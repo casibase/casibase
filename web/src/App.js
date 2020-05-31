@@ -17,8 +17,7 @@ import './App.css';
 import * as Setting from "./Setting";
 import {Layout, Menu, Typography} from 'antd';
 import {Switch, Route} from 'react-router-dom'
-import HomePage from "./HomePage";
-// import TaskPage from "./TaskPage";
+import TopicPage from "./TopicPage";
 
 const { Header, Footer } = Layout;
 const { Text } = Typography;
@@ -78,8 +77,7 @@ class App extends Component {
           </Menu>
         </Header>
         <Switch>
-          <Route exact path="/" component={HomePage}/>
-          {/*<Route path="/task/" component={TaskPage}/>*/}
+          <Route exact path="/" component={TopicPage}/>
         </Switch>
         <Footer style={{ textAlign: 'center' }}>Casbin Organization</Footer>
       </div>

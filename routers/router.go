@@ -28,10 +28,14 @@ func initAPI() {
 	ns :=
 		beego.NewNamespace("/api",
 			beego.NSInclude(
-				&controllers.ApiController{},
+				&controllers.APIController{},
 			),
 		)
 	beego.AddNamespace(ns)
 
-	beego.Router("/api/get-top-posts", &controllers.ApiController{}, "POST:GetTopPosts")
+	beego.Router("/api/get-topics", &controllers.APIController{}, "GET:GetTopics")
+	beego.Router("/api/get-topic", &controllers.APIController{}, "GET:GetTopic")
+	beego.Router("/api/update-topic", &controllers.APIController{}, "POST:UpdateTopic")
+	beego.Router("/api/add-topic", &controllers.APIController{}, "POST:AddTopic")
+	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 }

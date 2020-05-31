@@ -19,11 +19,14 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/casbin/casbin-forum/object"
 
 	_ "github.com/casbin/casbin-forum/routers"
 )
 
 func main() {
+	object.InitAdapter()
+
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "PUT", "PATCH"},
@@ -36,7 +39,7 @@ func main() {
 	beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
 
-	port := "7000"
+	port := beego.AppConfig.String("httpport")
 	if len(os.Args) > 1 {
 		port = os.Args[1]
 	}

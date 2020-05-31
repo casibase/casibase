@@ -12,9 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import React from "react";
+import {message} from "antd";
+
 export let ServerUrl = '';
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
   ServerUrl = `http://${hostname}:7000`;
+}
+
+export function openLink(link) {
+  const w = window.open('about:blank');
+  w.location.href = link;
+}
+
+export function getLink(link) {
+  return <a target="_blank" href={link}>{link}</a>
+}
+
+export function showMessage(type, text) {
+  if (type === "") {
+    return;
+  } else if (type === "success") {
+    message.success(text);
+  } else if (type === "error") {
+    message.error(text);
+  }
+}
+
+export function addRow(array, row) {
+  return [...array, row];
+}
+
+export function deleteRow(array, i) {
+  return [...array.slice(0, i), ...array.slice(i + 1)];
+}
+
+export function getFormattedDate(date) {
+  date = date.replace('T', ' ');
+  date = date.replace('+08:00', ' ');
+  return date;
 }
