@@ -18,6 +18,7 @@ import * as Setting from "./Setting";
 import {Layout, Menu, Typography} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
+import BoardPage from "./BoardPage";
 
 const { Header, Footer } = Layout;
 const { Text } = Typography;
@@ -34,7 +35,7 @@ class App extends Component {
   componentWillMount() {
     // eslint-disable-next-line no-restricted-globals
     const uri = location.pathname;
-    if (uri.includes('note')) {
+    if (uri.includes('board')) {
       this.setState({ selectedMenuKey: 2 });
     } else if (uri.includes('setting')) {
       this.setState({ selectedMenuKey: 3 });
@@ -65,8 +66,8 @@ class App extends Component {
               </a>
             </Menu.Item>
             <Menu.Item key="2">
-              <a href="/note">
-                Note
+              <a href="/board">
+                Board
               </a>
             </Menu.Item>
             <Menu.Item key="3">
@@ -78,6 +79,7 @@ class App extends Component {
         </Header>
         <Switch>
           <Route exact path="/" component={TopicPage}/>
+          <Route exact path="/board" component={BoardPage}/>
         </Switch>
         <Footer style={{ textAlign: 'center' }}>Casbin Organization</Footer>
       </div>

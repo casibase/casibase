@@ -14,46 +14,44 @@
 
 package object
 
-type Topic struct {
+type Board struct {
 	Owner       string `xorm:"varchar(100)" json:"owner"`
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
-	BoardId     string `xorm:"varchar(100)" json:"boardId"`
 	Title       string `xorm:"varchar(100)" json:"title"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-
-	Content string `xorm:"mediumtext" json:"content"`
+	Desc        string `xorm:"varchar(500)" json:"desc"`
 }
 
-func GetTopics() []*Topic {
-	topics := []*Topic{}
-	err := adapter.engine.Asc("created_time").Find(&topics)
+func GetBoards() []*Board {
+	boards := []*Board{}
+	err := adapter.engine.Asc("created_time").Find(&boards)
 	if err != nil {
 		panic(err)
 	}
 
-	return topics
+	return boards
 }
 
-func GetTopic(id string) *Topic {
-	topic := Topic{Id: id}
-	existed, err := adapter.engine.Get(&topic)
+func GetBoard(id string) *Board {
+	board := Board{Id: id}
+	existed, err := adapter.engine.Get(&board)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return &topic
+		return &board
 	} else {
 		return nil
 	}
 }
 
-func UpdateTopic(id string, topic *Topic) bool {
-	if GetTopic(id) == nil {
+func UpdateBoard(id string, board *Board) bool {
+	if GetBoard(id) == nil {
 		return false
 	}
 
-	_, err := adapter.engine.Id(id).AllCols().Update(topic)
+	_, err := adapter.engine.Id(id).AllCols().Update(board)
 	if err != nil {
 		panic(err)
 	}
@@ -62,8 +60,8 @@ func UpdateTopic(id string, topic *Topic) bool {
 	return true
 }
 
-func AddTopic(topic *Topic) bool {
-	affected, err := adapter.engine.Insert(topic)
+func AddBoard(board *Board) bool {
+	affected, err := adapter.engine.Insert(board)
 	if err != nil {
 		panic(err)
 	}
@@ -71,8 +69,8 @@ func AddTopic(topic *Topic) bool {
 	return affected != 0
 }
 
-func DeleteTopic(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Topic{})
+func DeleteBoard(id string) bool {
+	affected, err := adapter.engine.Id(id).Delete(&Board{})
 	if err != nil {
 		panic(err)
 	}

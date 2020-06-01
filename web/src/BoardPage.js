@@ -16,75 +16,75 @@ import React from "react";
 import {Button, Col, Popconfirm, Row, Table, Tag, Tooltip} from 'antd';
 import {EyeOutlined, MinusOutlined} from '@ant-design/icons';
 import * as Setting from "./Setting";
-import * as TopicBackend from "./backend/TopicBackend";
+import * as BoardBackend from "./backend/BoardBackend";
 import moment from "moment";
 
-class TopicPage extends React.Component {
+class BoardPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      topics: [],
+      boards: [],
     };
   }
 
   componentDidMount() {
-    this.getTopics();
+    this.getBoards();
   }
 
-  getTopics() {
-    TopicBackend.getTopics()
+  getBoards() {
+    BoardBackend.getBoards()
       .then((res) => {
           this.setState({
-            topics: res,
+            boards: res,
           });
         }
       );
   }
 
-  newTopic() {
+  newBoard() {
     return {
       owner: "admin",
-      id: `topic_${this.state.topics.length}`,
-      title: `Topic ${this.state.topics.length}`,
+      id: `board_${this.state.boards.length}`,
+      title: `Board ${this.state.boards.length}`,
       createdTime: moment().format(),
-      content: "description...",
+      desc: "description...",
     }
   }
 
-  addTopic() {
-    const newTopic = this.newTopic();
-    TopicBackend.addTopic(newTopic)
+  addBoard() {
+    const newBoard = this.newBoard();
+    BoardBackend.addBoard(newBoard)
       .then((res) => {
-          Setting.showMessage("success", `Adding topic succeeded`);
+          Setting.showMessage("success", `Adding board succeeded`);
           this.setState({
-            topics: Setting.addRow(this.state.topics, newTopic),
+            boards: Setting.addRow(this.state.boards, newBoard),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Adding topic failed：${error}`);
+        Setting.showMessage("error", `Adding board failed：${error}`);
       });
   }
 
-  deleteTopic(i) {
-    TopicBackend.deleteTopic(this.state.topics[i].id)
+  deleteBoard(i) {
+    BoardBackend.deleteBoard(this.state.boards[i].id)
       .then((res) => {
-          Setting.showMessage("success", `Deleting topic succeeded`);
+          Setting.showMessage("success", `Deleting board succeeded`);
           this.setState({
-            topics: Setting.deleteRow(this.state.topics, i),
+            boards: Setting.deleteRow(this.state.boards, i),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Deleting topic succeeded：${error}`);
+        Setting.showMessage("error", `Deleting board succeeded：${error}`);
       });
   }
 
-  renderTable(topics) {
+  renderTable(boards) {
     const columns = [
       {
-        title: 'Topic ID',
+        title: 'Board ID',
         dataIndex: 'id',
         key: 'id',
       },
@@ -107,9 +107,9 @@ class TopicPage extends React.Component {
         }
       },
       {
-        title: 'Content',
-        dataIndex: 'content',
-        key: 'content',
+        title: 'Desc',
+        dataIndex: 'desc',
+        key: 'desc',
       },
       {
         title: 'Action',
@@ -121,11 +121,11 @@ class TopicPage extends React.Component {
             <div>
               <Tooltip placement="topLeft" title="View">
                 <Button style={{marginRight: "5px"}} icon={<EyeOutlined/>} size="small"
-                        onClick={() => Setting.openLink(`/topics/${this.state.websiteId}/topics/${record.id}/impressions`)}/>
+                        onClick={() => Setting.openLink(`/boards/${this.state.websiteId}/boards/${record.id}/impressions`)}/>
               </Tooltip>
               <Popconfirm
-                title={`Are you sure to delete topic: ${record.id} ?`}
-                onConfirm={() => this.deleteTopic(index)}
+                title={`Are you sure to delete board: ${record.id} ?`}
+                onConfirm={() => this.deleteBoard(index)}
                 okText="Yes"
                 cancelText="No"
               >
@@ -141,11 +141,11 @@ class TopicPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={topics} rowKey="name" size="middle" bordered pagination={{topicSize: 100}}
+        <Table columns={columns} dataSource={boards} rowKey="name" size="middle" bordered pagination={{boardSize: 100}}
                title={() => (
                  <div>
-                   Topics&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addTopic.bind(this)}>Add</Button>
+                   Boards&nbsp;&nbsp;&nbsp;&nbsp;
+                   <Button type="primary" size="small" onClick={this.addBoard.bind(this)}>Add</Button>
                  </div>
                )}
         />
@@ -159,7 +159,7 @@ class TopicPage extends React.Component {
         <Row>
           <Col span={24}>
             {
-              this.renderTable(this.state.topics)
+              this.renderTable(this.state.boards)
             }
           </Col>
         </Row>
@@ -168,4 +168,4 @@ class TopicPage extends React.Component {
   }
 }
 
-export default TopicPage;
+export default BoardPage;
