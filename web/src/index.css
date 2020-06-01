@@ -14,10 +14,10 @@ code {
 
 .logo {
   background: url("logo.png") no-repeat;
-  width: 170px;
+  width: 130px;
   height: 40px;
-  background-size:70% 70%;
-  margin-top: 10px;
+  background-size:90% 70%;
+  margin-top: 0px;
   /*background: rgba(0, 0, 0, 0.2);*/
   float: left;
 }

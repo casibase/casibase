@@ -15,10 +15,11 @@
 import React, {Component} from 'react';
 import './App.css';
 import * as Setting from "./Setting";
-import {Layout, Menu, Input, Typography} from 'antd';
+import {Layout, Menu, Input, Typography, Col, Row} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
 import BoardPage from "./BoardPage";
+import AccountWidget from "./AccountWidget";
 
 const { Header, Footer } = Layout;
 const { Text } = Typography;
@@ -45,57 +46,79 @@ class App extends Component {
     }
   }
 
+  renderHeader() {
+    return (
+      <Header style={{ padding: '0', height: '38px'}}>
+        <div className="logo" />
+        <Menu
+          // theme="dark"
+          mode="horizontal"
+          defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
+          style={{ lineHeight: '32px' }}
+          inlineCollapsed={false}
+        >
+          {/*<Text>Casbin Forum</Text>*/}
+
+          <Search
+            onSearch={value => Setting.openLink(`https://www.google.com/search?q=site:casbin.org%20${value}`)}
+            style={{ width: 200, marginRight: "200px" }}
+          />
+          <Menu.Item key="1">
+            <a href="/">
+              Home
+            </a>
+          </Menu.Item>
+          <Menu.Item key="2">
+            <a href="/board">
+              Board
+            </a>
+          </Menu.Item>
+          <Menu.Item key="3">
+            <a href="/setting">
+              Setting
+            </a>
+          </Menu.Item>
+          <Menu.Item key='4' style={{float: 'right'}}>
+            <a target="_blank" href="https://github.com/casbin/casbin-forum">
+              <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
+            </a>
+          </Menu.Item>
+        </Menu>
+      </Header>
+    )
+  }
+
   render() {
     Setting.initServerUrl();
 
     return (
       <div>
         <div id="content-wrap">
-          <div className="layout">
-            <Header style={{ padding: '0', height: '50px'}}>
-              <div style={{marginLeft: '20px'}} className="logo" />
-              <Menu
-                // theme="dark"
-                mode="horizontal"
-                defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-                style={{ lineHeight: '44px' }}
-                inlineCollapsed={false}
-              >
-                {/*<Text>Casbin Forum</Text>*/}
-
-                <Menu.Item key="100">
-                  <Search
-                    onSearch={value => Setting.openLink(`https://www.google.com/search?q=site:casbin.org%20${value}`)}
-                    style={{ width: 200 }}
-                  />
-                </Menu.Item>
-                <Menu.Item key="1">
-                  <a href="/">
-                    Home
-                  </a>
-                </Menu.Item>
-                <Menu.Item key="2">
-                  <a href="/board">
-                    Board
-                  </a>
-                </Menu.Item>
-                <Menu.Item key="3">
-                  <a href="/setting">
-                    Setting
-                  </a>
-                </Menu.Item>
-                <Menu.Item key='4' style={{float: 'right'}}>
-                  <a target="_blank" href="https://github.com/casbin/casbin-forum">
-                    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
-                  </a>
-                </Menu.Item>
-              </Menu>
-            </Header>
+          <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
+            {/*<div className="layout" style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>*/}
+            <div style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>
+              <div style={{paddingTop: "6px"}}>
+                {
+                  this.renderHeader()
+                }
+              </div>
+            </div>
           </div>
-          <Switch>
-            <Route exact path="/" component={TopicPage}/>
-            <Route exact path="/board" component={BoardPage}/>
-          </Switch>
+          <div style={{backgroundColor: "rgb(226,226,226)"}}>
+            <div style={{minWidth: "600px", maxWidth: "1100px", margin: "0 auto"}}>
+              <div style={{width: "270px", float: "right", marginRight: "20px"}}>
+                <div style={{height: "20px"}} />
+                <AccountWidget />
+              </div>
+              <div style={{width: "auto", margin: "0 310px 0 20px"}}>
+                <div style={{height: "20px"}} />
+                <Switch style={{marginLeft: "20px"}}>
+                  <Route exact path="/" component={TopicPage}/>
+                  <Route exact path="/board" component={BoardPage}/>
+                </Switch>
+              </div>
+            </div>
+          </div>
           {/*How to keep your footer where it belongs ?*/}
           {/*https://www.freecodecamp.org/news/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/*/}
           <Footer id="footer" style={
