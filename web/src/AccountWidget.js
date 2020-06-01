@@ -40,7 +40,7 @@ class AccountWidget extends React.Component {
             <tr>
               <td width="48" valign="top">
                 <a href={`/member/${username}`}>
-                  <img src={gravatarUrl} className="avatar" border="0" align="default" style={{maxWidth: "48px", maxHeight: "48px"}} alt="hsluoyz" />
+                  <img src={gravatarUrl} className="avatar" border="0" align="default" style={{maxWidth: "48px", maxHeight: "48px"}} alt={username} />
                 </a>
               </td>
               <td width="10" valign="top" />

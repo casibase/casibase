@@ -21,11 +21,8 @@ import TopicPage from "./TopicPage";
 import BoardPage from "./BoardPage";
 import AccountWidget from "./AccountWidget";
 import BoardWidget from "./BoardWidget";
+import Header from "./Header";
 import Footer from "./Footer";
-
-const { Header } = Layout;
-const { Text } = Typography;
-const { Search } = Input;
 
 class App extends Component {
   constructor(props) {
@@ -48,81 +45,30 @@ class App extends Component {
     }
   }
 
-  renderHeader() {
-    return (
-      <Header style={{ padding: '0', height: '38px'}}>
-        <div className="logo" />
-        <Menu
-          // theme="dark"
-          mode="horizontal"
-          defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-          style={{ lineHeight: '27px' }}
-          inlineCollapsed={false}
-        >
-          {/*<Text>Casbin Forum</Text>*/}
-
-          <Search
-            onSearch={value => Setting.openLink(`https://www.google.com/search?q=site:casbin.org%20${value}`)}
-            style={{ width: 200, marginRight: "200px" }}
-          />
-          <Menu.Item key="1">
-            <a href="/">
-              Home
-            </a>
-          </Menu.Item>
-          <Menu.Item key="2">
-            <a href="/board">
-              Board
-            </a>
-          </Menu.Item>
-          <Menu.Item key="3">
-            <a href="/setting">
-              Setting
-            </a>
-          </Menu.Item>
-          <a style={{float: 'right'}} target="_blank" href="https://github.com/casbin/casbin-forum">
-            <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
-          </a>
-        </Menu>
-      </Header>
-    )
-  }
-
   render() {
     Setting.initServerUrl();
 
     return (
       <div>
-        <div>
-          <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
-            {/*<div className="layout" style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>*/}
-            <div style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>
-              <div style={{paddingTop: "6px"}}>
-                {
-                  this.renderHeader()
-                }
-              </div>
+        <Header />
+        <div style={{backgroundColor: "rgb(226,226,226)"}}>
+          <div style={{minWidth: "600px", maxWidth: "1100px", margin: "0 auto"}}>
+            <div style={{width: "270px", float: "right", marginRight: "20px"}}>
+              <div className="sep20" />
+              <AccountWidget />
+              <div className="sep20" />
+              <BoardWidget />
+            </div>
+            <div style={{width: "auto", margin: "0 310px 0 20px"}}>
+              <div style={{height: "20px"}} />
+              <Switch style={{marginLeft: "20px"}}>
+                <Route exact path="/" component={TopicPage}/>
+                <Route exact path="/board" component={BoardPage}/>
+              </Switch>
             </div>
           </div>
-          <div style={{backgroundColor: "rgb(226,226,226)"}}>
-            <div style={{minWidth: "600px", maxWidth: "1100px", margin: "0 auto"}}>
-              <div style={{width: "270px", float: "right", marginRight: "20px"}}>
-                <div className="sep20" />
-                <AccountWidget />
-                <div className="sep20" />
-                <BoardWidget />
-              </div>
-              <div style={{width: "auto", margin: "0 310px 0 20px"}}>
-                <div style={{height: "20px"}} />
-                <Switch style={{marginLeft: "20px"}}>
-                  <Route exact path="/" component={TopicPage}/>
-                  <Route exact path="/board" component={BoardPage}/>
-                </Switch>
-              </div>
-            </div>
-          </div>
-          <Footer />
         </div>
+        <Footer />
       </div>
     );
   }
