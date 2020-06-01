@@ -48,45 +48,59 @@ class App extends Component {
     Setting.initServerUrl();
 
     return (
-      <div className="layout">
-        <Header style={{ padding: '0', height: '50px'}}>
-          <div style={{marginLeft: '20px'}} className="logo" />
-          <Menu
-            // theme="dark"
-            mode="horizontal"
-            defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-            style={{ lineHeight: '44px' }}
-            inlineCollapsed={false}
-          >
-            {/*<Text>Casbin Forum</Text>*/}
+      <div>
+        <div id="content-wrap">
+          <div className="layout">
+            <Header style={{ padding: '0', height: '50px'}}>
+              <div style={{marginLeft: '20px'}} className="logo" />
+              <Menu
+                // theme="dark"
+                mode="horizontal"
+                defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
+                style={{ lineHeight: '44px' }}
+                inlineCollapsed={false}
+              >
+                {/*<Text>Casbin Forum</Text>*/}
 
-            <Menu.Item key="1">
-              <a href="/">
-                Home
-              </a>
-            </Menu.Item>
-            <Menu.Item key="2">
-              <a href="/board">
-                Board
-              </a>
-            </Menu.Item>
-            <Menu.Item key="3">
-              <a href="/setting">
-                Setting
-              </a>
-            </Menu.Item>
-            <Menu.Item key='4' style={{float: 'right'}}>
-              <a target="_blank" href="https://github.com/casbin/casbin-forum">
-                <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
-              </a>
-            </Menu.Item>
-          </Menu>
-        </Header>
-        <Switch>
-          <Route exact path="/" component={TopicPage}/>
-          <Route exact path="/board" component={BoardPage}/>
-        </Switch>
-        <Footer style={{ textAlign: 'center' }}>Casbin Organization</Footer>
+                <Menu.Item key="1">
+                  <a href="/">
+                    Home
+                  </a>
+                </Menu.Item>
+                <Menu.Item key="2">
+                  <a href="/board">
+                    Board
+                  </a>
+                </Menu.Item>
+                <Menu.Item key="3">
+                  <a href="/setting">
+                    Setting
+                  </a>
+                </Menu.Item>
+                <Menu.Item key='4' style={{float: 'right'}}>
+                  <a target="_blank" href="https://github.com/casbin/casbin-forum">
+                    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
+                  </a>
+                </Menu.Item>
+              </Menu>
+            </Header>
+          </div>
+          <Switch>
+            <Route exact path="/" component={TopicPage}/>
+            <Route exact path="/board" component={BoardPage}/>
+          </Switch>
+          {/*How to keep your footer where it belongs ?*/}
+          {/*https://www.freecodecamp.org/news/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/*/}
+          <Footer id="footer" style={
+            {
+              borderTop: '1px solid #e8e8e8',
+              backgroundColor: 'white',
+              textAlign: 'center',
+            }
+          }>
+            Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" href="https://casbin.org">Casbin</a>
+          </Footer>
+        </div>
       </div>
     );
   }
