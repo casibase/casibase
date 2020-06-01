@@ -107,9 +107,9 @@ class App extends Component {
           <div style={{backgroundColor: "rgb(226,226,226)"}}>
             <div style={{minWidth: "600px", maxWidth: "1100px", margin: "0 auto"}}>
               <div style={{width: "270px", float: "right", marginRight: "20px"}}>
-                <div style={{height: "20px"}} />
+                <div className="sep20" />
                 <AccountWidget />
-                <div style={{height: "20px"}} />
+                <div className="sep20" />
                 <BoardWidget />
               </div>
               <div style={{width: "auto", margin: "0 310px 0 20px"}}>

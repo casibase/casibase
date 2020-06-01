@@ -15,6 +15,7 @@
 import React from "react";
 import {Avatar, Col, Progress, Row, Space, Statistic, Switch} from "antd";
 import { UserOutlined, FormOutlined } from '@ant-design/icons';
+import * as Setting from "./Setting";
 
 class AccountWidget extends React.Component {
   constructor(props) {
@@ -28,36 +29,115 @@ class AccountWidget extends React.Component {
   }
 
   render() {
+    let username = "alice";
+    let gravatarUrl = "https://cdn.jsdelivr.net/gh/casbin/static/gravatar/alice.png";
+
     return (
-      <div style={{backgroundColor: "white"}}>
-        <div className="theme-cell">
-          <Space>
-            <Avatar shape="square" size={48} icon={<UserOutlined />} />
-            username
-            <Switch style={{marginLeft: "60px"}} checkedChildren="night" unCheckedChildren="day" defaultChecked={false} />
-          </Space>
+      <div className="box">
+        <div className="cell">
+          <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+            <tbody>
+            <tr>
+              <td width="48" valign="top">
+                <a href={`/member/${username}`}>
+                  <img src={gravatarUrl} className="avatar" border="0" align="default" style={{maxWidth: "48px", maxHeight: "48px"}} alt="hsluoyz" />
+                </a>
+              </td>
+              <td width="10" valign="top" />
+              <td width="auto" align="left">
+                <div className="fr">
+                  <a href="/settings/night/toggle?once=93095" className="light-toggle">
+                    <img src={Setting.getStatic("/static/img/toggle-light.png")} align="absmiddle" height="10" alt="Light" />
+                  </a>
+                </div>
+                <span className="bigger">
+                  <a href={`/member/${username}`}>
+                    {username}
+                  </a>
+                </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div className="sep10" />
+          <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+            <tbody>
+            <tr>
+              <td width="33%" align="center">
+                <a href="/my/nodes" className="dark" style={{display: "block"}}>
+                  <span className="bigger">
+                    0
+                  </span>
+                  <div className="sep3" />
+                  <span className="fade">
+                    Node
+                  </span>
+                </a>
+              </td>
+              <td width="34%"
+                  style={{borderLeft: "1px solid rgba(100, 100, 100, 0.4)", borderRight: "1px solid rgba(100, 100, 100, 0.4)"}}
+                  align="center">
+                <a href="/my/topics" className="dark" style={{display: "block"}}>
+                  <span className="bigger">
+                    0
+                  </span>
+                <div className="sep3" />
+                <span className="fade">
+                  Topic
+                </span>
+                </a>
+              </td>
+              <td width="33%" align="center">
+                <a href="/my/following" className="dark" style={{display: "block"}}>
+                  <span className="bigger">
+                    0
+                  </span>
+                  <div className="sep3" />
+                  <span className="fade">
+                    Watch
+                  </span>
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <div className="theme-cell">
-          <Row gutter={16}>
-            <Col span={8}>
-              <Statistic title="Board" value={0} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Topic" value={0} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Watch" value={0} />
-            </Col>
-          </Row>
+        <div className="cell" id="member-activity">
+          <div className="member-activity-bar">
+            <div className="member-activity-start" style={{width: "80px"}} />
+          </div>
         </div>
-        <div className="theme-cell">
-          <Progress percent={30} showInfo={false} />
+        <div className="cell" style={{padding: "8px", lineHeight: "100%"}}>
+          <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+            <tbody>
+            <tr>
+              <td width="28">
+                <a href="/new">
+                  <img src={Setting.getStatic("/static/img/essentials/compose.png")} width="28" border="0" style={{verticalAlign: "bottom"}} />
+                </a>
+              </td>
+              <td width="10" />
+              <td width="auto" valign="middle" align="left">
+                <a href="/new">
+                  Create a Post
+                </a>
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
-        <div className="theme-cell">
-          <FormOutlined /> Create Post
-        </div>
-        <div className="theme-cell">
-          0 Unread
+        <div className="inner">
+          <div className="fr" id="money" style={{margin: "-3px 0px 0px 0px"}}>
+            <a href="/balance" className="balance_area">
+              18
+              <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
+              69
+              <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
+            </a>
+          </div>
+          <a href="/notifications" className="fade">
+            0 Unread
+          </a>
         </div>
       </div>
     );

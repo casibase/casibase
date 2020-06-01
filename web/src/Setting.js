@@ -56,3 +56,7 @@ export function getFormattedDate(date) {
   date = date.replace('+08:00', ' ');
   return date;
 }
+
+export function getStatic(path) {
+  return `https://cdn.jsdelivr.net/gh/casbin${path}`;
+}
