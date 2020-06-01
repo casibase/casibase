@@ -15,13 +15,14 @@
 import React, {Component} from 'react';
 import './App.css';
 import * as Setting from "./Setting";
-import {Layout, Menu, Typography} from 'antd';
+import {Layout, Menu, Input, Typography} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
 import BoardPage from "./BoardPage";
 
 const { Header, Footer } = Layout;
 const { Text } = Typography;
+const { Search } = Input;
 
 class App extends Component {
   constructor(props) {
@@ -62,6 +63,12 @@ class App extends Component {
               >
                 {/*<Text>Casbin Forum</Text>*/}
 
+                <Menu.Item key="100">
+                  <Search
+                    onSearch={value => Setting.openLink(`https://www.google.com/search?q=site:casbin.org%20${value}`)}
+                    style={{ width: 200 }}
+                  />
+                </Menu.Item>
                 <Menu.Item key="1">
                   <a href="/">
                     Home
