@@ -49,16 +49,16 @@ class App extends Component {
 
     return (
       <div className="layout">
-        <Header style={{ padding: '0', marginBottom: '8px'}}>
-          <div className="logo" />
+        <Header style={{ padding: '0', height: '50px'}}>
+          <div style={{marginLeft: '20px'}} className="logo" />
           <Menu
             // theme="dark"
             mode="horizontal"
             defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-            style={{ lineHeight: '64px' }}
+            style={{ lineHeight: '44px' }}
             inlineCollapsed={false}
           >
-            <Text>Casbin Forum</Text>
+            {/*<Text>Casbin Forum</Text>*/}
 
             <Menu.Item key="1">
               <a href="/">
