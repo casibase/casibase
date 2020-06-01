@@ -20,6 +20,7 @@ type Board struct {
 	Title       string `xorm:"varchar(100)" json:"title"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	Desc        string `xorm:"varchar(500)" json:"desc"`
+	Image       string `xorm:"varchar(200)" json:"image"`
 }
 
 func GetBoards() []*Board {

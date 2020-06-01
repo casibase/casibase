@@ -15,49 +15,48 @@
 import React from "react";
 import {Avatar, Col, Progress, Row, Space, Statistic, Switch} from "antd";
 import { UserOutlined, FormOutlined } from '@ant-design/icons';
+import * as BoardBackend from "./backend/BoardBackend";
 
-class AccountWidget extends React.Component {
+class BoardWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
+      boards: [],
     };
   }
 
   componentDidMount() {
+    this.getBoards();
+  }
+
+  getBoards() {
+    BoardBackend.getBoards()
+      .then((res) => {
+          this.setState({
+            boards: res,
+          });
+        }
+      );
   }
 
   render() {
     return (
       <div style={{backgroundColor: "white"}}>
-        <div className="theme-cell">
-          <Space>
-            <Avatar shape="square" size={48} icon={<UserOutlined />} />
-            username
-            <Switch style={{marginLeft: "60px"}} checkedChildren="night" unCheckedChildren="day" defaultChecked={false} />
-          </Space>
+        <div className="theme-cell-top">
+          All Boards
         </div>
-        <div className="theme-cell">
-          <Row gutter={16}>
-            <Col span={8}>
-              <Statistic title="Board" value={0} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Topic" value={0} />
-            </Col>
-            <Col span={8}>
-              <Statistic title="Watch" value={0} />
-            </Col>
-          </Row>
-        </div>
-        <div className="theme-cell">
-          <Progress percent={30} showInfo={false} />
-        </div>
-        <div className="theme-cell">
-          <FormOutlined /> Create Post
-        </div>
-        <div className="theme-cell">
-          0 Unread
+        <div>
+          {
+            this.state.boards.map((board, i) => {
+              return (
+                <div style={{padding: "5px 10px 5px 10px"}}>
+                  <div className="theme-cell-board" style={{backgroundImage: `url("${board.image}")`}}/>
+                  &nbsp; {board.title}
+                </div>
+              );
+            })
+          }
         </div>
       </div>
     );
@@ -65,4 +64,4 @@ class AccountWidget extends React.Component {
 
 }
 
-export default AccountWidget;
+export default BoardWidget;

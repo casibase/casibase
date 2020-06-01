@@ -20,8 +20,10 @@ import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
 import BoardPage from "./BoardPage";
 import AccountWidget from "./AccountWidget";
+import BoardWidget from "./BoardWidget";
+import Footer from "./Footer";
 
-const { Header, Footer } = Layout;
+const { Header } = Layout;
 const { Text } = Typography;
 const { Search } = Input;
 
@@ -54,7 +56,7 @@ class App extends Component {
           // theme="dark"
           mode="horizontal"
           defaultSelectedKeys={[`${this.state.selectedMenuKey}`]}
-          style={{ lineHeight: '32px' }}
+          style={{ lineHeight: '27px' }}
           inlineCollapsed={false}
         >
           {/*<Text>Casbin Forum</Text>*/}
@@ -78,11 +80,9 @@ class App extends Component {
               Setting
             </a>
           </Menu.Item>
-          <Menu.Item key='4' style={{float: 'right'}}>
-            <a target="_blank" href="https://github.com/casbin/casbin-forum">
-              <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
-            </a>
-          </Menu.Item>
+          <a style={{float: 'right'}} target="_blank" href="https://github.com/casbin/casbin-forum">
+            <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
+          </a>
         </Menu>
       </Header>
     )
@@ -93,7 +93,7 @@ class App extends Component {
 
     return (
       <div>
-        <div id="content-wrap">
+        <div>
           <div style={{paddingLeft: "20px", paddingRight: "20px"}}>
             {/*<div className="layout" style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>*/}
             <div style={{minWidth: "600px", maxWidth: "1060px", margin: "0 auto"}}>
@@ -109,6 +109,8 @@ class App extends Component {
               <div style={{width: "270px", float: "right", marginRight: "20px"}}>
                 <div style={{height: "20px"}} />
                 <AccountWidget />
+                <div style={{height: "20px"}} />
+                <BoardWidget />
               </div>
               <div style={{width: "auto", margin: "0 310px 0 20px"}}>
                 <div style={{height: "20px"}} />
@@ -119,17 +121,7 @@ class App extends Component {
               </div>
             </div>
           </div>
-          {/*How to keep your footer where it belongs ?*/}
-          {/*https://www.freecodecamp.org/news/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/*/}
-          <Footer id="footer" style={
-            {
-              borderTop: '1px solid #e8e8e8',
-              backgroundColor: 'white',
-              textAlign: 'center',
-            }
-          }>
-            Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" href="https://casbin.org">Casbin</a>
-          </Footer>
+          <Footer />
         </div>
       </div>
     );
