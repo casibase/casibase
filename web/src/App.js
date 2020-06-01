@@ -75,6 +75,11 @@ class App extends Component {
                 Setting
               </a>
             </Menu.Item>
+            <Menu.Item key='4' style={{float: 'right'}}>
+              <a target="_blank" href="https://github.com/casbin/casbin-forum">
+                <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casbin-forum?style=social" />
+              </a>
+            </Menu.Item>
           </Menu>
         </Header>
         <Switch>
