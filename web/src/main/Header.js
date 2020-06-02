@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
+import * as Setting from "../Setting";
 
-class SigninWidget extends React.Component {
+class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,24 +25,21 @@ class SigninWidget extends React.Component {
 
   render() {
     return (
-      <div className="box">
-        <div className="cell">
-          <strong>Casbin Forum</strong>
-          <div className="sep5" />
-          <span className="fade">For Casbin developers and users</span>
-        </div>
-        <div className="inner">
-          <div className="sep5" />
-          <div align="center">
-            <a href="/signup" className="super normal button">Sign Up</a>
-            <div className="sep5" />
-            <div className="sep10" />
-            Already have account? please: &nbsp;<a href="/signin">Sign In</a>
-          </div>
-        </div>
+      <div className="header">
+        <a href="/">
+          {
+            Setting.getForumName()
+          }
+        </a>
+        <span className="chevron">
+            &nbsp;›&nbsp;
+        </span>
+        {
+          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>Sign In &nbsp; <li className="fa fa-lock" /></div>
+        }
       </div>
     );
   }
 }
 
-export default SigninWidget;
+export default Header;

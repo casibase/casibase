@@ -23,7 +23,9 @@ import AccountWidget from "./AccountWidget";
 import NodeWidget from "./NodeWidget";
 import Header from "./Header";
 import Footer from "./Footer";
-import SigninWidget from "./rightbar/SigninWidget";
+import RightSigninBox from "./rightbar/RightSigninBox";
+import SignupBox from "./main/SignupBox";
+import SigninBox from "./main/SigninBox";
 
 class App extends Component {
   constructor(props) {
@@ -36,10 +38,10 @@ class App extends Component {
 
   componentWillMount() {
     // eslint-disable-next-line no-restricted-globals
-    const uri = location.pathname;
-    if (uri.includes('node')) {
+    const pathname = location.pathname;
+    if (pathname.includes('node')) {
       this.setState({ selectedMenuKey: 2 });
-    } else if (uri.includes('setting')) {
+    } else if (pathname.includes('setting')) {
       this.setState({ selectedMenuKey: 3 });
     } else {
       this.setState({ selectedMenuKey: 1 });
@@ -49,6 +51,52 @@ class App extends Component {
   render() {
     Setting.initServerUrl();
 
+    // eslint-disable-next-line no-restricted-globals
+    const pathname = location.pathname;
+    if (pathname === "/signup") {
+      return (
+        <div>
+          <Header />
+          <div id="Wrapper">
+            <div className="content">
+              <div id="Leftbar" />
+              <div id="Rightbar">
+                <div className="sep20" />
+              </div>
+              <div id="Main">
+                <div className="sep20" />
+                <SignupBox />
+              </div>
+              <div className="c" />
+              <div className="sep20" />
+            </div>
+          </div>
+          <Footer />
+        </div>
+      )
+    } else if (pathname === "/signin") {
+      return (
+        <div>
+          <Header />
+          <div id="Wrapper">
+            <div className="content">
+              <div id="Leftbar" />
+              <div id="Rightbar">
+                <div className="sep20" />
+              </div>
+              <div id="Main">
+                <div className="sep20" />
+                <SigninBox />
+              </div>
+              <div className="c" />
+              <div className="sep20" />
+            </div>
+          </div>
+          <Footer />
+        </div>
+      )
+    }
+
     return (
       <div>
         <Header />
@@ -57,11 +105,9 @@ class App extends Component {
             <div id="Leftbar" />
             <div id="Rightbar">
               <div className="sep20" />
-              <SigninWidget />
+              <RightSigninBox />
               <div className="sep20" />
               <AccountWidget />
-              <div className="sep20" />
-              <NodeWidget />
             </div>
             <div id="Main">
               <div className="sep20" />
