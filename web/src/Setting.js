@@ -67,8 +67,8 @@ export function getStatic(path) {
   return `https://cdn.jsdelivr.net/gh/casbin${path}`;
 }
 
-export function getUserAvatar(username) {
-  return `https://cdn.jsdelivr.net/gh/casbin/static@00bc607406d185479a4dc9353bacefb39a830ab3/gravatar/${username}_48x48.png`;
+export function getUserAvatar(username, isLarge=false) {
+  return getStatic(`/static@00bc607406d185479a4dc9353bacefb39a830ab3/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
 export function getForumName() {

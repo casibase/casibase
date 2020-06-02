@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import * as Setting from "./Setting";
 
 class Footer extends React.Component {
   constructor(props) {
@@ -57,7 +58,7 @@ class Footer extends React.Component {
             <span className="fade">Highest Record 1234</span> &nbsp;
             <span className="snow">·</span> &nbsp;
             <a href="/select/language" className="f11">
-              <img src="https://cdn.jsdelivr.net/gh/casbin/static/img/language.png" width="16" align="absmiddle" id="ico-select-language" />
+              <img src={Setting.getStatic("/static/img/language.png")} width="16" align="absmiddle" id="ico-select-language" />
               &nbsp; Select Language
             </a>
             <div className="sep20" />

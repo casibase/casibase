@@ -26,6 +26,7 @@ import Footer from "./Footer";
 import RightSigninBox from "./rightbar/RightSigninBox";
 import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
+import TopicBox from "./main/TopicBox";
 
 class App extends Component {
   constructor(props) {
@@ -49,62 +50,59 @@ class App extends Component {
   }
 
   renderMain() {
-    // eslint-disable-next-line no-restricted-globals
-    const pathname = location.pathname;
-    if (pathname === "/signup") {
-      return (
-        <div id="Main">
-          <div className="sep20" />
-          <SignupBox />
-        </div>
-      )
-    } else if (pathname === "/signin") {
-      return (
-        <div id="Main">
-          <div className="sep20" />
-          <SigninBox />
-        </div>
-      )
-    }
-
     return (
-      <div id="Main">
-        <div className="sep20" />
-        <div className="box">
-          <Switch>
-            <Route exact path="/" component={TopicPage}/>
-            <Route exact path="/node" component={NodePage}/>
-          </Switch>
-        </div>
-      </div>
+      <Switch>
+        <Route exact path="/" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <TopicPage />
+          </div>
+        }/>
+        <Route exact path="/signup" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <SignupBox />
+          </div>
+        }/>
+        <Route exact path="/signin" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <SigninBox />
+          </div>
+        }/>
+        <Route exact path="/t/:topicId" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <TopicBox />
+          </div>
+        }/>
+      </Switch>
     )
   }
 
   renderRightbar() {
-    // eslint-disable-next-line no-restricted-globals
-    const pathname = location.pathname;
-    if (pathname === "/signup") {
-      return (
-        <div id="Rightbar">
-          <div className="sep20" />
-        </div>
-      )
-    } else if (pathname === "/signin") {
-      return (
-        <div id="Rightbar">
-          <div className="sep20" />
-        </div>
-      )
-    }
-
     return (
-      <div id="Rightbar">
-        <div className="sep20" />
-        <RightSigninBox />
-        <div className="sep20" />
-        <AccountWidget />
-      </div>
-    );
+      <Switch>
+        <Route exact path="/signup" component={() =>
+          <div id="Rightbar">
+            <div className="sep20" />
+          </div>
+        }/>
+        <Route exact path="/signin" component={() =>
+          <div id="Rightbar">
+            <div className="sep20" />
+          </div>
+        }/>
+        <Route component={() =>
+          <div id="Rightbar">
+            <div className="sep20" />
+            <RightSigninBox />
+            <div className="sep20" />
+            <AccountWidget />
+          </div>
+        }/>
+      </Switch>
+    )
   }
 
   render() {

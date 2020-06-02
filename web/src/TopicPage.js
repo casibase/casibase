@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "./Setting";
 import * as TopicBackend from "./backend/TopicBackend";
 import moment from "moment";
+import Avatar from "./Avatar";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -33,11 +34,10 @@ class TopicPage extends React.Component {
   getTopics() {
     TopicBackend.getTopics()
       .then((res) => {
-          this.setState({
-            topics: res,
-          });
-        }
-      );
+        this.setState({
+          topics: res,
+        });
+      });
   }
 
   newTopic() {
@@ -93,9 +93,7 @@ class TopicPage extends React.Component {
           <tbody>
           <tr>
             <td width="48" valign="top" align="center">
-              <a href={`/member/${topic.author}`}>
-                <img src={Setting.getUserAvatar(topic.author)} className="avatar" border="0" align="default" alt={topic.author} />
-              </a>
+              <Avatar username={topic.author} />
             </td>
             <td width="10" />
             <td width="auto" valign="middle">
