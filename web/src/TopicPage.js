@@ -13,8 +13,6 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Popconfirm, Row, Table, Tag, Tooltip} from 'antd';
-import {EyeOutlined, MinusOutlined} from '@ant-design/icons';
 import * as Setting from "./Setting";
 import * as TopicBackend from "./backend/TopicBackend";
 import moment from "moment";
@@ -81,88 +79,95 @@ class TopicPage extends React.Component {
       });
   }
 
-  renderTable(topics) {
-    const columns = [
-      {
-        title: 'Topic ID',
-        dataIndex: 'id',
-        key: 'id',
-      },
-      {
-        title: 'Title',
-        dataIndex: 'title',
-        key: 'title',
-      },
-      {
-        title: 'Owner',
-        dataIndex: 'owner',
-        key: 'owner',
-      },
-      {
-        title: 'Created Time',
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        }
-      },
-      {
-        title: 'Content',
-        dataIndex: 'content',
-        key: 'content',
-      },
-      {
-        title: 'Action',
-        dataIndex: '',
-        key: 'op',
-        width: '130px',
-        render: (text, record, index) => {
-          return (
-            <div>
-              <Tooltip placement="topLeft" title="View">
-                <Button style={{marginRight: "5px"}} icon={<EyeOutlined/>} size="small"
-                        onClick={() => Setting.openLink(`/topics/${this.state.websiteId}/topics/${record.id}/impressions`)}/>
-              </Tooltip>
-              <Popconfirm
-                title={`Are you sure to delete topic: ${record.id} ?`}
-                onConfirm={() => this.deleteTopic(index)}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Tooltip placement="topLeft" title="Delete">
-                  <Button icon={<MinusOutlined/>} size="small"/>
-                </Tooltip>
-              </Popconfirm>
-            </div>
-          )
-        }
-      },
-    ];
+  renderTopic(topic) {
+    const style = topic.nodeId !== "promotions" ? null : {
+      backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "20px 20px",
+      backgroundPosition: "right top"
+    };
 
     return (
-      <div>
-        <Table columns={columns} dataSource={topics} rowKey="name" size="middle" bordered pagination={{topicSize: 100}}
-               title={() => (
-                 <div>
-                   Topics&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addTopic.bind(this)}>Add</Button>
-                 </div>
-               )}
-        />
+      <div className="cell item" style={style}>
+        <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+          <tbody>
+          <tr>
+            <td width="48" valign="top" align="center">
+              <a href={`/member/${topic.author}`}>
+                <img src={Setting.getUserAvatar(topic.author)} className="avatar" border="0" align="default" alt={topic.author} />
+              </a>
+            </td>
+            <td width="10" />
+            <td width="auto" valign="middle">
+                <span className="item_title">
+                  <a href={`/t/${topic.id}`} className="topic-link">
+                    {
+                      topic.title
+                    }
+                  </a>
+                </span>
+              <div className="sep5" />
+              <span className="topic_info">
+                  <div className="votes" />
+                  <a className="node" href={`/go/${topic.nodeId}`}>{topic.nodeName}</a>
+                &nbsp;•&nbsp;
+                <strong><a href={`/member/${topic.author}`}>{topic.author}</a></strong>
+                &nbsp;•&nbsp;
+                {
+                  Setting.getPrettyDate(topic.createdTime)
+                }
+                &nbsp;•&nbsp;
+                last reply from <strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                </span>
+            </td>
+            <td width="70" align="right" valign="middle">
+              <a href={`/t/${topic.id}`} className="count_livid">
+                6
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
-    );
+    )
   }
 
   render() {
+    let username = "alice";
+
     return (
-      <div>
-        <Row>
-          <Col span={24}>
-            {
-              this.renderTable(this.state.topics)
-            }
-          </Col>
-        </Row>
+      <div className="box">
+        <div className="inner" id="Tabs">
+          <a href="/?tab=tech" className="tab">Tech</a>
+          <a href="/?tab=creative" className="tab">Creative</a>
+          <a href="/?tab=play" className="tab">Play</a>
+          <a href="/?tab=apple" className="tab">Apple</a>
+          <a href="/?tab=jobs" className="tab">Jobs</a>
+          <a href="/?tab=deals" className="tab">Deals</a>
+          <a href="/?tab=city" className="tab">City</a>
+          <a href="/?tab=qna" className="tab">Q&A</a>
+          <a href="/?tab=hot" className="tab">Hot</a>
+        </div>
+        <div className="cell" id="SecondaryTabs">
+          <div className="fr">
+            <a href="/new/qna">Create a Post</a>
+            &nbsp;
+            <li className="fa fa-caret-right gray" />
+          </div>
+          <a href="/go/share">Share</a>
+          &nbsp; &nbsp;
+          <a href="/go/create">Create</a>
+          &nbsp; &nbsp;
+          <a href="/go/qna">Q&A</a>
+        </div>
+        {
+          this.state.topics.map((topic, i) => {
+            return this.renderTopic(topic);
+          })
+        }
+        <div className="inner">
+          <span className="chevron">»</span> &nbsp;<a href="/recent">More Topics</a>
+        </div>
       </div>
     );
   }

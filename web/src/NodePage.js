@@ -16,75 +16,75 @@ import React from "react";
 import {Button, Col, Popconfirm, Row, Table, Tag, Tooltip} from 'antd';
 import {EyeOutlined, MinusOutlined} from '@ant-design/icons';
 import * as Setting from "./Setting";
-import * as BoardBackend from "./backend/BoardBackend";
+import * as NodeBackend from "./backend/NodeBackend";
 import moment from "moment";
 
-class BoardPage extends React.Component {
+class NodePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      boards: [],
+      nodes: [],
     };
   }
 
   componentDidMount() {
-    this.getBoards();
+    this.getNodes();
   }
 
-  getBoards() {
-    BoardBackend.getBoards()
+  getNodes() {
+    NodeBackend.getNodes()
       .then((res) => {
           this.setState({
-            boards: res,
+            nodes: res,
           });
         }
       );
   }
 
-  newBoard() {
+  newNode() {
     return {
       owner: "admin",
-      id: `board_${this.state.boards.length}`,
-      title: `Board ${this.state.boards.length}`,
+      id: `node_${this.state.nodes.length}`,
+      title: `Node ${this.state.nodes.length}`,
       createdTime: moment().format(),
       desc: "description...",
     }
   }
 
-  addBoard() {
-    const newBoard = this.newBoard();
-    BoardBackend.addBoard(newBoard)
+  addNode() {
+    const newNode = this.newNode();
+    NodeBackend.addNode(newNode)
       .then((res) => {
-          Setting.showMessage("success", `Adding board succeeded`);
+          Setting.showMessage("success", `Adding node succeeded`);
           this.setState({
-            boards: Setting.addRow(this.state.boards, newBoard),
+            nodes: Setting.addRow(this.state.nodes, newNode),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Adding board failed：${error}`);
+        Setting.showMessage("error", `Adding node failed：${error}`);
       });
   }
 
-  deleteBoard(i) {
-    BoardBackend.deleteBoard(this.state.boards[i].id)
+  deleteNode(i) {
+    NodeBackend.deleteNode(this.state.nodes[i].id)
       .then((res) => {
-          Setting.showMessage("success", `Deleting board succeeded`);
+          Setting.showMessage("success", `Deleting node succeeded`);
           this.setState({
-            boards: Setting.deleteRow(this.state.boards, i),
+            nodes: Setting.deleteRow(this.state.nodes, i),
           });
         }
       )
       .catch(error => {
-        Setting.showMessage("error", `Deleting board succeeded：${error}`);
+        Setting.showMessage("error", `Deleting node succeeded：${error}`);
       });
   }
 
-  renderTable(boards) {
+  renderTable(nodes) {
     const columns = [
       {
-        title: 'Board ID',
+        title: 'Node ID',
         dataIndex: 'id',
         key: 'id',
       },
@@ -121,11 +121,11 @@ class BoardPage extends React.Component {
             <div>
               <Tooltip placement="topLeft" title="View">
                 <Button style={{marginRight: "5px"}} icon={<EyeOutlined/>} size="small"
-                        onClick={() => Setting.openLink(`/boards/${this.state.websiteId}/boards/${record.id}/impressions`)}/>
+                        onClick={() => Setting.openLink(`/nodes/${this.state.websiteId}/nodes/${record.id}/impressions`)}/>
               </Tooltip>
               <Popconfirm
-                title={`Are you sure to delete board: ${record.id} ?`}
-                onConfirm={() => this.deleteBoard(index)}
+                title={`Are you sure to delete node: ${record.id} ?`}
+                onConfirm={() => this.deleteNode(index)}
                 okText="Yes"
                 cancelText="No"
               >
@@ -141,11 +141,11 @@ class BoardPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={boards} rowKey="name" size="middle" bordered pagination={{boardSize: 100}}
+        <Table columns={columns} dataSource={nodes} rowKey="name" size="middle" bordered pagination={{nodeSize: 100}}
                title={() => (
                  <div>
-                   Boards&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addBoard.bind(this)}>Add</Button>
+                   Nodes&nbsp;&nbsp;&nbsp;&nbsp;
+                   <Button type="primary" size="small" onClick={this.addNode.bind(this)}>Add</Button>
                  </div>
                )}
         />
@@ -159,7 +159,7 @@ class BoardPage extends React.Component {
         <Row>
           <Col span={24}>
             {
-              this.renderTable(this.state.boards)
+              this.renderTable(this.state.nodes)
             }
           </Col>
         </Row>
@@ -168,4 +168,4 @@ class BoardPage extends React.Component {
   }
 }
 
-export default BoardPage;
+export default NodePage;

@@ -14,38 +14,38 @@
 
 import * as Setting from "../Setting";
 
-export function getBoards() {
-  return fetch(`${Setting.ServerUrl}/api/get-boards`, {
+export function getNodes() {
+  return fetch(`${Setting.ServerUrl}/api/get-nodes`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());
 }
 
-export function getBoard(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-board?id=${id}`, {
+export function getNode(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-node?id=${id}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());
 }
 
-export function updateBoard(id, board) {
-  return fetch(`${Setting.ServerUrl}/api/update-board?id=${id}`, {
+export function updateNode(id, node) {
+  return fetch(`${Setting.ServerUrl}/api/update-node?id=${id}`, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify(board),
+    body: JSON.stringify(node),
   }).then(res => res.json());
 }
 
-export function addBoard(board) {
-  return fetch(`${Setting.ServerUrl}/api/add-board`, {
+export function addNode(node) {
+  return fetch(`${Setting.ServerUrl}/api/add-node`, {
     method: 'POST',
     credentials: 'include',
-    body: JSON.stringify(board),
+    body: JSON.stringify(node),
   }).then(res => res.json());
 }
 
-export function deleteBoard(id) {
-  return fetch(`${Setting.ServerUrl}/api/delete-board?id=${id}`, {
+export function deleteNode(id) {
+  return fetch(`${Setting.ServerUrl}/api/delete-node?id=${id}`, {
     method: 'POST',
     credentials: 'include',
   }).then(res => res.json());

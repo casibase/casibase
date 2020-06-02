@@ -14,6 +14,7 @@
 
 import React from "react";
 import {message} from "antd";
+import moment from "moment";
 
 export let ServerUrl = '';
 
@@ -57,6 +58,15 @@ export function getFormattedDate(date) {
   return date;
 }
 
+export function getPrettyDate(date) {
+  date = moment(date).fromNow();
+  return date;
+}
+
 export function getStatic(path) {
   return `https://cdn.jsdelivr.net/gh/casbin${path}`;
+}
+
+export function getUserAvatar(username) {
+  return `https://cdn.jsdelivr.net/gh/casbin/static@c9f1a96ae1d9c6fa5716086f9d234a383dd2965c/gravatar/${username}_48x48.png`;
 }

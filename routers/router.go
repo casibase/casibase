@@ -39,9 +39,9 @@ func initAPI() {
 	beego.Router("/api/add-topic", &controllers.APIController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 	
-	beego.Router("/api/get-boards", &controllers.APIController{}, "GET:GetBoards")
-	beego.Router("/api/get-board", &controllers.APIController{}, "GET:GetBoard")
-	beego.Router("/api/update-board", &controllers.APIController{}, "POST:UpdateBoard")
-	beego.Router("/api/add-board", &controllers.APIController{}, "POST:AddBoard")
-	beego.Router("/api/delete-board", &controllers.APIController{}, "POST:DeleteBoard")
+	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
+	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
+	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode")
+	beego.Router("/api/add-node", &controllers.APIController{}, "POST:AddNode")
+	beego.Router("/api/delete-node", &controllers.APIController{}, "POST:DeleteNode")
 }

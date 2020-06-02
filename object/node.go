@@ -14,45 +14,44 @@
 
 package object
 
-type Board struct {
-	Owner       string `xorm:"varchar(100)" json:"owner"`
+type Node struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
-	Title       string `xorm:"varchar(100)" json:"title"`
+	Name        string `xorm:"varchar(100)" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	Desc        string `xorm:"varchar(500)" json:"desc"`
 	Image       string `xorm:"varchar(200)" json:"image"`
 }
 
-func GetBoards() []*Board {
-	boards := []*Board{}
-	err := adapter.engine.Asc("created_time").Find(&boards)
+func GetNodes() []*Node {
+	nodes := []*Node{}
+	err := adapter.engine.Asc("created_time").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
 
-	return boards
+	return nodes
 }
 
-func GetBoard(id string) *Board {
-	board := Board{Id: id}
-	existed, err := adapter.engine.Get(&board)
+func GetNode(id string) *Node {
+	node := Node{Id: id}
+	existed, err := adapter.engine.Get(&node)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return &board
+		return &node
 	} else {
 		return nil
 	}
 }
 
-func UpdateBoard(id string, board *Board) bool {
-	if GetBoard(id) == nil {
+func UpdateNode(id string, node *Node) bool {
+	if GetNode(id) == nil {
 		return false
 	}
 
-	_, err := adapter.engine.Id(id).AllCols().Update(board)
+	_, err := adapter.engine.Id(id).AllCols().Update(node)
 	if err != nil {
 		panic(err)
 	}
@@ -61,8 +60,8 @@ func UpdateBoard(id string, board *Board) bool {
 	return true
 }
 
-func AddBoard(board *Board) bool {
-	affected, err := adapter.engine.Insert(board)
+func AddNode(node *Node) bool {
+	affected, err := adapter.engine.Insert(node)
 	if err != nil {
 		panic(err)
 	}
@@ -70,8 +69,8 @@ func AddBoard(board *Board) bool {
 	return affected != 0
 }
 
-func DeleteBoard(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Board{})
+func DeleteNode(id string) bool {
+	affected, err := adapter.engine.Id(id).Delete(&Node{})
 	if err != nil {
 		panic(err)
 	}

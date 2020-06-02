@@ -20,45 +20,45 @@ import (
 	"github.com/casbin/casbin-forum/object"
 )
 
-func (c *APIController) GetBoards() {
-	c.Data["json"] = object.GetBoards()
+func (c *APIController) GetNodes() {
+	c.Data["json"] = object.GetNodes()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetBoard() {
+func (c *APIController) GetNode() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetBoard(id)
+	c.Data["json"] = object.GetNode(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateBoard() {
+func (c *APIController) UpdateNode() {
 	id := c.Input().Get("id")
 
-	var board object.Board
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &board)
+	var node object.Node
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateBoard(id, &board)
+	c.Data["json"] = object.UpdateNode(id, &node)
 	c.ServeJSON()
 }
 
-func (c *APIController) AddBoard() {
-	var board object.Board
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &board)
+func (c *APIController) AddNode() {
+	var node object.Node
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddBoard(&board)
+	c.Data["json"] = object.AddNode(&node)
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteBoard() {
+func (c *APIController) DeleteNode() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.DeleteBoard(id)
+	c.Data["json"] = object.DeleteNode(id)
 	c.ServeJSON()
 }

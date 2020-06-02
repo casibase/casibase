@@ -15,11 +15,14 @@
 package object
 
 type Topic struct {
-	Owner       string `xorm:"varchar(100)" json:"owner"`
-	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
-	BoardId     string `xorm:"varchar(100)" json:"boardId"`
-	Title       string `xorm:"varchar(100)" json:"title"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	Id            string `xorm:"varchar(100) notnull pk" json:"id"`
+	Author        string `xorm:"varchar(100)" json:"author"`
+	NodeId        string `xorm:"varchar(100)" json:"nodeId"`
+	NodeName      string `xorm:"varchar(100)" json:"nodeName"`
+	Title         string `xorm:"varchar(100)" json:"title"`
+	CreatedTime   string `xorm:"varchar(100)" json:"createdTime"`
+	LastReplyUser string `xorm:"varchar(100)" json:"lastReplyUser"`
+	UpCount       int    `json:"upCount"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }

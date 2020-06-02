@@ -15,26 +15,26 @@
 import React from "react";
 import {Avatar, Col, Progress, Row, Space, Statistic, Switch} from "antd";
 import { UserOutlined, FormOutlined } from '@ant-design/icons';
-import * as BoardBackend from "./backend/BoardBackend";
+import * as NodeBackend from "./backend/NodeBackend";
 
-class BoardWidget extends React.Component {
+class NodeWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      boards: [],
+      nodes: [],
     };
   }
 
   componentDidMount() {
-    this.getBoards();
+    this.getNodes();
   }
 
-  getBoards() {
-    BoardBackend.getBoards()
+  getNodes() {
+    NodeBackend.getNodes()
       .then((res) => {
           this.setState({
-            boards: res,
+            nodes: res,
           });
         }
       );
@@ -44,15 +44,15 @@ class BoardWidget extends React.Component {
     return (
       <div style={{backgroundColor: "white"}}>
         <div className="theme-cell-top">
-          All Boards
+          All Nodes
         </div>
         <div>
           {
-            this.state.boards.map((board, i) => {
+            this.state.nodes.map((node, i) => {
               return (
                 <div style={{padding: "5px 10px 5px 10px"}}>
-                  <div className="theme-cell-board" style={{backgroundImage: `url("${board.image}")`}}/>
-                  &nbsp; {board.title}
+                  <div className="theme-cell-node" style={{backgroundImage: `url("${node.image}")`}}/>
+                  &nbsp; {node.title}
                 </div>
               );
             })
@@ -64,4 +64,4 @@ class BoardWidget extends React.Component {
 
 }
 
-export default BoardWidget;
+export default NodeWidget;

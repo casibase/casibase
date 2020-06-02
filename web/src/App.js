@@ -18,9 +18,9 @@ import * as Setting from "./Setting";
 import {Layout, Menu, Input, Typography, Col, Row} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
-import BoardPage from "./BoardPage";
+import NodePage from "./NodePage";
 import AccountWidget from "./AccountWidget";
-import BoardWidget from "./BoardWidget";
+import NodeWidget from "./NodeWidget";
 import Header from "./Header";
 import Footer from "./Footer";
 
@@ -36,7 +36,7 @@ class App extends Component {
   componentWillMount() {
     // eslint-disable-next-line no-restricted-globals
     const uri = location.pathname;
-    if (uri.includes('board')) {
+    if (uri.includes('node')) {
       this.setState({ selectedMenuKey: 2 });
     } else if (uri.includes('setting')) {
       this.setState({ selectedMenuKey: 3 });
@@ -51,21 +51,26 @@ class App extends Component {
     return (
       <div>
         <Header />
-        <div style={{backgroundColor: "rgb(226,226,226)"}}>
-          <div style={{minWidth: "600px", maxWidth: "1100px", margin: "0 auto"}}>
-            <div style={{width: "270px", float: "right", marginRight: "20px"}}>
+        <div id="Wrapper">
+          <div className="content">
+            <div id="Leftbar" />
+            <div id="Rightbar">
               <div className="sep20" />
               <AccountWidget />
               <div className="sep20" />
-              <BoardWidget />
+              <NodeWidget />
             </div>
-            <div style={{width: "auto", margin: "0 310px 0 20px"}}>
-              <div style={{height: "20px"}} />
-              <Switch style={{marginLeft: "20px"}}>
-                <Route exact path="/" component={TopicPage}/>
-                <Route exact path="/board" component={BoardPage}/>
-              </Switch>
+            <div id="Main">
+              <div className="sep20" />
+              <div className="box">
+                <Switch>
+                  <Route exact path="/" component={TopicPage}/>
+                  <Route exact path="/node" component={NodePage}/>
+                </Switch>
+              </div>
             </div>
+            <div className="c" />
+            <div className="sep20" />
           </div>
         </div>
         <Footer />
