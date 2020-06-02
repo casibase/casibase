@@ -48,54 +48,67 @@ class App extends Component {
     }
   }
 
-  render() {
-    Setting.initServerUrl();
-
+  renderMain() {
     // eslint-disable-next-line no-restricted-globals
     const pathname = location.pathname;
     if (pathname === "/signup") {
       return (
-        <div>
-          <Header />
-          <div id="Wrapper">
-            <div className="content">
-              <div id="Leftbar" />
-              <div id="Rightbar">
-                <div className="sep20" />
-              </div>
-              <div id="Main">
-                <div className="sep20" />
-                <SignupBox />
-              </div>
-              <div className="c" />
-              <div className="sep20" />
-            </div>
-          </div>
-          <Footer />
+        <div id="Main">
+          <div className="sep20" />
+          <SignupBox />
         </div>
       )
     } else if (pathname === "/signin") {
       return (
-        <div>
-          <Header />
-          <div id="Wrapper">
-            <div className="content">
-              <div id="Leftbar" />
-              <div id="Rightbar">
-                <div className="sep20" />
-              </div>
-              <div id="Main">
-                <div className="sep20" />
-                <SigninBox />
-              </div>
-              <div className="c" />
-              <div className="sep20" />
-            </div>
-          </div>
-          <Footer />
+        <div id="Main">
+          <div className="sep20" />
+          <SigninBox />
         </div>
       )
     }
+
+    return (
+      <div id="Main">
+        <div className="sep20" />
+        <div className="box">
+          <Switch>
+            <Route exact path="/" component={TopicPage}/>
+            <Route exact path="/node" component={NodePage}/>
+          </Switch>
+        </div>
+      </div>
+    )
+  }
+
+  renderRightbar() {
+    // eslint-disable-next-line no-restricted-globals
+    const pathname = location.pathname;
+    if (pathname === "/signup") {
+      return (
+        <div id="Rightbar">
+          <div className="sep20" />
+        </div>
+      )
+    } else if (pathname === "/signin") {
+      return (
+        <div id="Rightbar">
+          <div className="sep20" />
+        </div>
+      )
+    }
+
+    return (
+      <div id="Rightbar">
+        <div className="sep20" />
+        <RightSigninBox />
+        <div className="sep20" />
+        <AccountWidget />
+      </div>
+    );
+  }
+
+  render() {
+    Setting.initServerUrl();
 
     return (
       <div>
@@ -103,21 +116,12 @@ class App extends Component {
         <div id="Wrapper">
           <div className="content">
             <div id="Leftbar" />
-            <div id="Rightbar">
-              <div className="sep20" />
-              <RightSigninBox />
-              <div className="sep20" />
-              <AccountWidget />
-            </div>
-            <div id="Main">
-              <div className="sep20" />
-              <div className="box">
-                <Switch>
-                  <Route exact path="/" component={TopicPage}/>
-                  <Route exact path="/node" component={NodePage}/>
-                </Switch>
-              </div>
-            </div>
+            {
+              this.renderRightbar()
+            }
+            {
+              this.renderMain()
+            }
             <div className="c" />
             <div className="sep20" />
           </div>
