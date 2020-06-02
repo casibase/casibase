@@ -23,6 +23,7 @@ import AccountWidget from "./AccountWidget";
 import NodeWidget from "./NodeWidget";
 import Header from "./Header";
 import Footer from "./Footer";
+import SigninWidget from "./rightbar/SigninWidget";
 
 class App extends Component {
   constructor(props) {
@@ -55,6 +56,8 @@ class App extends Component {
           <div className="content">
             <div id="Leftbar" />
             <div id="Rightbar">
+              <div className="sep20" />
+              <SigninWidget />
               <div className="sep20" />
               <AccountWidget />
               <div className="sep20" />
