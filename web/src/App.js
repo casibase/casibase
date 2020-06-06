@@ -28,6 +28,7 @@ import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
 import ReplyBox from "./main/ReplyBox";
+import MemberBox from "./main/MemberBox";
 
 class App extends Component {
   constructor(props) {
@@ -77,6 +78,12 @@ class App extends Component {
             <TopicBox />
             <div className="sep20" />
             <ReplyBox />
+          </div>
+        }/>
+        <Route exact path="/member/:memberId" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <MemberBox />
           </div>
         }/>
       </Switch>

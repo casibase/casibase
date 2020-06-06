@@ -53,8 +53,8 @@ export function deleteRow(array, i) {
 }
 
 export function getFormattedDate(date) {
-  date = date.replace('T', ' ');
-  date = date.replace('+08:00', ' ');
+  date = date?.replace('T', ' ');
+  date = date?.replace('+08:00', ' +08:00');
   return date;
 }
 
@@ -73,7 +73,7 @@ export function getStatic(path) {
 }
 
 export function getUserAvatar(username, isLarge=false) {
-  return getStatic(`/static@47518e71c7e551894e660a609b86e2f28c5864d9/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
+  return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
 export function getForumName() {
