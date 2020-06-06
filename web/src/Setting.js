@@ -73,7 +73,7 @@ export function getStatic(path) {
 }
 
 export function getUserAvatar(username, isLarge=false) {
-  return getStatic(`/static@00bc607406d185479a4dc9353bacefb39a830ab3/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
+  return getStatic(`/static@47518e71c7e551894e660a609b86e2f28c5864d9/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
 export function getForumName() {

@@ -27,6 +27,7 @@ import RightSigninBox from "./rightbar/RightSigninBox";
 import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
+import ReplyBox from "./main/ReplyBox";
 
 class App extends Component {
   constructor(props) {
@@ -74,6 +75,8 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <TopicBox />
+            <div className="sep20" />
+            <ReplyBox />
           </div>
         }/>
       </Switch>

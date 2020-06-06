@@ -15,16 +15,17 @@
 package object
 
 type Topic struct {
-	Id            string `xorm:"varchar(100) notnull pk" json:"id"`
-	Author        string `xorm:"varchar(100)" json:"author"`
-	NodeId        string `xorm:"varchar(100)" json:"nodeId"`
-	NodeName      string `xorm:"varchar(100)" json:"nodeName"`
-	Title         string `xorm:"varchar(100)" json:"title"`
-	CreatedTime   string `xorm:"varchar(100)" json:"createdTime"`
-	LastReplyUser string `xorm:"varchar(100)" json:"lastReplyUser"`
-	UpCount       int    `json:"upCount"`
-	HitCount      int    `json:"hitCount"`
-	FavoriteCount int    `json:"favoriteCount"`
+	Id            string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Author        string   `xorm:"varchar(100)" json:"author"`
+	NodeId        string   `xorm:"varchar(100)" json:"nodeId"`
+	NodeName      string   `xorm:"varchar(100)" json:"nodeName"`
+	Title         string   `xorm:"varchar(100)" json:"title"`
+	CreatedTime   string   `xorm:"varchar(100)" json:"createdTime"`
+	Tags          []string `xorm:"varchar(200)" json:"tags"`
+	LastReplyUser string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	UpCount       int      `json:"upCount"`
+	HitCount      int      `json:"hitCount"`
+	FavoriteCount int      `json:"favoriteCount"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
