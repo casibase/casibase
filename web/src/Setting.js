@@ -63,6 +63,11 @@ export function getPrettyDate(date) {
   return date;
 }
 
+export function getDiffDays(date) {
+  date = moment().diff(moment(date), 'days');
+  return date;
+}
+
 export function getStatic(path) {
   return `https://cdn.jsdelivr.net/gh/casbin${path}`;
 }

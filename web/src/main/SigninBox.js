@@ -76,7 +76,7 @@ class SigninBox extends React.Component {
               </tr>
               </tbody>
             </table>
-            <input type="hidden" value="https://v2ex.com/signup" name="next" />
+            <input type="hidden" value="/signup" name="next" />
           </form>
         </div>
       </div>

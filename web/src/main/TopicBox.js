@@ -43,13 +43,11 @@ class TopicBox extends React.Component {
   }
 
   render() {
-    let username = "alice";
-
     return (
       <div className="box" style={{"borderBottom":"0px"}}>
         <div className="header">
           <div className="fr">
-            <Avatar username={username} isLarge={true} />
+            <Avatar username={this.state.topic?.author} isLarge={true} />
           </div>
           <a href="/">{Setting.getForumName()}</a>
           <span className="chevron">
@@ -74,11 +72,38 @@ class TopicBox extends React.Component {
             <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount} hits
           </small>
         </div>
+        <div className="outdated">This is a topic created {Setting.getDiffDays(this.state.topic?.createdTime)} days ago, the information in it may have changed.</div>
         <div className="cell">
           <div className="topic_content">
             <div className="markdown_body">
               <span dangerouslySetInnerHTML={{__html: this.state.topic?.content}} />
             </div>
+          </div>
+        </div>
+        <div className="topic_buttons">
+          <div className="fr topic_stats" style={{paddingTop: "4px"}}>
+            {this.state.topic?.hitCount} hits &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} favorites &nbsp;
+          </div>
+          <a href="/favorite/topic/123456?t=etpmvbwsbnssixpcdiugximqbxomnnsi" className="tb">
+            Favor
+          </a>
+          &nbsp;
+          <a href="#;" onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');" className="tb">
+            Tweet
+          </a>
+          &nbsp;
+          <a href="#;" onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');" className="tb">
+            Weibo
+          </a>
+          &nbsp;
+          <a href="#;" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="tb">
+            Ignore
+          </a>
+          &nbsp;
+          <div id="topic_thank">
+            <a href="#;" onClick="if (confirm('Are you sure to thank the topic's author?')) { thankTopic(123456, '39724'); }" className="tb">
+              Thank
+            </a>
           </div>
         </div>
       </div>

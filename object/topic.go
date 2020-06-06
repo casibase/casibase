@@ -24,6 +24,7 @@ type Topic struct {
 	LastReplyUser string `xorm:"varchar(100)" json:"lastReplyUser"`
 	UpCount       int    `json:"upCount"`
 	HitCount      int    `json:"hitCount"`
+	FavoriteCount int    `json:"favoriteCount"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
