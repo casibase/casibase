@@ -27,6 +27,10 @@ import RightSigninBox from "./rightbar/RightSigninBox";
 import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
+import Settings from "./main/Settings";
+import Profile from "./main/Profile";
+import ChangePassword from "./main/ChangePassword";
+import TwoFa from "./main/TwoFa";
 
 class App extends Component {
   constructor(props) {
@@ -75,6 +79,19 @@ class App extends Component {
             <div className="sep20" />
             <TopicBox />
           </div>
+        }/>
+        <Route exact path="/settings" component={() =>
+            <div id="Main">
+                <div className="sep20" />
+                <Settings />
+                <div className="sep20" />
+                <Profile />
+                <div className="sep20"/>
+                <ChangePassword />
+                <div className="sep20"/>
+                <TwoFa />
+                <div className="sep20"/>
+            </div>
         }/>
       </Switch>
     )
