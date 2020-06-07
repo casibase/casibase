@@ -24,6 +24,12 @@ class Avatar extends React.Component {
   }
 
   render() {
+    if (this.props.size === "small") {
+      return (
+        <img src={Setting.getUserAvatar(this.props.username)} className="avatar" border="0" align="default" style={{"maxWidth": "24px", "maxHeight": "24px"}} alt={this.props.username} />
+      )
+    }
+
     return (
       <a href={`/member/${this.props.username}`}>
         <img src={Setting.getUserAvatar(this.props.username, this.props.isLarge)} className="avatar" border="0" align="default" alt={this.props.username} />

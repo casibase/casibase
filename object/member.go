@@ -15,19 +15,22 @@
 package object
 
 type Member struct {
-	Id           string `xorm:"varchar(100) notnull pk" json:"id"`
-	No           int    `json:"no"`
-	CreatedTime  string `xorm:"varchar(100)" json:"createdTime"`
-	Tagline      string `xorm:"varchar(100)" json:"tagline"`
-	Company      string `xorm:"varchar(100)" json:"company"`
-	CompanyTitle string `xorm:"varchar(100)" json:"companyTitle"`
-	Ranking      int    `json:"ranking"`
-	GoldCount    int    `json:"goldCount"`
-	SilverCount  int    `json:"silverCount"`
-	BronzeCount  int    `json:"bronzeCount"`
-	Bio          string `xorm:"varchar(100)" json:"bio"`
-	Website      string `xorm:"varchar(100)" json:"website"`
-	Location     string `xorm:"varchar(100)" json:"location"`
+	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
+	No                int    `json:"no"`
+	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
+	Phone             string `xorm:"varchar(100)" json:"phone"`
+	Email             string `xorm:"varchar(100)" json:"email"`
+	EmailVerifiedTime string `xorm:"varchar(100)" json:"emailVerifiedTime"`
+	Tagline           string `xorm:"varchar(100)" json:"tagline"`
+	Company           string `xorm:"varchar(100)" json:"company"`
+	CompanyTitle      string `xorm:"varchar(100)" json:"companyTitle"`
+	Ranking           int    `json:"ranking"`
+	GoldCount         int    `json:"goldCount"`
+	SilverCount       int    `json:"silverCount"`
+	BronzeCount       int    `json:"bronzeCount"`
+	Bio               string `xorm:"varchar(100)" json:"bio"`
+	Website           string `xorm:"varchar(100)" json:"website"`
+	Location          string `xorm:"varchar(100)" json:"location"`
 }
 
 func GetMembers() []*Member {
