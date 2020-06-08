@@ -33,8 +33,8 @@ class TwoFa extends React.Component {
 
         return (
             <div className="box">
-                <div class="cell">两步验证</div>
-                <div class="inner">
+                <div className="cell">两步验证</div>
+                <div className="inner">
                     <a href="/settings/2fa">开启两步验证</a>
                 </div>
             </div>

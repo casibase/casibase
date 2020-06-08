@@ -46,6 +46,7 @@ class ChangePassword extends React.Component {
                 <div className="inner">
                     <form>
                         <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                            <tbody>
                             <tr>
                                 <td width="120" align="right">当前密码</td>
                                 <td width="auto" align="left"><input type="password" className="sl"
@@ -70,6 +71,7 @@ class ChangePassword extends React.Component {
                                     type="submit" className="super normal button" value="更改密码"/>
                                 </td>
                             </tr>
+                            </tbody>
                         </table>
                     </form>
                 </div>
