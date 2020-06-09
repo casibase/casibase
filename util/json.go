@@ -12,23 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+package util
 
-import "github.com/astaxie/beego"
+import "encoding/json"
 
-type APIController struct {
-	beego.Controller
-}
-
-func (c *APIController) GetSessionUser() string {
-	user := c.GetSession("username")
-	if user == nil {
-		return ""
+func StructToJson(v interface{}) string {
+	//data, err := json.MarshalIndent(v, "", "  ")
+	data, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
 	}
 
-	return user.(string)
-}
-
-func (c *APIController) SetSessionUser(user string) {
-	c.SetSession("username", user)
+	return string(data)
 }

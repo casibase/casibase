@@ -16,6 +16,7 @@ package object
 
 type Member struct {
 	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
+	Password          string `xorm:"varchar(100) notnull" json:"-"`
 	No                int    `json:"no"`
 	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
