@@ -405,9 +405,9 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="0">所有人</Option>
-                                    <Option value="1">已登录用户</Option>
-                                    <Option value="2">只有我自己</Option>
+                                    <Select.Option value="0">所有人</Select.Option>
+                                    <Select.Option value="1">已登录用户</Select.Option>
+                                    <Select.Option value="2">只有我自己</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
@@ -422,8 +422,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="0">不参与</Option>
-                                    <Option value="1">参与</Option>
+                                    <Select.Option value="0">不参与</Select.Option>
+                                    <Select.Option value="1">参与</Select.Option>
                                 </Select>
                                 &nbsp;&nbsp;
                                 <a href="/top/rich" target="_blank">查看当前排行榜 ›</a>
@@ -449,8 +449,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">显示</Option>
-                                    <Option value="0">不显示</Option>
+                                    <Select.Option value="1">显示</Select.Option>
+                                    <Select.Option value="0">不显示</Select.Option>
                                 </Select>
                                 &nbsp;&nbsp;
                                 <a href="" target="_blank">查看我的当前余额 ›</a>
@@ -467,8 +467,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">Yes</Option>
-                                    <Option value="0">No</Option>
+                                    <Select.Option value="1">Yes</Select.Option>
+                                    <Select.Option value="0">No</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
@@ -483,8 +483,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">使用</Option>
-                                    <Option value="0">不使用</Option>
+                                    <Select.Option value="1">使用</Select.Option>
+                                    <Select.Option value="0">不使用</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
@@ -499,8 +499,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">显示</Option>
-                                    <Option value="0">不显示</Option>
+                                    <Select.Option value="1">显示</Select.Option>
+                                    <Select.Option value="0">不显示</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
@@ -524,8 +524,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">使用</Option>
-                                    <Option value="0">不使用</Option>
+                                    <Select.Option value="1">使用</Select.Option>
+                                    <Select.Option value="0">不使用</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
@@ -548,8 +548,8 @@ class Settings extends React.Component {
                                     style={{ width: 120 }}
                                     onChange={handleChange}
                                 >
-                                    <Option value="1">永远使用TSL</Option>
-                                    <Option value="0">默认</Option>
+                                    <Select.Option value="1">永远使用TSL</Select.Option>
+                                    <Select.Option value="0">默认</Select.Option>
                                 </Select>
                             </Col>
                         </Row>
