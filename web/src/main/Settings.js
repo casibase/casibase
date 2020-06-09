@@ -386,124 +386,123 @@ class Settings extends React.Component {
                             <Input />
                         </Form.Item>
 
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                个人介绍
-                            </Col>
-                            <Col span={10}>
-                                <TextArea id={"bio"} defaultValue={this.state.info.bio} rows={8} />
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                状态更新查看权限
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.who_can_view_my_t.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="0">所有人</Select.Option>
-                                    <Select.Option value="1">已登录用户</Select.Option>
-                                    <Select.Option value="2">只有我自己</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                社区财富排行榜
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.list_rich.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="0">不参与</Select.Option>
-                                    <Select.Option value="1">参与</Select.Option>
-                                </Select>
-                                &nbsp;&nbsp;
-                                <a href="/top/rich" target="_blank">查看当前排行榜 ›</a>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                            </Col>
-                            <Col span={10}>
-                                <span className="gray">
-                                    参与此排行榜将会公开你的个人资产状况。默认是不参与的。
-                                </span>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                显示余额
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.show_balance.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">显示</Select.Option>
-                                    <Select.Option value="0">不显示</Select.Option>
-                                </Select>
-                                &nbsp;&nbsp;
-                                <a href="" target="_blank">查看我的当前余额 ›</a>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                使用节点头像作为页面
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.node_avatar_as_favicon.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">Yes</Select.Option>
-                                    <Select.Option value="0">No</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                使用高精度头像
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.show_hi_dpi.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">使用</Select.Option>
-                                    <Select.Option value="0">不使用</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                在首页显示收藏节点
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.show_my_nodes.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">显示</Select.Option>
-                                    <Select.Option value="0">不显示</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="个人介绍"
+                            name="bio"
+                            colon={false}
+                            align={"middle"}
+                        >
+                            <TextArea id={"bio"} defaultValue={this.state.info.bio} rows={8} />
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="状态更新查看权限"
+                            name="who_can_view_my_t"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.who_can_view_my_t.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="0">所有人</Select.Option>
+                                <Select.Option value="1">已登录用户</Select.Option>
+                                <Select.Option value="2">只有我自己</Select.Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="社区财富排行榜"
+                            name="list_rich"
+                            colon={false}
+                            extra="参与此排行榜将会公开你的个人资产状况。默认是不参与的。"
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.list_rich.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="0">不参与</Select.Option>
+                                <Select.Option value="1">参与</Select.Option>
+                            </Select>
+                            &nbsp;&nbsp;
+                            <a href="/top/rich" target="_blank">查看当前排行榜 ›</a>
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="显示余额"
+                            name="show_balance"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.show_balance.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">显示</Select.Option>
+                                <Select.Option value="0">不显示</Select.Option>
+                            </Select>
+                            &nbsp;&nbsp;
+                            <a href="" target="_blank">查看我的当前余额 ›</a>
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="使用节点头像作为页面"
+                            name="node_avatar_as_favicon"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.node_avatar_as_favicon.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">Yes</Select.Option>
+                                <Select.Option value="0">No</Select.Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="使用高精度头像"
+                            name="show_hi_dpi"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.show_hi_dpi.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">使用</Select.Option>
+                                <Select.Option value="0">不使用</Select.Option>
+                            </Select>
+                        </Form.Item>
+
+                        <Form.Item
+                            {...formTailLayout}
+                            label="在首页显示收藏节点"
+                            name="show_my_nodes"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.show_my_nodes.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">显示</Select.Option>
+                                <Select.Option value="0">不显示</Select.Option>
+                            </Select>
+                        </Form.Item>
                         <Form.Item
                             {...formTailLayout}
                             label="自定义首页跳转"
@@ -513,113 +512,106 @@ class Settings extends React.Component {
                         >
                             <Input />
                         </Form.Item>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                使用自定义
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.use_my_css.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">使用</Select.Option>
-                                    <Select.Option value="0">不使用</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                自定义CSS
-                            </Col>
-                            <Col span={10}>
-                                <TextArea id={"my_css"} defaultValue={this.state.info.my_css} rows={8} />
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                浏览器连接方式
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    labelInValue
-                                    defaultValue={{ value: this.state.info.always_ssl.toString() }}
-                                    style={{ width: 120 }}
-                                    onChange={handleChange}
-                                >
-                                    <Select.Option value="1">永远使用TSL</Select.Option>
-                                    <Select.Option value="0">默认</Select.Option>
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                            </Col>
-                            <Col span={10}>
-                                <span className="gray">
-                                    如果开启永远使用 TLS，则在返回首页时，Casbin Forum 会向浏览器发送 max-age 为一周的 HSTS 头来提示浏览器使用 TLS 方式连接。推荐使用最新版本的 Chrome 或者 Firefox 访问。
-                                </span>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                偏好正文英文字体
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    name="font"
-                                    id="fonts"
-                                    showSearch
-                                    placeholder="Select a font"
-                                    optionFilterProp="fonts"
-                                    value={this.state.info.font}
-                                    onChange={onChange}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onSearch={onSearch}
-                                    style={{ width: 320 }}
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    {
-                                        FONTS_LIST.map((font) => {
-                                            return <Select.Option key={font.value} value={font.value}>{font.label}</Select.Option>
-                                        })
-                                    }
-                                </Select>
-                            </Col>
-                        </Row>
-                        <Row align={"middle"} gutter={[8,10]}>
-                            <Col align="right" flex="140px">
-                                时区
-                            </Col>
-                            <Col span={10}>
-                                <Select
-                                    name="timezones"
-                                    id="timezones"
-                                    showSearch
-                                    placeholder="Select a timezone"
-                                    optionFilterProp="timezones"
-                                    value={this.state.info.timezone}
-                                    onChange={onChange}
-                                    onFocus={onFocus}
-                                    onBlur={onBlur}
-                                    onSearch={onSearch}
-                                    style={{ width: 320 }}
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    {
-                                        TIMEZONE_LIST.map((font) => {
-                                            return <Select.Option key={font.value} value={font.value}>{font.label}</Select.Option>
-                                        })
-                                    }
-                                </Select>
-                            </Col>
-                        </Row>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="使用自定义"
+                            name="use_my_css"
+                            colon={false}
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.use_my_css.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">使用</Select.Option>
+                                <Select.Option value="0">不使用</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="自定义CSS"
+                            name="my_css"
+                            colon={false}
+                            labelAlign="middle"
+                        >
+                            <TextArea id={"my_css"} defaultValue={this.state.info.my_css} rows={8} />
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="浏览器连接方式"
+                            name="always_ssl"
+                            colon={false}
+                            extra=" 如果开启永远使用 TLS，则在返回首页时，Casbin Forum 会向浏览器发送 max-age 为一周的 HSTS 头来提示浏览器使用 TLS 方式连接。推荐使用最新版本的 Chrome 或者 Firefox 访问。"
+                        >
+                            <Select
+                                labelInValue
+                                defaultValue={{ value: this.state.info.always_ssl.toString() }}
+                                style={{ width: 120 }}
+                                onChange={handleChange}
+                            >
+                                <Select.Option value="1">永远使用TSL</Select.Option>
+                                <Select.Option value="0">默认</Select.Option>
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="偏好正文英文字体"
+                            name="fonts"
+                            colon={false}
+                            initialValue={this.state.info.font}
+                        >
+                            <Select
+                                name="fonts"
+                                id="fonts"
+                                showSearch
+                                placeholder="Select a font"
+                                optionFilterProp="fonts"
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                                onSearch={onSearch}
+                                style={{ width: 320 }}
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                {
+                                    FONTS_LIST.map((font) => {
+                                        return <Select.Option key={font.value} value={font.value}>{font.label}</Select.Option>
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            label="时区"
+                            name="timezones"
+                            colon={false}
+                            initialValue={this.state.info.timezone}
+                        >
+                            <Select
+                                name="timezones"
+                                id="timezones"
+                                showSearch
+                                placeholder="Select a timezone"
+                                optionFilterProp="timezones"
+                                onChange={onChange}
+                                onFocus={onFocus}
+                                onBlur={onBlur}
+                                onSearch={onSearch}
+                                style={{ width: 320 }}
+                                filterOption={(input, option) =>
+                                    option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                {
+                                    TIMEZONE_LIST.map((font) => {
+                                        return <Select.Option key={font.value} value={font.value}>{font.label}</Select.Option>
+                                    })
+                                }
+                            </Select>
+                        </Form.Item>
                         <Form.Item {...formButtonLayout}
                                    label=" "
                                    colon={false}
