@@ -16,6 +16,56 @@ import Avatar from "../Avatar";
 import * as Setting from "../Setting";
 import React from "react";
 import Header from "./Header";
+import { QuestionCircleOutlined } from '@ant-design/icons';
+import {
+    Form,
+    Input,
+    Tooltip,
+    Cascader,
+    Select,
+    Row,
+    Col,
+    Checkbox,
+    Button,
+    AutoComplete,
+} from 'antd';
+
+const { Option } = Select;
+const AutoCompleteOption = AutoComplete.Option;
+
+const formItemLayout = {
+    labelCol: {
+        flex: "140px",
+        gutter:[8,6],
+    },
+    wrapperCol: {
+        span: 10,
+        gutter:[8,6],
+    },
+};
+
+const formTailLayout = {
+    labelCol: {
+        flex: "140px",
+        gutter:[8,6],
+    },
+    wrapperCol: {
+        span: 10,
+    },
+};
+
+const formButtonLayout = {
+    labelCol: {
+        flex: "140px",
+    },
+    wrapperCol: {
+        span: 10,
+    },
+};
+
+const onFinish = values => {
+    console.log('Received values of form: ', values);
+};
 
 class ChangePassword extends React.Component {
     constructor(props) {
@@ -44,36 +94,54 @@ class ChangePassword extends React.Component {
                     设置密码
                 </div>
                 <div className="inner">
-                    <form>
-                        <table cellPadding="5" cellSpacing="0" border="0" width="100%">
-                            <tbody>
-                            <tr>
-                                <td width="120" align="right">当前密码</td>
-                                <td width="auto" align="left"><input type="password" className="sl"
-                                                                     name="password_current" value=""/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="120" align="right">新密码</td>
-                                <td width="auto" align="left"><input type="password" className="sl" name="password_new"
-                                                                     value=""/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="120" align="right">再次输入新密码</td>
-                                <td width="auto" align="left"><input type="password" className="sl"
-                                                                     name="password_again" value=""/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td width="120" align="right"></td>
-                                <td width="auto" align="left"><input type="hidden" value="44811" name="once"/><input
-                                    type="submit" className="super normal button" value="更改密码"/>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </form>
+                    <Form
+                        {...formItemLayout}
+                        name="change_password"
+                    >
+                        <Form.Item
+                            {...formTailLayout}
+                            label="当前密码"
+                            name="password_current"
+                            colon={false}
+                            onFinish={onFinish}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            name="password_new"
+                            label="新密码"
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item
+                            {...formTailLayout}
+                            name="confirm"
+                            label="再次输入新密码"
+                            dependencies={['password_new']}
+                            hasFeedback
+                            rules={[
+                                ({ getFieldValue }) => ({
+                                    validator(rule, value) {
+                                        if (!value || getFieldValue('password_new') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject('The two passwords that you entered do not match!');
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+                        <Form.Item {...formButtonLayout}
+                                   label=" "
+                                   colon={false}
+                        >
+                            <Button htmlType="submit">
+                                更改密码
+                            </Button>
+                        </Form.Item>
+                        </Form>
                 </div>
             </div>
         );
