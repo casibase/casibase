@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casbin/casbin-forum/object"
 )
 
@@ -27,7 +26,6 @@ func (c *APIController) GetTopics() {
 
 func (c *APIController) GetTopic() {
 	id := c.Input().Get("id")
-
 	c.Data["json"] = object.GetTopic(id)
 	c.ServeJSON()
 }
@@ -60,5 +58,12 @@ func (c *APIController) DeleteTopic() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteTopic(id)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetAllCreatedTopics() {
+	author := c.Input().Get("id")
+
+	c.Data["json"] = object.GetAllCreatedTopics(author)
 	c.ServeJSON()
 }

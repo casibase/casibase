@@ -50,3 +50,10 @@ export function deleteTopic(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getAllCreatedTopics(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-all-created-topics?id=${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}

@@ -30,6 +30,8 @@ import TopicBox from "./main/TopicBox";
 import ReplyBox from "./main/ReplyBox";
 import MemberBox from "./main/MemberBox";
 import SettingsBox from "./main/SettingsBox";
+import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
+import LatestReplyBox from "./main/LatestReplyBox";
 
 class App extends Component {
   constructor(props) {
@@ -85,6 +87,10 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <MemberBox />
+            <div className="sep20" />
+            <AllCreatedTopicsBox />
+            <div className="sep20" />
+            <LatestReplyBox />
           </div>
         }/>
         <Route exact path="/settings" component={() =>

@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casbin/casbin-forum/object"
 )
 
@@ -62,5 +61,13 @@ func (c *APIController) DeleteReply() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteReply(id)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetLatestReplies() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetLatestReplies(id)
+
 	c.ServeJSON()
 }
