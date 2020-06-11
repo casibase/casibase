@@ -93,6 +93,13 @@ class App extends Component {
             <LatestReplyBox />
           </div>
         }/>
+        <Route exact path="/member/:memberId/:tab" component={() =>
+          <div id="Main">
+              <div className="sep20" />
+              <AllCreatedTopicsBox />
+              <div className="sep20" />
+          </div>
+        }/>
         <Route exact path="/settings" component={() =>
           <div id="Main">
             <div className="sep20" />

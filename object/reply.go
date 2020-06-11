@@ -83,9 +83,9 @@ func DeleteReply(id string) bool {
 	return affected != 0
 }
 
-func GetLatestReplies(author string) []LatestReply {
+func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 	replys := []*Reply{}
-	err := adapter.engine.Where("author = ?", author).Limit(10).Find(&replys)
+	err := adapter.engine.Where("author = ?", author).Limit(limit, offset).Find(&replys)
 	if err != nil {
 		panic(err)
 	}

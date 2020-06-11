@@ -33,7 +33,7 @@ class LatestReplyBox extends React.Component {
     }
 
     getLatestReplies() {
-        ReplyBackend.getLatestReplies(this.state.memberId)
+        ReplyBackend.getLatestReplies(this.state.memberId, 10, 1)
             .then((res) => {
                 this.setState({
                     replies: res,
@@ -42,7 +42,6 @@ class LatestReplyBox extends React.Component {
     }
 
     renderReplies(reply) {
-
         return (
             <div>
                 <div className="dock_area">
@@ -76,7 +75,7 @@ class LatestReplyBox extends React.Component {
                     )
                 }
                 <div className="inner">
-                    <span className="chevron">»</span> <a href={`/member/${this.state.memberId}/topics`}>{`${this.state.memberId}'s more replies`}</a></div>
+                    <span className="chevron">»</span> <a href={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}'s more replies`}</a></div>
             </div>
         );
     }

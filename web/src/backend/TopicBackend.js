@@ -51,8 +51,8 @@ export function deleteTopic(id) {
   }).then(res => res.json());
 }
 
-export function getAllCreatedTopics(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-all-created-topics?id=${id}`, {
+export function getAllCreatedTopics(id, tab, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-all-created-topics?id=${id}&tab=${tab}&limit=${limit}&page=${page}`, {
     method: 'GET',
     credentials: 'include',
   }).then(res => res.json());

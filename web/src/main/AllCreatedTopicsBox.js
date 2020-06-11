@@ -24,16 +24,19 @@ class AllCreatedTopicsBox extends React.Component {
         this.state = {
             classes: props,
             memberId: props.match.params.memberId,
+            tab : props.match.params.tab,
             topics: []
         };
     }
 
+
     componentDidMount() {
+
         this.getAllCreatedTopics();
     }
 
     getAllCreatedTopics() {
-        TopicBackend.getAllCreatedTopics(this.state.memberId)
+        TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, 10, 1)
             .then((res) => {
                 this.setState({
                     topics: res,
@@ -84,19 +87,54 @@ class AllCreatedTopicsBox extends React.Component {
     }
 
     render() {
+        {
+            if (this.state.tab === "replies") {
+                return (
+                    <div />
+                );
+            }
+        }
         return (
             <div className="box">
                         <div class="cell_tabs">
                             <div class="fl">
                                 <Avatar username={this.state.memberId} size={"small"} />
                             </div>
-                            <a href={`/member/${this.state.memberId}`} class="cell_tab_current">{`${this.state.memberId}'s all topics`}</a>
-                            <a href={`/member/${this.state.memberId}/qna`} class="cell_tab">Q&A</a>
-                            <a href={`/member/${this.state.memberId}/tech`} class="cell_tab">Tech</a>
-                            <a href={`/member/${this.state.memberId}/play`} class="cell_tab">Play</a>
-                            <a href={`/member/${this.state.memberId}/jobs`} class="cell_tab">Jobs</a>
-                            <a href={`/member/${this.state.memberId}/deals`} class="cell_tab">Deals</a>
-                            <a href={`/member/${this.state.memberId}/city`} class="cell_tab">City</a>
+                            {
+                                this.state.tab === undefined ?
+                                    <a href={`/member/${this.state.memberId}`} class="cell_tab_current"> {`${this.state.memberId}'s all topics`} </a> :
+                                    <a href={`/member/${this.state.memberId}`} class="cell_tab"> {`${this.state.memberId}'s all topics`} </a>
+                            }
+                            {
+                                this.state.tab === "qna" ?
+                                    <a href={`/member/${this.state.memberId}/qna`} class="cell_tab_current"> Q&A </a> :
+                                    <a href={`/member/${this.state.memberId}/qna`} class="cell_tab"> Q&A </a>
+                            }
+                            {
+                                this.state.tab === "tech" ?
+                                    <a href={`/member/${this.state.memberId}/tech`} class="cell_tab_current"> Tech </a> :
+                                    <a href={`/member/${this.state.memberId}/tech`} class="cell_tab"> Tech </a>
+                            }
+                            {
+                                this.state.tab === "play" ?
+                                    <a href={`/member/${this.state.memberId}/play`} class="cell_tab_current"> Play </a> :
+                                    <a href={`/member/${this.state.memberId}/play`} class="cell_tab"> Play </a>
+                            }
+                            {
+                                this.state.tab === "jobs" ?
+                                    <a href={`/member/${this.state.memberId}/jobs`} class="cell_tab_current"> Jobs </a> :
+                                    <a href={`/member/${this.state.memberId}/jobs`} class="cell_tab"> Jobs </a>
+                            }
+                            {
+                                this.state.tab === "deals" ?
+                                    <a href={`/member/${this.state.memberId}/deals`} class="cell_tab_current"> Deals </a> :
+                                    <a href={`/member/${this.state.memberId}/deals`} class="cell_tab"> Deals </a>
+                            }
+                            {
+                                this.state.tab === "city" ?
+                                    <a href={`/member/${this.state.memberId}/city`} class="cell_tab_current"> City </a> :
+                                    <a href={`/member/${this.state.memberId}/city`} class="cell_tab"> City </a>
+                            }
                         </div>
                                 {
                                     this.state.topics.map((topic) => {
@@ -104,9 +142,14 @@ class AllCreatedTopicsBox extends React.Component {
                                         }
                                     )
                                 }
-                        <div class="inner"><span class="chevron">»</span>
-                            <a href={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}'s more topics`} </a>
-                        </div>
+                        {
+                            this.state.tab === undefined ?
+                                <div className="inner"><span className="chevron">»</span>
+                                    <a href={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}'s more topics`} </a>
+                                </div> :
+                                <div />
+                        }
+
                 </div>
         );
     }

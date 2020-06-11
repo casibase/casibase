@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"github.com/casbin/casbin-forum/object"
+	"strconv"
 )
 
 func (c *APIController) GetReplies() {
@@ -66,8 +67,16 @@ func (c *APIController) DeleteReply() {
 
 func (c *APIController) GetLatestReplies() {
 	id := c.Input().Get("id")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		panic(err)
+	}
+	page, err := strconv.Atoi(pageStr)
+	offset := page * 10 - 10
 
-	c.Data["json"] = object.GetLatestReplies(id)
+	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
 
 	c.ServeJSON()
 }
