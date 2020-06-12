@@ -30,6 +30,7 @@ import TopicBox from "./main/TopicBox";
 import ReplyBox from "./main/ReplyBox";
 import MemberBox from "./main/MemberBox";
 import SettingsBox from "./main/SettingsBox";
+import SignoutBox from "./main/SignoutBox";
 
 class App extends Component {
   constructor(props) {
@@ -73,6 +74,12 @@ class App extends Component {
             <SigninBox />
           </div>
         }/>
+        <Route exact path="/signout" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <SignoutBox />
+          </div>
+        }/>
         <Route exact path="/t/:topicId" component={() =>
           <div id="Main">
             <div className="sep20" />
@@ -108,6 +115,12 @@ class App extends Component {
         <Route exact path="/signin" component={() =>
           <div id="Rightbar">
             <div className="sep20" />
+          </div>
+        }/>
+        <Route exact path="/signout" component={() =>
+          <div id="Rightbar">
+            <div className="sep20" />
+            <RightSigninBox />
           </div>
         }/>
         <Route component={() =>

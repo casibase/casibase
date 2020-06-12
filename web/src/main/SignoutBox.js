@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
+import Header from "./Header";
 
-class RightSigninBox extends React.Component {
+class SignoutBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,26 +23,23 @@ class RightSigninBox extends React.Component {
     };
   }
 
+  onSigninAgain() {
+    // eslint-disable-next-line no-restricted-globals
+    location.href = "/signin";
+  }
+
   render() {
     return (
       <div className="box">
-        <div className="cell">
-          <strong>Casbin = way to authorization</strong>
-          <div className="sep5" />
-          <span className="fade">A place for Casbin developers and users</span>
-        </div>
+        <Header item="Sign Out" />
         <div className="inner">
-          <div className="sep5" />
-          <div align="center">
-            <a href="/signup" className="super normal button">Sign Up</a>
-            <div className="sep5" />
-            <div className="sep10" />
-            Already have account? please: &nbsp;<a href="/signin">Sign In</a>
-          </div>
+          You have signed out, with all personal information wiped out from this computer.
+          <div className="sep20" />
+          <input type="button" className="super normal button" onClick={this.onSigninAgain} value="Sign In Again" />
         </div>
       </div>
     );
   }
 }
 
-export default RightSigninBox;
+export default SignoutBox;
