@@ -24,14 +24,20 @@ class AllCreatedTopicsBox extends React.Component {
         this.state = {
             classes: props,
             memberId: props.match.params.memberId,
-            tab : props.match.params.tab,
-            topics: []
+            tab: props.match.params.tab,
+            topics: [],
+            TAB_LIST: [
+                {label: "Q&A", value: "qna"},
+                {label: "Tech", value: "tech"},
+                {label: "Play", value: "play"},
+                {label: "Jobs", value: "jobs"},
+                {label: "Deals", value: "deals"},
+                {label: "City", value: "city"}
+            ]
         };
     }
 
-
     componentDidMount() {
-
         this.getAllCreatedTopics();
     }
 
@@ -42,6 +48,16 @@ class AllCreatedTopicsBox extends React.Component {
                     topics: res,
                 });
             });
+    }
+
+    renderTab(tab) {
+        return (
+                {
+                    ...this.state.tab === tab.value ?
+                        <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current"> {tab.label} </a> :
+                        <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab"> {tab.label} </a>
+                }
+        )
     }
 
     renderTopic(topic) {
@@ -106,34 +122,10 @@ class AllCreatedTopicsBox extends React.Component {
                                     <a href={`/member/${this.state.memberId}`} class="cell_tab"> {`${this.state.memberId}'s all topics`} </a>
                             }
                             {
-                                this.state.tab === "qna" ?
-                                    <a href={`/member/${this.state.memberId}/qna`} class="cell_tab_current"> Q&A </a> :
-                                    <a href={`/member/${this.state.memberId}/qna`} class="cell_tab"> Q&A </a>
-                            }
-                            {
-                                this.state.tab === "tech" ?
-                                    <a href={`/member/${this.state.memberId}/tech`} class="cell_tab_current"> Tech </a> :
-                                    <a href={`/member/${this.state.memberId}/tech`} class="cell_tab"> Tech </a>
-                            }
-                            {
-                                this.state.tab === "play" ?
-                                    <a href={`/member/${this.state.memberId}/play`} class="cell_tab_current"> Play </a> :
-                                    <a href={`/member/${this.state.memberId}/play`} class="cell_tab"> Play </a>
-                            }
-                            {
-                                this.state.tab === "jobs" ?
-                                    <a href={`/member/${this.state.memberId}/jobs`} class="cell_tab_current"> Jobs </a> :
-                                    <a href={`/member/${this.state.memberId}/jobs`} class="cell_tab"> Jobs </a>
-                            }
-                            {
-                                this.state.tab === "deals" ?
-                                    <a href={`/member/${this.state.memberId}/deals`} class="cell_tab_current"> Deals </a> :
-                                    <a href={`/member/${this.state.memberId}/deals`} class="cell_tab"> Deals </a>
-                            }
-                            {
-                                this.state.tab === "city" ?
-                                    <a href={`/member/${this.state.memberId}/city`} class="cell_tab_current"> City </a> :
-                                    <a href={`/member/${this.state.memberId}/city`} class="cell_tab"> City </a>
+                                this.state.TAB_LIST.map((tab) => {
+                                    return this.renderTab(tab);
+                                    }
+                                )
                             }
                         </div>
                                 {

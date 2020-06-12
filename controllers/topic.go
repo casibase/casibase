@@ -67,12 +67,25 @@ func (c *APIController) GetAllCreatedTopics() {
 	tab := c.Input().Get("tab")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	limit, err := strconv.Atoi(limitStr)
-	if err != nil {
-		panic(err)
+	var (
+		limit, offset int
+		err error
+	)
+	if len(limitStr) != 0 {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			panic(err)
+		}
+	}else {
+		limit = 10
 	}
-	page, err := strconv.Atoi(pageStr)
-	offset := page * 10 - 10
+	if len(pageStr) != 0 {
+		page, err := strconv.Atoi(pageStr)
+		if err != nil {
+			panic(err)
+		}
+		offset = page * 10 - 10
+	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
 	c.ServeJSON()
