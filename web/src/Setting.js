@@ -25,6 +25,18 @@ export function initServerUrl() {
   }
 }
 
+export function parseJson(s) {
+  if (s === "") {
+    return null;
+  } else {
+    return JSON.parse(s);
+  }
+}
+
+export function goToLink(link) {
+  window.location.href = link;
+}
+
 export function openLink(link) {
   const w = window.open('about:blank');
   w.location.href = link;

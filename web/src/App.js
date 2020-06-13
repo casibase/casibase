@@ -30,6 +30,7 @@ import TopicBox from "./main/TopicBox";
 import ReplyBox from "./main/ReplyBox";
 import MemberBox from "./main/MemberBox";
 import SettingsBox from "./main/SettingsBox";
+import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
 
 class App extends Component {
@@ -37,20 +38,38 @@ class App extends Component {
     super(props);
     this.state = {
       classes: props,
-      selectedMenuKey: 1,
+      account: undefined,
     };
+
+    Setting.initServerUrl();
   }
 
   componentWillMount() {
-    // eslint-disable-next-line no-restricted-globals
-    const pathname = location.pathname;
-    if (pathname.includes('node')) {
-      this.setState({ selectedMenuKey: 2 });
-    } else if (pathname.includes('setting')) {
-      this.setState({ selectedMenuKey: 3 });
-    } else {
-      this.setState({ selectedMenuKey: 1 });
-    }
+    this.getAccount();
+  }
+
+  onSignin() {
+    this.getAccount();
+  }
+
+  onSignout() {
+    this.getAccount();
+  }
+
+  onUpdateAccount(account) {
+    this.setState({
+      account: account
+    });
+  }
+
+  getAccount() {
+    AccountBackend.getAccount()
+      .then((res) => {
+        const account = Setting.parseJson(res.data);
+        this.setState({
+          account: account,
+        });
+      });
   }
 
   renderMain() {
@@ -71,13 +90,13 @@ class App extends Component {
         <Route exact path="/signin" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <SigninBox />
+            <SigninBox onSignin={this.onSignin.bind(this)} />
           </div>
         }/>
         <Route exact path="/signout" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <SignoutBox />
+            <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
           </div>
         }/>
         <Route exact path="/t/:topicId" component={() =>
@@ -105,42 +124,32 @@ class App extends Component {
   }
 
   renderRightbar() {
-    return (
-      <Switch>
-        <Route exact path="/signup" component={() =>
-          <div id="Rightbar">
-            <div className="sep20" />
-          </div>
-        }/>
-        <Route exact path="/signin" component={() =>
-          <div id="Rightbar">
-            <div className="sep20" />
-          </div>
-        }/>
-        <Route exact path="/signout" component={() =>
-          <div id="Rightbar">
-            <div className="sep20" />
-            <RightSigninBox />
-          </div>
-        }/>
-        <Route component={() =>
-          <div id="Rightbar">
-            <div className="sep20" />
-            <RightSigninBox />
-            <div className="sep20" />
-            <AccountWidget />
-          </div>
-        }/>
-      </Switch>
-    )
+    if (this.state.account === undefined) {
+      return null;
+    }
+
+    const isSignedIn = this.state.account !== null;
+    if (!isSignedIn) {
+      return (
+        <div id="Rightbar">
+          <div className="sep20" />
+          <RightSigninBox />
+        </div>
+      )
+    } else {
+      return (
+        <div id="Rightbar">
+          <div className="sep20" />
+          <AccountWidget />
+        </div>
+      )
+    }
   }
 
   render() {
-    Setting.initServerUrl();
-
     return (
       <div>
-        <Header />
+        <Header account={this.state.account} onSignout={this.onSignout.bind(this)} />
         <div id="Wrapper">
           <div className="content">
             <div id="Leftbar" />

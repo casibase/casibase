@@ -14,6 +14,8 @@
 
 import React from "react";
 import Header from "./Header";
+import * as Setting from "../Setting";
+import * as AccountBackend from "../backend/AccountBackend";
 
 class SignoutBox extends React.Component {
   constructor(props) {
@@ -24,21 +26,47 @@ class SignoutBox extends React.Component {
   }
 
   onSigninAgain() {
-    // eslint-disable-next-line no-restricted-globals
-    location.href = "/signin";
+    Setting.goToLink("/signin");
+  }
+
+  onRetrySignout() {
+    AccountBackend.signout()
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.props.onSignout();
+          Setting.goToLink("/signout");
+        } else {
+          Setting.goToLink("/signout");
+        }
+      });
   }
 
   render() {
-    return (
-      <div className="box">
-        <Header item="Sign Out" />
-        <div className="inner">
-          You have signed out, with all personal information wiped out from this computer.
-          <div className="sep20" />
-          <input type="button" className="super normal button" onClick={this.onSigninAgain} value="Sign In Again" />
+    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
+
+    if (!isSignedIn) {
+      return (
+        <div className="box">
+          <Header item="Sign Out" />
+          <div className="inner">
+            You have signed out, with all personal information wiped out from this computer.
+            <div className="sep20" />
+            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value="Sign In Again" />
+          </div>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div className="box">
+          <Header item="Sign Out" />
+          <div className="inner">
+            We had a problem when you signed out, please try again.
+            <div className="sep20" />
+            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value="Retry Sign Out" />
+          </div>
+        </div>
+      )
+    }
   }
 }
 
