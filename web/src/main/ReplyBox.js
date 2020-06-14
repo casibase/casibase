@@ -57,7 +57,7 @@ class ReplyBox extends React.Component {
     return (
       <div className="box">
         <div className="cell">
-          <div className="fr" style={{"margin": "-3px -5px 0px 0px"}}>
+          <div className="fr" style={{margin: "-3px -5px 0px 0px"}}>
             {
               this.state.topic?.tags?.map((tag, i) => {
                 return (

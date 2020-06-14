@@ -60,7 +60,7 @@ class MemberBox extends React.Component {
                   <div className="sep10" />
                   <input type="button" value="Block" onClick="if (confirm('Are you sure to block xxx?')) { location.href = '/block/1024?t=1493648974'; }" className="super normal button" />
                 </div>
-                <h1 style={{"marginBottom": "5px"}}>
+                <h1 style={{marginBottom: "5px"}}>
                   {this.state.member?.id}
                 </h1>
                 <span className="bigger">

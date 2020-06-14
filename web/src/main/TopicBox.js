@@ -43,7 +43,7 @@ class TopicBox extends React.Component {
 
   render() {
     return (
-      <div className="box" style={{"borderBottom":"0px"}}>
+      <div className="box" style={{borderBottom: "0px"}}>
         <div className="header">
           <div className="fr">
             <Avatar username={this.state.topic?.author} isLarge={true} />
