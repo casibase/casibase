@@ -34,6 +34,7 @@ import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
 import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
 import LatestReplyBox from "./main/LatestReplyBox";
+import NewBox from "./main/NewBox";
 
 class App extends Component {
   constructor(props) {
@@ -130,6 +131,12 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <SettingsBox account={this.state.account} />
+          </div>
+        }/>
+        <Route exact path="/new" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <NewBox />
           </div>
         }/>
       </Switch>

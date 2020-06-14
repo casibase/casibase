@@ -33,11 +33,10 @@ class NodeWidget extends React.Component {
   getNodes() {
     NodeBackend.getNodes()
       .then((res) => {
-          this.setState({
-            nodes: res,
-          });
-        }
-      );
+        this.setState({
+          nodes: res,
+        });
+      });
   }
 
   render() {
