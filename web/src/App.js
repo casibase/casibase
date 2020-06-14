@@ -19,11 +19,11 @@ import {Layout, Menu, Input, Typography, Col, Row} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
 import NodePage from "./NodePage";
-import AccountWidget from "./AccountWidget";
 import NodeWidget from "./NodeWidget";
 import Header from "./Header";
 import Footer from "./Footer";
 import RightSigninBox from "./rightbar/RightSigninBox";
+import RightAccountBox from "./rightbar/RightAccountBox";
 import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
@@ -140,7 +140,7 @@ class App extends Component {
       return (
         <div id="Rightbar">
           <div className="sep20" />
-          <AccountWidget />
+          <RightAccountBox account={this.state.account} />
         </div>
       )
     }

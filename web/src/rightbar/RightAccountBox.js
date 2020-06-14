@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import * as Setting from "./Setting";
-import Avatar from "./Avatar";
+import * as Setting from "../Setting";
+import Avatar from "../Avatar";
 
-class AccountWidget extends React.Component {
+class RightAccountBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,11 +24,8 @@ class AccountWidget extends React.Component {
     };
   }
 
-  componentDidMount() {
-  }
-
   render() {
-    let username = "alice";
+    const username = this.props.account?.id;
 
     return (
       <div className="box">
@@ -143,4 +140,4 @@ class AccountWidget extends React.Component {
 
 }
 
-export default AccountWidget;
+export default RightAccountBox;

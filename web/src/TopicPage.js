@@ -131,8 +131,6 @@ class TopicPage extends React.Component {
   }
 
   render() {
-    let username = "alice";
-
     return (
       <div className="box">
         <div className="inner" id="Tabs">
