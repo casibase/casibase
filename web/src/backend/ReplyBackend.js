@@ -50,3 +50,11 @@ export function deleteReply(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getLatestReplies(id, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-latest-replies?id=${id}&limit=${limit}&page=${page}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+    

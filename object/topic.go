@@ -85,3 +85,14 @@ func DeleteTopic(id string) bool {
 
 	return affected != 0
 }
+
+func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
+	topics := []*Topic{}
+	err := adapter.engine.Where("author = ?", author).Limit(limit, offset).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return topics
+}
+    
