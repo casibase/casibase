@@ -116,7 +116,7 @@ class App extends Component {
         <Route exact path="/settings" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <SettingsBox />
+            <SettingsBox account={this.state.account} />
           </div>
         }/>
       </Switch>

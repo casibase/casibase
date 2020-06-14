@@ -16,32 +16,19 @@ import React from "react";
 import * as Setting from "../Setting";
 import Header from "./Header";
 import Avatar from "../Avatar";
-import * as MemberBackend from "../backend/MemberBackend";
 
 class SettingsBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      memberId: "alice",
       member: null,
     };
   }
 
-  componentDidMount() {
-    this.getMember();
-  }
-
-  getMember() {
-    MemberBackend.getMember(this.state.memberId)
-      .then((res) => {
-        this.setState({
-          member: res,
-        });
-      });
-  }
-
   render() {
+    const account = this.props.account;
+
     return (
       <div className="box">
         <Header item="Settings" />
@@ -51,10 +38,10 @@ class SettingsBox extends React.Component {
               <tbody data-select2-id="8">
               <tr>
                 <td width="120" align="right">
-                  <Avatar username={this.state.member?.id} size="small" />
+                  <Avatar username={account?.id} size="small" />
                 </td>
                 <td width="auto" align="left">
-                  {Setting.getForumName()} No. {this.state.member?.no} member
+                  {Setting.getForumName()} No. {account?.no} member
                 </td>
               </tr>
               <tr>
@@ -62,7 +49,7 @@ class SettingsBox extends React.Component {
                   Username
                 </td>
                 <td width="auto" align="left">
-                  {this.state.member?.id}
+                  {account?.id}
                 </td>
               </tr>
               <tr>
@@ -71,7 +58,7 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   <code>
-                    {this.state.member?.phone}
+                    {account?.phone}
                   </code>
                 </td>
               </tr>
@@ -89,7 +76,7 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   <code>
-                    {this.state.member?.email}
+                    {account?.email}
                   </code>
                 </td>
               </tr>
@@ -107,7 +94,7 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   <span className="green">
-                    Verified on {Setting.getFormattedDate(this.state.member?.emailVerifiedTime)}
+                    Verified on {Setting.getFormattedDate(account?.emailVerifiedTime)}
                   </span>
                 </td>
               </tr>
@@ -116,7 +103,7 @@ class SettingsBox extends React.Component {
                   Website
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="website" value={this.state.member?.website} autoComplete="off" />
+                  <input type="text" className="sl" name="website" value={account?.website} autoComplete="off" />
                 </td>
               </tr>
               <tr>
@@ -124,7 +111,7 @@ class SettingsBox extends React.Component {
                   Company
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="company" value={this.state.member?.company} maxLength="32" autoComplete="off" />
+                  <input type="text" className="sl" name="company" value={account?.company} maxLength="32" autoComplete="off" />
                 </td>
               </tr>
               <tr>
@@ -133,7 +120,7 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   <textarea className="ml" name="bio">
-                    {this.state.member?.bio}
+                    {account?.bio}
                   </textarea>
                 </td>
               </tr>
