@@ -14,6 +14,10 @@
 
 package object
 
+import (
+	"sync"
+)
+
 type Reply struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Author      string `xorm:"varchar(100)" json:"author"`
@@ -77,4 +81,53 @@ func DeleteReply(id string) bool {
 	}
 
 	return affected != 0
+}
+
+func GetLatestReplies(author string, limit int, offset int) []LatestReply {
+	replys := []*Reply{}
+	err := adapter.engine.Where("author = ?", author).Limit(limit, offset).Find(&replys)
+	if err != nil {
+		panic(err)
+	}
+
+	var wg sync.WaitGroup
+	var lock sync.Mutex
+	errChan := make(chan error, 10)
+	var result []LatestReply
+	for _, v := range replys {
+		wg.Add(1)
+		v := v
+		go func() {
+			defer wg.Done()
+			topic := Topic{Id: v.TopicId}
+			existed, err := adapter.engine.Select("id, author, node_id, node_name, title, author").Get(&topic)
+			if err != nil {
+				errChan <- err
+				return
+			}
+
+			if existed {
+				var temp =  LatestReply{
+					TopicId:      topic.Id,
+					NodeId:       topic.NodeId,
+					NodeName:     topic.NodeName,
+					Author:       topic.Author,
+					ReplyContent: v.Content,
+					TopicTitle:   topic.Title,
+					ReplyTime:    v.CreatedTime,
+				}
+				lock.Lock()
+				result = append(result, temp)
+				lock.Unlock()
+			}
+		}()
+	}
+	wg.Wait()
+	close(errChan)
+	if len(errChan) != 0 {
+		for v := range errChan {
+			panic(v)
+		}
+	}
+	return result
 }

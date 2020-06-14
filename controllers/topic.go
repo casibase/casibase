@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/casbin/casbin-forum/object"
 )
@@ -27,7 +28,6 @@ func (c *APIController) GetTopics() {
 
 func (c *APIController) GetTopic() {
 	id := c.Input().Get("id")
-
 	c.Data["json"] = object.GetTopic(id)
 	c.ServeJSON()
 }
@@ -60,5 +60,34 @@ func (c *APIController) DeleteTopic() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteTopic(id)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetAllCreatedTopics() {
+	author := c.Input().Get("id")
+	tab := c.Input().Get("tab")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	var (
+		limit, offset int
+		err error
+	)
+	if len(limitStr) != 0 {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			panic(err)
+		}
+	}else {
+		limit = 10
+	}
+	if len(pageStr) != 0 {
+		page, err := strconv.Atoi(pageStr)
+		if err != nil {
+			panic(err)
+		}
+		offset = page * 10 - 10
+	}
+
+	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
 	c.ServeJSON()
 }
