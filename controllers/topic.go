@@ -28,6 +28,7 @@ func (c *APIController) GetTopics() {
 
 func (c *APIController) GetTopic() {
 	id := c.Input().Get("id")
+	
 	c.Data["json"] = object.GetTopic(id)
 	c.ServeJSON()
 }
