@@ -35,6 +35,7 @@ import SignoutBox from "./main/SignoutBox";
 import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
 import LatestReplyBox from "./main/LatestReplyBox";
 import NewBox from "./main/NewBox";
+import NewReplyBox from "./main/NewReplyBox";
 
 class App extends Component {
   constructor(props) {
@@ -108,6 +109,8 @@ class App extends Component {
             <TopicBox />
             <div className="sep20" />
             <ReplyBox />
+            <div className="sep20" />
+            <NewReplyBox />
           </div>
         }/>
         <Route exact path="/member/:memberId" component={() =>

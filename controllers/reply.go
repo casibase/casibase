@@ -19,7 +19,13 @@ import (
 	"strconv"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
 )
+
+type NewReplyForm struct {
+	Content string `json:"content"`
+	TopicId string `json:"topicId"`
+}
 
 func (c *APIController) GetReplies() {
 	topicId := c.Input().Get("topicId")
@@ -49,14 +55,31 @@ func (c *APIController) UpdateReply() {
 }
 
 func (c *APIController) AddReply() {
-	var reply object.Reply
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &reply)
+	if c.RequireLogin() {
+		return
+	}
+
+	var form NewReplyForm
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		panic(err)
+	}
+	content, topicId := form.Content, form.TopicId
+
+	reply := object.Reply{
+		Id:          util.IntToString(object.GetReplyCount()),
+		Author:      c.GetSessionUser(),
+		TopicId:     topicId,
+		CreatedTime: util.GetCurrentTime(),
+		Content:     content,
+	}
+
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &reply)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddReply(&reply)
-	c.ServeJSON()
+	c.wrapResponse(object.AddReply(&reply))
 }
 
 func (c *APIController) DeleteReply() {
@@ -72,14 +95,14 @@ func (c *APIController) GetLatestReplies() {
 	pageStr := c.Input().Get("page")
 	var (
 		limit, offset int
-		err error
+		err           error
 	)
 	if len(limitStr) != 0 {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil {
 			panic(err)
 		}
-	}else {
+	} else {
 		limit = 10
 	}
 	if len(pageStr) != 0 {
@@ -87,10 +110,9 @@ func (c *APIController) GetLatestReplies() {
 		if err != nil {
 			panic(err)
 		}
-		offset = page * 10 - 10
+		offset = page*10 - 10
 	}
 
 	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
 	c.ServeJSON()
 }
-    

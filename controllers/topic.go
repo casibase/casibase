@@ -85,8 +85,7 @@ func (c *APIController) AddTopic() {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddTopic(&topic)
-	c.ServeJSON()
+	c.wrapResponse(object.AddTopic(&topic))
 }
 
 func (c *APIController) DeleteTopic() {

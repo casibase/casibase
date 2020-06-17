@@ -43,3 +43,17 @@ func (c *APIController) RequireLogin() bool {
 
 	return false
 }
+
+func (c *APIController) wrapResponse(res bool) {
+	var resp Response
+
+	if res {
+		resp = Response{Status: "ok", Msg: "", Data: ""}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	} else {
+		resp = Response{Status: "error", Msg: "errorUnknown", Data: ""}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+}

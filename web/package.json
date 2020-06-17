@@ -17,6 +17,7 @@
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.1",
+    "react-scroll": "^1.7.16",
     "react-select2-wrapper": "^1.0.4-beta6"
   },
   "scripts": {

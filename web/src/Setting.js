@@ -15,6 +15,7 @@
 import React from "react";
 import {message} from "antd";
 import moment from "moment";
+import {animateScroll as scroll} from "react-scroll";
 
 export let ServerUrl = '';
 
@@ -31,6 +32,18 @@ export function parseJson(s) {
   } else {
     return JSON.parse(s);
   }
+}
+
+export function scrollToTop() {
+  scroll.scrollToTop();
+}
+
+export function scrollToBottom() {
+  scroll.scrollToBottom();
+}
+
+export function refresh() {
+  window.location.reload();
 }
 
 export function goToLink(link) {

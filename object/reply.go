@@ -25,6 +25,15 @@ type Reply struct {
 	Content string `xorm:"mediumtext" json:"content"`
 }
 
+func GetReplyCount() int {
+	count, err := adapter.engine.Count(&Reply{})
+	if err != nil {
+		panic(err)
+	}
+
+	return int(count)
+}
+
 func GetReplies(topicId string) []*Reply {
 	replies := []*Reply{}
 	err := adapter.engine.Asc("created_time").Find(&replies, &Reply{TopicId: topicId})
