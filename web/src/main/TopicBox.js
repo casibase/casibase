@@ -41,6 +41,20 @@ class TopicBox extends React.Component {
       });
   }
 
+  renderOutdatedProblem() {
+    const diffDays = Setting.getDiffDays(this.state.topic?.createdTime);
+
+    if (diffDays <= 30) {
+      return null;
+    }
+
+    return (
+      <div className="outdated">
+        This is a topic created {diffDays} days ago, the information in it may have changed.
+      </div>
+    )
+  }
+
   render() {
     return (
       <div className="box" style={{borderBottom: "0px"}}>
@@ -71,7 +85,9 @@ class TopicBox extends React.Component {
             <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount} hits
           </small>
         </div>
-        <div className="outdated">This is a topic created {Setting.getDiffDays(this.state.topic?.createdTime)} days ago, the information in it may have changed.</div>
+        {
+          this.renderOutdatedProblem()
+        }
         <div className="cell">
           <div className="topic_content">
             <div className="markdown_body">
