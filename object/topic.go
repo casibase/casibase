@@ -23,11 +23,21 @@ type Topic struct {
 	CreatedTime   string   `xorm:"varchar(100)" json:"createdTime"`
 	Tags          []string `xorm:"varchar(200)" json:"tags"`
 	LastReplyUser string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	ReplyCount    int      `json:"replyCount"`
 	UpCount       int      `json:"upCount"`
 	HitCount      int      `json:"hitCount"`
 	FavoriteCount int      `json:"favoriteCount"`
 
 	Content string `xorm:"mediumtext" json:"content"`
+}
+
+func GetTopicCount() int {
+	count, err := adapter.engine.Count(&Topic{})
+	if err != nil {
+		panic(err)
+	}
+
+	return int(count)
 }
 
 func GetTopics() []*Topic {
@@ -95,4 +105,3 @@ func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*To
 
 	return topics
 }
-    

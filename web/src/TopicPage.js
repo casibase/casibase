@@ -106,22 +106,40 @@ class TopicPage extends React.Component {
                 </span>
               <div className="sep5" />
               <span className="topic_info">
-                  <div className="votes" />
-                  <a className="node" href={`/go/${topic.nodeId}`}>{topic.nodeName}</a>
-                &nbsp;•&nbsp;
-                <strong><a href={`/member/${topic.author}`}>{topic.author}</a></strong>
-                &nbsp;•&nbsp;
+                <div className="votes" />
+                <a className="node" href={`/go/${topic.nodeId}`}>
+                  {topic.nodeName}
+                </a>
+                {" "}&nbsp;•&nbsp;{" "}
+                <strong>
+                  <a href={`/member/${topic.author}`}>
+                    {topic.author}
+                  </a>
+                </strong>
+                {" "}&nbsp;•&nbsp;{" "}
                 {
                   Setting.getPrettyDate(topic.createdTime)
                 }
-                &nbsp;•&nbsp;
-                last reply from <strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                {
+                  topic.lastReplyUser === "" ? null : (
+                    <div style={{display: "inline"}}>
+                      {" "}&nbsp;•&nbsp;{" "}
+                      last reply from <strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                    </div>
+                  )
+                }
                 </span>
             </td>
             <td width="70" align="right" valign="middle">
-              <a href={`/t/${topic.id}`} className="count_livid">
-                6
-              </a>
+              {
+                topic.replyCount === 0 ? null : (
+                  <a href={`/t/${topic.id}`} className="count_livid">
+                    {
+                      topic.replyCount
+                    }
+                  </a>
+                )
+              }
             </td>
           </tr>
           </tbody>

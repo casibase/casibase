@@ -19,7 +19,14 @@ import (
 	"strconv"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
 )
+
+type NewTopicForm struct {
+	Title  string `json:"title"`
+	Body   string `json:"body"`
+	NodeId string `json:"nodeId"`
+}
 
 func (c *APIController) GetTopics() {
 	c.Data["json"] = object.GetTopics()
@@ -47,8 +54,33 @@ func (c *APIController) UpdateTopic() {
 }
 
 func (c *APIController) AddTopic() {
-	var topic object.Topic
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
+	if c.RequireLogin() {
+		return
+	}
+
+	var form NewTopicForm
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		panic(err)
+	}
+	title, body, nodeId := form.Title, form.Body, form.NodeId
+	
+	topic := object.Topic{
+		Id:            util.IntToString(object.GetTopicCount()),
+		Author:        c.GetSessionUser(),
+		NodeId:        nodeId,
+		NodeName:      "",
+		Title:         title,
+		CreatedTime:   util.GetCurrentTime(),
+		Tags:          nil,
+		LastReplyUser: "",
+		UpCount:       0,
+		HitCount:      0,
+		FavoriteCount: 0,
+		Content:       body,
+	}
+
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
 	if err != nil {
 		panic(err)
 	}
@@ -71,14 +103,14 @@ func (c *APIController) GetAllCreatedTopics() {
 	pageStr := c.Input().Get("page")
 	var (
 		limit, offset int
-		err error
+		err           error
 	)
 	if len(limitStr) != 0 {
 		limit, err = strconv.Atoi(limitStr)
 		if err != nil {
 			panic(err)
 		}
-	}else {
+	} else {
 		limit = 10
 	}
 	if len(pageStr) != 0 {
@@ -86,10 +118,9 @@ func (c *APIController) GetAllCreatedTopics() {
 		if err != nil {
 			panic(err)
 		}
-		offset = page * 10 - 10
+		offset = page*10 - 10
 	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
 	c.ServeJSON()
 }
-    

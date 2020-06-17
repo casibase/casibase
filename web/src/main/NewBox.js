@@ -15,6 +15,8 @@
 import React from "react";
 import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
+import * as TopicBackend from "../backend/TopicBackend";
+import * as Setting from "../Setting";
 
 import $ from "jquery"
 import Select2 from 'react-select2-wrapper';
@@ -74,7 +76,16 @@ class NewBox extends React.Component {
   }
 
   publishTopic() {
-    alert("11")
+    TopicBackend.addTopic(this.state.form)
+      .then((res) => {
+        if (res.status === 'ok') {
+          Setting.goToLink("/");
+        } else {
+          // this.setState({
+          //   message: res.msg,
+          // });
+        }
+      });
   }
 
   getIndexFromNodeId(nodeId) {

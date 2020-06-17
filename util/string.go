@@ -12,34 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+package util
 
-import "github.com/astaxie/beego"
+import "strconv"
 
-type APIController struct {
-	beego.Controller
-}
-
-func (c *APIController) GetSessionUser() string {
-	user := c.GetSession("username")
-	if user == nil {
-		return ""
+func ParseInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
 	}
 
-	return user.(string)
+	return i
 }
 
-func (c *APIController) SetSessionUser(user string) {
-	c.SetSession("username", user)
-}
-
-func (c *APIController) RequireLogin() bool {
-	if c.GetSessionUser() == "" {
-		c.Data["json"] = Response{Status: "error", Msg: "errorNeedSignin", Data: ""}
-		c.ServeJSON()
-
-		return true
-	}
-
-	return false
+func IntToString(i int) string {
+	return strconv.Itoa(i)
 }
