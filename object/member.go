@@ -89,3 +89,17 @@ func DeleteMember(id string) bool {
 
 	return affected != 0
 }
+
+func GetMail(email string) *Member {
+	member := Member{Email: email}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}

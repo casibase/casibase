@@ -21,7 +21,18 @@ class SignupBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      clientId: "",
+      redirectUrl:  `${Setting.ClientUrl}/GoogleCallback`,
+      oauthUri: "https://accounts.google.com/o/oauth2/auth",
+      state: "",
+      scope: "https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email",
+      code: ""
     };
+    this.getCode = this.getCode.bind(this);
+  }
+  
+  getCode() {
+    window.location.href=`${this.state.oauthUri}?client_id=${this.state.clientId}&redirect_uri=${this.state.redirectUrl}&scope=${this.state.scope}&response_type=code&state=${this.state.state}`
   }
 
   render() {
@@ -37,7 +48,7 @@ class SignupBox extends React.Component {
         </div>
         <div className="dock_area">
           <div className="signup_methods">
-            <div className="signup_method" onClick="location.href = '/auth/google">
+            <div className="signup_method" onClick={this.getCode}>
               <div className="signup_method_icon signup_method_google"></div>
               <div className="signup_method_label">Continue with Google</div>
             </div>

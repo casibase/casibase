@@ -16,6 +16,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"golang.org/x/oauth2"
+	"io/ioutil"
+	"net/http"
+
+	"github.com/astaxie/beego"
 
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
@@ -57,18 +62,25 @@ func (c *APIController) Signup() {
 	}
 	member, password, email := form.Username, form.Password, form.Email
 
-	msg := object.CheckMemberSignup(member, password)
+	var msg string
+	if password == "" && email != "" {
+		msg = object.CheckMemberSignupWithEmail(member, email)
+	} else {
+		msg = object.CheckMemberSignup(member, password)
+	}
+
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
 		member := &object.Member{
-			Id:       member,
-			Password: password,
-			Email:    email,
+			Id:          member,
+			Password:    password,
+			Email:       email,
+			CreatedTime: util.GetCurrentTime(),
 		}
 		object.AddMember(member)
 
-		//c.SetSessionUser(user)
+		c.SetSessionUser(member.Id)
 
 		util.LogInfo(c.Ctx, "API: [%s] is signed up as new member", member)
 		resp = Response{Status: "ok", Msg: "success", Data: member}
@@ -158,5 +170,63 @@ func (c *APIController) GetAccount() {
 
 func (c *APIController) GetSessionId() {
 	c.Data["json"] = c.StartSession().SessionID()
+	c.ServeJSON()
+}
+
+var endpoint = oauth2.Endpoint{
+	AuthURL:  "https://accounts.google.com/o/oauth2/auth",
+	TokenURL: "https://accounts.google.com/o/oauth2/token",
+}
+
+var googleOauthConfig = &oauth2.Config{
+	ClientID:     beego.AppConfig.String("ClientID"),
+	ClientSecret: beego.AppConfig.String("ClientSecret"),
+	RedirectURL:  "",
+	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
+	Endpoint:     endpoint,
+}
+
+func (c *APIController) AuthGoogle() {
+	code := c.Input().Get("code")
+	state := c.Input().Get("state")
+	RedirectURL := c.Input().Get("redirect_url")
+
+	var res authResponse
+	res.IsAuthenticated = true
+
+	if state != beego.AppConfig.String("state") {
+		res.IsAuthenticated = false
+		return
+	}
+
+	googleOauthConfig.RedirectURL = RedirectURL
+	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		res.IsAuthenticated = false
+		panic(err)
+	}
+
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+
+	var tempUser userInfoFromGoogle
+	err = json.Unmarshal(contents, &tempUser)
+	if err != nil {
+		res.IsAuthenticated = false
+		panic(err)
+	}
+	res.Email = tempUser.Email
+	userId := object.HasMail(tempUser.Email)
+	if userId != "" {
+		c.SetSessionUser(userId)
+		util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+		res.IsSignedUp = true
+	} else {
+		res.IsSignedUp = false
+	}
+
+	c.Data["json"] = res
+
 	c.ServeJSON()
 }
