@@ -16,6 +16,8 @@ import React from "react";
 import * as Setting from "../Setting";
 import Header from "./Header";
 import Avatar from "../Avatar";
+import {withRouter} from "react-router-dom";
+import * as AccountBackend from "../backend/AccountBackend"
 
 class SettingsBox extends React.Component {
   constructor(props) {
@@ -23,12 +25,82 @@ class SettingsBox extends React.Component {
     this.state = {
       classes: props,
       member: null,
+      event: props.match.params.event,
+      topics: [],
+      username: "",
     };
+    this.newUsername = this.newUsername.bind(this);
+    this.postUsername = this.postUsername.bind(this);
   }
-
+  
+  newUsername() {
+    const params = new URLSearchParams(this.props.location.search)
+    let email
+    email = params.get("email")
+    return {
+      username: this.state.username,
+      email: email
+    }
+  }
+  
+  postUsername() {
+      const name = this.newUsername();
+      AccountBackend.signup(name)
+        .then((res) => {
+            if (res.status === "ok") {
+              Setting.showMessage("success", `Set username success`);
+              window.location.href = '/'
+            }else {
+              Setting.showMessage("error", `Set username failed：${res.msg}`);
+            }
+          }
+        )
+        .catch(error => {
+          Setting.showMessage("error", `Set username failed：${error}`);
+        });
+  }
+  
+  handelChange(e){
+    this.setState({
+      username: e.target.value
+      })
+  }
+  
   render() {
     const account = this.props.account;
-
+    
+    if (this.state.event === "username") {
+      return (
+        <div className="box">
+          <div className="header">
+            <a href="/">{Setting.getForumName()}</a>
+            <span className="chevron">&nbsp;›&nbsp;</span>
+            <a href="/settings">Settings</a> <span className="chevron">&nbsp;›&nbsp;</span> Set Username
+          </div>
+          <div className="cell">
+            <div className="topic_content">
+              Welcome to Casbin forum, you just registered your Casbin forum account through Google. Now please set a username here, you can only use half-width English letters and numbers. Other users can
+              send you a message through @ your account name. The user name cannot be changed after setting.
+            </div>
+          </div>
+          <div className="inner">
+            <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+              <tr>
+                <td width="120" align="right">Username</td>
+                <td width="auto" align="left">
+                  <input type="text" className="sl" name="username" onChange={this.handelChange.bind(this)} autoComplete="off"/></td>
+              </tr>
+              <tr>
+                <td width="120" align="right"></td>
+                <td width="auto" align="left"><input type="hidden"/>
+                <input type="submit" className="super normal button" onClick={this.postUsername} value="save"/></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      )
+    }
+    
     return (
       <div className="box">
         <Header item="Settings" />
@@ -140,4 +212,5 @@ class SettingsBox extends React.Component {
   }
 }
 
-export default SettingsBox;
+export default withRouter(SettingsBox);
+
