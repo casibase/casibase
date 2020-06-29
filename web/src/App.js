@@ -34,6 +34,7 @@ import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
 import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
 import LatestReplyBox from "./main/LatestReplyBox";
+import GoogleCallback from "./main/AuthGoogle";
 import NewBox from "./main/NewBox";
 import NewReplyBox from "./main/NewReplyBox";
 import NodesBox from "./main/NodeBox";
@@ -48,6 +49,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
+    Setting.initClientUrl();
   }
 
   componentWillMount() {
@@ -136,6 +138,18 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <SettingsBox account={this.state.account} />
+          </div>
+        }/>
+        <Route exact path="/GoogleCallback" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <GoogleCallback />
+          </div>
+        }/>
+        <Route exact path="/settings/:event" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <SettingsBox />
           </div>
         }/>
         <Route exact path="/new" component={() =>

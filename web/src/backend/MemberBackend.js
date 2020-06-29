@@ -50,3 +50,11 @@ export function deleteMember(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function googleLogin(code, state, redirectUrl) {
+  return fetch(`${Setting.ServerUrl}/api/auth/google?code=${code}&state=${state}&redirect_url=${redirectUrl}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+  

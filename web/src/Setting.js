@@ -18,11 +18,19 @@ import moment from "moment";
 import {animateScroll as scroll} from "react-scroll";
 
 export let ServerUrl = '';
+export let ClientUrl = '';
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
   if (hostname === 'localhost') {
     ServerUrl = `http://${hostname}:7000`;
+  }
+}
+
+export function initClientUrl() {
+  const hostname = window.location.hostname;
+  if (hostname === 'localhost') {
+    ClientUrl = `http://${hostname}:3000`;
   }
 }
 

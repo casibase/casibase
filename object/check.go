@@ -44,3 +44,21 @@ func CheckMemberLogin(member string, password string) string {
 
 	return ""
 }
+
+func CheckMemberSignupWithEmail(member string, email string) string {
+	if len(member) == 0 || len(email) == 0 {
+		return "errorUsernameOrUsernameEmpty"
+	} else if HasMember(member) || HasMail(email) != "" {
+		return "errorUsernameExistedOrEmailExisted"
+	} else {
+		return ""
+	}
+}
+
+func HasMail(email string) string {
+	userInfo := GetMail(email)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
