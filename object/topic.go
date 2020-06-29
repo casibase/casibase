@@ -64,6 +64,16 @@ func GetTopic(id string) *Topic {
 	}
 }
 
+func GetTopicsWithNode(nodeId string, limit int, offset int) []*Topic {
+	topics := []*Topic{}
+	err := adapter.engine.Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return topics
+}
+
 func UpdateTopic(id string, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false

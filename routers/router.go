@@ -39,6 +39,7 @@ func initAPI() {
 	beego.Router("/api/add-topic", &controllers.APIController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 	beego.Router("/api/get-all-created-topics", &controllers.APIController{}, "GET:GetAllCreatedTopics")
+	beego.Router("/api/get-topics-by-node", &controllers.APIController{}, "GET:GetTopicsByNode")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
@@ -58,9 +59,15 @@ func initAPI() {
 	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode")
 	beego.Router("/api/add-node", &controllers.APIController{}, "POST:AddNode")
 	beego.Router("/api/delete-node", &controllers.APIController{}, "POST:DeleteNode")
+	beego.Router("/api/get-node-info", &controllers.APIController{}, "GET:GetNodeInfo")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.APIController{}, "POST:Signin")
 	beego.Router("/api/signout", &controllers.APIController{}, "POST:Signout")
 	beego.Router("/api/get-account", &controllers.APIController{}, "GET:GetAccount")
+
+	beego.Router("/api/add-favorites", &controllers.APIController{}, "POST:AddFavorites")
+	beego.Router("/api/get-favorites", &controllers.APIController{}, "GET:GetFavorites")
+	beego.Router("/api/delete-favorites", &controllers.APIController{}, "POST:DeleteFavorites")
+	beego.Router("/api/get-favorites-status", &controllers.APIController{}, "GET:GetFavoritesStatus")
 }
