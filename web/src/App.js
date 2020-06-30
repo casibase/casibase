@@ -37,6 +37,8 @@ import LatestReplyBox from "./main/LatestReplyBox";
 import GoogleCallback from "./main/AuthGoogle";
 import NewBox from "./main/NewBox";
 import NewReplyBox from "./main/NewReplyBox";
+import NodesBox from "./main/NodeBox";
+import FavoritesBox from "./main/FavoritesBox";
 
 class App extends Component {
   constructor(props) {
@@ -154,6 +156,18 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <NewBox />
+          </div>
+        }/>
+        <Route exact path="/go/:nodeId" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <NodesBox />
+          </div>
+        }/>
+        <Route exact path="/my/:favorites" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <FavoritesBox />
           </div>
         }/>
       </Switch>

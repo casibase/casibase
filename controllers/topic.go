@@ -18,6 +18,8 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/astaxie/beego"
+
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -121,5 +123,26 @@ func (c *APIController) GetAllCreatedTopics() {
 	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetTopicsByNode() {
+	nodeId := c.Input().Get("node-id")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page * limit - 10
+	}
+
+	c.Data["json"] = object.GetTopicsWithNode(nodeId, limit, offset)
 	c.ServeJSON()
 }

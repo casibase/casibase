@@ -57,4 +57,10 @@ export function getAllCreatedTopics(id, tab, limit, page) {
     credentials: 'include',
   }).then(res => res.json());
 }
-    
+
+export function getTopicsWithNode(nodeId, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-topics-by-node?node-id=${nodeId}&limit=${limit}&page=${page}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
