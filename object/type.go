@@ -23,3 +23,8 @@ type LatestReply struct {
 	TopicTitle   string `json:"topicTitle"`
 	ReplyTime    string `json:"replyTime"`
 }
+
+type NodeFavoritesRes struct {
+	NodeInfo *Node `json:"nodeInfo"`
+	TopicNum int   `json:"topicNum"`
+}

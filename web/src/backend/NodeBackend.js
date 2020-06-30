@@ -50,3 +50,10 @@ export function deleteNode(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getNodeInfo(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-node-info?id=${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}

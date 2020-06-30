@@ -77,3 +77,13 @@ func DeleteNode(id string) bool {
 
 	return affected != 0
 }
+
+func GetNodeTopicNum(id string) int {
+	topic := new(Topic)
+	total, err := adapter.engine.Where("node_id = ?", id).Count(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
