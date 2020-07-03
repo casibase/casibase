@@ -21,7 +21,7 @@
     "react-select2-wrapper": "^1.0.4-beta6"
   },
   "scripts": {
-    "start": "set PORT=6060 && react-scripts start",
+    "start": "set PORT=3000 && react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
