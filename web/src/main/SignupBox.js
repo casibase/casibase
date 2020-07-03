@@ -30,7 +30,7 @@ class SignupBox extends React.Component {
     };
     this.getCode = this.getCode.bind(this);
   }
-  
+
   getCode() {
     window.location.href=`${this.state.oauthUri}?client_id=${this.state.clientId}&redirect_uri=${this.state.redirectUrl}&scope=${this.state.scope}&response_type=code&state=${this.state.state}`
   }
