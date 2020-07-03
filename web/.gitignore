@@ -24,6 +24,3 @@ yarn-error.log*
 
 .idea/
 *.iml
-
-package-lock.json
-yarn.lock
