@@ -16,6 +16,7 @@ import React from "react";
 import {message} from "antd";
 import moment from "moment";
 import {animateScroll as scroll} from "react-scroll";
+import md5 from 'js-md5'
 import * as Conf from "./Conf"
 
 export let ServerUrl = '';
@@ -109,7 +110,9 @@ export function getStatic(path) {
 }
 
 export function getUserAvatar(username, isLarge=false) {
-  return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
+  let gravatarStr = md5(username)
+  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro&size=${isLarge ? "" : "48"}`
+  //return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
 export function getForumName() {
