@@ -56,7 +56,7 @@ class FavoritesBox extends React.Component {
     switch (this.state.favoritesType) {
       case "topics": favoritesType = 1; break;
       case "following": favoritesType = 2; break;
-      case "node": favoritesType = 3; break;
+      case "nodes": favoritesType = 3; break;
       default: return
     }
     FavoritesBackend.getFavorites(favoritesType, this.state.limit, this.state.page)
@@ -104,7 +104,7 @@ class FavoritesBox extends React.Component {
 
   render() {
     switch (this.state.favoritesType) {
-      case "node":
+      case "nodes":
         return (
           <div className="box">
             <div className="header">
@@ -133,7 +133,7 @@ class FavoritesBox extends React.Component {
                 <span className="snow">Total topics: &nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
-            <TopicList topics={this.state.favorites}/>
+            <TopicList topics={this.state.favorites} showNodeName={true} />
           </div>
         )
       case "following":
@@ -147,7 +147,7 @@ class FavoritesBox extends React.Component {
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
             {this.showPageColumn()}
-            <TopicList topics={this.state.favorites}/>
+            <TopicList topics={this.state.favorites} showNodeName={true} />
             {this.showPageColumn()}
           </div>
         )

@@ -20,6 +20,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
+import NewNodeTopicBox from "./NewNodeTopicBox";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -49,12 +50,12 @@ class NodeBox extends React.Component {
 
     this.state.url = `/go/${this.state.nodeId}`
   }
-  
+
   componentDidMount() {
     this.getTopics()
     this.getNodeInfo()
   }
-  
+
   getNodeInfo() {
     NodeBackend.getNode(this.state.nodeId)
       .then((res) => {
@@ -101,6 +102,7 @@ class NodeBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
+          Setting.refresh()
         }else {
           Setting.showMessage("error", res.msg)
         }
@@ -114,6 +116,7 @@ class NodeBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
+          Setting.refresh()
         }else {
           Setting.showMessage("error", res.msg)
         }
@@ -126,7 +129,7 @@ class NodeBox extends React.Component {
       )
   }
 
-  render() {
+  renderNode() {
     const {nodeInfo, nodeId, page, limit} = this.state
     let from, end
     if (this.state.topicNum !== 0) {
@@ -165,7 +168,7 @@ class NodeBox extends React.Component {
           </div>
         </div>
         {this.showPageColumn()}
-        <TopicList topics={this.state.topics}/>
+        <TopicList topics={this.state.topics} showNodeName={false} />
         {this.showPageColumn()}
         <div className="cell" align="center">
           <div className="fr">{`${this.state.favoritesNum} members have added this node to favorites`}</div>
@@ -173,6 +176,17 @@ class NodeBox extends React.Component {
         </div>
       </div>
     );
+  }
+
+  render() {
+    return(
+        <div id="Main">
+          <div className="sep20" />
+          {this.renderNode()}
+          <div className="sep20" />
+          <NewNodeTopicBox nodeId={this.state.nodeId} size={"small"} />
+        </div>
+      )
   }
 }
 

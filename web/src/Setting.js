@@ -16,6 +16,7 @@ import React from "react";
 import {message} from "antd";
 import moment from "moment";
 import {animateScroll as scroll} from "react-scroll";
+import * as Conf from "./Conf"
 
 export let ServerUrl = '';
 export let ClientUrl = '';

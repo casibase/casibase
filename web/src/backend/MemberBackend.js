@@ -36,6 +36,14 @@ export function updateMember(id, member) {
   }).then(res => res.json());
 }
 
+export function updateMemberInfo(id, member) {
+  return fetch(`${Setting.ServerUrl}/api/update-member-info?id=${id}`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(member),
+  }).then(res => res.json());
+}
+
 export function addMember(member) {
   return fetch(`${Setting.ServerUrl}/api/add-member`, {
     method: 'POST',

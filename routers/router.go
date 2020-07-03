@@ -40,6 +40,8 @@ func initAPI() {
 	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 	beego.Router("/api/get-all-created-topics", &controllers.APIController{}, "GET:GetAllCreatedTopics")
 	beego.Router("/api/get-topics-by-node", &controllers.APIController{}, "GET:GetTopicsByNode")
+	beego.Router("/api/get-topics-num", &controllers.APIController{}, "GET:GetTopicsNum")
+	beego.Router("/api/add-topic-hit-count", &controllers.APIController{}, "POST:AddTopicHitCount")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
@@ -47,12 +49,14 @@ func initAPI() {
 	beego.Router("/api/add-reply", &controllers.APIController{}, "POST:AddReply")
 	beego.Router("/api/delete-reply", &controllers.APIController{}, "POST:DeleteReply")
 	beego.Router("/api/get-latest-replies", &controllers.APIController{}, "GET:GetLatestReplies")
+	beego.Router("/api/get-replies-num", &controllers.APIController{}, "GET:GetRepliesNum")
 
 	beego.Router("/api/get-members", &controllers.APIController{}, "GET:GetMembers")
 	beego.Router("/api/get-member", &controllers.APIController{}, "GET:GetMember")
 	beego.Router("/api/update-member", &controllers.APIController{}, "POST:UpdateMember")
 	beego.Router("/api/add-member", &controllers.APIController{}, "POST:AddMember")
 	beego.Router("/api/delete-member", &controllers.APIController{}, "POST:DeleteMember")
+	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
@@ -71,4 +75,5 @@ func initAPI() {
 	beego.Router("/api/get-favorites", &controllers.APIController{}, "GET:GetFavorites")
 	beego.Router("/api/delete-favorites", &controllers.APIController{}, "POST:DeleteFavorites")
 	beego.Router("/api/get-favorites-status", &controllers.APIController{}, "GET:GetFavoritesStatus")
+	beego.Router("/api/get-account-favorite-num", &controllers.APIController{}, "GET:GetAccountFavoriteNum")
 }

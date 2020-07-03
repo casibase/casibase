@@ -14,7 +14,10 @@
 
 package object
 
-import "sync"
+import (
+	"strings"
+	"sync"
+)
 
 type Reply struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
@@ -73,6 +76,8 @@ func UpdateReply(id string, reply *Reply) bool {
 }
 
 func AddReply(reply *Reply) bool {
+	reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
+
 	affected, err := adapter.engine.Insert(reply)
 	if err != nil {
 		panic(err)
@@ -138,4 +143,16 @@ func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 	}
 	return result
 }
-	
+
+func GetRepliesNum(memberId string) int {
+	var total int64
+	var err error
+
+	reply := new(Reply)
+	total, err = adapter.engine.Where("author = ?", memberId).Count(reply)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}

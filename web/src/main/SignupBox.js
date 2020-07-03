@@ -15,22 +15,23 @@
 import React from "react";
 import * as Setting from "../Setting";
 import Header from "./Header";
+import * as Conf from "../Conf"
 
 class SignupBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      clientId: "",
+      clientId: Conf.GoogleClientId,
       redirectUrl:  `${Setting.ClientUrl}/GoogleCallback`,
       oauthUri: "https://accounts.google.com/o/oauth2/auth",
-      state: "",
-      scope: "https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email",
+      state: Conf.GoogleAuthState,
+      scope: Conf.GoogleAuthScope,
       code: ""
     };
     this.getCode = this.getCode.bind(this);
   }
-  
+
   getCode() {
     window.location.href=`${this.state.oauthUri}?client_id=${this.state.clientId}&redirect_uri=${this.state.redirectUrl}&scope=${this.state.scope}&response_type=code&state=${this.state.state}`
   }

@@ -39,6 +39,7 @@ import NewBox from "./main/NewBox";
 import NewReplyBox from "./main/NewReplyBox";
 import NodesBox from "./main/NodeBox";
 import FavoritesBox from "./main/FavoritesBox";
+import RecentTopicsBox from "./main/RecentTopicsBox";
 
 class App extends Component {
   constructor(props) {
@@ -113,8 +114,6 @@ class App extends Component {
             <TopicBox />
             <div className="sep20" />
             <ReplyBox />
-            <div className="sep20" />
-            <NewReplyBox />
           </div>
         }/>
         <Route exact path="/member/:memberId" component={() =>
@@ -158,16 +157,25 @@ class App extends Component {
             <NewBox />
           </div>
         }/>
-        <Route exact path="/go/:nodeId" component={() =>
+        <Route exact path="/new/:nodeId" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <NodesBox />
+            <NewBox />
           </div>
+        }/>
+        <Route exact path="/go/:nodeId" component={() =>
+          <NodesBox />
         }/>
         <Route exact path="/my/:favorites" component={() =>
           <div id="Main">
             <div className="sep20" />
             <FavoritesBox />
+          </div>
+        }/>
+        <Route exact path="/recent" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <RecentTopicsBox />
           </div>
         }/>
       </Switch>

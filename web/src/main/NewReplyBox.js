@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import '../Reply.css'
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -30,6 +31,7 @@ class NewReplyBox extends React.Component {
       isTypingStarted: false,
       problem: [],
     };
+    this.handleChange = this.handleChange.bind(this)
   }
 
   componentDidMount() {
@@ -100,6 +102,9 @@ class NewReplyBox extends React.Component {
   }
 
   publishReply() {
+    if (this.props.content !== undefined) {
+      this.updateFormField("content", this.props.content)
+    }
     if (!this.isOkToSubmit()) {
       return;
     }
@@ -117,12 +122,26 @@ class NewReplyBox extends React.Component {
       });
   }
 
+  handleChange(e) {
+    this.props.onReplyChange(e.target.value);
+    this.updateFormField("content", this.props.content);
+  }
+
+  undockBox() {
+    this.props.changeStickyStatus(false)
+  }
+
+  dockBox() {
+    this.props.changeStickyStatus(true)
+  }
+
   render() {
+    {console.log(this.props.sticky)}
     return (
-      <div className="box" id="reply-box">
+      <div className={["box", this.props.sticky ? "sticky" : ""].join(' ')} id="reply-box">
         <div className="cell">
           <div className="fr">
-            <a href="javascript:undockReplyBox();" id="undock-button">
+            <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button">
               Undock Reply Box
             </a>
             {" "}&nbsp; &nbsp;{" "}
@@ -135,12 +154,8 @@ class NewReplyBox extends React.Component {
         {
           this.renderProblem()
         }
-        <div className="cell">
-          <textarea onChange={event => {this.updateFormField("content", event.target.value)}} name="content" maxLength="10000" className="mll" id="reply_content" onFocus="setReplyBoxSticky();" style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}}>
-            {
-              this.state.form.content
-            }
-          </textarea>
+        <div className="cell" >
+          <textarea onChange={this.handleChange} value={this.props.content} name="content" maxLength="10000" className="mll" id="reply_content" onFocus={() => this.dockBox(true)} style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} />
           <div className="sep10" />
           <div className="fr">
             <div className="sep5" />

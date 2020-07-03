@@ -32,7 +32,7 @@ class GoogleCallback extends React.Component {
     this.state.code = params.get("code")
     this.state.state = params.get("state")
   }
-  
+
   getAuthenticatedInfo() {
     let redirectUrl
     redirectUrl = `${Setting.ClientUrl}/GoogleCallback`
@@ -49,11 +49,11 @@ class GoogleCallback extends React.Component {
         window.location.href = '/'
       });
   }
-  
+
   componentDidMount() {
     this.getAuthenticatedInfo()
   }
-  
+
   render() {
     return (
       <div>
@@ -66,4 +66,3 @@ class GoogleCallback extends React.Component {
 }
 
 export default withRouter(GoogleCallback);
-  

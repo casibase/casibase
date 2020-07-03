@@ -45,6 +45,33 @@ func (c *APIController) UpdateMember() {
 	c.ServeJSON()
 }
 
+func (c *APIController) UpdateMemberInfo() {
+	id := c.Input().Get("id")
+	memberId := c.GetSessionUser()
+
+	var tempMember object.Member
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempMember)
+	if err != nil {
+		panic(err)
+	}
+
+	var resp Response
+	if memberId != id {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+	}else {
+		var member = object.Member{
+			Company:           tempMember.Company,
+			Bio:               tempMember.Bio,
+			Website:           tempMember.Website,
+		}
+		res := object.UpdateMemberInfo(id, &member)
+		resp = Response{Status: "ok", Msg: "success", Data: res}
+	}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) AddMember() {
 	var member object.Member
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)

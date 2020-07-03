@@ -24,6 +24,7 @@ class TopicPage extends React.Component {
     this.state = {
       classes: props,
       topics: [],
+      defaultHomePageNum: 50,
     };
   }
 
@@ -32,7 +33,7 @@ class TopicPage extends React.Component {
   }
 
   getTopics() {
-    TopicBackend.getTopics()
+    TopicBackend.getTopics(this.state.defaultHomePageNum, 1)
       .then((res) => {
         this.setState({
           topics: res,

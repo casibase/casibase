@@ -114,6 +114,16 @@ func GetNodeFavoritesNum(id string) int {
 	return int(total)
 }
 
+func GetFollowingNum(id string) int {
+	member := new(Favorites)
+	total, err := adapter.engine.Where("favorites_type = ?", 2).And("member_id = ?", id).Count(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
 func GetFavoritesNum(favoritesType int, memberId string) int {
 	var total int64
 	var err error
