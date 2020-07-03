@@ -15,13 +15,36 @@
 import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
+import * as FavoritesBackend from "../backend/FavoritesBackend";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
+      topicFavoriteNum: 1,
+      nodeFavoriteNum: 1,
+      followingNum: 1,
     };
+  }
+
+  componentDidMount() {
+    this.getFavoriteNum()
+  }
+
+  getFavoriteNum() {
+    FavoritesBackend.getAccountFavoriteNum(this.state.topicId)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            topicFavoriteNum: res?.data[1],
+            followingNum: res?.data[2],
+            nodeFavoriteNum: res?.data[3],
+          });
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
+      });
   }
 
   render() {
@@ -61,7 +84,7 @@ class RightAccountBox extends React.Component {
               <td width="33%" align="center">
                 <a href="/my/nodes" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    0
+                    {this.state.nodeFavoriteNum}
                   </span>
                   <div className="sep3" />
                   <span className="fade">
@@ -74,7 +97,7 @@ class RightAccountBox extends React.Component {
                   align="center">
                 <a href="/my/topics" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    0
+                    {this.state.topicFavoriteNum}
                   </span>
                 <div className="sep3" />
                 <span className="fade">
@@ -85,7 +108,7 @@ class RightAccountBox extends React.Component {
               <td width="33%" align="center">
                 <a href="/my/following" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    0
+                    {this.state.followingNum}
                   </span>
                   <div className="sep3" />
                   <span className="fade">

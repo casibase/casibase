@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import LatestReplyBox from "./LatestReplyBox";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -26,6 +27,14 @@ class AllCreatedTopicsBox extends React.Component {
       memberId: props.match.params.memberId,
       tab: props.match.params.tab,
       topics: [],
+      limit: 10,
+      p: "",
+      page: 1,
+      minPage: 1,
+      maxPage: -1,
+      topicsNum: 1,
+      temp: 0,
+      url: "",
       TAB_LIST: [
         {label: "Q&A", value: "qna"},
         {label: "Tech", value: "tech"},
@@ -35,6 +44,14 @@ class AllCreatedTopicsBox extends React.Component {
         {label: "City", value: "city"}
       ]
     };
+    const params = new URLSearchParams(this.props.location.search)
+    this.state.p = params.get("p")
+    if (this.state.p === null) {
+      this.state.page = 1
+    }else {
+      this.state.page = parseInt(this.state.p)
+    }
+    
   }
 
   componentDidMount() {
@@ -42,7 +59,7 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   getAllCreatedTopics() {
-    TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, 10, 1)
+    TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, this.state.limit, this.state.page)
       .then((res) => {
         this.setState({
           topics: res,
@@ -92,9 +109,17 @@ class AllCreatedTopicsBox extends React.Component {
                 </strong>
               </span>
             </td>
-              <td width="70" align="right" valign="middle">
-                <a href={`/t/${topic.id}`} className="count_livid">6</a>
-              </td>
+            <td width="70" align="right" valign="middle">
+              {
+                topic.replyCount === 0 ? null : (
+                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="count_livid">
+                    {
+                      topic.replyCount
+                    }
+                  </a>
+                )
+              }
+            </td>
           </tr>
           </tbody>
         </table>
@@ -106,7 +131,14 @@ class AllCreatedTopicsBox extends React.Component {
     {
       if (this.state.tab === "replies") {
         return (
-          <div />
+          <LatestReplyBox size={"large"} />
+        );
+      }
+    }
+    {
+      if (this.state.tab === "topics") {
+        return (
+          <LatestReplyBox size={"large"} />
         );
       }
     }
@@ -145,4 +177,3 @@ class AllCreatedTopicsBox extends React.Component {
 }
 
 export default withRouter(AllCreatedTopicsBox);
-    

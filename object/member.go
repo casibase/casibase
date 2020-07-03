@@ -72,6 +72,19 @@ func UpdateMember(id string, member *Member) bool {
 	return true
 }
 
+func UpdateMemberInfo(id string, member *Member) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	_, err := adapter.engine.Id(id).MustCols("company, bio, website").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
 func AddMember(member *Member) bool {
 	affected, err := adapter.engine.Insert(member)
 	if err != nil {

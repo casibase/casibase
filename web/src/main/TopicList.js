@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import * as TopicBackend from "../backend/TopicBackend";
 
 class TopicList extends React.Component {
   constructor(props) {
@@ -21,6 +22,15 @@ class TopicList extends React.Component {
     this.state = {
       classes: props,
     };
+  }
+
+  addTopicHitCount(topicId) {
+    TopicBackend.addTopicHitCount(topicId)
+      .then((res) => {
+        if (res?.status === "fail") {
+          Setting.showMessage("error", res?.msg)
+        }
+      });
   }
 
   renderTopic(topic) {
@@ -42,9 +52,19 @@ class TopicList extends React.Component {
               </a>
             </td>
             <td width="10"></td>
-            <td width="auto" valign="middle"><span className="item_title"><a href={`/t/${topic?.id}`} className="topic-link">{topic?.title}</a></span>
+            <td width="auto" valign="middle"><span className="item_title"><a href={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="topic-link">{topic?.title}</a></span>
               <div className="sep5"></div>
               <span className="topic_info">
+                {
+                  this.props.showNodeName ?
+                    <div>
+                      <div className="votes" />
+                      <a className="node" href={`/go/${topic?.nodeId}`}>
+                        {topic?.nodeName}
+                      </a>
+                      {" "}&nbsp;•&nbsp;{" "}
+                    </div> : null
+                }
                 <strong><a href={`/member/${topic?.author}`}>{topic?.author}</a></strong>
                 &nbsp;•&nbsp;
                 {Setting.getFormattedDate(topic?.createdTime)}
@@ -54,7 +74,15 @@ class TopicList extends React.Component {
               </span>
             </td>
             <td width="70" align="right" valign="middle">
-              <a href={`/t/${topic?.id}`} className="count_livid">{topic?.replyCount}</a>
+              {
+                topic.replyCount === 0 ? null : (
+                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="count_livid">
+                    {
+                      topic?.replyCount
+                    }
+                  </a>
+                )
+              }
             </td>
           </tr>
           </tbody>

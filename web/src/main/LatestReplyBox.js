@@ -17,6 +17,8 @@ import * as Setting from "../Setting";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import PageColumn from "./PageColumn";
+import TopicList from "./TopicList";
 
 class LatestReplyBox extends React.Component {
   constructor(props) {
@@ -24,21 +26,59 @@ class LatestReplyBox extends React.Component {
     this.state = {
       classes: props,
       memberId: props.match.params.memberId,
-      replies: []
+      p: "",
+      page: 1,
+      limit: 20,
+      minPage: 1,
+      maxPage: -1,
+      repliesNum: 10,
+      replies: [],
+      url: "",
     };
+    if (this.props.limit !== undefined) {
+      this.state.limit = this.props.limit
+    }
+    const params = new URLSearchParams(this.props.location.search)
+    this.state.p = params.get("p")
+    if (this.state.p === null) {
+      this.state.page = 1
+    }else {
+      this.state.page = parseInt(this.state.p)
+    }
+  
+    this.state.url = `/member/${this.state.memberId}/replies`
   }
 
   componentDidMount() {
     this.getLatestReplies();
+    this.getRepliesNum();
   }
 
   getLatestReplies() {
-    ReplyBackend.getLatestReplies(this.state.memberId, 10, 1)
+    ReplyBackend.getLatestReplies(this.state.memberId, this.state.limit, this.state.page)
       .then((res) => {
         this.setState({
           replies: res,
         });
       });
+  }
+
+  getRepliesNum() {
+    ReplyBackend.getRepliesNum(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          repliesNum: res,
+        });
+      });
+  }
+
+  showPageColumn() {
+    if (this.state.repliesNum === 10) {
+      return
+    }
+    return (
+      <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url}/>
+    )
   }
 
   renderReplies(reply) {
@@ -67,11 +107,32 @@ class LatestReplyBox extends React.Component {
   }
 
   render() {
+    if (this.props.size === "large") {
+      return (
+        <div className="box">
+          <div className="header">
+            <a href="/">{Setting.getForumName()} </a>
+            <span className="chevron">&nbsp;›&nbsp;</span>
+            <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span> All Replies
+            <div className="fr f12"><span className="snow">Total Replies&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
+          </div>
+          
+          {this.showPageColumn()}
+          {
+            this.state.replies?.map((reply) => {
+              return this.renderReplies(reply);
+            })
+          }
+          {this.showPageColumn()}
+        </div>
+      );
+    }
+
     return (
       <div className="box">
         <div className="cell"><span className="gray">{`${this.state.memberId}'s latest replies`}</span></div>
         {
-          this.state.replies.map((reply) => {
+          this.state.replies?.map((reply) => {
             return this.renderReplies(reply);
           })
         }
@@ -83,4 +144,3 @@ class LatestReplyBox extends React.Component {
 }
 
 export default withRouter(LatestReplyBox);
-    

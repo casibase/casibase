@@ -16,7 +16,10 @@ package controllers
 
 import (
 	"encoding/json"
+	"log"
 	"strconv"
+
+	"github.com/astaxie/beego"
 
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
@@ -79,11 +82,15 @@ func (c *APIController) AddReply() {
 		panic(err)
 	}
 
+	object.ChangeTopicReplyCount(topicId, 1)
+
 	c.wrapResponse(object.AddReply(&reply))
 }
 
 func (c *APIController) DeleteReply() {
 	id := c.Input().Get("id")
+
+	object.ChangeTopicReplyCount(id, -1)
 
 	c.Data["json"] = object.DeleteReply(id)
 	c.ServeJSON()
@@ -93,6 +100,7 @@ func (c *APIController) GetLatestReplies() {
 	id := c.Input().Get("id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
+	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
 	var (
 		limit, offset int
 		err           error
@@ -103,16 +111,24 @@ func (c *APIController) GetLatestReplies() {
 			panic(err)
 		}
 	} else {
-		limit = 10
+		limit = defaultLimit
 	}
 	if len(pageStr) != 0 {
 		page, err := strconv.Atoi(pageStr)
 		if err != nil {
 			panic(err)
 		}
-		offset = page*10 - 10
+		offset = page * limit - limit
 	}
 
+	log.Println(limit, offset)
 	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetRepliesNum() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetRepliesNum(id)
 	c.ServeJSON()
 }

@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getTopics() {
-  return fetch(`${Setting.ServerUrl}/api/get-topics`, {
+export function getTopics(limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-topics?limit=${limit}&page=${page}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());
@@ -51,6 +51,13 @@ export function deleteTopic(id) {
   }).then(res => res.json());
 }
 
+export function getTopicsNum() {
+  return fetch(`${Setting.ServerUrl}/api/get-topics-num`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
 export function getAllCreatedTopics(id, tab, limit, page) {
   return fetch(`${Setting.ServerUrl}/api/get-all-created-topics?id=${id}&tab=${tab}&limit=${limit}&page=${page}`, {
     method: 'GET',
@@ -61,6 +68,13 @@ export function getAllCreatedTopics(id, tab, limit, page) {
 export function getTopicsWithNode(nodeId, limit, page) {
   return fetch(`${Setting.ServerUrl}/api/get-topics-by-node?node-id=${nodeId}&limit=${limit}&page=${page}`, {
     method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function addTopicHitCount(topicId) {
+  return fetch(`${Setting.ServerUrl}/api/add-topic-hit-count?id=${topicId}`, {
+    method: 'POST',
     credentials: 'include',
   }).then(res => res.json());
 }

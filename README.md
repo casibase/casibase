@@ -38,23 +38,22 @@ Casbin-forum uses XORM to connect to DB, so all DBs supported by XORM can also b
 
 Casbin-forum provide a way to sign up using Google account,  so you may have to get your own  ClientID and ClientSecret first. You could get them by clicking on this url: https://console.developers.google.com/apis
 
-And to improve security, you could set a `state` value to make sure the request is requesting by yourself.
+And to improve security, you could set a `state` value to make sure the request is requesting by yourself, such as "random".
 
 Those information strings can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
 
 ```ini
-ClientID = ""
-ClientSecret = ""
-state = ""
+ClientID = "xxx"  //your clientID
+ClientSecret = "xxx"  //your clientSecret
+state = "xxx"  //set by yourself
 ```
 
-You may also have to fill in the same informations at: https://github.com/casbin/casbin-forum/blob/master/web/src/main/SignupBox.js. By the way, you could change the value of `scope` to get different user informations form Google if you need.
+You may also have to fill in the **same** informations at: https://github.com/casbin/casbin-forum/blob/master/web/src/main/SignupBox.js. By the way, you could change the value of `scope` to get different user informations form Google if you need.
 
 ```javascript
-clientId: "",
-oauthUri: "",
-state: "",
-scope: "https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email",
+clientId: "xxx",  //your clientID
+oauthUri: "xxx",  //your clientSecret
+state: "xxx",  //set by yourself, the same as the app.conf file
 ```
 
 - Run backend (in port 7000):

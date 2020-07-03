@@ -31,7 +31,22 @@ type NewTopicForm struct {
 }
 
 func (c *APIController) GetTopics() {
-	c.Data["json"] = object.GetTopics()
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	defaultLimit, _ := beego.AppConfig.Int("defaultHomePageNum")
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page * limit - limit
+	}
+
+	c.Data["json"] = object.GetTopics(limit, offset)
 	c.ServeJSON()
 }
 
@@ -97,6 +112,11 @@ func (c *APIController) DeleteTopic() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetTopicsNum() {
+	c.Data["json"] = object.GetTopicCount()
+	c.ServeJSON()
+}
+
 func (c *APIController) GetAllCreatedTopics() {
 	author := c.Input().Get("id")
 	tab := c.Input().Get("tab")
@@ -119,7 +139,7 @@ func (c *APIController) GetAllCreatedTopics() {
 		if err != nil {
 			panic(err)
 		}
-		offset = page*10 - 10
+		offset = page * limit - limit
 	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
@@ -140,9 +160,24 @@ func (c *APIController) GetTopicsByNode() {
 	}
 	if len(pageStr) != 0 {
 		page := util.ParseInt(pageStr)
-		offset = page * limit - 10
+		offset = page * limit - limit
 	}
 
 	c.Data["json"] = object.GetTopicsWithNode(nodeId, limit, offset)
+	c.ServeJSON()
+}
+
+func (c *APIController) AddTopicHitCount() {
+	topicId := c.Input().Get("id")
+
+	var resp Response
+	res := object.AddTopicHitCount(topicId)
+	if res {
+		resp = Response{Status: "ok", Msg: "success"}
+	}else {
+		resp = Response{Status: "fail", Msg: "add topic hit count failed"}
+	}
+
+	c.Data["json"] = resp
 	c.ServeJSON()
 }

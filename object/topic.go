@@ -14,6 +14,8 @@
 
 package object
 
+import "strings"
+
 type Topic struct {
 	Id            string   `xorm:"varchar(100) notnull pk" json:"id"`
 	Author        string   `xorm:"varchar(100)" json:"author"`
@@ -40,9 +42,9 @@ func GetTopicCount() int {
 	return int(count)
 }
 
-func GetTopics() []*Topic {
+func GetTopics(limit int, offset int) []*Topic {
 	topics := []*Topic{}
-	err := adapter.engine.Asc("created_time").Find(&topics)
+	err := adapter.engine.Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +68,7 @@ func GetTopic(id string) *Topic {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*Topic {
 	topics := []*Topic{}
-	err := adapter.engine.Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("created_time").Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -89,6 +91,8 @@ func UpdateTopic(id string, topic *Topic) bool {
 }
 
 func AddTopic(topic *Topic) bool {
+	topic.Content = strings.ReplaceAll(topic.Content, "\n", "<br/>")
+
 	affected, err := adapter.engine.Insert(topic)
 	if err != nil {
 		panic(err)
@@ -108,10 +112,67 @@ func DeleteTopic(id string) bool {
 
 func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
 	topics := []*Topic{}
-	err := adapter.engine.Where("author = ?", author).Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("created_time").Where("author = ?", author).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
 	return topics
+}
+
+func AddTopicHitCount(topicId string) bool {
+	topic := Topic{Id: topicId}
+	existed, err := adapter.engine.Cols("hit_count").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+	if !existed {
+		return false
+	}
+
+	topic.HitCount ++
+	affected, err := adapter.engine.Id(topicId).Cols("hit_count").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ChangeTopicFavoriteCount(topicId string, num int) bool {
+	topic := Topic{Id: topicId}
+	existed, err := adapter.engine.Cols("favorite_count").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+	if !existed {
+		return false
+	}
+
+	topic.FavoriteCount += num
+	affected, err := adapter.engine.Id(topicId).Cols("favorite_count").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ChangeTopicReplyCount(topicId string, num int) bool {
+	topic := Topic{Id: topicId}
+	existed, err := adapter.engine.Cols("reply_count").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+	if !existed {
+		return false
+	}
+
+	topic.ReplyCount += num
+	affected, err := adapter.engine.Id(topicId).Cols("reply_count").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

@@ -15,6 +15,8 @@
 package controllers
 
 import (
+	"sync"
+
 	"github.com/astaxie/beego"
 
 	"github.com/casbin/casbin-forum/object"
@@ -35,12 +37,28 @@ func (c *APIController) AddFavorites() {
 		MemberId:      memberId,
 	}
 
+	var wg sync.WaitGroup
+	res := true
+	if favorites.FavoritesType == 1 {
+		wg.Add(1)
+		go func() {
+			res = object.ChangeTopicFavoriteCount(favorites.ObjectId, 1)
+			wg.Done()
+		}()
+	}
+
 	var resp Response
 	if favoritesType <= 3 && favoritesType >= 1 {
 		res := object.AddFavorites(&favorites)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
 		resp = Response{Status: "fail", Msg: "param wrong"}
+	}
+
+	wg.Wait()
+
+	if !res {
+		resp = Response{Status: "fail", Msg: "add favorite wrong"}
 	}
 
 	c.Data["json"] = resp
@@ -53,12 +71,28 @@ func (c *APIController) DeleteFavorites() {
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
+	var wg sync.WaitGroup
+	res := true
+	if favoritesType == 1 {
+		wg.Add(1)
+		go func() {
+			res = object.ChangeTopicFavoriteCount(objectId, -1)
+			wg.Done()
+		}()
+	}
+
 	var resp Response
 	if favoritesType <= 3 && favoritesType >= 1 {
 		res := object.DeleteFavorites(memberId, objectId, favoritesType)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
 		resp = Response{Status: "fail", Msg: "param wrong"}
+	}
+
+	wg.Wait()
+
+	if !res {
+		resp = Response{Status: "fail", Msg: "delete favorite wrong"}
 	}
 
 	c.Data["json"] = resp
@@ -99,7 +133,7 @@ func (c *APIController) GetFavorites() {
 	}
 	if len(pageStr) != 0 {
 		page := util.ParseInt(pageStr)
-		offset = page * limit - defaultLimit
+		offset = page * limit - limit
 	}
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
@@ -113,7 +147,7 @@ func (c *APIController) GetFavorites() {
 	case 2:
 		res := object.GetFollowingNewAction(memberId, limit, offset)
 		num := object.GetFavoritesNum(2, memberId)
-		resp = Response{Status: "ok", Msg: "success", Data: res,  Data2: num}
+		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 		break
 	case 3:
 		res := object.GetNodesFromFavorites(memberId, limit, offset)
@@ -123,6 +157,33 @@ func (c *APIController) GetFavorites() {
 	default:
 		resp = Response{Status: "fail", Msg: "param wrong"}
 	}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetAccountFavoriteNum() {
+	memberId := c.GetSessionUser()
+
+	var res [4]int
+	var wg sync.WaitGroup
+
+	for i := 1; i <= 3; i ++ {
+		wg.Add(1)
+		i := i
+		go func() {
+			if i == 2 {
+				res[i] = object.GetFollowingNum(memberId)
+			}else {
+				res[i] = object.GetFavoritesNum(i, memberId)
+			}
+			wg.Done()
+		}()
+	}
+	wg.Wait()
+
+	var resp Response
+	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp
 	c.ServeJSON()

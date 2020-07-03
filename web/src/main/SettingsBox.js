@@ -18,6 +18,8 @@ import Header from "./Header";
 import Avatar from "../Avatar";
 import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend"
+import * as MemberBackend from "../backend/MemberBackend";
+import '../Reply.css'
 
 class SettingsBox extends React.Component {
   constructor(props) {
@@ -28,11 +30,26 @@ class SettingsBox extends React.Component {
       event: props.match.params.event,
       topics: [],
       username: "",
+      form: {},
     };
     this.newUsername = this.newUsername.bind(this);
     this.postUsername = this.postUsername.bind(this);
   }
-  
+
+  componentDidMount() {
+    this.initForm()
+  }
+
+  initForm() {
+    let form = this.state.form;
+    form["website"] = this.props.account?.website;
+    form["company"] = this.props.account?.company;
+    form["bio"] = this.props.account?.bio;
+    this.setState({
+      form: form,
+    });
+  }
+
   newUsername() {
     const params = new URLSearchParams(this.props.location.search)
     let email
@@ -42,7 +59,7 @@ class SettingsBox extends React.Component {
       email: email
     }
   }
-  
+
   postUsername() {
       const name = this.newUsername();
       AccountBackend.signup(name)
@@ -59,16 +76,35 @@ class SettingsBox extends React.Component {
           Setting.showMessage("error", `Set username failed：${error}`);
         });
   }
-  
+
   handelChange(e){
     this.setState({
       username: e.target.value
       })
   }
-  
+
+  updateFormField(key, value) {
+    let form = this.state.form;
+    form[key] = value;
+    this.setState({
+      form: form,
+    });
+  }
+
+  publishInfoUpdate() {
+    MemberBackend.updateMemberInfo(this.props.account?.id, this.state.form)
+      .then((res) => {
+        if (res.status === 'ok') {
+          Setting.showMessage("success", `Update memberInfo success`);
+        } else {
+          Setting.showMessage("error", res.msg)
+        }
+      });
+  }
+
   render() {
     const account = this.props.account;
-    
+
     if (this.state.event === "username") {
       return (
         <div className="box">
@@ -100,12 +136,12 @@ class SettingsBox extends React.Component {
         </div>
       )
     }
-    
+
     return (
       <div className="box">
         <Header item="Settings" />
         <div className="inner" data-select2-id="11">
-          <form method="post" action="/settings" data-select2-id="10">
+          <form data-select2-id="10">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
               <tbody data-select2-id="8">
               <tr>
@@ -175,7 +211,7 @@ class SettingsBox extends React.Component {
                   Website
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="website" value={account?.website} autoComplete="off" />
+                  <input type="text" className="sl" name="website" defaultValue={account?.website} onChange={event => this.updateFormField("website", event.target.value)} autoComplete="off" />
                 </td>
               </tr>
               <tr>
@@ -183,7 +219,7 @@ class SettingsBox extends React.Component {
                   Company
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="company" value={account?.company} maxLength="32" autoComplete="off" />
+                  <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
                 </td>
               </tr>
               <tr>
@@ -191,16 +227,14 @@ class SettingsBox extends React.Component {
                   Bio
                 </td>
                 <td width="auto" align="left">
-                  <textarea className="ml" name="bio">
-                    {account?.bio}
-                  </textarea>
+                  <textarea className="ml" name="bio" defaultValue={account?.bio} onChange={event => this.updateFormField("bio", event.target.value)} />
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right" />
                 <td width="auto" align="left">
                   <input type="hidden" value="26304" name="once" />
-                  <input type="submit" className="super normal button" value="Save Settings" />
+                  <input type="submit" className="super normal button" value="Save Settings" onClick={this.publishInfoUpdate.bind(this)} />
                 </td>
               </tr>
               </tbody>
@@ -213,4 +247,3 @@ class SettingsBox extends React.Component {
 }
 
 export default withRouter(SettingsBox);
-

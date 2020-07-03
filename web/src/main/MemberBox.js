@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import * as FavoritesBackend from "../backend/FavoritesBackend";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class MemberBox extends React.Component {
       classes: props,
       memberId: props.match.params.memberId,
       member: null,
+      favoritesStatus: false,
     };
   }
 
@@ -38,6 +40,34 @@ class MemberBox extends React.Component {
         this.setState({
           member: res,
         });
+      });
+  }
+
+  addFavorite(memberId) {
+    FavoritesBackend.addFavorites(memberId, 2)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: res.data,
+          });
+          Setting.refresh()
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
+      });
+  }
+
+  deleteFavorite(memberId) {
+    FavoritesBackend.deleteFavorites(memberId, 2)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: !res.data,
+          });
+          Setting.refresh()
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
       });
   }
 
@@ -56,7 +86,11 @@ class MemberBox extends React.Component {
               <td width="10" />
               <td width="auto" valign="top" align="left">
                 <div className="fr">
-                  <input type="button" value="Watch" onClick="if (confirm('Are you sure to watch xxx?')) { location.href = '/follow/1024?once=66707'; }" className="super special button" />
+                  {
+                    this.state.favoritesStatus ?
+                      <input type="button" value="Cancel Following" onClick={() => this.deleteFavorite(this.state.member?.id)} className="super inverse button" /> :
+                      <input type="button" value="Watch" onClick={() => this.addFavorite(this.state.member?.id)} className="super special button" />
+                  }
                   <div className="sep10" />
                   <input type="button" value="Block" onClick="if (confirm('Are you sure to block xxx?')) { location.href = '/block/1024?t=1493648974'; }" className="super normal button" />
                 </div>

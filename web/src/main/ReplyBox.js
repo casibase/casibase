@@ -18,15 +18,21 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import NewReplyBox from "./NewReplyBox";
 
 class ReplyBox extends React.Component {
   constructor(props) {
     super(props);
+    this.handleClick = this.handleClick.bind(this)
+    this.handleReply = this.handleReply.bind(this)
+    this.changeStickyStatus = this.changeStickyStatus.bind(this)
     this.state = {
       classes: props,
       topicId: props.match.params.topicId,
       topic: null,
       replies: [],
+      reply: "",
+      sticky: false,
     };
   }
 
@@ -52,8 +58,38 @@ class ReplyBox extends React.Component {
         });
       });
   }
+  
+  handleClick(e) {
+    this.handleComment(e);
+  }
 
-  render() {
+  handleComment(content) {
+    let temp
+    if (this.state.reply.length !== 0) {
+      temp = this.state.reply + "\n"
+    }else {
+      temp = this.state.reply
+    }
+
+    this.setState({
+      reply: temp + content,
+      sticky: true,
+    })
+  }
+
+  handleReply(content) {
+    this.setState({
+      reply: content
+    })
+  }
+
+  changeStickyStatus(status) {
+    this.setState({
+      sticky: status
+    })
+  }
+
+  renderReply() {
     return (
       <div className="box">
         <div className="cell">
@@ -96,7 +132,7 @@ class ReplyBox extends React.Component {
                           </a>
                         </div>
                         &nbsp;
-                        <a href="#;" onClick="replyOne('xxx');">
+                        <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
                           <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
                         </a>
                         &nbsp;&nbsp;
@@ -128,6 +164,16 @@ class ReplyBox extends React.Component {
         }
       </div>
     );
+  }
+
+  render() {
+    return (
+      <div>
+        {this.renderReply()}
+        <div className="sep20" />
+        <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} />
+      </div>
+    )
   }
 }
 

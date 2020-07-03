@@ -41,3 +41,10 @@ export function getFavoritesStatus(id, favoritesType) {
     credentials: "include"
   }).then(res => res.json());
 }
+
+export function getAccountFavoriteNum() {
+  return fetch(`${Setting.ServerUrl}/api/get-account-favorite-num`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}

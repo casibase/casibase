@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import * as FavoritesBackend from "../backend/FavoritesBackend";
 
 class TopicBox extends React.Component {
   constructor(props) {
@@ -25,11 +26,13 @@ class TopicBox extends React.Component {
       classes: props,
       topicId: props.match.params.topicId,
       topic: null,
+      favoritesStatus: false,
     };
   }
 
   componentDidMount() {
     this.getTopic();
+    this.getFavoriteStatus();
   }
 
   getTopic() {
@@ -38,6 +41,19 @@ class TopicBox extends React.Component {
         this.setState({
           topic: res,
         });
+      });
+  }
+
+  getFavoriteStatus() {
+    FavoritesBackend.getFavoritesStatus(this.state.topicId, 1)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: res.data,
+          });
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
       });
   }
 
@@ -53,6 +69,34 @@ class TopicBox extends React.Component {
         This is a topic created {diffDays} days ago, the information in it may have changed.
       </div>
     )
+  }
+
+  addFavorite() {
+    FavoritesBackend.addFavorites(this.state.topicId, 1)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: res.data,
+          });
+          Setting.refresh()
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
+      });
+  }
+
+  deleteFavorite() {
+    FavoritesBackend.deleteFavorites(this.state.topicId, 1)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: !res.data,
+          });
+          Setting.refresh()
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
+      });
   }
 
   render() {
@@ -99,10 +143,10 @@ class TopicBox extends React.Component {
           <div className="fr topic_stats" style={{paddingTop: "4px"}}>
             {this.state.topic?.hitCount} hits &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} favorites &nbsp;
           </div>
-          <a href="/favorite/topic/123456?t=etpmvbwsbnssixpcdiugximqbxomnnsi" className="tb">
-            Favor
-          </a>
-          &nbsp;
+          {
+            this.state.favoritesStatus ?
+            <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">Cancel Favor</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">Favor</a>
+          }
           <a href="#;" onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');" className="tb">
             Tweet
           </a>

@@ -57,4 +57,10 @@ export function getLatestReplies(id, limit, page) {
     credentials: 'include',
   }).then(res => res.json());
 }
-    
+
+export function getRepliesNum(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-replies-num?id=${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}

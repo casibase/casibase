@@ -12,14 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+export const GoogleClientId  = ""
 
-type userInfoFromGoogle struct {
-	Email string `json:"email"`
-}
+export const GoogleAuthState  = ""
 
-type authResponse struct {
-	IsAuthenticated bool `json:"isAuthenticated"`
-	IsSignedUp bool `json:"isSignedUp"`
-	Email string `json:"email"`
-}
+export const GoogleAuthScope  = "https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email"

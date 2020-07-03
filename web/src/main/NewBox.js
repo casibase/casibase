@@ -17,6 +17,8 @@ import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
+import NewNodeTopicBox from "./NewNodeTopicBox";
+import {withRouter} from "react-router-dom";
 
 import $ from "jquery"
 import Select2 from 'react-select2-wrapper';
@@ -35,6 +37,7 @@ class NewBox extends React.Component {
       form: {},
       isPreviewEnabled: false,
       nodes: [],
+      nodeId: this.props.match.params.nodeId,
     };
   }
 
@@ -99,6 +102,12 @@ class NewBox extends React.Component {
   }
 
   render() {
+    if (this.state.nodeId !== undefined) {
+      return (
+        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"}/>
+      )
+    }
+
     return (
       <div className="box" id="box">
         <Header item="New Topic" />
@@ -155,7 +164,9 @@ class NewBox extends React.Component {
 
                 const index = parseInt(s);
                 const nodeId = this.state.nodes[index].id;
+                const nodeName = this.state.nodes[index].name;
                 this.updateFormField("nodeId", nodeId);
+                this.updateFormField("nodeName", nodeName);
               }}
               options={
                 {
@@ -169,7 +180,7 @@ class NewBox extends React.Component {
               this.state.nodes.map((node, i) => {
                 return (
                   <div style={{display: "inline"}}>
-                    <a href="#" onClick={() => this.updateFormField("nodeId", node.id)} className="node">{node.name}</a> &nbsp;
+                    <a href="#" onClick={() => {this.updateFormField("nodeId", node.id); this.updateFormField("nodeName", node.name);} } className="node">{node.name}</a> &nbsp;
                   </div>
                 )
               })
@@ -203,4 +214,4 @@ class NewBox extends React.Component {
   }
 }
 
-export default NewBox;
+export default withRouter(NewBox);
