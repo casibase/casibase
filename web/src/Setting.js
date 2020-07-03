@@ -27,10 +27,12 @@ export function initServerUrl() {
   }
 }
 
-export function initClientUrl() {
+export function initFullClientUrl() {
   const hostname = window.location.hostname;
   if (hostname === 'localhost') {
     ClientUrl = `http://${hostname}:3000`;
+  } else {
+    ClientUrl = `https://${hostname}`;
   }
 }
 

@@ -49,7 +49,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Setting.initClientUrl();
+    Setting.initFullClientUrl();
   }
 
   componentWillMount() {
