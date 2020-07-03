@@ -82,18 +82,30 @@ func (c *APIController) AddReply() {
 		panic(err)
 	}
 
-	object.ChangeTopicReplyCount(topicId, 1)
+	affected := object.AddReply(&reply)
+	if affected {
+		object.ChangeTopicReplyCount(topicId, 1)
+		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser())
+	}
 
-	c.wrapResponse(object.AddReply(&reply))
+	c.wrapResponse(affected)
 }
 
 func (c *APIController) DeleteReply() {
 	id := c.Input().Get("id")
 
-	object.ChangeTopicReplyCount(id, -1)
+	affected := object.DeleteReply(id)
+	if affected {
+		object.ChangeTopicReplyCount(id, -1)
+		replies := object.GetReplies(id)
+		lastReplyUser := ""
+		if len(replies) > 0 {
+			lastReplyUser = replies[len(replies)-1].Author
+		}
+		object.ChangeTopicLastReplyUser(id, lastReplyUser)
+	}
 
-	c.Data["json"] = object.DeleteReply(id)
-	c.ServeJSON()
+	c.wrapResponse(affected)
 }
 
 func (c *APIController) GetLatestReplies() {
@@ -118,7 +130,7 @@ func (c *APIController) GetLatestReplies() {
 		if err != nil {
 			panic(err)
 		}
-		offset = page * limit - limit
+		offset = page*limit - limit
 	}
 
 	log.Println(limit, offset)

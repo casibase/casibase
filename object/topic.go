@@ -121,12 +121,8 @@ func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*To
 }
 
 func AddTopicHitCount(topicId string) bool {
-	topic := Topic{Id: topicId}
-	existed, err := adapter.engine.Cols("hit_count").Get(&topic)
-	if err != nil {
-		panic(err)
-	}
-	if !existed {
+	topic := GetTopic(topicId)
+	if topic == nil {
 		return false
 	}
 
@@ -140,12 +136,8 @@ func AddTopicHitCount(topicId string) bool {
 }
 
 func ChangeTopicFavoriteCount(topicId string, num int) bool {
-	topic := Topic{Id: topicId}
-	existed, err := adapter.engine.Cols("favorite_count").Get(&topic)
-	if err != nil {
-		panic(err)
-	}
-	if !existed {
+	topic := GetTopic(topicId)
+	if topic == nil {
 		return false
 	}
 
@@ -159,17 +151,28 @@ func ChangeTopicFavoriteCount(topicId string, num int) bool {
 }
 
 func ChangeTopicReplyCount(topicId string, num int) bool {
-	topic := Topic{Id: topicId}
-	existed, err := adapter.engine.Cols("reply_count").Get(&topic)
-	if err != nil {
-		panic(err)
-	}
-	if !existed {
+	topic := GetTopic(topicId)
+	if topic == nil {
 		return false
 	}
 
 	topic.ReplyCount += num
 	affected, err := adapter.engine.Id(topicId).Cols("reply_count").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
+	topic := GetTopic(topicId)
+	if topic == nil {
+		return false
+	}
+
+	topic.LastReplyUser = memberId
+	affected, err := adapter.engine.Id(topicId).Cols("last_reply_user").Update(topic)
 	if err != nil {
 		panic(err)
 	}
