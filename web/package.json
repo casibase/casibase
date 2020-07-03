@@ -10,6 +10,7 @@
     "antd": "^4.3.0",
     "codemirror": "^5.54.0",
     "jquery": "^3.5.1",
+    "js-md5": "^0.7.3",
     "moment": "^2.26.0",
     "react": "^16.13.1",
     "react-codemirror2": "^7.2.1",
