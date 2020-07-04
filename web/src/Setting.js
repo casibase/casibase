@@ -110,6 +110,10 @@ export function getStatic(path) {
 }
 
 export function getUserAvatar(username, isLarge=false) {
+  if (username === undefined) {
+    return null;
+  }
+
   let gravatarStr = md5(username)
   return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro&size=${isLarge ? "" : "48"}`
   //return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);

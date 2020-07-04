@@ -32,6 +32,7 @@ class MemberBox extends React.Component {
 
   componentDidMount() {
     this.getMember();
+    this.getFavoriteStatus();
   }
 
   getMember() {
@@ -40,6 +41,19 @@ class MemberBox extends React.Component {
         this.setState({
           member: res,
         });
+      });
+  }
+
+  getFavoriteStatus() {
+    FavoritesBackend.getFavoritesStatus(this.state.memberId, 2)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: res.data,
+          });
+        }else {
+          Setting.showMessage("error", res.msg)
+        }
       });
   }
 
@@ -72,6 +86,8 @@ class MemberBox extends React.Component {
   }
 
   render() {
+    const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.id
+
     return (
       <div className="box">
         <div className="cell">
@@ -85,7 +101,7 @@ class MemberBox extends React.Component {
               </td>
               <td width="10" />
               <td width="auto" valign="top" align="left">
-                <div className="fr">
+                <div className="fr" style={{display: showWatch ? "" : "none"}}>
                   {
                     this.state.favoritesStatus ?
                       <input type="button" value="Cancel Following" onClick={() => this.deleteFavorite(this.state.member?.id)} className="super inverse button" /> :
