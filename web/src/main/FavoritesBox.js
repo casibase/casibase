@@ -133,7 +133,7 @@ class FavoritesBox extends React.Component {
                 <span className="snow">Total topics: &nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
-            <TopicList topics={this.state.favorites} showNodeName={true} />
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
           </div>
         )
       case "following":
@@ -147,7 +147,7 @@ class FavoritesBox extends React.Component {
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
             {this.showPageColumn()}
-            <TopicList topics={this.state.favorites} showNodeName={true} />
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
             {this.showPageColumn()}
           </div>
         )

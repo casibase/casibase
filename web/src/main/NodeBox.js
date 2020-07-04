@@ -168,7 +168,7 @@ class NodeBox extends React.Component {
           </div>
         </div>
         {this.showPageColumn()}
-        <TopicList topics={this.state.topics} showNodeName={false} />
+        <TopicList topics={this.state.topics} showNodeName={false} showAvatar={true} />
         {this.showPageColumn()}
         <div className="cell" align="center">
           <div className="fr">{`${this.state.favoritesNum} members have added this node to favorites`}</div>

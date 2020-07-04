@@ -19,6 +19,7 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
+import TopicList from "./TopicList";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -90,56 +91,6 @@ class AllCreatedTopicsBox extends React.Component {
     )
   }
 
-  renderTopic(topic) {
-    const style = topic.nodeId !== "promotions" ? null : {
-      backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "20px 20px",
-      backgroundPosition: "right top"
-    };
-
-    return (
-      <div className="cell item" style={style}>
-        <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-          <tbody>
-          <tr>
-            <td width="auto" valign="middle">
-              <span className="item_title">
-                <a href={`/t/${topic.id}`} className="topic-link"> {topic.title} </a>
-              </span>
-              <div className="sep5" />
-              <span className="topic_info">
-                <div className="votes" />
-                <a className="node" href={`/go/${topic.nodeId}`}> {topic.nodeName} </a>
-                &nbsp;•&nbsp;
-                <strong><a href={`/member/${topic.author}`}> {topic.author} </a></strong>
-                &nbsp;•&nbsp;
-                {Setting.getPrettyDate(topic.createdTime)}
-                &nbsp;•&nbsp;
-                last reply from
-                <strong>
-                  <a href={`/member/${topic.lastReplyUser}`}> {topic.lastReplyUser} </a>
-                </strong>
-              </span>
-            </td>
-            <td width="70" align="right" valign="middle">
-              {
-                topic.replyCount === 0 ? null : (
-                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="count_livid">
-                    {
-                      topic.replyCount
-                    }
-                  </a>
-                )
-              }
-            </td>
-          </tr>
-          </tbody>
-        </table>
-      </div>
-    )
-  }
-
   showPageColumn(url) {
     if (this.state.topicsNum === 1) {
       return
@@ -170,11 +121,7 @@ class AllCreatedTopicsBox extends React.Component {
               </div>
       
               {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
-              {
-                this.state.topics?.map((topic) => {
-                  return this.renderTopic(topic);
-                })
-              }
+              <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
               {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
             </div>
           );
@@ -198,11 +145,7 @@ class AllCreatedTopicsBox extends React.Component {
               })
           }
         </div>
-        {
-          this.state.topics.map((topic) => {
-            return this.renderTopic(topic);
-          })
-        }
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
         {
           this.state.tab === undefined ?
             <div className="inner"><span className="chevron">»</span>

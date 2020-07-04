@@ -17,6 +17,7 @@ import * as Setting from "./Setting";
 import * as TopicBackend from "./backend/TopicBackend";
 import moment from "moment";
 import Avatar from "./Avatar";
+import TopicList from "./main/TopicList";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -175,11 +176,7 @@ class TopicPage extends React.Component {
           &nbsp; &nbsp;
           <a href="/go/qna">Q&A</a>
         </div>
-        {
-          this.state.topics.map((topic, i) => {
-            return this.renderTopic(topic);
-          })
-        }
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         <div className="inner">
           <span className="chevron">»</span> &nbsp;<a href="/recent">More Topics</a>
         </div>
