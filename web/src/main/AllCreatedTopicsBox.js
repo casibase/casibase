@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import LatestReplyBox from "./LatestReplyBox";
+import PageColumn from "./PageColumn";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class AllCreatedTopicsBox extends React.Component {
       memberId: props.match.params.memberId,
       tab: props.match.params.tab,
       topics: [],
-      limit: 10,
+      limit: 20,
       p: "",
       page: 1,
       minPage: 1,
@@ -51,11 +52,14 @@ class AllCreatedTopicsBox extends React.Component {
     }else {
       this.state.page = parseInt(this.state.p)
     }
-    
+    if (this.state.tab === undefined) {
+      this.state.limit = 10
+    }
   }
 
   componentDidMount() {
       this.getAllCreatedTopics();
+      this.geCreatedTopicsNum();
   }
 
   getAllCreatedTopics() {
@@ -63,6 +67,15 @@ class AllCreatedTopicsBox extends React.Component {
       .then((res) => {
         this.setState({
           topics: res,
+        });
+      });
+  }
+
+  geCreatedTopicsNum() {
+    TopicBackend.getCreatedTopicsNum(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          topicsNum: res,
         });
       });
   }
@@ -127,6 +140,15 @@ class AllCreatedTopicsBox extends React.Component {
     )
   }
 
+  showPageColumn(url) {
+    if (this.state.topicsNum === 1) {
+      return
+    }
+    return (
+      <PageColumn page={this.state.page} total={this.state.topicsNum} url={url}/>
+    )
+  }
+
   render() {
     {
       if (this.state.tab === "replies") {
@@ -137,9 +159,26 @@ class AllCreatedTopicsBox extends React.Component {
     }
     {
       if (this.state.tab === "topics") {
-        return (
-          <LatestReplyBox size={"large"} />
-        );
+        {
+          return (
+            <div className="box">
+              <div className="header">
+                <a href="/">{Setting.getForumName()} </a>
+                <span className="chevron">&nbsp;›&nbsp;</span>
+                <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span> All Topics
+                <div className="fr f12"><span className="snow">Total Replies&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong></div>
+              </div>
+      
+              {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
+              {
+                this.state.topics?.map((topic) => {
+                  return this.renderTopic(topic);
+                })
+              }
+              {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
+            </div>
+          );
+        }
       }
     }
     return (

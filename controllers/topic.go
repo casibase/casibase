@@ -81,7 +81,7 @@ func (c *APIController) AddTopic() {
 		panic(err)
 	}
 	title, body, nodeId := form.Title, form.Body, form.NodeId
-	
+
 	topic := object.Topic{
 		Id:            util.IntToString(object.GetTopicCount()),
 		Author:        c.GetSessionUser(),
@@ -143,6 +143,13 @@ func (c *APIController) GetAllCreatedTopics() {
 	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
+	c.ServeJSON()
+}
+
+func (c *APIController) GetCreatedTopicsNum() {
+	memberId := c.Input().Get("id")
+
+	c.Data["json"] = object.GetCreatedTopicsNum(memberId)
 	c.ServeJSON()
 }
 

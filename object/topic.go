@@ -42,6 +42,16 @@ func GetTopicCount() int {
 	return int(count)
 }
 
+func GetCreatedTopicsNum(memberId string) int {
+	topic := new(Topic)
+	total, err := adapter.engine.Where("author = ?", memberId).Count(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
 func GetTopics(limit int, offset int) []*Topic {
 	topics := []*Topic{}
 	err := adapter.engine.Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)

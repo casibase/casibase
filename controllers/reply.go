@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"log"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -133,7 +132,6 @@ func (c *APIController) GetLatestReplies() {
 		offset = page*limit - limit
 	}
 
-	log.Println(limit, offset)
 	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
 	c.ServeJSON()
 }

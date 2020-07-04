@@ -78,3 +78,10 @@ export function addTopicHitCount(topicId) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getCreatedTopicsNum(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-created-topics-num?id=${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}

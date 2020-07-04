@@ -39,6 +39,7 @@ func initAPI() {
 	beego.Router("/api/add-topic", &controllers.APIController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 	beego.Router("/api/get-all-created-topics", &controllers.APIController{}, "GET:GetAllCreatedTopics")
+	beego.Router("/api/get-created-topics-num", &controllers.APIController{}, "GET:GetCreatedTopicsNum")
 	beego.Router("/api/get-topics-by-node", &controllers.APIController{}, "GET:GetTopicsByNode")
 	beego.Router("/api/get-topics-num", &controllers.APIController{}, "GET:GetTopicsNum")
 	beego.Router("/api/add-topic-hit-count", &controllers.APIController{}, "POST:AddTopicHitCount")
