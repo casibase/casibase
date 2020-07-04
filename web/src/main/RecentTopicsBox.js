@@ -84,7 +84,7 @@ class RecentTopicsBox extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span> Recent Topics
         </div>
         {this.showPageColumn()}
-        <TopicList topics={this.state.topics} showNodeName={true} />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         {this.showPageColumn()}
       </div>
     )
