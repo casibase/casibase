@@ -119,7 +119,7 @@ class App extends Component {
         <Route exact path="/member/:memberId" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <MemberBox />
+            <MemberBox account={this.state.account} />
             <div className="sep20" />
             <AllCreatedTopicsBox />
             <div className="sep20" />
