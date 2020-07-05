@@ -18,8 +18,20 @@ type userInfoFromGoogle struct {
 	Email string `json:"email"`
 }
 
+type userEmailFromGithub struct {
+	Email      string `json:"email"`
+	Primary    bool   `json:"primary"`
+	Verified   bool   `json:"verified"`
+	Visibility string `json:"visibility"`
+}
+
+type userInfoFromGithub struct {
+	Login string `json:"login"`
+}
+
 type authResponse struct {
-	IsAuthenticated bool `json:"isAuthenticated"`
-	IsSignedUp bool `json:"isSignedUp"`
-	Email string `json:"email"`
+	IsAuthenticated bool   `json:"isAuthenticated"`
+	IsSignedUp      bool   `json:"isSignedUp"`
+	Email           string `json:"email"`
+	Addition        string `json:"addition"`
 }

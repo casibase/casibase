@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import * as Setting from "../Setting";
 
 class RightSigninBox extends React.Component {
   constructor(props) {
@@ -23,6 +24,20 @@ class RightSigninBox extends React.Component {
   }
 
   render() {
+    if (window.location.pathname === "/signin") {
+      return (
+        <div class="box">
+          <div class="header">Other login methods</div>
+          <div class="cell" style={{textAlign: "center"}}>
+            <a onClick={() => Setting.getGoogleAuthCode("signup")} href="javascript:void(0)" class="google-signin" />
+          </div>
+          <div className="cell" style={{textAlign: "center"}}>
+            <a onClick={() => Setting.getGithubAuthCode("signup")} href="javascript:void(0)" className="github-signin">Sign in with Github</a>
+          </div>
+        </div>
+      )
+    }
+
     return (
       <div className="box">
         <div className="cell">

@@ -122,3 +122,11 @@ export function getUserAvatar(username, isLarge=false) {
 export function getForumName() {
   return "Casbin Forum";
 }
+
+export function getGoogleAuthCode(method) {
+  window.location.href=`${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`
+}
+
+export function getGithubAuthCode(method) {
+  window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`
+}

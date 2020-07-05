@@ -16,4 +16,14 @@ export const GoogleClientId  = ""
 
 export const GoogleAuthState  = ""
 
-export const GoogleAuthScope  = "https://www.googleapis.com/auth/userinfo.profile+https://www.googleapis.com/auth/userinfo.email"
+export const GoogleAuthScope  = "profile+email"
+
+export const GoogleOauthUri = "https://accounts.google.com/signin/oauth"
+
+export const GithubClientId  = ""
+
+export const GithubAuthState  = ""
+
+export const GithubAuthScope  = "user:email+read:user"
+
+export const GithubOauthUri = "https://github.com/login/oauth/authorize"

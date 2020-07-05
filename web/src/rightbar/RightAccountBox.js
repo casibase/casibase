@@ -33,7 +33,7 @@ class RightAccountBox extends React.Component {
   }
 
   getFavoriteNum() {
-    FavoritesBackend.getAccountFavoriteNum(this.state.topicId)
+    FavoritesBackend.getAccountFavoriteNum()
       .then((res) => {
         if (res.status === 'ok') {
           this.setState({

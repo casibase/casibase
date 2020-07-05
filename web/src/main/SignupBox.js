@@ -22,18 +22,16 @@ class SignupBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      clientId: Conf.GoogleClientId,
-      redirectUrl:  `${Setting.ClientUrl}/GoogleCallback`,
-      oauthUri: "https://accounts.google.com/o/oauth2/auth",
-      state: Conf.GoogleAuthState,
-      scope: Conf.GoogleAuthScope,
       code: ""
     };
-    this.getCode = this.getCode.bind(this);
   }
 
-  getCode() {
-    window.location.href=`${this.state.oauthUri}?client_id=${this.state.clientId}&redirect_uri=${this.state.redirectUrl}&scope=${this.state.scope}&response_type=code&state=${this.state.state}`
+  getGoogleAuthCode() {
+    window.location.href=`${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${Setting.ClientUrl}/callback/google&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`
+  }
+
+  getGithubAuthCode() {
+    window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${Setting.ClientUrl}/callback/github&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`
   }
 
   render() {
@@ -49,9 +47,13 @@ class SignupBox extends React.Component {
         </div>
         <div className="dock_area">
           <div className="signup_methods">
-            <div className="signup_method" onClick={this.getCode}>
+            <div className="signup_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
               <div className="signup_method_icon signup_method_google"></div>
               <div className="signup_method_label">Continue with Google</div>
+            </div>
+            <div className="signup_method" onClick={() => Setting.getGithubAuthCode("signup")}>
+              <div className="signup_method_icon signup_method_github"></div>
+              <div className="signup_method_label">Continue with Github</div>
             </div>
           </div>
         </div>
