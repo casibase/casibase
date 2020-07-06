@@ -32,6 +32,9 @@ type Member struct {
 	Bio               string `xorm:"varchar(100)" json:"bio"`
 	Website           string `xorm:"varchar(100)" json:"website"`
 	Location          string `xorm:"varchar(100)" json:"location"`
+	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
+	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
+	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
 }
 
 func GetMembers() []*Member {
@@ -115,4 +118,41 @@ func GetMail(email string) *Member {
 	} else {
 		return nil
 	}
+}
+
+func GetGoogleAccount(googleAccount string) *Member {
+	member := Member{GoogleAccount: googleAccount}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetGithubAccount(githubAccount string) *Member {
+	member := Member{GithubAccount: githubAccount}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func LinkMemberAccount(memberId, field, value string) bool {
+	affected, err := adapter.engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

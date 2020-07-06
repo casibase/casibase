@@ -19,6 +19,7 @@ import (
 	"golang.org/x/oauth2"
 	"io/ioutil"
 	"net/http"
+	"sync"
 
 	"github.com/astaxie/beego"
 
@@ -30,6 +31,8 @@ type SignupForm struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+	Method   string `json:"method"`
+	Addition string `json:"addition"`
 }
 
 type Response struct {
@@ -78,6 +81,15 @@ func (c *APIController) Signup() {
 			Email:       email,
 			CreatedTime: util.GetCurrentTime(),
 		}
+		switch form.Method {
+		case "google":
+			member.GoogleAccount = form.Addition
+			break
+		case "github":
+			member.GithubAccount = form.Addition
+			break
+		}
+
 		object.AddMember(member)
 
 		c.SetSessionUser(member.Id)
@@ -173,29 +185,35 @@ func (c *APIController) GetSessionId() {
 	c.ServeJSON()
 }
 
-var endpoint = oauth2.Endpoint{
+var googleEndpoint = oauth2.Endpoint{
 	AuthURL:  "https://accounts.google.com/o/oauth2/auth",
 	TokenURL: "https://accounts.google.com/o/oauth2/token",
 }
 
 var googleOauthConfig = &oauth2.Config{
-	ClientID:     beego.AppConfig.String("ClientID"),
-	ClientSecret: beego.AppConfig.String("ClientSecret"),
+	ClientID:     beego.AppConfig.String("GoogleAuthClientID"),
+	ClientSecret: beego.AppConfig.String("GoogleAuthClientSecret"),
 	RedirectURL:  "",
-	Scopes:       []string{"https://www.googleapis.com/auth/userinfo.profile", "https://www.googleapis.com/auth/userinfo.email"},
-	Endpoint:     endpoint,
+	Scopes:       []string{"profile", "email"},
+	Endpoint:     googleEndpoint,
 }
 
+//Using addition to judge signup or link
 func (c *APIController) AuthGoogle() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
+	addition := c.Input().Get("addition")
 	RedirectURL := c.Input().Get("redirect_url")
 
+	var resp Response
 	var res authResponse
 	res.IsAuthenticated = true
 
-	if state != beego.AppConfig.String("state") {
+	if state != beego.AppConfig.String("GoogleAuthState") {
 		res.IsAuthenticated = false
+		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
+		c.Data["json"] = resp
+		c.ServeJSON()
 		return
 	}
 
@@ -217,16 +235,152 @@ func (c *APIController) AuthGoogle() {
 		panic(err)
 	}
 	res.Email = tempUser.Email
-	userId := object.HasMail(tempUser.Email)
-	if userId != "" {
-		c.SetSessionUser(userId)
-		util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
-		res.IsSignedUp = true
+
+	if addition == "signup" {
+		userId := object.HasGoogleAccount(res.Email)
+		if userId != "" {
+			c.SetSessionUser(userId)
+			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+			res.IsSignedUp = true
+		} else {
+			res.IsSignedUp = false
+		}
+		res.Addition = res.Email
+		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
-		res.IsSignedUp = false
+		memberId := c.GetSessionUser()
+		if memberId == "" {
+			resp = Response{Status: "fail", Msg: "no account exist", Data: res}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+		linkRes := object.LinkMemberAccount(memberId, "google_account", res.Email)
+		if linkRes {
+			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
+		} else {
+			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
+		}
 	}
 
-	c.Data["json"] = res
+	c.Data["json"] = resp
+
+	c.ServeJSON()
+}
+
+var githubEndpoint = oauth2.Endpoint{
+	AuthURL:  "https://github.com/login/oauth/authorize",
+	TokenURL: "https://github.com/login/oauth/access_token",
+}
+
+var githubOauthConfig = &oauth2.Config{
+	ClientID:     beego.AppConfig.String("GithubAuthClientID"),
+	ClientSecret: beego.AppConfig.String("GithubAuthClientSecret"),
+	RedirectURL:  "",
+	Scopes:       []string{"user:email", "read:user"},
+	Endpoint:     githubEndpoint,
+}
+
+func (c *APIController) AuthGithub() {
+	code := c.Input().Get("code")
+	state := c.Input().Get("state")
+	addition := c.Input().Get("addition")
+	RedirectURL := c.Input().Get("redirect_url")
+
+	var resp Response
+	var res authResponse
+	res.IsAuthenticated = true
+
+	if state != beego.AppConfig.String("GithubAuthState") {
+		res.IsAuthenticated = false
+		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
+		c.ServeJSON()
+		return
+	}
+
+	githubOauthConfig.RedirectURL = RedirectURL
+	token, err := githubOauthConfig.Exchange(oauth2.NoContext, code)
+	if err != nil {
+		res.IsAuthenticated = false
+		panic(err)
+	}
+
+	if !token.Valid() {
+		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	var wg sync.WaitGroup
+	var tempUserEmail []userEmailFromGithub
+	var tempUserAccount userInfoFromGithub
+	wg.Add(2)
+	go func() {
+		response, err := http.Get("https://api.github.com/user/emails?access_token=" + token.AccessToken)
+		if err != nil {
+			panic(err)
+		}
+		defer response.Body.Close()
+		contents, err := ioutil.ReadAll(response.Body)
+
+		err = json.Unmarshal(contents, &tempUserEmail)
+		if err != nil {
+			res.IsAuthenticated = false
+			panic(err)
+		}
+		for _, v := range tempUserEmail {
+			if v.Primary == true {
+				res.Email = v.Email
+				break
+			}
+		}
+		wg.Done()
+	}()
+	go func() {
+		response2, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken)
+		if err != nil {
+			panic(err)
+		}
+		defer response2.Body.Close()
+		contents2, err := ioutil.ReadAll(response2.Body)
+		err = json.Unmarshal(contents2, &tempUserAccount)
+		if err != nil {
+			res.IsAuthenticated = false
+			panic(err)
+		}
+		wg.Done()
+	}()
+	wg.Wait()
+
+	if addition == "signup" {
+		userId := object.HasGithubAccount(tempUserAccount.Login)
+		if userId != "" {
+			c.SetSessionUser(userId)
+			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+			res.IsSignedUp = true
+		} else {
+			res.IsSignedUp = false
+		}
+		res.Addition = tempUserAccount.Login
+		resp = Response{Status: "ok", Msg: "success", Data: res}
+	} else {
+		memberId := c.GetSessionUser()
+		if memberId == "" {
+			resp = Response{Status: "fail", Msg: "no account exist", Data: res}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+		linkRes := object.LinkMemberAccount(memberId, "github_account", tempUserAccount.Login)
+		if linkRes {
+			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
+		} else {
+			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
+		}
+	}
+
+	c.Data["json"] = resp
 
 	c.ServeJSON()
 }

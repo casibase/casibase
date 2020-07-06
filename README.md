@@ -34,26 +34,46 @@ dataSourceName = root:123@tcp(localhost:3306)/
 
 Casbin-forum uses XORM to connect to DB, so all DBs supported by XORM can also be used.
 
-- Setup your forum :
+- Setup your forum to enable some third-party login platform:
 
-Casbin-forum provide a way to sign up using Google account,  so you may have to get your own  ClientID and ClientSecret first. You could get them by clicking on this url: https://console.developers.google.com/apis
+Casbin-forum provide a way to sign up using Google account, Github account, WeChat account and so on,  so you may have to get your own  ClientID and ClientSecret first.
 
-And to improve security, you could set a `state` value to make sure the request is requesting by yourself, such as "random".
+1. Google
 
+    You could get them by clicking on this url: https://console.developers.google.com/apis
+    You should set `Authorized JavaScript origins` to fit your own domain address, for local testing, set`http://localhost:3000`. And set the `Authorized redirect URIs`, the same domain address as before, add `/callback/google/signup` and `/callback/google/link` after that, for local testing, set`http://localhost:3000/callback/google/signup` + `http://localhost:3000/callback/google/link`.
+
+2. Github
+
+    You could get them by clicking on this url: https://github.com/settings/developers
+    You should set `Homepage URL` to fit your own domain address, for local testing, set`http://localhost:3000`. And set the `Authorization callback URL`, the same domain address as before, add `/callback/github` after that, for local testing, set`http://localhost:3000/callback/github`.
+
+And to improve security, you could set a `state` value determined by **yourself** to make sure the request is requesting by yourself, such as "random".
 Those information strings can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
 
 ```ini
-ClientID = "xxx"  //your clientID
-ClientSecret = "xxx"  //your clientSecret
-state = "xxx"  //set by yourself
+GoogleAuthClientID = "xxx" //your own client id
+GoogleAuthClientSecret = "xxx" //your own client secret
+GoogleAuthState = "xxx" //set by yourself
+GithubAuthClientID = "xxx" //your own client id
+GithubAuthClientSecret = "xxx" //your own client secret
+GithubAuthState = "xx" //set by yourself
 ```
 
-You may also have to fill in the **same** informations at: https://github.com/casbin/casbin-forum/blob/master/web/src/main/SignupBox.js. By the way, you could change the value of `scope` to get different user informations form Google if you need.
+You may also have to fill in the **same** informations at: https://github.com/casbin/casbin-forum/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
 
 ```javascript
-clientId: "xxx",  //your clientID
-oauthUri: "xxx",  //your clientSecret
-state: "xxx",  //set by yourself, the same as the app.conf file
+export const GoogleClientId  = "xxx"
+
+export const GoogleAuthState  = "xxx"
+
+export const GoogleAuthScope  = "profile+email"
+
+export const GithubClientId  = "xxx"
+
+export const GithubAuthState  = "xxx"
+
+export const GithubAuthScope  = "user:email+read:user"
 ```
 
 - Run backend (in port 7000):

@@ -52,11 +52,15 @@ class SettingsBox extends React.Component {
 
   newUsername() {
     const params = new URLSearchParams(this.props.location.search)
-    let email
+    let email, method, addition
     email = params.get("email")
+    method = params.get("method")
+    addition = params.get("addition")
     return {
       username: this.state.username,
-      email: email
+      email: email,
+      method: method,
+      addition: addition,
     }
   }
 
@@ -101,6 +105,8 @@ class SettingsBox extends React.Component {
         }
       });
   }
+
+  
 
   render() {
     const account = this.props.account;
@@ -206,6 +212,93 @@ class SettingsBox extends React.Component {
                   </span>
                 </td>
               </tr>
+              <tr>
+                <td width="120" align="right">
+                  Google
+                </td>
+                {
+                  account?.googleAccount === "" ?
+                    <td width="auto" align="left">
+                      <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
+                        Link with GoogleAccount
+                      </a>
+                    </td> :
+                    <td width="auto" align="left">
+                      <code>
+                        {account?.googleAccount}
+                      </code>
+                    </td>
+                }
+              </tr>
+              {
+                account?.googleAccount === "" ? null :
+                  <tr>
+                    <td width="120" align="right" />
+                    <td width="auto" align="left">
+                      <a href="/settings/google">
+                        Modify GoogleAccount
+                      </a>
+                    </td>
+                  </tr>
+              }
+              <tr>
+                <td width="120" align="right">
+                  Github
+                </td>
+                {
+                  account?.githubAccount === "" ?
+                    <td width="auto" align="left">
+                      <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
+                        Link with GithubAccount
+                      </a>
+                    </td> :
+                    <td width="auto" align="left">
+                      <code>
+                        {account?.githubAccount}
+                      </code>
+                    </td>
+                }
+              </tr>
+              {
+                account?.githubAccount === "" ? null :
+                  <tr>
+                    <td width="120" align="right" />
+                    <td width="auto" align="left">
+                      <a href="/settings/github">
+                        Modify GithubAccount
+                      </a>
+                    </td>
+                  </tr>
+              }
+              <tr>
+                <td width="120" align="right">
+                  WeChat
+                </td>
+                {
+                  account?.weChatAccount === "" ?
+                    <td width="auto" align="left">
+                      <a href="/settings/wechat">
+                        Link with WeChat
+                      </a>
+                    </td> :
+                    <td width="auto" align="left">
+                      <code>
+                        {account?.weChatAccount}
+                      </code>
+                    </td>
+                }
+              </tr>
+              {
+                account?.weChatAccount === "" ? null :
+                  <tr>
+                    <td width="120" align="right" />
+                    <td width="auto" align="left">
+                      <a href="/settings/weChat">
+                        Modify WeChat
+                      </a>
+                    </td>
+                  </tr>
+              }
               <tr>
                 <td width="120" align="right">
                   Website

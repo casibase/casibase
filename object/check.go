@@ -62,3 +62,19 @@ func HasMail(email string) string {
 	}
 	return ""
 }
+
+func HasGithubAccount(githubAccount string) string {
+	userInfo := GetGithubAccount(githubAccount)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
+
+func HasGoogleAccount(googleAccount string) string {
+	userInfo := GetGoogleAccount(googleAccount)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
