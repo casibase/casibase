@@ -50,7 +50,7 @@ class TopicList extends React.Component {
             {
               this.props.showAvatar ?
                 <td width="48" valign="top" align="center">
-                  <Avatar username={topic.author} />
+                  <Avatar username={topic?.author} avatar={topic?.avatar} />
                 </td> :
                 null
             }

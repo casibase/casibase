@@ -95,7 +95,7 @@ class MemberBox extends React.Component {
             <tbody>
             <tr>
               <td width="73" valign="top" align="center">
-                <Avatar username={this.state.member?.id} isLarge={true} />
+                <Avatar username={this.state.member?.id} isLarge={true} avatar={this.state.member?.avatar} />
                 <div className="sep10" />
                 <strong className="online">ONLINE</strong>
               </td>

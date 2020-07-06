@@ -149,7 +149,7 @@ class NodeBox extends React.Component {
             <div className="fr f12"><span>Total topics: </span>
               <strong>{this.state.topicNum}</strong>
               <span className="snow">&nbsp;•&nbsp;</span>
-              {this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} className="node_header_link">Cancel favorite</a> : <a onClick={() => {this.addFavorite()}} className="node_header_link">Add to favorite</a>}
+              {this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0)" className="node_header_link">Cancel favorite</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0)" className="node_header_link">Add to favorite</a>}
             </div>
             <a href="/">{Setting.getForumName()}</a>
             <span className="chevron">&nbsp;›&nbsp;</span>

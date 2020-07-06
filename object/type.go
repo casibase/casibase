@@ -24,6 +24,16 @@ type LatestReply struct {
 	ReplyTime    string `json:"replyTime"`
 }
 
+type TopicWithAvatar struct {
+	Topic
+	Avatar string `json:"avatar"`
+}
+
+type ReplyWithAvatar struct {
+	Reply
+	Avatar string `json:"avatar"`
+}
+
 type NodeFavoritesRes struct {
 	NodeInfo *Node `json:"nodeInfo"`
 	TopicNum int   `json:"topicNum"`

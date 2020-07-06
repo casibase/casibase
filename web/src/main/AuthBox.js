@@ -54,7 +54,7 @@ class CallbackBox extends React.Component {
                 return;
               }
               if (!res.data.isSignedUp) {
-                window.location.href = `/settings/username?email=${res.data.email}&method=google&addition=${res.data.addition}`
+                window.location.href = `/settings/username?email=${res.data.email}&method=google&addition=${res.data.addition}&avatar=${res.data.avatar}`
                 return;
               }
               window.location.href = '/'
@@ -78,7 +78,7 @@ class CallbackBox extends React.Component {
                 return;
               }
               if (!res.data.isSignedUp) {
-                window.location.href = `/settings/username?email=${res.data.email}&method=github&addition=${res.data.addition}`
+                window.location.href = `/settings/username?email=${res.data.email}&method=github&addition=${res.data.addition}&avatar=${res.data.avatar}`
                 return;
               }
               window.location.href = '/'

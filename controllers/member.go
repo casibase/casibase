@@ -32,6 +32,13 @@ func (c *APIController) GetMember() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetMemberAvatar() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetMemberAvatar(id)
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateMember() {
 	id := c.Input().Get("id")
 
@@ -58,11 +65,11 @@ func (c *APIController) UpdateMemberInfo() {
 	var resp Response
 	if memberId != id {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
-	}else {
+	} else {
 		var member = object.Member{
-			Company:           tempMember.Company,
-			Bio:               tempMember.Bio,
-			Website:           tempMember.Website,
+			Company: tempMember.Company,
+			Bio:     tempMember.Bio,
+			Website: tempMember.Website,
 		}
 		res := object.UpdateMemberInfo(id, &member)
 		resp = Response{Status: "ok", Msg: "success", Data: res}

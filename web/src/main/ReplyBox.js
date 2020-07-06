@@ -119,7 +119,7 @@ class ReplyBox extends React.Component {
                   <tbody>
                   <tr>
                     <td width="48" valign="top" align="center">
-                      <Avatar username={reply.author} />
+                      <Avatar username={reply.author} avatar={reply.avatar} />
                     </td>
                     <td width="10" valign="top" />
                     <td width="auto" valign="top" align="left">

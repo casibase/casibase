@@ -31,6 +31,7 @@ type SignupForm struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 	Email    string `json:"email"`
+	Avatar   string `json:"avatar"`
 	Method   string `json:"method"`
 	Addition string `json:"addition"`
 }
@@ -63,7 +64,7 @@ func (c *APIController) Signup() {
 	if err != nil {
 		panic(err)
 	}
-	member, password, email := form.Username, form.Password, form.Email
+	member, password, email, avatar := form.Username, form.Password, form.Email, form.Avatar
 
 	var msg string
 	if password == "" && email != "" {
@@ -75,10 +76,13 @@ func (c *APIController) Signup() {
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
+		no := object.GetMemberNum()
 		member := &object.Member{
 			Id:          member,
+			No:          no + 1,
 			Password:    password,
 			Email:       email,
+			Avatar:      avatar,
 			CreatedTime: util.GetCurrentTime(),
 		}
 		switch form.Method {
@@ -224,7 +228,7 @@ func (c *APIController) AuthGoogle() {
 		panic(err)
 	}
 
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 
@@ -235,6 +239,7 @@ func (c *APIController) AuthGoogle() {
 		panic(err)
 	}
 	res.Email = tempUser.Email
+	res.Avatar = tempUser.Picture
 
 	if addition == "signup" {
 		userId := object.HasGoogleAccount(res.Email)
@@ -363,6 +368,7 @@ func (c *APIController) AuthGithub() {
 			res.IsSignedUp = false
 		}
 		res.Addition = tempUserAccount.Login
+		res.Avatar = tempUserAccount.AvatarUrl
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
 		memberId := c.GetSessionUser()

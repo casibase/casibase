@@ -20,6 +20,7 @@ import Avatar from "../Avatar";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
+import * as MemberBackend from "../backend/MemberBackend";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -61,6 +62,16 @@ class AllCreatedTopicsBox extends React.Component {
   componentDidMount() {
       this.getAllCreatedTopics();
       this.geCreatedTopicsNum();
+      this.getMemberAvatar();
+  }
+
+  getMemberAvatar() {
+    MemberBackend.getMemberAvatar(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          memberAvatar: res,
+        });
+      });
   }
 
   getAllCreatedTopics() {
@@ -132,7 +143,11 @@ class AllCreatedTopicsBox extends React.Component {
       <div className="box">
         <div class="cell_tabs">
           <div class="fl">
-            <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+            {
+              this.state.memberAvatar === "" ?
+                <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/> :
+                <img src={this.state.memberAvatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+            }
           </div>
           {
             this.state.tab === undefined ?

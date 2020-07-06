@@ -43,7 +43,7 @@ func (c *APIController) GetTopics() {
 	}
 	if len(pageStr) != 0 {
 		page := util.ParseInt(pageStr)
-		offset = page * limit - limit
+		offset = page*limit - limit
 	}
 
 	c.Data["json"] = object.GetTopics(limit, offset)
@@ -53,7 +53,7 @@ func (c *APIController) GetTopics() {
 func (c *APIController) GetTopic() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetTopic(id)
+	c.Data["json"] = object.GetTopicWithAvatar(id)
 	c.ServeJSON()
 }
 
@@ -139,7 +139,7 @@ func (c *APIController) GetAllCreatedTopics() {
 		if err != nil {
 			panic(err)
 		}
-		offset = page * limit - limit
+		offset = page*limit - limit
 	}
 
 	c.Data["json"] = object.GetAllCreatedTopics(author, tab, limit, offset)
@@ -167,7 +167,7 @@ func (c *APIController) GetTopicsByNode() {
 	}
 	if len(pageStr) != 0 {
 		page := util.ParseInt(pageStr)
-		offset = page * limit - limit
+		offset = page*limit - limit
 	}
 
 	c.Data["json"] = object.GetTopicsWithNode(nodeId, limit, offset)
@@ -181,7 +181,7 @@ func (c *APIController) AddTopicHitCount() {
 	res := object.AddTopicHitCount(topicId)
 	if res {
 		resp = Response{Status: "ok", Msg: "success"}
-	}else {
+	} else {
 		resp = Response{Status: "fail", Msg: "add topic hit count failed"}
 	}
 
