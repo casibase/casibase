@@ -59,14 +59,14 @@ func GetFavoritesStatus(memberId string, objectId string, favoritesType int) boo
 	return total != 0
 }
 
-func GetTopicsFromFavorites(memberId string, limit int, offset int) []*Topic {
+func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWithAvatar {
 	favorites := []*Favorites{}
 	err := adapter.engine.Where("member_id = ?", memberId).And("favorites_type = ?", 1).Limit(limit, offset).Find(&favorites)
 	if err != nil {
 		panic(err)
 	}
 
-	topics := []*Topic{}
+	topics := []*TopicWithAvatar{}
 	for _, v := range favorites {
 		temp := GetTopic(v.ObjectId)
 		topics = append(topics, temp)
@@ -75,15 +75,24 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int) []*Topic {
 	return topics
 }
 
-func GetFollowingNewAction(memberId string, limit int, offset int) []*Topic {
+func GetFollowingNewAction(memberId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
 
-	err := adapter.engine.Table("topic").Join("INNER", "favorites","topic.author = favorites.object_id").Desc("topic.id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Table("topic").Join("INNER", "favorites", "topic.author = favorites.object_id").Desc("topic.id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	return topics
+	res := []*TopicWithAvatar{}
+	for _, v := range topics {
+		temp := TopicWithAvatar{
+			Topic:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
+	}
+
+	return res
 }
 
 func GetNodesFromFavorites(memberId string, limit int, offset int) []*NodeFavoritesRes {
@@ -138,7 +147,7 @@ func GetFavoritesNum(favoritesType int, memberId string) int {
 		break
 	case 2:
 		topic := new(Favorites)
-		total, err = adapter.engine.Table("topic").Join("INNER", "favorites","topic.author = favorites.object_id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Count(topic)
+		total, err = adapter.engine.Table("topic").Join("INNER", "favorites", "topic.author = favorites.object_id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Count(topic)
 		if err != nil {
 			panic(err)
 		}

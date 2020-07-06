@@ -19,6 +19,7 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
+import * as MemberBackend from "../backend/MemberBackend";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class AllCreatedTopicsBox extends React.Component {
     this.state = {
       classes: props,
       memberId: props.match.params.memberId,
+      memberAvatar: "",
       tab: props.match.params.tab,
       topics: [],
       limit: 20,
@@ -60,8 +62,18 @@ class AllCreatedTopicsBox extends React.Component {
   componentDidMount() {
       this.getAllCreatedTopics();
       this.geCreatedTopicsNum();
+      this.getMemberAvatar();
   }
 
+  getMemberAvatar() {
+    MemberBackend.getMemberAvatar(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          memberAvatar: res,
+        });
+      });
+  }
+  
   getAllCreatedTopics() {
     TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, this.state.limit, this.state.page)
       .then((res) => {
@@ -185,7 +197,11 @@ class AllCreatedTopicsBox extends React.Component {
       <div className="box">
         <div class="cell_tabs">
           <div class="fl">
-            <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+            {
+              this.state.memberAvatar === "" ?
+                <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/> :
+                <img src={this.state.memberAvatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+            }
           </div>
           {
             this.state.tab === undefined ?

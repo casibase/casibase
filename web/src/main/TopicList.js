@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
+import Avatar from "../Avatar";
 
 class TopicList extends React.Component {
   constructor(props) {
@@ -47,9 +48,7 @@ class TopicList extends React.Component {
           <tbody>
           <tr>
             <td width="48" valign="top" align="center">
-              <a href={`/member/${topic?.author}`}>
-                <img src={Setting.getUserAvatar(topic?.author)} className="avatar" border="0" align="default"/>
-              </a>
+              <Avatar username={topic?.author} avatar={topic?.avatar} />
             </td>
             <td width="10"></td>
             <td width="auto" valign="middle"><span className="item_title"><a href={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="topic-link">{topic?.title}</a></span>

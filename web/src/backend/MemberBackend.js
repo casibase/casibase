@@ -36,6 +36,13 @@ export function updateMember(id, member) {
   }).then(res => res.json());
 }
 
+export function getMemberAvatar(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-member-avatar?id=${id}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function updateMemberInfo(id, member) {
   return fetch(`${Setting.ServerUrl}/api/update-member-info?id=${id}`, {
     method: 'POST',

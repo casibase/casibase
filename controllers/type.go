@@ -15,7 +15,8 @@
 package controllers
 
 type userInfoFromGoogle struct {
-	Email string `json:"email"`
+	Picture string `json:"picture"`
+	Email   string `json:"email"`
 }
 
 type userEmailFromGithub struct {
@@ -26,12 +27,14 @@ type userEmailFromGithub struct {
 }
 
 type userInfoFromGithub struct {
-	Login string `json:"login"`
+	Login     string `json:"login"`
+	AvatarUrl string `json:"avatar_url"`
 }
 
 type authResponse struct {
 	IsAuthenticated bool   `json:"isAuthenticated"`
 	IsSignedUp      bool   `json:"isSignedUp"`
 	Email           string `json:"email"`
+	Avatar          string `json:"avatar"`
 	Addition        string `json:"addition"`
 }

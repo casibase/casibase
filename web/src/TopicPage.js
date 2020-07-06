@@ -94,7 +94,7 @@ class TopicPage extends React.Component {
           <tbody>
           <tr>
             <td width="48" valign="top" align="center">
-              <Avatar username={topic.author} />
+              <Avatar username={topic.author} avatar={topic.avatar} />
             </td>
             <td width="10" />
             <td width="auto" valign="middle">
