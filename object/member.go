@@ -112,6 +112,22 @@ func UpdateMemberInfo(id string, member *Member) bool {
 	return true
 }
 
+func UpdateMemberAvatar(id string, avatar string) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	member := new(Member)
+	member.Avatar = avatar
+
+	_, err := adapter.engine.Id(id).MustCols("avatar").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
 func AddMember(member *Member) bool {
 	affected, err := adapter.engine.Insert(member)
 	if err != nil {

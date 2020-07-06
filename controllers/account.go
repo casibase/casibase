@@ -266,6 +266,9 @@ func (c *APIController) AuthGoogle() {
 		} else {
 			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
 		}
+		if len(object.GetMemberAvatar(memberId)) == 0 {
+			object.LinkMemberAccount(memberId, "avatar", res.Avatar)
+		}
 	}
 
 	c.Data["json"] = resp
@@ -383,6 +386,9 @@ func (c *APIController) AuthGithub() {
 			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
 		} else {
 			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
+		}
+		if len(object.GetMemberAvatar(memberId)) == 0 {
+			object.LinkMemberAccount(memberId, "avatar", tempUserAccount.AvatarUrl)
 		}
 	}
 
