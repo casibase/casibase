@@ -49,6 +49,7 @@ class RightAccountBox extends React.Component {
 
   render() {
     const username = this.props.account?.id;
+    const avatar = this.props.account?.avatar;
 
     return (
       <div className="box">
@@ -58,7 +59,7 @@ class RightAccountBox extends React.Component {
             <tr>
               <td width="48" valign="top">
                 <a href={`/member/${username}`}>
-                  <Avatar username={username} />
+                  <Avatar username={username} avatar={avatar} />
                 </a>
               </td>
               <td width="10" valign="top" />

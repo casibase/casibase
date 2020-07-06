@@ -52,15 +52,17 @@ class SettingsBox extends React.Component {
 
   newUsername() {
     const params = new URLSearchParams(this.props.location.search)
-    let email, method, addition
+    let email, method, addition, avatar
     email = params.get("email")
     method = params.get("method")
     addition = params.get("addition")
+    avatar = params.get("avatar")
     return {
       username: this.state.username,
       email: email,
       method: method,
       addition: addition,
+      avatar: avatar,
     }
   }
 
@@ -106,8 +108,6 @@ class SettingsBox extends React.Component {
       });
   }
 
-  
-
   render() {
     const account = this.props.account;
 
@@ -152,7 +152,7 @@ class SettingsBox extends React.Component {
               <tbody data-select2-id="8">
               <tr>
                 <td width="120" align="right">
-                  <Avatar username={account?.id} size="small" />
+                  <Avatar username={account?.id} size="small" avatar={account?.avatar} />
                 </td>
                 <td width="auto" align="left">
                   {Setting.getForumName()} No. {account?.no} member

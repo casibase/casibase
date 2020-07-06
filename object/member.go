@@ -20,6 +20,7 @@ type Member struct {
 	No                int    `json:"no"`
 	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
+	Avatar            string `xorm:"varchar(150)" json:"avatar"`
 	Email             string `xorm:"varchar(100)" json:"email"`
 	EmailVerifiedTime string `xorm:"varchar(100)" json:"emailVerifiedTime"`
 	Tagline           string `xorm:"varchar(100)" json:"tagline"`
@@ -61,6 +62,29 @@ func GetMember(id string) *Member {
 	}
 }
 
+func GetMemberAvatar(id string) string {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("avatar").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.Avatar
+	} else {
+		return ""
+	}
+}
+
+func GetMemberNum() int {
+	count, err := adapter.engine.Count(&Member{})
+	if err != nil {
+		panic(err)
+	}
+
+	return int(count)
+}
+
 func UpdateMember(id string, member *Member) bool {
 	if GetMember(id) == nil {
 		return false
@@ -81,6 +105,22 @@ func UpdateMemberInfo(id string, member *Member) bool {
 	}
 
 	_, err := adapter.engine.Id(id).MustCols("company, bio, website").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
+func UpdateMemberAvatar(id string, avatar string) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	member := new(Member)
+	member.Avatar = avatar
+
+	_, err := adapter.engine.Id(id).MustCols("avatar").Update(member)
 	if err != nil {
 		panic(err)
 	}

@@ -52,14 +52,42 @@ func GetCreatedTopicsNum(memberId string) int {
 	return int(total)
 }
 
-func GetTopics(limit int, offset int) []*Topic {
+func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
 	err := adapter.engine.Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	return topics
+	res := []*TopicWithAvatar{}
+	for _, v := range topics {
+		temp := TopicWithAvatar{
+			Topic:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
+	}
+
+	return res
+}
+
+func GetTopicWithAvatar(id string) *TopicWithAvatar {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	res := TopicWithAvatar{
+		Topic:  topic,
+		Avatar: GetMemberAvatar(topic.Author),
+	}
+
+	if existed {
+		return &res
+	} else {
+		return nil
+	}
 }
 
 func GetTopic(id string) *Topic {
@@ -76,14 +104,23 @@ func GetTopic(id string) *Topic {
 	}
 }
 
-func GetTopicsWithNode(nodeId string, limit int, offset int) []*Topic {
+func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
 	err := adapter.engine.Desc("created_time").Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	return topics
+	res := []*TopicWithAvatar{}
+	for _, v := range topics {
+		temp := TopicWithAvatar{
+			Topic:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
+	}
+
+	return res
 }
 
 func UpdateTopic(id string, topic *Topic) bool {

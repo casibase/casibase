@@ -25,9 +25,27 @@ class Avatar extends React.Component {
 
   render() {
     if (this.props.size === "small") {
+      if (this.props.avatar !== "") {
+        return <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "24px", maxHeight: "24px"}} alt={this.props.username} />
+      }
       return (
         <img src={Setting.getUserAvatar(this.props.username)} className="avatar" border="0" align="default" style={{maxWidth: "24px", maxHeight: "24px"}} alt={this.props.username} />
       )
+    }
+
+    if (this.props.avatar !== "") {
+      if (this.props.isLarge) {
+        return (
+          <a href={`/member/${this.props.username}`}>
+            <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "73px", maxHeight: "73px"}} alt={this.props.username} />
+          </a>
+        );
+      }
+      return (
+        <a href={`/member/${this.props.username}`}>
+          <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "48px", maxHeight: "48px"}} alt={this.props.username} />
+        </a>
+      );
     }
 
     return (

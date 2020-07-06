@@ -37,14 +37,23 @@ func GetReplyCount() int {
 	return int(count)
 }
 
-func GetReplies(topicId string) []*Reply {
+func GetReplies(topicId string) []*ReplyWithAvatar {
 	replies := []*Reply{}
 	err := adapter.engine.Asc("created_time").Find(&replies, &Reply{TopicId: topicId})
 	if err != nil {
 		panic(err)
 	}
 
-	return replies
+	res := []*ReplyWithAvatar{}
+	for _, v := range replies {
+		temp := ReplyWithAvatar{
+			Reply:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
+	}
+
+	return res
 }
 
 func GetReply(id string) *Reply {
@@ -119,7 +128,7 @@ func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 			}
 
 			if existed {
-				var temp =  LatestReply{
+				var temp = LatestReply{
 					TopicId:      topic.Id,
 					NodeId:       topic.NodeId,
 					NodeName:     topic.NodeName,
