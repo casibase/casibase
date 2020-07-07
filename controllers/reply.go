@@ -69,7 +69,7 @@ func (c *APIController) AddReply() {
 	content, topicId := form.Content, form.TopicId
 
 	reply := object.Reply{
-		Id:          util.IntToString(object.GetReplyCount()),
+		Id:          util.IntToString(object.GetReplyId()),
 		Author:      c.GetSessionUser(),
 		TopicId:     topicId,
 		CreatedTime: util.GetCurrentTime(),

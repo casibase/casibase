@@ -83,7 +83,7 @@ func (c *APIController) AddTopic() {
 	title, body, nodeId := form.Title, form.Body, form.NodeId
 
 	topic := object.Topic{
-		Id:            util.IntToString(object.GetTopicCount()),
+		Id:            util.IntToString(object.GetTopicId()),
 		Author:        c.GetSessionUser(),
 		NodeId:        nodeId,
 		NodeName:      "",
@@ -186,5 +186,26 @@ func (c *APIController) AddTopicHitCount() {
 	}
 
 	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetTopicsByTab() {
+	tabId := c.Input().Get("tab-id")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	c.Data["json"] = object.GetTopicsWithTab(tabId, limit, offset)
 	c.ServeJSON()
 }

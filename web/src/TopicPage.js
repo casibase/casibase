@@ -15,9 +15,11 @@
 import React from "react";
 import * as Setting from "./Setting";
 import * as TopicBackend from "./backend/TopicBackend";
+import * as TabBackend from "./backend/TabBackend";
 import moment from "moment";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
+import {withRouter} from "react-router-dom";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -26,14 +28,57 @@ class TopicPage extends React.Component {
       classes: props,
       topics: [],
       defaultHomePageNum: 50,
+      tabs: [],
+      tabInfo: null,
+      nodes: [],
     };
+    const params = new URLSearchParams(this.props.location.search)
+    if (params.get("tab") !== null) {
+      this.state.tab = params.get("tab")
+    }
   }
 
   componentDidMount() {
+    this.getNodeInfo();
     this.getTopics();
   }
 
+  getNodeInfo() {
+    let tab
+    TabBackend.getTabs()
+      .then((res) => {
+        this.setState({
+          tabs: res,
+        });
+      });
+    this.state.tab === undefined ? tab = "" : tab = this.state.tab
+    TabBackend.getTab(tab)
+      .then((res) => {
+        if (res === null) {
+          window.location.href = `/`
+        }
+        this.setState({
+          tabInfo: res,
+        });
+      });
+    TabBackend.getTabNodes(tab)
+      .then((res) => {
+        this.setState({
+          nodes: res,
+        });
+      });
+  }
+
   getTopics() {
+    if (this.state.tab !== undefined) {
+      TopicBackend.getTopicsWithTab(this.state.tab, this.state.defaultHomePageNum, 1)
+        .then((res) => {
+          this.setState({
+            topics: res,
+          });
+        });
+      return
+    }
     TopicBackend.getTopics(this.state.defaultHomePageNum, 1)
       .then((res) => {
         this.setState({
@@ -150,31 +195,42 @@ class TopicPage extends React.Component {
     )
   }
 
+  renderTab(tab) {
+    return (
+      <a href={`/?tab=${tab?.id}`} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>{tab?.name}</a>
+    )
+  }
+
+  renderNode(node) {
+    return (
+      <span>
+        <a href={`/go/${node?.id}`}>{node?.name}</a>
+        &nbsp;&nbsp;
+      </span>
+    )
+  }
+
   render() {
     return (
       <div className="box">
         <div className="inner" id="Tabs">
-          <a href="/?tab=tech" className="tab">Tech</a>
-          <a href="/?tab=creative" className="tab">Creative</a>
-          <a href="/?tab=play" className="tab">Play</a>
-          <a href="/?tab=apple" className="tab">Apple</a>
-          <a href="/?tab=jobs" className="tab">Jobs</a>
-          <a href="/?tab=deals" className="tab">Deals</a>
-          <a href="/?tab=city" className="tab">City</a>
-          <a href="/?tab=qna" className="tab">Q&A</a>
-          <a href="/?tab=hot" className="tab">Hot</a>
+          {
+            this.state.tabs.map((tab) => {
+              return this.renderTab(tab);
+            })
+          }
         </div>
         <div className="cell" id="SecondaryTabs">
           <div className="fr">
-            <a href="/new/qna">Create a Post</a>
+            <a href={`/new/${this.state.tabInfo?.defaultNode}`}>Create a Post</a>
             &nbsp;
             <li className="fa fa-caret-right gray" />
           </div>
-          <a href="/go/share">Share</a>
-          &nbsp; &nbsp;
-          <a href="/go/create">Create</a>
-          &nbsp; &nbsp;
-          <a href="/go/qna">Q&A</a>
+          {
+            this.state.nodes.map((node) => {
+              return this.renderNode(node);
+            })
+          }
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         <div className="inner">
@@ -185,4 +241,4 @@ class TopicPage extends React.Component {
   }
 }
 
-export default TopicPage;
+export default withRouter(TopicPage);

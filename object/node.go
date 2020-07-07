@@ -20,6 +20,7 @@ type Node struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	Desc        string `xorm:"varchar(500)" json:"desc"`
 	Image       string `xorm:"varchar(200)" json:"image"`
+	TabId       string `xorm:"varchar(100)" json:"tab"`
 }
 
 func GetNodes() []*Node {
@@ -86,4 +87,14 @@ func GetNodeTopicNum(id string) int {
 	}
 
 	return int(total)
+}
+
+func GetNodeFromTab(tab string) []*Node {
+	nodes := []*Node{}
+	err := adapter.engine.Where("tab = ?", tab).Find(&nodes)
+	if err != nil {
+		panic(err)
+	}
+
+	return nodes
 }

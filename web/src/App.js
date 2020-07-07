@@ -87,7 +87,7 @@ class App extends Component {
         <Route exact path="/" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <TopicPage />
+            <TopicPage account={this.state.account} />
           </div>
         }/>
         <Route exact path="/signup" component={() =>
@@ -113,7 +113,7 @@ class App extends Component {
             <div className="sep20" />
             <TopicBox />
             <div className="sep20" />
-            <ReplyBox />
+            <ReplyBox account={this.state.account} />
           </div>
         }/>
         <Route exact path="/member/:memberId" component={() =>
@@ -164,7 +164,7 @@ class App extends Component {
           </div>
         }/>
         <Route exact path="/go/:nodeId" component={() =>
-          <NodesBox />
+          <NodesBox account={this.state.account} />
         }/>
         <Route exact path="/my/:favorites" component={() =>
           <div id="Main">

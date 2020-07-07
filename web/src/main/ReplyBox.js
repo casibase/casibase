@@ -167,11 +167,18 @@ class ReplyBox extends React.Component {
   }
 
   render() {
+    if (this.state.topic === null) {
+      return null
+    }
+    
     return (
       <div>
         {this.renderReply()}
         <div className="sep20" />
-        <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} />
+        {
+          this.props.account === null ? null :
+            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} />
+        }
       </div>
     )
   }
