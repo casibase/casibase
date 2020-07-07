@@ -41,6 +41,7 @@ func initAPI() {
 	beego.Router("/api/get-all-created-topics", &controllers.APIController{}, "GET:GetAllCreatedTopics")
 	beego.Router("/api/get-created-topics-num", &controllers.APIController{}, "GET:GetCreatedTopicsNum")
 	beego.Router("/api/get-topics-by-node", &controllers.APIController{}, "GET:GetTopicsByNode")
+	beego.Router("/api/get-topics-by-tab", &controllers.APIController{}, "GET:GetTopicsByTab")
 	beego.Router("/api/get-topics-num", &controllers.APIController{}, "GET:GetTopicsNum")
 	beego.Router("/api/add-topic-hit-count", &controllers.APIController{}, "POST:AddTopicHitCount")
 
@@ -59,7 +60,7 @@ func initAPI() {
 	beego.Router("/api/delete-member", &controllers.APIController{}, "POST:DeleteMember")
 	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	beego.Router("/api/get-member-avatar", &controllers.APIController{}, "GET:GetMemberAvatar")
-	
+
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
 	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode")
@@ -79,4 +80,8 @@ func initAPI() {
 	beego.Router("/api/delete-favorites", &controllers.APIController{}, "POST:DeleteFavorites")
 	beego.Router("/api/get-favorites-status", &controllers.APIController{}, "GET:GetFavoritesStatus")
 	beego.Router("/api/get-account-favorite-num", &controllers.APIController{}, "GET:GetAccountFavoriteNum")
+
+	beego.Router("/api/get-tabs", &controllers.APIController{}, "GET:GetTabs")
+	beego.Router("/api/get-tab", &controllers.APIController{}, "GET:GetTab")
+	beego.Router("/api/get-tab-nodes", &controllers.APIController{}, "GET:GetTabNodes")
 }

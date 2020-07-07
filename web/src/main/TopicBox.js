@@ -19,6 +19,11 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 
+import "codemirror/lib/codemirror.css"
+require("codemirror/mode/markdown/markdown");
+
+const ReactMarkdown = require('react-markdown')
+
 class TopicBox extends React.Component {
   constructor(props) {
     super(props);
@@ -100,6 +105,16 @@ class TopicBox extends React.Component {
   }
 
   render() {
+    if (this.state.topic === null) {
+      return (
+        <div class="box">
+          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span> Topic not found</div>
+          <div class="cell"><span class="gray bigger">404 Topic Not Found</span></div>
+          <div class="inner">←  <a href="/">Back to Home Page</a></div>
+        </div>
+      )
+    }
+
     return (
       <div className="box" style={{borderBottom: "0px"}}>
         <div className="header">
@@ -135,7 +150,7 @@ class TopicBox extends React.Component {
         <div className="cell">
           <div className="topic_content">
             <div className="markdown_body">
-              <span dangerouslySetInnerHTML={{__html: this.state.topic?.content}} />
+              <ReactMarkdown source={this.state.topic?.content} />
             </div>
           </div>
         </div>
@@ -144,8 +159,10 @@ class TopicBox extends React.Component {
             {this.state.topic?.hitCount} hits &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} favorites &nbsp;
           </div>
           {
-            this.state.favoritesStatus ?
-            <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">Cancel Favor</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">Favor</a>
+            this.props.account !== undefined ?
+              this.state.favoritesStatus ?
+                <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">Cancel Favor</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">Favor</a> :
+              null
           }
           <a href="#;" onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');" className="tb">
             Tweet

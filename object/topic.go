@@ -14,7 +14,7 @@
 
 package object
 
-import "strings"
+import "github.com/casbin/casbin-forum/util"
 
 type Topic struct {
 	Id            string   `xorm:"varchar(100) notnull pk" json:"id"`
@@ -138,8 +138,6 @@ func UpdateTopic(id string, topic *Topic) bool {
 }
 
 func AddTopic(topic *Topic) bool {
-	topic.Content = strings.ReplaceAll(topic.Content, "\n", "<br/>")
-
 	affected, err := adapter.engine.Insert(topic)
 	if err != nil {
 		panic(err)
@@ -155,6 +153,18 @@ func DeleteTopic(id string) bool {
 	}
 
 	return affected != 0
+}
+
+func GetTopicId() int {
+	topic := new(Topic)
+	_, err := adapter.engine.Desc("created_time").Omit("content").Limit(1).Get(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	res := util.ParseInt(topic.Id) + 1
+
+	return res
 }
 
 func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
@@ -173,7 +183,7 @@ func AddTopicHitCount(topicId string) bool {
 		return false
 	}
 
-	topic.HitCount ++
+	topic.HitCount++
 	affected, err := adapter.engine.Id(topicId).Cols("hit_count").Update(topic)
 	if err != nil {
 		panic(err)
@@ -225,4 +235,22 @@ func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
 	}
 
 	return affected != 0
+}
+
+func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
+	topics := []*Topic{}
+	err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Desc("topic.created_time").Omit("content").Limit(limit, offset).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+	res := []*TopicWithAvatar{}
+	for _, v := range topics {
+		temp := TopicWithAvatar{
+			Topic:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
+	}
+
+	return res
 }

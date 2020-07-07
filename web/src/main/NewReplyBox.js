@@ -136,7 +136,10 @@ class NewReplyBox extends React.Component {
   }
 
   render() {
-    {console.log(this.props.sticky)}
+    if (this.state.topic === null) {
+      return null
+    }
+
     return (
       <div className={["box", this.props.sticky ? "sticky" : ""].join(' ')} id="reply-box">
         <div className="cell">

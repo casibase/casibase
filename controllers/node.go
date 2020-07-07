@@ -74,3 +74,14 @@ func (c *APIController) GetNodeInfo() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *APIController) GetNodeFromTab() {
+	tab := c.Input().Get("tab")
+
+	var resp Response
+	nodes := object.GetNodeFromTab(tab)
+	resp = Response{Status: "ok", Msg: "success", Data: nodes}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
