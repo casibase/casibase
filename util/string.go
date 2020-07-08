@@ -14,7 +14,10 @@
 
 package util
 
-import "strconv"
+import (
+	"regexp"
+	"strconv"
+)
 
 func ParseInt(s string) int {
 	i, err := strconv.Atoi(s)
@@ -27,4 +30,11 @@ func ParseInt(s string) int {
 
 func IntToString(i int) string {
 	return strconv.Itoa(i)
+}
+
+func IsValidUsername(username string) bool {
+	if ok, _ := regexp.MatchString("^[a-zA-Z0-9_]{4,20}$", username); !ok {
+		return false
+	}
+	return true
 }
