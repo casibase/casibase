@@ -111,7 +111,7 @@ class App extends Component {
         <Route exact path="/t/:topicId" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <TopicBox />
+            <TopicBox account={this.state.account} />
             <div className="sep20" />
             <ReplyBox account={this.state.account} />
           </div>

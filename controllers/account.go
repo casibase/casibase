@@ -66,6 +66,16 @@ func (c *APIController) Signup() {
 	}
 	member, password, email, avatar := form.Username, form.Password, form.Email, form.Avatar
 
+	checkUserName, _ := beego.AppConfig.Bool("UserNamingRestrictions")
+	if checkUserName {
+		if !util.IsValidUsername(member) {
+			resp = Response{Status: "error", Msg: "you could just have digital, letter and underline in you name", Data: ""}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+	}
+
 	var msg string
 	if password == "" && email != "" {
 		msg = object.CheckMemberSignupWithEmail(member, email)

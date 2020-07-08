@@ -38,6 +38,7 @@ class NodeBox extends React.Component {
       showPages: [],
       favoritesNum: 1,
       favoritesStatus: true,
+      nodeInfo: [],
       url: "",
     };
     const params = new URLSearchParams(this.props.location.search)
@@ -184,7 +185,16 @@ class NodeBox extends React.Component {
   }
 
   render() {
-    if (this.state.nodeInfo == null) {
+    if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
+      return (
+        <div className="box">
+          <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span> Node is loading</div>
+          <div className="cell"><span className="gray bigger">Please wait patiently...</span></div>
+        </div>
+      )
+    }
+
+    if (this.state.nodeInfo === null) {
       return (
         <div id="Main">
           <div class="sep20"></div>
