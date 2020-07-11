@@ -148,7 +148,7 @@ class NewReplyBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button">
-              Undock Reply Box
+              Undock
             </a>
             {" "}&nbsp; &nbsp;{" "}
             <a href="#" onClick={this.backToTop.bind(this)}>
@@ -183,7 +183,7 @@ class NewReplyBox extends React.Component {
               Make your comment helpful for others as much as possible
             </span>
           </div>
-          <input onClick={this.publishReply.bind(this)} type="submit" value="Submit" className="super normal button" />
+          <input onClick={this.publishReply.bind(this)} type="submit" value="Reply" className="super normal button" />
         </div>
         <div className="inner">
           <div className="fr">

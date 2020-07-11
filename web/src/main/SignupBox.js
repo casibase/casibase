@@ -41,8 +41,8 @@ class SignupBox extends React.Component {
         <div className="cell">
           <div className="topic_content markdown_body">
             <p>{`Welcome to ${Setting.getForumName()}, this is the official forum for Casbin developers and users.`}</p>
-            <p>You can use the following ways to register as a new user:</p>
-            <p>If you have previously registered an account via Email, please click: <a href="/signin">here</a> to login.</p>
+            <p>You can use the following ways to sign up as a new user:</p>
+            <p>If you have previously signed up an account via Email, please click: <a href="/signin">here</a> to sign in.</p>
           </div>
         </div>
         <div className="dock_area">

@@ -131,9 +131,11 @@ class TopicBox extends React.Component {
             <Avatar username={this.state.topic?.author} avatar={this.state.topic?.avatar} isLarge={true} />
           </div>
           <a href="/">{Setting.getForumName()}</a>
+          {" "}
           <span className="chevron">
             &nbsp;›&nbsp;
           </span>
+          {" "}
           <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
           <div className="sep10" />
           <h1>
@@ -143,12 +145,12 @@ class TopicBox extends React.Component {
             <a href="javascript:" onClick="upVoteTopic(677954);" className="vote">
               <li className="fa fa-chevron-up" />
             </a>
-            &nbsp;
+            {" "}&nbsp;
             <a href="javascript:" onClick="downVoteTopic(677954);" className="vote">
               <li className="fa fa-chevron-down" />
             </a>
           </div>
-          &nbsp;
+          &nbsp;{" "}
           <small className="gray">
             <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount} hits
           </small>

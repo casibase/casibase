@@ -27,7 +27,7 @@ class RightSigninBox extends React.Component {
     if (window.location.pathname === "/signin") {
       return (
         <div class="box">
-          <div class="header">Other login methods</div>
+          <div class="header">Other Sign In Methods</div>
           <div class="cell" style={{textAlign: "center"}}>
             <a onClick={() => Setting.getGoogleAuthCode("signup")} href="javascript:void(0)" class="google-signin" />
           </div>
@@ -48,10 +48,10 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <a href="/signup" className="super normal button">Sign Up</a>
+            <a href="/signup" className="super normal button">Sign Up Now</a>
             <div className="sep5" />
             <div className="sep10" />
-            Already have account? please: &nbsp;<a href="/signin">Sign In</a>
+            For Existing Member: &nbsp;<a href="/signin">Sign In</a>
           </div>
         </div>
       </div>

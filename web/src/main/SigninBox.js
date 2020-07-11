@@ -152,7 +152,7 @@ class SigninBox extends React.Component {
                 <td width="120" align="right" />
                 <td width="auto" align="left">
                   <a href="/forgot">
-                    I forgot the password
+                    Forgot Password
                   </a>
                 </td>
               </tr>

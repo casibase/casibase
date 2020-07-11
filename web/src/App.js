@@ -187,8 +187,15 @@ class App extends Component {
       return null;
     }
 
+    // eslint-disable-next-line no-restricted-globals
+    const uri = location.pathname;
+
     const isSignedIn = this.state.account !== null;
     if (!isSignedIn) {
+      if (uri === "/signup") {
+        return null;
+      }
+
       return (
         <div id="Rightbar">
           <div className="sep20" />

@@ -89,7 +89,7 @@ class RightAccountBox extends React.Component {
                   </span>
                   <div className="sep3" />
                   <span className="fade">
-                    Node
+                    Nodes
                   </span>
                 </a>
               </td>
@@ -102,7 +102,7 @@ class RightAccountBox extends React.Component {
                   </span>
                 <div className="sep3" />
                 <span className="fade">
-                  Topic
+                  Topics
                 </span>
                 </a>
               </td>
@@ -138,7 +138,7 @@ class RightAccountBox extends React.Component {
               <td width="10" />
               <td width="auto" valign="middle" align="left">
                 <a href="/new">
-                  Create a Post
+                  Compose
                 </a>
               </td>
             </tr>
@@ -152,7 +152,7 @@ class RightAccountBox extends React.Component {
             </a>
           </div>
           <a href="/notifications" className="fade">
-            0 Unread
+            0 unread
           </a>
         </div>
       </div>

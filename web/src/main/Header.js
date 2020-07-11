@@ -31,11 +31,13 @@ class Header extends React.Component {
             Setting.getForumName()
           }
         </a>
+        {" "}
         <span className="chevron">
-            &nbsp;›&nbsp;
+          &nbsp;›&nbsp;
         </span>
+        {" "}
         {
-          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>Sign In &nbsp; <li className="fa fa-lock" /></div>
+          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>Sign In &nbsp;<li className="fa fa-lock" /></div>
         }
       </div>
     );

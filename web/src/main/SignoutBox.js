@@ -49,7 +49,7 @@ class SignoutBox extends React.Component {
         <div className="box">
           <Header item="Sign Out" />
           <div className="inner">
-            You have signed out, with all personal information wiped out from this computer.
+            You have signed out completely, no personal information is left on this computer.
             <div className="sep20" />
             <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value="Sign In Again" />
           </div>
