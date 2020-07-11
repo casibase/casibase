@@ -38,3 +38,9 @@ type authResponse struct {
 	Avatar          string `json:"avatar"`
 	Addition        string `json:"addition"`
 }
+
+type stsTokenResponse struct {
+	AccessKeyID     string `json:"accessKeyId"`
+	AccessKeySecret string `json:"accessKeySecret"`
+	StsToken        string `json:"stsToken"`
+}

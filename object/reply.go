@@ -15,7 +15,6 @@
 package object
 
 import (
-	"strings"
 	"sync"
 
 	"github.com/casbin/casbin-forum/util"
@@ -99,7 +98,7 @@ func UpdateReply(id string, reply *Reply) bool {
 }
 
 func AddReply(reply *Reply) bool {
-	reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
+	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
 
 	affected, err := adapter.engine.Insert(reply)
 	if err != nil {

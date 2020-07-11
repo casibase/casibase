@@ -19,6 +19,7 @@ import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
+import ReactMarkdown from "react-markdown";
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -58,7 +59,7 @@ class ReplyBox extends React.Component {
         });
       });
   }
-  
+
   handleClick(e) {
     this.handleComment(e);
   }
@@ -152,7 +153,7 @@ class ReplyBox extends React.Component {
                       </span>
                       <div className="sep5" />
                       <div className="reply_content">
-                        <span dangerouslySetInnerHTML={{__html: reply.content}} />
+                        <ReactMarkdown source={reply.content} />
                       </div>
                     </td>
                   </tr>
@@ -173,11 +174,17 @@ class ReplyBox extends React.Component {
     
     return (
       <div>
-        {this.renderReply()}
+        {
+          this.state.replies.length === 0 ?
+            <div id="no-comments-yet">
+              No reply yet
+            </div> :
+            this.renderReply()
+        }
         <div className="sep20" />
         {
           this.props.account === null ? null :
-            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} />
+            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} />
         }
       </div>
     )

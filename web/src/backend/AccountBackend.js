@@ -43,3 +43,10 @@ export function signout() {
     credentials: "include",
   }).then(res => res.json());
 }
+
+export function getStsToken() {
+  return fetch(`${Setting.ServerUrl}/api/get-member-sts-token`, {
+    method: 'GET',
+    credentials: "include",
+  }).then(res => res.json());
+}

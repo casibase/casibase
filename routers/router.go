@@ -60,6 +60,7 @@ func initAPI() {
 	beego.Router("/api/delete-member", &controllers.APIController{}, "POST:DeleteMember")
 	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	beego.Router("/api/get-member-avatar", &controllers.APIController{}, "GET:GetMemberAvatar")
+	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")

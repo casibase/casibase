@@ -154,13 +154,13 @@ class App extends Component {
         <Route exact path="/new" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <NewBox />
+            <NewBox account={this.state.account} />
           </div>
         }/>
         <Route exact path="/new/:nodeId" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <NewBox />
+            <NewBox account={this.state.account} />
           </div>
         }/>
         <Route exact path="/go/:nodeId" component={() =>

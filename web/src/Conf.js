@@ -27,3 +27,14 @@ export const GithubAuthState  = ""
 export const GithubAuthScope  = "user:email+read:user"
 
 export const GithubOauthUri = "https://github.com/login/oauth/authorize"
+
+export const OSSRegion = ""
+
+//The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
+export const OSSEndPoint = ""
+
+export const OSSBucket = ""
+
+//The path stored in your oss
+//eg: `casbin-forum` or `casbin/forum/xxx/xxx`
+export const OSSBasicPath = ""
