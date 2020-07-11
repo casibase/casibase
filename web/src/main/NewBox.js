@@ -17,6 +17,7 @@ import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
+import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import {withRouter} from "react-router-dom";
 
@@ -45,6 +46,7 @@ class NewBox extends React.Component {
     this.getNodes();
 
     this.updateFormField("nodeId", "qna");
+    Setting.initOSSClient(this.props.account?.id)
   }
 
   getNodes() {
@@ -104,7 +106,7 @@ class NewBox extends React.Component {
   render() {
     if (this.state.nodeId !== undefined) {
       return (
-        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"}/>
+        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} memberId={this.props.account?.id} />
       )
     }
 
@@ -138,7 +140,10 @@ class NewBox extends React.Component {
           <div style={{textAlign: "left", borderBottom: "1px solid #e2e2e2", fontSize: "14px", lineHeight: "120%"}}>
             <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
             <CodeMirror
+              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              onPaste={() => Tools.uploadPic()}
               value={this.state.form.body}
+              onDrop={() => Tools.uploadPic()}
               options={{mode: 'markdown', lineNumbers: true}}
               onBeforeChange={(editor, data, value) => {
                 this.updateFormField("body", value);

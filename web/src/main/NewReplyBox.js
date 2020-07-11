@@ -19,6 +19,8 @@ import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import '../Reply.css'
+import * as Tools from "./Tools";
+import {Controlled as CodeMirror} from "react-codemirror2";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -36,6 +38,7 @@ class NewReplyBox extends React.Component {
 
   componentDidMount() {
     this.getTopic();
+    Setting.initOSSClient(this.props.member)
   }
 
   getTopic() {
@@ -122,8 +125,8 @@ class NewReplyBox extends React.Component {
       });
   }
 
-  handleChange(e) {
-    this.props.onReplyChange(e.target.value);
+  handleChange(value) {
+    this.props.onReplyChange(value);
     this.updateFormField("content", this.props.content);
   }
 
@@ -158,7 +161,21 @@ class NewReplyBox extends React.Component {
           this.renderProblem()
         }
         <div className="cell" >
-          <textarea onChange={this.handleChange} value={this.props.content} name="content" maxLength="10000" className="mll" id="reply_content" onFocus={() => this.dockBox(true)} style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} />
+          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className="mll" id="reply_content" >
+            <CodeMirror
+              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              onPaste={() => Tools.uploadPic()}
+              value={this.props.content}
+              onFocus={() => this.dockBox(true)}
+              onDrop={() => Tools.uploadPic()}
+              options={{mode: 'markdown', lineNumbers: false}}
+              onBeforeChange={(editor, data, value) => {
+                this.handleChange(value)
+              }}
+              onChange={(editor, data, value) => {
+              }}
+            />
+          </div>
           <div className="sep10" />
           <div className="fr">
             <div className="sep5" />

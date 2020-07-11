@@ -18,6 +18,8 @@ import moment from "moment";
 import {animateScroll as scroll} from "react-scroll";
 import md5 from 'js-md5'
 import * as Conf from "./Conf"
+import * as AccountBackend from "./backend/AccountBackend";
+import oss from "ali-oss";
 
 export let ServerUrl = '';
 export let ClientUrl = '';
@@ -129,4 +131,37 @@ export function getGoogleAuthCode(method) {
 
 export function getGithubAuthCode(method) {
   window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`
+}
+
+export let OSSClient
+export let OSSUrl
+export let OSSFileUrl
+
+export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
+  let newClient
+  newClient = new oss({
+    region: Conf.OSSRegion,
+    accessKeyId: accessKeyId,
+    accessKeySecret: accessKeySecret,
+    bucket: Conf.OSSBucket,
+    stsToken: stsToken
+  });
+  OSSClient = newClient
+}
+
+export function initOSSClient(id) {
+  getOSSClient(initNewOSSClient)
+  let url, fileUrl
+  url = `https://${Conf.OSSBucket}.${Conf.OSSEndPoint}/${Conf.OSSBasicPath}/${id}`
+  fileUrl = `${Conf.OSSBasicPath}/${id}`
+  OSSUrl = url
+  OSSFileUrl = fileUrl
+}
+
+export function getOSSClient(initNewOSSClient) {
+  AccountBackend.getStsToken().then((res) => {
+    if (res.status === "ok") {
+      initNewOSSClient(res.data.accessKeyId, res.data.accessKeySecret, res.data.stsToken)
+    }
+  });
 }

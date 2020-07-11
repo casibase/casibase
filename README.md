@@ -76,6 +76,33 @@ export const GithubAuthState  = "xxx"
 export const GithubAuthScope  = "user:email+read:user"
 ```
 
+- Fill in your Ali OSS configuration information
+
+    We use Ali OSS to save the user's pictures.
+    
+   Informations in Conf.js
+    ```javascript
+  export const OSSRegion = "" //your oss region
+  
+  //The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
+  export const OSSEndPoint = "" //your oss end point
+  
+  export const OSSBucket = "" //your oss bucket
+  
+  //The path stored in your oss
+  //eg: `casbin-forum` or `casbin/forum/xxx/xxx`
+  export const OSSBasicPath = "" //prefix for saved pictures 
+    ```
+  Informations in app.conf.
+  You could get your roleArn in https://ram.console.aliyun.com/roles.
+  Before that, you should have a independent account for this application, and add `AliyunOSSFullAccess`.
+  By the way, you should set your bucket permissions to public read.
+    ```ini
+  accessKeyID     = ""
+  accessKeySecret = ""
+  roleArn         = ""
+    ```
+  
 - Run backend (in port 7000):
 
 ```shell

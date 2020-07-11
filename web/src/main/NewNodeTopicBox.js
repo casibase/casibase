@@ -19,6 +19,8 @@ import * as Setting from "../Setting";
 import {withRouter} from "react-router-dom";
 
 import "codemirror/lib/codemirror.css"
+import {Controlled as CodeMirror} from "react-codemirror2";
+import * as Tools from "./Tools";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown')
@@ -43,6 +45,7 @@ class NewNodeTopicBox extends React.Component {
 
   componentDidMount() {
     this.getNodeInfo()
+    Setting.initOSSClient(this.props.account?.id)
   }
 
   updateFormField(key, value) {
@@ -174,11 +177,20 @@ class NewNodeTopicBox extends React.Component {
             }
           </textarea>
           <div class="sep10"></div>
-          <textarea name="content" class="mll" id="topic_content" placeholder="Content" maxLength="20000" onChange={event => {this.updateFormField("body", event.target.value)}} >
-            {
-              this.state.form.body
-            }
-          </textarea>
+          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} name="content" class="mll" id="topic_content" >
+            <CodeMirror
+              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              onPaste={() => Tools.uploadPic()}
+              value={this.state.form.body}
+              onDrop={() => Tools.uploadPic()}
+              options={{mode: 'markdown', lineNumbers: false}}
+              onBeforeChange={(editor, data, value) => {
+                this.updateFormField("body", value)
+              }}
+              onChange={(editor, data, value) => {
+              }}
+            />
+          </div>
           <div class="sep10"></div>
           <input type="hidden" name="once" />
           <input type="submit" value="Publish" class="super normal button" onClick={this.publishTopic.bind(this)} />
@@ -210,11 +222,20 @@ class NewNodeTopicBox extends React.Component {
             </tr>
             <tr>
               <td>
-                <textarea className="mle" rows="10" name="content" id="topic_content" maxLength="20000" onChange={event => {this.updateFormField("body", event.target.value)}} >
-                  {
-                    this.state.form.body
-                  }
-                </textarea>
+                <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none"}} className="mll" id="topic_content" >
+                  <CodeMirror
+                    editorDidMount={(editor) => Tools.attachEditor(editor)}
+                    onPaste={() => Tools.uploadPic()}
+                    value={this.state.form.body}
+                    onDrop={() => Tools.uploadPic()}
+                    options={{mode: 'markdown', lineNumbers: false}}
+                    onBeforeChange={(editor, data, value) => {
+                      this.updateFormField("body", value)
+                    }}
+                    onChange={(editor, data, value) => {
+                    }}
+                  />
+                </div>
               </td>
             </tr>
             <tr>
