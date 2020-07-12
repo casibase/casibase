@@ -128,7 +128,7 @@ class TopicBox extends React.Component {
       <div className="box" style={{borderBottom: "0px"}}>
         <div className="header">
           <div className="fr">
-            <Avatar username={this.state.topic?.author} avatar={this.state.topic?.avatar} isLarge={true} />
+            <Avatar username={this.state.topic?.author} size="large" avatar={this.state.topic?.avatar} />
           </div>
           <a href="/">{Setting.getForumName()}</a>
           {" "}

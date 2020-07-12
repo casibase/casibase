@@ -24,35 +24,27 @@ class Avatar extends React.Component {
   }
 
   render() {
+    let style;
     if (this.props.size === "small") {
-      if (this.props.avatar !== "") {
-        return <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "24px", maxHeight: "24px"}} alt={this.props.username} />
-      }
-      return (
-        <img src={Setting.getUserAvatar(this.props.username)} className="avatar" border="0" align="default" style={{maxWidth: "24px", maxHeight: "24px"}} alt={this.props.username} />
-      )
+      style = {maxWidth: "24px", maxHeight: "24px"};
+    } else if (this.props.size === "large") {
+      style = {maxWidth: "73px", maxHeight: "73px"};
+    } else {
+      style = {maxWidth: "48px", maxHeight: "48px"};
     }
 
+    let src;
     if (this.props.avatar !== "") {
-      if (this.props.isLarge) {
-        return (
-          <a href={`/member/${this.props.username}`}>
-            <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "73px", maxHeight: "73px"}} alt={this.props.username} />
-          </a>
-        );
-      }
-      return (
-        <a href={`/member/${this.props.username}`}>
-          <img src={this.props.avatar} className="avatar" border="0" align="default" style={{maxWidth: "48px", maxHeight: "48px"}} alt={this.props.username} />
-        </a>
-      );
+      src = this.props.avatar;
+    } else {
+      src = Setting.getUserAvatar(this.props.username);
     }
 
     return (
       <a href={`/member/${this.props.username}`}>
-        <img src={Setting.getUserAvatar(this.props.username, this.props.isLarge)} className="avatar" border="0" align="default" alt={this.props.username} />
+        <img src={src} className="avatar" border="0" align="default" style={style} alt={this.props.username}/>
       </a>
-    );
+    )
   }
 }
 

@@ -95,7 +95,7 @@ class MemberBox extends React.Component {
             <tbody>
             <tr>
               <td width="73" valign="top" align="center">
-                <Avatar username={this.state.member?.id} isLarge={true} avatar={this.state.member?.avatar} />
+                <Avatar username={this.state.member?.id} size="large" avatar={this.state.member?.avatar} />
                 <div className="sep10" />
                 <strong className="online">ONLINE</strong>
               </td>
@@ -123,7 +123,7 @@ class MemberBox extends React.Component {
                 <span className="gray">
                   {Setting.getForumName()} No. {this.state.member?.no} member, joined on {Setting.getFormattedDate(this.state.member?.createdTime)}
                   <div className="sep5" />
-                  Today's activity ranking <a href="/top/dau">{this.state.member?.ranking}</a>
+                  Today's ranking: <a href="/top/dau">{this.state.member?.ranking}</a>
                   <div className="sep5" />
                   <img src={Setting.getStatic("/static/img/mod@2x.png")} height="14px" align="absmiddle" /> authorized to manage the community
                 </span>
