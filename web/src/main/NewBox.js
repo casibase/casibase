@@ -209,7 +209,7 @@ class NewBox extends React.Component {
           <div className="topic_content">
             <div className="markdown_body">
               {
-                !this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} />
+                !this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} escapeHtml={false} />
               }
             </div>
           </div>

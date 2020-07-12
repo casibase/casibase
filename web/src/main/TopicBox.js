@@ -161,7 +161,7 @@ class TopicBox extends React.Component {
         <div className="cell">
           <div className="topic_content">
             <div className="markdown_body">
-              <ReactMarkdown source={this.state.topic?.content} />
+              <ReactMarkdown source={this.state.topic?.content} escapeHtml={false} />
             </div>
           </div>
         </div>

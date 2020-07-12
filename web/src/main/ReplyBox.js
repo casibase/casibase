@@ -153,7 +153,7 @@ class ReplyBox extends React.Component {
                       </span>
                       <div className="sep5" />
                       <div className="reply_content">
-                        <ReactMarkdown source={reply.content} />
+                        <ReactMarkdown source={reply.content} escapeHtml={false} />
                       </div>
                     </td>
                   </tr>
