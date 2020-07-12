@@ -86,15 +86,17 @@ class LatestReplyBox extends React.Component {
       <div>
         <div className="dock_area">
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-            <tr>
-              <td style={{padding: "10px 15px 8px 15px", fontSize: "12px", textAlign: "left"}}>
-                <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
-                <span className="gray">replied <a href={`/member/${reply.author}`}> {reply.author} </a> 's topic <span
-                  className="chevron">›</span> <a href={`/go/${reply.nodeId}`}> {reply.nodeName} </a>
-                  <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}> {reply.topicTitle} </a>
-                </span>
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td style={{padding: "10px 15px 8px 15px", fontSize: "12px", textAlign: "left"}}>
+                  <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
+                  <span className="gray">replied <a href={`/member/${reply.author}`}> {reply.author} </a> 's topic <span
+                    className="chevron">›</span> <a href={`/go/${reply.nodeId}`}> {reply.nodeName} </a>
+                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}> {reply.topicTitle} </a>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div className="inner">
