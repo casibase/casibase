@@ -15,6 +15,7 @@
 import React from "react";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class Header extends React.Component {
   constructor(props) {
@@ -48,15 +49,15 @@ class Header extends React.Component {
       return (
         <td width="570" align="right" style={{paddingTop: "2px"}}>
           <a href="/" className="top">
-            Home
+            {i18next.t("general:Home")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="/signup" className="top">
-            Sign Up
+            {i18next.t("general:Sign Up")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="/signin" className="top">
-            Sign In
+            {i18next.t("general:Sign In")}
           </a>
         </td>
       )
@@ -64,7 +65,7 @@ class Header extends React.Component {
       return (
         <td width="570" align="right" style={{paddingTop: "2px"}}>
           <a href="/" className="top">
-            Home
+            {i18next.t("general:Home")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href={`/member/${username}`} className="top">
@@ -72,19 +73,19 @@ class Header extends React.Component {
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="/notes" className="top">
-            Note
+            {i18next.t("general:Note")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="/t" className="top">
-            Timeline
+            {i18next.t("general:Timeline")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="/settings" className="top">
-            Setting
+            {i18next.t("general:Setting")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="#;" onClick={this.signout.bind(this)} className="top">
-            Sign Out
+            {i18next.t("general:Sign Out")}
           </a>
         </td>
       )

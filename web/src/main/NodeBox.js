@@ -21,6 +21,7 @@ import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import NewNodeTopicBox from "./NewNodeTopicBox";
+import i18next from "i18next";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -148,12 +149,12 @@ class NodeBox extends React.Component {
               <img src={nodeInfo?.image} border="0" align="default" width="72" alt={nodeInfo?.nodeName}/></div>
           </div>
           <div className="node_info">
-            <div className="fr f12"><span>Total topics: </span>
+            <div className="fr f12"><span>{i18next.t("node:Total topics")}&nbsp;</span>
               <strong>{this.state.topicNum}</strong>
               {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
               {
                 this.props.account !== null ?
-                  this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0)" className="node_header_link">Cancel favorite</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0)" className="node_header_link">Add to favorite</a> :
+                  this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0)" className="node_header_link">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0)" className="node_header_link">{i18next.t("fav:Add to favorite")}</a> :
                   null
               }
             </div>
@@ -163,13 +164,13 @@ class NodeBox extends React.Component {
             <div className="sep10"></div>
             <div className="sep5"></div>
             <div className="fr" style={{paddingLeft: "10px"}}>
-              <input type="button" className="super normal button" value="new topic"
+              <input type="button" className="super normal button" value={i18next.t("node:new topic")}
                      onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
             </div>
             <span className="f12">{nodeInfo?.desc}</span>
             <div className="sep10"></div>
-            <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">All topics</a>
-              <a href={`/go/${nodeId}/links`} className="node_header_tab">Related links</a>
+            <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
+              <a href={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</a>
             </div>
           </div>
         </div>
@@ -177,8 +178,8 @@ class NodeBox extends React.Component {
         <TopicList topics={this.state.topics} showNodeName={false} showAvatar={true} />
         {this.showPageColumn()}
         <div className="cell" align="center">
-          <div className="fr">{`${this.state.favoritesNum} members have added this node to favorites`}</div>
-          <span className="gray">{`Topic ${from} to ${end} of all ${this.state.topicNum} topics`}</span>
+          <div className="fr">{`${this.state.favoritesNum} ${i18next.t("node:members have added this node to favorites")}`}</div>
+          <span className="gray">{`${i18next.t("node:Topic")} ${from} ${i18next.t("node:to")} ${end} ${i18next.t("node:of all")} ${this.state.topicNum} ${i18next.t("node:topics")}`}</span>
         </div>
       </div>
     );
@@ -189,7 +190,7 @@ class NodeBox extends React.Component {
       return (
         <div className="box">
           <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span> Node is loading</div>
-          <div className="cell"><span className="gray bigger">Please wait patiently...</span></div>
+          <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       )
     }
@@ -201,26 +202,26 @@ class NodeBox extends React.Component {
           <div class="box">
             <div class="header">
               <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span> Node not found</div>
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Node not found")}</div>
             <div class="cell">
-              The node you are trying to view does not exist, there are several possibilities:
+              {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
               <div class="sep10"></div>
               <ul>
-                <li>You entered a node ID that does not exist.</li>
-                <li>The node is currently in invisible state.</li>
+                <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
+                <li>{i18next.t("error:The node is currently in invisible state.")}</li>
               </ul>
             </div>
             <div class="inner">
               {
                 this.props.account === null ?
                   <span className="gray">
-                    <span className="chevron">‹</span> &nbsp;Back to <a href="/">Home Page</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
                   </span> :
                   <span className="gray">
-                    <span className="chevron">‹</span> &nbsp;Back to <a href="/">Home Page</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
                     <br/>
-                    <span className="chevron">‹</span> &nbsp;Back to <a
-                    href={`/member/${this.props.account?.id}`}>My profile</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a
+                    href={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</a>
                   </span>
               }
             </div>

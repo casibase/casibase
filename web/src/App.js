@@ -40,6 +40,8 @@ import NewReplyBox from "./main/NewReplyBox";
 import NodesBox from "./main/NodeBox";
 import FavoritesBox from "./main/FavoritesBox";
 import RecentTopicsBox from "./main/RecentTopicsBox";
+import SelectLanguageBox from "./main/SelectLanguageBox";
+import "./i18n"
 
 class App extends Component {
   constructor(props) {
@@ -54,6 +56,7 @@ class App extends Component {
   }
 
   componentWillMount() {
+    Setting.SetLanguage();
     this.getAccount();
   }
 
@@ -176,6 +179,12 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <RecentTopicsBox />
+          </div>
+        }/>
+        <Route exact path="/select/language" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <SelectLanguageBox />
           </div>
         }/>
       </Switch>

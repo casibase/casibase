@@ -18,6 +18,7 @@ import {withRouter} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
+import i18next from "i18next";
 
 class RecentTopicsBox extends React.Component {
   constructor(props) {
@@ -78,10 +79,10 @@ class RecentTopicsBox extends React.Component {
       <div className="box">
         <div className="header">
           <div className="fr f12">
-            <span className="fade">{`Total Topics: ${this.state.topicsNum}`}</span>
+            <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>
           </div>
           <a href="/">{Setting.getForumName()}</a>
-          <span className="chevron">&nbsp;›&nbsp;</span> Recent Topics
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Recent Topics")}
         </div>
         {this.showPageColumn()}
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />

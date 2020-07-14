@@ -21,6 +21,7 @@ import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import {withRouter} from "react-router-dom";
 
+import i18next from "i18next";
 import $ from "jquery"
 import Select2 from 'react-select2-wrapper';
 
@@ -112,7 +113,7 @@ class NewBox extends React.Component {
 
     return (
       <div className="box" id="box">
-        <Header item="New Topic" />
+        <Header item={i18next.t("new:New Topic")} />
         <form method="post" action="/new" id="compose">
           <div className="cell">
             <div className="fr fade" id="title_remaining">
@@ -120,10 +121,10 @@ class NewBox extends React.Component {
                 120 - this.countField("title")
               }
             </div>
-            Topic Title
+            {i18next.t("new:Topic Title")}
           </div>
           <div className="cell" style={{padding: "0px"}}>
-            <textarea onChange={event => {this.updateFormField("title", event.target.value)}} className="msl" rows="1" maxLength="120" id="topic_title" name="title" autoFocus="autofocus" placeholder="Please input the topic title. The body can be empty if the title expresses the full idea">
+            <textarea onChange={event => {this.updateFormField("title", event.target.value)}} className="msl" rows="1" maxLength="120" id="topic_title" name="title" autoFocus="autofocus" placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
               {
                 this.state.form.title
               }
@@ -135,7 +136,7 @@ class NewBox extends React.Component {
                 20000 - this.countField("body")
               }
             </div>
-            Body
+            {i18next.t("new:Body")}
           </div>
           <div style={{textAlign: "left", borderBottom: "1px solid #e2e2e2", fontSize: "14px", lineHeight: "120%"}}>
             <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
@@ -175,13 +176,13 @@ class NewBox extends React.Component {
               }}
               options={
                 {
-                  placeholder: "Please select a node",
+                  placeholder: i18next.t("new:Please select a node"),
                 }
               }
             />
           </div>
           <div className="cell" style={{lineHeight: "190%"}}>
-            Hottest Nodes &nbsp; {
+            {i18next.t("new:Hottest Nodes")} &nbsp; {
               this.state.nodes.map((node, i) => {
                 return (
                   <div style={{display: "inline"}}>
@@ -197,12 +198,12 @@ class NewBox extends React.Component {
             <span id="error_message" /> &nbsp;
             <button type="button" className="super normal button" onClick={this.publishTopic.bind(this)}>
               <li className="fa fa-paper-plane" />
-              &nbsp;Publish
+              &nbsp;{i18next.t("new:Publish")}
             </button>
           </div>
           <button className="super normal button" onClick={this.enablePreview.bind(this)}>
             <li className="fa fa-eye" />
-            &nbsp;Preview
+            &nbsp;{i18next.t("new:Preview")}
           </button>
         </div>
         <div className="inner" id="topic_preview">

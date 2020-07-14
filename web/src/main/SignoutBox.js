@@ -16,6 +16,7 @@ import React from "react";
 import Header from "./Header";
 import * as Setting from "../Setting";
 import * as AccountBackend from "../backend/AccountBackend";
+import i18next from "i18next";
 
 class SignoutBox extends React.Component {
   constructor(props) {
@@ -47,22 +48,22 @@ class SignoutBox extends React.Component {
     if (!isSignedIn) {
       return (
         <div className="box">
-          <Header item="Sign Out" />
+          <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            You have signed out completely, no personal information is left on this computer.
+            {i18next.t("member:You have signed out completely, no personal information is left on this computer.")}
             <div className="sep20" />
-            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value="Sign In Again" />
+            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value={i18next.t("member:Sign In Again")} />
           </div>
         </div>
       );
     } else {
       return (
         <div className="box">
-          <Header item="Sign Out" />
+          <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            We had a problem when you signed out, please try again.
+            {i18next.t("error:We had a problem when you signed out, please try again.")}
             <div className="sep20" />
-            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value="Retry Sign Out" />
+            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value={i18next.t("error:Retry Sign Out")} />
           </div>
         </div>
       )

@@ -18,6 +18,7 @@ import * as MemberBackend from "../backend/MemberBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import i18next from "i18next";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -86,6 +87,17 @@ class MemberBox extends React.Component {
   }
 
   render() {
+    if (this.state.member === null) {
+      return (
+        <div className="box">
+          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+            className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Member does not exist")}</div>
+          <div className="cell"><span className="gray bigger">404 Member Not Found</span></div>
+          <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+        </div>
+      )
+    }
+
     const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.id
 
     return (
@@ -104,8 +116,8 @@ class MemberBox extends React.Component {
                 <div className="fr" style={{display: showWatch ? "" : "none"}}>
                   {
                     this.state.favoritesStatus ?
-                      <input type="button" value="Cancel Following" onClick={() => this.deleteFavorite(this.state.member?.id)} className="super inverse button" /> :
-                      <input type="button" value="Watch" onClick={() => this.addFavorite(this.state.member?.id)} className="super special button" />
+                      <input type="button" value={i18next.t("member:Cancel Following")} onClick={() => this.deleteFavorite(this.state.member?.id)} className="super inverse button" /> :
+                      <input type="button" value={i18next.t("member:Watch")} onClick={() => this.addFavorite(this.state.member?.id)} className="super special button" />
                   }
                   <div className="sep10" />
                   <input type="button" value="Block" onClick="if (confirm('Are you sure to block xxx?')) { location.href = '/block/1024?t=1493648974'; }" className="super normal button" />
@@ -121,9 +133,9 @@ class MemberBox extends React.Component {
                 </span>
                 <div className="sep10" />
                 <span className="gray">
-                  {Setting.getForumName()} No. {this.state.member?.no} member, joined on {Setting.getFormattedDate(this.state.member?.createdTime)}
+                  {Setting.getForumName()} {i18next.t("member:No.")} {this.state.member?.no} {i18next.t("member:member, joined on")} {Setting.getFormattedDate(this.state.member?.createdTime)}
                   <div className="sep5" />
-                  Today's ranking: <a href="/top/dau">{this.state.member?.ranking}</a>
+                  {i18next.t("member:Today's ranking")} <a href="/top/dau">{this.state.member?.ranking}</a>
                   <div className="sep5" />
                   <img src={Setting.getStatic("/static/img/mod@2x.png")} height="14px" align="absmiddle" /> authorized to manage the community
                 </span>

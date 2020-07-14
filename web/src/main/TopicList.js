@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
+import i18next from "i18next";
 
 class TopicList extends React.Component {
   constructor(props) {
@@ -96,7 +97,7 @@ class TopicList extends React.Component {
                   topic.lastReplyUser === "" ? null : (
                     <div style={{display: "inline"}}>
                       {" "}&nbsp;•&nbsp;{" "}
-                      last reply from <strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                      {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
                     </div>
                   )
                 }

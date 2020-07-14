@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import i18next from "i18next";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
@@ -89,7 +90,7 @@ class RightAccountBox extends React.Component {
                   </span>
                   <div className="sep3" />
                   <span className="fade">
-                    Nodes
+                    {i18next.t("bar:Nodes")}
                   </span>
                 </a>
               </td>
@@ -102,7 +103,7 @@ class RightAccountBox extends React.Component {
                   </span>
                 <div className="sep3" />
                 <span className="fade">
-                  Topics
+                  {i18next.t("bar:Topics")}
                 </span>
                 </a>
               </td>
@@ -113,7 +114,7 @@ class RightAccountBox extends React.Component {
                   </span>
                   <div className="sep3" />
                   <span className="fade">
-                    Watch
+                    {i18next.t("bar:Watch")}
                   </span>
                 </a>
               </td>
@@ -138,7 +139,7 @@ class RightAccountBox extends React.Component {
               <td width="10" />
               <td width="auto" valign="middle" align="left">
                 <a href="/new">
-                  Compose
+                  {i18next.t("bar:Compose")}
                 </a>
               </td>
             </tr>
@@ -152,7 +153,7 @@ class RightAccountBox extends React.Component {
             </a>
           </div>
           <a href="/notifications" className="fade">
-            0 unread
+            0{" "}{i18next.t("bar:unread")}
           </a>
         </div>
       </div>

@@ -20,6 +20,7 @@ import moment from "moment";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
 import {withRouter} from "react-router-dom";
+import i18next from "i18next";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -222,7 +223,7 @@ class TopicPage extends React.Component {
         </div>
         <div className="cell" id="SecondaryTabs">
           <div className="fr">
-            <a href={`/new/${this.state.tabInfo?.defaultNode}`}>Create a Post</a>
+            <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{i18next.t("topic:Create a Post")}</a>
             &nbsp;
             <li className="fa fa-caret-right gray" />
           </div>
@@ -234,7 +235,7 @@ class TopicPage extends React.Component {
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         <div className="inner">
-          <span className="chevron">»</span> &nbsp;<a href="/recent">More Topics</a>
+          <span className="chevron">»</span> &nbsp;<a href="/recent">{i18next.t("topic:More Topics")}</a>
         </div>
       </div>
     );

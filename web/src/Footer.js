@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class Footer extends React.Component {
   constructor(props) {
@@ -43,7 +44,7 @@ class Footer extends React.Component {
             {/*  </a>*/}
             {/*</div>*/}
             <strong>
-              <a href="/about" className="dark" target="_self">About</a>
+              <a href="/about" className="dark" target="_self">{i18next.t("footer:About")}</a>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
@@ -55,26 +56,26 @@ class Footer extends React.Component {
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/mission" className="dark" target="_self">Mission</a>
+              <a href="/mission" className="dark" target="_self">{i18next.t("footer:Mission")}</a>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/advertise" className="dark" target="_self">Advertise</a>
+              <a href="/advertise" className="dark" target="_self">{i18next.t("footer:Advertise")}</a>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/advertise/2019.html" className="dark" target="_self">Thanks</a>
+              <a href="/advertise/2019.html" className="dark" target="_self">{i18next.t("footer:Thanks")}</a>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/tools" className="dark" target="_self">Tools</a>
+              <a href="/tools" className="dark" target="_self">{i18next.t("footer:Tools")}</a>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              2645 Online
+              2645 {i18next.t("footer:Online")}
             </strong>
             {" "}&nbsp;{" "}
-            <span className="fade">Highest 5168</span>
+            <span className="fade">{i18next.t("footer:Highest")} 5168</span>
             {" "}&nbsp;{" "}
             <span className="snow">·</span>
             {" "}&nbsp;{" "}
@@ -84,7 +85,7 @@ class Footer extends React.Component {
               Select Language
             </a>
             <div className="sep20" />
-            Community of Creators
+            {i18next.t("footer:Community of Creators")}
             <div className="sep5" />
             World is powered by code
             <div className="sep20" />

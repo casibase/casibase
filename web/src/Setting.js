@@ -20,6 +20,8 @@ import md5 from 'js-md5'
 import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import oss from "ali-oss";
+import "./i18n"
+import i18next from "i18next";
 
 export let ServerUrl = '';
 export let ClientUrl = '';
@@ -164,4 +166,42 @@ export function getOSSClient(initNewOSSClient) {
       initNewOSSClient(res.data.accessKeyId, res.data.accessKeySecret, res.data.stsToken)
     }
   });
+}
+
+export function SetLanguage() {
+  let language = localStorage.getItem('language');
+  if (language === undefined) {
+    language = "en"
+  }
+  i18next.changeLanguage(language)
+  changeMomentLanguage(language)
+}
+
+export function ChangeLanguage(language) {
+  localStorage.setItem("language", language)
+  i18next.changeLanguage(language)
+  goToLink("/")
+}
+
+export function changeMomentLanguage(lng) {
+  if (lng === "zh") {
+    moment.locale('zh', {
+      relativeTime: {
+        future: '%s内',
+        past: '%s前',
+        s: '几秒',
+        ss: '%d秒',
+        m: '1分钟',
+        mm: '%d分钟',
+        h: '1小时',
+        hh: '%d小时',
+        d: '1天',
+        dd: '%d天',
+        M: '1个月',
+        MM: '%d个月',
+        y: '1年',
+        yy: '%d年'
+      }
+    })
+  }
 }

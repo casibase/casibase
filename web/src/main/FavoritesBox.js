@@ -19,6 +19,7 @@ import * as FavoritesBackend from "../backend/FavoritesBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
 import * as NodeBackend from "../backend/NodeBackend";
+import i18next from "i18next";
 
 class FavoritesBox extends React.Component {
   constructor(props) {
@@ -109,9 +110,9 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span> My favorite nodes
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My favorite nodes")}
               <div className="fr f12">
-                <span className="snow">Total nodes: &nbsp;</span>
+                <span className="snow">{i18next.t("fav:Total nodes")}{" "}&nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
             <div id="my-nodes">
@@ -128,9 +129,9 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span> My favorite topics
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My favorite topics")}
               <div className="fr f12">
-                <span className="snow">Total topics: &nbsp;</span>
+                <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
             <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
@@ -141,9 +142,9 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span> Latest topics from people I followed
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:Latest topics from people I followed")}
               <div className="fr f12">
-                <span className="snow">Total topics: &nbsp;</span>
+                <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
             {this.showPageColumn()}

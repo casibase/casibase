@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import '../Reply.css'
 import * as Tools from "./Tools";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import i18next from "i18next";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -70,7 +71,7 @@ class NewReplyBox extends React.Component {
 
     let problems = [];
     if (this.state.form.content === "") {
-      problems.push("Reply content cannot be empty");
+      problems.push(i18next.t("error:Reply content cannot be empty"));
     }
 
     return problems.length === 0
@@ -83,7 +84,7 @@ class NewReplyBox extends React.Component {
 
     let problems = [];
     if (this.state.form.content === "") {
-      problems.push("Reply content cannot be empty");
+      problems.push(i18next.t("error:Reply content cannot be empty"));
     }
 
     if (problems.length === 0) {
@@ -92,7 +93,7 @@ class NewReplyBox extends React.Component {
 
     return (
       <div className="problem">
-        Please resolve the following issues before submitting:
+        {i18next.t("reply:Please resolve the following issues before submitting")}
         <ul>
           {
             problems.map((problem, i) => {
@@ -148,14 +149,14 @@ class NewReplyBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button">
-              Undock
+              {i18next.t("reply:Undock")}
             </a>
             {" "}&nbsp; &nbsp;{" "}
             <a href="#" onClick={this.backToTop.bind(this)}>
-              Back to Top
+              {i18next.t("reply:Back to Top")}
             </a>
           </div>
-          Add a New Comment
+          {i18next.t("reply:Add a New Comment")}
         </div>
         {
           this.renderProblem()
@@ -180,10 +181,10 @@ class NewReplyBox extends React.Component {
           <div className="fr">
             <div className="sep5" />
             <span className="gray">
-              Make your comment helpful for others as much as possible
+              {i18next.t("reply:Make your comment helpful for others as much as possible")}
             </span>
           </div>
-          <input onClick={this.publishReply.bind(this)} type="submit" value="Reply" className="super normal button" />
+          <input onClick={this.publishReply.bind(this)} type="submit" value={i18next.t("reply:Reply")} className="super normal button" />
         </div>
         <div className="inner">
           <div className="fr">

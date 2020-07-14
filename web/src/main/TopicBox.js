@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
 require("codemirror/mode/markdown/markdown");
@@ -71,7 +72,7 @@ class TopicBox extends React.Component {
 
     return (
       <div className="outdated">
-        This is a topic created {diffDays} days ago, the information in it may have changed.
+        {i18next.t("topic:This is a topic created")} {diffDays} {i18next.t("topic:days ago, the information in it may have changed.")}
       </div>
     )
   }
@@ -108,8 +109,8 @@ class TopicBox extends React.Component {
     if (this.state.topic !== null && this.state.topic.length === 0) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span> Topic is loading</div>
-          <div class="cell"><span class="gray bigger">Please wait patiently...</span></div>
+          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Topic is loading")}</div>
+          <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       )
     }
@@ -117,9 +118,9 @@ class TopicBox extends React.Component {
     if (this.state.topic === null) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span> Topic not found</div>
+          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Topic not found")}</div>
           <div class="cell"><span class="gray bigger">404 Topic Not Found</span></div>
-          <div class="inner">←  <a href="/">Back to Home Page</a></div>
+          <div class="inner">←  <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
         </div>
       )
     }
@@ -152,7 +153,7 @@ class TopicBox extends React.Component {
           </div>
           &nbsp;{" "}
           <small className="gray">
-            <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount} hits
+            <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
           </small>
         </div>
         {
@@ -167,12 +168,12 @@ class TopicBox extends React.Component {
         </div>
         <div className="topic_buttons">
           <div className="fr topic_stats" style={{paddingTop: "4px"}}>
-            {this.state.topic?.hitCount} hits &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} favorites &nbsp;
+            {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
           </div>
           {
             this.props.account !== undefined ?
               this.state.favoritesStatus ?
-                <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">Cancel Favor</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">Favor</a> :
+                <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">{i18next.t("topic:Cancel Favor")}</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">{i18next.t("topic:Favor")}</a> :
               null
           }
           <a href="#;" onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');" className="tb">
@@ -184,12 +185,12 @@ class TopicBox extends React.Component {
           </a>
           &nbsp;
           <a href="#;" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="tb">
-            Ignore
+            {i18next.t("topic:Ignore")}
           </a>
           &nbsp;
           <div id="topic_thank">
             <a href="#;" onClick="if (confirm('Are you sure to thank the topic's author?')) { thankTopic(123456, '39724'); }" className="tb">
-              Thank
+              {i18next.t("topic:Thank")}
             </a>
           </div>
         </div>
