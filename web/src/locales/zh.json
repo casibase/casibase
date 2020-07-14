@@ -1,0 +1,189 @@
+{
+  "general":
+  {
+    "Home": "首页",
+    "Sign Up": "注册",
+    "Sign In": "登录",
+    "Note": "记事本",
+    "Timeline": "时间轴",
+    "Setting": "设置",
+    "Sign Out": "登出",
+    "Username": "用户名",
+    "Password": "密码",
+    "Forgot Password": "我忘记密码了",
+    "Username or Email address": "用户名或电子邮箱地址"
+  },
+  "bar":
+  {
+    "Nodes": "节点收藏",
+    "Topics": "主题收藏",
+    "Watch": "特别关注",
+    "Compose": "创作新主题",
+    "unread": "条未读提醒",
+    "For Existing Member": "已注册用户请",
+    "Sign In": "登录",
+    "Sign Up Now": "现在注册",
+    "Other Sign In Methods": "其他登录方式"
+  },
+  "topic":
+  {
+    "last reply from": "最后回复来自",
+    "Cancel Favor": "取消收藏",
+    "Favor": "加入收藏",
+    "hits": "次点击",
+    "Ignore": "忽略主题",
+    "Thank": "感谢",
+    "Total Topics": "主题总数",
+    "favorites": "人收藏",
+    "Create a Post": "发布我的新作品",
+    "More Topics": " 更多新主题",
+    "Recent Topics": "最近的主题",
+    "This is a topic created": "这是一个创建于",
+    "days ago, the information in it may have changed.": "天前的主题，其中的信息可能已经有所发展或是发生改变。"
+  },
+  "new":
+  {
+    "Topic Title": "主题标题",
+    "Please select a node": "请选择一个节点",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "请输入主题标题，如果标题能够表达完整内容，则正文可以为空",
+    "Body": "正文",
+    "Preview": "预览主题",
+    "Hottest Nodes": "最热节点",
+    "Publish": "发布主题",
+    "New Topic": "创作新主题",
+    "Already enabled Markdown": "已启用Markdown"
+  },
+  "fav":
+  {
+    "Add to favorite": "加入收藏",
+    "Cancel favorite": "取消收藏",
+    "My favorite nodes": "我收藏的节点",
+    "Total nodes": "节点总数",
+    "Total topics": "主题总数",
+    "My favorite topics": "我收藏的主题",
+    "Latest topics from people I followed": "我关注的人的最新主题"
+  },
+  "node":
+  {
+    "members have added this node to favorites": "人收藏了这个节点",
+    "Total topics": "主题总数",
+    "Ignore this node": "忽略这个节点",
+    "Topics in the ignored nodes will not appear on the homepage.": "被忽略的节点中的主题将不会在首页出现",
+    "Topic": "第",
+    "to": "到",
+    "of all": "/共",
+    "topics": "个主题",
+    "new topic": "创建新主题",
+    "All topics": "全部主题",
+    "Related links": "相关连接",
+    "Publish": "创建新主题"
+  },
+  "newNodeTopic":
+  {
+    "Publish": "发布",
+    "Preview": "预览"
+  },
+  "reply":
+  {
+    "replies": "条回复",
+    "thank": "感谢回复者",
+    "ignore": "隐藏",
+    "Reply": "回复",
+    "No reply yet": "目前尚无回复",
+    "Undock": "取消回复框停靠",
+    "Back to Top": "回到顶部",
+    "Add a New Comment": "添加一条新回复",
+    "Make your comment helpful for others as much as possible": "请尽量让自己的回复能够对别人有帮助",
+    "Please resolve the following issues before submitting": "创建新回复过程中遇到一些问题："
+  },
+  "member":
+  {
+    "Watch": "加入特别关注",
+    "member": "号会员",
+    "member, joined on": "号会员，加入于",
+    "No.": "第",
+    "Today's ranking": "今日排行：",
+    "'s all topics": " 创建的所有主题",
+    "'s more topics": " 创建的更多主题",
+    "All Topics": "全部主题",
+    "All Replies": "全部回复",
+    "Total Replies": "回复总数",
+    "replied": "回复了",
+    "Total Topics": "主题总数",
+    "Cancel Following": "取消特别关注",
+    "'s topic": "创建的主题",
+    "'s latest replies": " 最近回复了",
+    "'s more replies": " 创建的更多回复",
+    "Sign Out": "登出",
+    "Sign Up": "注册",
+    "Sign In Again": "重新登录",
+    "Welcome to": "欢迎来到",
+    ", this is the official forum for Casbin developers and users.": "，这里是创意工作者的数字化公共空间。",
+    "You can use the following ways to sign up as a new user.": "你可以通过以下方式注册成为新用户。",
+    "If you have previously signed up an account via Email, please click": "如果你之前已经使用电子邮件注册，那么请从",
+    "to sign in.": "登入。",
+    "here": "这里",
+    "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。"
+  },
+  "setting":
+  {
+    "Username": "用户名",
+    "Phone": "手机号",
+    "Modify phone": "验证手机号",
+    "Email": "电子邮件",
+    "Modify Email": "验证电子邮件地址",
+    "Email Verification": "电子邮件地址验证",
+    "Verified on": "已完成验证于",
+    "Link with GoogleAccount": "与Google账户关联",
+    "Modify GoogleAccount": "验证Google账户",
+    "Link with GithubAccount": "与Github账户关联",
+    "Modify GithubAccount": "验证Github账户",
+    "WeChat": "微信",
+    "Link with WeChat": "与微信账户关联",
+    "Modify WeChat": "验证微信",
+    "Website": "个人网站",
+    "Company": "所在公司",
+    "Bio": "个人简介",
+    "Save Settings": "保存设置",
+    "Settings": "设置"
+  },
+  "loading":
+  {
+    "Please wait patiently...": "请耐心等待......",
+    "Topic is loading": "主题正在加载",
+    "Logging in ...": "正在登录......"
+  },
+  "footer":
+  {
+    "About": "关于",
+    "Mission": "我们的愿景",
+    "Advertise": "广告投放",
+    "Thanks": "感谢",
+    "Tools": "实用小工具",
+    "Online": "人在线",
+    "Highest": "最高记录",
+    "Community of Creators": "创意工作者们的社区"
+  },
+  "error":
+  {
+    "Reply title cannot be empty": "回复内容不能为空",
+    "Node not found": "节点未找到",
+    "Topic not found": "主题未找到",
+    "The node you are trying to view does not exist, there are several possibilities": "你试图查看的节点不存在，有几种可能：",
+    "You entered a node ID that does not exist.": "你输入了一个确实不存在的节点 ID",
+    "The node is currently in invisible state.": "该节点目前位于一个 invisible 位面",
+    "Home Page": "主页",
+    "My profile": "我的个人主页",
+    "Back to": "返回",
+    "Back to Home Page": "返回主页",
+    "Please input username": "请输入用户名",
+    "Please input password": "请输入密码",
+    "Please resolve the following issues before submitting": "请解决以下问题然后再提交：",
+    "We had a problem when you signed in, please try again": "登录有点问题，请重试一次",
+    "Reply content cannot be empty": "回复内容不能为空",
+    "Retry Sign Out": "重新登出",
+    "Member does not exist": "用户不存在",
+    "We had a problem when you signed out, please try again.": "登出有点问题，请重试一次",
+    "Please resolve the following issues before creating a new topic": "创建新主题过程中遇到一些问题："
+  }
+}
