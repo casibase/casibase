@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import i18next from "i18next";
 
 class RightSigninBox extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class RightSigninBox extends React.Component {
     if (window.location.pathname === "/signin") {
       return (
         <div class="box">
-          <div class="header">Other Sign In Methods</div>
+          <div class="header">{i18next.t("bar:Other Sign In Methods")}</div>
           <div class="cell" style={{textAlign: "center"}}>
             <a onClick={() => Setting.getGoogleAuthCode("signup")} href="javascript:void(0)" class="google-signin" />
           </div>
@@ -48,10 +49,10 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <a href="/signup" className="super normal button">Sign Up Now</a>
+            <a href="/signup" className="super normal button">{i18next.t("bar:Sign Up Now")}</a>
             <div className="sep5" />
             <div className="sep10" />
-            For Existing Member: &nbsp;<a href="/signin">Sign In</a>
+            {i18next.t("bar:For Existing Member")}{" "}&nbsp;<a href="/signin">{i18next.t("bar:Sign In")}</a>
           </div>
         </div>
       </div>

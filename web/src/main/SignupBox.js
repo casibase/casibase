@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import Header from "./Header";
 import * as Conf from "../Conf"
+import i18next from "i18next";
 
 class SignupBox extends React.Component {
   constructor(props) {
@@ -37,12 +38,12 @@ class SignupBox extends React.Component {
   render() {
     return (
       <div className="box">
-        <Header item="Sign Up" />
+        <Header item={i18next.t("member:Sign Up")} />
         <div className="cell">
           <div className="topic_content markdown_body">
-            <p>{`Welcome to ${Setting.getForumName()}, this is the official forum for Casbin developers and users.`}</p>
-            <p>You can use the following ways to sign up as a new user:</p>
-            <p>If you have previously signed up an account via Email, please click: <a href="/signin">here</a> to sign in.</p>
+            <p>{`${i18next.t("member:Welcome to")} ${Setting.getForumName()}${i18next.t("member:, this is the official forum for Casbin developers and users.")}`}</p>
+            <p>{i18next.t("member:You can use the following ways to sign up as a new user.")}</p>
+            <p>{i18next.t("member:If you have previously signed up an account via Email, please click")}{" "}<a href="/signin">{i18next.t("member:here")}</a>{" "}{i18next.t("member:to sign in.")}</p>
           </div>
         </div>
         <div className="dock_area">

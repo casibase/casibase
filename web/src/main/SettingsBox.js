@@ -20,6 +20,7 @@ import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend"
 import * as MemberBackend from "../backend/MemberBackend";
 import '../Reply.css'
+import i18next from "i18next";
 
 class SettingsBox extends React.Component {
   constructor(props) {
@@ -145,7 +146,7 @@ class SettingsBox extends React.Component {
 
     return (
       <div className="box">
-        <Header item="Settings" />
+        <Header item={i18next.t("setting:Settings")} />
         <div className="inner" data-select2-id="11">
           <form data-select2-id="10">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
@@ -155,12 +156,12 @@ class SettingsBox extends React.Component {
                   <Avatar username={account?.id} size="small" avatar={account?.avatar} />
                 </td>
                 <td width="auto" align="left">
-                  {Setting.getForumName()} No. {account?.no} member
+                  {Setting.getForumName()} {i18next.t("member:No.")} {account?.no} {i18next.t("member:member")}
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Username
+                  {i18next.t("setting:Username")}
                 </td>
                 <td width="auto" align="left">
                   {account?.id}
@@ -168,7 +169,7 @@ class SettingsBox extends React.Component {
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Phone
+                  {i18next.t("setting:Phone")}
                 </td>
                 <td width="auto" align="left">
                   <code>
@@ -180,13 +181,13 @@ class SettingsBox extends React.Component {
                 <td width="120" align="right" />
                 <td width="auto" align="left">
                   <a href="/settings/phone">
-                    Modify phone
+                    {i18next.t("setting:Modify phone")}
                   </a>
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Email
+                  {i18next.t("setting:Email")}
                 </td>
                 <td width="auto" align="left">
                   <code>
@@ -198,17 +199,17 @@ class SettingsBox extends React.Component {
                 <td width="120" align="right" />
                 <td width="auto" align="left">
                   <a href="/settings/email">
-                    Modify Email
+                    {i18next.t("setting:Modify Email")}
                   </a>
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Email Verification
+                  {i18next.t("setting:Email Verification")}
                 </td>
                 <td width="auto" align="left">
                   <span className="green">
-                    Verified on {Setting.getFormattedDate(account?.emailVerifiedTime)}
+                    {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
                   </span>
                 </td>
               </tr>
@@ -220,7 +221,7 @@ class SettingsBox extends React.Component {
                   account?.googleAccount === "" ?
                     <td width="auto" align="left">
                       <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
-                        Link with GoogleAccount
+                        {i18next.t("setting:Link with GoogleAccount")}
                       </a>
                     </td> :
                     <td width="auto" align="left">
@@ -236,7 +237,7 @@ class SettingsBox extends React.Component {
                     <td width="120" align="right" />
                     <td width="auto" align="left">
                       <a href="/settings/google">
-                        Modify GoogleAccount
+                        {i18next.t("setting:Modify GoogleAccount")}
                       </a>
                     </td>
                   </tr>
@@ -249,7 +250,7 @@ class SettingsBox extends React.Component {
                   account?.githubAccount === "" ?
                     <td width="auto" align="left">
                       <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
-                        Link with GithubAccount
+                        {i18next.t("setting:Link with GithubAccount")}
                       </a>
                     </td> :
                     <td width="auto" align="left">
@@ -265,20 +266,20 @@ class SettingsBox extends React.Component {
                     <td width="120" align="right" />
                     <td width="auto" align="left">
                       <a href="/settings/github">
-                        Modify GithubAccount
+                        {i18next.t("setting:Modify GithubAccount")}
                       </a>
                     </td>
                   </tr>
               }
               <tr>
                 <td width="120" align="right">
-                  WeChat
+                  {i18next.t("setting:WeChat")}
                 </td>
                 {
                   account?.weChatAccount === "" ?
                     <td width="auto" align="left">
                       <a href="/settings/wechat">
-                        Link with WeChat
+                        {i18next.t("setting:Link with WeChat")}
                       </a>
                     </td> :
                     <td width="auto" align="left">
@@ -294,14 +295,14 @@ class SettingsBox extends React.Component {
                     <td width="120" align="right" />
                     <td width="auto" align="left">
                       <a href="/settings/weChat">
-                        Modify WeChat
+                        {i18next.t("setting:Modify WeChat")}
                       </a>
                     </td>
                   </tr>
               }
               <tr>
                 <td width="120" align="right">
-                  Website
+                  {i18next.t("setting:Website")}
                 </td>
                 <td width="auto" align="left">
                   <input type="text" className="sl" name="website" defaultValue={account?.website} onChange={event => this.updateFormField("website", event.target.value)} autoComplete="off" />
@@ -309,7 +310,7 @@ class SettingsBox extends React.Component {
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Company
+                  {i18next.t("setting:Company")}
                 </td>
                 <td width="auto" align="left">
                   <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
@@ -317,7 +318,7 @@ class SettingsBox extends React.Component {
               </tr>
               <tr>
                 <td width="120" align="right">
-                  Bio
+                  {i18next.t("setting:Bio")}
                 </td>
                 <td width="auto" align="left">
                   <textarea className="ml" name="bio" defaultValue={account?.bio} onChange={event => this.updateFormField("bio", event.target.value)} />
@@ -327,7 +328,7 @@ class SettingsBox extends React.Component {
                 <td width="120" align="right" />
                 <td width="auto" align="left">
                   <input type="hidden" value="26304" name="once" />
-                  <input type="submit" className="super normal button" value="Save Settings" onClick={this.publishInfoUpdate.bind(this)} />
+                  <input type="submit" className="super normal button" value={i18next.t("setting:Save Settings")} onClick={this.publishInfoUpdate.bind(this)} />
                 </td>
               </tr>
               </tbody>

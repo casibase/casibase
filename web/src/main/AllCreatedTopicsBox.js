@@ -21,6 +21,7 @@ import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import * as MemberBackend from "../backend/MemberBackend";
+import i18next from "i18next";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -37,6 +38,7 @@ class AllCreatedTopicsBox extends React.Component {
       maxPage: -1,
       topicsNum: 1,
       temp: 0,
+      member: null,
       url: "",
       TAB_LIST: [
         {label: "Q&A", value: "qna"},
@@ -63,6 +65,16 @@ class AllCreatedTopicsBox extends React.Component {
       this.getAllCreatedTopics();
       this.geCreatedTopicsNum();
       this.getMemberAvatar();
+      this.getMember();
+  }
+
+  getMember() {
+    MemberBackend.getMember(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          member: res,
+        });
+      });
   }
 
   getMemberAvatar() {
@@ -112,6 +124,10 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   render() {
+    if (this.state.member === null) {
+      return null
+    }
+
     {
       if (this.state.tab === "replies") {
         return (
@@ -127,8 +143,8 @@ class AllCreatedTopicsBox extends React.Component {
               <div className="header">
                 <a href="/">{Setting.getForumName()} </a>
                 <span className="chevron">&nbsp;›&nbsp;</span>
-                <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span> All Topics
-                <div className="fr f12"><span className="snow">Total Replies&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong></div>
+                <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Topics")}
+                <div className="fr f12"><span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong></div>
               </div>
       
               {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
@@ -151,8 +167,8 @@ class AllCreatedTopicsBox extends React.Component {
           </div>
           {
             this.state.tab === undefined ?
-              <a href={`/member/${this.state.memberId}`} class="cell_tab_current"> {`${this.state.memberId}'s all topics`} </a> :
-              <a href={`/member/${this.state.memberId}`} class="cell_tab"> {`${this.state.memberId}'s all topics`} </a>
+              <a href={`/member/${this.state.memberId}`} class="cell_tab_current"> {`${this.state.memberId}${i18next.t("member:'s all topics")}`} </a> :
+              <a href={`/member/${this.state.memberId}`} class="cell_tab"> {`${this.state.memberId}${i18next.t("member:'s all topics")}`} </a>
           }
           {
             this.state.TAB_LIST.map((tab) => {
@@ -164,7 +180,7 @@ class AllCreatedTopicsBox extends React.Component {
         {
           this.state.tab === undefined ?
             <div className="inner"><span className="chevron">»</span>
-              <a href={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}'s more topics`} </a>
+              <a href={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}${i18next.t("member:'s more topics")}`} </a>
             </div> :
             <div />
         }

@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import i18next from "i18next";
 
 class Header extends React.Component {
   constructor(props) {
@@ -37,7 +38,7 @@ class Header extends React.Component {
         </span>
         {" "}
         {
-          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>Sign In &nbsp;<li className="fa fa-lock" /></div>
+          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>{i18next.t("general:Sign In")}{" "}&nbsp;<li className="fa fa-lock" /></div>
         }
       </div>
     );

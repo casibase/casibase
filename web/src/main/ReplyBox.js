@@ -20,6 +20,7 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import ReactMarkdown from "react-markdown";
+import i18next from "i18next";
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -107,7 +108,7 @@ class ReplyBox extends React.Component {
             }
           </div>
           <span className="gray">
-            {this.state.replies.length} replies &nbsp;
+            {this.state.replies.length}{" "}{i18next.t("reply:replies")}{" "}&nbsp;
             <strong className="snow">•</strong>
             &nbsp;{Setting.getPrettyDate(this.state.replies[this.state.replies.length - 1]?.createdTime)}
           </span>
@@ -126,10 +127,10 @@ class ReplyBox extends React.Component {
                     <td width="auto" valign="top" align="left">
                       <div className="fr">
                         <div id={`thank_area__${reply.id}`} className="thank_area">
-                          <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>ignore</a>
+                          <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
                           &nbsp; &nbsp;
                           <a href="#;" onClick="if (confirm('Are you sure to spend 10 coins in thanking @xxx for this reply?')) { thankReply(9032017); }" className="thank">
-                            thank
+                            {i18next.t("reply:thank")}
                           </a>
                         </div>
                         &nbsp;
@@ -177,7 +178,7 @@ class ReplyBox extends React.Component {
         {
           this.state.replies.length === 0 ?
             <div id="no-comments-yet">
-              No reply yet
+              {i18next.t("reply:No reply yet")}
             </div> :
             this.renderReply()
         }

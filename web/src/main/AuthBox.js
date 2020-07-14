@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import {withRouter} from "react-router-dom";
+import i18next from "i18next";
 
 class CallbackBox extends React.Component {
   constructor(props) {
@@ -98,7 +99,7 @@ class CallbackBox extends React.Component {
     return (
       <div>
         <h3>
-          Logging in ......
+          {i18next.t("loading:Logging in ...")}
         </h3>
       </div>
     )

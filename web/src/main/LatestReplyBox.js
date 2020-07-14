@@ -19,6 +19,8 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
+import i18next from "i18next";
+import * as MemberBackend from "../backend/MemberBackend";
 
 class LatestReplyBox extends React.Component {
   constructor(props) {
@@ -33,6 +35,7 @@ class LatestReplyBox extends React.Component {
       maxPage: -1,
       repliesNum: 10,
       replies: [],
+      member: null,
       url: "",
     };
     if (this.props.limit !== undefined) {
@@ -52,6 +55,16 @@ class LatestReplyBox extends React.Component {
   componentDidMount() {
     this.getLatestReplies();
     this.getRepliesNum();
+    this.getMember();
+  }
+
+  getMember() {
+    MemberBackend.getMember(this.state.memberId)
+      .then((res) => {
+        this.setState({
+          member: res,
+        });
+      });
   }
 
   getLatestReplies() {
@@ -90,9 +103,9 @@ class LatestReplyBox extends React.Component {
               <tr>
                 <td style={{padding: "10px 15px 8px 15px", fontSize: "12px", textAlign: "left"}}>
                   <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
-                  <span className="gray">replied <a href={`/member/${reply.author}`}> {reply.author} </a> 's topic <span
-                    className="chevron">›</span> <a href={`/go/${reply.nodeId}`}> {reply.nodeName} </a>
-                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}> {reply.topicTitle} </a>
+                  <span className="gray">{i18next.t("member:replied")}{" "}<a href={`/member/${reply.author}`}> {reply.author} </a>{" "}{i18next.t("member:'s topic")}{" "}<span
+                    className="chevron">›</span> <a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
+                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}>{" "}{reply.topicTitle}{" "}</a>
                   </span>
                 </td>
               </tr>
@@ -109,14 +122,18 @@ class LatestReplyBox extends React.Component {
   }
 
   render() {
+    if (this.state.member === null) {
+      return null
+    }
+
     if (this.props.size === "large") {
       return (
         <div className="box">
           <div className="header">
             <a href="/">{Setting.getForumName()} </a>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span> All Replies
-            <div className="fr f12"><span className="snow">Total Replies&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
+            <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
+            <div className="fr f12"><span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
           </div>
           
           {this.showPageColumn()}
@@ -132,14 +149,14 @@ class LatestReplyBox extends React.Component {
 
     return (
       <div className="box">
-        <div className="cell"><span className="gray">{`${this.state.memberId}'s latest replies`}</span></div>
+        <div className="cell"><span className="gray">{`${this.state.memberId}${i18next.t("member:'s latest replies")}`}</span></div>
         {
           this.state.replies?.map((reply) => {
             return this.renderReplies(reply);
           })
         }
         <div className="inner">
-          <span className="chevron">»</span> <a href={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}'s more replies`}</a></div>
+          <span className="chevron">»</span> <a href={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</a></div>
       </div>
     );
   }

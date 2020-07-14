@@ -16,11 +16,13 @@ import React from "react";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
+import * as Tools from "./Tools";
 import {withRouter} from "react-router-dom";
+import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
 import {Controlled as CodeMirror} from "react-codemirror2";
-import * as Tools from "./Tools";
+
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown')
@@ -70,7 +72,7 @@ class NewNodeTopicBox extends React.Component {
 
     let problems = [];
     if (this.state.form.title === "" || this.state.form.title === undefined) {
-      problems.push("Reply title cannot be empty");
+      problems.push(i18next.t("error:Reply title cannot be empty"));
     }
     this.setState({
       problems: problems,
@@ -106,7 +108,7 @@ class NewNodeTopicBox extends React.Component {
     }
     return (
       <div className="problem">
-        Please resolve the following issues before submitting:
+        {i18next.t("error:Please resolve the following issues before creating a new topic")}
         <ul>
           {
             problems.map((problem, i) => {
@@ -135,7 +137,7 @@ class NewNodeTopicBox extends React.Component {
             <div className="dock_area">
               <div className="inner">
                 <div className="fr gray" id="syntax_text">
-                  Already enabled Markdown &nbsp;
+                  {i18next.t("new:Already enabled Markdown")}{" "}&nbsp;
                 </div>
                 <span className="gray">
               Content Preview
@@ -162,7 +164,7 @@ class NewNodeTopicBox extends React.Component {
         <a href="/">{Setting.getForumName()}</a>
         <span className="chevron">&nbsp;›&nbsp;</span>
         <a href={`/go/${this.props.nodeId}`}> {this.state.nodeInfo?.name} </a>
-        <span className="chevron">&nbsp;›&nbsp;</span> New Topic
+        <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("new:New Topic")}
       </div>
     )
   }
@@ -171,7 +173,7 @@ class NewNodeTopicBox extends React.Component {
     return (
       <div class="box">
         <div class="cell">
-          <textarea type="text" rows="1" maxLength="120" name="title" class="sll" id="topic_title" onChange={event => {this.updateFormField("title", event.target.value)}} placeholder="Please input the topic title. The body can be empty if the title expresses the full idea" >
+          <textarea type="text" rows="1" maxLength="120" name="title" class="sll" id="topic_title" onChange={event => {this.updateFormField("title", event.target.value)}} placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
             {
               this.state.form.title
             }
@@ -193,10 +195,10 @@ class NewNodeTopicBox extends React.Component {
           </div>
           <div class="sep10"></div>
           <input type="hidden" name="once" />
-          <input type="submit" value="Publish" class="super normal button" onClick={this.publishTopic.bind(this)} />
+          <input type="submit" value={i18next.t("node:Publish")} class="super normal button" onClick={this.publishTopic.bind(this)} />
         </div>
-        <div class="inner"><div class="fr"><a href="/settings/ignore/node/12">Ignore this node</a>
-          &nbsp; <span class="fade">Topics in the ignored nodes will not appear on the homepage.</span></div>
+        <div class="inner"><div class="fr"><a href="/settings/ignore/node/12">{i18next.t("node:Ignore this node")}</a>
+          &nbsp;{" "}<span class="fade">{i18next.t("node:Topics in the ignored nodes will not appear on the homepage.")}</span></div>
           &nbsp;
         </div>
       </div>
@@ -243,12 +245,12 @@ class NewNodeTopicBox extends React.Component {
                 <input type="hidden" name="once"/>
                 <button type="button" className="super normal button" onClick={this.enablePreview.bind(this)}>
                   <li className="fa fa-eye"></li>
-                  &nbsp;Preview
+                  &nbsp;{i18next.t("newNodeTopic:Preview")}
                 </button>
                 &nbsp;
                 <button type="submit" className="super normal button" onClick={this.publishTopic.bind(this)}>
                   <li className="fa fa-paper-plane"></li>
-                  &nbsp;Publish
+                  &nbsp;{i18next.t("newNodeTopic:Publish")}
                 </button>
               </td>
             </tr>
