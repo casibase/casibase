@@ -1,0 +1,189 @@
+{
+  "general":
+  {
+    "Home": "Home",
+    "Sign Up": "Sign Up",
+    "Sign In": "Sign In",
+    "Note": "Note",
+    "Timeline": "Timeline",
+    "Setting": "Setting",
+    "Sign Out": "Sign Out",
+    "Username": "Username",
+    "Password": "Password",
+    "Forgot Password": "Forgot Password",
+    "Username or Email address": "Username or Email address"
+  },
+  "bar":
+  {
+    "Nodes": "Nodes",
+    "Topics": "Topics",
+    "Watch": "Watch",
+    "Compose": "Compose",
+    "unread": "unread",
+    "For Existing Member": "For Existing Member:",
+    "Sign In": "Sign In",
+    "Sign Up Now": "Sign Up Now",
+    "Other Sign In Methods": "Other Sign In Methods"
+  },
+  "topic":
+  {
+    "last reply from": "last reply from",
+    "Cancel Favor": "Cancel Favor",
+    "Favor": "Favor",
+    "hits": "hits",
+    "Ignore": "Ignore",
+    "Thank": "Thank",
+    "Total Topics": "Total Topics",
+    "favorites": "favorites",
+    "Create a Post": "Create a Post",
+    "More Topics": " More Topics",
+    "Recent Topics": "Recent Topics",
+    "This is a topic created": "This is a topic created",
+    "days ago, the information in it may have changed.": "days ago, the information in it may have changed."
+  },
+  "new":
+  {
+    "Topic Title": "Topic Title",
+    "Please select a node": "Please select a node",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
+    "Body": "Body",
+    "Preview": "Preview",
+    "Hottest Nodes": "Hottest Nodes",
+    "Publish": "Publish",
+    "New Topic": "New Topic",
+    "Already enabled Markdown": "Already enabled Markdown"
+  },
+  "fav":
+  {
+    "Add to favorite": "Add to favorite",
+    "Cancel favorite": "Cancel favorite",
+    "My favorite nodes": "My favorite nodes",
+    "Total nodes": "Total nodes:",
+    "Total topics": "Total topics:",
+    "My favorite topics": "My favorite topics",
+    "Latest topics from people I followed": "Latest topics from people I followed"
+  },
+  "node":
+  {
+    "members have added this node to favorites": "members have added this node to favorites",
+    "Total topics": "Total topics:",
+    "Ignore this node": "Ignore this node",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
+    "Topic": "Topic",
+    "to": "to",
+    "of all": "of all",
+    "topics": "topics",
+    "new topic": "new topic",
+    "All topics": "All topics",
+    "Related links": "Related links",
+    "Publish": "Publish"
+  },
+  "newNodeTopic":
+  {
+    "Publish": "Publish",
+    "Preview": "Preview"
+  },
+  "reply":
+  {
+    "replies": "replies",
+    "thank": "thank",
+    "ignore": "ignore",
+    "Reply": "Reply",
+    "No reply yet": "No reply yet",
+    "Undock": "Undock",
+    "Back to Top": "Back to Top",
+    "Add a New Comment": "Add a New Comment",
+    "Make your comment helpful for others as much as possible": "Make your comment helpful for others as much as possible",
+    "Please resolve the following issues before submitting": "Please resolve the following issues before submitting:"
+  },
+  "member":
+  {
+    "Watch": "Watch",
+    "member": "member",
+    "member, joined on": "member, joined on",
+    "No.": "No.",
+    "Today's ranking": "Today's ranking:",
+    "'s all topics": "'s all topics",
+    "'s more topics": "'s more topics",
+    "All Topics": "All Topics",
+    "All Replies": "All Replies",
+    "Total Replies": "Total Replies",
+    "replied": "replied",
+    "Total Topics": "Total Topics",
+    "Cancel Following": "Cancel Following",
+    "'s topic": "s topic",
+    "'s latest replies": "'s latest replies",
+    "'s more replies": "'s more replies",
+    "Sign Out": "Sign Out",
+    "Sign Up": "Sign Up",
+    "Sign In Again": "Sign In Again",
+    "Welcome to": "Welcome to",
+    ", this is the official forum for Casbin developers and users.": ", this is the official forum for Casbin developers and users.",
+    "You can use the following ways to sign up as a new user.": "You can use the following ways to sign up as a new user.",
+    "If you have previously signed up an account via Email, please click": "If you have previously signed up an account via Email, please click",
+    "to sign in.": "to sign in.",
+    "here": "here",
+    "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer."
+  },
+  "setting":
+  {
+    "Username": "Username",
+    "Phone": "Phone",
+    "Modify phone": "Modify phone",
+    "Email": "Email",
+    "Modify Email": "Modify Email",
+    "Email Verification": "Email Verification",
+    "Verified on": "Verified on",
+    "Link with GoogleAccount": "Link with GoogleAccount",
+    "Modify GoogleAccount": "Modify GoogleAccount",
+    "Link with GithubAccount": "Link with GithubAccount",
+    "Modify GithubAccount": "Modify GithubAccount",
+    "WeChat": "WeChat",
+    "Link with WeChat": "Link with WeChat",
+    "Modify WeChat": "Modify WeChat",
+    "Website": "Website",
+    "Company": "Company",
+    "Bio": "Bio",
+    "Save Settings": "Save Settings",
+    "Settings": "Settings"
+  },
+  "loading":
+  {
+    "Please wait patiently...": "Please wait patiently....",
+    "Topic is loading": "Topic is loading",
+    "Logging in ...": "Logging in ..."
+  },
+  "footer":
+  {
+    "About": "About",
+    "Mission": "Mission",
+    "Advertise": "Advertise",
+    "Thanks": "Thanks",
+    "Tools": "Tools",
+    "Online": "Online",
+    "Highest": "Highest",
+    "Community of Creators": "Community of Creators"
+  },
+  "error":
+  {
+    "Reply title cannot be empty": "Reply title cannot be empty",
+    "Node not found": "Node not found",
+    "Topic not found": "Topic not found",
+    "The node you are trying to view does not exist, there are several possibilities": "The node you are trying to view does not exist, there are several possibilities:",
+    "You entered a node ID that does not exist.": "You entered a node ID that does not exist.",
+    "The node is currently in invisible state.": "The node is currently in invisible state.",
+    "Home Page": "Home Page",
+    "My profile": "My profile",
+    "Back to": "Back to",
+    "Back to Home Page": "Back to Home Page",
+    "Please input username": "Please input username",
+    "Please input password": "Please input password",
+    "Please resolve the following issues before submitting": "Please resolve the following issues before submitting:",
+    "We had a problem when you signed in, please try again": "We had a problem when you signed in, please try again",
+    "Reply content cannot be empty": "Reply content cannot be empty",
+    "Retry Sign Out": "Retry Sign Out",
+    "Member does not exist": "Member does not exist",
+    "We had a problem when you signed out, please try again.": "We had a problem when you signed out, please try again.",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic:"
+  }
+}
