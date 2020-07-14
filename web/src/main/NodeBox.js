@@ -189,7 +189,7 @@ class NodeBox extends React.Component {
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span> Node is loading</div>
+          <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
           <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       )
