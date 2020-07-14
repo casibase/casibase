@@ -151,7 +151,9 @@
   {
     "Please wait patiently...": "Please wait patiently....",
     "Topic is loading": "Topic is loading",
-    "Logging in ...": "Logging in ..."
+    "Logging in ...": "Logging in ...",
+    "Member profile is loading": "Member profile is loading",
+    "Node is loading": "Node is loading"
   },
   "footer":
   {

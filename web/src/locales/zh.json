@@ -151,7 +151,9 @@
   {
     "Please wait patiently...": "请耐心等待......",
     "Topic is loading": "主题正在加载",
-    "Logging in ...": "正在登录......"
+    "Logging in ...": "正在登录......",
+    "Member profile is loading": "用户资料正在加载",
+    "Node is loading": "节点正在加载"
   },
   "footer":
   {
