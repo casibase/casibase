@@ -169,16 +169,22 @@ export function getOSSClient(initNewOSSClient) {
 }
 
 export function SetLanguage() {
-  let language = localStorage.getItem('language');
-  if (language === undefined) {
-    language = "en"
+  let language = localStorage.getItem("casbin-forum-language");
+  if (language === undefined || language == null) {
+    let userLanguage
+    userLanguage = navigator.language
+    if (userLanguage === "zh-CN" || userLanguage === "zh") {
+      language = "zh"
+    } else {
+      language = "en"
+    }
   }
   i18next.changeLanguage(language)
   changeMomentLanguage(language)
 }
 
 export function ChangeLanguage(language) {
-  localStorage.setItem("language", language)
+  localStorage.setItem("casbin-forum-language", language)
   i18next.changeLanguage(language)
   goToLink("/")
 }
