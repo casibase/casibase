@@ -93,13 +93,13 @@ class ReplyBox extends React.Component {
 
   renderReply() {
     return (
-      <div className="box">
-        <div className="cell">
+      <div className={`box ${this.state.topic.nodeId}`}>
+        <div className={`cell ${this.state.topic.nodeId}`}>
           <div className="fr" style={{margin: "-3px -5px 0px 0px"}}>
             {
               this.state.topic?.tags?.map((tag, i) => {
                 return (
-                  <a href={`/tag/${tag}`} className="tag">
+                  <a href={`/tag/${tag}`} className={`tag ${this.state.topic.nodeId}`}>
                     <li className="fa fa-tag" />
                     {tag}
                   </a>
@@ -116,7 +116,7 @@ class ReplyBox extends React.Component {
         {
           this.state.replies?.map((reply, i) => {
             return (
-              <div id={`r_${reply.id}`} className="cell">
+              <div id={`r_${reply.id}`} className={`cell ${this.state.topic.nodeId}`}>
                 <table cellPadding="0" cellSpacing="0" border="0" width="100%">
                   <tbody>
                   <tr>
@@ -138,7 +138,7 @@ class ReplyBox extends React.Component {
                           <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
                         </a>
                         &nbsp;&nbsp;
-                        <span className="no">
+                        <span className={`no ${this.state.topic.nodeId}`}>
                           {i + 1}
                         </span>
                       </div>
@@ -153,7 +153,7 @@ class ReplyBox extends React.Component {
                         {Setting.getPrettyDate(reply.createdTime)}
                       </span>
                       <div className="sep5" />
-                      <div className="reply_content">
+                      <div className={`reply_content ${this.state.topic.nodeId}`}>
                         <ReactMarkdown source={reply.content} escapeHtml={false} />
                       </div>
                     </td>
@@ -185,7 +185,7 @@ class ReplyBox extends React.Component {
         <div className="sep20" />
         {
           this.props.account === null ? null :
-            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} />
+            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId} />
         }
       </div>
     )

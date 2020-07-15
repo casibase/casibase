@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
+import "../node.css"
 import i18next from "i18next";
 
 class TopicList extends React.Component {
@@ -44,7 +45,7 @@ class TopicList extends React.Component {
     };
 
     return (
-      <div className="cell item" style={style}>
+      <div className={`cell item ${this.props.nodeId}`} style={style}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
           <tr>
@@ -63,7 +64,7 @@ class TopicList extends React.Component {
             }
             <td width="auto" valign="middle">
                 <span className="item_title">
-                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="topic-link">
+                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
                     {
                       topic.title
                     }
@@ -85,7 +86,7 @@ class TopicList extends React.Component {
                     null
                 }
                 <strong>
-                  <a href={`/member/${topic.author}`}>
+                  <a href={`/member/${topic.author}`} className={`${this.props.nodeId} member`}>
                     {topic.author}
                   </a>
                 </strong>
@@ -97,7 +98,7 @@ class TopicList extends React.Component {
                   topic.lastReplyUser === "" ? null : (
                     <div style={{display: "inline"}}>
                       {" "}&nbsp;•&nbsp;{" "}
-                      {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                      {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>{topic.lastReplyUser}</a></strong>
                     </div>
                   )
                 }
@@ -106,7 +107,7 @@ class TopicList extends React.Component {
             <td width="70" align="right" valign="middle">
               {
                 topic.replyCount === 0 ? null : (
-                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className="count_livid">
+                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
                     {
                       topic.replyCount
                     }
@@ -123,7 +124,7 @@ class TopicList extends React.Component {
 
   render() {
     return (
-      <div id="TopicsNode">
+      <div className={`box ${this.props.nodeId}`}>
         {
           this.props.topics.map((topic) => {
             return this.renderTopic(topic);

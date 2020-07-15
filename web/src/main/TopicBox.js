@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import "../node.css"
 import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
@@ -46,7 +47,7 @@ class TopicBox extends React.Component {
       .then((res) => {
         this.setState({
           topic: res,
-        });
+        }, () => this.props.getNodeId(this.state.topic.nodeId));
       });
   }
 
@@ -126,41 +127,41 @@ class TopicBox extends React.Component {
     }
 
     return (
-      <div className="box" style={{borderBottom: "0px"}}>
-        <div className="header">
+      <div className={`box ${this.state.topic.nodeId}`} style={{borderBottom: "0px"}}>
+        <div className={`header ${this.state.topic.nodeId}`}>
           <div className="fr">
             <Avatar username={this.state.topic?.author} size="large" avatar={this.state.topic?.avatar} />
           </div>
-          <a href="/">{Setting.getForumName()}</a>
+          <a href="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</a>
           {" "}
           <span className="chevron">
             &nbsp;›&nbsp;
           </span>
           {" "}
-          <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
+          <a href={`/go/${this.state.topic?.nodeId}`} className={`${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
           <div className="sep10" />
           <h1>
             {this.state.topic?.title}
           </h1>
           <div id="topic_677954_votes" className="votes">
-            <a href="javascript:" onClick="upVoteTopic(677954);" className="vote">
+            <a href="javascript:" onClick="upVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
               <li className="fa fa-chevron-up" />
             </a>
             {" "}&nbsp;
-            <a href="javascript:" onClick="downVoteTopic(677954);" className="vote">
+            <a href="javascript:" onClick="downVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
               <li className="fa fa-chevron-down" />
             </a>
           </div>
           &nbsp;{" "}
           <small className="gray">
-            <a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
+            <a href={`/member/${this.state.topic?.author}`} className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
           </small>
         </div>
         {
           this.renderOutdatedProblem()
         }
-        <div className="cell">
-          <div className="topic_content">
+        <div className={`cell ${this.state.topic.nodeId}`}>
+          <div className={`topic_content ${this.state.topic.nodeId}`}>
             <div className="markdown_body">
               <ReactMarkdown source={this.state.topic?.content} escapeHtml={false} />
             </div>
