@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import {withRouter} from "react-router-dom";
+import "./node-casbin.css"
 import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
@@ -171,21 +172,22 @@ class NewNodeTopicBox extends React.Component {
 
   renderSmallSize() {
     return (
-      <div class="box">
-        <div class="cell">
-          <textarea type="text" rows="1" maxLength="120" name="title" class="sll" id="topic_title" onChange={event => {this.updateFormField("title", event.target.value)}} placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
+      <div className={`box ${this.state.nodeInfo.id}`}>
+        <div className={`cell ${this.props.nodeId}`}>
+          <textarea type="text" rows="1" maxLength="120" name="title" className={`sll ${this.state.nodeInfo.id}`} id="topic_title" onChange={event => {this.updateFormField("title", event.target.value)}} placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
             {
               this.state.form.title
             }
           </textarea>
           <div class="sep10"></div>
-          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} name="content" class="mll" id="topic_content" >
+          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} name="content" className={`mll ${this.state.nodeInfo.id}`} id="topic_content" >
             <CodeMirror
+              className={`${this.state.nodeInfo.id}`}
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadPic()}
               value={this.state.form.body}
               onDrop={() => Tools.uploadPic()}
-              options={{mode: 'markdown', lineNumbers: false}}
+              options={{mode: 'markdown', lineNumbers: false, theme:`${this.state.nodeInfo.id}`}}
               onBeforeChange={(editor, data, value) => {
                 this.updateFormField("body", value)
               }}
@@ -197,7 +199,7 @@ class NewNodeTopicBox extends React.Component {
           <input type="hidden" name="once" />
           <input type="submit" value={i18next.t("node:Publish")} class="super normal button" onClick={this.publishTopic.bind(this)} />
         </div>
-        <div class="inner"><div class="fr"><a href="/settings/ignore/node/12">{i18next.t("node:Ignore this node")}</a>
+        <div class="inner"><div class="fr"><a href="/settings/ignore/node/12" className={`${this.state.nodeInfo.id}`} >{i18next.t("node:Ignore this node")}</a>
           &nbsp;{" "}<span class="fade">{i18next.t("node:Topics in the ignored nodes will not appear on the homepage.")}</span></div>
           &nbsp;
         </div>

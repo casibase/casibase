@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import "../node.css"
 import i18next from "i18next";
 
 class RightAccountBox extends React.Component {
@@ -53,8 +54,8 @@ class RightAccountBox extends React.Component {
     const avatar = this.props.account?.avatar;
 
     return (
-      <div className="box">
-        <div className="cell">
+      <div className={`box ${this.props.nodeId}`}>
+        <div className={`cell ${this.props.nodeId}`}>
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
@@ -71,7 +72,7 @@ class RightAccountBox extends React.Component {
                   </a>
                 </div>
                 <span className="bigger">
-                  <a href={`/member/${username}`}>
+                  <a href={`/member/${username}`} className={`${this.props.nodeId}`}>
                     {username}
                   </a>
                 </span>
@@ -122,12 +123,12 @@ class RightAccountBox extends React.Component {
             </tbody>
           </table>
         </div>
-        <div className="cell" id="member-activity">
+        <div className={`cell ${this.props.nodeId}`} id="member-activity">
           <div className="member-activity-bar">
             <div className="member-activity-start" style={{width: "80px"}} />
           </div>
         </div>
-        <div className="cell" style={{padding: "8px", lineHeight: "100%"}}>
+        <div className={`cell ${this.props.nodeId}`} style={{padding: "8px", lineHeight: "100%"}}>
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
@@ -138,7 +139,7 @@ class RightAccountBox extends React.Component {
               </td>
               <td width="10" />
               <td width="auto" valign="middle" align="left">
-                <a href="/new">
+                <a href="/new" className={`${this.props.nodeId}`}>
                   {i18next.t("bar:Compose")}
                 </a>
               </td>
@@ -152,7 +153,7 @@ class RightAccountBox extends React.Component {
               {this.props.account?.silverCount} <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" /> {this.props.account?.bronzeCount} <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
             </a>
           </div>
-          <a href="/notifications" className="fade">
+          <a href="/notifications" className={`fade ${this.props.nodeId}`}>
             0{" "}{i18next.t("bar:unread")}
           </a>
         </div>

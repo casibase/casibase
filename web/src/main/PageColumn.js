@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import '../Bottom.css'
+import './node-casbin.css'
 
 class PageColumn extends React.Component {
   constructor(props) {
@@ -108,7 +109,7 @@ class PageColumn extends React.Component {
   renderPage(i, page, url) {
     return (
       <span>
-        {page === i ? <a href={`${url}?p=${i}`} className="page_current">{i}</a> : i === "..." ? <span className="fade"> ... </span> : <a href={`${url}?p=${i}`} className="page_normal">{i}</a>}
+        {page === i ? <a href={`${url}?p=${i}`} className={`page_current ${this.props.nodeId}`}>{i}</a> : i === "..." ? <span className="fade"> ... </span> : <a href={`${url}?p=${i}`} className={`page_normal ${this.props.nodeId}`}>{i}</a>}
         &nbsp;
       </span>
     )
@@ -124,8 +125,8 @@ class PageColumn extends React.Component {
     }
     const {page, url} = this.props
     return (
-      <div className="cell"
-           style={{backgroundImage: "", backgroundSize: "20px 20px", backgroundRepeat: "repeat-x"}}>
+      <div className={`cell ${this.props.nodeId}`}
+           style={{backgroundImage: "url('/static/img/shadow_light.png')", backgroundSize: "20px 20px", backgroundRepeat: "repeat-x"}}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tr>
             <td width="92%" align="left">

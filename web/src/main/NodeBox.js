@@ -21,6 +21,7 @@ import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import NewNodeTopicBox from "./NewNodeTopicBox";
+import "../node.css"
 import i18next from "i18next";
 
 class NodeBox extends React.Component {
@@ -54,8 +55,9 @@ class NodeBox extends React.Component {
   }
 
   componentDidMount() {
-    this.getTopics()
-    this.getNodeInfo()
+    this.getTopics();
+    this.getNodeInfo();
+    this.props.getNodeId(this.state.nodeId);
   }
 
   getNodeInfo() {
@@ -127,7 +129,7 @@ class NodeBox extends React.Component {
 
   showPageColumn() {
     return (
-      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url}/>
+      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} nodeId={this.state.nodeId} />
     )
   }
 
@@ -142,8 +144,8 @@ class NodeBox extends React.Component {
     end = (page - 1) * limit + this.state.topics.length
 
     return (
-      <div className="box">
-        <div className="node_header">
+      <div className={`box ${this.state.nodeId}`}>
+        <div className={`node_header ${this.state.nodeId}`}>
           <div className="node_avatar">
             <div style={{float: "left", display: "inline-block", marginRight: "10px", marginBottom: "initial!important"}}>
               <img src={nodeInfo?.image} border="0" align="default" width="72" alt={nodeInfo?.nodeName}/></div>
@@ -158,7 +160,7 @@ class NodeBox extends React.Component {
                   null
               }
             </div>
-            <a href="/">{Setting.getForumName()}</a>
+            <a href="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</a>
             <span className="chevron">&nbsp;›&nbsp;</span>
             {nodeInfo?.name}
             <div className="sep10"></div>
@@ -175,7 +177,7 @@ class NodeBox extends React.Component {
           </div>
         </div>
         {this.showPageColumn()}
-        <TopicList topics={this.state.topics} showNodeName={false} showAvatar={true} />
+        <TopicList nodeId={this.state.nodeId} topics={this.state.topics} showNodeName={false} showAvatar={true} />
         {this.showPageColumn()}
         <div className="cell" align="center">
           <div className="fr">{`${this.state.favoritesNum} ${i18next.t("node:members have added this node to favorites")}`}</div>

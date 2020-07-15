@@ -41,6 +41,7 @@ import NodesBox from "./main/NodeBox";
 import FavoritesBox from "./main/FavoritesBox";
 import RecentTopicsBox from "./main/RecentTopicsBox";
 import SelectLanguageBox from "./main/SelectLanguageBox";
+import "./node.css"
 import "./i18n"
 
 class App extends Component {
@@ -49,10 +50,12 @@ class App extends Component {
     this.state = {
       classes: props,
       account: undefined,
+      nodeId: null
     };
 
     Setting.initServerUrl();
     Setting.initFullClientUrl();
+    this.getNodeId = this.getNodeId.bind(this)
   }
 
   componentWillMount() {
@@ -72,6 +75,14 @@ class App extends Component {
     this.setState({
       account: account
     });
+  }
+
+  getNodeId(id) {
+    if (this.state.nodeId === null) {
+      this.setState({
+        nodeId: id
+      })
+    }
   }
 
   getAccount() {
@@ -114,7 +125,7 @@ class App extends Component {
         <Route exact path="/t/:topicId" component={() =>
           <div id="Main">
             <div className="sep20" />
-            <TopicBox account={this.state.account} />
+            <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
             <div className="sep20" />
             <ReplyBox account={this.state.account} />
           </div>
@@ -167,7 +178,7 @@ class App extends Component {
           </div>
         }/>
         <Route exact path="/go/:nodeId" component={() =>
-          <NodesBox account={this.state.account} />
+          <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
         }/>
         <Route exact path="/my/:favorites" component={() =>
           <div id="Main">
@@ -199,6 +210,10 @@ class App extends Component {
     // eslint-disable-next-line no-restricted-globals
     const uri = location.pathname;
 
+    if (uri === "/select/language") {
+      return null;
+    }
+
     const isSignedIn = this.state.account !== null;
     if (!isSignedIn) {
       if (uri === "/signup") {
@@ -208,14 +223,14 @@ class App extends Component {
       return (
         <div id="Rightbar">
           <div className="sep20" />
-          <RightSigninBox />
+          <RightSigninBox nodeId={this.state.nodeId} />
         </div>
       )
     } else {
       return (
         <div id="Rightbar">
           <div className="sep20" />
-          <RightAccountBox account={this.state.account} />
+          <RightAccountBox account={this.state.account} nodeId={this.state.nodeId} />
         </div>
       )
     }
@@ -225,7 +240,7 @@ class App extends Component {
     return (
       <div>
         <Header account={this.state.account} onSignout={this.onSignout.bind(this)} />
-        <div id="Wrapper">
+        <div  className={`Wrapper ${this.state.nodeId}`} >
           <div className="content">
             <div id="Leftbar" />
             {

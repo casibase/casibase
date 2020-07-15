@@ -20,6 +20,8 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import '../Reply.css'
 import * as Tools from "./Tools";
+import "../node.css"
+import "./node-casbin.css"
 import {Controlled as CodeMirror} from "react-codemirror2";
 import i18next from "i18next";
 
@@ -145,14 +147,14 @@ class NewReplyBox extends React.Component {
     }
 
     return (
-      <div className={["box", this.props.sticky ? "sticky" : ""].join(' ')} id="reply-box">
-        <div className="cell">
+      <div className={["box", this.props.sticky ? "sticky" : "", `${this.props.nodeId}`].join(' ')} id="reply-box">
+        <div className={`cell ${this.props.nodeId}`}>
           <div className="fr">
-            <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button">
+            <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button" className={`${this.props.nodeId}`}>
               {i18next.t("reply:Undock")}
             </a>
             {" "}&nbsp; &nbsp;{" "}
-            <a href="#" onClick={this.backToTop.bind(this)}>
+            <a href="#" onClick={this.backToTop.bind(this)} className={`${this.props.nodeId}`}>
               {i18next.t("reply:Back to Top")}
             </a>
           </div>
@@ -161,15 +163,15 @@ class NewReplyBox extends React.Component {
         {
           this.renderProblem()
         }
-        <div className="cell" >
-          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className="mll" id="reply_content" >
+        <div className={`cell ${this.props.nodeId}`} >
+          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className={`mll ${this.props.nodeId}`} id="reply_content" >
             <CodeMirror
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadPic()}
               value={this.props.content}
               onFocus={() => this.dockBox(true)}
               onDrop={() => Tools.uploadPic()}
-              options={{mode: 'markdown', lineNumbers: false}}
+              options={{mode: 'markdown', lineNumbers: false, theme:`${this.props.nodeId}`}}
               onBeforeChange={(editor, data, value) => {
                 this.handleChange(value)
               }}
@@ -188,7 +190,7 @@ class NewReplyBox extends React.Component {
         </div>
         <div className="inner">
           <div className="fr">
-            <a href="/">
+            <a href="/" className={`${this.props.nodeId}`}>
               ← {Setting.getForumName()}
             </a>
           </div>
