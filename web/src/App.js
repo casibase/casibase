@@ -216,7 +216,7 @@ class App extends Component {
 
     const isSignedIn = this.state.account !== null;
     if (!isSignedIn) {
-      if (uri === "/signup") {
+      if (uri === "/signup" || uri.startsWith("/member/")) {
         return null;
       }
 
