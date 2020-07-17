@@ -259,7 +259,14 @@ func (c *APIController) AuthGoogle() {
 			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 			res.IsSignedUp = true
 		} else {
-			res.IsSignedUp = false
+			if userId := object.HasMail(res.Email); userId != "" {
+				c.SetSessionUser(userId)
+				util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+				res.IsSignedUp = true
+				_ = object.LinkMemberAccount(userId, "google_account", tempUser.Email)
+			} else {
+				res.IsSignedUp = false
+			}
 		}
 		res.Addition = res.Email
 		resp = Response{Status: "ok", Msg: "success", Data: res}
@@ -379,7 +386,14 @@ func (c *APIController) AuthGithub() {
 			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 			res.IsSignedUp = true
 		} else {
-			res.IsSignedUp = false
+			if userId := object.HasMail(res.Email); userId != "" {
+				c.SetSessionUser(userId)
+				util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+				res.IsSignedUp = true
+				_ = object.LinkMemberAccount(userId, "github_account", tempUserAccount.Login)
+			} else {
+				res.IsSignedUp = false
+			}
 		}
 		res.Addition = tempUserAccount.Login
 		res.Avatar = tempUserAccount.AvatarUrl

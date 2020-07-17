@@ -176,7 +176,7 @@ class AllCreatedTopicsBox extends React.Component {
               })
           }
         </div>
-        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} timeStandard={"createdTime"} />
         {
           this.state.tab === undefined ?
             <div className="inner"><span className="chevron">»</span>

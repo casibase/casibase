@@ -52,6 +52,7 @@ class RightAccountBox extends React.Component {
   render() {
     const username = this.props.account?.id;
     const avatar = this.props.account?.avatar;
+    const tagline = this.props.account?.tagline;
 
     return (
       <div className={`box ${this.props.nodeId}`}>
@@ -76,6 +77,8 @@ class RightAccountBox extends React.Component {
                     {username}
                   </a>
                 </span>
+                <div className="sep5"></div>
+                <span className="fade">{tagline}</span>
               </td>
             </tr>
             </tbody>

@@ -19,6 +19,7 @@ import {animateScroll as scroll} from "react-scroll";
 import md5 from 'js-md5'
 import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
+import * as MemberBackend from "./backend/MemberBackend";
 import oss from "ali-oss";
 import "./i18n"
 import i18next from "i18next";
@@ -154,7 +155,11 @@ export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
 export function initOSSClient(id) {
   getOSSClient(initNewOSSClient)
   let url, fileUrl
-  url = `https://${Conf.OSSBucket}.${Conf.OSSEndPoint}/${Conf.OSSBasicPath}/${id}`
+  if (Conf.OSSCustomDomain.length !== 0) {
+    url = `https://${Conf.OSSCustomDomain}/${Conf.OSSBasicPath}/${id}`
+  } else {
+    url = `https://${Conf.OSSBucket}.${Conf.OSSEndPoint}/${Conf.OSSBasicPath}/${id}`
+  }
   fileUrl = `${Conf.OSSBasicPath}/${id}`
   OSSUrl = url
   OSSFileUrl = fileUrl
@@ -186,6 +191,7 @@ export function SetLanguage() {
 export function ChangeLanguage(language) {
   localStorage.setItem("casbin-forum-language", language)
   i18next.changeLanguage(language)
+  MemberBackend.updateMemberLanguage(language)
   goToLink("/")
 }
 

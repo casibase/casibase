@@ -57,3 +57,10 @@ export function getNodeInfo(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getNodeRelation(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-node-relation?id=${id}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}

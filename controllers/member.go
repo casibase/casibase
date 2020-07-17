@@ -79,6 +79,25 @@ func (c *APIController) UpdateMemberInfo() {
 	c.ServeJSON()
 }
 
+func (c *APIController) UpdateMemberLanguage() {
+	language := c.Input().Get("lng")
+	memberId := c.GetSessionUser()
+
+	var resp Response
+
+	if language != "zh" && language != "en" {
+		resp = Response{Status: "fail", Msg: "Bad request."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+
+	res := object.UpdateMemberLanguage(memberId, language)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) AddMember() {
 	var member object.Member
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)

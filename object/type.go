@@ -38,3 +38,15 @@ type NodeFavoritesRes struct {
 	NodeInfo *Node `json:"nodeInfo"`
 	TopicNum int   `json:"topicNum"`
 }
+
+type CommunityHealth struct {
+	Member int `json:"member"`
+	Topic  int `json:"topic"`
+	Reply  int `json:"reply"`
+}
+
+type NodeRelation struct {
+	ParentNode *Node `json:"parentNode"`
+	RelatedNode []*Node `json:"relatedNode"`
+	ChildNode  []*Node `json:"childNode"`
+}

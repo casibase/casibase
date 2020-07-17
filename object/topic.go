@@ -25,10 +25,12 @@ type Topic struct {
 	CreatedTime   string   `xorm:"varchar(100)" json:"createdTime"`
 	Tags          []string `xorm:"varchar(200)" json:"tags"`
 	LastReplyUser string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	LastReplyTime string   `xorm:"varchar(100)" json:"lastReplyTime"`
 	ReplyCount    int      `json:"replyCount"`
 	UpCount       int      `json:"upCount"`
 	HitCount      int      `json:"hitCount"`
 	FavoriteCount int      `json:"favoriteCount"`
+	Deleted       bool     `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -54,7 +56,7 @@ func GetCreatedTopicsNum(memberId string) int {
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -106,7 +108,7 @@ func GetTopic(id string) *Topic {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("created_time").Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -146,8 +148,21 @@ func AddTopic(topic *Topic) bool {
 	return affected != 0
 }
 
+/*
 func DeleteTopic(id string) bool {
 	affected, err := adapter.engine.Id(id).Delete(&Topic{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+*/
+
+func DeleteTopic(id string) bool {
+	topic := new(Topic)
+	topic.Deleted = true
+	affected, err := adapter.engine.Id(id).Update(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -229,7 +244,8 @@ func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
 	}
 
 	topic.LastReplyUser = memberId
-	affected, err := adapter.engine.Id(topicId).Cols("last_reply_user").Update(topic)
+	topic.LastReplyTime = util.GetCurrentTime()
+	affected, err := adapter.engine.Id(topicId).Cols("last_reply_user, last_reply_time").Update(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -239,7 +255,7 @@ func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
 
 func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Desc("topic.created_time").Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}

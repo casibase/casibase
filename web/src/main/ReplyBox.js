@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
+const pangu = require("pangu")
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -154,7 +155,7 @@ class ReplyBox extends React.Component {
                       </span>
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
-                        <ReactMarkdown source={reply.content} escapeHtml={false} />
+                        <ReactMarkdown source={pangu.spacing(reply.content)} escapeHtml={false} />
                       </div>
                     </td>
                   </tr>

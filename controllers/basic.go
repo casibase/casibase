@@ -14,7 +14,11 @@
 
 package controllers
 
-import "github.com/astaxie/beego"
+import (
+	"github.com/astaxie/beego"
+
+	"github.com/casbin/casbin-forum/object"
+)
 
 type APIController struct {
 	beego.Controller
@@ -56,4 +60,19 @@ func (c *APIController) wrapResponse(res bool) {
 		c.Data["json"] = resp
 		c.ServeJSON()
 	}
+}
+
+func (c *APIController) GetCommunityHealth() {
+	var resp Response
+
+	res := object.CommunityHealth{
+		Member: object.GetMemberNum(),
+		Topic:  object.GetTopicCount(),
+		Reply:  object.GetReplyCount(),
+	}
+
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
 }

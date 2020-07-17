@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
 import "../node.css"
 import i18next from "i18next";
+const pangu = require("pangu")
 
 class TopicList extends React.Component {
   constructor(props) {
@@ -66,7 +67,7 @@ class TopicList extends React.Component {
                 <span className="item_title">
                   <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
                     {
-                      topic.title
+                      pangu.spacing(topic.title)
                     }
                   </a>
                 </span>
@@ -92,7 +93,7 @@ class TopicList extends React.Component {
                 </strong>
                 {" "}&nbsp;•&nbsp;{" "}
                 {
-                  Setting.getPrettyDate(topic.createdTime)
+                  (topic.lastReplyUser === "" || this.props.timeStandard === "createdTime") ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)
                 }
                 {
                   topic.lastReplyUser === "" ? null : (
