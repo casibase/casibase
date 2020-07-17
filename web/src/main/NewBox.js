@@ -143,6 +143,7 @@ class NewBox extends React.Component {
           <div style={{textAlign: "left", borderBottom: "1px solid #e2e2e2", fontSize: "14px", lineHeight: "120%"}}>
             <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
             <Resizable
+              enable={false}
               defaultSize={{
                 height:290,
               }}
