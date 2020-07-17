@@ -20,10 +20,12 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import '../Reply.css'
 import * as Tools from "./Tools";
+import "../codemirrorSize.css"
 import "../node.css"
 import "./node-casbin.css"
 import {Controlled as CodeMirror} from "react-codemirror2";
 import i18next from "i18next";
+import {Resizable} from "re-resizable";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -165,19 +167,25 @@ class NewReplyBox extends React.Component {
         }
         <div className={`cell ${this.props.nodeId}`} >
           <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className={`mll ${this.props.nodeId}`} id="reply_content" >
-            <CodeMirror
-              editorDidMount={(editor) => Tools.attachEditor(editor)}
-              onPaste={() => Tools.uploadPic()}
-              value={this.props.content}
-              onFocus={() => this.dockBox(true)}
-              onDrop={() => Tools.uploadPic()}
-              options={{mode: 'markdown', lineNumbers: false, theme:`${this.props.nodeId}`}}
-              onBeforeChange={(editor, data, value) => {
-                this.handleChange(value)
+            <Resizable
+              defaultSize={{
+                height:112,
               }}
-              onChange={(editor, data, value) => {
-              }}
-            />
+            >
+              <CodeMirror
+                editorDidMount={(editor) => Tools.attachEditor(editor)}
+                onPaste={() => Tools.uploadPic()}
+                value={this.props.content}
+                onFocus={() => this.dockBox(true)}
+                onDrop={() => Tools.uploadPic()}
+                options={{mode: 'markdown', lineNumbers: false, lineWrapping:true, theme:`${this.props.nodeId}`}}
+                onBeforeChange={(editor, data, value) => {
+                  this.handleChange(value)
+                }}
+                onChange={(editor, data, value) => {
+                }}
+              />
+            </Resizable>
           </div>
           <div className="sep10" />
           <div className="fr">

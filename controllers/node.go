@@ -85,3 +85,14 @@ func (c *APIController) GetNodeFromTab() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *APIController) GetNodeRelation() {
+	id := c.Input().Get("id")
+
+	var resp Response
+	res := object.GetNodeRelation(id)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}

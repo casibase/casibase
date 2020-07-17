@@ -25,6 +25,7 @@ type Reply struct {
 	Author      string `xorm:"varchar(100)" json:"author"`
 	TopicId     string `xorm:"varchar(100)" json:"topicId"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	Deleted     bool   `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -108,8 +109,21 @@ func AddReply(reply *Reply) bool {
 	return affected != 0
 }
 
+/*
 func DeleteReply(id string) bool {
 	affected, err := adapter.engine.Id(id).Delete(&Reply{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+*/
+
+func DeleteReply(id string) bool {
+	reply := new(Reply)
+	reply.Deleted = true
+	affected, err := adapter.engine.Id(id).Update(reply)
 	if err != nil {
 		panic(err)
 	}

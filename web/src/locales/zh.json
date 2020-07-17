@@ -23,7 +23,21 @@
     "For Existing Member": "已注册用户请",
     "Sign In": "登录",
     "Sign Up Now": "现在注册",
-    "Other Sign In Methods": "其他登录方式"
+    "Other Sign In Methods": "其他登录方式",
+    "Community health": "社区运行状况",
+    "Member": "注册会员",
+    "Topic": "主题",
+    "Reply": "回复",
+    "Rich List": "财富排行榜",
+    "Consumption list": "消费排行榜",
+    "My favorite node": "我收藏的节点",
+    "Collapse the extra nodes below": "收起下面额外的节点",
+    "show": "显示",
+    "more related nodes": "个更多的相关节点",
+    "Related nodes": "相关节点",
+    "Parent node": "父节点",
+    "Child node": "子结点",
+    "more child nodes": "个更多的相关子节点"
   },
   "topic":
   {
@@ -80,7 +94,7 @@
   },
   "newNodeTopic":
   {
-    "Publish": "发布",
+    "Publish": "创建",
     "Preview": "预览"
   },
   "reply":

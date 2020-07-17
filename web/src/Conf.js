@@ -38,3 +38,8 @@ export const OSSBucket = ""
 //The path stored in your oss
 //eg: `casbin-forum` or `casbin/forum/xxx/xxx`
 export const OSSBasicPath = ""
+
+//If you set a custom domain name in ali-oss bucket, please fill in.
+export const OSSCustomDomain = ""
+
+export const GithubRepo = "https://github.com/casbin/casbin-forum"

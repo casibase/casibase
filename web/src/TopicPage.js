@@ -232,6 +232,7 @@ class TopicPage extends React.Component {
               return this.renderNode(node);
             })
           }
+          &nbsp;
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         <div className="inner">

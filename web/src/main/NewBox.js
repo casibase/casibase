@@ -19,11 +19,13 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
+import "../codemirrorSize.css"
 import {withRouter} from "react-router-dom";
 
 import i18next from "i18next";
 import $ from "jquery"
 import Select2 from 'react-select2-wrapper';
+import {Resizable} from "re-resizable";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
@@ -140,18 +142,24 @@ class NewBox extends React.Component {
           </div>
           <div style={{textAlign: "left", borderBottom: "1px solid #e2e2e2", fontSize: "14px", lineHeight: "120%"}}>
             <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
-            <CodeMirror
-              editorDidMount={(editor) => Tools.attachEditor(editor)}
-              onPaste={() => Tools.uploadPic()}
-              value={this.state.form.body}
-              onDrop={() => Tools.uploadPic()}
-              options={{mode: 'markdown', lineNumbers: true}}
-              onBeforeChange={(editor, data, value) => {
-                this.updateFormField("body", value);
+            <Resizable
+              defaultSize={{
+                height:290,
               }}
-              onChange={(editor, data, value) => {
-              }}
-             />
+            >
+              <CodeMirror
+                editorDidMount={(editor) => Tools.attachEditor(editor)}
+                onPaste={() => Tools.uploadPic()}
+                value={this.state.form.body}
+                onDrop={() => Tools.uploadPic()}
+                options={{mode: 'markdown', lineNumbers: true}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateFormField("body", value);
+                }}
+                onChange={(editor, data, value) => {
+                }}
+              />
+            </Resizable>
           </div>
           <div className="cell">
             <Select2

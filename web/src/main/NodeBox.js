@@ -23,6 +23,7 @@ import TopicList from "./TopicList";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css"
 import i18next from "i18next";
+import ReactMarkdown from "react-markdown";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -169,7 +170,7 @@ class NodeBox extends React.Component {
               <input type="button" className="super normal button" value={i18next.t("node:new topic")}
                      onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
             </div>
-            <span className="f12">{nodeInfo?.desc}</span>
+            <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
             <div className="sep10"></div>
             <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
               <a href={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</a>

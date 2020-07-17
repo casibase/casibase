@@ -23,7 +23,21 @@
     "For Existing Member": "For Existing Member:",
     "Sign In": "Sign In",
     "Sign Up Now": "Sign Up Now",
-    "Other Sign In Methods": "Other Sign In Methods"
+    "Other Sign In Methods": "Other Sign In Methods",
+    "Community health": "Community health",
+    "Member": "Member:",
+    "Topic": "Topic:",
+    "Reply": "Reply:",
+    "Rich List": "Rich List",
+    "Consumption list": "Consumption list",
+    "My favorite node": "My favorite node",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
+    "show": "show",
+    "more related nodes": "more related nodes",
+    "Related nodes": "Related nodes",
+    "Parent node": "Parent node",
+    "Child node": "Child node",
+    "more child nodes": "more child nodes"
   },
   "topic":
   {

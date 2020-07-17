@@ -61,6 +61,7 @@ func initAPI() {
 	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	beego.Router("/api/get-member-avatar", &controllers.APIController{}, "GET:GetMemberAvatar")
 	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
+	beego.Router("/api/update-member-language", &controllers.APIController{}, "POST:UpdateMemberLanguage")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
@@ -68,6 +69,7 @@ func initAPI() {
 	beego.Router("/api/add-node", &controllers.APIController{}, "POST:AddNode")
 	beego.Router("/api/delete-node", &controllers.APIController{}, "POST:DeleteNode")
 	beego.Router("/api/get-node-info", &controllers.APIController{}, "GET:GetNodeInfo")
+	beego.Router("/api/get-node-relation", &controllers.APIController{}, "GET:GetNodeRelation")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.APIController{}, "POST:Signin")
@@ -85,4 +87,6 @@ func initAPI() {
 	beego.Router("/api/get-tabs", &controllers.APIController{}, "GET:GetTabs")
 	beego.Router("/api/get-tab", &controllers.APIController{}, "GET:GetTab")
 	beego.Router("/api/get-tab-nodes", &controllers.APIController{}, "GET:GetTabNodes")
+
+	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 }

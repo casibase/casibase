@@ -43,6 +43,10 @@ import RecentTopicsBox from "./main/RecentTopicsBox";
 import SelectLanguageBox from "./main/SelectLanguageBox";
 import "./node.css"
 import "./i18n"
+import RightCommunityHealthBox from "./rightbar/RightCommunityHealthBox";
+import RightFavouriteBox from "./rightbar/RightFavouriteBox";
+import RightNodeBox from "./rightbar/RightNodeBox";
+import CustomGithubCorner from "./main/CustomGithubCorner";
 
 class App extends Component {
   constructor(props) {
@@ -219,21 +223,31 @@ class App extends Component {
       if (uri === "/signup" || uri.startsWith("/member/")) {
         return null;
       }
-
-      return (
-        <div id="Rightbar">
-          <div className="sep20" />
-          <RightSigninBox nodeId={this.state.nodeId} />
-        </div>
-      )
-    } else {
-      return (
-        <div id="Rightbar">
-          <div className="sep20" />
-          <RightAccountBox account={this.state.account} nodeId={this.state.nodeId} />
-        </div>
-      )
     }
+
+    return (
+      <div id="Rightbar">
+        <div className="sep20"/>
+        {isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId}/> :
+          <RightSigninBox nodeId={this.state.nodeId}/>}
+        <Switch>
+          <Route exact path="/" component={() =>
+            <span>
+              <div className="sep20"/>
+              <RightCommunityHealthBox/>
+              <div className="sep20"/>
+              <RightFavouriteBox/>
+            </span>
+          }/>
+          <Route exact path="/go/:nodeId" component={() =>
+            <span>
+              <div className="sep20"/>
+              <RightNodeBox/>
+            </span>
+          }/>
+        </Switch>
+      </div>
+    )
   }
 
   render() {
@@ -243,6 +257,7 @@ class App extends Component {
         <div  className={`Wrapper ${this.state.nodeId}`} >
           <div className="content">
             <div id="Leftbar" />
+            <CustomGithubCorner />
             {
               this.renderRightbar()
             }

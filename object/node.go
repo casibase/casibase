@@ -14,6 +14,8 @@
 
 package object
 
+import "sync"
+
 type Node struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Name        string `xorm:"varchar(100)" json:"name"`
@@ -21,6 +23,7 @@ type Node struct {
 	Desc        string `xorm:"varchar(500)" json:"desc"`
 	Image       string `xorm:"varchar(200)" json:"image"`
 	TabId       string `xorm:"varchar(100)" json:"tab"`
+	ParentNode  string `xorm:"varchar(200)" json:"parentNode"`
 }
 
 func GetNodes() []*Node {
@@ -97,4 +100,50 @@ func GetNodeFromTab(tab string) []*Node {
 	}
 
 	return nodes
+}
+
+func GetNodeRelation(id string) *NodeRelation {
+	node := new(Node)
+	parentNode := new(Node)
+	relatedNode := []*Node{}
+	childNode := []*Node{}
+
+	_, err := adapter.engine.Id(id).Cols("parent_node").Get(node)
+	if err != nil {
+		panic(err)
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+
+	go func() {
+		defer wg.Done()
+		_, err = adapter.engine.Id(node.ParentNode).Get(parentNode)
+		if err != nil {
+			panic(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err = adapter.engine.Table("node").Where("parent_node = ?", node.ParentNode).And("id != ?", node.ParentNode).Find(&relatedNode)
+		if err != nil {
+			panic(err)
+		}
+	}()
+	go func() {
+		defer wg.Done()
+		err = adapter.engine.Table("node").Where("parent_node = ?", id).And("id != ?", node.ParentNode).Find(&childNode)
+		if err != nil {
+			panic(err)
+		}
+	}()
+	wg.Wait()
+
+	res := &NodeRelation{
+		ParentNode:  parentNode,
+		RelatedNode: relatedNode,
+		ChildNode:   childNode,
+	}
+
+	return res
 }

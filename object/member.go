@@ -33,6 +33,7 @@ type Member struct {
 	Bio               string `xorm:"varchar(100)" json:"bio"`
 	Website           string `xorm:"varchar(100)" json:"website"`
 	Location          string `xorm:"varchar(100)" json:"location"`
+	Language          string `xorm:"varchar(10)"  json:"language"`
 	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
 	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
@@ -121,6 +122,22 @@ func UpdateMemberAvatar(id string, avatar string) bool {
 	member.Avatar = avatar
 
 	_, err := adapter.engine.Id(id).MustCols("avatar").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
+func UpdateMemberLanguage(id string, language string) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	member := new(Member)
+	member.Language = language
+
+	_, err := adapter.engine.Id(id).MustCols("language").Update(member)
 	if err != nil {
 		panic(err)
 	}

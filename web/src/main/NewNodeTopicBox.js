@@ -19,10 +19,12 @@ import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import {withRouter} from "react-router-dom";
 import "./node-casbin.css"
+import "../codemirrorSize.css"
 import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
 import {Controlled as CodeMirror} from "react-codemirror2";
+import {Resizable} from "re-resizable";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -181,6 +183,12 @@ class NewNodeTopicBox extends React.Component {
           </textarea>
           <div class="sep10"></div>
           <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} name="content" className={`mll ${this.state.nodeInfo.id}`} id="topic_content" >
+            <Resizable
+              defaultSize={{
+                width: 111,
+                height:112,
+              }}
+            >
             <CodeMirror
               className={`${this.state.nodeInfo.id}`}
               editorDidMount={(editor) => Tools.attachEditor(editor)}
@@ -194,6 +202,7 @@ class NewNodeTopicBox extends React.Component {
               onChange={(editor, data, value) => {
               }}
             />
+            </Resizable>
           </div>
           <div class="sep10"></div>
           <input type="hidden" name="once" />
@@ -226,19 +235,26 @@ class NewNodeTopicBox extends React.Component {
             </tr>
             <tr>
               <td>
-                <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none"}} className="mll" id="topic_content" >
-                  <CodeMirror
-                    editorDidMount={(editor) => Tools.attachEditor(editor)}
-                    onPaste={() => Tools.uploadPic()}
-                    value={this.state.form.body}
-                    onDrop={() => Tools.uploadPic()}
-                    options={{mode: 'markdown', lineNumbers: false}}
-                    onBeforeChange={(editor, data, value) => {
-                      this.updateFormField("body", value)
+                <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "172"}} className="mle" id="topic_content" >
+                  <Resizable
+                    defaultSize={{
+                      width:700,
+                      height:172,
                     }}
-                    onChange={(editor, data, value) => {
-                    }}
-                  />
+                  >
+                    <CodeMirror
+                      editorDidMount={(editor) => Tools.attachEditor(editor)}
+                      onPaste={() => Tools.uploadPic()}
+                      value={this.state.form.body}
+                      onDrop={() => Tools.uploadPic()}
+                      options={{mode: 'markdown', lineNumbers: false}}
+                      onBeforeChange={(editor, data, value) => {
+                        this.updateFormField("body", value)
+                      }}
+                      onChange={(editor, data, value) => {
+                      }}
+                    />
+                  </Resizable>
                 </div>
               </td>
             </tr>
@@ -247,12 +263,12 @@ class NewNodeTopicBox extends React.Component {
                 <input type="hidden" name="once"/>
                 <button type="button" className="super normal button" onClick={this.enablePreview.bind(this)}>
                   <li className="fa fa-eye"></li>
-                  &nbsp;{i18next.t("newNodeTopic:Preview")}
+                  {" "}&nbsp;{i18next.t("newNodeTopic:Preview")}{" "}
                 </button>
-                &nbsp;
+                {" "}&nbsp;
                 <button type="submit" className="super normal button" onClick={this.publishTopic.bind(this)}>
                   <li className="fa fa-paper-plane"></li>
-                  &nbsp;{i18next.t("newNodeTopic:Publish")}
+                  {" "}&nbsp;{i18next.t("newNodeTopic:Publish")}{" "}
                 </button>
               </td>
             </tr>
