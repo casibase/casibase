@@ -184,9 +184,9 @@ class NewNodeTopicBox extends React.Component {
           <div class="sep10"></div>
           <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} name="content" className={`mll ${this.state.nodeInfo.id}`} id="topic_content" >
             <Resizable
+              enable={false}
               defaultSize={{
-                width: 111,
-                height:112,
+                height: 100,
               }}
             >
             <CodeMirror
@@ -237,9 +237,10 @@ class NewNodeTopicBox extends React.Component {
               <td>
                 <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "172"}} className="mle" id="topic_content" >
                   <Resizable
+                    enable={false}
                     defaultSize={{
-                      width:700,
-                      height:172,
+                      width: 728,
+                      height: 180,
                     }}
                   >
                     <CodeMirror

@@ -168,6 +168,7 @@ class NewReplyBox extends React.Component {
         <div className={`cell ${this.props.nodeId}`} >
           <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className={`mll ${this.props.nodeId}`} id="reply_content" >
             <Resizable
+              enable={false}
               defaultSize={{
                 height:112,
               }}
