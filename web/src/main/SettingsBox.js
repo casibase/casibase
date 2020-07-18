@@ -33,6 +33,7 @@ class SettingsBox extends React.Component {
       topics: [],
       username: "",
       form: {},
+      showSuccess: false
     };
     this.newUsername = this.newUsername.bind(this);
     this.postUsername = this.postUsername.bind(this);
@@ -106,11 +107,17 @@ class SettingsBox extends React.Component {
     MemberBackend.updateMemberInfo(this.props.account?.id, this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.showMessage("success", `Update memberInfo success`);
+          this.changeSuccess()
         } else {
           Setting.showMessage("error", res.msg)
         }
       });
+  }
+
+  changeSuccess() {
+    this.setState({
+      showSuccess: !this.state.showSuccess
+    })
   }
 
   render() {
@@ -157,217 +164,222 @@ class SettingsBox extends React.Component {
         <div className="cell">
           <a href='/settings/profile' className='tab_current'>Profile</a>
         </div>
+        {
+          this.state.showSuccess ?
+            <div className="message" onClick={() => this.changeSuccess()}>
+              <li className="fa fa-exclamation-triangle"></li>
+              &nbsp; 设置已成功保存
+            </div> : null
+        }
         <div className="inner" data-select2-id="11">
-          <form data-select2-id="10">
-            <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
-              <tbody data-select2-id="8">
-              <tr>
-                <td width="120" align="right">
-                  <Avatar username={account?.id} size="small" avatar={account?.avatar} />
-                </td>
-                <td width="auto" align="left">
-                  {Setting.getForumName()} {i18next.t("member:No.")} {account?.no} {i18next.t("member:member")}
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Username")}
-                </td>
-                <td width="auto" align="left">
-                  {account?.id}
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Phone")}
-                </td>
-                <td width="auto" align="left">
-                  <code>
-                    {account?.phone}
-                  </code>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right" />
-                <td width="auto" align="left">
-                  <a href="/settings/phone">
-                    {i18next.t("setting:Modify phone")}
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Email")}
-                </td>
-                <td width="auto" align="left">
-                  <code>
-                    {account?.email}
-                  </code>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right" />
-                <td width="auto" align="left">
-                  <a href="/settings/email">
-                    {i18next.t("setting:Modify Email")}
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Email Verification")}
-                </td>
-                <td width="auto" align="left">
-                  <span className="green">
-                    {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  Google
-                </td>
-                {
-                  account?.googleAccount === "" ?
-                    <td width="auto" align="left">
-                      <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
-                        {i18next.t("setting:Link with GoogleAccount")}
-                      </a>
-                    </td> :
-                    <td width="auto" align="left">
-                      <code>
-                        {account?.googleAccount}
-                      </code>
-                    </td>
-                }
-              </tr>
+          <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
+            <tbody data-select2-id="8">
+            <tr>
+              <td width="120" align="right">
+                <Avatar username={account?.id} size="small" avatar={account?.avatar} />
+              </td>
+              <td width="auto" align="left">
+                {Setting.getForumName()} {i18next.t("member:No.")} {account?.no} {i18next.t("member:member")}
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Username")}
+              </td>
+              <td width="auto" align="left">
+                {account?.id}
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Phone")}
+              </td>
+              <td width="auto" align="left">
+                <code>
+                  {account?.phone}
+                </code>
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right" />
+              <td width="auto" align="left">
+                <a href="/settings/phone">
+                  {i18next.t("setting:Modify phone")}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Email")}
+              </td>
+              <td width="auto" align="left">
+                <code>
+                  {account?.email}
+                </code>
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right" />
+              <td width="auto" align="left">
+                <a href="/settings/email">
+                  {i18next.t("setting:Modify Email")}
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Email Verification")}
+              </td>
+              <td width="auto" align="left">
+                <span className="green">
+                  {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
+                </span>
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                Google
+              </td>
               {
-                account?.googleAccount === "" ? null :
-                  <tr>
-                    <td width="120" align="right" />
-                    <td width="auto" align="left">
-                      <a href="/settings/google">
-                        {i18next.t("setting:Modify GoogleAccount")}
-                      </a>
-                    </td>
-                  </tr>
+                account?.googleAccount === "" ?
+                  <td width="auto" align="left">
+                    <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
+                      {i18next.t("setting:Link with GoogleAccount")}
+                    </a>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.googleAccount}
+                    </code>
+                  </td>
               }
-              <tr>
-                <td width="120" align="right">
-                  Github
-                </td>
-                {
-                  account?.githubAccount === "" ?
-                    <td width="auto" align="left">
-                      <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
-                        {i18next.t("setting:Link with GithubAccount")}
-                      </a>
-                    </td> :
-                    <td width="auto" align="left">
-                      <code>
-                        {account?.githubAccount}
-                      </code>
-                    </td>
-                }
-              </tr>
+            </tr>
+            {
+              account?.googleAccount === "" ? null :
+                <tr>
+                  <td width="120" align="right" />
+                  <td width="auto" align="left">
+                    <a href="/settings/google">
+                      {i18next.t("setting:Modify GoogleAccount")}
+                    </a>
+                  </td>
+                </tr>
+            }
+            <tr>
+              <td width="120" align="right">
+                Github
+              </td>
               {
-                account?.githubAccount === "" ? null :
-                  <tr>
-                    <td width="120" align="right" />
-                    <td width="auto" align="left">
-                      <a href="/settings/github">
-                        {i18next.t("setting:Modify GithubAccount")}
-                      </a>
-                    </td>
-                  </tr>
+                account?.githubAccount === "" ?
+                  <td width="auto" align="left">
+                    <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
+                      {i18next.t("setting:Link with GithubAccount")}
+                    </a>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.githubAccount}
+                    </code>
+                  </td>
               }
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:WeChat")}
-                </td>
-                {
-                  account?.weChatAccount === "" ?
-                    <td width="auto" align="left">
-                      <a href="/settings/wechat">
-                        {i18next.t("setting:Link with WeChat")}
-                      </a>
-                    </td> :
-                    <td width="auto" align="left">
-                      <code>
-                        {account?.weChatAccount}
-                      </code>
-                    </td>
-                }
-              </tr>
+            </tr>
+            {
+              account?.githubAccount === "" ? null :
+                <tr>
+                  <td width="120" align="right" />
+                  <td width="auto" align="left">
+                    <a href="/settings/github">
+                      {i18next.t("setting:Modify GithubAccount")}
+                    </a>
+                  </td>
+                </tr>
+            }
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:WeChat")}
+              </td>
               {
-                account?.weChatAccount === "" ? null :
-                  <tr>
-                    <td width="120" align="right" />
-                    <td width="auto" align="left">
-                      <a href="/settings/weChat">
-                        {i18next.t("setting:Modify WeChat")}
-                      </a>
-                    </td>
-                  </tr>
+                account?.weChatAccount === "" ?
+                  <td width="auto" align="left">
+                    <a href="/settings/wechat">
+                      {i18next.t("setting:Link with WeChat")}
+                    </a>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.weChatAccount}
+                    </code>
+                  </td>
               }
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Website")}
-                </td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="website" defaultValue={account?.website} onChange={event => this.updateFormField("website", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Company")}
-                </td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Company title")}
-                </td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="companyTitle" defaultValue={account?.companyTitle} maxLength="32" onChange={event => this.updateFormField("companyTitle", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Location")}
-                </td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="location" defaultValue={account?.location} maxLength="32" onChange={event => this.updateFormField("location", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Tagline")}
-                </td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="tagline" defaultValue={account?.tagline} maxLength="32" onChange={event => this.updateFormField("tagline", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">
-                  {i18next.t("setting:Bio")}
-                </td>
-                <td width="auto" align="left">
-                  <textarea className="ml" name="bio" defaultValue={account?.bio} onChange={event => this.updateFormField("bio", event.target.value)} />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right" />
-                <td width="auto" align="left">
-                  <input type="hidden" value="26304" name="once" />
-                  <input type="submit" className="super normal button" value={i18next.t("setting:Save Settings")} onClick={this.publishInfoUpdate.bind(this)} />
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </form>
+            </tr>
+            {
+              account?.weChatAccount === "" ? null :
+                <tr>
+                  <td width="120" align="right" />
+                  <td width="auto" align="left">
+                    <a href="/settings/weChat">
+                      {i18next.t("setting:Modify WeChat")}
+                    </a>
+                  </td>
+                </tr>
+            }
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Website")}
+              </td>
+              <td width="auto" align="left">
+                <input type="text" className="sl" name="website" defaultValue={account?.website} onChange={event => this.updateFormField("website", event.target.value)} autoComplete="off" />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Company")}
+              </td>
+              <td width="auto" align="left">
+                <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Company title")}
+              </td>
+              <td width="auto" align="left">
+                <input type="text" className="sl" name="companyTitle" defaultValue={account?.companyTitle} maxLength="32" onChange={event => this.updateFormField("companyTitle", event.target.value)} autoComplete="off" />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Location")}
+              </td>
+              <td width="auto" align="left">
+                <input type="text" className="sl" name="location" defaultValue={account?.location} maxLength="32" onChange={event => this.updateFormField("location", event.target.value)} autoComplete="off" />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Tagline")}
+              </td>
+              <td width="auto" align="left">
+                <input type="text" className="sl" name="tagline" defaultValue={account?.tagline} maxLength="32" onChange={event => this.updateFormField("tagline", event.target.value)} autoComplete="off" />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right">
+                {i18next.t("setting:Bio")}
+              </td>
+              <td width="auto" align="left">
+                <textarea className="ml" name="bio" defaultValue={account?.bio} onChange={event => this.updateFormField("bio", event.target.value)} />
+              </td>
+            </tr>
+            <tr>
+              <td width="120" align="right" />
+              <td width="auto" align="left">
+                <input type="hidden" value="26304" name="once" />
+                <input type="submit" className="super normal button" value={i18next.t("setting:Save Settings")} onClick={this.publishInfoUpdate.bind(this)} />
+              </td>
+            </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     );

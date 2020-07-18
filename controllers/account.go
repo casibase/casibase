@@ -94,6 +94,7 @@ func (c *APIController) Signup() {
 			Password:    password,
 			Email:       email,
 			Avatar:      avatar,
+			IsModerator: false,
 			CreatedTime: util.GetCurrentTime(),
 		}
 		switch form.Method {

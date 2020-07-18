@@ -30,7 +30,7 @@ type Topic struct {
 	UpCount       int      `json:"upCount"`
 	HitCount      int      `json:"hitCount"`
 	FavoriteCount int      `json:"favoriteCount"`
-	Deleted       bool     `xorm:"bool default 0" json:"-"`
+	Deleted       bool     `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -255,17 +255,22 @@ func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
 
 func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
-	if err != nil {
-		panic(err)
-	}
 	res := []*TopicWithAvatar{}
-	for _, v := range topics {
-		temp := TopicWithAvatar{
-			Topic:  *v,
-			Avatar: GetMemberAvatar(v.Author),
+
+	if tab == "all" {
+		res = GetTopics(limit, offset)
+	} else {
+		err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
+		if err != nil {
+			panic(err)
 		}
-		res = append(res, &temp)
+		for _, v := range topics {
+			temp := TopicWithAvatar{
+				Topic:  *v,
+				Avatar: GetMemberAvatar(v.Author),
+			}
+			res = append(res, &temp)
+		}
 	}
 
 	return res

@@ -25,7 +25,7 @@ type Reply struct {
 	Author      string `xorm:"varchar(100)" json:"author"`
 	TopicId     string `xorm:"varchar(100)" json:"topicId"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
-	Deleted     bool   `xorm:"bool default 0" json:"-"`
+	Deleted     bool   `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }

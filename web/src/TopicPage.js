@@ -44,6 +44,15 @@ class TopicPage extends React.Component {
     this.getTopics();
   }
 
+  changeTab(tab) {
+    this.setState({
+      tab: tab
+    }, () => {
+      this.getNodeInfo();
+      this.getTopics();
+    });
+  }
+
   getNodeInfo() {
     let tab
     TabBackend.getTabs()
@@ -198,7 +207,7 @@ class TopicPage extends React.Component {
 
   renderTab(tab) {
     return (
-      <a href={`/?tab=${tab?.id}`} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>{tab?.name}</a>
+      <a href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>{tab?.name}</a>
     )
   }
 
@@ -206,7 +215,7 @@ class TopicPage extends React.Component {
     return (
       <span>
         <a href={`/go/${node?.id}`}>{node?.name}</a>
-        &nbsp;&nbsp;
+        &nbsp;{" "}&nbsp;
       </span>
     )
   }
@@ -225,7 +234,7 @@ class TopicPage extends React.Component {
           {
             this.props.account !== undefined && this.props.account !== null ?
               <div className="fr">
-                <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{i18next.t("topic:Create a Post")}</a>
+                <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</a>
                 &nbsp;
                 <li className="fa fa-caret-right gray" />
               </div> : null

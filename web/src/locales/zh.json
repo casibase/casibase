@@ -53,7 +53,8 @@
     "More Topics": " 更多新主题",
     "Recent Topics": "最近的主题",
     "This is a topic created": "这是一个创建于",
-    "days ago, the information in it may have changed.": "天前的主题，其中的信息可能已经有所发展或是发生改变。"
+    "days ago, the information in it may have changed.": "天前的主题，其中的信息可能已经有所发展或是发生改变。",
+    "Post a Question": "我要提问"
   },
   "new":
   {
@@ -163,7 +164,8 @@
     "Settings": "设置",
     "Company title": "工作职位",
     "Location": "所在地",
-    "Tagline": "个人签名"
+    "Tagline": "个人签名",
+    "Settings have been successfully saved": "设置已成功保存"
   },
   "loading":
   {
