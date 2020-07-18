@@ -74,6 +74,7 @@ func (c *APIController) AddReply() {
 		TopicId:     topicId,
 		CreatedTime: util.GetCurrentTime(),
 		Content:     content,
+		Deleted:     false,
 	}
 
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &reply)

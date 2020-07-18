@@ -18,7 +18,7 @@ type Member struct {
 	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
 	Password          string `xorm:"varchar(100) notnull" json:"-"`
 	No                int    `json:"no"`
-	IsModerator       bool   `xorm:"bool default 0" json:"isModerator"`
+	IsModerator       bool   `xorm:"bool" json:"isModerator"`
 	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
 	Avatar            string `xorm:"varchar(150)" json:"avatar"`

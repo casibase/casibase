@@ -53,7 +53,8 @@
     "More Topics": " More Topics",
     "Recent Topics": "Recent Topics",
     "This is a topic created": "This is a topic created",
-    "days ago, the information in it may have changed.": "days ago, the information in it may have changed."
+    "days ago, the information in it may have changed.": "days ago, the information in it may have changed.",
+    "Post a Question": "Post a Question"
   },
   "new":
   {
@@ -163,7 +164,8 @@
     "Settings": "Settings",
     "Company title": "Company title",
     "Location": "Location",
-    "Tagline": "Tagline"
+    "Tagline": "Tagline",
+    "Settings have been successfully saved": "Settings have been successfully saved"
   },
   "loading":
   {

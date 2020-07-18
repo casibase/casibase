@@ -96,6 +96,7 @@ func (c *APIController) AddTopic() {
 		HitCount:      0,
 		FavoriteCount: 0,
 		Content:       body,
+		Deleted:       false,
 	}
 
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &topic)

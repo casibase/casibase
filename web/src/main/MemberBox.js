@@ -192,7 +192,7 @@ class MemberBox extends React.Component {
           }
           {
             this.state.member?.googleAccount.length !== 0 ?
-              <a href="https://mail.google.com/mail/u/0/" className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <a href={`mailto:${this.state.member?.googleAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_google.png")} width="24" alt="Google" align="absmiddle"/> &nbsp;{this.state.member?.googleAccount}
               </a> : null
           }
