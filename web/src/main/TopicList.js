@@ -93,7 +93,7 @@ class TopicList extends React.Component {
                 </strong>
                 {" "}&nbsp;•&nbsp;{" "}
                 {
-                  (topic.lastReplyUser === "" || this.props.timeStandard === "createdTime") ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)
+                  (topic.lastReplyTime === "" || this.props.timeStandard === "createdTime") ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)
                 }
                 {
                   topic.lastReplyUser === "" ? null : (

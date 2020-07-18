@@ -137,7 +137,8 @@
     "If you have previously signed up an account via Email, please click": "如果你之前已经使用电子邮件注册，那么请从",
     "to sign in.": "登入。",
     "here": "这里",
-    "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。"
+    "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。",
+    "authorized to manage the community": "具有管理社区的权限"
   },
   "setting":
   {
@@ -159,7 +160,10 @@
     "Company": "所在公司",
     "Bio": "个人简介",
     "Save Settings": "保存设置",
-    "Settings": "设置"
+    "Settings": "设置",
+    "Company title": "工作职位",
+    "Location": "所在地",
+    "Tagline": "个人签名"
   },
   "loading":
   {

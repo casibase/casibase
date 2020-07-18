@@ -24,7 +24,8 @@ import i18next from "i18next";
 import "codemirror/lib/codemirror.css"
 require("codemirror/mode/markdown/markdown");
 
-const ReactMarkdown = require('react-markdown')
+const ReactMarkdown = require('react-markdown');
+const pangu = require("pangu");
 
 class TopicBox extends React.Component {
   constructor(props) {
@@ -163,7 +164,7 @@ class TopicBox extends React.Component {
         <div className={`cell ${this.state.topic.nodeId}`}>
           <div className={`topic_content ${this.state.topic.nodeId}`}>
             <div className="markdown_body">
-              <ReactMarkdown source={this.state.topic?.content} escapeHtml={false} />
+              <ReactMarkdown source={pangu.spacing(this.state.topic?.content)} escapeHtml={false} />
             </div>
           </div>
         </div>

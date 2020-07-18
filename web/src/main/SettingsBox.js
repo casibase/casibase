@@ -20,6 +20,7 @@ import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend"
 import * as MemberBackend from "../backend/MemberBackend";
 import '../Reply.css'
+import '../Settings.css'
 import i18next from "i18next";
 
 class SettingsBox extends React.Component {
@@ -46,6 +47,9 @@ class SettingsBox extends React.Component {
     form["website"] = this.props.account?.website;
     form["company"] = this.props.account?.company;
     form["bio"] = this.props.account?.bio;
+    form["companyTitle"] = this.props.account?.companyTitle;
+    form["tagline"] = this.props.account?.tagline;
+    form["location"] = this.props.account?.location;
     this.setState({
       form: form,
     });
@@ -146,7 +150,13 @@ class SettingsBox extends React.Component {
 
     return (
       <div className="box">
-        <Header item={i18next.t("setting:Settings")} />
+        <div className="page-content-header">
+          <img src={Setting.getStatic("/static/img/settings.png")} width="64" alt="Settings" />
+            <h2>{i18next.t("setting:Settings")}</h2>
+        </div>
+        <div className="cell">
+          <a href='/settings/profile' className='tab_current'>Profile</a>
+        </div>
         <div className="inner" data-select2-id="11">
           <form data-select2-id="10">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
@@ -314,6 +324,30 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Company title")}
+                </td>
+                <td width="auto" align="left">
+                  <input type="text" className="sl" name="companyTitle" defaultValue={account?.companyTitle} maxLength="32" onChange={event => this.updateFormField("companyTitle", event.target.value)} autoComplete="off" />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Location")}
+                </td>
+                <td width="auto" align="left">
+                  <input type="text" className="sl" name="location" defaultValue={account?.location} maxLength="32" onChange={event => this.updateFormField("location", event.target.value)} autoComplete="off" />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Tagline")}
+                </td>
+                <td width="auto" align="left">
+                  <input type="text" className="sl" name="tagline" defaultValue={account?.tagline} maxLength="32" onChange={event => this.updateFormField("tagline", event.target.value)} autoComplete="off" />
                 </td>
               </tr>
               <tr>

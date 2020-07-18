@@ -140,15 +140,26 @@ class MemberBox extends React.Component {
                   {this.state.member?.tagline}
                 </span>
                 <div className="sep10" />
-                <span>🏢&nbsp; <strong>{this.state.member?.company}</strong> / {this.state.member?.companyTitle}
-                </span>
+                {
+                  this.state.member?.company.length !== 0 || this.state.member?.companyTitle.length !== 0 ?
+                    <span>
+                      🏢&nbsp;{" "}
+                    <strong>
+                      {this.state.member?.company}
+                    </strong>
+                      {" "}/{" "}
+                      {this.state.member?.companyTitle}
+                    </span> : null
+                }
                 <div className="sep10" />
                 <span className="gray">
                   {Setting.getForumName()} {i18next.t("member:No.")} {this.state.member?.no} {i18next.t("member:member, joined on")} {Setting.getFormattedDate(this.state.member?.createdTime)}
                   <div className="sep5" />
                   {i18next.t("member:Today's ranking")} <a href="/top/dau">{this.state.member?.ranking}</a>
                   <div className="sep5" />
-                  <img src={Setting.getStatic("/static/img/mod@2x.png")} height="14px" align="absmiddle" /> authorized to manage the community
+                  {this.state.member?.isModerator ? <img src={Setting.getStatic("/static/img/mod@2x.png")} height="14px" align="absmiddle" /> : null }
+                  {" "}
+                  {this.state.member?.isModerator ? i18next.t("member:authorized to manage the community") : null }
                 </span>
                 <div className="sep10" />
                 <div className="balance_area">
@@ -161,12 +172,30 @@ class MemberBox extends React.Component {
           <div className="sep5" />
         </div>
         <div className="widgets">
-          <a href={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
-            <img src={Setting.getStatic("/static/img/social_home.png")} width="24" alt="Website" align="absmiddle" /> &nbsp;{this.state.member?.website}
-          </a>
-          <a href={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
-            <img src={Setting.getStatic("/static/img/social_geo.png")} width="24" alt="Geo" align="absmiddle" /> &nbsp;{this.state.member?.location}
-          </a>
+          {
+            this.state.member?.website.length !== 0 ?
+              <a href={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+                <img src={Setting.getStatic("/static/img/social_home.png")} width="24" alt="Website" align="absmiddle" /> &nbsp;{this.state.member?.website}
+              </a> : null
+          }
+          {
+            this.state.member?.location.length !== 0 ?
+              <a href={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+                <img src={Setting.getStatic("/static/img/social_geo.png")} width="24" alt="Geo" align="absmiddle" /> &nbsp;{this.state.member?.location}
+              </a> : null
+          }
+          {
+            this.state.member?.githubAccount.length !== 0 ?
+              <a href={`https://github.com/${this.state.member?.githubAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+                <img src={Setting.getStatic("/static/img/social_github.png")} width="24" alt="GitHub" align="absmiddle"/> &nbsp;{this.state.member?.githubAccount}
+              </a> : null
+          }
+          {
+            this.state.member?.googleAccount.length !== 0 ?
+              <a href="https://mail.google.com/mail/u/0/" className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+                <img src={Setting.getStatic("/static/img/social_google.png")} width="24" alt="Google" align="absmiddle"/> &nbsp;{this.state.member?.googleAccount}
+              </a> : null
+          }
         </div>
         <div className="cell">
           {this.state.member?.bio}

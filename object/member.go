@@ -18,6 +18,7 @@ type Member struct {
 	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
 	Password          string `xorm:"varchar(100) notnull" json:"-"`
 	No                int    `json:"no"`
+	IsModerator       bool   `xorm:"bool default 0" json:"isModerator"`
 	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
 	Avatar            string `xorm:"varchar(150)" json:"avatar"`
@@ -105,7 +106,7 @@ func UpdateMemberInfo(id string, member *Member) bool {
 		return false
 	}
 
-	_, err := adapter.engine.Id(id).MustCols("company, bio, website").Update(member)
+	_, err := adapter.engine.Id(id).MustCols("company, bio, website, tagline, company_title, location").Update(member)
 	if err != nil {
 		panic(err)
 	}

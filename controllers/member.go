@@ -67,9 +67,12 @@ func (c *APIController) UpdateMemberInfo() {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 	} else {
 		var member = object.Member{
-			Company: tempMember.Company,
-			Bio:     tempMember.Bio,
-			Website: tempMember.Website,
+			Company:      tempMember.Company,
+			CompanyTitle: tempMember.CompanyTitle,
+			Bio:          tempMember.Bio,
+			Website:      tempMember.Website,
+			Tagline:      tempMember.Tagline,
+			Location:     tempMember.Location,
 		}
 		res := object.UpdateMemberInfo(id, &member)
 		resp = Response{Status: "ok", Msg: "success", Data: res}

@@ -30,7 +30,7 @@ type Topic struct {
 	UpCount       int      `json:"upCount"`
 	HitCount      int      `json:"hitCount"`
 	FavoriteCount int      `json:"favoriteCount"`
-	Deleted       bool     `xorm:"bool" json:"-"`
+	Deleted       bool     `xorm:"bool default 0" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
