@@ -91,6 +91,7 @@ func (c *APIController) AddTopic() {
 		CreatedTime:   util.GetCurrentTime(),
 		Tags:          nil,
 		LastReplyUser: "",
+		LastReplyTime: util.GetCurrentTime(),
 		UpCount:       0,
 		HitCount:      0,
 		FavoriteCount: 0,

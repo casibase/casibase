@@ -222,11 +222,14 @@ class TopicPage extends React.Component {
           }
         </div>
         <div className="cell" id="SecondaryTabs">
-          <div className="fr">
-            <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{i18next.t("topic:Create a Post")}</a>
-            &nbsp;
-            <li className="fa fa-caret-right gray" />
-          </div>
+          {
+            this.props.account !== undefined && this.props.account !== null ?
+              <div className="fr">
+                <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{i18next.t("topic:Create a Post")}</a>
+                &nbsp;
+                <li className="fa fa-caret-right gray" />
+              </div> : null
+          }
           {
             this.state.nodes.map((node) => {
               return this.renderNode(node);

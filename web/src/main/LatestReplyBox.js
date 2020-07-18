@@ -22,6 +22,9 @@ import TopicList from "./TopicList";
 import i18next from "i18next";
 import * as MemberBackend from "../backend/MemberBackend";
 
+const ReactMarkdown = require('react-markdown');
+const pangu = require("pangu");
+
 class LatestReplyBox extends React.Component {
   constructor(props) {
     super(props);
@@ -105,7 +108,7 @@ class LatestReplyBox extends React.Component {
                   <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
                   <span className="gray">{i18next.t("member:replied")}{" "}<a href={`/member/${reply.author}`}> {reply.author} </a>{" "}{i18next.t("member:'s topic")}{" "}<span
                     className="chevron">›</span> <a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
-                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}>{" "}{reply.topicTitle}{" "}</a>
+                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
                   </span>
                 </td>
               </tr>
@@ -114,7 +117,7 @@ class LatestReplyBox extends React.Component {
         </div>
         <div className="inner">
           <div className="reply_content">
-            <span dangerouslySetInnerHTML={{__html: reply.replyContent}} />
+            <ReactMarkdown source={pangu.spacing(reply.replyContent)} escapeHtml={false} />
           </div>
         </div>
       </div>

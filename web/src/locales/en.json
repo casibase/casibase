@@ -137,7 +137,8 @@
     "If you have previously signed up an account via Email, please click": "If you have previously signed up an account via Email, please click",
     "to sign in.": "to sign in.",
     "here": "here",
-    "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer."
+    "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
+    "authorized to manage the community": "authorized to manage the community"
   },
   "setting":
   {
@@ -159,7 +160,10 @@
     "Company": "Company",
     "Bio": "Bio",
     "Save Settings": "Save Settings",
-    "Settings": "Settings"
+    "Settings": "Settings",
+    "Company title": "Company title",
+    "Location": "Location",
+    "Tagline": "Tagline"
   },
   "loading":
   {
