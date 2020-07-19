@@ -120,7 +120,7 @@ export function getUserAvatar(username, isLarge=false) {
   }
 
   let gravatarStr = md5(username)
-  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro&size=${isLarge ? "" : "48"}`
+  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro`
   //return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
@@ -191,8 +191,7 @@ export function SetLanguage() {
 export function ChangeLanguage(language) {
   localStorage.setItem("casbin-forum-language", language)
   i18next.changeLanguage(language)
-  MemberBackend.updateMemberLanguage(language)
-  goToLink("/")
+  MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"))
 }
 
 export function changeMomentLanguage(lng) {

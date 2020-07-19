@@ -15,19 +15,39 @@
 import React from "react";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import * as Conf from "./Conf"
+import * as BasicBackend from "./backend/BasicBackend";
+import moment from "moment";
 
 class Footer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
+      version: null
     };
   }
 
   componentDidMount() {
+    this.getForumVersion()
+  }
+
+  getForumVersion() {
+    BasicBackend.getForumVersion()
+      .then((res) => {
+        this.setState({
+          version: res.data,
+        });
+      });
   }
 
   render() {
+    const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart)
+    const utcTime = moment().utc(false).format("HH:mm")
+    const laxTime = moment().utcOffset(-7).format("HH:mm")
+    const pvgTime = moment().format("HH:mm")
+    const jfkTime = moment().utcOffset(-4).format("HH:mm")
+
     return (
       <div id="Bottom">
         <div className="content">
@@ -90,7 +110,7 @@ class Footer extends React.Component {
             World is powered by code
             <div className="sep20" />
             <span className="small fade">
-              VERSION: 0.0.1 · 5ms · UTC 15:13 · PVG 23:13 · LAX 08:13 · JFK 11:13
+              VERSION: <a href={Conf.GithubRepo}>{this.state.version}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
               <br />
               ♥ Do have faith in what you're doing.
             </span>

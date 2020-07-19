@@ -39,6 +39,14 @@ func (c *APIController) GetMemberAvatar() {
 	c.ServeJSON()
 }
 
+func (c *APIController) UpdateMemberAvatar() {
+	memberId := c.GetSessionUser()
+	avatar := c.Input().Get("avatar")
+
+	c.Data["json"] = object.UpdateMemberAvatar(memberId, avatar)
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateMember() {
 	id := c.Input().Get("id")
 
@@ -83,7 +91,7 @@ func (c *APIController) UpdateMemberInfo() {
 }
 
 func (c *APIController) UpdateMemberLanguage() {
-	language := c.Input().Get("lng")
+	language := c.Input().Get("language")
 	memberId := c.GetSessionUser()
 
 	var resp Response

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
+import * as MemberBackend from "../backend/MemberBackend";
 
 require('inline-attachment/src/inline-attachment')
 require('inline-attachment/src/codemirror-4.inline-attachment');
@@ -34,6 +35,10 @@ export function uploadPic() {
   url = Setting.OSSUrl
   timestamp = Date.parse(new Date());
   /* eslint-disable */inlineAttachment.prototype.uploadFile = function(file) {
+    if (file.size > 2097152) {
+      Setting.showMessage("error", "File size exceeds 2MB")
+      return
+    }
     let mdUrl = `${url}/${timestamp+file.name}`
     let path = `${filePath}/${timestamp+file.name}`
     newClient.multipartUpload(`${path}`, file).then(res => {
@@ -41,4 +46,21 @@ export function uploadPic() {
       this.onFileUploadResponse(file.name, encodeURI(mdUrl))
     }).catch(error => Setting.showMessage("error", `Adding pic failed：${error}`))
   }
+}
+
+export function uploadAvatar(file, redirectUrl) {
+  let newClient, url, timestamp, filePath
+  newClient = Setting.OSSClient
+  filePath = Setting.OSSFileUrl
+  url = Setting.OSSUrl
+  timestamp = Date.parse(new Date());
+  if (file.size > 2097152) {
+    Setting.showMessage("error", "File size exceeds 2MB")
+    return
+  }
+  let path = `${filePath}/${timestamp+file.name}`
+  newClient.multipartUpload(`${path}`, file).then(res => {
+    console.log('upload success');
+    MemberBackend.updateMemberAvatar(`${url}/${timestamp+file.name}`).then(() => window.location.href=`${redirectUrl}?success=true`)
+  }).catch(error => Setting.showMessage("error", `Adding pic failed：${error}`))
 }
