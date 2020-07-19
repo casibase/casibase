@@ -60,6 +60,7 @@ func initAPI() {
 	beego.Router("/api/delete-member", &controllers.APIController{}, "POST:DeleteMember")
 	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	beego.Router("/api/get-member-avatar", &controllers.APIController{}, "GET:GetMemberAvatar")
+	beego.Router("/api/update-member-avatar", &controllers.APIController{}, "POST:UpdateMemberAvatar")
 	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
 	beego.Router("/api/update-member-language", &controllers.APIController{}, "POST:UpdateMemberLanguage")
 
@@ -89,4 +90,5 @@ func initAPI() {
 	beego.Router("/api/get-tab-nodes", &controllers.APIController{}, "GET:GetTabNodes")
 
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
+	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")
 }

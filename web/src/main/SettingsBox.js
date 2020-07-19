@@ -19,6 +19,7 @@ import Avatar from "../Avatar";
 import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend"
 import * as MemberBackend from "../backend/MemberBackend";
+import * as Tools from "./Tools";
 import '../Reply.css'
 import '../Settings.css'
 import i18next from "i18next";
@@ -33,8 +34,21 @@ class SettingsBox extends React.Component {
       topics: [],
       username: "",
       form: {},
-      showSuccess: false
+      avatar: null,
+      showSuccess: false,
+      Setting_LIST: [
+        {label: "Profile", value: "profile"},
+        {label: "Avatar", value: "avatar"},
+      ]
     };
+    if (this.state.event === undefined) {
+      this.state.event = "profile"
+    }
+    if (this.state.event === "avatar") {
+      const params = new URLSearchParams(this.props.location.search)
+      this.state.showSuccess = params.get("success")
+    }
+
     this.newUsername = this.newUsername.bind(this);
     this.postUsername = this.postUsername.bind(this);
   }
@@ -44,6 +58,10 @@ class SettingsBox extends React.Component {
   }
 
   initForm() {
+    if (this.state.event !== "profile") {
+      return
+    }
+
     let form = this.state.form;
     form["website"] = this.props.account?.website;
     form["company"] = this.props.account?.company;
@@ -114,10 +132,58 @@ class SettingsBox extends React.Component {
       });
   }
 
+  handelChangeAvatar(event) {
+    this.setState({
+      avatar: event.target.files[0]
+    })
+  }
+
+  uploadAvatar() {
+    if (this.state.avatar === null) {
+      return
+    }
+    let redirectUrl = window.location.href.substring(0, window.location.href.lastIndexOf('?'))
+    
+    Tools.uploadAvatar(this.state.avatar, redirectUrl)
+  }
+
   changeSuccess() {
     this.setState({
       showSuccess: !this.state.showSuccess
     })
+  }
+
+  renderSettingList(item){
+    return (
+          <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{item.label}</a>
+      )
+  }
+
+  renderHeader() {
+    return (
+      <div className="box">
+        <div className="page-content-header">
+          <img src={Setting.getStatic("/static/img/settings.png")} width="64" alt="Settings" />
+          <h2>{i18next.t("setting:Settings")}</h2>
+        </div>
+        <div className="cell">
+          {
+            this.state.Setting_LIST.map((item) => {
+              return this.renderSettingList(item);
+            })
+          }
+        </div>
+        {
+          this.state.showSuccess ?
+            <div className="message" onClick={() => this.changeSuccess()}>
+              <li className="fa fa-exclamation-triangle"></li>
+              &nbsp;{" "}
+              {this.state.event === "profile" ? i18next.t("setting:Settings have been successfully saved") : null}
+              {this.state.event === "avatar" ? i18next.t("setting:New avatar set successfully") : null}
+            </div> : null
+        }
+      </div>
+    )
   }
 
   render() {
@@ -155,23 +221,57 @@ class SettingsBox extends React.Component {
       )
     }
 
+    if (this.state.event === "avatar") {
+      if (this.props.account !== undefined) {
+        Setting.initOSSClient(this.props.account?.id)
+      }
+      return (
+        <div>
+          {this.renderHeader()}
+          <div className="box" data-select2-id="11">
+            <div className="cell">
+              <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                <tr>
+                  <td width="120" align="right">{i18next.t("setting:Current avatar")}</td>
+                  <td width="auto" align="left">
+                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} size={"large"} />{" "}&nbsp;{" "}
+                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} />{" "}&nbsp;{" "}
+                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} size={"small"} />
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">{i18next.t("setting:Choose a picture file")}</td>
+                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png" onChange={(event) => this.handelChangeAvatar(event)} name="avatar" /></td>
+                </tr>
+                <tr>
+                  <td width="120" align="right"></td>
+                  <td width="auto" align="left"><span className="gray">{i18next.t("setting:Support PNG / JPG / GIF files within 2MB")}</span></td>
+                </tr>
+                <tr>
+                  <td width="120" align="right"></td>
+                  <td width="auto" align="left"><input type="hidden" name="once"/>
+                  <input type="submit" className="super normal button" onClick={() => this.uploadAvatar()} value={i18next.t("setting:Upload")} />
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="inner markdown_body">
+              <p>{i18next.t("setting:Rules and recommendations on avatars")}</p>
+              <ul>
+                <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is forbidden to use any vulgar or sensitive pictures as avatars")}</li>
+                <li>{i18next.t("setting:If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members")}</li>
+                <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited")}</li>
+              </ul>
+            </div>
+    </div>
+    </div>
+      )
+    }
+
     return (
-      <div className="box">
-        <div className="page-content-header">
-          <img src={Setting.getStatic("/static/img/settings.png")} width="64" alt="Settings" />
-            <h2>{i18next.t("setting:Settings")}</h2>
-        </div>
-        <div className="cell">
-          <a href='/settings/profile' className='tab_current'>Profile</a>
-        </div>
-        {
-          this.state.showSuccess ?
-            <div className="message" onClick={() => this.changeSuccess()}>
-              <li className="fa fa-exclamation-triangle"></li>
-              &nbsp; 设置已成功保存
-            </div> : null
-        }
-        <div className="inner" data-select2-id="11">
+      <div>
+        {this.renderHeader()}
+        <div className="inner box" data-select2-id="11">
           <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
             <tbody data-select2-id="8">
             <tr>

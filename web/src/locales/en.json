@@ -165,7 +165,16 @@
     "Company title": "Company title",
     "Location": "Location",
     "Tagline": "Tagline",
-    "Settings have been successfully saved": "Settings have been successfully saved"
+    "Settings have been successfully saved": "Settings have been successfully saved",
+    "New avatar set successfully": "New avatar set successfully",
+    "Current avatar": "Current avatar",
+    "Choose a picture file": "Choose a picture file",
+    "Support PNG / JPG / GIF files within 2MB": "Support PNG / JPG / GIF files within 2MB",
+    "Upload": "Upload",
+    "Rules and recommendations on avatars": "Rules and recommendations on avatars",
+    "It is forbidden to use any vulgar or sensitive pictures as avatars": "It is forbidden to use any vulgar or sensitive pictures as avatars",
+    "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members": "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members",
+    "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited"
   },
   "loading":
   {

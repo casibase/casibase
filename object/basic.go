@@ -12,18 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import * as Setting from "../Setting";
+package object
 
-export function getCommunityHealth() {
-  return fetch(`${Setting.ServerUrl}/api/get-community-health`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
-}
+import (
+	"io/ioutil"
+	"os"
+)
 
-export function getForumVersion() {
-  return fetch(`${Setting.ServerUrl}/api/get-forum-version`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+var fileDate, version string
+
+func GetForumVersion() string {
+	pwd, _ := os.Getwd()
+
+	fileInfos, err := ioutil.ReadDir(pwd + "/.git/refs/heads")
+	for _, v := range fileInfos {
+		if v.Name() == "master" {
+			if v.ModTime().String() == fileDate {
+				return version
+			} else {
+				fileDate = v.ModTime().String()
+				break
+			}
+		}
+	}
+
+	content, err := ioutil.ReadFile(pwd + "/.git/refs/heads/master")
+	if err != nil {
+		return ""
+	}
+
+	version = string(content[:7])
+
+	return version
 }

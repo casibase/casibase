@@ -76,3 +76,14 @@ func (c *APIController) GetCommunityHealth() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *APIController) GetForumVersion() {
+	var resp Response
+
+	res := object.GetForumVersion()
+
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
