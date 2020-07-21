@@ -46,7 +46,7 @@ func GetTopicCount() int {
 
 func GetCreatedTopicsNum(memberId string) int {
 	topic := new(Topic)
-	total, err := adapter.engine.Where("author = ?", memberId).Count(topic)
+	total, err := adapter.engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func GetCreatedTopicsNum(memberId string) int {
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -106,9 +106,37 @@ func GetTopic(id string) *Topic {
 	}
 }
 
+func GetTopicTitle(id string) string {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Cols("title").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return topic.Title
+	} else {
+		return ""
+	}
+}
+
+func GetTopicAuthor(id string) string {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Cols("author").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return topic.Author
+	} else {
+		return ""
+	}
+}
+
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -184,7 +212,7 @@ func GetTopicId() int {
 
 func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("created_time").Where("author = ?", author).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("created_time").Where("author = ?", author).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}

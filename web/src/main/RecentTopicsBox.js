@@ -31,7 +31,7 @@ class RecentTopicsBox extends React.Component {
       limit: 25,
       minPage: 1,
       maxPage: -1,
-      topicsNum: 1,
+      topicsNum: 0,
       temp: 0,
       url: ""
     };
@@ -66,7 +66,7 @@ class RecentTopicsBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.maxPage === -1) {
+    if (this.state.topicsNum === 0) {
       return
     }
     return (

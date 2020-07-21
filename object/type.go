@@ -46,7 +46,14 @@ type CommunityHealth struct {
 }
 
 type NodeRelation struct {
-	ParentNode *Node `json:"parentNode"`
+	ParentNode  *Node   `json:"parentNode"`
 	RelatedNode []*Node `json:"relatedNode"`
-	ChildNode  []*Node `json:"childNode"`
+	ChildNode   []*Node `json:"childNode"`
+}
+
+type NotificationResponse struct {
+	Notification
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	Avatar  string `json:"avatar"`
 }

@@ -50,6 +50,18 @@ func (c *APIController) AddFavorites() {
 	var resp Response
 	if favoritesType <= 3 && favoritesType >= 1 {
 		res := object.AddFavorites(&favorites)
+		if favoritesType == 1 {
+			notification := object.Notification{
+				Id:               util.IntToString(object.GetNotificationId()),
+				NotificationType: 4,
+				ObjectId:         objectId,
+				CreatedTime:      util.GetCurrentTime(),
+				SenderId:         c.GetSessionUser(),
+				ReceiverId:       object.GetTopicAuthor(objectId),
+				Status:           1,
+			}
+			_ = object.AddNotification(&notification)
+		}
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
 		resp = Response{Status: "fail", Msg: "param wrong"}
@@ -133,7 +145,7 @@ func (c *APIController) GetFavorites() {
 	}
 	if len(pageStr) != 0 {
 		page := util.ParseInt(pageStr)
-		offset = page * limit - limit
+		offset = page*limit - limit
 	}
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
@@ -168,13 +180,13 @@ func (c *APIController) GetAccountFavoriteNum() {
 	var res [4]int
 	var wg sync.WaitGroup
 
-	for i := 1; i <= 3; i ++ {
+	for i := 1; i <= 3; i++ {
 		wg.Add(1)
 		i := i
 		go func() {
 			if i == 2 {
 				res[i] = object.GetFollowingNum(memberId)
-			}else {
+			} else {
 				res[i] = object.GetFavoritesNum(i, memberId)
 			}
 			wg.Done()

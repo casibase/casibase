@@ -155,7 +155,9 @@ class ReplyBox extends React.Component {
                       </span>
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
-                        <ReactMarkdown source={pangu.spacing(reply.content)} escapeHtml={false} />
+                        <ReactMarkdown source={pangu.spacing(reply.content.replace(/@(.*?) /, function (w) {
+                          return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
+                        }))} escapeHtml={false} />
                       </div>
                     </td>
                   </tr>

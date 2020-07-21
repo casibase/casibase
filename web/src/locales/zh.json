@@ -176,6 +176,21 @@
     "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members": "如果你是男的，请不要用女人的照片作为头像，这样可能会对其他会员产生误导",
     "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "建议你不要使用真人照片作为头像，即使是自己的照片。而使用别人的照片则是被禁止的行为"
   },
+  "notification":
+  {
+    "Total reminders received": "总共收到提醒",
+    "Reminder system": "提醒系统",
+    "Thanks for your reply in topic": "感谢了你在主题",
+    "里的回复": "里的回复",
+    "Favorite you topic": "收藏了你发布的主题",
+    "Thanks for you topic": "感谢了你发布的主题",
+    "Replied to you in": "在",
+    "Mentioned you in topic": "在主题",
+    "Mentioned you in": "在",
+    "里回复了你": "里回复了你",
+    "里提到了你": "里提到了你",
+    "Delete": "删除"
+  },
   "loading":
   {
     "Please wait patiently...": "请耐心等待......",

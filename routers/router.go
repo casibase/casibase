@@ -89,6 +89,11 @@ func initAPI() {
 	beego.Router("/api/get-tab", &controllers.APIController{}, "GET:GetTab")
 	beego.Router("/api/get-tab-nodes", &controllers.APIController{}, "GET:GetTabNodes")
 
+	beego.Router("/api/get-notifications", &controllers.APIController{}, "GET:GetNotifications")
+	beego.Router("/api/delete-notifications", &controllers.APIController{}, "POST:DeleteNotification")
+	beego.Router("/api/get-unread-notification-num", &controllers.APIController{}, "GET:GetUnreadNotificationNum")
+	beego.Router("/api/update-read-status", &controllers.APIController{}, "POST:UpdateReadStatus")
+
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")
 }

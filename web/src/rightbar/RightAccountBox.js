@@ -16,8 +16,10 @@ import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import * as NotificationBackend from "../backend/NotificationBackend";
 import "../node.css"
 import i18next from "i18next";
+import {goToLink} from "../Setting";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
@@ -27,11 +29,22 @@ class RightAccountBox extends React.Component {
       topicFavoriteNum: 1,
       nodeFavoriteNum: 1,
       followingNum: 1,
+      unreadNotificationNum: 1
     };
   }
 
   componentDidMount() {
-    this.getFavoriteNum()
+    this.getFavoriteNum();
+    this.getUnreadNotificationNum();
+  }
+
+  getUnreadNotificationNum() {
+    NotificationBackend.getUnreadNotificationNum()
+      .then((res) => {
+        this.setState({
+          unreadNotificationNum: res?.data
+        });
+      })
   }
 
   getFavoriteNum() {
@@ -156,9 +169,23 @@ class RightAccountBox extends React.Component {
               {this.props.account?.silverCount} <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" /> {this.props.account?.bronzeCount} <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
             </a>
           </div>
-          <a href="/notifications" className={`fade ${this.props.nodeId}`}>
-            0{" "}{i18next.t("bar:unread")}
-          </a>
+          {
+            this.state.unreadNotificationNum !== 0 ?
+              <span>
+                <img src={Setting.getStatic("/static/img/dot_orange.png")} align="absmiddle" />{" "}
+              </span> : null
+          }
+          {
+            this.state.unreadNotificationNum === 0 ?
+              <a href="/notifications" className={`fade ${this.props.nodeId}`}>
+                0{" "}{i18next.t("bar:unread")}
+              </a> :
+              <strong>
+                <a href="/notifications" className={`fade ${this.props.nodeId}`}>
+                  {this.state.unreadNotificationNum}{" "}{i18next.t("bar:unread")}
+                </a>
+              </strong>
+          }
         </div>
       </div>
     );

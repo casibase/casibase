@@ -41,7 +41,7 @@ func GetReplyCount() int {
 
 func GetReplies(topicId string) []*ReplyWithAvatar {
 	replies := []*Reply{}
-	err := adapter.engine.Asc("created_time").Find(&replies, &Reply{TopicId: topicId})
+	err := adapter.engine.Asc("created_time").And("deleted = ?", 0).Find(&replies, &Reply{TopicId: topicId})
 	if err != nil {
 		panic(err)
 	}
@@ -133,7 +133,7 @@ func DeleteReply(id string) bool {
 
 func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 	replys := []*Reply{}
-	err := adapter.engine.Where("author = ?", author).Limit(limit, offset).Find(&replys)
+	err := adapter.engine.Where("author = ?", author).And("deleted = ?", 0).Limit(limit, offset).Find(&replys)
 	if err != nil {
 		panic(err)
 	}
@@ -185,10 +185,24 @@ func GetRepliesNum(memberId string) int {
 	var err error
 
 	reply := new(Reply)
-	total, err = adapter.engine.Where("author = ?", memberId).Count(reply)
+	total, err = adapter.engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(reply)
 	if err != nil {
 		panic(err)
 	}
 
 	return int(total)
+}
+
+func GetReplyTopicTitle(id string) string {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Cols("title").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return topic.Title
+	} else {
+		return ""
+	}
 }

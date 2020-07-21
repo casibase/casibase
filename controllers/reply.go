@@ -86,6 +86,7 @@ func (c *APIController) AddReply() {
 	if affected {
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser())
+		object.AddReplyNotification(reply.Id, c.GetSessionUser(), content, topicId)
 	}
 
 	c.wrapResponse(affected)

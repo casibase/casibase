@@ -47,6 +47,7 @@ import RightCommunityHealthBox from "./rightbar/RightCommunityHealthBox";
 import RightFavouriteBox from "./rightbar/RightFavouriteBox";
 import RightNodeBox from "./rightbar/RightNodeBox";
 import CustomGithubCorner from "./main/CustomGithubCorner";
+import NotificationBox from "./main/NotificationBox"
 
 class App extends Component {
   constructor(props) {
@@ -200,6 +201,12 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <SelectLanguageBox />
+          </div>
+        }/>
+        <Route exact path="/notifications" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <NotificationBox />
           </div>
         }/>
       </Switch>
