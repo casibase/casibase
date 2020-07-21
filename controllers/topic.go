@@ -99,6 +99,8 @@ func (c *APIController) AddTopic() {
 		Deleted:       false,
 	}
 
+	object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)
+
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
 	if err != nil {
 		panic(err)

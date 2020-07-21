@@ -176,6 +176,21 @@
     "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members": "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members",
     "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited"
   },
+  "notification":
+  {
+    "Total reminders received": "Total reminders received",
+    "Reminder system": "Reminder system",
+    "Thanks for your reply in topic": "Thanks for your reply in topic",
+    "里的回复": "",
+    "Favorite you topic": "Favorite you topic",
+    "Thanks for you topic": "Thanks for you topic",
+    "Replied to you in": "Replied to you in",
+    "Mentioned you in topic": "Mentioned you in topic",
+    "Mentioned you in": "Mentioned you in",
+    "里回复了你": "",
+    "里提到了你": "",
+    "Delete": "Delete"
+  },
   "loading":
   {
     "Please wait patiently...": "Please wait patiently....",

@@ -164,7 +164,9 @@ class TopicBox extends React.Component {
         <div className={`cell ${this.state.topic.nodeId}`}>
           <div className={`topic_content ${this.state.topic.nodeId}`}>
             <div className="markdown_body">
-              <ReactMarkdown source={pangu.spacing(this.state.topic?.content)} escapeHtml={false} />
+              <ReactMarkdown source={pangu.spacing(this.state.topic?.content.replace(/@(.*?) /, function (w) {
+                return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
+              }))} escapeHtml={false} />
             </div>
           </div>
         </div>

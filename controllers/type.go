@@ -44,3 +44,9 @@ type stsTokenResponse struct {
 	AccessKeySecret string `json:"accessKeySecret"`
 	StsToken        string `json:"stsToken"`
 }
+
+type newNotification struct {
+	ObjectId         string `json:"objectId"`
+	NotificationType int    `json:"notificationType"`
+	ReceiverId       string `json:"receiverId"`
+}
