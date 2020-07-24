@@ -15,6 +15,7 @@
 package util
 
 import (
+	"io/ioutil"
 	"regexp"
 	"strconv"
 )
@@ -37,4 +38,20 @@ func IsValidUsername(username string) bool {
 		return false
 	}
 	return true
+}
+
+func ReadStringFromPath(path string) string {
+	data, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(data)
+}
+
+func WriteStringToPath(s string, path string) {
+	err := ioutil.WriteFile(path, []byte(s), 0644)
+	if err != nil {
+		panic(err)
+	}
 }
