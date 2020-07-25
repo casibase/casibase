@@ -37,7 +37,50 @@
     "Related nodes": "Related nodes",
     "Parent node": "Parent node",
     "Child node": "Child node",
-    "more child nodes": "more child nodes"
+    "more child nodes": "more child nodes",
+    "Receive today's checkin bonus": "Receive today's checkin bonus"
+  },
+  "balance":
+  {
+    "Checkin bonus": "Checkin bonus",
+    "'s daily checkin bonus": "'s daily checkin bonus",
+    "Received thanks": "Received thanks",
+    "Thanks your topic": "Thanks your topic",
+    "Thanks your reply in": "Thanks your reply in",
+    "的回复": "",
+    "Send thanks": "Send thanks",
+    "Thanks": "Thanks",
+    "'s topic": "'s topic",
+    "'s reply": "'s reply",
+    "Create reply": "Create reply",
+    "Create topic": "Create topic",
+    "Created a": "Created a",
+    "characters reply": "characters reply",
+    "characters topic": "characters topic",
+    "Topic response bonus": "Topic response bonus",
+    "receive": "receive",
+    "Wealth ranking": "Wealth ranking",
+    "Consumption ranking": "Consumption ranking",
+    "Account balance": "Account balance",
+    "Current account balance": "Current account balance",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
+    "Time": "Time",
+    "Type": "Type",
+    "Amount": "Amount",
+    "Balance": "Balance",
+    "Description": "Description",
+    "Recharge": "Recharge"
+  },
+  "mission":
+  {
+    "Daily tasks": "Daily tasks",
+    "Successfully received daily checkin bonus": "Successfully received daily checkin bonus",
+    "Logged in continuously": "Logged in continuously",
+    "day(s)": "day(s)",
+    "Check my account balance": "Check my account balance",
+    "Receive X copper coins": "Receive X copper coins",
+    "Daily checkin bonus": "Daily checkin bonus",
+    "Daily checkin bonus has been received": "Daily checkin bonus has been received"
   },
   "topic":
   {
@@ -47,6 +90,7 @@
     "hits": "hits",
     "Ignore": "Ignore",
     "Thank": "Thank",
+    "Thanked": "Thanked",
     "Total Topics": "Total Topics",
     "favorites": "favorites",
     "Create a Post": "Create a Post",
@@ -91,7 +135,13 @@
     "new topic": "new topic",
     "All topics": "All topics",
     "Related links": "Related links",
-    "Publish": "Publish"
+    "Publish": "Publish",
+    "View all nodes": "View all nodes",
+    "Node navigation": "Node navigation"
+  },
+  "plane":
+  {
+    "Plane list": "位面列表"
   },
   "newNodeTopic":
   {
@@ -102,6 +152,7 @@
   {
     "replies": "replies",
     "thank": "thank",
+    "thanked": "thanked",
     "ignore": "ignore",
     "Reply": "Reply",
     "No reply yet": "No reply yet",

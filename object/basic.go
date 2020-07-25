@@ -17,7 +17,15 @@ package object
 import (
 	"io/ioutil"
 	"os"
+	"strings"
+
+	"github.com/casbin/casbin-forum/util"
 )
+
+type BasicInfo struct {
+	Id    string `xorm:"varchar(100) notnull pk"`
+	Value string `xorm:"varchar(100)"`
+}
 
 var fileDate, version string
 
@@ -41,7 +49,44 @@ func GetForumVersion() string {
 		return ""
 	}
 
-	version = string(content[:7])
+	//Convert to full length
+	temp := string(content)
+	version = strings.ReplaceAll(temp, "\n", "")
 
 	return version
+}
+
+func GetHighestOnlineNum() int {
+	info := BasicInfo{Id: "HighestOnlineNum"}
+	existed, err := adapter.engine.Get(&info)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return util.ParseInt(info.Value)
+	} else {
+		info := BasicInfo{
+			Id:    "HighestOnlineNum",
+			Value: "0",
+		}
+
+		_, err := adapter.engine.Insert(&info)
+		if err != nil {
+			panic(err)
+		}
+
+		return 0
+	}
+}
+
+func UpdateHighestOnlineNum(num int) bool {
+	info := new(BasicInfo)
+	info.Value = util.IntToString(num)
+	affected, err := adapter.engine.Where("id = ?", "HighestOnlineNum").Cols("value").Update(info)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

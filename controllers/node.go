@@ -63,6 +63,16 @@ func (c *APIController) DeleteNode() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetNodesNum() {
+	var resp Response
+
+	num := object.GetNodesNum()
+	resp = Response{Status: "ok", Msg: "success", Data: num}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) GetNodeInfo() {
 	id := c.Input().Get("id")
 

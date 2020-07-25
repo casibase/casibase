@@ -23,7 +23,10 @@ import * as Tools from "./Tools";
 import "../codemirrorSize.css"
 import "../node.css"
 import "./node-casbin.css"
-import {Controlled as CodeMirror} from "react-codemirror2";
+import * as CodeMirror from "codemirror"
+import "codemirror/addon/hint/show-hint"
+import "./show-hint.css"
+import {Controlled as CodeMirrorsEditor} from "react-codemirror2";
 import i18next from "i18next";
 import {Resizable} from "re-resizable";
 
@@ -39,6 +42,7 @@ class NewReplyBox extends React.Component {
       problem: [],
     };
     this.handleChange = this.handleChange.bind(this)
+    this.synonyms = this.synonyms.bind(this)
   }
 
   componentDidMount() {
@@ -130,9 +134,12 @@ class NewReplyBox extends React.Component {
       });
   }
 
-  handleChange(value) {
+  handleChange(editor, value) {
     this.props.onReplyChange(value);
     this.updateFormField("content", this.props.content);
+    if (value.substring(value.length-1) === "@") {
+      CodeMirror.commands.autocomplete(editor, null, { completeSingle: false })
+    }
   }
 
   undockBox() {
@@ -141,6 +148,24 @@ class NewReplyBox extends React.Component {
 
   dockBox() {
     this.props.changeStickyStatus(true)
+  }
+
+  synonyms(cm, option) {
+    let comp = this.props.memberList
+    let res = []
+    return new Promise(function(accept) {
+      setTimeout(function() {
+        let cursor = cm.getCursor(), line = cm.getLine(cursor.line)
+        let start = cursor.ch, end = cursor.ch
+        while (start && line.charAt(start - 1) !== "@") --start
+        while (end < line.length && /\w/.test(line.charAt(end))) ++end
+        let word = line.slice(start, end).toLowerCase()
+        for (let i = 0; i < comp.length; i++) if (comp[i].includes(word)) {res.push(comp[i])}
+        return accept({list: res,
+          from: CodeMirror.Pos(cursor.line, start+1),
+          to: CodeMirror.Pos(cursor.line, end)})
+      }, 100)
+    })
   }
 
   render() {
@@ -173,15 +198,15 @@ class NewReplyBox extends React.Component {
                 height:112,
               }}
             >
-              <CodeMirror
+              <CodeMirrorsEditor
                 editorDidMount={(editor) => Tools.attachEditor(editor)}
                 onPaste={() => Tools.uploadPic()}
                 value={this.props.content}
                 onFocus={() => this.dockBox(true)}
                 onDrop={() => Tools.uploadPic()}
-                options={{mode: 'markdown', lineNumbers: false, lineWrapping:true, theme:`${this.props.nodeId}`}}
+                options={{mode: 'markdown', lineNumbers: false, lineWrapping:true, theme:`${this.props.nodeId}`, extraKeys:{"Ctrl-Space": "autocomplete"}, hintOptions: {hint: this.synonyms, alignWithWord: false, closeOnUnfocus:false, closeOnBlur: false, className: "textcomplete-item"}}}
                 onBeforeChange={(editor, data, value) => {
-                  this.handleChange(value)
+                  this.handleChange(editor, value)
                 }}
                 onChange={(editor, data, value) => {
                 }}

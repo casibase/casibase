@@ -17,8 +17,6 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -61,7 +59,7 @@ func (c *APIController) GetNotifications() {
 	memberId := c.GetSessionUser()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("defaultNotificationPageNum")
+	defaultLimit := object.DefaultNotificationPageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {

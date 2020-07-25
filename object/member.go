@@ -38,6 +38,7 @@ type Member struct {
 	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
 	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
+	CheckinDate       string `xorm:"varchar(20)" json:"-"`
 }
 
 func GetMembers() []*Member {
@@ -208,6 +209,32 @@ func GetGithubAccount(githubAccount string) *Member {
 
 func LinkMemberAccount(memberId, field, value string) bool {
 	affected, err := adapter.engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func GetMemberCheckinDate(id string) string {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("checkin_date").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.CheckinDate
+	} else {
+		return ""
+	}
+}
+
+func UpdateMemberCheckinDate(id, date string) bool {
+	member := new(Member)
+	member.CheckinDate = date
+
+	affected, err := adapter.engine.Id(id).MustCols("checkin_date").Update(member)
 	if err != nil {
 		panic(err)
 	}

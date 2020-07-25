@@ -17,8 +17,6 @@ package controllers
 import (
 	"sync"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -135,7 +133,7 @@ func (c *APIController) GetFavorites() {
 	favoritesTypeStr := c.Input().Get("type")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("defaultPageNum")
+	defaultLimit := object.DefaultPageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {

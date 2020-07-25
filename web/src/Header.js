@@ -15,6 +15,7 @@
 import React from "react";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf"
 import i18next from "i18next";
 
 class Header extends React.Component {
@@ -22,7 +23,26 @@ class Header extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      searchValue: ""
     };
+  }
+
+  onSearchValueChange(e) {
+    this.setState({
+      searchValue: e.target.value
+    })
+  }
+
+  addSearchValue() {
+    this.setState({
+      searchValue: `${Conf.Domain}/t ` + this.state.searchValue
+    })
+  }
+
+  onKeyup(e) {
+    if(e.keyCode === 13) {
+      window.open(`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`)
+    }
   }
 
   signout() {
@@ -105,11 +125,9 @@ class Header extends React.Component {
                 </a></td>
                 <td width="auto" align="left">
                   <div id="Search">
-                    <form action="https://www.google.com" onSubmit="return dispatch()" target="_blank">
-                      <div id="qbar" className="">
-                        <input type="text" maxLength="40" name="q" id="q" value="" onFocus="$('#qbar').addClass('qbar_focus')" onBlur="$('#qbar').removeClass('qbar_focus')" />
-                      </div>
-                    </form>
+                    <div id="qbar" className="">
+                      <input type="text" maxLength="40" name="q" id="q" value={this.state.searchValue} onKeyUp={event => this.onKeyup(event)} onSubmit={() => this.window.open("https://www.google.com/search?1")} onChange={event => this.onSearchValueChange(event)} onFocus="$('#qbar').addClass('qbar_focus')" onBlur="$('#qbar').removeClass('qbar_focus')" />
+                    </div>
                   </div>
                 </td>
                 {

@@ -37,7 +37,50 @@
     "Related nodes": "相关节点",
     "Parent node": "父节点",
     "Child node": "子结点",
-    "more child nodes": "个更多的相关子节点"
+    "more child nodes": "个更多的相关子节点",
+    "Receive today's checkin bonus": "领取今日的登录奖励"
+  },
+  "balance":
+  {
+    "Checkin bonus": "每日登录奖励",
+    "'s daily checkin bonus": "的每日登录奖励",
+    "Received thanks": "收到谢意",
+    "Thanks your topic": "感谢你发布的主题",
+    "Thanks your reply in": "感谢你在",
+    "的回复": "的回复",
+    "Send thanks": "发送谢意",
+    "Thanks": "感谢",
+    "'s topic": "的主题",
+    "'s reply": "的回复",
+    "Create reply": "创建回复",
+    "Create topic": "创建主题",
+    "Created a": "创建了长度为",
+    "characters reply": "个字符的回复",
+    "characters topic": "个字符的主题",
+    "Topic response bonus": "主题回复收益",
+    "receive": "收到",
+    "Wealth ranking": "社区财富排行榜",
+    "Consumption ranking": "社区消费排行榜",
+    "Account balance": "账户余额",
+    "Current account balance": "当前账户余额",
+    "Documentation on the virtual currency system": "关于虚拟货币系统的说明文档",
+    "Time": "时间",
+    "Type": "类型",
+    "Amount": "数额",
+    "Balance": "余额",
+    "Description": "描述",
+    "Recharge": "充值"
+  },
+  "mission":
+  {
+    "Daily tasks": "日常任务",
+    "Successfully received daily checkin bonus": "已成功领取每日登录奖励",
+    "Logged in continuously": "已连续登录",
+    "day(s)": "天",
+    "Check my account balance": "查看我的账户余额",
+    "Receive X copper coins": "领取 X 铜币",
+    "Daily checkin bonus": "每日登录奖励",
+    "Daily checkin bonus has been received": "每日登录奖励已领取"
   },
   "topic":
   {
@@ -47,6 +90,7 @@
     "hits": "次点击",
     "Ignore": "忽略主题",
     "Thank": "感谢",
+    "Thanked": "已感谢",
     "Total Topics": "主题总数",
     "favorites": "人收藏",
     "Create a Post": "发布我的新作品",
@@ -91,7 +135,13 @@
     "new topic": "创建新主题",
     "All topics": "全部主题",
     "Related links": "相关连接",
-    "Publish": "创建新主题"
+    "Publish": "创建新主题",
+    "View all nodes": "浏览全部节点",
+    "Node navigation": "节点导航"
+  },
+  "plane":
+  {
+    "Plane list": "位面列表"
   },
   "newNodeTopic":
   {
@@ -102,6 +152,7 @@
   {
     "replies": "条回复",
     "thank": "感谢回复者",
+    "thanked": "感谢已发送",
     "ignore": "隐藏",
     "Reply": "回复",
     "No reply yet": "目前尚无回复",

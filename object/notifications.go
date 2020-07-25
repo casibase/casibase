@@ -80,7 +80,7 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 		go func() {
 			defer wg.Done()
 			tempNotification := NotificationResponse{
-				Notification: *v,
+				Notification: v,
 				Avatar:       GetMemberAvatar(v.SenderId),
 			}
 			switch v.NotificationType {

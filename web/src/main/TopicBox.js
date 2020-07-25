@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import * as BalanceBackend from "../backend/BalanceBackend";
 import "../node.css"
 import i18next from "i18next";
 
@@ -34,6 +35,7 @@ class TopicBox extends React.Component {
       classes: props,
       topicId: props.match.params.topicId,
       topic: [],
+      topicThanksCost: 15,
       favoritesStatus: false,
     };
   }
@@ -105,6 +107,19 @@ class TopicBox extends React.Component {
           Setting.showMessage("error", res.msg)
         }
       });
+  }
+
+  thanksTopic(id, author) {
+    if (window.confirm(`Are you sure to spend ${this.state.topicThanksCost} coins in thanking @${author} for this topic?`)) {
+      BalanceBackend.addThanks(id, 1)
+        .then((res) => {
+          if (res?.status === "ok") {
+            Setting.refresh()
+          } else {
+            alert(res?.msg)
+          }
+        })
+    }
   }
 
   render() {
@@ -192,11 +207,21 @@ class TopicBox extends React.Component {
             {i18next.t("topic:Ignore")}
           </a>
           &nbsp;
-          <div id="topic_thank">
-            <a href="#;" onClick="if (confirm('Are you sure to thank the topic's author?')) { thankTopic(123456, '39724'); }" className="tb">
-              {i18next.t("topic:Thank")}
-            </a>
-          </div>
+          {
+            this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+              this.state.topic?.thanksStatus === false ?
+                <div id="topic_thank">
+                  <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="tb">
+                    {i18next.t("topic:Thank")}
+                  </a>
+                </div> :
+                <div id="topic_thank">
+                  <span class="topic_thanked">
+                    {i18next.t("topic:Thanked")}
+                  </span>
+                </div>
+              : null
+          }
         </div>
       </div>
     );

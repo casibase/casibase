@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/session"
 
 	"github.com/casbin/casbin-forum/object"
 )
@@ -82,6 +83,45 @@ func (c *APIController) GetForumVersion() {
 
 	res := object.GetForumVersion()
 
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+var GlobalSessions *session.Manager
+
+func InitBeegoSession() {
+	sessionConfig := &session.ManagerConfig{
+		Secure:         false,
+		CookieLifeTime: 3600,
+		ProviderConfig: "./tmp",
+	}
+	GlobalSessions, _ = session.NewManager("file", sessionConfig)
+	go GlobalSessions.GC()
+}
+
+func (c *APIController) GetOnlineNum() {
+	var resp Response
+
+	highest := object.GetHighestOnlineNum()
+
+	onlineNum := GlobalSessions.GetActiveSession()
+
+	if onlineNum > highest {
+		object.UpdateHighestOnlineNum(onlineNum)
+	}
+
+	resp = Response{Status: "ok", Msg: "success", Data: onlineNum, Data2: highest}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetNodeNavigation() {
+	var resp Response
+
+	res := object.GetNodeNavigation()
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp

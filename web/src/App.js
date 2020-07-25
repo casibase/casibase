@@ -48,6 +48,11 @@ import RightFavouriteBox from "./rightbar/RightFavouriteBox";
 import RightNodeBox from "./rightbar/RightNodeBox";
 import CustomGithubCorner from "./main/CustomGithubCorner";
 import NotificationBox from "./main/NotificationBox"
+import NodeNavigationBox from "./main/NodeNavigationBox";
+import PlaneBox from "./main/PlaneBox";
+import BalanceBox from "./main/BalanceBox";
+import RightCheckinBonusBox from "./rightbar/RightCheckinBonusBox";
+import CheckinBonusBox from "./main/CheckinBonusBox";
 
 class App extends Component {
   constructor(props) {
@@ -107,6 +112,8 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <TopicPage account={this.state.account} />
+            <div className="sep20" />
+          <NodeNavigationBox />
           </div>
         }/>
         <Route exact path="/signup" component={() =>
@@ -209,6 +216,24 @@ class App extends Component {
             <NotificationBox />
           </div>
         }/>
+        <Route exact path="/planes" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <PlaneBox />
+          </div>
+        }/>
+        <Route exact path="/balance" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <BalanceBox account={this.state.account} />
+          </div>
+        }/>
+        <Route exact path="/mission/daily" component={() =>
+          <div id="Main">
+            <div className="sep20" />
+            <CheckinBonusBox />
+          </div>
+        }/>
       </Switch>
     )
   }
@@ -240,6 +265,8 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={() =>
             <span>
+              <div className="sep20"/>
+              <RightCheckinBonusBox />
               <div className="sep20"/>
               <RightCommunityHealthBox/>
               <div className="sep20"/>

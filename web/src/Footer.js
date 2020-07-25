@@ -24,12 +24,15 @@ class Footer extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      version: null
+      version: "",
+      online: 0,
+      highest: 0
     };
   }
 
   componentDidMount() {
-    this.getForumVersion()
+    this.getForumVersion();
+    this.getOnlineNum();
   }
 
   getForumVersion() {
@@ -37,6 +40,16 @@ class Footer extends React.Component {
       .then((res) => {
         this.setState({
           version: res.data,
+        });
+      });
+  }
+
+  getOnlineNum() {
+    BasicBackend.getOnlineNum()
+      .then((res) => {
+        this.setState({
+          online: res?.data,
+          highest: res?.data2
         });
       });
   }
@@ -92,10 +105,10 @@ class Footer extends React.Component {
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              2645 {i18next.t("footer:Online")}
+              {this.state.online}{" "}{i18next.t("footer:Online")}
             </strong>
             {" "}&nbsp;{" "}
-            <span className="fade">{i18next.t("footer:Highest")} 5168</span>
+            <span className="fade">{i18next.t("footer:Highest")}{" "}{this.state.highest}</span>
             {" "}&nbsp;{" "}
             <span className="snow">·</span>
             {" "}&nbsp;{" "}
@@ -110,7 +123,7 @@ class Footer extends React.Component {
             World is powered by code
             <div className="sep20" />
             <span className="small fade">
-              VERSION: <a href={Conf.GithubRepo}>{this.state.version}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
+              VERSION: <a href={`${Conf.GithubRepo}/commit/${this.state.version}`}>{this.state.version.substring(0, 7)}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
               <br />
               ♥ Do have faith in what you're doing.
             </span>

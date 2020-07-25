@@ -166,7 +166,18 @@ class RightAccountBox extends React.Component {
         <div className="inner">
           <div className="fr" id="money" style={{margin: "-3px 0px 0px 0px"}}>
             <a href="/balance" className="balance_area">
-              {this.props.account?.silverCount} <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" /> {this.props.account?.bronzeCount} <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
+              {
+                this.props.account?.goldCount !== 0 ?
+                  <span>
+                        {" "}{this.props.account?.goldCount}{" "}
+                    <img src={Setting.getStatic("/static/img/gold@2x.png")} height="16" alt="G" border="0"/>
+                      </span>
+                  : null
+              }
+              {" "}{this.props.account?.silverCount}{" "}
+              <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
+              {" "}{this.props.account?.bronzeCount}{" "}
+              <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
             </a>
           </div>
           {

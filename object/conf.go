@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package object
 
-import "time"
-
-func GetCurrentTime() string {
-	timestamp := time.Now().Unix()
-	tm := time.Unix(timestamp, 0)
-	return tm.Format(time.RFC3339)
-}
-
-func GetDateStr() string {
-	return time.Now().Format("20060102")
-}
+var (
+	DefaultPageNum             = 20
+	DefaultHomePageNum         = 50
+	DefaultNotificationPageNum = 10
+	DefaultBalancePageNum      = 25
+	UserNamingRestrictions     = true
+	HomePageNodeNum            = 8
+	TopicThanksCost            = 15
+	ReplyThanksCost            = 10
+	CreateTopicCost            = 20
+	CreateReplyCost            = 5
+	ReceiveReplyBonus          = 5
+	MaxDailyCheckinBonus       = 20
+)
