@@ -18,8 +18,6 @@ import (
 	"log"
 	"sync"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -210,7 +208,7 @@ func CreateTopicConsumption(consumerId, id string) bool {
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 8,
 	}
-	record.Amount, _ = beego.AppConfig.Int("createTopicCost")
+	record.Amount = CreateTopicCost
 	record.Amount = -record.Amount
 	balance := GetMemberBalance(consumerId)
 	if balance+record.Amount < 0 {
@@ -230,7 +228,7 @@ func CreateReplyConsumption(consumerId, id string) bool {
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 6,
 	}
-	record.Amount, _ = beego.AppConfig.Int("createReplyCost")
+	record.Amount = CreateReplyCost
 	record.Amount = -record.Amount
 	balance := GetMemberBalance(consumerId)
 	if balance+record.Amount < 0 {
@@ -256,7 +254,7 @@ func GetReplyBonus(author, consumerId, id string) {
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 7,
 	}
-	record.Amount, _ = beego.AppConfig.Int("createReplyCost")
+	record.Amount = ReceiveReplyBonus
 	balance := GetMemberBalance(consumerId)
 	record.Balance = balance + record.Amount
 	AddBalance(&record)

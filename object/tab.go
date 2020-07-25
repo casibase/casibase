@@ -14,8 +14,6 @@
 
 package object
 
-import "github.com/astaxie/beego"
-
 type Tab struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Name        string `xorm:"varchar(100)" json:"name"`
@@ -72,7 +70,7 @@ func GetDefaultTab() string {
 func GetNodesByTab(id string) []*Node {
 	nodes := []*Node{}
 
-	num, _ := beego.AppConfig.Int("homePageNodeNum")
+	num := HomePageNodeNum
 
 	if id == "all" {
 		err := adapter.engine.Cols("id, name").Limit(num).Find(&nodes)

@@ -18,8 +18,6 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -122,7 +120,7 @@ func (c *APIController) GetLatestReplies() {
 	id := c.Input().Get("id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
+	defaultLimit := object.DefaultPageNum
 	var (
 		limit, offset int
 		err           error

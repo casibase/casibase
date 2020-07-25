@@ -18,8 +18,6 @@ import (
 	"encoding/json"
 	"strconv"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -33,7 +31,7 @@ type NewTopicForm struct {
 func (c *APIController) GetTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("defaultHomePageNum")
+	defaultLimit := object.DefaultHomePageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {
@@ -169,7 +167,7 @@ func (c *APIController) GetTopicsByNode() {
 	nodeId := c.Input().Get("node-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
+	defaultLimit := object.DefaultPageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {
@@ -205,7 +203,7 @@ func (c *APIController) GetTopicsByTab() {
 	tabId := c.Input().Get("tab-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("nodePageTopicsNum")
+	defaultLimit := object.DefaultHomePageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {

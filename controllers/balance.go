@@ -18,8 +18,6 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/astaxie/beego"
-
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -55,15 +53,15 @@ func (c *APIController) AddThanks() {
 	var resp Response
 	if thanksType == "2" || thanksType == "1" {
 		if thanksType == "2" {
-			consumerRecord.Amount, _ = beego.AppConfig.Int("replyThanksCost")
+			consumerRecord.Amount = object.ReplyThanksCost
 			consumerRecord.Amount = -consumerRecord.Amount
-			receiverRecord.Amount, _ = beego.AppConfig.Int("replyThanksCost")
+			receiverRecord.Amount = object.ReplyThanksCost
 			consumerRecord.ConsumptionType = 5
 			receiverRecord.ConsumptionType = 3
 		} else {
-			consumerRecord.Amount, _ = beego.AppConfig.Int("topicThanksCost")
+			consumerRecord.Amount = object.TopicThanksCost
 			consumerRecord.Amount = -consumerRecord.Amount
-			receiverRecord.Amount, _ = beego.AppConfig.Int("topicThanksCost")
+			receiverRecord.Amount = object.TopicThanksCost
 			consumerRecord.ConsumptionType = 4
 			receiverRecord.ConsumptionType = 2
 		}
@@ -96,7 +94,7 @@ func (c *APIController) GetConsumptionRecord() {
 	memberId := c.GetSessionUser()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
-	defaultLimit, _ := beego.AppConfig.Int("defaultPageNum")
+	defaultLimit := object.DefaultBalancePageNum
 
 	var limit, offset int
 	if len(limitStr) != 0 {
@@ -130,7 +128,7 @@ func (c *APIController) GetCheckinBonus() {
 	}
 
 	var resp Response
-	maxBonus, _ := beego.AppConfig.Int("maxDailyCheckinBonus")
+	maxBonus := object.MaxDailyCheckinBonus
 	rand.Seed(time.Now().UnixNano())
 	bonus := rand.Intn(maxBonus)
 
