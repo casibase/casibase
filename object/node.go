@@ -24,6 +24,7 @@ type Node struct {
 	Image       string `xorm:"varchar(200)" json:"image"`
 	TabId       string `xorm:"varchar(100)" json:"tab"`
 	ParentNode  string `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId     string `xorm:"varchar(50)" json:"planeId"`
 }
 
 func GetNodes() []*Node {
@@ -82,6 +83,16 @@ func DeleteNode(id string) bool {
 	return affected != 0
 }
 
+func GetNodesNum() int {
+	node := new(Node)
+	total, err := adapter.engine.Count(node)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
 func GetNodeTopicNum(id string) int {
 	topic := new(Topic)
 	total, err := adapter.engine.Where("node_id = ?", id).Count(topic)
@@ -94,7 +105,17 @@ func GetNodeTopicNum(id string) int {
 
 func GetNodeFromTab(tab string) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Where("tab = ?", tab).Find(&nodes)
+	err := adapter.engine.Where("tab_id = ?", tab).Find(&nodes)
+	if err != nil {
+		panic(err)
+	}
+
+	return nodes
+}
+
+func GetNodeFromPlane(plane string) []*Node {
+	nodes := []*Node{}
+	err := adapter.engine.Where("plane_id = ?", plane).Cols("id, name").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -145,5 +166,19 @@ func GetNodeRelation(id string) *NodeRelation {
 		ChildNode:   childNode,
 	}
 
+	return res
+}
+
+func GetNodeNavigation() []*NodeNavigationResponse {
+	tabs := GetAllTabs()
+	//res := make([]*NodeNavigationResponse, len(notifications))
+	res := []*NodeNavigationResponse{}
+	for _, v := range tabs {
+		temp := NodeNavigationResponse{
+			Tab:   v,
+			Nodes: GetNodeFromTab(v.Id),
+		}
+		res = append(res, &temp)
+	}
 	return res
 }

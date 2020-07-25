@@ -51,9 +51,10 @@ func (c *APIController) GetTopics() {
 }
 
 func (c *APIController) GetTopic() {
+	memberId := c.GetSessionUser()
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetTopicWithAvatar(id)
+	c.Data["json"] = object.GetTopicWithAvatar(id, memberId)
 	c.ServeJSON()
 }
 
@@ -97,6 +98,13 @@ func (c *APIController) AddTopic() {
 		FavoriteCount: 0,
 		Content:       body,
 		Deleted:       false,
+	}
+
+	payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
+	if !payRes {
+		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
+		c.Data["json"] = resp
+		c.ServeJSON()
 	}
 
 	object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)

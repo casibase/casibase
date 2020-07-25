@@ -19,10 +19,10 @@ import "github.com/astaxie/beego"
 type Tab struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Name        string `xorm:"varchar(100)" json:"name"`
-	Sorter      int    `xorm:"int"`
-	CreatedTime string `xorm:"varchar(100)"`
+	Sorter      int    `xorm:"int" json:"-"`
+	CreatedTime string `xorm:"varchar(100)" json:"-"`
 	DefaultNode string `xorm:"varchar(100)" json:"defaultNode"`
-	HomePage    bool   `xorm:"bool"`
+	HomePage    bool   `xorm:"bool" json:"-"`
 }
 
 func GetTab(id string) *Tab {
@@ -39,9 +39,19 @@ func GetTab(id string) *Tab {
 	}
 }
 
-func GetTabs() []*Tab {
+func GetHomePageTabs() []*Tab {
 	tabs := []*Tab{}
 	err := adapter.engine.Asc("sorter").Where("home_page = ?", 1).Find(&tabs)
+	if err != nil {
+		panic(err)
+	}
+
+	return tabs
+}
+
+func GetAllTabs() []*Tab {
+	tabs := []*Tab{}
+	err := adapter.engine.Asc("sorter").Find(&tabs)
 	if err != nil {
 		panic(err)
 	}

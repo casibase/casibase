@@ -123,4 +123,19 @@ func (a *Adapter) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = a.engine.Sync2(new(BasicInfo))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Plane))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(ConsumptionRecord))
+	if err != nil {
+		panic(err)
+	}
 }

@@ -51,6 +51,13 @@ export function deleteNode(id) {
   }).then(res => res.json());
 }
 
+export function getNodesNum() {
+  return fetch(`${Setting.ServerUrl}/api/get-nodes-num`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
 export function getNodeInfo(id) {
   return fetch(`${Setting.ServerUrl}/api/get-node-info?id=${id}`, {
     method: 'GET',

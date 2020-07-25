@@ -17,7 +17,7 @@ package controllers
 import "github.com/casbin/casbin-forum/object"
 
 func (c *APIController) GetTabs() {
-	c.Data["json"] = object.GetTabs()
+	c.Data["json"] = object.GetHomePageTabs()
 	c.ServeJSON()
 }
 

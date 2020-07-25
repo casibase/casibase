@@ -26,12 +26,14 @@ type LatestReply struct {
 
 type TopicWithAvatar struct {
 	Topic
-	Avatar string `json:"avatar"`
+	Avatar       string `json:"avatar"`
+	ThanksStatus bool   `json:"thanksStatus"`
 }
 
 type ReplyWithAvatar struct {
 	Reply
-	Avatar string `json:"avatar"`
+	Avatar       string `json:"avatar"`
+	ThanksStatus bool   `json:"thanksStatus"`
 }
 
 type NodeFavoritesRes struct {
@@ -52,8 +54,30 @@ type NodeRelation struct {
 }
 
 type NotificationResponse struct {
-	Notification
+	*Notification
 	Title   string `json:"title"`
 	Content string `json:"content"`
 	Avatar  string `json:"avatar"`
+}
+
+type NodeNavigationResponse struct {
+	*Tab
+	Nodes []*Node `json:"nodes"`
+}
+
+type PlaneWithNodes struct {
+	*Plane
+	Nodes []*Node `json:"nodes"`
+}
+
+type BalanceResponse struct {
+	Amount          int    `json:"amount"`
+	Title           string `json:"title"`
+	Length          int    `json:"length"`
+	Balance         int    `json:"balance"`
+	ObjectId        string `json:"objectId"`
+	ReceiverId      string `json:"receiverId"`
+	ConsumerId      string `json:"consumerId"`
+	CreatedTime     string `json:"createdTime"`
+	ConsumptionType int    `json:"consumptionType"`
 }

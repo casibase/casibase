@@ -73,7 +73,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	return res
 }
 
-func GetTopicWithAvatar(id string) *TopicWithAvatar {
+func GetTopicWithAvatar(id, memberId string) *TopicWithAvatar {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Get(&topic)
 	if err != nil {
@@ -81,8 +81,9 @@ func GetTopicWithAvatar(id string) *TopicWithAvatar {
 	}
 
 	res := TopicWithAvatar{
-		Topic:  topic,
-		Avatar: GetMemberAvatar(topic.Author),
+		Topic:        topic,
+		Avatar:       GetMemberAvatar(topic.Author),
+		ThanksStatus: GetThanksStatus(memberId, id, 4),
 	}
 
 	if existed {

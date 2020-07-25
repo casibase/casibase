@@ -21,3 +21,7 @@ func GetCurrentTime() string {
 	tm := time.Unix(timestamp, 0)
 	return tm.Format(time.RFC3339)
 }
+
+func GetDateStr() string {
+	return time.Now().Format("20060102")
+}

@@ -50,3 +50,9 @@ type newNotification struct {
 	NotificationType int    `json:"notificationType"`
 	ReceiverId       string `json:"receiverId"`
 }
+
+type updatePlaneInfo struct {
+	Id    string `json:"id"`
+	Field string `json:"field"`
+	Value string `json:"value"`
+}

@@ -30,9 +30,10 @@ type NewReplyForm struct {
 }
 
 func (c *APIController) GetReplies() {
+	memberId := c.GetSessionUser()
 	topicId := c.Input().Get("topicId")
 
-	c.Data["json"] = object.GetReplies(topicId)
+	c.Data["json"] = object.GetReplies(topicId, memberId)
 	c.ServeJSON()
 }
 
@@ -82,8 +83,16 @@ func (c *APIController) AddReply() {
 		panic(err)
 	}
 
+	payRes := object.CreateReplyConsumption(c.GetSessionUser(), reply.Id)
+	if !payRes {
+		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+
 	affected := object.AddReply(&reply)
 	if affected {
+		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, reply.Id)
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser())
 		object.AddReplyNotification(reply.Id, c.GetSessionUser(), content, topicId)
@@ -98,7 +107,7 @@ func (c *APIController) DeleteReply() {
 	affected := object.DeleteReply(id)
 	if affected {
 		object.ChangeTopicReplyCount(id, -1)
-		replies := object.GetReplies(id)
+		replies := object.GetReplies(id, "")
 		lastReplyUser := ""
 		if len(replies) > 0 {
 			lastReplyUser = replies[len(replies)-1].Author

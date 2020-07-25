@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
+import * as BalanceBackend from "../backend/BalanceBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
@@ -35,6 +36,8 @@ class ReplyBox extends React.Component {
       topic: null,
       replies: [],
       reply: "",
+      memberList: [],
+      replyThanksCost: 10,
       sticky: false,
     };
   }
@@ -58,6 +61,8 @@ class ReplyBox extends React.Component {
       .then((res) => {
         this.setState({
           replies: res,
+        }, () => {
+          this.getMemberList();
         });
       });
   }
@@ -90,6 +95,41 @@ class ReplyBox extends React.Component {
     this.setState({
       sticky: status
     })
+  }
+
+  getMemberList() {
+    let list = []
+    let temp = []
+    for (let i = 0; i < this.state.replies.length; ++ i) {
+      let flag = true
+      for (let j = 0; j < temp.length; ++ j) {
+        if (temp[j] === this.state.replies[i].author) {
+          flag = false
+          break
+        }
+      }
+      if (flag) {
+        temp.push(this.state.replies[i].author)
+        list.push(this.state.replies[i].author + " ")
+      }
+    }
+    console.log(list)
+    this.setState({
+      memberList: list
+    })
+  }
+
+  thanksReply(id, author) {
+    if (window.confirm(`Are you sure to spend ${this.state.replyThanksCost} coins in thanking @${author} for this reply?`)) {
+      BalanceBackend.addThanks(id, 2)
+        .then((res) => {
+          if (res?.status === "ok") {
+            Setting.refresh()
+          } else {
+            alert(res?.msg)
+          }
+        })
+    }
   }
 
   renderReply() {
@@ -127,13 +167,21 @@ class ReplyBox extends React.Component {
                     <td width="10" valign="top" />
                     <td width="auto" valign="top" align="left">
                       <div className="fr">
-                        <div id={`thank_area__${reply.id}`} className="thank_area">
-                          <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
-                          &nbsp; &nbsp;
-                          <a href="#;" onClick="if (confirm('Are you sure to spend 10 coins in thanking @xxx for this reply?')) { thankReply(9032017); }" className="thank">
-                            {i18next.t("reply:thank")}
-                          </a>
-                        </div>
+                          {
+                            this.props.account !== null && this.props.account.id !== reply?.author ?
+                              reply?.thanksStatus === false ?
+                                <div id={`thank_area__${reply.id}`} className="thank_area">
+                                  <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
+                                  &nbsp; &nbsp;
+                                  <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
+                                    {i18next.t("reply:thank")}
+                                  </a>
+                                </div> :
+                                <div id={`thank_area__${reply.id}`} className="thank_area thanked">
+                                  {i18next.t("reply:thanked")}
+                                </div>
+                              : null
+                          }
                         &nbsp;
                         <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
                           <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
@@ -153,6 +201,14 @@ class ReplyBox extends React.Component {
                       <span className="ago">
                         {Setting.getPrettyDate(reply.createdTime)}
                       </span>
+                      {" "}&nbsp;{" "}
+                      {
+                        reply?.thanksNum !== 0 ?
+                          <span className="small fade">
+                            <img src={Setting.getStatic("/static/img/heart_neue_red.png")} width="14" align="absmiddle" alt="❤️"/>
+                            {" "}{reply?.thanksNum}
+                          </span> : null
+                      }
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
                         <ReactMarkdown source={pangu.spacing(reply.content.replace(/@(.*?) /, function (w) {
@@ -175,7 +231,7 @@ class ReplyBox extends React.Component {
     if (this.state.topic === null) {
       return null
     }
-    
+
     return (
       <div>
         {
@@ -188,7 +244,7 @@ class ReplyBox extends React.Component {
         <div className="sep20" />
         {
           this.props.account === null ? null :
-            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId} />
+            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId} memberList={this.state.memberList} />
         }
       </div>
     )

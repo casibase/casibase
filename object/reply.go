@@ -26,6 +26,7 @@ type Reply struct {
 	TopicId     string `xorm:"varchar(100)" json:"topicId"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"-"`
+	ThanksNum   int    `xorm:"int" json:"thanksNum"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -39,7 +40,7 @@ func GetReplyCount() int {
 	return int(count)
 }
 
-func GetReplies(topicId string) []*ReplyWithAvatar {
+func GetReplies(topicId, memberId string) []*ReplyWithAvatar {
 	replies := []*Reply{}
 	err := adapter.engine.Asc("created_time").And("deleted = ?", 0).Find(&replies, &Reply{TopicId: topicId})
 	if err != nil {
@@ -49,8 +50,9 @@ func GetReplies(topicId string) []*ReplyWithAvatar {
 	res := []*ReplyWithAvatar{}
 	for _, v := range replies {
 		temp := ReplyWithAvatar{
-			Reply:  *v,
-			Avatar: GetMemberAvatar(v.Author),
+			Reply:        *v,
+			Avatar:       GetMemberAvatar(v.Author),
+			ThanksStatus: GetThanksStatus(memberId, v.Id, 5),
 		}
 		res = append(res, &temp)
 	}
@@ -205,4 +207,33 @@ func GetReplyTopicTitle(id string) string {
 	} else {
 		return ""
 	}
+}
+
+func GetReplyAuthor(id string) string {
+	reply := Reply{Id: id}
+	existed, err := adapter.engine.Cols("author").Get(&reply)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return reply.Author
+	} else {
+		return ""
+	}
+}
+
+func AddReplyThanksNum(id string) bool {
+	reply := GetReply(id)
+	if reply == nil {
+		return false
+	}
+
+	reply.ThanksNum++
+	affected, err := adapter.engine.Id(id).Cols("thanks_num").Update(reply)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }
