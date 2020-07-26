@@ -15,9 +15,12 @@
 package object
 
 import (
+	"bytes"
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/dchest/captcha"
 
 	"github.com/casbin/casbin-forum/util"
 )
@@ -89,4 +92,23 @@ func UpdateHighestOnlineNum(num int) bool {
 	}
 
 	return affected != 0
+}
+
+func GetCaptcha() (string, []byte) {
+	id := captcha.NewLen(5)
+
+	var buffer bytes.Buffer
+
+	err := captcha.WriteImage(&buffer, id, 320, 80)
+	if err != nil {
+		panic(err)
+	}
+
+	return id, buffer.Bytes()
+}
+
+func VerifyCaptcha(id, digits string) bool {
+	res := captcha.VerifyString(id, digits)
+
+	return res
 }

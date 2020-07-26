@@ -13,6 +13,11 @@
     "Forgot Password": "我忘记密码了",
     "Username or Email address": "用户名或电子邮箱地址"
   },
+  "login":
+  {
+    "Are you a bot?": "你是机器人么？",
+    "Please enter the verification code in the picture above": "请输入上图中的验证码"
+  },
   "bar":
   {
     "Nodes": "节点收藏",

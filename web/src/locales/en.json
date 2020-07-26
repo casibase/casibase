@@ -13,6 +13,11 @@
     "Forgot Password": "Forgot Password",
     "Username or Email address": "Username or Email address"
   },
+  "login":
+  {
+    "Are you a bot?": "Are you a bot?",
+    "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"
+  },
   "bar":
   {
     "Nodes": "Nodes",
