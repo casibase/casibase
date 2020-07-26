@@ -40,7 +40,7 @@ class RightCheckinBonusBox extends React.Component {
   }
 
   render() {
-    if (this.state.info === null || this.state.info) {
+    if (this.state.info === null || this.state.info || this.props.account === undefined) {
       return null
     }
 

@@ -48,6 +48,7 @@ class TopicPage extends React.Component {
     this.setState({
       tab: tab
     }, () => {
+      window.history.pushState({}, 0, `/?tab=${this.state.tab}`)
       this.getNodeInfo();
       this.getTopics();
     });
