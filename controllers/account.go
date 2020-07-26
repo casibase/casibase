@@ -15,11 +15,12 @@
 package controllers
 
 import (
+	"context"
 	"encoding/json"
-	"golang.org/x/oauth2"
 	"io/ioutil"
-	"net/http"
 	"sync"
+
+	"golang.org/x/oauth2"
 
 	"github.com/aliyun/aliyun-sts-go-sdk/sts"
 	"github.com/astaxie/beego"
@@ -234,13 +235,16 @@ func (c *APIController) AuthGoogle() {
 	}
 
 	googleOauthConfig.RedirectURL = RedirectURL
-	token, err := googleOauthConfig.Exchange(oauth2.NoContext, code)
+
+	// https://github.com/golang/oauth2/issues/123#issuecomment-103715338
+	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, httpClient)
+	token, err := googleOauthConfig.Exchange(ctx, code)
 	if err != nil {
 		res.IsAuthenticated = false
 		panic(err)
 	}
 
-	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
+	response, err := httpClient.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 
@@ -326,7 +330,10 @@ func (c *APIController) AuthGithub() {
 	}
 
 	githubOauthConfig.RedirectURL = RedirectURL
-	token, err := githubOauthConfig.Exchange(oauth2.NoContext, code)
+
+	// https://github.com/golang/oauth2/issues/123#issuecomment-103715338
+	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, httpClient)
+	token, err := githubOauthConfig.Exchange(ctx, code)
 	if err != nil {
 		res.IsAuthenticated = false
 		panic(err)
@@ -344,7 +351,7 @@ func (c *APIController) AuthGithub() {
 	var tempUserAccount userInfoFromGithub
 	wg.Add(2)
 	go func() {
-		response, err := http.Get("https://api.github.com/user/emails?access_token=" + token.AccessToken)
+		response, err := httpClient.Get("https://api.github.com/user/emails?access_token=" + token.AccessToken)
 		if err != nil {
 			panic(err)
 		}
@@ -365,7 +372,7 @@ func (c *APIController) AuthGithub() {
 		wg.Done()
 	}()
 	go func() {
-		response2, err := http.Get("https://api.github.com/user?access_token=" + token.AccessToken)
+		response2, err := httpClient.Get("https://api.github.com/user?access_token=" + token.AccessToken)
 		if err != nil {
 			panic(err)
 		}
