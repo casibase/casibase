@@ -86,6 +86,7 @@ func (c *APIController) AddReply() {
 		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp
 		c.ServeJSON()
+		return
 	}
 
 	affected := object.AddReply(&reply)
@@ -101,6 +102,14 @@ func (c *APIController) AddReply() {
 
 func (c *APIController) DeleteReply() {
 	id := c.Input().Get("id")
+
+	memberId := c.GetSessionUser()
+	if memberId != object.GetReplyAuthor(id) {
+		resp := Response{Status: "fail", Msg: "Permission denied."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	affected := object.DeleteReply(id)
 	if affected {

@@ -40,6 +40,7 @@ class NewReplyBox extends React.Component {
       form: {topicId: props.match.params.topicId},
       isTypingStarted: false,
       problem: [],
+      message: null
     };
     this.handleChange = this.handleChange.bind(this)
     this.synonyms = this.synonyms.bind(this)
@@ -95,6 +96,10 @@ class NewReplyBox extends React.Component {
       problems.push(i18next.t("error:Reply content cannot be empty"));
     }
 
+    if (this.state.message !== null) {
+      problems.push(this.state.message)
+    }
+
     if (problems.length === 0) {
       return null;
     }
@@ -127,9 +132,9 @@ class NewReplyBox extends React.Component {
           Setting.refresh();
           Setting.scrollToBottom();
         } else {
-          // this.setState({
-          //   message: res.msg,
-          // });
+           this.setState({
+             message: res.msg,
+           });
         }
       });
   }
@@ -137,6 +142,11 @@ class NewReplyBox extends React.Component {
   handleChange(editor, value) {
     this.props.onReplyChange(value);
     this.updateFormField("content", this.props.content);
+    if (this.state.message !== null) {
+      this.setState({
+        message: null
+      })
+    }
     if (value.substring(value.length-1) === "@") {
       CodeMirror.commands.autocomplete(editor, null, { completeSingle: false })
     }

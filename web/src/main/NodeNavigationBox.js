@@ -79,7 +79,6 @@ class NodeNavigationBox extends React.Component {
           </div>
           <span class="fade"><strong>{Setting.getForumName()}</strong>{" "}/{" "}{i18next.t("node:Node navigation")}</span>
         </div>
-          {console.log(this.state.nodeNavigation)}
           {
             this.state.nodeNavigation.slice(0, -1)?.map((tab) => {
               return this.renderTab(tab);
