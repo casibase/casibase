@@ -26,10 +26,10 @@ class RightAccountBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      topicFavoriteNum: 1,
-      nodeFavoriteNum: 1,
-      followingNum: 1,
-      unreadNotificationNum: 1
+      topicFavoriteNum: 0,
+      nodeFavoriteNum: 0,
+      followingNum: 0,
+      unreadNotificationNum: 0
     };
   }
 

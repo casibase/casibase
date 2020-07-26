@@ -191,7 +191,7 @@ func DeleteTopic(id string) bool {
 func DeleteTopic(id string) bool {
 	topic := new(Topic)
 	topic.Deleted = true
-	affected, err := adapter.engine.Id(id).Update(topic)
+	affected, err := adapter.engine.Id(id).Cols("deleted").Update(topic)
 	if err != nil {
 		panic(err)
 	}

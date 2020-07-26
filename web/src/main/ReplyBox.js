@@ -132,6 +132,17 @@ class ReplyBox extends React.Component {
     }
   }
 
+  deleteReply(id) {
+    ReplyBackend.deleteReply(id)
+      .then((res) => {
+        if (res?.status === "ok") {
+          Setting.refresh()
+        } else {
+          alert(res?.msg)
+        }
+      })
+  }
+
   renderReply() {
     return (
       <div className={`box ${this.state.topic.nodeId}`}>
@@ -182,6 +193,14 @@ class ReplyBox extends React.Component {
                                 </div>
                               : null
                           }
+                        {
+                          reply?.deletable ?
+                            <div id={`thank_area__${reply.id}`} className="thank_area">
+                              <a href="#;" onClick={() => this.deleteReply(reply.id)} className="delete">
+                                {i18next.t("reply:Delete")}
+                              </a>
+                            </div> : null
+                        }
                         &nbsp;
                         <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
                           <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />

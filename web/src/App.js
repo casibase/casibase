@@ -265,8 +265,7 @@ class App extends Component {
         <Switch>
           <Route exact path="/" component={() =>
             <span>
-              <div className="sep20"/>
-              <RightCheckinBonusBox />
+              <RightCheckinBonusBox account={this.state.account} />
               <div className="sep20"/>
               <RightCommunityHealthBox/>
               <div className="sep20"/>

@@ -34,6 +34,7 @@ type ReplyWithAvatar struct {
 	Reply
 	Avatar       string `json:"avatar"`
 	ThanksStatus bool   `json:"thanksStatus"`
+	Deletable    bool   `json:"deletable"`
 }
 
 type NodeFavoritesRes struct {

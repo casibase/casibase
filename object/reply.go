@@ -16,6 +16,7 @@ package object
 
 import (
 	"sync"
+	"time"
 
 	"github.com/casbin/casbin-forum/util"
 )
@@ -53,6 +54,7 @@ func GetReplies(topicId, memberId string) []*ReplyWithAvatar {
 			Reply:        *v,
 			Avatar:       GetMemberAvatar(v.Author),
 			ThanksStatus: GetThanksStatus(memberId, v.Id, 5),
+			Deletable:    ReplyDeletable(v.CreatedTime, memberId, v.Author),
 		}
 		res = append(res, &temp)
 	}
@@ -125,7 +127,7 @@ func DeleteReply(id string) bool {
 func DeleteReply(id string) bool {
 	reply := new(Reply)
 	reply.Deleted = true
-	affected, err := adapter.engine.Id(id).Update(reply)
+	affected, err := adapter.engine.Id(id).Cols("deleted").Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -236,4 +238,24 @@ func AddReplyThanksNum(id string) bool {
 	}
 
 	return affected != 0
+}
+
+func ReplyDeletable(date, memberId, author string) bool {
+	if memberId != author {
+		return false
+	}
+
+	t, err := time.Parse("2006-01-02T15:04:05+08:00", date)
+	if err != nil {
+		return false
+	}
+	h, _ := time.ParseDuration("-1h")
+	t = t.Add(8 * h)
+
+	now := time.Now()
+	if now.Sub(t).Minutes() > 5 {
+		return false
+	}
+
+	return true
 }
