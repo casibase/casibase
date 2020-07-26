@@ -41,3 +41,10 @@ export function getNodeNavigation() {
     credentials: 'include'
   }).then(res => res.json());
 }
+
+export function getCaptcha() {
+  return fetch(`${Setting.ServerUrl}/api/get-captcha`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(res => res.json());
+}

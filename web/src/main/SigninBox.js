@@ -15,6 +15,7 @@
 import React from "react";
 import Header from "./Header";
 import * as AccountBackend from "../backend/AccountBackend";
+import * as BasicBackend from "../backend/BasicBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 
@@ -27,7 +28,25 @@ class SigninBox extends React.Component {
       isTypingStarted: false,
       problem: [],
       message: "",
+      captcha: "",
+      captchaId: "",
     };
+  }
+
+  componentDidMount() {
+    this.getCaptcha();
+  }
+
+  getCaptcha() {
+    BasicBackend.getCaptcha()
+      .then((res) => {
+        this.setState({
+          captcha: res?.data,
+          captchaId: res?.data2
+        }, () => {
+          this.updateFormField("captchaId", this.state.captchaId)
+        })
+      })
   }
 
   updateFormField(key, value) {
@@ -50,6 +69,7 @@ class SigninBox extends React.Component {
           this.setState({
             message: res.msg,
           });
+          this.getCaptcha();
         }
       });
   }
@@ -73,6 +93,10 @@ class SigninBox extends React.Component {
       problems.push(i18next.t("error:Please input password"));
     }
 
+    if (this.state.message !== "") {
+      problems.push(this.state.message)
+    }
+
     if (problems.length === 0) {
       return null;
     }
@@ -92,7 +116,7 @@ class SigninBox extends React.Component {
   }
 
   renderMessage() {
-    if (this.state.message === "") {
+    if (this.state.message === "" || this.state.message === "Captcha error") {
       return null;
     }
 
@@ -123,7 +147,7 @@ class SigninBox extends React.Component {
                   {i18next.t("general:Username")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" value={this.state.form.username} onChange={event => {this.updateFormField("username", event.target.value)}} className="sl" name="bb314296f3630dff0bcb01b1bef726e0f7e13736b5750e9206422f3c511ce41e" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username or Email address")} />
+                  <input type="text" value={this.state.form.username} onChange={event => {this.updateFormField("username", event.target.value)}} className="sl" name="username" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username or Email address")} />
                 </td>
               </tr>
               <tr>
@@ -131,17 +155,17 @@ class SigninBox extends React.Component {
                   {i18next.t("general:Password")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="password" value={this.state.form.password} onChange={event => {this.updateFormField("password", event.target.value)}} className="sl" name="d35d522d8b944ccbde14208cb8da6f72c23c101c43ac1e6bbd7593ed8268f276" autoCorrect="off" spellCheck="false" autoCapitalize="off" />
+                  <input type="password" value={this.state.form.password} onChange={event => {this.updateFormField("password", event.target.value)}} className="sl" name="password" autoCorrect="off" spellCheck="false" autoCapitalize="off" />
                 </td>
               </tr>
-              {/*<tr>*/}
-              {/*  <td width="120" align="right">Are you a bot?</td>*/}
-              {/*  <td width="auto" align="left">*/}
-              {/*    <div style={{"backgroundImage":"url('/_captcha?once=83861')", "backgroundRepeat":"no-repeat", "width":"320px", "height":"80px", "borderRadius":"3px", "border":"1px solid #ccc"}} />*/}
-              {/*    <div className="sep10" />*/}
-              {/*    <input type="text" className="sl" name="2b49b9b98de15817b6a6e2b29de34cb0282aac1d697b8c38563434901728343b" value="" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder="Please input the captcha" />*/}
-              {/*  </td>*/}
-              {/*</tr>*/}
+              <tr>
+              <td width="120" align="right">{i18next.t("login:Are you a bot?")}{" "}</td>
+              <td width="auto" align="left">
+                <div style={{backgroundImage: `url('data:image/png;base64,${this.state.captcha}')`, backgroundRepeat: "no-repeat", width: "320px", height: "80px", borderRadius: "3px", border: "1px solid #ccc"}} />
+                <div class="sep10" />
+                <input type="text" class="sl" name="captcha" value={this.state.form.captcha} onChange={event => {this.updateFormField("captcha", event.target.value)}} autocorrect="off" spellcheck="false" autocapitalize="off" placeholder={i18next.t("login:Please enter the verification code in the picture above")} />
+              </td>
+              </tr>
               <tr>
                 <td width="120" align="right" />
                 <td width="auto" align="left">

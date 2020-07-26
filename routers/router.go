@@ -106,6 +106,7 @@ func initAPI() {
 	beego.Router("/api/add-thanks", &controllers.APIController{}, "POST:AddThanks")
 	beego.Router("/api/get-consumption-record", &controllers.APIController{}, "GET:GetConsumptionRecord")
 
+	beego.Router("/api/get-captcha", &controllers.APIController{}, "GET:GetCaptcha")
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")
 	beego.Router("/api/get-online-num", &controllers.APIController{}, "GET:GetOnlineNum")

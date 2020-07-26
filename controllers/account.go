@@ -38,6 +38,14 @@ type SignupForm struct {
 	Addition string `json:"addition"`
 }
 
+type SigninForm struct {
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Email     string `json:"email"`
+	Captcha   string `json:"captcha"`
+	CaptchaId string `json:"captchaId"`
+}
+
 type Response struct {
 	Status string      `json:"status"`
 	Msg    string      `json:"msg"`
@@ -135,10 +143,18 @@ func (c *APIController) Signin() {
 		return
 	}
 
-	var form SignupForm
+	var form SigninForm
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
 		panic(err)
+	}
+
+	verifyCaptchaRes := object.VerifyCaptcha(form.CaptchaId, form.Captcha)
+	if !verifyCaptchaRes {
+		resp = Response{Status: "error", Msg: "Captcha error"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
 	}
 
 	var msg string
