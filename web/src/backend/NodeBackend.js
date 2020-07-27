@@ -71,3 +71,24 @@ export function getNodeRelation(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getLatestNode(limit) {
+  return fetch(`${Setting.ServerUrl}/api/get-latest-node?limit=${limit}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function getHottestNode(limit) {
+  return fetch(`${Setting.ServerUrl}/api/get-hottest-node?limit=${limit}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function addNodeBrowseCount(id) {
+  return fetch(`${Setting.ServerUrl}/api/add-node-browse-record?id=${id}`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => res.json());
+}

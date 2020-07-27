@@ -27,4 +27,7 @@ var (
 	CreateReplyCost            = 5
 	ReceiveReplyBonus          = 5
 	MaxDailyCheckinBonus       = 20
+	LatestNodeNum              = 20
+	HottestNodeNum             = 15
+	NodeHitRecordExpiredTime   = 1 //month
 )

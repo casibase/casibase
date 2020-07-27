@@ -112,3 +112,38 @@ func VerifyCaptcha(id, digits string) bool {
 
 	return res
 }
+
+func GetLatestSyncedHitId() int {
+	info := BasicInfo{Id: "LatestSyncedHitId"}
+	existed, err := adapter.engine.Get(&info)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return util.ParseInt(info.Value)
+	} else {
+		info := BasicInfo{
+			Id:    "LatestSyncedHitId",
+			Value: "0",
+		}
+
+		_, err := adapter.engine.Insert(&info)
+		if err != nil {
+			panic(err)
+		}
+
+		return 0
+	}
+}
+
+func UpdateLatestSyncedHitId(id int) bool {
+	info := new(BasicInfo)
+	info.Value = util.IntToString(id)
+	affected, err := adapter.engine.Where("id = ?", "LatestSyncedHitId").Cols("value").Update(info)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}

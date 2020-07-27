@@ -25,7 +25,7 @@ import (
 // login bonus, receive thanks(topic), receive thanks(reply), thanks(topic)
 // thanks(reply), new reply, new topic, receive reply bonus.
 type ConsumptionRecord struct {
-	Id              string `xorm:"varchar(100) notnull pk" json:"id"`
+	Id              int    `xorm:"int notnull pk autoincr" json:"id"`
 	Amount          int    `xorm:"int" json:"amount"`
 	Balance         int    `xorm:"int" json:"balance"`
 	ConsumerId      string `xorm:"varchar(100)" json:"consumerId"`
@@ -73,6 +73,7 @@ func GetConsumptionRecordCount() int {
 	return int(count)
 }
 
+/*
 func GetConsumptionRecordId() int {
 	num := GetConsumptionRecordCount()
 
@@ -80,6 +81,7 @@ func GetConsumptionRecordId() int {
 
 	return res
 }
+*/
 
 func GetMemberBalance(id string) int {
 	member := Member{Id: id}
@@ -202,7 +204,7 @@ func GetThanksStatus(memberId, id string, recordType int) bool {
 
 func CreateTopicConsumption(consumerId, id string) bool {
 	record := ConsumptionRecord{
-		Id:              util.IntToString(GetConsumptionRecordId()),
+		//Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      consumerId,
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
@@ -222,7 +224,7 @@ func CreateTopicConsumption(consumerId, id string) bool {
 
 func CreateReplyConsumption(consumerId, id string) bool {
 	record := ConsumptionRecord{
-		Id:              util.IntToString(GetConsumptionRecordId()),
+		//Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      consumerId,
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
@@ -247,7 +249,7 @@ func GetReplyBonus(author, consumerId, id string) {
 	}
 
 	record := ConsumptionRecord{
-		Id:              util.IntToString(GetConsumptionRecordId()),
+		//Id:              util.IntToString(GetConsumptionRecordId()),
 		ConsumerId:      consumerId,
 		ReceiverId:      author,
 		ObjectId:        id,

@@ -22,6 +22,18 @@ func GetCurrentTime() string {
 	return tm.Format(time.RFC3339)
 }
 
+func GetTimeMonth(month int) string {
+	currentTime := time.Now()
+	res := currentTime.AddDate(0, month, 0)
+	return res.Format(time.RFC3339)
+}
+
+func GetTimeDay(day int) string {
+	currentTime := time.Now()
+	res := currentTime.AddDate(0, 0, day)
+	return res.Format(time.RFC3339)
+}
+
 func GetDateStr() string {
 	return time.Now().Format("20060102")
 }

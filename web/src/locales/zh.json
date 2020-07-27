@@ -43,7 +43,9 @@
     "Parent node": "父节点",
     "Child node": "子结点",
     "more child nodes": "个更多的相关子节点",
-    "Receive today's checkin bonus": "领取今日的登录奖励"
+    "Receive today's checkin bonus": "领取今日的登录奖励",
+    "Hottest node": "最热节点",
+    "Recently added nodes": "最近新增节点"
   },
   "balance":
   {
@@ -286,6 +288,7 @@
     "Retry Sign Out": "重新登出",
     "Member does not exist": "用户不存在",
     "We had a problem when you signed out, please try again.": "登出有点问题，请重试一次",
-    "Please resolve the following issues before creating a new topic": "创建新主题过程中遇到一些问题："
+    "Please resolve the following issues before creating a new topic": "创建新主题过程中遇到一些问题：",
+    "Captcha error": "验证码错误"
   }
 }

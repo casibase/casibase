@@ -233,6 +233,7 @@ class NodeBox extends React.Component {
       )
     }
 
+    NodeBackend.addNodeBrowseCount(this.state.nodeId)
     return (
       <div id="Main">
         <div className="sep20" />

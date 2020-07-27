@@ -72,6 +72,10 @@ func initAPI() {
 	beego.Router("/api/get-node-info", &controllers.APIController{}, "GET:GetNodeInfo")
 	beego.Router("/api/get-node-relation", &controllers.APIController{}, "GET:GetNodeRelation")
 	beego.Router("/api/get-nodes-num", &controllers.APIController{}, "GET:GetNodesNum")
+	beego.Router("/api/get-latest-node", &controllers.APIController{}, "GET:GetLatestNode")
+	beego.Router("/api/get-hottest-node", &controllers.APIController{}, "GET:GetHottestNode")
+	beego.Router("/api/update-hottest-node", &controllers.APIController{}, "GET:UpdateHottestNode")
+	beego.Router("/api/add-node-browse-record", &controllers.APIController{}, "POST:AddNodeBrowseCount")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.APIController{}, "POST:Signin")
@@ -106,6 +110,7 @@ func initAPI() {
 	beego.Router("/api/add-thanks", &controllers.APIController{}, "POST:AddThanks")
 	beego.Router("/api/get-consumption-record", &controllers.APIController{}, "GET:GetConsumptionRecord")
 
+	beego.Router("/api/update-expired-data", &controllers.APIController{}, "GET:ChangeExpiredDataStatus")
 	beego.Router("/api/get-captcha", &controllers.APIController{}, "GET:GetCaptcha")
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")

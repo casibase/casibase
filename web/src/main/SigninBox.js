@@ -94,7 +94,7 @@ class SigninBox extends React.Component {
     }
 
     if (this.state.message !== "") {
-      problems.push(this.state.message)
+      problems.push(i18next.t(`error:${this.state.message}`))
     }
 
     if (problems.length === 0) {
