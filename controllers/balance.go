@@ -35,7 +35,7 @@ func (c *APIController) AddThanks() {
 	}
 
 	consumerRecord := object.ConsumptionRecord{
-		Id:          util.IntToString(object.GetConsumptionRecordId()),
+		//Id:          util.IntToString(object.GetConsumptionRecordId()),
 		ConsumerId:  author,
 		ReceiverId:  memberId,
 		ObjectId:    id,
@@ -43,7 +43,7 @@ func (c *APIController) AddThanks() {
 	}
 
 	receiverRecord := object.ConsumptionRecord{
-		Id:          util.IntToString(object.GetConsumptionRecordId() + 1),
+		//Id:          util.IntToString(object.GetConsumptionRecordId() + 1),
 		ConsumerId:  memberId,
 		ReceiverId:  author,
 		ObjectId:    id,
@@ -133,7 +133,7 @@ func (c *APIController) GetCheckinBonus() {
 	bonus := rand.Intn(maxBonus)
 
 	record := object.ConsumptionRecord{
-		Id:              util.IntToString(object.GetConsumptionRecordId() + 1),
+		//Id:              util.IntToString(object.GetConsumptionRecordId() + 1),
 		Amount:          bonus,
 		Balance:         object.GetMemberBalance(memberId) + bonus,
 		ReceiverId:      memberId,

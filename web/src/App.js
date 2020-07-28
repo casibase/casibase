@@ -53,6 +53,8 @@ import PlaneBox from "./main/PlaneBox";
 import BalanceBox from "./main/BalanceBox";
 import RightCheckinBonusBox from "./rightbar/RightCheckinBonusBox";
 import CheckinBonusBox from "./main/CheckinBonusBox";
+import RightLatestNodeBox from "./rightbar/RightLatestNodeBox";
+import RightHottestNodeBox from "./rightbar/RightHottestNodeBox";
 
 class App extends Component {
   constructor(props) {
@@ -267,15 +269,19 @@ class App extends Component {
             <span>
               <RightCheckinBonusBox account={this.state.account} />
               <div className="sep20"/>
-              <RightCommunityHealthBox/>
+              <RightCommunityHealthBox />
               <div className="sep20"/>
-              <RightFavouriteBox/>
+              <RightFavouriteBox />
+              <div className="sep20"/>
+              <RightHottestNodeBox />
+              <div className="sep20"/>
+              <RightLatestNodeBox />
             </span>
           }/>
           <Route exact path="/go/:nodeId" component={() =>
             <span>
               <div className="sep20"/>
-              <RightNodeBox/>
+              <RightNodeBox />
             </span>
           }/>
         </Switch>

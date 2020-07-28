@@ -43,7 +43,9 @@
     "Parent node": "Parent node",
     "Child node": "Child node",
     "more child nodes": "more child nodes",
-    "Receive today's checkin bonus": "Receive today's checkin bonus"
+    "Receive today's checkin bonus": "Receive today's checkin bonus",
+    "Hottest node": "Hottest node",
+    "Recently added nodes": "Recently added nodes"
   },
   "balance":
   {
@@ -286,6 +288,7 @@
     "Retry Sign Out": "Retry Sign Out",
     "Member does not exist": "Member does not exist",
     "We had a problem when you signed out, please try again.": "We had a problem when you signed out, please try again.",
-    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic:"
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic:",
+    "Captcha error": "Captcha error"
   }
 }

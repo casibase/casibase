@@ -25,6 +25,7 @@ type Node struct {
 	TabId       string `xorm:"varchar(100)" json:"tab"`
 	ParentNode  string `xorm:"varchar(200)" json:"parentNode"`
 	PlaneId     string `xorm:"varchar(50)" json:"planeId"`
+	Hot         int    `xorm:"int" json:"-"`
 }
 
 func GetNodes() []*Node {
@@ -181,4 +182,36 @@ func GetNodeNavigation() []*NodeNavigationResponse {
 		res = append(res, &temp)
 	}
 	return res
+}
+
+func GetLatestNode(limit int) []*Node {
+	nodes := []*Node{}
+	err := adapter.engine.Asc("created_time").Limit(limit).Find(&nodes)
+	if err != nil {
+		panic(err)
+	}
+
+	return nodes
+}
+
+func GetHottestNode(limit int) []*Node {
+	nodes := []*Node{}
+	err := adapter.engine.Desc("hot").Limit(limit).Find(&nodes)
+	if err != nil {
+		panic(err)
+	}
+
+	return nodes
+}
+
+func UpdateNodeHotInfo(nodeId string, addition int) bool {
+	node := GetNode(nodeId)
+
+	node.Hot += addition
+	affected, err := adapter.engine.Id(nodeId).Cols("hot").Update(node)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

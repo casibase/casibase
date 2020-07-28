@@ -184,11 +184,21 @@ func (c *APIController) GetTopicsByNode() {
 	c.ServeJSON()
 }
 
+//together with node
 func (c *APIController) AddTopicHitCount() {
 	topicId := c.Input().Get("id")
 
 	var resp Response
 	res := object.AddTopicHitCount(topicId)
+	topicInfo := object.GetTopic(topicId)
+	hitRecord := object.BrowseRecord{
+		MemberId:    c.GetSessionUser(),
+		RecordType:  1,
+		ObjectId:    topicInfo.NodeId,
+		CreatedTime: util.GetCurrentTime(),
+		Expired:     false,
+	}
+	object.AddBrowseRecordNum(&hitRecord)
 	if res {
 		resp = Response{Status: "ok", Msg: "success"}
 	} else {

@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
 )
 
 func (c *APIController) GetNodes() {
@@ -102,6 +103,66 @@ func (c *APIController) GetNodeRelation() {
 	var resp Response
 	res := object.GetNodeRelation(id)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetLatestNode() {
+	limitStr := c.Input().Get("limit")
+	defaultLimit := object.LatestNodeNum
+
+	var limit int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+
+	var resp Response
+	res := object.GetLatestNode(limit)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetHottestNode() {
+	limitStr := c.Input().Get("limit")
+	defaultLimit := object.HottestNodeNum
+
+	var limit int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+
+	var resp Response
+	res := object.GetHottestNode(limit)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) AddNodeBrowseCount() {
+	nodeId := c.Input().Get("id")
+
+	var resp Response
+	hitRecord := object.BrowseRecord{
+		MemberId:    c.GetSessionUser(),
+		RecordType:  1,
+		ObjectId:    nodeId,
+		CreatedTime: util.GetCurrentTime(),
+		Expired:     false,
+	}
+	res := object.AddBrowseRecordNum(&hitRecord)
+	if res {
+		resp = Response{Status: "ok", Msg: "success"}
+	} else {
+		resp = Response{Status: "fail", Msg: "add node hit count failed"}
+	}
 
 	c.Data["json"] = resp
 	c.ServeJSON()
