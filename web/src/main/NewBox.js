@@ -49,7 +49,6 @@ class NewBox extends React.Component {
     this.getNodes();
 
     this.updateFormField("nodeId", "qna");
-    Setting.initOSSClient(this.props.account?.id)
   }
 
   getNodes() {
@@ -107,10 +106,16 @@ class NewBox extends React.Component {
   }
 
   render() {
-    if (this.state.nodeId !== undefined) {
+    if (this.state.nodeId !== undefined && this.props.account !== undefined) {
       return (
-        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} memberId={this.props.account?.id} />
+        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} />
       )
+    }
+
+    if (this.props.account !== null) {
+      Setting.initOSSClient(this.props.account?.id)
+    } else {
+      return null
     }
 
     return (

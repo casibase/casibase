@@ -1,14 +1,13 @@
 package object
 
 import (
-	"bytes"
 	"fmt"
-	"io/ioutil"
-	"net/http"
 	"strings"
 	"time"
 
 	"github.com/mileusna/crontab"
+
+	"github.com/casbin/casbin-forum/util"
 )
 
 type CronJob struct {
@@ -17,7 +16,7 @@ type CronJob struct {
 	State    string `json:"state"`
 }
 
-type PostJob struct {
+type UpdateJob struct {
 	Id      string `json:"id"`
 	JobId   string `json:"jobId"`
 	State   string `json:"state"`
@@ -32,42 +31,57 @@ func init() {
 }
 
 func schedulePost(postId string) {
-	post := GetPost(postId)
-	isBumped := post.bumpPost()
-	if isBumped {
-		fmt.Printf("Bump post: %s\n", post.Id)
+	post := GetUpdateJob(postId)
+	isUpdated, num := post.updateInfo()
+	if isUpdated {
+		fmt.Printf("Update forum info: %s, update num: %d\n", post.Id, num)
 	}
 }
 
-func (post *PostJob) bumpPost() bool {
-	content := bytes.NewBuffer([]byte(post.Content))
-	response, err := http.Post(post.Url, "application/json", content)
-	defer response.Body.Close()
-	if err != nil {
-		panic(err)
-	}
-	_, err = ioutil.ReadAll(response.Body)
+func (job *UpdateJob) updateInfo() (bool, int) {
+	var num int
+	if job.Id == "expireData" {
+		expiredNodeDate := util.GetTimeMonth(-NodeHitRecordExpiredTime)
+		expiredTopicDate := util.GetTimeDay(-TopicHitRecordExpiredTime)
 
-	return true
+		updateNodeNum := ChangeExpiredDataStatus(1, expiredNodeDate)
+		updateTopicNum := ChangeExpiredDataStatus(2, expiredTopicDate)
+
+		num = updateNodeNum + updateTopicNum
+	} else {
+		last := GetLastRecordId()
+		latest := GetLatestSyncedRecordId()
+		if last == latest {
+			num = 0
+		} else {
+			UpdateLatestSyncedRecordId(last)
+			updateNodeNum := UpdateHotNode()
+			updateTopicNum := UpdateHotTopic()
+
+			num = updateTopicNum + updateNodeNum
+		}
+	}
+
+	return true, num
 }
 
-func GetPost(id string) *PostJob {
-	posts := GetCronPosts()
+func GetUpdateJob(id string) *UpdateJob {
+	posts := GetCronUpdateJobs()
 	for _, v := range posts {
 		if v.Id == id {
 			return v
 		}
 	}
-	return &PostJob{}
+	return &UpdateJob{}
 }
 
 func GetJobs() []*CronJob {
 	return GetCronJobs()
 }
 
-func GetPosts(jobId string) []*PostJob {
-	posts := GetCronPosts()
-	var jobs []*PostJob
+func GetUpdateJobs(jobId string) []*UpdateJob {
+	posts := GetCronUpdateJobs()
+	var jobs []*UpdateJob
 	for _, v := range posts {
 		if v.JobId == jobId {
 			jobs = append(jobs, v)
@@ -93,7 +107,7 @@ func refreshCronTasks() bool {
 
 		hours, minutes := parseDumpTime(job.BumpTime)
 
-		posts := GetPosts(job.Id)
+		posts := GetUpdateJobs(job.Id)
 		for _, post := range posts {
 			if post.State != "sent" || post.Url == "" {
 				continue
@@ -113,7 +127,6 @@ func refreshCronTasks() bool {
 
 func timerRoutine() {
 	for range time.Tick(time.Second * 3600) {
-		//println("timer")
 		refreshCronTasks()
 	}
 }

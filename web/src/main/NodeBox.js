@@ -167,10 +167,13 @@ class NodeBox extends React.Component {
             {nodeInfo?.name}
             <div className="sep10"></div>
             <div className="sep5"></div>
-            <div className="fr" style={{paddingLeft: "10px"}}>
-              <input type="button" className="super normal button" value={i18next.t("node:new topic")}
-                     onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
-            </div>
+            {
+              this.props.account !== null ?
+                <div className="fr" style={{paddingLeft: "10px"}}>
+                  <input type="button" className="super normal button" value={i18next.t("node:new topic")}
+                         onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
+                </div> : null
+            }
             <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
             <div className="sep10"></div>
             <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
@@ -239,7 +242,10 @@ class NodeBox extends React.Component {
         <div className="sep20" />
         {this.renderNode()}
         <div className="sep20" />
-        <NewNodeTopicBox nodeId={this.state.nodeId} size={"small"} />
+        {
+          this.props.account !== undefined && this.props.account !== null ?
+            <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} /> : null
+        }
       </div>
     )
   }

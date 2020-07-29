@@ -44,15 +44,15 @@ var (
 			State:    "active",
 		},
 	}
-	DefaultCronPosts           = []*PostJob{
+	DefaultCronUpdates         = []*UpdateJob{
 		{
-			Id:    "postUpdateExpiredData",
+			Id:    "expireData",
 			JobId: "updateExpiredData",
 			State: "sent",
 			Url:   "http://127.0.0.1:7000/api/update-expired-data",
 		},
 		{
-			Id:    "postUpdateHotInfo",
+			Id:    "hotInfo",
 			JobId: "updateHotInfo",
 			State: "sent",
 			Url:   "http://127.0.0.1:7000/api/update-hot-info",
