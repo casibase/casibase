@@ -50,7 +50,7 @@ func (c *APIController) AddFavorites() {
 		res := object.AddFavorites(&favorites)
 		if favoritesType == 1 {
 			notification := object.Notification{
-				Id:               util.IntToString(object.GetNotificationId()),
+				//Id:               util.IntToString(object.GetNotificationId()),
 				NotificationType: 4,
 				ObjectId:         objectId,
 				CreatedTime:      util.GetCurrentTime(),

@@ -24,6 +24,8 @@ import oss from "ali-oss";
 import "./i18n"
 import i18next from "i18next";
 
+const pangu = require("pangu");
+
 export let ServerUrl = '';
 export let ClientUrl = '';
 
@@ -215,4 +217,13 @@ export function changeMomentLanguage(lng) {
       }
     })
   }
+}
+
+export function getFormattedContent(content) {
+  return pangu.spacing(content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
+    if (w[w.length - 1] !== " ") {
+      return `[${w.substring(0, w.length)}](${ClientUrl}/member/${w.substring(1,)})`
+    }
+    return `[${w.substring(0, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `
+  }));
 }
