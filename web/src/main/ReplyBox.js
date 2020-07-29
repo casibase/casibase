@@ -178,21 +178,21 @@ class ReplyBox extends React.Component {
                     <td width="10" valign="top" />
                     <td width="auto" valign="top" align="left">
                       <div className="fr">
-                          {
-                            this.props.account !== null && this.props.account.id !== reply?.author ?
-                              reply?.thanksStatus === false ?
-                                <div id={`thank_area__${reply.id}`} className="thank_area">
-                                  <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
-                                  &nbsp; &nbsp;
-                                  <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
-                                    {i18next.t("reply:thank")}
-                                  </a>
-                                </div> :
-                                <div id={`thank_area__${reply.id}`} className="thank_area thanked">
-                                  {i18next.t("reply:thanked")}
-                                </div>
-                              : null
-                          }
+                        {
+                          this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ?
+                            reply?.thanksStatus === false ?
+                              <div id={`thank_area__${reply.id}`} className="thank_area">
+                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
+                                &nbsp; &nbsp;
+                                <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
+                                  {i18next.t("reply:thank")}
+                                </a>
+                              </div> :
+                              <div id={`thank_area__${reply.id}`} className="thank_area thanked">
+                                {i18next.t("reply:thanked")}
+                              </div>
+                            : null
+                        }
                         {
                           reply?.deletable ?
                             <div id={`thank_area__${reply.id}`} className="thank_area">
@@ -230,7 +230,7 @@ class ReplyBox extends React.Component {
                       }
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
-                        <ReactMarkdown source={pangu.spacing(reply.content.replace(/@(.*?) /, function (w) {
+                        <ReactMarkdown source={pangu.spacing(reply.content.replace(/@(.*?) /g, function (w) {
                           return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
                         }))} escapeHtml={false} />
                       </div>

@@ -15,10 +15,9 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import "./rightFavourite.css"
 import i18next from "i18next";
 
-class RightHottestNodeBox extends React.Component {
+class RightHotNodeBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -29,11 +28,11 @@ class RightHottestNodeBox extends React.Component {
   }
 
   componentDidMount() {
-    this.getHottestNode();
+    this.getHotNode();
   }
 
-  getHottestNode() {
-    NodeBackend.getHottestNode(this.state.limit)
+  getHotNode() {
+    NodeBackend.getHotNode(this.state.limit)
       .then((res) => {
         this.setState({
           info: res.data,
@@ -52,7 +51,7 @@ class RightHottestNodeBox extends React.Component {
       <div className="box">
         <div className="cell">
           <div className="fr"></div>
-          <span className="fade">{i18next.t("bar:Hottest node")}</span></div>
+          <span className="fade">{i18next.t("bar:Hot node")}</span></div>
         <div className="cell">
           {
             this.state.info?.map((node) => {
@@ -69,4 +68,4 @@ class RightHottestNodeBox extends React.Component {
   }
 }
 
-export default RightHottestNodeBox;
+export default RightHotNodeBox;

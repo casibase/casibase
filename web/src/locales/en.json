@@ -44,8 +44,9 @@
     "Child node": "Child node",
     "more child nodes": "more child nodes",
     "Receive today's checkin bonus": "Receive today's checkin bonus",
-    "Hottest node": "Hottest node",
-    "Recently added nodes": "Recently added nodes"
+    "Hot node": "Hot node",
+    "Recently added nodes": "Recently added nodes",
+    "Today Top 10": "Today Top 10"
   },
   "balance":
   {

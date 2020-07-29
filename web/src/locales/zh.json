@@ -44,8 +44,9 @@
     "Child node": "子结点",
     "more child nodes": "个更多的相关子节点",
     "Receive today's checkin bonus": "领取今日的登录奖励",
-    "Hottest node": "最热节点",
-    "Recently added nodes": "最近新增节点"
+    "Hot node": "最热节点",
+    "Recently added nodes": "最近新增节点",
+    "Today Top 10": "今日热议主题"
   },
   "balance":
   {

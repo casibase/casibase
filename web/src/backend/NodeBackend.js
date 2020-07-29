@@ -79,8 +79,8 @@ export function getLatestNode(limit) {
   }).then(res => res.json());
 }
 
-export function getHottestNode(limit) {
-  return fetch(`${Setting.ServerUrl}/api/get-hottest-node?limit=${limit}`, {
+export function getHotNode(limit) {
+  return fetch(`${Setting.ServerUrl}/api/get-hot-node?limit=${limit}`, {
     method: 'GET',
     credentials: 'include',
   }).then(res => res.json());

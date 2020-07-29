@@ -28,6 +28,34 @@ var (
 	ReceiveReplyBonus          = 5
 	MaxDailyCheckinBonus       = 20
 	LatestNodeNum              = 20
-	HottestNodeNum             = 15
+	HotNodeNum                 = 15
+	HotTopicNum                = 10
 	NodeHitRecordExpiredTime   = 1 //month
+	TopicHitRecordExpiredTime  = 1 //day
+	DefaultCronJobs            = []*CronJob{
+		{
+			Id:       "updateExpiredData",
+			BumpTime: "0:0",
+			State:    "active",
+		},
+		{
+			Id:       "updateHotInfo",
+			BumpTime: "*/1:*",
+			State:    "active",
+		},
+	}
+	DefaultCronPosts           = []*PostJob{
+		{
+			Id:    "postUpdateExpiredData",
+			JobId: "updateExpiredData",
+			State: "sent",
+			Url:   "http://127.0.0.1:7000/api/update-expired-data",
+		},
+		{
+			Id:    "postUpdateHotInfo",
+			JobId: "updateHotInfo",
+			State: "sent",
+			Url:   "http://127.0.0.1:7000/api/update-hot-info",
+		},
+	}
 )

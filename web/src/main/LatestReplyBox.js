@@ -58,16 +58,6 @@ class LatestReplyBox extends React.Component {
   componentDidMount() {
     this.getLatestReplies();
     this.getRepliesNum();
-    this.getMember();
-  }
-
-  getMember() {
-    MemberBackend.getMember(this.state.memberId)
-      .then((res) => {
-        this.setState({
-          member: res,
-        });
-      });
   }
 
   getLatestReplies() {
@@ -80,6 +70,10 @@ class LatestReplyBox extends React.Component {
   }
 
   getRepliesNum() {
+    if (this.props.size !== "large") {
+      return
+    }
+
     ReplyBackend.getRepliesNum(this.state.memberId)
       .then((res) => {
         this.setState({
@@ -125,7 +119,7 @@ class LatestReplyBox extends React.Component {
   }
 
   render() {
-    if (this.state.member === null) {
+    if (this.props.member === null) {
       return null
     }
 
@@ -138,7 +132,6 @@ class LatestReplyBox extends React.Component {
             <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
             <div className="fr f12"><span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
           </div>
-          
           {this.showPageColumn()}
           {
             this.state.replies?.map((reply) => {

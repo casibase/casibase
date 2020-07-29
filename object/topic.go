@@ -29,6 +29,7 @@ type Topic struct {
 	ReplyCount    int      `json:"replyCount"`
 	UpCount       int      `json:"upCount"`
 	HitCount      int      `json:"hitCount"`
+	Hot           int      `json:"hot"`
 	FavoriteCount int      `json:"favoriteCount"`
 	Deleted       bool     `xorm:"bool" json:"-"`
 
@@ -300,6 +301,37 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 			}
 			res = append(res, &temp)
 		}
+	}
+
+	return res
+}
+
+func UpdateTopicHotInfo(topicId string, hot int) bool {
+	topic := new(Topic)
+
+	topic.Hot = hot
+	affected, err := adapter.engine.Id(topicId).Cols("hot").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func GetHotTopic(limit int) []*TopicWithAvatar {
+	topics := []*Topic{}
+	err := adapter.engine.Desc("hot").Limit(limit).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	res := []*TopicWithAvatar{}
+	for _, v := range topics {
+		temp := TopicWithAvatar{
+			Topic:  *v,
+			Avatar: GetMemberAvatar(v.Author),
+		}
+		res = append(res, &temp)
 	}
 
 	return res

@@ -16,6 +16,7 @@ package object
 
 import (
 	"bytes"
+	"encoding/json"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -27,7 +28,7 @@ import (
 
 type BasicInfo struct {
 	Id    string `xorm:"varchar(100) notnull pk"`
-	Value string `xorm:"varchar(100)"`
+	Value string `xorm:"mediumtext"`
 }
 
 var fileDate, version string
@@ -113,37 +114,68 @@ func VerifyCaptcha(id, digits string) bool {
 	return res
 }
 
-func GetLatestSyncedHitId() int {
-	info := BasicInfo{Id: "LatestSyncedHitId"}
+func GetCronJobs() []*CronJob {
+	info := BasicInfo{Id: "CronJobs"}
 	existed, err := adapter.engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return util.ParseInt(info.Value)
+		var jobs []*CronJob
+		err := json.Unmarshal([]byte(info.Value), &jobs)
+		if err != nil {
+			panic(err)
+		}
+		return jobs
 	} else {
+		jobs, err := json.Marshal(DefaultCronJobs)
+		if err != nil {
+			panic(err)
+		}
 		info := BasicInfo{
-			Id:    "LatestSyncedHitId",
-			Value: "0",
+			Id:    "CronJobs",
+			Value: string(jobs),
 		}
 
-		_, err := adapter.engine.Insert(&info)
+		_, err = adapter.engine.Insert(&info)
 		if err != nil {
 			panic(err)
 		}
 
-		return 0
+		return DefaultCronJobs
 	}
 }
 
-func UpdateLatestSyncedHitId(id int) bool {
-	info := new(BasicInfo)
-	info.Value = util.IntToString(id)
-	affected, err := adapter.engine.Where("id = ?", "LatestSyncedHitId").Cols("value").Update(info)
+func GetCronPosts() []*PostJob {
+	info := BasicInfo{Id: "CronPosts"}
+	existed, err := adapter.engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
 
-	return affected != 0
+	if existed {
+		var posts []*PostJob
+		err := json.Unmarshal([]byte(info.Value), &posts)
+		if err != nil {
+			panic(err)
+		}
+		return posts
+	} else {
+		posts, err := json.Marshal(DefaultCronPosts)
+		if err != nil {
+			panic(err)
+		}
+		info := BasicInfo{
+			Id:    "CronPosts",
+			Value: string(posts),
+		}
+
+		_, err = adapter.engine.Insert(&info)
+		if err != nil {
+			panic(err)
+		}
+
+		return DefaultCronPosts
+	}
 }

@@ -44,6 +44,8 @@ func initAPI() {
 	beego.Router("/api/get-topics-by-tab", &controllers.APIController{}, "GET:GetTopicsByTab")
 	beego.Router("/api/get-topics-num", &controllers.APIController{}, "GET:GetTopicsNum")
 	beego.Router("/api/add-topic-hit-count", &controllers.APIController{}, "POST:AddTopicHitCount")
+	beego.Router("/api/get-hot-topic", &controllers.APIController{}, "GET:GetHotTopic")
+	beego.Router("/api/add-topic-browse-record", &controllers.APIController{}, "POST:AddTopicBrowseCount")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
@@ -73,8 +75,7 @@ func initAPI() {
 	beego.Router("/api/get-node-relation", &controllers.APIController{}, "GET:GetNodeRelation")
 	beego.Router("/api/get-nodes-num", &controllers.APIController{}, "GET:GetNodesNum")
 	beego.Router("/api/get-latest-node", &controllers.APIController{}, "GET:GetLatestNode")
-	beego.Router("/api/get-hottest-node", &controllers.APIController{}, "GET:GetHottestNode")
-	beego.Router("/api/update-hottest-node", &controllers.APIController{}, "GET:UpdateHottestNode")
+	beego.Router("/api/get-hot-node", &controllers.APIController{}, "GET:GetHotNode")
 	beego.Router("/api/add-node-browse-record", &controllers.APIController{}, "POST:AddNodeBrowseCount")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
@@ -91,8 +92,7 @@ func initAPI() {
 	beego.Router("/api/get-account-favorite-num", &controllers.APIController{}, "GET:GetAccountFavoriteNum")
 
 	beego.Router("/api/get-tabs", &controllers.APIController{}, "GET:GetTabs")
-	beego.Router("/api/get-tab", &controllers.APIController{}, "GET:GetTab")
-	beego.Router("/api/get-tab-nodes", &controllers.APIController{}, "GET:GetTabNodes")
+	beego.Router("/api/get-tab-with-nodes", &controllers.APIController{}, "GET:GetTabWithNodes")
 
 	beego.Router("/api/get-notifications", &controllers.APIController{}, "GET:GetNotifications")
 	beego.Router("/api/delete-notifications", &controllers.APIController{}, "POST:DeleteNotification")
@@ -110,7 +110,8 @@ func initAPI() {
 	beego.Router("/api/add-thanks", &controllers.APIController{}, "POST:AddThanks")
 	beego.Router("/api/get-consumption-record", &controllers.APIController{}, "GET:GetConsumptionRecord")
 
-	beego.Router("/api/update-expired-data", &controllers.APIController{}, "GET:ChangeExpiredDataStatus")
+	beego.Router("/api/update-hot-info", &controllers.APIController{}, "POST:UpdateHotInfo")
+	beego.Router("/api/update-expired-data", &controllers.APIController{}, "POST:ChangeExpiredDataStatus")
 	beego.Router("/api/get-captcha", &controllers.APIController{}, "GET:GetCaptcha")
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")
