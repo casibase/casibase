@@ -147,27 +147,27 @@ func GetCronJobs() []*CronJob {
 	}
 }
 
-func GetCronPosts() []*PostJob {
-	info := BasicInfo{Id: "CronPosts"}
+func GetCronUpdateJobs() []*UpdateJob {
+	info := BasicInfo{Id: "CronUpdateJobs"}
 	existed, err := adapter.engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		var posts []*PostJob
+		var posts []*UpdateJob
 		err := json.Unmarshal([]byte(info.Value), &posts)
 		if err != nil {
 			panic(err)
 		}
 		return posts
 	} else {
-		posts, err := json.Marshal(DefaultCronPosts)
+		posts, err := json.Marshal(DefaultCronUpdates)
 		if err != nil {
 			panic(err)
 		}
 		info := BasicInfo{
-			Id:    "CronPosts",
+			Id:    "CronUpdateJobs",
 			Value: string(posts),
 		}
 
@@ -176,6 +176,41 @@ func GetCronPosts() []*PostJob {
 			panic(err)
 		}
 
-		return DefaultCronPosts
+		return DefaultCronUpdates
 	}
+}
+
+func GetLatestSyncedRecordId() int {
+	info := BasicInfo{Id: "LatestSyncedRecordId"}
+	existed, err := adapter.engine.Get(&info)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return util.ParseInt(info.Value)
+	} else {
+		info := BasicInfo{
+			Id:    "LatestSyncedRecordId",
+			Value: "0",
+		}
+
+		_, err := adapter.engine.Insert(&info)
+		if err != nil {
+			panic(err)
+		}
+
+		return 0
+	}
+}
+
+func UpdateLatestSyncedRecordId(id int) bool {
+	info := new(BasicInfo)
+	info.Value = util.IntToString(id)
+	affected, err := adapter.engine.Where("id = ?", "LatestSyncedRecordId").Cols("value").Update(info)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

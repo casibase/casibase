@@ -48,7 +48,6 @@ class NewReplyBox extends React.Component {
 
   componentDidMount() {
     this.getTopic();
-    Setting.initOSSClient(this.props.member)
   }
 
   getTopic() {
@@ -181,6 +180,10 @@ class NewReplyBox extends React.Component {
   render() {
     if (this.state.topic === null) {
       return null
+    }
+
+    if (this.props.member !== null) {
+      Setting.initOSSClient(this.props.member)
     }
 
     return (

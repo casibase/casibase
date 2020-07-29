@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
+import * as NodeBackend from "../backend/NodeBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
@@ -51,7 +52,10 @@ class TopicBox extends React.Component {
       .then((res) => {
         this.setState({
           topic: res,
-        }, () => this.props.getNodeId(this.state.topic?.nodeId));
+        }, () => {
+          this.props.getNodeId(this.state.topic?.nodeId);
+          NodeBackend.addNodeBrowseCount(this.state.topic?.nodeId);
+        });
       });
   }
 
