@@ -92,3 +92,17 @@ export function getCreatedTopicsNum(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function getHotTopic(limit) {
+  return fetch(`${Setting.ServerUrl}/api/get-hot-topic?limit=${limit}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function addTopicBrowseCount(id) {
+  return fetch(`${Setting.ServerUrl}/api/add-topic-browse-record?id=${id}`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => res.json());
+}

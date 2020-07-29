@@ -54,7 +54,8 @@ import BalanceBox from "./main/BalanceBox";
 import RightCheckinBonusBox from "./rightbar/RightCheckinBonusBox";
 import CheckinBonusBox from "./main/CheckinBonusBox";
 import RightLatestNodeBox from "./rightbar/RightLatestNodeBox";
-import RightHottestNodeBox from "./rightbar/RightHottestNodeBox";
+import RightHotNodeBox from "./rightbar/RightHotNodeBox";
+import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 
 class App extends Component {
   constructor(props) {
@@ -70,7 +71,7 @@ class App extends Component {
     this.getNodeId = this.getNodeId.bind(this)
   }
 
-  componentWillMount() {
+  componentDidMount() {
     Setting.SetLanguage();
     this.getAccount();
   }
@@ -110,132 +111,127 @@ class App extends Component {
   renderMain() {
     return (
       <Switch>
-        <Route exact path="/" component={() =>
+        <Route exact path="/">
           <div id="Main">
             <div className="sep20" />
             <TopicPage account={this.state.account} />
             <div className="sep20" />
-          <NodeNavigationBox />
+            <NodeNavigationBox />
           </div>
-        }/>
-        <Route exact path="/signup" component={() =>
+        </Route>
+        <Route exact path="/signup">
           <div id="Main">
             <div className="sep20" />
             <SignupBox />
           </div>
-        }/>
-        <Route exact path="/signin" component={() =>
+        </Route>
+        <Route exact path="/signin">
           <div id="Main">
             <div className="sep20" />
             <SigninBox onSignin={this.onSignin.bind(this)} />
           </div>
-        }/>
-        <Route exact path="/signout" component={() =>
+        </Route>
+        <Route exact path="/signout">
           <div id="Main">
             <div className="sep20" />
             <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
           </div>
-        }/>
-        <Route exact path="/t/:topicId" component={() =>
+        </Route>
+        <Route exact path="/t/:topicId">
           <div id="Main">
             <div className="sep20" />
             <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
             <div className="sep20" />
             <ReplyBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/member/:memberId" component={() =>
+        </Route>
+        <Route exact path="/member/:memberId">
           <div id="Main">
-            <div className="sep20" />
             <MemberBox account={this.state.account} />
-            <div className="sep20" />
-            <AllCreatedTopicsBox />
-            <div className="sep20" />
-            <LatestReplyBox />
           </div>
-        }/>
-        <Route exact path="/member/:memberId/:tab" component={() =>
+        </Route>
+        <Route exact path="/member/:memberId/:tab">
           <div id="Main">
             <div className="sep20" />
             <AllCreatedTopicsBox />
             <div className="sep20" />
           </div>
-        }/>
-        <Route exact path="/settings" component={() =>
+        </Route>
+        <Route exact path="/settings">
           <div id="Main">
             <div className="sep20" />
             <SettingsBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/callback/:authType/:addition" component={() =>
+        </Route>
+        <Route exact path="/callback/:authType/:addition">
           <div id="Main">
             <div className="sep20" />
             <CallbackBox />
           </div>
-        }/>
-        <Route exact path="/settings/:event" component={() =>
+        </Route>
+        <Route exact path="/settings/:event">
           <div id="Main">
             <div className="sep20" />
             <SettingsBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/new" component={() =>
+        </Route>
+        <Route exact path="/new">
           <div id="Main">
             <div className="sep20" />
             <NewBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/new/:nodeId" component={() =>
+        </Route>
+        <Route exact path="/new/:nodeId">
           <div id="Main">
             <div className="sep20" />
             <NewBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/go/:nodeId" component={() =>
+        </Route>
+        <Route exact path="/go/:nodeId">
           <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
-        }/>
-        <Route exact path="/my/:favorites" component={() =>
+        </Route>
+        <Route exact path="/my/:favorites">
           <div id="Main">
             <div className="sep20" />
             <FavoritesBox />
           </div>
-        }/>
-        <Route exact path="/recent" component={() =>
+        </Route>
+        <Route exact path="/recent">
           <div id="Main">
             <div className="sep20" />
             <RecentTopicsBox />
           </div>
-        }/>
-        <Route exact path="/select/language" component={() =>
+        </Route>
+        <Route exact path="/select/language">
           <div id="Main">
             <div className="sep20" />
             <SelectLanguageBox />
           </div>
-        }/>
-        <Route exact path="/notifications" component={() =>
+        </Route>
+        <Route exact path="/notifications">
           <div id="Main">
             <div className="sep20" />
             <NotificationBox />
           </div>
-        }/>
-        <Route exact path="/planes" component={() =>
+        </Route>
+        <Route exact path="/planes">
           <div id="Main">
             <div className="sep20" />
             <PlaneBox />
           </div>
-        }/>
-        <Route exact path="/balance" component={() =>
+        </Route>
+        <Route exact path="/balance">
           <div id="Main">
             <div className="sep20" />
             <BalanceBox account={this.state.account} />
           </div>
-        }/>
-        <Route exact path="/mission/daily" component={() =>
+        </Route>
+        <Route exact path="/mission/daily">
           <div id="Main">
             <div className="sep20" />
             <CheckinBonusBox />
           </div>
-        }/>
+        </Route>
       </Switch>
     )
   }
@@ -265,7 +261,7 @@ class App extends Component {
         {isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId}/> :
           <RightSigninBox nodeId={this.state.nodeId}/>}
         <Switch>
-          <Route exact path="/" component={() =>
+          <Route exact path="/">
             <span>
               <RightCheckinBonusBox account={this.state.account} />
               <div className="sep20"/>
@@ -273,17 +269,19 @@ class App extends Component {
               <div className="sep20"/>
               <RightFavouriteBox />
               <div className="sep20"/>
-              <RightHottestNodeBox />
+              <RightHotTopicBox />
+              <div className="sep20"/>
+              <RightHotNodeBox />
               <div className="sep20"/>
               <RightLatestNodeBox />
             </span>
-          }/>
-          <Route exact path="/go/:nodeId" component={() =>
+          </Route>
+          <Route exact path="/go/:nodeId">
             <span>
               <div className="sep20"/>
               <RightNodeBox />
             </span>
-          }/>
+          </Route>
         </Switch>
       </div>
     )

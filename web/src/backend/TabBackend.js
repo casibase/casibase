@@ -21,8 +21,8 @@ export function getTabs() {
   }).then(res => res.json());
 }
 
-export function getTab(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-tab?id=${id}`, {
+export function getTabWithNode(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-tab-with-nodes?id=${id}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());

@@ -43,6 +43,7 @@ class TopicBox extends React.Component {
   componentDidMount() {
     this.getTopic();
     this.getFavoriteStatus();
+    TopicBackend.addTopicBrowseCount(this.state.topicId);
   }
 
   getTopic() {
@@ -50,7 +51,7 @@ class TopicBox extends React.Component {
       .then((res) => {
         this.setState({
           topic: res,
-        }, () => this.props.getNodeId(this.state.topic.nodeId));
+        }, () => this.props.getNodeId(this.state.topic?.nodeId));
       });
   }
 
@@ -179,7 +180,7 @@ class TopicBox extends React.Component {
         <div className={`cell ${this.state.topic.nodeId}`}>
           <div className={`topic_content ${this.state.topic.nodeId}`}>
             <div className="markdown_body">
-              <ReactMarkdown source={pangu.spacing(this.state.topic?.content.replace(/@(.*?) /, function (w) {
+              <ReactMarkdown source={pangu.spacing(this.state.topic?.content.replace(/@(.*?) /g, function (w) {
                 return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
               }))} escapeHtml={false} />
             </div>

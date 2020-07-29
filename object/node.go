@@ -194,7 +194,7 @@ func GetLatestNode(limit int) []*Node {
 	return nodes
 }
 
-func GetHottestNode(limit int) []*Node {
+func GetHotNode(limit int) []*Node {
 	nodes := []*Node{}
 	err := adapter.engine.Desc("hot").Limit(limit).Find(&nodes)
 	if err != nil {
@@ -204,10 +204,10 @@ func GetHottestNode(limit int) []*Node {
 	return nodes
 }
 
-func UpdateNodeHotInfo(nodeId string, addition int) bool {
-	node := GetNode(nodeId)
+func UpdateNodeHotInfo(nodeId string, hot int) bool {
+	node := new(Node)
 
-	node.Hot += addition
+	node.Hot = hot
 	affected, err := adapter.engine.Id(nodeId).Cols("hot").Update(node)
 	if err != nil {
 		panic(err)

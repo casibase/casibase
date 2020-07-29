@@ -20,23 +20,20 @@ import (
 )
 
 func (c *APIController) ChangeExpiredDataStatus() {
-	recordTypeStr := c.Input().Get("record-type")
+	expiredNodeDate := util.GetTimeMonth(-object.NodeHitRecordExpiredTime)
+	expiredTopicDate := util.GetTimeDay(-object.TopicHitRecordExpiredTime)
 
-	var date string
-	recordType := util.ParseInt(recordTypeStr)
-	if recordType == 1 {
-		date = util.GetTimeMonth(-object.NodeHitRecordExpiredTime)
-	}
+	updateNodeNum := object.ChangeExpiredDataStatus(1, expiredNodeDate)
+	updateTopicNum := object.ChangeExpiredDataStatus(2, expiredTopicDate)
 
-	res := object.ChangeExpiredDataStatus(recordType, date)
-
-	c.Data["json"] = Response{Status: "ok", Data: res}
+	c.Data["json"] = Response{Status: "ok", Data: updateNodeNum, Data2: updateTopicNum}
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateHottestNode() {
-	res := object.UpdateHottestNode()
+func (c *APIController) UpdateHotInfo() {
+	updateNodeNum := object.UpdateHotNode()
+	updateTopicNum := object.UpdateHotTopic()
 
-	c.Data["json"] = Response{Status: "ok", Data: res}
+	c.Data["json"] = Response{Status: "ok", Data: updateNodeNum, Data2: updateTopicNum}
 	c.ServeJSON()
 }

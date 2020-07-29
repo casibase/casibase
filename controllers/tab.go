@@ -21,14 +21,18 @@ func (c *APIController) GetTabs() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTab() {
+func (c *APIController) GetTabWithNodes() {
 	id := c.Input().Get("id")
 
 	if len(id) == 0 {
 		id = object.GetDefaultTab()
 	}
 
-	c.Data["json"] = object.GetTab(id)
+	tabInfo := object.GetTab(id)
+	nodes := object.GetNodesByTab(id)
+	resp := Response{Status: "ok", Msg: "success", Data: tabInfo, Data2: nodes}
+
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 

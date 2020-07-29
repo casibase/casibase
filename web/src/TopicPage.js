@@ -63,19 +63,14 @@ class TopicPage extends React.Component {
         });
       });
     this.state.tab === undefined ? tab = "" : tab = this.state.tab
-    TabBackend.getTab(tab)
+    TabBackend.getTabWithNode(tab)
       .then((res) => {
         if (res === null) {
           window.location.href = `/`
         }
         this.setState({
-          tabInfo: res,
-        });
-      });
-    TabBackend.getTabNodes(tab)
-      .then((res) => {
-        this.setState({
-          nodes: res,
+          tabInfo: res?.data,
+          nodes: res?.data2,
         });
       });
   }

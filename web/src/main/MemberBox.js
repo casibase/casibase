@@ -19,6 +19,8 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import i18next from "i18next";
+import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
+import LatestReplyBox from "./LatestReplyBox";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -86,7 +88,7 @@ class MemberBox extends React.Component {
       });
   }
 
-  render() {
+  renderMember() {
     if (this.state.member !== null && this.state.member.length === 0) {
       return (
         <div className="box">
@@ -203,6 +205,22 @@ class MemberBox extends React.Component {
       </div>
     );
   }
+
+  render() {
+    return (
+      <span>
+        <div className="sep20" />
+        {
+          this.renderMember()
+        }
+        <div className="sep20" />
+        <AllCreatedTopicsBox member={this.state.member} />
+        <div className="sep20" />
+        <LatestReplyBox member={this.state.member} />
+      </span>
+    )
+  }
+
 }
 
 export default withRouter(MemberBox);

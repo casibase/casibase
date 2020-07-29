@@ -59,6 +59,7 @@ class NodeBox extends React.Component {
     this.getTopics();
     this.getNodeInfo();
     this.props.getNodeId(this.state.nodeId);
+    NodeBackend.addNodeBrowseCount(this.state.nodeId);
   }
 
   getNodeInfo() {
@@ -233,7 +234,6 @@ class NodeBox extends React.Component {
       )
     }
 
-    NodeBackend.addNodeBrowseCount(this.state.nodeId)
     return (
       <div id="Main">
         <div className="sep20" />

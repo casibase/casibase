@@ -14,12 +14,6 @@
 
 package object
 
-import (
-	"fmt"
-
-	"github.com/casbin/casbin-forum/util"
-)
-
 //RecordType: 1 means node hit record
 type BrowseRecord struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
@@ -30,10 +24,9 @@ type BrowseRecord struct {
 	Expired     bool   `xorm:"bool" json:"expired"`
 }
 
-func GetBrowseRecordNum(from, recordType int, date, objectId string) int {
-	fmt.Println(from, recordType, date, objectId)
+func GetBrowseRecordNum(recordType int, objectId string) int {
 	record := new(BrowseRecord)
-	total, err := adapter.engine.Where("id > ?", from).And("record_type = ?", recordType).And("object_id = ?", objectId).And("created_time > ?", date).Count(record)
+	total, err := adapter.engine.Where("record_type = ?", recordType).And("object_id = ?", objectId).And("expired = ?", false).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -61,17 +54,12 @@ func AddBrowseRecordNum(record *BrowseRecord) bool {
 
 func ChangeExpiredDataStatus(recordType int, date string) int {
 	var res int
-	if recordType == 1 {
-		nodes := GetNodes()
-		for _, v := range nodes {
-			record := new(BrowseRecord)
-			record.Expired = true
-			affected, err := adapter.engine.Where("record_type = ?", 1).And("object_id = ?", v.Id).And("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
-			res += int(affected)
-			if err != nil {
-				panic(err)
-			}
-		}
+	record := new(BrowseRecord)
+	record.Expired = true
+	affected, err := adapter.engine.Where("record_type = ?", recordType).And("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
+	res += int(affected)
+	if err != nil {
+		panic(err)
 	}
 
 	return res
@@ -89,18 +77,32 @@ func GetLastRecordId() int {
 	return res
 }
 
-func UpdateHottestNode() int {
-	from := GetLatestSyncedHitId()
-	nodes := GetNodes()
-
-	for _, v := range nodes {
-		date := util.GetTimeMonth(-NodeHitRecordExpiredTime)
-		addition := GetBrowseRecordNum(from, 1, date, v.Id)
-		UpdateNodeHotInfo(v.Id, addition)
+func UpdateHotNode() int {
+	var record []*BrowseRecord
+	err := adapter.engine.Table("browse_record").Where("record_type = ?", 1).GroupBy("object_id").Find(&record)
+	if err != nil {
+		panic(err)
 	}
 
-	id := GetLastRecordId()
-	UpdateLatestSyncedHitId(id)
+	for _, v := range record {
+		hot := GetBrowseRecordNum(1, v.ObjectId)
+		UpdateNodeHotInfo(v.ObjectId, hot)
+	}
 
-	return len(nodes)
+	return len(record)
+}
+
+func UpdateHotTopic() int {
+	var record []*BrowseRecord
+	err := adapter.engine.Table("browse_record").Where("record_type = ?", 2).GroupBy("object_id").Find(&record)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range record {
+		hot := GetBrowseRecordNum(2, v.ObjectId)
+		UpdateTopicHotInfo(v.ObjectId, hot)
+	}
+
+	return len(record)
 }

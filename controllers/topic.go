@@ -229,3 +229,44 @@ func (c *APIController) GetTopicsByTab() {
 	c.Data["json"] = object.GetTopicsWithTab(tabId, limit, offset)
 	c.ServeJSON()
 }
+
+func (c *APIController) AddTopicBrowseCount() {
+	topicId := c.Input().Get("id")
+
+	var resp Response
+	hitRecord := object.BrowseRecord{
+		MemberId:    c.GetSessionUser(),
+		RecordType:  2,
+		ObjectId:    topicId,
+		CreatedTime: util.GetCurrentTime(),
+		Expired:     false,
+	}
+	res := object.AddBrowseRecordNum(&hitRecord)
+	if res {
+		resp = Response{Status: "ok", Msg: "success"}
+	} else {
+		resp = Response{Status: "fail", Msg: "add node hit count failed"}
+	}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) GetHotTopic() {
+	limitStr := c.Input().Get("limit")
+	defaultLimit := object.HotTopicNum
+
+	var limit int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+
+	var resp Response
+	res := object.GetHotTopic(limit)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}

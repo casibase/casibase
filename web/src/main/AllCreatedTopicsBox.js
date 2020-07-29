@@ -22,6 +22,7 @@ import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import * as MemberBackend from "../backend/MemberBackend";
 import i18next from "i18next";
+import {goToLink} from "../Setting";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class AllCreatedTopicsBox extends React.Component {
       maxPage: -1,
       topicsNum: 1,
       temp: 0,
-      member: null,
+      member: [],
       url: "",
       TAB_LIST: [
         {label: "Q&A", value: "qna"},
@@ -64,24 +65,18 @@ class AllCreatedTopicsBox extends React.Component {
   componentDidMount() {
       this.getAllCreatedTopics();
       this.geCreatedTopicsNum();
-      this.getMemberAvatar();
       this.getMember();
   }
 
   getMember() {
+    if (this.state.tab === undefined) {
+      return
+    }
+
     MemberBackend.getMember(this.state.memberId)
       .then((res) => {
         this.setState({
           member: res,
-        });
-      });
-  }
-
-  getMemberAvatar() {
-    MemberBackend.getMemberAvatar(this.state.memberId)
-      .then((res) => {
-        this.setState({
-          memberAvatar: res,
         });
       });
   }
@@ -96,6 +91,10 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   geCreatedTopicsNum() {
+    if (this.state.tab === undefined) {
+      return
+    }
+
     TopicBackend.getCreatedTopicsNum(this.state.memberId)
       .then((res) => {
         this.setState({
@@ -124,12 +123,15 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   render() {
-    if (this.state.member === null) {
+    if (this.props.member === null) {
       return null
     }
 
     {
       if (this.state.tab === "replies") {
+        if (this.state.member === null) {
+          goToLink(`/member/${this.state.memberId}`)
+        }
         return (
           <LatestReplyBox size={"large"} />
         );
@@ -137,6 +139,9 @@ class AllCreatedTopicsBox extends React.Component {
     }
     {
       if (this.state.tab === "topics") {
+        if (this.state.member === null) {
+          goToLink(`/member/${this.state.memberId}`)
+        }
         {
           return (
             <div className="box">
@@ -160,9 +165,9 @@ class AllCreatedTopicsBox extends React.Component {
         <div class="cell_tabs">
           <div class="fl">
             {
-              this.state.memberAvatar === "" ?
+              this.props.member.avatar === "" ?
                 <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/> :
-                <img src={this.state.memberAvatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+                <img src={this.props.member.avatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
             }
           </div>
           {

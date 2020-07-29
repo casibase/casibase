@@ -7,6 +7,7 @@ require (
 	github.com/astaxie/beego v1.12.1
 	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/mileusna/crontab v0.0.0-20180909013013-f182897de5d8
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	golang.org/x/net v0.0.0-20190620200207-3b0461eec859

@@ -127,9 +127,9 @@ func (c *APIController) GetLatestNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetHottestNode() {
+func (c *APIController) GetHotNode() {
 	limitStr := c.Input().Get("limit")
-	defaultLimit := object.HottestNodeNum
+	defaultLimit := object.HotNodeNum
 
 	var limit int
 	if len(limitStr) != 0 {
@@ -139,7 +139,7 @@ func (c *APIController) GetHottestNode() {
 	}
 
 	var resp Response
-	res := object.GetHottestNode(limit)
+	res := object.GetHotNode(limit)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp
