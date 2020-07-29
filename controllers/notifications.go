@@ -30,7 +30,7 @@ func (c *APIController) AddNotification() {
 
 	memberId := c.GetSessionUser()
 	notification := object.Notification{
-		Id:               util.IntToString(object.GetNotificationId()),
+		//Id:               util.IntToString(object.GetNotificationId()),
 		NotificationType: tempNotification.NotificationType,
 		ObjectId:         tempNotification.ObjectId,
 		CreatedTime:      util.GetCurrentTime(),

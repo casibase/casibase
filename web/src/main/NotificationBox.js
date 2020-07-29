@@ -125,9 +125,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={pangu.spacing(notification?.content.replace(/@(.*?) /, function (w) {
-                return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
-              }))} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
             </div>
           </td>
         )
@@ -145,9 +143,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={pangu.spacing(notification?.content.replace(/@(.*?) /, function (w) {
-                return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
-              }))} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
             </div>
           </td>
         )
@@ -206,9 +202,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={pangu.spacing(notification?.content.replace(/@(.*?) /, function (w) {
-                return `[${w.substring(0,w.length-1)}](${Setting.ClientUrl}/member/${w.substring(1,)}) `
-              }))} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
             </div>
           </td>
         )

@@ -24,7 +24,7 @@ import (
 // NotificationType 1-6 means: reply(topic), mentioned(reply), mentioned(topic), favorite(topic), thanks(topic), thanks(reply)
 // Status 1-3 means: unread, have read, deleted
 type Notification struct {
-	Id               string `xorm:"varchar(100) notnull pk" json:"id"`
+	Id               int    `xorm:"int notnull pk autoincr" json:"id"`
 	NotificationType int    `xorm:"int" json:"notificationType"`
 	ObjectId         string `xorm:"varchar(100)" json:"objectId"`
 	CreatedTime      string `xorm:"varchar(100)" json:"createdTime"`
@@ -145,6 +145,7 @@ func GetUnreadNotificationNum(memberId string) int {
 	return int(total)
 }
 
+/*
 func GetNotificationId() int {
 	num := GetNotificationCount()
 
@@ -152,6 +153,7 @@ func GetNotificationId() int {
 
 	return res
 }
+*/
 
 func UpdateReadStatus(id string) bool {
 	notification := new(Notification)
@@ -165,26 +167,26 @@ func UpdateReadStatus(id string) bool {
 }
 
 func AddReplyNotification(objectId, senderId, content, topicId string) {
-	memberMap := make(map[string]string)
+	memberMap := make(map[string]bool)
 
 	receiverId := GetTopicAuthor(topicId)
-	memberMap[receiverId] = util.IntToString(GetNotificationId())
+	memberMap[receiverId] = true
 
-	reg := regexp.MustCompile("@(.*?) ")
+	reg := regexp.MustCompile("@(.*?)[ \n\t]")
+	reg2 := regexp.MustCompile("@([^ \n\t]*?)[^ \n\t]$")
 	regResult := reg.FindAllStringSubmatch(content, -1)
+	regResult2 := reg2.FindAllStringSubmatch(content, -1)
 
-	//Write in advance to prevent multiple thread switching with Mutex
-	//Using i as offset of notificationId
-	var i int
-	if senderId != receiverId {
-		i = 1
-	} else {
-		i = 0
-	}
 	for _, v := range regResult {
-		if senderId != v[1] && len(memberMap[v[1]]) == 0 {
-			memberMap[v[1]] = util.IntToString(GetNotificationId() + i)
-			i++
+		if senderId != v[1] && !memberMap[v[1]] {
+			memberMap[v[1]] = true
+		}
+	}
+
+	for _, v := range regResult2 {
+		v[1] += content[len(content)-1:]
+		if senderId != v[1] && !memberMap[v[1]] {
+			memberMap[v[1]] = true
 		}
 	}
 
@@ -192,7 +194,7 @@ func AddReplyNotification(objectId, senderId, content, topicId string) {
 
 	if senderId != receiverId {
 		notification := Notification{
-			Id:               memberMap[receiverId],
+			//Id:               memberMap[receiverId],
 			NotificationType: 1,
 			ObjectId:         objectId,
 			CreatedTime:      util.GetCurrentTime(),
@@ -204,14 +206,12 @@ func AddReplyNotification(objectId, senderId, content, topicId string) {
 	}
 
 	delete(memberMap, receiverId)
-	for k, v := range memberMap {
+	for k, _ := range memberMap {
 		wg.Add(1)
-		v := v
 		k := k
 		go func() {
 			defer wg.Done()
 			notification := Notification{
-				Id:               v,
 				NotificationType: 2,
 				ObjectId:         objectId,
 				CreatedTime:      util.GetCurrentTime(),
@@ -227,26 +227,31 @@ func AddReplyNotification(objectId, senderId, content, topicId string) {
 
 func AddTopicNotification(objectId, author, content string) {
 	var wg sync.WaitGroup
-	memberMap := make(map[string]string)
-	reg := regexp.MustCompile("@(.*?) ")
+	memberMap := make(map[string]bool)
+	reg := regexp.MustCompile("@(.*?)[ \n\t]")
+	reg2 := regexp.MustCompile("@([^ \n\t]*?)[^ \n\t]$")
 	regResult := reg.FindAllStringSubmatch(content, -1)
+	regResult2 := reg2.FindAllStringSubmatch(content, -1)
 
-	var i int
 	for _, v := range regResult {
-		if author != v[1] && len(memberMap[v[1]]) == 0 {
-			memberMap[v[1]] = util.IntToString(GetNotificationId() + i)
-			i++
+		if author != v[1] && !memberMap[v[1]] {
+			memberMap[v[1]] = true
 		}
 	}
 
-	for k, v := range memberMap {
+	for _, v := range regResult2 {
+		v[1] += content[len(content)-1:]
+		if author != v[1] && !memberMap[v[1]] {
+			memberMap[v[1]] = true
+		}
+	}
+
+	for k, _ := range memberMap {
 		wg.Add(1)
-		v := v
 		k := k
 		go func() {
 			defer wg.Done()
 			notification := Notification{
-				Id:               v,
 				NotificationType: 3,
 				ObjectId:         objectId,
 				CreatedTime:      util.GetCurrentTime(),
