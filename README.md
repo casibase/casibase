@@ -5,7 +5,7 @@ Casbin-forum is the official forum for Casbin developers and users.
 
 ## Link
 
-https://forum.casbin.org/
+https://forum.casbin.com/
 
 ## Architecture
 
