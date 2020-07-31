@@ -14,7 +14,11 @@
 
 package object
 
-import "github.com/casbin/casbin-forum/util"
+import (
+	"time"
+
+	"github.com/casbin/casbin-forum/util"
+)
 
 type Topic struct {
 	Id            string   `xorm:"varchar(100) notnull pk" json:"id"`
@@ -85,6 +89,7 @@ func GetTopicWithAvatar(id, memberId string) *TopicWithAvatar {
 		Topic:        topic,
 		Avatar:       GetMemberAvatar(topic.Author),
 		ThanksStatus: GetThanksStatus(memberId, id, 4),
+		Editable:     GetTopicEditableStatus(memberId, topic.Author, topic.CreatedTime),
 	}
 
 	if existed {
@@ -161,6 +166,20 @@ func UpdateTopic(id string, topic *Topic) bool {
 	}
 
 	_, err := adapter.engine.Id(id).AllCols().Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	//return affected != 0
+	return true
+}
+
+func UpdateTopicWithLimitCols(id string, topic *Topic) bool {
+	if GetTopic(id) == nil {
+		return false
+	}
+
+	_, err := adapter.engine.Id(id).Update(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -335,4 +354,27 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	}
 
 	return res
+}
+
+func GetTopicEditableStatus(member, author, createdTime string) bool {
+	if CheckModIdentity(member) {
+		return true
+	}
+	if member != author {
+		return false
+	}
+
+	t, err := time.Parse("2006-01-02T15:04:05+08:00", createdTime)
+	if err != nil {
+		return false
+	}
+	h, _ := time.ParseDuration("-1h")
+	t = t.Add(8 * h)
+
+	now := time.Now()
+	if now.Sub(t).Minutes() > TopicEditableTime {
+		return false
+	}
+
+	return true
 }

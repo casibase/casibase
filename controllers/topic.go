@@ -112,7 +112,16 @@ func (c *APIController) AddTopic() {
 		panic(err)
 	}
 
-	c.wrapResponse(object.AddTopic(&topic))
+	var resp Response
+	res := object.AddTopic(&topic)
+	if res {
+		resp = Response{Status: "ok", Msg: "success", Data: topic.Id}
+	} else {
+		resp = Response{Status: "error", Msg: "fail"}
+	}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
 }
 
 func (c *APIController) DeleteTopic() {
@@ -266,6 +275,96 @@ func (c *APIController) GetHotTopic() {
 	var resp Response
 	res := object.GetHotTopic(limit)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UpdateTopicNode() {
+	if c.RequireLogin() {
+		return
+	}
+
+	var resp Response
+	memberId := c.GetSessionUser()
+	var form updateTopicNode
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+	if err != nil {
+		panic(err)
+	}
+	id, nodeName, nodeId := form.Id, form.NodeName, form.NodeId
+
+	if !object.CheckModIdentity(memberId) && object.GetTopicAuthor(id) != memberId {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	topic := object.Topic{
+		Id:       id,
+		NodeId:   nodeId,
+		NodeName: nodeName,
+	}
+	res := object.UpdateTopicWithLimitCols(id, &topic)
+
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) EditContent() {
+	if c.RequireLogin() {
+		return
+	}
+
+	editType := c.Input().Get("editType")
+	var resp Response
+	memberId := c.GetSessionUser()
+	if editType == "topic" {
+		var form editTopic
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+		id, title, content := form.Id, form.Title, form.Content
+		if !object.CheckModIdentity(memberId) && object.GetTopicAuthor(id) != memberId {
+			resp = Response{Status: "fail", Msg: "Unauthorized."}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+
+		topic := object.Topic{
+			Id:      id,
+			Title:   title,
+			Content: content,
+		}
+		res := object.UpdateTopicWithLimitCols(id, &topic)
+
+		resp = Response{Status: "ok", Msg: "success", Data: res}
+	} else {
+		var form editReply
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+		id, content := form.Id, form.Content
+		if !object.CheckModIdentity(memberId) && object.GetReplyAuthor(id) != memberId {
+			resp = Response{Status: "fail", Msg: "Unauthorized."}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+
+		reply := object.Reply{
+			Id:      id,
+			Content: content,
+		}
+		res := object.UpdateReplyWithLimitCols(id, &reply)
+
+		resp = Response{Status: "ok", Msg: "success", Data: res}
+	}
 
 	c.Data["json"] = resp
 	c.ServeJSON()

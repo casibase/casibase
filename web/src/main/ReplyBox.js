@@ -47,6 +47,20 @@ class ReplyBox extends React.Component {
     this.getReplies();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.reply !== this.state.reply || prevState.sticky !== this.state.sticky) {
+      return
+    }
+    let url = window.location.href;
+    let id = url.substring(url.lastIndexOf("#")+1);
+    setTimeout(function() {
+      let anchorElement = document.getElementById(id);
+      if (anchorElement) {
+        anchorElement.scrollIntoView()
+      }
+    }, 100)
+  }
+
   getTopic() {
     TopicBackend.getTopic(this.state.topicId)
       .then((res) => {
@@ -143,6 +157,15 @@ class ReplyBox extends React.Component {
       })
   }
 
+  scrollToAnchor = (anchorName) => {
+    if (anchorName) {
+      let anchorElement = document.getElementById(anchorName);
+      if (anchorElement) {
+        anchorElement.scrollIntoView()
+      }
+    }
+  }
+
   renderReply() {
     return (
       <div className={`box ${this.state.topic.nodeId}`}>
@@ -199,6 +222,10 @@ class ReplyBox extends React.Component {
                               <a href="#;" onClick={() => this.deleteReply(reply.id)} className="delete">
                                 {i18next.t("reply:Delete")}
                               </a>
+                              &nbsp; &nbsp;
+                              <a href={`/edit/reply/${reply.id}`} className="edit">
+                                {i18next.t("reply:Edit")}
+                              </a>
                             </div> : null
                         }
                         &nbsp;
@@ -217,7 +244,10 @@ class ReplyBox extends React.Component {
                         </a>
                       </strong>
                       &nbsp; &nbsp;
-                      <span className="ago">
+                      <span className="ago" onClick={() => {
+                        this.scrollToAnchor(`r_${reply?.id}`)
+                        window.history.pushState({}, 0, `/t/${this.state.topic?.id}#r_${reply.id}`)
+                      }}>
                         {Setting.getPrettyDate(reply.createdTime)}
                       </span>
                       {" "}&nbsp;{" "}

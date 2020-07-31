@@ -23,7 +23,7 @@ import (
 
 // ConsumptionType 1-8 means:
 // login bonus, receive thanks(topic), receive thanks(reply), thanks(topic)
-// thanks(reply), new reply, new topic, receive reply bonus.
+// thanks(reply), new reply, receive reply bonus, new topic.
 type ConsumptionRecord struct {
 	Id              int    `xorm:"int notnull pk autoincr" json:"id"`
 	Amount          int    `xorm:"int" json:"amount"`
@@ -152,28 +152,52 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 			case 3:
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
+				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 				tempRecord.Title = topicInfo.Title
 				tempRecord.ObjectId = topicInfo.Id
 			case 4:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
+				if len(tempRecord.Title) == 0 {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 			case 5:
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
+				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 				tempRecord.Title = topicInfo.Title
 				tempRecord.ObjectId = topicInfo.Id
 			case 6:
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
+				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 				tempRecord.Title = topicInfo.Title
 				tempRecord.Length = len(replyInfo.Content)
 				tempRecord.ObjectId = topicInfo.Id
 			case 7:
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
+				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 				tempRecord.Title = topicInfo.Title
 				tempRecord.ObjectId = topicInfo.Id
 			case 8:
 				topicInfo := GetTopic(v.ObjectId)
+				if topicInfo == nil || topicInfo.Deleted {
+					tempRecord.ConsumptionType = 9
+					break
+				}
 				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
 				tempRecord.Length = len(topicInfo.Content)

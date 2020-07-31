@@ -56,6 +56,8 @@ import CheckinBonusBox from "./main/CheckinBonusBox";
 import RightLatestNodeBox from "./rightbar/RightLatestNodeBox";
 import RightHotNodeBox from "./rightbar/RightHotNodeBox";
 import RightHotTopicBox from "./rightbar/RightHotTopicBox";
+import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
+import EditBox from "./main/EditBox";
 
 class App extends Component {
   constructor(props) {
@@ -135,6 +137,12 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
+          </div>
+        </Route>
+        <Route exact path="/t/:topicId/:event">
+          <div id="Main">
+            <div className="sep20" />
+            <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
@@ -230,6 +238,18 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <CheckinBonusBox />
+          </div>
+        </Route>
+        <Route exact path="/move/topic/:id">
+          <div id="Main">
+            <div className="sep20" />
+            <MoveTopicNodeBox />
+          </div>
+        </Route>
+        <Route exact path="/edit/:editType/:id">
+          <div id="Main">
+            <div className="sep20" />
+            <EditBox account={this.state.account} />
           </div>
         </Route>
       </Switch>

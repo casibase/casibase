@@ -106,3 +106,19 @@ export function addTopicBrowseCount(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function updateTopicNode(topic) {
+  return fetch(`${Setting.ServerUrl}/api/update-topic-node`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(topic),
+  }).then(res => res.json());
+}
+
+export function editTopicContent(topic) {
+  return fetch(`${Setting.ServerUrl}/api/edit-content?editType=topic`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(topic),
+  }).then(res => res.json());
+}

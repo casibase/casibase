@@ -56,3 +56,20 @@ type updatePlaneInfo struct {
 	Field string `json:"field"`
 	Value string `json:"value"`
 }
+
+type updateTopicNode struct {
+	Id       string `json:"id"`
+	NodeId   string `json:"nodeId"`
+	NodeName string `json:"nodeName"`
+}
+
+type editTopic struct {
+	Id      string `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type editReply struct {
+	Id      string `json:"id"`
+	Content string `json:"content"`
+}

@@ -37,7 +37,7 @@ export function getCheckinBonusStatus() {
 
 export function getCheckinBonus() {
   return fetch(`${Setting.ServerUrl}/api/get-checkin-bonus`, {
-    method: 'POST',
+    method: 'GET',
     credentials: 'include'
   }).then(res => res.json());
 }

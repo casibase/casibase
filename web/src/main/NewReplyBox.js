@@ -40,7 +40,8 @@ class NewReplyBox extends React.Component {
       form: {topicId: props.match.params.topicId},
       isTypingStarted: false,
       problem: [],
-      message: null
+      message: null,
+      initOSSClientStatus: false
     };
     this.handleChange = this.handleChange.bind(this)
     this.synonyms = this.synonyms.bind(this)
@@ -183,7 +184,12 @@ class NewReplyBox extends React.Component {
     }
 
     if (this.props.member !== null) {
-      Setting.initOSSClient(this.props.member)
+      if (!this.state.initOSSClientStatus) {
+        Setting.initOSSClient(this.props.member)
+        this.setState({
+          initOSSClientStatus: true
+        })
+      }
     }
 
     return (

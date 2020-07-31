@@ -30,6 +30,9 @@ var (
 	LatestNodeNum              = 20
 	HotNodeNum                 = 15
 	HotTopicNum                = 10
+	TopicEditableTime          = 10.0 //minutes
+	ReplyEditableTime          = 10.0 //minutes
+	ReplyDeletableTime         = 5.0 //minutes
 	NodeHitRecordExpiredTime   = 1 //month
 	TopicHitRecordExpiredTime  = 1 //day
 	DefaultCronJobs            = []*CronJob{

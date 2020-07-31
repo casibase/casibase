@@ -241,3 +241,17 @@ func UpdateMemberCheckinDate(id, date string) bool {
 
 	return affected != 0
 }
+
+func CheckModIdentity(memberId string) bool {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", memberId).Cols("is_moderator").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.IsModerator
+	} else {
+		return false
+	}
+}

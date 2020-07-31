@@ -46,6 +46,8 @@ func initAPI() {
 	beego.Router("/api/add-topic-hit-count", &controllers.APIController{}, "POST:AddTopicHitCount")
 	beego.Router("/api/get-hot-topic", &controllers.APIController{}, "GET:GetHotTopic")
 	beego.Router("/api/add-topic-browse-record", &controllers.APIController{}, "POST:AddTopicBrowseCount")
+	beego.Router("/api/update-topic-node", &controllers.APIController{}, "POST:UpdateTopicNode")
+	beego.Router("/api/edit-content", &controllers.APIController{}, "POST:EditContent")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
@@ -54,6 +56,7 @@ func initAPI() {
 	beego.Router("/api/delete-reply", &controllers.APIController{}, "POST:DeleteReply")
 	beego.Router("/api/get-latest-replies", &controllers.APIController{}, "GET:GetLatestReplies")
 	beego.Router("/api/get-replies-num", &controllers.APIController{}, "GET:GetRepliesNum")
+	beego.Router("/api/get-reply-with-details", &controllers.APIController{}, "GET:GetReplyWithDetails")
 
 	beego.Router("/api/get-members", &controllers.APIController{}, "GET:GetMembers")
 	beego.Router("/api/get-member", &controllers.APIController{}, "GET:GetMember")
@@ -106,7 +109,7 @@ func initAPI() {
 	beego.Router("/api/update-plane-info", &controllers.APIController{}, "POST:UpdatePlaneInfo")
 
 	beego.Router("/api/get-checkin-bonus-status", &controllers.APIController{}, "GET:GetCheckinBonusStatus")
-	beego.Router("/api/get-checkin-bonus", &controllers.APIController{}, "POST:GetCheckinBonus")
+	beego.Router("/api/get-checkin-bonus", &controllers.APIController{}, "GET:GetCheckinBonus")
 	beego.Router("/api/add-thanks", &controllers.APIController{}, "POST:AddThanks")
 	beego.Router("/api/get-consumption-record", &controllers.APIController{}, "GET:GetConsumptionRecord")
 

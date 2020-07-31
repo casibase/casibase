@@ -15,8 +15,16 @@
 package controllers
 
 import (
+	"bytes"
+	"crypto/md5"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"strconv"
+	"time"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/astaxie/beego"
 	"golang.org/x/net/proxy"
 )
 
@@ -41,4 +49,61 @@ func InitHttpClient() {
 	//}
 	//defer resp.Body.Close()
 	//println("Response status: %s", resp.Status)
+}
+
+var ossURL, ossFilePath string
+var ossClient *oss.Client
+var ossBucket *oss.Bucket
+
+func InitOSS() {
+	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
+	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
+	//OSSRegion := beego.AppConfig.String("OSSRegion")
+	OSSEndPoint := beego.AppConfig.String("OSSEndPoint")
+	OSSBucket := beego.AppConfig.String("OSSBucket")
+
+	if len(OSSCustomDomain) != 0 {
+		ossURL = "https://" + OSSCustomDomain + "/" + OSSBasicPath + "/"
+	} else {
+		ossURL = "https://" + OSSBucket + "." + OSSEndPoint + "/" + OSSBasicPath + "/"
+	}
+	ossFilePath = OSSBasicPath + "/"
+	var err error
+	ossClient, err = oss.New(OSSEndPoint, accessKeyID, accessKeySecret)
+	if err != nil {
+		panic(err)
+	}
+
+	ossBucket, err = ossClient.Bucket(OSSBucket)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func UploadAvatarToOSS(avatar, memberId string) string {
+	var avatarURL string
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	if len(avatar) == 0 {
+		data := []byte(memberId)
+		has := md5.Sum(data)
+		memberMd5 := fmt.Sprintf("%x", has)
+		avatar = "https://www.gravatar.com/avatar/" + memberMd5 + "?d=retro"
+	}
+
+	response, err := httpClient.Get(avatar)
+	if err != nil {
+		panic(err)
+	}
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+
+	err = ossBucket.PutObject(ossFilePath+memberId+"/avatar/"+timestamp+".png", bytes.NewReader(contents))
+	if err != nil {
+		panic(err)
+		return ""
+	}
+
+	avatarURL = ossURL + memberId + "/avatar/" + timestamp + ".png"
+
+	return avatarURL
 }

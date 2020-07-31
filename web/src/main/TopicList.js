@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
 import "../node.css"
 import i18next from "i18next";
+import {goToLink} from "../Setting";
 const pangu = require("pangu")
 
 class TopicList extends React.Component {
@@ -34,6 +35,7 @@ class TopicList extends React.Component {
         if (res?.status === "fail") {
           Setting.showMessage("error", res?.msg)
         }
+        goToLink(`/t/${topicId}`)
       });
   }
 
@@ -65,7 +67,7 @@ class TopicList extends React.Component {
             }
             <td width="auto" valign="middle">
                 <span className="item_title">
-                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
+                  <a href="javascript:void(0)" onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
                     {
                       pangu.spacing(topic.title)
                     }
@@ -108,7 +110,7 @@ class TopicList extends React.Component {
             <td width="70" align="right" valign="middle">
               {
                 topic.replyCount === 0 ? null : (
-                  <a href={`/t/${topic.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
+                  <a href="javascript:void(0)" onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
                     {
                       topic.replyCount
                     }

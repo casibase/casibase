@@ -55,6 +55,7 @@ func GetReplies(topicId, memberId string) []*ReplyWithAvatar {
 			Avatar:       GetMemberAvatar(v.Author),
 			ThanksStatus: GetThanksStatus(memberId, v.Id, 5),
 			Deletable:    ReplyDeletable(v.CreatedTime, memberId, v.Author),
+			Editable:     GetReplyEditableStatus(memberId, v.Author, v.CreatedTime),
 		}
 		res = append(res, &temp)
 	}
@@ -71,6 +72,27 @@ func GetReply(id string) *Reply {
 
 	if existed {
 		return &reply
+	} else {
+		return nil
+	}
+}
+
+func GetReplyWithDetails(memberId, id string) *ReplyWithAvatar {
+	reply := Reply{Id: id}
+	existed, err := adapter.engine.Get(&reply)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		res := ReplyWithAvatar{
+			Reply:        reply,
+			Avatar:       GetMemberAvatar(reply.Author),
+			ThanksStatus: GetThanksStatus(memberId, memberId, 5),
+			Deletable:    ReplyDeletable(reply.CreatedTime, memberId, reply.Author),
+			Editable:     GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime),
+		}
+		return &res
 	} else {
 		return nil
 	}
@@ -94,6 +116,20 @@ func UpdateReply(id string, reply *Reply) bool {
 	}
 
 	_, err := adapter.engine.Id(id).AllCols().Update(reply)
+	if err != nil {
+		panic(err)
+	}
+
+	//return affected != 0
+	return true
+}
+
+func UpdateReplyWithLimitCols(id string, reply *Reply) bool {
+	if GetReply(id) == nil {
+		return false
+	}
+
+	_, err := adapter.engine.Id(id).Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -241,6 +277,10 @@ func AddReplyThanksNum(id string) bool {
 }
 
 func ReplyDeletable(date, memberId, author string) bool {
+	if CheckModIdentity(memberId) {
+		return true
+	}
+
 	if memberId != author {
 		return false
 	}
@@ -253,7 +293,30 @@ func ReplyDeletable(date, memberId, author string) bool {
 	t = t.Add(8 * h)
 
 	now := time.Now()
-	if now.Sub(t).Minutes() > 5 {
+	if now.Sub(t).Minutes() > ReplyDeletableTime {
+		return false
+	}
+
+	return true
+}
+
+func GetReplyEditableStatus(member, author, createdTime string) bool {
+	if CheckModIdentity(member) {
+		return true
+	}
+	if member != author {
+		return false
+	}
+
+	t, err := time.Parse("2006-01-02T15:04:05+08:00", createdTime)
+	if err != nil {
+		return false
+	}
+	h, _ := time.ParseDuration("-1h")
+	t = t.Add(8 * h)
+
+	now := time.Now()
+	if now.Sub(t).Minutes() > ReplyEditableTime {
 		return false
 	}
 
