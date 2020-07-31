@@ -28,6 +28,13 @@ export function getReply(id) {
   }).then(res => res.json());
 }
 
+export function getReplyWithDetails(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-reply-with-details?id=${id}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function updateReply(id, reply) {
   return fetch(`${Setting.ServerUrl}/api/update-reply?id=${id}`, {
     method: 'POST',
@@ -62,5 +69,13 @@ export function getRepliesNum(id) {
   return fetch(`${Setting.ServerUrl}/api/get-replies-num?id=${id}`, {
     method: 'GET',
     credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function editReplyContent(topic) {
+  return fetch(`${Setting.ServerUrl}/api/edit-content?editType=reply`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(topic),
   }).then(res => res.json());
 }

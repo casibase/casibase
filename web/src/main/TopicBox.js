@@ -20,6 +20,7 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
+import {goToLink} from "../Setting"; 
 import "../node.css"
 import i18next from "i18next";
 
@@ -35,6 +36,7 @@ class TopicBox extends React.Component {
     this.state = {
       classes: props,
       topicId: props.match.params.topicId,
+      event: props.match.params.event,
       topic: [],
       topicThanksCost: 15,
       favoritesStatus: false,
@@ -60,6 +62,10 @@ class TopicBox extends React.Component {
   }
 
   getFavoriteStatus() {
+    if (this.state.event === "review") {
+      return
+    }
+
     FavoritesBackend.getFavoritesStatus(this.state.topicId, 1)
       .then((res) => {
         if (res.status === 'ok') {
@@ -128,7 +134,7 @@ class TopicBox extends React.Component {
   }
 
   render() {
-    if (this.state.topic !== null && this.state.topic.length === 0) {
+    if (this.props.account === undefined || this.state.topic !== null && this.state.topic.length === 0) {
       return (
         <div class="box">
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Topic is loading")}</div>
@@ -143,6 +149,89 @@ class TopicBox extends React.Component {
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Topic not found")}</div>
           <div class="cell"><span class="gray bigger">404 Topic Not Found</span></div>
           <div class="inner">←  <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+        </div>
+      )
+    }
+
+    if (this.state.event === "review") {
+      if (this.props.account === null || this.props.account?.id !== this.state.topic?.author) {
+        goToLink(`/t/${this.state.topic?.id}`)
+      }
+      return (
+        <div class="box">
+          <div class="header"><a href="/">{Setting.getForumName()}</a>
+            {" "}<span class="chevron">&nbsp;›&nbsp;</span>
+            {" "}<a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
+            {" "}<span class="chevron">&nbsp;›&nbsp;</span>
+            {" "}<a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a>
+            {" "}<span class="chevron">&nbsp;›&nbsp;</span> Review</div>
+          <div class="cell topic_content markdown_body">
+            <p>{i18next.t("topic:The new topic has been successfully created on the")}{" "}
+            <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, you can click on the title below to continue to view")}</p>
+            <h1><a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a></h1>
+            <p>{i18next.t("topic:Following are some guides to help you better use the topic management related functions of the casbin-forum")}</p>
+            <ul>
+              <li>{i18next.t("topic:The topic is currently at")}&nbsp;<a href="">{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, within 10 minutes after creation, you can")}{" "}<a href={`/move/topic/${this.state.topic?.id}`}>{i18next.t("topic:move freely")}</a></li>
+              <li>{i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")}{" "}<a href={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</a></li>
+            </ul>
+          </div>
+          <div class="cell topic_content markdown_body">
+            <h3>{i18next.t("topic:Topic meta information")}</h3>
+            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+              <tr>
+                <td align="right" width="120">ID</td>
+                <td align="left">{this.state.topic?.id}</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Creator")}</td>
+                <td align="left"><a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a></td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Node")}</td>
+                <td align="left"><a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a></td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Text syntax format")}</td>
+                <td align="left">Markdown</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Hot")}</td>
+                <td align="left">{this.state.topic?.hot}</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Topic created")}</td>
+                <td align="left">{Setting.getPrettyDate(this.state.topic?.createdTime)}</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Sticky state")}</td>
+                <td align="left">否</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Remaining time to top")}</td>
+                <td align="left">0</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Movable")}</td>
+                <td align="left">{Setting.getBoolConvertedText(this.state.topic?.editable)}</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Editable")}</td>
+                <td align="left">{Setting.getBoolConvertedText(this.state.topic?.editable)}</td>
+              </tr>
+              <tr>
+                <td align="right">{i18next.t("topic:Appendable")}</td>
+                <td align="left">否</td>
+              </tr>
+            </table>
+          </div>
+          <div class="cell topic_content markdown_body">
+            <h3>{i18next.t("topic:Related resources")}</h3>
+            <ul>
+              <li><a href="/help/currency">{i18next.t("topic:Virtual currency system")}</a></li>
+              <li><a href="/help/node">{i18next.t("topic:Node usage help")}</a></li>
+              <li><a href="/help/spam">{i18next.t("topic:Treatment of link handling type spam")}</a></li>
+            </ul>
+          </div>
         </div>
       )
     }
@@ -176,6 +265,15 @@ class TopicBox extends React.Component {
           &nbsp;{" "}
           <small className="gray">
             <a href={`/member/${this.state.topic?.author}`} className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
+            &nbsp;{" "}
+            {
+              this.state.topic?.editable ?
+                <span>
+                  <a href={`/edit/topic/${this.state.topic?.id}`} className="op">EDIT</a>
+                  &nbsp;{" "}
+                  <a href={`/move/topic/${this.state.topic?.id}`} className="op">MOVE</a>
+                </span> : null
+            }
           </small>
         </div>
         {

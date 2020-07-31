@@ -96,6 +96,7 @@ func (c *APIController) Signup() {
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
+		avatar = UploadAvatarToOSS(avatar, member)
 		no := object.GetMemberNum()
 		member := &object.Member{
 			Id:          member,
@@ -276,6 +277,10 @@ func (c *APIController) AuthGoogle() {
 	if addition == "signup" {
 		userId := object.HasGoogleAccount(res.Email)
 		if userId != "" {
+			if len(object.GetMemberAvatar(userId)) == 0 {
+				avatar := UploadAvatarToOSS(res.Avatar, userId)
+				object.LinkMemberAccount(userId, "avatar", avatar)
+			}
 			c.SetSessionUser(userId)
 			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 			res.IsSignedUp = true
@@ -306,7 +311,8 @@ func (c *APIController) AuthGoogle() {
 			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
 		}
 		if len(object.GetMemberAvatar(memberId)) == 0 {
-			object.LinkMemberAccount(memberId, "avatar", res.Avatar)
+			avatar := UploadAvatarToOSS(res.Avatar, memberId)
+			object.LinkMemberAccount(memberId, "avatar", avatar)
 		}
 	}
 
@@ -406,6 +412,10 @@ func (c *APIController) AuthGithub() {
 	if addition == "signup" {
 		userId := object.HasGithubAccount(tempUserAccount.Login)
 		if userId != "" {
+			if len(object.GetMemberAvatar(userId)) == 0 {
+				avatar := UploadAvatarToOSS(tempUserAccount.AvatarUrl, userId)
+				object.LinkMemberAccount(userId, "avatar", avatar)
+			}
 			c.SetSessionUser(userId)
 			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 			res.IsSignedUp = true
@@ -437,7 +447,8 @@ func (c *APIController) AuthGithub() {
 			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
 		}
 		if len(object.GetMemberAvatar(memberId)) == 0 {
-			object.LinkMemberAccount(memberId, "avatar", tempUserAccount.AvatarUrl)
+			avatar := UploadAvatarToOSS(tempUserAccount.AvatarUrl, memberId)
+			object.LinkMemberAccount(memberId, "avatar", avatar)
 		}
 	}
 

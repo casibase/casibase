@@ -28,6 +28,7 @@ type TopicWithAvatar struct {
 	Topic
 	Avatar       string `json:"avatar"`
 	ThanksStatus bool   `json:"thanksStatus"`
+	Editable     bool   `json:"editable"`
 }
 
 type ReplyWithAvatar struct {
@@ -35,6 +36,7 @@ type ReplyWithAvatar struct {
 	Avatar       string `json:"avatar"`
 	ThanksStatus bool   `json:"thanksStatus"`
 	Deletable    bool   `json:"deletable"`
+	Editable     bool   `json:"editable"`
 }
 
 type NodeFavoritesRes struct {

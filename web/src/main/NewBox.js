@@ -29,6 +29,7 @@ import {Resizable} from "re-resizable";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
+import {goToLink} from "../Setting";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown')
@@ -86,7 +87,7 @@ class NewBox extends React.Component {
     TopicBackend.addTopic(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink("/");
+          Setting.goToLink(`/t/${res?.data}/review`);
         } else {
           // this.setState({
           //   message: res.msg,
@@ -113,9 +114,14 @@ class NewBox extends React.Component {
     }
 
     if (this.props.account !== null) {
-      Setting.initOSSClient(this.props.account?.id)
+      if (!this.state.initOSSClientStatus) {
+        Setting.initOSSClient(this.props.account?.id)
+        this.setState({
+          initOSSClientStatus: true
+        })
+      }
     } else {
-      return null
+      goToLink("/signin")
     }
 
     return (

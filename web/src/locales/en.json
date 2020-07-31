@@ -11,12 +11,32 @@
     "Username": "Username",
     "Password": "Password",
     "Forgot Password": "Forgot Password",
-    "Username or Email address": "Username or Email address"
+    "Username or Email address": "Username or Email address",
+    "true": "true",
+    "false": "false"
   },
   "login":
   {
     "Are you a bot?": "Are you a bot?",
     "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"
+  },
+  "edit":
+  {
+    "Edit content": "Edit content",
+    "You cannot edit this content.": "You cannot edit this content.",
+    "Edit reply": "Edit reply",
+    "Save": "Save",
+    "Edit topic": "Edit topic"
+  },
+  "move":
+  {
+    "Move topic": "Move topic",
+    "Topic": "Topic",
+    "Title": "Title",
+    "Current node": "Current node",
+    "Target node": "Target node",
+    "You cannot move this topic.": "You cannot move this topic.",
+    "Move": "Move"
   },
   "bar":
   {
@@ -106,7 +126,31 @@
     "Recent Topics": "Recent Topics",
     "This is a topic created": "This is a topic created",
     "days ago, the information in it may have changed.": "days ago, the information in it may have changed.",
-    "Post a Question": "Post a Question"
+    "Post a Question": "Post a Question",
+    "The new topic has been successfully created on the": "The new topic has been successfully created on the",
+    "node, you can click on the title below to continue to view": "node, you can click on the title below to continue to view",
+    "Following are some guides to help you better use the topic management related functions of the casbin-forum": "Following are some guides to help you better use the topic management related functions of the casbin-forum",
+    "The topic is currently at": "The topic is currently at",
+    "node, within 10 minutes after creation, you can": "node, within 10 minutes after creation, you can",
+    "move freely": "move freely",
+    "If you are not satisfied with the content, within 10 minutes of creation, you can": "If you are not satisfied with the content, within 10 minutes of creation, you can",
+    "edit topic": "edit topic",
+    "Topic meta information": "Topic meta information",
+    "Already enabled Markdown": "Already enabled Markdown",
+    "Creator": "Creator",
+    "Node": "Node",
+    "Text syntax format": "Text syntax format",
+    "Hot": "Hot",
+    "Topic created": "Topic created",
+    "Sticky state": "Sticky state",
+    "Remaining time to top": "Remaining time to top",
+    "Movable": "Movable",
+    "Editable": "Editable",
+    "Appendable": "Appendable",
+    "Related resources": "Related resources",
+    "Virtual currency system": "Virtual currency system",
+    "Node usage help": "Node usage help",
+    "Treatment of link handling type spam": "Treatment of link handling type spam"
   },
   "new":
   {

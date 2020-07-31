@@ -222,8 +222,15 @@ export function changeMomentLanguage(lng) {
 export function getFormattedContent(content) {
   return pangu.spacing(content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
     if (w[w.length - 1] !== " ") {
-      return `[${w.substring(0, w.length)}](${ClientUrl}/member/${w.substring(1,)})`
+      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1,)})`
     }
-    return `[${w.substring(0, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `
+    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `
   }));
+}
+
+export function getBoolConvertedText(status) {
+  if (status) {
+    return i18next.t("general:true")
+  }
+  return i18next.t("general:false")
 }

@@ -42,6 +42,14 @@ func (c *APIController) GetReply() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetReplyWithDetails() {
+	memberId := c.GetSessionUser()
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetReplyWithDetails(memberId, id)
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateReply() {
 	id := c.Input().Get("id")
 
@@ -113,13 +121,14 @@ func (c *APIController) DeleteReply() {
 
 	affected := object.DeleteReply(id)
 	if affected {
-		object.ChangeTopicReplyCount(id, -1)
-		replies := object.GetReplies(id, "")
+		replyInfo := object.GetReply(id)
+		object.ChangeTopicReplyCount(replyInfo.TopicId, -1)
+		replies := object.GetReplies(replyInfo.TopicId, "")
 		lastReplyUser := ""
 		if len(replies) > 0 {
 			lastReplyUser = replies[len(replies)-1].Author
 		}
-		object.ChangeTopicLastReplyUser(id, lastReplyUser)
+		object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReplyUser)
 	}
 
 	c.wrapResponse(affected)
