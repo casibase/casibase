@@ -212,7 +212,9 @@
     "Back to Top": "回到顶部",
     "Add a New Comment": "添加一条新回复",
     "Make your comment helpful for others as much as possible": "请尽量让自己的回复能够对别人有帮助",
-    "Please resolve the following issues before submitting": "创建新回复过程中遇到一些问题："
+    "Please resolve the following issues before submitting": "创建新回复过程中遇到一些问题：",
+    "Delete": "删除",
+    "Edit": "编辑"
   },
   "member":
   {

@@ -101,7 +101,7 @@ func (c *APIController) AddReply() {
 	if affected {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, reply.Id)
 		object.ChangeTopicReplyCount(topicId, 1)
-		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser())
+		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser(), true)
 		object.AddReplyNotification(reply.Id, c.GetSessionUser(), content, topicId)
 	}
 
@@ -112,7 +112,8 @@ func (c *APIController) DeleteReply() {
 	id := c.Input().Get("id")
 
 	memberId := c.GetSessionUser()
-	if memberId != object.GetReplyAuthor(id) {
+	replyInfo := object.GetReply(id)
+	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) {
 		resp := Response{Status: "fail", Msg: "Permission denied."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -121,14 +122,13 @@ func (c *APIController) DeleteReply() {
 
 	affected := object.DeleteReply(id)
 	if affected {
-		replyInfo := object.GetReply(id)
 		object.ChangeTopicReplyCount(replyInfo.TopicId, -1)
 		replies := object.GetReplies(replyInfo.TopicId, "")
 		lastReplyUser := ""
 		if len(replies) > 0 {
 			lastReplyUser = replies[len(replies)-1].Author
 		}
-		object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReplyUser)
+		object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReplyUser, false)
 	}
 
 	c.wrapResponse(affected)
