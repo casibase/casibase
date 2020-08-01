@@ -286,14 +286,19 @@ func ChangeTopicReplyCount(topicId string, num int) bool {
 	return affected != 0
 }
 
-func ChangeTopicLastReplyUser(topicId string, memberId string) bool {
+func ChangeTopicLastReplyUser(topicId string, memberId string, updateTime bool) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false
 	}
 
 	topic.LastReplyUser = memberId
-	topic.LastReplyTime = util.GetCurrentTime()
+	if updateTime {
+		topic.LastReplyTime = util.GetCurrentTime()
+	}
+	if len(memberId) == 0 {
+		topic.LastReplyTime = ""
+	}
 	affected, err := adapter.engine.Id(topicId).Cols("last_reply_user, last_reply_time").Update(topic)
 	if err != nil {
 		panic(err)
