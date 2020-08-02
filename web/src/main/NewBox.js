@@ -48,8 +48,6 @@ class NewBox extends React.Component {
 
   componentWillMount() {
     this.getNodes();
-
-    this.updateFormField("nodeId", "qna");
   }
 
   getNodes() {
@@ -57,6 +55,9 @@ class NewBox extends React.Component {
       .then((res) => {
         this.setState({
           nodes: res,
+        }, () => {
+          this.updateFormField("nodeId", "qna");
+          this.updateFormField("nodeName", "问与答");
         });
       });
   }

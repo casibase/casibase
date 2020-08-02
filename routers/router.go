@@ -116,6 +116,7 @@ func initAPI() {
 	beego.Router("/api/update-hot-info", &controllers.APIController{}, "POST:UpdateHotInfo")
 	beego.Router("/api/update-expired-data", &controllers.APIController{}, "POST:ChangeExpiredDataStatus")
 	beego.Router("/api/get-captcha", &controllers.APIController{}, "GET:GetCaptcha")
+	beego.Router("/api/get-validate-code", &controllers.APIController{}, "GET:GetValidateCode")
 	beego.Router("/api/get-community-health", &controllers.APIController{}, "GET:GetCommunityHealth")
 	beego.Router("/api/get-forum-version", &controllers.APIController{}, "GET:GetForumVersion")
 	beego.Router("/api/get-online-num", &controllers.APIController{}, "GET:GetOnlineNum")

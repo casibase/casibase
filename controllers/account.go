@@ -30,12 +30,18 @@ import (
 )
 
 type SignupForm struct {
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Avatar   string `json:"avatar"`
-	Method   string `json:"method"`
-	Addition string `json:"addition"`
+	Username       string `json:"username"`
+	Password       string `json:"password"`
+	Email          string `json:"email"`
+	Avatar         string `json:"avatar"`
+	Method         string `json:"method"`
+	Phone          string `json:"phone"`
+	Company        string `json:"company"`
+	CompanyTitle   string `json:"companyTitle"`
+	Location       string `json:"location"`
+	ValidateCode   string `json:"validateCode"`
+	ValidateCodeId string `json:"validateCodeId"`
+	Addition       string `json:"addition"`
 }
 
 type SigninForm struct {
@@ -74,12 +80,24 @@ func (c *APIController) Signup() {
 	if err != nil {
 		panic(err)
 	}
+	if form.Method != "google" && form.Method != "github" {
+		if !object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, form.Phone) {
+			resp = Response{Status: "error", Msg: "validate code error", Data: ""}
+			if object.CheckValidateCodeExpired(form.ValidateCodeId) {
+				resp = Response{Status: "error", Msg: "validate code expired", Data: ""}
+			}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+	}
+
 	member, password, email, avatar := form.Username, form.Password, form.Email, form.Avatar
 
 	checkUserName := object.UserNamingRestrictions
 	if checkUserName {
 		if !util.IsValidUsername(member) {
-			resp = Response{Status: "error", Msg: "you could just have digital, letter and underline in you name", Data: ""}
+			resp = Response{Status: "error", Msg: "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters", Data: ""}
 			c.Data["json"] = resp
 			c.ServeJSON()
 			return
@@ -91,6 +109,9 @@ func (c *APIController) Signup() {
 		msg = object.CheckMemberSignupWithEmail(member, email)
 	} else {
 		msg = object.CheckMemberSignup(member, password)
+		if len(msg) == 0 {
+			msg = object.CheckMemberSignupWithPhone(member, form.Phone)
+		}
 	}
 
 	if msg != "" {
@@ -99,21 +120,34 @@ func (c *APIController) Signup() {
 		avatar = UploadAvatarToOSS(avatar, member)
 		no := object.GetMemberNum()
 		member := &object.Member{
-			Id:          member,
-			No:          no + 1,
-			Password:    password,
-			Email:       email,
-			Avatar:      avatar,
-			IsModerator: false,
-			CreatedTime: util.GetCurrentTime(),
+			Id:           member,
+			Password:     password,
+			No:           no + 1,
+			IsModerator:  false,
+			CreatedTime:  util.GetCurrentTime(),
+			Phone:        form.Phone,
+			Avatar:       avatar,
+			Email:        email,
+			Company:      form.Company,
+			CompanyTitle: form.CompanyTitle,
+			SilverCount:  2,
+			Location:     form.Location,
 		}
 		switch form.Method {
 		case "google":
 			member.GoogleAccount = form.Addition
+			if len(email) != 0 {
+				member.EmailVerifiedTime = util.GetCurrentTime()
+			}
 			break
 		case "github":
 			member.GithubAccount = form.Addition
+			if len(email) != 0 {
+				member.EmailVerifiedTime = util.GetCurrentTime()
+			}
 			break
+		case "phone":
+			member.PhoneVerifiedTime = util.GetCurrentTime()
 		}
 
 		object.AddMember(member)

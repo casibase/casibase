@@ -3,6 +3,7 @@ module github.com/casbin/casbin-forum
 go 1.14
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.370
 	github.com/aliyun/aliyun-oss-go-sdk v2.1.4+incompatible
 	github.com/aliyun/aliyun-sts-go-sdk v0.0.0-20171106034748-98d3903a2309
 	github.com/astaxie/beego v1.12.1

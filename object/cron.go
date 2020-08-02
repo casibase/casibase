@@ -33,14 +33,15 @@ func init() {
 func schedulePost(postId string) {
 	post := GetUpdateJob(postId)
 	isUpdated, num := post.updateInfo()
-	if isUpdated {
+	if isUpdated && num != 0 {
 		fmt.Printf("Update forum info: %s, update num: %d\n", post.Id, num)
 	}
 }
 
 func (job *UpdateJob) updateInfo() (bool, int) {
 	var num int
-	if job.Id == "expireData" {
+	switch job.Id {
+	case "expireData":
 		expiredNodeDate := util.GetTimeMonth(-NodeHitRecordExpiredTime)
 		expiredTopicDate := util.GetTimeDay(-TopicHitRecordExpiredTime)
 
@@ -48,7 +49,7 @@ func (job *UpdateJob) updateInfo() (bool, int) {
 		updateTopicNum := ChangeExpiredDataStatus(2, expiredTopicDate)
 
 		num = updateNodeNum + updateTopicNum
-	} else {
+	case "hotInfo":
 		last := GetLastRecordId()
 		latest := GetLatestSyncedRecordId()
 		if last == latest {
@@ -60,6 +61,10 @@ func (job *UpdateJob) updateInfo() (bool, int) {
 
 			num = updateTopicNum + updateNodeNum
 		}
+	case "expireValidateCode":
+		expiredValidateCodeDate := util.GetTimeMinute(-ValidateCodeExpiredTime)
+
+		num = ExpireValidateCode(expiredValidateCodeDate)
 	}
 
 	return true, num
@@ -109,7 +114,7 @@ func refreshCronTasks() bool {
 
 		posts := GetUpdateJobs(job.Id)
 		for _, post := range posts {
-			if post.State != "sent" || post.Url == "" {
+			if post.State != "active" {
 				continue
 			}
 

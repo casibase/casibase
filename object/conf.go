@@ -35,6 +35,7 @@ var (
 	ReplyDeletableTime         = 5.0 //minutes
 	NodeHitRecordExpiredTime   = 1 //month
 	TopicHitRecordExpiredTime  = 1 //day
+	ValidateCodeExpiredTime    = 20 //minutes
 	DefaultCronJobs            = []*CronJob{
 		{
 			Id:       "updateExpiredData",
@@ -46,19 +47,27 @@ var (
 			BumpTime: "*/1:*",
 			State:    "active",
 		},
+		{
+			Id:       "expireValidateCode",
+			BumpTime: "*/1:*",
+			State:    "active",
+		},
 	}
 	DefaultCronUpdates         = []*UpdateJob{
 		{
 			Id:    "expireData",
 			JobId: "updateExpiredData",
-			State: "sent",
-			Url:   "http://127.0.0.1:7000/api/update-expired-data",
+			State: "active",
 		},
 		{
 			Id:    "hotInfo",
 			JobId: "updateHotInfo",
-			State: "sent",
-			Url:   "http://127.0.0.1:7000/api/update-hot-info",
+			State: "active",
+		},
+		{
+			Id:    "expireValidateCode",
+			JobId: "expireValidateCode",
+			State: "active",
 		},
 	}
 )

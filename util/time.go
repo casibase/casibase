@@ -14,7 +14,10 @@
 
 package util
 
-import "time"
+import (
+	"strconv"
+	"time"
+)
 
 func GetCurrentTime() string {
 	timestamp := time.Now().Unix()
@@ -31,6 +34,13 @@ func GetTimeMonth(month int) string {
 func GetTimeDay(day int) string {
 	currentTime := time.Now()
 	res := currentTime.AddDate(0, 0, day)
+	return res.Format(time.RFC3339)
+}
+
+func GetTimeMinute(minute int) string {
+	currentTime := time.Now()
+	m, _ := time.ParseDuration(strconv.Itoa(minute) + "m")
+	res := currentTime.Add(m)
 	return res.Format(time.RFC3339)
 }
 

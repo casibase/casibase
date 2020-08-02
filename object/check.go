@@ -55,8 +55,26 @@ func CheckMemberSignupWithEmail(member string, email string) string {
 	}
 }
 
+func CheckMemberSignupWithPhone(member string, phoneNumber string) string {
+	if len(member) == 0 || len(phoneNumber) == 0 {
+		return "errorUsernameOrUsernameEmpty"
+	} else if HasPhone(phoneNumber) != "" {
+		return "This phone number has already been linked with another account"
+	} else {
+		return ""
+	}
+}
+
 func HasMail(email string) string {
 	userInfo := GetMail(email)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
+
+func HasPhone(phoneNumber string) string {
+	userInfo := GetPhoneNumber(phoneNumber)
 	if userInfo != nil {
 		return userInfo.Id
 	}

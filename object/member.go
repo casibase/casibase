@@ -21,6 +21,7 @@ type Member struct {
 	IsModerator       bool   `xorm:"bool" json:"isModerator"`
 	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
+	PhoneVerifiedTime string `xorm:"varchar(100)" json:"phoneVerifiedTime"`
 	Avatar            string `xorm:"varchar(150)" json:"avatar"`
 	Email             string `xorm:"varchar(100)" json:"email"`
 	EmailVerifiedTime string `xorm:"varchar(100)" json:"emailVerifiedTime"`
@@ -167,6 +168,20 @@ func DeleteMember(id string) bool {
 
 func GetMail(email string) *Member {
 	member := Member{Email: email}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetPhoneNumber(phoneNumber string) *Member {
+	member := Member{Phone: phoneNumber}
 	existed, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
