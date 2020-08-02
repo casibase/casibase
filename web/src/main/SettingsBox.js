@@ -199,7 +199,7 @@ class SettingsBox extends React.Component {
           </div>
           <div className="cell">
             <div className="topic_content">
-              Welcome to Casbin forum, you just registered your Casbin forum account through Google. Now please set a username here, you can only use half-width English letters and numbers. Other users can
+              Welcome to {Setting.getForumName()}, you just registered your {Setting.getForumName()} account through Google. Now please set a username here, you can only use half-width English letters and numbers. Other users can
               send you a message through @ your account name. The user name cannot be changed after setting.
             </div>
           </div>
