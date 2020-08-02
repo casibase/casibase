@@ -41,7 +41,7 @@ class RightCommunityHealthBox extends React.Component {
   render() {
     return (
       <div className="box">
-        <div className="cell"><span className="fade">{i18next.t("bar:Community health")}</span></div>
+        <div className="cell"><span className="fade">{i18next.t("bar:Community Stats")}</span></div>
         <div className="cell">
           <table cellPadding="5" cellSpacing="0" border="0" width="100%">
             <tr>

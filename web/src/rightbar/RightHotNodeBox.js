@@ -51,7 +51,7 @@ class RightHotNodeBox extends React.Component {
       <div className="box">
         <div className="cell">
           <div className="fr"></div>
-          <span className="fade">{i18next.t("bar:Hot node")}</span></div>
+          <span className="fade">{i18next.t("bar:Hottest Nodes")}</span></div>
         <div className="cell">
           {
             this.state.info?.map((node) => {

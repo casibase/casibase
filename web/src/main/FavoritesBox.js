@@ -110,7 +110,7 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My favorite nodes")}
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My Favorite Nodes")}
               <div className="fr f12">
                 <span className="snow">{i18next.t("fav:Total nodes")}{" "}&nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>

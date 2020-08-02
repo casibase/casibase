@@ -52,7 +52,7 @@ class RightLatestNodeBox extends React.Component {
       <div className="box">
         <div className="cell">
           <div className="fr"></div>
-          <span className="fade">{i18next.t("bar:Recently added nodes")}</span></div>
+          <span className="fade">{i18next.t("bar:Newest Nodes")}</span></div>
         <div className="inner">
           {
             this.state.info?.map((node) => {

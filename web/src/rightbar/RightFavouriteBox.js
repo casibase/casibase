@@ -57,7 +57,7 @@ class RightFavouriteBox extends React.Component {
     return (
       <div className="box">
         <div className="inner">
-          <span className="f12 gray">{i18next.t("bar:My favorite node")}</span>
+          <span className="f12 gray">{i18next.t("bar:My Favorite Nodes")}</span>
         </div>
         <div className="inner" id="nodes-sidebar">
           {
