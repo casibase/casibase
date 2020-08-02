@@ -20,6 +20,24 @@
     "Are you a bot?": "Are you a bot?",
     "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"
   },
+  "signup":
+  {
+    "Send the verification code again in": "Send the verification code again in",
+    "seconds": "seconds",
+    "Validate Code": "Validate Code",
+    "Click to send validate code": "Click to send validate code",
+    "Continue with Mobile Phone": "Continue with Mobile Phone",
+    "Continue with Google": "Continue with Google",
+    "Continue with Github": "Continue with Github",
+    "Username": "Username",
+    "Password": "Password",
+    "Phone": "Phone",
+    "Email": "Email",
+    "Company title": "Company title",
+    "Company": "Company",
+    "Location": "Location",
+    "Signup": "Signup"
+  },
   "edit":
   {
     "Edit content": "Edit content",
@@ -129,7 +147,8 @@
     "Post a Question": "Post a Question",
     "The new topic has been successfully created on the": "The new topic has been successfully created on the",
     "node, you can click on the title below to continue to view": "node, you can click on the title below to continue to view",
-    "Following are some guides to help you better use the topic management related functions of the casbin-forum": "Following are some guides to help you better use the topic management related functions of the casbin-forum",
+    "Following are some guides to help you better use the topic management related functions of the": "Following are some guides to help you better use the topic management related functions of the",
+    "community": "community",
     "The topic is currently at": "The topic is currently at",
     "node, within 10 minutes after creation, you can": "node, within 10 minutes after creation, you can",
     "move freely": "move freely",
@@ -150,7 +169,9 @@
     "Related resources": "Related resources",
     "Virtual currency system": "Virtual currency system",
     "Node usage help": "Node usage help",
-    "Treatment of link handling type spam": "Treatment of link handling type spam"
+    "Treatment of link handling type spam": "Treatment of link handling type spam",
+    "EDIT": "EDIT",
+    "MOVE": "MOVE"
   },
   "new":
   {
@@ -279,7 +300,10 @@
     "Rules and recommendations on avatars": "Rules and recommendations on avatars",
     "It is forbidden to use any vulgar or sensitive pictures as avatars": "It is forbidden to use any vulgar or sensitive pictures as avatars",
     "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members": "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members",
-    "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited"
+    "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited",
+    "Phone not verified": "Phone not verified",
+    "Email not verified": "Email not verified",
+    "Modify Phone": "Modify Phone"
   },
   "notification":
   {
@@ -336,6 +360,11 @@
     "Member does not exist": "Member does not exist",
     "We had a problem when you signed out, please try again.": "We had a problem when you signed out, please try again.",
     "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic:",
-    "Captcha error": "Captcha error"
+    "Captcha error": "Captcha error",
+    "Please input your phone number": "Please input your phone number",
+    "validate code error": "validate code error",
+    "validate code expired": "validate code expired",
+    "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters": "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters",
+    "This phone number has already been linked with another account": "This phone number has already been linked with another account"
   }
 }

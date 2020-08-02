@@ -20,6 +20,24 @@
     "Are you a bot?": "你是机器人么？",
     "Please enter the verification code in the picture above": "请输入上图中的验证码"
   },
+  "signup":
+  {
+    "Send the verification code again in": "",
+    "seconds": "秒后再次发送验证码",
+    "Validate Code": "验证码",
+    "Click to send validate code": "点击发送验证码",
+    "Continue with Mobile Phone": "通过手机号注册",
+    "Continue with Google": "通过Google注册",
+    "Continue with Github": "通过Github注册",
+    "Username": "用户名",
+    "Password": "密码",
+    "Phone": "手机号",
+    "Email": "电子邮件",
+    "Company title": "工作职位",
+    "Company": "所在公司",
+    "Location": "所在地",
+    "Signup": "注册"
+  },
   "edit":
   {
     "Edit content": "编辑内容",
@@ -129,7 +147,8 @@
     "Post a Question": "我要提问",
     "The new topic has been successfully created on the": "新主题已经在",
     "node, you can click on the title below to continue to view": "节点成功创建，可以点击下面的标题继续查看：",
-    "Following are some guides to help you better use the topic management related functions of the casbin-forum": "以下是一些指南帮助你更好的使用 V2EX 社区的主题管理相关功能：",
+    "Following are some guides to help you better use the topic management related functions of the": "以下是一些指南帮助你更好的使用",
+    "community": "社区的主题管理相关功能：",
     "The topic is currently at": "主题当前位于",
     "node, within 10 minutes after creation, you can": "节点，在创建完成的 10 分钟内，可以",
     "move freely": "自由移动",
@@ -150,7 +169,9 @@
     "Related resources": "相关资源",
     "Virtual currency system": "虚拟货币系统",
     "Node usage help": "节点使用帮助",
-    "Treatment of link handling type spam": "对于链接搬运类型 spam 的处理"
+    "Treatment of link handling type spam": "对于链接搬运类型 spam 的处理",
+    "EDIT": "编辑",
+    "MOVE": "移动"
   },
   "new":
   {
@@ -279,7 +300,10 @@
     "Rules and recommendations on avatars": "关于头像的规则和建议",
     "It is forbidden to use any vulgar or sensitive pictures as avatars": "禁止使用任何低俗或者敏感图片作为头像",
     "If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members": "如果你是男的，请不要用女人的照片作为头像，这样可能会对其他会员产生误导",
-    "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "建议你不要使用真人照片作为头像，即使是自己的照片。而使用别人的照片则是被禁止的行为"
+    "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "建议你不要使用真人照片作为头像，即使是自己的照片。而使用别人的照片则是被禁止的行为",
+    "Phone not verified": "尚未验证手机号",
+    "Email not verified": "尚未验证邮箱",
+    "Modify Phone": "验证手机号"
   },
   "notification":
   {
@@ -336,6 +360,11 @@
     "Member does not exist": "用户不存在",
     "We had a problem when you signed out, please try again.": "登出有点问题，请重试一次",
     "Please resolve the following issues before creating a new topic": "创建新主题过程中遇到一些问题：",
-    "Captcha error": "验证码错误"
+    "Captcha error": "验证码错误",
+    "Please input your phone number": "请输入手机号",
+    "validate code error": "验证码错误",
+    "validate code expired": "验证码过期",
+    "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters": "您只能在您的用户名中使用数字、字母以及下划线，并且长度在4到20个字符之间",
+    "This phone number has already been linked with another account": "该电话号码已与另一个帐户关联"
   }
 }

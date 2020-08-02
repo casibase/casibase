@@ -169,7 +169,7 @@ class TopicBox extends React.Component {
             <p>{i18next.t("topic:The new topic has been successfully created on the")}{" "}
             <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, you can click on the title below to continue to view")}</p>
             <h1><a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a></h1>
-            <p>{i18next.t("topic:Following are some guides to help you better use the topic management related functions of the casbin-forum")}</p>
+            <p>{i18next.t("topic:Following are some guides to help you better use the topic management related functions of the")}{" "}{Setting.getForumName()}{" "}{i18next.t("topic:community")}</p>
             <ul>
               <li>{i18next.t("topic:The topic is currently at")}&nbsp;<a href="">{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, within 10 minutes after creation, you can")}{" "}<a href={`/move/topic/${this.state.topic?.id}`}>{i18next.t("topic:move freely")}</a></li>
               <li>{i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")}{" "}<a href={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</a></li>
@@ -269,9 +269,9 @@ class TopicBox extends React.Component {
             {
               this.state.topic?.editable ?
                 <span>
-                  <a href={`/edit/topic/${this.state.topic?.id}`} className="op">EDIT</a>
+                  <a href={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</a>
                   &nbsp;{" "}
-                  <a href={`/move/topic/${this.state.topic?.id}`} className="op">MOVE</a>
+                  <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
                 </span> : null
             }
           </small>

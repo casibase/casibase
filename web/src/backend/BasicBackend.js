@@ -48,3 +48,10 @@ export function getCaptcha() {
     credentials: 'include'
   }).then(res => res.json());
 }
+
+export function getValidateCode(phoneNumber) {
+  return fetch(`${Setting.ServerUrl}/api/get-validate-code?phoneNumber=${phoneNumber}`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(res => res.json());
+}

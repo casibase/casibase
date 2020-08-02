@@ -143,7 +143,7 @@ class SettingsBox extends React.Component {
       return
     }
     let redirectUrl = window.location.href.substring(0, window.location.href.lastIndexOf('?'))
-    
+
     Tools.uploadAvatar(this.state.avatar, redirectUrl)
   }
 
@@ -294,48 +294,80 @@ class SettingsBox extends React.Component {
               <td width="120" align="right">
                 {i18next.t("setting:Phone")}
               </td>
-              <td width="auto" align="left">
-                <code>
-                  {account?.phone}
-                </code>
-              </td>
+              {
+                account?.phone.length === 0 ?
+                  <td width="auto" align="left">
+                    <span className="negative">
+                      {i18next.t("setting:Phone not verified")}
+                    </span>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.phone}
+                    </code>
+                  </td>
+              }
             </tr>
-            <tr>
-              <td width="120" align="right" />
-              <td width="auto" align="left">
-                <a href="/settings/phone">
-                  {i18next.t("setting:Modify phone")}
-                </a>
-              </td>
-            </tr>
+            {
+              account?.phoneVerifiedTime.length !== 0 ?
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:Phone Verification")}
+                  </td>
+                  <td width="auto" align="left">
+                    <span className="green">
+                      {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.phoneVerifiedTime)}
+                    </span>
+                  </td>
+                </tr> :
+                <tr>
+                  <td width="120" align="right" />
+                  <td width="auto" align="left">
+                    <a href="/settings/phone">
+                      {i18next.t("setting:Modify Phone")}
+                    </a>
+                  </td>
+                </tr>
+            }
             <tr>
               <td width="120" align="right">
                 {i18next.t("setting:Email")}
               </td>
-              <td width="auto" align="left">
-                <code>
-                  {account?.email}
-                </code>
-              </td>
+              {
+                account?.email.length === 0 ?
+                  <td width="auto" align="left">
+                    <span className="negative">
+                      {i18next.t("setting:Email not verified")}
+                    </span>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.email}
+                    </code>
+                  </td>
+              }
             </tr>
-            <tr>
-              <td width="120" align="right" />
-              <td width="auto" align="left">
-                <a href="/settings/email">
-                  {i18next.t("setting:Modify Email")}
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Email Verification")}
-              </td>
-              <td width="auto" align="left">
-                <span className="green">
-                  {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
-                </span>
-              </td>
-            </tr>
+            {
+              account?.emailVerifiedTime.length !== 0 ?
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("setting:Email Verification")}
+                    </td>
+                    <td width="auto" align="left">
+                      <span className="green">
+                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
+                      </span>
+                    </td>
+                </tr> :
+                <tr>
+                  <td width="120" align="right" />
+                  <td width="auto" align="left">
+                    <a href="/settings/email">
+                      {i18next.t("setting:Modify Email")}
+                    </a>
+                  </td>
+                </tr>
+            }
             <tr>
               <td width="120" align="right">
                 Google

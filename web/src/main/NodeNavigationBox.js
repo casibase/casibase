@@ -48,6 +48,10 @@ class NodeNavigationBox extends React.Component {
   }
 
   renderTab(tab) {
+    if (tab?.id === "all") {
+      return null
+    }
+
     return (
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0">
@@ -80,7 +84,7 @@ class NodeNavigationBox extends React.Component {
           <span class="fade"><strong>{Setting.getForumName()}</strong>{" "}/{" "}{i18next.t("node:Node navigation")}</span>
         </div>
           {
-            this.state.nodeNavigation.slice(0, -1)?.map((tab) => {
+            this.state.nodeNavigation?.map((tab) => {
               return this.renderTab(tab);
             })
           }

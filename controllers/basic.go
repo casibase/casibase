@@ -127,14 +127,3 @@ func (c *APIController) GetNodeNavigation() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
-
-func (c *APIController) GetCaptcha() {
-	var resp Response
-
-	id, captcha := object.GetCaptcha()
-
-	resp = Response{Status: "ok", Msg: "success", Data: captcha, Data2: id}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
-}

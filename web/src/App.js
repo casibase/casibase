@@ -127,6 +127,12 @@ class App extends Component {
             <SignupBox />
           </div>
         </Route>
+        <Route exact path="/signup/:signupMethod">
+          <div id="Main">
+            <div className="sep20" />
+            <SignupBox account={this.state.account} />
+          </div>
+        </Route>
         <Route exact path="/signin">
           <div id="Main">
             <div className="sep20" />
