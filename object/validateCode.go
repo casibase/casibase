@@ -32,7 +32,7 @@ type ValidateCode struct {
 
 // AddValidateCode: return validate code and validate code ID
 func GetNewValidateCode(phoneNumber string) (string, string) {
-	num := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(100000)
+	num := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000)
 	code := strconv.FormatInt(int64(num), 10)
 
 	validateCode := ValidateCode{
