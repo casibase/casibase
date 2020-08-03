@@ -24,10 +24,11 @@ import (
 
 func (c *APIController) AddThanks() {
 	memberId := c.GetSessionUser()
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
 
 	var author string
+	id := util.ParseInt(idStr)
 	if thanksType == "2" {
 		author = object.GetReplyAuthor(id)
 	} else {

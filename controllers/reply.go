@@ -24,19 +24,22 @@ import (
 
 type NewReplyForm struct {
 	Content string `json:"content"`
-	TopicId string `json:"topicId"`
+	TopicId int    `json:"topicId"`
 }
 
 func (c *APIController) GetReplies() {
 	memberId := c.GetSessionUser()
-	topicId := c.Input().Get("topicId")
+	topicIdStr := c.Input().Get("topicId")
 
+	topicId := util.ParseInt(topicIdStr)
 	c.Data["json"] = object.GetReplies(topicId, memberId)
 	c.ServeJSON()
 }
 
 func (c *APIController) GetReply() {
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
+
+	id := util.ParseInt(idStr)
 
 	c.Data["json"] = object.GetReply(id)
 	c.ServeJSON()
@@ -44,16 +47,19 @@ func (c *APIController) GetReply() {
 
 func (c *APIController) GetReplyWithDetails() {
 	memberId := c.GetSessionUser()
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
+
+	id := util.ParseInt(idStr)
 
 	c.Data["json"] = object.GetReplyWithDetails(memberId, id)
 	c.ServeJSON()
 }
 
 func (c *APIController) UpdateReply() {
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 
 	var reply object.Reply
+	id := util.ParseInt(idStr)
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &reply)
 	if err != nil {
 		panic(err)
@@ -76,7 +82,7 @@ func (c *APIController) AddReply() {
 	content, topicId := form.Content, form.TopicId
 
 	reply := object.Reply{
-		Id:          util.IntToString(object.GetReplyId()),
+		//Id:          util.IntToString(object.GetReplyId()),
 		Author:      c.GetSessionUser(),
 		TopicId:     topicId,
 		CreatedTime: util.GetCurrentTime(),
@@ -89,29 +95,30 @@ func (c *APIController) AddReply() {
 		panic(err)
 	}
 
-	payRes := object.CreateReplyConsumption(c.GetSessionUser(), reply.Id)
-	if !payRes {
+	balance := object.GetMemberBalance(c.GetSessionUser())
+	if balance < object.CreateReplyCost {
 		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
 
-	affected := object.AddReply(&reply)
+	affected, id := object.AddReply(&reply)
 	if affected {
-		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, reply.Id)
+		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser(), true)
-		object.AddReplyNotification(reply.Id, c.GetSessionUser(), content, topicId)
+		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
 	}
 
 	c.wrapResponse(affected)
 }
 
 func (c *APIController) DeleteReply() {
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 
 	memberId := c.GetSessionUser()
+	id := util.ParseInt(idStr)
 	replyInfo := object.GetReply(id)
 	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) {
 		resp := Response{Status: "fail", Msg: "Permission denied."}

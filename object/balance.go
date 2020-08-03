@@ -29,7 +29,7 @@ type ConsumptionRecord struct {
 	Amount          int    `xorm:"int" json:"amount"`
 	Balance         int    `xorm:"int" json:"balance"`
 	ConsumerId      string `xorm:"varchar(100)" json:"consumerId"`
-	ObjectId        string `xorm:"varchar(100)" json:"objectId"`
+	ObjectId        int    `xorm:"int" json:"objectId"`
 	ReceiverId      string `xorm:"varchar(100)" json:"receiverId"`
 	CreatedTime     string `xorm:"varchar(100)" json:"createdTime"`
 	ConsumptionType int    `xorm:"int" json:"consumptionType"`
@@ -216,7 +216,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 	return res
 }
 
-func GetThanksStatus(memberId, id string, recordType int) bool {
+func GetThanksStatus(memberId string, id, recordType int) bool {
 	record := new(ConsumptionRecord)
 	total, err := adapter.engine.Where("consumption_type = ?", recordType).And("object_id = ?", id).And("receiver_id = ?", memberId).Count(record)
 	if err != nil {
@@ -226,7 +226,7 @@ func GetThanksStatus(memberId, id string, recordType int) bool {
 	return total != 0
 }
 
-func CreateTopicConsumption(consumerId, id string) bool {
+func CreateTopicConsumption(consumerId string, id int) bool {
 	record := ConsumptionRecord{
 		//Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      consumerId,
@@ -246,7 +246,7 @@ func CreateTopicConsumption(consumerId, id string) bool {
 	return true
 }
 
-func CreateReplyConsumption(consumerId, id string) bool {
+func CreateReplyConsumption(consumerId string, id int) bool {
 	record := ConsumptionRecord{
 		//Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      consumerId,
@@ -267,7 +267,7 @@ func CreateReplyConsumption(consumerId, id string) bool {
 	return true
 }
 
-func GetReplyBonus(author, consumerId, id string) {
+func GetReplyBonus(author, consumerId string, id int) {
 	if author == consumerId {
 		return
 	}

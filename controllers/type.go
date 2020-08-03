@@ -46,7 +46,7 @@ type stsTokenResponse struct {
 }
 
 type newNotification struct {
-	ObjectId         string `json:"objectId"`
+	ObjectId         int    `json:"objectId"`
 	NotificationType int    `json:"notificationType"`
 	ReceiverId       string `json:"receiverId"`
 }
@@ -58,18 +58,18 @@ type updatePlaneInfo struct {
 }
 
 type updateTopicNode struct {
-	Id       string `json:"id"`
+	Id       int    `json:"id"`
 	NodeId   string `json:"nodeId"`
 	NodeName string `json:"nodeName"`
 }
 
 type editTopic struct {
-	Id      string `json:"id"`
+	Id      int    `json:"id"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
 
 type editReply struct {
-	Id      string `json:"id"`
+	Id      int    `json:"id"`
 	Content string `json:"content"`
 }

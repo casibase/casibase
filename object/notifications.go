@@ -26,7 +26,7 @@ import (
 type Notification struct {
 	Id               int    `xorm:"int notnull pk autoincr" json:"id"`
 	NotificationType int    `xorm:"int" json:"notificationType"`
-	ObjectId         string `xorm:"varchar(100)" json:"objectId"`
+	ObjectId         int    `xorm:"int" json:"objectId"`
 	CreatedTime      string `xorm:"varchar(100)" json:"createdTime"`
 	SenderId         string `xorm:"varchar(100)" json:"senderId"`
 	ReceiverId       string `xorm:"varchar(100)" json:"receiverId"`
@@ -166,7 +166,7 @@ func UpdateReadStatus(id string) bool {
 	return affected != 0
 }
 
-func AddReplyNotification(objectId, senderId, content, topicId string) {
+func AddReplyNotification(senderId, content string, objectId, topicId int) {
 	memberMap := make(map[string]bool)
 
 	receiverId := GetTopicAuthor(topicId)
@@ -225,7 +225,7 @@ func AddReplyNotification(objectId, senderId, content, topicId string) {
 	wg.Wait()
 }
 
-func AddTopicNotification(objectId, author, content string) {
+func AddTopicNotification(objectId int, author, content string) {
 	var wg sync.WaitGroup
 	memberMap := make(map[string]bool)
 	reg := regexp.MustCompile("@(.*?)[ \n\t]")
