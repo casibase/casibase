@@ -15,7 +15,7 @@
 package object
 
 type LatestReply struct {
-	TopicId      string `json:"topicId"`
+	TopicId      int    `json:"topicId"`
 	NodeId       string `json:"nodeId"`
 	NodeName     string `json:"nodeName"`
 	Author       string `json:"author"`
@@ -78,7 +78,7 @@ type BalanceResponse struct {
 	Title           string `json:"title"`
 	Length          int    `json:"length"`
 	Balance         int    `json:"balance"`
-	ObjectId        string `json:"objectId"`
+	ObjectId        int    `json:"objectId"`
 	ReceiverId      string `json:"receiverId"`
 	ConsumerId      string `json:"consumerId"`
 	CreatedTime     string `json:"createdTime"`

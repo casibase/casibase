@@ -50,14 +50,15 @@ func (c *APIController) GetTopics() {
 
 func (c *APIController) GetTopic() {
 	memberId := c.GetSessionUser()
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 
+	id := util.ParseInt(idStr)
 	c.Data["json"] = object.GetTopicWithAvatar(id, memberId)
 	c.ServeJSON()
 }
 
 func (c *APIController) UpdateTopic() {
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 
 	var topic object.Topic
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
@@ -65,6 +66,7 @@ func (c *APIController) UpdateTopic() {
 		panic(err)
 	}
 
+	id := util.ParseInt(idStr)
 	c.Data["json"] = object.UpdateTopic(id, &topic)
 	c.ServeJSON()
 }
@@ -82,7 +84,7 @@ func (c *APIController) AddTopic() {
 	title, body, nodeId := form.Title, form.Body, form.NodeId
 
 	topic := object.Topic{
-		Id:            util.IntToString(object.GetTopicId()),
+		//Id:            util.IntToString(object.GetTopicId()),
 		Author:        c.GetSessionUser(),
 		NodeId:        nodeId,
 		NodeName:      "",
@@ -98,14 +100,16 @@ func (c *APIController) AddTopic() {
 		Deleted:       false,
 	}
 
-	payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
-	if !payRes {
+	balance := object.GetMemberBalance(c.GetSessionUser())
+	if balance < object.CreateTopicCost {
 		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp
 		c.ServeJSON()
+		return
 	}
+	//payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
 
-	object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)
+	//object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)
 
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
 	if err != nil {
@@ -113,8 +117,10 @@ func (c *APIController) AddTopic() {
 	}
 
 	var resp Response
-	res := object.AddTopic(&topic)
+	res, id := object.AddTopic(&topic)
 	if res {
+		object.CreateTopicConsumption(topic.Author, id)
+		object.AddTopicNotification(id, topic.Author, topic.Content)
 		resp = Response{Status: "ok", Msg: "success", Data: topic.Id}
 	} else {
 		resp = Response{Status: "error", Msg: "fail"}
@@ -195,9 +201,10 @@ func (c *APIController) GetTopicsByNode() {
 
 //together with node
 func (c *APIController) AddTopicHitCount() {
-	topicId := c.Input().Get("id")
+	topicIdStr := c.Input().Get("id")
 
 	var resp Response
+	topicId := util.ParseInt(topicIdStr)
 	res := object.AddTopicHitCount(topicId)
 	topicInfo := object.GetTopic(topicId)
 	hitRecord := object.BrowseRecord{
@@ -302,7 +309,7 @@ func (c *APIController) UpdateTopicNode() {
 	}
 
 	topic := object.Topic{
-		Id:       id,
+		//Id:       id,
 		NodeId:   nodeId,
 		NodeName: nodeName,
 	}

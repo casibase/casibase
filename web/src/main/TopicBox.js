@@ -134,7 +134,7 @@ class TopicBox extends React.Component {
   }
 
   render() {
-    if (this.props.account === undefined || this.state.topic !== null && this.state.topic.length === 0) {
+    if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       return (
         <div class="box">
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Topic is loading")}</div>

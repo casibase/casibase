@@ -14,8 +14,10 @@
 
 package object
 
+import "github.com/casbin/casbin-forum/util"
+
 type Favorites struct {
-	Id            string `xorm:"varchar(100) notnull pk" json:"id"`
+	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
 	FavoritesType int    `xorm:"int" json:"favoritesType"`
 	ObjectId      string `xorm:"varchar(100)" json:"objectId"`
 	CreatedTime   string `xorm:"varchar(100)" json:"createdTime"`
@@ -68,7 +70,8 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWith
 
 	topics := []*TopicWithAvatar{}
 	for _, v := range favorites {
-		temp := GetTopicWithAvatar(v.ObjectId, "")
+		topicId := util.ParseInt(v.ObjectId)
+		temp := GetTopicWithAvatar(topicId, "")
 		topics = append(topics, temp)
 	}
 

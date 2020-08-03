@@ -17,14 +17,12 @@ package object
 import (
 	"sync"
 	"time"
-
-	"github.com/casbin/casbin-forum/util"
 )
 
 type Reply struct {
-	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
+	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	Author      string `xorm:"varchar(100)" json:"author"`
-	TopicId     string `xorm:"varchar(100)" json:"topicId"`
+	TopicId     int    `xorm:"int" json:"topicId"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"-"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
@@ -41,7 +39,7 @@ func GetReplyCount() int {
 	return int(count)
 }
 
-func GetReplies(topicId, memberId string) []*ReplyWithAvatar {
+func GetReplies(topicId int, memberId string) []*ReplyWithAvatar {
 	replies := []*Reply{}
 	err := adapter.engine.Asc("created_time").And("deleted = ?", 0).Find(&replies, &Reply{TopicId: topicId})
 	if err != nil {
@@ -63,7 +61,7 @@ func GetReplies(topicId, memberId string) []*ReplyWithAvatar {
 	return res
 }
 
-func GetReply(id string) *Reply {
+func GetReply(id int) *Reply {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Get(&reply)
 	if err != nil {
@@ -77,7 +75,7 @@ func GetReply(id string) *Reply {
 	}
 }
 
-func GetReplyWithDetails(memberId, id string) *ReplyWithAvatar {
+func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Get(&reply)
 	if err != nil {
@@ -88,7 +86,7 @@ func GetReplyWithDetails(memberId, id string) *ReplyWithAvatar {
 		res := ReplyWithAvatar{
 			Reply:        reply,
 			Avatar:       GetMemberAvatar(reply.Author),
-			ThanksStatus: GetThanksStatus(memberId, memberId, 5),
+			ThanksStatus: GetThanksStatus(memberId, reply.Id, 5),
 			Deletable:    ReplyDeletable(reply.CreatedTime, memberId, reply.Author),
 			Editable:     GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime),
 		}
@@ -98,6 +96,7 @@ func GetReplyWithDetails(memberId, id string) *ReplyWithAvatar {
 	}
 }
 
+/*
 func GetReplyId() int {
 	reply := new(Reply)
 	_, err := adapter.engine.Desc("created_time").Omit("content").Limit(1).Get(reply)
@@ -109,8 +108,9 @@ func GetReplyId() int {
 
 	return res
 }
+*/
 
-func UpdateReply(id string, reply *Reply) bool {
+func UpdateReply(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
@@ -124,7 +124,7 @@ func UpdateReply(id string, reply *Reply) bool {
 	return true
 }
 
-func UpdateReplyWithLimitCols(id string, reply *Reply) bool {
+func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
@@ -138,7 +138,8 @@ func UpdateReplyWithLimitCols(id string, reply *Reply) bool {
 	return true
 }
 
-func AddReply(reply *Reply) bool {
+// AddReply return add reply result and reply id
+func AddReply(reply *Reply) (bool, int) {
 	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
 
 	affected, err := adapter.engine.Insert(reply)
@@ -146,7 +147,7 @@ func AddReply(reply *Reply) bool {
 		panic(err)
 	}
 
-	return affected != 0
+	return affected != 0, reply.Id
 }
 
 /*
@@ -160,7 +161,7 @@ func DeleteReply(id string) bool {
 }
 */
 
-func DeleteReply(id string) bool {
+func DeleteReply(id int) bool {
 	reply := new(Reply)
 	reply.Deleted = true
 	affected, err := adapter.engine.Id(id).Cols("deleted").Update(reply)
@@ -233,7 +234,7 @@ func GetRepliesNum(memberId string) int {
 	return int(total)
 }
 
-func GetReplyTopicTitle(id string) string {
+func GetReplyTopicTitle(id int) string {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Cols("title").Get(&topic)
 	if err != nil {
@@ -247,7 +248,7 @@ func GetReplyTopicTitle(id string) string {
 	}
 }
 
-func GetReplyAuthor(id string) string {
+func GetReplyAuthor(id int) string {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Cols("author").Get(&reply)
 	if err != nil {
@@ -261,7 +262,7 @@ func GetReplyAuthor(id string) string {
 	}
 }
 
-func AddReplyThanksNum(id string) bool {
+func AddReplyThanksNum(id int) bool {
 	reply := GetReply(id)
 	if reply == nil {
 		return false

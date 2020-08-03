@@ -96,7 +96,7 @@ func GetNodesNum() int {
 
 func GetNodeTopicNum(id string) int {
 	topic := new(Topic)
-	total, err := adapter.engine.Where("node_id = ?", id).Count(topic)
+	total, err := adapter.engine.Where("node_id = ?", id).And("deleted = ?", 0).Count(topic)
 	if err != nil {
 		panic(err)
 	}

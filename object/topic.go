@@ -21,7 +21,7 @@ import (
 )
 
 type Topic struct {
-	Id            string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Id            int      `xorm:"int notnull pk autoincr" json:"id"`
 	Author        string   `xorm:"varchar(100)" json:"author"`
 	NodeId        string   `xorm:"varchar(100)" json:"nodeId"`
 	NodeName      string   `xorm:"varchar(100)" json:"nodeName"`
@@ -78,7 +78,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	return res
 }
 
-func GetTopicWithAvatar(id, memberId string) *TopicWithAvatar {
+func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Get(&topic)
 	if err != nil {
@@ -99,7 +99,7 @@ func GetTopicWithAvatar(id, memberId string) *TopicWithAvatar {
 	}
 }
 
-func GetTopic(id string) *Topic {
+func GetTopic(id int) *Topic {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Get(&topic)
 	if err != nil {
@@ -113,7 +113,7 @@ func GetTopic(id string) *Topic {
 	}
 }
 
-func GetTopicTitle(id string) string {
+func GetTopicTitle(id int) string {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Cols("title").Get(&topic)
 	if err != nil {
@@ -127,7 +127,7 @@ func GetTopicTitle(id string) string {
 	}
 }
 
-func GetTopicAuthor(id string) string {
+func GetTopicAuthor(id int) string {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Cols("author").Get(&topic)
 	if err != nil {
@@ -160,7 +160,7 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar 
 	return res
 }
 
-func UpdateTopic(id string, topic *Topic) bool {
+func UpdateTopic(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
@@ -174,7 +174,7 @@ func UpdateTopic(id string, topic *Topic) bool {
 	return true
 }
 
-func UpdateTopicWithLimitCols(id string, topic *Topic) bool {
+func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
@@ -188,13 +188,14 @@ func UpdateTopicWithLimitCols(id string, topic *Topic) bool {
 	return true
 }
 
-func AddTopic(topic *Topic) bool {
+// AddTopic return add topic result and topic id
+func AddTopic(topic *Topic) (bool, int) {
 	affected, err := adapter.engine.Insert(topic)
 	if err != nil {
 		panic(err)
 	}
 
-	return affected != 0
+	return affected != 0, topic.Id
 }
 
 /*
@@ -219,6 +220,7 @@ func DeleteTopic(id string) bool {
 	return affected != 0
 }
 
+/*
 func GetTopicId() int {
 	topic := new(Topic)
 	_, err := adapter.engine.Desc("created_time").Omit("content").Limit(1).Get(topic)
@@ -230,6 +232,7 @@ func GetTopicId() int {
 
 	return res
 }
+*/
 
 func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
 	topics := []*Topic{}
@@ -241,7 +244,7 @@ func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*To
 	return topics
 }
 
-func AddTopicHitCount(topicId string) bool {
+func AddTopicHitCount(topicId int) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false
@@ -256,7 +259,7 @@ func AddTopicHitCount(topicId string) bool {
 	return affected != 0
 }
 
-func ChangeTopicFavoriteCount(topicId string, num int) bool {
+func ChangeTopicFavoriteCount(topicId int, num int) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false
@@ -271,7 +274,7 @@ func ChangeTopicFavoriteCount(topicId string, num int) bool {
 	return affected != 0
 }
 
-func ChangeTopicReplyCount(topicId string, num int) bool {
+func ChangeTopicReplyCount(topicId int, num int) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false
@@ -286,7 +289,7 @@ func ChangeTopicReplyCount(topicId string, num int) bool {
 	return affected != 0
 }
 
-func ChangeTopicLastReplyUser(topicId string, memberId string, updateTime bool) bool {
+func ChangeTopicLastReplyUser(topicId int, memberId string, updateTime bool) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false

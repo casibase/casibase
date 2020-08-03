@@ -37,7 +37,7 @@ class NewReplyBox extends React.Component {
       classes: props,
       topicId: props.match.params.topicId,
       topic: null,
-      form: {topicId: props.match.params.topicId},
+      form: {},
       isTypingStarted: false,
       problem: [],
       message: null,
@@ -56,6 +56,8 @@ class NewReplyBox extends React.Component {
       .then((res) => {
         this.setState({
           topic: res,
+        }, () => {
+          this.updateFormField("topicId", this.state.topic.id)
         });
       });
   }
