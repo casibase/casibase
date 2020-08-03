@@ -31,8 +31,8 @@ func SendSms(phoneNumber, code string) {
 	request.Scheme = "https"
 
 	request.PhoneNumbers = phoneNumber
-	request.SignName = ""
-	request.TemplateCode = ""
+	request.SignName = SMSSignName
+	request.TemplateCode = SMSTemplateCode
 	request.TemplateParam = "{\"code\":\"" + code + "\"}"
 
 	_, err = client.SendSms(request)
