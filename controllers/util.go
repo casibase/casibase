@@ -17,16 +17,23 @@ package controllers
 import (
 	"crypto/md5"
 	"fmt"
-	"golang.org/x/net/proxy"
 	"io/ioutil"
 	"net/http"
 
+	"golang.org/x/net/proxy"
+
+	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/service"
 )
 
 var httpClient *http.Client
 
 func InitHttpClient() {
+	if !object.UseOAuthProxy {
+		httpClient = &http.Client{}
+		return
+	}
+
 	// https://stackoverflow.com/questions/33585587/creating-a-go-socks5-client
 	proxyAddress := "127.0.0.1:10808"
 	dialer, err := proxy.SOCKS5("tcp", proxyAddress, nil, proxy.Direct)

@@ -44,4 +44,4 @@ export const OSSCustomDomain = ""
 
 export const GithubRepo = "https://github.com/casbin/casbin-forum"
 
-export const Domain = "forum.casbin.org"
+export const Domain = "forum.casbin.com"

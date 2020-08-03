@@ -32,11 +32,13 @@ var (
 	HotTopicNum                = 10
 	TopicEditableTime          = 10.0 //minutes
 	ReplyEditableTime          = 10.0 //minutes
-	ReplyDeletableTime         = 5.0 //minutes
-	NodeHitRecordExpiredTime   = 1 //month
-	TopicHitRecordExpiredTime  = 1 //day
-	ValidateCodeExpiredTime    = 20 //minutes
-	DefaultCronJobs            = []*CronJob{
+	ReplyDeletableTime         = 5.0  //minutes
+	NodeHitRecordExpiredTime   = 1    //month
+	TopicHitRecordExpiredTime  = 1    //day
+	ValidateCodeExpiredTime    = 20   //minutes
+	UseOAuthProxy              = false
+
+	DefaultCronJobs = []*CronJob{
 		{
 			Id:       "updateExpiredData",
 			BumpTime: "0:0",
@@ -53,7 +55,7 @@ var (
 			State:    "active",
 		},
 	}
-	DefaultCronUpdates         = []*UpdateJob{
+	DefaultCronUpdates = []*UpdateJob{
 		{
 			Id:    "expireData",
 			JobId: "updateExpiredData",
