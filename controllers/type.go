@@ -113,3 +113,8 @@ type resetPasswordVerify struct {
 	Code     string `json:"code"`
 	Password string `json:"password"`
 }
+
+type resetPasswordValidateCode struct {
+	Method   string `json:"method"`
+	Username string `json:"username"`
+}

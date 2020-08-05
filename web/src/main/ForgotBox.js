@@ -34,7 +34,13 @@ class ForgotBox extends React.Component {
       message: "",
       method: "",
       code: "",
-      username: ""
+      username: "",
+      showTab: false,
+      getValidateCode: false,
+      Method_LIST: [
+        {label: "Phone", value: "phone"},
+        {label: "Email", value: "email"},
+      ]
     };
     const params = new URLSearchParams(this.props.location.search)
     this.state.method = params.get("method")
@@ -87,6 +93,24 @@ class ForgotBox extends React.Component {
     })
   }
 
+  getValidateCode() {
+    AccountBackend.resetPassword(7, this.state.form)
+      .then((res) => {
+        if (res?.status === "ok") {
+          this.setState({
+            validateCodeId: res?.data,
+            getValidateCode: true
+          }, () => {
+            this.updateFormField("validateCodeId", this.state.validateCodeId)
+          })
+        } else {
+          this.setState({
+            message: res?.msg
+          })
+        }
+      })
+  }
+
   getAccountInfo() {
     if (this.state.form.username === undefined || this.state.form.username.length === 0) {
       this.setState({
@@ -103,9 +127,16 @@ class ForgotBox extends React.Component {
     AccountBackend.resetPassword(this.state.step, this.state.form)
       .then((res) => {
         if (res?.status === "ok") {
+          let method = res?.data
+          if (res?.data === "both") {
+            method = "phone"
+            this.setState({
+              showTab: true
+            })
+          }
           let message = ""
           let step
-          if (res?.data === "phone") {
+          if (method === "phone") {
             step = 2
           } else {
             step = 3
@@ -113,7 +144,7 @@ class ForgotBox extends React.Component {
           this.setState({
             step: step,
             username: this.state.form.username,
-            method: res?.data,
+            method: method,
             message: message,
             resetInfo: res?.data2,
             form: {}
@@ -137,6 +168,19 @@ class ForgotBox extends React.Component {
           })
         }
       })
+  }
+
+  changeTab(method) {
+    let step
+    if (method === "phone") {
+      step = 2
+    } else {
+      step = 3
+    }
+    this.setState({
+      step: step,
+      method: method
+    })
   }
 
   postVerification() {
@@ -195,11 +239,13 @@ class ForgotBox extends React.Component {
       .then((res) => {
         if (res?.status === "ok") {
           this.setState({
-            step: 6
+            step: 6,
+            showTab: false
           })
         } else {
           this.setState({
-            message: res?.msg
+            message: res?.msg,
+            showTab: false
           })
         }
       })
@@ -244,7 +290,14 @@ class ForgotBox extends React.Component {
     )
   }
 
+  renderMethodList(item){
+    return (
+      <a onClick={() => this.changeTab(item.value)} href="javascript:void(0)" className={this.state.method === item.value ? "tab_current" : "tab"}>{item.label}</a>
+    )
+  }
+
   render() {
+    console.log(this.state.step)
     switch (this.state.step) {
       case 2:
           return (
@@ -254,6 +307,16 @@ class ForgotBox extends React.Component {
                 {" "}<span className="chevron">&nbsp;›&nbsp;</span>
                 {" "}{i18next.t("forgot:Reset password by phone")}
               </div>
+              {
+                this.state.showTab ?
+                  <div className="cell">
+                    {
+                      this.state.Method_LIST.map((item) => {
+                        return this.renderMethodList(item);
+                      })
+                    }
+                  </div> : null
+              }
               {
                 this.renderProblem()
               }
@@ -267,7 +330,19 @@ class ForgotBox extends React.Component {
                   <tr>
                     <td width="120" align="right"></td>
                     <td width="auto" align="left">
-                      <span className="gray">{i18next.t("forgot:The verification code has been sent to the mobile phone")}{" "}{this.state.resetInfo?.phone}{" "}{i18next.t("forgot:, please enter it within 20 minutes and do not leave the interface")}</span>
+                      {
+                        this.state.getValidateCode ?
+                          <span className="gray">
+                            {i18next.t("forgot:The verification code has been sent to the mobile phone")}{" "}
+                            {this.state.resetInfo?.phone}{" "}
+                            {i18next.t("forgot:, please enter it within 20 minutes and do not leave the interface")}
+                          </span> :
+                          <span>
+                            <a href="#;" onClick={() => this.getValidateCode()}>
+                              {i18next.t("signup:Click to send validate code")}
+                            </a>
+                          </span>
+                      }
                     </td>
                   </tr>
                   <tr>
@@ -300,6 +375,16 @@ class ForgotBox extends React.Component {
               {" "}<span className="chevron">&nbsp;›&nbsp;</span>
               {" "}{i18next.t("forgot:Reset password by email")}
             </div>
+            {
+              this.state.showTab ?
+                <div className="cell">
+                  {
+                    this.state.Method_LIST.map((item) => {
+                      return this.renderMethodList(item);
+                    })
+                  }
+                </div> : null
+            }
             {
               this.renderProblem()
             }

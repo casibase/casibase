@@ -283,14 +283,18 @@ func (c *APIController) ResetPassword() {
 			resp = Response{Status: "error", Msg: "Member not found"}
 		} else {
 			if len(userInfo.Phone) != 0 && len(userInfo.PhoneVerifiedTime) != 0 {
-				validateCodeId, code := object.GetNewValidateCode(userInfo.Phone)
-				service.SendSms(userInfo.Phone, code)
+				//validateCodeId, code := object.GetNewValidateCode(userInfo.Phone)
+				//service.SendSms(userInfo.Phone, code)
 				resetInfo := resetPasswordPhoneResponse{
-					Username:       userInfo.Id,
-					Phone:          "*******" + userInfo.Phone[len(userInfo.Phone)-4:],
-					ValidateCodeId: validateCodeId,
+					Username: userInfo.Id,
+					Phone:    "*******" + userInfo.Phone[len(userInfo.Phone)-4:],
+					//ValidateCodeId: validateCodeId,
 				}
 				resp = Response{Status: "ok", Msg: "success", Data: "phone", Data2: resetInfo}
+				if len(userInfo.Email) != 0 && len(userInfo.EmailVerifiedTime) != 0 {
+					resp.Data = "both"
+					break
+				}
 			} else {
 				resp = Response{Status: "ok", Msg: "success", Data: "email"}
 			}
@@ -333,10 +337,10 @@ func (c *APIController) ResetPassword() {
 		}
 
 		if userInfo.Email == form.Email {
-			//resetId, resetCode := object.AddNewResetRecord(userInfo.Email, form.Username, 2)
-			//idStr := util.IntToString(resetId)
-			//resetUrl := form.Url + "/forgot?method=email" + "&id=" + idStr + "&code=" + resetCode + "&username=" + userInfo.Id
-			//service.SendResetPasswordMail(userInfo.Email, userInfo.Id, resetUrl)
+			resetId, resetCode := object.AddNewResetRecord(userInfo.Email, form.Username, 2)
+			idStr := util.IntToString(resetId)
+			resetUrl := form.Url + "/forgot?method=email" + "&id=" + idStr + "&code=" + resetCode + "&username=" + userInfo.Id
+			service.SendResetPasswordMail(userInfo.Email, userInfo.Id, resetUrl)
 			resp = Response{Status: "ok", Msg: "success", Data: "email", Data2: userInfo.Email}
 		} else {
 			resp = Response{Status: "error", Msg: "Email and account do not correspond"}
@@ -364,6 +368,21 @@ func (c *APIController) ResetPassword() {
 			if object.CheckResetCodeExpired(form.Id) {
 				resp = Response{Status: "error", Msg: "This password reset request has expired", Data: ""}
 			}
+		}
+	case "7":
+		var form resetPasswordValidateCode
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+
+		userInfo := object.GetMember(form.Username)
+		if userInfo == nil {
+			resp = Response{Status: "error", Msg: "Member not found"}
+		} else {
+			validateCodeId, code := object.GetNewValidateCode(userInfo.Phone)
+			service.SendSms(userInfo.Phone, code)
+			resp = Response{Status: "ok", Msg: "success", Data: validateCodeId}
 		}
 	default:
 		resp = Response{Status: "error", Msg: "Please try again"}
