@@ -8,6 +8,7 @@ require (
 	github.com/aliyun/aliyun-sts-go-sdk v0.0.0-20171106034748-98d3903a2309
 	github.com/astaxie/beego v1.12.1
 	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
+	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/mileusna/crontab v0.0.0-20180909013013-f182897de5d8
 	github.com/satori/go.uuid v1.2.0 // indirect
