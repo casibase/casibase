@@ -50,3 +50,11 @@ export function getStsToken() {
     credentials: "include",
   }).then(res => res.json());
 }
+
+export function resetPassword(step, values) {
+  return fetch(`${Setting.ServerUrl}/api/reset-password?step=${step}`, {
+    method: 'POST',
+    credentials: "include",
+    body: JSON.stringify(values),
+  }).then(res => res.json());
+}

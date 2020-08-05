@@ -26,6 +26,7 @@ import (
 	"github.com/astaxie/beego"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/service"
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -243,6 +244,130 @@ func (c *APIController) GetAccount() {
 	username := c.GetSessionUser()
 	memberObj = object.GetMember(username)
 	resp = Response{Status: "ok", Msg: "", Data: util.StructToJson(memberObj)}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) ResetPassword() {
+	step := c.Input().Get("step")
+
+	var resp Response
+	switch step {
+	case "1":
+		var form getResetPasswordMember
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+
+		verifyCaptchaRes := object.VerifyCaptcha(form.CaptchaId, form.Captcha)
+		if !verifyCaptchaRes {
+			resp = Response{Status: "error", Msg: "Captcha error"}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+
+		date := util.GetTimeHour(-24)
+		frequency := object.GetMemberResetFrequency(form.Username, date)
+		if frequency >= 2 {
+			resp = Response{Status: "error", Msg: "Reset password more than twice within 24 hours"}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+
+		userInfo := object.GetMember(form.Username)
+		if userInfo == nil {
+			resp = Response{Status: "error", Msg: "Member not found"}
+		} else {
+			if len(userInfo.Phone) != 0 && len(userInfo.PhoneVerifiedTime) != 0 {
+				validateCodeId, code := object.GetNewValidateCode(userInfo.Phone)
+				service.SendSms(userInfo.Phone, code)
+				resetInfo := resetPasswordPhoneResponse{
+					Username:       userInfo.Id,
+					Phone:          "*******" + userInfo.Phone[len(userInfo.Phone)-4:],
+					ValidateCodeId: validateCodeId,
+				}
+				resp = Response{Status: "ok", Msg: "success", Data: "phone", Data2: resetInfo}
+			} else {
+				resp = Response{Status: "ok", Msg: "success", Data: "email"}
+			}
+		}
+		break
+	case "2": // phone
+		var form resetPasswordWithPhone
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+
+		userInfo := object.GetMember(form.Username)
+		if form.Method != "phone" {
+			resp = Response{Status: "error", Msg: "Please try again"}
+		}
+
+		verifyRes := object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, userInfo.Phone)
+		if verifyRes {
+			resetId, resetCode := object.AddNewResetRecord(userInfo.Phone, form.Username, 1)
+			res := verifyResetWithPhoneRes{
+				Username:  form.Username,
+				ResetId:   resetId,
+				ResetCode: resetCode,
+			}
+			resp = Response{Status: "ok", Msg: "success", Data: "phone", Data2: res}
+		} else {
+			resp = Response{Status: "error", Msg: "Validate code error"}
+		}
+	case "3": // email
+		var form resetPasswordWithEmail
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+
+		userInfo := object.GetMember(form.Username)
+		if form.Method != "email" {
+			resp = Response{Status: "error", Msg: "Please try again"}
+		}
+
+		if userInfo.Email == form.Email {
+			//resetId, resetCode := object.AddNewResetRecord(userInfo.Email, form.Username, 2)
+			//idStr := util.IntToString(resetId)
+			//resetUrl := form.Url + "/forgot?method=email" + "&id=" + idStr + "&code=" + resetCode + "&username=" + userInfo.Id
+			//service.SendResetPasswordMail(userInfo.Email, userInfo.Id, resetUrl)
+			resp = Response{Status: "ok", Msg: "success", Data: "email", Data2: userInfo.Email}
+		} else {
+			resp = Response{Status: "error", Msg: "Email and account do not correspond"}
+		}
+	case "5": // verify
+		var form resetPasswordVerify
+		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
+		if err != nil {
+			panic(err)
+		}
+
+		var recordType int
+		if form.Method == "phone" {
+			recordType = 1
+		} else if form.Method == "email" {
+			recordType = 2
+		}
+
+		res := object.VerifyResetInformation(form.Id, form.Code, form.Username, recordType)
+		if res {
+			object.UpdateMemberPassword(form.Username, form.Password)
+			resp = Response{Status: "ok", Msg: "success"}
+		} else {
+			resp = Response{Status: "error", Msg: "Please try again"}
+			if object.CheckResetCodeExpired(form.Id) {
+				resp = Response{Status: "error", Msg: "This password reset request has expired", Data: ""}
+			}
+		}
+	default:
+		resp = Response{Status: "error", Msg: "Please try again"}
+	}
 
 	c.Data["json"] = resp
 	c.ServeJSON()

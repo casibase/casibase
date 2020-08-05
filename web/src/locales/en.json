@@ -320,6 +320,26 @@
     "里提到了你": "",
     "Delete": "Delete"
   },
+  "forgot":
+  {
+    "Reset password by phone": "Reset password by phone",
+    "Reset password by email": "Reset password by email",
+    "Username": "Username",
+    "Reset Password": "Reset Password",
+    "You can reset the password at most 2 times within 24 hours.": "You can reset the password at most 2 times within 24 hours.",
+    "Continue": "Continue",
+    "Mail": "Mail",
+    "Reset password for account": "Reset password for account",
+    "New password": "New password",
+    "Password again": "Password again",
+    "重新设置密码": "",
+    "The verification code has been sent to the mobile phone": "The verification code has been sent to the mobile phone",
+    ", please enter it within 20 minutes and do not leave the interface": ", please enter it within 20 minutes and do not leave the interface",
+    "An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.": "An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.",
+    "Password reset complete": "Password reset complete",
+    "The password reset is complete. You can now log in with the new password.": "The password reset is complete. You can now log in with the new password.",
+    "Log in now": "Log in now"
+  },
   "loading":
   {
     "Please wait patiently...": "Please wait patiently....",
@@ -365,6 +385,17 @@
     "validate code error": "validate code error",
     "validate code expired": "validate code expired",
     "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters": "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters",
-    "This phone number has already been linked with another account": "This phone number has already been linked with another account"
+    "This phone number has already been linked with another account": "This phone number has already been linked with another account",
+    "Please input captcha": "Please input captcha",
+    "Please input validate code": "Please input validate code",
+    "Please input email": "Please input email",
+    "Please input your new password": "Please input your new password",
+    "The two passwords are different": "The two passwords are different",
+    "Reset password more than twice within 24 hours": "Reset password more than twice within 24 hours",
+    "Member not found": "Member not found",
+    "Please try again": "Please try again",
+    "Validate code error": "Validate code error",
+    "Email and account do not correspond": "Email and account do not correspond",
+    "This password reset request has expired": "This password reset request has expired"
   }
 }

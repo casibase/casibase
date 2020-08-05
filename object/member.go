@@ -148,6 +148,20 @@ func UpdateMemberLanguage(id string, language string) bool {
 	return true
 }
 
+func GetMemberLanguage(id string) string {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("language").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.Language
+	} else {
+		return ""
+	}
+}
+
 func AddMember(member *Member) bool {
 	affected, err := adapter.engine.Insert(member)
 	if err != nil {
@@ -269,4 +283,16 @@ func CheckModIdentity(memberId string) bool {
 	} else {
 		return false
 	}
+}
+
+func UpdateMemberPassword(id, password string) bool {
+	member := new(Member)
+	member.Password = password
+
+	affected, err := adapter.engine.Id(id).MustCols("password").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

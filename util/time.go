@@ -44,6 +44,13 @@ func GetTimeMinute(minute int) string {
 	return res.Format(time.RFC3339)
 }
 
+func GetTimeHour(minute int) string {
+	currentTime := time.Now()
+	h, _ := time.ParseDuration(strconv.Itoa(minute) + "h")
+	res := currentTime.Add(h)
+	return res.Format(time.RFC3339)
+}
+
 func GetDateStr() string {
 	return time.Now().Format("20060102")
 }
