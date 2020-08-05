@@ -320,6 +320,26 @@
     "里提到了你": "里提到了你",
     "Delete": "删除"
   },
+  "forgot":
+  {
+    "Reset password by phone": "通过手机号重置密码",
+    "Reset password by email": "通过邮箱重置密码",
+    "Username": "用户名",
+    "Reset Password": "重设密码",
+    "You can reset the password at most 2 times within 24 hours.": "24 小时内，至多可以重新设置密码 2 次。",
+    "Continue": "继续",
+    "Mail": "预留邮箱",
+    "Reset password for account": "为帐号",
+    "New password": "新密码",
+    "Password again": "再次输入新密码",
+    "重新设置密码": "重新设置密码",
+    "The verification code has been sent to the mobile phone": "已向手机",
+    ", please enter it within 20 minutes and do not leave the interface": "发送验证码，请在20分钟内输入，不要离开界面",
+    "An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.": "一封包含了重设密码指令的邮件已经发送到你的注册邮箱，按照邮件中的提示，即可重设你的密码。",
+    "Password reset complete": "重设密码完成",
+    "The password reset is complete. You can now log in with the new password.": "密码重设完成。现在可以使用新密码登录了。",
+    "Log in now": "现在登录"
+  },
   "loading":
   {
     "Please wait patiently...": "请耐心等待......",
@@ -365,6 +385,17 @@
     "validate code error": "验证码错误",
     "validate code expired": "验证码过期",
     "You can only use numbers, letters and underline in your username, and the length is between 4 and 20 characters": "您只能在您的用户名中使用数字、字母以及下划线，并且长度在4到20个字符之间",
-    "This phone number has already been linked with another account": "该电话号码已与另一个帐户关联"
+    "This phone number has already been linked with another account": "该电话号码已与另一个帐户关联",
+    "Please input captcha": "请输入图形验证码",
+    "Please input validate code": "请输入验证码",
+    "Please input email": "请输入邮箱",
+    "Please input your new password": "请输入新密码",
+    "The two passwords are different": "两次输入密码不相同",
+    "Reset password more than twice within 24 hours": "24小时内重置密码超过两次",
+    "Member not found": "未找到该用户",
+    "Please try again": "请重试",
+    "Validate code error": "验证码错误",
+    "Email and account do not correspond": "邮箱和用户名不匹配",
+    "This password reset request has expired": "此重置密码请求已过期"
   }
 }

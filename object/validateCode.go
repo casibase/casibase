@@ -63,7 +63,7 @@ func CheckValidateCodeExpired(id string) bool {
 	if existed {
 		return code.Expired
 	}
-	return false
+	return true
 }
 
 func VerifyValidateCode(id, validateCode, phoneNumber string) bool {

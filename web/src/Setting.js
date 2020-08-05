@@ -21,7 +21,7 @@ import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import * as MemberBackend from "./backend/MemberBackend";
 import oss from "ali-oss";
-import "./i18n"
+import * as i18n from "./i18n"
 import i18next from "i18next";
 
 const pangu = require("pangu");
@@ -175,23 +175,15 @@ export function getOSSClient(initNewOSSClient) {
   });
 }
 
-export function SetLanguage() {
-  let language = localStorage.getItem("casbin-forum-language");
-  if (language === undefined || language == null) {
-    let userLanguage
-    userLanguage = navigator.language
-    if (userLanguage === "zh-CN" || userLanguage === "zh") {
-      language = "zh"
-    } else {
-      language = "en"
-    }
-  }
-  i18next.changeLanguage(language)
+export function SetLanguage(language) {
+  localStorage.setItem("casbin-forum-language", language)
   changeMomentLanguage(language)
+  i18next.changeLanguage(language)
 }
 
 export function ChangeLanguage(language) {
   localStorage.setItem("casbin-forum-language", language)
+  changeMomentLanguage(language)
   i18next.changeLanguage(language)
   MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"))
 }

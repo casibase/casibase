@@ -68,6 +68,7 @@ func initAPI() {
 	beego.Router("/api/update-member-avatar", &controllers.APIController{}, "POST:UpdateMemberAvatar")
 	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
 	beego.Router("/api/update-member-language", &controllers.APIController{}, "POST:UpdateMemberLanguage")
+	beego.Router("/api/get-member-language", &controllers.APIController{}, "GET:GetMemberLanguage")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
@@ -87,6 +88,7 @@ func initAPI() {
 	beego.Router("/api/get-account", &controllers.APIController{}, "GET:GetAccount")
 	beego.Router("/api/auth/google", &controllers.APIController{}, "GET:AuthGoogle")
 	beego.Router("/api/auth/github", &controllers.APIController{}, "GET:AuthGithub")
+	beego.Router("/api/reset-password", &controllers.APIController{}, "POST:ResetPassword")
 
 	beego.Router("/api/add-favorites", &controllers.APIController{}, "POST:AddFavorites")
 	beego.Router("/api/get-favorites", &controllers.APIController{}, "GET:GetFavorites")

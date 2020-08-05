@@ -120,6 +120,15 @@ class TopicBox extends React.Component {
       });
   }
 
+  deleteTopic() {
+    TopicBackend.deleteTopic(this.state.topicId)
+      .then((res) => {
+        if (res) {
+          goToLink("/")
+        }
+      });
+  }
+
   thanksTopic(id, author) {
     if (window.confirm(`Are you sure to spend ${this.state.topicThanksCost} coins in thanking @${author} for this topic?`)) {
       BalanceBackend.addThanks(id, 1)
@@ -272,6 +281,11 @@ class TopicBox extends React.Component {
                   <a href={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</a>
                   &nbsp;{" "}
                   <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
+                  &nbsp;{" "}
+                  {
+                    this.props.account?.isModerator ?
+                      <a onClick={() => this.deleteTopic()} href="javascript:void(0)" className="op">{i18next.t("topic:DELETE")}</a> : null
+                  }
                 </span> : null
             }
           </small>

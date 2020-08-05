@@ -15,20 +15,37 @@
 import i18n from "i18next";
 import zh from './locales/zh.json'
 import en from './locales/en.json'
+import * as Setting from "./Setting";
 
 const resources = {
   en: en,
   zh: zh
 };
 
+function initLanguage() {
+  let language = localStorage.getItem("casbin-forum-language");
+  if (language === undefined || language == null) {
+    let userLanguage
+    userLanguage = navigator.language
+    if (userLanguage === "zh-CN" || userLanguage === "zh") {
+      language = "zh"
+    } else {
+      language = "en"
+    }
+  }
+  Setting.changeMomentLanguage(language)
+
+  return language
+}
+
 i18n
   .init({
-    lng: "en",
-    
+    lng: initLanguage(),
+
     resources: resources,
-    
+
     keySeparator: false,
-    
+
     interpolation: {
       escapeValue: false
     },

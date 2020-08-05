@@ -58,6 +58,8 @@ import RightHotNodeBox from "./rightbar/RightHotNodeBox";
 import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
 import EditBox from "./main/EditBox";
+import ForgotBox from "./main/ForgotBox";
+import i18next from "i18next";
 
 class App extends Component {
   constructor(props) {
@@ -74,7 +76,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    Setting.SetLanguage();
+    //Setting.SetLanguage();
     this.getAccount();
   }
 
@@ -104,6 +106,13 @@ class App extends Component {
     AccountBackend.getAccount()
       .then((res) => {
         const account = Setting.parseJson(res.data);
+        if (account !== null) {
+          let language = account?.language
+          if (language !== i18next.language) {
+            Setting.SetLanguage(language)
+          }
+         // i18n.changeCustomLanguage(language)
+        }
         this.setState({
           account: account,
         });
@@ -256,6 +265,12 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <EditBox account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/forgot">
+          <div id="Main">
+            <div className="sep20" />
+            <ForgotBox account={this.state.account} />
           </div>
         </Route>
       </Switch>

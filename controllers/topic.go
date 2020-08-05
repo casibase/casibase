@@ -53,7 +53,14 @@ func (c *APIController) GetTopic() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
-	c.Data["json"] = object.GetTopicWithAvatar(id, memberId)
+
+	topic := object.GetTopicWithAvatar(id, memberId)
+	if topic.Deleted {
+		c.Data["json"] = nil
+	} else {
+		c.Data["json"] = object.GetTopicWithAvatar(id, memberId)
+	}
+
 	c.ServeJSON()
 }
 
@@ -132,6 +139,14 @@ func (c *APIController) AddTopic() {
 
 func (c *APIController) DeleteTopic() {
 	id := c.Input().Get("id")
+	memberId := c.GetSessionUser()
+
+	if !object.CheckModIdentity(memberId) {
+		resp := Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	c.Data["json"] = object.DeleteTopic(id)
 	c.ServeJSON()

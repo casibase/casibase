@@ -347,7 +347,7 @@ func UpdateTopicHotInfo(topicId string, hot int) bool {
 
 func GetHotTopic(limit int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("hot").Limit(limit).Find(&topics)
+	err := adapter.engine.Desc("hot").And("deleted = ? ", 0).Limit(limit).Find(&topics)
 	if err != nil {
 		panic(err)
 	}

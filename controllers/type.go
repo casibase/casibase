@@ -73,3 +73,43 @@ type editReply struct {
 	Id      int    `json:"id"`
 	Content string `json:"content"`
 }
+
+type getResetPasswordMember struct {
+	Username  string `json:"username"`
+	Captcha   string `json:"captcha"`
+	CaptchaId string `json:"captchaId"`
+}
+
+type resetPasswordPhoneResponse struct {
+	Username       string `json:"username"`
+	Phone          string `json:"phone"`
+	ValidateCodeId string `json:"validateCodeId"`
+}
+
+type resetPasswordWithPhone struct {
+	Method         string `json:"method"`
+	Username       string `json:"username"`
+	ValidateCode   string `json:"validateCode"`
+	ValidateCodeId string `json:"validateCodeId"`
+}
+
+type verifyResetWithPhoneRes struct {
+	Username  string `json:"username"`
+	ResetId   int    `json:"resetId"`
+	ResetCode string `json:"resetCode"`
+}
+
+type resetPasswordWithEmail struct {
+	Method   string `json:"method"`
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Url      string `json:"url"`
+}
+
+type resetPasswordVerify struct {
+	Method   string `json:"method"`
+	Username string `json:"username"`
+	Id       string `json:"id"`
+	Code     string `json:"code"`
+	Password string `json:"password"`
+}
