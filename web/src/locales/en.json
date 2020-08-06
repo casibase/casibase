@@ -39,6 +39,12 @@
     "Location": "Location",
     "Signup": "Signup"
   },
+  "signin":
+  {
+    "Sign in with QQ": "Sign in with QQ",
+    "Sign in with Google": "Sign in with Google",
+    "Sign in with Github": "Sign in with Github"
+  },
   "edit":
   {
     "Edit content": "Edit content",
