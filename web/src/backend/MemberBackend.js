@@ -88,6 +88,14 @@ export function githubLogin(code, state, redirectUrl, addition) {
   }).then(res => res.json());
 }
 
+export function qqLogin(code, state, redirectUrl, addition) {
+  console.log(redirectUrl)
+  return fetch(`${Setting.ServerUrl}/api/auth/qq?code=${code}&state=${state}&redirect_url=${redirectUrl}&addition=${addition}`, {
+    method: 'GET',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
 export function updateMemberLanguage(language) {
   return fetch(`${Setting.ServerUrl}/api/update-member-language?language=${language}`, {
     method: 'POST',

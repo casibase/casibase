@@ -17,7 +17,10 @@ package controllers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/url"
+	"regexp"
 	"sync"
 
 	"golang.org/x/oauth2"
@@ -43,6 +46,7 @@ type SignupForm struct {
 	ValidateCode   string `json:"validateCode"`
 	ValidateCodeId string `json:"validateCodeId"`
 	Addition       string `json:"addition"`
+	Addition2      string `json:"addition2"` // this field is for more addition info if needed
 }
 
 type SigninForm struct {
@@ -81,7 +85,7 @@ func (c *APIController) Signup() {
 	if err != nil {
 		panic(err)
 	}
-	if form.Method != "google" && form.Method != "github" {
+	if form.Method != "google" && form.Method != "github" && form.Method != "qq" {
 		if !object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, form.Phone) {
 			resp = Response{Status: "error", Msg: "validate code error", Data: ""}
 			if object.CheckValidateCodeExpired(form.ValidateCodeId) {
@@ -109,15 +113,25 @@ func (c *APIController) Signup() {
 	if password == "" && email != "" {
 		msg = object.CheckMemberSignupWithEmail(member, email)
 	} else {
-		msg = object.CheckMemberSignup(member, password)
-		if len(msg) == 0 {
-			msg = object.CheckMemberSignupWithPhone(member, form.Phone)
+		if form.Method != "qq" {
+			msg = object.CheckMemberSignup(member, password)
+			if len(msg) == 0 {
+				msg = object.CheckMemberSignupWithPhone(member, form.Phone)
+			}
+		} else {
+			msg = object.CheckMemberSignupWithQQ(member, form.Addition2)
 		}
 	}
 
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
+		if form.Method == "qq" {
+			avatar, err = url.QueryUnescape(avatar)
+			if err != nil {
+				panic(err)
+			}
+		}
 		avatar = UploadAvatarToOSS(avatar, member)
 		no := object.GetMemberNum()
 		member := &object.Member{
@@ -134,6 +148,9 @@ func (c *APIController) Signup() {
 			SilverCount:  2,
 			Location:     form.Location,
 		}
+		if no == 0 {
+			member.IsModerator = true
+		}
 		switch form.Method {
 		case "google":
 			member.GoogleAccount = form.Addition
@@ -149,6 +166,10 @@ func (c *APIController) Signup() {
 			break
 		case "phone":
 			member.PhoneVerifiedTime = util.GetCurrentTime()
+		case "qq":
+			member.QQOpenId = form.Addition2
+			member.QQAccount = form.Addition
+			member.QQVerifiedTime = util.GetCurrentTime()
 		}
 
 		object.AddMember(member)
@@ -340,7 +361,10 @@ func (c *APIController) ResetPassword() {
 			resetId, resetCode := object.AddNewResetRecord(userInfo.Email, form.Username, 2)
 			idStr := util.IntToString(resetId)
 			resetUrl := form.Url + "/forgot?method=email" + "&id=" + idStr + "&code=" + resetCode + "&username=" + userInfo.Id
-			service.SendResetPasswordMail(userInfo.Email, userInfo.Id, resetUrl)
+			err := service.SendResetPasswordMail(userInfo.Email, userInfo.Id, resetUrl)
+			if err != nil {
+				resp = Response{Status: "error", Msg: "Send email fail"}
+			}
 			resp = Response{Status: "ok", Msg: "success", Data: "email", Data2: userInfo.Email}
 		} else {
 			resp = Response{Status: "error", Msg: "Email and account do not correspond"}
@@ -626,6 +650,117 @@ func (c *APIController) AuthGithub() {
 		}
 		if len(object.GetMemberAvatar(memberId)) == 0 {
 			avatar := UploadAvatarToOSS(tempUserAccount.AvatarUrl, memberId)
+			object.LinkMemberAccount(memberId, "avatar", avatar)
+		}
+	}
+
+	c.Data["json"] = resp
+
+	c.ServeJSON()
+}
+
+var QQClientID = beego.AppConfig.String("QQAPPID")
+var QQClientSecret = beego.AppConfig.String("QQAPPKey")
+
+func (c *APIController) AuthQQ() {
+	code := c.Input().Get("code")
+	state := c.Input().Get("state")
+	addition := c.Input().Get("addition")
+	redirectURL := c.Input().Get("redirect_url")
+
+	var resp Response
+	var res authResponse
+	res.IsAuthenticated = true
+
+	if state != beego.AppConfig.String("QQAuthState") {
+		res.IsAuthenticated = false
+		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
+		c.ServeJSON()
+		return
+	}
+
+	params := url.Values{}
+	params.Add("grant_type", "authorization_code")
+	params.Add("client_id", QQClientID)
+	params.Add("client_secret", QQClientSecret)
+	params.Add("code", code)
+	params.Add("redirect_uri", redirectURL)
+	getAccessKeyUrl := fmt.Sprintf("%s?%s", "https://graph.qq.com/oauth2.0/token", params.Encode())
+
+	tokenResponse, err := httpClient.Get(getAccessKeyUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer tokenResponse.Body.Close()
+	tokenContent, err := ioutil.ReadAll(tokenResponse.Body)
+
+	tokenReg := regexp.MustCompile("token=(.*?)&")
+	tokenRegRes := tokenReg.FindAllStringSubmatch(string(tokenContent), -1)
+	token := tokenRegRes[0][1]
+
+	getOpenIdUrl := fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s", token)
+
+	openIdResponse, err := httpClient.Get(getOpenIdUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer openIdResponse.Body.Close()
+	openIdContent, err := ioutil.ReadAll(openIdResponse.Body)
+
+	openIdReg := regexp.MustCompile("\"openid\":\"(.*?)\"}")
+	openIdRegRes := openIdReg.FindAllStringSubmatch(string(openIdContent), -1)
+	openId := openIdRegRes[0][1]
+
+	getUserInfoUrl := fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s", token, QQClientID, openId)
+	getUserInfoResponse, err := httpClient.Get(getUserInfoUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer getUserInfoResponse.Body.Close()
+	userInfoContent, err := ioutil.ReadAll(getUserInfoResponse.Body)
+	var userInfo userInfoFromQQ
+	err = json.Unmarshal(userInfoContent, &userInfo)
+	if err != nil || userInfo.Ret != 0 {
+		res.IsAuthenticated = false
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	if addition == "signup" {
+		userId := object.HasQQAccount(openId)
+		if userId != "" {
+			if len(object.GetMemberAvatar(userId)) == 0 {
+				avatar := UploadAvatarToOSS(userInfo.AvatarUrl, userId)
+				object.LinkMemberAccount(userId, "avatar", avatar)
+			}
+			c.SetSessionUser(userId)
+			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+			res.IsSignedUp = true
+		} else {
+			res.IsSignedUp = false
+		}
+		res.Addition = userInfo.Nickname
+		res.Avatar = url.QueryEscape(userInfo.AvatarUrl)
+		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: openId}
+	} else {
+		memberId := c.GetSessionUser()
+		if memberId == "" {
+			resp = Response{Status: "fail", Msg: "no account exist", Data: res}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+		linkRes := object.LinkMemberAccount(memberId, "qq_account", userInfo.Nickname)
+		linkRes = object.LinkMemberAccount(memberId, "qq_open_id", openId)
+		linkRes = object.LinkMemberAccount(memberId, "qq_verified_time", util.GetCurrentTime())
+		if linkRes {
+			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
+		} else {
+			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
+		}
+		if len(object.GetMemberAvatar(memberId)) == 0 {
+			avatar := UploadAvatarToOSS(userInfo.AvatarUrl, memberId)
 			object.LinkMemberAccount(memberId, "avatar", avatar)
 		}
 	}

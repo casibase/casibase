@@ -31,14 +31,14 @@ class CallbackBox extends React.Component {
       isSignedUp: false,
       email: ""
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.code = params.get("code")
-    this.state.state = params.get("state")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.code = params.get("code");
+    this.state.state = params.get("state");
   }
 
   getAuthenticatedInfo() {
-    let redirectUrl
-    redirectUrl = `${Setting.ClientUrl}/callback/${this.state.authType}/${this.state.addition}`
+    let redirectUrl;
+    redirectUrl = `${Setting.ClientUrl}/callback/${this.state.authType}/${this.state.addition}`;
     switch (this.state.authType) {
       case "google":
         MemberBackend.googleLogin(this.state.code, this.state.state, redirectUrl, this.state.addition)
@@ -46,21 +46,21 @@ class CallbackBox extends React.Component {
             if (res.status === "ok") {
               if (this.state.addition === "link") {
                 if (res.data) {
-                  window.location.href = '/settings'
+                  window.location.href = '/settings';
                   return;
                 }
               }
               if (!res.data.isAuthenticated) {
-                window.location.href = '/signup'
+                window.location.href = '/signup';
                 return;
               }
               if (!res.data.isSignedUp) {
-                window.location.href = `/settings/username?email=${res.data.email}&method=google&addition=${res.data.addition}&avatar=${res.data.avatar}`
+                window.location.href = `/settings/username?email=${res.data.email}&method=google&addition=${res.data.addition}&avatar=${res.data.avatar}`;
                 return;
               }
-              window.location.href = '/'
+              window.location.href = '/';
             }else {
-              Setting.showMessage("error", res?.msg)
+              Setting.showMessage("error", res?.msg);
             }
           });
         break;
@@ -70,21 +70,45 @@ class CallbackBox extends React.Component {
             if (res.status === "ok") {
               if (this.state.addition === "link") {
                 if (res.data) {
-                  window.location.href = '/settings'
+                  window.location.href = '/settings';
                   return;
                 }
               }
               if (!res.data.isAuthenticated) {
-                window.location.href = '/signup'
+                window.location.href = '/signup';
                 return;
               }
               if (!res.data.isSignedUp) {
-                window.location.href = `/settings/username?email=${res.data.email}&method=github&addition=${res.data.addition}&avatar=${res.data.avatar}`
+                window.location.href = `/settings/username?email=${res.data.email}&method=github&addition=${res.data.addition}&avatar=${res.data.avatar}`;
                 return;
               }
-              window.location.href = '/'
+              window.location.href = '/';
             }else {
-              Setting.showMessage("error", res?.msg)
+              Setting.showMessage("error", res?.msg);
+            }
+          });
+        break;
+      case "qq":
+        MemberBackend.qqLogin(this.state.code, this.state.state, redirectUrl, this.state.addition)
+          .then((res) => {
+            if (res.status === "ok") {
+              if (this.state.addition === "link") {
+                if (res.data) {
+                  window.location.href = '/settings';
+                  return;
+                }
+              }
+              if (!res.data.isAuthenticated) {
+                window.location.href = '/signup';
+                return;
+              }
+              if (!res.data.isSignedUp) {
+                window.location.href = `/settings/username?email=${res.data.email}&method=qq&addition=${res.data.addition}&addition2=${res.data2}&avatar=${res.data.avatar}`;
+                return;
+              }
+              window.location.href = '/';
+            }else {
+              Setting.showMessage("error", res?.msg);
             }
           });
         break;
@@ -92,7 +116,7 @@ class CallbackBox extends React.Component {
   }
 
   componentDidMount() {
-    this.getAuthenticatedInfo()
+    this.getAuthenticatedInfo();
   }
 
   render() {

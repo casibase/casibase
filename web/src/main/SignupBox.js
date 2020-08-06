@@ -19,7 +19,7 @@ import Header from "./Header";
 import * as Conf from "../Conf"
 import * as AccountBackend from "../backend/AccountBackend";
 import * as BasicBackend from "../backend/BasicBackend";
-import "../Signup.css"
+import "../Signup.css";
 import i18next from "i18next";
 
 class SignupBox extends React.Component {
@@ -88,7 +88,7 @@ class SignupBox extends React.Component {
     }
 
     if (this.state.message !== "") {
-      problems.push(i18next.t(`error:${this.state.message}`))
+      problems.push(i18next.t(`error:${this.state.message}`));
     }
 
     if (problems.length === 0) {
@@ -217,7 +217,7 @@ class SignupBox extends React.Component {
                   {i18next.t("signup:Password")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="password" maxLength="20" onChange={event => this.updateFormField("password", event.target.value)} autoComplete="off" />
+                  <input type="password" className="sl" name="password" maxLength="20" onChange={event => this.updateFormField("password", event.target.value)} autoComplete="off" />
                   <span className="negative">
                     {" "}*
                   </span>
@@ -320,6 +320,10 @@ class SignupBox extends React.Component {
             <div className="signup_method" onClick={() => Setting.goToLink("/signup/sms")}>
               <div className="signup_method_icon signup_method_sms"></div>
               <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Mobile Phone")}</div>
+            </div>
+            <div className="signup_method" onClick={() => Setting.getQQAuthCode("signup")}>
+              <div className="signup_method_icon signup_method_qq"></div>
+              <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with QQ")}</div>
             </div>
             <div className="signup_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
               <div className="signup_method_icon signup_method_google"></div>

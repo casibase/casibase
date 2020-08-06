@@ -31,6 +31,12 @@ type userInfoFromGithub struct {
 	AvatarUrl string `json:"avatar_url"`
 }
 
+type userInfoFromQQ struct {
+	Ret       int    `json:"ret"`
+	Nickname  string `json:"nickname"`
+	AvatarUrl string `json:"figureurl_qq_1"`
+}
+
 type authResponse struct {
 	IsAuthenticated bool   `json:"isAuthenticated"`
 	IsSignedUp      bool   `json:"isSignedUp"`

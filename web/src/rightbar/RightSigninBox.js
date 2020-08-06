@@ -35,8 +35,11 @@ class RightSigninBox extends React.Component {
           <div className="cell" style={{textAlign: "center"}}>
             <a onClick={() => Setting.getGithubAuthCode("signup")} href="javascript:void(0)" className="github-signin">Sign in with Github</a>
           </div>
+          <div className="cell" style={{textAlign: "center"}}>
+            <a onClick={() => Setting.getQQAuthCode("signup")} href="javascript:void(0)" className="qq-signin">Sign in with QQ</a>
+          </div>
         </div>
-      )
+      );
     }
 
     return (

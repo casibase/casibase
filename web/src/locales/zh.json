@@ -27,6 +27,7 @@
     "Validate Code": "验证码",
     "Click to send validate code": "点击发送验证码",
     "Continue with Mobile Phone": "通过手机号注册",
+    "Continue with QQ": "通过QQ号注册",
     "Continue with Google": "通过Google注册",
     "Continue with Github": "通过Github注册",
     "Username": "用户名",
@@ -303,7 +304,12 @@
     "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "建议你不要使用真人照片作为头像，即使是自己的照片。而使用别人的照片则是被禁止的行为",
     "Phone not verified": "尚未验证手机号",
     "Email not verified": "尚未验证邮箱",
-    "Modify Phone": "验证手机号"
+    "Modify Phone": "验证手机号",
+    "Phone Verification": "手机号验证",
+    "QQ Verification": "QQ验证",
+    "Link with QQAccount": "与QQ账户关联",
+    "Profile": "个人主页",
+    "Avatar": "头像"
   },
   "notification":
   {
@@ -357,7 +363,8 @@
     "Tools": "实用小工具",
     "Online": "人在线",
     "Highest": "最高记录",
-    "Community of Creators": "创意工作者们的社区"
+    "Community of Creators": "创意工作者们的社区",
+    "Select Language": "选择语言"
   },
   "error":
   {
