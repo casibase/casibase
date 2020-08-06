@@ -108,7 +108,7 @@ class App extends Component {
         const account = Setting.parseJson(res.data);
         if (account !== null) {
           let language = account?.language
-          if (language !== i18next.language) {
+          if (language !== "" && language !== i18next.language) {
             Setting.SetLanguage(language)
           }
          // i18n.changeCustomLanguage(language)
