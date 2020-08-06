@@ -20,6 +20,7 @@ import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as Tools from "./Tools";
+import * as Conf from "../Conf";
 import '../Reply.css';
 import '../Settings.css';
 import i18next from "i18next";
@@ -370,24 +371,27 @@ class SettingsBox extends React.Component {
                   </td>
                 </tr>
             }
-            <tr>
-              <td width="120" align="right">
-                Google
-              </td>
-              {
-                account?.googleAccount === "" ?
-                  <td width="auto" align="left">
-                    <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
-                      {i18next.t("setting:Link with GoogleAccount")}
-                    </a>
-                  </td> :
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.googleAccount}
-                    </code>
+            {
+              Conf.GoogleClientId !== "" ?
+                <tr>
+                  <td width="120" align="right">
+                    Google
                   </td>
-              }
-            </tr>
+                  {
+                    account?.googleAccount === "" ?
+                      <td width="auto" align="left">
+                        <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
+                          {i18next.t("setting:Link with GoogleAccount")}
+                        </a>
+                      </td> :
+                      <td width="auto" align="left">
+                        <code>
+                          {account?.googleAccount}
+                        </code>
+                      </td>
+                  }
+                </tr> : null
+            }
             {
               account?.googleAccount === "" ? null :
                 <tr>
@@ -399,24 +403,27 @@ class SettingsBox extends React.Component {
                   </td>
                 </tr>
             }
-            <tr>
-              <td width="120" align="right">
-                Github
-              </td>
-              {
-                account?.githubAccount === "" ?
-                  <td width="auto" align="left">
-                    <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
-                      {i18next.t("setting:Link with GithubAccount")}
-                    </a>
-                  </td> :
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.githubAccount}
-                    </code>
+            {
+              Conf.GithubClientId !== "" ?
+                <tr>
+                  <td width="120" align="right">
+                    Github
                   </td>
-              }
-            </tr>
+                  {
+                    account?.githubAccount === "" ?
+                      <td width="auto" align="left">
+                        <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
+                          {i18next.t("setting:Link with GithubAccount")}
+                        </a>
+                      </td> :
+                      <td width="auto" align="left">
+                        <code>
+                          {account?.githubAccount}
+                        </code>
+                      </td>
+                  }
+                </tr> : null
+            }
             {
               account?.githubAccount === "" ? null :
                 <tr>
@@ -428,24 +435,27 @@ class SettingsBox extends React.Component {
                   </td>
                 </tr>
             }
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:WeChat")}
-              </td>
-              {
-                account?.weChatAccount === "" ?
-                  <td width="auto" align="left">
-                    <a href="/settings/wechat">
-                      {i18next.t("setting:Link with WeChat")}
-                    </a>
-                  </td> :
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.weChatAccount}
-                    </code>
+            {
+              Conf.WechatClientId !== "" ?
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:WeChat")}
                   </td>
-              }
-            </tr>
+                  {
+                    account?.weChatAccount === "" ?
+                      <td width="auto" align="left">
+                        <a href="/settings/wechat">
+                          {i18next.t("setting:Link with WeChat")}
+                        </a>
+                      </td> :
+                      <td width="auto" align="left">
+                        <code>
+                          {account?.weChatAccount}
+                        </code>
+                      </td>
+                  }
+                </tr> : null
+            }
             {
               account?.weChatAccount === "" ? null :
                 <tr>
@@ -457,24 +467,27 @@ class SettingsBox extends React.Component {
                   </td>
                 </tr>
             }
-            <tr>
-              <td width="120" align="right">
-                QQ
-              </td>
-              {
-                account?.qqAccount === "" ?
-                  <td width="auto" align="left">
-                    <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0)">
-                      {i18next.t("setting:Link with QQAccount")}
-                    </a>
-                  </td> :
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.qqAccount}
-                    </code>
+            {
+              Conf.QQClientId !== "" ?
+                <tr>
+                  <td width="120" align="right">
+                    QQ
                   </td>
-              }
-            </tr>
+                  {
+                    account?.qqAccount === "" ?
+                      <td width="auto" align="left">
+                        <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0)">
+                          {i18next.t("setting:Link with QQAccount")}
+                        </a>
+                      </td> :
+                      <td width="auto" align="left">
+                        <code>
+                          {account?.qqAccount}
+                        </code>
+                      </td>
+                  }
+                </tr> : null
+            }
             {
               account?.qqVerifiedTime.length !== 0 ?
                 <tr>
