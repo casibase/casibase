@@ -36,6 +36,8 @@ export const QQAuthScope  = "get_user_info"
 
 export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize"
 
+export const WechatClientId  = ""
+
 export const OSSRegion = ""
 
 //The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
