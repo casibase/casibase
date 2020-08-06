@@ -321,18 +321,27 @@ class SignupBox extends React.Component {
               <div className="signup_method_icon signup_method_sms"></div>
               <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Mobile Phone")}</div>
             </div>
-            <div className="signup_method" onClick={() => Setting.getQQAuthCode("signup")}>
-              <div className="signup_method_icon signup_method_qq"></div>
-              <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with QQ")}</div>
-            </div>
-            <div className="signup_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
-              <div className="signup_method_icon signup_method_google"></div>
-              <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Google")}</div>
-            </div>
-            <div className="signup_method" onClick={() => Setting.getGithubAuthCode("signup")}>
-              <div className="signup_method_icon signup_method_github"></div>
-              <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Github")}</div>
-            </div>
+            {
+              Conf.QQClientId !== "" ?
+                <div className="signup_method" onClick={() => Setting.getQQAuthCode("signup")}>
+                  <div className="signup_method_icon signup_method_qq"></div>
+                  <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with QQ")}</div>
+                </div> : null
+            }
+            {
+              Conf.GoogleClientId !== "" ?
+                <div className="signup_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
+                  <div className="signup_method_icon signup_method_google"></div>
+                  <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Google")}</div>
+                </div> : null
+            }
+            {
+              Conf.GithubClientId !== "" ?
+                <div className="signup_method" onClick={() => Setting.getGithubAuthCode("signup")}>
+                  <div className="signup_method_icon signup_method_github"></div>
+                  <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Github")}</div>
+                </div> : null
+            }
           </div>
         </div>
       </div>

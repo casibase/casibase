@@ -39,6 +39,12 @@
     "Location": "所在地",
     "Signup": "注册"
   },
+  "signin":
+  {
+    "Sign in with QQ": "通过QQ号登录",
+    "Sign in with Google": "通过Google登录",
+    "Sign in with Github": "通过Github登录"
+  },
   "edit":
   {
     "Edit content": "编辑内容",
