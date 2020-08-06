@@ -15,7 +15,7 @@
 import React from "react";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as Setting from "./Setting";
-import * as Conf from "./Conf"
+import * as Conf from "./Conf";
 import i18next from "i18next";
 
 class Header extends React.Component {

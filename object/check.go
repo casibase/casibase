@@ -65,6 +65,16 @@ func CheckMemberSignupWithPhone(member string, phoneNumber string) string {
 	}
 }
 
+func CheckMemberSignupWithQQ(member string, qqOpenId string) string {
+	if len(member) == 0 || len(qqOpenId) == 0 {
+		return "Username empty or qq id empty"
+	} else if HasQQAccount(qqOpenId) != "" {
+		return "This qq account has already been linked with another account"
+	} else {
+		return ""
+	}
+}
+
 func HasMail(email string) string {
 	userInfo := GetMail(email)
 	if userInfo != nil {
@@ -91,6 +101,14 @@ func HasGithubAccount(githubAccount string) string {
 
 func HasGoogleAccount(googleAccount string) string {
 	userInfo := GetGoogleAccount(googleAccount)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
+
+func HasQQAccount(qqOpenId string) string {
+	userInfo := GetQQAccount(qqOpenId)
 	if userInfo != nil {
 		return userInfo.Id
 	}

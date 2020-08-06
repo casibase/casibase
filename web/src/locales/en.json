@@ -27,6 +27,7 @@
     "Validate Code": "Validate Code",
     "Click to send validate code": "Click to send validate code",
     "Continue with Mobile Phone": "Continue with Mobile Phone",
+    "Continue with QQ": "Continue with QQ",
     "Continue with Google": "Continue with Google",
     "Continue with Github": "Continue with Github",
     "Username": "Username",
@@ -303,7 +304,12 @@
     "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited": "It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited",
     "Phone not verified": "Phone not verified",
     "Email not verified": "Email not verified",
-    "Modify Phone": "Modify Phone"
+    "Modify Phone": "Modify Phone",
+    "Phone Verification": "Phone Verification",
+    "QQ Verification": "QQ Verification",
+    "Link with QQAccount": "Link with QQAccount",
+    "Profile": "Profile",
+    "Avatar": "Avatar"
   },
   "notification":
   {
@@ -357,7 +363,8 @@
     "Tools": "Tools",
     "Online": "Online",
     "Highest": "Highest",
-    "Community of Creators": "Community of Creators"
+    "Community of Creators": "Community of Creators",
+    "Select Language": "Select Language"
   },
   "error":
   {

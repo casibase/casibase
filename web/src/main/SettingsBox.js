@@ -17,11 +17,11 @@ import * as Setting from "../Setting";
 import Header from "./Header";
 import Avatar from "../Avatar";
 import {withRouter} from "react-router-dom";
-import * as AccountBackend from "../backend/AccountBackend"
+import * as AccountBackend from "../backend/AccountBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as Tools from "./Tools";
-import '../Reply.css'
-import '../Settings.css'
+import '../Reply.css';
+import '../Settings.css';
 import i18next from "i18next";
 
 class SettingsBox extends React.Component {
@@ -42,11 +42,11 @@ class SettingsBox extends React.Component {
       ]
     };
     if (this.state.event === undefined) {
-      this.state.event = "profile"
+      this.state.event = "profile";
     }
     if (this.state.event === "avatar") {
       const params = new URLSearchParams(this.props.location.search)
-      this.state.showSuccess = params.get("success")
+      this.state.showSuccess = params.get("success");
     }
 
     this.newUsername = this.newUsername.bind(this);
@@ -54,12 +54,12 @@ class SettingsBox extends React.Component {
   }
 
   componentDidMount() {
-    this.initForm()
+    this.initForm();
   }
 
   initForm() {
     if (this.state.event !== "profile") {
-      return
+      return;
     }
 
     let form = this.state.form;
@@ -75,17 +75,19 @@ class SettingsBox extends React.Component {
   }
 
   newUsername() {
-    const params = new URLSearchParams(this.props.location.search)
-    let email, method, addition, avatar
-    email = params.get("email")
-    method = params.get("method")
-    addition = params.get("addition")
-    avatar = params.get("avatar")
+    const params = new URLSearchParams(this.props.location.search);
+    let email, method, addition, avatar, addition2;
+    email = params.get("email");
+    method = params.get("method");
+    addition = params.get("addition");
+    addition2 = params.get("addition2");
+    avatar = params.get("avatar");
     return {
       username: this.state.username,
       email: email,
       method: method,
       addition: addition,
+      addition2: addition2,
       avatar: avatar,
     }
   }
@@ -96,7 +98,7 @@ class SettingsBox extends React.Component {
         .then((res) => {
             if (res.status === "ok") {
               Setting.showMessage("success", `Set username success`);
-              window.location.href = '/'
+              window.location.href = '/';
             }else {
               Setting.showMessage("error", `Set username failed：${res.msg}`);
             }
@@ -110,7 +112,7 @@ class SettingsBox extends React.Component {
   handelChange(e){
     this.setState({
       username: e.target.value
-      })
+      });
   }
 
   updateFormField(key, value) {
@@ -125,9 +127,9 @@ class SettingsBox extends React.Component {
     MemberBackend.updateMemberInfo(this.props.account?.id, this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          this.changeSuccess()
+          this.changeSuccess();
         } else {
-          Setting.showMessage("error", res.msg)
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -135,27 +137,27 @@ class SettingsBox extends React.Component {
   handelChangeAvatar(event) {
     this.setState({
       avatar: event.target.files[0]
-    })
+    });
   }
 
   uploadAvatar() {
     if (this.state.avatar === null) {
-      return
+      return;
     }
-    let redirectUrl = window.location.href.substring(0, window.location.href.lastIndexOf('?'))
+    let redirectUrl = window.location.href.substring(0, window.location.href.lastIndexOf('?'));
 
-    Tools.uploadAvatar(this.state.avatar, redirectUrl)
+    Tools.uploadAvatar(this.state.avatar, redirectUrl);
   }
 
   changeSuccess() {
     this.setState({
       showSuccess: !this.state.showSuccess
-    })
+    });
   }
 
   renderSettingList(item){
     return (
-          <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{item.label}</a>
+          <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</a>
       )
   }
 
@@ -223,7 +225,7 @@ class SettingsBox extends React.Component {
 
     if (this.state.event === "avatar") {
       if (this.props.account !== undefined) {
-        Setting.initOSSClient(this.props.account?.id)
+        Setting.initOSSClient(this.props.account?.id);
       }
       return (
         <div>
@@ -454,6 +456,37 @@ class SettingsBox extends React.Component {
                     </a>
                   </td>
                 </tr>
+            }
+            <tr>
+              <td width="120" align="right">
+                QQ
+              </td>
+              {
+                account?.qqAccount === "" ?
+                  <td width="auto" align="left">
+                    <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0)">
+                      {i18next.t("setting:Link with QQAccount")}
+                    </a>
+                  </td> :
+                  <td width="auto" align="left">
+                    <code>
+                      {account?.qqAccount}
+                    </code>
+                  </td>
+              }
+            </tr>
+            {
+              account?.qqVerifiedTime.length !== 0 ?
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:QQ Verification")}
+                  </td>
+                  <td width="auto" align="left">
+                      <span className="green">
+                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.qqVerifiedTime)}
+                      </span>
+                  </td>
+                </tr> : null
             }
             <tr>
               <td width="120" align="right">

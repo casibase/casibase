@@ -55,11 +55,11 @@ class Footer extends React.Component {
   }
 
   render() {
-    const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart)
-    const utcTime = moment().utc(false).format("HH:mm")
-    const laxTime = moment().utcOffset(-7).format("HH:mm")
-    const pvgTime = moment().format("HH:mm")
-    const jfkTime = moment().utcOffset(-4).format("HH:mm")
+    const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart);
+    const utcTime = moment().utc(false).format("HH:mm");
+    const laxTime = moment().utcOffset(-7).format("HH:mm");
+    const pvgTime = moment().format("HH:mm");
+    const jfkTime = moment().utcOffset(-4).format("HH:mm");
 
     return (
       <div id="Bottom">
@@ -115,7 +115,7 @@ class Footer extends React.Component {
             <a href="/select/language" className="f11">
               <img src={Setting.getStatic("/static/img/language.png")} width="16" align="absmiddle" id="ico-select-language" />
               {" "}&nbsp;{" "}
-              Select Language
+              {i18next.t("footer:Select Language")}
             </a>
             <div className="sep20" />
             {i18next.t("footer:Community of Creators")}

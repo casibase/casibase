@@ -131,19 +131,23 @@ export function getForumName() {
 }
 
 export function getGoogleAuthCode(method) {
-  window.location.href=`${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`
+  window.location.href=`${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`;
 }
 
 export function getGithubAuthCode(method) {
-  window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`
+  window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
 }
 
-export let OSSClient
-export let OSSUrl
-export let OSSFileUrl
+export function getQQAuthCode(method) {
+  window.location.href=`${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.QQAuthState}`;
+}
+
+export let OSSClient;
+export let OSSUrl;
+export let OSSFileUrl;
 
 export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
-  let newClient
+  let newClient;
   newClient = new oss({
     region: Conf.OSSRegion,
     accessKeyId: accessKeyId,
@@ -151,20 +155,20 @@ export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
     bucket: Conf.OSSBucket,
     stsToken: stsToken
   });
-  OSSClient = newClient
+  OSSClient = newClient;
 }
 
 export function initOSSClient(id) {
-  getOSSClient(initNewOSSClient)
-  let url, fileUrl
+  getOSSClient(initNewOSSClient);
+  let url, fileUrl;
   if (Conf.OSSCustomDomain.length !== 0) {
-    url = `https://${Conf.OSSCustomDomain}/${Conf.OSSBasicPath}/${id}`
+    url = `https://${Conf.OSSCustomDomain}/${Conf.OSSBasicPath}/${id}`;
   } else {
-    url = `https://${Conf.OSSBucket}.${Conf.OSSEndPoint}/${Conf.OSSBasicPath}/${id}`
+    url = `https://${Conf.OSSBucket}.${Conf.OSSEndPoint}/${Conf.OSSBasicPath}/${id}`;
   }
-  fileUrl = `${Conf.OSSBasicPath}/${id}`
-  OSSUrl = url
-  OSSFileUrl = fileUrl
+  fileUrl = `${Conf.OSSBasicPath}/${id}`;
+  OSSUrl = url;
+  OSSFileUrl = fileUrl;
 }
 
 export function getOSSClient(initNewOSSClient) {
@@ -176,15 +180,15 @@ export function getOSSClient(initNewOSSClient) {
 }
 
 export function SetLanguage(language) {
-  localStorage.setItem("casbin-forum-language", language)
-  changeMomentLanguage(language)
-  i18next.changeLanguage(language)
+  localStorage.setItem("casbin-forum-language", language);
+  changeMomentLanguage(language);
+  i18next.changeLanguage(language);
 }
 
 export function ChangeLanguage(language) {
-  localStorage.setItem("casbin-forum-language", language)
-  changeMomentLanguage(language)
-  i18next.changeLanguage(language)
+  localStorage.setItem("casbin-forum-language", language);
+  changeMomentLanguage(language);
+  i18next.changeLanguage(language);
   MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"))
 }
 
@@ -214,15 +218,15 @@ export function changeMomentLanguage(lng) {
 export function getFormattedContent(content) {
   return pangu.spacing(content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
     if (w[w.length - 1] !== " ") {
-      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1,)})`
+      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1,)})`;
     }
-    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `
+    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `;
   }));
 }
 
 export function getBoolConvertedText(status) {
   if (status) {
-    return i18next.t("general:true")
+    return i18next.t("general:true");
   }
-  return i18next.t("general:false")
+  return i18next.t("general:false");
 }

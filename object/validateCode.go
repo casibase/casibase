@@ -16,7 +16,6 @@ package object
 
 import (
 	"math/rand"
-	"strconv"
 	"time"
 
 	"github.com/casbin/casbin-forum/util"
@@ -32,8 +31,7 @@ type ValidateCode struct {
 
 // AddValidateCode: return validate code and validate code ID
 func GetNewValidateCode(phoneNumber string) (string, string) {
-	num := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(1000000)
-	code := strconv.FormatInt(int64(num), 10)
+	code := getRandomCode(6)
 
 	validateCode := ValidateCode{
 		Id:          getRandomId(20),
@@ -107,6 +105,17 @@ func getRandomId(length int) string {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0; i < length; i++ {
 		result = append(result, stdChars[r.Intn(len(stdChars))])
+	}
+	return string(result)
+}
+
+var stdNums = []byte("0123456789")
+
+func getRandomCode(length int) string {
+	var result []byte
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0; i < length; i++ {
+		result = append(result, stdNums[r.Intn(len(stdNums))])
 	}
 	return string(result)
 }

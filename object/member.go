@@ -39,6 +39,9 @@ type Member struct {
 	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
 	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
+	QQAccount         string `xorm:"qq_account varchar(100)" json:"qqAccount"`
+	QQOpenId          string `xorm:"qq_open_id varchar(100)" json:"-"`
+	QQVerifiedTime    string `xorm:"qq_verified_time varchar(100)" json:"qqVerifiedTime"`
 	CheckinDate       string `xorm:"varchar(20)" json:"-"`
 }
 
@@ -210,6 +213,20 @@ func GetPhoneNumber(phoneNumber string) *Member {
 
 func GetGoogleAccount(googleAccount string) *Member {
 	member := Member{GoogleAccount: googleAccount}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetQQAccount(qqOpenId string) *Member {
+	member := Member{QQOpenId: qqOpenId}
 	existed, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
