@@ -23,8 +23,6 @@ import (
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/routers"
 	"github.com/casbin/casbin-forum/service"
-
-	_ "github.com/casbin/casbin-forum/routers"
 )
 
 func main() {
