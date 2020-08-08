@@ -56,4 +56,4 @@ export const GithubRepo = "https://github.com/casbin/casbin-forum"
 
 export const Domain = "forum.casbin.com"
 
-export const DefaultLanguage = "zh"
+export const DefaultLanguage = "en"
