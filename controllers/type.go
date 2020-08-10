@@ -124,3 +124,13 @@ type resetPasswordValidateCode struct {
 	Method   string `json:"method"`
 	Username string `json:"username"`
 }
+
+type fileDescribe struct {
+	Desc     string `json:"desc"`
+	FileName string `json:"fileName"`
+}
+
+type fileNumResp struct {
+	Num    int `json:"num"`
+	MaxNum int `json:"maxNum"`
+}

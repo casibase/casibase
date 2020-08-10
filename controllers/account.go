@@ -147,6 +147,7 @@ func (c *APIController) Signup() {
 			CompanyTitle: form.CompanyTitle,
 			SilverCount:  2,
 			Location:     form.Location,
+			FileQuota:    object.DefaultUploadFileQuota,
 		}
 		if no == 0 {
 			member.IsModerator = true

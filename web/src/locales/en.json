@@ -91,7 +91,8 @@
     "Receive today's checkin bonus": "Receive today's checkin bonus",
     "Hottest Nodes": "Hottest Nodes",
     "Newest Nodes": "Newest Nodes",
-    "Today Top 10": "Today Top 10"
+    "Today Top 10": "Today Top 10",
+    "File library": "File library"
   },
   "balance":
   {
@@ -352,13 +353,46 @@
     "The password reset is complete. You can now log in with the new password.": "The password reset is complete. You can now log in with the new password.",
     "Log in now": "Log in now"
   },
+  "file":
+  {
+    "Confirm to delete": "Confirm to delete",
+    "?": "?",
+    "The title information of the picture is necessary": "The title information of the picture is necessary",
+    "Delete": "Delete",
+    "uploading": "uploading",
+    "Support all types of files within 6MB": "Support all types of files within 6MB",
+    "Drop files here, or click upload": "Drop files here, or click upload",
+    "Upload new file": "Upload new file",
+    "Uploaded file": "Uploaded file",
+    "You can upload": "You can upload",
+    "files now": "files now",
+    "Recharge to get more storage space": "Recharge to get more storage space",
+    "There is no preview for this type of file, click to download/view": "There is no preview for this type of file, click to download/view",
+    "Privacy and content policy": "Privacy and content policy",
+    "File Library is a storage and distribution service for publicly sharing files. The final links of all files will not be protected for privacy, and the Referer will not be checked, so external links without any restrictions can be supported.": "File Library is a storage and distribution service for publicly sharing files. The final links of all files will not be protected for privacy, and the Referer will not be checked, so external links without any restrictions can be supported.",
+    "If the file is something you do not want to be seen by others, then please do not upload it. At the same time, do not upload any file content that is prohibited by law.": "If the file is something you do not want to be seen by others, then please do not upload it. At the same time, do not upload any file content that is prohibited by law.",
+    "file": "file",
+    "upload": "upload",
+    "views": "views",
+    "Edit information": "Edit information",
+    "Edit file information": "Edit file information",
+    "No preview for this type of file": "No preview for this type of file",
+    "Open in new window": "Open in new window",
+    "File title": "File title",
+    "Description": "Description",
+    "submit": "submit",
+    "'s file library": "'s file library",
+    "There are": "There are",
+    "files": "files"
+  },
   "loading":
   {
     "Please wait patiently...": "Please wait patiently....",
     "Topic is loading": "Topic is loading",
     "Logging in ...": "Logging in ...",
     "Member profile is loading": "Member profile is loading",
-    "Node is loading": "Node is loading"
+    "Node is loading": "Node is loading",
+    "File is loading": "File is loading"
   },
   "footer":
   {
@@ -409,6 +443,10 @@
     "Please try again": "Please try again",
     "Validate code error": "Validate code error",
     "Email and account do not correspond": "Email and account do not correspond",
-    "This password reset request has expired": "This password reset request has expired"
+    "This password reset request has expired": "This password reset request has expired",
+    "File not found": "File not found",
+    "You have exceeded the upload limit.": "You have exceeded the upload limit.",
+    "Add file failed, please try again.": "Add file failed, please try again.",
+    "Delete file failed, please try again.": "Delete file failed, please try again."
   }
 }

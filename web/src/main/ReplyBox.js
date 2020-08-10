@@ -127,7 +127,7 @@ class ReplyBox extends React.Component {
         list.push(this.state.replies[i].author + " ")
       }
     }
-    console.log(list)
+    //console.log(list)
     this.setState({
       memberList: list
     })
@@ -260,7 +260,7 @@ class ReplyBox extends React.Component {
                       }
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
-                        <ReactMarkdown source={Setting.getFormattedContent(reply.content)} escapeHtml={false} />
+                        <ReactMarkdown source={Setting.getFormattedContent(reply.content, true)} escapeHtml={false} />
                       </div>
                     </td>
                   </tr>

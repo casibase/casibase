@@ -162,9 +162,9 @@ class NewBox extends React.Component {
             >
               <CodeMirror
                 editorDidMount={(editor) => Tools.attachEditor(editor)}
-                onPaste={() => Tools.uploadPic()}
+                onPaste={() => Tools.uploadMdFile()}
                 value={this.state.form.body}
-                onDrop={() => Tools.uploadPic()}
+                onDrop={() => Tools.uploadMdFile()}
                 options={{mode: 'markdown', lineNumbers: true}}
                 onBeforeChange={(editor, data, value) => {
                   this.updateFormField("body", value);

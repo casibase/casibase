@@ -91,7 +91,8 @@
     "Receive today's checkin bonus": "领取今日的登录奖励",
     "Hottest Nodes": "最热节点",
     "Newest Nodes": "最近新增节点",
-    "Today Top 10": "今日热议主题"
+    "Today Top 10": "今日热议主题",
+    "File library": "文件库"
   },
   "balance":
   {
@@ -352,13 +353,46 @@
     "The password reset is complete. You can now log in with the new password.": "密码重设完成。现在可以使用新密码登录了。",
     "Log in now": "现在登录"
   },
+  "file":
+  {
+    "Confirm to delete": "确认删除",
+    "?": "？",
+    "The title information of the picture is necessary": "图片的标题信息是必要的",
+    "Delete": "删除",
+    "uploading": "上传中",
+    "Support all types of files within 6MB": "支持 6MB 以内的所有类型文件",
+    "Drop files here, or click upload": "拖拽文件至此，或者点击上传",
+    "Upload new file": "上传新文件",
+    "Uploaded file": "已上传文件",
+    "You can upload": "你还可以上传",
+    "files now": "个文件",
+    "Recharge to get more storage space": "充值获得更多存储空间",
+    "There is no preview for this type of file, click to download/view": "此类型文件无预览，点击下载/查看",
+    "Privacy and content policy": "隐私及内容政策",
+    "File Library is a storage and distribution service for publicly sharing files. The final links of all files will not be protected for privacy, and the Referer will not be checked, so external links without any restrictions can be supported.": "文件库是一个用于公开分享文件的存储和分发服务。所有文件的最终链接不会做任何私密保护，也不会检查 Referer，因此可以支持无任何限制的外链。",
+    "If the file is something you do not want to be seen by others, then please do not upload it. At the same time, do not upload any file content that is prohibited by law.": "如果文件是你不希望被别人看到的，那么请不要上传。同时，也不要上传任何被法律禁止的文件内容。",
+    "file": "文件",
+    "upload": "上传",
+    "views": "次查看",
+    "Edit information": "编辑信息",
+    "Edit file information": "编辑文件信息",
+    "No preview for this type of file": "此类型文件无预览",
+    "Open in new window": "在新窗口打开",
+    "File title": "文件标题",
+    "Description": "简介文字",
+    "submit": "提交",
+    "'s file library": "的文件库",
+    "There are": "共有",
+    "files": "个文件"
+  },
   "loading":
   {
     "Please wait patiently...": "请耐心等待......",
     "Topic is loading": "主题正在加载",
     "Logging in ...": "正在登录......",
     "Member profile is loading": "用户资料正在加载",
-    "Node is loading": "节点正在加载"
+    "Node is loading": "节点正在加载",
+    "File is loading": "文件正在加载"
   },
   "footer":
   {
@@ -409,6 +443,10 @@
     "Please try again": "请重试",
     "Validate code error": "验证码错误",
     "Email and account do not correspond": "邮箱和用户名不匹配",
-    "This password reset request has expired": "此重置密码请求已过期"
+    "This password reset request has expired": "此重置密码请求已过期",
+    "File not found": "未找到该文件",
+    "You have exceeded the upload limit.": "您已超出上传限制。",
+    "Add file failed, please try again.": "添加文件失败，请重试。",
+    "Delete file failed, please try again.": "删除文件失败，请重试。"
   }
 }

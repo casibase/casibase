@@ -110,9 +110,9 @@ class EditBox extends React.Component {
     return (
       <CodeMirror
         editorDidMount={(editor) => Tools.attachEditor(editor)}
-        onPaste={() => Tools.uploadPic()}
+        onPaste={() => Tools.uploadMdFile()}
         value={this.state.form.content}
-        onDrop={() => Tools.uploadPic()}
+        onDrop={() => Tools.uploadMdFile()}
         options={{mode: 'markdown', lineNumbers: false}}
         onBeforeChange={(editor, data, value) => {
           this.updateFormField("content", value)

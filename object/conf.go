@@ -19,6 +19,7 @@ var (
 	DefaultHomePageNum         = 50
 	DefaultNotificationPageNum = 10
 	DefaultBalancePageNum      = 25
+	DefaultFilePageNum         = 25
 	UserNamingRestrictions     = true
 	HomePageNodeNum            = 8
 	TopicThanksCost            = 15
@@ -37,6 +38,7 @@ var (
 	TopicHitRecordExpiredTime  = 1    //day
 	ValidateCodeExpiredTime    = 20   //minutes
 	UseOAuthProxy              = false
+	DefaultUploadFileQuota     = 50
 
 	DefaultCronJobs = []*CronJob{
 		{

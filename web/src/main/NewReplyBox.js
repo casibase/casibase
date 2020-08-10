@@ -221,10 +221,10 @@ class NewReplyBox extends React.Component {
             >
               <CodeMirrorsEditor
                 editorDidMount={(editor) => Tools.attachEditor(editor)}
-                onPaste={() => Tools.uploadPic()}
+                onPaste={() => Tools.uploadMdFile()}
                 value={this.props.content}
                 onFocus={() => this.dockBox(true)}
-                onDrop={() => Tools.uploadPic()}
+                onDrop={() => Tools.uploadMdFile()}
                 options={{mode: 'markdown', lineNumbers: false, lineWrapping:true, theme:`${this.props.nodeId}`, extraKeys:{"Ctrl-Space": "autocomplete"}, hintOptions: {hint: this.synonyms, alignWithWord: false, closeOnUnfocus:false, closeOnBlur: false, className: "textcomplete-item"}}}
                 onBeforeChange={(editor, data, value) => {
                   this.handleChange(editor, value)
