@@ -111,7 +111,7 @@ class LatestReplyBox extends React.Component {
         </div>
         <div className="inner">
           <div className="reply_content">
-            <ReactMarkdown source={Setting.getFormattedContent(reply.replyContent)} escapeHtml={false} />
+            <ReactMarkdown source={Setting.getFormattedContent(reply.replyContent, true)} escapeHtml={false} />
           </div>
         </div>
       </div>

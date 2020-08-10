@@ -125,7 +125,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
             </div>
           </td>
         )
@@ -143,7 +143,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
             </div>
           </td>
         )
@@ -202,7 +202,7 @@ class NotificationBox extends React.Component {
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content)} escapeHtml={false} />
+              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
             </div>
           </td>
         )

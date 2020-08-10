@@ -215,13 +215,17 @@ export function changeMomentLanguage(lng) {
   }
 }
 
-export function getFormattedContent(content) {
-  return pangu.spacing(content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
+export function getFormattedContent(content, spacing) {
+  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
     if (w[w.length - 1] !== " ") {
       return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1,)})`;
     }
     return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `;
-  }));
+  })
+  if (spacing) {
+    return pangu.spacing(formattedContent);
+  }
+  return formattedContent
 }
 
 export function getBoolConvertedText(status) {
@@ -229,4 +233,29 @@ export function getBoolConvertedText(status) {
     return i18next.t("general:true");
   }
   return i18next.t("general:false");
+}
+
+const stdPicExt = ["png", "jpg", "gif", "jpeg"]
+
+export function getFileType(fileName) {
+  let fileType = "pic"
+  let fileIndex = fileName.lastIndexOf(".");
+  let ext = fileName.substr(fileIndex+1);
+  let index = stdPicExt.indexOf(ext);
+  if(index < 0) {
+    fileType = "file"
+  }
+  return {fileType: fileType, ext: ext}
+}
+
+const unitSuffix = ["Bytes", "KB", "MB"]
+
+export function getFormattedSize(fileSize){
+  if (fileSize === null) {
+      return "0 Bytes";
+  }
+  let index = Math.floor(Math.log(fileSize)/Math.log(1024));
+  let size = (fileSize/Math.pow(1024, index)).toPrecision(3);
+
+  return size+" "+unitSuffix[index];
 }

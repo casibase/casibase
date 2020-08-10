@@ -65,3 +65,13 @@ func UploadAvatarToAliOSS(avatar []byte, memberId string) string {
 
 	return avatarURL
 }
+
+func DeleteOSSFile(filePath string) bool {
+	err := ossBucket.DeleteObject(filePath)
+	if err != nil {
+		panic(err)
+		return false
+	}
+
+	return true
+}

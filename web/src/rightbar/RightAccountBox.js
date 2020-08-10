@@ -148,6 +148,17 @@ class RightAccountBox extends React.Component {
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
+              <td width="28"><a href="/i"><img src={Setting.getStatic("/static/img/essentials/images.png")} width="28" border="0" style={{verticalAlign: "bottom"}}/></a></td>
+              <td width="10"></td>
+              <td width="auto" valign="middle" align="left"><a href="/i">{i18next.t("bar:File library")}</a></td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className={`cell ${this.props.nodeId}`} style={{padding: "8px", lineHeight: "100%"}}>
+          <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+            <tbody>
+            <tr>
               <td width="28">
                 <a href="/new">
                   <img src={Setting.getStatic("/static/img/essentials/compose.png")} width="28" border="0" style={{verticalAlign: "bottom"}} />

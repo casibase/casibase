@@ -36,6 +36,7 @@ type Member struct {
 	Website           string `xorm:"varchar(100)" json:"website"`
 	Location          string `xorm:"varchar(100)" json:"location"`
 	Language          string `xorm:"varchar(10)"  json:"language"`
+	FileQuota         int    `xorm:"int" json:"fileQuota"`
 	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
 	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
@@ -312,4 +313,18 @@ func UpdateMemberPassword(id, password string) bool {
 	}
 
 	return affected != 0
+}
+
+func GetMemberFileQuota(memberId string) int {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", memberId).Cols("file_quota").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.FileQuota
+	} else {
+		return 0
+	}
 }

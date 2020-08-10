@@ -116,6 +116,13 @@ func initAPI() {
 	beego.Router("/api/add-thanks", &controllers.APIController{}, "POST:AddThanks")
 	beego.Router("/api/get-consumption-record", &controllers.APIController{}, "GET:GetConsumptionRecord")
 
+	beego.Router("/api/get-files", &controllers.APIController{}, "GET:GetFiles")
+	beego.Router("/api/add-file-record", &controllers.APIController{}, "POST:AddFileRecord")
+	beego.Router("/api/delete-file", &controllers.APIController{}, "POST:DeleteFile")
+	beego.Router("/api/get-file", &controllers.APIController{}, "GET:GetFile")
+	beego.Router("/api/update-file-desc", &controllers.APIController{}, "POST:UpdateFileDescribe")
+	beego.Router("/api/get-file-num", &controllers.APIController{}, "GET:GetFileNum")
+
 	beego.Router("/api/update-hot-info", &controllers.APIController{}, "POST:UpdateHotInfo")
 	beego.Router("/api/update-expired-data", &controllers.APIController{}, "POST:ChangeExpiredDataStatus")
 	beego.Router("/api/get-captcha", &controllers.APIController{}, "GET:GetCaptcha")

@@ -59,6 +59,7 @@ import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
 import EditBox from "./main/EditBox";
 import ForgotBox from "./main/ForgotBox";
+import FilesBox from "./main/FilesBox";
 import i18next from "i18next";
 
 class App extends Component {
@@ -271,6 +272,24 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <ForgotBox account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/i">
+          <div id="Main">
+            <div className="sep20" />
+            <FilesBox account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/i/:event">
+          <div id="Main">
+            <div className="sep20" />
+            <FilesBox account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/i/edit/:event">
+          <div id="Main">
+            <div className="sep20" />
+            <FilesBox account={this.state.account} edit={true} />
           </div>
         </Route>
       </Switch>
