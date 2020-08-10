@@ -318,7 +318,7 @@ class FilesBox extends React.Component {
           </div>
           <span className="gray">
             <li className="fa fa-cloud-upload"></li>
-            &nbsp;{" "}{i18next.t("file:Uploaded file")}
+            &nbsp;{" "}{i18next.t("file:You can upload")}
             {" "}{this.state.maxFileNum - this.state.filesNum}{" "}{i18next.t("file:files now")}</span>
         </div>
           <div className="inner"><span className="gray"><li className="fa fa-credit-card"></li>
