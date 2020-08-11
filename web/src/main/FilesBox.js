@@ -114,11 +114,13 @@ class FilesBox extends React.Component {
 
     FileBackend.getFiles(this.state.limit, this.state.page)
       .then((res) => {
-        this.setState({
-          files: res?.data,
-          filesNum: res?.data2.num,
-          maxFileNum: res?.data2.maxNum,
-        });
+        if (res?.status === "ok") {
+          this.setState({
+            files: res?.data,
+            filesNum: res?.data2.num,
+            maxFileNum: res?.data2.maxNum,
+          });
+        }
       });
   }
 
