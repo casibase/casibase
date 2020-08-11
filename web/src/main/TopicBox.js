@@ -22,6 +22,7 @@ import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import {goToLink} from "../Setting"; 
 import "../node.css"
+import Zmage from "react-zmage";
 import i18next from "i18next";
 
 import "codemirror/lib/codemirror.css"
@@ -141,6 +142,12 @@ class TopicBox extends React.Component {
         })
     }
   }
+
+  renderImage = ({alt, src}) => {
+    return(
+      <Zmage src={src} alt={alt} />
+    );
+  };
 
   render() {
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
@@ -296,7 +303,13 @@ class TopicBox extends React.Component {
         <div className={`cell ${this.state.topic.nodeId}`}>
           <div className={`topic_content ${this.state.topic.nodeId}`}>
             <div className="markdown_body">
-              <ReactMarkdown source={Setting.getFormattedContent(this.state.topic?.content, true)} escapeHtml={false} />
+              <ReactMarkdown
+                renderers={{
+                  image: this.renderImage
+                }}
+                source={Setting.getFormattedContent(this.state.topic?.content, true)}
+                escapeHtml={false}
+              />
             </div>
           </div>
         </div>

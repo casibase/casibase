@@ -21,7 +21,9 @@ import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import ReactMarkdown from "react-markdown";
+import Zmage from "react-zmage";
 import i18next from "i18next";
+
 const pangu = require("pangu")
 
 class ReplyBox extends React.Component {
@@ -166,6 +168,12 @@ class ReplyBox extends React.Component {
     }
   }
 
+  renderImage = ({alt, src}) => {
+    return(
+      <Zmage src={src} alt={alt} />
+    );
+  };
+
   renderReply() {
     return (
       <div className={`box ${this.state.topic.nodeId}`}>
@@ -260,7 +268,13 @@ class ReplyBox extends React.Component {
                       }
                       <div className="sep5" />
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
-                        <ReactMarkdown source={Setting.getFormattedContent(reply.content, true)} escapeHtml={false} />
+                        <ReactMarkdown
+                          renderers={{
+                            image: this.renderImage
+                          }}
+                          source={Setting.getFormattedContent(reply.content, true)}
+                          escapeHtml={false}
+                        />
                       </div>
                     </td>
                   </tr>
