@@ -216,6 +216,23 @@ class BalanceBox extends React.Component {
             </td>
           </tr>
         )
+      case 9:
+        return (
+          <tr>
+            <td className="d">
+              <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
+            </td>
+            <td className="d">{i18next.t("balance:Top topic")}</td>
+            <td className="d" style={{textAlign: "right"}}>
+              <span className="negative">
+                <strong>{record?.amount + ".0"}</strong>
+              </span>
+            </td>
+            <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
+            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Topped topic")}{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a>{" "}{i18next.t("balance:进行置顶操作")}</span>
+            </td>
+          </tr>
+        )
     }
   }
 

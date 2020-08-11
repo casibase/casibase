@@ -25,13 +25,13 @@ export function attachEditor(editor) {
 
 // upload file through markdown editor
 export function uploadMdFile() {
-  const stdPicExt = ["png", "jpg", "gif", "jpeg"]
+  const stdImageExt = ["png", "jpg", "gif", "jpeg"]
   /* eslint-disable */inlineAttachment.prototype.onFileUploadResponse = function(fileName, fileUrl) {
     let newValue = this.settings.urlText.replace('file', fileName);
     let text = this.editor.getValue().replace(this.lastValue, newValue).replace('{filename}', fileUrl);
     let fileIndex = fileName.lastIndexOf(".");
     let ext = fileName.substr(fileIndex+1);
-    let index = stdPicExt.indexOf(ext);
+    let index = stdImageExt.indexOf(ext);
     if(index < 0) {
       text = text.substring(1);
     }
@@ -63,7 +63,7 @@ export function uploadMdFile() {
       this.onFileUploadResponse(file.name, encodeURI(mdUrl));
       uploadStatus = true
       FileBackend.addFileRecord({fileName: originalFileName, filePath: filePath, fileUrl: mdUrl, size: size})
-    }).catch(error => Setting.showMessage("error", `Adding pic failed：${error}`));
+    }).catch(error => Setting.showMessage("error", `Adding image failed：${error}`));
   }
 }
 
@@ -109,5 +109,5 @@ export function uploadAvatar(file, redirectUrl) {
   newClient.multipartUpload(`${filePath}`, file).then(res => {
     console.log('upload success');
     MemberBackend.updateMemberAvatar(`${url}/avatar/${fileName}`).then(() => window.location.href=`${redirectUrl}?success=true`);
-  }).catch(error => Setting.showMessage("error", `Adding pic failed：${error}`));
+  }).catch(error => Setting.showMessage("error", `Adding image failed：${error}`));
 }

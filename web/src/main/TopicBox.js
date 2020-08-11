@@ -18,6 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as NodeBackend from "../backend/NodeBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
+import ReplyBox from "./ReplyBox";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import {goToLink} from "../Setting"; 
@@ -41,6 +42,7 @@ class TopicBox extends React.Component {
       topic: [],
       topicThanksCost: 15,
       favoritesStatus: false,
+      defaultTopTopicTime: 10
     };
   }
 
@@ -141,6 +143,59 @@ class TopicBox extends React.Component {
           }
         })
     }
+  }
+
+  topTopic() {
+    if (this.props.account?.isModerator) {
+      let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
+      TopicBackend.topTopic(this.state.topic?.id, time)
+        .then((res) => {
+          if (res?.status === "ok") {
+            goToLink("/");
+          } else {
+            alert(i18next.t(`error:${res?.msg}`));
+          }
+        })
+      return;
+    }
+
+    if (this.state.topic?.topExpiredTime !== "") {
+      alert(i18next.t("topic:This topic has been topped"));
+      return;
+    }
+
+    if (window.confirm(`${i18next.t("topic:Are you sure you want to pin this topic for")} ${this.state.defaultTopTopicTime} ${i18next.t("topic:minutes? The operation price is 200 copper coins.")}`)) {
+      TopicBackend.topTopic(this.state.topic?.id, 10)
+        .then((res) => {
+          if (res?.status === "ok") {
+            goToLink("/");
+          } else {
+            alert(i18next.t(`error:${res?.msg}`));
+          }
+        })
+    }
+  }
+
+  renderTopTopic() {
+    return (
+      <div className="box">
+        <div className="inner">
+          <div className="fr">
+            &nbsp;{" "}
+            <a href="#;" onClick="">
+              {i18next.t("topic:Sink")}{" "}↓
+            </a>
+            &nbsp;{" "}
+            {
+              this.props.account?.isModerator ?
+                <a href="#;" onClick={() => this.topTopic()}>{i18next.t("topic:Top this topic")}</a> :
+                <a href="#;" onClick={() => this.topTopic()}>{i18next.t("topic:Top")}{" "}{this.state.defaultTopTopicTime}{" "}{i18next.t("topic:minutes")}</a>
+            }
+          </div>
+          &nbsp;
+        </div>
+      </div>
+    )
   }
 
   renderImage = ({alt, src}) => {
@@ -253,104 +308,127 @@ class TopicBox extends React.Component {
     }
 
     return (
-      <div className={`box ${this.state.topic.nodeId}`} style={{borderBottom: "0px"}}>
-        <div className={`header ${this.state.topic.nodeId}`}>
-          <div className="fr">
-            <Avatar username={this.state.topic?.author} size="large" avatar={this.state.topic?.avatar} />
-          </div>
-          <a href="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</a>
-          {" "}
-          <span className="chevron">
+      <div>
+        <div className={`box ${this.state.topic.nodeId}`} style={{borderBottom: "0px"}}>
+          <div className={`header ${this.state.topic.nodeId}`}>
+            <div className="fr">
+              <Avatar username={this.state.topic?.author} size="large" avatar={this.state.topic?.avatar}/>
+            </div>
+            <a href="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</a>
+            {" "}
+            <span className="chevron">
             &nbsp;›&nbsp;
           </span>
-          {" "}
-          <a href={`/go/${this.state.topic?.nodeId}`} className={`${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
-          <div className="sep10" />
-          <h1>
-            {this.state.topic?.title}
-          </h1>
-          <div id="topic_677954_votes" className="votes">
-            <a href="javascript:" onClick="upVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
-              <li className="fa fa-chevron-up" />
-            </a>
-            {" "}&nbsp;
-            <a href="javascript:" onClick="downVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
-              <li className="fa fa-chevron-down" />
-            </a>
-          </div>
-          &nbsp;{" "}
-          <small className="gray">
-            <a href={`/member/${this.state.topic?.author}`} className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
+            {" "}
+            <a href={`/go/${this.state.topic?.nodeId}`}
+               className={`${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
+            <div className="sep10"/>
+            <h1>
+              {this.state.topic?.title}
+            </h1>
+            <div id="topic_677954_votes" className="votes">
+              <a href="javascript:" onClick="upVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
+                <li className="fa fa-chevron-up"/>
+              </a>
+              {" "}&nbsp;
+              <a href="javascript:" onClick="downVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
+                <li className="fa fa-chevron-down"/>
+              </a>
+            </div>
             &nbsp;{" "}
-            {
-              this.state.topic?.editable ?
-                <span>
+            <small className="gray">
+              <a href={`/member/${this.state.topic?.author}`}
+                 className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
+              &nbsp;{" "}
+              {
+                this.state.topic?.editable ?
+                  <span>
                   <a href={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</a>
-                  &nbsp;{" "}
-                  <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
-                  &nbsp;{" "}
-                  {
-                    this.props.account?.isModerator ?
-                      <a onClick={() => this.deleteTopic()} href="javascript:void(0)" className="op">{i18next.t("topic:DELETE")}</a> : null
-                  }
+                    &nbsp;{" "}
+                    <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
+                    &nbsp;{" "}
+                    {
+                      this.props.account?.isModerator ?
+                        <a onClick={() => this.deleteTopic()} href="javascript:void(0)"
+                           className="op">{i18next.t("topic:DELETE")}</a> : null
+                    }
                 </span> : null
-            }
-          </small>
-        </div>
-        {
-          this.renderOutdatedProblem()
-        }
-        <div className={`cell ${this.state.topic.nodeId}`}>
-          <div className={`topic_content ${this.state.topic.nodeId}`}>
-            <div className="markdown_body">
-              <ReactMarkdown
-                renderers={{
-                  image: this.renderImage
-                }}
-                source={Setting.getFormattedContent(this.state.topic?.content, true)}
-                escapeHtml={false}
-              />
+              }
+            </small>
+          </div>
+          {
+            this.renderOutdatedProblem()
+          }
+          <div className={`cell ${this.state.topic.nodeId}`}>
+            <div className={`topic_content ${this.state.topic.nodeId}`}>
+              <div className="markdown_body">
+                <ReactMarkdown
+                  renderers={{
+                    image: this.renderImage
+                  }}
+                  source={Setting.getFormattedContent(this.state.topic?.content, true)}
+                  escapeHtml={false}
+                />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="topic_buttons">
-          <div className="fr topic_stats" style={{paddingTop: "4px"}}>
-            {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
-          </div>
-          {
-            this.props.account !== undefined ?
-              this.state.favoritesStatus ?
-                <a href="#;" onClick={() => {this.deleteFavorite()}} className="tb">{i18next.t("topic:Cancel Favor")}</a> : <a href="#;" onClick={() => {this.addFavorite()}} className="tb">{i18next.t("topic:Favor")}</a> :
-              null
-          }
-          <a href="#;" onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');" className="tb">
-            Tweet
-          </a>
-          &nbsp;
-          <a href="#;" onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');" className="tb">
-            Weibo
-          </a>
-          &nbsp;
-          <a href="#;" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="tb">
-            {i18next.t("topic:Ignore")}
-          </a>
-          &nbsp;
-          {
-            this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
-              this.state.topic?.thanksStatus === false ?
-                <div id="topic_thank">
-                  <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="tb">
-                    {i18next.t("topic:Thank")}
-                  </a>
-                </div> :
-                <div id="topic_thank">
-                  <span class="topic_thanked">
+          <div className="topic_buttons">
+            <div className="fr topic_stats" style={{paddingTop: "4px"}}>
+              {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
+            </div>
+            {
+              this.props.account !== undefined ?
+                this.state.favoritesStatus ?
+                  <a href="#;" onClick={() => {
+                    this.deleteFavorite()
+                  }} className="tb">{i18next.t("topic:Cancel Favor")}</a> : <a href="#;" onClick={() => {
+                    this.addFavorite()
+                  }} className="tb">{i18next.t("topic:Favor")}</a> :
+                null
+            }
+            <a href="#;"
+               onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
+               className="tb">
+              Tweet
+            </a>
+            &nbsp;
+            <a href="#;"
+               onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');"
+               className="tb">
+              Weibo
+            </a>
+            &nbsp;
+            <a href="#;"
+               onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
+               className="tb">
+              {i18next.t("topic:Ignore")}
+            </a>
+            &nbsp;
+            {
+              this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+                this.state.topic?.thanksStatus === false ?
+                  <div id="topic_thank">
+                    <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
+                       className="tb">
+                      {i18next.t("topic:Thank")}
+                    </a>
+                  </div> :
+                  <div id="topic_thank">
+                  <span className="topic_thanked">
                     {i18next.t("topic:Thanked")}
                   </span>
-                </div>
-              : null
-          }
+                  </div>
+                : null
+            }
+          </div>
         </div>
+        <div className="sep20" />
+        <ReplyBox account={this.props.account} />
+        <div className="sep20" />
+        {
+          this.props.account?.id === this.state.topic?.author || this.props.account?.isModerator ?
+            this.renderTopTopic() : null
+        }
       </div>
     );
   }

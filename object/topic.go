@@ -21,21 +21,22 @@ import (
 )
 
 type Topic struct {
-	Id            int      `xorm:"int notnull pk autoincr" json:"id"`
-	Author        string   `xorm:"varchar(100)" json:"author"`
-	NodeId        string   `xorm:"varchar(100)" json:"nodeId"`
-	NodeName      string   `xorm:"varchar(100)" json:"nodeName"`
-	Title         string   `xorm:"varchar(100)" json:"title"`
-	CreatedTime   string   `xorm:"varchar(100)" json:"createdTime"`
-	Tags          []string `xorm:"varchar(200)" json:"tags"`
-	LastReplyUser string   `xorm:"varchar(100)" json:"lastReplyUser"`
-	LastReplyTime string   `xorm:"varchar(100)" json:"lastReplyTime"`
-	ReplyCount    int      `json:"replyCount"`
-	UpCount       int      `json:"upCount"`
-	HitCount      int      `json:"hitCount"`
-	Hot           int      `json:"hot"`
-	FavoriteCount int      `json:"favoriteCount"`
-	Deleted       bool     `xorm:"bool" json:"-"`
+	Id             int      `xorm:"int notnull pk autoincr" json:"id"`
+	Author         string   `xorm:"varchar(100)" json:"author"`
+	NodeId         string   `xorm:"varchar(100)" json:"nodeId"`
+	NodeName       string   `xorm:"varchar(100)" json:"nodeName"`
+	Title          string   `xorm:"varchar(100)" json:"title"`
+	CreatedTime    string   `xorm:"varchar(100)" json:"createdTime"`
+	Tags           []string `xorm:"varchar(200)" json:"tags"`
+	LastReplyUser  string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	LastReplyTime  string   `xorm:"varchar(100)" json:"lastReplyTime"`
+	ReplyCount     int      `json:"replyCount"`
+	UpCount        int      `json:"upCount"`
+	HitCount       int      `json:"hitCount"`
+	Hot            int      `json:"hot"`
+	FavoriteCount  int      `json:"favoriteCount"`
+	TopExpiredTime string   `xorm:"varchar(100)" json:"topExpiredTime"`
+	Deleted        bool     `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -61,7 +62,7 @@ func GetCreatedTopicsNum(memberId string) int {
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("top_expired_time").Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -143,7 +144,7 @@ func GetTopicAuthor(id int) string {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("top_expired_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -385,4 +386,40 @@ func GetTopicEditableStatus(member, author, createdTime string) bool {
 	}
 
 	return true
+}
+
+func ChangeTopicTopExpiredTime(id int, date string) bool {
+	topic := GetTopic(id)
+	if topic == nil {
+		return false
+	}
+
+	topic.TopExpiredTime = date
+	affected, err := adapter.engine.Id(id).Cols("top_expired_time").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ExpireTopTopic() int {
+	topics := []*Topic{}
+	err := adapter.engine.Where("top_expired_time != ?", "").Cols("id, top_expired_time").Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	var num int
+	date := util.GetCurrentTime()
+	for _, v := range topics {
+		if v.TopExpiredTime <= date {
+			res := ChangeTopicTopExpiredTime(v.Id, "")
+			if res {
+				num++
+			}
+		}
+	}
+
+	return num
 }

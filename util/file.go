@@ -19,7 +19,7 @@ import (
 	"strings"
 )
 
-var stdPicExt = []string{"png", "jpg", "gif", "jpeg"}
+var stdImageExt = []string{"png", "jpg", "gif", "jpeg"}
 
 func FileExt(fileName string) string {
 	ext := path.Ext(fileName)
@@ -27,7 +27,7 @@ func FileExt(fileName string) string {
 	return strings.ReplaceAll(ext, ".", "")
 }
 
-// FileType return pic or file
+// FileType return image or file
 func FileType(fileName string) string {
 	ext := FileExt(fileName)
 
@@ -35,9 +35,9 @@ func FileType(fileName string) string {
 		return "file"
 	}
 
-	for _, v := range stdPicExt {
+	for _, v := range stdImageExt {
 		if v == ext {
-			return "pic"
+			return "image"
 		}
 	}
 	return "file"

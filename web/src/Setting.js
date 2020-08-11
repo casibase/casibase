@@ -235,13 +235,13 @@ export function getBoolConvertedText(status) {
   return i18next.t("general:false");
 }
 
-const stdPicExt = ["png", "jpg", "gif", "jpeg"]
+const stdImageExt = ["png", "jpg", "gif", "jpeg"]
 
 export function getFileType(fileName) {
-  let fileType = "pic"
+  let fileType = "image"
   let fileIndex = fileName.lastIndexOf(".");
   let ext = fileName.substr(fileIndex+1);
-  let index = stdPicExt.indexOf(ext);
+  let index = stdImageExt.indexOf(ext);
   if(index < 0) {
     fileType = "file"
   }

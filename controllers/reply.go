@@ -106,6 +106,7 @@ func (c *APIController) AddReply() {
 	affected, id := object.AddReply(&reply)
 	if affected {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
+		object.CreateReplyConsumption(reply.Author, id)
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser(), true)
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)

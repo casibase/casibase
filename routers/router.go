@@ -48,6 +48,7 @@ func initAPI() {
 	beego.Router("/api/add-topic-browse-record", &controllers.APIController{}, "POST:AddTopicBrowseCount")
 	beego.Router("/api/update-topic-node", &controllers.APIController{}, "POST:UpdateTopicNode")
 	beego.Router("/api/edit-content", &controllers.APIController{}, "POST:EditContent")
+	beego.Router("/api/top-topic", &controllers.APIController{}, "POST:TopTopic")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")

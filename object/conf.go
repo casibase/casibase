@@ -26,6 +26,7 @@ var (
 	ReplyThanksCost            = 10
 	CreateTopicCost            = 20
 	CreateReplyCost            = 5
+	TopTopicCost               = 200
 	ReceiveReplyBonus          = 5
 	MaxDailyCheckinBonus       = 20
 	LatestNodeNum              = 20
@@ -37,6 +38,7 @@ var (
 	NodeHitRecordExpiredTime   = 1    //month
 	TopicHitRecordExpiredTime  = 1    //day
 	ValidateCodeExpiredTime    = 20   //minutes
+	DefaultTopTopicTime        = 10   //minutes
 	UseOAuthProxy              = false
 	DefaultUploadFileQuota     = 50
 
@@ -52,7 +54,7 @@ var (
 			State:    "active",
 		},
 		{
-			Id:       "expireValidateCode",
+			Id:       "expireData",
 			BumpTime: "*/1:*",
 			State:    "active",
 		},
@@ -70,7 +72,12 @@ var (
 		},
 		{
 			Id:    "expireValidateCode",
-			JobId: "expireValidateCode",
+			JobId: "expireData",
+			State: "active",
+		},
+		{
+			Id:    "expireTopTopic",
+			JobId: "expireData",
 			State: "active",
 		},
 	}

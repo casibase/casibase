@@ -77,7 +77,7 @@ class FilesBox extends React.Component {
           if (this.state.file === null) {
             return;
           }
-          if (this.state.file?.fileType === "pic") {
+          if (this.state.file?.fileType === "image") {
             browserImageSize(this.state.file?.fileUrl)
               .then((size) => {
                 this.setState({
@@ -222,7 +222,7 @@ class FilesBox extends React.Component {
   editDesc() {
     if (this.state.form.fileName === "") {
       this.setState({
-        message: i18next.t("file:The title information of the picture is necessary")
+        message: i18next.t("file:The title information of the image is necessary")
       });
       return;
     }
@@ -358,7 +358,7 @@ class FilesBox extends React.Component {
         </div>
         <div class="cell" style={{textAlign: "center", padding: "12px"}}>
           {
-            file?.fileType === "pic" ?
+            file?.fileType === "image" ?
               <a href={file?.fileUrl} className="img_view" target="_blank">
                 <img src={file?.fileUrl} border="0" className="embedded_image"/>
               </a> :
@@ -373,7 +373,7 @@ class FilesBox extends React.Component {
           <div class="sep5"></div>
           <span class="gray">
             {
-              file?.fileType === "pic" ?
+              file?.fileType === "image" ?
                 <span>
                   {this.state.fileWidth}𝖷{this.state.fileHeight}
                   {" "}&nbsp;·&nbsp;
@@ -427,7 +427,7 @@ class FilesBox extends React.Component {
             <tr>
               <td width="160" valign="top" align="center" className="image-edit-left">
                 {
-                  file?.fileType === "pic" ?
+                  file?.fileType === "image" ?
                     <a href={`/i/${file?.id}`} target="_blank" title={i18next.t("file:Open in new window")}>
                       <img src={file?.fileUrl} border="0" width="160" />
                     </a> :
@@ -439,7 +439,7 @@ class FilesBox extends React.Component {
                 }
                 <div className="inner">
                   {
-                    file?.fileType === "pic" ?
+                    file?.fileType === "image" ?
                       <span>
                         {this.state.fileWidth}𝖷{this.state.fileHeight}
                         <div className="sep5"></div>

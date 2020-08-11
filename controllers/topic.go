@@ -391,3 +391,43 @@ func (c *APIController) EditContent() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *APIController) TopTopic() {
+	if c.RequireLogin() {
+		return
+	}
+
+	idStr := c.Input().Get("id")
+	memberId := c.GetSessionUser()
+
+	id := util.ParseInt(idStr)
+	var resp Response
+	var res bool
+
+	if object.CheckModIdentity(memberId) {
+		timeStr := c.Input().Get("time")
+		time := util.ParseInt(timeStr)
+		date := util.GetTimeMinute(time)
+		res = object.ChangeTopicTopExpiredTime(id, date)
+	} else if object.GetTopicAuthor(id) == memberId {
+		balance := object.GetMemberBalance(memberId)
+		if balance < object.TopTopicCost {
+			resp = Response{Status: "fail", Msg: "You don't have enough balance."}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+		object.TopTopicConsumption(memberId, id)
+		date := util.GetTimeMinute(object.DefaultTopTopicTime)
+		res = object.ChangeTopicTopExpiredTime(id, date)
+	} else {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
