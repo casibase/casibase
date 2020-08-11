@@ -123,7 +123,10 @@
     "Amount": "数额",
     "Balance": "余额",
     "Description": "描述",
-    "Recharge": "充值"
+    "Recharge": "充值",
+    "Top topic": "主题置顶",
+    "Topped topic": "对主题",
+    "进行置顶操作": "进行置顶操作"
   },
   "mission":
   {
@@ -179,7 +182,15 @@
     "Node usage help": "节点使用帮助",
     "Treatment of link handling type spam": "对于链接搬运类型 spam 的处理",
     "EDIT": "编辑",
-    "MOVE": "移动"
+    "MOVE": "移动",
+    "How long do you want to top this topic? (minute)": "你想置顶此主题多久？（分钟）",
+    "This topic has been topped": "此主题已置顶",
+    "Are you sure you want to pin this topic for": "你确认要将此主题置顶",
+    "minutes? The operation price is 200 copper coins.": "分钟？该操作价格为 200 铜币。",
+    "Sink": "下沉",
+    "Top this topic": "置顶主题",
+    "Top": "置顶",
+    "minutes": "分钟"
   },
   "new":
   {
@@ -357,7 +368,7 @@
   {
     "Confirm to delete": "确认删除",
     "?": "？",
-    "The title information of the picture is necessary": "图片的标题信息是必要的",
+    "The title information of the image is necessary": "图片的标题信息是必要的",
     "Delete": "删除",
     "uploading": "上传中",
     "Support all types of files within 6MB": "支持 6MB 以内的所有类型文件",
@@ -447,6 +458,7 @@
     "File not found": "未找到该文件",
     "You have exceeded the upload limit.": "您已超出上传限制。",
     "Add file failed, please try again.": "添加文件失败，请重试。",
-    "Delete file failed, please try again.": "删除文件失败，请重试。"
+    "Delete file failed, please try again.": "删除文件失败，请重试。",
+    "You don't have enough balance.": "您余额不足。"
   }
 }

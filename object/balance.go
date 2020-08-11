@@ -15,15 +15,14 @@
 package object
 
 import (
-	"log"
 	"sync"
 
 	"github.com/casbin/casbin-forum/util"
 )
 
-// ConsumptionType 1-8 means:
+// ConsumptionType 1-9 means:
 // login bonus, receive thanks(topic), receive thanks(reply), thanks(topic)
-// thanks(reply), new reply, receive reply bonus, new topic.
+// thanks(reply), new reply, receive reply bonus, new topic, top topic.
 type ConsumptionRecord struct {
 	Id              int    `xorm:"int notnull pk autoincr" json:"id"`
 	Amount          int    `xorm:"int" json:"amount"`
@@ -153,7 +152,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
 				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 				tempRecord.Title = topicInfo.Title
@@ -161,14 +160,14 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 			case 4:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
 				if len(tempRecord.Title) == 0 {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 			case 5:
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
 				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 				tempRecord.Title = topicInfo.Title
@@ -177,7 +176,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
 				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 				tempRecord.Title = topicInfo.Title
@@ -187,7 +186,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 				replyInfo := GetReply(v.ObjectId)
 				topicInfo := GetTopic(replyInfo.TopicId)
 				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 				tempRecord.Title = topicInfo.Title
@@ -195,12 +194,20 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 			case 8:
 				topicInfo := GetTopic(v.ObjectId)
 				if topicInfo == nil || topicInfo.Deleted {
-					tempRecord.ConsumptionType = 9
+					tempRecord.ConsumptionType = 10
 					break
 				}
 				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
 				tempRecord.Length = len(topicInfo.Content)
+			case 9:
+				topicInfo := GetTopic(v.ObjectId)
+				if topicInfo == nil || topicInfo.Deleted {
+					tempRecord.ConsumptionType = 10
+					break
+				}
+				tempRecord.ObjectId = v.ObjectId
+				tempRecord.Title = topicInfo.Title
 			}
 			res[k] = &tempRecord
 		}()
@@ -240,9 +247,11 @@ func CreateTopicConsumption(consumerId string, id int) bool {
 	if balance+record.Amount < 0 {
 		return false
 	}
+
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalances(consumerId, record.Amount)
+
 	return true
 }
 
@@ -260,10 +269,11 @@ func CreateReplyConsumption(consumerId string, id int) bool {
 	if balance+record.Amount < 0 {
 		return false
 	}
+
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	log.Println(record.Amount, consumerId)
 	UpdateMemberBalances(consumerId, record.Amount)
+
 	return true
 }
 
@@ -285,4 +295,25 @@ func GetReplyBonus(author, consumerId string, id int) {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalances(author, record.Amount)
+}
+
+func TopTopicConsumption(consumerId string, id int) bool {
+	record := ConsumptionRecord{
+		ReceiverId:      consumerId,
+		ObjectId:        id,
+		CreatedTime:     util.GetCurrentTime(),
+		ConsumptionType: 9,
+	}
+	record.Amount = TopTopicCost
+	record.Amount = -record.Amount
+	balance := GetMemberBalance(consumerId)
+	if balance+record.Amount < 0 {
+		return false
+	}
+
+	record.Balance = balance + record.Amount
+	AddBalance(&record)
+	UpdateMemberBalances(consumerId, record.Amount)
+
+	return true
 }

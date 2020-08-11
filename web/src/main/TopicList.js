@@ -40,7 +40,7 @@ class TopicList extends React.Component {
   }
 
   renderTopic(topic) {
-    const style = topic.nodeId !== "promotions" ? null : {
+    const style = topic.topExpiredTime === "" ? null : {
       backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "20px 20px",

@@ -122,3 +122,10 @@ export function editTopicContent(topic) {
     body: JSON.stringify(topic),
   }).then(res => res.json());
 }
+
+export function topTopic(id, time) {
+  return fetch(`${Setting.ServerUrl}/api/top-topic?id=${id}&time=${time}`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => res.json());
+}

@@ -123,7 +123,10 @@
     "Amount": "Amount",
     "Balance": "Balance",
     "Description": "Description",
-    "Recharge": "Recharge"
+    "Recharge": "Recharge",
+    "Top topic": "Top topic",
+    "Topped topic": "Topped topic",
+    "进行置顶操作": ""
   },
   "mission":
   {
@@ -179,7 +182,15 @@
     "Node usage help": "Node usage help",
     "Treatment of link handling type spam": "Treatment of link handling type spam",
     "EDIT": "EDIT",
-    "MOVE": "MOVE"
+    "MOVE": "MOVE",
+    "How long do you want to top this topic? (minute)": "How long do you want to top this topic? (minute)",
+    "This topic has been topped": "This topic has been topped",
+    "Are you sure you want to pin this topic for": "Are you sure you want to pin this topic for",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
+    "Sink": "Sink",
+    "Top this topic": "Top this topic",
+    "Top": "Top",
+    "minutes": "minutes"
   },
   "new":
   {
@@ -357,7 +368,7 @@
   {
     "Confirm to delete": "Confirm to delete",
     "?": "?",
-    "The title information of the picture is necessary": "The title information of the picture is necessary",
+    "The title information of the image is necessary": "The title information of the image is necessary",
     "Delete": "Delete",
     "uploading": "uploading",
     "Support all types of files within 6MB": "Support all types of files within 6MB",
@@ -447,6 +458,7 @@
     "File not found": "File not found",
     "You have exceeded the upload limit.": "You have exceeded the upload limit.",
     "Add file failed, please try again.": "Add file failed, please try again.",
-    "Delete file failed, please try again.": "Delete file failed, please try again."
+    "Delete file failed, please try again.": "Delete file failed, please try again.",
+    "You don't have enough balance.": "You don't have enough balance."
   }
 }

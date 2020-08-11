@@ -165,8 +165,6 @@ class App extends Component {
           <div id="Main">
             <div className="sep20" />
             <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
-            <div className="sep20" />
-            <ReplyBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/member/:memberId">

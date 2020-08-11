@@ -65,6 +65,8 @@ func (job *UpdateJob) updateInfo() (bool, int) {
 		expiredValidateCodeDate := util.GetTimeMinute(-ValidateCodeExpiredTime)
 
 		num = ExpireValidateCode(expiredValidateCodeDate)
+	case "expireTopTopic":
+		num = ExpireTopTopic()
 	}
 
 	return true, num
