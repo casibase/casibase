@@ -27,7 +27,7 @@ type Notification struct {
 	Id               int    `xorm:"int notnull pk autoincr" json:"id"`
 	NotificationType int    `xorm:"int" json:"notificationType"`
 	ObjectId         int    `xorm:"int" json:"objectId"`
-	CreatedTime      string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime      string `xorm:"varchar(40)" json:"createdTime"`
 	SenderId         string `xorm:"varchar(100)" json:"senderId"`
 	ReceiverId       string `xorm:"varchar(100)" json:"receiverId"`
 	Status           int    `xorm:"tinyint" json:"-"`

@@ -171,6 +171,7 @@ func (c *APIController) GetLatestReplies() {
 	c.ServeJSON()
 }
 
+// GetRepliesNum gets member's all replies num.
 func (c *APIController) GetRepliesNum() {
 	id := c.Input().Get("id")
 

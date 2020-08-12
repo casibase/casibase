@@ -123,8 +123,15 @@ export function editTopicContent(topic) {
   }).then(res => res.json());
 }
 
-export function topTopic(id, time) {
-  return fetch(`${Setting.ServerUrl}/api/top-topic?id=${id}&time=${time}`, {
+export function topTopic(id, time, topType) {
+  return fetch(`${Setting.ServerUrl}/api/top-topic?id=${id}&time=${time}&topType=${topType}`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => res.json());
+}
+
+export function cancelTopTopic(id, topType) {
+  return fetch(`${Setting.ServerUrl}/api/cancel-top-topic?id=${id}&topType=${topType}`, {
     method: 'POST',
     credentials: 'include',
   }).then(res => res.json());

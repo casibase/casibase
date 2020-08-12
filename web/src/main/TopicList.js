@@ -39,13 +39,36 @@ class TopicList extends React.Component {
       });
   }
 
+  topTopicStyle = {
+    backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "20px 20px",
+    backgroundPosition: "right top"
+  }
+
+  // return style according to whether it is a topped topic.
+  topStyle(nodeTopTime, tabTopTime, homePageTopTime) {
+    switch (this.props.topType) {
+      case "node":
+        if (nodeTopTime !== "") {
+          return this.topTopicStyle;
+        }
+        return null;
+      case "tab":
+        if (tabTopTime !== "") {
+          return this.topTopicStyle;
+        }
+        return null;
+      case "homePage":
+        if (homePageTopTime !== "") {
+          return this.topTopicStyle;
+        }
+    }
+    return null;
+  }
+
   renderTopic(topic) {
-    const style = topic.topExpiredTime === "" ? null : {
-      backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "20px 20px",
-      backgroundPosition: "right top"
-    };
+    const style = this.topStyle(topic?.nodeTopTime, topic?.tabTopTime, topic?.homePageTopTime);
 
     return (
       <div className={`cell item ${this.props.nodeId}`} style={style}>

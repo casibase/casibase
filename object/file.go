@@ -22,7 +22,7 @@ type UploadFileRecord struct {
 	FileType    string `xorm:"varchar(10)" json:"fileType"`
 	FileExt     string `xorm:"varchar(20)" json:"fileExt"`
 	MemberId    string `xorm:"varchar(100)" json:"memberId"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Size        int    `xorm:"int" json:"size"`
 	Views       int    `xorm:"int" json:"views"`
 	Desc        string `xorm:"varchar(500)" json:"desc"`

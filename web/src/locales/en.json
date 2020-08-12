@@ -183,6 +183,7 @@
     "Treatment of link handling type spam": "Treatment of link handling type spam",
     "EDIT": "EDIT",
     "MOVE": "MOVE",
+    "DELETE": "DELETE",
     "How long do you want to top this topic? (minute)": "How long do you want to top this topic? (minute)",
     "This topic has been topped": "This topic has been topped",
     "Are you sure you want to pin this topic for": "Are you sure you want to pin this topic for",
@@ -190,7 +191,15 @@
     "Sink": "Sink",
     "Top this topic": "Top this topic",
     "Top": "Top",
-    "minutes": "minutes"
+    "minutes": "minutes",
+    "Are you sure to top this topic?": "Are you sure to top this topic?",
+    "Are you sure to cancel top this topic?": "Are you sure to cancel top this topic?",
+    "HomePageTop": "HomePageTop",
+    "CancelHomePageTop": "CancelHomePageTop",
+    "TabTop": "TabTop",
+    "CancelTabTop": "CancelTabTop",
+    "NodeTop": "NodeTop",
+    "CancelNodeTop": "CancelNodeTop"
   },
   "new":
   {

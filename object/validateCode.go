@@ -25,7 +25,7 @@ type ValidateCode struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Code        string `xorm:"varchar(100)" json:"code"`
 	PhoneNumber string `xorm:"varchar(100)" json:"phoneNumber"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Expired     bool   `xorm:"bool" json:"expired"`
 }
 

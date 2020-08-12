@@ -19,12 +19,12 @@ type Member struct {
 	Password          string `xorm:"varchar(100) notnull" json:"-"`
 	No                int    `json:"no"`
 	IsModerator       bool   `xorm:"bool" json:"isModerator"`
-	CreatedTime       string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime       string `xorm:"varchar(40)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
-	PhoneVerifiedTime string `xorm:"varchar(100)" json:"phoneVerifiedTime"`
+	PhoneVerifiedTime string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
 	Avatar            string `xorm:"varchar(150)" json:"avatar"`
 	Email             string `xorm:"varchar(100)" json:"email"`
-	EmailVerifiedTime string `xorm:"varchar(100)" json:"emailVerifiedTime"`
+	EmailVerifiedTime string `xorm:"varchar(40)" json:"emailVerifiedTime"`
 	Tagline           string `xorm:"varchar(100)" json:"tagline"`
 	Company           string `xorm:"varchar(100)" json:"company"`
 	CompanyTitle      string `xorm:"varchar(100)" json:"companyTitle"`
@@ -42,7 +42,7 @@ type Member struct {
 	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
 	QQAccount         string `xorm:"qq_account varchar(100)" json:"qqAccount"`
 	QQOpenId          string `xorm:"qq_open_id varchar(100)" json:"-"`
-	QQVerifiedTime    string `xorm:"qq_verified_time varchar(100)" json:"qqVerifiedTime"`
+	QQVerifiedTime    string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
 	CheckinDate       string `xorm:"varchar(20)" json:"-"`
 }
 

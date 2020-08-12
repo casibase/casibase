@@ -138,6 +138,7 @@ func timerRoutine() {
 	}
 }
 
+// InitTimer initializes scheduled tasks.
 func InitTimer() {
 	refreshCronTasks()
 

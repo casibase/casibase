@@ -8,7 +8,7 @@ type ResetRecord struct {
 	MemberId         string `xorm:"varchar(100)" json:"memberId"`
 	RecordType       int    `xorm:"int" json:"recordType"`
 	ResetInformation string `xorm:"varchar(100)" json:"resetInformation"`
-	CreatedTime      string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime      string `xorm:"varchar(40)" json:"createdTime"`
 	Expired          bool   `xorm:"bool" json:"expired"`
 	ValidateCode     string `xorm:"varchar(100)" json:"validateCode"`
 }

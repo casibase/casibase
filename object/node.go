@@ -19,7 +19,7 @@ import "sync"
 type Node struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Name        string `xorm:"varchar(100)" json:"name"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Desc        string `xorm:"varchar(500)" json:"desc"`
 	Image       string `xorm:"varchar(200)" json:"image"`
 	TabId       string `xorm:"varchar(100)" json:"tab"`

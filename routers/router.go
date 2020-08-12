@@ -49,6 +49,7 @@ func initAPI() {
 	beego.Router("/api/update-topic-node", &controllers.APIController{}, "POST:UpdateTopicNode")
 	beego.Router("/api/edit-content", &controllers.APIController{}, "POST:EditContent")
 	beego.Router("/api/top-topic", &controllers.APIController{}, "POST:TopTopic")
+	beego.Router("/api/cancel-top-topic", &controllers.APIController{}, "POST:CancelTopTopic")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")

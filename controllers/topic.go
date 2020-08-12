@@ -392,6 +392,7 @@ func (c *APIController) EditContent() {
 	c.ServeJSON()
 }
 
+// TopTopic tops topic according to the topType in the url.
 func (c *APIController) TopTopic() {
 	if c.RequireLogin() {
 		return
@@ -405,10 +406,13 @@ func (c *APIController) TopTopic() {
 	var res bool
 
 	if object.CheckModIdentity(memberId) {
-		timeStr := c.Input().Get("time")
-		time := util.ParseInt(timeStr)
-		date := util.GetTimeMinute(time)
-		res = object.ChangeTopicTopExpiredTime(id, date)
+		//timeStr := c.Input().Get("time")
+		//time := util.ParseInt(timeStr)
+		//date := util.GetTimeMinute(time)
+		//res = object.ChangeTopicTopExpiredTime(id, date)
+		topType := c.Input().Get("topType")
+		date := util.GetTimeYear(100)
+		res = object.ChangeTopicTopExpiredTime(id, date, topType)
 	} else if object.GetTopicAuthor(id) == memberId {
 		balance := object.GetMemberBalance(memberId)
 		if balance < object.TopTopicCost {
@@ -419,7 +423,35 @@ func (c *APIController) TopTopic() {
 		}
 		object.TopTopicConsumption(memberId, id)
 		date := util.GetTimeMinute(object.DefaultTopTopicTime)
-		res = object.ChangeTopicTopExpiredTime(id, date)
+		res = object.ChangeTopicTopExpiredTime(id, date, "node")
+	} else {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+// CancelTopTopic cancels top topic according to the topType in the url.
+func (c *APIController) CancelTopTopic() {
+	if c.RequireLogin() {
+		return
+	}
+
+	idStr := c.Input().Get("id")
+	memberId := c.GetSessionUser()
+
+	id := util.ParseInt(idStr)
+	var resp Response
+	var res bool
+
+	if object.CheckModIdentity(memberId) {
+		topType := c.Input().Get("topType")
+		res = object.ChangeTopicTopExpiredTime(id, "", topType)
 	} else {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
