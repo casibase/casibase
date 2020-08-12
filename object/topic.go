@@ -21,22 +21,24 @@ import (
 )
 
 type Topic struct {
-	Id             int      `xorm:"int notnull pk autoincr" json:"id"`
-	Author         string   `xorm:"varchar(100)" json:"author"`
-	NodeId         string   `xorm:"varchar(100)" json:"nodeId"`
-	NodeName       string   `xorm:"varchar(100)" json:"nodeName"`
-	Title          string   `xorm:"varchar(100)" json:"title"`
-	CreatedTime    string   `xorm:"varchar(100)" json:"createdTime"`
-	Tags           []string `xorm:"varchar(200)" json:"tags"`
-	LastReplyUser  string   `xorm:"varchar(100)" json:"lastReplyUser"`
-	LastReplyTime  string   `xorm:"varchar(100)" json:"lastReplyTime"`
-	ReplyCount     int      `json:"replyCount"`
-	UpCount        int      `json:"upCount"`
-	HitCount       int      `json:"hitCount"`
-	Hot            int      `json:"hot"`
-	FavoriteCount  int      `json:"favoriteCount"`
-	TopExpiredTime string   `xorm:"varchar(100)" json:"topExpiredTime"`
-	Deleted        bool     `xorm:"bool" json:"-"`
+	Id              int      `xorm:"int notnull pk autoincr" json:"id"`
+	Author          string   `xorm:"varchar(100)" json:"author"`
+	NodeId          string   `xorm:"varchar(100)" json:"nodeId"`
+	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
+	Title           string   `xorm:"varchar(100)" json:"title"`
+	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
+	Tags            []string `xorm:"varchar(200)" json:"tags"`
+	LastReplyUser   string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	LastReplyTime   string   `xorm:"varchar(40)" json:"lastReplyTime"`
+	ReplyCount      int      `json:"replyCount"`
+	UpCount         int      `json:"upCount"`
+	HitCount        int      `json:"hitCount"`
+	Hot             int      `json:"hot"`
+	FavoriteCount   int      `json:"favoriteCount"`
+	HomePageTopTime string   `xorm:"varchar(40)" json:"homePageTopTime"`
+	TabTopTime      string   `xorm:"varchar(40)" json:"tabTopTime"`
+	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
+	Deleted         bool     `xorm:"bool" json:"-"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
@@ -62,7 +64,7 @@ func GetCreatedTopicsNum(memberId string) int {
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("top_expired_time").Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("home_page_top_time").Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -144,7 +146,7 @@ func GetTopicAuthor(id int) string {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("top_expired_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("node_top_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -318,7 +320,7 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 	if tab == "all" {
 		res = GetTopics(limit, offset)
 	} else {
-		err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
+		err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("tab_top_time").Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
 		if err != nil {
 			panic(err)
 		}
@@ -388,14 +390,24 @@ func GetTopicEditableStatus(member, author, createdTime string) bool {
 	return true
 }
 
-func ChangeTopicTopExpiredTime(id int, date string) bool {
+// ChangeTopicTopExpiredTime changes topic's top expired time.
+// topType: tab, node or homePage.
+func ChangeTopicTopExpiredTime(id int, date, topType string) bool {
 	topic := GetTopic(id)
 	if topic == nil {
 		return false
 	}
 
-	topic.TopExpiredTime = date
-	affected, err := adapter.engine.Id(id).Cols("top_expired_time").Update(topic)
+	switch topType {
+	case "tab":
+		topic.TabTopTime = date
+	case "node":
+		topic.NodeTopTime = date
+	case "homePage":
+		topic.HomePageTopTime = date
+	}
+
+	affected, err := adapter.engine.Id(id).Cols("tab_top_time, node_top_time, home_page_top_time").Update(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -403,9 +415,10 @@ func ChangeTopicTopExpiredTime(id int, date string) bool {
 	return affected != 0
 }
 
+// ExpireTopTopic searches and expires expired top topic.
 func ExpireTopTopic() int {
 	topics := []*Topic{}
-	err := adapter.engine.Where("top_expired_time != ?", "").Cols("id, top_expired_time").Find(&topics)
+	err := adapter.engine.Where("tab_top_time != ?", "").Or("node_top_time != ?", "").Or("home_page_top_time != ?", "").Cols("id, tab_top_time, node_top_time, home_page_top_time").Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -413,8 +426,20 @@ func ExpireTopTopic() int {
 	var num int
 	date := util.GetCurrentTime()
 	for _, v := range topics {
-		if v.TopExpiredTime <= date {
-			res := ChangeTopicTopExpiredTime(v.Id, "")
+		if v.TabTopTime <= date {
+			res := ChangeTopicTopExpiredTime(v.Id, "", "tab")
+			if res {
+				num++
+			}
+		}
+		if v.NodeTopTime <= date {
+			res := ChangeTopicTopExpiredTime(v.Id, "", "node")
+			if res {
+				num++
+			}
+		}
+		if v.HomePageTopTime <= date {
+			res := ChangeTopicTopExpiredTime(v.Id, "", "homePage")
 			if res {
 				num++
 			}

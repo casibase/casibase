@@ -183,6 +183,7 @@
     "Treatment of link handling type spam": "对于链接搬运类型 spam 的处理",
     "EDIT": "编辑",
     "MOVE": "移动",
+    "DELETE": "删除",
     "How long do you want to top this topic? (minute)": "你想置顶此主题多久？（分钟）",
     "This topic has been topped": "此主题已置顶",
     "Are you sure you want to pin this topic for": "你确认要将此主题置顶",
@@ -190,7 +191,15 @@
     "Sink": "下沉",
     "Top this topic": "置顶主题",
     "Top": "置顶",
-    "minutes": "分钟"
+    "minutes": "分钟",
+    "Are you sure to top this topic?": "你确认要将此主题置顶？",
+    "Are you sure to cancel top this topic?": "你确认要取消置顶此主题？",
+    "HomePageTop": "首页置顶",
+    "CancelHomePageTop": "取消首页置顶",
+    "TabTop": "Tab置顶",
+    "CancelTabTop": "取消Tab置顶",
+    "NodeTop": "节点置顶",
+    "CancelNodeTop": "取消节点置顶"
   },
   "new":
   {

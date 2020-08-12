@@ -217,6 +217,11 @@ class TopicPage extends React.Component {
   }
 
   render() {
+    let topType = "homePage";
+    if (this.state.tab !== undefined) {
+      topType = "tab";
+    }
+
     return (
       <div className="box">
         <div className="inner" id="Tabs">
@@ -242,7 +247,7 @@ class TopicPage extends React.Component {
           }
           &nbsp;
         </div>
-        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} topType={topType} />
         <div className="inner">
           <span className="chevron">»</span> &nbsp;<a href="/recent">{i18next.t("topic:More Topics")}</a>
         </div>

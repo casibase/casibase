@@ -30,7 +30,7 @@ type ConsumptionRecord struct {
 	ConsumerId      string `xorm:"varchar(100)" json:"consumerId"`
 	ObjectId        int    `xorm:"int" json:"objectId"`
 	ReceiverId      string `xorm:"varchar(100)" json:"receiverId"`
-	CreatedTime     string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime     string `xorm:"varchar(40)" json:"createdTime"`
 	ConsumptionType int    `xorm:"int" json:"consumptionType"`
 }
 

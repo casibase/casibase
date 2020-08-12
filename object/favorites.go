@@ -20,7 +20,7 @@ type Favorites struct {
 	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
 	FavoritesType int    `xorm:"int" json:"favoritesType"`
 	ObjectId      string `xorm:"varchar(100)" json:"objectId"`
-	CreatedTime   string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime   string `xorm:"varchar(40)" json:"createdTime"`
 	MemberId      string `xorm:"varchar(100)" json:"memberId"`
 }
 

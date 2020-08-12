@@ -145,18 +145,20 @@ class TopicBox extends React.Component {
     }
   }
 
-  topTopic() {
+  topTopic(topType) {
     if (this.props.account?.isModerator) {
-      let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
-      TopicBackend.topTopic(this.state.topic?.id, time)
-        .then((res) => {
-          if (res?.status === "ok") {
-            goToLink("/");
-          } else {
-            alert(i18next.t(`error:${res?.msg}`));
-          }
-        })
-      return;
+      //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
+      if (window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)) {
+        TopicBackend.topTopic(this.state.topic?.id, "", topType)
+          .then((res) => {
+            if (res?.status === "ok") {
+              Setting.refresh();
+            } else {
+              alert(i18next.t(`error:${res?.msg}`));
+            }
+          });
+        return;
+      }
     }
 
     if (this.state.topic?.topExpiredTime !== "") {
@@ -165,14 +167,29 @@ class TopicBox extends React.Component {
     }
 
     if (window.confirm(`${i18next.t("topic:Are you sure you want to pin this topic for")} ${this.state.defaultTopTopicTime} ${i18next.t("topic:minutes? The operation price is 200 copper coins.")}`)) {
-      TopicBackend.topTopic(this.state.topic?.id, 10)
+      TopicBackend.topTopic(this.state.topic?.id, 10, topType)
         .then((res) => {
           if (res?.status === "ok") {
             goToLink("/");
           } else {
             alert(i18next.t(`error:${res?.msg}`));
           }
-        })
+        });
+    }
+  }
+
+  cancelTopTopic(topType) {
+    if (this.props.account?.isModerator) {
+      if (window.confirm(`${i18next.t("topic:Are you sure to cancel top this topic?")}`)) {
+        TopicBackend.cancelTopTopic(this.state.topic?.id, topType)
+          .then((res) => {
+            if (res?.status === "ok") {
+              Setting.refresh();
+            } else {
+              alert(i18next.t(`error:${res?.msg}`));
+            }
+          })
+      }
     }
   }
 
@@ -341,6 +358,44 @@ class TopicBox extends React.Component {
                  className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
               &nbsp;{" "}
               {
+                this.props.account?.isModerator ?
+                  <span>
+                    {
+                      this.state.topic?.homePageTopTime === "" ?
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.topTopic("homePage")}  className="op">{i18next.t("topic:HomePageTop")}</a>
+                          &nbsp;{" "}
+                        </span> :
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.cancelTopTopic("homePage")}  className="op">{i18next.t("topic:CancelHomePageTop")}</a>
+                          &nbsp;{" "}
+                        </span>
+                    }
+                    {
+                      this.state.topic?.tabTopTime === "" ?
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.topTopic("tab")}  className="op">{i18next.t("topic:TabTop")}</a>
+                          &nbsp;{" "}
+                        </span> :
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.cancelTopTopic("tab")}  className="op">{i18next.t("topic:CancelTabTop")}</a>
+                          &nbsp;{" "}
+                        </span>
+                    }
+                    {
+                      this.state.topic?.nodeTopTime === "" ?
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.topTopic("node")}  className="op">{i18next.t("topic:NodeTop")}</a>
+                          &nbsp;{" "}
+                        </span> :
+                        <span>
+                          <a href="javascript:void(0);" onClick={() => this.cancelTopTopic("node")}  className="op">{i18next.t("topic:CancelNodeTop")}</a>
+                          &nbsp;{" "}
+                        </span>
+                    }
+                  </span> : null
+              }
+              {
                 this.state.topic?.editable ?
                   <span>
                   <a href={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</a>
@@ -349,7 +404,7 @@ class TopicBox extends React.Component {
                     &nbsp;{" "}
                     {
                       this.props.account?.isModerator ?
-                        <a onClick={() => this.deleteTopic()} href="javascript:void(0)"
+                        <a onClick={() => this.deleteTopic()} href="javascript:void(0);"
                            className="op">{i18next.t("topic:DELETE")}</a> : null
                     }
                 </span> : null
@@ -426,7 +481,7 @@ class TopicBox extends React.Component {
         <ReplyBox account={this.props.account} />
         <div className="sep20" />
         {
-          this.props.account?.id === this.state.topic?.author || this.props.account?.isModerator ?
+          this.props.account?.isModerator ?
             this.renderTopTopic() : null
         }
       </div>

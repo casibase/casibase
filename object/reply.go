@@ -23,13 +23,14 @@ type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	Author      string `xorm:"varchar(100)" json:"author"`
 	TopicId     int    `xorm:"int" json:"topicId"`
-	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"-"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
 
 	Content string `xorm:"mediumtext" json:"content"`
 }
 
+// GetReplyCount returns all replies num so far, both deleted and not deleted.
 func GetReplyCount() int {
 	count, err := adapter.engine.Count(&Reply{})
 	if err != nil {
@@ -39,6 +40,7 @@ func GetReplyCount() int {
 	return int(count)
 }
 
+// GetReplies returns more information about reply of a topic.
 func GetReplies(topicId int, memberId string) []*ReplyWithAvatar {
 	replies := []*Reply{}
 	err := adapter.engine.Asc("created_time").And("deleted = ?", 0).Find(&replies, &Reply{TopicId: topicId})
@@ -61,6 +63,7 @@ func GetReplies(topicId int, memberId string) []*ReplyWithAvatar {
 	return res
 }
 
+// GetReply returns a single reply.
 func GetReply(id int) *Reply {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Get(&reply)
@@ -70,11 +73,11 @@ func GetReply(id int) *Reply {
 
 	if existed {
 		return &reply
-	} else {
-		return nil
 	}
+	return nil
 }
 
+// GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
 func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Get(&reply)
@@ -91,9 +94,8 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 			Editable:     GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime),
 		}
 		return &res
-	} else {
-		return nil
 	}
+	return nil
 }
 
 /*
@@ -110,6 +112,7 @@ func GetReplyId() int {
 }
 */
 
+// UpdateReply updates reply's all field.
 func UpdateReply(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
@@ -124,6 +127,7 @@ func UpdateReply(id int, reply *Reply) bool {
 	return true
 }
 
+// UpdateReplyWithLimitCols updates reply's not null field.
 func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
@@ -138,7 +142,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 	return true
 }
 
-// AddReply return add reply result and reply id
+// AddReply returns add reply result and reply id.
 func AddReply(reply *Reply) (bool, int) {
 	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
 
@@ -161,6 +165,7 @@ func DeleteReply(id string) bool {
 }
 */
 
+// DeleteReply soft delete reply.
 func DeleteReply(id int) bool {
 	reply := new(Reply)
 	reply.Deleted = true
@@ -172,6 +177,7 @@ func DeleteReply(id int) bool {
 	return affected != 0
 }
 
+// GetLatestReplies returns member's latest replies.
 func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 	replys := []*Reply{}
 	err := adapter.engine.Where("author = ?", author).And("deleted = ?", 0).Limit(limit, offset).Find(&replys)
@@ -221,6 +227,7 @@ func GetLatestReplies(author string, limit int, offset int) []LatestReply {
 	return result
 }
 
+// GetRepliesNum returns member's all replies num.
 func GetRepliesNum(memberId string) int {
 	var total int64
 	var err error
@@ -234,6 +241,7 @@ func GetRepliesNum(memberId string) int {
 	return int(total)
 }
 
+// GetReplyTopicTitle only returns reply's topic title.
 func GetReplyTopicTitle(id int) string {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Cols("title").Get(&topic)
@@ -243,11 +251,11 @@ func GetReplyTopicTitle(id int) string {
 
 	if existed {
 		return topic.Title
-	} else {
-		return ""
 	}
+	return ""
 }
 
+// GetReplyAuthor only returns reply's topic author.
 func GetReplyAuthor(id int) string {
 	reply := Reply{Id: id}
 	existed, err := adapter.engine.Cols("author").Get(&reply)
@@ -257,11 +265,11 @@ func GetReplyAuthor(id int) string {
 
 	if existed {
 		return reply.Author
-	} else {
-		return ""
 	}
+	return ""
 }
 
+// AddReplyThanksNum updates reply's thanks num.
 func AddReplyThanksNum(id int) bool {
 	reply := GetReply(id)
 	if reply == nil {
@@ -277,6 +285,7 @@ func AddReplyThanksNum(id int) bool {
 	return affected != 0
 }
 
+// ReplyDeletable checks whether the reply can be deleted.
 func ReplyDeletable(date, memberId, author string) bool {
 	if CheckModIdentity(memberId) {
 		return true
@@ -301,6 +310,7 @@ func ReplyDeletable(date, memberId, author string) bool {
 	return true
 }
 
+// GetReplyEditableStatus checks whether the reply can be edited.
 func GetReplyEditableStatus(member, author, createdTime string) bool {
 	if CheckModIdentity(member) {
 		return true
