@@ -92,7 +92,7 @@ func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 		Topic:        topic,
 		Avatar:       GetMemberAvatar(topic.Author),
 		ThanksStatus: GetThanksStatus(memberId, id, 4),
-		Editable:     GetTopicEditableStatus(memberId, topic.Author, topic.CreatedTime),
+		Editable:     GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime),
 	}
 
 	if existed {
@@ -139,6 +139,20 @@ func GetTopicAuthor(id int) string {
 
 	if existed {
 		return topic.Author
+	} else {
+		return ""
+	}
+}
+
+func GetTopicNodeId(id int) string {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Cols("node_id").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return topic.NodeId
 	} else {
 		return ""
 	}
@@ -212,7 +226,7 @@ func DeleteTopic(id string) bool {
 }
 */
 
-func DeleteTopic(id string) bool {
+func DeleteTopic(id int) bool {
 	topic := new(Topic)
 	topic.Deleted = true
 	affected, err := adapter.engine.Id(id).Cols("deleted").Update(topic)
@@ -367,8 +381,8 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	return res
 }
 
-func GetTopicEditableStatus(member, author, createdTime string) bool {
-	if CheckModIdentity(member) {
+func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {
+	if CheckModIdentity(member) || CheckNodeModerator(member, nodeId) {
 		return true
 	}
 	if member != author {

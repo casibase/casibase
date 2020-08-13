@@ -167,3 +167,18 @@ func (c *APIController) AddNodeBrowseCount() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *APIController) AddNodeModerators() {
+	var moderators addNodeModerator
+	var resp Response
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
+	if err != nil {
+		panic(err)
+	}
+
+	res := object.AddNodeModerators(moderators.MemberId, moderators.NodeId)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}

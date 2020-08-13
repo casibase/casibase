@@ -17,15 +17,16 @@ package object
 import "sync"
 
 type Node struct {
-	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
-	Name        string `xorm:"varchar(100)" json:"name"`
-	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
-	Desc        string `xorm:"varchar(500)" json:"desc"`
-	Image       string `xorm:"varchar(200)" json:"image"`
-	TabId       string `xorm:"varchar(100)" json:"tab"`
-	ParentNode  string `xorm:"varchar(200)" json:"parentNode"`
-	PlaneId     string `xorm:"varchar(50)" json:"planeId"`
-	Hot         int    `xorm:"int" json:"-"`
+	Id          string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Name        string   `xorm:"varchar(100)" json:"name"`
+	CreatedTime string   `xorm:"varchar(40)" json:"createdTime"`
+	Desc        string   `xorm:"varchar(500)" json:"desc"`
+	Image       string   `xorm:"varchar(200)" json:"image"`
+	TabId       string   `xorm:"varchar(100)" json:"tab"`
+	ParentNode  string   `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId     string   `xorm:"varchar(50)" json:"planeId"`
+	Hot         int      `xorm:"int" json:"-"`
+	Moderators  []string `xorm:"varchar(200)" json:"moderators"`
 }
 
 func GetNodes() []*Node {
@@ -209,6 +210,51 @@ func UpdateNodeHotInfo(nodeId string, hot int) bool {
 
 	node.Hot = hot
 	affected, err := adapter.engine.Id(nodeId).Cols("hot").Update(node)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func GetNodeModerators(id string) []string {
+	node := Node{Id: id}
+	existed, err := adapter.engine.Cols("moderators").Get(&node)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return node.Moderators
+	} else {
+		return nil
+	}
+}
+
+func CheckNodeModerator(memberId, nodeId string) bool {
+	node := Node{Id: nodeId}
+	existed, err := adapter.engine.Cols("moderators").Get(&node)
+	if err != nil {
+		panic(err)
+	}
+
+	if !existed || len(node.Moderators) == 0 {
+		return false
+	}
+	for _, v := range node.Moderators {
+		if v == memberId {
+			return true
+		}
+	}
+	return false
+}
+
+func AddNodeModerators(memberId, nodeId string) bool {
+	node := new(Node)
+
+	moderators := GetNodeModerators(nodeId)
+	node.Moderators = append(moderators, memberId)
+	affected, err := adapter.engine.Id(nodeId).Cols("moderators").Update(node)
 	if err != nil {
 		panic(err)
 	}

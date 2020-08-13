@@ -27,12 +27,17 @@ var ossURL, ossFilePath string
 var ossClient *oss.Client
 var ossBucket *oss.Bucket
 
+// InitAliOSS initializes ali-oss client.
 func InitAliOSS() {
 	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
 	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
 	//OSSRegion := beego.AppConfig.String("OSSRegion")
 	OSSEndPoint := beego.AppConfig.String("OSSEndPoint")
 	OSSBucket := beego.AppConfig.String("OSSBucket")
+
+	if OSSBucket == "" {
+		return
+	}
 
 	if len(OSSCustomDomain) != 0 {
 		ossURL = "https://" + OSSCustomDomain + "/" + OSSBasicPath + "/"
@@ -52,6 +57,7 @@ func InitAliOSS() {
 	}
 }
 
+// UploadAvatarToAliOSS uploads an avatar to ali-oss.
 func UploadAvatarToAliOSS(avatar []byte, memberId string) string {
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
@@ -66,6 +72,7 @@ func UploadAvatarToAliOSS(avatar []byte, memberId string) string {
 	return avatarURL
 }
 
+// DeleteOSSFile deletes file according to the file path.
 func DeleteOSSFile(filePath string) bool {
 	err := ossBucket.DeleteObject(filePath)
 	if err != nil {

@@ -165,6 +165,21 @@ class NodeBox extends React.Component {
             <a href="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</a>
             <span className="chevron">&nbsp;›&nbsp;</span>
             {nodeInfo?.name}
+            <span className="gray">
+              {" "}&nbsp;
+              {
+                this.state.nodeInfo?.moderators !== null ?
+                  <span>
+                    {i18next.t("node:Node moderator")}{" "}
+                    {
+                      this.state.nodeInfo?.moderators.map(member => {
+                        return member
+                      })
+                    }
+                  </span>
+                 : null
+              }
+            </span>
             <div className="sep10"></div>
             <div className="sep5"></div>
             {

@@ -72,6 +72,7 @@ type updateTopicNode struct {
 type editTopic struct {
 	Id      int    `json:"id"`
 	Title   string `json:"title"`
+	NodeId  string `json:"nodeId"`
 	Content string `json:"content"`
 }
 
@@ -133,4 +134,9 @@ type fileDescribe struct {
 type fileNumResp struct {
 	Num    int `json:"num"`
 	MaxNum int `json:"maxNum"`
+}
+
+type addNodeModerator struct {
+	NodeId   string `json:"nodeId"`
+	MemberId string `json:"memberId"`
 }

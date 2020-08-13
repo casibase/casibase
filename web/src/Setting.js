@@ -147,6 +147,10 @@ export let OSSUrl;
 export let OSSFileUrl;
 
 export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
+  if (Conf.OSSBucket === "") {
+    return;
+  }
+
   let newClient;
   newClient = new oss({
     region: Conf.OSSRegion,
