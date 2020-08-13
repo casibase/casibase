@@ -239,7 +239,16 @@
     "Publish": "创建新主题",
     "View all nodes": "浏览全部节点",
     "Node navigation": "节点导航",
-    "Node moderator": "节点版主："
+    "Node moderator": "节点版主：",
+    "Delete moderator success": "移除版主成功",
+    "Add moderator success": "添加版主成功",
+    "No moderators": "暂无版主",
+    "Cancel moderator permissions": "取消版主权限",
+    "Moderator Management": "版主管理",
+    "Node name": "节点名称",
+    "Moderators": "已有版主",
+    "Add moderator": "新增版主",
+    "Add": "添加"
   },
   "plane":
   {
@@ -469,6 +478,8 @@
     "You have exceeded the upload limit.": "您已超出上传限制。",
     "Add file failed, please try again.": "添加文件失败，请重试。",
     "Delete file failed, please try again.": "删除文件失败，请重试。",
-    "You don't have enough balance.": "您余额不足。"
+    "You don't have enough balance.": "您余额不足。",
+    "Member doesn't exist.": "指定用户不存在",
+    "Moderator already exist.": "该版主已经存在"
   }
 }

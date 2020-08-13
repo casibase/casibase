@@ -253,7 +253,31 @@ func AddNodeModerators(memberId, nodeId string) bool {
 	node := new(Node)
 
 	moderators := GetNodeModerators(nodeId)
+	for _, v := range moderators {
+		if v == memberId {
+			return false
+		}
+	}
 	node.Moderators = append(moderators, memberId)
+	affected, err := adapter.engine.Id(nodeId).Cols("moderators").Update(node)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func DeleteNodeModerators(memberId, nodeId string) bool {
+	node := new(Node)
+
+	moderators := GetNodeModerators(nodeId)
+	for i, v := range moderators {
+		if v == memberId {
+			moderators = append(moderators[:i], moderators[i+1:]...)
+			break
+		}
+	}
+	node.Moderators = moderators
 	affected, err := adapter.engine.Id(nodeId).Cols("moderators").Update(node)
 	if err != nil {
 		panic(err)

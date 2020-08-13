@@ -456,7 +456,8 @@ func (c *APIController) CancelTopTopic() {
 	var resp Response
 	var res bool
 
-	if object.CheckModIdentity(memberId) {
+	nodeId := object.GetTopicNodeId(id)
+	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
 		topType := c.Input().Get("topType")
 		res = object.ChangeTopicTopExpiredTime(id, "", topType)
 	} else {

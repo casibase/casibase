@@ -140,3 +140,8 @@ type addNodeModerator struct {
 	NodeId   string `json:"nodeId"`
 	MemberId string `json:"memberId"`
 }
+
+type deleteNodeModerator struct {
+	NodeId   string `json:"nodeId"`
+	MemberId string `json:"memberId"`
+}
