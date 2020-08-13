@@ -26,9 +26,10 @@ type LatestReply struct {
 
 type TopicWithAvatar struct {
 	Topic
-	Avatar       string `json:"avatar"`
-	ThanksStatus bool   `json:"thanksStatus"`
-	Editable     bool   `json:"editable"`
+	Avatar        string `json:"avatar"`
+	ThanksStatus  bool   `json:"thanksStatus"`
+	Editable      bool   `json:"editable"`
+	NodeModerator bool   `json:"nodeModerator"`
 }
 
 type ReplyWithAvatar struct {

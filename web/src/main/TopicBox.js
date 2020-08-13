@@ -146,7 +146,7 @@ class TopicBox extends React.Component {
   }
 
   topTopic(topType) {
-    if (this.props.account?.isModerator) {
+    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
       //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
       if (window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)) {
         TopicBackend.topTopic(this.state.topic?.id, "", topType)
@@ -159,6 +159,7 @@ class TopicBox extends React.Component {
           });
         return;
       }
+      return;
     }
 
     if (this.state.topic?.topExpiredTime !== "") {
@@ -393,7 +394,21 @@ class TopicBox extends React.Component {
                           &nbsp;{" "}
                         </span>
                     }
-                  </span> : null
+                  </span> :
+                  this.state.topic?.nodeModerator ?
+                    <span>
+                      {
+                        this.state.topic?.nodeTopTime === "" ?
+                          <span>
+                          <a href="javascript:void(0);" onClick={() => this.topTopic("node")}  className="op">{i18next.t("topic:NodeTop")}</a>
+                            &nbsp;{" "}
+                        </span> :
+                          <span>
+                          <a href="javascript:void(0);" onClick={() => this.cancelTopTopic("node")}  className="op">{i18next.t("topic:CancelNodeTop")}</a>
+                            &nbsp;{" "}
+                        </span>
+                      }
+                    </span> : null
               }
               {
                 this.state.topic?.editable ?
@@ -403,7 +418,7 @@ class TopicBox extends React.Component {
                     <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
                     &nbsp;{" "}
                     {
-                      this.props.account?.isModerator ?
+                      this.props.account?.isModerator || this.state.topic?.nodeModerator ?
                         <a onClick={() => this.deleteTopic()} href="javascript:void(0);"
                            className="op">{i18next.t("topic:DELETE")}</a> : null
                     }

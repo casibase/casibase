@@ -47,6 +47,7 @@ class EditBox extends React.Component {
     form["id"] = this.state.editObject?.id;
     if (this.state.editType === "topic") {
       form["title"] = this.state.editObject?.title;
+      form["nodeId"] = this.state.editObject?.nodeId;
     }
     form["content"] = this.state.editObject?.content;
     this.setState({

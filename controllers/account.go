@@ -777,6 +777,13 @@ var roleArn = beego.AppConfig.String("roleArn")
 
 func (c *APIController) GetMemberStsToken() {
 	sessionName := c.GetSessionUser()
+
+	if accessKeyID == "" {
+		resp := Response{Status: "fail", Msg: "Missing sts config."}
+		c.Data["json"] = resp
+		return
+	}
+
 	stsClient := sts.NewClient(accessKeyID, accessKeySecret, roleArn, sessionName)
 
 	authResp, err := stsClient.AssumeRole(3600)

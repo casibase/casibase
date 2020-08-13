@@ -55,10 +55,13 @@ func (c *APIController) GetTopic() {
 	id := util.ParseInt(idStr)
 
 	topic := object.GetTopicWithAvatar(id, memberId)
+	if memberId != "" {
+		topic.NodeModerator = object.CheckNodeModerator(memberId, topic.NodeId)
+	}
 	if topic.Deleted {
 		c.Data["json"] = nil
 	} else {
-		c.Data["json"] = object.GetTopicWithAvatar(id, memberId)
+		c.Data["json"] = topic
 	}
 
 	c.ServeJSON()
@@ -138,10 +141,12 @@ func (c *APIController) AddTopic() {
 }
 
 func (c *APIController) DeleteTopic() {
-	id := c.Input().Get("id")
+	idStr := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
-	if !object.CheckModIdentity(memberId) {
+	id := util.ParseInt(idStr)
+	nodeId := object.GetTopicNodeId(id)
+	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) {
 		resp := Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -316,7 +321,8 @@ func (c *APIController) UpdateTopicNode() {
 	}
 	id, nodeName, nodeId := form.Id, form.NodeName, form.NodeId
 
-	if !object.CheckModIdentity(memberId) && object.GetTopicAuthor(id) != memberId {
+	originalNode := object.GetTopicNodeId(id)
+	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, originalNode) && object.GetTopicAuthor(id) != memberId {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -349,8 +355,8 @@ func (c *APIController) EditContent() {
 		if err != nil {
 			panic(err)
 		}
-		id, title, content := form.Id, form.Title, form.Content
-		if !object.CheckModIdentity(memberId) && object.GetTopicAuthor(id) != memberId {
+		id, title, content, nodeId := form.Id, form.Title, form.Content, form.NodeId
+		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
 			c.ServeJSON()
@@ -405,7 +411,8 @@ func (c *APIController) TopTopic() {
 	var resp Response
 	var res bool
 
-	if object.CheckModIdentity(memberId) {
+	nodeId := object.GetTopicNodeId(id)
+	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
 		//timeStr := c.Input().Get("time")
 		//time := util.ParseInt(timeStr)
 		//date := util.GetTimeMinute(time)
