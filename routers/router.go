@@ -83,6 +83,8 @@ func initAPI() {
 	beego.Router("/api/get-latest-node", &controllers.APIController{}, "GET:GetLatestNode")
 	beego.Router("/api/get-hot-node", &controllers.APIController{}, "GET:GetHotNode")
 	beego.Router("/api/add-node-browse-record", &controllers.APIController{}, "POST:AddNodeBrowseCount")
+	beego.Router("/api/add-node-moderators", &controllers.APIController{}, "POST:AddNodeModerators")
+	beego.Router("/api/delete-node-moderators", &controllers.APIController{}, "POST:DeleteNodeModerators")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.APIController{}, "POST:Signin")

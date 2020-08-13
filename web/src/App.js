@@ -212,6 +212,12 @@ class App extends Component {
         <Route exact path="/go/:nodeId">
           <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
         </Route>
+        <Route exact path="/go/:nodeId/:event">
+          <div id="Main">
+            <div className="sep20" />
+            <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
+          </div>
+        </Route>
         <Route exact path="/my/:favorites">
           <div id="Main">
             <div className="sep20" />

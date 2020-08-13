@@ -171,12 +171,57 @@ func (c *APIController) AddNodeBrowseCount() {
 func (c *APIController) AddNodeModerators() {
 	var moderators addNodeModerator
 	var resp Response
+
+	memberId := c.GetSessionUser()
+	if !object.CheckModIdentity(memberId) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
 	if err != nil {
 		panic(err)
 	}
 
+	moderator := object.GetMember(moderators.MemberId)
+	if moderator == nil {
+		resp = Response{Status: "fail", Msg: "Member doesn't exist."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	res := object.AddNodeModerators(moderators.MemberId, moderators.NodeId)
+	if res {
+		resp = Response{Status: "ok", Msg: "success", Data: res}
+	} else {
+		resp = Response{Status: "fail", Msg: "Moderator already exist."}
+	}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) DeleteNodeModerators() {
+	var moderators deleteNodeModerator
+	var resp Response
+
+	memberId := c.GetSessionUser()
+	if !object.CheckModIdentity(memberId) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
+	if err != nil {
+		panic(err)
+	}
+
+	res := object.DeleteNodeModerators(moderators.MemberId, moderators.NodeId)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp

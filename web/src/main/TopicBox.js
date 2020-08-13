@@ -180,7 +180,7 @@ class TopicBox extends React.Component {
   }
 
   cancelTopTopic(topType) {
-    if (this.props.account?.isModerator) {
+    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
       if (window.confirm(`${i18next.t("topic:Are you sure to cancel top this topic?")}`)) {
         TopicBackend.cancelTopTopic(this.state.topic?.id, topType)
           .then((res) => {
@@ -219,6 +219,12 @@ class TopicBox extends React.Component {
   renderImage = ({alt, src}) => {
     return(
       <Zmage src={src} alt={alt} />
+    );
+  };
+
+  renderLink = (props) => {
+    return(
+      <a {...props} target="_blank" />
     );
   };
 
@@ -434,7 +440,8 @@ class TopicBox extends React.Component {
               <div className="markdown_body">
                 <ReactMarkdown
                   renderers={{
-                    image: this.renderImage
+                    image: this.renderImage,
+                    link: this.renderLink
                   }}
                   source={Setting.getFormattedContent(this.state.topic?.content, true)}
                   escapeHtml={false}

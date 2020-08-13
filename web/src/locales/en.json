@@ -239,7 +239,16 @@
     "Publish": "Publish",
     "View all nodes": "View all nodes",
     "Node navigation": "Node navigation",
-    "Node moderator": "Node moderator"
+    "Node moderator": "Node moderator",
+    "Delete moderator success": "Delete moderator success",
+    "Add moderator success": "Add moderator success",
+    "No moderators": "No moderators",
+    "Cancel moderator permissions": "Cancel moderator permissions",
+    "Moderator Management": "Moderator Management",
+    "Node name": "Node name",
+    "Moderators": "Moderators",
+    "Add moderator": "Add moderator",
+    "Add": "Add"
   },
   "plane":
   {
@@ -469,6 +478,8 @@
     "You have exceeded the upload limit.": "You have exceeded the upload limit.",
     "Add file failed, please try again.": "Add file failed, please try again.",
     "Delete file failed, please try again.": "Delete file failed, please try again.",
-    "You don't have enough balance.": "You don't have enough balance."
+    "You don't have enough balance.": "You don't have enough balance.",
+    "Member doesn't exist.": "Member doesn't exist.",
+    "Moderator already exist.": "Moderator already exist."
   }
 }

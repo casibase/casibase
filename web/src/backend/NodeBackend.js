@@ -92,3 +92,19 @@ export function addNodeBrowseCount(id) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function addNodeModerators(value) {
+  return fetch(`${Setting.ServerUrl}/api/add-node-moderators`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(value),
+  }).then(res => res.json());
+}
+
+export function deleteNodeModerators(value) {
+  return fetch(`${Setting.ServerUrl}/api/delete-node-moderators`, {
+    method: 'POST',
+    credentials: 'include',
+    body: JSON.stringify(value),
+  }).then(res => res.json());
+}

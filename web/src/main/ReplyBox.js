@@ -174,6 +174,12 @@ class ReplyBox extends React.Component {
     );
   };
 
+  renderLink = (props) => {
+    return(
+      <a {...props} target="_blank" />
+    );
+  };
+
   renderReply() {
     return (
       <div className={`box ${this.state.topic.nodeId}`}>
@@ -270,7 +276,8 @@ class ReplyBox extends React.Component {
                       <div className={`reply_content ${this.state.topic.nodeId}`}>
                         <ReactMarkdown
                           renderers={{
-                            image: this.renderImage
+                            image: this.renderImage,
+                            link: this.renderLink
                           }}
                           source={Setting.getFormattedContent(reply.content, true)}
                           escapeHtml={false}
