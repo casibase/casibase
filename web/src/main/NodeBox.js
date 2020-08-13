@@ -227,13 +227,15 @@ class NodeBox extends React.Component {
                   this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
                     <span>
                       <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
-                        {i18next.t("node:Node moderator")}
+                        {i18next.t("node:Moderator")}
                       </a>
-                      {" "}
                       {
                         this.state.nodeInfo?.moderators.map((member) => {
-                          return <a href={`/member/${member}`} target="_blank">{member}</a>
-                        })
+                          return (
+                            <span>
+                              {" "}<a href={`/member/${member}`} target="_blank">{member}</a>
+                            </span>
+                          )})
                       }
                     </span> :
                     <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
