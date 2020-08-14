@@ -21,22 +21,23 @@ import (
 	"github.com/casbin/casbin-forum/util"
 )
 
+// ValidateCode table records validate code, for sign up, sign in or reset password using phone or email.
 type ValidateCode struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Code        string `xorm:"varchar(100)" json:"code"`
-	PhoneNumber string `xorm:"varchar(100)" json:"phoneNumber"`
+	Information string `xorm:"varchar(100)" json:"information"`
 	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Expired     bool   `xorm:"bool" json:"expired"`
 }
 
 // AddValidateCode: return validate code and validate code ID
-func GetNewValidateCode(phoneNumber string) (string, string) {
+func GetNewValidateCode(information string) (string, string) {
 	code := getRandomCode(6)
 
 	validateCode := ValidateCode{
 		Id:          getRandomId(20),
 		Code:        code,
-		PhoneNumber: phoneNumber,
+		Information: information,
 		CreatedTime: util.GetCurrentTime(),
 		Expired:     false,
 	}
@@ -51,6 +52,7 @@ func GetNewValidateCode(phoneNumber string) (string, string) {
 	return "", ""
 }
 
+// CheckValidateCodeExpired checks whether the verification code has expired.
 func CheckValidateCodeExpired(id string) bool {
 	var code ValidateCode
 	existed, err := adapter.engine.Id(id).Get(&code)
@@ -61,17 +63,18 @@ func CheckValidateCodeExpired(id string) bool {
 	if existed {
 		return code.Expired
 	}
-	return true
+	return false
 }
 
-func VerifyValidateCode(id, validateCode, phoneNumber string) bool {
+// VerifyValidateCode verifies validate code.
+func VerifyValidateCode(id, validateCode, information string) bool {
 	var code ValidateCode
 	existed, err := adapter.engine.Id(id).Get(&code)
 	if err != nil {
 		panic(err)
 	}
 
-	if !existed || code.Expired || code.Code != validateCode || code.PhoneNumber != phoneNumber {
+	if !existed || code.Expired || code.Code != validateCode || code.Information != information {
 		return false
 	}
 
@@ -87,6 +90,7 @@ func VerifyValidateCode(id, validateCode, phoneNumber string) bool {
 	return false
 }
 
+// ExpireValidateCode expires validate code according to date, return effects num.
 func ExpireValidateCode(date string) int {
 	code := new(ValidateCode)
 	code.Expired = true

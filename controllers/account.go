@@ -40,6 +40,7 @@ type SignupForm struct {
 	Avatar         string `json:"avatar"`
 	Method         string `json:"method"`
 	Phone          string `json:"phone"`
+	AreaCode       string `json:"areaCode"` // phone area code
 	Company        string `json:"company"`
 	CompanyTitle   string `json:"companyTitle"`
 	Location       string `json:"location"`
@@ -49,12 +50,13 @@ type SignupForm struct {
 	Addition2      string `json:"addition2"` // this field is for more addition info if needed
 }
 
+// SigninForm information field could be phone number, usernam or email.
 type SigninForm struct {
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Email     string `json:"email"`
-	Captcha   string `json:"captcha"`
-	CaptchaId string `json:"captchaId"`
+	Information string `json:"information"`
+	Password    string `json:"password"`
+	Email       string `json:"email"`
+	Captcha     string `json:"captcha"`
+	CaptchaId   string `json:"captchaId"`
 }
 
 type Response struct {
@@ -86,7 +88,14 @@ func (c *APIController) Signup() {
 		panic(err)
 	}
 	if form.Method != "google" && form.Method != "github" && form.Method != "qq" {
-		if !object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, form.Phone) {
+		// Check validate code.
+		var validateCodeRes bool
+		if form.Method == "phone" {
+			validateCodeRes = object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, form.Phone)
+		} else {
+			validateCodeRes = object.VerifyValidateCode(form.ValidateCodeId, form.ValidateCode, form.Email)
+		}
+		if !validateCodeRes {
 			resp = Response{Status: "error", Msg: "validate code error", Data: ""}
 			if object.CheckValidateCodeExpired(form.ValidateCodeId) {
 				resp = Response{Status: "error", Msg: "validate code expired", Data: ""}
@@ -110,15 +119,21 @@ func (c *APIController) Signup() {
 	}
 
 	var msg string
-	if password == "" && email != "" {
+	// Check the information registered through the github, google, email method.
+	if (password == "" && email != "") || form.Method == "email" {
+		if password != "" {
+			msg = object.CheckMemberSignup(member, password)
+		}
 		msg = object.CheckMemberSignupWithEmail(member, email)
 	} else {
+		// Check the information registered through the phone method.
 		if form.Method != "qq" {
 			msg = object.CheckMemberSignup(member, password)
 			if len(msg) == 0 {
 				msg = object.CheckMemberSignupWithPhone(member, form.Phone)
 			}
 		} else {
+			// Check the information registered through the qq method.
 			msg = object.CheckMemberSignupWithQQ(member, form.Addition2)
 		}
 	}
@@ -141,6 +156,7 @@ func (c *APIController) Signup() {
 			IsModerator:  false,
 			CreatedTime:  util.GetCurrentTime(),
 			Phone:        form.Phone,
+			AreaCode:     form.AreaCode,
 			Avatar:       avatar,
 			Email:        email,
 			Company:      form.Company,
@@ -167,6 +183,8 @@ func (c *APIController) Signup() {
 			break
 		case "phone":
 			member.PhoneVerifiedTime = util.GetCurrentTime()
+		case "email":
+			member.EmailVerifiedTime = util.GetCurrentTime()
 		case "qq":
 			member.QQOpenId = form.Addition2
 			member.QQAccount = form.Addition
@@ -215,11 +233,10 @@ func (c *APIController) Signin() {
 		return
 	}
 
-	var msg string
-	var member string
+	var information string
 	var password string
-	member, password = form.Username, form.Password
-	msg = object.CheckMemberLogin(member, password)
+	information, password = form.Information, form.Password
+	member, msg := object.CheckMemberLogin(information, password)
 
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}

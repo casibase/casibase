@@ -73,7 +73,7 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initFullClientUrl();
-    this.getNodeId = this.getNodeId.bind(this)
+    this.getNodeId = this.getNodeId.bind(this);
   }
 
   componentDidMount() {
@@ -99,7 +99,7 @@ class App extends Component {
     if (this.state.nodeId === null) {
       this.setState({
         nodeId: id
-      })
+      });
     }
   }
 
@@ -108,9 +108,9 @@ class App extends Component {
       .then((res) => {
         const account = Setting.parseJson(res.data);
         if (account !== null) {
-          let language = account?.language
+          let language = account?.language;
           if (language !== "" && language !== i18next.language) {
-            Setting.SetLanguage(language)
+            Setting.SetLanguage(language);
           }
          // i18n.changeCustomLanguage(language)
         }

@@ -226,9 +226,15 @@ class NodeBox extends React.Component {
                 {
                   this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
                     <span>
-                      <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
-                        {i18next.t("node:Moderator")}
-                      </a>
+                      {
+                        this.props.account?.isModerator ?
+                          <a href={`/go/${this.state.nodeId}/moderators`}>
+                            {i18next.t("node:Moderator")}
+                          </a> :
+                          <span>
+                            {i18next.t("node:Moderator")}
+                          </span>
+                      }
                       {
                         this.state.nodeInfo?.moderators.map((member) => {
                           return (
@@ -238,12 +244,16 @@ class NodeBox extends React.Component {
                           )})
                       }
                     </span> :
-                    <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
+                    this.props.account?.isModerator ?
+                      <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
                       {i18next.t("node:No moderators")}
-                    </a>
+                      </a> :
+                      <span>
+                        {i18next.t("node:No moderators")}
+                      </span>
                 }
                 {" "}&nbsp;
-            </span>
+              </span>
               <span>{i18next.t("node:Total topics")}&nbsp;</span>
               <strong>{this.state.topicNum}</strong>
               {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}

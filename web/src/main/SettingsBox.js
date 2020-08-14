@@ -266,8 +266,8 @@ class SettingsBox extends React.Component {
                 <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited")}</li>
               </ul>
             </div>
-    </div>
-    </div>
+          </div>
+        </div>
       )
     }
 
@@ -306,7 +306,7 @@ class SettingsBox extends React.Component {
                   </td> :
                   <td width="auto" align="left">
                     <code>
-                      {account?.phone}
+                      {account?.areaCode}{" "}{account?.phone}
                     </code>
                   </td>
               }

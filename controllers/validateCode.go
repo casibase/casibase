@@ -19,6 +19,7 @@ import (
 	"github.com/casbin/casbin-forum/service"
 )
 
+// GetCaptcha gets captcha.
 func (c *APIController) GetCaptcha() {
 	var resp Response
 
@@ -30,12 +31,18 @@ func (c *APIController) GetCaptcha() {
 	c.ServeJSON()
 }
 
+// GetValidateCode gets validate code.
 func (c *APIController) GetValidateCode() {
-	phoneNumber := c.Input().Get("phoneNumber")
+	information := c.Input().Get("information")
+	verifyType := c.Input().Get("type") // verify type: 1: phone, 2: email.
 
-	id, code := object.GetNewValidateCode(phoneNumber)
+	id, code := object.GetNewValidateCode(information)
 
-	service.SendSms(phoneNumber, code)
+	if verifyType == "1" {
+		service.SendSms(information, code)
+	} else {
+		service.SendRegistrationMail(information, code)
+	}
 
 	resp := Response{Status: "ok", Msg: "success", Data: id}
 

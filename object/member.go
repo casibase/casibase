@@ -21,6 +21,7 @@ type Member struct {
 	IsModerator       bool   `xorm:"bool" json:"isModerator"`
 	CreatedTime       string `xorm:"varchar(40)" json:"createdTime"`
 	Phone             string `xorm:"varchar(100)" json:"phone"`
+	AreaCode          string `xorm:"varchar(10)" json:"areaCode"` // phone area code
 	PhoneVerifiedTime string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
 	Avatar            string `xorm:"varchar(150)" json:"avatar"`
 	Email             string `xorm:"varchar(100)" json:"email"`
@@ -327,4 +328,23 @@ func GetMemberFileQuota(memberId string) int {
 	} else {
 		return 0
 	}
+}
+
+// MemberPasswordLogin needs information and password to check member login.
+// Information could be phone member, email or username.
+// If success, return username.
+func MemberPasswordLogin(information, password string) string {
+	members := []*Member{}
+	err := adapter.engine.Where("password = ? ", password).Cols("id, password, email, email_verified_time, phone, phone_verified_time").Find(&members)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range members {
+		if (v.Email == information && v.EmailVerifiedTime != "") || (v.Phone == information && v.PhoneVerifiedTime != "") || (v.Id == information) {
+			return v.Id
+		}
+	}
+
+	return ""
 }
