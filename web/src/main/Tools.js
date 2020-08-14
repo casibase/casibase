@@ -24,17 +24,18 @@ export function attachEditor(editor) {
 }
 
 // upload file through markdown editor
-export function uploadMdFile() {
+export function uploadMdFile(addMsg) {
   const stdImageExt = ["png", "jpg", "gif", "jpeg"]
   /* eslint-disable */inlineAttachment.prototype.onFileUploadResponse = function(fileName, fileUrl) {
     let newValue = this.settings.urlText.replace('file', fileName);
-    let text = this.editor.getValue().replace(this.lastValue, newValue).replace('{filename}', fileUrl);
-    let fileIndex = fileName.lastIndexOf(".");
+    let fileIndex = fileName.lastIndexOf("."); // find the ext of the file, choosing []() or ![]()
     let ext = fileName.substr(fileIndex+1);
     let index = stdImageExt.indexOf(ext);
     if(index < 0) {
-      text = text.substring(1);
+      newValue = newValue.substring(1);
     }
+    newValue = newValue.replace('{filename}', fileUrl)
+    let text = this.editor.getValue().replace(this.lastValue, newValue);
     this.editor.setValue(text);
     this.settings.onFileUploaded.call(this, fileName);
   }
@@ -47,7 +48,7 @@ export function uploadMdFile() {
 
   /* eslint-disable */inlineAttachment.prototype.uploadFile = function(file) {
     if (file.size > 6291456) {
-      Setting.showMessage("error", "File size exceeds 2MB");
+      alert("File size exceeds 6MB");
       return;
     }
 
@@ -70,7 +71,7 @@ export function uploadMdFile() {
 // upload file through files page
 export function uploadFile(file) {
   if (file.size > 6291456) {
-    Setting.showMessage("error", "File size exceeds 2MB");
+    alert("File size exceeds 6MB");
     return;
   }
 
@@ -101,7 +102,7 @@ export function uploadAvatar(file, redirectUrl) {
   timestamp = Date.parse(new Date());
   fileName = timestamp + '.' + fileType.ext;
   if (file.size > 2097152) {
-    Setting.showMessage("error", "File size exceeds 2MB");
+    alert("File size exceeds 2MB");
     return;
   }
 

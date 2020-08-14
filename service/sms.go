@@ -24,6 +24,7 @@ var accessKeySecret = beego.AppConfig.String("accessKeySecret")
 var SMSSignName = beego.AppConfig.String("SMSSignName")
 var SMSTemplateCode = beego.AppConfig.String("SMSTemplateCode")
 
+// SendSms sends a message to the phone.
 func SendSms(phoneNumber, code string) {
 	client, err := dysmsapi.NewClientWithAccessKey("cn-hangzhou", accessKeyID, accessKeySecret)
 

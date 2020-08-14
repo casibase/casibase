@@ -49,8 +49,8 @@ export function getCaptcha() {
   }).then(res => res.json());
 }
 
-export function getValidateCode(phoneNumber) {
-  return fetch(`${Setting.ServerUrl}/api/get-validate-code?phoneNumber=${phoneNumber}`, {
+export function getValidateCode(information, verifyType) {
+  return fetch(`${Setting.ServerUrl}/api/get-validate-code?information=${information}&type=${verifyType}`, {
     method: 'GET',
     credentials: 'include'
   }).then(res => res.json());

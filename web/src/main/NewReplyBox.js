@@ -66,6 +66,13 @@ class NewReplyBox extends React.Component {
     Setting.scrollToTop();
   }
 
+  initOSS() {
+    Setting.initOSSClient(this.props.member)
+    this.setState({
+      initOSSClientStatus: true
+    });
+  }
+
   updateFormField(key, value) {
     let form = this.state.form;
     form[key] = value;
@@ -99,7 +106,7 @@ class NewReplyBox extends React.Component {
     }
 
     if (this.state.message !== null) {
-      problems.push(this.state.message)
+      problems.push(this.state.message);
     }
 
     if (problems.length === 0) {
@@ -122,7 +129,7 @@ class NewReplyBox extends React.Component {
 
   publishReply() {
     if (this.props.content !== undefined) {
-      this.updateFormField("content", this.props.content)
+      this.updateFormField("content", this.props.content);
     }
     if (!this.isOkToSubmit()) {
       return;
@@ -147,32 +154,32 @@ class NewReplyBox extends React.Component {
     if (this.state.message !== null) {
       this.setState({
         message: null
-      })
+      });
     }
     if (value.substring(value.length-1) === "@") {
-      CodeMirror.commands.autocomplete(editor, null, { completeSingle: false })
+      CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
     }
   }
 
   undockBox() {
-    this.props.changeStickyStatus(false)
+    this.props.changeStickyStatus(false);
   }
 
   dockBox() {
-    this.props.changeStickyStatus(true)
+    this.props.changeStickyStatus(true);
   }
 
   synonyms(cm, option) {
-    let comp = this.props.memberList
-    let res = []
+    let comp = this.props.memberList;
+    let res = [];
     return new Promise(function(accept) {
       setTimeout(function() {
-        let cursor = cm.getCursor(), line = cm.getLine(cursor.line)
-        let start = cursor.ch, end = cursor.ch
-        while (start && line.charAt(start - 1) !== "@") --start
-        while (end < line.length && /\w/.test(line.charAt(end))) ++end
-        let word = line.slice(start, end).toLowerCase()
-        for (let i = 0; i < comp.length; i++) if (comp[i].includes(word)) {res.push(comp[i])}
+        let cursor = cm.getCursor(), line = cm.getLine(cursor.line);
+        let start = cursor.ch, end = cursor.ch;
+        while (start && line.charAt(start - 1) !== "@") --start;
+        while (end < line.length && /\w/.test(line.charAt(end))) ++end;
+        let word = line.slice(start, end).toLowerCase();
+        for (let i = 0; i < comp.length; i++) if (comp[i].includes(word)) {res.push(comp[i]);}
         return accept({list: res,
           from: CodeMirror.Pos(cursor.line, start+1),
           to: CodeMirror.Pos(cursor.line, end)})
@@ -182,15 +189,12 @@ class NewReplyBox extends React.Component {
 
   render() {
     if (this.state.topic === null) {
-      return null
+      return null;
     }
 
     if (this.props.member !== null) {
       if (!this.state.initOSSClientStatus) {
-        Setting.initOSSClient(this.props.member)
-        this.setState({
-          initOSSClientStatus: true
-        })
+        this.initOSS();
       }
     }
 

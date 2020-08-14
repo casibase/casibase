@@ -45,8 +45,8 @@ class SigninBox extends React.Component {
           captchaId: res?.data2
         }, () => {
           this.updateFormField("captchaId", this.state.captchaId)
-        })
-      })
+        });
+      });
   }
 
   updateFormField(key, value) {
@@ -94,7 +94,7 @@ class SigninBox extends React.Component {
     }
 
     if (this.state.message !== "") {
-      problems.push(i18next.t(`error:${this.state.message}`))
+      problems.push(i18next.t(`error:${this.state.message}`));
     }
 
     if (problems.length === 0) {
@@ -147,7 +147,7 @@ class SigninBox extends React.Component {
                   {i18next.t("general:Username")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" value={this.state.form.username} onChange={event => {this.updateFormField("username", event.target.value)}} className="sl" name="username" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username or Email address")} />
+                  <input type="text" value={this.state.form.information} onChange={event => {this.updateFormField("information", event.target.value)}} className="sl" name="username" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username, email address or phone number")} />
                 </td>
               </tr>
               <tr>

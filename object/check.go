@@ -33,6 +33,7 @@ func CheckMemberSignup(member string, password string) string {
 	}
 }
 
+/*
 func CheckMemberLogin(member string, password string) string {
 	if !HasMember(member) {
 		return "errorUsernameNotFound"
@@ -44,12 +45,22 @@ func CheckMemberLogin(member string, password string) string {
 
 	return ""
 }
+*/
+
+// CheckMemberLogin needs password, and information, which could be username, phone number or email.
+func CheckMemberLogin(information, password string) (string, string) {
+	if member := MemberPasswordLogin(information, password); member != "" {
+		return member, ""
+	}
+
+	return "", "Member not found or password error."
+}
 
 func CheckMemberSignupWithEmail(member string, email string) string {
 	if len(member) == 0 || len(email) == 0 {
 		return "errorUsernameOrUsernameEmpty"
 	} else if HasMember(member) || HasMail(email) != "" {
-		return "errorUsernameExistedOrEmailExisted"
+		return "Username existed or email existed."
 	} else {
 		return ""
 	}

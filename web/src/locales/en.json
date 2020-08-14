@@ -11,7 +11,7 @@
     "Username": "Username",
     "Password": "Password",
     "Forgot Password": "Forgot Password",
-    "Username or Email address": "Username or Email address",
+    "Username, email address or phone number": "Username, email address or phone number",
     "true": "true",
     "false": "false"
   },
@@ -30,6 +30,7 @@
     "Continue with QQ": "Continue with QQ",
     "Continue with Google": "Continue with Google",
     "Continue with Github": "Continue with Github",
+    "Continue with Email": "Continue with Email",
     "Username": "Username",
     "Password": "Password",
     "Phone": "Phone",
@@ -37,7 +38,9 @@
     "Company title": "Company title",
     "Company": "Company",
     "Location": "Location",
-    "Signup": "Signup"
+    "Signup": "Signup",
+    "Please select a area code": "Please select a area code",
+    "Area code": "Area code"
   },
   "signin":
   {
@@ -480,6 +483,11 @@
     "Delete file failed, please try again.": "Delete file failed, please try again.",
     "You don't have enough balance.": "You don't have enough balance.",
     "Member doesn't exist.": "Member doesn't exist.",
-    "Moderator already exist.": "Moderator already exist."
+    "Moderator already exist.": "Moderator already exist.",
+    "Member not found or password error": "Member not found or password error",
+    "Please check your phone number": "Please check your phone number",
+    "Please check your email": "Please check your email",
+    "Please input your email": "Please input your email",
+    "Username existed or email existed.": "Username existed or email existed."
   }
 }
