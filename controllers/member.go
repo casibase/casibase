@@ -28,7 +28,7 @@ func (c *APIController) GetMembers() {
 func (c *APIController) GetMember() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetMember(id)
+	c.Data["json"] = object.GetMemberById(id)
 	c.ServeJSON()
 }
 

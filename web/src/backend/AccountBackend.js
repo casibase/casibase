@@ -13,6 +13,13 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
+import sha256 from "js-sha256";
+
+function encryptPassword(kv) {
+  if (kv["password"] !== undefined && kv["password"] !== "") {
+    kv["password"] = sha256(kv["password"])
+  }
+}
 
 export function getAccount() {
   return fetch(`${Setting.ServerUrl}/api/get-account`, {
@@ -22,6 +29,7 @@ export function getAccount() {
 }
 
 export function signup(values) {
+  encryptPassword(values);
   return fetch(`${Setting.ServerUrl}/api/signup`, {
     method: 'POST',
     credentials: "include",
@@ -30,6 +38,7 @@ export function signup(values) {
 }
 
 export function signin(values) {
+  encryptPassword(values);
   return fetch(`${Setting.ServerUrl}/api/signin`, {
     method: 'POST',
     credentials: "include",

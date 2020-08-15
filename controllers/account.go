@@ -281,7 +281,7 @@ func (c *APIController) GetAccount() {
 
 	var memberObj interface{}
 	username := c.GetSessionUser()
-	memberObj = object.GetMember(username)
+	memberObj = object.GetMemberById(username)
 	resp = Response{Status: "ok", Msg: "", Data: util.StructToJson(memberObj)}
 
 	c.Data["json"] = resp
@@ -317,7 +317,7 @@ func (c *APIController) ResetPassword() {
 			return
 		}
 
-		userInfo := object.GetMember(form.Username)
+		userInfo := object.GetMemberById(form.Username)
 		if userInfo == nil {
 			resp = Response{Status: "error", Msg: "Member not found"}
 		} else {
@@ -346,7 +346,7 @@ func (c *APIController) ResetPassword() {
 			panic(err)
 		}
 
-		userInfo := object.GetMember(form.Username)
+		userInfo := object.GetMemberById(form.Username)
 		if form.Method != "phone" {
 			resp = Response{Status: "error", Msg: "Please try again"}
 		}
@@ -370,7 +370,7 @@ func (c *APIController) ResetPassword() {
 			panic(err)
 		}
 
-		userInfo := object.GetMember(form.Username)
+		userInfo := object.GetMemberById(form.Username)
 		if form.Method != "email" {
 			resp = Response{Status: "error", Msg: "Please try again"}
 		}
@@ -418,7 +418,7 @@ func (c *APIController) ResetPassword() {
 			panic(err)
 		}
 
-		userInfo := object.GetMember(form.Username)
+		userInfo := object.GetMemberById(form.Username)
 		if userInfo == nil {
 			resp = Response{Status: "error", Msg: "Member not found"}
 		} else {

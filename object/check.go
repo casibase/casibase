@@ -14,13 +14,29 @@
 
 package object
 
+import (
+	"crypto/sha256"
+	"encoding/hex"
+)
+
 func HasMember(memberId string) bool {
-	return GetMember(memberId) != nil
+	return GetMemberById(memberId) != nil
 }
 
 func IsPasswordCorrect(memberId string, password string) bool {
-	objMember := GetMember(memberId)
-	return objMember.Password == password
+	objMember := GetMemberById(memberId)
+	return VerifyPassword(password, objMember.Password)
+}
+
+// Check if the input password matches the real password
+func VerifyPassword(inPassword string, realPassword string) bool {
+	if inPassword == realPassword {
+		return true
+	}
+	// Because some of the passwords in the DB are not encrypted with SHA256
+	// we need to check if SHA256(realPassword) == inPassword
+	bEncryptedMemberPswd := sha256.Sum256([]byte(realPassword))
+	return hex.EncodeToString(bEncryptedMemberPswd[:]) == inPassword
 }
 
 func CheckMemberSignup(member string, password string) string {

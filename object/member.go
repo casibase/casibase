@@ -57,8 +57,36 @@ func GetMembers() []*Member {
 	return members
 }
 
-func GetMember(id string) *Member {
+func GetMemberById(id string) *Member {
 	member := Member{Id: id}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetMemberByEmail(email string) *Member {
+	member := Member{Email: email}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetMemberByPhone(phone string) *Member {
+	member := Member{Phone: phone}
 	existed, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
@@ -95,7 +123,7 @@ func GetMemberNum() int {
 }
 
 func UpdateMember(id string, member *Member) bool {
-	if GetMember(id) == nil {
+	if GetMemberById(id) == nil {
 		return false
 	}
 
@@ -109,7 +137,7 @@ func UpdateMember(id string, member *Member) bool {
 }
 
 func UpdateMemberInfo(id string, member *Member) bool {
-	if GetMember(id) == nil {
+	if GetMemberById(id) == nil {
 		return false
 	}
 
@@ -122,7 +150,7 @@ func UpdateMemberInfo(id string, member *Member) bool {
 }
 
 func UpdateMemberAvatar(id string, avatar string) bool {
-	if GetMember(id) == nil {
+	if GetMemberById(id) == nil {
 		return false
 	}
 
@@ -138,7 +166,7 @@ func UpdateMemberAvatar(id string, avatar string) bool {
 }
 
 func UpdateMemberLanguage(id string, language string) bool {
-	if GetMember(id) == nil {
+	if GetMemberById(id) == nil {
 		return false
 	}
 
@@ -334,15 +362,27 @@ func GetMemberFileQuota(memberId string) int {
 // Information could be phone member, email or username.
 // If success, return username.
 func MemberPasswordLogin(information, password string) string {
-	members := []*Member{}
-	err := adapter.engine.Where("password = ? ", password).Cols("id, password, email, email_verified_time, phone, phone_verified_time").Find(&members)
-	if err != nil {
-		panic(err)
+	// information as ID
+	member := GetMemberById(information)
+	if member != nil {
+		if VerifyPassword(password, member.Password) {
+			return member.Id
+		}
 	}
 
-	for _, v := range members {
-		if (v.Email == information && v.EmailVerifiedTime != "") || (v.Phone == information && v.PhoneVerifiedTime != "") || (v.Id == information) {
-			return v.Id
+	// information as email
+	member = GetMemberByEmail(information)
+	if member != nil {
+		if member.EmailVerifiedTime != "" && VerifyPassword(password, member.Password) {
+			return member.Id
+		}
+	}
+
+	// information as phone
+	member = GetMemberByPhone(information)
+	if member != nil {
+		if member.PhoneVerifiedTime != "" && VerifyPassword(password, member.Password) {
+			return member.Id
 		}
 	}
 
