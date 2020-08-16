@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
+	. "github.com/casbin/casbin-forum/authz"
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -173,7 +174,7 @@ func (c *APIController) AddNodeModerators() {
 	var resp Response
 
 	memberId := c.GetSessionUser()
-	if !object.CheckModIdentity(memberId) {
+	if !IsRootMod(memberId) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -209,7 +210,7 @@ func (c *APIController) DeleteNodeModerators() {
 	var resp Response
 
 	memberId := c.GetSessionUser()
-	if !object.CheckModIdentity(memberId) {
+	if !IsRootMod(memberId) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()

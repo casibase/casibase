@@ -17,6 +17,7 @@ package object
 import (
 	"time"
 
+	"github.com/casbin/casbin-forum/authz"
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -384,7 +385,7 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 }
 
 func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {
-	if CheckModIdentity(member) || CheckNodeModerator(member, nodeId) {
+	if authz.IsRootMod(member) || authz.IsNodeMod(member, nodeId) {
 		return true
 	}
 	if member != author {
