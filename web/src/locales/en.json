@@ -13,7 +13,9 @@
     "Forgot Password": "Forgot Password",
     "Username, email address or phone number": "Username, email address or phone number",
     "true": "true",
-    "false": "false"
+    "false": "false",
+    "Homepage": "Homepage",
+    "Language": "Language"
   },
   "login":
   {
@@ -47,6 +49,10 @@
     "Sign in with QQ": "Sign in with QQ",
     "Sign in with Google": "Sign in with Google",
     "Sign in with Github": "Sign in with Github"
+  },
+  "signout":
+  {
+    "Are you sure to log out?": "Are you sure to log out?"
   },
   "edit":
   {
@@ -202,7 +208,10 @@
     "TabTop": "TabTop",
     "CancelTabTop": "CancelTabTop",
     "NodeTop": "NodeTop",
-    "CancelNodeTop": "CancelNodeTop"
+    "CancelNodeTop": "CancelNodeTop",
+    "words": "words",
+    "Next": "Next",
+    "Last": "Last"
   },
   "new":
   {
@@ -306,7 +315,8 @@
     "to sign in.": "to sign in.",
     "here": "here",
     "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
-    "authorized to manage the community": "authorized to manage the community"
+    "authorized to manage the community": "authorized to manage the community",
+    "Switch topic list": "Switch topic list"
   },
   "setting":
   {

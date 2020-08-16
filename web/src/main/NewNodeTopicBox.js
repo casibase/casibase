@@ -41,6 +41,7 @@ class NewNodeTopicBox extends React.Component {
       nodeId: "",
       nodeInfo: {},
       problems: [],
+      width: ""
     };
 
     this.renderLargeSize = this.renderLargeSize.bind(this)
@@ -109,6 +110,7 @@ class NewNodeTopicBox extends React.Component {
     if (this.state.problems.length === 0) {
       return null
     }
+
     return (
       <div className="problem">
         {i18next.t("error:Please resolve the following issues before creating a new topic")}
@@ -217,11 +219,19 @@ class NewNodeTopicBox extends React.Component {
   }
 
   renderLargeSize() {
+    const title = document.getElementById('topic_title');
+    let contentWidth = title.clientWidth;
+    if (this.state.width === "") {
+      this.setState({
+        width: contentWidth
+      });
+    }
+
     return (
       <div className="box" id="box">
         {this.renderHeader()}
         {this.renderProblem()}
-        <div className="cell">
+        <div className="cell" id="topic-cell">
           <table cellPadding="5" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
@@ -239,7 +249,7 @@ class NewNodeTopicBox extends React.Component {
                   <Resizable
                     enable={false}
                     defaultSize={{
-                      width: 728,
+                      width: this.state.width,
                       height: 180,
                     }}
                   >

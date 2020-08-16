@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import {withRouter} from "react-router-dom";
+import {Route, withRouter} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
@@ -203,25 +203,44 @@ class NodeBox extends React.Component {
     )
   }
 
-  renderNode() {
-    const {nodeInfo, nodeId, page, limit} = this.state
-    let from, end
-    if (this.state.topicNum !== 0) {
-      from = (page - 1) * limit + 1
-    }else {
-      from = 0
-    }
-    end = (page - 1) * limit + this.state.topics.length
+  renderMobileHeader() {
+    return (
+      <div className="header">
+        <div className="fr f12">
+          <span className="snow">{i18next.t("node:Total topics")}</span>
+          {" "}<strong className="gray">{this.state.topicNum}</strong>
+          {" "}{this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
+          {" "}
+          {
+            this.props.account !== null ?
+              this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0);">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0);">{i18next.t("fav:Add to favorite")}</a> : null
+          }
+        </div>
+        <a href="/">{Setting.getForumName()}</a>
+        {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+        {" "}{this.state.nodeInfo?.name}
+        <div className="sep5"></div>
+        {
+          this.props.account !== null ?
+            <div align="right">
+              <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={()=> Setting.goToLink(`/new/${this.state.nodeId}`)} style={{width: "100%", lineHeight: "20px"}}/>
+            </div> : null
+        }
+      </div>
+    )
+  }
+
+  renderDesktopHeader() {
+    const {nodeInfo, nodeId} = this.state
 
     return (
-      <div className={`box ${this.state.nodeId}`}>
-        <div className={`node_header ${this.state.nodeId}`}>
-          <div className="node_avatar">
-            <div style={{float: "left", display: "inline-block", marginRight: "10px", marginBottom: "initial!important"}}>
-              <img src={nodeInfo?.image} border="0" align="default" width="72" alt={nodeInfo?.nodeName}/></div>
-          </div>
-          <div className="node_info">
-            <div className="fr f12">
+      <div className={`node_header ${this.state.nodeId}`}>
+        <div className="node_avatar">
+          <div style={{float: "left", display: "inline-block", marginRight: "10px", marginBottom: "initial!important"}}>
+            <img src={nodeInfo?.image} border="0" align="default" width="72" alt={nodeInfo?.nodeName}/></div>
+        </div>
+        <div className="node_info">
+          <div className="fr f12">
               <span className="gray">
                 {
                   this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
@@ -246,7 +265,7 @@ class NodeBox extends React.Component {
                     </span> :
                     this.props.account?.isModerator ?
                       <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
-                      {i18next.t("node:No moderators")}
+                        {i18next.t("node:No moderators")}
                       </a> :
                       <span>
                         {i18next.t("node:No moderators")}
@@ -254,34 +273,50 @@ class NodeBox extends React.Component {
                 }
                 {" "}&nbsp;
               </span>
-              <span>{i18next.t("node:Total topics")}&nbsp;</span>
-              <strong>{this.state.topicNum}</strong>
-              {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
-              {
-                this.props.account !== null ?
-                  this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Add to favorite")}</a> : null
-              }
-            </div>
-            <a href="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</a>
-            <span className="chevron">&nbsp;›&nbsp;</span>
-            {nodeInfo?.name}
-            <div className="sep10"></div>
-            <div className="sep5"></div>
+            <span>{i18next.t("node:Total topics")}&nbsp;</span>
+            <strong>{this.state.topicNum}</strong>
+            {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
             {
               this.props.account !== null ?
-                <div className="fr" style={{paddingLeft: "10px"}}>
-                  <input type="button" className="super normal button" value={i18next.t("node:new topic")}
-                         onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
-                </div> : null
+                this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Add to favorite")}</a> : null
             }
-            <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
-            <div className="sep10"></div>
-            <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
-              <a href={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</a>
-            </div>
+          </div>
+          <a href="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</a>
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          {nodeInfo?.name}
+          <div className="sep10"></div>
+          <div className="sep5"></div>
+          {
+            this.props.account !== null ?
+              <div className="fr" style={{paddingLeft: "10px"}}>
+                <input type="button" className="super normal button" value={i18next.t("node:new topic")}
+                       onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
+              </div> : null
+          }
+          <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
+          <div className="sep10"></div>
+          <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
+            <a href={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</a>
           </div>
         </div>
-        {this.showPageColumn()}
+      </div>
+    )
+  }
+
+  renderNode() {
+    const {page, limit} = this.state
+    let from, end
+    if (this.state.topicNum !== 0) {
+      from = (page - 1) * limit + 1
+    }else {
+      from = 0
+    }
+    end = (page - 1) * limit + this.state.topics.length
+
+    return (
+      <div className={`box ${this.state.nodeId}`}>
+        {Setting.PcBrowser ? this.renderDesktopHeader() : this.renderMobileHeader()}
+        {Setting.PcBrowser ? this.showPageColumn() : null}
         <TopicList nodeId={this.state.nodeId} topics={this.state.topics} showNodeName={false} showAvatar={true} topType={"node"} />
         {this.showPageColumn()}
         <div className="cell" align="center">
@@ -307,6 +342,8 @@ class NodeBox extends React.Component {
   }
 
   render() {
+    const pcBrowser = Setting.PcBrowser
+
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       return (
         <div className="box">
@@ -318,7 +355,7 @@ class NodeBox extends React.Component {
 
     if (this.state.nodeInfo === null) {
       return (
-        <div id="Main">
+        <div id={pcBrowser ? "Main" : ""}>
           <div class="sep20"></div>
           <div class="box">
             <div class="header">
@@ -424,12 +461,12 @@ class NodeBox extends React.Component {
     }
 
     return (
-      <div id="Main">
-        <div className="sep20" />
+      <div id={pcBrowser ? "Main" : ""}>
+        {pcBrowser ? <div className="sep20" /> : null}
         {this.renderNode()}
-        <div className="sep20" />
+        {pcBrowser ? <div className="sep20" /> : null}
         {
-          this.props.account !== undefined && this.props.account !== null ?
+          this.props.account !== undefined && this.props.account !== null && pcBrowser ?
             <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} /> : null
         }
       </div>

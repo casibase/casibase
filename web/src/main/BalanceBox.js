@@ -282,7 +282,7 @@ class BalanceBox extends React.Component {
               <td width="60" className="h">{i18next.t("balance:Balance")}</td>
               <td width="auto" className="h" style={{borderRight: "none"}}>{i18next.t("balance:Description")}</td>
             </tr>
-            {this.showPageColumn()}
+            {Setting.PcBrowser ? this.showPageColumn() : null}
             {
               this.state.records.map((record) => {
                 return this.renderRecord(record);

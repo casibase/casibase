@@ -67,8 +67,9 @@ class RecentTopicsBox extends React.Component {
 
   showPageColumn() {
     if (this.state.topicsNum === 0) {
-      return
+      return;
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url}/>
     )
@@ -84,7 +85,7 @@ class RecentTopicsBox extends React.Component {
           <a href="/">{Setting.getForumName()}</a>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Recent Topics")}
         </div>
-        {this.showPageColumn()}
+        {Setting.PcBrowser ? this.showPageColumn() : null}
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         {this.showPageColumn()}
       </div>

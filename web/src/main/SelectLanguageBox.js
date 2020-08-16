@@ -26,10 +26,18 @@ class SelectLanguageBox extends React.Component {
   render() {
     return (
       <div align="center">
-        <div class="box" style={{width: "600px"}}>
+        <div class="box" style={{width: Setting.PcBrowser ? "600px" : "auto"}}>
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span> Select Language / 选择语言</div>
           <div class="cell">
-            Please select the language you would like to use on {Setting.getForumName()}
+            {
+              Setting.PcBrowser ?
+                <span>
+                  Please select the language you would like to use on {Setting.getForumName()}
+                </span> :
+                <span>
+                  Please select the language you would like to use:
+                </span>
+            }
           </div>
           <a href="javascript:void(0)" onClick={() => Setting.ChangeLanguage("en")} class="lang-selector">English</a>
           <a href="javascript:void(0)" onClick={() => Setting.ChangeLanguage("zh")} class="lang-selector">简体中文</a>

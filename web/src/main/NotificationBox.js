@@ -72,17 +72,18 @@ class NotificationBox extends React.Component {
     NotificationBackend.deleteNotifications(id)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.refresh()
+          Setting.refresh();
         }else {
-          Setting.showMessage("error", res.msg)
+          Setting.showMessage("error", res.msg);
         }
       });
   }
 
   showPageColumn() {
     if (this.state.notificationNum === 0) {
-      return null
+      return null;
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.notificationNum} url={this.state.url} defaultPageNum={this.state.limit} />
     )
@@ -239,7 +240,7 @@ class NotificationBox extends React.Component {
             <a href="/">{Setting.getForumName()}</a> <span className="chevron">&nbsp;›&nbsp;</span>
             {" "}{i18next.t("notification:Reminder system")}
           </div>
-          {this.showPageColumn()}
+          {Setting.PcBrowser ? this.showPageColumn() : null}
           <div id="notifications">
             {
               this.state.notifications.map((notification) => {

@@ -245,7 +245,7 @@ class FilesBox extends React.Component {
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
           <tr>
-            <td width="300" align="left">
+            <td width={Setting.PcBrowser ? "300" : "180"} align="left">
               <a href={`${file.id}`}>
                 {file.name}
               </a>
@@ -481,29 +481,32 @@ class FilesBox extends React.Component {
     if (this.state.filesNum === 0) {
       return;
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.filesNum} url={this.state.url} defaultPageNum={this.state.limit} />
     )
   }
 
   renderFiles(file) {
+    const pcBrowser = Setting.PcBrowser
+
     return (
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
           <tr>
-            <td width="300" align="left">
+            <td width={pcBrowser ? "300" : "auto"} align="left">
               <a href={`/i/${file.id}`}>
                 {file?.fileName}
               </a>
             </td>
             <td width="10"></td>
-            <td width="auto" valign="middle" style={{textAlign: "center"}}>
+            <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
               <span style={{fontSize: "13px"}}>
                 {Setting.getFormattedSize(file?.size)}
               </span>
             </td>
-            <td  width="100"  align="left" style={{textAlign: "center"}}>
+            <td  width="100" align="left" style={{textAlign: "center"}}>
               {Setting.getPrettyDate(file?.createdTime)}
             </td>
           </tr>
@@ -557,6 +560,8 @@ class FilesBox extends React.Component {
   }
 
   render() {
+    const pcBrowser = Setting.PcBrowser;
+
     if (this.props.account !== null && this.props.account !== undefined) {
       if (!this.state.initOSSClientStatus) {
         Setting.initOSSClient(this.props.account.id)
@@ -596,7 +601,7 @@ class FilesBox extends React.Component {
               <td width="64">
                 <img src={Setting.getStatic("/static/img/essentials/images.png")} width="64"/>
               </td>
-              <td width="200">
+              <td width={pcBrowser ? "200" : "auto"}>
                 <span className="item_title">
                   {this.props.account?.id}{" "}{i18next.t("file:'s file library")}
                 </span>
@@ -614,7 +619,7 @@ class FilesBox extends React.Component {
           </table>
         </div>
         <div class="cell" style={{padding: "0px", textAlign: "center"}}>
-          {this.showPageColumn()}
+          {Setting.PcBrowser ? this.showPageColumn() : null}
           {
             this.state.files !== null && this.state.files.length !== 0 ?
             this.state.files.map(file => this.renderFiles(file)) : null

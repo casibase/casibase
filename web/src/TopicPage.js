@@ -16,10 +16,11 @@ import React from "react";
 import * as Setting from "./Setting";
 import * as TopicBackend from "./backend/TopicBackend";
 import * as TabBackend from "./backend/TabBackend";
-import moment from "moment";
+import * as NotificationBackend from "./backend/NotificationBackend";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
 import {withRouter} from "react-router-dom";
+import moment from "moment";
 import i18next from "i18next";
 
 class TopicPage extends React.Component {
@@ -42,6 +43,20 @@ class TopicPage extends React.Component {
   componentDidMount() {
     this.getNodeInfo();
     this.getTopics();
+    this.getUnreadNotificationNum();
+  }
+
+  getUnreadNotificationNum() {
+    if (Setting.PcBrowser) {
+      return;
+    }
+
+    NotificationBackend.getUnreadNotificationNum()
+      .then((res) => {
+        this.setState({
+          unreadNotificationNum: res?.data
+        });
+      });
   }
 
   changeTab(tab) {
@@ -83,7 +98,7 @@ class TopicPage extends React.Component {
             topics: res,
           });
         });
-      return
+      return;
     }
     TopicBackend.getTopics(this.state.defaultHomePageNum, 1)
       .then((res) => {
@@ -216,6 +231,51 @@ class TopicPage extends React.Component {
     )
   }
 
+  renderAccountInfo() {
+    if (this.props.account === undefined || this.props.account === null) {
+      return null;
+    }
+
+    return (
+      <div class="cell">
+        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+          <tbody>
+          <tr>
+            <td width="auto">
+              {
+                this.state.unreadNotificationNum === 0 ?
+                  <a href="/notifications" className="gray">
+                    0{" "}{i18next.t("bar:unread")}
+                  </a> :
+                  <input type="button" className="super special button" value={`${this.state.unreadNotificationNum} ${i18next.t("bar:unread")}`}
+                         onClick={() => Setting.goToLink("/notifications")}
+                         style={{marginLeft: "2px", width: "100%", lineHeight: "20px"}}/>
+              }
+            </td>
+            <td width="10"></td>
+            <td width="100" align="center">
+              <a href="/balance" className="balance_area" style={{margin: "0px"}}>
+                {
+                  this.props.account?.goldCount !== 0 ?
+                    <span>
+                        {" "}{this.props.account?.goldCount}{" "}
+                      <img src={Setting.getStatic("/static/img/gold@2x.png")} height="16" alt="G" border="0"/>
+                      </span>
+                    : null
+                }
+                {" "}{this.props.account?.silverCount}{" "}
+                <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
+                {" "}{this.props.account?.bronzeCount}{" "}
+                <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
+              </a>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    )
+  }
+
   render() {
     let topType = "homePage";
     if (this.state.tab !== undefined) {
@@ -224,6 +284,7 @@ class TopicPage extends React.Component {
 
     return (
       <div className="box">
+        {Setting.PcBrowser ? null : this.renderAccountInfo()}
         <div className="inner" id="Tabs">
           {
             this.state.tabs.map((tab) => {
@@ -231,7 +292,7 @@ class TopicPage extends React.Component {
             })
           }
         </div>
-        <div className="cell" id="SecondaryTabs">
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {
             this.props.account !== undefined && this.props.account !== null ?
               <div className="fr">

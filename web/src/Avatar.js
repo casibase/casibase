@@ -29,6 +29,8 @@ class Avatar extends React.Component {
       style = {maxWidth: "24px", maxHeight: "24px"};
     } else if (this.props.size === "large") {
       style = {maxWidth: "73px", maxHeight: "73px"};
+    } else if (this.props.size === "middle") {
+      style = {maxWidth: "36px", maxHeight: "36px"};
     } else {
       style = {maxWidth: "48px", maxHeight: "48px"};
     }

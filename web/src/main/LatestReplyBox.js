@@ -86,6 +86,7 @@ class LatestReplyBox extends React.Component {
     if (this.state.repliesNum === 10) {
       return
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url}/>
     )
@@ -100,9 +101,12 @@ class LatestReplyBox extends React.Component {
               <tr>
                 <td style={{padding: "10px 15px 8px 15px", fontSize: "12px", textAlign: "left"}}>
                   <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
-                  <span className="gray">{i18next.t("member:replied")}{" "}<a href={`/member/${reply.author}`}> {reply.author} </a>{" "}{i18next.t("member:'s topic")}{" "}<span
-                    className="chevron">›</span> <a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
-                    <span className="chevron">›</span> <a href={`/t/${reply.topicId}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
+                  <span className="gray">
+                    {i18next.t("member:replied")}{" "}
+                    <a href={`/member/${reply.author}`}>{" "}{reply.author}{" "}</a>
+                    {" "}{i18next.t("member:'s topic")}{" "}
+                    <span className="chevron">›</span>{" "}<a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
+                    <span className="chevron">›</span>{" "}<a href={`/t/${reply.topicId}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
                   </span>
                 </td>
               </tr>
@@ -132,7 +136,7 @@ class LatestReplyBox extends React.Component {
             <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
             <div className="fr f12"><span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
           </div>
-          {this.showPageColumn()}
+          {Setting.PcBrowser ? this.showPageColumn() : null}
           {
             this.state.replies?.map((reply) => {
               return this.renderReplies(reply);
