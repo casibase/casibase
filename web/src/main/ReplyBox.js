@@ -170,7 +170,7 @@ class ReplyBox extends React.Component {
 
   renderImage = ({alt, src}) => {
     return(
-      <Zmage src={src} alt={alt} />
+      <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>
     );
   };
 
@@ -219,10 +219,10 @@ class ReplyBox extends React.Component {
                           this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ?
                             reply?.thanksStatus === false ?
                               <div id={`thank_area__${reply.id}`} className="thank_area">
-                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc"}}>{i18next.t("reply:ignore")}</a>
+                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc", display: Setting.PcBrowser ? "block" : "none"}}>{i18next.t("reply:ignore")}</a>
                                 &nbsp; &nbsp;
                                 <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
-                                  {i18next.t("reply:thank")}
+                                  <img src={Setting.getStatic("/static/img/heart_neue.png")} style={{verticalAlign: "bottom"}} alt={i18next.t("reply:thank")} width="16" />
                                 </a>
                               </div> :
                               <div id={`thank_area__${reply.id}`} className="thank_area thanked">
@@ -230,6 +230,7 @@ class ReplyBox extends React.Component {
                               </div>
                             : null
                         }
+                        {" "}&nbsp;
                         {
                           reply?.deletable ?
                             <div id={`thank_area__${reply.id}`} className="thank_area">
@@ -309,7 +310,7 @@ class ReplyBox extends React.Component {
             </div> :
             this.renderReply()
         }
-        <div className="sep20" />
+        {Setting.PcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
         {
           this.props.account === null ? null :
             <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId} memberList={this.state.memberList} />

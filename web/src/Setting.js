@@ -178,7 +178,7 @@ export function initOSSClient(id) {
 export function getOSSClient(initNewOSSClient) {
   AccountBackend.getStsToken().then((res) => {
     if (res.status === "ok") {
-      initNewOSSClient(res.data.accessKeyId, res.data.accessKeySecret, res.data.stsToken)
+      initNewOSSClient(res.data.accessKeyId, res.data.accessKeySecret, res.data.stsToken);
     }
   });
 }
@@ -193,7 +193,7 @@ export function ChangeLanguage(language) {
   localStorage.setItem("casbin-forum-language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);
-  MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"))
+  MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"));
 }
 
 export function changeMomentLanguage(lng) {
@@ -229,7 +229,7 @@ export function getFormattedContent(content, spacing) {
   if (spacing) {
     return pangu.spacing(formattedContent);
   }
-  return formattedContent
+  return formattedContent;
 }
 
 export function getBoolConvertedText(status) {
@@ -239,20 +239,20 @@ export function getBoolConvertedText(status) {
   return i18next.t("general:false");
 }
 
-const stdImageExt = ["png", "jpg", "gif", "jpeg"]
+const stdImageExt = ["png", "jpg", "gif", "jpeg"];
 
 export function getFileType(fileName) {
-  let fileType = "image"
+  let fileType = "image";
   let fileIndex = fileName.lastIndexOf(".");
   let ext = fileName.substr(fileIndex+1);
   let index = stdImageExt.indexOf(ext);
   if(index < 0) {
-    fileType = "file"
+    fileType = "file";
   }
-  return {fileType: fileType, ext: ext}
+  return {fileType: fileType, ext: ext};
 }
 
-const unitSuffix = ["Bytes", "KB", "MB"]
+const unitSuffix = ["Bytes", "KB", "MB"];
 
 export function getFormattedSize(fileSize){
   if (fileSize === null) {
@@ -262,4 +262,17 @@ export function getFormattedSize(fileSize){
   let size = (fileSize/Math.pow(1024, index)).toPrecision(3);
 
   return size+" "+unitSuffix[index];
+}
+
+export let PcBrowser = true;
+
+export function initBrowserType() {
+  if (!checkPc()) {
+    PcBrowser = false;
+  }
+}
+
+// checkPc return a boolean value means "mobile" or "pc"
+export function checkPc() {
+  return !/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 }

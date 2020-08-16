@@ -13,7 +13,9 @@
     "Forgot Password": "我忘记密码了",
     "Username, email address or phone number": "用户名，电子邮箱地址或手机号",
     "true": "是",
-    "false": "否"
+    "false": "否",
+    "Homepage": "个人主页",
+    "Language": "语言选择"
   },
   "login":
   {
@@ -47,6 +49,10 @@
     "Sign in with QQ": "通过QQ号登录",
     "Sign in with Google": "通过Google登录",
     "Sign in with Github": "通过Github登录"
+  },
+  "signout":
+  {
+    "Are you sure to log out?": "确定要登出？"
   },
   "edit":
   {
@@ -202,7 +208,10 @@
     "TabTop": "Tab置顶",
     "CancelTabTop": "取消Tab置顶",
     "NodeTop": "节点置顶",
-    "CancelNodeTop": "取消节点置顶"
+    "CancelNodeTop": "取消节点置顶",
+    "words": "个字符",
+    "Next": "下一页",
+    "Last": "上一页"
   },
   "new":
   {
@@ -306,7 +315,8 @@
     "to sign in.": "登入。",
     "here": "这里",
     "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。",
-    "authorized to manage the community": "具有管理社区的权限"
+    "authorized to manage the community": "具有管理社区的权限",
+    "Switch topic list": "切换主题列表"
   },
   "setting":
   {

@@ -98,6 +98,7 @@ class FavoritesBox extends React.Component {
     if (this.state.maxPage === -1) {
       return
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url}/>
     )
@@ -147,7 +148,7 @@ class FavoritesBox extends React.Component {
                 <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong></div>
             </div>
-            {this.showPageColumn()}
+            {Setting.PcBrowser ? this.showPageColumn() : null}
             <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
             {this.showPageColumn()}
           </div>

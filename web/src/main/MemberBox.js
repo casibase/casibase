@@ -119,7 +119,7 @@ class MemberBox extends React.Component {
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
-              <td width="73" valign="top" align="center">
+              <td width={Setting.PcBrowser ? "73" : "56"} valign="top" align="center">
                 <Avatar username={this.state.member?.id} size="large" avatar={this.state.member?.avatar} />
                 <div className="sep10" />
                 <strong className="online">ONLINE</strong>
@@ -153,11 +153,16 @@ class MemberBox extends React.Component {
                       {this.state.member?.companyTitle}
                     </span> : null
                 }
-                <div className="sep10" />
+                <div className={Setting.PcBrowser ? "sep10" : "sep5"} />
                 <span className="gray">
-                  {Setting.getForumName()} {i18next.t("member:No.")} {this.state.member?.no} {i18next.t("member:member, joined on")} {Setting.getFormattedDate(this.state.member?.createdTime)}
-                  <div className="sep5" />
-                  {i18next.t("member:Today's ranking")} <a href="/top/dau">{this.state.member?.ranking}</a>
+                  {Setting.getForumName()}{" "}{i18next.t("member:No.")}{" "}{this.state.member?.no}{" "}{i18next.t("member:member, joined on")}{" "}{Setting.getFormattedDate(this.state.member?.createdTime)}
+                  {
+                    Setting.PcBrowser ?
+                      <span>
+                        <div className="sep5" />
+                        {i18next.t("member:Today's ranking")} <a href="/top/dau">{this.state.member?.ranking}</a>
+                      </span> : null
+                  }
                   <div className="sep5" />
                   {this.state.member?.isModerator ? <img src={Setting.getStatic("/static/img/mod@2x.png")} height="14px" align="absmiddle" /> : null }
                   {" "}
@@ -199,9 +204,12 @@ class MemberBox extends React.Component {
               </a> : null
           }
         </div>
-        <div className="cell">
-          {this.state.member?.bio}
-        </div>
+        {
+          this.state.member?.bio === "" ?
+            <div className="cell">
+              {this.state.member?.bio}
+            </div> : null
+        }
       </div>
     );
   }
@@ -209,13 +217,13 @@ class MemberBox extends React.Component {
   render() {
     return (
       <span>
-        <div className="sep20" />
+        {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         {
           this.renderMember()
         }
-        <div className="sep20" />
+        {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <AllCreatedTopicsBox member={this.state.member} />
-        <div className="sep20" />
+        {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <LatestReplyBox member={this.state.member} />
       </span>
     )

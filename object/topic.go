@@ -158,19 +158,21 @@ func GetTopicNodeId(id int) string {
 	}
 }
 
-func GetTopicsWithNode(nodeId string, limit int, offset int) []*TopicWithAvatar {
+func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*Topic{}
-	err := adapter.engine.Desc("node_top_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Desc("node_top_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	res := []*TopicWithAvatar{}
+	res := []*NodeTopic{}
 	for _, v := range topics {
-		temp := TopicWithAvatar{
-			Topic:  *v,
-			Avatar: GetMemberAvatar(v.Author),
+		temp := NodeTopic{
+			Topic:         *v,
+			Avatar:        GetMemberAvatar(v.Author),
+			ContentLength: len(v.Content),
 		}
+		temp.Content = ""
 		res = append(res, &temp)
 	}
 

@@ -22,7 +22,6 @@ import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import * as MemberBackend from "../backend/MemberBackend";
 import i18next from "i18next";
-import {goToLink} from "../Setting";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -50,15 +49,15 @@ class AllCreatedTopicsBox extends React.Component {
         {label: "City", value: "city"}
       ]
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1
+      this.state.page = 1;
     }else {
-      this.state.page = parseInt(this.state.p)
+      this.state.page = parseInt(this.state.p);
     }
     if (this.state.tab === undefined) {
-      this.state.limit = 10
+      this.state.limit = 10;
     }
   }
 
@@ -70,7 +69,7 @@ class AllCreatedTopicsBox extends React.Component {
 
   getMember() {
     if (this.state.tab === undefined) {
-      return
+      return;
     }
 
     MemberBackend.getMember(this.state.memberId)
@@ -92,7 +91,7 @@ class AllCreatedTopicsBox extends React.Component {
 
   geCreatedTopicsNum() {
     if (this.state.tab === undefined) {
-      return
+      return;
     }
 
     TopicBackend.getCreatedTopicsNum(this.state.memberId)
@@ -107,30 +106,57 @@ class AllCreatedTopicsBox extends React.Component {
     return (
       {
         ...this.state.tab === tab.value ?
-          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current"> {tab.label} </a> :
-          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab"> {tab.label} </a>
+          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current">{" "}{tab.label}{" "}</a> :
+          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab">{" "}{tab.label}{" "}</a>
       }
+    );
+  }
+
+  renderMobileTab() {
+    return (
+      <div className="fr">
+        <label className="f14" htmlFor="switch-topics">
+          {i18next.t("member:Switch topic list")}
+          <select id="switch-topics" defaultValue={this.state.tab === undefined ? "all" : this.state.tab} onChange={event => {
+            if (event.target.value === "all") {
+              Setting.goToLink(`/member/${this.state.memberId}/`)
+            } else {
+              Setting.goToLink(`/member/${this.state.memberId}/${event.target.value}`)
+            }
+          }}>
+            <option value="all">{this.state.memberId}{i18next.t("member:'s all topics")}</option>
+            {
+              this.state.TAB_LIST.map((tab) => {
+                return <option value={tab.value}>{tab.label}</option>
+              })
+            }
+          </select>
+        </label>
+      </div>
     )
   }
 
   showPageColumn(url) {
     if (this.state.topicsNum === 1) {
-      return
+      return;
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.topicsNum} url={url}/>
     )
   }
 
   render() {
+    const pcBrowser = Setting.PcBrowser
+
     if (this.props.member === null) {
-      return null
+      return null;
     }
 
     {
       if (this.state.tab === "replies") {
         if (this.state.member === null) {
-          goToLink(`/member/${this.state.memberId}`)
+          Setting.goToLink(`/member/${this.state.memberId}`)
         }
         return (
           <LatestReplyBox size={"large"} />
@@ -140,7 +166,7 @@ class AllCreatedTopicsBox extends React.Component {
     {
       if (this.state.tab === "topics") {
         if (this.state.member === null) {
-          goToLink(`/member/${this.state.memberId}`)
+          Setting.goToLink(`/member/${this.state.memberId}`)
         }
         {
           return (
@@ -151,8 +177,7 @@ class AllCreatedTopicsBox extends React.Component {
                 <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Topics")}
                 <div className="fr f12"><span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong></div>
               </div>
-      
-              {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
+              {pcBrowser ? this.showPageColumn(`/member/${this.state.memberId}/topics`) : null}
               <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
               {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
             </div>
@@ -160,34 +185,52 @@ class AllCreatedTopicsBox extends React.Component {
         }
       }
     }
+
+    let memberAvatar;
+    if (this.state.tab === undefined) {
+      memberAvatar = this.props.member.avatar;
+    } else {
+      memberAvatar = this.state.member.avatar;
+    }
+
     return (
       <div className="box">
         <div class="cell_tabs">
           <div class="fl">
             {
-              this.props.member.avatar === "" ?
+              memberAvatar === "" ?
                 <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/> :
-                <img src={this.props.member.avatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
+                <img src={memberAvatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
             }
           </div>
           {
-            this.state.tab === undefined ?
-              <a href={`/member/${this.state.memberId}`} class="cell_tab_current"> {`${this.state.memberId}${i18next.t("member:'s all topics")}`} </a> :
-              <a href={`/member/${this.state.memberId}`} class="cell_tab"> {`${this.state.memberId}${i18next.t("member:'s all topics")}`} </a>
+            !pcBrowser ?
+              this.renderMobileTab() : null
           }
           {
-            this.state.TAB_LIST.map((tab) => {
-              return this.renderTab(tab);
-              })
+            pcBrowser ?
+              this.state.tab === undefined ?
+                <a href={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all topics")}`}{" "}</a> :
+                <a href={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all topics")}`}{" "}</a>
+              : null
+          }
+          {
+            !pcBrowser ?
+              <div className="sep10" style={{clear: "both"}} /> : null
+          }
+          {
+            pcBrowser ?
+              this.state.TAB_LIST.map((tab) => {
+                return this.renderTab(tab);
+              }) : null
           }
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} timeStandard={"createdTime"} />
         {
           this.state.tab === undefined ?
             <div className="inner"><span className="chevron">»</span>
-              <a href={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}${i18next.t("member:'s more topics")}`} </a>
-            </div> :
-            <div />
+              <a href={`/member/${this.state.memberId}/topics`}>{" "}{`${this.state.memberId}${i18next.t("member:'s more topics")}`}{" "}</a>
+            </div> : null
         }
       </div>
     );

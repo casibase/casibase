@@ -32,6 +32,15 @@ type TopicWithAvatar struct {
 	NodeModerator bool   `json:"nodeModerator"`
 }
 
+type NodeTopic struct {
+	Topic
+	Avatar        string `json:"avatar"`
+	ThanksStatus  bool   `json:"thanksStatus"`
+	Editable      bool   `json:"editable"`
+	NodeModerator bool   `json:"nodeModerator"`
+	ContentLength int    `json:"contentLength"`
+}
+
 type ReplyWithAvatar struct {
 	Reply
 	Avatar       string `json:"avatar"`

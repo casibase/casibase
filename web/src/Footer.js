@@ -56,6 +56,27 @@ class Footer extends React.Component {
 
   render() {
     const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart);
+    const date = new(Date);
+
+    if (!Setting.PcBrowser) {
+      return (
+        <div id="Bottom">
+          <div className="content">
+            <div className="inner" style={{textAlign: "center"}}>
+              &copy;{" "}{date.getFullYear()}{" "}{Setting.getForumName()}{" "}·{" "}{loadingTime}ms{" "}·{" "}<a href={`${Conf.GithubRepo}/commit/${this.state.version}`}>{this.state.version.substring(0, 7)}</a>
+              <div >
+                <strong>
+                  <a href="/about" className="dark">{i18next.t("footer:About")}</a>
+                  &nbsp;·&nbsp;
+                  <a href="/select/language" title="Select Language" className="dark">Language</a>
+                </strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    }
+
     const utcTime = moment().utc(false).format("HH:mm");
     const laxTime = moment().utcOffset(-7).format("HH:mm");
     const pvgTime = moment().format("HH:mm");

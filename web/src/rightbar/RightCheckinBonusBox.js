@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as BalanceBackend from "../backend/BalanceBackend";
+import * as Setting from "../Setting"
 import "./rightFavourite.css"
 import i18next from "i18next";
 
@@ -40,13 +41,13 @@ class RightCheckinBonusBox extends React.Component {
   }
 
   render() {
-    if (this.state.info === null || this.state.info || this.props.account === null) {
+    if (this.state.info === null || this.state.info || this.props.account === null || this.props.account === undefined) {
       return null
     }
 
     return (
       <span>
-        <div className="sep20"/>
+        {Setting.PcBrowser ? <div className="sep20"/> : null}
         <div className={`box ${this.props.nodeId}`}>
           <div className={`inner ${this.props.nodeId}`}>
             <li className="fa fa-gift" style={{color: "#f90"}}></li>

@@ -68,12 +68,15 @@ class App extends Component {
     this.state = {
       classes: props,
       account: undefined,
-      nodeId: null
+      nodeId: null,
+      showMenu: false
     };
 
     Setting.initServerUrl();
     Setting.initFullClientUrl();
+    Setting.initBrowserType();
     this.getNodeId = this.getNodeId.bind(this);
+    this.changeMenuStatus = this.changeMenuStatus.bind(this);
   }
 
   componentDidMount() {
@@ -121,91 +124,95 @@ class App extends Component {
   }
 
   renderMain() {
+    const pcBrowser = Setting.PcBrowser
     return (
       <Switch>
         <Route exact path="/">
-          <div id="Main">
-            <div className="sep20" />
+          {pcBrowser ? null : <RightCheckinBonusBox account={this.state.account} />}
+          {pcBrowser ? null : <div className="sep5" /> }
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <TopicPage account={this.state.account} />
-            <div className="sep20" />
+            {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
             <NodeNavigationBox />
           </div>
         </Route>
         <Route exact path="/signup">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SignupBox />
           </div>
         </Route>
         <Route exact path="/signup/:signupMethod">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SignupBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/signin">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SigninBox onSignin={this.onSignin.bind(this)} />
+            {pcBrowser ? null : <div className="sep5" />}
+            {pcBrowser ? null : <RightSigninBox />}
           </div>
         </Route>
         <Route exact path="/signout">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
           </div>
         </Route>
         <Route exact path="/t/:topicId/:event">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
-          <div id="Main">
+          <div id={pcBrowser ? "Main" : ""}>
             <MemberBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/member/:memberId/:tab">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <AllCreatedTopicsBox />
-            <div className="sep20" />
           </div>
         </Route>
         <Route exact path="/settings">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SettingsBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/callback/:authType/:addition">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <CallbackBox />
           </div>
         </Route>
         <Route exact path="/settings/:event">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SettingsBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/new">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <NewBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/new/:nodeId">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <NewBox account={this.state.account} />
           </div>
         </Route>
@@ -213,86 +220,86 @@ class App extends Component {
           <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
         </Route>
         <Route exact path="/go/:nodeId/:event">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}>
             <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
           </div>
         </Route>
         <Route exact path="/my/:favorites">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <FavoritesBox />
           </div>
         </Route>
         <Route exact path="/recent">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <RecentTopicsBox />
           </div>
         </Route>
         <Route exact path="/select/language">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <SelectLanguageBox />
           </div>
         </Route>
         <Route exact path="/notifications">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <NotificationBox />
           </div>
         </Route>
         <Route exact path="/planes">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <PlaneBox />
           </div>
         </Route>
         <Route exact path="/balance">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <BalanceBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/mission/daily">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <CheckinBonusBox />
           </div>
         </Route>
         <Route exact path="/move/topic/:id">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <MoveTopicNodeBox />
           </div>
         </Route>
         <Route exact path="/edit/:editType/:id">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <EditBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/forgot">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <ForgotBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <FilesBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i/:event">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <FilesBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i/edit/:event">
-          <div id="Main">
-            <div className="sep20" />
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <FilesBox account={this.state.account} edit={true} />
           </div>
         </Route>
@@ -351,22 +358,38 @@ class App extends Component {
     )
   }
 
+  changeMenuStatus(status) {
+    if (this.state.showMenu === status) {
+      return;
+    }
+    this.setState({
+      showMenu: status
+    });
+  }
+  
   render() {
     return (
       <div>
-        <Header account={this.state.account} onSignout={this.onSignout.bind(this)} />
-        <div  className={`Wrapper ${this.state.nodeId}`} >
+        <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu}/>
+        <div  id="Wrapper" className={this.state.nodeId} onClick={() => this.changeMenuStatus(false)}>
           <div className="content">
             <div id="Leftbar" />
-            <CustomGithubCorner />
             {
-              this.renderRightbar()
+              Setting.PcBrowser ?
+                <CustomGithubCorner /> : null
+            }
+            {
+              Setting.PcBrowser ?
+                this.renderRightbar() : null
             }
             {
               this.renderMain()
             }
             <div className="c" />
-            <div className="sep20" />
+            {
+              Setting.PcBrowser ?
+                <div className="sep20" /> : null
+            }
           </div>
         </div>
         <Footer />

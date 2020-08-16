@@ -14,8 +14,9 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import '../Bottom.css'
-import './node-casbin.css'
+import '../Bottom.css';
+import './node-casbin.css';
+import i18next from "i18next";
 
 class PageColumn extends React.Component {
   constructor(props) {
@@ -28,17 +29,17 @@ class PageColumn extends React.Component {
       defaultPageNum: 20
     };
     if (this.props.defaultPageNum !== undefined) {
-      this.state.defaultPageNum = this.props.defaultPageNum
+      this.state.defaultPageNum = this.props.defaultPageNum;
     }
   }
 
   componentDidMount() {
-    this.getMaxPage()
+    this.getMaxPage();
   }
 
   keyUp = (e) => {
     if (e.keyCode === 13) {
-      this.gotoPage(this.props.url ,e.target.value)
+      this.gotoPage(this.props.url ,e.target.value);
     }
   }
 
@@ -46,9 +47,9 @@ class PageColumn extends React.Component {
     this.setState({
       maxPage: this.handelMaxPage(this.props.total)
     }, () => {
-      if (this.props.page > this.state.maxPage) this.gotoPage(this.props.url, this.state.maxPage)
-      if (this.props.page < this.state.minPage) this.gotoPage(this.props.url, this.state.minPage)
-      this.getPages()
+      if (this.props.page > this.state.maxPage) this.gotoPage(this.props.url, this.state.maxPage);
+      if (this.props.page < this.state.minPage) this.gotoPage(this.props.url, this.state.minPage);
+      this.getPages();
     });
   }
 
@@ -59,54 +60,54 @@ class PageColumn extends React.Component {
   }
 
   handelMaxPage(total) {
-    let res
-    res = Math.ceil(total / this.state.defaultPageNum)
+    let res;
+    res = Math.ceil(total / this.state.defaultPageNum);
     if (res !== 0) {
-      return res
+      return res;
     }
-    return 1
+    return 1;
   }
 
   //Get an array of page number, and there always should have 10 elements except '...'.
   getShowPages(page, total) {
-    let pages = []
+    let pages = [];
 
     if (total <= 10) {
       for (let i = 1; i <= total; i ++) {
-        pages.push(i)
+        pages.push(i);
       }
-      return pages
+      return pages;
     }
     if (page < 6) {
       for (let i = 1; i <= 10; i ++) {
-        pages.push(i)
+        pages.push(i);
       }
-      pages.push("...")
-      pages.push(total)
-      return pages
+      pages.push("...");
+      pages.push(total);
+      return pages;
     }
 
     let left = page, right = page, sum = 9;
-    pages.push(page)
+    pages.push(page);
 
     for (let i = 0; i < 5; i ++) {
-      right ++
+      right ++;
       if (right >= total) {
-        break
+        break;
       }
-      pages.push(right)
-      sum --
+      pages.push(right);
+      sum --;
     }
     for (let i = 0; i < sum; i ++) {
-      left --
-      pages.unshift(left)
+      left --;
+      pages.unshift(left);
     }
-    pages.unshift(1, "...")
+    pages.unshift(1, "...");
     if (page !== total) {
-      pages.push("...", total)
+      pages.push("...", total);
     }
 
-    return pages
+    return pages;
   }
 
   renderPage(i, page, url) {
@@ -119,14 +120,41 @@ class PageColumn extends React.Component {
   }
 
   gotoPage(url, page) {
-    Setting.goToLink(`${url}?p=${page}`)
+    Setting.goToLink(`${url}?p=${page}`);
   }
 
   render() {
     if (this.state.maxPage <= 1) {
-      return null
+      return null;
     }
-    const {page, url} = this.props
+    const {page, url} = this.props;
+
+    if (!Setting.PcBrowser) {
+      return (
+        <div class="inner">
+          <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <tr>
+              <td width="120" align="left">
+                <input type="button" onClick={() => {
+                  this.gotoPage(url, page - 1)
+                }} value={`‹ ${i18next.t("topic:Last")}`} className="super normal button" style={{display: page > 1 ? "block" : "none"}}/>
+              </td>
+              <td width="auto" align="center">
+                <strong class="fade">
+                  {page}/{this.state.maxPage}
+                </strong>
+              </td>
+              <td width="120" align="right">
+                <input type="button" onClick={() => {
+                  this.gotoPage(url, page + 1)
+                }} value={`${i18next.t("topic:Next")} ›`} className="super normal button" />
+              </td>
+            </tr>
+          </table>
+        </div>
+      )
+    }
+
     return (
       <div className={`cell ${this.props.nodeId}`}
            style={{backgroundImage: "url('/static/img/shadow_light.png')", backgroundSize: "20px 20px", backgroundRepeat: "repeat-x"}}>

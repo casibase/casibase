@@ -228,7 +228,107 @@ class TopicBox extends React.Component {
     );
   };
 
+  renderMobileButtons() {
+    return (
+      <div class="inner">
+        <div class="fr" align="right">
+          {
+            this.props.account !== undefined ?
+              this.state.favoritesStatus ?
+                <a href="#;" onClick={() => this.deleteFavorite()} className="op">{i18next.t("topic:Cancel Favor")}</a> :
+                <a href="#;" onClick={() => this.addFavorite()} className="op">{i18next.t("topic:Favor")}</a> :
+              null
+          }{" "}&nbsp;
+          <a href="#;"
+             onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
+             className="op">
+            Tweet
+          </a>{" "}&nbsp;
+          <a href="#" onclick="shareTopic(``);" class="op">Share</a>{" "}&nbsp;
+          <a href="#;"
+             onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
+             className="op">
+            {i18next.t("topic:Ignore")}
+          </a>{" "}&nbsp;
+          {
+            this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+              this.state.topic?.thanksStatus === false ?
+                <div id="topic_thank">
+                  <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
+                     className="op">
+                    {i18next.t("topic:Thank")}
+                  </a>
+                </div> :
+                <div id="topic_thank">
+                  <span className="topic_thanked">
+                    {i18next.t("topic:Thanked")}
+                  </span>
+                </div>
+              : null
+          }{" "}&nbsp;
+        </div>
+        {" "}&nbsp;{" "}
+      </div>
+    )
+  }
+
+  renderDesktopButtons() {
+    return (
+      <div className="topic_buttons">
+        <div className="fr topic_stats" style={{paddingTop: "4px"}}>
+          {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
+        </div>
+        {
+          this.props.account !== undefined ?
+            this.state.favoritesStatus ?
+              <a href="#;" onClick={() => {
+                this.deleteFavorite()
+              }} className="tb">{i18next.t("topic:Cancel Favor")}</a> : <a href="#;" onClick={() => {
+                this.addFavorite()
+              }} className="tb">{i18next.t("topic:Favor")}</a> :
+            null
+        }
+        <a href="#;"
+           onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
+           className="tb">
+          Tweet
+        </a>
+        &nbsp;
+        <a href="#;"
+           onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');"
+           className="tb">
+          Weibo
+        </a>
+        &nbsp;
+        <a href="#;"
+           onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
+           className="tb">
+          {i18next.t("topic:Ignore")}
+        </a>
+        &nbsp;
+        {
+          this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+            this.state.topic?.thanksStatus === false ?
+              <div id="topic_thank">
+                <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
+                   className="tb">
+                  {i18next.t("topic:Thank")}
+                </a>
+              </div> :
+              <div id="topic_thank">
+                  <span className="topic_thanked">
+                    {i18next.t("topic:Thanked")}
+                  </span>
+              </div>
+            : null
+        }
+      </div>
+    )
+  }
+
   render() {
+    const pcBrowser = Setting.PcBrowser
+
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       return (
         <div class="box">
@@ -336,7 +436,7 @@ class TopicBox extends React.Component {
         <div className={`box ${this.state.topic.nodeId}`} style={{borderBottom: "0px"}}>
           <div className={`header ${this.state.topic.nodeId}`}>
             <div className="fr">
-              <Avatar username={this.state.topic?.author} size="large" avatar={this.state.topic?.avatar}/>
+              <Avatar username={this.state.topic?.author} size={pcBrowser ? "large" : "middle"} avatar={this.state.topic?.avatar}/>
             </div>
             <a href="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</a>
             {" "}
@@ -350,16 +450,21 @@ class TopicBox extends React.Component {
             <h1>
               {this.state.topic?.title}
             </h1>
-            <div id="topic_677954_votes" className="votes">
-              <a href="javascript:" onClick="upVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
-                <li className="fa fa-chevron-up"/>
-              </a>
-              {" "}&nbsp;
-              <a href="javascript:" onClick="downVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
-                <li className="fa fa-chevron-down"/>
-              </a>
-            </div>
-            &nbsp;{" "}
+            {
+              Setting.PcBrowser ?
+                <span>
+                  <div id="topic_677954_votes" className="votes">
+                    <a href="javascript:" onClick="upVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
+                      <li className="fa fa-chevron-up"/>
+                    </a>
+                    {" "}&nbsp;
+                    <a href="javascript:" onClick="downVoteTopic(677954);" className={`vote ${this.state.topic.nodeId}`}>
+                      <li className="fa fa-chevron-down"/>
+                    </a>
+                  </div>
+                  &nbsp;{" "}
+                </span> : null
+            }
             <small className="gray">
               <a href={`/member/${this.state.topic?.author}`}
                  className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
@@ -449,59 +554,15 @@ class TopicBox extends React.Component {
               </div>
             </div>
           </div>
-          <div className="topic_buttons">
-            <div className="fr topic_stats" style={{paddingTop: "4px"}}>
-              {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
-            </div>
-            {
-              this.props.account !== undefined ?
-                this.state.favoritesStatus ?
-                  <a href="#;" onClick={() => {
-                    this.deleteFavorite()
-                  }} className="tb">{i18next.t("topic:Cancel Favor")}</a> : <a href="#;" onClick={() => {
-                    this.addFavorite()
-                  }} className="tb">{i18next.t("topic:Favor")}</a> :
-                null
-            }
-            <a href="#;"
-               onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
-               className="tb">
-              Tweet
-            </a>
-            &nbsp;
-            <a href="#;"
-               onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');"
-               className="tb">
-              Weibo
-            </a>
-            &nbsp;
-            <a href="#;"
-               onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
-               className="tb">
-              {i18next.t("topic:Ignore")}
-            </a>
-            &nbsp;
-            {
-              this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
-                this.state.topic?.thanksStatus === false ?
-                  <div id="topic_thank">
-                    <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
-                       className="tb">
-                      {i18next.t("topic:Thank")}
-                    </a>
-                  </div> :
-                  <div id="topic_thank">
-                  <span className="topic_thanked">
-                    {i18next.t("topic:Thanked")}
-                  </span>
-                  </div>
-                : null
-            }
-          </div>
+          {
+            Setting.PcBrowser ?
+              this.renderDesktopButtons() :
+              this.renderMobileButtons()
+          }
         </div>
-        <div className="sep20" />
+        {pcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
         <ReplyBox account={this.props.account} />
-        <div className="sep20" />
+        {pcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
         {
           this.props.account?.isModerator ?
             this.renderTopTopic() : null
