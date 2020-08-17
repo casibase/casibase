@@ -147,7 +147,7 @@ class SigninBox extends React.Component {
                   {i18next.t("general:Username")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="text" value={this.state.form.information} onChange={event => {this.updateFormField("information", event.target.value)}} className="sl" name="username" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username, email address or phone number")} />
+                  <input type="text" value={this.state.form.information} onChange={event => {this.updateFormField("information", event.target.value)}} className="sl" name="username" autoFocus="autofocus" autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("general:Username, email address or phone number")} style={{width: "280px"}} />
                 </td>
               </tr>
               <tr>
@@ -155,7 +155,7 @@ class SigninBox extends React.Component {
                   {i18next.t("general:Password")}
                 </td>
                 <td width="auto" align="left">
-                  <input type="password" value={this.state.form.password} onChange={event => {this.updateFormField("password", event.target.value)}} className="sl" name="password" autoCorrect="off" spellCheck="false" autoCapitalize="off" />
+                  <input type="password" value={this.state.form.password} onChange={event => {this.updateFormField("password", event.target.value)}} className="sl" name="password" autoCorrect="off" spellCheck="false" autoCapitalize="off" style={{width: "280px"}} />
                 </td>
               </tr>
               <tr>

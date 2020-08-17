@@ -51,7 +51,7 @@ class RightCheckinBonusBox extends React.Component {
         <div className={`box ${this.props.nodeId}`}>
           <div className={`inner ${this.props.nodeId}`}>
             <li className="fa fa-gift" style={{color: "#f90"}}></li>
-            &nbsp;
+            {" "}&nbsp;
             <a href="/mission/daily">
               {i18next.t("bar:Receive today's checkin bonus")}
             </a>

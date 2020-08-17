@@ -210,8 +210,8 @@ class AllCreatedTopicsBox extends React.Component {
           {
             pcBrowser ?
               this.state.tab === undefined ?
-                <a href={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all topics")}`}{" "}</a> :
-                <a href={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all topics")}`}{" "}</a>
+                <a href={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</a> :
+                <a href={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</a>
               : null
           }
           {

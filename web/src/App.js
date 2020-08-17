@@ -221,7 +221,7 @@ class App extends Component {
         </Route>
         <Route exact path="/go/:nodeId/:event">
           <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}>
+            {pcBrowser ? <div className="sep20" /> : null}
             <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
           </div>
         </Route>

@@ -120,24 +120,24 @@ class TopicList extends React.Component {
                               {topic.nodeName}
                             </a>
                             {" "}&nbsp;•&nbsp;{" "}
-                            <strong>
-                              <a href={`/member/${topic.author}`} className={`${this.props.nodeId} member`}>
-                                {topic.author}
-                              </a>
-                            </strong>
-                            {" "}&nbsp;•&nbsp;{" "}
-                            {
-                              (topic.lastReplyTime === "" || this.props.timeStandard === "createdTime") ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)
-                            }
-                            {
-                              topic.lastReplyUser === "" ? null : (
-                                <div style={{display: "inline"}}>
-                                  {" "}&nbsp;•&nbsp;{" "}
-                                  {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>{topic.lastReplyUser}</a></strong>
-                                </div>
-                              )
-                            }
                           </span> : null
+                      }
+                      <strong>
+                        <a href={`/member/${topic.author}`} className={`${this.props.nodeId} member`}>
+                          {topic.author}
+                        </a>
+                      </strong>
+                      {" "}&nbsp;•&nbsp;{" "}
+                      {
+                        (topic.lastReplyTime === "" || this.props.timeStandard === "createdTime") ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)
+                      }
+                      {
+                        topic.lastReplyUser === "" ? null : (
+                          <div style={{display: "inline"}}>
+                            {" "}&nbsp;•&nbsp;{" "}
+                            {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>{topic.lastReplyUser}</a></strong>
+                          </div>
+                        )
                       }
                     </span> :
                     <span>

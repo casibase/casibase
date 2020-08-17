@@ -159,7 +159,7 @@ class Header extends React.Component {
               }
             </button>
             <div id="user-menu" style={menuStyle}>
-              <div><a href="/member/kocoler" className="top">{i18next.t("general:Homepage")}</a></div>
+              <div><a href={`/member/${this.props.account?.id}`} className="top">{i18next.t("general:Homepage")}</a></div>
               <div><a href="/my/nodes" className="top">{i18next.t("bar:Nodes")}</a></div>
               <div><a href="/my/topics" className="top">{i18next.t("bar:Topics")}</a></div>
               <div><a href="/settings" className="top">{i18next.t("general:Setting")}</a></div>
@@ -214,8 +214,6 @@ class Header extends React.Component {
   }
 
   renderSearch() {
-    console.log(this.props.account)
-
     if (Setting.PcBrowser) {
       return (
         <div id="Search">
