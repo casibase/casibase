@@ -53,7 +53,7 @@ func main() {
 		port = os.Args[1]
 	}
 
-	controllers.InitBeegoSession()
+	//controllers.InitBeegoSession()
 	object.InitTimer()
 
 	beego.Run("0.0.0.0:" + port)
