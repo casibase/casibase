@@ -93,9 +93,8 @@ var GlobalSessions *session.Manager
 
 func InitBeegoSession() {
 	sessionConfig := &session.ManagerConfig{
-		Secure:         false,
-		CookieLifeTime: 3600,
 		ProviderConfig: "./tmp",
+		Gclifetime: 3600 * 24 * 365,
 	}
 	GlobalSessions, _ = session.NewManager("file", sessionConfig)
 	go GlobalSessions.GC()
@@ -106,7 +105,7 @@ func (c *APIController) GetOnlineNum() {
 
 	highest := object.GetHighestOnlineNum()
 
-	onlineNum := GlobalSessions.GetActiveSession()
+	onlineNum := beego.GlobalSessions.GetActiveSession()
 
 	if onlineNum > highest {
 		object.UpdateHighestOnlineNum(onlineNum)
