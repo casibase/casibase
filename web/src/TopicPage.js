@@ -253,7 +253,7 @@ class TopicPage extends React.Component {
               }
             </td>
             <td width="10"></td>
-            <td width="100" align="center">
+            <td width="150" align="right">
               <a href="/balance" className="balance_area" style={{margin: "0px"}}>
                 {
                   this.props.account?.goldCount !== 0 ?
@@ -268,6 +268,7 @@ class TopicPage extends React.Component {
                 {" "}{this.props.account?.bronzeCount}{" "}
                 <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
               </a>
+              &nbsp;
             </td>
           </tr>
           </tbody>

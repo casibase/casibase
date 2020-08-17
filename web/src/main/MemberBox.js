@@ -15,12 +15,12 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
+import * as FavoritesBackend from "../backend/FavoritesBackend";
 import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
-import * as FavoritesBackend from "../backend/FavoritesBackend";
-import i18next from "i18next";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
+import i18next from "i18next";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -30,6 +30,7 @@ class MemberBox extends React.Component {
       memberId: props.match.params.memberId,
       member: [],
       favoritesStatus: false,
+      getFavoriteStatus: false
     };
   }
 
@@ -47,6 +48,26 @@ class MemberBox extends React.Component {
       });
   }
 
+  getFavoriteNum() {
+    if (this.props.account === undefined || this.props.account === null || this.state.getFavoriteStatus) {
+      return;
+    }
+
+    FavoritesBackend.getAccountFavoriteNum()
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            topicFavoriteNum: res?.data[1],
+            followingNum: res?.data[2],
+            nodeFavoriteNum: res?.data[3],
+            getFavoriteStatus: true
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+  }
+
   getFavoriteStatus() {
     FavoritesBackend.getFavoritesStatus(this.state.memberId, 2)
       .then((res) => {
@@ -54,7 +75,7 @@ class MemberBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-        }else {
+        } else {
           Setting.showMessage("error", res.msg)
         }
       });
@@ -67,9 +88,9 @@ class MemberBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-          Setting.refresh()
-        }else {
-          Setting.showMessage("error", res.msg)
+          Setting.refresh();
+        } else {
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -81,9 +102,9 @@ class MemberBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
-          Setting.refresh()
-        }else {
-          Setting.showMessage("error", res.msg)
+          Setting.refresh();
+        } else {
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -111,7 +132,7 @@ class MemberBox extends React.Component {
       )
     }
 
-    const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.id
+    const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.id;
 
     return (
       <div className="box">
@@ -120,7 +141,7 @@ class MemberBox extends React.Component {
             <tbody>
             <tr>
               <td width={Setting.PcBrowser ? "73" : "56"} valign="top" align="center">
-                <Avatar username={this.state.member?.id} size="large" avatar={this.state.member?.avatar} />
+                <Avatar username={this.state.member?.id} size={Setting.PcBrowser ? "large" : "middle"} avatar={this.state.member?.avatar} />
                 <div className="sep10" />
                 <strong className="online">ONLINE</strong>
               </td>
@@ -214,6 +235,42 @@ class MemberBox extends React.Component {
     );
   }
 
+  renderMemberFavorites() {
+    this.getFavoriteNum();
+
+    return (
+      <div className="box">
+        <div className="sep5"></div>
+        <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+          <tr>
+            <td width="33%" valign="center" align="center">
+              <a href="/my/nodes" className="dark" style={{display: "block"}}>
+                <span className="bigger">{this.state.nodeFavoriteNum}</span>
+                <div className="sep3"></div>
+                <span className="fade small">{i18next.t("bar:Nodes")}</span>
+              </a>
+            </td>
+            <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
+              <a href="/my/topics" className="dark" style={{display: "block"}}>
+                <span className="bigger">{this.state.topicFavoriteNum}</span>
+                <div className="sep3"></div>
+                <span className="fade small">{i18next.t("bar:Topics")}</span>
+              </a>
+            </td>
+            <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
+              <a href="/my/following" className="dark" style={{display: "block"}}>
+                <span className="bigger">{this.state.followingNum}</span>
+                <div className="sep3"></div>
+                <span className="fade small">{i18next.t("bar:Watch")}</span>
+              </a>
+            </td>
+          </tr>
+        </table>
+        <div className="sep5"></div>
+      </div>
+    )
+  }
+
   render() {
     return (
       <span>
@@ -221,6 +278,8 @@ class MemberBox extends React.Component {
         {
           this.renderMember()
         }
+        {!Setting.PcBrowser && this.props.account?.id === this.state.memberId ? <div className="sep5" /> : null}
+        {!Setting.PcBrowser && this.props.account?.id === this.state.memberId ? this.renderMemberFavorites() : null}
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <AllCreatedTopicsBox member={this.state.member} />
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}

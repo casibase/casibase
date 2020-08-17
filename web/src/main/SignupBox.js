@@ -445,9 +445,9 @@ class SignupBox extends React.Component {
         <Header item={i18next.t("member:Sign Up")} />
         <div className="cell">
           <div className="topic_content markdown_body">
-            <p>{`${i18next.t("member:Welcome to")} ${Setting.getForumName()}${i18next.t("member:, this is the official forum for Casbin developers and users.")}`}</p>
-            <p>{i18next.t("member:You can use the following ways to sign up as a new user.")}</p>
-            <p>{i18next.t("member:If you have previously signed up an account via Email, please click")}{" "}<a href="/signin">{i18next.t("member:here")}</a>{" "}{i18next.t("member:to sign in.")}</p>
+            <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{`${i18next.t("member:Welcome to")} ${Setting.getForumName()}${i18next.t("member:, this is the official forum for Casbin developers and users.")}`}</p>
+            <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{i18next.t("member:You can use the following ways to sign up as a new user.")}</p>
+            <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{i18next.t("member:If you have previously signed up an account via Email, please click")}{" "}<a href="/signin">{i18next.t("member:here")}</a>{" "}{i18next.t("member:to sign in.")}</p>
           </div>
         </div>
         <div className="dock_area">
