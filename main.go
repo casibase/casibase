@@ -19,6 +19,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
+	"github.com/casbin/casbin-forum/authz"
 	"github.com/casbin/casbin-forum/controllers"
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/routers"
@@ -56,5 +57,6 @@ func main() {
 	//controllers.InitBeegoSession()
 	object.InitTimer()
 
+	authz.Init()
 	beego.Run("0.0.0.0:" + port)
 }

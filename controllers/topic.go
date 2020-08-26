@@ -18,6 +18,9 @@ import (
 	"encoding/json"
 	"strconv"
 
+	"github.com/casbin/casbin-forum/authz"
+	. "github.com/casbin/casbin-forum/authz"
+
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
@@ -56,7 +59,7 @@ func (c *APIController) GetTopic() {
 
 	topic := object.GetTopicWithAvatar(id, memberId)
 	if memberId != "" {
-		topic.NodeModerator = object.CheckNodeModerator(memberId, topic.NodeId)
+		topic.NodeModerator = IsNodeMod(memberId, topic.NodeId)
 	}
 	if topic.Deleted {
 		c.Data["json"] = nil
@@ -146,7 +149,8 @@ func (c *APIController) DeleteTopic() {
 
 	id := util.ParseInt(idStr)
 	nodeId := object.GetTopicNodeId(id)
-	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) {
+
+	if !(IsNodeMod(memberId, nodeId) || IsRootMod(memberId)) {
 		resp := Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -322,7 +326,8 @@ func (c *APIController) UpdateTopicNode() {
 	id, nodeName, nodeId := form.Id, form.NodeName, form.NodeId
 
 	originalNode := object.GetTopicNodeId(id)
-	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, originalNode) && object.GetTopicAuthor(id) != memberId {
+	// TODO: Use Casbin ABAC to avoid "object.GetTopicAuthor(id) != memberId"
+	if !IsNodeMod(memberId, originalNode) && !IsRootMod(memberId) && object.GetTopicAuthor(id) != memberId {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -356,7 +361,8 @@ func (c *APIController) EditContent() {
 			panic(err)
 		}
 		id, title, content, nodeId := form.Id, form.Title, form.Content, form.NodeId
-		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
+		// TODO: Use Casbin ABAC to avoid "object.GetTopicAuthor(id) != memberId"
+		if !IsRootMod(memberId) && authz.IsNodeMod(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
 			c.ServeJSON()
@@ -378,7 +384,8 @@ func (c *APIController) EditContent() {
 			panic(err)
 		}
 		id, content := form.Id, form.Content
-		if !object.CheckModIdentity(memberId) && object.GetReplyAuthor(id) != memberId {
+		// TODO: Use Casbin ABAC to avoid "object.GetReplyAuthor(id) != memberId"
+		if !IsRootMod(memberId) && object.GetReplyAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
 			c.ServeJSON()
@@ -412,7 +419,7 @@ func (c *APIController) TopTopic() {
 	var res bool
 
 	nodeId := object.GetTopicNodeId(id)
-	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
+	if IsRootMod(memberId) || IsNodeMod(memberId, nodeId) {
 		//timeStr := c.Input().Get("time")
 		//time := util.ParseInt(timeStr)
 		//date := util.GetTimeMinute(time)
@@ -457,7 +464,7 @@ func (c *APIController) CancelTopTopic() {
 	var res bool
 
 	nodeId := object.GetTopicNodeId(id)
-	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
+	if IsRootMod(memberId) || IsNodeMod(memberId, nodeId) {
 		topType := c.Input().Get("topType")
 		res = object.ChangeTopicTopExpiredTime(id, "", topType)
 	} else {

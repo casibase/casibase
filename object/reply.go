@@ -17,6 +17,8 @@ package object
 import (
 	"sync"
 	"time"
+
+	"github.com/casbin/casbin-forum/authz"
 )
 
 type Reply struct {
@@ -287,7 +289,7 @@ func AddReplyThanksNum(id int) bool {
 
 // ReplyDeletable checks whether the reply can be deleted.
 func ReplyDeletable(date, memberId, author string) bool {
-	if CheckModIdentity(memberId) {
+	if authz.IsRootMod(memberId) {
 		return true
 	}
 
@@ -312,7 +314,7 @@ func ReplyDeletable(date, memberId, author string) bool {
 
 // GetReplyEditableStatus checks whether the reply can be edited.
 func GetReplyEditableStatus(member, author, createdTime string) bool {
-	if CheckModIdentity(member) {
+	if authz.IsRootMod(member) {
 		return true
 	}
 	if member != author {

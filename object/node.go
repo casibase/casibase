@@ -231,24 +231,6 @@ func GetNodeModerators(id string) []string {
 	}
 }
 
-func CheckNodeModerator(memberId, nodeId string) bool {
-	node := Node{Id: nodeId}
-	existed, err := adapter.engine.Cols("moderators").Get(&node)
-	if err != nil {
-		panic(err)
-	}
-
-	if !existed || len(node.Moderators) == 0 {
-		return false
-	}
-	for _, v := range node.Moderators {
-		if v == memberId {
-			return true
-		}
-	}
-	return false
-}
-
 func AddNodeModerators(memberId, nodeId string) bool {
 	node := new(Node)
 

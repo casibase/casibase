@@ -14,6 +14,8 @@
 
 package object
 
+import . "github.com/casbin/casbin-forum/authz"
+
 type UploadFileRecord struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	FileName    string `xorm:"varchar(100)" json:"fileName"`
@@ -87,7 +89,7 @@ func DeleteFileRecord(id int) bool {
 }
 
 func FileEditable(memberId, author string) bool {
-	if CheckModIdentity(memberId) {
+	if IsRootMod(memberId) {
 		return true
 	}
 
