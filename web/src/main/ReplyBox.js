@@ -149,14 +149,16 @@ class ReplyBox extends React.Component {
   }
 
   deleteReply(id) {
-    ReplyBackend.deleteReply(id)
-      .then((res) => {
-        if (res?.status === "ok") {
-          Setting.refresh()
-        } else {
-          alert(res?.msg)
-        }
-      })
+    if (window.confirm(`Are you sure to delete this reply?`)) {
+      ReplyBackend.deleteReply(id)
+        .then((res) => {
+          if (res?.status === "ok") {
+            Setting.refresh()
+          } else {
+            alert(res?.msg)
+          }
+        })
+    }
   }
 
   scrollToAnchor = (anchorName) => {
@@ -219,10 +221,14 @@ class ReplyBox extends React.Component {
                           this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ?
                             reply?.thanksStatus === false ?
                               <div id={`thank_area__${reply.id}`} className="thank_area">
-                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc", display: Setting.PcBrowser ? "block" : "none"}}>{i18next.t("reply:ignore")}</a>
+                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc", display: Setting.PcBrowser ? "" : "none"}}>{i18next.t("reply:ignore")}</a>
                                 &nbsp; &nbsp;
                                 <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
-                                  <img src={Setting.getStatic("/static/img/heart_neue.png")} style={{verticalAlign: "bottom"}} alt={i18next.t("reply:thank")} width="16" />
+                                  {
+                                    Setting.PcBrowser ?
+                                      i18next.t("reply:thank") :
+                                      <img src={Setting.getStatic("/static/img/heart_neue.png")} style={{verticalAlign: "bottom"}} alt={i18next.t("reply:thank")} width="16" />
+                                  }
                                 </a>
                               </div> :
                               <div id={`thank_area__${reply.id}`} className="thank_area thanked">

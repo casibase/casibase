@@ -124,12 +124,14 @@ class TopicBox extends React.Component {
   }
 
   deleteTopic() {
-    TopicBackend.deleteTopic(this.state.topicId)
-      .then((res) => {
-        if (res) {
-          goToLink("/")
-        }
-      });
+    if (window.confirm(`Are you sure to delete this topic?`)) {
+      TopicBackend.deleteTopic(this.state.topicId)
+        .then((res) => {
+          if (res) {
+            goToLink("/")
+          }
+        });
+    }
   }
 
   thanksTopic(id, author) {
@@ -316,9 +318,9 @@ class TopicBox extends React.Component {
                 </a>
               </div> :
               <div id="topic_thank">
-                  <span className="topic_thanked">
-                    {i18next.t("topic:Thanked")}
-                  </span>
+                <span className="topic_thanked">
+                  {i18next.t("topic:Thanked")}
+                </span>
               </div>
             : null
         }
