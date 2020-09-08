@@ -53,14 +53,14 @@ func CheckMemberLogin(information, password string) (string, string) {
 		return member, ""
 	}
 
-	return "", "Member not found or password error."
+	return "", "Member not found or password error"
 }
 
 func CheckMemberSignupWithEmail(member string, email string) string {
 	if len(member) == 0 || len(email) == 0 {
 		return "errorUsernameOrUsernameEmpty"
 	} else if HasMember(member) || HasMail(email) != "" {
-		return "Username existed or email existed."
+		return "Username existed or email existed"
 	} else {
 		return ""
 	}
