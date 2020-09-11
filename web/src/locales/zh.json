@@ -15,7 +15,8 @@
     "true": "是",
     "false": "否",
     "Homepage": "个人主页",
-    "Language": "语言选择"
+    "Language": "语言选择",
+    "Admin": "后台"
   },
   "login":
   {
@@ -260,7 +261,26 @@
     "Node name": "节点名称",
     "Moderators": "已有版主",
     "Add moderator": "新增版主",
-    "Add": "添加"
+    "Add": "添加",
+    "Update node information success": "更新节点信息成功",
+    "Node management": "节点管理",
+    "Please select a node": "请选择一个节点",
+    "Please select a tab": "请选择一个类别",
+    "Please select a plane": "请选择一个位面",
+    "Created time": "创建时间",
+    "Image": "图标",
+    "Change image": "更改图标",
+    "Total favorites": "总收藏人数",
+    "Hot": "热度",
+    "Parent node": "父节点",
+    "Tab": "类别",
+    "Plane": "位面",
+    "Manage moderators": "管理版主",
+    "Description": "简介",
+    "Manage": "管理",
+    "hot": "热度",
+    "Total nodes": "总主题数",
+    "Save": "保存"
   },
   "plane":
   {
@@ -433,6 +453,7 @@
   {
     "Please wait patiently...": "请耐心等待......",
     "Topic is loading": "主题正在加载",
+    "Page is loading": "页面正在加载",
     "Logging in ...": "正在登录......",
     "Member profile is loading": "用户资料正在加载",
     "Node is loading": "节点正在加载",
@@ -449,6 +470,12 @@
     "Highest": "最高记录",
     "Community of Creators": "创意工作者们的社区",
     "Select Language": "选择语言"
+  },
+  "admin": {
+    "Backstage management": "后台管理",
+    "Node management": "节点管理",
+    "Topic management": "帖子管理",
+    "Member management": "用户管理"
   },
   "error":
   {

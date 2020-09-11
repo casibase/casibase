@@ -85,6 +85,7 @@ func initAPI() {
 	beego.Router("/api/add-node-browse-record", &controllers.APIController{}, "POST:AddNodeBrowseCount")
 	beego.Router("/api/add-node-moderators", &controllers.APIController{}, "POST:AddNodeModerators")
 	beego.Router("/api/delete-node-moderators", &controllers.APIController{}, "POST:DeleteNodeModerators")
+	beego.Router("/api/get-nodes-admin", &controllers.APIController{}, "GET:GetNodesAdmin")
 
 	beego.Router("/api/signup", &controllers.APIController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.APIController{}, "POST:Signin")
@@ -102,6 +103,7 @@ func initAPI() {
 	beego.Router("/api/get-account-favorite-num", &controllers.APIController{}, "GET:GetAccountFavoriteNum")
 
 	beego.Router("/api/get-tabs", &controllers.APIController{}, "GET:GetTabs")
+	beego.Router("/api/get-all-tabs", &controllers.APIController{}, "GET:GetAllTabs")
 	beego.Router("/api/get-tab-with-nodes", &controllers.APIController{}, "GET:GetTabWithNodes")
 
 	beego.Router("/api/get-notifications", &controllers.APIController{}, "GET:GetNotifications")
@@ -114,6 +116,7 @@ func initAPI() {
 	beego.Router("/api/add-plane", &controllers.APIController{}, "POST:AddPlane")
 	beego.Router("/api/get-plane-list", &controllers.APIController{}, "GET:GetPlaneList")
 	beego.Router("/api/update-plane-info", &controllers.APIController{}, "POST:UpdatePlaneInfo")
+	beego.Router("/api/get-planes-admin", &controllers.APIController{}, "GET:GetPlanes")
 
 	beego.Router("/api/get-checkin-bonus-status", &controllers.APIController{}, "GET:GetCheckinBonusStatus")
 	beego.Router("/api/get-checkin-bonus", &controllers.APIController{}, "GET:GetCheckinBonus")

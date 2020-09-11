@@ -25,6 +25,11 @@ func (c *APIController) GetPlanes() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetPlanesAdmin() {
+	c.Data["json"] = object.GetAllPlanes()
+	c.ServeJSON()
+}
+
 func (c *APIController) GetPlane() {
 	id := c.Input().Get("id")
 

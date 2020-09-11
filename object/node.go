@@ -25,7 +25,7 @@ type Node struct {
 	TabId       string   `xorm:"varchar(100)" json:"tab"`
 	ParentNode  string   `xorm:"varchar(200)" json:"parentNode"`
 	PlaneId     string   `xorm:"varchar(50)" json:"planeId"`
-	Hot         int      `xorm:"int" json:"-"`
+	Hot         int      `xorm:"int" json:"hot"`
 	Moderators  []string `xorm:"varchar(200)" json:"moderators"`
 }
 

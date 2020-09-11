@@ -26,6 +26,22 @@ func (c *APIController) GetNodes() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetNodesAdmin() {
+	var res []adminNodeInfo
+	nodes := object.GetNodes()
+	for _, v := range nodes {
+		node := adminNodeInfo{
+			NodeInfo:     *v,
+			TopicNum:     object.GetNodeTopicNum(v.Id),
+			FavoritesNum: object.GetNodeFavoritesNum(v.Id),
+		}
+		res = append(res, node)
+	}
+
+	c.Data["json"] = res
+	c.ServeJSON()
+}
+
 func (c *APIController) GetNode() {
 	id := c.Input().Get("id")
 
@@ -36,13 +52,21 @@ func (c *APIController) GetNode() {
 func (c *APIController) UpdateNode() {
 	id := c.Input().Get("id")
 
+	var resp Response
 	var node object.Node
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+	}
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
 	}
+	res := object.UpdateNode(id, &node)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
 
-	c.Data["json"] = object.UpdateNode(id, &node)
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 

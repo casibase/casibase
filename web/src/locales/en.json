@@ -15,7 +15,8 @@
     "true": "true",
     "false": "false",
     "Homepage": "Homepage",
-    "Language": "Language"
+    "Language": "Language",
+    "Admin": "Admin"
   },
   "login":
   {
@@ -260,7 +261,26 @@
     "Node name": "Node name",
     "Moderators": "Moderators",
     "Add moderator": "Add moderator",
-    "Add": "Add"
+    "Add": "Add",
+    "Update node information success": "Update node information success",
+    "Node management": "Node management",
+    "Please select a node": "Please select a node",
+    "Please select a tab": "Please select a tab",
+    "Please select a plane": "Please select a plane",
+    "Created time": "Created time",
+    "Image": "Image",
+    "Change image": "Change image",
+    "Total favorites": "Total favorites",
+    "Hot": "Hot",
+    "Parent node": "Parent node",
+    "Tab": "Tab",
+    "Plane": "Plane",
+    "Manage moderators": "Manage moderators",
+    "Description": "Description",
+    "Manage": "Manage",
+    "hot": "hot",
+    "Total nodes": "Total nodes",
+    "Save": "Save"
   },
   "plane":
   {
@@ -433,6 +453,7 @@
   {
     "Please wait patiently...": "Please wait patiently....",
     "Topic is loading": "Topic is loading",
+    "Page is loading": "Page is loading",
     "Logging in ...": "Logging in ...",
     "Member profile is loading": "Member profile is loading",
     "Node is loading": "Node is loading",
@@ -449,6 +470,12 @@
     "Highest": "Highest",
     "Community of Creators": "Community of Creators",
     "Select Language": "Select Language"
+  },
+  "admin": {
+    "Backstage management": "Backstage management",
+    "Node management": "Node management",
+    "Topic management": "Topic management",
+    "Member management": "Member management"
   },
   "error":
   {

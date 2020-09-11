@@ -60,6 +60,8 @@ import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
 import EditBox from "./main/EditBox";
 import ForgotBox from "./main/ForgotBox";
 import FilesBox from "./main/FilesBox";
+import AdminHomepage from "./admin/AdminHomepage";
+import AdminNode from "./admin/AdminNode";
 import i18next from "i18next";
 
 class App extends Component {
@@ -301,6 +303,25 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <FilesBox account={this.state.account} edit={true} />
+          </div>
+        </Route>
+        {/*BACKSTAGE*/}
+        <Route exact path="/admin">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminHomepage account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/node">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminNode account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/node/:nodeId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminNode account={this.state.account} />
           </div>
         </Route>
       </Switch>
