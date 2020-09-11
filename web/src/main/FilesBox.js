@@ -484,11 +484,11 @@ class FilesBox extends React.Component {
 
     return (
       <PageColumn page={this.state.page} total={this.state.filesNum} url={this.state.url} defaultPageNum={this.state.limit} />
-    )
+    );
   }
 
   renderFiles(file) {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
 
     return (
       <div className="cell">
@@ -513,7 +513,7 @@ class FilesBox extends React.Component {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   renderProblem() {
@@ -529,13 +529,13 @@ class FilesBox extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
-          {
-            problems.map((problem, i) => {
-              return <li>{problem}</li>;
-            })
-          }
+        {
+          problems.map((problem, i) => {
+            return <li>{problem}</li>;
+          })
+        }
       </div>
-    )
+    );
   }
 
   renderFileNotFound() {
@@ -546,7 +546,7 @@ class FilesBox extends React.Component {
         <div className="cell"><span className="gray bigger">404 File Not Found</span></div>
         <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
       </div>
-    )
+    );
   }
 
   renderFileLoading() {
@@ -556,7 +556,7 @@ class FilesBox extends React.Component {
           className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:File is loading")}</div>
         <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -627,7 +627,7 @@ class FilesBox extends React.Component {
           {this.showPageColumn()}
         </div>
       </div>
-    )
+    );
   }
 }
 

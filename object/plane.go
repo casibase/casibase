@@ -34,6 +34,16 @@ func GetPlanes() []*Plane {
 	return planes
 }
 
+func GetAllPlanes() []*Plane {
+	planes := []*Plane{}
+	err := adapter.engine.Asc("sorter").Find(&planes)
+	if err != nil {
+		panic(err)
+	}
+
+	return planes
+}
+
 func GetPlane(id string) *Plane {
 	plane := Plane{Id: id}
 	existed, err := adapter.engine.Get(&plane)

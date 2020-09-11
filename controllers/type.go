@@ -14,6 +14,8 @@
 
 package controllers
 
+import "github.com/casbin/casbin-forum/object"
+
 type userInfoFromGoogle struct {
 	Picture string `json:"picture"`
 	Email   string `json:"email"`
@@ -144,4 +146,10 @@ type addNodeModerator struct {
 type deleteNodeModerator struct {
 	NodeId   string `json:"nodeId"`
 	MemberId string `json:"memberId"`
+}
+
+type adminNodeInfo struct {
+	NodeInfo     object.Node `json:"nodeInfo"`
+	TopicNum     int         `json:"topicNum"`
+	FavoritesNum int         `json:"favoritesNum"`
 }

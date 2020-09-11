@@ -21,6 +21,11 @@ func (c *APIController) GetTabs() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetAllTabs() {
+	c.Data["json"] = object.GetAllTabs()
+	c.ServeJSON()
+}
+
 func (c *APIController) GetTabWithNodes() {
 	id := c.Input().Get("id")
 

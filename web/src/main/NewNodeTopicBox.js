@@ -220,6 +220,7 @@ class NewNodeTopicBox extends React.Component {
 
   renderLargeSize() {
     const title = document.getElementById('topic_title');
+    console.log(title)
     let contentWidth = title.clientWidth;
     if (this.state.width === "") {
       this.setState({

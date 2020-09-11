@@ -188,7 +188,7 @@ class MoveTopicNodeBox extends React.Component {
             </table>
         </div>
       </div>
-    )
+    );
   }
 }
 

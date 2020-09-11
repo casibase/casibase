@@ -42,13 +42,13 @@ class ForgotBox extends React.Component {
         {label: "Email", value: "email"},
       ]
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.method = params.get("method")
-    this.state.code = params.get("code")
-    this.state.username = params.get("username")
-    this.state.id = params.get("id")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.method = params.get("method");
+    this.state.code = params.get("code");
+    this.state.username = params.get("username");
+    this.state.id = params.get("id");
     if (this.state.code !== undefined && this.state.code !== null && this.state.code.length !== 0) {
-      this.state.step = 5
+      this.state.step = 5;
     }
   }
 
@@ -73,7 +73,7 @@ class ForgotBox extends React.Component {
 
   getCaptcha() {
     if (this.state.step !== 1) {
-      return
+      return;
     }
 
     BasicBackend.getCaptcha()
@@ -83,14 +83,14 @@ class ForgotBox extends React.Component {
           captchaId: res?.data2
         }, () => {
           this.updateFormField("captchaId", this.state.captchaId)
-        })
-      })
+        });
+      });
   }
 
   clearForm() {
     this.setState({
       form: {}
-    })
+    });
   }
 
   getValidateCode() {
@@ -101,45 +101,45 @@ class ForgotBox extends React.Component {
             validateCodeId: res?.data,
             getValidateCode: true
           }, () => {
-            this.updateFormField("validateCodeId", this.state.validateCodeId)
-          })
+            this.updateFormField("validateCodeId", this.state.validateCodeId);
+          });
         } else {
           this.setState({
             message: res?.msg
-          })
+          });
         }
-      })
+      });
   }
 
   getAccountInfo() {
     if (this.state.form.username === undefined || this.state.form.username.length === 0) {
       this.setState({
         message: i18next.t("error:Please input username")
-      })
-      return
+      });
+      return;
     }
     if (this.state.form.captcha === undefined || this.state.form.captcha.length === 0) {
       this.setState({
         message: i18next.t("error:Please input captcha")
-      })
-      return
+      });
+      return;
     }
     AccountBackend.resetPassword(this.state.step, this.state.form)
       .then((res) => {
         if (res?.status === "ok") {
-          let method = res?.data
+          let method = res?.data;
           if (res?.data === "both") {
-            method = "phone"
+            method = "phone";
             this.setState({
               showTab: true
-            })
+            });
           }
           let message = ""
-          let step
+          let step;
           if (method === "phone") {
-            step = 2
+            step = 2;
           } else {
-            step = 3
+            step = 3;
           }
           this.setState({
             step: step,
@@ -149,38 +149,38 @@ class ForgotBox extends React.Component {
             resetInfo: res?.data2,
             form: {}
           }, () => {
-            let form = {}
-            form["step"] = this.state.step
-            form["method"] = this.state.method
-            form["username"] = this.state.username
+            let form = {};
+            form["step"] = this.state.step;
+            form["method"] = this.state.method;
+            form["username"] = this.state.username;
             if (res?.data === "phone") {
-              form["validateCodeId"] = res?.data2.validateCodeId
+              form["validateCodeId"] = res?.data2.validateCodeId;
             } else {
-              form["url"] = Setting.ClientUrl
+              form["url"] = Setting.ClientUrl;
             }
             this.setState({
               form: form,
             });
-          })
+          });
         } else {
           this.setState({
             message: res?.msg
-          })
+          });
         }
-      })
+      });
   }
 
   changeTab(method) {
-    let step
+    let step;
     if (method === "phone") {
-      step = 2
+      step = 2;
     } else {
-      step = 3
+      step = 3;
     }
     this.setState({
       step: step,
       method: method
-    })
+    });
   }
 
   postVerification() {
@@ -188,52 +188,52 @@ class ForgotBox extends React.Component {
       if (this.state.form.validateCode === undefined || this.state.form.validateCode.length === 0) {
         this.setState({
           message: i18next.t("error:Please input validate code")
-        })
-        return
+        });
+        return;
       }
     } else  {
       if (this.state.form?.email === undefined || this.state.form?.email.length === 0) {
         this.setState({
           message: i18next.t("error:Please input email")
-        })
-        return
+        });
+        return;
       }
     }
     AccountBackend.resetPassword(this.state.step, this.state.form)
       .then((res) => {
         if (res?.status === "ok") {
           if (res?.data === "phone") {
-            let method = res?.data
-            let code = res?.data2.resetCode
-            let id = res?.data2.resetId
-            let username = res?.data2.username
-            goToLink(`/forgot?method=${method}&id=${id}&code=${code}&username=${username}`)
-            return
+            let method = res?.data;
+            let code = res?.data2.resetCode;
+            let id = res?.data2.resetId;
+            let username = res?.data2.username;
+            goToLink(`/forgot?method=${method}&id=${id}&code=${code}&username=${username}`);
+            return;
           }
           this.setState({
             step: 4,
             email: res?.data2
-          })
+          });
         } else {
           this.setState({
             message: res?.msg
-          })
+          });
         }
-      })
+      });
   }
 
   postResetPassword() {
     if (this.state.form.password === undefined || this.state.form.password.length === 0) {
       this.setState({
         message: i18next.t("error:Please input your new password")
-      })
-      return
+      });
+      return;
     }
     if (this.state.form?.password !== this.state.form?.passwordAgain) {
       this.setState({
         message: i18next.t("error:The two passwords are different")
-      })
-      return
+      });
+      return;
     }
     AccountBackend.resetPassword(this.state.step, this.state.form)
       .then((res) => {
@@ -241,14 +241,14 @@ class ForgotBox extends React.Component {
           this.setState({
             step: 6,
             showTab: false
-          })
+          });
         } else {
           this.setState({
             message: res?.msg,
             showTab: false
-          })
+          });
         }
-      })
+      });
   }
 
   updateFormField(key, value) {
@@ -269,7 +269,7 @@ class ForgotBox extends React.Component {
     let problems = [];
 
     if (this.state.message !== "") {
-      problems.push(i18next.t(`error:${this.state.message}`))
+      problems.push(i18next.t(`error:${this.state.message}`));
     }
 
     if (problems.length === 0) {
@@ -287,17 +287,16 @@ class ForgotBox extends React.Component {
           }
         </ul>
       </div>
-    )
+    );
   }
 
   renderMethodList(item){
     return (
       <a onClick={() => this.changeTab(item.value)} href="javascript:void(0)" className={this.state.method === item.value ? "tab_current" : "tab"}>{item.label}</a>
-    )
+    );
   }
 
   render() {
-    console.log(this.state.step)
     switch (this.state.step) {
       case 2:
           return (
@@ -366,7 +365,7 @@ class ForgotBox extends React.Component {
                 </table>
               </div>
             </div>
-          )
+          );
       case 3:
         return (
           <div className="box">
@@ -409,7 +408,7 @@ class ForgotBox extends React.Component {
               </table>
             </div>
           </div>
-        )
+        );
       case 4:
         return (
           <div class="box">
@@ -423,7 +422,7 @@ class ForgotBox extends React.Component {
               ← <a href="/">{i18next.t("forgot:Back to homepage")}</a>
             </div>
           </div>
-        )
+        );
       case 5:
         return (
           <div>
@@ -461,7 +460,7 @@ class ForgotBox extends React.Component {
               </div>
             </div>
           </div>
-        )
+        );
       case 6:
         return (
           <div class="box">
@@ -476,7 +475,7 @@ class ForgotBox extends React.Component {
               <input type="button" onClick={() => goToLink("/signin")} class="super normal button" value={i18next.t("forgot:Log in now")} />
             </div>
           </div>
-        )
+        );
     }
 
     return (
@@ -528,7 +527,7 @@ class ForgotBox extends React.Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 }
 

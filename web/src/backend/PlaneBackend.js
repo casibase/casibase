@@ -20,3 +20,10 @@ export function getPlaneList() {
     credentials: 'include'
   }).then(res => res.json());
 }
+
+export function getPlanesAdmin() {
+  return fetch(`${Setting.ServerUrl}/api/get-planes-admin`, {
+    method: 'GET',
+    credentials: 'include'
+  }).then(res => res.json());
+}

@@ -39,7 +39,7 @@ class EditBox extends React.Component {
 
   componentDidMount() {
     this.getEditObject();
-    Setting.initOSSClient(this.props.account?.id)
+    Setting.initOSSClient(this.props.account?.id);
   }
 
   initForm() {
@@ -65,7 +65,7 @@ class EditBox extends React.Component {
             Setting.showMessage("error", res?.msg);
           }
         });
-      return
+      return;
     }
     ReplyBackend.editReplyContent(this.state.form)
       .then((res) => {
@@ -87,7 +87,7 @@ class EditBox extends React.Component {
             this.initForm();
           });
         });
-      return
+      return;
     }
    ReplyBackend.getReplyWithDetails(this.state.objectId)
      .then((res) => {
@@ -121,7 +121,7 @@ class EditBox extends React.Component {
         onChange={(editor, data, value) => {
         }}
       />
-    )
+    );
   }
 
   render() {
@@ -131,7 +131,7 @@ class EditBox extends React.Component {
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
-      )
+      );
     }
 
     if (this.state.editObject === null || !this.state.editObject?.editable) {
@@ -145,7 +145,7 @@ class EditBox extends React.Component {
             {i18next.t("edit:You cannot edit this content.")}
           </div>
         </div>
-      )
+      );
     }
 
     if (this.state.editType === "reply") {
@@ -184,7 +184,7 @@ class EditBox extends React.Component {
             </table>
           </div>
         </div>
-      )
+      );
     }
     return (
       <div class="box">
@@ -225,7 +225,7 @@ class EditBox extends React.Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 }
 

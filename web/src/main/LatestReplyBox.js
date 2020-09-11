@@ -16,11 +16,8 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import {withRouter} from "react-router-dom";
-import Avatar from "../Avatar";
 import PageColumn from "./PageColumn";
-import TopicList from "./TopicList";
 import i18next from "i18next";
-import * as MemberBackend from "../backend/MemberBackend";
 
 const ReactMarkdown = require('react-markdown');
 const pangu = require("pangu");
@@ -42,17 +39,17 @@ class LatestReplyBox extends React.Component {
       url: "",
     };
     if (this.props.limit !== undefined) {
-      this.state.limit = this.props.limit
+      this.state.limit = this.props.limit;
     }
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1
+      this.state.page = 1;
     }else {
-      this.state.page = parseInt(this.state.p)
+      this.state.page = parseInt(this.state.p);
     }
   
-    this.state.url = `/member/${this.state.memberId}/replies`
+    this.state.url = `/member/${this.state.memberId}/replies`;
   }
 
   componentDidMount() {
@@ -71,7 +68,7 @@ class LatestReplyBox extends React.Component {
 
   getRepliesNum() {
     if (this.props.size !== "large") {
-      return
+      return;
     }
 
     ReplyBackend.getRepliesNum(this.state.memberId)
@@ -84,12 +81,12 @@ class LatestReplyBox extends React.Component {
 
   showPageColumn() {
     if (this.state.repliesNum === 10) {
-      return
+      return;
     }
 
     return (
       <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url}/>
-    )
+    );
   }
 
   renderReplies(reply) {
@@ -119,12 +116,12 @@ class LatestReplyBox extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   render() {
     if (this.props.member === null) {
-      return null
+      return null;
     }
 
     if (this.props.size === "large") {

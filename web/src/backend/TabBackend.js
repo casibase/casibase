@@ -34,3 +34,10 @@ export function getTabNodes(id) {
     credentials: "include"
   }).then(res => res.json());
 }
+
+export function getAllTabs() {
+  return fetch(`${Setting.ServerUrl}/api/get-all-tabs`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}

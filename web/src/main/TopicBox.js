@@ -225,6 +225,12 @@ class TopicBox extends React.Component {
   };
 
   renderLink = (props) => {
+    let check = Setting.checkPageLink(props.href);
+    if (check) {
+      return (
+        <a {...props} />
+      );
+    }
     return(
       <a {...props} target="_blank" />
     );

@@ -23,6 +23,7 @@ import NewReplyBox from "./NewReplyBox";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
+import {windows} from "codemirror/src/util/browser";
 
 const pangu = require("pangu")
 
@@ -58,9 +59,9 @@ class ReplyBox extends React.Component {
     setTimeout(function() {
       let anchorElement = document.getElementById(id);
       if (anchorElement) {
-        anchorElement.scrollIntoView()
+        anchorElement.scrollIntoView();
       }
-    }, 100)
+    }, 100);
   }
 
   getTopic() {
@@ -88,51 +89,51 @@ class ReplyBox extends React.Component {
   }
 
   handleComment(content) {
-    let temp
+    let temp;
     if (this.state.reply.length !== 0) {
-      temp = this.state.reply + "\n"
+      temp = this.state.reply + "\n";
     }else {
-      temp = this.state.reply
+      temp = this.state.reply;
     }
 
     this.setState({
       reply: temp + content,
       sticky: true,
-    })
+    });
   }
 
   handleReply(content) {
     this.setState({
       reply: content
-    })
+    });
   }
 
   changeStickyStatus(status) {
     this.setState({
       sticky: status
-    })
+    });
   }
 
   getMemberList() {
-    let list = []
-    let temp = []
+    let list = [];
+    let temp = [];
     for (let i = 0; i < this.state.replies.length; ++ i) {
-      let flag = true
+      let flag = true;
       for (let j = 0; j < temp.length; ++ j) {
         if (temp[j] === this.state.replies[i].author) {
-          flag = false
-          break
+          flag = false;
+          break;
         }
       }
       if (flag) {
-        temp.push(this.state.replies[i].author)
-        list.push(this.state.replies[i].author + " ")
+        temp.push(this.state.replies[i].author);
+        list.push(this.state.replies[i].author + " ");
       }
     }
     //console.log(list)
     this.setState({
       memberList: list
-    })
+    });
   }
 
   thanksReply(id, author) {
@@ -140,11 +141,11 @@ class ReplyBox extends React.Component {
       BalanceBackend.addThanks(id, 2)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh()
+            Setting.refresh();
           } else {
-            alert(res?.msg)
+            alert(res?.msg);
           }
-        })
+        });
     }
   }
 
@@ -153,11 +154,11 @@ class ReplyBox extends React.Component {
       ReplyBackend.deleteReply(id)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh()
+            Setting.refresh();
           } else {
-            alert(res?.msg)
+            alert(res?.msg);
           }
-        })
+        });
     }
   }
 
@@ -165,7 +166,7 @@ class ReplyBox extends React.Component {
     if (anchorName) {
       let anchorElement = document.getElementById(anchorName);
       if (anchorElement) {
-        anchorElement.scrollIntoView()
+        anchorElement.scrollIntoView();
       }
     }
   }
@@ -177,6 +178,12 @@ class ReplyBox extends React.Component {
   };
 
   renderLink = (props) => {
+    let check = Setting.checkPageLink(props.href);
+    if (check) {
+      return (
+        <a {...props} />
+        );
+    }
     return(
       <a {...props} target="_blank" />
     );
@@ -265,12 +272,11 @@ class ReplyBox extends React.Component {
                         </a>
                       </strong>
                       &nbsp; &nbsp;
-                      <span className="ago" onClick={() => {
+                      <a className="ago" href={`#r_${reply.id}`} onClick={() => {
                         this.scrollToAnchor(`r_${reply?.id}`)
-                        window.history.pushState({}, 0, `/t/${this.state.topic?.id}#r_${reply.id}`)
                       }}>
                         {Setting.getPrettyDate(reply.createdTime)}
-                      </span>
+                      </a>
                       {" "}&nbsp;{" "}
                       {
                         reply?.thanksNum !== 0 ?
@@ -304,7 +310,7 @@ class ReplyBox extends React.Component {
 
   render() {
     if (this.state.topic === null) {
-      return null
+      return null;
     }
 
     return (

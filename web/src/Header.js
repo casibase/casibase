@@ -30,18 +30,18 @@ class Header extends React.Component {
   onSearchValueChange(e) {
     this.setState({
       searchValue: e.target.value
-    })
+    });
   }
 
   addSearchValue() {
     this.setState({
       searchValue: `${Conf.Domain}/t ` + this.state.searchValue
-    })
+    });
   }
 
   onKeyup(e) {
     if(e.keyCode === 13) {
-      window.open(`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`)
+      window.open(`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`);
     }
   }
 
@@ -102,6 +102,10 @@ class Header extends React.Component {
           &nbsp;&nbsp;&nbsp;
           <a href="/settings" className="top">
             {i18next.t("general:Setting")}
+          </a>
+          &nbsp;&nbsp;&nbsp;
+          <a href="/admin" className="top">
+            {i18next.t("general:Admin")}
           </a>
           &nbsp;&nbsp;&nbsp;
           <a href="#;" onClick={this.signout.bind(this)} className="top">

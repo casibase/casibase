@@ -276,3 +276,23 @@ export function initBrowserType() {
 export function checkPc() {
   return !/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 }
+
+// check if the link contains this page's anchor.
+export function checkPageLink(url) {
+
+  if (url.search(ClientUrl) === -1) {
+    return false;
+  }
+  let current, target;
+  if (window.location.href.indexOf('#') !== -1) {
+    current = window.location.href.slice(0, window.location.href.indexOf('#'));
+  } else {
+    current = window.location.href;
+  }
+  if (url.indexOf('#') !== -1) {
+    target = url.slice(0, url.indexOf('#'));
+  } else {
+    target = url;
+  }
+  return current === target;
+}

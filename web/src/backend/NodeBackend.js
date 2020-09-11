@@ -21,6 +21,13 @@ export function getNodes() {
   }).then(res => res.json());
 }
 
+export function getNodesAdmin() {
+  return fetch(`${Setting.ServerUrl}/api/get-nodes-admin`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getNode(id) {
   return fetch(`${Setting.ServerUrl}/api/get-node?id=${id}`, {
     method: "GET",

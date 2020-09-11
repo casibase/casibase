@@ -27,7 +27,7 @@ class CustomGithubCorner extends React.Component {
   render() {
     return (
       <GithubCorner href={Conf.GithubRepo} />
-    )
+    );
   }
 }
 
