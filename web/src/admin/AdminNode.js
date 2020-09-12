@@ -21,6 +21,7 @@ import * as Setting from "../Setting";
 import * as Tools from "../main/Tools";
 import {Resizable} from "re-resizable";
 import {Controlled as CodeMirror} from "react-codemirror2";
+import {SketchPicker} from "react-color"
 import Zmage from "react-zmage";
 import Select2 from "react-select2-wrapper";
 import $ from "jquery";
@@ -35,6 +36,7 @@ class AdminNode extends React.Component {
       tabs: [],
       planes: [],
       message: "",
+      errorMessage: "",
       form: {},
       nodeInfo: [],
       //event: props.match.params.event,
@@ -42,6 +44,18 @@ class AdminNode extends React.Component {
       topicNum: 0,
       favoritesNum: 0,
       width: "",
+      event: "basic",
+      Management_LIST: [
+        {label: "Basic Info", value: "basic"},
+        {label: "Background", value: "background"},
+      ],
+      Repeat_LIST: [
+        {label: "Repeat", value: "repeat"},
+        {label: "Repeat-x", value: "repeat-x"},
+        {label: "Repeat-y", value: "repeat-y"},
+      ],
+      color: "#386d97",
+      displayColorPicker: false
     };
   }
 
@@ -62,7 +76,7 @@ class AdminNode extends React.Component {
   }
 
   getTabs() {
-    if (this.state.nodeId === undefined) {
+    if (this.state.nodeId === undefined && this.props.event !== "new") {
       return;
     }
 
@@ -75,7 +89,7 @@ class AdminNode extends React.Component {
   }
 
   getPlanes() {
-    if (this.state.nodeId === undefined) {
+    if (this.state.nodeId === undefined && this.props.event !== "new") {
       return;
     }
 
@@ -107,7 +121,7 @@ class AdminNode extends React.Component {
             topicNum: res?.data,
             favoritesNum: res?.data2,
           });
-        }else {
+        } else {
           Setting.showMessage("error", res.msg);
         }
       });
@@ -120,12 +134,15 @@ class AdminNode extends React.Component {
     form["createdTime"] = this.state.nodeInfo?.createdTime;
     form["desc"] = this.state.nodeInfo?.desc;
     form["image"] = this.state.nodeInfo?.image;
-    form["tabId"] = this.state.nodeInfo?.tabId;
+    form["tab"] = this.state.nodeInfo?.tab;
     form["parentNode"] = this.state.nodeInfo?.parentNode;
     form["planeId"] = this.state.nodeInfo?.planeId;
     form["hot"] = this.state.nodeInfo?.hot;
     form["tab"] = this.state.nodeInfo?.tab;
     form["moderators"] = this.state.nodeInfo?.moderators;
+    form["backgroundImage"] = this.state.nodeInfo?.backgroundImage;
+    form["backgroundColor"] = this.state.nodeInfo?.backgroundColor;
+    form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
     this.setState({
       form: form,
     });
@@ -140,7 +157,7 @@ class AdminNode extends React.Component {
   }
 
   getIndexFromNodeId(nodeId) {
-    for (let i = 0; i < this.state.nodes.length; i ++) {
+    for (let i = 0; i < this.state.nodes.length; i++) {
       if (this.state.nodes[i].nodeInfo.id === nodeId) {
         return i;
       }
@@ -150,7 +167,7 @@ class AdminNode extends React.Component {
   }
 
   getIndexFromTabId(tabId) {
-    for (let i = 0; i < this.state.tabs.length; i ++) {
+    for (let i = 0; i < this.state.tabs.length; i++) {
       if (this.state.tabs[i].id === tabId) {
         return i;
       }
@@ -160,7 +177,7 @@ class AdminNode extends React.Component {
   }
 
   getIndexFromPlaneId(planeId) {
-    for (let i = 0; i < this.state.planes.length; i ++) {
+    for (let i = 0; i < this.state.planes.length; i++) {
       if (this.state.planes[i].id === planeId) {
         return i;
       }
@@ -179,7 +196,57 @@ class AdminNode extends React.Component {
           });
         } else {
           this.setState({
-            message: i18next.t(`err:${res?.msg}`),
+            message: res?.msg,
+          });
+        }
+      });
+  }
+
+  postNewNode() {
+    if (this.state.form.id === undefined || this.state.form.id === "") {
+      this.setState({
+        errorMessage: "Please input node ID",
+      });
+      return;
+    }
+    if (this.state.form.name === "" || this.state.form.name === undefined) {
+      this.setState({
+        errorMessage: "Please input node name",
+      });
+      return;
+    }
+    if (this.state.form.parentNode === "" || this.state.form.parentNode === undefined) {
+      this.setState({
+        errorMessage: "Please select a parent node",
+      });
+      return;
+    }
+    if (this.state.form.tab === "" || this.state.form.tab === undefined) {
+      this.setState({
+        errorMessage: "Please select a tab",
+      });
+      return;
+    }
+    if (this.state.form.planeId === "" || this.state.form.planeId === undefined) {
+      this.setState({
+        errorMessage: "Please select a plane",
+      });
+      return;
+    }
+
+    NodeBackend.addNode(this.state.form)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.getNodeInfo();
+          this.setState({
+            errorMessage: "",
+            message: i18next.t("node:Creat node success"),
+          }, () => {
+            setTimeout(() => Setting.goToLink(`/admin/node/edit/${this.state.form.id}`), 1600);
+          });
+        } else {
+          this.setState({
+            errorMessage: i18next.t(`err:${res?.msg}`),
           });
         }
       });
@@ -189,6 +256,96 @@ class AdminNode extends React.Component {
     this.setState({
       message: "",
     });
+  }
+
+  clearErrorMessage() {
+    this.setState({
+      errorMessage: "",
+    });
+  }
+
+  handleColorChange = (color) => {
+    this.updateFormField("backgroundColor", color.hex);
+    //this.setState({ color: color.hex });
+  };
+
+  handleColorClick = () => {
+    this.setState({
+      displayColorPicker: !this.state.displayColorPicker,
+    });
+  };
+
+  handleColorClose = () => {
+    this.setState({
+      displayColorPicker: false,
+    });
+  };
+
+  changeEvent(event) {
+    this.setState({
+      event: event,
+      message: "",
+    });
+    if (this.props.event !== "new") {
+      this.initForm();
+    }
+  }
+
+  renderProblem() {
+    let problems = [];
+
+    if (this.state.errorMessage !== "") {
+      problems.push(i18next.t(`error:${this.state.errorMessage}`));
+    }
+
+    if (problems.length === 0) {
+      return null;
+    }
+
+    return (
+      <div className="problem" onClick={() => this.clearErrorMessage()}>
+        {i18next.t("error:Please resolve the following issues before submitting")}
+        <ul>
+          {
+            problems.map((problem, i) => {
+              return <li>{problem}</li>;
+            })
+          }
+        </ul>
+      </div>
+    );
+  }
+
+  renderManagementList(item){
+    return (
+      <a href="javascript:void(0);" className={this.state.event === item.value ? "tab_current" : "tab"} onClick={() => this.changeEvent(item.value)}>{i18next.t(`node:${item.label}`)}</a>
+    );
+  }
+
+  renderHeader() {
+    return (
+      <div className="box">
+        <div className="header"><a href="/">{Setting.getForumName()}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin/node`}>{i18next.t("node:Node management")}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          {
+            this.props.event === "new" ?
+              <span className="gray">
+                {i18next.t("node:New node")}
+              </span> :
+              <a href={`/go/${this.state.nodeId}`}>{this.state.nodeInfo?.name}</a>
+          }
+        </div>
+        <div className="cell">
+          {
+            this.state.Management_LIST.map((item) => {
+              return this.renderManagementList(item);
+            })
+          }
+        </div>
+      </div>
+    );
   }
 
   renderNodes(node) {
@@ -205,7 +362,7 @@ class AdminNode extends React.Component {
               </a>
             </td>
             <td width={pcBrowser ? "200" : "auto"} align="center">
-              <a href={`/admin/node/${node?.nodeInfo.id}`}>
+              <a href={`/admin/node/edit/${node?.nodeInfo.id}`}>
                 {i18next.t("node:Manage")}
               </a>
             </td>
@@ -222,6 +379,14 @@ class AdminNode extends React.Component {
           </tbody>
         </table>
       </div>
+    );
+  }
+
+  renderRadioButton(item) {
+    return (
+      <span>
+        <input type="radio" onClick={() => this.updateFormField("backgroundRepeat", item.value)} checked={item.value === this.state.form?.backgroundRepeat} name="repeat" />{i18next.t(`node:${item.label}`)}{" "}
+      </span>
     );
   }
 
@@ -277,7 +442,7 @@ class AdminNode extends React.Component {
         }}
         options={
           {
-            placeholder: i18next.t(`new:Please select a ${item}`),
+            placeholder: i18next.t(`node:Please select a ${item}`),
           }
         }
       />
@@ -293,46 +458,50 @@ class AdminNode extends React.Component {
   }
 
   render() {
-    if (this.state.nodeId !== undefined) {
-      if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
-        return (
-          <div className="box">
-            <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
-            <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
-          </div>
-        );
-      }
+    const newNode = (this.props.event === "new")
 
-      if (this.state.nodeInfo === null) {
-        return (
-          <div class="box">
-            <div class="header">
-              <a href="/">{Setting.getForumName()}</a>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Node not found")}</div>
-            <div class="cell">
-              {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
-              <div class="sep10"></div>
-              <ul>
-                <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
-                <li>{i18next.t("error:The node is currently in invisible state.")}</li>
-              </ul>
+    if (this.state.nodeId !== undefined || newNode) {
+      if (this.state.nodeId !== undefined) {
+        if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
+          return (
+            <div className="box">
+              <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
+              <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
             </div>
-            <div class="inner">
-              {
-                this.props.account === null ?
-                  <span className="gray">
-                  <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
-                </span> :
-                  <span className="gray">
-                  <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
-                  <br/>
-                  <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a
-                    href={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</a>
-                </span>
-              }
+          );
+        }
+
+        if (this.state.nodeInfo === null) {
+          return (
+            <div class="box">
+              <div class="header">
+                <a href="/">{Setting.getForumName()}</a>
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Node not found")}</div>
+              <div class="cell">
+                {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
+                <div class="sep10"></div>
+                <ul>
+                  <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
+                  <li>{i18next.t("error:The node is currently in invisible state.")}</li>
+                </ul>
+              </div>
+              <div class="inner">
+                {
+                  this.props.account === null ?
+                    <span className="gray">
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
+                  </span> :
+                    <span className="gray">
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}
+                      <a href="/">{i18next.t("error:Home Page")}</a>
+                    <br/>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</a>
+                  </span>
+                }
+              </div>
             </div>
-          </div>
-        );
+          );
+        }
       }
 
       const image = document.getElementById('change_image');
@@ -347,156 +516,334 @@ class AdminNode extends React.Component {
 
       const node = this.state.nodeInfo;
 
-      return (
-        <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a>
-            {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-            <a href={`/admin/node`}>{i18next.t("node:Node management")}</a>
-            {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-            <a href={`/go/${this.state.nodeId}`}>{this.state.nodeInfo?.name}</a>
-          </div>
-          {
-            this.state.message !== "" ?
-              <div className="message" onClick={() => this.clearMessage()}>
-                <li className="fa fa-exclamation-triangle"></li>
-                &nbsp;{" "}
-                {this.state.message}
-              </div> : null
-          }
-          <div className="inner">
-            <table cellPadding="5" cellSpacing="0" border="0" width="100%">
-              <tbody>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Node name")} ID</td>
-                <td width="auto" align="left">
-                  <a href={`/go/${this.state.nodeId}`}>{node?.name}</a>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Created time")}</td>
-                <td width="auto" align="left">
-                  <span className="gray">
-                    {node?.createdTime}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Image")}</td>
-                <td width="auto" align="left">
-                  <Zmage
-                    src={node?.image} alt={node?.image} style={{maxWidth: "48px", maxHeight: "48px"}}
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Change image")}</td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="image" id="change_image" defaultValue={node?.image} onChange={event => this.updateFormField("image", event.target.value)} autoComplete="off" />
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Total topics")}</td>
-                <td width="auto" align="left">
-                  <span className="gray">
-                    {this.state.topicNum}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Total favorites")}</td>
-                <td width="auto" align="left">
-                  <span className="gray">
-                    {this.state.favoritesNum}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Hot")}</td>
-                <td width="auto" align="left">
-                  <span className="gray">
-                    {node?.hot}
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Parent node")}</td>
-                <td width="auto" align="left">
-                  {this.renderSelect("node")}
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Tab")}</td>
-                <td width="auto" align="left">
-                  {this.renderSelect("tab")}
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Plane")}</td>
-                <td width="auto" align="left">
-                  {this.renderSelect("plane")}
-                </td>
-              </tr>
+      if (this.state.event === "basic") {
+        return (
+          <div>
+            {this.renderHeader()}
+            <div className="box">
+              {this.renderProblem()}
               {
-                this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
+                this.state.message !== "" ?
+                  <div className="message" onClick={() => this.clearMessage()}>
+                    <li className="fa fa-exclamation-triangle"></li>
+                    &nbsp;{" "}
+                    {this.state.message}
+                  </div> : null
+              }
+              <div className="inner">
+                <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                  <tbody>
+                  {
+                    newNode ?
+                      <tr>
+                        <td width="120" align="right">{i18next.t("node:Node ID")}</td>
+                        <td width="auto" align="left">
+                          <input type="text" className="sl" name="id" id="node_id" value={this.state.form?.id} onChange={event => this.updateFormField("id", event.target.value)} autoComplete="off" />
+                        </td>
+                      </tr> : null
+                  }
                   <tr>
-                    <td width="120" align="right">{i18next.t("node:Moderators")}</td>
+                    <td width="120" align="right">{i18next.t("node:Node name")}</td>
                     <td width="auto" align="left">
-                      {this.state.nodeInfo?.moderators.map(moderators => this.renderNodeModerators(moderators))}
-                    </td>
-                  </tr>:
-                  <tr>
-                    <td width="120" align="right">{i18next.t("node:Moderators")}</td>
-                    <td width="auto" align="left">
-                        <span class="gray">
-                          {i18next.t("node:No moderators")}
-                        </span>
+                      {
+                        newNode ?
+                          <input type="text" className="sl" name="name" id="node_name" value={this.state.form?.name===undefined ? "" : this.state.form?.name} onChange={event => this.updateFormField("name", event.target.value)} autoComplete="off" /> :
+                          <a href={`/go/${this.state.nodeId}`}>{node?.name}</a>
+                      }
                     </td>
                   </tr>
-              }
-              <tr>
-                <td width="120" align="right"></td>
-                <td width="auto" align="left">
-                  <span className="gray">
-                    <a href={`/go/${this.state.nodeId}/moderators`}>
-                      {i18next.t("node:Manage moderators")}
-                    </a>
-                  </span>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("node:Description")}</td>
-                <td>
-                  <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "172"}} className="mle" id="node_description" >
-                    <Resizable
-                      enable={false}
-                      defaultSize={{
-                        width: this.state.width,
-                        height: 180,
-                      }}
+                  {
+                    !newNode ?
+                      <tr>
+                        <td width="120" align="right">{i18next.t("node:Created time")}</td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {node?.createdTime}
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Image")}</td>
+                    <td width="auto" align="left">
+                      {
+                        this.state.form?.image === undefined || this.state.form?.image === "" ?
+                          <span className="gray">
+                            {i18next.t("node:Not set")}
+                          </span> :
+                          <Zmage
+                            src={this.state.form?.image} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}}
+                          />
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {
+                        newNode ?
+                          i18next.t("node:Set image") :
+                          i18next.t("node:Change image")
+                      }
+                    </td>
+                    <td width="auto" align="left">
+                      <input type="text" className="sl" name="image" id="change_image" defaultValue={this.state.form?.image} onChange={event => this.updateFormField("image", event.target.value)} autoComplete="off" />
+                    </td>
+                  </tr>
+                  {
+                    !newNode ?
+                      <tr>
+                        <td width="120" align="right">{i18next.t("node:Total topics")}</td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {this.state.topicNum}
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  {
+                    !newNode ?
+                      <tr>
+                        <td width="120" align="right">{i18next.t("node:Total favorites")}</td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {this.state.favoritesNum}
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  {
+                    !newNode ?
+                      <tr>
+                        <td width="120" align="right">{i18next.t("node:Hot")}</td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {node?.hot}
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Parent node")}</td>
+                    <td width="auto" align="left">
+                      {this.renderSelect("node")}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Tab")}</td>
+                    <td width="auto" align="left">
+                      {this.renderSelect("tab")}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Plane")}</td>
+                    <td width="auto" align="left">
+                      {this.renderSelect("plane")}
+                    </td>
+                  </tr>
+                  {
+                    !newNode ?
+                      this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
+                        <tr>
+                          <td width="120" align="right">{i18next.t("node:Moderators")}</td>
+                          <td width="auto" align="left">
+                            {this.state.nodeInfo?.moderators.map(moderators => this.renderNodeModerators(moderators))}
+                          </td>
+                        </tr>:
+                        <tr>
+                          <td width="120" align="right">{i18next.t("node:Moderators")}</td>
+                          <td width="auto" align="left">
+                            <span class="gray">
+                              {i18next.t("node:No moderators")}
+                            </span>
+                          </td>
+                        </tr> : null
+                  }
+                  {
+                    !newNode ?
+                      <tr>
+                        <td width="120" align="right"></td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            <a href={`/go/${this.state.nodeId}/moderators`}>
+                              {i18next.t("node:Manage moderators")}
+                            </a>
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Description")}</td>
+                    <td>
+                      <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "172"}} className="mle" id="node_description" >
+                        <Resizable
+                          enable={false}
+                          defaultSize={{
+                            width: this.state.width,
+                            height: 180,
+                          }}
+                        >
+                          <CodeMirror
+                            editorDidMount={(editor) => Tools.attachEditor(editor)}
+                            onPaste={() => Tools.uploadMdFile()}
+                            value={this.state.form.desc}
+                            onDrop={() => Tools.uploadMdFile()}
+                            options={{mode: 'markdown', lineNumbers: false}}
+                            onBeforeChange={(editor, data, value) => {
+                              this.updateFormField("desc", value)
+                            }}
+                            onChange={(editor, data, value) => {
+                            }}
+                          />
+                        </Resizable>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right"></td>
+                    <td width="auto" align="left">
+                      {
+                        !newNode ?
+                          <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()}/> : null
+                      }
+                    </td>
+                  </tr>
+                  {
+                    newNode ?
+                      <tr>
+                        <td width="120" align="right"></td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {i18next.t("node:Please go to the background page to continue to improve the information and submit")}
+                          </span>
+                        </td>
+                      </tr> : null
+                  }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      // background
+      return (
+        <div>
+          {this.renderHeader()}
+          <div className="box">
+            {this.renderProblem()}
+            {
+              this.state.message !== "" ?
+                <div className="message" onClick={() => this.clearMessage()}>
+                  <li className="fa fa-exclamation-triangle"></li>
+                  &nbsp;{" "}
+                  {this.state.message}
+                </div> : null
+            }
+            <div className="inner">
+              <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                <tbody>
+                <tr>
+                  <td width="120" align="right">{i18next.t("node:Background image")}</td>
+                  <td width="auto" align="left">
+                    {
+                      this.state.form?.backgroundImage === undefined || this.state.form?.backgroundImage === "" ?
+                        <span className="gray">
+                          {i18next.t("node:Not set")}
+                        </span> :
+                        <Zmage
+                          src={this.state.form?.backgroundImage} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}}
+                        />
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">
+                    {
+                      newNode ?
+                        i18next.t("node:Set background image") :
+                        i18next.t("node:Change background image")
+                    }
+                  </td>
+                  <td width="auto" align="left">
+                    <input type="text" className="sl" name="image" id="change_image" value={this.state.form?.backgroundImage===undefined ? "" : this.state.form?.backgroundImage} onChange={event => this.updateFormField("backgroundImage", event.target.value)} autoComplete="off" />
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">{i18next.t("node:Background repeat")}</td>
+                  <td width="auto" align="left">
+                    {
+                      this.state.Repeat_LIST.map((item) => {
+                        return this.renderRadioButton(item);
+                      })
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">{i18next.t("node:Background color")}</td>
+                  <td width="auto" align="left">
+                    <div style={{
+                      padding: '5px',
+                      background: '#fff',
+                      borderRadius: '1px',
+                      boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
+                      display: 'inline-block',
+                      cursor: 'pointer'
+                    }} onClick={this.handleColorClick} >
+                      <div style={{
+                        width: '36px',
+                        height: '14px',
+                        borderRadius: '2px',
+                        background: `${this.state.form.backgroundColor}`
+                      }} />
+                    </div>
+                    {
+                      this.state.displayColorPicker ?
+                        <div style={{
+                          position: 'absolute',
+                          zIndex: '2'}}
+                        >
+                        <div style={{
+                          position: 'fixed',
+                          top: '0px',
+                          right: '0px',
+                          bottom: '0px',
+                          left: '0px'
+                        }} onClick={this.handleColorClose} />
+                      <SketchPicker color={this.state.form.backgroundColor} onChange={this.handleColorChange} />
+                    </div> : null
+                    }
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">{i18next.t("node:Preview")}</td>
+                  <td width="auto" align="left">
+                    <div id="Wrapper"
+                         style={{
+                           backgroundColor: `${this.state.form?.backgroundColor}`,
+                           backgroundImage: `url(${this.state.form?.backgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`,
+                           backgroundRepeat: `${this.state.form?.backgroundRepeat}, repeat-x`,
+                           width: Setting.PcBrowser ? "500px" : "200px",
+                           height: Setting.PcBrowser ? "400px" : "100px"
+                         }}
+                         className={this.state.nodeId}
                     >
-                      <CodeMirror
-                        editorDidMount={(editor) => Tools.attachEditor(editor)}
-                        onPaste={() => Tools.uploadMdFile()}
-                        value={this.state.form.desc}
-                        onDrop={() => Tools.uploadMdFile()}
-                        options={{mode: 'markdown', lineNumbers: false}}
-                        onBeforeChange={(editor, data, value) => {
-                          this.updateFormField("desc", value)
-                        }}
-                        onChange={(editor, data, value) => {
-                        }}
-                      />
-                    </Resizable>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td width="120" align="right"></td>
-                <td width="auto" align="left">
-                  <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()}/></td>
-              </tr>
-              </tbody>
-            </table>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right"></td>
+                  <td width="auto" align="left">
+                    {
+                      newNode ?
+                        <input type="submit" className="super normal button" value={i18next.t("node:Create")} onClick={() => this.postNewNode()}/> :
+                        <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()}/>
+                    }
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       );
@@ -509,7 +856,14 @@ class AdminNode extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("node:Node management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("node:Total nodes")}{" "}&nbsp;</span>
-            <strong className="gray">{this.state.nodes.length}</strong></div>
+            <strong className="gray">{this.state.nodes.length}</strong>
+          </div>
+          <div className="fr f12">
+            <strong className="gray">
+              <a href="node/new">{i18next.t("node:Add new node")}</a>
+              {" "}&nbsp;
+            </strong>
+          </div>
         </div>
         <div id="all-nodes">
           {

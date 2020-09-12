@@ -125,3 +125,9 @@ func HasQQAccount(qqOpenId string) string {
 	}
 	return ""
 }
+
+func HasNode(id string) bool {
+	node := GetNode(id)
+
+	return node != nil
+}

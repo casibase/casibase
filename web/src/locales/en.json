@@ -280,7 +280,26 @@
     "Manage": "Manage",
     "hot": "hot",
     "Total nodes": "Total nodes",
-    "Save": "Save"
+    "Save": "Save",
+    "Node ID": "Node ID",
+    "Set image": "Set image",
+    "Basic Info": "Basic Info",
+    "Background": "Background",
+    "Not set": "Not set",
+    "New node": "New node",
+    "Background image": "Background image",
+    "Set background image": "Set background image",
+    "Change background image": "Change background image",
+    "Background repeat": "Background repeat",
+    "Background color": "Background color",
+    "Preview": "Preview",
+    "Create": "Create",
+    "Repeat": "Repeat",
+    "Repeat-x": "Repeat-x",
+    "Repeat-y": "Repeat-y",
+    "Creat node success": "Creat node success",
+    "Add new node": "Add new node",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit"
   },
   "plane":
   {
@@ -526,6 +545,13 @@
     "Please check your phone number": "Please check your phone number",
     "Please check your email": "Please check your email",
     "Please input your email": "Please input your email",
-    "Username existed or email existed.": "Username existed or email existed."
+    "Username existed or email existed.": "Username existed or email existed.",
+    "Please input node ID": "Please input node ID",
+    "Please input node name": "Please input node name",
+    "Please select a parent node": "Please select a parent node",
+    "Please select a tab": "Please select a tab",
+    "Please select a plane": "Please select a plane",
+    "Node ID existed": "Node ID existed",
+    "Some information is missing": "Some information is missing"
   }
 }

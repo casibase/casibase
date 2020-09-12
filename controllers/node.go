@@ -72,12 +72,32 @@ func (c *APIController) UpdateNode() {
 
 func (c *APIController) AddNode() {
 	var node object.Node
+	var resp Response
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddNode(&node)
+	if node.Id == "" || node.Name == "" || node.ParentNode == "" || node.TabId == "" || node.PlaneId == "" {
+		resp = Response{Status: "fail", Msg: "Some information is missing"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if object.HasNode(node.Id) {
+		resp = Response{Status: "fail", Msg: "Node ID existed"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	node.CreatedTime = util.GetCurrentTime()
+	res := object.AddNode(&node)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 

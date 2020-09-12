@@ -279,8 +279,27 @@
     "Description": "简介",
     "Manage": "管理",
     "hot": "热度",
-    "Total nodes": "总主题数",
-    "Save": "保存"
+    "Total nodes": "总节点数",
+    "Save": "保存",
+    "Node ID": "节点ID",
+    "Set image": "设置图标",
+    "Basic Info": "基本信息",
+    "Background": "背景",
+    "Not set": "未设定",
+    "New node": "新增节点",
+    "Background image": "背景图片",
+    "Set background image": "设置背景图片",
+    "Change background image": "更改背景图片",
+    "Background repeat": "背景图片重复方式",
+    "Background color": "背景颜色",
+    "Preview": "预览",
+    "Create": "创建",
+    "Repeat": "平铺重复",
+    "Repeat-x": "横向重复",
+    "Repeat-y": "竖向重复",
+    "Creat node success": "创建节点成功",
+    "Add new node": "新增节点",
+    "Please go to the background page to continue to improve the information and submit": "请前往背景页面继续完善信息然后提交"
   },
   "plane":
   {
@@ -526,6 +545,13 @@
     "Please check your phone number": "请检查你的手机号",
     "Please check your email": "请检查你的邮箱",
     "Please input your email": "请输入邮箱",
-    "Username existed or email existed.": "用户名已存在或邮箱已注册"
+    "Username existed or email existed.": "用户名已存在或邮箱已注册",
+    "Please input node ID": "请填写节点ID",
+    "Please input node name": "请填写节点名称",
+    "Please select a parent node": "请选择一个父节点",
+    "Please select a tab": "请选择一个类别",
+    "Please select a plane": "请选择一个位面",
+    "Node ID existed": "节点ID已存在",
+    "Some information is missing": "信息缺失"
   }
 }
