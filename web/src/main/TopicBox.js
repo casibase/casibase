@@ -58,9 +58,17 @@ class TopicBox extends React.Component {
         this.setState({
           topic: res,
         }, () => {
-          this.props.getNodeId(this.state.topic?.nodeId);
+          this.getNodeInfo();
+          //this.props.getNodeId(this.state.topic?.nodeId);
           NodeBackend.addNodeBrowseCount(this.state.topic?.nodeId);
         });
+      });
+  }
+
+  getNodeInfo() {
+    NodeBackend.getNode(this.state.topic?.nodeId)
+      .then((res) => {
+        this.props.getNodeBackground(this.state.nodeId, res?.backgroundImage, res?.backgroundColor, res?.backgroundRepeat);
       });
   }
 

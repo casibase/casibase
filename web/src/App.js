@@ -71,13 +71,16 @@ class App extends Component {
       classes: props,
       account: undefined,
       nodeId: null,
-      showMenu: false
+      showMenu: false,
+      nodeBackgroundImage: "",
+      nodeBackgroundColor: "",
+      nodeBackgroundRepeat: ""
     };
 
     Setting.initServerUrl();
     Setting.initFullClientUrl();
     Setting.initBrowserType();
-    this.getNodeId = this.getNodeId.bind(this);
+    this.getNodeBackground = this.getNodeBackground.bind(this);
     this.changeMenuStatus = this.changeMenuStatus.bind(this);
   }
 
@@ -100,10 +103,13 @@ class App extends Component {
     });
   }
 
-  getNodeId(id) {
+  getNodeBackground(id, backgroundImage, backgroundColor, backgroundRepeat) {
     if (this.state.nodeId === null) {
       this.setState({
-        nodeId: id
+        nodeId: id,
+        nodeBackgroundImage: backgroundImage,
+        nodeBackgroundColor: backgroundColor,
+        nodeBackgroundRepeat: backgroundRepeat
       });
     }
   }
@@ -168,13 +174,13 @@ class App extends Component {
         <Route exact path="/t/:topicId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeId={this.getNodeId} />
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
@@ -219,12 +225,12 @@ class App extends Component {
           </div>
         </Route>
         <Route exact path="/go/:nodeId">
-          <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
+          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
         </Route>
         <Route exact path="/go/:nodeId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <NodesBox account={this.state.account} getNodeId={this.getNodeId} />
+            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
           </div>
         </Route>
         <Route exact path="/my/:favorites">
@@ -318,7 +324,13 @@ class App extends Component {
             <AdminNode account={this.state.account} />
           </div>
         </Route>
-        <Route exact path="/admin/node/:nodeId">
+        <Route exact path="/admin/node/new">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminNode account={this.state.account} event={"new"} />
+          </div>
+        </Route>
+        <Route exact path="/admin/node/edit/:nodeId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminNode account={this.state.account} />
@@ -392,7 +404,7 @@ class App extends Component {
     return (
       <div>
         <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu}/>
-        <div  id="Wrapper" className={this.state.nodeId} onClick={() => this.changeMenuStatus(false)}>
+        <div id="Wrapper" style={{backgroundColor: `${this.state.nodeBackgroundColor}`, backgroundImage: `url(${this.state.nodeBackgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`, backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`}} className={this.state.nodeId} onClick={() => this.changeMenuStatus(false)}>
           <div className="content">
             <div id="Leftbar" />
             {

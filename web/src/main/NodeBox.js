@@ -61,7 +61,7 @@ class NodeBox extends React.Component {
   componentDidMount() {
     this.getTopics();
     this.getNodeInfo();
-    this.props.getNodeId(this.state.nodeId);
+    //this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
   }
 
@@ -70,6 +70,8 @@ class NodeBox extends React.Component {
       .then((res) => {
         this.setState({
           nodeInfo: res,
+        }, () => {
+          this.props.getNodeBackground(this.state.nodeId, this.state.nodeInfo?.backgroundImage, this.state.nodeInfo?.backgroundColor, this.state.nodeInfo?.backgroundRepeat);
         });
       });
     NodeBackend.getNodeInfo(this.state.nodeId)

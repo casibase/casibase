@@ -279,10 +279,13 @@ export function checkPc() {
 
 // check if the link contains this page's anchor.
 export function checkPageLink(url) {
-
+  if (url.indexOf('#') === 0) {
+  return true;
+  }
   if (url.search(ClientUrl) === -1) {
     return false;
   }
+
   let current, target;
   if (window.location.href.indexOf('#') !== -1) {
     current = window.location.href.slice(0, window.location.href.indexOf('#'));

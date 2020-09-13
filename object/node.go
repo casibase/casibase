@@ -17,16 +17,19 @@ package object
 import "sync"
 
 type Node struct {
-	Id          string   `xorm:"varchar(100) notnull pk" json:"id"`
-	Name        string   `xorm:"varchar(100)" json:"name"`
-	CreatedTime string   `xorm:"varchar(40)" json:"createdTime"`
-	Desc        string   `xorm:"varchar(500)" json:"desc"`
-	Image       string   `xorm:"varchar(200)" json:"image"`
-	TabId       string   `xorm:"varchar(100)" json:"tab"`
-	ParentNode  string   `xorm:"varchar(200)" json:"parentNode"`
-	PlaneId     string   `xorm:"varchar(50)" json:"planeId"`
-	Hot         int      `xorm:"int" json:"hot"`
-	Moderators  []string `xorm:"varchar(200)" json:"moderators"`
+	Id               string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Name             string   `xorm:"varchar(100)" json:"name"`
+	CreatedTime      string   `xorm:"varchar(40)" json:"createdTime"`
+	Desc             string   `xorm:"varchar(500)" json:"desc"`
+	Image            string   `xorm:"varchar(200)" json:"image"`
+	BackgroundImage  string   `xorm:"varchar(200)" json:"backgroundImage"`
+	BackgroundColor  string   `xorm:"varchar(20)" json:"backgroundColor"`
+	BackgroundRepeat string   `xorm:"varchar(20)" json:"backgroundRepeat"`
+	TabId            string   `xorm:"varchar(100)" json:"tab"`
+	ParentNode       string   `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId          string   `xorm:"varchar(50)" json:"planeId"`
+	Hot              int      `xorm:"int" json:"hot"`
+	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
 }
 
 func GetNodes() []*Node {
