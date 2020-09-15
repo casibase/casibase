@@ -184,7 +184,7 @@ class NodeBox extends React.Component {
   showPageColumn() {
     return (
       <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} nodeId={this.state.nodeId} />
-    )
+    );
   }
 
   clearMessage() {
@@ -202,7 +202,7 @@ class NodeBox extends React.Component {
       <div className="problem" onClick={() => this.clearMessage()}>
         <li>{i18next.t(`error:${this.state.message}`)}</li>
       </div>
-    )
+    );
   }
 
   renderMobileHeader() {
@@ -229,11 +229,11 @@ class NodeBox extends React.Component {
             </div> : null
         }
       </div>
-    )
+    );
   }
 
   renderDesktopHeader() {
-    const {nodeInfo, nodeId} = this.state
+    const {nodeInfo, nodeId} = this.state;
 
     return (
       <div className={`node_header ${this.state.nodeId}`}>
@@ -243,38 +243,38 @@ class NodeBox extends React.Component {
         </div>
         <div className="node_info">
           <div className="fr f12">
-              <span className="gray">
-                {
-                  this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
-                    <span>
-                      {
-                        this.props.account?.isModerator ?
-                          <a href={`/go/${this.state.nodeId}/moderators`}>
-                            {i18next.t("node:Moderator")}
-                          </a> :
+            <span className="gray">
+              {
+                this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ?
+                  <span>
+                    {
+                      this.props.account?.isModerator ?
+                        <a href={`/go/${this.state.nodeId}/moderators`}>
+                          {i18next.t("node:Moderator")}
+                        </a> :
+                        <span>
+                          {i18next.t("node:Moderator")}
+                        </span>
+                    }
+                    {
+                      this.state.nodeInfo?.moderators.map((member) => {
+                        return (
                           <span>
-                            {i18next.t("node:Moderator")}
+                            {" "}<a href={`/member/${member}`} target="_blank">{member}</a>
                           </span>
-                      }
-                      {
-                        this.state.nodeInfo?.moderators.map((member) => {
-                          return (
-                            <span>
-                              {" "}<a href={`/member/${member}`} target="_blank">{member}</a>
-                            </span>
-                          )})
-                      }
-                    </span> :
-                    this.props.account?.isModerator ?
-                      <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
-                        {i18next.t("node:No moderators")}
-                      </a> :
-                      <span>
-                        {i18next.t("node:No moderators")}
-                      </span>
-                }
-                {" "}&nbsp;
-              </span>
+                        )})
+                    }
+                  </span> :
+                  this.props.account?.isModerator ?
+                    <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
+                      {i18next.t("node:No moderators")}
+                    </a> :
+                    <span>
+                      {i18next.t("node:No moderators")}
+                    </span>
+              }
+              {" "}&nbsp;
+            </span>
             <span>{i18next.t("node:Total topics")}&nbsp;</span>
             <strong>{this.state.topicNum}</strong>
             {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
@@ -302,18 +302,18 @@ class NodeBox extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderNode() {
-    const {page, limit} = this.state
-    let from, end
+    const {page, limit} = this.state;
+    let from, end;
     if (this.state.topicNum !== 0) {
-      from = (page - 1) * limit + 1
+      from = (page - 1) * limit + 1;
     }else {
-      from = 0
+      from = 0;
     }
-    end = (page - 1) * limit + this.state.topics.length
+    end = (page - 1) * limit + this.state.topics.length;
 
     return (
       <div className={`box ${this.state.nodeId}`}>
@@ -340,11 +340,11 @@ class NodeBox extends React.Component {
           <a onClick={() => {this.deleteNodeModerator(moderators)}} href="javascript:void(0);">{i18next.t("node:Cancel moderator permissions")}</a>
         </td>
       </tr>
-    )
+    );
   }
 
   render() {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
 
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       return (
@@ -352,7 +352,7 @@ class NodeBox extends React.Component {
           <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
           <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
-      )
+      );
     }
 
     if (this.state.nodeInfo === null) {
@@ -387,7 +387,7 @@ class NodeBox extends React.Component {
             </div>
           </div>
         </div>
-      )
+      );
     }
 
     if (this.state.event === "moderators") {
@@ -459,7 +459,7 @@ class NodeBox extends React.Component {
             </table>
           </div>
         </div>
-      )
+      );
     }
 
     return (
@@ -472,7 +472,7 @@ class NodeBox extends React.Component {
             <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} /> : null
         }
       </div>
-    )
+    );
   }
 }
 

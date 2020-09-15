@@ -131,3 +131,9 @@ func HasNode(id string) bool {
 
 	return node != nil
 }
+
+func HasTab(id string) bool {
+	tab := GetTab(id)
+
+	return tab != nil
+}

@@ -112,7 +112,7 @@ class Header extends React.Component {
             {i18next.t("general:Sign Out")}
           </a>
         </td>
-      )
+      );
     }
   }
 
@@ -146,7 +146,7 @@ class Header extends React.Component {
             </div>
           </div>
         </div>
-      )
+      );
     } else {
       return (
         <header className="site-header">
@@ -213,7 +213,7 @@ class Header extends React.Component {
             </div>
           </div>
         </header>
-      )
+      );
     }
   }
 
@@ -225,17 +225,17 @@ class Header extends React.Component {
             <input type="text" maxLength="40" name="q" id="q" value={this.state.searchValue} onKeyUp={event => this.onKeyup(event)} onSubmit={() => this.window.open("https://www.google.com/search?1")} onChange={event => this.onSearchValueChange(event)} />
           </div>
         </div>
-      )
+      );
     }
 
     if (this.props.account === undefined || this.props.account === null) {
-      return null
+      return null;
     }
 
     // mobile
     return (
       <input type="text" id="site-search" value={this.state.searchValue} onKeyUp={event => this.onKeyup(event)} onChange={event => this.onSearchValueChange(event)} />
-    )
+    );
   }
 
   changeShowMenuStatus() {
@@ -271,7 +271,7 @@ class Header extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

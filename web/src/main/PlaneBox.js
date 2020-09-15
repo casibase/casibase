@@ -54,7 +54,7 @@ class PlaneBox extends React.Component {
   renderNode(node) {
     return (
       <a href={`/go/${node?.id}`} className="item_node">{node?.name}</a>
-    )
+    );
   }
 
   renderPlane(plane) {
@@ -70,13 +70,13 @@ class PlaneBox extends React.Component {
           <div className="inner">
             {
               plane?.nodes.map((node) => {
-                return this.renderNode(node)
+                return this.renderNode(node);
               })
             }
           </div>
         </div>
       </span>
-    )
+    );
   }
 
   render() {
@@ -100,11 +100,11 @@ class PlaneBox extends React.Component {
         </div>
         {
           this.state.planes?.map((plane) => {
-            return this.renderPlane(plane)
+            return this.renderPlane(plane);
           })
         }
       </span>
-    )
+    );
   }
 }
 

@@ -186,7 +186,7 @@ class SettingsBox extends React.Component {
             </div> : null
         }
       </div>
-    )
+    );
   }
 
   render() {
@@ -221,7 +221,7 @@ class SettingsBox extends React.Component {
             </table>
           </div>
         </div>
-      )
+      );
     }
 
     if (this.state.event === "avatar") {
@@ -234,6 +234,7 @@ class SettingsBox extends React.Component {
           <div className="box" data-select2-id="11">
             <div className="cell">
               <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                <tbody>
                 <tr>
                   <td width="120" align="right">{i18next.t("setting:Current avatar")}</td>
                   <td width="auto" align="left">
@@ -253,9 +254,10 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right"></td>
                   <td width="auto" align="left"><input type="hidden" name="once"/>
-                  <input type="submit" className="super normal button" onClick={() => this.uploadAvatar()} value={i18next.t("setting:Upload")} />
+                    <input type="submit" className="super normal button" onClick={() => this.uploadAvatar()} value={i18next.t("setting:Upload")} />
                   </td>
                 </tr>
+                </tbody>
               </table>
             </div>
             <div class="inner markdown_body">
@@ -268,7 +270,7 @@ class SettingsBox extends React.Component {
             </div>
           </div>
         </div>
-      )
+      );
     }
 
     return (

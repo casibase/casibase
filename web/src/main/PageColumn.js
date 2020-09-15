@@ -116,7 +116,7 @@ class PageColumn extends React.Component {
         {page === i ? <a href={`${url}?p=${i}`} className={`page_current ${this.props.nodeId}`}>{i}</a> : i === "..." ? <span className="fade"> ... </span> : <a href={`${url}?p=${i}`} className={`page_normal ${this.props.nodeId}`}>{i}</a>}
         &nbsp;
       </span>
-    )
+    );
   }
 
   gotoPage(url, page) {
@@ -152,13 +152,14 @@ class PageColumn extends React.Component {
             </tr>
           </table>
         </div>
-      )
+      );
     }
 
     return (
       <div className={`cell ${this.props.nodeId}`}
            style={{backgroundImage: "url('/static/img/shadow_light.png')", backgroundSize: "20px 20px", backgroundRepeat: "repeat-x"}}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+          <tbody>
           <tr>
             <td width="92%" align="left">
               {
@@ -171,6 +172,7 @@ class PageColumn extends React.Component {
             </td>
             <td width="8%" align="right">
               <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+                <tbody>
                 <tr>
                   {
                     page <= 1 ?
@@ -205,9 +207,11 @@ class PageColumn extends React.Component {
                       </td>
                   }
                 </tr>
+                </tbody>
               </table>
             </td>
           </tr>
+          </tbody>
         </table>
       </div>
     )

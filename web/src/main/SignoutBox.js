@@ -66,7 +66,7 @@ class SignoutBox extends React.Component {
             <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value={i18next.t("error:Retry Sign Out")} />
           </div>
         </div>
-      )
+      );
     }
   }
 }

@@ -61,7 +61,7 @@ class RightLatestNodeBox extends React.Component {
           }
         </div>
       </div>
-    )
+    );
   }
 }
 

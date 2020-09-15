@@ -105,6 +105,11 @@ func initAPI() {
 	beego.Router("/api/get-tabs", &controllers.APIController{}, "GET:GetTabs")
 	beego.Router("/api/get-all-tabs", &controllers.APIController{}, "GET:GetAllTabs")
 	beego.Router("/api/get-tab-with-nodes", &controllers.APIController{}, "GET:GetTabWithNodes")
+	beego.Router("/api/get-tabs-admin", &controllers.APIController{}, "GET:GetAllTabsAdmin")
+	beego.Router("/api/get-tab-admin", &controllers.APIController{}, "GET:GetTabAdmin")
+	beego.Router("/api/add-tab", &controllers.APIController{}, "POST:AddTab")
+	beego.Router("/api/update-tab", &controllers.APIController{}, "POST:UpdateTab")
+	beego.Router("/api/delete-tab", &controllers.APIController{}, "POST:DeleteTab")
 
 	beego.Router("/api/get-notifications", &controllers.APIController{}, "GET:GetNotifications")
 	beego.Router("/api/delete-notifications", &controllers.APIController{}, "POST:DeleteNotification")

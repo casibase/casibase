@@ -16,7 +16,7 @@ import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FileBackend from "../backend/FileBackend";
 
-require('inline-attachment/src/inline-attachment')
+require('inline-attachment/src/inline-attachment');
 require('inline-attachment/src/codemirror-4.inline-attachment');
 
 export function attachEditor(editor) {
@@ -53,16 +53,16 @@ export function uploadMdFile(addMsg) {
     }
 
     let fileType = Setting.getFileType(file.name);
-    originalFileName = file.name
-    fileName = timestamp + '.' + fileType.ext
-    size = file.size
+    originalFileName = file.name;
+    fileName = timestamp + '.' + fileType.ext;
+    size = file.size;
 
     let mdUrl = `${url}/${fileType.fileType}/${fileName}`;
     filePath = `${path}/${fileType.fileType}/${fileName}`; //path
     newClient.multipartUpload(`${filePath}`, file).then(res => {
       console.log('upload success');
       this.onFileUploadResponse(file.name, encodeURI(mdUrl));
-      uploadStatus = true
+      uploadStatus = true;
       FileBackend.addFileRecord({fileName: originalFileName, filePath: filePath, fileUrl: mdUrl, size: size})
     }).catch(error => Setting.showMessage("error", `Adding image failed：${error}`));
   }
@@ -106,7 +106,7 @@ export function uploadAvatar(file, redirectUrl) {
     return;
   }
 
-  let filePath = `${path}/avatar/${fileName}`
+  let filePath = `${path}/avatar/${fileName}`;
   newClient.multipartUpload(`${filePath}`, file).then(res => {
     console.log('upload success');
     MemberBackend.updateMemberAvatar(`${url}/avatar/${fileName}`).then(() => window.location.href=`${redirectUrl}?success=true`);

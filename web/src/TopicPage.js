@@ -219,7 +219,7 @@ class TopicPage extends React.Component {
   renderTab(tab) {
     return (
       <a href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>{tab?.name}</a>
-    )
+    );
   }
 
   renderNode(node) {
@@ -228,7 +228,7 @@ class TopicPage extends React.Component {
         <a href={`/go/${node?.id}`}>{node?.name}</a>
         &nbsp;{" "}&nbsp;
       </span>
-    )
+    );
   }
 
   renderAccountInfo() {
@@ -295,7 +295,7 @@ class TopicPage extends React.Component {
         </div>
         <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {
-            this.props.account !== undefined && this.props.account !== null ?
+            this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== "" ?
               <div className="fr">
                 <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</a>
                 &nbsp;

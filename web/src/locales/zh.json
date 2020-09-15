@@ -281,7 +281,7 @@
     "hot": "热度",
     "Total nodes": "总节点数",
     "Save": "保存",
-    "Node ID": "节点ID",
+    "Node ID": "节点 ID",
     "Set image": "设置图标",
     "Basic Info": "基本信息",
     "Background": "背景",
@@ -300,6 +300,42 @@
     "Creat node success": "创建节点成功",
     "Add new node": "新增节点",
     "Please go to the background page to continue to improve the information and submit": "请前往背景页面继续完善信息然后提交"
+  },
+  "tab":
+  {
+    "Are you sure to delete tab": "你确定要删除节点",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "请先删除该Tab下的所有节点、帖子后，再删除Tab",
+    "Currently the number of nodes under the tab is": "目前该Tab下的节点个数为",
+    ", the number of posts is": "，帖子个数为",
+    "Delete tab": "删除节点",
+    "success": "成功",
+    "Update tab information success": "更新节点信息成功",
+    "Creat tab success": "创建类别成功",
+    "Tab management": "类别管理",
+    "New tab": "新建类别",
+    "Manage": "管理",
+    "topics": "主题",
+    "nodes": "节点",
+    "Delete": "删除",
+    "Tab ID": "类别 ID",
+    "Tab name": "节点名称",
+    "Created time": "创建时间",
+    "Total topics": "主题总数",
+    "Total nodes": "节点总数",
+    "Sorter": "节点排序",
+    "show": "显示",
+    "hidden": "隐藏",
+    "Decide the order of node navigation and homepage": "决定在主页或在节点导航的排序",
+    "Home page": "主页",
+    "Default node": "默认节点",
+    "Please select a default node": "请选择一个默认节点",
+    "No node exists in this tab": "此类别下不存在节点",
+    "The default node when creating a topic on the homepage": "在主页创建主题时默认的节点",
+    "Save": "保存",
+    "Create": "创建",
+    "Total tabs": "总类别数",
+    "Add new tab": "新建类别",
+    "Basic Info": "基本信息"
   },
   "plane":
   {
@@ -552,6 +588,11 @@
     "Please select a tab": "请选择一个类别",
     "Please select a plane": "请选择一个位面",
     "Node ID existed": "节点ID已存在",
-    "Some information is missing": "信息缺失"
+    "Some information is missing": "信息缺失",
+    "Please input tab ID": "请填写类别ID",
+    "Please input tab name": "请填写类别名称",
+    "Tab not found": "类别未找到",
+    "The tab you are trying to view does not exist": "你即将访问的类别不存在",
+    "Tab ID existed": "类别ID已存在"
   }
 }

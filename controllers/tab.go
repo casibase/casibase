@@ -14,7 +14,12 @@
 
 package controllers
 
-import "github.com/casbin/casbin-forum/object"
+import (
+	"encoding/json"
+
+	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
+)
 
 func (c *APIController) GetTabs() {
 	c.Data["json"] = object.GetHomePageTabs()
@@ -23,6 +28,104 @@ func (c *APIController) GetTabs() {
 
 func (c *APIController) GetAllTabs() {
 	c.Data["json"] = object.GetAllTabs()
+	c.ServeJSON()
+}
+
+func (c *APIController) GetAllTabsAdmin() {
+	c.Data["json"] = object.GetAllTabsAdmin()
+	c.ServeJSON()
+}
+
+func (c *APIController) GetTabAdmin() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetTabAdmin(id)
+	c.ServeJSON()
+}
+
+func (c *APIController) AddTab() {
+	var tabInfo object.AdminTabInfo
+	var resp Response
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tabInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	if tabInfo.Id == "" || tabInfo.Name == "" || tabInfo.Sorter <= 0 {
+		resp = Response{Status: "fail", Msg: "Some information is missing"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if object.HasTab(tabInfo.Id) {
+		resp = Response{Status: "fail", Msg: "Tab ID existed"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	tab := object.Tab{
+		Id:          tabInfo.Id,
+		Name:        tabInfo.Name,
+		Sorter:      tabInfo.Sorter,
+		CreatedTime: util.GetCurrentTime(),
+		DefaultNode: tabInfo.DefaultNode,
+		HomePage:    tabInfo.HomePage,
+	}
+
+	res := object.AddTab(&tab)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UpdateTab() {
+	id := c.Input().Get("id")
+
+	var resp Response
+	var tabInfo object.AdminTabInfo
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tabInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	tab := object.Tab{
+		//Id:          tabInfo.Id,
+		Name:        tabInfo.Name,
+		Sorter:      tabInfo.Sorter,
+		CreatedTime: tabInfo.CreatedTime,
+		DefaultNode: tabInfo.DefaultNode,
+		HomePage:    tabInfo.HomePage,
+	}
+	res := object.UpdateTab(id, &tab)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) DeleteTab() {
+	id := c.Input().Get("id")
+	memberId := c.GetSessionUser()
+
+	if !object.CheckModIdentity(memberId) {
+		resp := Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	resp := Response{Status: "ok", Msg: "success", Data: object.DeleteTab(id)}
+
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 

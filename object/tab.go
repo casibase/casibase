@@ -37,6 +37,38 @@ func GetTab(id string) *Tab {
 	}
 }
 
+func AddTab(tab *Tab) bool {
+	affected, err := adapter.engine.Insert(tab)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func UpdateTab(id string, tab *Tab) bool {
+	if GetTab(id) == nil {
+		return false
+	}
+
+	_, err := adapter.engine.Id(id).AllCols().Omit("id").Update(tab)
+	if err != nil {
+		panic(err)
+	}
+
+	//return affected != 0
+	return true
+}
+
+func DeleteTab(id string) bool {
+	affected, err := adapter.engine.Id(id).Delete(&Tab{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 func GetHomePageTabs() []*Tab {
 	tabs := []*Tab{}
 	err := adapter.engine.Asc("sorter").Where("home_page = ?", 1).Find(&tabs)
@@ -55,6 +87,66 @@ func GetAllTabs() []*Tab {
 	}
 
 	return tabs
+}
+
+// GetTabAdmin returns more tab information for admin.
+func GetTabAdmin(id string) *AdminTabInfo {
+	tab := Tab{Id: id}
+	existed, err := adapter.engine.Get(&tab)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		var topicsNum int
+		nodes := GetNodeFromTab(tab.Id)
+		for _, v := range nodes {
+			topicsNum += GetNodeTopicNum(v.Id)
+		}
+		res := AdminTabInfo{
+			Id:          tab.Id,
+			Name:        tab.Name,
+			Sorter:      tab.Sorter,
+			CreatedTime: tab.CreatedTime,
+			DefaultNode: tab.DefaultNode,
+			HomePage:    tab.HomePage,
+			NodesNum:    len(nodes),
+			TopicsNum:   topicsNum,
+		}
+		return &res
+	} else {
+		return nil
+	}
+}
+
+func GetAllTabsAdmin() []*AdminTabInfo {
+	tabs := []*Tab{}
+	err := adapter.engine.Asc("sorter").Find(&tabs)
+	if err != nil {
+		panic(err)
+	}
+
+	res := []*AdminTabInfo{}
+	for _, v := range tabs {
+		var topicsNum int
+		nodes := GetNodeFromTab(v.Id)
+		for _, v := range nodes {
+			topicsNum += GetNodeTopicNum(v.Id)
+		}
+		temp := AdminTabInfo{
+			Id:          v.Id,
+			Name:        v.Name,
+			Sorter:      v.Sorter,
+			CreatedTime: v.CreatedTime,
+			DefaultNode: v.DefaultNode,
+			HomePage:    v.HomePage,
+			NodesNum:    len(nodes),
+			TopicsNum:   topicsNum,
+		}
+		res = append(res, &temp)
+	}
+
+	return res
 }
 
 func GetDefaultTab() string {
