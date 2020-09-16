@@ -303,13 +303,13 @@
   },
   "tab":
   {
-    "Are you sure to delete tab": "你确定要删除节点",
+    "Are you sure to delete tab": "你确定要删除该类别",
     "Please delete all the nodes and posts under the tab before deleting the tab": "请先删除该Tab下的所有节点、帖子后，再删除Tab",
     "Currently the number of nodes under the tab is": "目前该Tab下的节点个数为",
     ", the number of posts is": "，帖子个数为",
     "Delete tab": "删除节点",
     "success": "成功",
-    "Update tab information success": "更新节点信息成功",
+    "Update tab information success": "更新类别信息成功",
     "Creat tab success": "创建类别成功",
     "Tab management": "类别管理",
     "New tab": "新建类别",
@@ -318,11 +318,11 @@
     "nodes": "节点",
     "Delete": "删除",
     "Tab ID": "类别 ID",
-    "Tab name": "节点名称",
+    "Tab name": "类别名称",
     "Created time": "创建时间",
     "Total topics": "主题总数",
     "Total nodes": "节点总数",
-    "Sorter": "节点排序",
+    "Sorter": "类别排序",
     "show": "显示",
     "hidden": "隐藏",
     "Decide the order of node navigation and homepage": "决定在主页或在节点导航的排序",
@@ -530,7 +530,8 @@
     "Backstage management": "后台管理",
     "Node management": "节点管理",
     "Topic management": "帖子管理",
-    "Member management": "用户管理"
+    "Member management": "用户管理",
+    "Tab management": "类别管理"
   },
   "error":
   {
