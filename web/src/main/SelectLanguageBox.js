@@ -43,7 +43,7 @@ class SelectLanguageBox extends React.Component {
           <a href="javascript:void(0)" onClick={() => Setting.ChangeLanguage("zh")} class="lang-selector">简体中文</a>
         </div>
       </div>
-    )
+    );
   }
 }
 

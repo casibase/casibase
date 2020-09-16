@@ -94,3 +94,14 @@ type BalanceResponse struct {
 	CreatedTime     string `json:"createdTime"`
 	ConsumptionType int    `json:"consumptionType"`
 }
+
+type AdminTabInfo struct {
+	Id          string `json:"id"`
+	Name        string `json:"name"`
+	Sorter      int    `json:"sorter"`
+	CreatedTime string `json:"createdTime"`
+	DefaultNode string `json:"defaultNode"`
+	HomePage    bool   `json:"homePage"`
+	NodesNum    int    `json:"nodesNum"`
+	TopicsNum   int    `json:"topicsNum"`
+}

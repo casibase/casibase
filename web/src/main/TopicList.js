@@ -68,7 +68,7 @@ class TopicList extends React.Component {
   }
 
   renderTopic(topic) {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
     const style = this.topStyle(topic?.nodeTopTime, topic?.tabTopTime, topic?.homePageTopTime);
 
     return (
@@ -183,7 +183,7 @@ class TopicList extends React.Component {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   render() {
@@ -195,7 +195,7 @@ class TopicList extends React.Component {
           })
         }
       </div>
-    )
+    );
   }
 }
 

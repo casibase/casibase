@@ -458,7 +458,7 @@ class AdminNode extends React.Component {
   }
 
   render() {
-    const newNode = (this.props.event === "new")
+    const newNode = (this.props.event === "new");
 
     if (this.state.nodeId !== undefined || newNode) {
       if (this.state.nodeId !== undefined) {

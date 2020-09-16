@@ -106,7 +106,7 @@ class MoveTopicNodeBox extends React.Component {
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
-      )
+      );
     }
 
     if (this.state.topic === null || !this.state.topic?.editable) {
@@ -119,7 +119,7 @@ class MoveTopicNodeBox extends React.Component {
             {i18next.t("move:You cannot move this topic.")}
           </div>
         </div>
-      )
+      );
     }
 
     return (

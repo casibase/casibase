@@ -301,6 +301,42 @@
     "Add new node": "Add new node",
     "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit"
   },
+  "tab":
+  {
+    "Are you sure to delete tab": "Are you sure to delete tab",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
+    ", the number of posts is": ", the number of posts is",
+    "Delete tab": "Delete tab",
+    "success": "success",
+    "Update tab information success": "Update tab information success",
+    "Creat tab success": "Creat tab success",
+    "Tab management": "Tab management",
+    "New tab": "New tab",
+    "Manage": "Manage",
+    "topics": "topics",
+    "nodes": "nodes",
+    "Delete": "Delete",
+    "Tab ID": "Tab ID",
+    "Tab name": "Tab name",
+    "Created time": "Created time",
+    "Total topics": "Total topics",
+    "Total nodes": "Total nodes",
+    "Sorter": "Sorter",
+    "show": "show",
+    "hidden": "hidden",
+    "Decide the order of node navigation and homepage": "Decide the order of node navigation and homepage",
+    "Home page": "Home page",
+    "Default node": "Default node",
+    "Please select a default node": "Please select a default node",
+    "No node exists in this tab": "No node exists in this tab",
+    "The default node when creating a topic on the homepage": "The default node when creating a topic on the homepage",
+    "Save": "Save",
+    "Create": "Create",
+    "Total tabs": "Total tabs",
+    "Add new tab": "Add new tab",
+    "Basic Info": "Basic Info"
+  },
   "plane":
   {
     "Plane list": "位面列表"
@@ -552,6 +588,11 @@
     "Please select a tab": "Please select a tab",
     "Please select a plane": "Please select a plane",
     "Node ID existed": "Node ID existed",
-    "Some information is missing": "Some information is missing"
+    "Some information is missing": "Some information is missing",
+    "Please input tab ID": "Please input tab ID",
+    "Please input tab name": "Please input tab name",
+    "Tab not found": "Tab not found",
+    "The tab you are trying to view does not exist": "The tab you are trying to view does not exist",
+    "Tab ID existed": "Tab ID existed"
   }
 }
