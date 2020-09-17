@@ -369,13 +369,7 @@ class AdminTab extends React.Component {
                 <tr>
                   <td width="120" align="right">{i18next.t("tab:Tab name")}</td>
                   <td width="auto" align="left">
-                    {
-                      newTab ?
-                        <input type="text" className="sl" name="name" id="tab_name" value={this.state.form?.name===undefined ? "" : this.state.form?.name} onChange={event => this.updateFormField("name", event.target.value)} autoComplete="off" /> :
-                        <span className="gray">
-                          {tab?.name}
-                        </span>
-                    }
+                    <input type="text" className="sl" name="name" id="tab_name" value={this.state.form?.name===undefined ? "" : this.state.form?.name} onChange={event => this.updateFormField("name", event.target.value)} autoComplete="off" />
                   </td>
                 </tr>
                 {
