@@ -86,6 +86,13 @@ func (c *APIController) AddTopic() {
 		return
 	}
 
+	memberId := c.GetSessionUser()
+	// check account status
+	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
+		c.mutedAccountResp(memberId)
+		return
+	}
+
 	var form NewTopicForm
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -95,7 +102,7 @@ func (c *APIController) AddTopic() {
 
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
-		Author:        c.GetSessionUser(),
+		Author:        memberId,
 		NodeId:        nodeId,
 		NodeName:      "",
 		Title:         title,
@@ -110,7 +117,7 @@ func (c *APIController) AddTopic() {
 		Deleted:       false,
 	}
 
-	balance := object.GetMemberBalance(c.GetSessionUser())
+	balance := object.GetMemberBalance(memberId)
 	if balance < object.CreateTopicCost {
 		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp

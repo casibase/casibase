@@ -18,10 +18,43 @@ import (
 	"encoding/json"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
 )
 
 func (c *APIController) GetMembers() {
 	c.Data["json"] = object.GetMembers()
+	c.ServeJSON()
+}
+
+func (c *APIController) GetMembersAdmin() {
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	un := c.Input().Get("un") // search: username
+	cs := c.Input().Get("cs") // sort: created time
+	us := c.Input().Get("us") // sort: username
+	defaultLimit := object.DefaultMemberAdminPageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	res, num := object.GetMembersAdmin(cs, us, un, limit, offset)
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
+	c.ServeJSON()
+}
+
+func (c *APIController) GetMemberAdmin() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetMemberAdmin(id)
 	c.ServeJSON()
 }
 
@@ -51,12 +84,25 @@ func (c *APIController) UpdateMember() {
 	id := c.Input().Get("id")
 
 	var member object.Member
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
+	var memberInfo object.AdminMemberInfo
+	var resp Response
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &memberInfo)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateMember(id, &member)
+	member.FileQuota = memberInfo.FileQuota
+	member.Status = memberInfo.Status
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.UpdateMember(id, &member)}
 	c.ServeJSON()
 }
 

@@ -137,3 +137,17 @@ func HasTab(id string) bool {
 
 	return tab != nil
 }
+
+// IsMuted check member whether is muted.
+func IsMuted(id string) bool {
+	status := GetMemberStatus(id)
+
+	return status == 2
+}
+
+// IsForbidden check member whether is forbidden.
+func IsForbidden(id string) bool {
+	status := GetMemberStatus(id)
+
+	return status == 3
+}

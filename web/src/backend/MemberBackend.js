@@ -21,8 +21,22 @@ export function getMembers() {
   }).then(res => res.json());
 }
 
+export function getMembersAdmin(cs, us, un, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-members-admin?cs=${cs}&us=${us}&un=${un}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getMember(id) {
   return fetch(`${Setting.ServerUrl}/api/get-member?id=${id}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
+export function getMemberAdmin(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-member-admin?id=${id}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());

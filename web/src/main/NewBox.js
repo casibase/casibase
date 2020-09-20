@@ -17,6 +17,7 @@ import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
+import {goToLink} from "../Setting";
 import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css"
@@ -29,7 +30,7 @@ import {Resizable} from "re-resizable";
 
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
-import {goToLink} from "../Setting";
+
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown')
@@ -42,6 +43,9 @@ class NewBox extends React.Component {
       form: {},
       isPreviewEnabled: false,
       nodes: [],
+      problems: [],
+      message: "",
+      isTypingStarted: false,
       nodeId: this.props.match.params.nodeId,
     };
   }
@@ -67,6 +71,7 @@ class NewBox extends React.Component {
     form[key] = value;
     this.setState({
       form: form,
+      isTypingStarted: true,
     });
   }
 
@@ -85,14 +90,18 @@ class NewBox extends React.Component {
   }
 
   publishTopic() {
+    if (!this.isOkToSubmit()) {
+      return;
+    }
+
     TopicBackend.addTopic(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
           Setting.goToLink(`/t/${res?.data}/review`);
         } else {
-          // this.setState({
-          //   message: res.msg,
-          // });
+          this.setState({
+            message: res.msg,
+          });
         }
       });
   }
@@ -107,27 +116,77 @@ class NewBox extends React.Component {
     return -1;
   }
 
+  clearMessage() {
+    this.setState({
+      message: "",
+      problems: [],
+    });
+  }
+
+  isOkToSubmit() {
+    if (!this.state.isTypingStarted) {
+      return false;
+    }
+
+    let problems = [];
+    if (this.state.form.title === "" || this.state.form.title === undefined) {
+      problems.push(i18next.t("error:Topic title cannot be empty"));
+    }
+
+    this.setState({
+      problems: problems,
+    });
+
+    return problems.length === 0;
+  }
+
+  renderProblem() {
+    let problems = this.state.problems;
+
+    if (problems.length === 0 && this.state.message === "") {
+      return null;
+    }
+
+    return (
+      <div className="problem" onClick={() => this.clearMessage()}>
+        {i18next.t("error:Please resolve the following issues before creating a new topic")}
+        <ul>
+          {
+            problems.map((problem, i) => {
+              return <li>{problem}</li>;
+            })
+          }
+          {
+            this.state.message !== "" ?
+              <li>{i18next.t(`error:${this.state.message}`)}</li> : null
+          }
+        </ul>
+      </div>
+    );
+  }
+
   render() {
     if (this.state.nodeId !== undefined && this.props.account !== undefined) {
       return (
         <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} />
-      )
+      );
     }
 
     if (this.props.account !== null) {
       if (!this.state.initOSSClientStatus) {
         Setting.initOSSClient(this.props.account?.id)
         this.setState({
-          initOSSClientStatus: true
-        })
+          initOSSClientStatus: true,
+        });
       }
     } else {
-      goToLink("/signin")
+      goToLink("/signin");
     }
 
     return (
       <div className="box" id="box">
         <Header item={i18next.t("new:New Topic")} />
+        {this.renderProblem()}
         <form method="post" action="/new" id="compose">
           <div className="cell">
             <div className="fr fade" id="title_remaining">
@@ -237,7 +296,7 @@ class NewBox extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 

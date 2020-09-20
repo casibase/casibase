@@ -50,7 +50,7 @@ type SignupForm struct {
 	Addition2      string `json:"addition2"` // this field is for more addition info if needed
 }
 
-// SigninForm information field could be phone number, usernam or email.
+// SigninForm information field could be phone number, username or email.
 type SigninForm struct {
 	Information string `json:"information"`
 	Password    string `json:"password"`
@@ -241,6 +241,12 @@ func (c *APIController) Signin() {
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
+		// check account status
+		if object.IsForbidden(member) {
+			c.forbiddenAccountResp(member)
+			return
+		}
+
 		c.SetSessionUser(member)
 
 		util.LogInfo(c.Ctx, "API: [%s] signed in", member)
@@ -497,6 +503,12 @@ func (c *APIController) AuthGoogle() {
 	if addition == "signup" {
 		userId := object.HasGoogleAccount(res.Email)
 		if userId != "" {
+			// check account status
+			if object.IsForbidden(userId) {
+				c.forbiddenAccountResp(userId)
+				return
+			}
+
 			if len(object.GetMemberAvatar(userId)) == 0 {
 				avatar := UploadAvatarToOSS(res.Avatar, userId)
 				object.LinkMemberAccount(userId, "avatar", avatar)
@@ -506,6 +518,12 @@ func (c *APIController) AuthGoogle() {
 			res.IsSignedUp = true
 		} else {
 			if userId := object.HasMail(res.Email); userId != "" {
+				// check account status
+				if object.IsForbidden(userId) {
+					c.forbiddenAccountResp(userId)
+					return
+				}
+
 				c.SetSessionUser(userId)
 				util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 				res.IsSignedUp = true
@@ -632,6 +650,12 @@ func (c *APIController) AuthGithub() {
 	if addition == "signup" {
 		userId := object.HasGithubAccount(tempUserAccount.Login)
 		if userId != "" {
+			// check account status
+			if object.IsForbidden(userId) {
+				c.forbiddenAccountResp(userId)
+				return
+			}
+
 			if len(object.GetMemberAvatar(userId)) == 0 {
 				avatar := UploadAvatarToOSS(tempUserAccount.AvatarUrl, userId)
 				object.LinkMemberAccount(userId, "avatar", avatar)
@@ -641,6 +665,12 @@ func (c *APIController) AuthGithub() {
 			res.IsSignedUp = true
 		} else {
 			if userId := object.HasMail(res.Email); userId != "" {
+				// check account status
+				if object.IsForbidden(userId) {
+					c.forbiddenAccountResp(userId)
+					return
+				}
+
 				c.SetSessionUser(userId)
 				util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
 				res.IsSignedUp = true
@@ -748,6 +778,12 @@ func (c *APIController) AuthQQ() {
 	if addition == "signup" {
 		userId := object.HasQQAccount(openId)
 		if userId != "" {
+			// check account status
+			if object.IsForbidden(userId) {
+				c.forbiddenAccountResp(userId)
+				return
+			}
+
 			if len(object.GetMemberAvatar(userId)) == 0 {
 				avatar := UploadAvatarToOSS(userInfo.AvatarUrl, userId)
 				object.LinkMemberAccount(userId, "avatar", avatar)

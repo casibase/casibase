@@ -105,3 +105,13 @@ type AdminTabInfo struct {
 	NodesNum    int    `json:"nodesNum"`
 	TopicsNum   int    `json:"topicsNum"`
 }
+
+type AdminMemberInfo struct {
+	Member
+	FileQuota     int    `json:"fileQuota"`
+	FileUploadNum int    `json:"fileUploadNum"`
+	Status        int    `json:"status"`
+	TopicNum      int    `json:"topicNum"`
+	ReplyNum      int    `json:"replyNum"`
+	LatestLogin   string `json:"latestLogin"`
+}

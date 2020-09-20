@@ -57,6 +57,9 @@ func (c *APIController) UpdateNode() {
 
 	if !object.CheckModIdentity(c.GetSessionUser()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
 	}
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)

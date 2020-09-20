@@ -392,7 +392,41 @@
     "here": "这里",
     "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。",
     "authorized to manage the community": "具有管理社区的权限",
-    "Switch topic list": "切换主题列表"
+    "Switch topic list": "切换主题列表",
+    "Update member information success": "更新用户信息成功",
+    "Get search result success": "获取搜索结果成功",
+    "Sorter": "排序",
+    "Registration date": "注册日期",
+    "Search": "搜索",
+    "Member management": "用户管理",
+    "Normal": "正常",
+    "Mute": "禁言",
+    "Forbidden": "封号",
+    "Unknown status": "未知状态",
+    "Manage": "管理",
+    "Topic num": "发帖量",
+    "Reply num": "回复量",
+    "Balance": "余额",
+    "Latest login": "最近登录日期",
+    "Files num": "文件数量",
+    "File quota": "文件额度",
+    "Status": "状态",
+    "Please choose member's status": "请选择用户状态",
+    "Save": "保存",
+    "Unverified": "未认证",
+    "Verified": "已认证",
+    "Not set": "未设置",
+    "Homepage": "主页",
+    "Total members": "用户数量",
+    "Condition search": "条件搜索",
+    "Data is loading": "数据正在加载",
+    "No matching data": "没有匹配信息",
+    "Username": "用户名",
+    "Asc": "升序",
+    "Desc": "降序",
+    "Ignore": "忽略",
+    "Basic Info": "基本信息",
+    "Personal Info": "个人信息"
   },
   "setting":
   {
@@ -536,6 +570,7 @@
   "error":
   {
     "Reply title cannot be empty": "回复内容不能为空",
+    "Topic title cannot be empty": "主题标题不能为空",
     "Node not found": "节点未找到",
     "Topic not found": "主题未找到",
     "The node you are trying to view does not exist, there are several possibilities": "你试图查看的节点不存在，有几种可能：",
@@ -594,6 +629,8 @@
     "Please input tab name": "请填写类别名称",
     "Tab not found": "类别未找到",
     "The tab you are trying to view does not exist": "你即将访问的类别不存在",
-    "Tab ID existed": "类别ID已存在"
+    "Tab ID existed": "类别ID已存在",
+    "Your account has been muted": "你的账号已被禁言",
+    "Your account has been forbidden to log in": "你的账号已被禁止登录"
   }
 }

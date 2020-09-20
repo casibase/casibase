@@ -106,7 +106,7 @@ class NewReplyBox extends React.Component {
     }
 
     if (this.state.message !== null) {
-      problems.push(this.state.message);
+      problems.push(i18next.t(`error:${this.state.message}`));
     }
 
     if (problems.length === 0) {
@@ -153,7 +153,7 @@ class NewReplyBox extends React.Component {
     this.updateFormField("content", this.props.content);
     if (this.state.message !== null) {
       this.setState({
-        message: null
+        message: null,
       });
     }
     if (value.substring(value.length-1) === "@") {
@@ -183,8 +183,8 @@ class NewReplyBox extends React.Component {
         return accept({list: res,
           from: CodeMirror.Pos(cursor.line, start+1),
           to: CodeMirror.Pos(cursor.line, end)})
-      }, 100)
-    })
+      }, 100);
+    });
   }
 
   render() {

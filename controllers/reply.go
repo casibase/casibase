@@ -74,6 +74,13 @@ func (c *APIController) AddReply() {
 		return
 	}
 
+	memberId := c.GetSessionUser()
+	// check account status
+	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
+		c.mutedAccountResp(memberId)
+		return
+	}
+
 	var form NewReplyForm
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -83,7 +90,7 @@ func (c *APIController) AddReply() {
 
 	reply := object.Reply{
 		//Id:          util.IntToString(object.GetReplyId()),
-		Author:      c.GetSessionUser(),
+		Author:      memberId,
 		TopicId:     topicId,
 		CreatedTime: util.GetCurrentTime(),
 		Content:     content,

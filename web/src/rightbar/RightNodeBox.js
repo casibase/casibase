@@ -16,10 +16,10 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
 import {withRouter} from "react-router-dom";
-import i18next from "i18next";
-import Collapse, {Panel} from "rc-collapse";
 import "../node.css"
 import "./rightNodeRelation.css"
+import Collapse, {Panel} from "rc-collapse";
+import i18next from "i18next";
 
 class RightNodeBox extends React.Component {
   constructor(props) {
@@ -32,11 +32,11 @@ class RightNodeBox extends React.Component {
       showChildNode: false
     };
   }
-  
+
   componentDidMount() {
     this.getNodeRelation();
   }
-  
+
   getNodeRelation() {
     NodeBackend.getNodeRelation(this.state.nodeId)
       .then((res) => {
@@ -45,19 +45,19 @@ class RightNodeBox extends React.Component {
         });
       });
   }
-  
+
   changeShowRelatedNode() {
     this.setState({
       showRelatedNode: !this.state.showRelatedNode
-    })
+    });
   }
   
   changeShowChildNode() {
     this.setState({
       showRelatedNode: !this.state.showChildNode
-    })
+    });
   }
-  
+
   renderNodes(node) {
     return (
       <div class="node rightFavorite node-casbin">
@@ -68,26 +68,27 @@ class RightNodeBox extends React.Component {
         &nbsp;{" "}
         <a href={`/go/${node?.id}`} id="linkTitle">{node?.name}</a>
       </div>
-    )
+    );
   }
-  
+
   render() {
-    let relatedNum = this.state.info?.relatedNode?.length
-    let childNum = this.state.info?.childNode?.length
-    
+    let relatedNum = this.state.info?.relatedNode?.length;
+    let childNum = this.state.info?.childNode?.length;
+
     return (
       <div class={`box ${this.state.nodeId}`}>
         <div class="inner">
           <strong class="gray">{i18next.t("bar:Parent node")}</strong>
           <div class="sep10"></div>
           {this.renderNodes(this.state.info?.parentNode)}
-      </div>
+        </div>
         {
           relatedNum !== 0 ?
             <span>
               <div className="cell-top">
                 <span className="f12 gray"><div className="fr">{this.state.info?.relatedNode.length}</div>
-                  {i18next.t("bar:Related nodes")}</span>
+                  {i18next.t("bar:Related nodes")}
+                </span>
               </div>
               <div className="nodes-sidebar-container">
                 {
@@ -146,7 +147,7 @@ class RightNodeBox extends React.Component {
             </span> : null
         }
       </div>
-    )
+    );
   }
 }
 

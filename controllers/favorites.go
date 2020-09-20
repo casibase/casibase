@@ -132,7 +132,6 @@ func (c *APIController) GetFavoritesStatus() {
 	c.ServeJSON()
 }
 
-// Using figure 1-3 to choose type, 1 means topic, 2 means people, 3 means node.
 func (c *APIController) GetFavorites() {
 	memberId := c.GetSessionUser()
 	favoritesTypeStr := c.Input().Get("type")
