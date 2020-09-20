@@ -60,7 +60,8 @@ class CallbackBox extends React.Component {
               }
               window.location.href = '/';
             }else {
-              Setting.showMessage("error", res?.msg);
+              alert(i18next.t(`error:${res?.msg}`));
+              Setting.showMessage("error", i18next.t(`error:${res?.msg}`));
             }
           });
         break;
@@ -84,7 +85,8 @@ class CallbackBox extends React.Component {
               }
               window.location.href = '/';
             }else {
-              Setting.showMessage("error", res?.msg);
+              alert(i18next.t(`error:${res?.msg}`));
+              Setting.showMessage("error", i18next.t(`error:${res?.msg}`));
             }
           });
         break;
@@ -108,7 +110,8 @@ class CallbackBox extends React.Component {
               }
               window.location.href = '/';
             }else {
-              Setting.showMessage("error", res?.msg);
+              alert(i18next.t(`error:${res?.msg}`));
+              Setting.showMessage("error", i18next.t(`error:${res?.msg}`));
             }
           });
         break;
@@ -126,7 +129,7 @@ class CallbackBox extends React.Component {
           {i18next.t("loading:Logging in ...")}
         </h3>
       </div>
-    )
+    );
   }
 }
 

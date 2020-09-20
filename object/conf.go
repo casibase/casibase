@@ -20,6 +20,7 @@ var (
 	DefaultNotificationPageNum = 10
 	DefaultBalancePageNum      = 25
 	DefaultFilePageNum         = 25
+	DefaultMemberAdminPageNum  = 100
 	UserNamingRestrictions     = true
 	HomePageNodeNum            = 8
 	TopicThanksCost            = 15

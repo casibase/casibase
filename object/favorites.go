@@ -16,6 +16,7 @@ package object
 
 import "github.com/casbin/casbin-forum/util"
 
+// Favorites using figure 1-3 to choose type, 1 means topic, 2 means people, 3 means node.
 type Favorites struct {
 	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
 	FavoritesType int    `xorm:"int" json:"favoritesType"`

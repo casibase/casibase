@@ -14,6 +14,9 @@
 
 package object
 
+import "bytes"
+
+// Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
 	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
 	Password          string `xorm:"varchar(100) notnull" json:"-"`
@@ -45,6 +48,7 @@ type Member struct {
 	QQOpenId          string `xorm:"qq_open_id varchar(100)" json:"-"`
 	QQVerifiedTime    string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
 	CheckinDate       string `xorm:"varchar(20)" json:"-"`
+	Status            int    `xorm:"int" json:"-"`
 }
 
 func GetMembers() []*Member {
@@ -55,6 +59,81 @@ func GetMembers() []*Member {
 	}
 
 	return members
+}
+
+// GetMembersAdmin cs, us: 1 means Asc, 2 means Desc, 0 means no effect.
+func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int) {
+	members := []*Member{}
+	db := adapter.engine.Table("member")
+
+	var bt bytes.Buffer
+
+	// created time sort
+	switch cs {
+	case "1":
+		bt.WriteString("created_time ASC")
+	case "2":
+		bt.WriteString("created_time DESC")
+	}
+
+	if cs != "0" && us != "0" {
+		bt.WriteString(", ")
+	}
+
+	// id/username sort
+	switch us {
+	case "1":
+		bt.WriteString("id ASC")
+	case "2":
+		bt.WriteString("id DESC")
+	}
+
+	db = db.OrderBy(bt.String())
+
+	if un != "" {
+		// search username
+		db = db.Where("id like ?", "%"+un+"%")
+	}
+	// get result
+	num, err := db.Limit(limit, offset).FindAndCount(&members, &Member{})
+	if err != nil {
+		panic(err)
+	}
+
+	var res []*AdminMemberInfo
+	for _, v := range members {
+		temp := AdminMemberInfo{
+			Member: *v,
+			Status: v.Status,
+		}
+		res = append(res, &temp)
+	}
+
+	return res, int(num)
+}
+
+func GetMemberAdmin(id string) *AdminMemberInfo {
+	member := Member{Id: id}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	res := AdminMemberInfo{
+		Member:        member,
+		FileQuota:     member.FileQuota,
+		FileUploadNum: GetFilesNum(id),
+		Status:        member.Status,
+		TopicNum:      GetCreatedTopicsNum(id),
+		ReplyNum:      GetRepliesNum(id),
+		LatestLogin:   member.CheckinDate,
+	}
+
+	if existed {
+		return &res
+	} else {
+		return nil
+	}
 }
 
 func GetMember(id string) *Member {
@@ -94,12 +173,13 @@ func GetMemberNum() int {
 	return int(count)
 }
 
+// UpdateMember could update member's file quota and account status.
 func UpdateMember(id string, member *Member) bool {
 	if GetMember(id) == nil {
 		return false
 	}
 
-	_, err := adapter.engine.Id(id).AllCols().Update(member)
+	_, err := adapter.engine.Id(id).Cols("file_quota, status").Update(member)
 	if err != nil {
 		panic(err)
 	}
@@ -176,6 +256,7 @@ func AddMember(member *Member) bool {
 	return affected != 0
 }
 
+// DeleteMember change this function to update member status.
 func DeleteMember(id string) bool {
 	affected, err := adapter.engine.Id(id).Delete(&Member{})
 	if err != nil {
@@ -347,4 +428,19 @@ func MemberPasswordLogin(information, password string) string {
 	}
 
 	return ""
+}
+
+// GetMemberStatus returns member's account status, default 3(forbidden).
+func GetMemberStatus(id string) int {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("status").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.Status
+	} else {
+		return 3
+	}
 }

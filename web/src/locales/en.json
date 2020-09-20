@@ -392,7 +392,41 @@
     "here": "here",
     "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
     "authorized to manage the community": "authorized to manage the community",
-    "Switch topic list": "Switch topic list"
+    "Switch topic list": "Switch topic list",
+    "Update member information success": "Update member information success",
+    "Get search result success": "Get search result success",
+    "Sorter": "Sorter",
+    "Registration date": "Registration date",
+    "Search": "Search",
+    "Member management": "Member management",
+    "Normal": "Normal",
+    "Mute": "Mute",
+    "Forbidden": "Forbidden",
+    "Unknown status": "Unknown status",
+    "Manage": "Manage",
+    "Topic num": "Topic num",
+    "Reply num": "Reply num",
+    "Balance": "Balance",
+    "Latest login": "Latest login",
+    "Files num": "Files num",
+    "File quota": "File quota",
+    "Status": "Status",
+    "Please choose member's status": "Please choose member's status",
+    "Save": "Save",
+    "Unverified": "Unverified",
+    "Verified": "Verified",
+    "Not set": "Not set",
+    "Homepage": "Homepage",
+    "Total members": "Total members",
+    "Condition search": "Condition search",
+    "Data is loading": "Data is loading",
+    "No matching data": "No matching data",
+    "Username": "Username",
+    "Asc": "Asc",
+    "Desc": "Desc",
+    "Ignore": "Ignore",
+    "Basic Info": "Basic Info",
+    "Personal Info": "Personal Info"
   },
   "setting":
   {
@@ -536,6 +570,7 @@
   "error":
   {
     "Reply title cannot be empty": "Reply title cannot be empty",
+    "Topic title cannot be empty": "Topic title cannot be empty",
     "Node not found": "Node not found",
     "Topic not found": "Topic not found",
     "The node you are trying to view does not exist, there are several possibilities": "The node you are trying to view does not exist, there are several possibilities:",
@@ -594,6 +629,8 @@
     "Please input tab name": "Please input tab name",
     "Tab not found": "Tab not found",
     "The tab you are trying to view does not exist": "The tab you are trying to view does not exist",
-    "Tab ID existed": "Tab ID existed"
+    "Tab ID existed": "Tab ID existed",
+    "Your account has been muted": "Your account has been muted",
+    "Your account has been forbidden to log in": "Your account has been forbidden to log in"
   }
 }

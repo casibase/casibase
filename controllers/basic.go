@@ -63,6 +63,18 @@ func (c *APIController) wrapResponse(res bool) {
 	}
 }
 
+func (c *APIController) mutedAccountResp(memberId string) {
+	resp := Response{Status: "error", Msg: "Your account has been muted", Data: memberId}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) forbiddenAccountResp(memberId string) {
+	resp := Response{Status: "error", Msg: "Your account has been forbidden to log in", Data: memberId}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) GetCommunityHealth() {
 	var resp Response
 

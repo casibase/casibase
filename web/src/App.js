@@ -63,6 +63,7 @@ import FilesBox from "./main/FilesBox";
 import AdminHomepage from "./admin/AdminHomepage";
 import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
+import AdminMember from "./admin/AdminMember";
 import i18next from "i18next";
 
 class App extends Component {
@@ -353,6 +354,24 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminTab account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/member">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminMember account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/member/new">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminMember account={this.state.account} event={"new"} />
+          </div>
+        </Route>
+        <Route exact path="/admin/member/edit/:memberId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminMember account={this.state.account} />
           </div>
         </Route>
       </Switch>

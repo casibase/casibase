@@ -41,6 +41,7 @@ class NewNodeTopicBox extends React.Component {
       nodeId: "",
       nodeInfo: {},
       problems: [],
+      message: "",
       width: ""
     };
 
@@ -76,13 +77,14 @@ class NewNodeTopicBox extends React.Component {
 
     let problems = [];
     if (this.state.form.title === "" || this.state.form.title === undefined) {
-      problems.push(i18next.t("error:Reply title cannot be empty"));
+      problems.push(i18next.t("error:Topic title cannot be empty"));
     }
+
     this.setState({
       problems: problems,
-    })
+    });
 
-    return problems.length === 0
+    return problems.length === 0;
   }
 
   publishTopic() {
@@ -98,21 +100,29 @@ class NewNodeTopicBox extends React.Component {
         if (res.status === 'ok') {
           Setting.goToLink(`/go/${this.state.nodeInfo.id}`);
         } else {
-          // this.setState({
-          //   message: res.msg,
-          // });
+          this.setState({
+            message: res.msg,
+          });
         }
       });
   }
 
+  clearMessage() {
+    this.setState({
+      message: "",
+      problems: [],
+    });
+  }
+
   renderProblem() {
-    let problems = this.state.problems
-    if (this.state.problems.length === 0) {
-      return null
+    let problems = this.state.problems;
+
+    if (this.state.problems.length === 0 && this.state.message === "") {
+      return null;
     }
 
     return (
-      <div className="problem">
+      <div className="problem" onClick={() => this.clearMessage()}>
         {i18next.t("error:Please resolve the following issues before creating a new topic")}
         <ul>
           {
@@ -120,9 +130,13 @@ class NewNodeTopicBox extends React.Component {
               return <li>{problem}</li>;
             })
           }
+          {
+            this.state.message !== "" ?
+              <li>{i18next.t(`error:${this.state.message}`)}</li> : null
+          }
         </ul>
       </div>
-    )
+    );
   }
 
   getNodeInfo() {
@@ -160,7 +174,7 @@ class NewNodeTopicBox extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   renderHeader() {
@@ -171,12 +185,13 @@ class NewNodeTopicBox extends React.Component {
         <a href={`/go/${this.props.nodeId}`}> {this.state.nodeInfo?.name} </a>
         <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("new:New Topic")}
       </div>
-    )
+    );
   }
 
   renderSmallSize() {
     return (
       <div className={`box ${this.state.nodeInfo.id}`}>
+        {this.renderProblem()}
         <div className={`cell ${this.props.nodeId}`}>
           <textarea type="text" rows="1" maxLength="120" name="title" className={`sll ${this.state.nodeInfo.id}`} id="topic_title" onChange={event => {this.updateFormField("title", event.target.value)}} placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
             {
@@ -215,16 +230,16 @@ class NewNodeTopicBox extends React.Component {
           &nbsp;
         </div>
       </div>
-    )
+    );
   }
 
   renderLargeSize() {
     const title = document.getElementById('topic_title');
-    console.log(title)
+
     let contentWidth = title.clientWidth;
     if (this.state.width === "") {
       this.setState({
-        width: contentWidth
+        width: contentWidth,
       });
     }
 
@@ -289,14 +304,14 @@ class NewNodeTopicBox extends React.Component {
         </div>
         {this.renderPreview()}
       </div>
-    )
+    );
   }
 
   render() {
     if (this.props.size === "small") {
-      return this.renderSmallSize()
+      return this.renderSmallSize();
     }else {
-      return this.renderLargeSize()
+      return this.renderLargeSize();
     }
   }
 }
