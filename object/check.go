@@ -138,6 +138,12 @@ func HasTab(id string) bool {
 	return tab != nil
 }
 
+func HasPlane(id string) bool {
+	plane := GetPlane(id)
+
+	return plane != nil
+}
+
 // IsMuted check member whether is muted.
 func IsMuted(id string) bool {
 	status := GetMemberStatus(id)

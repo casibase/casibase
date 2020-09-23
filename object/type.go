@@ -115,3 +115,11 @@ type AdminMemberInfo struct {
 	ReplyNum      int    `json:"replyNum"`
 	LatestLogin   string `json:"latestLogin"`
 }
+
+type AdminPlaneInfo struct {
+	Plane
+	Sorter   int     `json:"sorter"`
+	Visible  bool    `json:"visible"`
+	NodesNum int     `json:"nodesNum"`
+	Nodes    []*Node `json:"nodes"`
+}

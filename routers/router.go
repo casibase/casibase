@@ -76,9 +76,9 @@ func initAPI() {
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
-	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode")
-	beego.Router("/api/add-node", &controllers.APIController{}, "POST:AddNode")
-	beego.Router("/api/delete-node", &controllers.APIController{}, "POST:DeleteNode")
+	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode") // Update node api just for admin.
+	beego.Router("/api/add-node", &controllers.APIController{}, "POST:AddNode")       // Add node api just for admin.
+	beego.Router("/api/delete-node", &controllers.APIController{}, "POST:DeleteNode") // Delete node api just for admin.
 	beego.Router("/api/get-node-info", &controllers.APIController{}, "GET:GetNodeInfo")
 	beego.Router("/api/get-node-relation", &controllers.APIController{}, "GET:GetNodeRelation")
 	beego.Router("/api/get-nodes-num", &controllers.APIController{}, "GET:GetNodesNum")
@@ -109,9 +109,9 @@ func initAPI() {
 	beego.Router("/api/get-tab-with-nodes", &controllers.APIController{}, "GET:GetTabWithNodes")
 	beego.Router("/api/get-tabs-admin", &controllers.APIController{}, "GET:GetAllTabsAdmin")
 	beego.Router("/api/get-tab-admin", &controllers.APIController{}, "GET:GetTabAdmin")
-	beego.Router("/api/add-tab", &controllers.APIController{}, "POST:AddTab")
-	beego.Router("/api/update-tab", &controllers.APIController{}, "POST:UpdateTab")
-	beego.Router("/api/delete-tab", &controllers.APIController{}, "POST:DeleteTab")
+	beego.Router("/api/add-tab", &controllers.APIController{}, "POST:AddTab")       // Add tab api just for admin.
+	beego.Router("/api/update-tab", &controllers.APIController{}, "POST:UpdateTab") // Update tab api just for admin.
+	beego.Router("/api/delete-tab", &controllers.APIController{}, "POST:DeleteTab") // Delete tab api just for admin.
 
 	beego.Router("/api/get-notifications", &controllers.APIController{}, "GET:GetNotifications")
 	beego.Router("/api/delete-notifications", &controllers.APIController{}, "POST:DeleteNotification")
@@ -119,11 +119,13 @@ func initAPI() {
 	beego.Router("/api/update-read-status", &controllers.APIController{}, "POST:UpdateReadStatus")
 
 	beego.Router("/api/get-plane", &controllers.APIController{}, "GET:GetPlane")
-	beego.Router("/api/get-planes", &controllers.APIController{}, "GET:GetPlanes")
-	beego.Router("/api/add-plane", &controllers.APIController{}, "POST:AddPlane")
+	beego.Router("/api/get-plane-admin", &controllers.APIController{}, "GET:GetPlaneAdmin")
+	//beego.Router("/api/get-planes", &controllers.APIController{}, "GET:GetPlanes")
+	beego.Router("/api/add-plane", &controllers.APIController{}, "POST:AddPlane") // Add plane api just for admin.
 	beego.Router("/api/get-plane-list", &controllers.APIController{}, "GET:GetPlaneList")
-	beego.Router("/api/update-plane-info", &controllers.APIController{}, "POST:UpdatePlaneInfo")
-	beego.Router("/api/get-planes-admin", &controllers.APIController{}, "GET:GetPlanes")
+	beego.Router("/api/update-plane", &controllers.APIController{}, "POST:UpdatePlane") // Update plane api just for admin.
+	beego.Router("/api/get-planes-admin", &controllers.APIController{}, "GET:GetPlanesAdmin")
+	beego.Router("/api/delete-plane", &controllers.APIController{}, "POST:DeletePlane") // Delete plane api just for admin.
 
 	beego.Router("/api/get-checkin-bonus-status", &controllers.APIController{}, "GET:GetCheckinBonusStatus")
 	beego.Router("/api/get-checkin-bonus", &controllers.APIController{}, "GET:GetCheckinBonus")

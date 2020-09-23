@@ -55,15 +55,17 @@ func (c *APIController) GetTopic() {
 	id := util.ParseInt(idStr)
 
 	topic := object.GetTopicWithAvatar(id, memberId)
+	if topic == nil || topic.Deleted {
+		c.Data["json"] = nil
+		c.ServeJSON()
+		return
+	}
+
 	if memberId != "" {
 		topic.NodeModerator = object.CheckNodeModerator(memberId, topic.NodeId)
 	}
-	if topic.Deleted {
-		c.Data["json"] = nil
-	} else {
-		c.Data["json"] = topic
-	}
 
+	c.Data["json"] = topic
 	c.ServeJSON()
 }
 

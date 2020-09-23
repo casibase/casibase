@@ -25,6 +25,7 @@ class AdminHomepage extends React.Component {
       manageItems: [
         {label: i18next.t("admin:Tab management" ), value: "tab", image: Setting.getStatic("/static/img/settings.png")},
         {label: i18next.t("admin:Node management"), value: "node", image: Setting.getStatic("/static/img/settings.png")},
+        {label: i18next.t("admin:Plane management" ), value: "plane", image: Setting.getStatic("/static/img/settings.png")},
         {label: i18next.t("admin:Topic management"), value: "topic", image: Setting.getStatic("/static/img/settings.png")},
         {label: i18next.t("admin:Member management" ), value: "member", image: Setting.getStatic("/static/img/settings.png")},
       ],

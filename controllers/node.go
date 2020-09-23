@@ -56,9 +56,7 @@ func (c *APIController) UpdateNode() {
 	var node object.Node
 
 	if !object.CheckModIdentity(c.GetSessionUser()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.RequireAdmin(c.GetSessionUser())
 		return
 	}
 
@@ -76,6 +74,11 @@ func (c *APIController) UpdateNode() {
 func (c *APIController) AddNode() {
 	var node object.Node
 	var resp Response
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		c.RequireAdmin(c.GetSessionUser())
+		return
+	}
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
@@ -106,6 +109,11 @@ func (c *APIController) AddNode() {
 
 func (c *APIController) DeleteNode() {
 	id := c.Input().Get("id")
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		c.RequireAdmin(c.GetSessionUser())
+		return
+	}
 
 	c.Data["json"] = object.DeleteNode(id)
 	c.ServeJSON()

@@ -18,6 +18,7 @@ type Plane struct {
 	Id              string `xorm:"varchar(50) notnull pk" json:"id"`
 	Name            string `xorm:"varchar(50)" json:"name"`
 	Sorter          int    `xorm:"int" json:"-"`
+	CreatedTime     string `xorm:"varchar(40)" json:"createdTime"`
 	Image           string `xorm:"varchar(200)" json:"image"`
 	BackgroundColor string `xorm:"varchar(20)" json:"backgroundColor"`
 	Color           string `xorm:"varchar(20)" json:"color"`
@@ -34,14 +35,24 @@ func GetPlanes() []*Plane {
 	return planes
 }
 
-func GetAllPlanes() []*Plane {
+func GetAllPlanes() []*AdminPlaneInfo {
 	planes := []*Plane{}
 	err := adapter.engine.Asc("sorter").Find(&planes)
 	if err != nil {
 		panic(err)
 	}
 
-	return planes
+	var res []*AdminPlaneInfo
+	for _, v := range planes {
+		temp := AdminPlaneInfo{
+			Plane:    *v,
+			Sorter:   v.Sorter,
+			Visible:  v.Visible,
+			NodesNum: GetPlaneNodesNum(v.Id),
+		}
+		res = append(res, &temp)
+	}
+	return res
 }
 
 func GetPlane(id string) *Plane {
@@ -58,6 +69,28 @@ func GetPlane(id string) *Plane {
 	}
 }
 
+func GetPlaneAdmin(id string) *AdminPlaneInfo {
+	plane := Plane{Id: id}
+	existed, err := adapter.engine.Get(&plane)
+	if err != nil {
+		panic(err)
+	}
+
+	res := AdminPlaneInfo{
+		Plane:    plane,
+		Sorter:   plane.Sorter,
+		Visible:  plane.Visible,
+		NodesNum: GetPlaneNodesNum(plane.Id),
+		Nodes:    GetNodeFromPlane(plane.Id),
+	}
+
+	if existed {
+		return &res
+	} else {
+		return nil
+	}
+}
+
 func AddPlane(plane *Plane) bool {
 	affected, err := adapter.engine.Insert(plane)
 	if err != nil {
@@ -67,8 +100,12 @@ func AddPlane(plane *Plane) bool {
 	return affected != 0
 }
 
-func UpdatePlaneInfo(id, field, value string) bool {
-	affected, err := adapter.engine.Table(new(Plane)).ID(id).Update(map[string]interface{}{field: value})
+func UpdatePlane(id string, plane *Plane) bool {
+	if GetPlane(id) == nil {
+		return false
+	}
+
+	affected, err := adapter.engine.Id(id).AllCols().Update(plane)
 	if err != nil {
 		panic(err)
 	}
@@ -89,4 +126,23 @@ func GetPlaneList() []*PlaneWithNodes {
 	}
 
 	return res
+}
+
+func DeletePlane(id string) bool {
+	affected, err := adapter.engine.Id(id).Delete(&Plane{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func GetPlaneNodesNum(id string) int {
+	node := new(Node)
+	total, err := adapter.engine.Where("plane_id = ?", id).Count(node)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
 }

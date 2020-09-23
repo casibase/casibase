@@ -252,9 +252,11 @@ class AdminTab extends React.Component {
       <div className="box">
         <div className="header"><a href="/">{Setting.getForumName()}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <a href={`/admin/tab`}>{i18next.t("tab:Tab management")}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <span className="gray">
+          <span>
             {
               this.props.event === "new" ?
                 i18next.t("tab:New tab") : this.state.tabId
@@ -499,6 +501,8 @@ class AdminTab extends React.Component {
       <div className="box">
         <div className="header">
           <a href="/">{Setting.getForumName()}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("tab:Tab management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("tab:Total tabs")}{" "}&nbsp;</span>

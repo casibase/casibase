@@ -339,7 +339,45 @@
   },
   "plane":
   {
-    "Plane list": "位面列表"
+    "Plane list": "位面列表",
+    "Are you sure to delete plane": "你确定删除位面",
+    "Please delete all the nodes or move to another plane before deleting the plane": "在删除位面之前请删除位面下所有节点或移动至其他位面",
+    "Currently the number of nodes under the plane is": "目前此位面下的节点数为",
+    "Delete plane": "删除位面",
+    "success": "成功",
+    "Update plane information success": "更新位面信息成功",
+    "Creat plane success": "创建位面成功",
+    "Plane management": "位面管理",
+    "New plane": "新建位面",
+    "Manage": "管理",
+    "nodes": "节点",
+    "Visible": "可见",
+    "Invisible": "隐藏",
+    "Delete": "删除",
+    "Plane ID": "位面ID",
+    "Plane name": "位面名称",
+    "Created time": "创建时间",
+    "Total nodes": "节点总数",
+    "Nodes": "节点",
+    "No node yet": "暂无节点",
+    "Sorter": "排序",
+    "Decide the order of node navigation": "决定在节点导航中的顺序",
+    "This plane will not appear on the node navigation": "此位面将不会出现在节点导航中",
+    "Save": "保存",
+    "Please go to the display page to continue to improve the information and submit": "请前往显示页面继续完善信息然后提交",
+    "Image": "图标",
+    "Not set": "未设定",
+    "Set image": "设置图标",
+    "Change image": "更换图标",
+    "Font color": "文字颜色",
+    "Restore": "恢复",
+    "Background color": "背景颜色",
+    "Preview": "预览",
+    "Create": "创建",
+    "Total planes": "总位面",
+    "Add new plane": "新增位面",
+    "Basic Info": "基本信息",
+    "Display": "显示"
   },
   "newNodeTopic":
   {
@@ -565,7 +603,8 @@
     "Node management": "节点管理",
     "Topic management": "帖子管理",
     "Member management": "用户管理",
-    "Tab management": "类别管理"
+    "Tab management": "类别管理",
+    "Plane management": "位面管理"
   },
   "error":
   {
@@ -631,6 +670,11 @@
     "The tab you are trying to view does not exist": "你即将访问的类别不存在",
     "Tab ID existed": "类别ID已存在",
     "Your account has been muted": "你的账号已被禁言",
-    "Your account has been forbidden to log in": "你的账号已被禁止登录"
+    "Your account has been forbidden to log in": "你的账号已被禁止登录",
+    "Plane not found": "位面未找到",
+    "The plane you are trying to view does not exist": "你即将访问的位面不存在",
+    "Plane ID existed": "位面ID已存在",
+    "Please input plane ID": "请填写位面ID",
+    "Please input plane name": "请填写位面名称"
   }
 }
