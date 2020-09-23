@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/util"
 )
 
 func (c *APIController) GetPlanes() {
@@ -37,6 +38,13 @@ func (c *APIController) GetPlane() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetPlaneAdmin() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetPlaneAdmin(id)
+	c.ServeJSON()
+}
+
 func (c *APIController) GetPlaneList() {
 	var resp Response
 
@@ -47,21 +55,90 @@ func (c *APIController) GetPlaneList() {
 }
 
 func (c *APIController) AddPlane() {
-	var plane object.Plane
+	var plane object.AdminPlaneInfo
+	var resp Response
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		c.RequireAdmin(c.GetSessionUser())
+		return
+	}
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &plane)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddPlane(&plane)
+	if plane.Id == "" || plane.Name == "" {
+		resp = Response{Status: "fail", Msg: "Some information is missing"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if object.HasPlane(plane.Id) {
+		resp = Response{Status: "fail", Msg: "Plane ID existed"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	newPlane := object.Plane{
+		Id:              plane.Id,
+		Name:            plane.Name,
+		Sorter:          plane.Sorter,
+		CreatedTime:     util.GetCurrentTime(),
+		Image:           plane.Image,
+		BackgroundColor: plane.BackgroundColor,
+		Color:           plane.Color,
+		Visible:         plane.Visible,
+	}
+	res := object.AddPlane(&newPlane)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
 }
 
-func (c *APIController) UpdatePlaneInfo() {
-	var info updatePlaneInfo
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &info)
+func (c *APIController) UpdatePlane() {
+	id := c.Input().Get("id")
+
+	var resp Response
+	var plane object.AdminPlaneInfo
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		c.RequireAdmin(c.GetSessionUser())
+		return
+	}
+
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &plane)
 	if err != nil {
 		panic(err)
 	}
+	newPlane := object.Plane{
+		Id:              plane.Id,
+		Name:            plane.Name,
+		Sorter:          plane.Sorter,
+		CreatedTime:     plane.CreatedTime,
+		Image:           plane.Image,
+		BackgroundColor: plane.BackgroundColor,
+		Color:           plane.Color,
+		Visible:         plane.Visible,
+	}
+	res := object.UpdatePlane(id, &newPlane)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
 
-	c.Data["json"] = object.UpdatePlaneInfo(info.Id, info.Field, info.Value)
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) DeletePlane() {
+	id := c.Input().Get("id")
+
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		c.RequireAdmin(c.GetSessionUser())
+		return
+	}
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.DeletePlane(id)}
+	c.ServeJSON()
 }

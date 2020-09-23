@@ -88,6 +88,10 @@ func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 		panic(err)
 	}
 
+	if !existed {
+		return nil
+	}
+
 	res := TopicWithAvatar{
 		Topic:        topic,
 		Avatar:       GetMemberAvatar(topic.Author),
@@ -95,11 +99,7 @@ func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 		Editable:     GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime),
 	}
 
-	if existed {
-		return &res
-	} else {
-		return nil
-	}
+	return &res
 }
 
 func GetTopic(id int) *Topic {

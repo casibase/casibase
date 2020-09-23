@@ -327,11 +327,13 @@ class AdminNode extends React.Component {
       <div className="box">
         <div className="header"><a href="/">{Setting.getForumName()}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <a href={`/admin/node`}>{i18next.t("node:Node management")}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {
             this.props.event === "new" ?
-              <span className="gray">
+              <span>
                 {i18next.t("node:New node")}
               </span> :
               <a href={`/go/${this.state.nodeId}`}>{this.state.nodeInfo?.name}</a>
@@ -853,6 +855,8 @@ class AdminNode extends React.Component {
       <div className="box">
         <div className="header">
           <a href="/">{Setting.getForumName()}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("node:Node management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("node:Total nodes")}{" "}&nbsp;</span>

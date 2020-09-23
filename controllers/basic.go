@@ -75,6 +75,12 @@ func (c *APIController) forbiddenAccountResp(memberId string) {
 	c.ServeJSON()
 }
 
+func (c *APIController) RequireAdmin(memberId string) {
+	resp := Response{Status: "error", Msg: "Unauthorized.", Data: memberId}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) GetCommunityHealth() {
 	var resp Response
 
@@ -106,7 +112,7 @@ var GlobalSessions *session.Manager
 func InitBeegoSession() {
 	sessionConfig := &session.ManagerConfig{
 		ProviderConfig: "./tmp",
-		Gclifetime: 3600 * 24 * 365,
+		Gclifetime:     3600 * 24 * 365,
 	}
 	GlobalSessions, _ = session.NewManager("file", sessionConfig)
 	go GlobalSessions.GC()

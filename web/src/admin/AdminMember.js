@@ -306,9 +306,11 @@ class AdminMember extends React.Component {
       <div className="box">
         <div className="header"><a href="/">{Setting.getForumName()}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <a href={`/admin/member`}>{i18next.t("member:Member management")}</a>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <span className="gray">
+          <span>
             {this.state.memberId}
           </span>
         </div>
@@ -724,6 +726,8 @@ class AdminMember extends React.Component {
       <div className="box">
         <div className="header">
           <a href="/">{Setting.getForumName()}</a>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:Member management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("member:Total members")}{" "}&nbsp;</span>

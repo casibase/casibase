@@ -100,7 +100,7 @@ class TopicBox extends React.Component {
       <div className="outdated">
         {i18next.t("topic:This is a topic created")} {diffDays} {i18next.t("topic:days ago, the information in it may have changed.")}
       </div>
-    )
+    );
   }
 
   addFavorite() {
@@ -223,7 +223,7 @@ class TopicBox extends React.Component {
           &nbsp;
         </div>
       </div>
-    )
+    );
   }
 
   renderImage = ({alt, src}) => {
@@ -285,7 +285,7 @@ class TopicBox extends React.Component {
         </div>
         {" "}&nbsp;{" "}
       </div>
-    )
+    );
   }
 
   renderDesktopButtons() {
@@ -339,19 +339,19 @@ class TopicBox extends React.Component {
             : null
         }
       </div>
-    )
+    );
   }
 
   render() {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
 
-    if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
+    if ((this.props.account === undefined) || (this.state.topic !== null && this.state.topic.length === 0)) {
       return (
         <div class="box">
           <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Topic is loading")}</div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
-      )
+      );
     }
 
     if (this.state.topic === null) {
@@ -361,12 +361,12 @@ class TopicBox extends React.Component {
           <div class="cell"><span class="gray bigger">404 Topic Not Found</span></div>
           <div class="inner">←  <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
         </div>
-      )
+      );
     }
 
     if (this.state.event === "review") {
       if (this.props.account === null || this.props.account?.id !== this.state.topic?.author) {
-        goToLink(`/t/${this.state.topic?.id}`)
+        goToLink(`/t/${this.state.topic?.id}`);
       }
       return (
         <div class="box">
@@ -444,7 +444,7 @@ class TopicBox extends React.Component {
             </ul>
           </div>
         </div>
-      )
+      );
     }
 
     return (

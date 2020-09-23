@@ -339,7 +339,45 @@
   },
   "plane":
   {
-    "Plane list": "位面列表"
+    "Plane list": "Plane list",
+    "Are you sure to delete plane": "Are you sure to delete plane",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
+    "Delete plane": "Delete plane",
+    "success": "success",
+    "Update plane information success": "Update plane information success",
+    "Creat plane success": "Creat plane success",
+    "Plane management": "Plane management",
+    "New plane": "New plane",
+    "Manage": "Manage",
+    "nodes": "nodes",
+    "Visible": "Visible",
+    "Invisible": "Invisible",
+    "Delete": "Delete",
+    "Plane ID": "Plane ID",
+    "Plane name": "Plane name",
+    "Created time": "Created time",
+    "Total nodes": "Total nodes",
+    "Nodes": "Nodes",
+    "No node yet": "No node yet",
+    "Sorter": "Sorter",
+    "Decide the order of node navigation": "Decide the order of node navigation",
+    "This plane will not appear on the node navigation": "This plane will not appear on the node navigation",
+    "Save": "Save",
+    "Please go to the display page to continue to improve the information and submit": "Please go to the display page to continue to improve the information and submit",
+    "Image": "Image",
+    "Not set": "Not set",
+    "Set image": "Set image",
+    "Change image": "Change image",
+    "Font color": "Font color",
+    "Restore": "Restore",
+    "Background color": "Background color",
+    "Preview": "Preview",
+    "Create": "Create",
+    "Total planes": "Total planes",
+    "Add new plane": "Add new plane",
+    "Basic Info": "Basic Info",
+    "Display": "Display"
   },
   "newNodeTopic":
   {
@@ -565,7 +603,8 @@
     "Node management": "Node management",
     "Topic management": "Topic management",
     "Member management": "Member management",
-    "Tab management": "Tab management"
+    "Tab management": "Tab management",
+    "Plane management": "Plane management"
   },
   "error":
   {
@@ -631,6 +670,11 @@
     "The tab you are trying to view does not exist": "The tab you are trying to view does not exist",
     "Tab ID existed": "Tab ID existed",
     "Your account has been muted": "Your account has been muted",
-    "Your account has been forbidden to log in": "Your account has been forbidden to log in"
+    "Your account has been forbidden to log in": "Your account has been forbidden to log in",
+    "Plane not found": "Plane not found",
+    "The plane you are trying to view does not exist": "The plane you are trying to view does not exist",
+    "Plane ID existed": "Plane ID existed",
+    "Please input plane ID": "Please input plane ID",
+    "Please input plane name": "Please input plane name"
   }
 }
