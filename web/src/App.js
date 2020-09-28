@@ -66,6 +66,7 @@ import AdminTab from "./admin/AdminTab";
 import AdminMember from "./admin/AdminMember";
 import i18next from "i18next";
 import AdminPlane from "./admin/AdminPlane";
+import AdminTopic from "./admin/AdminTopic";
 
 class App extends Component {
   constructor(props) {
@@ -363,12 +364,6 @@ class App extends Component {
             <AdminMember account={this.state.account} />
           </div>
         </Route>
-        <Route exact path="/admin/member/new">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <AdminMember account={this.state.account} event={"new"} />
-          </div>
-        </Route>
         <Route exact path="/admin/member/edit/:memberId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -391,6 +386,18 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminPlane account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/topic">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminTopic account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/topic/edit/:topicId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminTopic account={this.state.account} />
           </div>
         </Route>
       </Switch>

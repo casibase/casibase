@@ -34,8 +34,10 @@ func initAPI() {
 	beego.AddNamespace(ns)
 
 	beego.Router("/api/get-topics", &controllers.APIController{}, "GET:GetTopics")
+	beego.Router("/api/get-topics-admin", &controllers.APIController{}, "GET:GetTopicsAdmin")
 	beego.Router("/api/get-topic", &controllers.APIController{}, "GET:GetTopic")
-	beego.Router("/api/update-topic", &controllers.APIController{}, "POST:UpdateTopic")
+	beego.Router("/api/get-topic-admin", &controllers.APIController{}, "GET:GetTopicAdmin")
+	//beego.Router("/api/update-topic", &controllers.APIController{}, "POST:UpdateTopic") // no necessary to explore this api.
 	beego.Router("/api/add-topic", &controllers.APIController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.APIController{}, "POST:DeleteTopic")
 	beego.Router("/api/get-all-created-topics", &controllers.APIController{}, "GET:GetAllCreatedTopics")

@@ -180,7 +180,7 @@
     "Creator": "创建者",
     "Node": "所在节点",
     "Text syntax format": "正文语法格式",
-    "Hot": "查看次数",
+    "Hot": "热度",
     "Topic created": "主题已创建",
     "Sticky state": "是否处于置顶状态",
     "Remaining time to top": "置顶状态剩余时间",
@@ -212,7 +212,29 @@
     "CancelNodeTop": "取消节点置顶",
     "words": "个字符",
     "Next": "下一页",
-    "Last": "上一页"
+    "Last": "上一页",
+    "Topic management": "帖子管理",
+    "Author": "作者",
+    "Title": "标题",
+    "Content": "内容",
+    "Show deleted topics": "显示已删除的主题",
+    "Created time": "创建时间",
+    "Reply count": "回复数量",
+    "Favorite count": "收藏数量",
+    "Condition search": "条件搜索",
+    "Normal": "正常",
+    "Deleted": "已被删除",
+    "Topping": "已被置顶",
+    "Basic Info": "基本信息",
+    "Move topic": "移动主题",
+    "Last reply user": "最新回复用户",
+    "Last reply time": "最新回复时间",
+    "Hit count": "点击量",
+    "Status": "状态",
+    "Topic ID": "主题 ID",
+    "Edit": "编辑",
+    "Search": "搜索",
+    "Please change the basic information through the topic page": "请通过主题页面来更改部分信息"
   },
   "new":
   {
@@ -604,7 +626,17 @@
     "Topic management": "帖子管理",
     "Member management": "用户管理",
     "Tab management": "类别管理",
-    "Plane management": "位面管理"
+    "Plane management": "位面管理",
+    "Get search result success": "获取搜索结果成功",
+    "Sorter": "排序",
+    "Show": "显示",
+    "Hidden": "隐藏",
+    "Condition search": "条件搜索",
+    "No matching data": "没有匹配信息",
+    "Manage": "管理",
+    "Asc": "升序",
+    "Desc": "降序",
+    "Ignore": "忽略"
   },
   "error":
   {

@@ -212,7 +212,29 @@
     "CancelNodeTop": "CancelNodeTop",
     "words": "words",
     "Next": "Next",
-    "Last": "Last"
+    "Last": "Last",
+    "Topic management": "Topic management",
+    "Author": "Author",
+    "Title": "Title",
+    "Content": "Content",
+    "Show deleted topics": "Show deleted topics",
+    "Created time": "Created time",
+    "Reply count": "Reply count",
+    "Favorite count": "Favorite count",
+    "Condition search": "Condition search",
+    "Normal": "Normal",
+    "Deleted": "Deleted",
+    "Topping": "Topping",
+    "Basic Info": "Basic Info",
+    "Move topic": "Move topic",
+    "Last reply user": "Last reply user",
+    "Last reply time": "Last reply time",
+    "Hit count": "Hit count",
+    "Status": "Status",
+    "Topic ID": "Topic ID",
+    "Edit": "Edit",
+    "Search": "Search",
+    "Please change the basic information through the topic page": "Please change the basic information through the topic page"
   },
   "new":
   {
@@ -604,7 +626,17 @@
     "Topic management": "Topic management",
     "Member management": "Member management",
     "Tab management": "Tab management",
-    "Plane management": "Plane management"
+    "Plane management": "Plane management",
+    "Get search result success": "Get search result success",
+    "Sorter": "Sorter",
+    "Show": "Show",
+    "Hidden": "Hidden",
+    "Condition search": "Condition search",
+    "No matching data": "No matching data",
+    "Manage": "Manage",
+    "Asc": "Asc",
+    "Desc": "Desc",
+    "Ignore": "Ignore"
   },
   "error":
   {

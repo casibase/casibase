@@ -52,6 +52,15 @@ func GetTopicCount() int {
 	return int(count)
 }
 
+func GetTopicNum() int {
+	count, err := adapter.engine.Where("deleted = ?", 0).Count(&Topic{})
+	if err != nil {
+		panic(err)
+	}
+
+	return int(count)
+}
+
 func GetCreatedTopicsNum(memberId string) int {
 	topic := new(Topic)
 	total, err := adapter.engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(topic)
@@ -79,6 +88,101 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	}
 
 	return res
+}
+
+// GetTopicsAdmin *sort: 1 means Asc, 2 means Desc, 0 means no effect.
+func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDeletedTopic, createdTimeSort, lastReplySort, usernameSort, replyCountSort, hotSort, favCountSort string, limit int, offset int) ([]*AdminTopicInfo, int) {
+	topics := []*Topic{}
+	db := adapter.engine.Table("topic")
+
+	// created time sort
+	switch createdTimeSort {
+	case "1":
+		db = db.Asc("created_time")
+	case "2":
+		db = db.Desc("created_time")
+	}
+
+	// last reply time sort
+	switch lastReplySort {
+	case "1":
+		db = db.Asc("last_reply_time")
+	case "2":
+		db = db.Desc("last_reply_time")
+	}
+
+	// author sort
+	switch usernameSort {
+	case "1":
+		db = db.Asc("author")
+	case "2":
+		db = db.Desc("author")
+	}
+
+	// reply count sort
+	switch replyCountSort {
+	case "1":
+		db = db.Asc("reply_count")
+	case "2":
+		db = db.Desc("reply_count")
+	}
+
+	// hot sort
+	switch hotSort {
+	case "1":
+		db = db.Asc("hot")
+	case "2":
+		db = db.Desc("hot")
+	}
+
+	// favorite count sort
+	switch favCountSort {
+	case "1":
+		db = db.Asc("favorite_count")
+	case "2":
+		db = db.Desc("favorite_count")
+	}
+
+	if usernameSearchKw != "" {
+		unKw := util.SplitWords(usernameSearchKw)
+		for _, v := range unKw {
+			db.Or("author like ?", "%"+v+"%")
+		}
+	}
+
+	if titleSearchKw != "" {
+		tiKw := util.SplitWords(titleSearchKw)
+		for _, v := range tiKw {
+			db.Or("title like ?", "%"+v+"%")
+		}
+	}
+
+	if contentSearchKw != "" {
+		coKw := util.SplitWords(contentSearchKw)
+		for _, v := range coKw {
+			db.Or("content like ?", "%"+v+"%")
+		}
+	}
+
+	if showDeletedTopic == "0" {
+		db = db.Where("deleted = ?", 0)
+	}
+
+	num, err := db.Limit(limit, offset).FindAndCount(&topics, &Topic{})
+	if err != nil {
+		panic(err)
+	}
+
+	var res []*AdminTopicInfo
+	for _, v := range topics {
+		temp := AdminTopicInfo{
+			Topic:   *v,
+			Deleted: v.Deleted,
+		}
+		res = append(res, &temp)
+	}
+
+	return res, int(num)
 }
 
 func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
@@ -111,6 +215,23 @@ func GetTopic(id int) *Topic {
 
 	if existed {
 		return &topic
+	} else {
+		return nil
+	}
+}
+
+func GetTopicAdmin(id int) *AdminTopicInfo {
+	topic := Topic{Id: id}
+	existed, err := adapter.engine.Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &AdminTopicInfo{
+			Topic:   topic,
+			Deleted: topic.Deleted,
+		}
 	} else {
 		return nil
 	}

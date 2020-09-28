@@ -48,6 +48,42 @@ func (c *APIController) GetTopics() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetTopicsAdmin() {
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+
+	usernameSearchKw := c.Input().Get("un") // search: username(author)
+	titleSearchKw := c.Input().Get("ti")    // search: title
+	contentSearchKw := c.Input().Get("cn")  // search: content
+
+	showDeletedTopics := c.Input().Get("sdt") // sort: show deleted topics
+
+	createdTimeSort := c.Input().Get("cs") // sort: created time
+	lastReplySort := c.Input().Get("lrs")  // sort: last reply time
+	usernameSort := c.Input().Get("us")    // sort: username
+	replyCountSort := c.Input().Get("rcs") // sort: reply count
+	hotSort := c.Input().Get("hs")         // sort: hot
+	favCountSort := c.Input().Get("fcs")   // sort: favorite count
+
+	defaultLimit := object.DefaultHomePageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	res, num := object.GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDeletedTopics, createdTimeSort, lastReplySort, usernameSort, replyCountSort, hotSort, favCountSort, limit, offset)
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
+	c.ServeJSON()
+}
+
 func (c *APIController) GetTopic() {
 	memberId := c.GetSessionUser()
 	idStr := c.Input().Get("id")
@@ -66,6 +102,15 @@ func (c *APIController) GetTopic() {
 	}
 
 	c.Data["json"] = topic
+	c.ServeJSON()
+}
+
+func (c *APIController) GetTopicAdmin() {
+	idStr := c.Input().Get("id")
+
+	id := util.ParseInt(idStr)
+
+	c.Data["json"] = object.GetTopicAdmin(id)
 	c.ServeJSON()
 }
 
@@ -167,7 +212,7 @@ func (c *APIController) DeleteTopic() {
 }
 
 func (c *APIController) GetTopicsNum() {
-	c.Data["json"] = object.GetTopicCount()
+	c.Data["json"] = object.GetTopicNum()
 	c.ServeJSON()
 }
 
