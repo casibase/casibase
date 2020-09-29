@@ -52,6 +52,8 @@ export const OSSBasicPath = ""
 //If you set a custom domain name in ali-oss bucket, please fill in.
 export const OSSCustomDomain = ""
 
+export const ShowGithubCorner = true
+
 export const GithubRepo = "https://github.com/casbin/casbin-forum"
 
 export const Domain = "forum.casbin.com"
