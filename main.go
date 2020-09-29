@@ -23,12 +23,14 @@ import (
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/routers"
 	"github.com/casbin/casbin-forum/service"
+	"github.com/casbin/casbin-forum/util"
 )
 
 func main() {
 	object.InitAdapter()
 	controllers.InitHttpClient()
 	service.InitAliOSS()
+	util.InitSegmenter()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

@@ -21,8 +21,28 @@ export function getTopics(limit, page) {
   }).then(res => res.json());
 }
 
+// un: search with username(author), ti: search with title
+// cn: search with content
+// sdt: show deleted topics
+// cs: sort with created time, lrs: sort with last reply time
+// us: sort with username, rcs: sort with reply count
+// hs: sort with hot, fcs: sort with favorite count
+export function getTopicsAdmin(un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-topics-admin?un=${un}&ti=${ti}&cn=${cn}&sdt=${sdt}&cs=${cs}&lrs=${lrs}&us=${us}&rcs=${rcs}&hs=${hs}&fcs=${fcs}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function getTopic(id) {
   return fetch(`${Setting.ServerUrl}/api/get-topic?id=${id}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
+export function getTopicAdmin(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-topic-admin?id=${id}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());

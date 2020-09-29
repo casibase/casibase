@@ -18,6 +18,9 @@ import (
 	"io/ioutil"
 	"regexp"
 	"strconv"
+
+	"github.com/huichen/sego"
+	"github.com/mozillazg/go-slugify"
 )
 
 func ParseInt(s string) int {
@@ -54,4 +57,25 @@ func WriteStringToPath(s string, path string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+var Segmenter sego.Segmenter
+
+func InitSegmenter() {
+	// load dictionary
+	Segmenter.LoadDictionary("dictionary/dictionary.txt")
+}
+
+// SplitWords split string into single words.
+func SplitWords(str string) []string {
+	if Segmenter.Dictionary() != nil {
+		var res []string
+		res = sego.SegmentsToSlice(Segmenter.Segment([]byte(str)), true)
+		return res
+	}
+	return []string{}
+}
+
+func ConvertToPinyin(content string) string {
+	return slugify.Slugify(content)
 }

@@ -758,7 +758,7 @@ class AdminMember extends React.Component {
         {
           this.state.loading ?
             <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
-              {i18next.t("member:Data is loading")}
+              {i18next.t("loading:Data is loading...")}
             </div> :
             <div id="all-members">
               {

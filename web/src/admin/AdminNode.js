@@ -860,7 +860,7 @@ class AdminNode extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("node:Node management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("node:Total nodes")}{" "}&nbsp;</span>
-            <strong className="gray">{this.state.nodes.length}</strong>
+            <strong className="gray">{this.state.nodes === null ? 0 : this.state.nodes.length}</strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
@@ -871,8 +871,14 @@ class AdminNode extends React.Component {
         </div>
         <div id="all-nodes">
           {
-            this.state.nodes.length !== 0 ?
-              this.state.nodes.map(node => this.renderNodes(node)) : null
+            this.state.nodes !== null && this.state.nodes.length !== 0 ?
+              this.state.nodes.map(node => this.renderNodes(node)) :
+              <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
+                {
+                  this.state.nodes === null ?
+                    i18next.t("node:No node yet") : i18next.t("loading:Data is loading...")
+                }
+              </div>
           }
         </div>
       </div>

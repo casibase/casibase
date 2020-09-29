@@ -686,7 +686,7 @@ class AdminPlane extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("plane:Plane management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("plane:Total planes")}{" "}&nbsp;</span>
-            <strong className="gray">{this.state.planes.length}</strong>
+            <strong className="gray">{this.state.planes === null ? 0 : this.state.planes.length}</strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
@@ -705,8 +705,14 @@ class AdminPlane extends React.Component {
         }
         <div id="all-planes">
           {
-            this.state.planes.length !== 0 ?
-              this.state.planes.map(plane => this.renderPlanes(plane)) : null
+            this.state.planes !== null && this.state.planes.length !== 0 ?
+              this.state.planes.map(plane => this.renderPlanes(plane)) :
+              <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
+                {
+                  this.state.planes === null ?
+                    i18next.t("plane:No plant yet") : i18next.t("loading:Data is loading...")
+                }
+              </div>
           }
         </div>
       </div>

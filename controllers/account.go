@@ -829,7 +829,7 @@ var accessKeySecret = beego.AppConfig.String("accessKeySecret")
 var roleArn = beego.AppConfig.String("roleArn")
 
 func (c *APIController) GetMemberStsToken() {
-	sessionName := c.GetSessionUser()
+	sessionName := util.ConvertToPinyin(c.GetSessionUser())
 
 	if accessKeyID == "" {
 		resp := Response{Status: "fail", Msg: "Missing sts config."}

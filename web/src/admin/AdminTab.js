@@ -506,7 +506,7 @@ class AdminTab extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("tab:Tab management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("tab:Total tabs")}{" "}&nbsp;</span>
-            <strong className="gray">{this.state.tabs.length}</strong>
+            <strong className="gray">{this.state.tabs === null ? 0 : this.state.tabs.length}</strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
@@ -525,8 +525,14 @@ class AdminTab extends React.Component {
         }
         <div id="all-tabs">
           {
-            this.state.tabs.length !== 0 ?
-              this.state.tabs.map(tab => this.renderTabs(tab)) : null
+            this.state.tabs !== null && this.state.tabs.length !== 0 ?
+              this.state.tabs.map(tab => this.renderTabs(tab)) :
+              <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
+                {
+                  this.state.tabs === null ?
+                    i18next.t("tab:No tab yet") : i18next.t("loading:Data is loading...")
+                }
+              </div>
           }
         </div>
       </div>

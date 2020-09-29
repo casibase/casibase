@@ -123,3 +123,8 @@ type AdminPlaneInfo struct {
 	NodesNum int     `json:"nodesNum"`
 	Nodes    []*Node `json:"nodes"`
 }
+
+type AdminTopicInfo struct {
+	Topic
+	Deleted bool `json:"deleted"`
+}
