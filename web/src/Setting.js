@@ -24,7 +24,6 @@ import oss from "ali-oss";
 import * as i18n from "./i18n"
 import i18next from "i18next";
 
-const pinyin = require('pinyin');
 const pangu = require("pangu");
 
 export let ServerUrl = '';
@@ -163,20 +162,10 @@ export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
   OSSClient = newClient;
 }
 
-export function convertToPinyin(content) {
-  content = pinyin(content, {style: pinyin.STYLE_NORMAL, heteronym: false, segment: false});
-  let pinyinData = "";
-  for(let i = 0; i < content.length; i++){
-    pinyinData = pinyinData + content[i][0];
-  }
-
-  return pinyinData;
-}
-
 export function initOSSClient(id) {
   getOSSClient(initNewOSSClient);
   let url, fileUrl;
-  id = convertToPinyin(id);
+  id = encodeURI(id);
   if (Conf.OSSCustomDomain.length !== 0) {
     url = `https://${Conf.OSSCustomDomain}/${Conf.OSSBasicPath}/${id}`;
   } else {
@@ -239,7 +228,9 @@ export function getFormattedContent(content, spacing) {
     return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `;
   })
   if (spacing) {
-    return pangu.spacing(formattedContent);
+    return pangu.spacing(formattedContent).replace(/\[(.*?)]\((.*?)\)/g, function(w) {
+      return w.replace(/ /g, "");
+    });
   }
   return formattedContent;
 }

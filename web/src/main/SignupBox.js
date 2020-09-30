@@ -90,6 +90,22 @@ class SignupBox extends React.Component {
     }
   }
 
+  signOut() {
+    if (!window.confirm(i18next.t("signout:Are you sure to log out?"))) {
+      return;
+    }
+
+    AccountBackend.signout()
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.props.onSignout();
+          Setting.goToLink("/signout");
+        } else {
+          Setting.goToLink("/signout");
+        }
+      });
+  }
+
   clearMessage() {
     this.setState({
       message: "",
@@ -100,7 +116,7 @@ class SignupBox extends React.Component {
     let problems = [];
 
     if (this.state.message !== "") {
-      problems.push(i18next.t(`error:${this.state.message}`));
+      problems.push(this.state.message);
     }
 
     if (problems.length === 0) {
@@ -108,17 +124,27 @@ class SignupBox extends React.Component {
     }
 
     return (
-      <div className="problem" onClick={() => this.clearMessage()}>
+      <div className="problem" onClick={() => this.clearMessage()} >
         {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
           {
             problems.map((problem, i) => {
-              return <li>{problem}</li>;
+              if (problem === "Please sign out before sign up") {
+                return (
+                  <li>
+                    {i18next.t(`error:${this.state.message}`)}{" "}&nbsp;{" "}
+                    <a href="#;" onClick={() => this.signOut()}>
+                      {i18next.t("signout:Click to sign out")}
+                    </a>
+                  </li>
+                );
+              }
+              return <li>{i18next.t(`error:${problem}`)}</li>;
             })
           }
         </ul>
       </div>
-    )
+    );
   }
 
   sendValidateCode() {
@@ -223,7 +249,7 @@ class SignupBox extends React.Component {
           Setting.goToLink("/");
         } else {
           this.setState({
-            message: i18next.t("signup:"+res?.msg)
+            message: res?.msg
           });
         }
       });

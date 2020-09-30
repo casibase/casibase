@@ -76,7 +76,7 @@ func (c *APIController) Signup() {
 	var resp Response
 
 	if c.GetSessionUser() != "" {
-		resp = Response{Status: "error", Msg: "errorSignoutBeforeSignup", Data: c.GetSessionUser()}
+		resp = Response{Status: "error", Msg: "Please sign out before sign up", Data: c.GetSessionUser()}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
@@ -213,7 +213,7 @@ func (c *APIController) Signin() {
 	var resp Response
 
 	if c.GetSessionUser() != "" {
-		resp = Response{Status: "error", Msg: "errorSignoutBeforeSignin", Data: c.GetSessionUser()}
+		resp = Response{Status: "error", Msg: "Please sign out before sign in", Data: c.GetSessionUser()}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
@@ -279,7 +279,7 @@ func (c *APIController) GetAccount() {
 	var resp Response
 
 	if c.GetSessionUser() == "" {
-		resp = Response{Status: "error", Msg: "errorSigninFirst", Data: c.GetSessionUser()}
+		resp = Response{Status: "error", Msg: "Please sign in first", Data: c.GetSessionUser()}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
