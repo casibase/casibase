@@ -152,19 +152,19 @@ class App extends Component {
         <Route exact path="/signup">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox />
+            <SignupBox onSignout={this.onSignout.bind(this)} />
           </div>
         </Route>
         <Route exact path="/signup/:signupMethod">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox account={this.state.account} />
+            <SignupBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
           </div>
         </Route>
         <Route exact path="/signin">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SigninBox onSignin={this.onSignin.bind(this)} />
+            <SigninBox onSignin={this.onSignin.bind(this)} onSignout={this.onSignout.bind(this)} />
             {pcBrowser ? null : <div className="sep5" />}
             {pcBrowser ? null : <RightSigninBox />}
           </div>

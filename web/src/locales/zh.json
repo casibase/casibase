@@ -53,7 +53,8 @@
   },
   "signout":
   {
-    "Are you sure to log out?": "确定要登出？"
+    "Are you sure to log out?": "确定要登出？",
+    "Click to sign out": "点击登出"
   },
   "edit":
   {
@@ -707,6 +708,8 @@
     "The plane you are trying to view does not exist": "你即将访问的位面不存在",
     "Plane ID existed": "位面ID已存在",
     "Please input plane ID": "请填写位面ID",
-    "Please input plane name": "请填写位面名称"
+    "Please input plane name": "请填写位面名称",
+    "Please sign out before sign up": "注册前请先登出",
+    "Please sign out before sign in": "登录前请先登出"
   }
 }

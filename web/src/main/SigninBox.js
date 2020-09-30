@@ -74,6 +74,22 @@ class SigninBox extends React.Component {
       });
   }
 
+  signOut() {
+    if (!window.confirm(i18next.t("signout:Are you sure to log out?"))) {
+      return;
+    }
+
+    AccountBackend.signout()
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.props.onSignout();
+          Setting.goToLink("/signout");
+        } else {
+          Setting.goToLink("/signout");
+        }
+      });
+  }
+
   clearMessage() {
     this.setState({
       message: "",
@@ -94,7 +110,7 @@ class SigninBox extends React.Component {
     }
 
     if (this.state.message !== "") {
-      problems.push(i18next.t(`error:${this.state.message}`));
+      problems.push(this.state.message);
     }
 
     if (problems.length === 0) {
@@ -102,17 +118,27 @@ class SigninBox extends React.Component {
     }
 
     return (
-      <div className="problem">
+      <div className="problem" onClick={this.clearMessage.bind(this)} >
         {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
           {
             problems.map((problem, i) => {
-              return <li>{problem}</li>;
+              if (problem === "Please sign out before sign in") {
+                return (
+                  <li>
+                    {i18next.t(`error:${this.state.message}`)}{" "}&nbsp;{" "}
+                    <a href="#;" onClick={() => this.signOut()}>
+                      {i18next.t("signout:Click to sign out")}
+                    </a>
+                  </li>
+                );
+              }
+              return <li>{i18next.t(`error:${problem}`)}</li>;
             })
           }
         </ul>
       </div>
-    )
+    );
   }
 
   renderMessage() {
@@ -121,7 +147,7 @@ class SigninBox extends React.Component {
     }
 
     return (
-      <div className="message" onClick={this.clearMessage.bind(this)}>
+      <div className="message" onClick={this.clearMessage.bind(this)} >
         <li className="fa fa-exclamation-triangle" />
         &nbsp;{" "}{i18next.t("error:We had a problem when you signed in, please try again")}
       </div>

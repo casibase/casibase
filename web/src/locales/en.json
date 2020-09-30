@@ -53,7 +53,8 @@
   },
   "signout":
   {
-    "Are you sure to log out?": "Are you sure to log out?"
+    "Are you sure to log out?": "Are you sure to log out?",
+    "Click to sign out": "Click to sign out"
   },
   "edit":
   {
@@ -707,6 +708,8 @@
     "The plane you are trying to view does not exist": "The plane you are trying to view does not exist",
     "Plane ID existed": "Plane ID existed",
     "Please input plane ID": "Please input plane ID",
-    "Please input plane name": "Please input plane name"
+    "Please input plane name": "Please input plane name",
+    "Please sign out before sign up": "Please sign out before sign up",
+    "Please sign out before sign in": "Please sign out before sign in"
   }
 }
