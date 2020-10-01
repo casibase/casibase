@@ -28,10 +28,11 @@ export function uploadMdFile(addMsg) {
   const stdImageExt = ["png", "jpg", "gif", "jpeg"]
   /* eslint-disable */inlineAttachment.prototype.onFileUploadResponse = function(fileName, fileUrl) {
     let newValue = this.settings.urlText.replace('file', fileName);
-    let fileIndex = fileName.lastIndexOf("."); // find the ext of the file, choosing []() or ![]()
-    let ext = fileName.substr(fileIndex+1);
-    let index = stdImageExt.indexOf(ext);
-    if(index < 0) {
+    let fileType = Setting.getFileType(fileName); // find the ext of the file, choosing []() or ![]()
+    //let fileIndex = fileName.lastIndexOf(".");
+    //let ext = fileName.substr(fileIndex+1);
+    //let index = stdImageExt.indexOf(ext);
+    if(fileType.fileType === "file") {
       newValue = newValue.substring(1);
     }
     newValue = newValue.replace('{filename}', fileUrl)

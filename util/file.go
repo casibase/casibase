@@ -35,10 +35,13 @@ func FileType(fileName string) string {
 		return "file"
 	}
 
+	lowerCase := strings.ToLower(ext)
+
 	for _, v := range stdImageExt {
-		if v == ext {
+		if v == lowerCase {
 			return "image"
 		}
 	}
+
 	return "file"
 }

@@ -165,7 +165,7 @@ export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
 export function initOSSClient(id) {
   getOSSClient(initNewOSSClient);
   let url, fileUrl;
-  id = encodeURI(id);
+  //id = encodeURI(id);
   if (Conf.OSSCustomDomain.length !== 0) {
     url = `https://${Conf.OSSCustomDomain}/${Conf.OSSBasicPath}/${id}`;
   } else {
@@ -248,7 +248,8 @@ export function getFileType(fileName) {
   let fileType = "image";
   let fileIndex = fileName.lastIndexOf(".");
   let ext = fileName.substr(fileIndex+1);
-  let index = stdImageExt.indexOf(ext);
+  let lowerCase = ext.toLowerCase();
+  let index = stdImageExt.indexOf(lowerCase);
   if(index < 0) {
     fileType = "file";
   }
