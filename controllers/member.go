@@ -80,6 +80,14 @@ func (c *APIController) UpdateMemberAvatar() {
 	c.ServeJSON()
 }
 
+func (c *APIController) UpdateMemberEmailReminder() {
+	memberId := c.GetSessionUser()
+	status := c.Input().Get("status")
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.ChangeMemberEmailReminder(memberId, status)}
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateMember() {
 	id := c.Input().Get("id")
 

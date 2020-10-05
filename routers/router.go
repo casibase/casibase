@@ -75,6 +75,7 @@ func initAPI() {
 	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
 	beego.Router("/api/update-member-language", &controllers.APIController{}, "POST:UpdateMemberLanguage")
 	beego.Router("/api/get-member-language", &controllers.APIController{}, "GET:GetMemberLanguage")
+	beego.Router("/api/update-member-email-reminder", &controllers.APIController{}, "POST:UpdateMemberEmailReminder")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")

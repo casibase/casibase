@@ -56,6 +56,13 @@ export function updateMemberAvatar(avatar) {
   }).then(res => res.json());
 }
 
+export function updateMemberEmailReminder(status) {
+  return fetch(`${Setting.ServerUrl}/api/update-member-email-reminder?status=${status}`, {
+    method: "POST",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function updateMember(id, member) {
   return fetch(`${Setting.ServerUrl}/api/update-member?id=${id}`, {
     method: 'POST',

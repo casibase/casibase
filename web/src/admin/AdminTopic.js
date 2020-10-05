@@ -394,8 +394,14 @@ class AdminTopic extends React.Component {
     } else {
       status = 2;
     }
-    if (homePageTopTime !== "" || tabTopTime !== "" || nodeTopTime !== "") {
-      status = 3; // topping
+    if (nodeTopTime !== "") {
+      status = 3; // node to[ping
+    }
+    if (tabTopTime !== "") {
+      status = 4; // tab topping
+    }
+    if (homePageTopTime !== "") {
+      status = 5; // home page topping
     }
 
     switch (status) {
@@ -414,7 +420,19 @@ class AdminTopic extends React.Component {
       case 3:
         return (
           <span className="positive">
-            {i18next.t("topic:Topping")}
+            {i18next.t("topic:Node Topping")}
+          </span>
+        );
+      case 4:
+        return (
+          <span className="positive">
+            {i18next.t("topic:Tab Topping")}
+          </span>
+        );
+      case 5:
+        return (
+          <span className="positive">
+            {i18next.t("topic:Homepage Topping")}
           </span>
         );
       default:
@@ -444,7 +462,12 @@ class AdminTopic extends React.Component {
                 </a>
               </span>
             </td>
-            <td width="200" align="center">
+            <td width="100" align="center">
+              <a href={`/member/${topic?.author}`}>
+                {topic?.author}
+              </a>
+            </td>
+            <td width="100" align="center">
               <a href={`/admin/topic/edit/${topic?.id}`}>
                 {i18next.t("admin:Manage")}
               </a>
@@ -689,7 +712,7 @@ class AdminTopic extends React.Component {
           <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Topic management")}
           <div className="fr f12">
-            <span className="snow">{i18next.t("topic:Total topics")}{" "}&nbsp;</span>
+            <span className="snow">{i18next.t("topic:Total Topics")}{" "}&nbsp;</span>
             <strong className="gray">{this.state.topicsNum}</strong>
           </div>
         </div>

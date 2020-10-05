@@ -75,3 +75,27 @@ func SendRegistrationMail(email, validateCode string) error {
 	err := d.DialAndSend(mail)
 	return err
 }
+
+// SendRemindMail sends mail with remind information.
+func SendRemindMail(title, content, topicId, email, domain string) error {
+	port, _ := strconv.Atoi(mailConn["port"])
+
+	mail := gomail.NewMessage()
+	name := beego.AppConfig.String("appname")
+	body := content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-
+<br>
+You are receiving this because you are subscribed to this thread.
+<br> Reply to this email directly, 
+<a href="https://` + domain + "/t/" + topicId + `">view it on ` + name + `</a>` + `
+, or <a href="https://` + domain + `/settings/forum">unsubscribe` + `</a>`
+
+	mail.SetHeader("From", mail.FormatAddress(mailConn["user"], name))
+	mail.SetHeader("To", email)
+	mail.SetHeader("Subject", "Re: ["+name+"] "+title) // set subject
+	mail.SetBody("text/html", body)                    // set body
+
+	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+
+	err := d.DialAndSend(mail)
+	return err
+}

@@ -59,3 +59,7 @@ export const GithubRepo = "https://github.com/casbin/casbin-forum"
 export const Domain = "forum.casbin.com"
 
 export const DefaultLanguage = "en"
+
+//Default search engine
+//Support: baidu(www.baidu.com) | google(www.google.com) | cn-bing(cn.bing.com)
+export const DefaultSearchSite = "google"

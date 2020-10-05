@@ -182,8 +182,12 @@ class NodeBox extends React.Component {
   }
 
   showPageColumn() {
+    if (this.state.topicNum < this.state.limit) {
+      return null;
+    }
+
     return (
-      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} nodeId={this.state.nodeId} />
+      <PageColumn page={this.state.page} total={this.state.topicNum} url={this.state.url} nodeId={this.state.nodeId} />
     );
   }
 
