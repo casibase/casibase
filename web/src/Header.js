@@ -41,7 +41,19 @@ class Header extends React.Component {
 
   onKeyup(e) {
     if(e.keyCode === 13) {
-      window.open(`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`);
+      const searchSide = Conf.DefaultSearchSite;
+
+      switch (searchSide) {
+        case "baidu":
+          window.open(`https://www.baidu.com/s?q6=${Conf.Domain}/t&q3=${this.state.searchValue}`);
+          return;
+        case "bing":
+          window.open(`https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`);
+          return;
+        case "google":
+          window.open(`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`);
+          return;
+      }
     }
   }
 

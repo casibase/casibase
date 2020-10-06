@@ -165,12 +165,12 @@ func GetNodesByTab(id string) []*Node {
 	num := HomePageNodeNum
 
 	if id == "all" {
-		err := adapter.engine.Cols("id, name").Limit(num).Find(&nodes)
+		err := adapter.engine.Cols("id, name").Desc("sorter").Limit(num).Find(&nodes)
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		err := adapter.engine.Where("tab_id = ?", id).Cols("id, name").Limit(num).Find(&nodes)
+		err := adapter.engine.Where("tab_id = ?", id).Cols("id, name").Desc("sorter").Limit(num).Find(&nodes)
 		if err != nil {
 			panic(err)
 		}

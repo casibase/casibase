@@ -102,6 +102,9 @@ class AdminNode extends React.Component {
   }
 
   getNodeInfo() {
+    if (this.props.event === "new") {
+      this.initForm();
+    }
     if (this.state.nodeId === undefined) {
       return;
     }
@@ -129,20 +132,26 @@ class AdminNode extends React.Component {
 
   initForm() {
     let form = this.state.form;
-    form["id"] = this.state.nodeInfo?.id;
-    form["name"] = this.state.nodeInfo?.name;
-    form["createdTime"] = this.state.nodeInfo?.createdTime;
-    form["desc"] = this.state.nodeInfo?.desc;
-    form["image"] = this.state.nodeInfo?.image;
-    form["tab"] = this.state.nodeInfo?.tab;
-    form["parentNode"] = this.state.nodeInfo?.parentNode;
-    form["planeId"] = this.state.nodeInfo?.planeId;
-    form["hot"] = this.state.nodeInfo?.hot;
-    form["tab"] = this.state.nodeInfo?.tab;
-    form["moderators"] = this.state.nodeInfo?.moderators;
-    form["backgroundImage"] = this.state.nodeInfo?.backgroundImage;
-    form["backgroundColor"] = this.state.nodeInfo?.backgroundColor;
-    form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
+    if (this.props.event === "new") {
+      form["sorter"] = 1;
+    } else {
+      form["id"] = this.state.nodeInfo?.id;
+      form["name"] = this.state.nodeInfo?.name;
+      form["createdTime"] = this.state.nodeInfo?.createdTime;
+      form["desc"] = this.state.nodeInfo?.desc;
+      form["image"] = this.state.nodeInfo?.image;
+      form["tab"] = this.state.nodeInfo?.tab;
+      form["parentNode"] = this.state.nodeInfo?.parentNode;
+      form["planeId"] = this.state.nodeInfo?.planeId;
+      form["hot"] = this.state.nodeInfo?.hot;
+      form["tab"] = this.state.nodeInfo?.tab;
+      form["sorter"] = this.state.nodeInfo?.sorter;
+      form["moderators"] = this.state.nodeInfo?.moderators;
+      form["backgroundImage"] = this.state.nodeInfo?.backgroundImage;
+      form["backgroundColor"] = this.state.nodeInfo?.backgroundColor;
+      form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
+    }
+
     this.setState({
       form: form,
     });
@@ -215,12 +224,7 @@ class AdminNode extends React.Component {
       });
       return;
     }
-    if (this.state.form.parentNode === "" || this.state.form.parentNode === undefined) {
-      this.setState({
-        errorMessage: "Please select a parent node",
-      });
-      return;
-    }
+    // remove parent node no select error
     if (this.state.form.tab === "" || this.state.form.tab === undefined) {
       this.setState({
         errorMessage: "Please select a tab",
@@ -624,6 +628,14 @@ class AdminNode extends React.Component {
                         </td>
                       </tr> : null
                   }
+                  <tr>
+                    <td width="120" align="right">{i18next.t("node:Sorter")}</td>
+                    <td width="auto" align="left">
+                      <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={event => this.updateFormField("sorter", parseInt(event.target.value))}/>
+                      &nbsp;{" "}&nbsp;{" "}
+                      <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={event => this.updateFormField("sorter", parseInt(event.target.value))} />
+                    </td>
+                  </tr>
                   <tr>
                     <td width="120" align="right">{i18next.t("node:Parent node")}</td>
                     <td width="auto" align="left">

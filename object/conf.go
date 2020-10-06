@@ -33,15 +33,16 @@ var (
 	LatestNodeNum              = 20
 	HotNodeNum                 = 15
 	HotTopicNum                = 10
-	TopicEditableTime          = 10.0 //minutes
-	ReplyEditableTime          = 10.0 //minutes
-	ReplyDeletableTime         = 5.0  //minutes
-	NodeHitRecordExpiredTime   = 1    //month
-	TopicHitRecordExpiredTime  = 1    //day
-	ValidateCodeExpiredTime    = 20   //minutes
-	DefaultTopTopicTime        = 10   //minutes
+	TopicEditableTime          = 10.0 // minutes
+	ReplyEditableTime          = 10.0 // minutes
+	ReplyDeletableTime         = 5.0  // minutes
+	NodeHitRecordExpiredTime   = 1    // month
+	TopicHitRecordExpiredTime  = 1    // day
+	ValidateCodeExpiredTime    = 20   // minutes
+	DefaultTopTopicTime        = 10   // minutes
 	UseOAuthProxy              = false
 	DefaultUploadFileQuota     = 50
+	Domain                     = "forum.casbin.com" // domain
 
 	DefaultCronJobs = []*CronJob{
 		{

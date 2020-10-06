@@ -14,7 +14,6 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import Header from "./Header";
 import Avatar from "../Avatar";
 import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
@@ -37,9 +36,11 @@ class SettingsBox extends React.Component {
       form: {},
       avatar: null,
       showSuccess: false,
+      emailReminder: false,
       Setting_LIST: [
         {label: "Profile", value: "profile"},
         {label: "Avatar", value: "avatar"},
+        {label: "Forum", value: "forum"},
       ]
     };
     if (this.state.event === undefined) {
@@ -90,7 +91,7 @@ class SettingsBox extends React.Component {
       addition: addition,
       addition2: addition2,
       avatar: avatar,
-    }
+    };
   }
 
   postUsername() {
@@ -135,6 +136,17 @@ class SettingsBox extends React.Component {
       });
   }
 
+  updateMemberEmailReminder() {
+    MemberBackend.updateMemberEmailReminder(this.state.emailReminder)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.changeSuccess();
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+  }
+
   handelChangeAvatar(event) {
     this.setState({
       avatar: event.target.files[0]
@@ -158,8 +170,8 @@ class SettingsBox extends React.Component {
 
   renderSettingList(item){
     return (
-          <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</a>
-      )
+      <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</a>
+    );
   }
 
   renderHeader() {
@@ -183,14 +195,29 @@ class SettingsBox extends React.Component {
               &nbsp;{" "}
               {this.state.event === "profile" ? i18next.t("setting:Settings have been successfully saved") : null}
               {this.state.event === "avatar" ? i18next.t("setting:New avatar set successfully") : null}
+              {this.state.event === "forum" ? i18next.t("setting:Change forum setting successfully") : null}
             </div> : null
         }
       </div>
     );
   }
 
+  renderRadio() {
+    if (this.props.account === undefined) {
+      return;
+    }
+
+    return (
+      <td width="auto" align="left">
+        <input type="radio" onClick={() => this.setState({emailReminder: true})} defaultChecked={this.props.account?.emailReminder} name="reminder" />{i18next.t("setting:Open")}{" "}
+        <input type="radio" onClick={() => this.setState({emailReminder: false})} defaultChecked={!this.props.account?.emailReminder} name="reminder" />{i18next.t("setting:Close")}
+      </td>
+    );
+  }
+
   render() {
     const account = this.props.account;
+    const pcBrowser = Setting.PcBrowser;
 
     if (this.state.event === "username") {
       return (
@@ -266,6 +293,38 @@ class SettingsBox extends React.Component {
                 <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is forbidden to use any vulgar or sensitive pictures as avatars")}</li>
                 <li>{i18next.t("setting:If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members")}</li>
                 <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited")}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    if (this.state.event === "forum") {
+      return (
+        <div>
+          {this.renderHeader()}
+          <div className="box" data-select2-id="11">
+            <div className="cell">
+              <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                <tbody>
+                <tr>
+                  <td width="120" align="right">{i18next.t("setting:Email Reminder")}</td>
+                  {this.renderRadio()}
+                </tr>
+                <tr>
+                  <td width="120" align="right"></td>
+                  <td width="auto" align="left"><input type="hidden" name="once"/>
+                    <input type="submit" className="super normal button" onClick={() => this.updateMemberEmailReminder()} value={i18next.t("setting:Save Settings")} />
+                  </td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="inner markdown_body">
+              <p>{i18next.t("setting:Description on email reminder")}</p>
+              <ul>
+                <li>{Setting.getForumName()}{" "}{i18next.t("setting:Will send you a email when you receive a new reply")}</li>
               </ul>
             </div>
           </div>

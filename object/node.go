@@ -28,6 +28,7 @@ type Node struct {
 	TabId            string   `xorm:"varchar(100)" json:"tab"`
 	ParentNode       string   `xorm:"varchar(200)" json:"parentNode"`
 	PlaneId          string   `xorm:"varchar(50)" json:"planeId"`
+	Sorter           int      `xorm:"int" json:"sorter"`
 	Hot              int      `xorm:"int" json:"hot"`
 	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
 }
@@ -110,7 +111,7 @@ func GetNodeTopicNum(id string) int {
 
 func GetNodeFromTab(tab string) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Where("tab_id = ?", tab).Find(&nodes)
+	err := adapter.engine.Where("tab_id = ?", tab).Desc("sorter").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +121,7 @@ func GetNodeFromTab(tab string) []*Node {
 
 func GetNodeFromPlane(plane string) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Where("plane_id = ?", plane).Cols("id, name").Find(&nodes)
+	err := adapter.engine.Where("plane_id = ?", plane).Cols("id, name").Desc("sorter").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}

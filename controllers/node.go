@@ -85,7 +85,7 @@ func (c *APIController) AddNode() {
 		panic(err)
 	}
 
-	if node.Id == "" || node.Name == "" || node.ParentNode == "" || node.TabId == "" || node.PlaneId == "" {
+	if node.Id == "" || node.Name == "" || node.TabId == "" || node.PlaneId == "" {
 		resp = Response{Status: "fail", Msg: "Some information is missing"}
 		c.Data["json"] = resp
 		c.ServeJSON()

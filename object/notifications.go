@@ -18,6 +18,7 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/casbin/casbin-forum/service"
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -203,6 +204,13 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 			Status:           1,
 		}
 		_ = AddNotification(&notification)
+		// send remind email
+		email := GetMemberMail(receiverId)
+		reminder := GetMemberEmailReminder(receiverId)
+		if email != "" && reminder {
+			topicIdStr := util.IntToString(topicId)
+			service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+		}
 	}
 
 	delete(memberMap, receiverId)
@@ -220,6 +228,13 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 				Status:           1,
 			}
 			_ = AddNotification(&notification)
+			// send remind email
+			email := GetMemberMail(receiverId)
+			reminder := GetMemberEmailReminder(receiverId)
+			if email != "" && reminder {
+				topicIdStr := util.IntToString(topicId)
+				service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+			}
 		}()
 	}
 	wg.Wait()
@@ -260,6 +275,13 @@ func AddTopicNotification(objectId int, author, content string) {
 				Status:           1,
 			}
 			_ = AddNotification(&notification)
+			// send remind email
+			email := GetMemberMail(k)
+			reminder := GetMemberEmailReminder(k)
+			if email != "" && reminder {
+				topicIdStr := util.IntToString(objectId)
+				service.SendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
+			}
 		}()
 	}
 	wg.Wait()

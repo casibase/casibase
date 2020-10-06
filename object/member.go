@@ -47,6 +47,7 @@ type Member struct {
 	QQAccount         string `xorm:"qq_account varchar(100)" json:"qqAccount"`
 	QQOpenId          string `xorm:"qq_open_id varchar(100)" json:"-"`
 	QQVerifiedTime    string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
+	EmailReminder     bool   `xorm:"bool" json:"emailReminder"`
 	CheckinDate       string `xorm:"varchar(20)" json:"-"`
 	Status            int    `xorm:"int" json:"-"`
 }
@@ -201,6 +202,27 @@ func UpdateMemberInfo(id string, member *Member) bool {
 	return true
 }
 
+// ChangeMemberEmailReminder change member's email reminder status
+func ChangeMemberEmailReminder(id, status string) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	member := new(Member)
+	if status == "true" {
+		member.EmailReminder = true
+	} else {
+		member.EmailReminder = false
+	}
+
+	_, err := adapter.engine.Id(id).MustCols("email_reminder").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
 func UpdateMemberAvatar(id string, avatar string) bool {
 	if GetMember(id) == nil {
 		return false
@@ -264,6 +286,36 @@ func DeleteMember(id string) bool {
 	}
 
 	return affected != 0
+}
+
+// GetMemberMail return member's email.
+func GetMemberMail(id string) string {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("email").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.Email
+	} else {
+		return ""
+	}
+}
+
+// GetMemberEmailReminder return member's email reminder status.
+func GetMemberEmailReminder(id string) bool {
+	member := Member{}
+	existed, err := adapter.engine.Where("id = ?", id).Cols("email_reminder").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.EmailReminder
+	} else {
+		return false
+	}
 }
 
 func GetMail(email string) *Member {
