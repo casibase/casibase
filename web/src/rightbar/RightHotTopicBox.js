@@ -52,13 +52,13 @@ class RightHotTopicBox extends React.Component {
             <td width="10"></td>
             <td width="auto" valign="middle">
               <span className="item_hot_topic_title">
-                <a href={`/t/${topic?.id}`}>{pangu.spacing(topic?.title)}</a>
+                <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(topic?.title)}</a>
               </span>
             </td>
           </tr>
         </table>
       </div>
-    )
+    );
   }
 
   render() {
@@ -71,7 +71,7 @@ class RightHotTopicBox extends React.Component {
           })
         }
       </div>
-    )
+    );
   }
 }
 

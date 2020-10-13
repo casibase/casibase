@@ -25,7 +25,7 @@ type LatestReply struct {
 }
 
 type TopicWithAvatar struct {
-	Topic
+	Topic         `xorm:"extends"`
 	Avatar        string `json:"avatar"`
 	ThanksStatus  bool   `json:"thanksStatus"`
 	Editable      bool   `json:"editable"`
@@ -33,7 +33,7 @@ type TopicWithAvatar struct {
 }
 
 type NodeTopic struct {
-	Topic
+	Topic         `xorm:"extends"`
 	Avatar        string `json:"avatar"`
 	ThanksStatus  bool   `json:"thanksStatus"`
 	Editable      bool   `json:"editable"`

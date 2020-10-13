@@ -35,19 +35,19 @@ class RecentTopicsBox extends React.Component {
       temp: 0,
       url: ""
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1
+      this.state.page = 1;
     }else {
-      this.state.page = parseInt(this.state.p)
+      this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/recent`
+    this.state.url = `/recent`;
   }
 
   componentDidMount() {
-    this.getTopics()
+    this.getTopics();
   }
 
   getTopics() {
@@ -72,7 +72,7 @@ class RecentTopicsBox extends React.Component {
 
     return (
       <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url}/>
-    )
+    );
   }
 
   render() {
@@ -89,7 +89,7 @@ class RecentTopicsBox extends React.Component {
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         {this.showPageColumn()}
       </div>
-    )
+    );
   }
 }
 

@@ -45,7 +45,7 @@ class Header extends React.Component {
 
       switch (searchSide) {
         case "baidu":
-          window.open(`https://www.baidu.com/s?q6=${Conf.Domain}/t&q3=${this.state.searchValue}`);
+          window.open(`https://www.baidu.com/s?q6=${Conf.Domain}&q3=${this.state.searchValue}`);
           return;
         case "bing":
           window.open(`https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`);
@@ -179,6 +179,7 @@ class Header extends React.Component {
               <div><a href="/my/nodes" className="top">{i18next.t("bar:Nodes")}</a></div>
               <div><a href="/my/topics" className="top">{i18next.t("bar:Topics")}</a></div>
               <div><a href="/settings" className="top">{i18next.t("general:Setting")}</a></div>
+              <div><a href="/admin" className="top">{i18next.t("general:Admin")}</a></div>
               <div className="menu_sep"></div>
               <div>
                 <a href="/i" className="top">

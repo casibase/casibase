@@ -72,22 +72,29 @@ func GetCreatedTopicsNum(memberId string) int {
 }
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
-	topics := []*Topic{}
-	err := adapter.engine.Desc("home_page_top_time").Desc("last_reply_time").Desc("created_time").And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	topics := []*TopicWithAvatar{}
+	err := adapter.engine.Table("topic").Join("INNER", "member", "member.id = topic.author").
+		Where("topic.deleted = ?", 0).
+		Desc("topic.home_page_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
+		Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
+		Limit(limit, offset).Find(&topics)
+
 	if err != nil {
 		panic(err)
 	}
-
-	res := []*TopicWithAvatar{}
-	for _, v := range topics {
-		temp := TopicWithAvatar{
-			Topic:  *v,
-			Avatar: GetMemberAvatar(v.Author),
+	/*
+		res := []*TopicWithAvatar{}
+		for _, v := range topics {
+			temp := TopicWithAvatar{
+				Topic:  *v,
+				Avatar: GetMemberAvatar(v.Author),
+			}
+			res = append(res, &temp)
 		}
-		res = append(res, &temp)
-	}
 
-	return res
+		return res
+	*/
+	return topics
 }
 
 // GetTopicsAdmin *sort: 1 means Asc, 2 means Desc, 0 means no effect.
@@ -280,24 +287,22 @@ func GetTopicNodeId(id int) string {
 }
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
-	topics := []*Topic{}
-	err := adapter.engine.Desc("node_top_time").Desc("last_reply_time").Desc("created_time").Where("node_id = ?", nodeId).And("deleted = ?", 0).Limit(limit, offset).Find(&topics)
+	topics := []*NodeTopic{}
+	err := adapter.engine.Table("topic").Join("INNER", "member", "member.id = topic.author").
+		Where("topic.node_id = ?", nodeId).And("topic.deleted = ?", 0).
+		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
+		Cols("topic.*, member.avatar").
+		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	res := []*NodeTopic{}
 	for _, v := range topics {
-		temp := NodeTopic{
-			Topic:         *v,
-			Avatar:        GetMemberAvatar(v.Author),
-			ContentLength: len(v.Content),
-		}
-		temp.Content = ""
-		res = append(res, &temp)
+		v.ContentLength = len(v.Content)
+		v.Content = ""
 	}
 
-	return res
+	return topics
 }
 
 func UpdateTopic(id int, topic *Topic) bool {
@@ -451,26 +456,23 @@ func ChangeTopicLastReplyUser(topicId int, memberId string, updateTime bool) boo
 }
 
 func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
-	topics := []*Topic{}
-	res := []*TopicWithAvatar{}
+	topics := []*TopicWithAvatar{}
 
 	if tab == "all" {
-		res = GetTopics(limit, offset)
+		topics = GetTopics(limit, offset)
 	} else {
-		err := adapter.engine.Table("topic").Join("INNER", "node", "topic.node_id = node.id").Where("node.tab_id = ?", tab).Where("deleted = ?", 0).Desc("tab_top_time").Desc("topic.last_reply_time").Omit("content").Limit(limit, offset).Find(&topics)
+		err := adapter.engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").Join("INNER", "member", "member.id = topic.author").
+			Where("node.tab_id = ?", tab).And("topic.deleted = ?", 0).
+			Desc("topic.tab_top_time").Desc("topic.last_reply_time").
+			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
+			Limit(limit, offset).Find(&topics)
+
 		if err != nil {
 			panic(err)
 		}
-		for _, v := range topics {
-			temp := TopicWithAvatar{
-				Topic:  *v,
-				Avatar: GetMemberAvatar(v.Author),
-			}
-			res = append(res, &temp)
-		}
 	}
 
-	return res
+	return topics
 }
 
 func UpdateTopicHotInfo(topicId string, hot int) bool {

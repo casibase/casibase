@@ -51,7 +51,7 @@ class NodeBox extends React.Component {
     this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1;
-    }else {
+    } else {
       this.state.page = parseInt(this.state.p);
     }
 
@@ -81,7 +81,7 @@ class NodeBox extends React.Component {
             topicNum: res?.data,
             favoritesNum: res?.data2
           });
-        }else {
+        } else {
           Setting.showMessage("error", res.msg);
         }
       });
@@ -96,7 +96,7 @@ class NodeBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-        }else {
+        } else {
           Setting.showMessage("error", res.msg);
         }
       });
@@ -123,7 +123,7 @@ class NodeBox extends React.Component {
             favoritesStatus: res.data,
           });
           Setting.refresh();
-        }else {
+        } else {
           Setting.showMessage("error", res.msg);
         }
       });
@@ -137,7 +137,7 @@ class NodeBox extends React.Component {
             favoritesStatus: !res.data,
           });
           Setting.refresh();
-        }else {
+        } else {
           Setting.showMessage("error", res.msg);
         }
       });
@@ -314,7 +314,7 @@ class NodeBox extends React.Component {
     let from, end;
     if (this.state.topicNum !== 0) {
       from = (page - 1) * limit + 1;
-    }else {
+    } else {
       from = 0;
     }
     end = (page - 1) * limit + this.state.topics.length;

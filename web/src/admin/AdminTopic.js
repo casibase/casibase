@@ -454,7 +454,7 @@ class AdminTopic extends React.Component {
           <tr>
             <td width={pcBrowser ? "200" : "auto"} align="left">
               <span className="gray">
-                <a href={`/t/${topic?.id}`} target="_blank">
+                <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
                   {
                     topic?.title.length > 30 ?
                       topic?.title.slice(0, 30) + "..." : topic?.title
@@ -554,7 +554,7 @@ class AdminTopic extends React.Component {
                         </a>
                       </span>
                       &nbsp;{" "}&nbsp;{" "}
-                      <a href={`/move/topic/${topic?.id}`} target="_blank">
+                      <a href={`/move/topic/${topic?.id}`} style={{fontWeight: "bolder"}} target="_blank">
                         {i18next.t("topic:Move topic")}
                       </a>
                     </td>
@@ -657,7 +657,7 @@ class AdminTopic extends React.Component {
                     {i18next.t("topic:Title")}
                   </td>
                   <td width="500" align="left">
-                    <a href={`/t/${topic?.id}`} target="_blank">
+                    <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
                       {topic?.title}
                     </a>
                   </td>

@@ -47,7 +47,7 @@ class SettingsBox extends React.Component {
       this.state.event = "profile";
     }
     if (this.state.event === "avatar") {
-      const params = new URLSearchParams(this.props.location.search)
+      const params = new URLSearchParams(this.props.location.search);
       this.state.showSuccess = params.get("success");
     }
 
@@ -225,25 +225,25 @@ class SettingsBox extends React.Component {
           <div className="header">
             <a href="/">{Setting.getForumName()}</a>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <a href="/settings">Settings</a> <span className="chevron">&nbsp;›&nbsp;</span> Set Username
+            <a href="/settings">{i18next.t("setting:Settings")}</a> <span className="chevron">&nbsp;›&nbsp;</span>
+            {" "}{i18next.t("setting:Set Username")}
           </div>
           <div className="cell">
             <div className="topic_content">
-              Welcome to {Setting.getForumName()}, you just registered your {Setting.getForumName()} account through Google. Now please set a username here, you can only use half-width English letters and numbers. Other users can
-              send you a message through @ your account name. The user name cannot be changed after setting.
+              {i18next.t("setting:Welcome to")}{" "}{Setting.getForumName()}{" "}{i18next.t("setting:, you just registered your")}{" "}{Setting.getForumName()}{" "}{i18next.t("setting:account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.")}
             </div>
           </div>
           <div className="inner">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
               <tr>
-                <td width="120" align="right">Username</td>
+                <td width="120" align="right">{i18next.t("setting:Username")}</td>
                 <td width="auto" align="left">
                   <input type="text" className="sl" name="username" onChange={this.handelChange.bind(this)} autoComplete="off"/></td>
               </tr>
               <tr>
                 <td width="120" align="right"></td>
                 <td width="auto" align="left"><input type="hidden"/>
-                <input type="submit" className="super normal button" onClick={this.postUsername} value="save"/></td>
+                <input type="submit" className="super normal button" onClick={this.postUsername} value={i18next.t("setting:save")}/></td>
               </tr>
             </table>
           </div>
@@ -272,7 +272,7 @@ class SettingsBox extends React.Component {
                 </tr>
                 <tr>
                   <td width="120" align="right">{i18next.t("setting:Choose a picture file")}</td>
-                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png" onChange={(event) => this.handelChangeAvatar(event)} name="avatar" /></td>
+                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handelChangeAvatar(event)} name="avatar" /></td>
                 </tr>
                 <tr>
                   <td width="120" align="right"></td>
