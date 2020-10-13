@@ -42,8 +42,17 @@ class TopicBox extends React.Component {
       topic: [],
       topicThanksCost: 15,
       favoritesStatus: false,
-      defaultTopTopicTime: 10
+      defaultTopTopicTime: 10,
+      from: "/"
     };
+
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.from = params.get("from");
+    if (this.state.from === null) {
+      this.state.from = "/";
+    } else {
+      this.state.from = decodeURIComponent(this.state.from);
+    }
   }
 
   componentDidMount() {
@@ -74,7 +83,7 @@ class TopicBox extends React.Component {
 
   getFavoriteStatus() {
     if (this.state.event === "review") {
-      return
+      return;
     }
 
     FavoritesBackend.getFavoritesStatus(this.state.topicId, 1)
@@ -84,7 +93,7 @@ class TopicBox extends React.Component {
             favoritesStatus: res.data,
           });
         }else {
-          Setting.showMessage("error", res.msg)
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -110,9 +119,9 @@ class TopicBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-          Setting.refresh()
+          Setting.refresh();
         }else {
-          Setting.showMessage("error", res.msg)
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -124,9 +133,9 @@ class TopicBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
-          Setting.refresh()
+          Setting.refresh();
         }else {
-          Setting.showMessage("error", res.msg)
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -136,7 +145,7 @@ class TopicBox extends React.Component {
       TopicBackend.deleteTopic(this.state.topicId)
         .then((res) => {
           if (res) {
-            goToLink("/")
+            goToLink(this.state.from);
           }
         });
     }
@@ -147,11 +156,11 @@ class TopicBox extends React.Component {
       BalanceBackend.addThanks(id, 1)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh()
+            Setting.refresh();
           } else {
-            alert(res?.msg)
+            alert(res?.msg);
           }
-        })
+        });
     }
   }
 
@@ -199,7 +208,7 @@ class TopicBox extends React.Component {
             } else {
               alert(i18next.t(`error:${res?.msg}`));
             }
-          })
+          });
       }
     }
   }

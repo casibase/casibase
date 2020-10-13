@@ -118,7 +118,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Replied to you in")}{" "}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
               {" "}{i18next.t("notification:里回复了你")}
@@ -136,7 +136,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Mentioned you in")}{" "}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
               {" "}{i18next.t("notification:里提到了你")}
@@ -154,7 +154,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Mentioned you in topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
               {" "}{i18next.t("notification:里提到了你")}
@@ -168,7 +168,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Favorite you topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
             </span>
@@ -181,7 +181,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Thanks for you topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
             </span>
@@ -195,7 +195,7 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Thanks for your reply in topic")}{" "}›{""}
-              <a href={`/t/${notification?.objectId}`}>
+              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
               </a>
               {" "}{i18next.t("notification:里的回复")}

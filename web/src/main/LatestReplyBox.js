@@ -103,7 +103,7 @@ class LatestReplyBox extends React.Component {
                     <a href={`/member/${reply.author}`}>{" "}{reply.author}{" "}</a>
                     {" "}{i18next.t("member:'s topic")}{" "}
                     <span className="chevron">›</span>{" "}<a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
-                    <span className="chevron">›</span>{" "}<a href={`/t/${reply.topicId}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
+                    <span className="chevron">›</span>{" "}<a href={`/t/${reply.topicId}?from=${encodeURIComponent(window.location.href)}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
                   </span>
                 </td>
               </tr>

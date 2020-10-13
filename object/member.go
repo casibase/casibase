@@ -153,7 +153,7 @@ func GetMember(id string) *Member {
 
 func GetMemberAvatar(id string) string {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("avatar").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("avatar").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -257,7 +257,7 @@ func UpdateMemberLanguage(id string, language string) bool {
 
 func GetMemberLanguage(id string) string {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("language").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("language").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -291,7 +291,7 @@ func DeleteMember(id string) bool {
 // GetMemberMail return member's email.
 func GetMemberMail(id string) string {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("email").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("email").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -306,7 +306,7 @@ func GetMemberMail(id string) string {
 // GetMemberEmailReminder return member's email reminder status.
 func GetMemberEmailReminder(id string) bool {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("email_reminder").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("email_reminder").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -399,7 +399,7 @@ func LinkMemberAccount(memberId, field, value string) bool {
 
 func GetMemberCheckinDate(id string) string {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("checkin_date").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("checkin_date").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -425,7 +425,7 @@ func UpdateMemberCheckinDate(id, date string) bool {
 
 func CheckModIdentity(memberId string) bool {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", memberId).Cols("is_moderator").Get(&member)
+	existed, err := adapter.engine.Id(memberId).Cols("is_moderator").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -451,7 +451,7 @@ func UpdateMemberPassword(id, password string) bool {
 
 func GetMemberFileQuota(memberId string) int {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", memberId).Cols("file_quota").Get(&member)
+	existed, err := adapter.engine.Id(memberId).Cols("file_quota").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -485,7 +485,7 @@ func MemberPasswordLogin(information, password string) string {
 // GetMemberStatus returns member's account status, default 3(forbidden).
 func GetMemberStatus(id string) int {
 	member := Member{}
-	existed, err := adapter.engine.Where("id = ?", id).Cols("status").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("status").Get(&member)
 	if err != nil {
 		panic(err)
 	}

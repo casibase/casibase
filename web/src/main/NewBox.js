@@ -224,7 +224,7 @@ class NewBox extends React.Component {
                 onPaste={() => Tools.uploadMdFile()}
                 value={this.state.form.body}
                 onDrop={() => Tools.uploadMdFile()}
-                options={{mode: 'markdown', lineNumbers: true}}
+                options={{mode: 'markdown', lineNumbers: true, lineWrapping:true}}
                 onBeforeChange={(editor, data, value) => {
                   this.updateFormField("body", value);
                 }}

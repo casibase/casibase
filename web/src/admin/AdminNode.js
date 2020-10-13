@@ -19,6 +19,7 @@ import * as TabBackend from "../backend/TabBackend.js";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
 import * as Tools from "../main/Tools";
+import * as FileBackend from "../backend/FileBackend";
 import {Resizable} from "re-resizable";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import {SketchPicker} from "react-color"
@@ -129,6 +130,37 @@ class AdminNode extends React.Component {
         }
       });
   }
+
+  // upload pic
+  handelUploadImage(event) {
+    this.updateFormField("backgroundImage", i18next.t("file:Uploading..."));
+
+    let file = event.target.files[0]
+    let newClient, url, timestamp, path, fileName;
+    let fileType = Setting.getFileType(file.name);
+    newClient = Setting.OSSClient;
+    path = Setting.OSSFileUrl;
+    url = Setting.OSSUrl;
+    timestamp = Date.parse(new Date());
+    fileName = timestamp + '.' + fileType.ext;
+
+    let fileUrl = `${url}/${fileType.fileType}/${fileName}`;
+    let filePath = `${path}/${fileType.fileType}/${fileName}`; //path
+    newClient.multipartUpload(`${filePath}`, file).then(res => {
+      FileBackend.addFileRecord({fileName: file.name, filePath: filePath, fileUrl: fileUrl, size: file.size})
+        .then((res) => {
+          if (res?.status === 'ok') {
+            this.updateFormField("backgroundImage", fileUrl);
+          } else {
+            this.setState({
+              message: res?.msg,
+            });
+          }
+        })
+    }).catch(error => this.setState({
+      message: error,
+    }));
+}
 
   initForm() {
     let form = this.state.form;
@@ -464,6 +496,10 @@ class AdminNode extends React.Component {
   }
 
   render() {
+    if (this.props.account !== undefined) {
+      Setting.initOSSClient(this.props.account?.id);
+    }
+
     const newNode = (this.props.event === "new");
 
     if (this.state.nodeId !== undefined || newNode) {
@@ -781,6 +817,8 @@ class AdminNode extends React.Component {
                   </td>
                   <td width="auto" align="left">
                     <input type="text" className="sl" name="image" id="change_image" value={this.state.form?.backgroundImage===undefined ? "" : this.state.form?.backgroundImage} onChange={event => this.updateFormField("backgroundImage", event.target.value)} autoComplete="off" />
+                    {" "}&nbsp;{" "}
+                    <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handelUploadImage(event)} name="backgroundImage" />
                   </td>
                 </tr>
                 <tr>
@@ -836,6 +874,7 @@ class AdminNode extends React.Component {
                          style={{
                            backgroundColor: `${this.state.form?.backgroundColor}`,
                            backgroundImage: `url(${this.state.form?.backgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`,
+                           backgroundSize: "contain",
                            backgroundRepeat: `${this.state.form?.backgroundRepeat}, repeat-x`,
                            width: Setting.PcBrowser ? "500px" : "200px",
                            height: Setting.PcBrowser ? "400px" : "100px"

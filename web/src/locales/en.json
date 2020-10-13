@@ -540,7 +540,12 @@
     "Close": "Close",
     "Description on email reminder": "Description on email reminder",
     "Will send you a email when you receive a new reply": "Will send you a email when you receive a new reply",
-    "Change forum setting successfully": "Change forum setting successfully"
+    "Change forum setting successfully": "Change forum setting successfully",
+    "Set Username": "Set Username",
+    "Welcome to": "Welcome to",
+    ", you just registered your": ", you just registered your",
+    "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.": "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.",
+    "save": "save"
   },
   "notification":
   {
@@ -607,7 +612,8 @@
     "submit": "submit",
     "'s file library": "'s file library",
     "There are": "There are",
-    "files": "files"
+    "files": "files",
+    "Uploading...": "Uploading..."
   },
   "loading":
   {

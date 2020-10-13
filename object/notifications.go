@@ -209,7 +209,10 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		reminder := GetMemberEmailReminder(receiverId)
 		if email != "" && reminder {
 			topicIdStr := util.IntToString(topicId)
-			service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+			err := service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 
@@ -233,7 +236,10 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 			reminder := GetMemberEmailReminder(receiverId)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(topicId)
-				service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+				err := service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}()
 	}
@@ -280,7 +286,10 @@ func AddTopicNotification(objectId int, author, content string) {
 			reminder := GetMemberEmailReminder(k)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(objectId)
-				service.SendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
+				err := service.SendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
+				if err != nil {
+					panic(err)
+				}
 			}
 		}()
 	}
