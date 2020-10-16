@@ -73,7 +73,7 @@ func GetCreatedTopicsNum(memberId string) int {
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	topics := []*TopicWithAvatar{}
-	err := adapter.engine.Table("topic").Join("INNER", "member", "member.id = topic.author").
+	err := adapter.engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
 		Where("topic.deleted = ?", 0).
 		Desc("topic.home_page_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
 		Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
@@ -288,7 +288,7 @@ func GetTopicNodeId(id int) string {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
-	err := adapter.engine.Table("topic").Join("INNER", "member", "member.id = topic.author").
+	err := adapter.engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
 		Where("topic.node_id = ?", nodeId).And("topic.deleted = ?", 0).
 		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
 		Cols("topic.*, member.avatar").
@@ -461,7 +461,7 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 	if tab == "all" {
 		topics = GetTopics(limit, offset)
 	} else {
-		err := adapter.engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").Join("INNER", "member", "member.id = topic.author").
+		err := adapter.engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").Join("LEFT OUTER", "member", "member.id = topic.author").
 			Where("node.tab_id = ?", tab).And("topic.deleted = ?", 0).
 			Desc("topic.tab_top_time").Desc("topic.last_reply_time").
 			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
