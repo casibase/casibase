@@ -114,7 +114,7 @@ class EditBox extends React.Component {
         onPaste={() => Tools.uploadMdFile()}
         value={this.state.form.content}
         onDrop={() => Tools.uploadMdFile()}
-        options={{mode: 'markdown', lineNumbers: false, lineWrapping:true}}
+        options={{mode: 'markdown', lineNumbers: false, lineWrapping: true}}
         onBeforeChange={(editor, data, value) => {
           this.updateFormField("content", value)
         }}

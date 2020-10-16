@@ -737,7 +737,7 @@ class AdminNode extends React.Component {
                             onPaste={() => Tools.uploadMdFile()}
                             value={this.state.form.desc}
                             onDrop={() => Tools.uploadMdFile()}
-                            options={{mode: 'markdown', lineNumbers: false}}
+                            options={{mode: 'markdown', lineNumbers: false, lineWrapping: true}}
                             onBeforeChange={(editor, data, value) => {
                               this.updateFormField("desc", value)
                             }}

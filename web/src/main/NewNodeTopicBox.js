@@ -212,7 +212,7 @@ class NewNodeTopicBox extends React.Component {
               onPaste={() => Tools.uploadMdFile()}
               value={this.state.form.body}
               onDrop={() => Tools.uploadMdFile()}
-              options={{mode: 'markdown', lineNumbers: false, lineWrapping:true, theme:`${this.state.nodeInfo.id}`}}
+              options={{mode: 'markdown', lineNumbers: false, lineWrapping: true, theme:`${this.state.nodeInfo.id}`}}
               onBeforeChange={(editor, data, value) => {
                 this.updateFormField("body", value)
               }}
@@ -274,7 +274,7 @@ class NewNodeTopicBox extends React.Component {
                       onPaste={() => Tools.uploadMdFile()}
                       value={this.state.form.body}
                       onDrop={() => Tools.uploadMdFile()}
-                      options={{mode: 'markdown', lineNumbers: false}}
+                      options={{mode: 'markdown', lineNumbers: false, lineWrapping: true}}
                       onBeforeChange={(editor, data, value) => {
                         this.updateFormField("body", value)
                       }}
