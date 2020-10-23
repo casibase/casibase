@@ -21,6 +21,7 @@ import * as Conf from "./Conf"
 import * as AccountBackend from "./backend/AccountBackend";
 import * as MemberBackend from "./backend/MemberBackend";
 import oss from "ali-oss";
+import {Link} from "react-router-dom";
 import * as i18n from "./i18n"
 import i18next from "i18next";
 
@@ -128,6 +129,14 @@ export function getUserAvatar(username, isLarge=false) {
 
 export function getForumName() {
   return "Casbin Forum";
+}
+
+export function getHomeLink(text) {
+  return (
+    <Link to={"/"} >
+      {text === undefined ? getForumName() : text}
+    </Link>
+  );
 }
 
 export function getGoogleAuthCode(method) {

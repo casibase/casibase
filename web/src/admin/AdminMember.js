@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as MemberBackend from "../backend/MemberBackend.js";
 import * as Setting from "../Setting";
 import PageColumn from "../main/PageColumn";
@@ -74,6 +74,10 @@ class AdminMember extends React.Component {
   }
 
   getMembers() {
+    if (this.state.memberId !== undefined) {
+      return;
+    }
+
     MemberBackend.getMembersAdmin(this.state.cs, this.state.us, this.state.un, this.state.limit, this.state.page)
       .then((res) => {
         this.setState({
@@ -82,6 +86,25 @@ class AdminMember extends React.Component {
           loading: false,
         });
       });
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      const params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        message: "",
+        errorMessage: "",
+        page: parseInt(page),
+        memberId: newProps.match.params.memberId,
+      }, () => {
+        this.getMembers();
+        this.getMember();
+      });
+    }
   }
 
   getMember() {
@@ -304,11 +327,11 @@ class AdminMember extends React.Component {
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin/member`}>{i18next.t("member:Member management")}</a>
+          <Link to={`/admin/member`}>{i18next.t("member:Member management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <span>
             {this.state.memberId}
@@ -368,9 +391,9 @@ class AdminMember extends React.Component {
               </span>
             </td>
             <td width="200" align="center">
-              <a href={`/admin/member/edit/${member?.id}`}>
+              <Link to={`/admin/member/edit/${member?.id}`}>
                 {i18next.t("member:Manage")}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width="60" align="left" style={{textAlign: "right"}}>
@@ -390,7 +413,7 @@ class AdminMember extends React.Component {
         if (this.state.member !== null && this.state.member.length === 0) {
           return (
             <div className="box">
-              <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
+              <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
               <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
             </div>
           );
@@ -400,10 +423,10 @@ class AdminMember extends React.Component {
           return (
             <div class="box">
               <div className="box">
-                <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+                <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
                   className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Member does not exist")}</div>
                 <div className="cell"><span className="gray bigger">404 Member Not Found</span></div>
-                <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+                <div className="inner">← <Link to="/">{i18next.t("error:Back to Home Page")}</Link></div>
               </div>
             </div>
           );
@@ -709,9 +732,9 @@ class AdminMember extends React.Component {
                 <tr>
                   <td width="120" align="right"></td>
                   <td width="auto" align="left">
-                    <a href={`/member/${member?.id}`} target="_blank">
+                    <Link to={`/member/${member?.id}`} target="_blank">
                       {i18next.t("member:Homepage")}&nbsp;{" "}›&nbsp;
-                    </a>
+                    </Link>
                   </td>
                 </tr>
                 </tbody>
@@ -725,9 +748,9 @@ class AdminMember extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:Member management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("member:Total members")}{" "}&nbsp;</span>

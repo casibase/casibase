@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as Setting from "../Setting";
 import Select2 from "react-select2-wrapper";
@@ -47,6 +47,19 @@ class AdminTab extends React.Component {
     this.getTabs();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        message: "",
+        errorMessage: "",
+        tabId: newProps.match.params.tabId
+      }, () => {
+        this.getTab();
+        this.initForm();
+      });
+    }
+  }
+
   getTabs() {
     TabBackend.getTabsAdmin()
       .then((res) => {
@@ -70,7 +83,7 @@ class AdminTab extends React.Component {
   }
 
   getTab() {
-    if (this.state.tabId === undefined && this.props.event !== "new") {
+    if (this.state.tabId === undefined) {
       return;
     }
 
@@ -179,12 +192,12 @@ class AdminTab extends React.Component {
     TabBackend.addTab(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          this.getTab();
+          this.getTabs();
           this.setState({
             errorMessage: "",
             message: i18next.t("tab:Creat tab success"),
           }, () => {
-            setTimeout(() => Setting.goToLink(`/admin/tab/edit/${this.state.form.id}`), 1600);
+            setTimeout(() => this.props.history.push(`/admin/tab/edit/${this.state.form.id}`), 1600);
           });
         } else {
           this.setState({
@@ -250,11 +263,11 @@ class AdminTab extends React.Component {
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin/tab`}>{i18next.t("tab:Tab management")}</a>
+          <Link to={`/admin/tab`}>{i18next.t("tab:Tab management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <span>
             {
@@ -288,9 +301,9 @@ class AdminTab extends React.Component {
               </span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="center">
-              <a href={`/admin/tab/edit/${tab?.id}`}>
+              <Link to={`/admin/tab/edit/${tab?.id}`}>
                 {i18next.t("tab:Manage")}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
@@ -321,7 +334,10 @@ class AdminTab extends React.Component {
         if (this.state.tab !== null && this.state.tab.length === 0) {
           return (
             <div className="box">
-              <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
+              <div className="header">
+                <Link to="/">{Setting.getForumName()}</Link>
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}
+              </div>
               <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
             </div>
           );
@@ -331,8 +347,9 @@ class AdminTab extends React.Component {
           return (
             <div class="box">
               <div class="header">
-                <a href="/">{Setting.getForumName()}</a>
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Tab not found")}</div>
+                <Link to="/">{Setting.getForumName()}</Link>
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Tab not found")}
+              </div>
               <div class="cell">
                 {i18next.t("error:The tab you are trying to view does not exist")}
               </div>
@@ -500,17 +517,17 @@ class AdminTab extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("tab:Tab management")}
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>{i18next.t("tab:Tab management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("tab:Total tabs")}{" "}&nbsp;</span>
             <strong className="gray">{this.state.tabs === null ? 0 : this.state.tabs.length}</strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
-              <a href="tab/new">{i18next.t("tab:Add new tab")}</a>
+              <Link to="tab/new">{i18next.t("tab:Add new tab")}</Link>
               {" "}&nbsp;
             </strong>
           </div>

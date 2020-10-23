@@ -14,13 +14,13 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import i18next from "i18next";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import {Resizable} from "re-resizable";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import * as Tools from "./Tools";
+import i18next from "i18next";
 
 const pangu = require("pangu");
 
@@ -60,7 +60,7 @@ class EditBox extends React.Component {
       TopicBackend.editTopicContent(this.state.form)
         .then((res) => {
           if (res.status === 'ok') {
-            Setting.goToLink(`/t/${this.state.editObject?.id}`);
+            this.props.history.push(`/t/${this.state.editObject?.id}`);
           } else {
             Setting.showMessage("error", res?.msg);
           }
@@ -70,7 +70,7 @@ class EditBox extends React.Component {
     ReplyBackend.editReplyContent(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink(`/t/${this.state.editObject?.topicId}#r_${this.state.editObject?.id}`);
+          this.props.history.push(`/t/${this.state.editObject?.topicId}#r_${this.state.editObject?.id}`);
         } else {
           Setting.showMessage("error", res?.msg);
         }
@@ -128,7 +128,7 @@ class EditBox extends React.Component {
     if (this.state.editObject !== null && this.state.editObject.length === 0) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
+          <div class="header"><Link to="/">{Setting.getForumName()}</Link> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       );
@@ -137,7 +137,7 @@ class EditBox extends React.Component {
     if (this.state.editObject === null || !this.state.editObject?.editable) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
             className="chevron">&nbsp;›&nbsp;</span>
             {" "}{i18next.t("edit:Edit content")}
           </div>
@@ -151,7 +151,7 @@ class EditBox extends React.Component {
     if (this.state.editType === "reply") {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
             className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("edit:Edit reply")}
           </div>
           <div className="cell">
@@ -188,9 +188,14 @@ class EditBox extends React.Component {
     }
     return (
       <div class="box">
-        <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/go/${this.state.editObject?.nodeId}`}>{" "}{this.state.editObject?.nodeName}</a> <span class="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/t/${this.state.editObject?.id}`}>{" "}{pangu.spacing(this.state.editObject?.title)}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("edit:Edit topic")}</div>
+        <div class="header">
+          <Link to="/">{Setting.getForumName()}</Link>
+          {" "}<span class="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/go/${this.state.editObject?.nodeId}`}>{" "}{this.state.editObject?.nodeName}</Link>
+          {" "}<span class="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/t/${this.state.editObject?.id}`}>{" "}{pangu.spacing(this.state.editObject?.title)}</Link>
+          {" "}<span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("edit:Edit topic")}
+        </div>
         <div class="cell">
           <table cellpadding="5" cellspacing="0" border="0" width="100%">
             <tbody>
@@ -219,7 +224,8 @@ class EditBox extends React.Component {
             </tr>
             <tr>
               <td>
-                <input type="submit" value={i18next.t("edit:Save")} class="super normal button" onClick={() => this.editContent()} /></td>
+                <input type="submit" value={i18next.t("edit:Save")} class="super normal button" onClick={() => this.editContent()} />
+              </td>
             </tr>
             </tbody>
           </table>

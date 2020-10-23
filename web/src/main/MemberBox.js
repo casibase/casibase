@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import Avatar from "../Avatar";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
@@ -37,6 +37,15 @@ class MemberBox extends React.Component {
   componentDidMount() {
     this.getMember();
     this.getFavoriteStatus();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        memberId: newProps.match.params.memberId,
+      });
+      this.getMember();
+    }
   }
 
   getMember() {
@@ -88,7 +97,8 @@ class MemberBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-          Setting.refresh();
+          this.getFavoriteStatus();
+          this.props.refreshFavorites();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -102,7 +112,8 @@ class MemberBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
-          Setting.refresh();
+          this.getFavoriteStatus();
+          this.props.refreshFavorites();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -113,23 +124,23 @@ class MemberBox extends React.Component {
     if (this.state.member !== null && this.state.member.length === 0) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
-            className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Member profile is loading")}</div>
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Member profile is loading")}</div>
           <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
           </div>
         </div>
-      )
+      );
     }
 
     if (this.state.member === null) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
-            className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Member does not exist")}</div>
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Member does not exist")}</div>
           <div className="cell"><span className="gray bigger">404 Member Not Found</span></div>
-          <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+          <div className="inner">←{" "}<Link to="/">{i18next.t("error:Back to Home Page")}</Link></div>
         </div>
-      )
+      );
     }
 
     const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.id;
@@ -181,7 +192,7 @@ class MemberBox extends React.Component {
                     Setting.PcBrowser ?
                       <span>
                         <div className="sep5" />
-                        {i18next.t("member:Today's ranking")} <a href="/top/dau">{this.state.member?.ranking}</a>
+                        {i18next.t("member:Today's ranking")} <Link to="/top/dau">{this.state.member?.ranking}</Link>
                       </span> : null
                   }
                   <div className="sep5" />
@@ -202,27 +213,27 @@ class MemberBox extends React.Component {
         <div className="widgets">
           {
             this.state.member?.website.length !== 0 ?
-              <a href={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <Link to={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_home.png")} width="24" alt="Website" align="absmiddle" /> &nbsp;{this.state.member?.website}
-              </a> : null
+              </Link> : null
           }
           {
             this.state.member?.location.length !== 0 ?
-              <a href={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <Link to={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_geo.png")} width="24" alt="Geo" align="absmiddle" /> &nbsp;{this.state.member?.location}
-              </a> : null
+              </Link> : null
           }
           {
             this.state.member?.githubAccount.length !== 0 ?
-              <a href={`https://github.com/${this.state.member?.githubAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <Link to={`https://github.com/${this.state.member?.githubAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_github.png")} width="24" alt="GitHub" align="absmiddle"/> &nbsp;{this.state.member?.githubAccount}
-              </a> : null
+              </Link> : null
           }
           {
             this.state.member?.googleAccount.length !== 0 ?
-              <a href={`mailto:${this.state.member?.googleAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <Link to={`mailto:${this.state.member?.googleAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_google.png")} width="24" alt="Google" align="absmiddle"/> &nbsp;{this.state.member?.googleAccount}
-              </a> : null
+              </Link> : null
           }
         </div>
         {
@@ -244,31 +255,31 @@ class MemberBox extends React.Component {
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tr>
             <td width="33%" valign="center" align="center">
-              <a href="/my/nodes" className="dark" style={{display: "block"}}>
+              <Link to="/my/nodes" className="dark" style={{display: "block"}}>
                 <span className="bigger">{this.state.nodeFavoriteNum}</span>
                 <div className="sep3"></div>
                 <span className="fade small">{i18next.t("bar:Nodes")}</span>
-              </a>
+              </Link>
             </td>
             <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
-              <a href="/my/topics" className="dark" style={{display: "block"}}>
+              <Link to="/my/topics" className="dark" style={{display: "block"}}>
                 <span className="bigger">{this.state.topicFavoriteNum}</span>
                 <div className="sep3"></div>
                 <span className="fade small">{i18next.t("bar:Topics")}</span>
-              </a>
+              </Link>
             </td>
             <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
-              <a href="/my/following" className="dark" style={{display: "block"}}>
+              <Link to="/my/following" className="dark" style={{display: "block"}}>
                 <span className="bigger">{this.state.followingNum}</span>
                 <div className="sep3"></div>
                 <span className="fade small">{i18next.t("bar:Watch")}</span>
-              </a>
+              </Link>
             </td>
           </tr>
         </table>
         <div className="sep5"></div>
       </div>
-    )
+    );
   }
 
   render() {
@@ -285,7 +296,7 @@ class MemberBox extends React.Component {
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <LatestReplyBox member={this.state.member} />
       </span>
-    )
+    );
   }
 
 }

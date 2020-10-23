@@ -18,7 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
 import "../node.css"
 import i18next from "i18next";
-import {goToLink} from "../Setting";
+import {Link} from "react-router-dom";
 const pangu = require("pangu")
 
 class TopicList extends React.Component {
@@ -35,7 +35,7 @@ class TopicList extends React.Component {
         if (res?.status === "fail") {
           Setting.showMessage("error", res?.msg)
         }
-        goToLink(`/t/${topicId}?from=${encodeURIComponent(window.location.href)}`)
+        //goToLink(`/t/${topicId}?from=${encodeURIComponent(window.location.href)}`)
       });
   }
 
@@ -90,10 +90,14 @@ class TopicList extends React.Component {
               {
                 !pcBrowser && this.props.showNodeName ?
                   <span className="small fade">
-                    <a className="node" href={`/go/${topic.nodeId}`}>{topic.nodeName}</a>
+                    <Link to={`/go/${topic.nodeId}`} className="node">
+                      {topic.nodeName}
+                    </Link>
                     {" "}&nbsp;•&nbsp;{" "}
                     <strong>
-                      <a href={`/member/${topic.author}`}>{topic.author}</a>
+                      <Link to={`/member/${topic.author}`} className="node">
+                        {topic.author}
+                      </Link>
                     </strong>
                   </span> : null
               }
@@ -101,11 +105,11 @@ class TopicList extends React.Component {
                 !pcBrowser && this.props.showNodeName ? <div className="sep5" /> : null
               }
               <span className="item_title">
-                <a href="javascript:void(0);" onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
+                <Link to={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
                   {
                     pangu.spacing(topic.title)
                   }
-                </a>
+                </Link>
               </span>
               <div className="sep5" />
               <span className={pcBrowser ? "topic_info" : "small fade"}>
@@ -116,16 +120,16 @@ class TopicList extends React.Component {
                       {
                         this.props.showNodeName ?
                           <span>
-                            <a className="node" href={`/go/${topic.nodeId}`}>
+                            <Link to={`/go/${topic.nodeId}`} className="node">
                               {topic.nodeName}
-                            </a>
+                            </Link>
                             {" "}&nbsp;•&nbsp;{" "}
                           </span> : null
                       }
                       <strong>
-                        <a href={`/member/${topic.author}`} className={`${this.props.nodeId} member`}>
+                        <Link to={`/member/${topic.author}`} className={`${this.props.nodeId} member`}>
                           {topic.author}
-                        </a>
+                        </Link>
                       </strong>
                       {" "}&nbsp;•&nbsp;{" "}
                       {
@@ -135,7 +139,12 @@ class TopicList extends React.Component {
                         topic.lastReplyUser === "" ? null : (
                           <div style={{display: "inline"}}>
                             {" "}&nbsp;•&nbsp;{" "}
-                            {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>{topic.lastReplyUser}</a></strong>
+                            {i18next.t("topic:last reply from")}{" "}
+                            <strong>
+                              <Link to={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>
+                                {topic.lastReplyUser}
+                              </Link>
+                            </strong>
                           </div>
                         )
                       }
@@ -151,7 +160,12 @@ class TopicList extends React.Component {
                               topic.lastReplyUser === "" ? null : (
                                 <div style={{display: "inline"}}>
                                   {" "}&nbsp;•&nbsp;{" "}
-                                  {i18next.t("topic:last reply from")}{" "}<strong><a href={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>{topic.lastReplyUser}</a></strong>
+                                  {i18next.t("topic:last reply from")}{" "}
+                                  <strong>
+                                    <Link to={`/member/${topic.lastReplyUser}`} className={`${this.props.nodeId} member`}>
+                                      {topic.lastReplyUser}
+                                    </Link>
+                                  </strong>
                                 </div>
                               )
                             }
@@ -170,13 +184,12 @@ class TopicList extends React.Component {
             </td>
             <td width="70" align="right" valign="middle">
               {
-                topic.replyCount === 0 ? null : (
-                  <a href="javascript:void(0)" onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
+                topic.replyCount === 0 ? null :
+                  <Link to={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
                     {
                       topic.replyCount
                     }
-                  </a>
-                )
+                  </Link>
               }
             </td>
           </tr>

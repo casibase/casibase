@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class RightHotNodeBox extends React.Component {
@@ -42,7 +43,7 @@ class RightHotNodeBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <a href={`/go/${node?.id}`} className="item_node">{node?.name}</a>
+      <Link to={`/go/${node?.id}`} className="item_node">{node?.name}</Link>
     )
   }
 
@@ -64,7 +65,7 @@ class RightHotNodeBox extends React.Component {
           <a href="/index.xml" target="_blank">RSS</a>
         </div>
       </div>
-    )
+    );
   }
 }
 

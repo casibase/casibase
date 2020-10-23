@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
 
 class AdminHomepage extends React.Component {
@@ -39,7 +40,7 @@ class AdminHomepage extends React.Component {
 
   renderManageItem(item) {
     return (
-      <a className="grid_item" href={`admin/${item?.value}`}>
+      <Link className="grid_item" to={`admin/${item?.value}`}>
         <div style={{
           display: "table",
           padding: "20px 0px 20px 0px",
@@ -51,7 +52,7 @@ class AdminHomepage extends React.Component {
           <div className="sep10"></div>
           {item?.label}
         </div>
-      </a>
+      </Link>
     );
   }
 
@@ -59,20 +60,20 @@ class AdminHomepage extends React.Component {
     if (this.props.account === undefined) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
           <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
         );
     }
     if (this.props.account === null || !this.props.account?.isModerator) {
-      Setting.goToLink("/");
+      this.props.history.push("/");
     }
 
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("admin:Backstage management")}
+          <Link to="/">{Setting.getForumName()}</Link>
+          {" "}<span className="chevron">&nbsp;›&nbsp;</span>{i18next.t("admin:Backstage management")}
         </div>
         <div id="all-items">
           {
@@ -86,4 +87,4 @@ class AdminHomepage extends React.Component {
   }
 }
 
-export default AdminHomepage;
+export default withRouter(AdminHomepage);

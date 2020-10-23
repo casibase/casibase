@@ -14,10 +14,9 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as AccountBackend from "../backend/AccountBackend";
-import {goToLink} from "../Setting";
 import i18next from "i18next";
 
 class ForgotBox extends React.Component {
@@ -207,7 +206,7 @@ class ForgotBox extends React.Component {
             let code = res?.data2.resetCode;
             let id = res?.data2.resetId;
             let username = res?.data2.username;
-            goToLink(`/forgot?method=${method}&id=${id}&code=${code}&username=${username}`);
+            this.props.history.push(`/forgot?method=${method}&id=${id}&code=${code}&username=${username}`);
             return;
           }
           this.setState({
@@ -292,7 +291,7 @@ class ForgotBox extends React.Component {
 
   renderMethodList(item){
     return (
-      <a onClick={() => this.changeTab(item.value)} href="javascript:void(0)" className={this.state.method === item.value ? "tab_current" : "tab"}>{item.label}</a>
+      <a onClick={() => this.changeTab(item.value)} href="javascript:void(0);" className={this.state.method === item.value ? "tab_current" : "tab"}>{item.label}</a>
     );
   }
 
@@ -302,7 +301,7 @@ class ForgotBox extends React.Component {
           return (
             <div className="box">
               <div className="header">
-                <a href="/">{Setting.getForumName()}</a>
+                <Link to="/">{Setting.getForumName()}</Link>
                 {" "}<span className="chevron">&nbsp;›&nbsp;</span>
                 {" "}{i18next.t("forgot:Reset password by phone")}
               </div>
@@ -370,7 +369,7 @@ class ForgotBox extends React.Component {
         return (
           <div className="box">
             <div className="header">
-              <a href="/">{Setting.getForumName()}</a>
+              <Link to="/">{Setting.getForumName()}</Link>
               {" "}<span className="chevron">&nbsp;›&nbsp;</span>
               {" "}{i18next.t("forgot:Reset password by email")}
             </div>
@@ -412,14 +411,16 @@ class ForgotBox extends React.Component {
       case 4:
         return (
           <div class="box">
-            <div class="header"><a href="/">{Setting.getForumName()}</a>
+            <div class="header">
+              <Link to="/">{Setting.getForumName()}</Link>
               {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-              {" "}{i18next.t("forgot:Reset password by email")}</div>
+              {" "}{i18next.t("forgot:Reset password by email")}
+            </div>
             <div class="cell">
               {i18next.t("forgot:An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.")}
             </div>
             <div class="inner">
-              ← <a href="/">{i18next.t("forgot:Back to homepage")}</a>
+              ←{" "}<Link to="/">{i18next.t("forgot:Back to homepage")}</Link>
             </div>
           </div>
         );
@@ -428,7 +429,7 @@ class ForgotBox extends React.Component {
           <div>
             <div className="box">
               <div className="header">
-                <a href="/">{Setting.getForumName()}</a>
+                <Link to="/">{Setting.getForumName()}</Link>
                 {" "}<span className="chevron">&nbsp;›&nbsp;</span>
                 {" "}{i18next.t(`forgot:Reset password by ${this.state.method}`)}
               </div>
@@ -464,7 +465,7 @@ class ForgotBox extends React.Component {
       case 6:
         return (
           <div class="box">
-            <div class="header"><a href="/">{Setting.getForumName()}</a>
+            <div class="header"><Link to="/">{Setting.getForumName()}</Link>
               {" "}<span class="chevron">&nbsp;›&nbsp;</span>
               {" "}{i18next.t("forgot:Password reset complete")}
             </div>
@@ -472,7 +473,7 @@ class ForgotBox extends React.Component {
               {i18next.t("forgot:The password reset is complete. You can now log in with the new password.")}
             </div>
             <div class="caution">
-              <input type="button" onClick={() => goToLink("/signin")} class="super normal button" value={i18next.t("forgot:Log in now")} />
+              <input type="button" onClick={() => this.props.history.push("/signin")} class="super normal button" value={i18next.t("forgot:Log in now")} />
             </div>
           </div>
         );
@@ -481,7 +482,7 @@ class ForgotBox extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {" "}{i18next.t("forgot:Reset Password")}
         </div>

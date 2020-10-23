@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
@@ -50,6 +50,19 @@ class RecentTopicsBox extends React.Component {
     this.getTopics();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getTopics());
+    }
+  }
+
   getTopics() {
     TopicBackend.getTopics(this.state.limit, this.state.page)
       .then((res) => {
@@ -82,7 +95,7 @@ class RecentTopicsBox extends React.Component {
           <div className="fr f12">
             <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>
           </div>
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Recent Topics")}
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}

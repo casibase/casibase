@@ -14,9 +14,9 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import i18next from "i18next";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
+import i18next from "i18next";
 
 class CheckinBonusBox extends React.Component {
   constructor(props) {
@@ -52,22 +52,22 @@ class CheckinBonusBox extends React.Component {
           this.setState({
             checkinBonusStatus: true,
             showSuccess: true
-          })
+          });
         }
-      })
+      });
   }
 
   changeSuccessStatus() {
     this.setState({
       showSuccess: !this.state.showSuccess
-    })
+    });
   }
 
   render() {
     if (this.state.checkinBonusStatus) {
       return (
         <div class="box">
-          <div class="cell"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("mission:Daily tasks")}</div>
+          <div class="cell"><Link to="/">{Setting.getForumName()}</Link>{" "}<span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("mission:Daily tasks")}</div>
           {
             this.state.showSuccess ?
               <div className="message" onClick={() => this.changeSuccessStatus()}>
@@ -78,21 +78,21 @@ class CheckinBonusBox extends React.Component {
           <div class="cell">
             <span class="gray"><li class="fa fa-ok-sign" style={{color: "#0c0"}}></li> &nbsp;{i18next.t("mission:Daily checkin bonus has been received")}</span>
             <div class="sep10"></div>
-            <input type="button" class="super normal button" value={i18next.t("mission:Check my account balance")} onClick={() => Setting.goToLink("/balance")} />
+            <input type="button" class="super normal button" value={i18next.t("mission:Check my account balance")} onClick={() => this.props.history.push("/balance")} />
           </div>
         </div>
-      )
+      );
     }
     return (
       <div class="box">
-        <div class="cell"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("mission:Daily tasks")}</div>
+        <div class="cell"><Link to="/">{Setting.getForumName()}</Link> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("mission:Daily tasks")}</div>
         <div class="cell">
           <h1>{i18next.t("mission:Daily checkin bonus")}{" "}{this.state.date}</h1>
           <input type="button" class="super normal button" value={i18next.t("mission:Receive X copper coins")} onClick={() => this.getDailyCheckinBonus()} />
         </div>
         <div class="cell">{i18next.t("mission:Logged in continuously")} 1 {i18next.t("mission:Successfully received daily checkin bonus")}</div>
       </div>
-    )
+    );
   }
 }
 

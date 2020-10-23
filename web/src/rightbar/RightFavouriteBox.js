@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css"
 import i18next from "i18next";
 
@@ -26,11 +27,11 @@ class RightFavouriteBox extends React.Component {
       info: null
     };
   }
-  
+
   componentDidMount() {
     this.getFavoriteNode();
   }
-  
+
   getFavoriteNode() {
     FavoritesBackend.getFavorites(3, 0, 0)
       .then((res) => {
@@ -44,15 +45,15 @@ class RightFavouriteBox extends React.Component {
     return (
         <div class="node rightFavorite">
           <div class="node_compose rightFavorite">
-            <a href={`/new/${node?.id}`} id="linkCompose"><img src={Setting.getStatic("/static/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic"/></a>
+            <Link to={`/new/${node?.id}`} id="linkCompose"><img src={Setting.getStatic("/static/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic"/></Link>
           </div>
-          <a href={`/go/${node?.id}`} id="linkAvatar"><div id="avatar" style={{backgroundImage: `url(${node?.image})`}} className="rightFavorite" /></a>
+          <Link to={`/go/${node?.id}`} id="linkAvatar"><div id="avatar" style={{backgroundImage: `url(${node?.image})`}} className="rightFavorite" /></Link>
           &nbsp;{" "}
-          <a href={`/go/${node?.id}`} id="linkTitle">{node?.name}</a>
+          <linkTitle to={`/go/${node?.id}`} id="linkTitle">{node?.name}</linkTitle>
         </div>
-    )
+    );
   }
-  
+
   render() {
     return (
       <div className="box">
@@ -67,7 +68,7 @@ class RightFavouriteBox extends React.Component {
           }
         </div>
       </div>
-    )
+    );
   }
 }
 

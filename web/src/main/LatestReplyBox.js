@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as ReplyBackend from "../backend/ReplyBackend";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 
@@ -55,6 +55,22 @@ class LatestReplyBox extends React.Component {
   componentDidMount() {
     this.getLatestReplies();
     this.getRepliesNum();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+        memberId: newProps.match.params.memberId,
+      });
+      this.getLatestReplies();
+      this.getRepliesNum();
+    }
   }
 
   getLatestReplies() {
@@ -100,10 +116,10 @@ class LatestReplyBox extends React.Component {
                   <div className="fr"><span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span></div>
                   <span className="gray">
                     {i18next.t("member:replied")}{" "}
-                    <a href={`/member/${reply.author}`}>{" "}{reply.author}{" "}</a>
+                    <Link to={`/member/${reply.author}`}>{" "}{reply.author}{" "}</Link>
                     {" "}{i18next.t("member:'s topic")}{" "}
-                    <span className="chevron">›</span>{" "}<a href={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</a>
-                    <span className="chevron">›</span>{" "}<a href={`/t/${reply.topicId}?from=${encodeURIComponent(window.location.href)}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</a>
+                    <span className="chevron">›</span>{" "}<Link to={`/go/${reply.nodeId}`}>{" "}{reply.nodeName}{" "}</Link>
+                    <span className="chevron">›</span>{" "}<Link to={`/t/${reply.topicId}?from=${encodeURIComponent(window.location.href)}`}>{" "}{pangu.spacing(reply.topicTitle)}{" "}</Link>
                   </span>
                 </td>
               </tr>
@@ -128,9 +144,9 @@ class LatestReplyBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <a href="/">{Setting.getForumName()} </a>
+            <Link to="/">{Setting.getForumName()} </Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
+            <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
             <div className="fr f12"><span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
           </div>
           {Setting.PcBrowser ? this.showPageColumn() : null}
@@ -153,7 +169,7 @@ class LatestReplyBox extends React.Component {
           })
         }
         <div className="inner">
-          <span className="chevron">»</span> <a href={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</a></div>
+          <span className="chevron">»</span> <Link to={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</Link></div>
       </div>
     );
   }

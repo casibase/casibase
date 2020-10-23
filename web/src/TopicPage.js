@@ -19,7 +19,7 @@ import * as TabBackend from "./backend/TabBackend";
 import * as NotificationBackend from "./backend/NotificationBackend";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
 
@@ -166,23 +166,23 @@ class TopicPage extends React.Component {
             <td width="10" />
             <td width="auto" valign="middle">
                 <span className="item_title">
-                  <a href={`/t/${topic.id}`} className="topic-link">
+                  <Link to={`/t/${topic.id}`} className="topic-link">
                     {
                       topic.title
                     }
-                  </a>
+                  </Link>
                 </span>
               <div className="sep5" />
               <span className="topic_info">
                 <div className="votes" />
-                <a className="node" href={`/go/${topic.nodeId}`}>
+                <Link className="node" to={`/go/${topic.nodeId}`}>
                   {topic.nodeName}
-                </a>
+                </Link>
                 {" "}&nbsp;•&nbsp;{" "}
                 <strong>
-                  <a href={`/member/${topic.author}`}>
+                  <Link to={`/member/${topic.author}`}>
                     {topic.author}
-                  </a>
+                  </Link>
                 </strong>
                 {" "}&nbsp;•&nbsp;{" "}
                 {
@@ -192,7 +192,7 @@ class TopicPage extends React.Component {
                   topic.lastReplyUser === "" ? null : (
                     <div style={{display: "inline"}}>
                       {" "}&nbsp;•&nbsp;{" "}
-                      last reply from <strong><a href={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</a></strong>
+                      last reply from <strong><Link to={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</Link></strong>
                     </div>
                   )
                 }
@@ -201,11 +201,11 @@ class TopicPage extends React.Component {
             <td width="70" align="right" valign="middle">
               {
                 topic.replyCount === 0 ? null : (
-                  <a href={`/t/${topic.id}`} className="count_livid">
+                  <Link to={`/t/${topic.id}`} className="count_livid">
                     {
                       topic.replyCount
                     }
-                  </a>
+                  </Link>
                 )
               }
             </td>
@@ -225,7 +225,7 @@ class TopicPage extends React.Component {
   renderNode(node) {
     return (
       <span>
-        <a href={`/go/${node?.id}`}>{node?.name}</a>
+        <Link to={`/go/${node?.id}`}>{node?.name}</Link>
         &nbsp;{" "}&nbsp;
       </span>
     );
@@ -243,18 +243,18 @@ class TopicPage extends React.Component {
           <tr>
             <td width="auto">
               {
-                this.state.unreadNotificationNum === 0 ?
-                  <a href="/notifications" className="gray">
+                this.state.unreadNotificationNum !== 0 ?
+                  <Link to="/notifications" className="gray">
                     0{" "}{i18next.t("bar:unread")}
-                  </a> :
+                  </Link> :
                   <input type="button" className="super special button" value={`${this.state.unreadNotificationNum} ${i18next.t("bar:unread")}`}
-                         onClick={() => Setting.goToLink("/notifications")}
+                         onClick={() => this.props.history.push("/notifications")}
                          style={{marginLeft: "2px", width: "100%", lineHeight: "20px"}}/>
               }
             </td>
             <td width="10"></td>
             <td width="150" align="right">
-              <a href="/balance" className="balance_area" style={{margin: "0px"}}>
+              <Link to="/balance" className="balance_area" style={{margin: "0px"}}>
                 {
                   this.props.account?.goldCount !== 0 ?
                     <span>
@@ -267,7 +267,7 @@ class TopicPage extends React.Component {
                 <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
                 {" "}{this.props.account?.bronzeCount}{" "}
                 <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
-              </a>
+              </Link>
               &nbsp;
             </td>
           </tr>
@@ -297,7 +297,7 @@ class TopicPage extends React.Component {
           {
             this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== "" ?
               <div className="fr">
-                <a href={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</a>
+                <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</Link>
                 &nbsp;
                 <li className="fa fa-caret-right gray" />
               </div> : null
@@ -311,7 +311,7 @@ class TopicPage extends React.Component {
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} topType={topType} />
         <div className="inner">
-          <span className="chevron">»</span> &nbsp;<a href="/recent">{i18next.t("topic:More Topics")}</a>
+          <span className="chevron">»</span> &nbsp;<Link to="/recent">{i18next.t("topic:More Topics")}</Link>
         </div>
       </div>
     );

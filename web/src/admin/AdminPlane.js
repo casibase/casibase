@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as Setting from "../Setting";
 import Zmage from "react-zmage";
@@ -49,6 +49,18 @@ class AdminPlane extends React.Component {
   componentDidMount() {
     this.getPlane();
     this.getPlanes();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        message: "",
+        errorMessage: "",
+        planeId: newProps.match.params.planeId
+      }, () => {
+        this.getPlane();
+      });
+    }
   }
 
   getPlanes() {
@@ -168,7 +180,7 @@ class AdminPlane extends React.Component {
             errorMessage: "",
             message: i18next.t("plane:Creat plane success"),
           }, () => {
-            setTimeout(() => Setting.goToLink(`/admin/plane/edit/${this.state.form.id}`), 1600);
+            setTimeout(() => this.props.history.push(`/admin/plane/edit/${this.state.form.id}`), 1600);
           });
         } else {
           this.setState({
@@ -267,9 +279,9 @@ class AdminPlane extends React.Component {
   renderNode(node) {
     return (
       <span>
-        <a href={`/go/${node.id}`}>
+        <Link to={`/go/${node.id}`}>
           {node.name}
-        </a>{" "}&nbsp;{" "}
+        </Link>{" "}&nbsp;{" "}
       </span>
     );
   }
@@ -308,11 +320,11 @@ class AdminPlane extends React.Component {
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin/plane`}>{i18next.t("plane:Plane management")}</a>
+          <Link to={`/admin/plane`}>{i18next.t("plane:Plane management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <span>
             {
@@ -346,9 +358,9 @@ class AdminPlane extends React.Component {
               </span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="center">
-              <a href={`/admin/plane/edit/${plane?.id}`}>
+              <Link to={`/admin/plane/edit/${plane?.id}`}>
                 {i18next.t("plane:Manage")}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
@@ -387,7 +399,7 @@ class AdminPlane extends React.Component {
         if (this.state.plane !== null && this.state.plane.length === 0) {
           return (
             <div className="box">
-              <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
+              <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
               <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
             </div>
           );
@@ -397,7 +409,7 @@ class AdminPlane extends React.Component {
           return (
             <div class="box">
               <div class="header">
-                <a href="/">{Setting.getForumName()}</a>
+                <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Plane not found")}</div>
               <div class="cell">
                 {i18next.t("error:The plane you are trying to view does not exist")}
@@ -680,9 +692,9 @@ class AdminPlane extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("plane:Plane management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("plane:Total planes")}{" "}&nbsp;</span>
@@ -690,7 +702,7 @@ class AdminPlane extends React.Component {
           </div>
           <div className="fr f12">
             <strong className="gray">
-              <a href="plane/new">{i18next.t("plane:Add new plane")}</a>
+              <Link to="plane/new">{i18next.t("plane:Add new plane")}</Link>
               {" "}&nbsp;
             </strong>
           </div>

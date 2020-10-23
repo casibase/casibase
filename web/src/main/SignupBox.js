@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as Setting from "../Setting";
 import Header from "./Header";
 import * as Conf from "../Conf"
@@ -21,10 +21,10 @@ import * as AccountBackend from "../backend/AccountBackend";
 import * as BasicBackend from "../backend/BasicBackend";
 import "../Signup.css";
 import "./const"
-import i18next from "i18next";
 import $ from "jquery";
 import Select2 from "react-select2-wrapper";
 import {Area_Code} from "./const";
+import i18next from "i18next";
 
 class SignupBox extends React.Component {
   constructor(props) {
@@ -51,6 +51,15 @@ class SignupBox extends React.Component {
 
   componentDidMount() {
     this.initPostForm();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        signupMethod: newProps.match.params.signupMethod,
+      });
+      this.initPostForm();
+    }
   }
 
   initPostForm() {
@@ -99,9 +108,9 @@ class SignupBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.props.onSignout();
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         } else {
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         }
       });
   }
@@ -246,7 +255,8 @@ class SignupBox extends React.Component {
     AccountBackend.signup(this.state.form)
       .then((res) => {
         if (res?.status === "ok") {
-          Setting.goToLink("/");
+          this.props.refreshAccount();
+          this.props.history.push("/");
         } else {
           this.setState({
             message: res?.msg
@@ -290,11 +300,11 @@ class SignupBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <a href="/">{Setting.getForumName()}</a>
+            <Link to="/">{Setting.getForumName()}</Link>
             {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-            {" "}<a href="/signup">Sign up</a>
+            {" "}<Link to="/signup">Sign up</Link>
             {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-            {" "}<a href="/settings">{this.state.signupMethod === "sms" ? "Phone" : "Email"}</a>
+            {" "}<Link to="/settings">{this.state.signupMethod === "sms" ? "Phone" : "Email"}</Link>
           </div>
           {
             this.renderProblem()
@@ -473,16 +483,16 @@ class SignupBox extends React.Component {
           <div className="topic_content markdown_body">
             <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{`${i18next.t("member:Welcome to")} ${Setting.getForumName()}${i18next.t("member:, this is the official forum for Casbin developers and users.")}`}</p>
             <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{i18next.t("member:You can use the following ways to sign up as a new user.")}</p>
-            <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{i18next.t("member:If you have previously signed up an account via Email, please click")}{" "}<a href="/signin">{i18next.t("member:here")}</a>{" "}{i18next.t("member:to sign in.")}</p>
+            <p style={{marginBlockStart: "1em", marginBlockEnd: "1em"}}>{i18next.t("member:If you have previously signed up an account via Email, please click")}{" "}<Link to="/signin">{i18next.t("member:here")}</Link>{" "}{i18next.t("member:to sign in.")}</p>
           </div>
         </div>
         <div className="dock_area">
           <div className="signup_methods">
-            <div className="signup_method" onClick={() => Setting.goToLink("/signup/sms")}>
+            <div className="signup_method" onClick={() => this.props.history.push("/signup/sms")}>
               <div className="signup_method_icon signup_method_sms"></div>
               <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Mobile Phone")}</div>
             </div>
-            <div className="signup_method" onClick={() => Setting.goToLink("/signup/email")}>
+            <div className="signup_method" onClick={() => this.props.history.push("/signup/email")}>
               <div className="signup_method_icon signup_method_email"></div>
               <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with Email")}</div>
             </div>

@@ -16,6 +16,7 @@ import React from "react";
 import * as PlaneBackend from "../backend/PlaneBackend";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class PlaneBox extends React.Component {
@@ -53,7 +54,7 @@ class PlaneBox extends React.Component {
 
   renderNode(node) {
     return (
-      <a href={`/go/${node?.id}`} className="item_node">{node?.name}</a>
+      <Link to={`/go/${node?.id}`} className="item_node">{node?.name}</Link>
     );
   }
 

@@ -14,8 +14,9 @@
 
 import React from "react";
 import * as TopicBackend from "../backend/TopicBackend";
-import i18next from "i18next";
+import {Link} from "react-router-dom";
 import Avatar from "../Avatar";
+import i18next from "i18next";
 const pangu = require("pangu");
 
 class RightHotTopicBox extends React.Component {
@@ -33,6 +34,9 @@ class RightHotTopicBox extends React.Component {
   }
 
   getHotTopic() {
+    if (this.state.info !== null) {
+      return;
+    }
     TopicBackend.getHotTopic(this.state.limit)
       .then((res) => {
         this.setState({
@@ -52,7 +56,7 @@ class RightHotTopicBox extends React.Component {
             <td width="10"></td>
             <td width="auto" valign="middle">
               <span className="item_hot_topic_title">
-                <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(topic?.title)}</a>
+                <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(topic?.title)}</Link>
               </span>
             </td>
           </tr>

@@ -17,9 +17,9 @@ import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as NotificationBackend from "../backend/NotificationBackend";
+import {Link} from "react-router-dom";
 import "../node.css"
 import i18next from "i18next";
-import {goToLink} from "../Setting";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
@@ -34,7 +34,7 @@ class RightAccountBox extends React.Component {
   }
 
   componentDidMount() {
-    this.getFavoriteNum();
+    //this.getFavoriteNum();
     this.getUnreadNotificationNum();
   }
 
@@ -56,8 +56,8 @@ class RightAccountBox extends React.Component {
             followingNum: res?.data[2],
             nodeFavoriteNum: res?.data[3],
           });
-        }else {
-          Setting.showMessage("error", res.msg)
+        } else {
+          Setting.showMessage("error", res.msg);
         }
       });
   }
@@ -66,6 +66,7 @@ class RightAccountBox extends React.Component {
     const username = this.props.account?.id;
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
+    const favorites = this.props.favorites;
 
     return (
       <div className={`box ${this.props.nodeId}`}>
@@ -74,21 +75,21 @@ class RightAccountBox extends React.Component {
             <tbody>
             <tr>
               <td width="48" valign="top">
-                <a href={`/member/${username}`}>
+                <Link to={`/member/${username}`}>
                   <Avatar username={username} avatar={avatar} />
-                </a>
+                </Link>
               </td>
               <td width="10" valign="top" />
               <td width="auto" align="left">
                 <div className="fr">
-                  <a href="/settings/night/toggle?once=93095" className="light-toggle">
+                  <Link to="/settings/night/toggle?once=93095" className="light-toggle">
                     <img src={Setting.getStatic("/static/img/toggle-light.png")} align="absmiddle" height="10" alt="Light" />
-                  </a>
+                  </Link>
                 </div>
                 <span className="bigger">
-                  <a href={`/member/${username}`} className={`${this.props.nodeId}`}>
+                  <Link to={`/member/${username}`} className={`${this.props.nodeId}`}>
                     {username}
-                  </a>
+                  </Link>
                 </span>
                 <div className="sep5"></div>
                 <span className="fade">{tagline}</span>
@@ -101,39 +102,39 @@ class RightAccountBox extends React.Component {
             <tbody>
             <tr>
               <td width="33%" align="center">
-                <a href="/my/nodes" className="dark" style={{display: "block"}}>
+                <Link to="/my/nodes" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    {this.state.nodeFavoriteNum}
+                    {favorites === undefined ? this.state.nodeFavoriteNum : favorites[3]}
                   </span>
                   <div className="sep3" />
                   <span className="fade">
                     {i18next.t("bar:Nodes")}
                   </span>
-                </a>
+                </Link>
               </td>
               <td width="34%"
                   style={{borderLeft: "1px solid rgba(100, 100, 100, 0.4)", borderRight: "1px solid rgba(100, 100, 100, 0.4)"}}
                   align="center">
-                <a href="/my/topics" className="dark" style={{display: "block"}}>
+                <Link to="/my/topics" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    {this.state.topicFavoriteNum}
+                    {favorites === undefined ? this.state.topicFavoriteNum : favorites[1]}
                   </span>
-                <div className="sep3" />
-                <span className="fade">
-                  {i18next.t("bar:Topics")}
-                </span>
-                </a>
+                  <div className="sep3" />
+                  <span className="fade">
+                    {i18next.t("bar:Topics")}
+                  </span>
+                </Link>
               </td>
               <td width="33%" align="center">
-                <a href="/my/following" className="dark" style={{display: "block"}}>
+                <Link to="/my/following" className="dark" style={{display: "block"}}>
                   <span className="bigger">
-                    {this.state.followingNum}
+                    {favorites === undefined ? this.state.followingNum : favorites[2]}
                   </span>
                   <div className="sep3" />
                   <span className="fade">
                     {i18next.t("bar:Watch")}
                   </span>
-                </a>
+                </Link>
               </td>
             </tr>
             </tbody>
@@ -148,9 +149,9 @@ class RightAccountBox extends React.Component {
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
             <tr>
-              <td width="28"><a href="/i"><img src={Setting.getStatic("/static/img/essentials/images.png")} width="28" border="0" style={{verticalAlign: "bottom"}}/></a></td>
+              <td width="28"><Link to="/i"><img src={Setting.getStatic("/static/img/essentials/images.png")} width="28" border="0" style={{verticalAlign: "bottom"}}/></Link></td>
               <td width="10"></td>
-              <td width="auto" valign="middle" align="left"><a href="/i">{i18next.t("bar:File library")}</a></td>
+              <td width="auto" valign="middle" align="left"><Link to="/i">{i18next.t("bar:File library")}</Link></td>
             </tr>
             </tbody>
           </table>
@@ -160,15 +161,15 @@ class RightAccountBox extends React.Component {
             <tbody>
             <tr>
               <td width="28">
-                <a href="/new">
+                <Link to="/new">
                   <img src={Setting.getStatic("/static/img/essentials/compose.png")} width="28" border="0" style={{verticalAlign: "bottom"}} />
-                </a>
+                </Link>
               </td>
               <td width="10" />
               <td width="auto" valign="middle" align="left">
-                <a href="/new" className={`${this.props.nodeId}`}>
+                <Link to="/new" className={`${this.props.nodeId}`}>
                   {i18next.t("bar:Compose")}
-                </a>
+                </Link>
               </td>
             </tr>
             </tbody>
@@ -176,7 +177,7 @@ class RightAccountBox extends React.Component {
         </div>
         <div className="inner">
           <div className="fr" id="money" style={{margin: "-3px 0px 0px 0px"}}>
-            <a href="/balance" className="balance_area">
+            <Link to="/balance" className="balance_area">
               {
                 this.props.account?.goldCount !== 0 ?
                   <span>
@@ -189,7 +190,7 @@ class RightAccountBox extends React.Component {
               <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
               {" "}{this.props.account?.bronzeCount}{" "}
               <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
-            </a>
+            </Link>
           </div>
           {
             this.state.unreadNotificationNum !== 0 ?
@@ -199,13 +200,13 @@ class RightAccountBox extends React.Component {
           }
           {
             this.state.unreadNotificationNum === 0 ?
-              <a href="/notifications" className={`fade ${this.props.nodeId}`}>
+              <Link to="/notifications" className={`fade ${this.props.nodeId}`}>
                 0{" "}{i18next.t("bar:unread")}
-              </a> :
+              </Link> :
               <strong>
-                <a href="/notifications" className={`fade ${this.props.nodeId}`}>
+                <Link to="/notifications" className={`fade ${this.props.nodeId}`}>
                   {this.state.unreadNotificationNum}{" "}{i18next.t("bar:unread")}
-                </a>
+                </Link>
               </strong>
           }
         </div>

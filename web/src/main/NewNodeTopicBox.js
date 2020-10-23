@@ -17,7 +17,7 @@ import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "./node-casbin.css"
 import "../codemirrorSize.css"
 import i18next from "i18next";
@@ -45,14 +45,14 @@ class NewNodeTopicBox extends React.Component {
       width: ""
     };
 
-    this.renderLargeSize = this.renderLargeSize.bind(this)
-    this.renderSmallSize = this.renderSmallSize.bind(this)
-    this.publishTopic = this.publishTopic.bind(this)
+    this.renderLargeSize = this.renderLargeSize.bind(this);
+    this.renderSmallSize = this.renderSmallSize.bind(this);
+    this.publishTopic = this.publishTopic.bind(this);
   }
 
   componentDidMount() {
-    this.getNodeInfo()
-    Setting.initOSSClient(this.props.account?.id)
+    this.getNodeInfo();
+    Setting.initOSSClient(this.props.account?.id);
   }
 
   updateFormField(key, value) {
@@ -98,7 +98,7 @@ class NewNodeTopicBox extends React.Component {
     TopicBackend.addTopic(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink(`/go/${this.state.nodeInfo.id}`);
+          this.props.history.push(`/t/${res?.data}/review`);
         } else {
           this.setState({
             message: res.msg,
@@ -180,9 +180,9 @@ class NewNodeTopicBox extends React.Component {
   renderHeader() {
     return (
       <div className="header">
-        <a href="/">{Setting.getForumName()}</a>
+        <Link to="/">{Setting.getForumName()}</Link>
         <span className="chevron">&nbsp;›&nbsp;</span>
-        <a href={`/go/${this.props.nodeId}`}> {this.state.nodeInfo?.name} </a>
+        <Link to={`/go/${this.props.nodeId}`}> {this.state.nodeInfo?.name} </Link>
         <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("new:New Topic")}
       </div>
     );
@@ -226,8 +226,7 @@ class NewNodeTopicBox extends React.Component {
           <input type="submit" value={i18next.t("node:Publish")} class="super normal button" onClick={this.publishTopic.bind(this)} />
         </div>
         <div class="inner"><div class="fr"><a href="/settings/ignore/node/12" className={`${this.state.nodeInfo.id}`} >{i18next.t("node:Ignore this node")}</a>
-          &nbsp;{" "}<span class="fade">{i18next.t("node:Topics in the ignored nodes will not appear on the homepage.")}</span></div>
-          &nbsp;
+          &nbsp;{" "}<span class="fade">{i18next.t("node:Topics in the ignored nodes will not appear on the homepage.")}</span></div>&nbsp;
         </div>
       </div>
     );
@@ -236,11 +235,13 @@ class NewNodeTopicBox extends React.Component {
   renderLargeSize() {
     const title = document.getElementById('topic_title');
 
-    let contentWidth = title.clientWidth;
-    if (this.state.width === "") {
-      this.setState({
-        width: contentWidth,
-      });
+    if (title !== null) {
+      let contentWidth = title.clientWidth;
+      if (this.state.width === "") {
+        this.setState({
+          width: contentWidth,
+        });
+      }
     }
 
     return (

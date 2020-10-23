@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React from "react";
+import {Link} from "react-router-dom";
 import * as Setting from "./Setting";
 
 class Avatar extends React.Component {
@@ -43,10 +44,10 @@ class Avatar extends React.Component {
     }
 
     return (
-      <a href={`/member/${this.props.username}`}>
+      <Link to={`/member/${this.props.username}`}>
         <img src={src} className="avatar" border="0" align="default" style={style} alt={this.props.username}/>
-      </a>
-    )
+      </Link>
+    );
   }
 }
 

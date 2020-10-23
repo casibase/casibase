@@ -17,7 +17,6 @@ import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
-import {goToLink} from "../Setting";
 import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css"
@@ -97,7 +96,7 @@ class NewBox extends React.Component {
     TopicBackend.addTopic(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink(`/t/${res?.data}/review`);
+          this.props.history.push(`/t/${res?.data}/review`);
         } else {
           this.setState({
             message: res.msg,
@@ -180,7 +179,7 @@ class NewBox extends React.Component {
         });
       }
     } else {
-      goToLink("/signin");
+      this.props.history.push("/signin");
     }
 
     return (

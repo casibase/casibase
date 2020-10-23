@@ -27,22 +27,17 @@ import RightAccountBox from "./rightbar/RightAccountBox";
 import SignupBox from "./main/SignupBox";
 import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
-import ReplyBox from "./main/ReplyBox";
 import MemberBox from "./main/MemberBox";
 import SettingsBox from "./main/SettingsBox";
 import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
 import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
-import LatestReplyBox from "./main/LatestReplyBox";
 import CallbackBox from "./main/AuthBox";
 import NewBox from "./main/NewBox";
-import NewReplyBox from "./main/NewReplyBox";
 import NodesBox from "./main/NodeBox";
 import FavoritesBox from "./main/FavoritesBox";
 import RecentTopicsBox from "./main/RecentTopicsBox";
 import SelectLanguageBox from "./main/SelectLanguageBox";
-import "./node.css"
-import "./i18n"
 import RightCommunityHealthBox from "./rightbar/RightCommunityHealthBox";
 import RightFavouriteBox from "./rightbar/RightFavouriteBox";
 import RightNodeBox from "./rightbar/RightNodeBox";
@@ -64,9 +59,12 @@ import AdminHomepage from "./admin/AdminHomepage";
 import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
 import AdminMember from "./admin/AdminMember";
-import i18next from "i18next";
 import AdminPlane from "./admin/AdminPlane";
 import AdminTopic from "./admin/AdminTopic";
+import i18next from "i18next";
+import "./node.css"
+import "./i18n"
+import * as FavoritesBackend from "./backend/FavoritesBackend";
 
 class App extends Component {
   constructor(props) {
@@ -91,6 +89,7 @@ class App extends Component {
   componentDidMount() {
     //Setting.SetLanguage();
     this.getAccount();
+    this.getFavoriteNum();
   }
 
   onSignin() {
@@ -108,14 +107,12 @@ class App extends Component {
   }
 
   getNodeBackground(id, backgroundImage, backgroundColor, backgroundRepeat) {
-    if (this.state.nodeId === null) {
-      this.setState({
-        nodeId: id,
-        nodeBackgroundImage: backgroundImage,
-        nodeBackgroundColor: backgroundColor,
-        nodeBackgroundRepeat: backgroundRepeat
-      });
-    }
+    this.setState({
+      nodeId: id,
+      nodeBackgroundImage: backgroundImage,
+      nodeBackgroundColor: backgroundColor,
+      nodeBackgroundRepeat: backgroundRepeat
+    });
   }
 
   getAccount() {
@@ -132,6 +129,23 @@ class App extends Component {
         this.setState({
           account: account,
         });
+      });
+  }
+
+  getFavoriteNum() {
+    if (this.state.account === null) {
+      return;
+    }
+
+    FavoritesBackend.getAccountFavoriteNum()
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favorites: res?.data
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
       });
   }
 
@@ -152,13 +166,13 @@ class App extends Component {
         <Route exact path="/signup">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox onSignout={this.onSignout.bind(this)} />
+            <SignupBox onSignout={this.onSignout.bind(this)} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/signup/:signupMethod">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
+            <SignupBox account={this.state.account} onSignout={this.onSignout.bind(this)} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/signin">
@@ -178,18 +192,18 @@ class App extends Component {
         <Route exact path="/t/:topicId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
           <div id={pcBrowser ? "Main" : ""}>
-            <MemberBox account={this.state.account} />
+            <MemberBox account={this.state.account} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </div>
         </Route>
         <Route exact path="/member/:memberId/:tab">
@@ -201,7 +215,7 @@ class App extends Component {
         <Route exact path="/settings">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox account={this.state.account} />
+            <SettingsBox account={this.state.account} refreshAccount={this.getAccount.bind(this)}/>
           </div>
         </Route>
         <Route exact path="/callback/:authType/:addition">
@@ -213,7 +227,7 @@ class App extends Component {
         <Route exact path="/settings/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox account={this.state.account} />
+            <SettingsBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/new">
@@ -229,12 +243,12 @@ class App extends Component {
           </div>
         </Route>
         <Route exact path="/go/:nodeId">
-          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
+          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
         </Route>
         <Route exact path="/go/:nodeId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} />
+            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </div>
         </Route>
         <Route exact path="/my/:favorites">
@@ -426,8 +440,10 @@ class App extends Component {
     return (
       <div id="Rightbar">
         <div className="sep20"/>
-        {isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId}/> :
-          <RightSigninBox nodeId={this.state.nodeId}/>}
+        {
+          isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId} favorites={this.state.favorites}/> :
+          <RightSigninBox nodeId={this.state.nodeId}/>
+        }
         <Switch>
           <Route exact path="/">
             <span>
@@ -452,7 +468,7 @@ class App extends Component {
           </Route>
         </Switch>
       </div>
-    )
+    );
   }
 
   changeMenuStatus(status) {

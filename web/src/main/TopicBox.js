@@ -21,12 +21,12 @@ import Avatar from "../Avatar";
 import ReplyBox from "./ReplyBox";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {goToLink} from "../Setting"; 
 import "../node.css"
 import Zmage from "react-zmage";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
-
 import "codemirror/lib/codemirror.css"
+
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown');
@@ -61,12 +61,29 @@ class TopicBox extends React.Component {
     TopicBackend.addTopicBrowseCount(this.state.topicId);
   }
 
-  getTopic() {
+ componentWillUnmount() {
+    this.props.getNodeBackground("", "", "", "");
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        topicId: newProps.match.params.topicId,
+        event: newProps.match.params.event,
+      }, () => this.getTopic());
+    }
+  }
+
+  getTopic(event) {
     TopicBackend.getTopic(this.state.topicId)
       .then((res) => {
         this.setState({
           topic: res,
         }, () => {
+          if (event === "refresh") {
+            return;
+          }
+
           this.getNodeInfo();
           //this.props.getNodeId(this.state.topic?.nodeId);
           NodeBackend.addNodeBrowseCount(this.state.topic?.nodeId);
@@ -82,7 +99,7 @@ class TopicBox extends React.Component {
   }
 
   getFavoriteStatus() {
-    if (this.state.event === "review") {
+    if (this.state.event === "review" || this.props.account === null) {
       return;
     }
 
@@ -119,7 +136,8 @@ class TopicBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-          Setting.refresh();
+          this.getTopic("refresh");
+          this.props.refreshFavorites();
         }else {
           Setting.showMessage("error", res.msg);
         }
@@ -133,7 +151,8 @@ class TopicBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
-          Setting.refresh();
+          this.getTopic("refresh");
+          this.props.refreshFavorites();
         }else {
           Setting.showMessage("error", res.msg);
         }
@@ -145,7 +164,7 @@ class TopicBox extends React.Component {
       TopicBackend.deleteTopic(this.state.topicId)
         .then((res) => {
           if (res) {
-            goToLink(this.state.from);
+            this.props.history.push(this.state.from);
           }
         });
     }
@@ -156,7 +175,7 @@ class TopicBox extends React.Component {
       BalanceBackend.addThanks(id, 1)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh();
+            this.getTopic("refresh");
           } else {
             alert(res?.msg);
           }
@@ -171,7 +190,7 @@ class TopicBox extends React.Component {
         TopicBackend.topTopic(this.state.topic?.id, "", topType)
           .then((res) => {
             if (res?.status === "ok") {
-              Setting.refresh();
+              this.getTopic("refresh");
             } else {
               alert(i18next.t(`error:${res?.msg}`));
             }
@@ -190,7 +209,7 @@ class TopicBox extends React.Component {
       TopicBackend.topTopic(this.state.topic?.id, 10, topType)
         .then((res) => {
           if (res?.status === "ok") {
-            goToLink("/");
+            this.props.history.push("/");
           } else {
             alert(i18next.t(`error:${res?.msg}`));
           }
@@ -204,7 +223,7 @@ class TopicBox extends React.Component {
         TopicBackend.cancelTopTopic(this.state.topic?.id, topType)
           .then((res) => {
             if (res?.status === "ok") {
-              Setting.refresh();
+              this.getTopic("refresh");
             } else {
               alert(i18next.t(`error:${res?.msg}`));
             }
@@ -258,7 +277,7 @@ class TopicBox extends React.Component {
       <div class="inner">
         <div class="fr" align="right">
           {
-            this.props.account !== undefined ?
+            this.props.account !== undefined && this.props.account !== null ?
               this.state.favoritesStatus ?
                 <a href="#;" onClick={() => this.deleteFavorite()} className="op">{i18next.t("topic:Cancel Favor")}</a> :
                 <a href="#;" onClick={() => this.addFavorite()} className="op">{i18next.t("topic:Favor")}</a> :
@@ -304,7 +323,7 @@ class TopicBox extends React.Component {
           {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}{" "}&nbsp;∙&nbsp; {this.state.topic?.favoriteCount}{" "}{i18next.t("topic:favorites")}{" "}&nbsp;
         </div>
         {
-          this.props.account !== undefined ?
+          this.props.account !== undefined && this.props.account !== null ?
             this.state.favoritesStatus ?
               <a href="#;" onClick={() => {
                 this.deleteFavorite()
@@ -357,7 +376,12 @@ class TopicBox extends React.Component {
     if ((this.props.account === undefined) || (this.state.topic !== null && this.state.topic.length === 0)) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Topic is loading")}</div>
+          <div class="header">
+            {Setting.getHomeLink()}
+            {" "}
+            <span class="chevron">&nbsp;›&nbsp;</span>
+            {" "}{i18next.t("loading:Topic is loading")}
+          </div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       );
@@ -366,33 +390,45 @@ class TopicBox extends React.Component {
     if (this.state.topic === null) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Topic not found")}</div>
+          <div class="header">
+            {Setting.getHomeLink()}{" "}
+            <span class="chevron">&nbsp;›&nbsp;</span>
+            {" "}{i18next.t("error:Topic not found")}
+          </div>
           <div class="cell"><span class="gray bigger">404 Topic Not Found</span></div>
-          <div class="inner">←  <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+          <div class="inner">
+            ←{" "}{" "}
+            {Setting.getHomeLink(i18next.t("error:Back to Home Page"))}
+          </div>
         </div>
       );
     }
 
     if (this.state.event === "review") {
       if (this.props.account === null || this.props.account?.id !== this.state.topic?.author) {
-        goToLink(`/t/${this.state.topic?.id}`);
+        this.props.history.push(`/t/${this.state.topic?.id}`);
       }
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a>
+          <div class="header">{Setting.getHomeLink()}
             {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-            {" "}<a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
+            {" "}<Link to={`/go/${this.state.topic?.nodeId}`} >{this.state.topic?.nodeName}</Link>
             {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-            {" "}<a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a>
-            {" "}<span class="chevron">&nbsp;›&nbsp;</span> Review</div>
+            {" "}<Link to={`/t/${this.state.topic?.id}`} >{pangu.spacing(this.state.topic?.title)}</Link>
+            {" "}<span class="chevron">&nbsp;›&nbsp;</span>
+            {" "}Review
+          </div>
           <div class="cell topic_content markdown_body">
-            <p>{i18next.t("topic:The new topic has been successfully created on the")}{" "}
-            <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, you can click on the title below to continue to view")}</p>
-            <h1><a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a></h1>
+            <p>
+              {i18next.t("topic:The new topic has been successfully created on the")}{" "}
+              <Link to={`/go/${this.state.topic?.nodeId}`} >{this.state.topic?.nodeName}</Link>
+              {" "}{i18next.t("topic:node, you can click on the title below to continue to view")}
+            </p>
+            <h1><Link to={`/t/${this.state.topic?.id}`} >{pangu.spacing(this.state.topic?.title)}</Link></h1>
             <p>{i18next.t("topic:Following are some guides to help you better use the topic management related functions of the")}{" "}{Setting.getForumName()}{" "}{i18next.t("topic:community")}</p>
             <ul>
-              <li>{i18next.t("topic:The topic is currently at")}&nbsp;<a href="">{this.state.topic?.nodeName}</a>{" "}{i18next.t("topic:node, within 10 minutes after creation, you can")}{" "}<a href={`/move/topic/${this.state.topic?.id}`}>{i18next.t("topic:move freely")}</a></li>
-              <li>{i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")}{" "}<a href={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</a></li>
+              <li>{i18next.t("topic:The topic is currently at")}&nbsp;<Link to={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</Link>{" "}{i18next.t("topic:node, within 10 minutes after creation, you can")}{" "}<Link to={`/move/topic/${this.state.topic?.id}`} >{i18next.t("topic:move freely")}</Link></li>
+              <li>{i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")}{" "}<Link to={`/edit/topic/${this.state.topic?.id}`} >{i18next.t("topic:edit topic")}</Link></li>
             </ul>
           </div>
           <div class="cell topic_content markdown_body">
@@ -404,11 +440,11 @@ class TopicBox extends React.Component {
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Creator")}</td>
-                <td align="left"><a href={`/member/${this.state.topic?.author}`}>{this.state.topic?.author}</a></td>
+                <td align="left"><Link to={`/member/${this.state.topic?.author}`} >{this.state.topic?.author}</Link></td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Node")}</td>
-                <td align="left"><a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a></td>
+                <td align="left"><Link to={`/go/${this.state.topic?.nodeId}`} >{this.state.topic?.nodeName}</Link></td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Text syntax format")}</td>
@@ -447,9 +483,9 @@ class TopicBox extends React.Component {
           <div class="cell topic_content markdown_body">
             <h3>{i18next.t("topic:Related resources")}</h3>
             <ul>
-              <li><a href="/help/currency">{i18next.t("topic:Virtual currency system")}</a></li>
-              <li><a href="/help/node">{i18next.t("topic:Node usage help")}</a></li>
-              <li><a href="/help/spam">{i18next.t("topic:Treatment of link handling type spam")}</a></li>
+              <li><Link to={`/go/${this.state.topic?.nodeId}`} >{this.state.topic?.nodeName}</Link><Link to="/help/currency">{i18next.t("topic:Virtual currency system")}</Link></li>
+              <li><Link to="/help/node">{i18next.t("topic:Node usage help")}</Link></li>
+              <li><Link to="/help/spam">{i18next.t("topic:Treatment of link handling type spam")}</Link></li>
             </ul>
           </div>
         </div>
@@ -463,14 +499,15 @@ class TopicBox extends React.Component {
             <div className="fr">
               <Avatar username={this.state.topic?.author} size={pcBrowser ? "large" : "middle"} avatar={this.state.topic?.avatar}/>
             </div>
-            <a href="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</a>
+            <Link to="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</Link>
             {" "}
             <span className="chevron">
             &nbsp;›&nbsp;
           </span>
             {" "}
-            <a href={`/go/${this.state.topic?.nodeId}`}
-               className={`${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a>
+            <Link to={`/go/${this.state.topic?.nodeId}`} className={`${this.state.topic?.nodeId}`} >
+              {this.state.topic?.nodeName}
+            </Link>
             <div className="sep10"/>
             <h1>
               {this.state.topic?.title}
@@ -491,8 +528,8 @@ class TopicBox extends React.Component {
                 </span> : null
             }
             <small className="gray">
-              <a href={`/member/${this.state.topic?.author}`}
-                 className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</a> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
+              <Link to={`/member/${this.state.topic?.author}`}
+                 className={`${this.state.topic.nodeId}`}>{this.state.topic?.author}</Link> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount}{" "}{i18next.t("topic:hits")}
               &nbsp;{" "}
               {
                 this.props.account?.isModerator ?
@@ -549,14 +586,14 @@ class TopicBox extends React.Component {
               {
                 this.state.topic?.editable ?
                   <span>
-                  <a href={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</a>
+                  <Link to={`/edit/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:EDIT")}</Link>
                     &nbsp;{" "}
-                    <a href={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</a>
+                    <Link to={`/move/topic/${this.state.topic?.id}`} className="op">{i18next.t("topic:MOVE")}</Link>
                     &nbsp;{" "}
                     {
                       this.props.account?.isModerator || this.state.topic?.nodeModerator ?
-                        <a onClick={() => this.deleteTopic()} href="javascript:void(0);"
-                           className="op">{i18next.t("topic:DELETE")}</a> : null
+                        <Link onClick={() => this.deleteTopic()} to="javascript:void(0);"
+                           className="op">{i18next.t("topic:DELETE")}</Link> : null
                     }
                 </span> : null
               }
