@@ -14,7 +14,7 @@
 
 import React from "react";
 import Header from "./Header";
-import * as Setting from "../Setting";
+import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import i18next from "i18next";
 
@@ -27,7 +27,7 @@ class SignoutBox extends React.Component {
   }
 
   onSigninAgain() {
-    Setting.goToLink("/signin");
+    this.props.history.push("/signin");
   }
 
   onRetrySignout() {
@@ -35,9 +35,9 @@ class SignoutBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.props.onSignout();
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         } else {
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         }
       });
   }
@@ -71,4 +71,4 @@ class SignoutBox extends React.Component {
   }
 }
 
-export default SignoutBox;
+export default withRouter(SignoutBox);

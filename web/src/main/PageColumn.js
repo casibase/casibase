@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import {withRouter, Link} from "react-router-dom";
 import '../Bottom.css';
 import './node-casbin.css';
 import i18next from "i18next";
@@ -37,6 +38,12 @@ class PageColumn extends React.Component {
     this.getMaxPage();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.page !== this.props.page) {
+      this.getMaxPage();
+    }
+  }
+
   keyUp = (e) => {
     if (e.keyCode === 13) {
       this.gotoPage(this.props.url ,e.target.value);
@@ -45,7 +52,7 @@ class PageColumn extends React.Component {
 
   getMaxPage() {
     this.setState({
-      maxPage: this.handelMaxPage(this.props.total)
+      maxPage: this.handleMaxPage(this.props.total)
     }, () => {
       if (this.props.page > this.state.maxPage) this.gotoPage(this.props.url, this.state.maxPage);
       if (this.props.page < this.state.minPage) this.gotoPage(this.props.url, this.state.minPage);
@@ -59,7 +66,7 @@ class PageColumn extends React.Component {
     });
   }
 
-  handelMaxPage(total) {
+  handleMaxPage(total) {
     let res;
     res = Math.ceil(total / this.state.defaultPageNum);
     if (res !== 0) {
@@ -113,14 +120,15 @@ class PageColumn extends React.Component {
   renderPage(i, page, url) {
     return (
       <span>
-        {page === i ? <a href={`${url}?p=${i}`} className={`page_current ${this.props.nodeId}`}>{i}</a> : i === "..." ? <span className="fade"> ... </span> : <a href={`${url}?p=${i}`} className={`page_normal ${this.props.nodeId}`}>{i}</a>}
+        {page === i ? <Link to={`${url}?p=${i}`} className={`page_current ${this.props.nodeId}`}>{i}</Link> : i === "..." ? <span className="fade"> ... </span> : <Link to={`${url}?p=${i}`} className={`page_normal ${this.props.nodeId}`}>{i}</Link>}
         &nbsp;
       </span>
     );
   }
 
   gotoPage(url, page) {
-    Setting.goToLink(`${url}?p=${page}`);
+    this.props.history.push(`${url}?p=${page}`)
+    //Setting.goToLink(`${url}?p=${page}`);
   }
 
   render() {
@@ -218,4 +226,4 @@ class PageColumn extends React.Component {
   }
 }
 
-export default PageColumn;
+export default withRouter(PageColumn);

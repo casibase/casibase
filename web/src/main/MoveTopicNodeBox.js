@@ -14,12 +14,12 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import i18next from "i18next";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import $ from "jquery";
 import Select2 from "react-select2-wrapper";
+import i18next from "i18next";
 
 const pangu = require("pangu");
 
@@ -54,7 +54,7 @@ class MoveTopicNodeBox extends React.Component {
     TopicBackend.updateTopicNode(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink(`/t/${this.state.topicId}`);
+          this.props.history.push(`/t/${this.state.topicId}`);
         } else {
           Setting.showMessage("error", res?.msg);
         }
@@ -103,7 +103,7 @@ class MoveTopicNodeBox extends React.Component {
     if (this.state.topic !== null && this.state.topic.length === 0) {
       return (
         <div class="box">
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
+          <div class="header"><Link to="/">{Setting.getForumName()}</Link>{" "}<span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
           <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
         </div>
       );
@@ -112,8 +112,8 @@ class MoveTopicNodeBox extends React.Component {
     if (this.state.topic === null || !this.state.topic?.editable) {
       return (
         <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a> <span
-            className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("move:Move topic")}
+          <div className="header"><Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("move:Move topic")}
           </div>
           <div className="inner">
             {i18next.t("move:You cannot move this topic.")}
@@ -124,10 +124,10 @@ class MoveTopicNodeBox extends React.Component {
 
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</a> <span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<a href={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</a>
+          <Link to={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          {" "}<Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {" "}{i18next.t("move:Move topic")}
         </div>
@@ -141,12 +141,12 @@ class MoveTopicNodeBox extends React.Component {
               <tr>
                 <td width="120" align="right">{i18next.t("move:Title")}</td>
                 <td width="auto" align="left">
-                  <a href={`/t/${this.state.topic?.id}`} target="_blank">{pangu.spacing(this.state.topic?.title)}</a>
+                  <Link to={`/t/${this.state.topic?.id}`} target="_blank">{pangu.spacing(this.state.topic?.title)}</Link>
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right">{i18next.t("move:Current node")}</td>
-                <td width="auto" align="left"><a href={`/go/${this.state.topic?.nodeId}`} target="_blank">{this.state.topic?.nodeName}</a></td>
+                <td width="auto" align="left"><Link to={`/go/${this.state.topic?.nodeId}`} target="_blank">{this.state.topic?.nodeName}</Link></td>
               </tr>
               <tr>
                 <td width="120" align="right">{i18next.t("move:Target node")}</td>

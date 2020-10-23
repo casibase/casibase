@@ -14,10 +14,11 @@
 
 import React from "react";
 import * as Setting from "./Setting";
-import i18next from "i18next";
 import * as Conf from "./Conf"
 import * as BasicBackend from "./backend/BasicBackend";
+import {Link} from "react-router-dom";
 import moment from "moment";
+import i18next from "i18next";
 
 class Footer extends React.Component {
   constructor(props) {
@@ -63,12 +64,12 @@ class Footer extends React.Component {
         <div id="Bottom">
           <div className="content">
             <div className="inner" style={{textAlign: "center"}}>
-              &copy;{" "}{date.getFullYear()}{" "}{Setting.getForumName()}{" "}·{" "}{loadingTime}ms{" "}·{" "}<a href={`${Conf.GithubRepo}/commit/${this.state.version}`}>{this.state.version.substring(0, 7)}</a>
+              &copy;{" "}{date.getFullYear()}{" "}{Setting.getForumName()}{" "}·{" "}{loadingTime}ms{" "}·{" "}<a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank">{this.state.version.substring(0, 7)}</a>
               <div >
                 <strong>
-                  <a href="/about" className="dark">{i18next.t("footer:About")}</a>
+                  <Link to="/about" className="dark">{i18next.t("footer:About")}</Link>
                   &nbsp;·&nbsp;
-                  <a href="/select/language" title="Select Language" className="dark">Language</a>
+                  <Link to="/select/language" title="Select Language" className="dark">Language</Link>
                 </strong>
               </div>
             </div>
@@ -98,31 +99,31 @@ class Footer extends React.Component {
             {/*  </a>*/}
             {/*</div>*/}
             <strong>
-              <a href="/about" className="dark" target="_self">{i18next.t("footer:About")}</a>
+              <Link to="/about" className="dark" target="_self">{i18next.t("footer:About")}</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/faq" className="dark" target="_self">FAQ</a>
+              <Link to="/faq" className="dark" target="_self">FAQ</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/api" className="dark" target="_self">API</a>
+              <Link to="/api" className="dark" target="_self">API</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/mission" className="dark" target="_self">{i18next.t("footer:Mission")}</a>
+              <Link to="/mission" className="dark" target="_self">{i18next.t("footer:Mission")}</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/advertise" className="dark" target="_self">{i18next.t("footer:Advertise")}</a>
+              <Link to="/advertise" className="dark" target="_self">{i18next.t("footer:Advertise")}</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/advertise/2019.html" className="dark" target="_self">{i18next.t("footer:Thanks")}</a>
+              <Link to="/advertise/2019.html" className="dark" target="_self">{i18next.t("footer:Thanks")}</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
-              <a href="/tools" className="dark" target="_self">{i18next.t("footer:Tools")}</a>
+              <Link to="/tools" className="dark" target="_self">{i18next.t("footer:Tools")}</Link>
               {" "}&nbsp;{" "}
               <span className="snow">·</span>
               {" "}&nbsp;{" "}
@@ -133,18 +134,18 @@ class Footer extends React.Component {
             {" "}&nbsp;{" "}
             <span className="snow">·</span>
             {" "}&nbsp;{" "}
-            <a href="/select/language" className="f11">
+            <Link to="/select/language" className="f11">
               <img src={Setting.getStatic("/static/img/language.png")} width="16" align="absmiddle" id="ico-select-language" />
               {" "}&nbsp;{" "}
               {i18next.t("footer:Select Language")}
-            </a>
+            </Link>
             <div className="sep20" />
             {i18next.t("footer:Community of Creators")}
             <div className="sep5" />
             World is powered by code
             <div className="sep20" />
             <span className="small fade">
-              VERSION: <a href={`${Conf.GithubRepo}/commit/${this.state.version}`}>{this.state.version.substring(0, 7)}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
+              VERSION: <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank">{this.state.version.substring(0, 7)}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
               <br />
               ♥ Do have faith in what you're doing.
             </span>

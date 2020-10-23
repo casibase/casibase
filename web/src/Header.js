@@ -16,6 +16,7 @@ import React from "react";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
 
 class Header extends React.Component {
@@ -66,9 +67,9 @@ class Header extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.props.onSignout();
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         } else {
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         }
       });
   }
@@ -80,46 +81,51 @@ class Header extends React.Component {
     if (!isSignedIn) {
       return (
         <td width="570" align="right" style={{paddingTop: "2px"}}>
-          <a href="/" className="top">
+          <Link to="/" className="top">
             {i18next.t("general:Home")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/signup" className="top">
+          <Link to="/signup" className="top">
             {i18next.t("general:Sign Up")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/signin" className="top">
+          <Link to="/signin" className="top">
             {i18next.t("general:Sign In")}
-          </a>
+          </Link>
         </td>
       )
     } else {
       return (
         <td width="570" align="right" style={{paddingTop: "2px"}}>
-          <a href="/" className="top">
+          <Link to="/" className="top">
             {i18next.t("general:Home")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href={`/member/${username}`} className="top">
+          <Link to={`/member/${username}`} className="top">
             {username}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/notes" className="top">
+          <Link to="/notes" className="top">
             {i18next.t("general:Note")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/t" className="top">
+          <Link to="/t" className="top">
             {i18next.t("general:Timeline")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/settings" className="top">
+          <Link to="/settings" className="top">
             {i18next.t("general:Setting")}
-          </a>
+          </Link>
           &nbsp;&nbsp;&nbsp;
-          <a href="/admin" className="top">
-            {i18next.t("general:Admin")}
-          </a>
-          &nbsp;&nbsp;&nbsp;
+          {
+            this.props.account?.isModerator ?
+              <span>
+                <Link to="/admin" className="top">
+                  {i18next.t("general:Admin")}
+                </Link>
+                &nbsp;&nbsp;&nbsp;
+              </span> : null
+          }
           <a href="#;" onClick={this.signout.bind(this)} className="top">
             {i18next.t("general:Sign Out")}
           </a>
@@ -142,15 +148,17 @@ class Header extends React.Component {
               <table cellPadding="0" cellSpacing="0" border="0" width="100%">
                 <tr>
                   <td width="5" align="left"></td>
-                  <td width="80" align="left" style={{paddingTop: "4px"}}><a href="/" name="top">
-                    <div id="LogoMobile"></div>
-                  </a></td>
+                  <td width="80" align="left" style={{paddingTop: "4px"}}>
+                    <Link to="/" name="top">
+                      <div id="LogoMobile"></div>
+                    </Link>
+                  </td>
                   <td width="auto" align="right" style={{paddingTop: "2px"}}>
-                    <a href="/" className="top">{i18next.t("general:Home")}</a>
+                    <Link to="/" className="top">{i18next.t("general:Home")}</Link>
                     &nbsp;&nbsp;&nbsp;
-                    <a href="/signup" className="top">{i18next.t("general:Sign Up")}</a>
+                    <Link to="/signup" className="top">{i18next.t("general:Sign Up")}</Link>
                     &nbsp;&nbsp;&nbsp;
-                    <a href="/signin" className="top">{i18next.t("general:Sign In")}</a>
+                    <Link to="/signin" className="top">{i18next.t("general:Sign In")}</Link>
                   </td>
                   <td width="10" align="left"></td>
                 </tr>
@@ -163,7 +171,7 @@ class Header extends React.Component {
       return (
         <header className="site-header">
           <div className="site-header-logo">
-            <div id="LogoMobile" onClick={() => Setting.goToLink("/")} />
+            <div id="LogoMobile" onClick={() => this.props.history.push("/")} />
           </div>
           <div className="site-header-menu">
             {this.renderSearch()}
@@ -175,41 +183,41 @@ class Header extends React.Component {
               }
             </button>
             <div id="user-menu" style={menuStyle}>
-              <div><a href={`/member/${this.props.account?.id}`} className="top">{i18next.t("general:Homepage")}</a></div>
-              <div><a href="/my/nodes" className="top">{i18next.t("bar:Nodes")}</a></div>
-              <div><a href="/my/topics" className="top">{i18next.t("bar:Topics")}</a></div>
-              <div><a href="/settings" className="top">{i18next.t("general:Setting")}</a></div>
-              <div><a href="/admin" className="top">{i18next.t("general:Admin")}</a></div>
+              <div><Link to={`/member/${this.props.account?.id}`} className="top">{i18next.t("general:Homepage")}</Link></div>
+              <div><Link to="/my/nodes" className="top">{i18next.t("bar:Nodes")}</Link></div>
+              <div><Link to="/my/topics" className="top">{i18next.t("bar:Topics")}</Link></div>
+              <div><Link to="/settings" className="top">{i18next.t("general:Setting")}</Link></div>
+              <div><Link to="/admin" className="top">{i18next.t("general:Admin")}</Link></div>
               <div className="menu_sep"></div>
               <div>
-                <a href="/i" className="top">
+                <Link to="/i" className="top">
                   <img src={Setting.getStatic("/static/img/neue_image.png")} height="14" border="0" align="absmiddle"/>
                   {" "}&nbsp;{i18next.t("bar:File library")}
-                </a>
+                </Link>
               </div>
               <div>
-                <a href="/notes" className="top">
+                <Link to="/notes" className="top">
                   <img src={Setting.getStatic("/static/img/neue_notepad.png")} height="14" border="0" align="absmiddle"/>
                   {" "}&nbsp;{i18next.t("general:Note")}
-                </a>
+                </Link>
               </div>
               <div>
-                <a href="/t" className="top">
+                <Link to="/t" className="top">
                   <img src={Setting.getStatic("/static/img/neue_comment.png")} height="14" border="0" align="absmiddle"/>
                   {" "}&nbsp;{i18next.t("general:Timeline")}
-                </a>
+                </Link>
               </div>
               <div className="menu_sep"></div>
               <div>
-                <a href="/select/language" className="top">
+                <Link to="/select/language" className="top">
                   {i18next.t("general:Language")}
-                </a>
+                </Link>
               </div>
               <div className="menu_sep"></div>
               <div>
-                <a href="/settings/night/toggle" className="top">
+                <Link to="/settings/night/toggle" className="top">
                   <img src={Setting.getStatic("/static/img/toggle-light.png")} align="absmiddle" height="10" alt="Light" style={{verticalAlign: "middle"}}/>
-              </a>
+                </Link>
               </div>
               <div className="menu_sep"></div>
               <div style={{padding: "10px"}}>
@@ -219,9 +227,9 @@ class Header extends React.Component {
               </div>
               <div className="menu_sep"></div>
               <div>
-                <a href="/signout" className="top">
+                <Link to="/signout" className="top">
                   {i18next.t("general:Sign Out")}
-                </a>
+                </Link>
               </div>
             </div>
           </div>
@@ -268,9 +276,9 @@ class Header extends React.Component {
               <tbody>
               <tr>
                 <td width="110" align="left">
-                  <a href="/" name="top" title="way to explore">
+                  <Link to="/" name="top" title="way to explore">
                     <div id="Logo" />
-                  </a>
+                  </Link>
                 </td>
                 <td width="auto" align="left">
                   {this.renderSearch()}
@@ -288,4 +296,4 @@ class Header extends React.Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);

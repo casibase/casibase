@@ -14,6 +14,7 @@
 
 import React from 'react';
 import * as Setting from "../Setting";
+import {Link} from "react-router-dom";
 
 class SelectLanguageBox extends React.Component {
   constructor(props) {
@@ -22,12 +23,12 @@ class SelectLanguageBox extends React.Component {
       classes: props,
     };
   }
-  
+
   render() {
     return (
       <div align="center">
         <div class="box" style={{width: Setting.PcBrowser ? "600px" : "auto"}}>
-          <div class="header"><a href="/">{Setting.getForumName()}</a> <span class="chevron">&nbsp;›&nbsp;</span> Select Language / 选择语言</div>
+          <div class="header"><Link to="/">{Setting.getForumName()}</Link>{" "}<span class="chevron">&nbsp;›&nbsp;</span> Select Language / 选择语言</div>
           <div class="cell">
             {
               Setting.PcBrowser ?
@@ -39,8 +40,8 @@ class SelectLanguageBox extends React.Component {
                 </span>
             }
           </div>
-          <a href="javascript:void(0)" onClick={() => Setting.ChangeLanguage("en")} class="lang-selector">English</a>
-          <a href="javascript:void(0)" onClick={() => Setting.ChangeLanguage("zh")} class="lang-selector">简体中文</a>
+          <a href="javascript:void(0);" onClick={() => Setting.ChangeLanguage("en")} class="lang-selector">English</a>
+          <a href="javascript:void(0);" onClick={() => Setting.ChangeLanguage("zh")} class="lang-selector">简体中文</a>
         </div>
       </div>
     );

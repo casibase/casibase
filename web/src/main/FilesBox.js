@@ -16,11 +16,11 @@ import React from "react";
 import * as FileBackend from "../backend/FileBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
-import {withRouter} from "react-router-dom";
+import PageColumn from "./PageColumn";
+import {withRouter, Link} from "react-router-dom";
 import "../deopzone.css"
 import Dropzone from "react-dropzone";
 import i18next from "i18next";
-import PageColumn from "./PageColumn";
 
 const browserImageSize = require('browser-image-size');
 
@@ -62,6 +62,25 @@ class FilesBox extends React.Component {
     this.getFiles();
     this.clearMessage();
     this.getFileNum();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+        event: newProps.match.params.event,
+      }, ()=> {
+        this.getFile();
+        this.getFiles();
+        this.clearMessage();
+        this.getFileNum();
+      });
+    }
   }
 
   getFile() {
@@ -183,7 +202,7 @@ class FilesBox extends React.Component {
       .then((res) => {
         if (res?.status === "ok") {
           if (this.state.event !== "upload") {
-            Setting.goToLink("/i?p=1");
+            this.props.history.push("/i?p=1");
           }
           let index = this.getIndex(file);
           let files = this.state.files;
@@ -193,7 +212,7 @@ class FilesBox extends React.Component {
             message: "",
             filesNum: res?.data2.num,
             maxFileNum: res?.data2.maxNum,
-          })
+          });
         } else {
           this.setState({
             message: res?.msg
@@ -230,7 +249,7 @@ class FilesBox extends React.Component {
     FileBackend.updateFileDesc(this.state.event, this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.goToLink(`/i/${this.state.event}`);
+          this.props.history.push(`/i/${this.state.event}`);
         } else {
           this.setState({
             message: i18next.t(`"file:${res?.msg}`)
@@ -246,9 +265,9 @@ class FilesBox extends React.Component {
           <tbody>
           <tr>
             <td width={Setting.PcBrowser ? "300" : "180"} align="left">
-              <a href={`${file.id}`}>
+              <Link to={`${file.id}`}>
                 {file.name}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width="auto" valign="middle">
@@ -268,7 +287,7 @@ class FilesBox extends React.Component {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   // url: /i/upload
@@ -279,9 +298,9 @@ class FilesBox extends React.Component {
       <span>
         <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<a href="/i">Files</a>
+          {" "}<Link to="/i">Files</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {" "}{i18next.t("file:Upload new file")}
         </div>
@@ -324,7 +343,7 @@ class FilesBox extends React.Component {
             {" "}{this.state.maxFileNum - this.state.filesNum}{" "}{i18next.t("file:files now")}</span>
         </div>
           <div className="inner"><span className="gray"><li className="fa fa-credit-card"></li>
-            &nbsp; <a href="/balance/add">{i18next.t("file:Recharge to get more storage space")}</a></span></div>
+            &nbsp; <Link to="/balance/add">{i18next.t("file:Recharge to get more storage space")}</Link></span></div>
         </div>
         <div className="sep20"></div>
         <div className="box">
@@ -341,7 +360,7 @@ class FilesBox extends React.Component {
           </div>
         </div>
       </span>
-    )
+    );
   }
 
   renderFile() {
@@ -350,9 +369,9 @@ class FilesBox extends React.Component {
     return (
       <div class="box">
         <div class="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-          {" "}<a href="/i?p=1">Files</a>
+          {" "}<Link to="/i?p=1">Files</Link>
           {" "}<span class="chevron">&nbsp;›&nbsp;</span>
           {" "}{file?.fileName}
         </div>
@@ -384,7 +403,7 @@ class FilesBox extends React.Component {
             {" "}{Setting.getFormattedSize(file?.size)}
             {" "}&nbsp;·&nbsp;
             {" "}{Setting.getPrettyDate(file?.createdTime)}
-            {" "}<a href={`/member/${file?.memberId}`}>{file?.memberId}</a>
+            {" "}<Link to={`/member/${file?.memberId}`}>{file?.memberId}</Link>
             {" "}{i18next.t("file:upload")}
             {" "}&nbsp;·&nbsp;
             {" "}{file?.views}{" "}{i18next.t("file:views")}
@@ -397,10 +416,10 @@ class FilesBox extends React.Component {
             </div> : null
         }
         <div class="cell_ops"><div class="fr"><input type="button" value={i18next.t("file:Delete")} class="super normal button" onClick={() => this.deleteFile(file)} /></div>
-          <input type="button" value={i18next.t("file:Edit information")} class="super normal button" onClick={() => Setting.goToLink(`/i/edit/${file?.id}`)}/>
+          <input type="button" value={i18next.t("file:Edit information")} class="super normal button" onClick={() => this.props.history.push(`/i/edit/${file?.id}`)}/>
         </div>
       </div>
-    )
+    );
   }
 
   // url: /i/edit/:fileId
@@ -410,11 +429,11 @@ class FilesBox extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<a href="/i">Files</a>
+          {" "}<Link to="/i">Files</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<a href={`/i/${file?.id}`}>{file?.fileName}</a>
+          {" "}<Link to={`/i/${file?.id}`}>{file?.fileName}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {" "}{i18next.t("file:Edit file information")}
         </div>
@@ -428,14 +447,14 @@ class FilesBox extends React.Component {
               <td width="160" valign="top" align="center" className="image-edit-left">
                 {
                   file?.fileType === "image" ?
-                    <a href={`/i/${file?.id}`} target="_blank" title={i18next.t("file:Open in new window")}>
+                    <Link to={`/i/${file?.id}`} target="_blank" title={i18next.t("file:Open in new window")}>
                       <img src={file?.fileUrl} border="0" width="160" />
-                    </a> :
-                    <a href={`/i/${file?.id}`} target="_blank">
+                    </Link> :
+                    <Link to={`/i/${file?.id}`} target="_blank">
                       <div style={{lineHeight: "100px"}}>
                         {i18next.t("file:No preview for this type of file")}
                       </div>
-                    </a>
+                    </Link>
                 }
                 <div className="inner">
                   {
@@ -474,7 +493,7 @@ class FilesBox extends React.Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 
   showPageColumn() {
@@ -496,9 +515,9 @@ class FilesBox extends React.Component {
           <tbody>
           <tr>
             <td width={pcBrowser ? "300" : "auto"} align="left">
-              <a href={`/i/${file.id}`}>
+              <Link to={`/i/${file.id}`}>
                 {file?.fileName}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
@@ -541,10 +560,10 @@ class FilesBox extends React.Component {
   renderFileNotFound() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
           className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:File not found")}</div>
         <div className="cell"><span className="gray bigger">404 File Not Found</span></div>
-        <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+        <div className="inner">←{" "}<Link to="/">{i18next.t("error:Back to Home Page")}</Link></div>
       </div>
     );
   }
@@ -552,7 +571,7 @@ class FilesBox extends React.Component {
   renderFileLoading() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
           className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:File is loading")}</div>
         <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
       </div>
@@ -573,7 +592,7 @@ class FilesBox extends React.Component {
 
     if (this.state.event === "upload") {
       if (this.props.account === null) {
-        Setting.goToLink("/signin");
+        this.props.history.push("/signin");
       }
       return this.renderUpload();
     }
@@ -612,7 +631,7 @@ class FilesBox extends React.Component {
               </td>
               <td width="auto" align="center">
                 <li className="fa fa-cloud-upload"></li>
-                {" "}<a href="/i/upload">{i18next.t("file:Upload new file")}</a>
+                {" "}<Link to="/i/upload">{i18next.t("file:Upload new file")}</Link>
               </td>
             </tr>
             </tbody>

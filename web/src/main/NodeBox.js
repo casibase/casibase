@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import {Route, withRouter} from "react-router-dom";
+import {Route, withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
@@ -40,7 +40,7 @@ class NodeBox extends React.Component {
       minPage: 1,
       maxPage: -1,
       showPages: [],
-      favoritesNum: 1,
+      favoritesNum: 0,
       favoritesStatus: true,
       nodeInfo: [],
       newModerator: "",
@@ -63,6 +63,23 @@ class NodeBox extends React.Component {
     this.getNodeInfo();
     //this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getTopics());
+    }
+  }
+
+  componentWillUnmount() {
+    this.props.getNodeBackground("", "", "", "");
   }
 
   getNodeInfo() {
@@ -102,6 +119,19 @@ class NodeBox extends React.Component {
       });
   }
 
+  getNodeFavoriteStatus() {
+    FavoritesBackend.getFavoritesStatus(this.state.nodeId, 3)
+      .then((res) => {
+        if (res.status === 'ok') {
+          this.setState({
+            favoritesStatus: res.data,
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+  }
+
   getTopics() {
     if (this.state.event !== undefined) {
       return;
@@ -122,7 +152,8 @@ class NodeBox extends React.Component {
           this.setState({
             favoritesStatus: res.data,
           });
-          Setting.refresh();
+          this.getNodeFavoriteStatus();
+          this.props.refreshFavorites();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -136,7 +167,8 @@ class NodeBox extends React.Component {
           this.setState({
             favoritesStatus: !res.data,
           });
-          Setting.refresh();
+          this.getNodeFavoriteStatus();
+          this.props.refreshFavorites();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -222,14 +254,14 @@ class NodeBox extends React.Component {
               this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0);">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0);">{i18next.t("fav:Add to favorite")}</a> : null
           }
         </div>
-        <a href="/">{Setting.getForumName()}</a>
+        <Link to="/">{Setting.getForumName()}</Link>
         {" "}<span className="chevron">&nbsp;›&nbsp;</span>
         {" "}{this.state.nodeInfo?.name}
         <div className="sep5"></div>
         {
           this.props.account !== null ?
             <div align="right">
-              <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={()=> Setting.goToLink(`/new/${this.state.nodeId}`)} style={{width: "100%", lineHeight: "20px"}}/>
+              <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={()=> this.props.history.push(`/new/${this.state.nodeId}`)} style={{width: "100%", lineHeight: "20px"}}/>
             </div> : null
         }
       </div>
@@ -253,9 +285,9 @@ class NodeBox extends React.Component {
                   <span>
                     {
                       this.props.account?.isModerator ?
-                        <a href={`/go/${this.state.nodeId}/moderators`}>
+                        <Link to={`/go/${this.state.nodeId}/moderators`}>
                           {i18next.t("node:Moderator")}
-                        </a> :
+                        </Link> :
                         <span>
                           {i18next.t("node:Moderator")}
                         </span>
@@ -264,15 +296,15 @@ class NodeBox extends React.Component {
                       this.state.nodeInfo?.moderators.map((member) => {
                         return (
                           <span>
-                            {" "}<a href={`/member/${member}`} target="_blank">{member}</a>
+                            {" "}<Link to={`/member/${member}`} target="_blank">{member}</Link>
                           </span>
                         )})
                     }
                   </span> :
                   this.props.account?.isModerator ?
-                    <a href={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
+                    <Link to={this.props.account?.isModerator ? `/go/${this.state.nodeId}/moderators` : null}>
                       {i18next.t("node:No moderators")}
-                    </a> :
+                    </Link> :
                     <span>
                       {i18next.t("node:No moderators")}
                     </span>
@@ -287,7 +319,7 @@ class NodeBox extends React.Component {
                 this.state.favoritesStatus ? <a onClick={() => {this.deleteFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Cancel favorite")}</a> : <a onClick={() => {this.addFavorite()}} href="javascript:void(0);" className="node_header_link">{i18next.t("fav:Add to favorite")}</a> : null
             }
           </div>
-          <a href="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</a>
+          <Link to="/" className={`${this.state.nodeId}`} >{Setting.getForumName()}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>
           {nodeInfo?.name}
           <div className="sep10"></div>
@@ -296,13 +328,13 @@ class NodeBox extends React.Component {
             this.props.account !== null ?
               <div className="fr" style={{paddingLeft: "10px"}}>
                 <input type="button" className="super normal button" value={i18next.t("node:new topic")}
-                       onClick={()=> {Setting.goToLink(`/new/${nodeId}`)}}/>
+                       onClick={()=> {this.props.history.push(`/new/${nodeId}`)}}/>
               </div> : null
           }
           <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
           <div className="sep10"></div>
-          <div className="node_header_tabs"><a href={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</a>
-            <a href={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</a>
+          <div className="node_header_tabs"><Link to={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</Link>
+            <Link to={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</Link>
           </div>
         </div>
       </div>
@@ -338,7 +370,7 @@ class NodeBox extends React.Component {
       <tr>
         <td width="120" align="right"></td>
         <td width="auto" align="left">
-          <a href={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">{moderators}</a>
+          <Link to={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">{moderators}</Link>
         </td>
         <td width="auto" align="left">
           <a onClick={() => {this.deleteNodeModerator(moderators)}} href="javascript:void(0);">{i18next.t("node:Cancel moderator permissions")}</a>
@@ -352,9 +384,11 @@ class NodeBox extends React.Component {
 
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       return (
-        <div className="box">
-          <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
-          <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+        <div id={pcBrowser ? "Main" : ""}>
+          <div className="box">
+            <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
+            <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+          </div>
         </div>
       );
     }
@@ -365,7 +399,7 @@ class NodeBox extends React.Component {
           <div class="sep20"></div>
           <div class="box">
             <div class="header">
-              <a href="/">{Setting.getForumName()}</a>
+              <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Node not found")}</div>
             <div class="cell">
               {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
@@ -379,13 +413,13 @@ class NodeBox extends React.Component {
               {
                 this.props.account === null ?
                   <span className="gray">
-                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<Link to="/">{i18next.t("error:Home Page")}</Link>
                   </span> :
                   <span className="gray">
-                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<Link to="/">{i18next.t("error:Home Page")}</Link>
                     <br/>
-                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a
-                    href={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}
+                    <Link to={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</Link>
                   </span>
               }
             </div>
@@ -399,13 +433,13 @@ class NodeBox extends React.Component {
         return null;
       }
       if (this.props.account === null || !this.props.account?.isModerator) {
-        Setting.goToLink("/signin");
+        this.props.history.push("/signin");
       }
 
       return (
         <div className={`box ${this.state.nodeId}`}>
           <div className="header">
-            <a href="/">{Setting.getForumName()}</a>
+            <Link to="/">{Setting.getForumName()}</Link>
             <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("node:Moderator Management")}
           </div>
           {
@@ -423,7 +457,7 @@ class NodeBox extends React.Component {
                     <tr>
                       <td width="120" align="right">{i18next.t("node:Moderators")}</td>
                       <td width="auto" align="left">
-                        <a href={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{fontWeight: "bolder"}} target="_blank">{this.state.nodeInfo?.moderators[0]}</a>
+                        <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{fontWeight: "bolder"}} target="_blank">{this.state.nodeInfo?.moderators[0]}</Link>
                       </td>
                       <td width="auto" align="left">
                         <a onClick={() => {this.deleteNodeModerator(this.state.nodeInfo?.moderators[0])}} href="javascript:void(0);">{i18next.t("node:Cancel moderator permissions")}</a>

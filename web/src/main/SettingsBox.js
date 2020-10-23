@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as Tools from "./Tools";
@@ -57,6 +57,16 @@ class SettingsBox extends React.Component {
 
   componentDidMount() {
     this.initForm();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        event: newProps.match.params.event,
+        showSuccess: false
+      });
+      this.initForm();
+    }
   }
 
   initForm() {
@@ -111,7 +121,7 @@ class SettingsBox extends React.Component {
         });
   }
 
-  handelChange(e){
+  handleChange(e){
     this.setState({
       username: e.target.value
       });
@@ -130,6 +140,7 @@ class SettingsBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.changeSuccess();
+          this.props.refreshAccount();
         } else {
           Setting.showMessage("error", res.msg);
         }
@@ -141,13 +152,14 @@ class SettingsBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.changeSuccess();
+          this.props.refreshAccount();
         } else {
           Setting.showMessage("error", res.msg);
         }
       });
   }
 
-  handelChangeAvatar(event) {
+  handleChangeAvatar(event) {
     this.setState({
       avatar: event.target.files[0]
     });
@@ -170,7 +182,7 @@ class SettingsBox extends React.Component {
 
   renderSettingList(item){
     return (
-      <a href={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</a>
+      <Link to={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</Link>
     );
   }
 
@@ -223,9 +235,9 @@ class SettingsBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <a href="/">{Setting.getForumName()}</a>
+            <Link to="/">{Setting.getForumName()}</Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <a href="/settings">{i18next.t("setting:Settings")}</a> <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/settings">{i18next.t("setting:Settings")}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>
             {" "}{i18next.t("setting:Set Username")}
           </div>
           <div className="cell">
@@ -235,16 +247,18 @@ class SettingsBox extends React.Component {
           </div>
           <div className="inner">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+              <tbody>
               <tr>
                 <td width="120" align="right">{i18next.t("setting:Username")}</td>
                 <td width="auto" align="left">
-                  <input type="text" className="sl" name="username" onChange={this.handelChange.bind(this)} autoComplete="off"/></td>
+                  <input type="text" className="sl" name="username" onChange={this.handleChange.bind(this)} autoComplete="off"/></td>
               </tr>
               <tr>
                 <td width="120" align="right"></td>
                 <td width="auto" align="left"><input type="hidden"/>
-                <input type="submit" className="super normal button" onClick={this.postUsername} value={i18next.t("setting:save")}/></td>
+                  <input type="submit" className="super normal button" onClick={this.postUsername} value={i18next.t("setting:save")}/></td>
               </tr>
+              </tbody>
             </table>
           </div>
         </div>
@@ -272,7 +286,7 @@ class SettingsBox extends React.Component {
                 </tr>
                 <tr>
                   <td width="120" align="right">{i18next.t("setting:Choose a picture file")}</td>
-                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handelChangeAvatar(event)} name="avatar" /></td>
+                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleChangeAvatar(event)} name="avatar" /></td>
                 </tr>
                 <tr>
                   <td width="120" align="right"></td>
@@ -387,9 +401,9 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
-                    <a href="/settings/phone">
+                    <Link to="/settings/phone">
                       {i18next.t("setting:Modify Phone")}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
             }
@@ -426,9 +440,9 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
-                    <a href="/settings/email">
+                    <Link to="/settings/email">
                       {i18next.t("setting:Modify Email")}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
             }
@@ -441,7 +455,7 @@ class SettingsBox extends React.Component {
                   {
                     account?.googleAccount === "" ?
                       <td width="auto" align="left">
-                        <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0)">
+                        <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0);">
                           {i18next.t("setting:Link with GoogleAccount")}
                         </a>
                       </td> :
@@ -458,9 +472,9 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
-                    <a href="/settings/google">
+                    <Link to="/settings/google">
                       {i18next.t("setting:Modify GoogleAccount")}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
             }
@@ -473,7 +487,7 @@ class SettingsBox extends React.Component {
                   {
                     account?.githubAccount === "" ?
                       <td width="auto" align="left">
-                        <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0)">
+                        <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0);">
                           {i18next.t("setting:Link with GithubAccount")}
                         </a>
                       </td> :
@@ -490,9 +504,9 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
-                    <a href="/settings/github">
+                    <Link to="/settings/github">
                       {i18next.t("setting:Modify GithubAccount")}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
             }
@@ -505,9 +519,9 @@ class SettingsBox extends React.Component {
                   {
                     account?.weChatAccount === "" ?
                       <td width="auto" align="left">
-                        <a href="/settings/wechat">
+                        <Link to="/settings/wechat">
                           {i18next.t("setting:Link with WeChat")}
-                        </a>
+                        </Link>
                       </td> :
                       <td width="auto" align="left">
                         <code>
@@ -522,9 +536,9 @@ class SettingsBox extends React.Component {
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
-                    <a href="/settings/weChat">
+                    <Link to="/settings/weChat">
                       {i18next.t("setting:Modify WeChat")}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
             }
@@ -537,7 +551,7 @@ class SettingsBox extends React.Component {
                   {
                     account?.qqAccount === "" ?
                       <td width="auto" align="left">
-                        <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0)">
+                        <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0);">
                           {i18next.t("setting:Link with QQAccount")}
                         </a>
                       </td> :

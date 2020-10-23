@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import i18next from "i18next";
+import {Link} from "react-router-dom";
 import * as BasicBackend from "../backend/BasicBackend";
+import i18next from "i18next";
 
 class RightCommunityHealthBox extends React.Component {
   constructor(props) {
@@ -30,6 +31,9 @@ class RightCommunityHealthBox extends React.Component {
   }
 
   getHealthInfo() {
+    if (this.state.info !== null) {
+      return;
+    }
     BasicBackend.getCommunityHealth()
       .then((res) => {
         this.setState({
@@ -59,12 +63,12 @@ class RightCommunityHealthBox extends React.Component {
           </table>
         </div>
         <div className="inner">
-          <span className="chevron">›</span> <a href="/top/rich">{i18next.t("bar:Rich List")}</a>
+          <span className="chevron">›</span> <Link to="/top/rich">{i18next.t("bar:Rich List")}</Link>
           <div className="sep5"></div>
-          <span className="chevron">›</span> <a href="/top/player">{i18next.t("bar:Consumption list")}</a>
+          <span className="chevron">›</span> <Link to="/top/player">{i18next.t("bar:Consumption list")}</Link>
         </div>
       </div>
-    )
+    );
   }
 }
 

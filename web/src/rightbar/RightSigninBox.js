@@ -15,6 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as Conf from "../Conf";
+import {Link} from "react-router-dom";
 import "./rightSignin.css";
 import i18next from "i18next";
 
@@ -72,10 +73,10 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <a href="/signup" className="super normal button">{i18next.t("bar:Sign Up Now")}</a>
+            <Link to="/signup" className="super normal button">{i18next.t("bar:Sign Up Now")}</Link>
             <div className="sep5" />
             <div className="sep10" />
-            {i18next.t("bar:For Existing Member")}{" "}&nbsp;<a href="/signin">{i18next.t("bar:Sign In")}</a>
+            {i18next.t("bar:For Existing Member")}{" "}&nbsp;<Link to="/signin">{i18next.t("bar:Sign In")}</Link>
           </div>
         </div>
       </div>

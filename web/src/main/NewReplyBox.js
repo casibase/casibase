@@ -16,8 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
-import {withRouter} from "react-router-dom";
-import Avatar from "../Avatar";
+import {withRouter, Link} from "react-router-dom";
 import '../Reply.css'
 import * as Tools from "./Tools";
 import "../codemirrorSize.css"
@@ -27,8 +26,8 @@ import * as CodeMirror from "codemirror"
 import "codemirror/addon/hint/show-hint"
 import "./show-hint.css"
 import {Controlled as CodeMirrorsEditor} from "react-codemirror2";
-import i18next from "i18next";
 import {Resizable} from "re-resizable";
+import i18next from "i18next";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -43,8 +42,8 @@ class NewReplyBox extends React.Component {
       message: null,
       initOSSClientStatus: false
     };
-    this.handleChange = this.handleChange.bind(this)
-    this.synonyms = this.synonyms.bind(this)
+    this.handleChange = this.handleChange.bind(this);
+    this.synonyms = this.synonyms.bind(this);
   }
 
   componentDidMount() {
@@ -138,7 +137,7 @@ class NewReplyBox extends React.Component {
     ReplyBackend.addReply(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.refresh();
+          this.props.refreshReplies();
           Setting.scrollToBottom();
         } else {
            this.setState({
@@ -229,7 +228,10 @@ class NewReplyBox extends React.Component {
                 value={this.props.content}
                 onFocus={() => this.dockBox(true)}
                 onDrop={() => Tools.uploadMdFile()}
-                options={{mode: 'markdown', lineNumbers: false, lineWrapping: true, theme:`${this.props.nodeId}`, extraKeys:{"Ctrl-Space": "autocomplete"}, hintOptions: {hint: this.synonyms, alignWithWord: false, closeOnUnfocus:false, closeOnBlur: false, className: "textcomplete-item"}}}
+                options={{
+                  mode: 'markdown', lineNumbers: false, lineWrapping: true, theme:`${this.props.nodeId}`,
+                  extraKeys:{"Ctrl-Space": "autocomplete"}, hintOptions: {hint: this.synonyms, alignWithWord: false, closeOnUnfocus:false, closeOnBlur: false, className: "textcomplete-item"}
+                }}
                 onBeforeChange={(editor, data, value) => {
                   this.handleChange(editor, value)
                 }}
@@ -249,9 +251,9 @@ class NewReplyBox extends React.Component {
         </div>
         <div className="inner">
           <div className="fr">
-            <a href="/" className={`${this.props.nodeId}`}>
-              ← {Setting.getForumName()}
-            </a>
+            <Link to="/" className={`${this.props.nodeId}`}>
+              ←{" "}{Setting.getForumName()}
+            </Link>
           </div>
           &nbsp;
         </div>

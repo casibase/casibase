@@ -23,7 +23,7 @@ class CustomGithubCorner extends React.Component {
       classes: props,
     };
   }
-  
+
   render() {
     if (!Conf.ShowGithubCorner) {
       return null;

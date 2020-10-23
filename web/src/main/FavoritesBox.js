@@ -14,11 +14,10 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
-import * as NodeBackend from "../backend/NodeBackend";
 import i18next from "i18next";
 
 class FavoritesBox extends React.Component {
@@ -37,19 +36,32 @@ class FavoritesBox extends React.Component {
       temp: 0,
       url: ""
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1
+      this.state.page = 1;
     }else {
-      this.state.page = parseInt(this.state.p)
+      this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/my/${this.state.favoritesType}`
+    this.state.url = `/my/${this.state.favoritesType}`;
   }
 
   componentDidMount() {
-    this.getFavoritesInfo()
+    this.getFavoritesInfo();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getFavoritesInfo());
+    }
   }
 
   getFavoritesInfo() {
@@ -73,7 +85,7 @@ class FavoritesBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <a className="grid_item" href={`/go/${node?.nodeInfo.id}`}>
+      <Link className="grid_item" to={`/go/${node?.nodeInfo.id}`}>
         <div style={{
           display: "table",
           padding: "20px 0px 20px 0px",
@@ -90,18 +102,18 @@ class FavoritesBox extends React.Component {
             {node?.topicNum}
           </span>
         </div>
-      </a>
-    )
+      </Link>
+    );
   }
 
   showPageColumn() {
     if (this.state.maxPage === -1) {
-      return
+      return;
     }
 
     return (
       <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url}/>
-    )
+    );
   }
 
   render() {
@@ -110,7 +122,7 @@ class FavoritesBox extends React.Component {
         return (
           <div className="box">
             <div className="header">
-              <a href="/">{Setting.getForumName()}</a>
+              <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My Favorite Nodes")}
               <div className="fr f12">
                 <span className="snow">{i18next.t("fav:Total nodes")}{" "}&nbsp;</span>
@@ -124,25 +136,26 @@ class FavoritesBox extends React.Component {
               }
             </div>
           </div>
-        )
+        );
       case "topics":
         return (
           <div className="box">
             <div className="header">
-              <a href="/">{Setting.getForumName()}</a>
+              <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My favorite topics")}
               <div className="fr f12">
                 <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
-                <strong className="gray">{this.state.favoritesNum}</strong></div>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
             </div>
             <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
           </div>
-        )
+        );
       case "following":
         return (
           <div className="box">
             <div className="header">
-              <a href="/">{Setting.getForumName()}</a>
+              <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:Latest topics from people I followed")}
               <div className="fr f12">
                 <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
@@ -152,13 +165,13 @@ class FavoritesBox extends React.Component {
             <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
             {this.showPageColumn()}
           </div>
-        )
+        );
     }
     return (
       <div className="box">
         {this.state.favoritesType}
       </div>
-    )
+    );
   }
 }
 

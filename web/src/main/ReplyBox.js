@@ -17,13 +17,12 @@ import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
-import {windows} from "codemirror/src/util/browser";
 
 const pangu = require("pangu")
 
@@ -141,7 +140,7 @@ class ReplyBox extends React.Component {
       BalanceBackend.addThanks(id, 2)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh();
+            this.getReplies();
           } else {
             alert(res?.msg);
           }
@@ -154,7 +153,7 @@ class ReplyBox extends React.Component {
       ReplyBackend.deleteReply(id)
         .then((res) => {
           if (res?.status === "ok") {
-            Setting.refresh();
+            this.getReplies();
           } else {
             alert(res?.msg);
           }
@@ -197,10 +196,10 @@ class ReplyBox extends React.Component {
             {
               this.state.topic?.tags?.map((tag, i) => {
                 return (
-                  <a href={`/tag/${tag}`} className={`tag ${this.state.topic.nodeId}`}>
+                  <Link to={`/tag/${tag}`} className={`tag ${this.state.topic.nodeId}`}>
                     <li className="fa fa-tag" />
                     {tag}
-                  </a>
+                  </Link>
                 )
               })
             }
@@ -267,16 +266,16 @@ class ReplyBox extends React.Component {
                       </div>
                       <div className="sep3" />
                       <strong>
-                        <a href={`/member/${reply.author}`} className="dark">
+                        <Link to={`/member/${reply.author}`} className="dark">
                           {reply.author}
-                        </a>
+                        </Link>
                       </strong>
                       &nbsp; &nbsp;
-                      <a className="ago" href={`#r_${reply.id}`} onClick={() => {
+                      <Link className="ago" to={`#r_${reply.id}`} onClick={() => {
                         this.scrollToAnchor(`r_${reply?.id}`)
                       }}>
                         {Setting.getPrettyDate(reply.createdTime)}
-                      </a>
+                      </Link>
                       {" "}&nbsp;{" "}
                       {
                         reply?.thanksNum !== 0 ?
@@ -325,7 +324,9 @@ class ReplyBox extends React.Component {
         {Setting.PcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
         {
           this.props.account === null ? null :
-            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky} changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId} memberList={this.state.memberList} />
+            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky}
+                         changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId}
+                         memberList={this.state.memberList} refreshReplies={this.getReplies.bind(this)} />
         }
       </div>
     )

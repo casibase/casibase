@@ -14,10 +14,10 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import i18next from "i18next";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import PageColumn from "./PageColumn";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
+import i18next from "i18next";
 
 const pangu = require("pangu");
 
@@ -37,19 +37,32 @@ class BalanceBox extends React.Component {
       replyThanksCost: 10.0,
       url: ""
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1
-    }else {
-      this.state.page = parseInt(this.state.p)
+    } else {
+      this.state.page = parseInt(this.state.p);
     }
   
-    this.state.url = `/balance`
+    this.state.url = `/balance`;
   }
 
   componentDidMount() {
     this.getRecords();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getRecords());
+    }
   }
 
   getRecords() {
@@ -64,11 +77,12 @@ class BalanceBox extends React.Component {
 
   showPageColumn() {
     if (this.state.recordsNum === 0) {
-      return
+      return;
     }
+
     return (
       <PageColumn page={this.state.page} total={this.state.recordsNum} url={this.state.url}/>
-    )
+    );
   }
 
   renderRecord(record) {
@@ -87,10 +101,10 @@ class BalanceBox extends React.Component {
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
-              <span className="gray">{record?.createdTime.replace(/-/g, '').substring(0, 8)}{" "}{i18next.t("balance:'s daily checkin bonus")}{" "}{record?.amount} 铜币</span>
+              <span className="gray">{record?.createdTime.replace(/-/g, '').substring(0, 8)}{" "}{i18next.t("balance:'s daily checkin bonus")}{" "}{record?.amount}{" "}{i18next.t("balance:copper")}</span>
             </td>
           </tr>
-        )
+        );
       case 2:
         return (
           <tr>
@@ -106,11 +120,11 @@ class BalanceBox extends React.Component {
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
-                <a href={`/member/${record?.consumerId}`}>{record?.consumerId}</a>{" "}{i18next.t("balance:Thanks your topic")}{" "}›{" "}<a href={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a>
+                <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link>{" "}{i18next.t("balance:Thanks your topic")}{" "}›{" "}<Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
             </td>
           </tr>
-        )
+        );
       case 3:
         return (
           <tr>
@@ -126,11 +140,11 @@ class BalanceBox extends React.Component {
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
-                <a href={`/member/${record?.consumerId}`}>{record?.consumerId}</a>{" "}{i18next.t("balance:Thanks your reply in")}{" "}<a href={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a>{" "}{i18next.t("balance:的回复")}
+                <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link>{" "}{i18next.t("balance:Thanks your reply in")}{" "}<Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>{" "}{i18next.t("balance:的回复")}
               </span>
             </td>
           </tr>
-        )
+        );
       case 4:
         return (
           <tr>
@@ -145,9 +159,10 @@ class BalanceBox extends React.Component {
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
-              <span className="gray">{i18next.t("balance:Thanks")}{" "}<a href={`/member/${record?.consumerId}`}>{record?.consumerId}</a>{" "}{i18next.t("balance:'s topic")}{" "}›{" "}<a href={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a></span></td>
+              <span className="gray">{i18next.t("balance:Thanks")}{" "}<Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link>{" "}{i18next.t("balance:'s topic")}{" "}›{" "}<Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link></span>
+            </td>
           </tr>
-        )
+        );
       case 5:
         return (
           <tr>
@@ -162,9 +177,10 @@ class BalanceBox extends React.Component {
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
-              <span className="gray">{i18next.t("balance:Thanks")}{" "}<a href={`/member/${record?.consumerId}`}>{record?.consumerId}</a>{" "}{i18next.t("balance:'s reply")}{" "}›{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a></span></td>
+              <span className="gray">{i18next.t("balance:Thanks")}{" "}<Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link>{" "}{i18next.t("balance:'s reply")}{" "}›{" "}<Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link></span>
+            </td>
           </tr>
-        )
+        );
       case 6:
         return (
           <tr>
@@ -178,10 +194,9 @@ class BalanceBox extends React.Component {
               </span>
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
-            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Created a")}{" "}{record?.length}{" "}{i18next.t("balance:characters reply")}{" "}›{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a></span>
-            </td>
+            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Created a")}{" "}{record?.length}{" "}{i18next.t("balance:characters reply")}{" "}›{" "}<Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link></span></td>
           </tr>
-        )
+        );
       case 7:
         return (
           <tr>
@@ -196,9 +211,10 @@ class BalanceBox extends React.Component {
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
             <td className="d" style={{borderRight: "none"}}>
-              <span className="gray">{i18next.t("balance:receive")}{" "}<a href={`/member/${record?.consumerId}`}>{record?.consumerId}</a>{" "}{i18next.t("balance:'s reply")}{" "}›{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a></span></td>
+              <span className="gray">{i18next.t("balance:receive")}{" "}<Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link>{" "}{i18next.t("balance:'s reply")}{" "}›{" "}<Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link></span>
+            </td>
           </tr>
-        )
+        );
       case 8:
         return (
           <tr>
@@ -212,10 +228,9 @@ class BalanceBox extends React.Component {
               </span>
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
-            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Created a")}{" "}{record?.length}{" "}{i18next.t("balance:characters topic")}{" "}›{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a></span>
-            </td>
+            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Created a")}{" "}{record?.length}{" "}{i18next.t("balance:characters topic")}{" "}›{" "}<Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link></span></td>
           </tr>
-        )
+        );
       case 9:
         return (
           <tr>
@@ -229,10 +244,10 @@ class BalanceBox extends React.Component {
               </span>
             </td>
             <td className="d" style={{textAlign: "right"}}>{record?.balance + ".0"}</td>
-            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Topped topic")}{" "}<a href={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</a>{" "}{i18next.t("balance:进行置顶操作")}</span>
+            <td className="d" style={{borderRight: "none"}}><span className="gray">{i18next.t("balance:Topped topic")}{" "}<Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>{" "}{i18next.t("balance:进行置顶操作")}</span>
             </td>
           </tr>
-        )
+        );
     }
   }
 
@@ -240,9 +255,10 @@ class BalanceBox extends React.Component {
     return (
       <div className="box">
         <div className="cell">
-          <div className="fr" style={{margin: "-3px -8px 0px 0px"}}><a href="/top/rich" className="tab">{i18next.t("balance:Wealth ranking")}</a><a
-            href="/top/player" className="tab">{i18next.t("balance:Consumption ranking")}</a><a href="/balance/add/alipay" className="tab">{i18next.t("balance:Recharge")}</a></div>
-          <a href="/">{Setting.getForumName()}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("balance:Account balance")}
+          <div className="fr" style={{margin: "-3px -8px 0px 0px"}}><Link to="/top/rich" className="tab">{i18next.t("balance:Wealth ranking")}</Link>
+            <Link to="/top/player" className="tab">{i18next.t("balance:Consumption ranking")}</Link><Link to="/balance/add/alipay" className="tab">{i18next.t("balance:Recharge")}</Link>
+          </div>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("balance:Account balance")}
         </div>
         <div className="cell">
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
@@ -268,7 +284,7 @@ class BalanceBox extends React.Component {
                 <div className="sep10"></div>
                 <div className="sep5"></div>
                 <li className="fa fa-question-circle gray"></li>
-                <a href="/help/currency">{i18next.t("balance:Documentation on the virtual currency system")}</a></td>
+                <Link to="/help/currency">{i18next.t("balance:Documentation on the virtual currency system")}</Link></td>
             </tr>
           </table>
         </div>
@@ -293,7 +309,7 @@ class BalanceBox extends React.Component {
           </table>
         </div>
       </div>
-    )
+    );
   }
 }
 

@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css"
 import i18next from "i18next";
 
@@ -43,8 +43,8 @@ class RightLatestNodeBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <a href={`/go/${node?.id}`} className="item_node">{node?.name}</a>
-    )
+      <Link to={`/go/${node?.id}`} className="item_node">{node?.name}</Link>
+    );
   }
 
   render() {

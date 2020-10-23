@@ -15,8 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import {withRouter} from "react-router-dom";
-import Avatar from "../Avatar";
+import {withRouter, Link} from "react-router-dom";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
@@ -67,6 +66,21 @@ class AllCreatedTopicsBox extends React.Component {
       this.getMember();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+        memberId: newProps.match.params.memberId,
+      }, () => this.getAllCreatedTopics());
+      this.geCreatedTopicsNum();
+    }
+  }
+
   getMember() {
     if (this.state.tab === undefined) {
       return;
@@ -106,8 +120,8 @@ class AllCreatedTopicsBox extends React.Component {
     return (
       {
         ...this.state.tab === tab.value ?
-          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current">{" "}{tab.label}{" "}</a> :
-          <a href={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab">{" "}{tab.label}{" "}</a>
+          <Link to={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current">{" "}{tab.label}{" "}</Link> :
+          <Link to={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab">{" "}{tab.label}{" "}</Link>
       }
     );
   }
@@ -119,9 +133,9 @@ class AllCreatedTopicsBox extends React.Component {
           {i18next.t("member:Switch topic list")}
           <select id="switch-topics" defaultValue={this.state.tab === undefined ? "all" : this.state.tab} onChange={event => {
             if (event.target.value === "all") {
-              Setting.goToLink(`/member/${this.state.memberId}/`)
+              this.props.history.push(`/member/${this.state.memberId}/`)
             } else {
-              Setting.goToLink(`/member/${this.state.memberId}/${event.target.value}`)
+              this.props.history.push(`/member/${this.state.memberId}/${event.target.value}`)
             }
           }}>
             <option value="all">{this.state.memberId}{i18next.t("member:'s all topics")}</option>
@@ -133,7 +147,7 @@ class AllCreatedTopicsBox extends React.Component {
           </select>
         </label>
       </div>
-    )
+    );
   }
 
   showPageColumn(url) {
@@ -143,7 +157,7 @@ class AllCreatedTopicsBox extends React.Component {
 
     return (
       <PageColumn page={this.state.page} total={this.state.topicsNum} url={url}/>
-    )
+    );
   }
 
   render() {
@@ -156,7 +170,7 @@ class AllCreatedTopicsBox extends React.Component {
     {
       if (this.state.tab === "replies") {
         if (this.state.member === null) {
-          Setting.goToLink(`/member/${this.state.memberId}`)
+          this.props.history.push(`/member/${this.state.memberId}`);
         }
         return (
           <LatestReplyBox size={"large"} />
@@ -166,16 +180,16 @@ class AllCreatedTopicsBox extends React.Component {
     {
       if (this.state.tab === "topics") {
         if (this.state.member === null) {
-          Setting.goToLink(`/member/${this.state.memberId}`)
+          this.props.history.push(`/member/${this.state.memberId}`);
         }
         {
           return (
             <div className="box">
               <div className="header">
-                <a href="/">{Setting.getForumName()} </a>
+                <Link to="/">{Setting.getForumName()}{" "}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span>
-                <a href={`/member/${this.state.memberId}`}> {this.state.memberId}</a> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Topics")}
-                <div className="fr f12"><span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong></div>
+                <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Topics")}
+                <div className="fr f12"><span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span>{" "}<strong className="gray">{this.state.topicsNum}</strong></div>
               </div>
               {pcBrowser ? this.showPageColumn(`/member/${this.state.memberId}/topics`) : null}
               <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
@@ -210,8 +224,8 @@ class AllCreatedTopicsBox extends React.Component {
           {
             pcBrowser ?
               this.state.tab === undefined ?
-                <a href={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</a> :
-                <a href={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</a>
+                <Link to={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</Link> :
+                <Link to={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</Link>
               : null
           }
           {
@@ -229,7 +243,7 @@ class AllCreatedTopicsBox extends React.Component {
         {
           this.state.tab === undefined ?
             <div className="inner"><span className="chevron">»</span>
-              <a href={`/member/${this.state.memberId}/topics`}>{" "}{`${this.state.memberId}${i18next.t("member:'s more topics")}`}{" "}</a>
+              <Link to={`/member/${this.state.memberId}/topics`}>{" "}{`${this.state.memberId}${i18next.t("member:'s more topics")}`}{" "}</Link>
             </div> : null
         }
       </div>

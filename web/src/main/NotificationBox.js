@@ -14,13 +14,15 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import i18next from "i18next";
-import ReactMarkdown from "react-markdown";
 import * as NotificationBackend from "../backend/NotificationBackend";
-import {withRouter} from "react-router-dom";
 import PageColumn from "./PageColumn";
 import Avatar from "../Avatar";
 import "../Notification.css"
+import {withRouter, Link} from "react-router-dom";
+import Zmage from "react-zmage";
+import ReactMarkdown from "react-markdown";
+import i18next from "i18next";
+
 const pangu = require("pangu")
 
 class NotificationBox extends React.Component {
@@ -38,20 +40,33 @@ class NotificationBox extends React.Component {
       temp: 0,
       url: ""
     };
-    const params = new URLSearchParams(this.props.location.search)
-    this.state.p = params.get("p")
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1
+      this.state.page = 1;
     }else {
-      this.state.page = parseInt(this.state.p)
+      this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/notifications`
+    this.state.url = `/notifications`;
   }
 
   componentDidMount() {
     this.getNotifications();
     this.updateReadStatus();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getNotifications());
+    }
   }
 
   getNotifications() {
@@ -65,14 +80,14 @@ class NotificationBox extends React.Component {
   }
 
   updateReadStatus() {
-    NotificationBackend.updateReadStatus()
+    NotificationBackend.updateReadStatus();
   }
 
-  deleteFavorite(id) {
+  deleteNotification(id) {
     NotificationBackend.deleteNotifications(id)
       .then((res) => {
         if (res.status === 'ok') {
-          Setting.refresh();
+           this.getNotifications();
         }else {
           Setting.showMessage("error", res.msg);
         }
@@ -86,17 +101,17 @@ class NotificationBox extends React.Component {
 
     return (
       <PageColumn page={this.state.page} total={this.state.notificationNum} url={this.state.url} defaultPageNum={this.state.limit} />
-    )
+    );
   }
 
   renderMember(senderId) {
     return (
-      <a href={`/member/${senderId}`}>
+      <Link to={`/member/${senderId}`}>
         <strong>
           {senderId}
         </strong>
-      </a>
-    )
+      </Link>
+    );
   }
 
   renderDelete(createdTime, objectId) {
@@ -105,9 +120,36 @@ class NotificationBox extends React.Component {
         {" "}&nbsp;
         <span className="snow">{Setting.getPrettyDate(createdTime)}</span>
         {" "}&nbsp;
-        <a href="#;" onClick={() => this.deleteFavorite(objectId)} className="node">{i18next.t("notification:Delete")}</a>
+        <a href="#;" onClick={() => this.deleteNotification(objectId)} className="node">{i18next.t("notification:Delete")}</a>
       </span>
-    )
+    );
+  }
+
+  renderImage = ({alt, src}) => {
+    return(
+      <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>
+    );
+  };
+
+  renderLink = (props) => {
+    let check = Setting.checkPageLink(props.href);
+    if (check) {
+      return (
+        <a {...props} />
+      );
+    }
+    return(
+      <a {...props} target="_blank" />
+    );
+  };
+
+  renderContent(content) {
+    return (
+      <ReactMarkdown className={"notification"} renderers={{
+        image: this.renderImage,
+        link: this.renderLink
+      }} source={Setting.getFormattedContent(content, true)} escapeHtml={false} />
+    );
   }
 
   renderNotificationContent(notification) {
@@ -118,95 +160,95 @@ class NotificationBox extends React.Component {
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Replied to you in")}{" "}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
               {" "}{i18next.t("notification:里回复了你")}
             </span>
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
+              {this.renderContent(notification?.content)}
             </div>
           </td>
-        )
+        );
       case 2:
         return (
           <td valign="middle">
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Mentioned you in")}{" "}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
               {" "}{i18next.t("notification:里提到了你")}
             </span>
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
+              {this.renderContent(notification?.content)}
             </div>
           </td>
-        )
+        );
       case 3:
         return (
           <td valign="middle">
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Mentioned you in topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
               {" "}{i18next.t("notification:里提到了你")}
             </span>
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
-        )
+        );
       case 4:
         return (
           <td valign="middle">
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Favorite you topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
             </span>
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
-        )
+        );
       case 5:
         return (
           <td valign="middle">
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Thanks for you topic")}{" "}›{" "}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
             </span>
             {" "}&nbsp;
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
-        )
+        );
       case 6:
         return (
           <td valign="middle">
             <span className="fade">
               {this.renderMember(notification?.senderId)}
               {" "}{i18next.t("notification:Thanks for your reply in topic")}{" "}›{""}
-              <a href={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>
                 {pangu.spacing(notification?.title)}
-              </a>
+              </Link>
               {" "}{i18next.t("notification:里的回复")}
             </span>
             {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
             <div className="payload">
-              <ReactMarkdown className={"notification"} source={Setting.getFormattedContent(notification?.content, true)} escapeHtml={false} />
+              {this.renderContent(notification?.content)}
             </div>
           </td>
-        )
+        );
     }
   }
 
@@ -216,15 +258,15 @@ class NotificationBox extends React.Component {
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tr>
             <td width="32" align="left" valign="top">
-              <a href={`/member/${notification?.senderId}`}>
+              <Link to={`/member/${notification?.senderId}`}>
                 <Avatar username={notification?.senderId} avatar={notification?.avatar} size={"small"} />
-              </a>
+              </Link>
             </td>
             {this.renderNotificationContent(notification)}
           </tr>
         </table>
       </div>
-    )
+    );
   }
 
   render() {
@@ -237,7 +279,7 @@ class NotificationBox extends React.Component {
                 {this.state.notificationNum}
               </strong>
             </div>
-            <a href="/">{Setting.getForumName()}</a> <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>
             {" "}{i18next.t("notification:Reminder system")}
           </div>
           {Setting.PcBrowser ? this.showPageColumn() : null}
@@ -250,7 +292,7 @@ class NotificationBox extends React.Component {
           </div>
           {this.showPageColumn()}
         </div>
-    )
+    );
   }
 }
 

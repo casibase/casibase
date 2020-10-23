@@ -15,6 +15,7 @@
 import React from "react";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import * as Setting from "../Setting"
+import {Link} from "react-router-dom";
 import "./rightFavourite.css"
 import i18next from "i18next";
 
@@ -52,9 +53,9 @@ class RightCheckinBonusBox extends React.Component {
           <div className={`inner ${this.props.nodeId}`}>
             <li className="fa fa-gift" style={{color: "#f90"}}></li>
             {" "}&nbsp;
-            <a href="/mission/daily">
+            <Link to="/mission/daily">
               {i18next.t("bar:Receive today's checkin bonus")}
-            </a>
+            </Link>
         </div>
         </div>
       </span>

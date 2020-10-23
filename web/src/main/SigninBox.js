@@ -17,6 +17,7 @@ import Header from "./Header";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as Setting from "../Setting";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
 
 class SigninBox extends React.Component {
@@ -64,7 +65,7 @@ class SigninBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.props.onSignin();
-          Setting.goToLink("/");
+          this.props.history.push("/");
         } else {
           this.setState({
             message: res.msg,
@@ -83,9 +84,9 @@ class SigninBox extends React.Component {
       .then((res) => {
         if (res.status === 'ok') {
           this.props.onSignout();
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         } else {
-          Setting.goToLink("/signout");
+          this.props.history.push("/signout");
         }
       });
   }
@@ -151,7 +152,7 @@ class SigninBox extends React.Component {
         <li className="fa fa-exclamation-triangle" />
         &nbsp;{" "}{i18next.t("error:We had a problem when you signed in, please try again")}
       </div>
-    )
+    );
   }
 
   render() {
@@ -202,9 +203,9 @@ class SigninBox extends React.Component {
               <tr>
                 <td width="120" align="right" />
                 <td width="auto" align="left">
-                  <a href="/forgot">
+                  <Link to="/forgot">
                     {i18next.t("general:Forgot Password")}
-                  </a>
+                  </Link>
                 </td>
               </tr>
               </tbody>
@@ -217,4 +218,4 @@ class SigninBox extends React.Component {
   }
 }
 
-export default SigninBox;
+export default withRouter(SigninBox);

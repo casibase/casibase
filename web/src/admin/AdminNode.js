@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as NodeBackend from "../backend/NodeBackend";
@@ -65,6 +65,18 @@ class AdminNode extends React.Component {
     this.getNodeInfo();
     this.getTabs();
     this.getPlanes();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      this.setState({
+        message: "",
+        errorMessage: "",
+        nodeId: newProps.match.params.nodeId
+      }, () => {
+        this.getNodeInfo();
+      });
+    }
   }
 
   getNodes() {
@@ -132,7 +144,7 @@ class AdminNode extends React.Component {
   }
 
   // upload pic
-  handelUploadImage(event) {
+  handleUploadImage(event) {
     this.updateFormField("backgroundImage", i18next.t("file:Uploading..."));
 
     let file = event.target.files[0]
@@ -278,7 +290,7 @@ class AdminNode extends React.Component {
             errorMessage: "",
             message: i18next.t("node:Creat node success"),
           }, () => {
-            setTimeout(() => Setting.goToLink(`/admin/node/edit/${this.state.form.id}`), 1600);
+            setTimeout(() => this.props.history.push(`/admin/node/edit/${this.state.form.id}`), 1600);
           });
         } else {
           this.setState({
@@ -361,18 +373,18 @@ class AdminNode extends React.Component {
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin/node`}>{i18next.t("node:Node management")}</a>
+          <Link to={`/admin/node`}>{i18next.t("node:Node management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           {
             this.props.event === "new" ?
               <span>
                 {i18next.t("node:New node")}
               </span> :
-              <a href={`/go/${this.state.nodeId}`}>{this.state.nodeInfo?.name}</a>
+              <Link to={`/go/${this.state.nodeId}`}>{this.state.nodeInfo?.name}</Link>
           }
         </div>
         <div className="cell">
@@ -395,14 +407,14 @@ class AdminNode extends React.Component {
           <tbody>
           <tr>
             <td width={pcBrowser ? "200" : "auto"} align="left">
-              <a href={`/go/${node?.nodeInfo.id}`}>
+              <Link to={`/go/${node?.nodeInfo.id}`}>
                 {node?.nodeInfo.name}
-              </a>
+              </Link>
             </td>
             <td width={pcBrowser ? "200" : "auto"} align="center">
-              <a href={`/admin/node/edit/${node?.nodeInfo.id}`}>
+              <Link to={`/admin/node/edit/${node?.nodeInfo.id}`}>
                 {i18next.t("node:Manage")}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
@@ -490,7 +502,7 @@ class AdminNode extends React.Component {
   renderNodeModerators(moderators) {
     return (
       <span>
-        <a href={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">{moderators}</a>&nbsp;{" "}&nbsp;
+        <Link to={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">{moderators}</Link>&nbsp;{" "}&nbsp;
       </span>
     );
   }
@@ -507,7 +519,7 @@ class AdminNode extends React.Component {
         if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
           return (
             <div className="box">
-              <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
+              <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Node is loading")}</div>
               <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
             </div>
           );
@@ -517,7 +529,7 @@ class AdminNode extends React.Component {
           return (
             <div class="box">
               <div class="header">
-                <a href="/">{Setting.getForumName()}</a>
+                <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Node not found")}</div>
               <div class="cell">
                 {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
@@ -531,13 +543,12 @@ class AdminNode extends React.Component {
                 {
                   this.props.account === null ?
                     <span className="gray">
-                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href="/">{i18next.t("error:Home Page")}</a>
-                  </span> :
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<Link to="/">{i18next.t("error:Home Page")}</Link></span> :
                     <span className="gray">
                     <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}
-                      <a href="/">{i18next.t("error:Home Page")}</a>
+                      <Link to="/">{i18next.t("error:Home Page")}</Link>
                     <br/>
-                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<a href={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</a>
+                    <span className="chevron">‹</span>{" "}&nbsp;{i18next.t("error:Back to")}{" "}<Link to={`/member/${this.props.account?.id}`}>{i18next.t("error:My profile")}</Link>
                   </span>
                 }
               </div>
@@ -590,7 +601,7 @@ class AdminNode extends React.Component {
                       {
                         newNode ?
                           <input type="text" className="sl" name="name" id="node_name" value={this.state.form?.name===undefined ? "" : this.state.form?.name} onChange={event => this.updateFormField("name", event.target.value)} autoComplete="off" /> :
-                          <a href={`/go/${this.state.nodeId}`}>{node?.name}</a>
+                          <Link to={`/go/${this.state.nodeId}`}>{node?.name}</Link>
                       }
                     </td>
                   </tr>
@@ -714,9 +725,9 @@ class AdminNode extends React.Component {
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
                           <span className="gray">
-                            <a href={`/go/${this.state.nodeId}/moderators`}>
+                            <Link to={`/go/${this.state.nodeId}/moderators`}>
                               {i18next.t("node:Manage moderators")}
-                            </a>
+                            </Link>
                           </span>
                         </td>
                       </tr> : null
@@ -818,7 +829,7 @@ class AdminNode extends React.Component {
                   <td width="auto" align="left">
                     <input type="text" className="sl" name="image" id="change_image" value={this.state.form?.backgroundImage===undefined ? "" : this.state.form?.backgroundImage} onChange={event => this.updateFormField("backgroundImage", event.target.value)} autoComplete="off" />
                     {" "}&nbsp;{" "}
-                    <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handelUploadImage(event)} name="backgroundImage" />
+                    <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event)} name="backgroundImage" />
                   </td>
                 </tr>
                 <tr>
@@ -905,9 +916,9 @@ class AdminNode extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("node:Node management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("node:Total nodes")}{" "}&nbsp;</span>
@@ -915,7 +926,7 @@ class AdminNode extends React.Component {
           </div>
           <div className="fr f12">
             <strong className="gray">
-              <a href="node/new">{i18next.t("node:Add new node")}</a>
+              <Link to="node/new">{i18next.t("node:Add new node")}</Link>
               {" "}&nbsp;
             </strong>
           </div>

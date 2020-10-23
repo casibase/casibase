@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend.js";
 import * as Setting from "../Setting";
 import PageColumn from "../main/PageColumn";
@@ -81,7 +81,30 @@ class AdminTopic extends React.Component {
     this.getTopic();
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        message: "",
+        errorMessage: "",
+        topicId: newProps.match.params.topicId,
+        page: parseInt(page)
+      }, () => {
+        this.getTopics();
+        this.getTopic();
+      });
+    }
+  }
+
   getTopics() {
+    if (this.state.topicId !== undefined) {
+      return;
+    }
+
     //un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs
     TopicBackend.getTopicsAdmin(this.state.un, this.state.ti, this.state.cn, this.state.sdt, this.state.cs, this.state.lrs, this.state.us, this.state.rcs, this.state.hs, this.state.fcs, this.state.limit, this.state.page)
       .then((res) => {
@@ -367,11 +390,11 @@ class AdminTopic extends React.Component {
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><a href="/">{Setting.getForumName()}</a>
+        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin/topic`}>{i18next.t("topic:Topic management")}</a>
+          <Link to="/admin/topic">{i18next.t("topic:Topic management")}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
           <span>
             {this.state.topic?.title}
@@ -389,6 +412,7 @@ class AdminTopic extends React.Component {
   }
 
   renderTopicStatus(status, homePageTopTime, tabTopTime, nodeTopTime) {
+    console.log(status)
     if (status === false) {
       status = 1;
     } else {
@@ -454,23 +478,23 @@ class AdminTopic extends React.Component {
           <tr>
             <td width={pcBrowser ? "200" : "auto"} align="left">
               <span className="gray">
-                <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
+                <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
                   {
                     topic?.title.length > 30 ?
                       topic?.title.slice(0, 30) + "..." : topic?.title
                   }
-                </a>
+                </Link>
               </span>
             </td>
             <td width="100" align="center">
-              <a href={`/member/${topic?.author}`}>
+              <Link to={`/member/${topic?.author}`}>
                 {topic?.author}
-              </a>
+              </Link>
             </td>
             <td width="100" align="center">
-              <a href={`/admin/topic/edit/${topic?.id}`}>
+              <Link to={`/admin/topic/edit/${topic?.id}`}>
                 {i18next.t("admin:Manage")}
-              </a>
+              </Link>
             </td>
             <td width="10"></td>
             <td width="60" align="left" style={{textAlign: "right"}}>
@@ -490,7 +514,7 @@ class AdminTopic extends React.Component {
       if (this.state.topic !== null && this.state.topic.length === 0) {
         return (
           <div className="box">
-            <div className="header"><a href="/">{Setting.getForumName()}</a><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
+            <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
             <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
           </div>
         );
@@ -500,10 +524,10 @@ class AdminTopic extends React.Component {
         return (
           <div class="box">
             <div className="box">
-              <div className="header"><a href="/">{Setting.getForumName()}</a> <span
+              <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
                 className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Topic does not exist")}</div>
               <div className="cell"><span className="gray bigger">404 Topic Not Found</span></div>
-              <div className="inner">← <a href="/">{i18next.t("error:Back to Home Page")}</a></div>
+              <div className="inner">← <Link to="/">{i18next.t("error:Back to Home Page")}</Link></div>
             </div>
           </div>
         );
@@ -539,9 +563,9 @@ class AdminTopic extends React.Component {
                     <td width="120" align="right">{i18next.t("topic:Author")}</td>
                     <td width="auto" align="left">
                       <span className="gray">
-                        <a href={`/member/${topic.author}`} target="_blank">
+                        <Link to={`/member/${topic.author}`} target="_blank">
                           {topic?.author}
-                        </a>
+                        </Link>
                       </span>
                     </td>
                   </tr>
@@ -549,14 +573,14 @@ class AdminTopic extends React.Component {
                     <td width="120" align="right">{i18next.t("topic:Node")}</td>
                     <td width="auto" align="left">
                       <span className="gray">
-                        <a href={`/go/${topic?.nodeId}`} target="_blank">
+                        <Link to={`/go/${topic?.nodeId}`} target="_blank">
                           {topic?.nodeName}
-                        </a>
+                        </Link>
                       </span>
                       &nbsp;{" "}&nbsp;{" "}
-                      <a href={`/move/topic/${topic?.id}`} style={{fontWeight: "bolder"}} target="_blank">
+                      <Link to={`/move/topic/${topic?.id}`} style={{fontWeight: "bolder"}} target="_blank">
                         {i18next.t("topic:Move topic")}
-                      </a>
+                      </Link>
                     </td>
                   </tr>
                   <tr>
@@ -573,7 +597,7 @@ class AdminTopic extends React.Component {
                       <span className="gray">
                         {
                           topic.lastReplyUser === "" ?
-                            i18next.t("topic: No reply yet") : <a href={`/member/${topic?.lastReplyUser}`}>{topic?.lastReplyUser}</a>
+                            i18next.t("topic: No reply yet") : <Link to={`/member/${topic?.lastReplyUser}`}>{topic?.lastReplyUser}</Link>
                         }
                       </span>
                     </td>
@@ -625,7 +649,7 @@ class AdminTopic extends React.Component {
                     <td width="120" align="right">{i18next.t("topic:Status")}</td>
                     <td width="auto" align="left">
                       <span className="gray">
-                        {this.renderTopicStatus(topic?.status, topic?.homePageTopTime, topic?.tabTopTime, topic?.nodeTopTime)}
+                        {this.renderTopicStatus(topic?.deleted, topic?.homePageTopTime, topic?.tabTopTime, topic?.nodeTopTime)}
                       </span>
                     </td>
                   </tr>
@@ -657,9 +681,9 @@ class AdminTopic extends React.Component {
                     {i18next.t("topic:Title")}
                   </td>
                   <td width="500" align="left">
-                    <a href={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
+                    <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
                       {topic?.title}
-                    </a>
+                    </Link>
                   </td>
                 </tr>
                 <tr>
@@ -691,9 +715,9 @@ class AdminTopic extends React.Component {
                 <tr>
                   <td width="120" align="right"></td>
                   <td width="auto" align="left">
-                    <a href={`/edit/topic/${topic?.id}`} target="_blank">
+                    <Link to={`/edit/topic/${topic?.id}`} target="_blank">
                       {i18next.t("topic:Edit")}&nbsp;{" "}›&nbsp;
-                    </a>
+                    </Link>
                   </td>
                 </tr>
                 </tbody>
@@ -707,9 +731,9 @@ class AdminTopic extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <a href="/">{Setting.getForumName()}</a>
+          <Link to="/">{Setting.getForumName()}</Link>
           {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <a href={`/admin`}>{i18next.t("admin:Backstage management")}</a>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Topic management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("topic:Total Topics")}{" "}&nbsp;</span>

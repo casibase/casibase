@@ -59,6 +59,10 @@ func InitAliOSS() {
 
 // UploadAvatarToAliOSS uploads an avatar to ali-oss.
 func UploadAvatarToAliOSS(avatar []byte, memberId string) string {
+	if ossClient == nil || ossBucket == nil {
+		return ""
+	}
+
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 
 	err := ossBucket.PutObject(ossFilePath+memberId+"/avatar/"+timestamp+".png", bytes.NewReader(avatar))

@@ -15,6 +15,7 @@
 import React from "react";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as Setting from "../Setting";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class NodeNavigationBox extends React.Component {
@@ -27,7 +28,7 @@ class NodeNavigationBox extends React.Component {
   }
 
   componentDidMount() {
-    this.getNodeNavigation()
+    this.getNodeNavigation();
   }
 
   getNodeNavigation() {
@@ -42,19 +43,20 @@ class NodeNavigationBox extends React.Component {
   renderNode(node) {
     return (
       <span>
-        <a href={`/go/${node?.id}`} style={{fontSize: "14px"}}>{node?.name}</a>&nbsp; &nbsp;
+        <Link to={`/go/${node?.id}`} style={{fontSize: "14px"}}>{node?.name}</Link>&nbsp;{" "}&nbsp;
       </span>
-    )
+    );
   }
 
   renderTab(tab) {
     if (tab?.id === "all") {
-      return null
+      return null;
     }
 
     return (
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0">
+          <tbody>
           <tr>
             <td align="right" width="80">
               <span className="fade">{tab?.name}</span>
@@ -62,14 +64,15 @@ class NodeNavigationBox extends React.Component {
             <td style={{lineHeight: "200%", paddingLeft: "10px", wordBreak: "keep-all"}}>
               {
                 tab?.nodes.map((node) => {
-                  return this.renderNode(node)
+                  return this.renderNode(node);
                 })
               }
             </td>
           </tr>
+          </tbody>
         </table>
       </div>
-      )
+    );
   }
 
   render() {
@@ -77,9 +80,9 @@ class NodeNavigationBox extends React.Component {
       <div class="box">
         <div class="cell">
           <div class="fr">
-            <a href="/planes">
+            <Link to="/planes">
               {i18next.t("node:View all nodes")}
-            </a>
+            </Link>
           </div>
           <span class="fade"><strong>{Setting.getForumName()}</strong>{" "}/{" "}{i18next.t("node:Node navigation")}</span>
         </div>
@@ -89,7 +92,7 @@ class NodeNavigationBox extends React.Component {
             })
           }
       </div>
-    )
+    );
   }
 }
 
