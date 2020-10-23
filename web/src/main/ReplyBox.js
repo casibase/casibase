@@ -256,9 +256,12 @@ class ReplyBox extends React.Component {
                             </div> : null
                         }
                         &nbsp;
-                        <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
-                          <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
-                        </a>
+                        {
+                          this.props.account !== undefined && this.props.account !== null ?
+                            <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
+                              <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
+                            </a> : null
+                        }
                         &nbsp;&nbsp;
                         <span className={`no ${this.state.topic.nodeId}`}>
                           {i + 1}
@@ -329,7 +332,7 @@ class ReplyBox extends React.Component {
                          memberList={this.state.memberList} refreshReplies={this.getReplies.bind(this)} />
         }
       </div>
-    )
+    );
   }
 }
 

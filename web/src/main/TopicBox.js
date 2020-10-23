@@ -295,7 +295,7 @@ class TopicBox extends React.Component {
             {i18next.t("topic:Ignore")}
           </a>{" "}&nbsp;
           {
-            this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+            this.props.account !== undefined && this.props.account !== null && this.props.account?.id !== this.state.topic?.author ?
               this.state.topic?.thanksStatus === false ?
                 <div id="topic_thank">
                   <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
@@ -351,7 +351,7 @@ class TopicBox extends React.Component {
         </a>
         &nbsp;
         {
-          this.props.account !== undefined && this.props.account?.id !== this.state.topic?.author ?
+          this.props.account !== undefined && this.props.account !== null && this.props.account?.id !== this.state.topic?.author ?
             this.state.topic?.thanksStatus === false ?
               <div id="topic_thank">
                 <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)}
@@ -502,8 +502,8 @@ class TopicBox extends React.Component {
             <Link to="/" className={`${this.state.topic?.nodeId}`}>{Setting.getForumName()}</Link>
             {" "}
             <span className="chevron">
-            &nbsp;›&nbsp;
-          </span>
+              &nbsp;›&nbsp;
+            </span>
             {" "}
             <Link to={`/go/${this.state.topic?.nodeId}`} className={`${this.state.topic?.nodeId}`} >
               {this.state.topic?.nodeName}
