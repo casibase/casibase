@@ -123,7 +123,7 @@ class NewReplyBox extends React.Component {
           }
         </ul>
       </div>
-    )
+    );
   }
 
   publishReply() {
@@ -137,6 +137,7 @@ class NewReplyBox extends React.Component {
     ReplyBackend.addReply(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
+          this.props.onReplyChange("")
           this.props.refreshReplies();
           Setting.scrollToBottom();
         } else {
