@@ -62,6 +62,7 @@ func WriteStringToPath(s string, path string) {
 var Segmenter sego.Segmenter
 
 func InitSegmenter() {
+	return
 	// load dictionary
 	Segmenter.LoadDictionary("dictionary/dictionary.txt")
 }

@@ -56,8 +56,8 @@ func (job *UpdateJob) updateInfo() (bool, int) {
 			num = 0
 		} else {
 			UpdateLatestSyncedRecordId(last)
-			updateNodeNum := UpdateHotNode()
-			updateTopicNum := UpdateHotTopic()
+			updateNodeNum := UpdateHotNode(latest)
+			updateTopicNum := UpdateHotTopic(latest)
 
 			num = updateTopicNum + updateNodeNum
 		}

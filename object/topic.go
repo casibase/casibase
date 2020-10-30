@@ -22,8 +22,8 @@ import (
 
 type Topic struct {
 	Id              int      `xorm:"int notnull pk autoincr" json:"id"`
-	Author          string   `xorm:"varchar(100)" json:"author"`
-	NodeId          string   `xorm:"varchar(100)" json:"nodeId"`
+	Author          string   `xorm:"varchar(100) index" json:"author"`
+	NodeId          string   `xorm:"varchar(100) index" json:"nodeId"`
 	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
 	Title           string   `xorm:"varchar(100)" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
@@ -193,29 +193,35 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 }
 
 func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
+	topic := TopicWithAvatar{}
+	_, err:= adapter.engine.Table("topic").Id(id).Join("LEFT OUTER", "member", "member.id = topic.author").Cols("topic.*, member.avatar").Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	topic.ThanksStatus = GetThanksStatus(memberId, id, 4)
+	topic.Editable = GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime)
+
+	return &topic
+}
+
+func GetTopic(id int) *Topic {
 	topic := Topic{Id: id}
 	existed, err := adapter.engine.Get(&topic)
 	if err != nil {
 		panic(err)
 	}
 
-	if !existed {
+	if existed {
+		return &topic
+	} else {
 		return nil
 	}
-
-	res := TopicWithAvatar{
-		Topic:        topic,
-		Avatar:       GetMemberAvatar(topic.Author),
-		ThanksStatus: GetThanksStatus(memberId, id, 4),
-		Editable:     GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime),
-	}
-
-	return &res
 }
 
-func GetTopic(id int) *Topic {
+func GetTopicBasicInfo(id int) *Topic {
 	topic := Topic{Id: id}
-	existed, err := adapter.engine.Get(&topic)
+	existed, err := adapter.engine.Id(id).Omit("content").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
@@ -488,22 +494,14 @@ func UpdateTopicHotInfo(topicId string, hot int) bool {
 }
 
 func GetHotTopic(limit int) []*TopicWithAvatar {
-	topics := []*Topic{}
-	err := adapter.engine.Desc("hot").And("deleted = ? ", 0).Limit(limit).Find(&topics)
+	topics := []*TopicWithAvatar{}
+	err := adapter.engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+		Desc("hot").And("deleted = ? ", 0).Limit(limit).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	res := []*TopicWithAvatar{}
-	for _, v := range topics {
-		temp := TopicWithAvatar{
-			Topic:  *v,
-			Avatar: GetMemberAvatar(v.Author),
-		}
-		res = append(res, &temp)
-	}
-
-	return res
+	return topics
 }
 
 func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {

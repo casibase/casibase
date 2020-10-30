@@ -19,14 +19,14 @@ type BrowseRecord struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	MemberId    string `xorm:"varchar(100)" json:"memberId"`
 	RecordType  int    `xorm:"int" json:"recordType"`
-	ObjectId    string `xorm:"varchar(100)" json:"objectId"`
-	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
+	ObjectId    string `xorm:"varchar(100) index" json:"objectId"`
+	CreatedTime string `xorm:"varchar(40) index" json:"createdTime"`
 	Expired     bool   `xorm:"bool" json:"expired"`
 }
 
 func GetBrowseRecordNum(recordType int, objectId string) int {
 	record := new(BrowseRecord)
-	total, err := adapter.engine.Where("record_type = ?", recordType).And("object_id = ?", objectId).And("expired = ?", false).Count(record)
+	total, err := adapter.engine.Where("object_id = ?", objectId).And("record_type = ?", recordType).And("expired = ?", false).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -77,9 +77,9 @@ func GetLastRecordId() int {
 	return res
 }
 
-func UpdateHotNode() int {
+func UpdateHotNode(last int) int {
 	var record []*BrowseRecord
-	err := adapter.engine.Table("browse_record").Where("record_type = ?", 1).GroupBy("object_id").Find(&record)
+	err := adapter.engine.Table("browse_record").Where("id > ?", last).And("record_type = ?", 1).GroupBy("object_id").Find(&record)
 	if err != nil {
 		panic(err)
 	}
@@ -92,9 +92,9 @@ func UpdateHotNode() int {
 	return len(record)
 }
 
-func UpdateHotTopic() int {
+func UpdateHotTopic(last int) int {
 	var record []*BrowseRecord
-	err := adapter.engine.Table("browse_record").Where("record_type = ?", 2).GroupBy("object_id").Find(&record)
+	err := adapter.engine.Table("browse_record").Where("id > ? ", last).And("record_type = ?", 2).GroupBy("object_id").Find(&record)
 	if err != nil {
 		panic(err)
 	}

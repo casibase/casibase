@@ -261,13 +261,15 @@ class NewBox extends React.Component {
             />
           </div>
           <div className="cell" style={{lineHeight: "190%"}}>
-            {i18next.t("new:Hottest Nodes")} &nbsp; {
+            {i18next.t("new:Hottest Nodes")}
+            {" "}&nbsp;{" "}
+            {
               this.state.nodes.map((node, i) => {
                 return (
                   <div style={{display: "inline"}}>
                     <a href="#" onClick={() => {this.updateFormField("nodeId", node.id); this.updateFormField("nodeName", node.name);} } className="node">{node.name}</a> &nbsp;
                   </div>
-                )
+                );
               })
             }
           </div>

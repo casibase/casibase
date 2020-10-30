@@ -24,7 +24,7 @@ import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
 
-const pangu = require("pangu")
+const pangu = require("pangu");
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class ReplyBox extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.reply !== this.state.reply || prevState.sticky !== this.state.sticky) {
-      return
+      return;
     }
     let url = window.location.href;
     let id = url.substring(url.lastIndexOf("#")+1);
@@ -200,7 +200,7 @@ class ReplyBox extends React.Component {
                     <li className="fa fa-tag" />
                     {tag}
                   </Link>
-                )
+                );
               })
             }
           </div>
@@ -303,7 +303,7 @@ class ReplyBox extends React.Component {
                   </tbody>
                 </table>
               </div>
-            )
+            );
           })
         }
       </div>

@@ -32,6 +32,7 @@ func (c *APIController) GetReplies() {
 	topicIdStr := c.Input().Get("topicId")
 
 	topicId := util.ParseInt(topicIdStr)
+
 	c.Data["json"] = object.GetReplies(topicId, memberId)
 	c.ServeJSON()
 }
@@ -128,7 +129,8 @@ func (c *APIController) DeleteReply() {
 	memberId := c.GetSessionUser()
 	id := util.ParseInt(idStr)
 	replyInfo := object.GetReply(id)
-	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) {
+	isModerator := object.CheckModIdentity(memberId)
+	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) && !isModerator {
 		resp := Response{Status: "fail", Msg: "Permission denied."}
 		c.Data["json"] = resp
 		c.ServeJSON()

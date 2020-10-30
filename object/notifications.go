@@ -26,11 +26,11 @@ import (
 // Status 1-3 means: unread, have read, deleted
 type Notification struct {
 	Id               int    `xorm:"int notnull pk autoincr" json:"id"`
-	NotificationType int    `xorm:"int" json:"notificationType"`
-	ObjectId         int    `xorm:"int" json:"objectId"`
+	NotificationType int    `xorm:"int index" json:"notificationType"`
+	ObjectId         int    `xorm:"int index" json:"objectId"`
 	CreatedTime      string `xorm:"varchar(40)" json:"createdTime"`
 	SenderId         string `xorm:"varchar(100)" json:"senderId"`
-	ReceiverId       string `xorm:"varchar(100)" json:"receiverId"`
+	ReceiverId       string `xorm:"varchar(100) index" json:"receiverId"`
 	Status           int    `xorm:"tinyint" json:"-"`
 	//Deleted        bool   `xorm:"bool" json:"-"`
 }
@@ -65,8 +65,12 @@ func GetNotificationCount() int {
 }
 
 func GetNotifications(memberId string, limit int, offset int) []*NotificationResponse {
-	notifications := []*Notification{}
-	err := adapter.engine.Desc("created_time").Where("receiver_id = ?", memberId).And("status != ?", 3).Limit(limit, offset).Find(&notifications, &Notification{ReceiverId: memberId})
+	notifications := []*NotificationResponse{}
+	err := adapter.engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
+		Where("notification.receiver_id = ?", memberId).And("notification.status != ?", 3).
+		Desc("notifications.created_time").
+		Cols("notifications.*, member.avatar").
+		Limit(limit, offset).Find(&notifications)
 	if err != nil {
 		panic(err)
 	}
@@ -80,33 +84,30 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 		k := k
 		go func() {
 			defer wg.Done()
-			tempNotification := NotificationResponse{
-				Notification: v,
-				Avatar:       GetMemberAvatar(v.SenderId),
-			}
 			switch v.NotificationType {
 			case 1:
+
 				replyInfo := GetReply(v.ObjectId)
-				tempNotification.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				tempNotification.Content = replyInfo.Content
-				tempNotification.ObjectId = replyInfo.TopicId
+				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
+				v.Content = replyInfo.Content
+				v.ObjectId = replyInfo.TopicId
 			case 2:
 				replyInfo := GetReply(v.ObjectId)
-				tempNotification.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				tempNotification.Content = replyInfo.Content
-				tempNotification.ObjectId = replyInfo.TopicId
+				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
+				v.Content = replyInfo.Content
+				v.ObjectId = replyInfo.TopicId
 			case 3:
-				tempNotification.Title = GetTopicTitle(v.ObjectId)
+				v.Title = GetTopicTitle(v.ObjectId)
 			case 4:
-				tempNotification.Title = GetTopicTitle(v.ObjectId)
+				v.Title = GetTopicTitle(v.ObjectId)
 			case 5:
-				tempNotification.Title = GetTopicTitle(v.ObjectId)
+				v.Title = GetTopicTitle(v.ObjectId)
 			case 6:
 				replyInfo := GetReply(v.ObjectId)
-				tempNotification.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				tempNotification.Content = replyInfo.Content
+				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
+				v.Content = replyInfo.Content
 			}
-			res[k] = &tempNotification
+			res[k] = v
 		}()
 	}
 	wg.Wait()
@@ -170,7 +171,8 @@ func UpdateReadStatus(id string) bool {
 func AddReplyNotification(senderId, content string, objectId, topicId int) {
 	memberMap := make(map[string]bool)
 
-	receiverId := GetTopicAuthor(topicId)
+	topicInfo := GetTopicBasicInfo(topicId)
+	receiverId := topicInfo.Author
 	memberMap[receiverId] = true
 
 	reg := regexp.MustCompile("@(.*?)[ \n\t]")
@@ -205,11 +207,10 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		}
 		_ = AddNotification(&notification)
 		// send remind email
-		email := GetMemberMail(receiverId)
-		reminder := GetMemberEmailReminder(receiverId)
+		reminder, email := GetMemberEmailReminder(receiverId)
 		if email != "" && reminder {
 			topicIdStr := util.IntToString(topicId)
-			err := service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+			err := service.SendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
 			if err != nil {
 				panic(err)
 			}
@@ -232,11 +233,10 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 			}
 			_ = AddNotification(&notification)
 			// send remind email
-			email := GetMemberMail(receiverId)
-			reminder := GetMemberEmailReminder(receiverId)
+			reminder, email := GetMemberEmailReminder(receiverId)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(topicId)
-				err := service.SendRemindMail(GetTopicTitle(topicId), content, topicIdStr, email, Domain)
+				err := service.SendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
 				if err != nil {
 					panic(err)
 				}
@@ -282,8 +282,7 @@ func AddTopicNotification(objectId int, author, content string) {
 			}
 			_ = AddNotification(&notification)
 			// send remind email
-			email := GetMemberMail(k)
-			reminder := GetMemberEmailReminder(k)
+			reminder, email := GetMemberEmailReminder(k)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(objectId)
 				err := service.SendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)

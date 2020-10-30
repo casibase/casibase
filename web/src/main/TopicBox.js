@@ -24,8 +24,8 @@ import * as BalanceBackend from "../backend/BalanceBackend";
 import "../node.css"
 import Zmage from "react-zmage";
 import {Link} from "react-router-dom";
-import i18next from "i18next";
 import "codemirror/lib/codemirror.css"
+import i18next from "i18next";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -67,11 +67,21 @@ class TopicBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
+      if (this.judgeAnchorElement()) {
+        return;
+      }
       this.setState({
         topicId: newProps.match.params.topicId,
         event: newProps.match.params.event,
       }, () => this.getTopic());
     }
+  }
+
+  judgeAnchorElement() {
+    let url = window.location.href;
+    let id = url.substring(url.lastIndexOf("#")+1);
+    let anchorElement = document.getElementById(id);
+    return !!anchorElement;
   }
 
   getTopic(event) {
