@@ -303,18 +303,18 @@ func GetMemberMail(id string) string {
 	}
 }
 
-// GetMemberEmailReminder return member's email reminder status.
-func GetMemberEmailReminder(id string) bool {
+// GetMemberEmailReminder return member's email reminder status, and his email adress.
+func GetMemberEmailReminder(id string) (bool, string) {
 	member := Member{}
-	existed, err := adapter.engine.Id(id).Cols("email_reminder").Get(&member)
+	existed, err := adapter.engine.Id(id).Cols("email_reminder, email").Get(&member)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return member.EmailReminder
+		return member.EmailReminder, member.Email
 	} else {
-		return false
+		return false, ""
 	}
 }
 

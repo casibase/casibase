@@ -27,9 +27,9 @@ type ConsumptionRecord struct {
 	Id              int    `xorm:"int notnull pk autoincr" json:"id"`
 	Amount          int    `xorm:"int" json:"amount"`
 	Balance         int    `xorm:"int" json:"balance"`
-	ConsumerId      string `xorm:"varchar(100)" json:"consumerId"`
-	ObjectId        int    `xorm:"int" json:"objectId"`
-	ReceiverId      string `xorm:"varchar(100)" json:"receiverId"`
+	ConsumerId      string `xorm:"varchar(100) index" json:"consumerId"`
+	ObjectId        int    `xorm:"int index" json:"objectId"`
+	ReceiverId      string `xorm:"varchar(100) index" json:"receiverId"`
 	CreatedTime     string `xorm:"varchar(40)" json:"createdTime"`
 	ConsumptionType int    `xorm:"int" json:"consumptionType"`
 }

@@ -31,8 +31,15 @@ func (c *APIController) ChangeExpiredDataStatus() {
 }
 
 func (c *APIController) UpdateHotInfo() {
-	updateNodeNum := object.UpdateHotNode()
-	updateTopicNum := object.UpdateHotTopic()
+	var updateNodeNum int
+	var updateTopicNum int
+	last := object.GetLastRecordId()
+	latest := object.GetLatestSyncedRecordId()
+	if last != latest {
+		object.UpdateLatestSyncedRecordId(last)
+		updateNodeNum = object.UpdateHotNode(latest)
+		updateTopicNum = object.UpdateHotTopic(latest)
+	}
 
 	c.Data["json"] = Response{Status: "ok", Data: updateNodeNum, Data2: updateTopicNum}
 	c.ServeJSON()

@@ -415,7 +415,7 @@ class App extends Component {
           </div>
         </Route>
       </Switch>
-    )
+    );
   }
 
   renderRightbar() {

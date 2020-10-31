@@ -42,7 +42,7 @@ type NodeTopic struct {
 }
 
 type ReplyWithAvatar struct {
-	Reply
+	Reply        `xorm:"extends"`
 	Avatar       string `json:"avatar"`
 	ThanksStatus bool   `json:"thanksStatus"`
 	Deletable    bool   `json:"deletable"`
@@ -67,10 +67,10 @@ type NodeRelation struct {
 }
 
 type NotificationResponse struct {
-	*Notification
-	Title   string `json:"title"`
-	Content string `json:"content"`
-	Avatar  string `json:"avatar"`
+	*Notification `xorm:"extends"`
+	Title         string `json:"title"`
+	Content       string `json:"content"`
+	Avatar        string `json:"avatar"`
 }
 
 type NodeNavigationResponse struct {

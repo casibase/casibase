@@ -5,7 +5,7 @@ import "github.com/casbin/casbin-forum/util"
 // RecordType: 1 means phone, 2 means email, resetInformation means phone number or email.
 type ResetRecord struct {
 	Id               int    `xorm:"int notnull pk autoincr" json:"id"`
-	MemberId         string `xorm:"varchar(100)" json:"memberId"`
+	MemberId         string `xorm:"varchar(100) index" json:"memberId"`
 	RecordType       int    `xorm:"int" json:"recordType"`
 	ResetInformation string `xorm:"varchar(100)" json:"resetInformation"`
 	CreatedTime      string `xorm:"varchar(40)" json:"createdTime"`

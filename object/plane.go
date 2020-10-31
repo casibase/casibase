@@ -114,18 +114,17 @@ func UpdatePlane(id string, plane *Plane) bool {
 }
 
 func GetPlaneList() []*PlaneWithNodes {
-	planes := GetPlanes()
-
-	res := []*PlaneWithNodes{}
-	for _, v := range planes {
-		temp := &PlaneWithNodes{
-			Plane: v,
-			Nodes: GetNodeFromPlane(v.Id),
-		}
-		res = append(res, temp)
+	planes := []*PlaneWithNodes{}
+	err := adapter.engine.Table("plane").Join("LEFT OUTER", "node", "plane.id = node.plane_id").
+		Where("plane.visible = ?", 1).
+		Asc("plane.sorter").Desc("node.sorter").
+		Cols("plane.*, node.id, node.name").
+		Find(&planes)
+	if err != nil {
+		return planes
 	}
 
-	return res
+	return planes
 }
 
 func DeletePlane(id string) bool {

@@ -19,10 +19,10 @@ import "github.com/casbin/casbin-forum/util"
 // Favorites using figure 1-3 to choose type, 1 means topic, 2 means people, 3 means node.
 type Favorites struct {
 	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
-	FavoritesType int    `xorm:"int" json:"favoritesType"`
-	ObjectId      string `xorm:"varchar(100)" json:"objectId"`
+	FavoritesType int    `xorm:"int index" json:"favoritesType"`
+	ObjectId      string `xorm:"varchar(100) index" json:"objectId"`
 	CreatedTime   string `xorm:"varchar(40)" json:"createdTime"`
-	MemberId      string `xorm:"varchar(100)" json:"memberId"`
+	MemberId      string `xorm:"varchar(100) index" json:"memberId"`
 }
 
 func AddFavorites(favorite *Favorites) bool {

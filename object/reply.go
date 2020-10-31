@@ -15,14 +15,13 @@
 package object
 
 import (
-	"sync"
 	"time"
 )
 
 type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
-	Author      string `xorm:"varchar(100)" json:"author"`
-	TopicId     int    `xorm:"int" json:"topicId"`
+	Author      string `xorm:"varchar(100) index" json:"author"`
+	TopicId     int    `xorm:"int index" json:"topicId"`
 	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"-"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
@@ -42,25 +41,24 @@ func GetReplyCount() int {
 
 // GetReplies returns more information about reply of a topic.
 func GetReplies(topicId int, memberId string) []*ReplyWithAvatar {
-	replies := []*Reply{}
-	err := adapter.engine.Asc("created_time").And("deleted = ?", 0).Find(&replies, &Reply{TopicId: topicId})
+	replies := []*ReplyWithAvatar{}
+	err := adapter.engine.Table("reply").Join("LEFT OUTER", "member", "member.id = reply.author").
+		Where("reply.topic_id = ?", topicId).And("reply.deleted = ?", 0).
+		Asc("reply.created_time").
+		Cols("reply.*, member.avatar").
+		Find(&replies)
 	if err != nil {
 		panic(err)
 	}
 
-	res := []*ReplyWithAvatar{}
+	isModerator := CheckModIdentity(memberId)
 	for _, v := range replies {
-		temp := ReplyWithAvatar{
-			Reply:        *v,
-			Avatar:       GetMemberAvatar(v.Author),
-			ThanksStatus: GetThanksStatus(memberId, v.Id, 5),
-			Deletable:    ReplyDeletable(v.CreatedTime, memberId, v.Author),
-			Editable:     GetReplyEditableStatus(memberId, v.Author, v.CreatedTime),
-		}
-		res = append(res, &temp)
+		v.ThanksStatus = GetThanksStatus(memberId, v.Id, 5)
+		v.Deletable = isModerator || ReplyDeletable(v.CreatedTime, memberId, v.Author)
+		v.Editable = isModerator || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
 	}
 
-	return res
+	return replies
 }
 
 // GetReply returns a single reply.
@@ -79,21 +77,18 @@ func GetReply(id int) *Reply {
 
 // GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
 func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
-	reply := Reply{Id: id}
-	existed, err := adapter.engine.Get(&reply)
+	reply := ReplyWithAvatar{}
+	existed, err := adapter.engine.Table("reply").Join("LEFT OUTER", "member", "member.id = topic.author").Id(id).Cols("reply.*, member.avatar").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
 
+	isModerator := CheckModIdentity(memberId)
 	if existed {
-		res := ReplyWithAvatar{
-			Reply:        reply,
-			Avatar:       GetMemberAvatar(reply.Author),
-			ThanksStatus: GetThanksStatus(memberId, reply.Id, 5),
-			Deletable:    ReplyDeletable(reply.CreatedTime, memberId, reply.Author),
-			Editable:     GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime),
-		}
-		return &res
+		reply.ThanksStatus = GetThanksStatus(memberId, reply.Id, 5)
+		reply.Deletable = isModerator || ReplyDeletable(reply.CreatedTime, memberId, reply.Author)
+		reply.Editable = isModerator || GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime)
+		return &reply
 	}
 	return nil
 }
@@ -178,53 +173,18 @@ func DeleteReply(id int) bool {
 }
 
 // GetLatestReplies returns member's latest replies.
-func GetLatestReplies(author string, limit int, offset int) []LatestReply {
-	replys := []*Reply{}
-	err := adapter.engine.Where("author = ?", author).And("deleted = ?", 0).Limit(limit, offset).Find(&replys)
+func GetLatestReplies(author string, limit int, offset int) []*LatestReply {
+	replys := []*LatestReply{}
+	err := adapter.engine.Table("reply").Join("LEFT OUTER", "topic", "topic.author = reply.author").
+		Where("reply.author = ?", author).And("deleted = ?", 0).
+		Desc("reply.created_time").
+		Cols("reply.content, reply.author, reply.created_time, topic.id, topic.node_id, topic.node_name, topic.title").
+		Limit(limit, offset).Find(&replys)
 	if err != nil {
 		panic(err)
 	}
 
-	var wg sync.WaitGroup
-	var lock sync.Mutex
-	errChan := make(chan error, 10)
-	var result []LatestReply
-	for _, v := range replys {
-		wg.Add(1)
-		v := v
-		go func() {
-			defer wg.Done()
-			topic := Topic{Id: v.TopicId}
-			existed, err := adapter.engine.Select("id, author, node_id, node_name, title, author").Get(&topic)
-			if err != nil {
-				errChan <- err
-				return
-			}
-
-			if existed {
-				var temp = LatestReply{
-					TopicId:      topic.Id,
-					NodeId:       topic.NodeId,
-					NodeName:     topic.NodeName,
-					Author:       topic.Author,
-					ReplyContent: v.Content,
-					TopicTitle:   topic.Title,
-					ReplyTime:    v.CreatedTime,
-				}
-				lock.Lock()
-				result = append(result, temp)
-				lock.Unlock()
-			}
-		}()
-	}
-	wg.Wait()
-	close(errChan)
-	if len(errChan) != 0 {
-		for v := range errChan {
-			panic(v)
-		}
-	}
-	return result
+	return replys
 }
 
 // GetRepliesNum returns member's all replies num.
@@ -287,10 +247,6 @@ func AddReplyThanksNum(id int) bool {
 
 // ReplyDeletable checks whether the reply can be deleted.
 func ReplyDeletable(date, memberId, author string) bool {
-	if CheckModIdentity(memberId) {
-		return true
-	}
-
 	if memberId != author {
 		return false
 	}
@@ -312,9 +268,6 @@ func ReplyDeletable(date, memberId, author string) bool {
 
 // GetReplyEditableStatus checks whether the reply can be edited.
 func GetReplyEditableStatus(member, author, createdTime string) bool {
-	if CheckModIdentity(member) {
-		return true
-	}
 	if member != author {
 		return false
 	}
