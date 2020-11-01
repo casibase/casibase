@@ -497,7 +497,7 @@ class FilesBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.filesNum === 0) {
+    if (this.state.filesNum < this.state.limit) {
       return;
     }
 

@@ -633,7 +633,7 @@ class TopicBox extends React.Component {
           }
         </div>
         {pcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
-        <ReplyBox account={this.props.account} />
+        <ReplyBox account={this.props.account} topic={this.state.topic} />
         {pcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
         {
           this.props.account?.isModerator ?

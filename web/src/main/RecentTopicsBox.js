@@ -70,6 +70,9 @@ class RecentTopicsBox extends React.Component {
           topics: res
         });
       });
+    if (this.state.topicsNum !== 0 ) {
+      return;
+    }
     TopicBackend.getTopicsNum()
       .then((res) => {
         this.setState({
@@ -79,12 +82,12 @@ class RecentTopicsBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.topicsNum === 0) {
+    if (this.state.topicNum < this.state.limit) {
       return;
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url}/>
+      <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url} defaultPageNum={this.state.limit} />
     );
   }
 

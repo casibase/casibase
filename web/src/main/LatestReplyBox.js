@@ -87,7 +87,7 @@ class LatestReplyBox extends React.Component {
       return;
     }
 
-    ReplyBackend.getRepliesNum(this.state.memberId)
+    ReplyBackend.getMemberRepliesNum(this.state.memberId)
       .then((res) => {
         this.setState({
           repliesNum: res,
@@ -96,12 +96,12 @@ class LatestReplyBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.repliesNum === 10) {
+    if (this.state.repliesNum < this.state.limit) {
       return;
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url}/>
+      <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url} defaultPageNum={this.state.limit} />
     );
   }
 
@@ -146,7 +146,7 @@ class LatestReplyBox extends React.Component {
           <div className="header">
             <Link to="/">{Setting.getForumName()} </Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link> <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
+            <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Replies")}
             <div className="fr f12"><span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong></div>
           </div>
           {Setting.PcBrowser ? this.showPageColumn() : null}
@@ -169,7 +169,8 @@ class LatestReplyBox extends React.Component {
           })
         }
         <div className="inner">
-          <span className="chevron">»</span> <Link to={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</Link></div>
+          <span className="chevron">»</span>{" "}<Link to={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</Link>
+        </div>
       </div>
     );
   }

@@ -30,10 +30,32 @@ type NewReplyForm struct {
 func (c *APIController) GetReplies() {
 	memberId := c.GetSessionUser()
 	topicIdStr := c.Input().Get("topicId")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	initStatus := c.Input().Get("init")
 
+	defaultLimit := object.DefaultTopicPageReplyNum
 	topicId := util.ParseInt(topicIdStr)
 
-	c.Data["json"] = object.GetReplies(topicId, memberId)
+	var limit, offset, page int
+	repliesNum := object.GetTopicReplyNum(topicId)
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		if initStatus == "false" {
+			page = util.ParseInt(pageStr)
+		} else {
+			page = repliesNum/limit + 1
+		}
+		offset = page*limit - limit
+	}
+
+	replies := object.GetReplies(topicId, memberId, limit, offset)
+
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: []int{repliesNum, page}}
 	c.ServeJSON()
 }
 
@@ -140,11 +162,7 @@ func (c *APIController) DeleteReply() {
 	affected := object.DeleteReply(id)
 	if affected {
 		object.ChangeTopicReplyCount(replyInfo.TopicId, -1)
-		replies := object.GetReplies(replyInfo.TopicId, "")
-		lastReplyUser := ""
-		if len(replies) > 0 {
-			lastReplyUser = replies[len(replies)-1].Author
-		}
+		lastReplyUser := object.GetLatestReplyAuthor(replyInfo.TopicId)
 		object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReplyUser, false)
 	}
 
@@ -181,9 +199,9 @@ func (c *APIController) GetLatestReplies() {
 }
 
 // GetRepliesNum gets member's all replies num.
-func (c *APIController) GetRepliesNum() {
+func (c *APIController) GetMemberRepliesNum() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetRepliesNum(id)
+	c.Data["json"] = object.GetMemberRepliesNum(id)
 	c.ServeJSON()
 }

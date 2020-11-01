@@ -95,7 +95,7 @@ class NotificationBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.notificationNum === 0) {
+    if (this.state.notificationNum < this.state.limit) {
       return null;
     }
 

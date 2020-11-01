@@ -76,12 +76,12 @@ class BalanceBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.recordsNum === 0) {
+    if (this.state.recordsNum < this.state.limit) {
       return;
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.recordsNum} url={this.state.url}/>
+      <PageColumn page={this.state.page} total={this.state.recordsNum} url={this.state.url} defaultPageNum={this.state.limit} />
     );
   }
 

@@ -126,7 +126,7 @@ func GetMemberAdmin(id string) *AdminMemberInfo {
 		FileUploadNum: GetFilesNum(id),
 		Status:        member.Status,
 		TopicNum:      GetCreatedTopicsNum(id),
-		ReplyNum:      GetRepliesNum(id),
+		ReplyNum:      GetMemberRepliesNum(id),
 		LatestLogin:   member.CheckinDate,
 	}
 

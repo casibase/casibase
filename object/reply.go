@@ -40,25 +40,54 @@ func GetReplyCount() int {
 }
 
 // GetReplies returns more information about reply of a topic.
-func GetReplies(topicId int, memberId string) []*ReplyWithAvatar {
+func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWithAvatar {
 	replies := []*ReplyWithAvatar{}
 	err := adapter.engine.Table("reply").Join("LEFT OUTER", "member", "member.id = reply.author").
+		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
 		Where("reply.topic_id = ?", topicId).And("reply.deleted = ?", 0).
 		Asc("reply.created_time").
-		Cols("reply.*, member.avatar").
-		Find(&replies)
+		Cols("reply.*, member.avatar, consumption_record.amount").
+		Limit(limit, offset).Find(&replies)
 	if err != nil {
 		panic(err)
 	}
 
 	isModerator := CheckModIdentity(memberId)
 	for _, v := range replies {
-		v.ThanksStatus = GetThanksStatus(memberId, v.Id, 5)
+		v.ThanksStatus = v.ConsumptionAmount != 0
 		v.Deletable = isModerator || ReplyDeletable(v.CreatedTime, memberId, v.Author)
 		v.Editable = isModerator || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
 	}
 
 	return replies
+}
+
+// GetTopicReplyNum returns topic's reply num.
+func GetTopicReplyNum(topicId int) int {
+	var total int64
+	var err error
+
+	reply := new(Reply)
+	total, err = adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Count(reply)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
+// GetLatestReplyAuthor returns topic's latest reply author.
+func GetLatestReplyAuthor(topicId int) string {
+	var reply Reply
+	exist, err := adapter.engine.Where("topic_id = ?", topicId).Desc("created_time").Limit(1).Cols("author").Get(&reply)
+	if err != nil {
+		panic(err)
+	}
+
+	if exist {
+		return reply.Author
+	}
+	return ""
 }
 
 // GetReply returns a single reply.
@@ -78,14 +107,17 @@ func GetReply(id int) *Reply {
 // GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
 func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 	reply := ReplyWithAvatar{}
-	existed, err := adapter.engine.Table("reply").Join("LEFT OUTER", "member", "member.id = topic.author").Id(id).Cols("reply.*, member.avatar").Get(&reply)
+	existed, err := adapter.engine.Table("reply").
+		Join("LEFT OUTER", "member", "member.id = reply.author").
+		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
+		Id(id).Cols("reply.*, member.avatar, consumption_record.amount").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
 
 	isModerator := CheckModIdentity(memberId)
 	if existed {
-		reply.ThanksStatus = GetThanksStatus(memberId, reply.Id, 5)
+		reply.ThanksStatus = reply.ConsumptionAmount != 0
 		reply.Deletable = isModerator || ReplyDeletable(reply.CreatedTime, memberId, reply.Author)
 		reply.Editable = isModerator || GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime)
 		return &reply
@@ -187,8 +219,8 @@ func GetLatestReplies(author string, limit int, offset int) []*LatestReply {
 	return replys
 }
 
-// GetRepliesNum returns member's all replies num.
-func GetRepliesNum(memberId string) int {
+// GetMemberRepliesNum returns member's all replies num.
+func GetMemberRepliesNum(memberId string) int {
 	var total int64
 	var err error
 

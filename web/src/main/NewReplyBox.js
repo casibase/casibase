@@ -46,21 +46,6 @@ class NewReplyBox extends React.Component {
     this.synonyms = this.synonyms.bind(this);
   }
 
-  componentDidMount() {
-    this.getTopic();
-  }
-
-  getTopic() {
-    TopicBackend.getTopic(this.state.topicId)
-      .then((res) => {
-        this.setState({
-          topic: res,
-        }, () => {
-          this.updateFormField("topicId", this.state.topic.id)
-        });
-      });
-  }
-
   backToTop() {
     Setting.scrollToTop();
   }
@@ -134,10 +119,11 @@ class NewReplyBox extends React.Component {
       return;
     }
 
+    this.updateFormField("topicId", this.props.topic?.id);
     ReplyBackend.addReply(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
-          this.props.onReplyChange("")
+          this.props.onReplyChange("");
           this.props.refreshReplies();
           Setting.scrollToBottom();
         } else {
@@ -188,7 +174,7 @@ class NewReplyBox extends React.Component {
   }
 
   render() {
-    if (this.state.topic === null) {
+    if (this.props.topic === null) {
       return null;
     }
 
