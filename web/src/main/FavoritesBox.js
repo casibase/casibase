@@ -32,7 +32,7 @@ class FavoritesBox extends React.Component {
       limit: 20,
       minPage: 1,
       maxPage: -1,
-      favoritesNum: 10,
+      favoritesNum: 0,
       temp: 0,
       url: ""
     };
@@ -107,12 +107,12 @@ class FavoritesBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.maxPage === -1) {
+    if (this.state.favoritesNum < this.state.limit) {
       return;
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url}/>
+      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} defaultPageNum={this.state.limit} />
     );
   }
 

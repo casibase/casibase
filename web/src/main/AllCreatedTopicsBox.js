@@ -151,17 +151,17 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   showPageColumn(url) {
-    if (this.state.topicsNum === 1) {
+    if (this.state.topicsNum < this.state.limit) {
       return;
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.topicsNum} url={url}/>
+      <PageColumn page={this.state.page} total={this.state.topicsNum} url={url} defaultPageNum={this.state.limit} />
     );
   }
 
   render() {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
 
     if (this.props.member === null) {
       return null;

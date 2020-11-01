@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getReplies(topicId) {
-  return fetch(`${Setting.ServerUrl}/api/get-replies?topicId=${topicId}`, {
+export function getReplies(topicId, limit, page, init) {
+  return fetch(`${Setting.ServerUrl}/api/get-replies?topicId=${topicId}&limit=${limit}&page=${page}&init=${init}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());
@@ -65,8 +65,8 @@ export function getLatestReplies(id, limit, page) {
   }).then(res => res.json());
 }
 
-export function getRepliesNum(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-replies-num?id=${id}`, {
+export function getMemberRepliesNum(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-member-replies-num?id=${id}`, {
     method: 'GET',
     credentials: 'include',
   }).then(res => res.json());

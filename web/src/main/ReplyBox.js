@@ -20,6 +20,7 @@ import * as BalanceBackend from "../backend/BalanceBackend";
 import {withRouter, Link} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
+import PageColumn from "./PageColumn";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
@@ -40,13 +41,29 @@ class ReplyBox extends React.Component {
       reply: "",
       memberList: [],
       replyThanksCost: 10,
+      repliesNum: 0,
+      latestReplyTime: "",
+      p: "",
+      page: 1,
+      limit: 50,
+      minPage: 1,
+      maxPage: -1,
       sticky: false,
     };
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
+    if (this.state.p === null) {
+      this.state.page = 1;
+    } else {
+      this.state.page = parseInt(this.state.p);
+    }
+  
+    this.state.url = `/t/${this.state.topicId}`;
   }
 
   componentDidMount() {
-    this.getTopic();
-    this.getReplies();
+    //this.getTopic();
+    this.getReplies(true);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -63,6 +80,19 @@ class ReplyBox extends React.Component {
     }, 100);
   }
 
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState({
+        page: parseInt(page),
+      }, () => this.getReplies(false));
+    }
+  }
+
   getTopic() {
     TopicBackend.getTopic(this.state.topicId)
       .then((res) => {
@@ -72,11 +102,23 @@ class ReplyBox extends React.Component {
       });
   }
 
-  getReplies() {
-    ReplyBackend.getReplies(this.state.topicId)
+  getReplies(init) {
+    ReplyBackend.getReplies(this.state.topicId, this.state.limit, this.state.page, init)
       .then((res) => {
+        if (init) {
+          this.setState({
+            replies: res?.data,
+            repliesNum: res?.data2[0],
+            page: res?.data2[1],
+            latestReplyTime: Setting.getPrettyDate(res?.data[res?.data.length - 1]?.createdTime)
+          }, () => {
+            this.getMemberList();
+          });
+          return;
+        }
         this.setState({
-          replies: res,
+          replies: res?.data,
+          repliesNum: res?.data2[0]
         }, () => {
           this.getMemberList();
         });
@@ -140,7 +182,7 @@ class ReplyBox extends React.Component {
       BalanceBackend.addThanks(id, 2)
         .then((res) => {
           if (res?.status === "ok") {
-            this.getReplies();
+            this.getReplies(false);
           } else {
             alert(res?.msg);
           }
@@ -153,7 +195,7 @@ class ReplyBox extends React.Component {
       ReplyBackend.deleteReply(id)
         .then((res) => {
           if (res?.status === "ok") {
-            this.getReplies();
+            this.getReplies(false);
           } else {
             alert(res?.msg);
           }
@@ -168,6 +210,16 @@ class ReplyBox extends React.Component {
         anchorElement.scrollIntoView();
       }
     }
+  }
+
+  showPageColumn() {
+    if (this.state.repliesNum < this.state.limit) {
+      return;
+    }
+    
+    return (
+      <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url} defaultPageNum={this.state.limit} />
+    );
   }
 
   renderImage = ({alt, src}) => {
@@ -190,13 +242,13 @@ class ReplyBox extends React.Component {
 
   renderReply() {
     return (
-      <div className={`box ${this.state.topic.nodeId}`}>
-        <div className={`cell ${this.state.topic.nodeId}`}>
+      <div className={`box ${this.props.topic.nodeId}`}>
+        <div className={`cell ${this.props.topic.nodeId}`}>
           <div className="fr" style={{margin: "-3px -5px 0px 0px"}}>
             {
-              this.state.topic?.tags?.map((tag, i) => {
+              this.props.topic?.tags?.map((tag, i) => {
                 return (
-                  <Link to={`/tag/${tag}`} className={`tag ${this.state.topic.nodeId}`}>
+                  <Link to={`/tag/${tag}`} className={`tag ${this.props.topic.nodeId}`}>
                     <li className="fa fa-tag" />
                     {tag}
                   </Link>
@@ -205,15 +257,16 @@ class ReplyBox extends React.Component {
             }
           </div>
           <span className="gray">
-            {this.state.replies.length}{" "}{i18next.t("reply:replies")}{" "}&nbsp;
+            {this.state.repliesNum}{" "}{i18next.t("reply:replies")}{" "}&nbsp;
             <strong className="snow">•</strong>
-            &nbsp;{Setting.getPrettyDate(this.state.replies[this.state.replies.length - 1]?.createdTime)}
+            &nbsp;{this.state.latestReplyTime}
           </span>
         </div>
+        {Setting.PcBrowser ? this.showPageColumn() : null}
         {
           this.state.replies?.map((reply, i) => {
             return (
-              <div id={`r_${reply.id}`} className={`cell ${this.state.topic.nodeId}`}>
+              <div id={`r_${reply.id}`} className={`cell ${this.props.topic.nodeId}`}>
                 <table cellPadding="0" cellSpacing="0" border="0" width="100%">
                   <tbody>
                   <tr>
@@ -263,7 +316,7 @@ class ReplyBox extends React.Component {
                             </a> : null
                         }
                         &nbsp;&nbsp;
-                        <span className={`no ${this.state.topic.nodeId}`}>
+                        <span className={`no ${this.props.topic.nodeId}`}>
                           {i + 1}
                         </span>
                       </div>
@@ -288,7 +341,7 @@ class ReplyBox extends React.Component {
                           </span> : null
                       }
                       <div className="sep5" />
-                      <div className={`reply_content ${this.state.topic.nodeId}`}>
+                      <div className={`reply_content ${this.props.topic.nodeId}`}>
                         <ReactMarkdown
                           renderers={{
                             image: this.renderImage,
@@ -306,12 +359,13 @@ class ReplyBox extends React.Component {
             );
           })
         }
+        {this.showPageColumn()}
       </div>
     );
   }
 
   render() {
-    if (this.state.topic === null) {
+    if (this.props.topic === null) {
       return null;
     }
 
@@ -328,8 +382,8 @@ class ReplyBox extends React.Component {
         {
           this.props.account === null ? null :
             <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky}
-                         changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.state.topic?.nodeId}
-                         memberList={this.state.memberList} refreshReplies={this.getReplies.bind(this)} />
+                         changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.props.topic?.nodeId}
+                         memberList={this.state.memberList} refreshReplies={this.getReplies.bind(this)} topic={this.props.topic} />
         }
       </div>
     );

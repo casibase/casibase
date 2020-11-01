@@ -59,7 +59,7 @@ func initAPI() {
 	beego.Router("/api/add-reply", &controllers.APIController{}, "POST:AddReply")
 	beego.Router("/api/delete-reply", &controllers.APIController{}, "POST:DeleteReply")
 	beego.Router("/api/get-latest-replies", &controllers.APIController{}, "GET:GetLatestReplies")
-	beego.Router("/api/get-replies-num", &controllers.APIController{}, "GET:GetRepliesNum")
+	beego.Router("/api/get-member-replies-num", &controllers.APIController{}, "GET:GetMemberRepliesNum")
 	beego.Router("/api/get-reply-with-details", &controllers.APIController{}, "GET:GetReplyWithDetails")
 
 	beego.Router("/api/get-members", &controllers.APIController{}, "GET:GetMembers")
