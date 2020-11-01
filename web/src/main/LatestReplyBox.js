@@ -67,9 +67,10 @@ class LatestReplyBox extends React.Component {
       this.setState({
         page: parseInt(page),
         memberId: newProps.match.params.memberId,
+      }, () => {
+        this.getLatestReplies();
+        this.getRepliesNum();
       });
-      this.getLatestReplies();
-      this.getRepliesNum();
     }
   }
 
@@ -128,7 +129,14 @@ class LatestReplyBox extends React.Component {
         </div>
         <div className="inner">
           <div className="reply_content">
-            <ReactMarkdown source={Setting.getFormattedContent(reply.replyContent, true)} escapeHtml={false} />
+            <ReactMarkdown
+              renderers={{
+                image: Setting.renderImage,
+                link: Setting.renderLink
+              }}
+              source={Setting.getFormattedContent(reply.replyContent, true)}
+              escapeHtml={false}
+            />
           </div>
         </div>
       </div>

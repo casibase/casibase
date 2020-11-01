@@ -213,27 +213,27 @@ class MemberBox extends React.Component {
         <div className="widgets">
           {
             this.state.member?.website.length !== 0 ?
-              <Link to={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <a href={this.state.member?.website} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_home.png")} width="24" alt="Website" align="absmiddle" /> &nbsp;{this.state.member?.website}
-              </Link> : null
+              </a> : null
           }
           {
             this.state.member?.location.length !== 0 ?
-              <Link to={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <a href={`http://www.google.com/maps?q=${this.state.member?.location}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_geo.png")} width="24" alt="Geo" align="absmiddle" /> &nbsp;{this.state.member?.location}
-              </Link> : null
+              </a> : null
           }
           {
             this.state.member?.githubAccount.length !== 0 ?
-              <Link to={`https://github.com/${this.state.member?.githubAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <a href={`https://github.com/${this.state.member?.githubAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_github.png")} width="24" alt="GitHub" align="absmiddle"/> &nbsp;{this.state.member?.githubAccount}
-              </Link> : null
+              </a> : null
           }
           {
             this.state.member?.googleAccount.length !== 0 ?
-              <Link to={`mailto:${this.state.member?.googleAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+              <a href={`mailto:${this.state.member?.googleAccount}`} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
                 <img src={Setting.getStatic("/static/img/social_google.png")} width="24" alt="Google" align="absmiddle"/> &nbsp;{this.state.member?.googleAccount}
-              </Link> : null
+              </a> : null
           }
         </div>
         {

@@ -24,6 +24,7 @@ import oss from "ali-oss";
 import {Link} from "react-router-dom";
 import * as i18n from "./i18n"
 import i18next from "i18next";
+import Zmage from "react-zmage";
 
 const pangu = require("pangu");
 
@@ -312,3 +313,16 @@ export function checkPageLink(url) {
   }
   return current === target;
 }
+
+export function renderImage({alt, src}) {
+  return(
+    <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>
+  );
+}
+
+export function renderLink(props) {
+  return(
+    <a {...props} target="_blank" rel="nofollow noopener noreferrer" />
+  );
+}
+
