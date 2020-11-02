@@ -68,8 +68,8 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 	notifications := []*NotificationResponse{}
 	err := adapter.engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
 		Where("notification.receiver_id = ?", memberId).And("notification.status != ?", 3).
-		Desc("notifications.created_time").
-		Cols("notifications.*, member.avatar").
+		Desc("notification.created_time").
+		Cols("notification.*, member.avatar").
 		Limit(limit, offset).Find(&notifications)
 	if err != nil {
 		panic(err)

@@ -22,8 +22,8 @@ import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css"
-import i18next from "i18next";
 import ReactMarkdown from "react-markdown";
+import i18next from "i18next";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -331,7 +331,16 @@ class NodeBox extends React.Component {
                        onClick={()=> {this.props.history.push(`/new/${nodeId}`)}}/>
               </div> : null
           }
-          <span className="f12"><ReactMarkdown source={nodeInfo?.desc} escapeHtml={false} /></span>
+          <span className="f12">
+            <ReactMarkdown
+              renderers={{
+                image: Setting.renderImage,
+                link: Setting.renderLink
+              }}
+              source={nodeInfo?.desc}
+              escapeHtml={false}
+            />
+          </span>
           <div className="sep10"></div>
           <div className="node_header_tabs"><Link to={`/go/${nodeId}`} className="node_header_tab_current">{i18next.t("node:All topics")}</Link>
             <Link to={`/go/${nodeId}/links`} className="node_header_tab">{i18next.t("node:Related links")}</Link>

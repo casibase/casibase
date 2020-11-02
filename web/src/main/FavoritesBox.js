@@ -60,6 +60,7 @@ class FavoritesBox extends React.Component {
       }
       this.setState({
         page: parseInt(page),
+        favoritesType: newProps.match.params.favorites
       }, () => this.getFavoritesInfo());
     }
   }
@@ -84,6 +85,10 @@ class FavoritesBox extends React.Component {
   }
 
   renderNodes(node) {
+    if (node.nodeInfo == null) {
+      return;
+    }
+
     return (
       <Link className="grid_item" to={`/go/${node?.nodeInfo.id}`}>
         <div style={{

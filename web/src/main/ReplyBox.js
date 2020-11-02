@@ -236,7 +236,7 @@ class ReplyBox extends React.Component {
         );
     }
     return(
-      <a {...props} target="_blank" />
+      <a {...props} target="_blank" rel="nofollow noopener noreferrer" />
     );
   };
 

@@ -207,8 +207,8 @@ func DeleteReply(id int) bool {
 // GetLatestReplies returns member's latest replies.
 func GetLatestReplies(author string, limit int, offset int) []*LatestReply {
 	replys := []*LatestReply{}
-	err := adapter.engine.Table("reply").Join("LEFT OUTER", "topic", "topic.author = reply.author").
-		Where("reply.author = ?", author).And("deleted = ?", 0).
+	err := adapter.engine.Table("reply").Join("LEFT OUTER", "topic", "topic.id = reply.topic_id").
+		Where("reply.author = ?", author).And("reply.deleted = ?", 0).
 		Desc("reply.created_time").
 		Cols("reply.content, reply.author, reply.created_time, topic.id, topic.node_id, topic.node_name, topic.title").
 		Limit(limit, offset).Find(&replys)
