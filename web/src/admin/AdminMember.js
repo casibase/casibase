@@ -48,9 +48,9 @@ class AdminMember extends React.Component {
       cs: 1, // created time sort, default: Asc
       us: 0, // username sort, default: None
       Status_LIST: [
-        {label: "Normal", value: 1},
-        {label: "Mute", value: 2},
-        {label: "Forbidden", value: 3},
+        {label: "Normal", value: 0},
+        {label: "Mute", value: 1},
+        {label: "Forbidden", value: 2},
       ],
       Management_LIST: [
         {label: "Basic Info", value: "basic"},
@@ -350,19 +350,19 @@ class AdminMember extends React.Component {
 
   renderMemberStatus(status) {
     switch (status) {
-      case 1:
+      case 0:
         return (
           <span className="positive">
             {i18next.t("member:Normal")}
           </span>
         );
-      case 2:
+      case 1:
         return (
           <span className="gray">
             {i18next.t("member:Mute")}
           </span>
         );
-      case 3:
+      case 2:
         return (
           <span className="negative">
             {i18next.t("member:Forbidden")}
@@ -531,7 +531,7 @@ class AdminMember extends React.Component {
                           }
 
                           const index = parseInt(s);
-                          this.updateFormField("status", index + 1);
+                          this.updateFormField("status", index);
                         }}
                         options={
                           {
