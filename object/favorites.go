@@ -80,23 +80,20 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWith
 }
 
 func GetFollowingNewAction(memberId string, limit int, offset int) []*TopicWithAvatar {
-	topics := []*Topic{}
+	topics := []*TopicWithAvatar{}
 
-	err := adapter.engine.Table("topic").Join("INNER", "favorites", "topic.author = favorites.object_id").Desc("topic.id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Limit(limit, offset).Find(&topics)
+	err := adapter.engine.Table("topic").
+		Join("INNER", "favorites", "favorites.object_id = topic.author").Join("INNER", "member", "member.id = topic.author").
+		Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).
+		Desc("topic.id").
+		Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
+		Omit("topic.content").
+		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	res := []*TopicWithAvatar{}
-	for _, v := range topics {
-		temp := TopicWithAvatar{
-			Topic:  *v,
-			Avatar: GetMemberAvatar(v.Author),
-		}
-		res = append(res, &temp)
-	}
-
-	return res
+	return topics
 }
 
 func GetNodesFromFavorites(memberId string, limit int, offset int) []*NodeFavoritesRes {

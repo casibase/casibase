@@ -14,6 +14,8 @@
 
 package object
 
+import "sync"
+
 type Plane struct {
 	Id              string `xorm:"varchar(50) notnull pk" json:"id"`
 	Name            string `xorm:"varchar(50)" json:"name"`
@@ -76,12 +78,13 @@ func GetPlaneAdmin(id string) *AdminPlaneInfo {
 		panic(err)
 	}
 
+	planeNode := GetNodeFromPlane(plane.Id)
 	res := AdminPlaneInfo{
 		Plane:    plane,
 		Sorter:   plane.Sorter,
 		Visible:  plane.Visible,
-		NodesNum: GetPlaneNodesNum(plane.Id),
-		Nodes:    GetNodeFromPlane(plane.Id),
+		NodesNum: len(planeNode),
+		Nodes:    planeNode,
 	}
 
 	if existed {
@@ -114,17 +117,26 @@ func UpdatePlane(id string, plane *Plane) bool {
 }
 
 func GetPlaneList() []*PlaneWithNodes {
-	planes := []*PlaneWithNodes{}
-	err := adapter.engine.Table("plane").Join("LEFT OUTER", "node", "plane.id = node.plane_id").
-		Where("plane.visible = ?", 1).
-		Asc("plane.sorter").Desc("node.sorter").
-		Cols("plane.*, node.id, node.name").
-		Find(&planes)
-	if err != nil {
-		return planes
-	}
+	planes := GetPlanes()
 
-	return planes
+	var wg sync.WaitGroup
+	res := make([]*PlaneWithNodes, len(planes))
+	for k, plane := range planes {
+		plane := plane
+		k := k
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			temp := &PlaneWithNodes{
+				Plane: plane,
+				Nodes: GetNodeFromPlane(plane.Id),
+			}
+			res[k] = temp
+		}()
+	}
+	wg.Wait()
+
+	return res
 }
 
 func DeletePlane(id string) bool {

@@ -479,7 +479,7 @@ class App extends Component {
       showMenu: status
     });
   }
-  
+
   render() {
     return (
       <div>

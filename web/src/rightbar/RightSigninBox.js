@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as Conf from "../Conf";
-import {Link} from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "./rightSignin.css";
 import i18next from "i18next";
 
@@ -84,4 +84,4 @@ class RightSigninBox extends React.Component {
   }
 }
 
-export default RightSigninBox;
+export default withRouter(RightSigninBox);

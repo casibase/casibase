@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
 	"regexp"
 	"sync"
@@ -490,7 +491,6 @@ func (c *APIController) AuthGoogle() {
 	response, err := httpClient.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
-
 	var tempUser userInfoFromGoogle
 	err = json.Unmarshal(contents, &tempUser)
 	if err != nil {
@@ -499,6 +499,13 @@ func (c *APIController) AuthGoogle() {
 	}
 	res.Email = tempUser.Email
 	res.Avatar = tempUser.Picture
+
+	if res.Email == "" {
+		resp = Response{Status: "fail", Msg: "Login failed, please try again."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	if addition == "signup" {
 		userId := object.HasGoogleAccount(res.Email)
@@ -611,7 +618,9 @@ func (c *APIController) AuthGithub() {
 	var tempUserAccount userInfoFromGithub
 	wg.Add(2)
 	go func() {
-		response, err := httpClient.Get("https://api.github.com/user/emails?access_token=" + token.AccessToken)
+		req, _ := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
+		req.Header.Set("Authorization", "token "+token.AccessToken)
+		response, err := httpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
@@ -632,7 +641,9 @@ func (c *APIController) AuthGithub() {
 		wg.Done()
 	}()
 	go func() {
-		response2, err := httpClient.Get("https://api.github.com/user?access_token=" + token.AccessToken)
+		req, _ := http.NewRequest("GET", "https://api.github.com/user", nil)
+		req.Header.Set("Authorization", "token "+token.AccessToken)
+		response2, err := httpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
@@ -646,6 +657,13 @@ func (c *APIController) AuthGithub() {
 		wg.Done()
 	}()
 	wg.Wait()
+
+	if res.Email == "" || tempUserAccount.Login == "" {
+		resp = Response{Status: "fail", Msg: "Login failed, please try again."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	if addition == "signup" {
 		userId := object.HasGithubAccount(tempUserAccount.Login)
@@ -773,6 +791,13 @@ func (c *APIController) AuthQQ() {
 		if err != nil {
 			panic(err)
 		}
+	}
+
+	if openId == "" {
+		resp = Response{Status: "fail", Msg: "Login failed, please try again."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
 	}
 
 	if addition == "signup" {
