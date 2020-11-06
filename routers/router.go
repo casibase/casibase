@@ -33,6 +33,8 @@ func initAPI() {
 		)
 	beego.AddNamespace(ns)
 
+	beego.InsertFilter("/*", beego.BeforeRouter, FreshAccountActiveStatus)
+
 	beego.Router("/api/get-topics", &controllers.APIController{}, "GET:GetTopics")
 	beego.Router("/api/get-topics-admin", &controllers.APIController{}, "GET:GetTopicsAdmin")
 	beego.Router("/api/get-topic", &controllers.APIController{}, "GET:GetTopic")

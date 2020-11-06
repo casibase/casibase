@@ -49,6 +49,8 @@ type Member struct {
 	QQVerifiedTime    string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
 	EmailReminder     bool   `xorm:"bool" json:"emailReminder"`
 	CheckinDate       string `xorm:"varchar(20)" json:"-"`
+	OnlineStatus      bool   `xorm:"bool" json:"onlineStatus"`
+	LastActionDate    string `xorm:"varchar(40)" json:"-"`
 	Status            int    `xorm:"int" json:"-"`
 }
 
@@ -495,4 +497,43 @@ func GetMemberStatus(id string) int {
 	} else {
 		return 3
 	}
+}
+
+// UpdateMemberOnlineStatus updates member's online information.
+func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate string) bool {
+	member := new(Member)
+	member.OnlineStatus = onlineStatus
+	member.LastActionDate = lastActionDate
+
+	affected, err := adapter.engine.Id(id).MustCols("online_status, last_action_date").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ExpiredMemberOnlineStatus(date string) int {
+	member := new(Member)
+	member.OnlineStatus = false
+
+	affected, err := adapter.engine.Where("online_status = ?", true).And("last_action_date < ?", date).Cols("online_status").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(affected)
+}
+
+func GetMemberOnlineNum() int {
+	var total int64
+	var err error
+
+	member := new(Member)
+	total, err = adapter.engine.Where("online_status = ?", true).Count(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
 }

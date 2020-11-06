@@ -32,6 +32,13 @@ type BasicInfo struct {
 }
 
 var fileDate, version string
+var onlineMemberNum, highestOnlineNum int
+
+func InitForumBasicInfo() {
+	GetForumVersion()
+	GetHighestOnlineNum()
+	UpdateOnlineMemberNum()
+}
 
 func GetForumVersion() string {
 	pwd, _ := os.Getwd()
@@ -61,6 +68,10 @@ func GetForumVersion() string {
 }
 
 func GetHighestOnlineNum() int {
+	if highestOnlineNum != 0 {
+		return highestOnlineNum
+	}
+
 	info := BasicInfo{Id: "HighestOnlineNum"}
 	existed, err := adapter.engine.Get(&info)
 	if err != nil {
@@ -68,7 +79,8 @@ func GetHighestOnlineNum() int {
 	}
 
 	if existed {
-		return util.ParseInt(info.Value)
+		highestOnlineNum = util.ParseInt(info.Value)
+		return highestOnlineNum
 	} else {
 		info := BasicInfo{
 			Id:    "HighestOnlineNum",
@@ -213,4 +225,22 @@ func UpdateLatestSyncedRecordId(id int) bool {
 	}
 
 	return affected != 0
+}
+
+// GetOnlineMemberNum returns online member num.
+func GetOnlineMemberNum() int {
+	if onlineMemberNum == 0 {
+		UpdateOnlineMemberNum()
+		return onlineMemberNum
+	}
+
+	return onlineMemberNum
+}
+
+// UpdateOnlineMemberNum updates online member num and updates highest online member num at the same time.
+func UpdateOnlineMemberNum() {
+	onlineMemberNum = GetMemberOnlineNum()
+	if onlineMemberNum > highestOnlineNum {
+		UpdateHighestOnlineNum(onlineMemberNum)
+	}
 }

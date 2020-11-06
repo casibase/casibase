@@ -41,6 +41,7 @@ var (
 	TopicHitRecordExpiredTime  = 1    // day
 	ValidateCodeExpiredTime    = 20   // minutes
 	DefaultTopTopicTime        = 10   // minutes
+	OnlineMemberExpiedTime     = 10   // minutes
 	UseOAuthProxy              = false
 	DefaultUploadFileQuota     = 50
 	Domain                     = "forum.casbin.com" // domain
@@ -82,6 +83,11 @@ var (
 			Id:    "expireTopTopic",
 			JobId: "expireData",
 			State: "canceled",
+		},
+		{
+			Id:    "expireOnlineMember",
+			JobId: "expireData",
+			State: "active",
 		},
 	}
 )

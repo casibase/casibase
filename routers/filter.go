@@ -19,6 +19,8 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
+
+	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -39,5 +41,13 @@ func TransparentStatic(ctx *context.Context) {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, path)
 	} else {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
+	}
+}
+
+// FreshAccountActiveStatus fresh member's online status.
+func FreshAccountActiveStatus(ctx *context.Context) {
+	id, ok := ctx.Input.Session("username").(string)
+	if ok && id != "" {
+		object.UpdateMemberOnlineStatus(id, true, util.GetCurrentTime())
 	}
 }
