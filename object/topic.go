@@ -194,7 +194,7 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 
 func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
-	_, err:= adapter.engine.Table("topic").Id(id).Join("LEFT OUTER", "member", "member.id = topic.author").Cols("topic.*, member.avatar").Get(&topic)
+	_, err := adapter.engine.Table("topic").Id(id).Join("LEFT OUTER", "member", "member.id = topic.author").Cols("topic.*, member.avatar").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
@@ -440,16 +440,14 @@ func ChangeTopicReplyCount(topicId int, num int) bool {
 	return affected != 0
 }
 
-func ChangeTopicLastReplyUser(topicId int, memberId string, updateTime bool) bool {
+func ChangeTopicLastReplyUser(topicId int, memberId string, updateTime string) bool {
 	topic := GetTopic(topicId)
 	if topic == nil {
 		return false
 	}
 
 	topic.LastReplyUser = memberId
-	if updateTime {
-		topic.LastReplyTime = util.GetCurrentTime()
-	}
+	topic.LastReplyTime = updateTime
 	if len(memberId) == 0 {
 		topic.LastReplyTime = ""
 	}
