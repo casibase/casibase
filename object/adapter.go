@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"runtime"
 
 	"github.com/astaxie/beego"
@@ -23,6 +24,12 @@ import (
 )
 
 var adapter *Adapter
+
+type Session struct {
+	SessionKey    string  `xorm:"char(64) notnull pk"`
+	SessionData   []uint8 `xorm:"blob"`
+	SessionExpiry int     `xorm:"notnull"`
+}
 
 func InitAdapter() {
 	adapter = NewAdapter("mysql", beego.AppConfig.String("dataSourceName"))
@@ -65,7 +72,7 @@ func (a *Adapter) createDatabase() error {
 	}
 	defer engine.Close()
 
-	_, err = engine.Exec("CREATE DATABASE IF NOT EXISTS casbin_forum default charset utf8 COLLATE utf8_general_ci")
+	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8 COLLATE utf8_general_ci", beego.AppConfig.String("dbName")))
 	return err
 }
 
@@ -74,7 +81,7 @@ func (a *Adapter) open() {
 		panic(err)
 	}
 
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+"casbin_forum")
+	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+beego.AppConfig.String("dbName"))
 	if err != nil {
 		panic(err)
 	}
@@ -89,7 +96,12 @@ func (a *Adapter) close() {
 }
 
 func (a *Adapter) createTable() {
-	err := a.engine.Sync2(new(Topic))
+	err := a.engine.Sync2(new(Session))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Topic))
 	if err != nil {
 		panic(err)
 	}
