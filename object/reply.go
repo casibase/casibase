@@ -76,18 +76,18 @@ func GetTopicReplyNum(topicId int) int {
 	return int(total)
 }
 
-// GetLatestReplyAuthor returns topic's latest reply author.
-func GetLatestReplyAuthor(topicId int) string {
+// GetLatestReplyInfo returns topic's latest reply information.
+func GetLatestReplyInfo(topicId int) *Reply {
 	var reply Reply
-	exist, err := adapter.engine.Where("topic_id = ?", topicId).Desc("created_time").Limit(1).Cols("author").Get(&reply)
+	exist, err := adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", false).Desc("created_time").Limit(1).Omit("content").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
 
 	if exist {
-		return reply.Author
+		return &reply
 	}
-	return ""
+	return nil
 }
 
 // GetReply returns a single reply.

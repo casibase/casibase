@@ -125,7 +125,7 @@ func (c *APIController) AddReply() {
 		panic(err)
 	}
 
-	balance := object.GetMemberBalance(c.GetSessionUser())
+	balance := object.GetMemberBalance(memberId)
 	if balance < object.CreateReplyCost {
 		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp
@@ -138,7 +138,7 @@ func (c *APIController) AddReply() {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
 		object.CreateReplyConsumption(reply.Author, id)
 		object.ChangeTopicReplyCount(topicId, 1)
-		object.ChangeTopicLastReplyUser(topicId, c.GetSessionUser(), true)
+		object.ChangeTopicLastReplyUser(topicId, memberId, util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
 	}
 
@@ -162,8 +162,12 @@ func (c *APIController) DeleteReply() {
 	affected := object.DeleteReply(id)
 	if affected {
 		object.ChangeTopicReplyCount(replyInfo.TopicId, -1)
-		lastReplyUser := object.GetLatestReplyAuthor(replyInfo.TopicId)
-		object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReplyUser, false)
+		lastReply := object.GetLatestReplyInfo(replyInfo.TopicId)
+		if lastReply != nil {
+			object.ChangeTopicLastReplyUser(replyInfo.TopicId, lastReply.Author, lastReply.CreatedTime)
+		} else {
+			object.ChangeTopicLastReplyUser(replyInfo.TopicId, "", "")
+		}
 	}
 
 	c.wrapResponse(affected)
