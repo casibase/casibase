@@ -33,7 +33,7 @@ class TopicPage extends React.Component {
       classes: props,
       topics: [],
       defaultHomePageNum: 50,
-      tab:lastTabOpen ? lastTabOpen : rootTabId,
+      tab: lastTabOpen ? lastTabOpen : rootTabId,
       tabs: [],
       tabInfo: null,
       nodes: [],
