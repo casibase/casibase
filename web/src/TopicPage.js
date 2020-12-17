@@ -33,10 +33,11 @@ class TopicPage extends React.Component {
       tabs: [],
       tabInfo: null,
       nodes: [],
+      tab: "all"
     };
-    const params = new URLSearchParams(this.props.location.search)
+    const params = new URLSearchParams(this.props.location.search);
     if (params.get("tab") !== null) {
-      this.state.tab = params.get("tab")
+      this.state.tab = params.get("tab");
     }
   }
 
@@ -70,18 +71,18 @@ class TopicPage extends React.Component {
   }
 
   getNodeInfo() {
-    let tab
+    let tab;
     TabBackend.getTabs()
       .then((res) => {
         this.setState({
           tabs: res,
         });
       });
-    this.state.tab === undefined ? tab = "" : tab = this.state.tab
+    this.state.tab === undefined ? tab = "" : tab = this.state.tab;
     TabBackend.getTabWithNode(tab)
       .then((res) => {
         if (res === null) {
-          window.location.href = `/`
+          window.location.href = `/`;
         }
         this.setState({
           tabInfo: res?.data,
@@ -274,7 +275,7 @@ class TopicPage extends React.Component {
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   render() {
