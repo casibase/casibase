@@ -27,13 +27,13 @@ import i18next from "i18next";
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
-    const rootTabId='all' // should be set as the root tab id
-    let lastTabOpen=localStorage.getItem("casbin-forum-lastUsedTab");
+    const rootTabId = "all" // should be set as the root tab id
+    const lastTabOpen = localStorage.getItem("casbin-forum-lastUsedTab");
     this.state = {
       classes: props,
       topics: [],
       defaultHomePageNum: 50,
-      tab:lastTabOpen ? lastTabOpen:rootTabId,
+      tab:lastTabOpen ? lastTabOpen : rootTabId,
       tabs: [],
       tabInfo: null,
       nodes: [],
@@ -48,7 +48,6 @@ class TopicPage extends React.Component {
     this.getNodeInfo();
     this.getTopics();
     this.getUnreadNotificationNum();
-    this.changeTab(this.state.tab);
   }
 
   getUnreadNotificationNum() {
@@ -69,7 +68,7 @@ class TopicPage extends React.Component {
       tab: tab
     }, () => {
       window.history.pushState({}, 0, `/?tab=${this.state.tab}`)
-        localStorage.setItem('casbin-forum-lastUsedTab', tab);
+      localStorage.setItem("casbin-forum-lastUsedTab", tab);
       this.getNodeInfo();
       this.getTopics();
     });
