@@ -444,10 +444,17 @@ class AdminNode extends React.Component {
     let value, data;
     switch (item) {
       case "node":
-        value = this.getIndexFromNodeId(this.state.form.parentNode);
-        data= this.state.nodes.map((node, i) => {
-          return {text: `${node.nodeInfo.name} / ${node.nodeInfo.id}`, id: i};
-        });
+        if (this.state.form.parentNode){
+          value = this.getIndexFromNodeId(this.state.form.parentNode);
+        }
+        if (this.state.nodes){
+            data = this.state.nodes.map((node, i) => {
+              return {
+                text: `${node.nodeInfo.name} / ${node.nodeInfo.id}`,
+                id: i,
+              };
+            });
+          }
         break;
       case "tab":
         value = this.getIndexFromTabId(this.state.form.tab);
