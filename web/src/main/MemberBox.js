@@ -154,7 +154,10 @@ class MemberBox extends React.Component {
               <td width={Setting.PcBrowser ? "73" : "56"} valign="top" align="center">
                 <Avatar username={this.state.member?.id} size={Setting.PcBrowser ? "large" : "middle"} avatar={this.state.member?.avatar} />
                 <div className="sep10" />
-                <strong className="online">ONLINE</strong>
+                  {
+                    this.state.member?.onlineStatus ?
+                      <strong className="online"> {i18next.t("ONLINE")} </strong> : ""
+                  }
               </td>
               <td width="10" />
               <td width="auto" valign="top" align="left">
