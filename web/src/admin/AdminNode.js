@@ -83,7 +83,7 @@ class AdminNode extends React.Component {
     NodeBackend.getNodesAdmin()
       .then((res) => {
         this.setState({
-          nodes: res,
+          nodes: res ? res : [],
         });
       });
   }
@@ -937,7 +937,7 @@ class AdminNode extends React.Component {
               this.state.nodes.map(node => this.renderNodes(node)) :
               <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
                 {
-                  this.state.nodes === null ?
+                  this.state.nodes === null || this.state.nodes.length ===0 ?
                     i18next.t("node:No node yet") : i18next.t("loading:Data is loading...")
                 }
               </div>

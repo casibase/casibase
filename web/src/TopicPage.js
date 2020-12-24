@@ -36,8 +36,7 @@ class TopicPage extends React.Component {
       tab: lastTabOpen ? lastTabOpen : rootTabId,
       tabs: [],
       tabInfo: null,
-      nodes: [],
-      tab: "all"
+      nodes: []
     };
     const params = new URLSearchParams(this.props.location.search);
     if (params.get("tab") !== null) {
