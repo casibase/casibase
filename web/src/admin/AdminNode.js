@@ -33,7 +33,7 @@ class AdminNode extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      nodes: [],
+      nodes: null,
       tabs: [],
       planes: [],
       message: "",
@@ -938,7 +938,7 @@ class AdminNode extends React.Component {
               <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
                 {
                   this.state.nodes === null ?
-                    i18next.t("node:No node yet") : i18next.t("loading:Data is loading...")
+                    i18next.t("loading:Data is loading...") : i18next.t("node:No node yet")
                 }
               </div>
           }

@@ -103,7 +103,7 @@ func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberIn
 		panic(err)
 	}
 
-	var res []*AdminMemberInfo
+	res := []*AdminMemberInfo{}
 	for _, v := range members {
 		temp := AdminMemberInfo{
 			Member: *v,

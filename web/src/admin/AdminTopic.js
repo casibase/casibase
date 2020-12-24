@@ -42,7 +42,7 @@ class AdminTopic extends React.Component {
       showSearch: false,
       loading: true,
       topicsNum: 0,
-      topics: [],
+      topics: null,
       topic: [],
       //un, ti, cn, cs, lrs, us, rcs, hs, fcs
       un: "", // username search
@@ -768,7 +768,7 @@ class AdminTopic extends React.Component {
               <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
                 {
                   this.state.topics === null ?
-                    i18next.t("admin:No matching data") : i18next.t("loading:Data is loading...")
+                    i18next.t("loading:Data is loading...") : i18next.t("admin:No matching data")
                 }
               </div>
           }

@@ -26,7 +26,7 @@ class AdminPlane extends React.Component {
     this.state = {
       classes: props,
       nodes: [],
-      planes: [],
+      planes: null,
       message: "",
       errorMessage: "",
       form: {},
@@ -722,7 +722,7 @@ class AdminPlane extends React.Component {
               <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
                 {
                   this.state.planes === null ?
-                    i18next.t("plane:No plant yet") : i18next.t("loading:Data is loading...")
+                    i18next.t("loading:Data is loading...") : i18next.t("plane:No plant yet")
                 }
               </div>
           }

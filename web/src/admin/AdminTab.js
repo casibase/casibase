@@ -26,7 +26,7 @@ class AdminTab extends React.Component {
     this.state = {
       classes: props,
       nodes: [],
-      tabs: [],
+      tabs: null,
       message: "",
       errorMessage: "",
       form: {},
@@ -467,7 +467,7 @@ class AdminTab extends React.Component {
                                 if (s === null) {
                                   return;
                                 }
-      
+
                                 const index = parseInt(s);
                                 const nodeId = this.state.nodes[index].id;
                                 this.updateFormField("defaultNode", nodeId);
@@ -547,7 +547,7 @@ class AdminTab extends React.Component {
               <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
                 {
                   this.state.tabs === null ?
-                    i18next.t("tab:No tab yet") : i18next.t("loading:Data is loading...")
+                    i18next.t("loading:Data is loading...") : i18next.t("tab:No tab yet")
                 }
               </div>
           }

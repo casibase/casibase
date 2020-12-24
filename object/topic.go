@@ -180,7 +180,7 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 		panic(err)
 	}
 
-	var res []*AdminTopicInfo
+	res := []*AdminTopicInfo{}
 	for _, v := range topics {
 		temp := AdminTopicInfo{
 			Topic:   *v,

@@ -27,7 +27,7 @@ func (c *APIController) GetNodes() {
 }
 
 func (c *APIController) GetNodesAdmin() {
-	var res []adminNodeInfo
+	res := []adminNodeInfo{}
 	nodes := object.GetNodes()
 	for _, v := range nodes {
 		node := adminNodeInfo{

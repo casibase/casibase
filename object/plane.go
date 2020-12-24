@@ -44,7 +44,7 @@ func GetAllPlanes() []*AdminPlaneInfo {
 		panic(err)
 	}
 
-	var res []*AdminPlaneInfo
+	res := []*AdminPlaneInfo{}
 	for _, v := range planes {
 		temp := AdminPlaneInfo{
 			Plane:    *v,

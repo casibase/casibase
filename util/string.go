@@ -69,12 +69,11 @@ func InitSegmenter() {
 
 // SplitWords split string into single words.
 func SplitWords(str string) []string {
+	res := []string{}
 	if Segmenter.Dictionary() != nil {
-		var res []string
 		res = sego.SegmentsToSlice(Segmenter.Segment([]byte(str)), true)
-		return res
 	}
-	return []string{}
+	return res
 }
 
 func ConvertToPinyin(content string) string {
