@@ -86,6 +86,16 @@ func CheckMemberSignupWithQQ(member string, qqOpenId string) string {
 	}
 }
 
+func CheckMemberSignupWithWeChat(member string, wechatOpenId string) string {
+	if len(member) == 0 || len(wechatOpenId) == 0 {
+		return "Username empty or WeChat id empty"
+	} else if HasWeChatAccount(wechatOpenId) != "" {
+		return "This wechat account has already been linked with another account"
+	} else {
+		return ""
+	}
+}
+
 func HasMail(email string) string {
 	userInfo := GetMail(email)
 	if userInfo != nil {
@@ -120,6 +130,14 @@ func HasGoogleAccount(googleAccount string) string {
 
 func HasQQAccount(qqOpenId string) string {
 	userInfo := GetQQAccount(qqOpenId)
+	if userInfo != nil {
+		return userInfo.Id
+	}
+	return ""
+}
+
+func HasWeChatAccount(wechatOpenId string) string {
+	userInfo := GetWechatAccount(wechatOpenId)
 	if userInfo != nil {
 		return userInfo.Id
 	}

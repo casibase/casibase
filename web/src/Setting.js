@@ -152,6 +152,10 @@ export function getQQAuthCode(method) {
   window.location.href=`${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.QQAuthState}`;
 }
 
+export function getWeChatAuthCode(method){
+  window.location.href=`${Conf.WeChatOauthUri}?appid=${Conf.WechatClientId}&redirect_uri=${ClientUrl}/callback/wechat/${method}&scope=${Conf.WeChatAuthScope}&response_type=code&state=${Conf.WeChatAuthState}#wechat_redirect`;
+}
+
 export let OSSClient;
 export let OSSUrl;
 export let OSSFileUrl;

@@ -23,6 +23,12 @@
     background-repeat: no-repeat;
 }
 
+.signup_method_wechat {
+    background-image: url("https://cdn.jsdelivr.net/gh/casbin/static/img/social_wechat.png");
+    background-size: 32px 32px;
+    background-repeat: no-repeat;
+}
+
 .signup_method_email {
     background-image: url("https://cdn.jsdelivr.net/gh/casbin/static/img/social_mail.png");
     background-size: 32px 32px;

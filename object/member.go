@@ -18,40 +18,42 @@ import "bytes"
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
-	Id                string `xorm:"varchar(100) notnull pk" json:"id"`
-	Password          string `xorm:"varchar(100) notnull" json:"-"`
-	No                int    `json:"no"`
-	IsModerator       bool   `xorm:"bool" json:"isModerator"`
-	CreatedTime       string `xorm:"varchar(40)" json:"createdTime"`
-	Phone             string `xorm:"varchar(100)" json:"phone"`
-	AreaCode          string `xorm:"varchar(10)" json:"areaCode"` // phone area code
-	PhoneVerifiedTime string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
-	Avatar            string `xorm:"varchar(150)" json:"avatar"`
-	Email             string `xorm:"varchar(100)" json:"email"`
-	EmailVerifiedTime string `xorm:"varchar(40)" json:"emailVerifiedTime"`
-	Tagline           string `xorm:"varchar(100)" json:"tagline"`
-	Company           string `xorm:"varchar(100)" json:"company"`
-	CompanyTitle      string `xorm:"varchar(100)" json:"companyTitle"`
-	Ranking           int    `json:"ranking"`
-	GoldCount         int    `json:"goldCount"`
-	SilverCount       int    `json:"silverCount"`
-	BronzeCount       int    `json:"bronzeCount"`
-	Bio               string `xorm:"varchar(100)" json:"bio"`
-	Website           string `xorm:"varchar(100)" json:"website"`
-	Location          string `xorm:"varchar(100)" json:"location"`
-	Language          string `xorm:"varchar(10)"  json:"language"`
-	FileQuota         int    `xorm:"int" json:"fileQuota"`
-	GoogleAccount     string `xorm:"varchar(100)" json:"googleAccount"`
-	GithubAccount     string `xorm:"varchar(100)" json:"githubAccount"`
-	WeChatAccount     string `xorm:"varchar(100)" json:"weChatAccount"`
-	QQAccount         string `xorm:"qq_account varchar(100)" json:"qqAccount"`
-	QQOpenId          string `xorm:"qq_open_id varchar(100)" json:"-"`
-	QQVerifiedTime    string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
-	EmailReminder     bool   `xorm:"bool" json:"emailReminder"`
-	CheckinDate       string `xorm:"varchar(20)" json:"-"`
-	OnlineStatus      bool   `xorm:"bool" json:"onlineStatus"`
-	LastActionDate    string `xorm:"varchar(40)" json:"-"`
-	Status            int    `xorm:"int" json:"-"`
+	Id                 string `xorm:"varchar(100) notnull pk" json:"id"`
+	Password           string `xorm:"varchar(100) notnull" json:"-"`
+	No                 int    `json:"no"`
+	IsModerator        bool   `xorm:"bool" json:"isModerator"`
+	CreatedTime        string `xorm:"varchar(40)" json:"createdTime"`
+	Phone              string `xorm:"varchar(100)" json:"phone"`
+	AreaCode           string `xorm:"varchar(10)" json:"areaCode"` // phone area code
+	PhoneVerifiedTime  string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
+	Avatar             string `xorm:"varchar(150)" json:"avatar"`
+	Email              string `xorm:"varchar(100)" json:"email"`
+	EmailVerifiedTime  string `xorm:"varchar(40)" json:"emailVerifiedTime"`
+	Tagline            string `xorm:"varchar(100)" json:"tagline"`
+	Company            string `xorm:"varchar(100)" json:"company"`
+	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
+	Ranking            int    `json:"ranking"`
+	GoldCount          int    `json:"goldCount"`
+	SilverCount        int    `json:"silverCount"`
+	BronzeCount        int    `json:"bronzeCount"`
+	Bio                string `xorm:"varchar(100)" json:"bio"`
+	Website            string `xorm:"varchar(100)" json:"website"`
+	Location           string `xorm:"varchar(100)" json:"location"`
+	Language           string `xorm:"varchar(10)"  json:"language"`
+	FileQuota          int    `xorm:"int" json:"fileQuota"`
+	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
+	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
+	WeChatAccount      string `xorm:"wechat_account varchar(100)" json:"weChatAccount"`
+	WeChatOpenId       string `xorm:"wechat_open_id varchar(100)" json:"-"`
+	WeChatVerifiedTime string `xorm:"wechat_verified_time varchar(40)" json:"WeChatVerifiedTime"`
+	QQAccount          string `xorm:"qq_account varchar(100)" json:"qqAccount"`
+	QQOpenId           string `xorm:"qq_open_id varchar(100)" json:"-"`
+	QQVerifiedTime     string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
+	EmailReminder      bool   `xorm:"bool" json:"emailReminder"`
+	CheckinDate        string `xorm:"varchar(20)" json:"-"`
+	OnlineStatus       bool   `xorm:"bool" json:"onlineStatus"`
+	LastActionDate     string `xorm:"varchar(40)" json:"-"`
+	Status             int    `xorm:"int" json:"-"`
 }
 
 func GetMembers() []*Member {
@@ -364,6 +366,20 @@ func GetGoogleAccount(googleAccount string) *Member {
 
 func GetQQAccount(qqOpenId string) *Member {
 	member := Member{QQOpenId: qqOpenId}
+	existed, err := adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &member
+	} else {
+		return nil
+	}
+}
+
+func GetWechatAccount(wechatOpenId string) *Member {
+	member := Member{WeChatOpenId: wechatOpenId}
 	existed, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)

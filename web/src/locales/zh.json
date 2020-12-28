@@ -31,6 +31,7 @@
     "Click to send validate code": "点击发送验证码",
     "Continue with Mobile Phone": "通过手机号注册",
     "Continue with QQ": "通过QQ号注册",
+    "Continue with WeChat": "通过微信号注册",
     "Continue with Google": "通过Google注册",
     "Continue with Github": "通过Github注册",
     "Continue with Email": "通过邮箱注册",
@@ -48,6 +49,7 @@
   "signin":
   {
     "Sign in with QQ": "通过QQ号登录",
+    "Sign in with WeChat": "通过微信号登录",
     "Sign in with Google": "通过Google登录",
     "Sign in with Github": "通过Github登录"
   },

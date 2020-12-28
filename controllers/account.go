@@ -88,7 +88,7 @@ func (c *APIController) Signup() {
 	if err != nil {
 		panic(err)
 	}
-	if form.Method != "google" && form.Method != "github" && form.Method != "qq" {
+	if form.Method != "google" && form.Method != "github" && form.Method != "qq" && form.Method != "wechat" {
 		// Check validate code.
 		var validateCodeRes bool
 		if form.Method == "phone" {
@@ -128,21 +128,23 @@ func (c *APIController) Signup() {
 		msg = object.CheckMemberSignupWithEmail(member, email)
 	} else {
 		// Check the information registered through the phone method.
-		if form.Method != "qq" {
+		if form.Method == "phone" {
 			msg = object.CheckMemberSignup(member, password)
 			if len(msg) == 0 {
 				msg = object.CheckMemberSignupWithPhone(member, form.Phone)
 			}
-		} else {
+		} else if form.Method == "qq" {
 			// Check the information registered through the qq method.
 			msg = object.CheckMemberSignupWithQQ(member, form.Addition2)
+		} else if form.Method == "wechat" {
+			msg = object.CheckMemberSignupWithWeChat(member, form.Addition2)
 		}
 	}
 
 	if msg != "" {
 		resp = Response{Status: "error", Msg: msg, Data: ""}
 	} else {
-		if form.Method == "qq" {
+		if form.Method == "qq" || form.Method == "wechat" {
 			avatar, err = url.QueryUnescape(avatar)
 			if err != nil {
 				panic(err)
@@ -190,6 +192,10 @@ func (c *APIController) Signup() {
 			member.QQOpenId = form.Addition2
 			member.QQAccount = form.Addition
 			member.QQVerifiedTime = util.GetCurrentTime()
+		case "wechat":
+			member.WeChatOpenId = form.Addition2
+			member.WeChatAccount = form.Addition
+			member.WeChatVerifiedTime = util.GetCurrentTime()
 		}
 
 		object.AddMember(member)
@@ -833,6 +839,119 @@ func (c *APIController) AuthQQ() {
 		linkRes := object.LinkMemberAccount(memberId, "qq_account", userInfo.Nickname)
 		linkRes = object.LinkMemberAccount(memberId, "qq_open_id", openId)
 		linkRes = object.LinkMemberAccount(memberId, "qq_verified_time", util.GetCurrentTime())
+		if linkRes {
+			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
+		} else {
+			resp = Response{Status: "fail", Msg: "link account failed", Data: linkRes}
+		}
+		if len(object.GetMemberAvatar(memberId)) == 0 {
+			avatar := UploadAvatarToOSS(userInfo.AvatarUrl, memberId)
+			object.LinkMemberAccount(memberId, "avatar", avatar)
+		}
+	}
+
+	c.Data["json"] = resp
+
+	c.ServeJSON()
+}
+
+var WeChatClientID = beego.AppConfig.String("WeChatAPPID")
+var WeChatClientSecret = beego.AppConfig.String("WeChatKey")
+
+func (c *APIController) AuthWeChat() {
+	code := c.Input().Get("code")
+	state := c.Input().Get("state")
+	addition := c.Input().Get("addition")
+	//redirectURL := c.Input().Get("redirect_url")
+
+	var resp Response
+	var res authResponse
+	res.IsAuthenticated = true
+
+	if state != beego.AppConfig.String("WeChatAuthState") {
+		res.IsAuthenticated = false
+		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
+		c.ServeJSON()
+		return
+	}
+
+	params := url.Values{}
+	params.Add("code", code)
+	params.Add("grant_type", "authorization_code")
+	params.Add("appid", WeChatClientID)
+	params.Add("secret", WeChatClientSecret)
+
+	getAccessKeyUrl := fmt.Sprintf("%s?%s", "https://api.weixin.qq.com/sns/oauth2/access_token", params.Encode())
+
+	tokenResponse, err := httpClient.Get(getAccessKeyUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer tokenResponse.Body.Close()
+	tokenContent, err := ioutil.ReadAll(tokenResponse.Body)
+	if err != nil {
+		panic(err)
+	}
+	var accessTokenResp *GetAccessTokenRespFromWeChat
+	err = json.Unmarshal(tokenContent, &accessTokenResp)
+	if err != nil {
+		panic(err)
+	}
+	token := accessTokenResp.AccessToken
+	openid := accessTokenResp.Openid
+
+	getUserInfoUrl := fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s", token, openid)
+	getUserInfoResponse, err := httpClient.Get(getUserInfoUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer getUserInfoResponse.Body.Close()
+	userInfoContent, err := ioutil.ReadAll(getUserInfoResponse.Body)
+	var userInfo userInfoFromWeChat
+	err = json.Unmarshal(userInfoContent, &userInfo)
+	if err != nil {
+		res.IsAuthenticated = false // unexpected return
+		panic(err)
+	}
+
+	if openid == "" {
+		resp = Response{Status: "fail", Msg: "Login failed, please try again."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if addition == "signup" {
+		userId := object.HasWeChatAccount(openid)
+		if userId != "" {
+			if object.IsForbidden(userId) {
+				c.forbiddenAccountResp(userId)
+				return
+			}
+			if len(object.GetMemberAvatar(userId)) == 0 {
+				avatar := UploadAvatarToOSS(userInfo.AvatarUrl, userId)
+				object.LinkMemberAccount(userId, "avatar", avatar)
+			}
+			c.SetSessionUser(userId)
+			util.LogInfo(c.Ctx, "API: [%s] signed in", userId)
+			res.IsSignedUp = true
+		} else {
+			res.IsSignedUp = false
+		}
+		res.Addition = userInfo.Nickname
+		res.Avatar = url.QueryEscape(userInfo.AvatarUrl)
+		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: openid}
+	} else {
+		memberId := c.GetSessionUser()
+		if memberId == "" {
+			resp = Response{Status: "fail", Msg: "no account exist", Data: res}
+			c.Data["json"] = resp
+			c.ServeJSON()
+			return
+		}
+		linkRes := object.LinkMemberAccount(memberId, "wechat_account", userInfo.Nickname)
+		linkRes = object.LinkMemberAccount(memberId, "wechat_open_id", openid)
+		linkRes = object.LinkMemberAccount(memberId, "wechat_verified_time", util.GetCurrentTime())
 		if linkRes {
 			resp = Response{Status: "ok", Msg: "success", Data: linkRes}
 		} else {
