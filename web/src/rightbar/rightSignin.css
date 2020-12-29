@@ -53,6 +53,12 @@
     background-repeat: no-repeat;
 }
 
+.signin_method_wechat {
+    background-image: url("https://cdn.jsdelivr.net/gh/casbin/static/img/social_wechat.png");
+    background-size: 30px 30px;
+    background-repeat: no-repeat;
+}
+
 .signin_method_google {
     background-image: url("https://cdn.jsdelivr.net/gh/casbin/static/img/social_google.png");
     background-size: 30px 30px;

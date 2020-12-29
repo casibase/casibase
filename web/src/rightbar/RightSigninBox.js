@@ -42,6 +42,15 @@ class RightSigninBox extends React.Component {
               </div> : null
           }
           {
+            Conf.WechatClientId !== "" ?
+              <div className="cell" style={{textAlign: "center"}}>
+                <div className="signin_method" onClick={() => Setting.getWeChatAuthCode("signup")}>
+                  <div className="signin_method_icon signin_method_wechat"></div>
+                  <div className="signin_method_label" style={{width: 140}}>{i18next.t("signin:Sign in with WeChat")}</div>
+                </div>
+              </div> : null
+          }
+          {
             Conf.GoogleClientId !== "" ?
               <div className="cell" style={{textAlign: "center"}}>
                 <div className="signin_method" onClick={() => Setting.getGoogleAuthCode("signup")}>

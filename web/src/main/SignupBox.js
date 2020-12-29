@@ -504,6 +504,13 @@ class SignupBox extends React.Component {
                 </div> : null
             }
             {
+              Conf.WechatClientId !== "" ?
+                <div className="signup_method" onClick={() => Setting.getWeChatAuthCode("signup")}>
+                  <div className="signup_method_icon signup_method_wechat"></div>
+                  <div className="signup_method_label" style={{width: 230}}>{i18next.t("signup:Continue with WeChat")}</div>
+                </div> : null
+            }
+            {
               Conf.GoogleClientId !== "" ?
                 <div className="signup_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
                   <div className="signup_method_icon signup_method_google"></div>

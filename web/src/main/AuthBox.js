@@ -115,6 +115,31 @@ class CallbackBox extends React.Component {
             }
           });
         break;
+      case "wechat":
+        MemberBackend.wechatLogin(this.state.code, this.state.state, redirectUrl, this.state.addition)
+          .then((res) => {
+            if (res.status === "ok") {
+              if (this.state.addition === "link") {
+                if (res.data) {
+                  window.location.href = '/settings';
+                  return;
+                }
+              }
+              if (!res.data.isAuthenticated) {
+                window.location.href = '/signup';
+                return;
+              }
+              if (!res.data.isSignedUp) {
+                window.location.href = `/settings/username?email=${res.data.email}&method=wechat&addition=${res.data.addition}&addition2=${res.data2}&avatar=${res.data.avatar}`;
+                return;
+              }
+              window.location.href = '/';
+            }else {
+              alert(i18next.t(`error:${res?.msg}`));
+              Setting.showMessage("error", i18next.t(`error:${res?.msg}`));
+            }
+          });
+        break;
     }
   }
 

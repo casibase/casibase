@@ -31,6 +31,7 @@
     "Click to send validate code": "Click to send validate code",
     "Continue with Mobile Phone": "Continue with Mobile Phone",
     "Continue with QQ": "Continue with QQ",
+    "Continue with WeChat": "Continue with WeChat",
     "Continue with Google": "Continue with Google",
     "Continue with Github": "Continue with Github",
     "Continue with Email": "Continue with Email",
@@ -48,6 +49,7 @@
   "signin":
   {
     "Sign in with QQ": "Sign in with QQ",
+    "Sign in with WeChat": "Sign in with WeChat",
     "Sign in with Google": "Sign in with Google",
     "Sign in with Github": "Sign in with Github"
   },

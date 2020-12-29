@@ -39,6 +39,19 @@ type userInfoFromQQ struct {
 	AvatarUrl string `json:"figureurl_qq_1"`
 }
 
+type userInfoFromWeChat struct {
+	Nickname  string `json:"nickname"`
+	AvatarUrl string `json:"headimgurl"`
+}
+
+type GetAccessTokenRespFromWeChat struct {
+	AccessToken  string  `json:"access_token"`
+	ExpiresIn    float64 `json:"expires_in"`
+	RefreshToken string  `json:"refresh_token"`
+	Openid       string  `json:"openid"`
+	Scope        string  `json:"scope"`
+}
+
 type authResponse struct {
 	IsAuthenticated bool   `json:"isAuthenticated"`
 	IsSignedUp      bool   `json:"isSignedUp"`

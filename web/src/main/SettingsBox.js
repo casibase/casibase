@@ -519,9 +519,9 @@ class SettingsBox extends React.Component {
                   {
                     account?.weChatAccount === "" ?
                       <td width="auto" align="left">
-                        <Link to="/settings/wechat">
+                        <a onClick={() => Setting.getWeChatAuthCode("link")} href="javascript:void(0);">
                           {i18next.t("setting:Link with WeChat")}
-                        </Link>
+                        </a>
                       </td> :
                       <td width="auto" align="left">
                         <code>
@@ -532,15 +532,17 @@ class SettingsBox extends React.Component {
                 </tr> : null
             }
             {
-              account?.weChatAccount === "" ? null :
+              account?.qqVerifiedTime.length !== 0 ?
                 <tr>
-                  <td width="120" align="right" />
-                  <td width="auto" align="left">
-                    <Link to="/settings/weChat">
-                      {i18next.t("setting:Modify WeChat")}
-                    </Link>
+                  <td width="120" align="right">
+                    {i18next.t("setting:Modify WeChat")}
                   </td>
-                </tr>
+                  <td width="auto" align="left">
+                      <span className="green">
+                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.wechatVerifiedTime)}
+                      </span>
+                  </td>
+                </tr> : null
             }
             {
               Conf.QQClientId !== "" ?
