@@ -229,11 +229,7 @@ func UpdateLatestSyncedRecordId(id int) bool {
 
 // GetOnlineMemberNum returns online member num.
 func GetOnlineMemberNum() int {
-	if onlineMemberNum == 0 {
-		UpdateOnlineMemberNum()
-		return onlineMemberNum
-	}
-
+	UpdateOnlineMemberNum()
 	return onlineMemberNum
 }
 
