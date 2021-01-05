@@ -273,7 +273,7 @@ func (c *APIController) Signout() {
 
 	member := c.GetSessionUser()
 	util.LogInfo(c.Ctx, "API: [%s] signed out", member)
-
+	object.UpdateMemberOnlineStatus(member,false,util.GetCurrentTime())
 	c.SetSessionUser("")
 
 	resp = Response{Status: "ok", Msg: "success", Data: member}
