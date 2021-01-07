@@ -15,11 +15,8 @@
 import React, {Component} from 'react';
 import './App.css';
 import * as Setting from "./Setting";
-import {Layout, Menu, Input, Typography, Col, Row} from 'antd';
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
-import NodePage from "./NodePage";
-import NodeWidget from "./NodeWidget";
 import Header from "./Header";
 import Footer from "./Footer";
 import RightSigninBox from "./rightbar/RightSigninBox";
