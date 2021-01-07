@@ -14,6 +14,7 @@
 
 import React, {Component} from 'react';
 import './App.css';
+import {BackTop} from "antd";
 import * as Setting from "./Setting";
 import {Switch, Route} from 'react-router-dom'
 import TopicPage from "./TopicPage";
@@ -480,6 +481,7 @@ class App extends Component {
   render() {
     return (
       <div>
+        <BackTop />
         <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu}/>
         <div id="Wrapper" style={{backgroundColor: `${this.state.nodeBackgroundColor}`, backgroundImage: `url(${this.state.nodeBackgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`, backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`}} className={this.state.nodeId} onClick={() => this.changeMenuStatus(false)}>
           <div className="content">
