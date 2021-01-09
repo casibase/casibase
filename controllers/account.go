@@ -193,9 +193,9 @@ func (c *APIController) Signup() {
 			member.QQAccount = form.Addition
 			member.QQVerifiedTime = util.GetCurrentTime()
 		case "wechat":
-			member.WeChatOpenId = form.Addition2
-			member.WeChatAccount = form.Addition
-			member.WeChatVerifiedTime = util.GetCurrentTime()
+			member.WechatOpenId = form.Addition2
+			member.WechatAccount = form.Addition
+			member.WechatVerifiedTime = util.GetCurrentTime()
 		}
 
 		object.AddMember(member)

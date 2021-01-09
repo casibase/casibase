@@ -43,9 +43,9 @@ type Member struct {
 	FileQuota          int    `xorm:"int" json:"fileQuota"`
 	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
-	WeChatAccount      string `xorm:"wechat_account varchar(100)" json:"weChatAccount"`
-	WeChatOpenId       string `xorm:"wechat_open_id varchar(100)" json:"-"`
-	WeChatVerifiedTime string `xorm:"wechat_verified_time varchar(40)" json:"WeChatVerifiedTime"`
+	WechatAccount      string `xorm:"varchar(100)" json:"weChatAccount"`
+	WechatOpenId       string `xorm:"varchar(100)" json:"-"`
+	WechatVerifiedTime string `xorm:"varchar(40)" json:"WechatVerifiedTime"`
 	QQAccount          string `xorm:"qq_account varchar(100)" json:"qqAccount"`
 	QQOpenId           string `xorm:"qq_open_id varchar(100)" json:"-"`
 	QQVerifiedTime     string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
@@ -379,7 +379,7 @@ func GetQQAccount(qqOpenId string) *Member {
 }
 
 func GetWechatAccount(wechatOpenId string) *Member {
-	member := Member{WeChatOpenId: wechatOpenId}
+	member := Member{WechatOpenId: wechatOpenId}
 	existed, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
