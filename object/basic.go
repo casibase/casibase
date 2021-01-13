@@ -68,10 +68,7 @@ func GetForumVersion() string {
 }
 
 func GetHighestOnlineNum() int {
-	if highestOnlineNum != 0 {
-		return highestOnlineNum
-	}
-
+	
 	info := BasicInfo{Id: "HighestOnlineNum"}
 	existed, err := adapter.engine.Get(&info)
 	if err != nil {
@@ -229,11 +226,7 @@ func UpdateLatestSyncedRecordId(id int) bool {
 
 // GetOnlineMemberNum returns online member num.
 func GetOnlineMemberNum() int {
-	if onlineMemberNum == 0 {
-		UpdateOnlineMemberNum()
-		return onlineMemberNum
-	}
-
+	UpdateOnlineMemberNum()
 	return onlineMemberNum
 }
 
