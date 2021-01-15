@@ -82,7 +82,7 @@ var (
 		{
 			Id:    "expireTopTopic",
 			JobId: "expireData",
-			State: "canceled",
+			State: "active",
 		},
 		{
 			Id:    "expireOnlineMember",
