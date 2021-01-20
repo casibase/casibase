@@ -34,6 +34,7 @@
     /* height: 46px; */
     font-size: 10px;
     height: 30px;
+    align-items: center;
 }
 
 .signin_method:hover {
