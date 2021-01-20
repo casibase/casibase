@@ -30,8 +30,8 @@ class RightSigninBox extends React.Component {
   render() {
     if (window.location.pathname === "/signin") {
       return (
-        <div class="box">
-          <div class="header">{i18next.t("bar:Other Sign In Methods")}</div>
+        <div className="box">
+          <div className="header">{i18next.t("bar:Other Sign In Methods")}</div>
           {
             Conf.QQClientId !== "" ?
               <div className="cell" style={{textAlign: "center"}}>

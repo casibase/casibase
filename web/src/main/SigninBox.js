@@ -189,8 +189,8 @@ class SigninBox extends React.Component {
               <td width="120" align="right">{i18next.t("login:Are you a bot?")}{" "}</td>
               <td width="auto" align="left">
                 <div style={{backgroundImage: `url('data:image/png;base64,${this.state.captcha}')`, backgroundRepeat: "no-repeat", width: Setting.PcBrowser ? "320px" : "280px", height: "80px", borderRadius: "3px", border: "1px solid #ccc"}} />
-                <div class="sep10" />
-                <input type="text" class="sl" name="captcha" value={this.state.form.captcha} onChange={event => {this.updateFormField("captcha", event.target.value)}} autocorrect="off" spellcheck="false" autocapitalize="off" placeholder={i18next.t("login:Please enter the verification code in the picture above")} />
+                <div className="sep10" />
+                <input type="text" className="sl" name="captcha" value={this.state.form.captcha} onChange={event => {this.updateFormField("captcha", event.target.value)}} autoCorrect="off" spellCheck="false" autoCapitalize="off" placeholder={i18next.t("login:Please enter the verification code in the picture above")} />
               </td>
               </tr>
               <tr>
