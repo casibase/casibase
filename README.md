@@ -98,6 +98,28 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
     QQAuthState = ""
     ```
 
+    4. WeChat
+
+        Similar to QQ login service, before using WeChat to log in, you need to apply for OAuth2.0 service fee on the WeChat open platform [open weixin](https://open.weixin.qq.com/cgi-bin/frame?t=home/web_tmpl). After completing the configuration, you can log in via WeChat QR code.
+
+    Configuration:
+
+    ```javascript
+    export const WechatClientId  = ""
+
+    export const WeChatAuthState = ""
+
+    export const WeChatAuthScope = "snsapi_login"
+
+    export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect"
+    ```
+
+    ```ini
+    WeChatAPPID = ""
+    WeChatKey = ""
+    WeChatAuthState = ""
+    ```
+
     We would show different login/signup methods depending on your configuration.
 
 - OSS, Mail, and SMS services.
