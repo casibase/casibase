@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as AccountBackend from "./backend/AccountBackend";
+import * as NodeBackend from "./backend/NodeBackend";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 import {withRouter, Link} from "react-router-dom";
@@ -25,12 +26,37 @@ class Header extends React.Component {
     this.state = {
       classes: props,
       searchValue: "",
+      searchResShow: false,
+      nodes:[],
+      matchNodes:[],
     };
   }
 
+  componentDidMount(){
+    this.getNodes();
+  }
+
+  getMatchNodes(nodes,curSearchVal,matchNodes){
+    if(!curSearchVal||!nodes){
+      return ;
+    }
+    for(let i =0;i<nodes.length;i++){
+      const name = nodes[i].name;
+      const id = nodes[i].id;
+      if(name.indexOf(curSearchVal) > -1 || id.indexOf(curSearchVal)> -1){
+        matchNodes.push(nodes[i]);
+      }
+    }
+  }
+
   onSearchValueChange(e) {
+    const nodes = this.state.nodes;
+    const curSearchVal = e.target.value;
+    const matchNodes = [];
+    this.getMatchNodes(nodes,curSearchVal,matchNodes)
     this.setState({
-      searchValue: e.target.value
+      searchValue: curSearchVal,
+      matchNodes: matchNodes
     });
   }
 
@@ -243,7 +269,45 @@ class Header extends React.Component {
       return (
         <div id="Search">
           <div id="qbar" className="">
-            <input type="text" maxLength="40" name="q" id="q" value={this.state.searchValue} onKeyUp={event => this.onKeyup(event)} onSubmit={() => this.window.open("https://www.google.com/search?1")} onChange={event => this.onSearchValueChange(event)} />
+            <input
+              type="text"
+              maxLength="40"
+              name="q"
+              id="q"
+              autoComplete={"off"}
+              value={this.state.searchValue}
+              onKeyUp={event => this.onKeyup(event)}
+              onSubmit={() => this.window.open("https://www.google.com/search?1")}
+              onChange={event => this.onSearchValueChange(event)}
+              onFocus={() => {
+                this.setState({
+                  searchResShow: true
+                })
+              }}
+              onBlur={() => {
+                this.setState({
+                  searchResShow: false
+                })
+              }}
+            />
+            {this.state.searchResShow && this.state.searchValue ?
+              <div id="search-result" className="box" style={{ display: "block" }}>
+                {this.state.matchNodes.length !== 0 ?
+                  <div className="cell">
+                    <span className="fade">节点&nbsp;&nbsp;/&nbsp;&nbsp;Nodes</span>
+                    {
+                      this.state.matchNodes.map((val) => {
+                        //TODO: maybe weshould add `active` iterm 
+                        return <a className="search-item" href={`/go/${val.id}`}>{val.name}&nbsp;&nbsp;/&nbsp;&nbsp;{val.id}</a>
+                      })
+                    }
+                  </div> : null
+                }
+                <div className="cell">
+                  <a className="search-item" href={`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`} target='_blank'> Google&nbsp;{this.state.searchValue} </a>
+                </div>
+              </div> : null
+            }
           </div>
         </div>
       );
@@ -263,11 +327,23 @@ class Header extends React.Component {
     this.props.changeMenuStatus(!this.props.showMenu);
   }
 
+  getNodes(){
+    if (this.state.account === null) {
+      return;
+    }
+
+    NodeBackend.getNodes()
+      .then((res) => {
+        this.setState({
+          nodes: res
+        });
+      });
+  }
+
   render() {
     if (!Setting.PcBrowser) {
       return this.renderMobileHeader();
     }
-
     return (
       <div id="Top">
         <div className="content">
