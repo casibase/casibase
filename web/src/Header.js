@@ -27,8 +27,8 @@ class Header extends React.Component {
       classes: props,
       searchValue: "",
       searchResShow: false,
-      nodes:[],
-      matchNodes:[],
+      nodes: [],
+      matchNodes: [],
     };
   }
 
@@ -285,9 +285,11 @@ class Header extends React.Component {
                 })
               }}
               onBlur={() => {
-                this.setState({
-                  searchResShow: false
-                })
+                  setTimeout(()=>{
+                    this.setState({
+                    searchResShow: false
+                  })
+                }, 200)
               }}
             />
             {this.state.searchResShow && this.state.searchValue ?
