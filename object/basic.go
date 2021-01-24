@@ -97,6 +97,7 @@ func GetHighestOnlineNum() int {
 }
 
 func UpdateHighestOnlineNum(num int) bool {
+	highestOnlineNum = num
 	info := new(BasicInfo)
 	info.Value = util.IntToString(num)
 	affected, err := adapter.engine.Where("id = ?", "HighestOnlineNum").Cols("value").Update(info)
@@ -233,7 +234,9 @@ func GetOnlineMemberNum() int {
 		UpdateOnlineMemberNum()
 		return onlineMemberNum
 	}
-
+	if onlineMemberNum > highestOnlineNum {
+		UpdateHighestOnlineNum(onlineMemberNum)
+	}
 	return onlineMemberNum
 }
 

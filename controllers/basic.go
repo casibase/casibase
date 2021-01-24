@@ -109,8 +109,8 @@ func (c *APIController) GetForumVersion() {
 func (c *APIController) GetOnlineNum() {
 	var resp Response
 
-	highest := object.GetHighestOnlineNum()
 	onlineNum := object.GetOnlineMemberNum()
+	highest := object.GetHighestOnlineNum()
 
 	resp = Response{Status: "ok", Msg: "success", Data: onlineNum, Data2: highest}
 
