@@ -39,7 +39,7 @@ type Topic struct {
 	TabTopTime      string   `xorm:"varchar(40)" json:"tabTopTime"`
 	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
 	Deleted         bool     `xorm:"bool" json:"-"`
-
+	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content string `xorm:"mediumtext" json:"content"`
 }
 

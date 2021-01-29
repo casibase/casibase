@@ -88,10 +88,9 @@ class NewNodeTopicBox extends React.Component {
   }
 
   publishTopic() {
-    if (!this.isOkToSubmit()) {
+    if (!this.isOkToSubmit() || !this.state.nodeInfo) {
       return;
     }
-
     this.updateFormField("nodeId", this.state.nodeInfo.id)
     this.updateFormField("nodeName", this.state.nodeInfo.name)
 
