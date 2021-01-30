@@ -21,15 +21,13 @@ import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css"
 import {withRouter} from "react-router-dom";
-
 import i18next from "i18next";
 import $ from "jquery"
 import Select2 from 'react-select2-wrapper';
 import {Resizable} from "re-resizable";
-
 import {Controlled as CodeMirror} from 'react-codemirror2'
 import "codemirror/lib/codemirror.css"
-
+import Editor from './richTextEditor'
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require('react-markdown')
@@ -46,6 +44,14 @@ class NewBox extends React.Component {
       message: "",
       isTypingStarted: false,
       nodeId: this.props.match.params.nodeId,
+      editor: [{
+        text: "markdown",
+        id: 0
+      },
+      {
+        text: "richtext",
+        id: 1
+      }]
     };
   }
 
@@ -74,6 +80,10 @@ class NewBox extends React.Component {
     });
   }
 
+  handleValueFromEditor(textValue){
+    this.updateFormField("body", textValue);
+  }
+
   countField(key) {
     if (this.state.form[key] === undefined) {
       return 0;
@@ -92,7 +102,9 @@ class NewBox extends React.Component {
     if (!this.isOkToSubmit()) {
       return;
     }
-
+    if(!this.state.form.editorType) {
+      this.updateFormField("editorType", "markdown");
+    }
     TopicBackend.addTopic(this.state.form)
       .then((res) => {
         if (res.status === 'ok') {
@@ -210,29 +222,49 @@ class NewBox extends React.Component {
             </div>
             {i18next.t("new:Body")}
           </div>
-          <div style={{textAlign: "left", borderBottom: "1px solid #e2e2e2", fontSize: "14px", lineHeight: "120%"}}>
-            <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
-            <Resizable
-              enable={false}
-              defaultSize={{
-                height:290,
-              }}
-            >
-              <CodeMirror
-                editorDidMount={(editor) => Tools.attachEditor(editor)}
-                onPaste={() => Tools.uploadMdFile()}
-                value={this.state.form.body}
-                onDrop={() => Tools.uploadMdFile()}
-                options={{mode: 'markdown', lineNumbers: true, lineWrapping: true}}
-                onBeforeChange={(editor, data, value) => {
-                  this.updateFormField("body", value);
-                }}
-                onChange={(editor, data, value) => {
-                }}
-              />
-            </Resizable>
+          <div>
+            {/* markdown editor */}
+            {!this.state.form.editorType || this.state.form.editorType === "markdown" ? (
+              <div style={{ textAlign: "left", borderBottom: "1px solid #e2e2e2",fontSize: "14px",lineHeight: "120%",}}>
+                <textarea style={{ visibility: "hidden", display: "none" }} maxLength="20000" id="editor" name="content" />
+                <Resizable 
+                enable={false} 
+                defaultSize={{
+                  height: 290,
+                  }}
+                >
+                  <CodeMirror
+                    editorDidMount={(editor) => Tools.attachEditor(editor)}
+                    onPaste={() => Tools.uploadMdFile()}
+                    value={this.state.form.body}
+                    onDrop={() => Tools.uploadMdFile()}
+                    options={{
+                      mode: 'markdown',
+                      lineNumbers: true,
+                      lineWrapping: true,
+                    }}
+                    onBeforeChange={(editor, data, value) => {
+                      this.updateFormField("body", value);
+                    }}
+                    onChange={(editor, data, value) => { }}
+                  />
+                </Resizable>
+              </div>
+            ) : (
+                <div
+                    style={{display:"block", height:"100%"}}>
+                  <Editor
+                    height="400px"
+                    id="richTextEditor"
+                    onBeforeChange={(value) => {
+                      this.updateFormField("body", value);
+                    }}
+                  />
+                </div>
+              )}
           </div>
-          <div className="cell">
+          {/* select node */}
+          <div className="cell" style={{display:"flex",justifyContent:"space-between"}}>
             <Select2
               value={this.getIndexFromNodeId(this.state.form.nodeId)}
               style={{width: "300px", fontSize: "14px"}}
@@ -259,6 +291,29 @@ class NewBox extends React.Component {
                 }
               }
             />
+            <Select2
+              value={(this.state.form.editorType)}
+              style={{ width: "110px", fontSize: "14px" }}
+              data={
+                this.state.editor.map((node, i) => {
+                  return { text: `${node.text}`, id: i };
+                })
+              }
+              onSelect={event => {
+                const s = $(event.target).val();
+                if (s === null) {
+                  return;
+                }
+                const index = parseInt(s);
+                if (index === 0) {
+                  this.updateFormField("editorType", "markdown");
+                }
+                else {
+                  this.updateFormField("editorType", "richtext");
+                }
+              }}
+              options={{ placeholder: i18next.t("new:Switch editor") }}
+            />
           </div>
           <div className="cell" style={{lineHeight: "190%"}}>
             {i18next.t("new:Hottest Nodes")}
@@ -282,13 +337,16 @@ class NewBox extends React.Component {
               &nbsp;{i18next.t("new:Publish")}
             </button>
           </div>
-          <button className="super normal button" onClick={this.enablePreview.bind(this)}>
-            <li className="fa fa-eye" />
-            &nbsp;{i18next.t("new:Preview")}
-          </button>
+          <div>
+            <button className="super normal button" onClick={this.enablePreview.bind(this)}>
+              <li className="fa fa-eye" />
+              &nbsp;{i18next.t("new:Preview")}
+            </button>
+          </div>
         </div>
         <div className="inner" id="topic_preview">
           <div className="topic_content">
+            {/* preview in markdown */}
             <div className="markdown_body">
               {
                 !this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} escapeHtml={false} />

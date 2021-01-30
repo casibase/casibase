@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^7.1.2",
     "ali-oss": "^6.9.1",
     "antd": "^4.3.0",
+    "braft-editor": "^2.3.9",
     "browser-image-size": "^1.1.0",
     "codemirror": "^5.54.0",
     "i18next": "^19.6.0",

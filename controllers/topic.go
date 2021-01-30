@@ -26,6 +26,7 @@ type NewTopicForm struct {
 	Title  string `json:"title"`
 	Body   string `json:"body"`
 	NodeId string `json:"nodeId"`
+	EditorType string `json:"editorType"`
 }
 
 func (c *APIController) GetTopics() {
@@ -145,7 +146,7 @@ func (c *APIController) AddTopic() {
 	if err != nil {
 		panic(err)
 	}
-	title, body, nodeId := form.Title, form.Body, form.NodeId
+	title, body, nodeId, editorType := form.Title, form.Body, form.NodeId, form.EditorType
 
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
@@ -162,6 +163,7 @@ func (c *APIController) AddTopic() {
 		FavoriteCount: 0,
 		Content:       body,
 		Deleted:       false,
+		EditorType:    editorType,
 	}
 
 	balance := object.GetMemberBalance(memberId)

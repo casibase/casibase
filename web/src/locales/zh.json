@@ -252,7 +252,9 @@
     "Hottest Nodes": "最热节点",
     "Publish": "发布主题",
     "New Topic": "创作新主题",
-    "Already enabled Markdown": "已启用Markdown"
+    "Already enabled Markdown": "已启用Markdown",
+    "Switch editor": "切换编辑器",
+    "richtext": "富文本"
   },
   "fav":
   {
