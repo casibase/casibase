@@ -176,7 +176,7 @@ class Header extends React.Component {
                   <td width="5" align="left"></td>
                   <td width="80" align="left" style={{paddingTop: "4px"}}>
                     <Link to="/" name="top">
-                      <div id="custom-LogoMobile"></div>
+                      <div id="logoMobile"></div>
                     </Link>
                   </td>
                   <td width="auto" align="right" style={{paddingTop: "2px"}}>
@@ -197,7 +197,7 @@ class Header extends React.Component {
       return (
         <header className="site-header">
           <div className="site-header-logo">
-            <div id="custom-LogoMobile" onClick={() => this.props.history.push("/")} />
+            <div id="logoMobile" onClick={() => this.props.history.push("/")} />
           </div>
           <div className="site-header-menu">
             {this.renderSearch()}
@@ -299,7 +299,7 @@ class Header extends React.Component {
                     <span className="fade">节点&nbsp;&nbsp;/&nbsp;&nbsp;Nodes</span>
                     {
                       this.state.matchNodes.map((val) => {
-                        //TODO: maybe weshould add `active` iterm 
+                        //TODO: maybe weshould add `active` iterm
                         return <a className="search-item" href={`/go/${val.id}`}>{val.name}&nbsp;&nbsp;/&nbsp;&nbsp;{val.id}</a>
                       })
                     }
@@ -355,7 +355,7 @@ class Header extends React.Component {
               <tr>
                 <td width="110" align="left">
                   <Link to="/" name="top" title="way to explore">
-                    <div id="custom-Logo" />
+                    <div id="logo" />
                   </Link>
                 </td>
                 <td width="auto" align="left">

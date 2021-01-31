@@ -1,43 +1,30 @@
 @import '~antd/lib/back-top/style/index.css';
 
-/* custom option */
-@import './main/custom/logo.css';
+#logo {
+    width: 94px;
+    height: 30px;
+    /* please replace to your own logo */
+    background-image: url(static/logo.png);
+    background-size: 94px 30px;
+    background-repeat: no-repeat;
+    display: inline-block
+}
 
-/*.App {*/
-/*  text-align: center;*/
-/*}*/
+#logoMobile {
+    width: 80px;
+    height: 25px;
+    /* please replace to your own logo */
+    background-image: url(static/logo.png);
+    background-size: 80px 25px;
+    background-repeat: no-repeat;
+    display: inline-block
+}
 
-/*.App-logo {*/
-/*  height: 40vmin;*/
-/*  pointer-events: none;*/
-/*}*/
-
-/*@media (prefers-reduced-motion: no-preference) {*/
-/*  .App-logo {*/
-/*    animation: App-logo-spin infinite 20s linear;*/
-/*  }*/
-/*}*/
-
-/*.App-header {*/
-/*  background-color: #282c34;*/
-/*  min-height: 100vh;*/
-/*  display: flex;*/
-/*  flex-direction: column;*/
-/*  align-items: center;*/
-/*  justify-content: center;*/
-/*  font-size: calc(10px + 2vmin);*/
-/*  color: white;*/
-/*}*/
-
-/*.App-link {*/
-/*  color: #61dafb;*/
-/*}*/
-
-/*@keyframes App-logo-spin {*/
-/*  from {*/
-/*    transform: rotate(0deg);*/
-/*  }*/
-/*  to {*/
-/*    transform: rotate(360deg);*/
-/*  }*/
-/*}*/
+#logoFooter {
+    /* please replace to your own footer logo */
+    background-image: url(static/logo-footer.png);
+    width: 163.92px;
+    height: 28px;
+    background-size: 163.92px 28px;
+    background-repeat: no-repeat
+}
