@@ -90,7 +90,7 @@ class Footer extends React.Component {
             <div className="sep10" />
             <div className="fr">
               <a href="https://www.digitalocean.com/" target="_blank">
-                <div id="DigitalOcean" />
+                <div id="custom-Organization_Logo" />
               </a>
             </div>
             {/*<div className="fr">*/}

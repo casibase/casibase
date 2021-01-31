@@ -1,5 +1,8 @@
 @import '~antd/lib/back-top/style/index.css';
 
+/* custom option */
+@import './main/custom/logo.css';
+
 /*.App {*/
 /*  text-align: center;*/
 /*}*/
