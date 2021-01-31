@@ -176,7 +176,7 @@ class Header extends React.Component {
                   <td width="5" align="left"></td>
                   <td width="80" align="left" style={{paddingTop: "4px"}}>
                     <Link to="/" name="top">
-                      <div id="LogoMobile"></div>
+                      <div id="custom-LogoMobile"></div>
                     </Link>
                   </td>
                   <td width="auto" align="right" style={{paddingTop: "2px"}}>
@@ -197,7 +197,7 @@ class Header extends React.Component {
       return (
         <header className="site-header">
           <div className="site-header-logo">
-            <div id="LogoMobile" onClick={() => this.props.history.push("/")} />
+            <div id="custom-LogoMobile" onClick={() => this.props.history.push("/")} />
           </div>
           <div className="site-header-menu">
             {this.renderSearch()}
@@ -355,7 +355,7 @@ class Header extends React.Component {
               <tr>
                 <td width="110" align="left">
                   <Link to="/" name="top" title="way to explore">
-                    <div id="Logo" />
+                    <div id="custom-Logo" />
                   </Link>
                 </td>
                 <td width="auto" align="left">

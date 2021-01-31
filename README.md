@@ -24,6 +24,15 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
     go get github.com/casbin/casbin-forum
     ```
 
+- Custom settings:
+    Casbin-forum currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
+
+    Customizable option:
+
+    * Logo, include `forum Logo` and `organization Logo` which organization by `web/src/main/custom/logo.css`
+
+
+
 - Setup database:
 
     Casbin-forum will store its users, nodes and topics informations in a MySQL database named: `casbin_forum`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
