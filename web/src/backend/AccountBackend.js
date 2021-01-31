@@ -16,45 +16,45 @@ import * as Setting from "../Setting";
 
 export function getAccount() {
   return fetch(`${Setting.ServerUrl}/api/get-account`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function signup(values) {
   return fetch(`${Setting.ServerUrl}/api/signup`, {
-    method: 'POST',
+    method: "POST",
     credentials: "include",
     body: JSON.stringify(values),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function signin(values) {
   return fetch(`${Setting.ServerUrl}/api/signin`, {
-    method: 'POST',
+    method: "POST",
     credentials: "include",
     body: JSON.stringify(values),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function signout() {
   return fetch(`${Setting.ServerUrl}/api/signout`, {
-    method: 'POST',
+    method: "POST",
     credentials: "include",
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function getStsToken() {
   return fetch(`${Setting.ServerUrl}/api/get-member-sts-token`, {
-    method: 'GET',
+    method: "GET",
     credentials: "include",
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function resetPassword(step, values) {
   return fetch(`${Setting.ServerUrl}/api/reset-password?step=${step}`, {
-    method: 'POST',
+    method: "POST",
     credentials: "include",
     body: JSON.stringify(values),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }

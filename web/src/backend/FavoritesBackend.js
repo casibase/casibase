@@ -15,36 +15,48 @@
 import * as Setting from "../Setting";
 
 export function addFavorites(id, favoritesType) {
-  return fetch(`${Setting.ServerUrl}/api/add-favorites?id=${id}&type=${favoritesType}`, {
-    method: "POST",
-    credentials: "include"
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/add-favorites?id=${id}&type=${favoritesType}`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function deleteFavorites(id, favoritesType) {
-  return fetch(`${Setting.ServerUrl}/api/delete-favorites?id=${id}&type=${favoritesType}`, {
-    method: 'POST',
-    credentials: 'include',
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/delete-favorites?id=${id}&type=${favoritesType}`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function getFavorites(favoritesType, limit, page) {
-  return fetch(`${Setting.ServerUrl}/api/get-favorites?type=${favoritesType}&limit=${limit}&page=${page}`, {
-    method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-favorites?type=${favoritesType}&limit=${limit}&page=${page}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function getFavoritesStatus(id, favoritesType) {
-  return fetch(`${Setting.ServerUrl}/api/get-favorites-status?id=${id}&type=${favoritesType}`, {
-    method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-favorites-status?id=${id}&type=${favoritesType}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function getAccountFavoriteNum() {
   return fetch(`${Setting.ServerUrl}/api/get-account-favorite-num`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }

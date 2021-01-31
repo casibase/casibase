@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as TopicBackend from "../backend/TopicBackend";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import i18next from "i18next";
 const pangu = require("pangu");
@@ -25,7 +25,7 @@ class RightHotTopicBox extends React.Component {
     this.state = {
       classes: props,
       info: null,
-      limit: 10
+      limit: 10,
     };
   }
 
@@ -37,12 +37,11 @@ class RightHotTopicBox extends React.Component {
     if (this.state.info !== null) {
       return;
     }
-    TopicBackend.getHotTopic(this.state.limit)
-      .then((res) => {
-        this.setState({
-          info: res.data,
-        });
+    TopicBackend.getHotTopic(this.state.limit).then((res) => {
+      this.setState({
+        info: res.data,
       });
+    });
   }
 
   renderTopics(topic) {
@@ -51,12 +50,22 @@ class RightHotTopicBox extends React.Component {
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tr>
             <td width="24" valign="middle" align="center">
-              <Avatar username={topic?.author} avatar={topic?.avatar} size={"small"} />
+              <Avatar
+                username={topic?.author}
+                avatar={topic?.avatar}
+                size={"small"}
+              />
             </td>
             <td width="10"></td>
             <td width="auto" valign="middle">
               <span className="item_hot_topic_title">
-                <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(topic?.title)}</Link>
+                <Link
+                  to={`/t/${topic?.id}?from=${encodeURIComponent(
+                    window.location.href
+                  )}`}
+                >
+                  {pangu.spacing(topic?.title)}
+                </Link>
               </span>
             </td>
           </tr>
@@ -68,12 +77,12 @@ class RightHotTopicBox extends React.Component {
   render() {
     return (
       <div className="box" id="TopicsHot">
-        <div className="cell"><span className="fade">{i18next.t("bar:Today Top 10")}</span></div>
-        {
-          this.state.info?.map((topic) => {
-            return this.renderTopics(topic);
-          })
-        }
+        <div className="cell">
+          <span className="fade">{i18next.t("bar:Today Top 10")}</span>
+        </div>
+        {this.state.info?.map((topic) => {
+          return this.renderTopics(topic);
+        })}
       </div>
     );
   }

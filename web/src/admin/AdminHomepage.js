@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
 
 class AdminHomepage extends React.Component {
@@ -24,11 +24,31 @@ class AdminHomepage extends React.Component {
       classes: props,
       form: {},
       manageItems: [
-        {label: i18next.t("admin:Tab management" ), value: "tab", image: Setting.getStatic("/static/img/settings.png")},
-        {label: i18next.t("admin:Node management"), value: "node", image: Setting.getStatic("/static/img/settings.png")},
-        {label: i18next.t("admin:Plane management" ), value: "plane", image: Setting.getStatic("/static/img/settings.png")},
-        {label: i18next.t("admin:Topic management"), value: "topic", image: Setting.getStatic("/static/img/settings.png")},
-        {label: i18next.t("admin:Member management" ), value: "member", image: Setting.getStatic("/static/img/settings.png")},
+        {
+          label: i18next.t("admin:Tab management"),
+          value: "tab",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Node management"),
+          value: "node",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Plane management"),
+          value: "plane",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Topic management"),
+          value: "topic",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Member management"),
+          value: "member",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
       ],
       message: "",
     };
@@ -41,14 +61,22 @@ class AdminHomepage extends React.Component {
   renderManageItem(item) {
     return (
       <Link className="grid_item" to={`admin/${item?.value}`}>
-        <div style={{
-          display: "table",
-          padding: "20px 0px 20px 0px",
-          width: "100%",
-          textAlign: "center",
-          fontSize: "14px"
-        }}>
-          <img src={item?.image} border="0" align="default" width="73" alt={item?.value} />
+        <div
+          style={{
+            display: "table",
+            padding: "20px 0px 20px 0px",
+            width: "100%",
+            textAlign: "center",
+            fontSize: "14px",
+          }}
+        >
+          <img
+            src={item?.image}
+            border="0"
+            align="default"
+            width="73"
+            alt={item?.value}
+          />
           <div className="sep10"></div>
           {item?.label}
         </div>
@@ -60,10 +88,18 @@ class AdminHomepage extends React.Component {
     if (this.props.account === undefined) {
       return (
         <div className="box">
-          <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
-          <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+          <div className="header">
+            <Link to="/">{Setting.getForumName()}</Link>
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("loading:Page is loading")}
+          </div>
+          <div className="cell">
+            <span className="gray bigger">
+              {i18next.t("loading:Please wait patiently...")}
+            </span>
+          </div>
         </div>
-        );
+      );
     }
     if (this.props.account === null || !this.props.account?.isModerator) {
       this.props.history.push("/");
@@ -72,15 +108,14 @@ class AdminHomepage extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>{i18next.t("admin:Backstage management")}
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          {i18next.t("admin:Backstage management")}
         </div>
         <div id="all-items">
-          {
-            this.state.manageItems.map((item) => {
-              return this.renderManageItem(item);
-            })
-          }
+          {this.state.manageItems.map((item) => {
+            return this.renderManageItem(item);
+          })}
         </div>
       </div>
     );

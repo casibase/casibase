@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import i18next from "i18next";
 
 class Header extends React.Component {
@@ -28,19 +28,16 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-        <Link to="/">
-          {
-            Setting.getForumName()
-          }
-        </Link>
-        {" "}
-        <span className="chevron">
-          &nbsp;›&nbsp;
-        </span>
-        {" "}
-        {
-          this.props.item !== "Sign In" ? this.props.item : <div style={{display: "inline"}}>{i18next.t("general:Sign In")}{" "}&nbsp;<li className="fa fa-lock" /></div>
-        }
+        <Link to="/">{Setting.getForumName()}</Link>{" "}
+        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+        {this.props.item !== "Sign In" ? (
+          this.props.item
+        ) : (
+          <div style={{ display: "inline" }}>
+            {i18next.t("general:Sign In")} &nbsp;
+            <li className="fa fa-lock" />
+          </div>
+        )}
       </div>
     );
   }
