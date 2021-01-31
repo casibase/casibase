@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import $ from "jquery";
@@ -51,34 +51,34 @@ class MoveTopicNodeBox extends React.Component {
   }
 
   moveTopicNode() {
-    TopicBackend.updateTopicNode(this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.props.history.push(`/t/${this.state.topicId}`);
-        } else {
-          Setting.showMessage("error", res?.msg);
-        }
-      });
+    TopicBackend.updateTopicNode(this.state.form).then((res) => {
+      if (res.status === "ok") {
+        this.props.history.push(`/t/${this.state.topicId}`);
+      } else {
+        Setting.showMessage("error", res?.msg);
+      }
+    });
   }
 
   getNodes() {
-    NodeBackend.getNodes()
-      .then((res) => {
-        this.setState({
-          nodes: res,
-        });
+    NodeBackend.getNodes().then((res) => {
+      this.setState({
+        nodes: res,
       });
+    });
   }
 
   getTopic() {
-    TopicBackend.getTopic(this.state.topicId)
-      .then((res) => {
-        this.setState({
+    TopicBackend.getTopic(this.state.topicId).then((res) => {
+      this.setState(
+        {
           topic: res,
-        }, () => {
+        },
+        () => {
           this.initForm();
-        });
-      });
+        }
+      );
+    });
   }
 
   updateFormField(key, value) {
@@ -90,7 +90,7 @@ class MoveTopicNodeBox extends React.Component {
   }
 
   getIndexFromNodeId(nodeId) {
-    for (let i = 0; i < this.state.nodes.length; i ++) {
+    for (let i = 0; i < this.state.nodes.length; i++) {
       if (this.state.nodes[i].id === nodeId) {
         return i;
       }
@@ -103,8 +103,16 @@ class MoveTopicNodeBox extends React.Component {
     if (this.state.topic !== null && this.state.topic.length === 0) {
       return (
         <div class="box">
-          <div class="header"><Link to="/">{Setting.getForumName()}</Link>{" "}<span class="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Content loading")}</div>
-          <div class="cell"><span class="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+          <div class="header">
+            <Link to="/">{Setting.getForumName()}</Link>{" "}
+            <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("loading:Content loading")}
+          </div>
+          <div class="cell">
+            <span class="gray bigger">
+              {i18next.t("loading:Please wait patiently...")}
+            </span>
+          </div>
         </div>
       );
     }
@@ -112,8 +120,10 @@ class MoveTopicNodeBox extends React.Component {
     if (this.state.topic === null || !this.state.topic?.editable) {
       return (
         <div className="box">
-          <div className="header"><Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("move:Move topic")}
+          <div className="header">
+            <Link to="/">{Setting.getForumName()}</Link>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("move:Move topic")}
           </div>
           <div className="inner">
             {i18next.t("move:You cannot move this topic.")}
@@ -124,42 +134,62 @@ class MoveTopicNodeBox extends React.Component {
 
     return (
       <div className="box">
-        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${this.state.topic?.nodeId}`}>{this.state.topic?.nodeName}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}{i18next.t("move:Move topic")}
+        <div className="header">
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/go/${this.state.topic?.nodeId}`}>
+            {this.state.topic?.nodeName}
+          </Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          <Link to={`/t/${this.state.topic?.id}`}>
+            {pangu.spacing(this.state.topic?.title)}
+          </Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("move:Move topic")}
         </div>
         <div className="inner">
-            <table cellPadding="5" cellSpacing="0" border="0" width="100%">
-              <tbody>
+          <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+            <tbody>
               <tr>
-                <td width="120" align="right">{i18next.t("move:Topic")} ID</td>
-                <td width="auto" align="left">{this.state.topic?.id}</td>
-              </tr>
-              <tr>
-                <td width="120" align="right">{i18next.t("move:Title")}</td>
+                <td width="120" align="right">
+                  {i18next.t("move:Topic")} ID
+                </td>
                 <td width="auto" align="left">
-                  <Link to={`/t/${this.state.topic?.id}`} target="_blank">{pangu.spacing(this.state.topic?.title)}</Link>
+                  {this.state.topic?.id}
                 </td>
               </tr>
               <tr>
-                <td width="120" align="right">{i18next.t("move:Current node")}</td>
-                <td width="auto" align="left"><Link to={`/go/${this.state.topic?.nodeId}`} target="_blank">{this.state.topic?.nodeName}</Link></td>
+                <td width="120" align="right">
+                  {i18next.t("move:Title")}
+                </td>
+                <td width="auto" align="left">
+                  <Link to={`/t/${this.state.topic?.id}`} target="_blank">
+                    {pangu.spacing(this.state.topic?.title)}
+                  </Link>
+                </td>
               </tr>
               <tr>
-                <td width="120" align="right">{i18next.t("move:Target node")}</td>
+                <td width="120" align="right">
+                  {i18next.t("move:Current node")}
+                </td>
+                <td width="auto" align="left">
+                  <Link to={`/go/${this.state.topic?.nodeId}`} target="_blank">
+                    {this.state.topic?.nodeName}
+                  </Link>
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("move:Target node")}
+                </td>
                 <td width="auto" align="left">
                   <Select2
                     value={this.getIndexFromNodeId(this.state.form.nodeId)}
-                    style={{width: "300px", fontSize: "14px"}}
-                    data={
-                      this.state.nodes.map((node, i) => {
-                        return {text: `${node.name} / ${node.id}`, id: i};
-                      })
-                    }
-                    onSelect={event => {
+                    style={{ width: "300px", fontSize: "14px" }}
+                    data={this.state.nodes.map((node, i) => {
+                      return { text: `${node.name} / ${node.id}`, id: i };
+                    })}
+                    onSelect={(event) => {
                       const s = $(event.target).val();
                       if (s === null) {
                         return;
@@ -171,21 +201,25 @@ class MoveTopicNodeBox extends React.Component {
                       this.updateFormField("nodeId", nodeId);
                       this.updateFormField("nodeName", nodeName);
                     }}
-                    options={
-                      {
-                        placeholder: i18next.t("new:Please select a node"),
-                      }
-                    }
+                    options={{
+                      placeholder: i18next.t("new:Please select a node"),
+                    }}
                   />
                 </td>
               </tr>
               <tr>
                 <td width="120" align="right"></td>
                 <td width="auto" align="left">
-                  <input type="submit" className="super normal button" value={i18next.t("move:Move")} onClick={() => this.moveTopicNode()}/></td>
+                  <input
+                    type="submit"
+                    className="super normal button"
+                    value={i18next.t("move:Move")}
+                    onClick={() => this.moveTopicNode()}
+                  />
+                </td>
               </tr>
-              </tbody>
-            </table>
+            </tbody>
+          </table>
         </div>
       </div>
     );

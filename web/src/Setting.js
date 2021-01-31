@@ -13,34 +13,34 @@
 // limitations under the License.
 
 import React from "react";
-import {message} from "antd";
+import { message } from "antd";
 import moment from "moment";
-import {animateScroll as scroll} from "react-scroll";
-import md5 from 'js-md5'
-import * as Conf from "./Conf"
+import { animateScroll as scroll } from "react-scroll";
+import md5 from "js-md5";
+import * as Conf from "./Conf";
 import * as AccountBackend from "./backend/AccountBackend";
 import * as MemberBackend from "./backend/MemberBackend";
 import oss from "ali-oss";
-import {Link} from "react-router-dom";
-import * as i18n from "./i18n"
+import { Link } from "react-router-dom";
+import * as i18n from "./i18n";
 import i18next from "i18next";
 import Zmage from "react-zmage";
 
 const pangu = require("pangu");
 
-export let ServerUrl = '';
-export let ClientUrl = '';
+export let ServerUrl = "";
+export let ClientUrl = "";
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
-  if (hostname === 'localhost') {
+  if (hostname === "localhost") {
     ServerUrl = `http://${hostname}:7000`;
   }
 }
 
 export function initFullClientUrl() {
   const hostname = window.location.hostname;
-  if (hostname === 'localhost') {
+  if (hostname === "localhost") {
     ClientUrl = `http://${hostname}:3000`;
   } else {
     ClientUrl = `https://${hostname}`;
@@ -72,12 +72,16 @@ export function goToLink(link) {
 }
 
 export function openLink(link) {
-  const w = window.open('about:blank');
+  const w = window.open("about:blank");
   w.location.href = link;
 }
 
 export function getLink(link) {
-  return <a target="_blank" href={link}>{link}</a>
+  return (
+    <a target="_blank" href={link}>
+      {link}
+    </a>
+  );
 }
 
 export function showMessage(type, text) {
@@ -99,8 +103,8 @@ export function deleteRow(array, i) {
 }
 
 export function getFormattedDate(date) {
-  date = date?.replace('T', ' ');
-  date = date?.replace('+08:00', ' +08:00');
+  date = date?.replace("T", " ");
+  date = date?.replace("+08:00", " +08:00");
   return date;
 }
 
@@ -110,7 +114,7 @@ export function getPrettyDate(date) {
 }
 
 export function getDiffDays(date) {
-  date = moment().diff(moment(date), 'days');
+  date = moment().diff(moment(date), "days");
   return date;
 }
 
@@ -118,13 +122,13 @@ export function getStatic(path) {
   return `https://cdn.jsdelivr.net/gh/casbin${path}`;
 }
 
-export function getUserAvatar(username, isLarge=false) {
+export function getUserAvatar(username, isLarge = false) {
   if (username === undefined) {
     return null;
   }
 
-  let gravatarStr = md5(username)
-  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro`
+  let gravatarStr = md5(username);
+  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro`;
   //return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
 }
 
@@ -133,27 +137,23 @@ export function getForumName() {
 }
 
 export function getHomeLink(text) {
-  return (
-    <Link to={"/"} >
-      {text === undefined ? getForumName() : text}
-    </Link>
-  );
+  return <Link to={"/"}>{text === undefined ? getForumName() : text}</Link>;
 }
 
 export function getGoogleAuthCode(method) {
-  window.location.href=`${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`;
+  window.location.href = `${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`;
 }
 
 export function getGithubAuthCode(method) {
-  window.location.href=`${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
+  window.location.href = `${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
 }
 
 export function getQQAuthCode(method) {
-  window.location.href=`${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.QQAuthState}`;
+  window.location.href = `${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.QQAuthState}`;
 }
 
-export function getWeChatAuthCode(method){
-  window.location.href=`${Conf.WeChatOauthUri}?appid=${Conf.WechatClientId}&redirect_uri=${ClientUrl}/callback/wechat/${method}&scope=${Conf.WeChatAuthScope}&response_type=code&state=${Conf.WeChatAuthState}#wechat_redirect`;
+export function getWeChatAuthCode(method) {
+  window.location.href = `${Conf.WeChatOauthUri}?appid=${Conf.WechatClientId}&redirect_uri=${ClientUrl}/callback/wechat/${method}&scope=${Conf.WeChatAuthScope}&response_type=code&state=${Conf.WeChatAuthState}#wechat_redirect`;
 }
 
 export let OSSClient;
@@ -171,7 +171,7 @@ export function initNewOSSClient(accessKeyId, accessKeySecret, stsToken) {
     accessKeyId: accessKeyId,
     accessKeySecret: accessKeySecret,
     bucket: Conf.OSSBucket,
-    stsToken: stsToken
+    stsToken: stsToken,
   });
   OSSClient = newClient;
 }
@@ -193,7 +193,11 @@ export function initOSSClient(id) {
 export function getOSSClient(initNewOSSClient) {
   AccountBackend.getStsToken().then((res) => {
     if (res.status === "ok") {
-      initNewOSSClient(res.data.accessKeyId, res.data.accessKeySecret, res.data.stsToken);
+      initNewOSSClient(
+        res.data.accessKeyId,
+        res.data.accessKeySecret,
+        res.data.stsToken
+      );
     }
   });
 }
@@ -213,38 +217,49 @@ export function ChangeLanguage(language) {
 
 export function changeMomentLanguage(lng) {
   if (lng === "zh") {
-    moment.locale('zh', {
+    moment.locale("zh", {
       relativeTime: {
-        future: '%s内',
-        past: '%s前',
-        s: '几秒',
-        ss: '%d秒',
-        m: '1分钟',
-        mm: '%d分钟',
-        h: '1小时',
-        hh: '%d小时',
-        d: '1天',
-        dd: '%d天',
-        M: '1个月',
-        MM: '%d个月',
-        y: '1年',
-        yy: '%d年'
-      }
-    })
+        future: "%s内",
+        past: "%s前",
+        s: "几秒",
+        ss: "%d秒",
+        m: "1分钟",
+        mm: "%d分钟",
+        h: "1小时",
+        hh: "%d小时",
+        d: "1天",
+        dd: "%d天",
+        M: "1个月",
+        MM: "%d个月",
+        y: "1年",
+        yy: "%d年",
+      },
+    });
   }
 }
 
 export function getFormattedContent(content, spacing) {
-  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
-    if (w[w.length - 1] !== " ") {
-      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1,)})`;
+  let formattedContent = content.replace(
+    /@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g,
+    function (w) {
+      if (w[w.length - 1] !== " ") {
+        return `@[${w.substring(
+          1,
+          w.length
+        )}](${ClientUrl}/member/${w.substring(1)})`;
+      }
+      return `@[${w.substring(
+        1,
+        w.length - 1
+      )}](${ClientUrl}/member/${w.substring(1)}) `;
     }
-    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1,)}) `;
-  })
+  );
   if (spacing) {
-    return pangu.spacing(formattedContent).replace(/\[(.*?)]\((.*?)\)/g, function(w) {
-      return w.replace(/ /g, "");
-    });
+    return pangu
+      .spacing(formattedContent)
+      .replace(/\[(.*?)]\((.*?)\)/g, function (w) {
+        return w.replace(/ /g, "");
+      });
   }
   return formattedContent;
 }
@@ -261,25 +276,25 @@ const stdImageExt = ["png", "jpg", "gif", "jpeg"];
 export function getFileType(fileName) {
   let fileType = "image";
   let fileIndex = fileName.lastIndexOf(".");
-  let ext = fileName.substr(fileIndex+1);
+  let ext = fileName.substr(fileIndex + 1);
   let lowerCase = ext.toLowerCase();
   let index = stdImageExt.indexOf(lowerCase);
-  if(index < 0) {
+  if (index < 0) {
     fileType = "file";
   }
-  return {fileType: fileType, ext: ext};
+  return { fileType: fileType, ext: ext };
 }
 
 const unitSuffix = ["Bytes", "KB", "MB"];
 
-export function getFormattedSize(fileSize){
+export function getFormattedSize(fileSize) {
   if (fileSize === null) {
-      return "0 Bytes";
+    return "0 Bytes";
   }
-  let index = Math.floor(Math.log(fileSize)/Math.log(1024));
-  let size = (fileSize/Math.pow(1024, index)).toPrecision(3);
+  let index = Math.floor(Math.log(fileSize) / Math.log(1024));
+  let size = (fileSize / Math.pow(1024, index)).toPrecision(3);
 
-  return size+" "+unitSuffix[index];
+  return size + " " + unitSuffix[index];
 }
 
 export let PcBrowser = true;
@@ -297,36 +312,31 @@ export function checkPc() {
 
 // check if the link contains this page's anchor.
 export function checkPageLink(url) {
-  if (url.indexOf('#') === 0) {
-  return true;
+  if (url.indexOf("#") === 0) {
+    return true;
   }
   if (url.search(ClientUrl) === -1) {
     return false;
   }
 
   let current, target;
-  if (window.location.href.indexOf('#') !== -1) {
-    current = window.location.href.slice(0, window.location.href.indexOf('#'));
+  if (window.location.href.indexOf("#") !== -1) {
+    current = window.location.href.slice(0, window.location.href.indexOf("#"));
   } else {
     current = window.location.href;
   }
-  if (url.indexOf('#') !== -1) {
-    target = url.slice(0, url.indexOf('#'));
+  if (url.indexOf("#") !== -1) {
+    target = url.slice(0, url.indexOf("#"));
   } else {
     target = url;
   }
   return current === target;
 }
 
-export function renderImage({alt, src}) {
-  return(
-    <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>
-  );
+export function renderImage({ alt, src }) {
+  return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
 }
 
 export function renderLink(props) {
-  return(
-    <a {...props} target="_blank" rel="nofollow noopener noreferrer" />
-  );
+  return <a {...props} target="_blank" rel="nofollow noopener noreferrer" />;
 }
-

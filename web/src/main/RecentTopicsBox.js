@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
@@ -33,13 +33,13 @@ class RecentTopicsBox extends React.Component {
       maxPage: -1,
       topicsNum: 0,
       temp: 0,
-      url: ""
+      url: "",
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1;
-    }else {
+    } else {
       this.state.page = parseInt(this.state.p);
     }
 
@@ -57,28 +57,29 @@ class RecentTopicsBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-      }, () => this.getTopics());
+      this.setState(
+        {
+          page: parseInt(page),
+        },
+        () => this.getTopics()
+      );
     }
   }
 
   getTopics() {
-    TopicBackend.getTopics(this.state.limit, this.state.page)
-      .then((res) => {
-        this.setState({
-          topics: res
-        });
+    TopicBackend.getTopics(this.state.limit, this.state.page).then((res) => {
+      this.setState({
+        topics: res,
       });
-    if (this.state.topicsNum !== 0 ) {
+    });
+    if (this.state.topicsNum !== 0) {
       return;
     }
-    TopicBackend.getTopicsNum()
-      .then((res) => {
-        this.setState({
-          topicsNum: res
-        });
+    TopicBackend.getTopicsNum().then((res) => {
+      this.setState({
+        topicsNum: res,
       });
+    });
   }
 
   showPageColumn() {
@@ -87,7 +88,12 @@ class RecentTopicsBox extends React.Component {
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url} defaultPageNum={this.state.limit} />
+      <PageColumn
+        page={this.state.page}
+        total={this.state.topicsNum}
+        url={this.state.url}
+        defaultPageNum={this.state.limit}
+      />
     );
   }
 
@@ -96,13 +102,20 @@ class RecentTopicsBox extends React.Component {
       <div className="box">
         <div className="header">
           <div className="fr f12">
-            <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>
+            <span className="fade">{`${i18next.t("topic:Total Topics")} ${
+              this.state.topicsNum
+            }`}</span>
           </div>
           <Link to="/">{Setting.getForumName()}</Link>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("topic:Recent Topics")}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("topic:Recent Topics")}
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}
-        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
+        <TopicList
+          topics={this.state.topics}
+          showNodeName={true}
+          showAvatar={true}
+        />
         {this.showPageColumn()}
       </div>
     );

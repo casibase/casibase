@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import i18next from "i18next";
 
 class RightHotNodeBox extends React.Component {
@@ -24,7 +24,7 @@ class RightHotNodeBox extends React.Component {
     this.state = {
       classes: props,
       info: null,
-      limit: 15
+      limit: 15,
     };
   }
 
@@ -33,18 +33,19 @@ class RightHotNodeBox extends React.Component {
   }
 
   getHotNode() {
-    NodeBackend.getHotNode(this.state.limit)
-      .then((res) => {
-        this.setState({
-          info: res.data,
-        });
+    NodeBackend.getHotNode(this.state.limit).then((res) => {
+      this.setState({
+        info: res.data,
       });
+    });
   }
 
   renderNodes(node) {
     return (
-      <Link to={`/go/${node?.id}`} className="item_node">{node?.name}</Link>
-    )
+      <Link to={`/go/${node?.id}`} className="item_node">
+        {node?.name}
+      </Link>
+    );
   }
 
   render() {
@@ -52,17 +53,26 @@ class RightHotNodeBox extends React.Component {
       <div className="box">
         <div className="cell">
           <div className="fr"></div>
-          <span className="fade">{i18next.t("bar:Hottest Nodes")}</span></div>
+          <span className="fade">{i18next.t("bar:Hottest Nodes")}</span>
+        </div>
         <div className="cell">
-          {
-            this.state.info?.map((node) => {
-              return this.renderNodes(node);
-            })
-          }
+          {this.state.info?.map((node) => {
+            return this.renderNodes(node);
+          })}
         </div>
         <div className="inner">
-          <a href="/index.xml" target="_blank"><img src={Setting.getStatic("/static/img/rss.png")} align="absmiddle" border="0" style={{marginTop: "-3px"}}/></a>&nbsp;
-          <a href="/index.xml" target="_blank">RSS</a>
+          <a href="/index.xml" target="_blank">
+            <img
+              src={Setting.getStatic("/static/img/rss.png")}
+              align="absmiddle"
+              border="0"
+              style={{ marginTop: "-3px" }}
+            />
+          </a>
+          &nbsp;
+          <a href="/index.xml" target="_blank">
+            RSS
+          </a>
         </div>
       </div>
     );

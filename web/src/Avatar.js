@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import * as Setting from "./Setting";
 
 class Avatar extends React.Component {
@@ -27,13 +27,13 @@ class Avatar extends React.Component {
   render() {
     let style;
     if (this.props.size === "small") {
-      style = {maxWidth: "24px", maxHeight: "24px"};
+      style = { maxWidth: "24px", maxHeight: "24px" };
     } else if (this.props.size === "large") {
-      style = {maxWidth: "73px", maxHeight: "73px"};
+      style = { maxWidth: "73px", maxHeight: "73px" };
     } else if (this.props.size === "middle") {
-      style = {maxWidth: "36px", maxHeight: "36px"};
+      style = { maxWidth: "36px", maxHeight: "36px" };
     } else {
-      style = {maxWidth: "48px", maxHeight: "48px"};
+      style = { maxWidth: "48px", maxHeight: "48px" };
     }
 
     let src;
@@ -45,7 +45,14 @@ class Avatar extends React.Component {
 
     return (
       <Link to={`/member/${this.props.username}`}>
-        <img src={src} className="avatar" border="0" align="default" style={style} alt={this.props.username}/>
+        <img
+          src={src}
+          className="avatar"
+          border="0"
+          align="default"
+          style={style}
+          alt={this.props.username}
+        />
       </Link>
     );
   }

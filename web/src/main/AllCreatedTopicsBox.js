@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
@@ -40,19 +40,19 @@ class AllCreatedTopicsBox extends React.Component {
       member: [],
       url: "",
       TAB_LIST: [
-        {label: "Q&A", value: "qna"},
-        {label: "Tech", value: "tech"},
-        {label: "Play", value: "play"},
-        {label: "Jobs", value: "jobs"},
-        {label: "Deals", value: "deals"},
-        {label: "City", value: "city"}
-      ]
+        { label: "Q&A", value: "qna" },
+        { label: "Tech", value: "tech" },
+        { label: "Play", value: "play" },
+        { label: "Jobs", value: "jobs" },
+        { label: "Deals", value: "deals" },
+        { label: "City", value: "city" },
+      ],
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1;
-    }else {
+    } else {
       this.state.page = parseInt(this.state.p);
     }
     if (this.state.tab === undefined) {
@@ -61,9 +61,9 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   componentDidMount() {
-      this.getAllCreatedTopics();
-      this.geCreatedTopicsNum();
-      this.getMember();
+    this.getAllCreatedTopics();
+    this.geCreatedTopicsNum();
+    this.getMember();
   }
 
   componentWillReceiveProps(newProps) {
@@ -73,10 +73,13 @@ class AllCreatedTopicsBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-        memberId: newProps.match.params.memberId,
-      }, () => this.getAllCreatedTopics());
+      this.setState(
+        {
+          page: parseInt(page),
+          memberId: newProps.match.params.memberId,
+        },
+        () => this.getAllCreatedTopics()
+      );
       this.geCreatedTopicsNum();
     }
   }
@@ -86,21 +89,24 @@ class AllCreatedTopicsBox extends React.Component {
       return;
     }
 
-    MemberBackend.getMember(this.state.memberId)
-      .then((res) => {
-        this.setState({
-          member: res,
-        });
+    MemberBackend.getMember(this.state.memberId).then((res) => {
+      this.setState({
+        member: res,
       });
+    });
   }
 
   getAllCreatedTopics() {
-    TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, this.state.limit, this.state.page)
-      .then((res) => {
-        this.setState({
-          topics: res,
-        });
+    TopicBackend.getAllCreatedTopics(
+      this.state.memberId,
+      this.state.tab,
+      this.state.limit,
+      this.state.page
+    ).then((res) => {
+      this.setState({
+        topics: res,
       });
+    });
   }
 
   geCreatedTopicsNum() {
@@ -108,22 +114,33 @@ class AllCreatedTopicsBox extends React.Component {
       return;
     }
 
-    TopicBackend.getCreatedTopicsNum(this.state.memberId)
-      .then((res) => {
-        this.setState({
-          topicsNum: res,
-        });
+    TopicBackend.getCreatedTopicsNum(this.state.memberId).then((res) => {
+      this.setState({
+        topicsNum: res,
       });
+    });
   }
 
   renderTab(tab) {
-    return (
-      {
-        ...this.state.tab === tab.value ?
-          <Link to={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab_current">{" "}{tab.label}{" "}</Link> :
-          <Link to={`/member/${this.state.memberId}/${tab.value}`} class="cell_tab">{" "}{tab.label}{" "}</Link>
-      }
-    );
+    return {
+      ...(this.state.tab === tab.value ? (
+        <Link
+          to={`/member/${this.state.memberId}/${tab.value}`}
+          class="cell_tab_current"
+        >
+          {" "}
+          {tab.label}{" "}
+        </Link>
+      ) : (
+        <Link
+          to={`/member/${this.state.memberId}/${tab.value}`}
+          class="cell_tab"
+        >
+          {" "}
+          {tab.label}{" "}
+        </Link>
+      )),
+    };
   }
 
   renderMobileTab() {
@@ -131,19 +148,26 @@ class AllCreatedTopicsBox extends React.Component {
       <div className="fr">
         <label className="f14" htmlFor="switch-topics">
           {i18next.t("member:Switch topic list")}
-          <select id="switch-topics" defaultValue={this.state.tab === undefined ? "all" : this.state.tab} onChange={event => {
-            if (event.target.value === "all") {
-              this.props.history.push(`/member/${this.state.memberId}/`)
-            } else {
-              this.props.history.push(`/member/${this.state.memberId}/${event.target.value}`)
-            }
-          }}>
-            <option value="all">{this.state.memberId}{i18next.t("member:'s all topics")}</option>
-            {
-              this.state.TAB_LIST.map((tab) => {
-                return <option value={tab.value}>{tab.label}</option>
-              })
-            }
+          <select
+            id="switch-topics"
+            defaultValue={this.state.tab === undefined ? "all" : this.state.tab}
+            onChange={(event) => {
+              if (event.target.value === "all") {
+                this.props.history.push(`/member/${this.state.memberId}/`);
+              } else {
+                this.props.history.push(
+                  `/member/${this.state.memberId}/${event.target.value}`
+                );
+              }
+            }}
+          >
+            <option value="all">
+              {this.state.memberId}
+              {i18next.t("member:'s all topics")}
+            </option>
+            {this.state.TAB_LIST.map((tab) => {
+              return <option value={tab.value}>{tab.label}</option>;
+            })}
           </select>
         </label>
       </div>
@@ -156,7 +180,12 @@ class AllCreatedTopicsBox extends React.Component {
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.topicsNum} url={url} defaultPageNum={this.state.limit} />
+      <PageColumn
+        page={this.state.page}
+        total={this.state.topicsNum}
+        url={url}
+        defaultPageNum={this.state.limit}
+      />
     );
   }
 
@@ -172,9 +201,7 @@ class AllCreatedTopicsBox extends React.Component {
         if (this.state.member === null) {
           this.props.history.push(`/member/${this.state.memberId}`);
         }
-        return (
-          <LatestReplyBox size={"large"} />
-        );
+        return <LatestReplyBox size={"large"} />;
       }
     }
     {
@@ -186,13 +213,29 @@ class AllCreatedTopicsBox extends React.Component {
           return (
             <div className="box">
               <div className="header">
-                <Link to="/">{Setting.getForumName()}{" "}</Link>
+                <Link to="/">{Setting.getForumName()} </Link>
                 <span className="chevron">&nbsp;›&nbsp;</span>
-                <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("member:All Topics")}
-                <div className="fr f12"><span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span>{" "}<strong className="gray">{this.state.topicsNum}</strong></div>
+                <Link to={`/member/${this.state.memberId}`}>
+                  {" "}
+                  {this.state.memberId}
+                </Link>{" "}
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+                {i18next.t("member:All Topics")}
+                <div className="fr f12">
+                  <span className="snow">
+                    {i18next.t("member:Total Topics")}&nbsp;
+                  </span>{" "}
+                  <strong className="gray">{this.state.topicsNum}</strong>
+                </div>
               </div>
-              {pcBrowser ? this.showPageColumn(`/member/${this.state.memberId}/topics`) : null}
-              <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
+              {pcBrowser
+                ? this.showPageColumn(`/member/${this.state.memberId}/topics`)
+                : null}
+              <TopicList
+                topics={this.state.topics}
+                showNodeName={true}
+                showAvatar={false}
+              />
               {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
             </div>
           );
@@ -211,41 +254,69 @@ class AllCreatedTopicsBox extends React.Component {
       <div className="box">
         <div class="cell_tabs">
           <div class="fl">
-            {
-              memberAvatar === "" ?
-                <img src={Setting.getUserAvatar(this.state.memberId)} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/> :
-                <img src={memberAvatar} width={24} border={0} style={{borderRadius: "24px", marginTop: "-2px"}}/>
-            }
+            {memberAvatar === "" ? (
+              <img
+                src={Setting.getUserAvatar(this.state.memberId)}
+                width={24}
+                border={0}
+                style={{ borderRadius: "24px", marginTop: "-2px" }}
+              />
+            ) : (
+              <img
+                src={memberAvatar}
+                width={24}
+                border={0}
+                style={{ borderRadius: "24px", marginTop: "-2px" }}
+              />
+            )}
           </div>
-          {
-            !pcBrowser ?
-              this.renderMobileTab() : null
-          }
-          {
-            pcBrowser ?
-              this.state.tab === undefined ?
-                <Link to={`/member/${this.state.memberId}`} class="cell_tab_current">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</Link> :
-                <Link to={`/member/${this.state.memberId}`} class="cell_tab">{" "}{`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}</Link>
-              : null
-          }
-          {
-            !pcBrowser ?
-              <div className="sep10" style={{clear: "both"}} /> : null
-          }
-          {
-            pcBrowser ?
-              this.state.TAB_LIST.map((tab) => {
+          {!pcBrowser ? this.renderMobileTab() : null}
+          {pcBrowser ? (
+            this.state.tab === undefined ? (
+              <Link
+                to={`/member/${this.state.memberId}`}
+                class="cell_tab_current"
+              >
+                {" "}
+                {`${this.state.memberId}${i18next.t(
+                  "member:'s all created topics"
+                )}`}{" "}
+              </Link>
+            ) : (
+              <Link to={`/member/${this.state.memberId}`} class="cell_tab">
+                {" "}
+                {`${this.state.memberId}${i18next.t(
+                  "member:'s all created topics"
+                )}`}{" "}
+              </Link>
+            )
+          ) : null}
+          {!pcBrowser ? (
+            <div className="sep10" style={{ clear: "both" }} />
+          ) : null}
+          {pcBrowser
+            ? this.state.TAB_LIST.map((tab) => {
                 return this.renderTab(tab);
-              }) : null
-          }
+              })
+            : null}
         </div>
-        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} timeStandard={"createdTime"} />
-        {
-          this.state.tab === undefined ?
-            <div className="inner"><span className="chevron">»</span>
-              <Link to={`/member/${this.state.memberId}/topics`}>{" "}{`${this.state.memberId}${i18next.t("member:'s more topics")}`}{" "}</Link>
-            </div> : null
-        }
+        <TopicList
+          topics={this.state.topics}
+          showNodeName={true}
+          showAvatar={false}
+          timeStandard={"createdTime"}
+        />
+        {this.state.tab === undefined ? (
+          <div className="inner">
+            <span className="chevron">»</span>
+            <Link to={`/member/${this.state.memberId}/topics`}>
+              {" "}
+              {`${this.state.memberId}${i18next.t(
+                "member:'s more topics"
+              )}`}{" "}
+            </Link>
+          </div>
+        ) : null}
       </div>
     );
   }

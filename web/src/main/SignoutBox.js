@@ -14,7 +14,7 @@
 
 import React from "react";
 import Header from "./Header";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import i18next from "i18next";
 
@@ -31,28 +31,35 @@ class SignoutBox extends React.Component {
   }
 
   onRetrySignout() {
-    AccountBackend.signout()
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.props.onSignout();
-          this.props.history.push("/signout");
-        } else {
-          this.props.history.push("/signout");
-        }
-      });
+    AccountBackend.signout().then((res) => {
+      if (res.status === "ok") {
+        this.props.onSignout();
+        this.props.history.push("/signout");
+      } else {
+        this.props.history.push("/signout");
+      }
+    });
   }
 
   render() {
-    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
+    const isSignedIn =
+      this.props.account !== undefined && this.props.account !== null;
 
     if (!isSignedIn) {
       return (
         <div className="box">
           <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            {i18next.t("member:You have signed out completely, no personal information is left on this computer.")}
+            {i18next.t(
+              "member:You have signed out completely, no personal information is left on this computer."
+            )}
             <div className="sep20" />
-            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value={i18next.t("member:Sign In Again")} />
+            <input
+              type="button"
+              className="super normal button"
+              onClick={this.onSigninAgain.bind(this)}
+              value={i18next.t("member:Sign In Again")}
+            />
           </div>
         </div>
       );
@@ -61,9 +68,16 @@ class SignoutBox extends React.Component {
         <div className="box">
           <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            {i18next.t("error:We had a problem when you signed out, please try again.")}
+            {i18next.t(
+              "error:We had a problem when you signed out, please try again."
+            )}
             <div className="sep20" />
-            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value={i18next.t("error:Retry Sign Out")} />
+            <input
+              type="button"
+              className="super normal button"
+              onClick={this.onRetrySignout.bind(this)}
+              value={i18next.t("error:Retry Sign Out")}
+            />
           </div>
         </div>
       );

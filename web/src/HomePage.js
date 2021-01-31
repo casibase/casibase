@@ -22,16 +22,11 @@ class HomePage extends React.Component {
     };
   }
 
-  componentDidMount() {
-  }
+  componentDidMount() {}
 
   render() {
-    return (
-      <div>
-      </div>
-    );
+    return <div></div>;
   }
-
 }
 
 export default HomePage;

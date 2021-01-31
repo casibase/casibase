@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as Setting from "../Setting";
 import Zmage from "react-zmage";
-import {SketchPicker} from "react-color";
+import { SketchPicker } from "react-color";
 import i18next from "i18next";
 
 class AdminPlane extends React.Component {
@@ -36,8 +36,8 @@ class AdminPlane extends React.Component {
       width: "",
       event: "basic",
       Management_LIST: [
-        {label: "Basic Info", value: "basic"},
-        {label: "Display", value: "display"},
+        { label: "Basic Info", value: "basic" },
+        { label: "Display", value: "display" },
       ],
       color: "",
       backgroundColor: "",
@@ -53,23 +53,25 @@ class AdminPlane extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      this.setState({
-        message: "",
-        errorMessage: "",
-        planeId: newProps.match.params.planeId
-      }, () => {
-        this.getPlane();
-      });
+      this.setState(
+        {
+          message: "",
+          errorMessage: "",
+          planeId: newProps.match.params.planeId,
+        },
+        () => {
+          this.getPlane();
+        }
+      );
     }
   }
 
   getPlanes() {
-    PlaneBackend.getPlanesAdmin()
-      .then((res) => {
-        this.setState({
-          planes: res,
-        });
+    PlaneBackend.getPlanesAdmin().then((res) => {
+      this.setState({
+        planes: res,
       });
+    });
   }
 
   getPlane() {
@@ -77,16 +79,18 @@ class AdminPlane extends React.Component {
       return;
     }
 
-    PlaneBackend.getPlaneAdmin(this.state.planeId)
-      .then((res) => {
-        this.setState({
+    PlaneBackend.getPlaneAdmin(this.state.planeId).then((res) => {
+      this.setState(
+        {
           plane: res,
           color: res?.color,
           backgroundColor: res?.backgroundColor,
-        }, () => {
+        },
+        () => {
           this.initForm();
-        });
-      });
+        }
+      );
+    });
   }
 
   initForm() {
@@ -118,34 +122,43 @@ class AdminPlane extends React.Component {
   }
 
   deletePlane(plane, planeId, nodesNum) {
-    if (window.confirm(`${i18next.t(`plane:Are you sure to delete plane`)} ${plane} ?`)) {
+    if (
+      window.confirm(
+        `${i18next.t(`plane:Are you sure to delete plane`)} ${plane} ?`
+      )
+    ) {
       if (nodesNum !== 0) {
         alert(`
-        ${i18next.t("plane:Please delete all the nodes or move to another plane before deleting the plane")}
-        ${i18next.t("plane:Currently the number of nodes under the plane is")} ${nodesNum}
+        ${i18next.t(
+          "plane:Please delete all the nodes or move to another plane before deleting the plane"
+        )}
+        ${i18next.t(
+          "plane:Currently the number of nodes under the plane is"
+        )} ${nodesNum}
         `);
       } else {
-        PlaneBackend.deletePlane(planeId)
-          .then((res) => {
-            if (res.status === 'ok') {
-              this.setState({
-                message: `${i18next.t("plane:Delete plane")} ${plane} ${i18next.t("plane:success")}`,
-              });
-              this.getPlanes();
-            } else {
-              this.setState({
-                errorMessage: res?.msg,
-              });
-            }
-          });
+        PlaneBackend.deletePlane(planeId).then((res) => {
+          if (res.status === "ok") {
+            this.setState({
+              message: `${i18next.t("plane:Delete plane")} ${plane} ${i18next.t(
+                "plane:success"
+              )}`,
+            });
+            this.getPlanes();
+          } else {
+            this.setState({
+              errorMessage: res?.msg,
+            });
+          }
+        });
       }
     }
   }
 
   updatePlaneInfo() {
-    PlaneBackend.updatePlane(this.state.planeId, this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
+    PlaneBackend.updatePlane(this.state.planeId, this.state.form).then(
+      (res) => {
+        if (res.status === "ok") {
           this.getPlane();
           this.setState({
             message: i18next.t("plane:Update plane information success"),
@@ -155,7 +168,8 @@ class AdminPlane extends React.Component {
             message: res?.msg,
           });
         }
-      });
+      }
+    );
   }
 
   postNewPlane() {
@@ -172,22 +186,30 @@ class AdminPlane extends React.Component {
       return;
     }
 
-    PlaneBackend.addPlane(this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.getPlane();
-          this.setState({
+    PlaneBackend.addPlane(this.state.form).then((res) => {
+      if (res.status === "ok") {
+        this.getPlane();
+        this.setState(
+          {
             errorMessage: "",
             message: i18next.t("plane:Creat plane success"),
-          }, () => {
-            setTimeout(() => this.props.history.push(`/admin/plane/edit/${this.state.form.id}`), 1600);
-          });
-        } else {
-          this.setState({
-            errorMessage: res?.msg,
-          });
-        }
-      });
+          },
+          () => {
+            setTimeout(
+              () =>
+                this.props.history.push(
+                  `/admin/plane/edit/${this.state.form.id}`
+                ),
+              1600
+            );
+          }
+        );
+      } else {
+        this.setState({
+          errorMessage: res?.msg,
+        });
+      }
+    });
   }
 
   clearMessage() {
@@ -258,20 +280,28 @@ class AdminPlane extends React.Component {
 
   renderColorPicker(event) {
     return (
-      <div style={{
-        padding: '5px',
-        background: '#fff',
-        borderRadius: '1px',
-        boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
-        display: 'inline-block',
-        cursor: 'pointer'
-      }} onClick={() => this.handleColorClick(event)} >
-        <div style={{
-          width: '36px',
-          height: '14px',
-          borderRadius: '2px',
-          background: event === "color" ? `${this.state.form.color}` : `${this.state.form.backgroundColor}`
-        }} />
+      <div
+        style={{
+          padding: "5px",
+          background: "#fff",
+          borderRadius: "1px",
+          boxShadow: "0 0 0 1px rgba(0,0,0,.1)",
+          display: "inline-block",
+          cursor: "pointer",
+        }}
+        onClick={() => this.handleColorClick(event)}
+      >
+        <div
+          style={{
+            width: "36px",
+            height: "14px",
+            borderRadius: "2px",
+            background:
+              event === "color"
+                ? `${this.state.form.color}`
+                : `${this.state.form.backgroundColor}`,
+          }}
+        />
       </div>
     );
   }
@@ -279,9 +309,7 @@ class AdminPlane extends React.Component {
   renderNode(node) {
     return (
       <span>
-        <Link to={`/go/${node.id}`}>
-          {node.name}
-        </Link>{" "}&nbsp;{" "}
+        <Link to={`/go/${node.id}`}>{node.name}</Link> &nbsp;{" "}
       </span>
     );
   }
@@ -299,46 +327,54 @@ class AdminPlane extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearErrorMessage()}>
-        {i18next.t("error:Please resolve the following issues before submitting")}
+        {i18next.t(
+          "error:Please resolve the following issues before submitting"
+        )}
         <ul>
-          {
-            problems.map((problem, i) => {
-              return <li>{problem}</li>;
-            })
-          }
+          {problems.map((problem, i) => {
+            return <li>{problem}</li>;
+          })}
         </ul>
       </div>
     );
   }
 
-  renderManagementList(item){
+  renderManagementList(item) {
     return (
-      <a href="javascript:void(0);" className={this.state.event === item.value ? "tab_current" : "tab"} onClick={() => this.changeEvent(item.value)}>{i18next.t(`plane:${item.label}`)}</a>
+      <a
+        href="javascript:void(0);"
+        className={this.state.event === item.value ? "tab_current" : "tab"}
+        onClick={() => this.changeEvent(item.value)}
+      >
+        {i18next.t(`plane:${item.label}`)}
+      </a>
     );
   }
 
   renderHeader() {
     return (
       <div className="box">
-        <div className="header"><Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/plane`}>{i18next.t("plane:Plane management")}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+        <div className="header">
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin`}>
+            {i18next.t("admin:Backstage management")}
+          </Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin/plane`}>
+            {i18next.t("plane:Plane management")}
+          </Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
           <span>
-            {
-              this.props.event === "new" ?
-                i18next.t("plane:New plane") : this.state.planeId
-            }
+            {this.props.event === "new"
+              ? i18next.t("plane:New plane")
+              : this.state.planeId}
           </span>
         </div>
         <div className="cell">
-          {
-            this.state.Management_LIST.map((item) => {
-              return this.renderManagementList(item);
-            })
-          }
+          {this.state.Management_LIST.map((item) => {
+            return this.renderManagementList(item);
+          })}
         </div>
       </div>
     );
@@ -351,40 +387,47 @@ class AdminPlane extends React.Component {
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width={pcBrowser ? "200" : "auto"} align="left">
-              <span className="gray">
-                {plane?.name}
-              </span>
-            </td>
-            <td width={pcBrowser ? "100" : "auto"} align="center">
-              <Link to={`/admin/plane/edit/${plane?.id}`}>
-                {i18next.t("plane:Manage")}
-              </Link>
-            </td>
-            <td width="10"></td>
-            <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
-              <span style={{fontSize: "13px"}}>
-                {plane?.nodesNum}{" "}{i18next.t("plane:nodes")}
-              </span>
-            </td>
-            <td width={pcBrowser ? "120" : "80"} align="left" style={{textAlign: "center"}}>
-              {
-                plane?.visible ?
-                  <span className="positive">
-                    {i18next.t("plane:Visible")}
-                  </span> :
-                  <span className="gray">
-                    {i18next.t("plane:Invisible")}
-                  </span>
-              }
-            </td>
-            <td width="50" align="left" style={{textAlign: "right"}}>
-              <a href="#" onClick={() => this.deletePlane(plane?.name, plane?.id, plane?.nodesNum)}>
-                {i18next.t("plane:Delete")}
-              </a>
-            </td>
-          </tr>
+            <tr>
+              <td width={pcBrowser ? "200" : "auto"} align="left">
+                <span className="gray">{plane?.name}</span>
+              </td>
+              <td width={pcBrowser ? "100" : "auto"} align="center">
+                <Link to={`/admin/plane/edit/${plane?.id}`}>
+                  {i18next.t("plane:Manage")}
+                </Link>
+              </td>
+              <td width="10"></td>
+              <td
+                width={pcBrowser ? "120" : "80"}
+                valign="middle"
+                style={{ textAlign: "center" }}
+              >
+                <span style={{ fontSize: "13px" }}>
+                  {plane?.nodesNum} {i18next.t("plane:nodes")}
+                </span>
+              </td>
+              <td
+                width={pcBrowser ? "120" : "80"}
+                align="left"
+                style={{ textAlign: "center" }}
+              >
+                {plane?.visible ? (
+                  <span className="positive">{i18next.t("plane:Visible")}</span>
+                ) : (
+                  <span className="gray">{i18next.t("plane:Invisible")}</span>
+                )}
+              </td>
+              <td width="50" align="left" style={{ textAlign: "right" }}>
+                <a
+                  href="#"
+                  onClick={() =>
+                    this.deletePlane(plane?.name, plane?.id, plane?.nodesNum)
+                  }
+                >
+                  {i18next.t("plane:Delete")}
+                </a>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -392,15 +435,23 @@ class AdminPlane extends React.Component {
   }
 
   render() {
-    const newPlane = (this.props.event === "new");
+    const newPlane = this.props.event === "new";
 
     if (this.state.planeId !== undefined || newPlane) {
       if (this.state.planeId !== undefined) {
         if (this.state.plane !== null && this.state.plane.length === 0) {
           return (
             <div className="box">
-              <div className="header"><Link to="/">{Setting.getForumName()}</Link><span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:Page is loading")}</div>
-              <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+              <div className="header">
+                <Link to="/">{Setting.getForumName()}</Link>
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+                {i18next.t("loading:Page is loading")}
+              </div>
+              <div className="cell">
+                <span className="gray bigger">
+                  {i18next.t("loading:Please wait patiently...")}
+                </span>
+              </div>
             </div>
           );
         }
@@ -410,9 +461,13 @@ class AdminPlane extends React.Component {
             <div class="box">
               <div class="header">
                 <Link to="/">{Setting.getForumName()}</Link>
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:Plane not found")}</div>
+                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+                {i18next.t("error:Plane not found")}
+              </div>
               <div class="cell">
-                {i18next.t("error:The plane you are trying to view does not exist")}
+                {i18next.t(
+                  "error:The plane you are trying to view does not exist"
+                )}
               </div>
             </div>
           );
@@ -427,123 +482,201 @@ class AdminPlane extends React.Component {
             {this.renderHeader()}
             <div className="box">
               {this.renderProblem()}
-              {
-                this.state.message !== "" ?
-                  <div className="message" onClick={() => this.clearMessage()}>
-                    <li className="fa fa-exclamation-triangle"></li>
-                    &nbsp;{" "}
-                    {this.state.message}
-                  </div> : null
-              }
+              {this.state.message !== "" ? (
+                <div className="message" onClick={() => this.clearMessage()}>
+                  <li className="fa fa-exclamation-triangle"></li>
+                  &nbsp; {this.state.message}
+                </div>
+              ) : null}
               <div className="inner">
                 <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                   <tbody>
-                  {
-                    newPlane ?
+                    {newPlane ? (
                       <tr>
-                        <td width="120" align="right">{i18next.t("plane:Plane ID")}</td>
-                        <td width="auto" align="left">
-                          <input type="text" className="sl" name="id" id="plane_id" value={this.state.form?.id} onChange={event => this.updateFormField("id", event.target.value)} autoComplete="off" />
+                        <td width="120" align="right">
+                          {i18next.t("plane:Plane ID")}
                         </td>
-                      </tr> : null
-                  }
-                  <tr>
-                    <td width="120" align="right">{i18next.t("plane:Plane name")}</td>
-                    <td width="auto" align="left">
-                      <input type="text" className="sl" name="name" id="plane_name" value={this.state.form?.name===undefined ? "" : this.state.form?.name} onChange={event => this.updateFormField("name", event.target.value)} autoComplete="off" />
-                    </td>
-                  </tr>
-                  {
-                    !newPlane ?
-                      <tr>
-                        <td width="120" align="right">{i18next.t("plane:Created time")}</td>
                         <td width="auto" align="left">
-                          <span className="gray">
-                            {plane?.createdTime}
-                          </span>
+                          <input
+                            type="text"
+                            className="sl"
+                            name="id"
+                            id="plane_id"
+                            value={this.state.form?.id}
+                            onChange={(event) =>
+                              this.updateFormField("id", event.target.value)
+                            }
+                            autoComplete="off"
+                          />
                         </td>
-                      </tr> : null
-                  }
-                  {
-                    !newPlane ?
-                      <tr>
-                        <td width="120" align="right">{i18next.t("plane:Total nodes")}</td>
-                        <td width="auto" align="left">
-                          <span className="gray">
-                            {plane?.nodesNum}
-                          </span>
-                        </td>
-                      </tr> : null
-                  }
-                  {
-                    !newPlane ?
-                      <tr>
-                        <td width="120" align="right">{i18next.t("plane:Nodes")}</td>
-                        <td width="auto" align="left">
-                        <span className="gray">
-                          {
-                            this.state.plane?.nodes.length !== 0 ?
-                              this.state.plane?.nodes.map(node => this.renderNode(node)) :
-                              i18next.t("plane:No node yet")
+                      </tr>
+                    ) : null}
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("plane:Plane name")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="text"
+                          className="sl"
+                          name="name"
+                          id="plane_name"
+                          value={
+                            this.state.form?.name === undefined
+                              ? ""
+                              : this.state.form?.name
                           }
+                          onChange={(event) =>
+                            this.updateFormField("name", event.target.value)
+                          }
+                          autoComplete="off"
+                        />
+                      </td>
+                    </tr>
+                    {!newPlane ? (
+                      <tr>
+                        <td width="120" align="right">
+                          {i18next.t("plane:Created time")}
+                        </td>
+                        <td width="auto" align="left">
+                          <span className="gray">{plane?.createdTime}</span>
+                        </td>
+                      </tr>
+                    ) : null}
+                    {!newPlane ? (
+                      <tr>
+                        <td width="120" align="right">
+                          {i18next.t("plane:Total nodes")}
+                        </td>
+                        <td width="auto" align="left">
+                          <span className="gray">{plane?.nodesNum}</span>
+                        </td>
+                      </tr>
+                    ) : null}
+                    {!newPlane ? (
+                      <tr>
+                        <td width="120" align="right">
+                          {i18next.t("plane:Nodes")}
+                        </td>
+                        <td width="auto" align="left">
+                          <span className="gray">
+                            {this.state.plane?.nodes.length !== 0
+                              ? this.state.plane?.nodes.map((node) =>
+                                  this.renderNode(node)
+                                )
+                              : i18next.t("plane:No node yet")}
+                          </span>
+                        </td>
+                      </tr>
+                    ) : null}
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("plane:Sorter")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="range"
+                          min="1"
+                          max="1000"
+                          step="1"
+                          value={
+                            this.state.form?.sorter === undefined
+                              ? 1
+                              : this.state.form?.sorter
+                          }
+                          onChange={(event) =>
+                            this.updateFormField(
+                              "sorter",
+                              parseInt(event.target.value)
+                            )
+                          }
+                        />
+                        &nbsp; &nbsp;{" "}
+                        <input
+                          type="number"
+                          name="sorter"
+                          min="1"
+                          max="1000"
+                          step="1"
+                          value={this.state.form?.sorter}
+                          style={{ width: "50px" }}
+                          onChange={(event) =>
+                            this.updateFormField(
+                              "sorter",
+                              parseInt(event.target.value)
+                            )
+                          }
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right"></td>
+                      <td width="auto" align="left">
+                        <span className="gray">
+                          {i18next.t(
+                            "plane:Decide the order of node navigation"
+                          )}
                         </span>
-                        </td>
-                      </tr> : null
-                  }
-                  <tr>
-                    <td width="120" align="right">{i18next.t("plane:Sorter")}</td>
-                    <td width="auto" align="left">
-                      <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={event => this.updateFormField("sorter", parseInt(event.target.value))}/>
-                      &nbsp;{" "}&nbsp;{" "}
-                      <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={event => this.updateFormField("sorter", parseInt(event.target.value))} />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="120" align="right"></td>
-                    <td width="auto" align="left">
-                      <span className="gray">
-                        {i18next.t("plane:Decide the order of node navigation")}
-                      </span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td width="120" align="right">{i18next.t("plane:Visible")}</td>
-                    <td width="auto" align="left">
-                      <input type="radio" onClick={() => this.updateFormField("visible", true)} checked={this.state.form?.visible} name="visible" />{i18next.t("plane:Visible")}{" "}
-                      <input type="radio" onClick={() => this.updateFormField("visible", false)} checked={!this.state.form?.visible} name="visible" />{i18next.t("plane:Invisible")}
-                    </td>
-                  </tr>
-                  {
-                    !this.state.form.visible ?
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("plane:Visible")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="radio"
+                          onClick={() => this.updateFormField("visible", true)}
+                          checked={this.state.form?.visible}
+                          name="visible"
+                        />
+                        {i18next.t("plane:Visible")}{" "}
+                        <input
+                          type="radio"
+                          onClick={() => this.updateFormField("visible", false)}
+                          checked={!this.state.form?.visible}
+                          name="visible"
+                        />
+                        {i18next.t("plane:Invisible")}
+                      </td>
+                    </tr>
+                    {!this.state.form.visible ? (
                       <tr>
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
                           <span className="gray">
-                            {i18next.t("plane:This plane will not appear on the node navigation")}
+                            {i18next.t(
+                              "plane:This plane will not appear on the node navigation"
+                            )}
                           </span>
                         </td>
-                      </tr> : null
-                  }
-                  <tr>
-                    <td width="120" align="right"></td>
-                    <td width="auto" align="left">
-                      {
-                        !newPlane ?
-                          <input type="submit" className="super normal button" value={i18next.t("plane:Save")} onClick={() => this.updatePlaneInfo()}/> : null
-                      }
-                    </td>
-                  </tr>
-                  {
-                    newPlane ?
+                      </tr>
+                    ) : null}
+                    <tr>
+                      <td width="120" align="right"></td>
+                      <td width="auto" align="left">
+                        {!newPlane ? (
+                          <input
+                            type="submit"
+                            className="super normal button"
+                            value={i18next.t("plane:Save")}
+                            onClick={() => this.updatePlaneInfo()}
+                          />
+                        ) : null}
+                      </td>
+                    </tr>
+                    {newPlane ? (
                       <tr>
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
                           <span className="gray">
-                            {i18next.t("plane:Please go to the display page to continue to improve the information and submit")}
+                            {i18next.t(
+                              "plane:Please go to the display page to continue to improve the information and submit"
+                            )}
                           </span>
                         </td>
-                      </tr> : null
-                  }
+                      </tr>
+                    ) : null}
                   </tbody>
                 </table>
               </div>
@@ -558,129 +691,198 @@ class AdminPlane extends React.Component {
           {this.renderHeader()}
           <div className="box">
             {this.renderProblem()}
-            {
-              this.state.message !== "" ?
-                <div className="message" onClick={() => this.clearMessage()}>
-                  <li className="fa fa-exclamation-triangle"></li>
-                  &nbsp;{" "}
-                  {this.state.message}
-                </div> : null
-            }
+            {this.state.message !== "" ? (
+              <div className="message" onClick={() => this.clearMessage()}>
+                <li className="fa fa-exclamation-triangle"></li>
+                &nbsp; {this.state.message}
+              </div>
+            ) : null}
             <div className="inner">
               <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                 <tbody>
-                <tr>
-                  <td width="120" align="right">{i18next.t("plane:Image")}</td>
-                  <td width="auto" align="left">
-                    {
-                      this.state.form?.image === undefined || this.state.form?.image === "" ?
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("plane:Image")}
+                    </td>
+                    <td width="auto" align="left">
+                      {this.state.form?.image === undefined ||
+                      this.state.form?.image === "" ? (
                         <span className="gray">
                           {i18next.t("plane:Not set")}
-                        </span> :
+                        </span>
+                      ) : (
                         <Zmage
-                          src={this.state.form?.image} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}}
+                          src={this.state.form?.image}
+                          alt={this.state.form?.id}
+                          style={{ maxWidth: "48px", maxHeight: "48px" }}
                         />
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right">
-                    {
-                      newPlane ?
-                        i18next.t("plane:Set image") :
-                        i18next.t("plane:Change image")
-                    }
-                  </td>
-                  <td width="auto" align="left">
-                    <input type="text" className="sl" name="image" id="change_image" value={this.state.form?.image===undefined ? "" : this.state.form?.image} onChange={event => this.updateFormField("image", event.target.value)} autoComplete="off" />
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right">{i18next.t("plane:Font color")}</td>
-                  <td width="auto" align="left">
-                    {this.renderColorPicker("color")}
-                    {
-                      this.state.displayColorPicker ?
-                        <div style={{
-                          position: 'absolute',
-                          zIndex: '2'}}
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {newPlane
+                        ? i18next.t("plane:Set image")
+                        : i18next.t("plane:Change image")}
+                    </td>
+                    <td width="auto" align="left">
+                      <input
+                        type="text"
+                        className="sl"
+                        name="image"
+                        id="change_image"
+                        value={
+                          this.state.form?.image === undefined
+                            ? ""
+                            : this.state.form?.image
+                        }
+                        onChange={(event) =>
+                          this.updateFormField("image", event.target.value)
+                        }
+                        autoComplete="off"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("plane:Font color")}
+                    </td>
+                    <td width="auto" align="left">
+                      {this.renderColorPicker("color")}
+                      {this.state.displayColorPicker ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            zIndex: "2",
+                          }}
                         >
-                          <div style={{
-                            position: 'fixed',
-                            top: '0px',
-                            right: '0px',
-                            bottom: '0px',
-                            left: '0px'
-                          }} onClick={() => this.handleColorClose("color")} />
-                          <SketchPicker color={this.state.form.color} onChange={(color) => this.handleColorChange(color, "color")} />
-                        </div> : null
-                    }
-                    {" "}&nbsp;{" "}
-                    {
-                      !newPlane ?
+                          <div
+                            style={{
+                              position: "fixed",
+                              top: "0px",
+                              right: "0px",
+                              bottom: "0px",
+                              left: "0px",
+                            }}
+                            onClick={() => this.handleColorClose("color")}
+                          />
+                          <SketchPicker
+                            color={this.state.form.color}
+                            onChange={(color) =>
+                              this.handleColorChange(color, "color")
+                            }
+                          />
+                        </div>
+                      ) : null}{" "}
+                      &nbsp;{" "}
+                      {!newPlane ? (
                         <a href="#" onClick={() => this.resetColor("color")}>
                           {i18next.t("plane:Restore")}
-                        </a> : null
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right">{i18next.t("plane:Background color")}</td>
-                  <td width="auto" align="left">
-                    {this.renderColorPicker("backgroundColor")}
-                    {
-                      this.state.displayBackgroundColorPicker ?
-                        <div style={{
-                          position: 'absolute',
-                          zIndex: '2'}}
+                        </a>
+                      ) : null}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("plane:Background color")}
+                    </td>
+                    <td width="auto" align="left">
+                      {this.renderColorPicker("backgroundColor")}
+                      {this.state.displayBackgroundColorPicker ? (
+                        <div
+                          style={{
+                            position: "absolute",
+                            zIndex: "2",
+                          }}
                         >
-                          <div style={{
-                            position: 'fixed',
-                            top: '0px',
-                            right: '0px',
-                            bottom: '0px',
-                            left: '0px'
-                          }} onClick={() => this.handleColorClose("backgroundColor")} />
-                          <SketchPicker color={this.state.form.backgroundColor} onChange={(color) => this.handleColorChange(color, "backgroundColor")} />
-                        </div> : null
-                    }
-                    {" "}&nbsp;{" "}
-                    {
-                      !newPlane ?
-                        <a href="#" onClick={() => this.resetColor("backgroundColor")}>
+                          <div
+                            style={{
+                              position: "fixed",
+                              top: "0px",
+                              right: "0px",
+                              bottom: "0px",
+                              left: "0px",
+                            }}
+                            onClick={() =>
+                              this.handleColorClose("backgroundColor")
+                            }
+                          />
+                          <SketchPicker
+                            color={this.state.form.backgroundColor}
+                            onChange={(color) =>
+                              this.handleColorChange(color, "backgroundColor")
+                            }
+                          />
+                        </div>
+                      ) : null}{" "}
+                      &nbsp;{" "}
+                      {!newPlane ? (
+                        <a
+                          href="#"
+                          onClick={() => this.resetColor("backgroundColor")}
+                        >
                           {i18next.t("plane:Restore")}
-                        </a> : null
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right">{i18next.t("plane:Preview")}</td>
-                  <td width="auto" align="left">
-                    <div className="header" style={{backgroundColor: this.state.form?.backgroundColor, color: this.state.form?.color, fontSize: Setting.PcBrowser ? "" : "13px"}}>
-                      <img src={this.state.form?.image} border="0" align="absmiddle" width="24"/>
-                      {" "}&nbsp;{" "}{this.state.form?.name}
-                      <span className="fr" style={{color: this.state.form?.color, lineHeight: "20px"}}>
-                        {this.state.form?.id}{" "}•{" "}
-                        {
-                          !newPlane ?
+                        </a>
+                      ) : null}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("plane:Preview")}
+                    </td>
+                    <td width="auto" align="left">
+                      <div
+                        className="header"
+                        style={{
+                          backgroundColor: this.state.form?.backgroundColor,
+                          color: this.state.form?.color,
+                          fontSize: Setting.PcBrowser ? "" : "13px",
+                        }}
+                      >
+                        <img
+                          src={this.state.form?.image}
+                          border="0"
+                          align="absmiddle"
+                          width="24"
+                        />{" "}
+                        &nbsp; {this.state.form?.name}
+                        <span
+                          className="fr"
+                          style={{
+                            color: this.state.form?.color,
+                            lineHeight: "20px",
+                          }}
+                        >
+                          {this.state.form?.id} •{" "}
+                          {!newPlane ? (
                             <span className="small">
-                              {plane?.nodesNum}{" "}nodes
-                            </span> : null
-                        }
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right"></td>
-                  <td width="auto" align="left">
-                    {
-                      newPlane ?
-                        <input type="submit" className="super normal button" value={i18next.t("plane:Create")} onClick={() => this.postNewPlane()}/> :
-                        <input type="submit" className="super normal button" value={i18next.t("plane:Save")} onClick={() => this.updatePlaneInfo()}/>
-                    }
-                  </td>
-                </tr>
+                              {plane?.nodesNum} nodes
+                            </span>
+                          ) : null}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right"></td>
+                    <td width="auto" align="left">
+                      {newPlane ? (
+                        <input
+                          type="submit"
+                          className="super normal button"
+                          value={i18next.t("plane:Create")}
+                          onClick={() => this.postNewPlane()}
+                        />
+                      ) : (
+                        <input
+                          type="submit"
+                          className="super normal button"
+                          value={i18next.t("plane:Save")}
+                          onClick={() => this.updatePlaneInfo()}
+                        />
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -692,40 +894,49 @@ class AdminPlane extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>
           <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("plane:Plane management")}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("plane:Plane management")}
           <div className="fr f12">
-            <span className="snow">{i18next.t("plane:Total planes")}{" "}&nbsp;</span>
-            <strong className="gray">{this.state.planes === null ? 0 : this.state.planes.length}</strong>
+            <span className="snow">
+              {i18next.t("plane:Total planes")} &nbsp;
+            </span>
+            <strong className="gray">
+              {this.state.planes === null ? 0 : this.state.planes.length}
+            </strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
-              <Link to="plane/new">{i18next.t("plane:Add new plane")}</Link>
-              {" "}&nbsp;
+              <Link to="plane/new">{i18next.t("plane:Add new plane")}</Link>{" "}
+              &nbsp;
             </strong>
           </div>
         </div>
-        {
-          this.state.message !== "" ?
-            <div className="message" onClick={() => this.clearMessage()}>
-              <li className="fa fa-exclamation-triangle"></li>
-              &nbsp;{" "}
-              {this.state.message}
-            </div> : null
-        }
+        {this.state.message !== "" ? (
+          <div className="message" onClick={() => this.clearMessage()}>
+            <li className="fa fa-exclamation-triangle"></li>
+            &nbsp; {this.state.message}
+          </div>
+        ) : null}
         <div id="all-planes">
-          {
-            this.state.planes !== null && this.state.planes.length !== 0 ?
-              this.state.planes.map(plane => this.renderPlanes(plane)) :
-              <div className="cell" style={{textAlign: "center", height: "100px", lineHeight: "100px"}}>
-                {
-                  this.state.planes === null ?
-                    i18next.t("loading:Data is loading...") : i18next.t("plane:No plant yet")
-                }
-              </div>
-          }
+          {this.state.planes !== null && this.state.planes.length !== 0 ? (
+            this.state.planes.map((plane) => this.renderPlanes(plane))
+          ) : (
+            <div
+              className="cell"
+              style={{
+                textAlign: "center",
+                height: "100px",
+                lineHeight: "100px",
+              }}
+            >
+              {this.state.planes === null
+                ? i18next.t("loading:Data is loading...")
+                : i18next.t("plane:No plant yet")}
+            </div>
+          )}
         </div>
       </div>
     );

@@ -13,14 +13,14 @@
 // limitations under the License.
 
 import i18n from "i18next";
-import zh from './locales/zh.json';
-import en from './locales/en.json';
+import zh from "./locales/zh.json";
+import en from "./locales/en.json";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 
 const resources = {
   en: en,
-  zh: zh
+  zh: zh,
 };
 
 function initLanguage() {
@@ -50,19 +50,18 @@ function initLanguage() {
   return language;
 }
 
-i18n
-  .init({
-    lng: initLanguage(),
+i18n.init({
+  lng: initLanguage(),
 
-    resources: resources,
+  resources: resources,
 
-    keySeparator: false,
+  keySeparator: false,
 
-    interpolation: {
-      escapeValue: false
-    },
-    //debug: true,
-    saveMissing: true,
-  })
+  interpolation: {
+    escapeValue: false,
+  },
+  //debug: true,
+  saveMissing: true,
+});
 
 export default i18n;
