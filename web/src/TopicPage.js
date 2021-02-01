@@ -19,15 +19,14 @@ import * as TabBackend from "./backend/TabBackend";
 import * as NotificationBackend from "./backend/NotificationBackend";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
-
 
 class TopicPage extends React.Component {
   constructor(props) {
     super(props);
-    const rootTabId = "all" // should be set as the root tab id
+    const rootTabId = "all"; // should be set as the root tab id
     const lastTabOpen = localStorage.getItem("casbin-forum-lastUsedTab");
     this.state = {
       classes: props,
@@ -55,62 +54,64 @@ class TopicPage extends React.Component {
       return;
     }
 
-    NotificationBackend.getUnreadNotificationNum()
-      .then((res) => {
-        this.setState({
-          unreadNotificationNum: res?.data
-        });
+    NotificationBackend.getUnreadNotificationNum().then((res) => {
+      this.setState({
+        unreadNotificationNum: res?.data,
       });
+    });
   }
 
   changeTab(tab) {
-    this.setState({
-      tab: tab
-    }, () => {
-      window.history.pushState({}, 0, `/?tab=${this.state.tab}`)
-      localStorage.setItem("casbin-forum-lastUsedTab", tab);
-      this.getNodeInfo();
-      this.getTopics();
-    });
+    this.setState(
+      {
+        tab: tab,
+      },
+      () => {
+        window.history.pushState({}, 0, `/?tab=${this.state.tab}`);
+        localStorage.setItem("casbin-forum-lastUsedTab", tab);
+        this.getNodeInfo();
+        this.getTopics();
+      }
+    );
   }
 
   getNodeInfo() {
     let tab;
-    TabBackend.getTabs()
-      .then((res) => {
-        this.setState({
-          tabs: res,
-        });
+    TabBackend.getTabs().then((res) => {
+      this.setState({
+        tabs: res,
       });
-    this.state.tab === undefined ? tab = "" : tab = this.state.tab;
-    TabBackend.getTabWithNode(tab)
-      .then((res) => {
-        if (res === null) {
-          window.location.href = `/`;
-        }
-        this.setState({
-          tabInfo: res?.data,
-          nodes: res?.data2,
-        });
+    });
+    this.state.tab === undefined ? (tab = "") : (tab = this.state.tab);
+    TabBackend.getTabWithNode(tab).then((res) => {
+      if (res === null) {
+        window.location.href = `/`;
+      }
+      this.setState({
+        tabInfo: res?.data,
+        nodes: res?.data2,
       });
+    });
   }
 
   getTopics() {
     if (this.state.tab !== undefined) {
-      TopicBackend.getTopicsWithTab(this.state.tab, this.state.defaultHomePageNum, 1)
-        .then((res) => {
-          this.setState({
-            topics: res,
-          });
-        });
-      return;
-    }
-    TopicBackend.getTopics(this.state.defaultHomePageNum, 1)
-      .then((res) => {
+      TopicBackend.getTopicsWithTab(
+        this.state.tab,
+        this.state.defaultHomePageNum,
+        1
+      ).then((res) => {
         this.setState({
           topics: res,
         });
       });
+      return;
+    }
+    TopicBackend.getTopics(this.state.defaultHomePageNum, 1).then((res) => {
+      this.setState({
+        topics: res,
+      });
+    });
   }
 
   newTopic() {
@@ -120,20 +121,19 @@ class TopicPage extends React.Component {
       title: `Topic ${this.state.topics.length}`,
       createdTime: moment().format(),
       content: "description...",
-    }
+    };
   }
 
   addTopic() {
     const newTopic = this.newTopic();
     TopicBackend.addTopic(newTopic)
       .then((res) => {
-          Setting.showMessage("success", `Adding topic succeeded`);
-          this.setState({
-            topics: Setting.addRow(this.state.topics, newTopic),
-          });
-        }
-      )
-      .catch(error => {
+        Setting.showMessage("success", `Adding topic succeeded`);
+        this.setState({
+          topics: Setting.addRow(this.state.topics, newTopic),
+        });
+      })
+      .catch((error) => {
         Setting.showMessage("error", `Adding topic failed：${error}`);
       });
   }
@@ -141,89 +141,91 @@ class TopicPage extends React.Component {
   deleteTopic(i) {
     TopicBackend.deleteTopic(this.state.topics[i].id)
       .then((res) => {
-          Setting.showMessage("success", `Deleting topic succeeded`);
-          this.setState({
-            topics: Setting.deleteRow(this.state.topics, i),
-          });
-        }
-      )
-      .catch(error => {
+        Setting.showMessage("success", `Deleting topic succeeded`);
+        this.setState({
+          topics: Setting.deleteRow(this.state.topics, i),
+        });
+      })
+      .catch((error) => {
         Setting.showMessage("error", `Deleting topic succeeded：${error}`);
       });
   }
 
   renderTopic(topic) {
-    const style = topic.nodeId !== "promotions" ? null : {
-      backgroundImage: `url('${Setting.getStatic("/static/img/corner_star.png")}')`,
-      backgroundRepeat: "no-repeat",
-      backgroundSize: "20px 20px",
-      backgroundPosition: "right top"
-    };
+    const style =
+      topic.nodeId !== "promotions"
+        ? null
+        : {
+            backgroundImage: `url('${Setting.getStatic(
+              "/static/img/corner_star.png"
+            )}')`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "20px 20px",
+            backgroundPosition: "right top",
+          };
 
     return (
       <div className="cell item" style={style}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width="48" valign="top" align="center">
-              <Avatar username={topic.author} avatar={topic.avatar} />
-            </td>
-            <td width="10" />
-            <td width="auto" valign="middle">
+            <tr>
+              <td width="48" valign="top" align="center">
+                <Avatar username={topic.author} avatar={topic.avatar} />
+              </td>
+              <td width="10" />
+              <td width="auto" valign="middle">
                 <span className="item_title">
                   <Link to={`/t/${topic.id}`} className="topic-link">
-                    {
-                      topic.title
-                    }
+                    {topic.title}
                   </Link>
                 </span>
-              <div className="sep5" />
-              <span className="topic_info">
-                <div className="votes" />
-                <Link className="node" to={`/go/${topic.nodeId}`}>
-                  {topic.nodeName}
-                </Link>
-                {" "}&nbsp;•&nbsp;{" "}
-                <strong>
-                  <Link to={`/member/${topic.author}`}>
-                    {topic.author}
-                  </Link>
-                </strong>
-                {" "}&nbsp;•&nbsp;{" "}
-                {
-                  Setting.getPrettyDate(topic.createdTime)
-                }
-                {
-                  topic.lastReplyUser === "" ? null : (
-                    <div style={{display: "inline"}}>
-                      {" "}&nbsp;•&nbsp;{" "}
-                      last reply from <strong><Link to={`/member/${topic.lastReplyUser}`}>{topic.lastReplyUser}</Link></strong>
+                <div className="sep5" />
+                <span className="topic_info">
+                  <div className="votes" />
+                  <Link className="node" to={`/go/${topic.nodeId}`}>
+                    {topic.nodeName}
+                  </Link>{" "}
+                  &nbsp;•&nbsp;{" "}
+                  <strong>
+                    <Link to={`/member/${topic.author}`}>{topic.author}</Link>
+                  </strong>{" "}
+                  &nbsp;•&nbsp; {Setting.getPrettyDate(topic.createdTime)}
+                  {topic.lastReplyUser === "" ? null : (
+                    <div style={{ display: "inline" }}>
+                      {" "}
+                      &nbsp;•&nbsp; last reply from{" "}
+                      <strong>
+                        <Link to={`/member/${topic.lastReplyUser}`}>
+                          {topic.lastReplyUser}
+                        </Link>
+                      </strong>
                     </div>
-                  )
-                }
+                  )}
                 </span>
-            </td>
-            <td width="70" align="right" valign="middle">
-              {
-                topic.replyCount === 0 ? null : (
+              </td>
+              <td width="70" align="right" valign="middle">
+                {topic.replyCount === 0 ? null : (
                   <Link to={`/t/${topic.id}`} className="count_livid">
-                    {
-                      topic.replyCount
-                    }
+                    {topic.replyCount}
                   </Link>
-                )
-              }
-            </td>
-          </tr>
+                )}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 
   renderTab(tab) {
     return (
-      <a href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>{tab?.name}</a>
+      <a
+        href="javascript:void(0)"
+        onClick={() => this.changeTab(tab?.id)}
+        className={this.state.tab === tab?.id ? "tab_current" : "tab"}
+      >
+        {tab?.name}
+      </a>
     );
   }
 
@@ -231,7 +233,7 @@ class TopicPage extends React.Component {
     return (
       <span>
         <Link to={`/go/${node?.id}`}>{node?.name}</Link>
-        &nbsp;{" "}&nbsp;
+        &nbsp; &nbsp;
       </span>
     );
   }
@@ -245,37 +247,65 @@ class TopicPage extends React.Component {
       <div class="cell">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width="auto">
-              {
-                this.state.unreadNotificationNum !== 0 ?
+            <tr>
+              <td width="auto">
+                {this.state.unreadNotificationNum !== 0 ? (
                   <Link to="/notifications" className="gray">
-                    0{" "}{i18next.t("bar:unread")}
-                  </Link> :
-                  <input type="button" className="super special button" value={`${this.state.unreadNotificationNum} ${i18next.t("bar:unread")}`}
-                         onClick={() => this.props.history.push("/notifications")}
-                         style={{marginLeft: "2px", width: "100%", lineHeight: "20px"}}/>
-              }
-            </td>
-            <td width="10"></td>
-            <td width="150" align="right">
-              <Link to="/balance" className="balance_area" style={{margin: "0px"}}>
-                {
-                  this.props.account?.goldCount !== 0 ?
+                    0 {i18next.t("bar:unread")}
+                  </Link>
+                ) : (
+                  <input
+                    type="button"
+                    className="super special button"
+                    value={`${this.state.unreadNotificationNum} ${i18next.t(
+                      "bar:unread"
+                    )}`}
+                    onClick={() => this.props.history.push("/notifications")}
+                    style={{
+                      marginLeft: "2px",
+                      width: "100%",
+                      lineHeight: "20px",
+                    }}
+                  />
+                )}
+              </td>
+              <td width="10"></td>
+              <td width="150" align="right">
+                <Link
+                  to="/balance"
+                  className="balance_area"
+                  style={{ margin: "0px" }}
+                >
+                  {this.props.account?.goldCount !== 0 ? (
                     <span>
-                        {" "}{this.props.account?.goldCount}{" "}
-                      <img src={Setting.getStatic("/static/img/gold@2x.png")} height="16" alt="G" border="0"/>
-                      </span>
-                    : null
-                }
-                {" "}{this.props.account?.silverCount}{" "}
-                <img src={Setting.getStatic("/static/img/silver@2x.png")} height="16" alt="S" border="0" />
-                {" "}{this.props.account?.bronzeCount}{" "}
-                <img src={Setting.getStatic("/static/img/bronze@2x.png")} height="16" alt="B" border="0" />
-              </Link>
-              &nbsp;
-            </td>
-          </tr>
+                      {" "}
+                      {this.props.account?.goldCount}{" "}
+                      <img
+                        src={Setting.getStatic("/static/img/gold@2x.png")}
+                        height="16"
+                        alt="G"
+                        border="0"
+                      />
+                    </span>
+                  ) : null}{" "}
+                  {this.props.account?.silverCount}{" "}
+                  <img
+                    src={Setting.getStatic("/static/img/silver@2x.png")}
+                    height="16"
+                    alt="S"
+                    border="0"
+                  />{" "}
+                  {this.props.account?.bronzeCount}{" "}
+                  <img
+                    src={Setting.getStatic("/static/img/bronze@2x.png")}
+                    height="16"
+                    alt="B"
+                    border="0"
+                  />
+                </Link>
+                &nbsp;
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -292,31 +322,38 @@ class TopicPage extends React.Component {
       <div className="box">
         {Setting.PcBrowser ? null : this.renderAccountInfo()}
         <div className="inner" id="Tabs">
-          {
-            this.state.tabs.map((tab) => {
-              return this.renderTab(tab);
-            })
-          }
+          {this.state.tabs.map((tab) => {
+            return this.renderTab(tab);
+          })}
         </div>
-        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
-          {
-            this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== "" ?
-              <div className="fr">
-                <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</Link>
-                &nbsp;
-                <li className="fa fa-caret-right gray" />
-              </div> : null
-          }
-          {
-            this.state.nodes.map((node) => {
-              return this.renderNode(node);
-            })
-          }
+        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+          {this.props.account !== undefined &&
+          this.props.account !== null &&
+          this.state.tabInfo?.defaultNode !== "" ? (
+            <div className="fr">
+              <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>
+                {this.state.tab === "all"
+                  ? i18next.t("topic:Post a Question")
+                  : i18next.t("topic:Create a Post")}
+              </Link>
+              &nbsp;
+              <li className="fa fa-caret-right gray" />
+            </div>
+          ) : null}
+          {this.state.nodes.map((node) => {
+            return this.renderNode(node);
+          })}
           &nbsp;
         </div>
-        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} topType={topType} />
+        <TopicList
+          topics={this.state.topics}
+          showNodeName={true}
+          showAvatar={true}
+          topType={topType}
+        />
         <div className="inner">
-          <span className="chevron">»</span> &nbsp;<Link to="/recent">{i18next.t("topic:More Topics")}</Link>
+          <span className="chevron">»</span> &nbsp;
+          <Link to="/recent">{i18next.t("topic:More Topics")}</Link>
         </div>
       </div>
     );

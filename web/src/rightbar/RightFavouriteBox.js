@@ -15,8 +15,8 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import {Link} from "react-router-dom";
-import "./rightFavourite.css"
+import { Link } from "react-router-dom";
+import "./rightFavourite.css";
 import i18next from "i18next";
 
 class RightFavouriteBox extends React.Component {
@@ -24,7 +24,7 @@ class RightFavouriteBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      info: null
+      info: null,
     };
   }
 
@@ -33,24 +33,40 @@ class RightFavouriteBox extends React.Component {
   }
 
   getFavoriteNode() {
-    FavoritesBackend.getFavorites(3, 0, 0)
-      .then((res) => {
-        this.setState({
-          info: res.data,
-        });
+    FavoritesBackend.getFavorites(3, 0, 0).then((res) => {
+      this.setState({
+        info: res.data,
       });
+    });
   }
 
   renderNodes(node) {
     return (
-        <div class="node rightFavorite">
-          <div class="node_compose rightFavorite">
-            <Link to={`/new/${node?.id}`} id="linkCompose"><img src={Setting.getStatic("/static/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic"/></Link>
-          </div>
-          <Link to={`/go/${node?.id}`} id="linkAvatar"><div id="avatar" style={{backgroundImage: `url(${node?.image})`}} className="rightFavorite" /></Link>
-          &nbsp;{" "}
-          <linkTitle to={`/go/${node?.id}`} id="linkTitle">{node?.name}</linkTitle>
+      <div class="node rightFavorite">
+        <div class="node_compose rightFavorite">
+          <Link to={`/new/${node?.id}`} id="linkCompose">
+            <img
+              src={Setting.getStatic("/static/img/compose.png")}
+              align="absmiddle"
+              border="0"
+              width="23"
+              height="18"
+              alt="New Topic"
+            />
+          </Link>
         </div>
+        <Link to={`/go/${node?.id}`} id="linkAvatar">
+          <div
+            id="avatar"
+            style={{ backgroundImage: `url(${node?.image})` }}
+            className="rightFavorite"
+          />
+        </Link>
+        &nbsp;{" "}
+        <linkTitle to={`/go/${node?.id}`} id="linkTitle">
+          {node?.name}
+        </linkTitle>
+      </div>
     );
   }
 
@@ -61,11 +77,9 @@ class RightFavouriteBox extends React.Component {
           <span className="f12 gray">{i18next.t("bar:My Favorite Nodes")}</span>
         </div>
         <div className="inner" id="nodes-sidebar">
-          {
-            this.state.info?.map((node) => {
-              return this.renderNodes(node?.nodeInfo);
-            })
-          }
+          {this.state.info?.map((node) => {
+            return this.renderNodes(node?.nodeInfo);
+          })}
         </div>
       </div>
     );

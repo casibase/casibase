@@ -1,6 +1,5 @@
 {
-  "general":
-  {
+  "general": {
     "Home": "Home",
     "Sign Up": "Sign Up",
     "Sign In": "Sign In",
@@ -18,13 +17,11 @@
     "Language": "Language",
     "Admin": "Admin"
   },
-  "login":
-  {
+  "login": {
     "Are you a bot?": "Are you a bot?",
     "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"
   },
-  "signup":
-  {
+  "signup": {
     "Send the verification code again in": "Send the verification code again in",
     "seconds": "seconds",
     "Validate Code": "Validate Code",
@@ -46,28 +43,24 @@
     "Please select a area code": "Please select a area code",
     "Area code": "Area code"
   },
-  "signin":
-  {
+  "signin": {
     "Sign in with QQ": "Sign in with QQ",
     "Sign in with WeChat": "Sign in with WeChat",
     "Sign in with Google": "Sign in with Google",
     "Sign in with Github": "Sign in with Github"
   },
-  "signout":
-  {
+  "signout": {
     "Are you sure to log out?": "Are you sure to log out?",
     "Click to sign out": "Click to sign out"
   },
-  "edit":
-  {
+  "edit": {
     "Edit content": "Edit content",
     "You cannot edit this content.": "You cannot edit this content.",
     "Edit reply": "Edit reply",
     "Save": "Save",
     "Edit topic": "Edit topic"
   },
-  "move":
-  {
+  "move": {
     "Move topic": "Move topic",
     "Topic": "Topic",
     "Title": "Title",
@@ -76,8 +69,7 @@
     "You cannot move this topic.": "You cannot move this topic.",
     "Move": "Move"
   },
-  "bar":
-  {
+  "bar": {
     "Nodes": "Nodes",
     "Topics": "Topics",
     "Watch": "Watch",
@@ -107,8 +99,7 @@
     "Today Top 10": "Today Top 10",
     "File library": "File library"
   },
-  "balance":
-  {
+  "balance": {
     "Checkin bonus": "Checkin bonus",
     "'s daily checkin bonus": "'s daily checkin bonus",
     "Received thanks": "Received thanks",
@@ -142,8 +133,7 @@
     "进行置顶操作": "",
     "copper": "copper"
   },
-  "mission":
-  {
+  "mission": {
     "Daily tasks": "Daily tasks",
     "Successfully received daily checkin bonus": "Successfully received daily checkin bonus",
     "Logged in continuously": "Logged in continuously",
@@ -153,8 +143,7 @@
     "Daily checkin bonus": "Daily checkin bonus",
     "Daily checkin bonus has been received": "Daily checkin bonus has been received"
   },
-  "topic":
-  {
+  "topic": {
     "last reply from": "last reply from",
     "Cancel Favor": "Cancel Favor",
     "Favor": "Favor",
@@ -242,8 +231,7 @@
     "Search": "Search",
     "Please change the basic information through the topic page": "Please change the basic information through the topic page"
   },
-  "new":
-  {
+  "new": {
     "Topic Title": "Topic Title",
     "Please select a node": "Please select a node",
     "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
@@ -254,8 +242,7 @@
     "New Topic": "New Topic",
     "Already enabled Markdown": "Already enabled Markdown"
   },
-  "fav":
-  {
+  "fav": {
     "Add to favorite": "Add to favorite",
     "Cancel favorite": "Cancel favorite",
     "My Favorite Nodes": "My Favorite Nodes",
@@ -264,8 +251,7 @@
     "My favorite topics": "My favorite topics",
     "Latest topics from people I followed": "Latest topics from people I followed"
   },
-  "node":
-  {
+  "node": {
     "members have added this node to favorites": "members have added this node to favorites",
     "Total topics": "Total topics:",
     "Ignore this node": "Ignore this node",
@@ -330,8 +316,7 @@
     "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "sorter": "sorter"
   },
-  "tab":
-  {
+  "tab": {
     "Are you sure to delete tab": "Are you sure to delete tab",
     "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
@@ -366,8 +351,7 @@
     "Add new tab": "Add new tab",
     "Basic Info": "Basic Info"
   },
-  "plane":
-  {
+  "plane": {
     "Plane list": "Plane list",
     "Are you sure to delete plane": "Are you sure to delete plane",
     "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
@@ -408,13 +392,11 @@
     "Basic Info": "Basic Info",
     "Display": "Display"
   },
-  "newNodeTopic":
-  {
+  "newNodeTopic": {
     "Publish": "Publish",
     "Preview": "Preview"
   },
-  "reply":
-  {
+  "reply": {
     "replies": "replies",
     "thank": "thank",
     "thanked": "thanked",
@@ -429,8 +411,7 @@
     "Delete": "Delete",
     "Edit": "Edit"
   },
-  "member":
-  {
+  "member": {
     "Watch": "Watch",
     "member": "member",
     "member, joined on": "member, joined on",
@@ -495,8 +476,7 @@
     "Basic Info": "Basic Info",
     "Personal Info": "Personal Info"
   },
-  "setting":
-  {
+  "setting": {
     "Username": "Username",
     "Phone": "Phone",
     "Modify phone": "Modify phone",
@@ -550,8 +530,7 @@
     "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.": "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.",
     "save": "save"
   },
-  "notification":
-  {
+  "notification": {
     "Total reminders received": "Total reminders received",
     "Reminder system": "Reminder system",
     "Thanks for your reply in topic": "Thanks for your reply in topic",
@@ -565,8 +544,7 @@
     "里提到了你": "",
     "Delete": "Delete"
   },
-  "forgot":
-  {
+  "forgot": {
     "Reset password by phone": "Reset password by phone",
     "Reset password by email": "Reset password by email",
     "Username": "Username",
@@ -585,8 +563,7 @@
     "The password reset is complete. You can now log in with the new password.": "The password reset is complete. You can now log in with the new password.",
     "Log in now": "Log in now"
   },
-  "file":
-  {
+  "file": {
     "Confirm to delete": "Confirm to delete",
     "?": "?",
     "The title information of the image is necessary": "The title information of the image is necessary",
@@ -618,8 +595,7 @@
     "files": "files",
     "Uploading...": "Uploading..."
   },
-  "loading":
-  {
+  "loading": {
     "Please wait patiently...": "Please wait patiently....",
     "Topic is loading": "Topic is loading",
     "Page is loading": "Page is loading",
@@ -628,8 +604,7 @@
     "Node is loading": "Node is loading",
     "File is loading": "File is loading"
   },
-  "footer":
-  {
+  "footer": {
     "About": "About",
     "Mission": "Mission",
     "Advertise": "Advertise",
@@ -658,8 +633,7 @@
     "Desc": "Desc",
     "Ignore": "Ignore"
   },
-  "error":
-  {
+  "error": {
     "Reply title cannot be empty": "Reply title cannot be empty",
     "Topic title cannot be empty": "Topic title cannot be empty",
     "Node not found": "Node not found",

@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
@@ -34,13 +34,13 @@ class FavoritesBox extends React.Component {
       maxPage: -1,
       favoritesNum: 0,
       temp: 0,
-      url: ""
+      url: "",
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1;
-    }else {
+    } else {
       this.state.page = parseInt(this.state.p);
     }
 
@@ -58,30 +58,43 @@ class FavoritesBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-        favoritesType: newProps.match.params.favorites
-      }, () => this.getFavoritesInfo());
+      this.setState(
+        {
+          page: parseInt(page),
+          favoritesType: newProps.match.params.favorites,
+        },
+        () => this.getFavoritesInfo()
+      );
     }
   }
 
   getFavoritesInfo() {
-    let favoritesType
+    let favoritesType;
     switch (this.state.favoritesType) {
-      case "topics": favoritesType = 1; break;
-      case "following": favoritesType = 2; break;
-      case "nodes": favoritesType = 3; break;
-      default: return
+      case "topics":
+        favoritesType = 1;
+        break;
+      case "following":
+        favoritesType = 2;
+        break;
+      case "nodes":
+        favoritesType = 3;
+        break;
+      default:
+        return;
     }
-    FavoritesBackend.getFavorites(favoritesType, this.state.limit, this.state.page)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.setState({
-            favorites: res.data,
-            favoritesNum: res.data2,
-          });
-        }
-      });
+    FavoritesBackend.getFavorites(
+      favoritesType,
+      this.state.limit,
+      this.state.page
+    ).then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          favorites: res.data,
+          favoritesNum: res.data2,
+        });
+      }
+    });
   }
 
   renderNodes(node) {
@@ -91,14 +104,22 @@ class FavoritesBox extends React.Component {
 
     return (
       <Link className="grid_item" to={`/go/${node?.nodeInfo.id}`}>
-        <div style={{
-          display: "table",
-          padding: "20px 0px 20px 0px",
-          width: "100%",
-          textAlign: "center",
-          fontSize: "14px"
-        }}>
-          <img src={node?.nodeInfo.image} border="0" align="default" width="73" alt={node?.nodeInfo.name}/>
+        <div
+          style={{
+            display: "table",
+            padding: "20px 0px 20px 0px",
+            width: "100%",
+            textAlign: "center",
+            fontSize: "14px",
+          }}
+        >
+          <img
+            src={node?.nodeInfo.image}
+            border="0"
+            align="default"
+            width="73"
+            alt={node?.nodeInfo.name}
+          />
           <div className="sep10"></div>
           {node?.nodeInfo.name}
           <div className="sep5"></div>
@@ -117,7 +138,12 @@ class FavoritesBox extends React.Component {
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} defaultPageNum={this.state.limit} />
+      <PageColumn
+        page={this.state.page}
+        total={this.state.favoritesNum}
+        url={this.state.url}
+        defaultPageNum={this.state.limit}
+      />
     );
   }
 
@@ -128,17 +154,19 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My Favorite Nodes")}
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+              {i18next.t("fav:My Favorite Nodes")}
               <div className="fr f12">
-                <span className="snow">{i18next.t("fav:Total nodes")}{" "}&nbsp;</span>
-                <strong className="gray">{this.state.favoritesNum}</strong></div>
+                <span className="snow">
+                  {i18next.t("fav:Total nodes")} &nbsp;
+                </span>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
             </div>
             <div id="my-nodes">
-              {
-                this.state.favorites.map((node) => {
-                  return this.renderNodes(node);
-                })
-              }
+              {this.state.favorites.map((node) => {
+                return this.renderNodes(node);
+              })}
             </div>
           </div>
         );
@@ -147,13 +175,20 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:My favorite topics")}
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+              {i18next.t("fav:My favorite topics")}
               <div className="fr f12">
-                <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
+                <span className="snow">
+                  {i18next.t("fav:Total topics")} &nbsp;
+                </span>
                 <strong className="gray">{this.state.favoritesNum}</strong>
               </div>
             </div>
-            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
+            <TopicList
+              topics={this.state.favorites}
+              showNodeName={true}
+              showAvatar={true}
+            />
           </div>
         );
       case "following":
@@ -161,22 +196,26 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("fav:Latest topics from people I followed")}
+              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+              {i18next.t("fav:Latest topics from people I followed")}
               <div className="fr f12">
-                <span className="snow">{i18next.t("fav:Total topics")}{" "}&nbsp;</span>
-                <strong className="gray">{this.state.favoritesNum}</strong></div>
+                <span className="snow">
+                  {i18next.t("fav:Total topics")} &nbsp;
+                </span>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
             </div>
             {Setting.PcBrowser ? this.showPageColumn() : null}
-            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
+            <TopicList
+              topics={this.state.favorites}
+              showNodeName={true}
+              showAvatar={true}
+            />
             {this.showPageColumn()}
           </div>
         );
     }
-    return (
-      <div className="box">
-        {this.state.favoritesType}
-      </div>
-    );
+    return <div className="box">{this.state.favoritesType}</div>;
   }
 }
 

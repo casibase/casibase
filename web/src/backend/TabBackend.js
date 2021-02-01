@@ -17,64 +17,64 @@ import * as Setting from "../Setting";
 export function getTabs() {
   return fetch(`${Setting.ServerUrl}/api/get-tabs`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTabWithNode(id) {
   return fetch(`${Setting.ServerUrl}/api/get-tab-with-nodes?id=${id}`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTabNodes(id) {
   return fetch(`${Setting.ServerUrl}/api/get-tab-nodes?id=${id}`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getAllTabs() {
   return fetch(`${Setting.ServerUrl}/api/get-all-tabs`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTabsAdmin() {
   return fetch(`${Setting.ServerUrl}/api/get-tabs-admin`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTabAdmin(id) {
   return fetch(`${Setting.ServerUrl}/api/get-tab-admin?id=${id}`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateTab(id, tab) {
   return fetch(`${Setting.ServerUrl}/api/update-tab?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(tab),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function addTab(tab) {
   return fetch(`${Setting.ServerUrl}/api/add-tab`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(tab),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function deleteTab(id) {
   return fetch(`${Setting.ServerUrl}/api/delete-tab?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
-  }).then(res => res.json());
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }

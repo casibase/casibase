@@ -16,42 +16,45 @@ import * as Setting from "../Setting";
 
 export function getCommunityHealth() {
   return fetch(`${Setting.ServerUrl}/api/get-community-health`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getForumVersion() {
   return fetch(`${Setting.ServerUrl}/api/get-forum-version`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getOnlineNum() {
   return fetch(`${Setting.ServerUrl}/api/get-online-num`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getNodeNavigation() {
   return fetch(`${Setting.ServerUrl}/api/node-navigation`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getCaptcha() {
   return fetch(`${Setting.ServerUrl}/api/get-captcha`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getValidateCode(information, verifyType) {
-  return fetch(`${Setting.ServerUrl}/api/get-validate-code?information=${information}&type=${verifyType}`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-validate-code?information=${information}&type=${verifyType}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }

@@ -14,9 +14,9 @@
 
 import React from "react";
 import * as Setting from "./Setting";
-import * as Conf from "./Conf"
+import * as Conf from "./Conf";
 import * as BasicBackend from "./backend/BasicBackend";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
 
@@ -27,7 +27,7 @@ class Footer extends React.Component {
       classes: props,
       version: "",
       online: 0,
-      highest: 0
+      highest: 0,
     };
   }
 
@@ -37,45 +37,61 @@ class Footer extends React.Component {
   }
 
   getForumVersion() {
-    BasicBackend.getForumVersion()
-      .then((res) => {
-        this.setState({
-          version: res.data,
-        });
+    BasicBackend.getForumVersion().then((res) => {
+      this.setState({
+        version: res.data,
       });
+    });
   }
 
   getOnlineNum() {
-    BasicBackend.getOnlineNum()
-      .then((res) => {
-        this.setState({
-          online: res?.data,
-          highest: res?.data2
-        });
+    BasicBackend.getOnlineNum().then((res) => {
+      this.setState({
+        online: res?.data,
+        highest: res?.data2,
       });
+    });
   }
 
   render() {
-    const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart);
-    const date = new(Date);
+    const loadingTime = Math.floor(
+      performance.getEntries()[0].responseEnd -
+        performance.getEntries()[0].requestStart
+    );
+    const date = new Date();
 
     if (!Setting.PcBrowser) {
       return (
         <div id="Bottom">
           <div className="content">
-            <div className="inner" style={{textAlign: "center"}}>
-              &copy;{" "}{date.getFullYear()}{" "}{Setting.getForumName()}{" "}·{" "}{loadingTime}ms{" "}·{" "}<a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank">{this.state.version.substring(0, 7)}</a>
-              <div >
+            <div className="inner" style={{ textAlign: "center" }}>
+              &copy; {date.getFullYear()} {Setting.getForumName()} ·{" "}
+              {loadingTime}ms ·{" "}
+              <a
+                href={`${Conf.GithubRepo}/commit/${this.state.version}`}
+                target="_blank"
+              >
+                {this.state.version.substring(0, 7)}
+              </a>
+              <div>
                 <strong>
-                  <Link to="/about" className="dark">{i18next.t("footer:About")}</Link>
+                  <Link to="/about" className="dark">
+                    {i18next.t("footer:About")}
+                  </Link>
                   &nbsp;·&nbsp;
-                  <Link to="/select/language" title="Select Language" className="dark">Language</Link>
+                  <Link
+                    to="/select/language"
+                    title="Select Language"
+                    className="dark"
+                  >
+                    Language
+                  </Link>
                 </strong>
               </div>
             </div>
           </div>
         </div>
-      )
+      );
     }
 
     const utcTime = moment().utc(false).format("HH:mm");
@@ -99,45 +115,49 @@ class Footer extends React.Component {
             {/*  </a>*/}
             {/*</div>*/}
             <strong>
-              <Link to="/about" className="dark" target="_self">{i18next.t("footer:About")}</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/faq" className="dark" target="_self">FAQ</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/api" className="dark" target="_self">API</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/mission" className="dark" target="_self">{i18next.t("footer:Mission")}</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/advertise" className="dark" target="_self">{i18next.t("footer:Advertise")}</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/advertise/2019.html" className="dark" target="_self">{i18next.t("footer:Thanks")}</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              <Link to="/tools" className="dark" target="_self">{i18next.t("footer:Tools")}</Link>
-              {" "}&nbsp;{" "}
-              <span className="snow">·</span>
-              {" "}&nbsp;{" "}
-              {this.state.online}{" "}{i18next.t("footer:Online")}
-            </strong>
-            {" "}&nbsp;{" "}
-            <span className="fade">{i18next.t("footer:Highest")}{" "}{this.state.highest}</span>
-            {" "}&nbsp;{" "}
-            <span className="snow">·</span>
-            {" "}&nbsp;{" "}
+              <Link to="/about" className="dark" target="_self">
+                {i18next.t("footer:About")}
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/faq" className="dark" target="_self">
+                FAQ
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/api" className="dark" target="_self">
+                API
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/mission" className="dark" target="_self">
+                {i18next.t("footer:Mission")}
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/advertise" className="dark" target="_self">
+                {i18next.t("footer:Advertise")}
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/advertise/2019.html" className="dark" target="_self">
+                {i18next.t("footer:Thanks")}
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp;{" "}
+              <Link to="/tools" className="dark" target="_self">
+                {i18next.t("footer:Tools")}
+              </Link>{" "}
+              &nbsp; <span className="snow">·</span> &nbsp; {this.state.online}{" "}
+              {i18next.t("footer:Online")}
+            </strong>{" "}
+            &nbsp;{" "}
+            <span className="fade">
+              {i18next.t("footer:Highest")} {this.state.highest}
+            </span>{" "}
+            &nbsp; <span className="snow">·</span> &nbsp;{" "}
             <Link to="/select/language" className="f11">
-              <img src={Setting.getStatic("/static/img/language.png")} width="16" align="absmiddle" id="ico-select-language" />
-              {" "}&nbsp;{" "}
-              {i18next.t("footer:Select Language")}
+              <img
+                src={Setting.getStatic("/static/img/language.png")}
+                width="16"
+                align="absmiddle"
+                id="ico-select-language"
+              />{" "}
+              &nbsp; {i18next.t("footer:Select Language")}
             </Link>
             <div className="sep20" />
             {i18next.t("footer:Community of Creators")}
@@ -145,17 +165,23 @@ class Footer extends React.Component {
             World is powered by code
             <div className="sep20" />
             <span className="small fade">
-              VERSION: <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank">{this.state.version.substring(0, 7)}</a> · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
-              <br />
-              ♥ Do have faith in what you're doing.
+              VERSION:{" "}
+              <a
+                href={`${Conf.GithubRepo}/commit/${this.state.version}`}
+                target="_blank"
+              >
+                {this.state.version.substring(0, 7)}
+              </a>{" "}
+              · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime}{" "}
+              · JFK {jfkTime}
+              <br />♥ Do have faith in what you're doing.
             </span>
             <div className="sep10" />
           </div>
         </div>
       </div>
-    )
+    );
   }
-
 }
 
 export default Footer;

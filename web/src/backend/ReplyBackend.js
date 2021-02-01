@@ -15,67 +15,73 @@
 import * as Setting from "../Setting";
 
 export function getReplies(topicId, limit, page, init) {
-  return fetch(`${Setting.ServerUrl}/api/get-replies?topicId=${topicId}&limit=${limit}&page=${page}&init=${init}`, {
-    method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-replies?topicId=${topicId}&limit=${limit}&page=${page}&init=${init}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function getReply(id) {
   return fetch(`${Setting.ServerUrl}/api/get-reply?id=${id}`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getReplyWithDetails(id) {
   return fetch(`${Setting.ServerUrl}/api/get-reply-with-details?id=${id}`, {
     method: "GET",
-    credentials: "include"
-  }).then(res => res.json());
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateReply(id, reply) {
   return fetch(`${Setting.ServerUrl}/api/update-reply?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(reply),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function addReply(reply) {
   return fetch(`${Setting.ServerUrl}/api/add-reply`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(reply),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function deleteReply(id) {
   return fetch(`${Setting.ServerUrl}/api/delete-reply?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
-  }).then(res => res.json());
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getLatestReplies(id, limit, page) {
-  return fetch(`${Setting.ServerUrl}/api/get-latest-replies?id=${id}&limit=${limit}&page=${page}`, {
-    method: 'GET',
-    credentials: 'include',
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-latest-replies?id=${id}&limit=${limit}&page=${page}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function getMemberRepliesNum(id) {
   return fetch(`${Setting.ServerUrl}/api/get-member-replies-num?id=${id}`, {
-    method: 'GET',
-    credentials: 'include',
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function editReplyContent(topic) {
   return fetch(`${Setting.ServerUrl}/api/edit-content?editType=reply`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(topic),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }

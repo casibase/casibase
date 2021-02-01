@@ -15,13 +15,13 @@
 import React from "react";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as Tools from "./Tools";
 import * as Conf from "../Conf";
-import '../Reply.css';
-import '../Settings.css';
+import "../Reply.css";
+import "../Settings.css";
 import i18next from "i18next";
 
 class SettingsBox extends React.Component {
@@ -38,10 +38,10 @@ class SettingsBox extends React.Component {
       showSuccess: false,
       emailReminder: false,
       Setting_LIST: [
-        {label: "Profile", value: "profile"},
-        {label: "Avatar", value: "avatar"},
-        {label: "Forum", value: "forum"},
-      ]
+        { label: "Profile", value: "profile" },
+        { label: "Avatar", value: "avatar" },
+        { label: "Forum", value: "forum" },
+      ],
     };
     if (this.state.event === undefined) {
       this.state.event = "profile";
@@ -63,7 +63,7 @@ class SettingsBox extends React.Component {
     if (newProps.location !== this.props.location) {
       this.setState({
         event: newProps.match.params.event,
-        showSuccess: false
+        showSuccess: false,
       });
       this.initForm();
     }
@@ -105,26 +105,25 @@ class SettingsBox extends React.Component {
   }
 
   postUsername() {
-      const name = this.newUsername();
-      AccountBackend.signup(name)
-        .then((res) => {
-            if (res.status === "ok") {
-              Setting.showMessage("success", `Set username success`);
-              window.location.href = '/';
-            }else {
-              Setting.showMessage("error", `Set username failed：${res.msg}`);
-            }
-          }
-        )
-        .catch(error => {
-          Setting.showMessage("error", `Set username failed：${error}`);
-        });
+    const name = this.newUsername();
+    AccountBackend.signup(name)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", `Set username success`);
+          window.location.href = "/";
+        } else {
+          Setting.showMessage("error", `Set username failed：${res.msg}`);
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `Set username failed：${error}`);
+      });
   }
 
-  handleChange(e){
+  handleChange(e) {
     this.setState({
-      username: e.target.value
-      });
+      username: e.target.value,
+    });
   }
 
   updateFormField(key, value) {
@@ -136,32 +135,35 @@ class SettingsBox extends React.Component {
   }
 
   publishInfoUpdate() {
-    MemberBackend.updateMemberInfo(this.props.account?.id, this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.changeSuccess();
-          this.props.refreshAccount();
-        } else {
-          Setting.showMessage("error", res.msg);
-        }
-      });
+    MemberBackend.updateMemberInfo(
+      this.props.account?.id,
+      this.state.form
+    ).then((res) => {
+      if (res.status === "ok") {
+        this.changeSuccess();
+        this.props.refreshAccount();
+      } else {
+        Setting.showMessage("error", res.msg);
+      }
+    });
   }
 
   updateMemberEmailReminder() {
-    MemberBackend.updateMemberEmailReminder(this.state.emailReminder)
-      .then((res) => {
-        if (res.status === 'ok') {
+    MemberBackend.updateMemberEmailReminder(this.state.emailReminder).then(
+      (res) => {
+        if (res.status === "ok") {
           this.changeSuccess();
           this.props.refreshAccount();
         } else {
           Setting.showMessage("error", res.msg);
         }
-      });
+      }
+    );
   }
 
   handleChangeAvatar(event) {
     this.setState({
-      avatar: event.target.files[0]
+      avatar: event.target.files[0],
     });
   }
 
@@ -169,20 +171,28 @@ class SettingsBox extends React.Component {
     if (this.state.avatar === null) {
       return;
     }
-    let redirectUrl = window.location.href.substring(0, window.location.href.lastIndexOf('?'));
+    let redirectUrl = window.location.href.substring(
+      0,
+      window.location.href.lastIndexOf("?")
+    );
 
     Tools.uploadAvatar(this.state.avatar, redirectUrl);
   }
 
   changeSuccess() {
     this.setState({
-      showSuccess: !this.state.showSuccess
+      showSuccess: !this.state.showSuccess,
     });
   }
 
-  renderSettingList(item){
+  renderSettingList(item) {
     return (
-      <Link to={`/settings/${item.value}`} className={this.state.event === item.value ? "tab_current" : "tab"}>{i18next.t(`setting:${item.label}`)}</Link>
+      <Link
+        to={`/settings/${item.value}`}
+        className={this.state.event === item.value ? "tab_current" : "tab"}
+      >
+        {i18next.t(`setting:${item.label}`)}
+      </Link>
     );
   }
 
@@ -190,26 +200,33 @@ class SettingsBox extends React.Component {
     return (
       <div className="box">
         <div className="page-content-header">
-          <img src={Setting.getStatic("/static/img/settings.png")} width="64" alt="Settings" />
+          <img
+            src={Setting.getStatic("/static/img/settings.png")}
+            width="64"
+            alt="Settings"
+          />
           <h2>{i18next.t("setting:Settings")}</h2>
         </div>
         <div className="cell">
-          {
-            this.state.Setting_LIST.map((item) => {
-              return this.renderSettingList(item);
-            })
-          }
+          {this.state.Setting_LIST.map((item) => {
+            return this.renderSettingList(item);
+          })}
         </div>
-        {
-          this.state.showSuccess ?
-            <div className="message" onClick={() => this.changeSuccess()}>
-              <li className="fa fa-exclamation-triangle"></li>
-              &nbsp;{" "}
-              {this.state.event === "profile" ? i18next.t("setting:Settings have been successfully saved") : null}
-              {this.state.event === "avatar" ? i18next.t("setting:New avatar set successfully") : null}
-              {this.state.event === "forum" ? i18next.t("setting:Change forum setting successfully") : null}
-            </div> : null
-        }
+        {this.state.showSuccess ? (
+          <div className="message" onClick={() => this.changeSuccess()}>
+            <li className="fa fa-exclamation-triangle"></li>
+            &nbsp;{" "}
+            {this.state.event === "profile"
+              ? i18next.t("setting:Settings have been successfully saved")
+              : null}
+            {this.state.event === "avatar"
+              ? i18next.t("setting:New avatar set successfully")
+              : null}
+            {this.state.event === "forum"
+              ? i18next.t("setting:Change forum setting successfully")
+              : null}
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -221,8 +238,20 @@ class SettingsBox extends React.Component {
 
     return (
       <td width="auto" align="left">
-        <input type="radio" onClick={() => this.setState({emailReminder: true})} defaultChecked={this.props.account?.emailReminder} name="reminder" />{i18next.t("setting:Open")}{" "}
-        <input type="radio" onClick={() => this.setState({emailReminder: false})} defaultChecked={!this.props.account?.emailReminder} name="reminder" />{i18next.t("setting:Close")}
+        <input
+          type="radio"
+          onClick={() => this.setState({ emailReminder: true })}
+          defaultChecked={this.props.account?.emailReminder}
+          name="reminder"
+        />
+        {i18next.t("setting:Open")}{" "}
+        <input
+          type="radio"
+          onClick={() => this.setState({ emailReminder: false })}
+          defaultChecked={!this.props.account?.emailReminder}
+          name="reminder"
+        />
+        {i18next.t("setting:Close")}
       </td>
     );
   }
@@ -237,27 +266,49 @@ class SettingsBox extends React.Component {
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <Link to="/settings">{i18next.t("setting:Settings")}</Link>{" "}<span className="chevron">&nbsp;›&nbsp;</span>
-            {" "}{i18next.t("setting:Set Username")}
+            <Link to="/settings">{i18next.t("setting:Settings")}</Link>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("setting:Set Username")}
           </div>
           <div className="cell">
             <div className="topic_content">
-              {i18next.t("setting:Welcome to")}{" "}{Setting.getForumName()}{" "}{i18next.t("setting:, you just registered your")}{" "}{Setting.getForumName()}{" "}{i18next.t("setting:account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.")}
+              {i18next.t("setting:Welcome to")} {Setting.getForumName()}{" "}
+              {i18next.t("setting:, you just registered your")}{" "}
+              {Setting.getForumName()}{" "}
+              {i18next.t(
+                "setting:account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting."
+              )}
             </div>
           </div>
           <div className="inner">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
               <tbody>
-              <tr>
-                <td width="120" align="right">{i18next.t("setting:Username")}</td>
-                <td width="auto" align="left">
-                  <input type="text" className="sl" name="username" onChange={this.handleChange.bind(this)} autoComplete="off"/></td>
-              </tr>
-              <tr>
-                <td width="120" align="right"></td>
-                <td width="auto" align="left"><input type="hidden"/>
-                  <input type="submit" className="super normal button" onClick={this.postUsername} value={i18next.t("setting:save")}/></td>
-              </tr>
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:Username")}
+                  </td>
+                  <td width="auto" align="left">
+                    <input
+                      type="text"
+                      className="sl"
+                      name="username"
+                      onChange={this.handleChange.bind(this)}
+                      autoComplete="off"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right"></td>
+                  <td width="auto" align="left">
+                    <input type="hidden" />
+                    <input
+                      type="submit"
+                      className="super normal button"
+                      onClick={this.postUsername}
+                      value={i18next.t("setting:save")}
+                    />
+                  </td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -276,37 +327,87 @@ class SettingsBox extends React.Component {
             <div className="cell">
               <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                 <tbody>
-                <tr>
-                  <td width="120" align="right">{i18next.t("setting:Current avatar")}</td>
-                  <td width="auto" align="left">
-                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} size={"large"} />{" "}&nbsp;{" "}
-                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} />{" "}&nbsp;{" "}
-                    <Avatar username={this.props.account?.id} avatar={this.props.account?.avatar} size={"small"} />
-                  </td>
-                </tr>
-                <tr>
-                  <td width="120" align="right">{i18next.t("setting:Choose a picture file")}</td>
-                  <td width="auto" align="left"><input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleChangeAvatar(event)} name="avatar" /></td>
-                </tr>
-                <tr>
-                  <td width="120" align="right"></td>
-                  <td width="auto" align="left"><span className="gray">{i18next.t("setting:Support PNG / JPG / GIF files within 2MB")}</span></td>
-                </tr>
-                <tr>
-                  <td width="120" align="right"></td>
-                  <td width="auto" align="left"><input type="hidden" name="once"/>
-                    <input type="submit" className="super normal button" onClick={() => this.uploadAvatar()} value={i18next.t("setting:Upload")} />
-                  </td>
-                </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("setting:Current avatar")}
+                    </td>
+                    <td width="auto" align="left">
+                      <Avatar
+                        username={this.props.account?.id}
+                        avatar={this.props.account?.avatar}
+                        size={"large"}
+                      />{" "}
+                      &nbsp;{" "}
+                      <Avatar
+                        username={this.props.account?.id}
+                        avatar={this.props.account?.avatar}
+                      />{" "}
+                      &nbsp;{" "}
+                      <Avatar
+                        username={this.props.account?.id}
+                        avatar={this.props.account?.avatar}
+                        size={"small"}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("setting:Choose a picture file")}
+                    </td>
+                    <td width="auto" align="left">
+                      <input
+                        type="file"
+                        accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
+                        onChange={(event) => this.handleChangeAvatar(event)}
+                        name="avatar"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right"></td>
+                    <td width="auto" align="left">
+                      <span className="gray">
+                        {i18next.t(
+                          "setting:Support PNG / JPG / GIF files within 2MB"
+                        )}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right"></td>
+                    <td width="auto" align="left">
+                      <input type="hidden" name="once" />
+                      <input
+                        type="submit"
+                        className="super normal button"
+                        onClick={() => this.uploadAvatar()}
+                        value={i18next.t("setting:Upload")}
+                      />
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
             <div class="inner markdown_body">
               <p>{i18next.t("setting:Rules and recommendations on avatars")}</p>
               <ul>
-                <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is forbidden to use any vulgar or sensitive pictures as avatars")}</li>
-                <li>{i18next.t("setting:If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members")}</li>
-                <li>{Setting.getForumName()}{" "}{i18next.t("setting:It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited")}</li>
+                <li>
+                  {Setting.getForumName()}{" "}
+                  {i18next.t(
+                    "setting:It is forbidden to use any vulgar or sensitive pictures as avatars"
+                  )}
+                </li>
+                <li>
+                  {i18next.t(
+                    "setting:If you are a man, please do not use a woman’s photo as your avatar, as this may mislead other members"
+                  )}
+                </li>
+                <li>
+                  {Setting.getForumName()}{" "}
+                  {i18next.t(
+                    "setting:It is recommended that you do not use real person photos as avatars, even photos of yourself. The use of other people’s photos is prohibited"
+                  )}
+                </li>
               </ul>
             </div>
           </div>
@@ -322,23 +423,36 @@ class SettingsBox extends React.Component {
             <div className="cell">
               <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                 <tbody>
-                <tr>
-                  <td width="120" align="right">{i18next.t("setting:Email Reminder")}</td>
-                  {this.renderRadio()}
-                </tr>
-                <tr>
-                  <td width="120" align="right"></td>
-                  <td width="auto" align="left"><input type="hidden" name="once"/>
-                    <input type="submit" className="super normal button" onClick={() => this.updateMemberEmailReminder()} value={i18next.t("setting:Save Settings")} />
-                  </td>
-                </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {i18next.t("setting:Email Reminder")}
+                    </td>
+                    {this.renderRadio()}
+                  </tr>
+                  <tr>
+                    <td width="120" align="right"></td>
+                    <td width="auto" align="left">
+                      <input type="hidden" name="once" />
+                      <input
+                        type="submit"
+                        className="super normal button"
+                        onClick={() => this.updateMemberEmailReminder()}
+                        value={i18next.t("setting:Save Settings")}
+                      />
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </div>
             <div class="inner markdown_body">
               <p>{i18next.t("setting:Description on email reminder")}</p>
               <ul>
-                <li>{Setting.getForumName()}{" "}{i18next.t("setting:Will send you a email when you receive a new reply")}</li>
+                <li>
+                  {Setting.getForumName()}{" "}
+                  {i18next.t(
+                    "setting:Will send you a email when you receive a new reply"
+                  )}
+                </li>
               </ul>
             </div>
           </div>
@@ -350,54 +464,66 @@ class SettingsBox extends React.Component {
       <div>
         {this.renderHeader()}
         <div className="inner box" data-select2-id="11">
-          <table cellPadding="5" cellSpacing="0" border="0" width="100%" data-select2-id="9">
+          <table
+            cellPadding="5"
+            cellSpacing="0"
+            border="0"
+            width="100%"
+            data-select2-id="9"
+          >
             <tbody data-select2-id="8">
-            <tr>
-              <td width="120" align="right">
-                <Avatar username={account?.id} size="small" avatar={account?.avatar} />
-              </td>
-              <td width="auto" align="left">
-                {Setting.getForumName()} {i18next.t("member:No.")} {account?.no} {i18next.t("member:member")}
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Username")}
-              </td>
-              <td width="auto" align="left">
-                {account?.id}
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Phone")}
-              </td>
-              {
-                account?.phone.length === 0 ?
+              <tr>
+                <td width="120" align="right">
+                  <Avatar
+                    username={account?.id}
+                    size="small"
+                    avatar={account?.avatar}
+                  />
+                </td>
+                <td width="auto" align="left">
+                  {Setting.getForumName()} {i18next.t("member:No.")}{" "}
+                  {account?.no} {i18next.t("member:member")}
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Username")}
+                </td>
+                <td width="auto" align="left">
+                  {account?.id}
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Phone")}
+                </td>
+                {account?.phone.length === 0 ? (
                   <td width="auto" align="left">
                     <span className="negative">
                       {i18next.t("setting:Phone not verified")}
                     </span>
-                  </td> :
+                  </td>
+                ) : (
                   <td width="auto" align="left">
                     <code>
-                      {account?.areaCode}{" "}{account?.phone}
+                      {account?.areaCode} {account?.phone}
                     </code>
                   </td>
-              }
-            </tr>
-            {
-              account?.phoneVerifiedTime.length !== 0 ?
+                )}
+              </tr>
+              {account?.phoneVerifiedTime.length !== 0 ? (
                 <tr>
                   <td width="120" align="right">
                     {i18next.t("setting:Phone Verification")}
                   </td>
                   <td width="auto" align="left">
                     <span className="green">
-                      {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.phoneVerifiedTime)}
+                      {i18next.t("setting:Verified on")}{" "}
+                      {Setting.getFormattedDate(account?.phoneVerifiedTime)}
                     </span>
                   </td>
-                </tr> :
+                </tr>
+              ) : (
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
@@ -406,37 +532,36 @@ class SettingsBox extends React.Component {
                     </Link>
                   </td>
                 </tr>
-            }
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Email")}
-              </td>
-              {
-                account?.email.length === 0 ?
+              )}
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Email")}
+                </td>
+                {account?.email.length === 0 ? (
                   <td width="auto" align="left">
                     <span className="negative">
                       {i18next.t("setting:Email not verified")}
                     </span>
-                  </td> :
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.email}
-                    </code>
                   </td>
-              }
-            </tr>
-            {
-              account?.emailVerifiedTime.length !== 0 ?
-                  <tr>
-                    <td width="120" align="right">
-                      {i18next.t("setting:Email Verification")}
-                    </td>
-                    <td width="auto" align="left">
-                      <span className="green">
-                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.emailVerifiedTime)}
-                      </span>
-                    </td>
-                </tr> :
+                ) : (
+                  <td width="auto" align="left">
+                    <code>{account?.email}</code>
+                  </td>
+                )}
+              </tr>
+              {account?.emailVerifiedTime.length !== 0 ? (
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:Email Verification")}
+                  </td>
+                  <td width="auto" align="left">
+                    <span className="green">
+                      {i18next.t("setting:Verified on")}{" "}
+                      {Setting.getFormattedDate(account?.emailVerifiedTime)}
+                    </span>
+                  </td>
+                </tr>
+              ) : (
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
@@ -445,30 +570,29 @@ class SettingsBox extends React.Component {
                     </Link>
                   </td>
                 </tr>
-            }
-            {
-              Conf.GoogleClientId !== "" ?
+              )}
+              {Conf.GoogleClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
                     Google
                   </td>
-                  {
-                    account?.googleAccount === "" ?
-                      <td width="auto" align="left">
-                        <a onClick={() => Setting.getGoogleAuthCode("link")} href="javascript:void(0);">
-                          {i18next.t("setting:Link with GoogleAccount")}
-                        </a>
-                      </td> :
-                      <td width="auto" align="left">
-                        <code>
-                          {account?.googleAccount}
-                        </code>
-                      </td>
-                  }
-                </tr> : null
-            }
-            {
-              account?.googleAccount === "" ? null :
+                  {account?.googleAccount === "" ? (
+                    <td width="auto" align="left">
+                      <a
+                        onClick={() => Setting.getGoogleAuthCode("link")}
+                        href="javascript:void(0);"
+                      >
+                        {i18next.t("setting:Link with GoogleAccount")}
+                      </a>
+                    </td>
+                  ) : (
+                    <td width="auto" align="left">
+                      <code>{account?.googleAccount}</code>
+                    </td>
+                  )}
+                </tr>
+              ) : null}
+              {account?.googleAccount === "" ? null : (
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
@@ -477,30 +601,29 @@ class SettingsBox extends React.Component {
                     </Link>
                   </td>
                 </tr>
-            }
-            {
-              Conf.GithubClientId !== "" ?
+              )}
+              {Conf.GithubClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
                     Github
                   </td>
-                  {
-                    account?.githubAccount === "" ?
-                      <td width="auto" align="left">
-                        <a onClick={() => Setting.getGithubAuthCode("link")} href="javascript:void(0);">
-                          {i18next.t("setting:Link with GithubAccount")}
-                        </a>
-                      </td> :
-                      <td width="auto" align="left">
-                        <code>
-                          {account?.githubAccount}
-                        </code>
-                      </td>
-                  }
-                </tr> : null
-            }
-            {
-              account?.githubAccount === "" ? null :
+                  {account?.githubAccount === "" ? (
+                    <td width="auto" align="left">
+                      <a
+                        onClick={() => Setting.getGithubAuthCode("link")}
+                        href="javascript:void(0);"
+                      >
+                        {i18next.t("setting:Link with GithubAccount")}
+                      </a>
+                    </td>
+                  ) : (
+                    <td width="auto" align="left">
+                      <code>{account?.githubAccount}</code>
+                    </td>
+                  )}
+                </tr>
+              ) : null}
+              {account?.githubAccount === "" ? null : (
                 <tr>
                   <td width="120" align="right" />
                   <td width="auto" align="left">
@@ -509,130 +632,191 @@ class SettingsBox extends React.Component {
                     </Link>
                   </td>
                 </tr>
-            }
-            {
-              Conf.WechatClientId !== "" ?
+              )}
+              {Conf.WechatClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
                     {i18next.t("setting:WeChat")}
                   </td>
-                  {
-                    account?.weChatAccount === "" ?
-                      <td width="auto" align="left">
-                        <a onClick={() => Setting.getWeChatAuthCode("link")} href="javascript:void(0);">
-                          {i18next.t("setting:Link with WeChat")}
-                        </a>
-                      </td> :
-                      <td width="auto" align="left">
-                        <code>
-                          {account?.weChatAccount}
-                        </code>
-                      </td>
-                  }
-                </tr> : null
-            }
-            {
-              account?.qqVerifiedTime.length !== 0 ?
+                  {account?.weChatAccount === "" ? (
+                    <td width="auto" align="left">
+                      <a
+                        onClick={() => Setting.getWeChatAuthCode("link")}
+                        href="javascript:void(0);"
+                      >
+                        {i18next.t("setting:Link with WeChat")}
+                      </a>
+                    </td>
+                  ) : (
+                    <td width="auto" align="left">
+                      <code>{account?.weChatAccount}</code>
+                    </td>
+                  )}
+                </tr>
+              ) : null}
+              {account?.qqVerifiedTime.length !== 0 ? (
                 <tr>
                   <td width="120" align="right">
                     {i18next.t("setting:Modify WeChat")}
                   </td>
                   <td width="auto" align="left">
-                      <span className="green">
-                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.wechatVerifiedTime)}
-                      </span>
+                    <span className="green">
+                      {i18next.t("setting:Verified on")}{" "}
+                      {Setting.getFormattedDate(account?.wechatVerifiedTime)}
+                    </span>
                   </td>
-                </tr> : null
-            }
-            {
-              Conf.QQClientId !== "" ?
+                </tr>
+              ) : null}
+              {Conf.QQClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
                     QQ
                   </td>
-                  {
-                    account?.qqAccount === "" ?
-                      <td width="auto" align="left">
-                        <a onClick={() => Setting.getQQAuthCode("link")} href="javascript:void(0);">
-                          {i18next.t("setting:Link with QQAccount")}
-                        </a>
-                      </td> :
-                      <td width="auto" align="left">
-                        <code>
-                          {account?.qqAccount}
-                        </code>
-                      </td>
-                  }
-                </tr> : null
-            }
-            {
-              account?.qqVerifiedTime.length !== 0 ?
+                  {account?.qqAccount === "" ? (
+                    <td width="auto" align="left">
+                      <a
+                        onClick={() => Setting.getQQAuthCode("link")}
+                        href="javascript:void(0);"
+                      >
+                        {i18next.t("setting:Link with QQAccount")}
+                      </a>
+                    </td>
+                  ) : (
+                    <td width="auto" align="left">
+                      <code>{account?.qqAccount}</code>
+                    </td>
+                  )}
+                </tr>
+              ) : null}
+              {account?.qqVerifiedTime.length !== 0 ? (
                 <tr>
                   <td width="120" align="right">
                     {i18next.t("setting:QQ Verification")}
                   </td>
                   <td width="auto" align="left">
-                      <span className="green">
-                        {i18next.t("setting:Verified on")}{" "}{Setting.getFormattedDate(account?.qqVerifiedTime)}
-                      </span>
+                    <span className="green">
+                      {i18next.t("setting:Verified on")}{" "}
+                      {Setting.getFormattedDate(account?.qqVerifiedTime)}
+                    </span>
                   </td>
-                </tr> : null
-            }
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Website")}
-              </td>
-              <td width="auto" align="left">
-                <input type="text" className="sl" name="website" defaultValue={account?.website} onChange={event => this.updateFormField("website", event.target.value)} autoComplete="off" />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Company")}
-              </td>
-              <td width="auto" align="left">
-                <input type="text" className="sl" name="company" defaultValue={account?.company} maxLength="32" onChange={event => this.updateFormField("company", event.target.value)} autoComplete="off" />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Company title")}
-              </td>
-              <td width="auto" align="left">
-                <input type="text" className="sl" name="companyTitle" defaultValue={account?.companyTitle} maxLength="32" onChange={event => this.updateFormField("companyTitle", event.target.value)} autoComplete="off" />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Location")}
-              </td>
-              <td width="auto" align="left">
-                <input type="text" className="sl" name="location" defaultValue={account?.location} maxLength="32" onChange={event => this.updateFormField("location", event.target.value)} autoComplete="off" />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Tagline")}
-              </td>
-              <td width="auto" align="left">
-                <input type="text" className="sl" name="tagline" defaultValue={account?.tagline} maxLength="32" onChange={event => this.updateFormField("tagline", event.target.value)} autoComplete="off" />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right">
-                {i18next.t("setting:Bio")}
-              </td>
-              <td width="auto" align="left">
-                <textarea className="ml" name="bio" defaultValue={account?.bio} onChange={event => this.updateFormField("bio", event.target.value)} />
-              </td>
-            </tr>
-            <tr>
-              <td width="120" align="right" />
-              <td width="auto" align="left">
-                <input type="hidden" value="26304" name="once" />
-                <input type="submit" className="super normal button" value={i18next.t("setting:Save Settings")} onClick={this.publishInfoUpdate.bind(this)} />
-              </td>
-            </tr>
+                </tr>
+              ) : null}
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Website")}
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="website"
+                    defaultValue={account?.website}
+                    onChange={(event) =>
+                      this.updateFormField("website", event.target.value)
+                    }
+                    autoComplete="off"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Company")}
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="company"
+                    defaultValue={account?.company}
+                    maxLength="32"
+                    onChange={(event) =>
+                      this.updateFormField("company", event.target.value)
+                    }
+                    autoComplete="off"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Company title")}
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="companyTitle"
+                    defaultValue={account?.companyTitle}
+                    maxLength="32"
+                    onChange={(event) =>
+                      this.updateFormField("companyTitle", event.target.value)
+                    }
+                    autoComplete="off"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Location")}
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="location"
+                    defaultValue={account?.location}
+                    maxLength="32"
+                    onChange={(event) =>
+                      this.updateFormField("location", event.target.value)
+                    }
+                    autoComplete="off"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Tagline")}
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="tagline"
+                    defaultValue={account?.tagline}
+                    maxLength="32"
+                    onChange={(event) =>
+                      this.updateFormField("tagline", event.target.value)
+                    }
+                    autoComplete="off"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:Bio")}
+                </td>
+                <td width="auto" align="left">
+                  <textarea
+                    className="ml"
+                    name="bio"
+                    defaultValue={account?.bio}
+                    onChange={(event) =>
+                      this.updateFormField("bio", event.target.value)
+                    }
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right" />
+                <td width="auto" align="left">
+                  <input type="hidden" value="26304" name="once" />
+                  <input
+                    type="submit"
+                    className="super normal button"
+                    value={i18next.t("setting:Save Settings")}
+                    onClick={this.publishInfoUpdate.bind(this)}
+                  />
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>

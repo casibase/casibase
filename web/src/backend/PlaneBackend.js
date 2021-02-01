@@ -16,44 +16,44 @@ import * as Setting from "../Setting";
 
 export function getPlaneList() {
   return fetch(`${Setting.ServerUrl}/api/get-plane-list`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getPlaneAdmin(id) {
   return fetch(`${Setting.ServerUrl}/api/get-plane-admin?id=${id}`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getPlanesAdmin() {
   return fetch(`${Setting.ServerUrl}/api/get-planes-admin`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function deletePlane(id) {
   return fetch(`${Setting.ServerUrl}/api/delete-plane?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
-  }).then(res => res.json());
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updatePlane(id, plane) {
   return fetch(`${Setting.ServerUrl}/api/update-plane?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(plane),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function addPlane(plane) {
   return fetch(`${Setting.ServerUrl}/api/add-plane`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(plane),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
