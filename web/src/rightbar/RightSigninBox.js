@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as Conf from "../Conf";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import "./rightSignin.css";
 import i18next from "i18next";
 
@@ -32,42 +32,58 @@ class RightSigninBox extends React.Component {
       return (
         <div className="box">
           <div className="header">{i18next.t("bar:Other Sign In Methods")}</div>
-          {
-            Conf.QQClientId !== "" ?
-              <div className="cell" style={{textAlign: "center"}}>
-                <div className="signin_method" onClick={() => Setting.getQQAuthCode("signup")}>
-                  <div className="signin_method_icon signin_method_qq"></div>
-                  <div className="signin_method_label" style={{width: 140}}>{i18next.t("signin:Sign in with QQ")}</div>
+          {Conf.QQClientId !== "" ? (
+            <div className="cell" style={{ textAlign: "center" }}>
+              <div
+                className="signin_method"
+                onClick={() => Setting.getQQAuthCode("signup")}
+              >
+                <div className="signin_method_icon signin_method_qq"></div>
+                <div className="signin_method_label" style={{ width: 140 }}>
+                  {i18next.t("signin:Sign in with QQ")}
                 </div>
-              </div> : null
-          }
-          {
-            Conf.WechatClientId !== "" ?
-              <div className="cell" style={{textAlign: "center"}}>
-                <div className="signin_method" onClick={() => Setting.getWeChatAuthCode("signup")}>
-                  <div className="signin_method_icon signin_method_wechat"></div>
-                  <div className="signin_method_label" style={{width: 140}}>{i18next.t("signin:Sign in with WeChat")}</div>
+              </div>
+            </div>
+          ) : null}
+          {Conf.WechatClientId !== "" ? (
+            <div className="cell" style={{ textAlign: "center" }}>
+              <div
+                className="signin_method"
+                onClick={() => Setting.getWeChatAuthCode("signup")}
+              >
+                <div className="signin_method_icon signin_method_wechat"></div>
+                <div className="signin_method_label" style={{ width: 140 }}>
+                  {i18next.t("signin:Sign in with WeChat")}
                 </div>
-              </div> : null
-          }
-          {
-            Conf.GoogleClientId !== "" ?
-              <div className="cell" style={{textAlign: "center"}}>
-                <div className="signin_method" onClick={() => Setting.getGoogleAuthCode("signup")}>
-                  <div className="signin_method_icon signin_method_google"></div>
-                  <div className="signin_method_label" style={{width: 140}}>{i18next.t("signin:Sign in with Google")}</div>
+              </div>
+            </div>
+          ) : null}
+          {Conf.GoogleClientId !== "" ? (
+            <div className="cell" style={{ textAlign: "center" }}>
+              <div
+                className="signin_method"
+                onClick={() => Setting.getGoogleAuthCode("signup")}
+              >
+                <div className="signin_method_icon signin_method_google"></div>
+                <div className="signin_method_label" style={{ width: 140 }}>
+                  {i18next.t("signin:Sign in with Google")}
                 </div>
-              </div> : null
-          }
-          {
-            Conf.GithubClientId !== "" ?
-              <div className="cell" style={{textAlign: "center"}}>
-                <div className="signin_method" onClick={() => Setting.getGithubAuthCode("signup")}>
-                  <div className="signin_method_icon signin_method_github"></div>
-                  <div className="signin_method_label" style={{width: 140 }}>{i18next.t("signin:Sign in with Github")}</div>
+              </div>
+            </div>
+          ) : null}
+          {Conf.GithubClientId !== "" ? (
+            <div className="cell" style={{ textAlign: "center" }}>
+              <div
+                className="signin_method"
+                onClick={() => Setting.getGithubAuthCode("signup")}
+              >
+                <div className="signin_method_icon signin_method_github"></div>
+                <div className="signin_method_label" style={{ width: 140 }}>
+                  {i18next.t("signin:Sign in with Github")}
                 </div>
-              </div> : null
-          }
+              </div>
+            </div>
+          ) : null}
         </div>
       );
     }
@@ -82,10 +98,13 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <Link to="/signup" className="super normal button">{i18next.t("bar:Sign Up Now")}</Link>
+            <Link to="/signup" className="super normal button">
+              {i18next.t("bar:Sign Up Now")}
+            </Link>
             <div className="sep5" />
             <div className="sep10" />
-            {i18next.t("bar:For Existing Member")}{" "}&nbsp;<Link to="/signin">{i18next.t("bar:Sign In")}</Link>
+            {i18next.t("bar:For Existing Member")} &nbsp;
+            <Link to="/signin">{i18next.t("bar:Sign In")}</Link>
           </div>
         </div>
       </div>

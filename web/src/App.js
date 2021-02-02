@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, {Component} from 'react';
-import './App.css';
-import {BackTop} from "antd";
+import React, { Component } from "react";
+import "./App.css";
+import { BackTop } from "antd";
 import * as Setting from "./Setting";
-import {Switch, Route} from 'react-router-dom'
+import { Switch, Route } from "react-router-dom";
 import TopicPage from "./TopicPage";
 import Header from "./Header";
 import Footer from "./Footer";
@@ -40,7 +40,7 @@ import RightCommunityHealthBox from "./rightbar/RightCommunityHealthBox";
 import RightFavouriteBox from "./rightbar/RightFavouriteBox";
 import RightNodeBox from "./rightbar/RightNodeBox";
 import CustomGithubCorner from "./main/CustomGithubCorner";
-import NotificationBox from "./main/NotificationBox"
+import NotificationBox from "./main/NotificationBox";
 import NodeNavigationBox from "./main/NodeNavigationBox";
 import PlaneBox from "./main/PlaneBox";
 import BalanceBox from "./main/BalanceBox";
@@ -60,8 +60,8 @@ import AdminMember from "./admin/AdminMember";
 import AdminPlane from "./admin/AdminPlane";
 import AdminTopic from "./admin/AdminTopic";
 import i18next from "i18next";
-import "./node.css"
-import "./i18n"
+import "./node.css";
+import "./i18n";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
 
 class App extends Component {
@@ -74,7 +74,7 @@ class App extends Component {
       showMenu: false,
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
-      nodeBackgroundRepeat: ""
+      nodeBackgroundRepeat: "",
     };
 
     Setting.initServerUrl();
@@ -100,7 +100,7 @@ class App extends Component {
 
   onUpdateAccount(account) {
     this.setState({
-      account: account
+      account: account,
     });
   }
 
@@ -109,25 +109,24 @@ class App extends Component {
       nodeId: id,
       nodeBackgroundImage: backgroundImage,
       nodeBackgroundColor: backgroundColor,
-      nodeBackgroundRepeat: backgroundRepeat
+      nodeBackgroundRepeat: backgroundRepeat,
     });
   }
 
   getAccount() {
-    AccountBackend.getAccount()
-      .then((res) => {
-        const account = Setting.parseJson(res.data);
-        if (account !== null) {
-          let language = account?.language;
-          if (language !== "" && language !== i18next.language) {
-            Setting.SetLanguage(language);
-          }
-         // i18n.changeCustomLanguage(language)
+    AccountBackend.getAccount().then((res) => {
+      const account = Setting.parseJson(res.data);
+      if (account !== null) {
+        let language = account?.language;
+        if (language !== "" && language !== i18next.language) {
+          Setting.SetLanguage(language);
         }
-        this.setState({
-          account: account,
-        });
+        // i18n.changeCustomLanguage(language)
+      }
+      this.setState({
+        account: account,
       });
+    });
   }
 
   getFavoriteNum() {
@@ -135,25 +134,26 @@ class App extends Component {
       return;
     }
 
-    FavoritesBackend.getAccountFavoriteNum()
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.setState({
-            favorites: res?.data
-          });
-        } else {
-          Setting.showMessage("error", res.msg);
-        }
-      });
+    FavoritesBackend.getAccountFavoriteNum().then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          favorites: res?.data,
+        });
+      } else {
+        Setting.showMessage("error", res.msg);
+      }
+    });
   }
 
   renderMain() {
-    const pcBrowser = Setting.PcBrowser
+    const pcBrowser = Setting.PcBrowser;
     return (
       <Switch>
         <Route exact path="/">
-          {pcBrowser ? null : <RightCheckinBonusBox account={this.state.account} />}
-          {pcBrowser ? null : <div className="sep5" /> }
+          {pcBrowser ? null : (
+            <RightCheckinBonusBox account={this.state.account} />
+          )}
+          {pcBrowser ? null : <div className="sep5" />}
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <TopicPage account={this.state.account} />
@@ -164,19 +164,29 @@ class App extends Component {
         <Route exact path="/signup">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox onSignout={this.onSignout.bind(this)} refreshAccount={this.getAccount.bind(this)} />
+            <SignupBox
+              onSignout={this.onSignout.bind(this)}
+              refreshAccount={this.getAccount.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/signup/:signupMethod">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox account={this.state.account} onSignout={this.onSignout.bind(this)} refreshAccount={this.getAccount.bind(this)} />
+            <SignupBox
+              account={this.state.account}
+              onSignout={this.onSignout.bind(this)}
+              refreshAccount={this.getAccount.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/signin">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SigninBox onSignin={this.onSignin.bind(this)} onSignout={this.onSignout.bind(this)} />
+            <SigninBox
+              onSignin={this.onSignin.bind(this)}
+              onSignout={this.onSignout.bind(this)}
+            />
             {pcBrowser ? null : <div className="sep5" />}
             {pcBrowser ? null : <RightSigninBox />}
           </div>
@@ -184,24 +194,38 @@ class App extends Component {
         <Route exact path="/signout">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
+            <SignoutBox
+              account={this.state.account}
+              onSignout={this.onSignout.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/t/:topicId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
+            <TopicBox
+              account={this.state.account}
+              getNodeBackground={this.getNodeBackground}
+              refreshFavorites={this.getFavoriteNum.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
+            <TopicBox
+              account={this.state.account}
+              getNodeBackground={this.getNodeBackground}
+              refreshFavorites={this.getFavoriteNum.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
           <div id={pcBrowser ? "Main" : ""}>
-            <MemberBox account={this.state.account} refreshFavorites={this.getFavoriteNum.bind(this)} />
+            <MemberBox
+              account={this.state.account}
+              refreshFavorites={this.getFavoriteNum.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/member/:memberId/:tab">
@@ -213,7 +237,10 @@ class App extends Component {
         <Route exact path="/settings">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox account={this.state.account} refreshAccount={this.getAccount.bind(this)}/>
+            <SettingsBox
+              account={this.state.account}
+              refreshAccount={this.getAccount.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/callback/:authType/:addition">
@@ -225,7 +252,10 @@ class App extends Component {
         <Route exact path="/settings/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
+            <SettingsBox
+              account={this.state.account}
+              refreshAccount={this.getAccount.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/new">
@@ -241,12 +271,22 @@ class App extends Component {
           </div>
         </Route>
         <Route exact path="/go/:nodeId">
-          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
+          <NodesBox
+            account={this.state.account}
+            getNodeBackground={this.getNodeBackground}
+            refreshAccount={this.getAccount.bind(this)}
+            refreshFavorites={this.getFavoriteNum.bind(this)}
+          />
         </Route>
         <Route exact path="/go/:nodeId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
+            <NodesBox
+              account={this.state.account}
+              getNodeBackground={this.getNodeBackground}
+              refreshAccount={this.getAccount.bind(this)}
+              refreshFavorites={this.getFavoriteNum.bind(this)}
+            />
           </div>
         </Route>
         <Route exact path="/my/:favorites">
@@ -437,30 +477,35 @@ class App extends Component {
 
     return (
       <div id="Rightbar">
-        <div className="sep20"/>
-        {
-          isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId} favorites={this.state.favorites}/> :
-          <RightSigninBox nodeId={this.state.nodeId}/>
-        }
+        <div className="sep20" />
+        {isSignedIn ? (
+          <RightAccountBox
+            account={this.state.account}
+            nodeId={this.state.nodeId}
+            favorites={this.state.favorites}
+          />
+        ) : (
+          <RightSigninBox nodeId={this.state.nodeId} />
+        )}
         <Switch>
           <Route exact path="/">
             <span>
               <RightCheckinBonusBox account={this.state.account} />
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightCommunityHealthBox />
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightFavouriteBox />
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightHotTopicBox />
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightHotNodeBox />
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightLatestNodeBox />
             </span>
           </Route>
           <Route exact path="/go/:nodeId">
             <span>
-              <div className="sep20"/>
+              <div className="sep20" />
               <RightNodeBox />
             </span>
           </Route>
@@ -474,7 +519,7 @@ class App extends Component {
       return;
     }
     this.setState({
-      showMenu: status
+      showMenu: status,
     });
   }
 
@@ -482,26 +527,29 @@ class App extends Component {
     return (
       <div>
         <BackTop />
-        <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu}/>
-        <div id="Wrapper" style={{backgroundColor: `${this.state.nodeBackgroundColor}`, backgroundImage: `url(${this.state.nodeBackgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`, backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`}} className={this.state.nodeId} onClick={() => this.changeMenuStatus(false)}>
+        <Header
+          account={this.state.account}
+          onSignout={this.onSignout.bind(this)}
+          changeMenuStatus={this.changeMenuStatus.bind(this)}
+          showMenu={this.state.showMenu}
+        />
+        <div
+          id="Wrapper"
+          style={{
+            backgroundColor: `${this.state.nodeBackgroundColor}`,
+            backgroundImage: `url(${this.state.nodeBackgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`,
+            backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`,
+          }}
+          className={this.state.nodeId}
+          onClick={() => this.changeMenuStatus(false)}
+        >
           <div className="content">
             <div id="Leftbar" />
-            {
-              Setting.PcBrowser ?
-                <CustomGithubCorner /> : null
-            }
-            {
-              Setting.PcBrowser ?
-                this.renderRightbar() : null
-            }
-            {
-              this.renderMain()
-            }
+            {Setting.PcBrowser ? <CustomGithubCorner /> : null}
+            {Setting.PcBrowser ? this.renderRightbar() : null}
+            {this.renderMain()}
             <div className="c" />
-            {
-              Setting.PcBrowser ?
-                <div className="sep20" /> : null
-            }
+            {Setting.PcBrowser ? <div className="sep20" /> : null}
           </div>
         </div>
         <Footer />

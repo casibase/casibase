@@ -17,12 +17,12 @@ import * as FileBackend from "../backend/FileBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import PageColumn from "./PageColumn";
-import {withRouter, Link} from "react-router-dom";
-import "../deopzone.css"
+import { withRouter, Link } from "react-router-dom";
+import "../deopzone.css";
 import Dropzone from "react-dropzone";
 import i18next from "i18next";
 
-const browserImageSize = require('browser-image-size');
+const browserImageSize = require("browser-image-size");
 
 class FilesBox extends React.Component {
   constructor(props) {
@@ -44,13 +44,13 @@ class FilesBox extends React.Component {
       minPage: 1,
       maxPage: -1,
       url: "",
-      form: {}
+      form: {},
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
       this.state.page = 1;
-    }else {
+    } else {
       this.state.page = parseInt(this.state.p);
     }
 
@@ -71,45 +71,53 @@ class FilesBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-        event: newProps.match.params.event,
-      }, ()=> {
-        this.getFile();
-        this.getFiles();
-        this.clearMessage();
-        this.getFileNum();
-      });
+      this.setState(
+        {
+          page: parseInt(page),
+          event: newProps.match.params.event,
+        },
+        () => {
+          this.getFile();
+          this.getFiles();
+          this.clearMessage();
+          this.getFileNum();
+        }
+      );
     }
   }
 
   getFile() {
-    if (this.state.event === "" || this.state.event === undefined || this.state.event === "upload") {
+    if (
+      this.state.event === "" ||
+      this.state.event === undefined ||
+      this.state.event === "upload"
+    ) {
       return;
     }
 
-    FileBackend.getFile(this.state.event)
-      .then((res) => {
-        this.setState({
+    FileBackend.getFile(this.state.event).then((res) => {
+      this.setState(
+        {
           file: res?.data,
-        }, () => {
+        },
+        () => {
           if (this.state.file === null) {
             return;
           }
           if (this.state.file?.fileType === "image") {
-            browserImageSize(this.state.file?.fileUrl)
-              .then((size) => {
-                this.setState({
-                  fileHeight: size.height,
-                  fileWidth: size.width
-                })
-              })
+            browserImageSize(this.state.file?.fileUrl).then((size) => {
+              this.setState({
+                fileHeight: size.height,
+                fileWidth: size.width,
+              });
+            });
           }
           if (this.props.edit) {
             this.initForm();
           }
-        });
-      });
+        }
+      );
+    });
   }
 
   getFileNum() {
@@ -117,13 +125,12 @@ class FilesBox extends React.Component {
       return;
     }
 
-    FileBackend.getFileNum()
-      .then((res) => {
-        this.setState({
-          filesNum: res?.data.num,
-          maxFileNum: res?.data.maxNum,
-        });
+    FileBackend.getFileNum().then((res) => {
+      this.setState({
+        filesNum: res?.data.num,
+        maxFileNum: res?.data.maxNum,
       });
+    });
   }
 
   getFiles() {
@@ -131,26 +138,25 @@ class FilesBox extends React.Component {
       return;
     }
 
-    FileBackend.getFiles(this.state.limit, this.state.page)
-      .then((res) => {
-        if (res?.status === "ok") {
-          this.setState({
-            files: res?.data,
-            filesNum: res?.data2.num,
-            maxFileNum: res?.data2.maxNum,
-          });
-        }
-      });
+    FileBackend.getFiles(this.state.limit, this.state.page).then((res) => {
+      if (res?.status === "ok") {
+        this.setState({
+          files: res?.data,
+          filesNum: res?.data2.num,
+          maxFileNum: res?.data2.maxNum,
+        });
+      }
+    });
   }
 
   clearMessage() {
     this.setState({
-      message: ""
+      message: "",
     });
   }
 
   getIndex(file) {
-    for (let i = 0; i < this.state.files.length; i ++) {
+    for (let i = 0; i < this.state.files.length; i++) {
       if (this.state.files[i] === file) {
         return i;
       }
@@ -160,31 +166,30 @@ class FilesBox extends React.Component {
   }
 
   uploadFile(file) {
-    let fileInfo = {name: file[0].path, size: file[0].size, status: false};
+    let fileInfo = { name: file[0].path, size: file[0].size, status: false };
     let files = this.state.files;
     files.push(fileInfo);
     this.setState({
-      files: files
+      files: files,
     });
-    Tools.uploadFile(file[0])
-      .then((res) => {
-        if (res?.status === "ok") {
-          let index = this.getIndex(fileInfo);
-          let files = this.state.files;
-          files[index].status = true;
-          files[index].id = res?.data;
-          this.setState({
-            files: files,
-            message: "",
-            filesNum: res?.data2.num,
-            maxFileNum: res?.data2.maxNum,
-          });
-        } else {
-          this.setState({
-            message: res?.msg
-          });
-        }
-      });
+    Tools.uploadFile(file[0]).then((res) => {
+      if (res?.status === "ok") {
+        let index = this.getIndex(fileInfo);
+        let files = this.state.files;
+        files[index].status = true;
+        files[index].id = res?.data;
+        this.setState({
+          files: files,
+          message: "",
+          filesNum: res?.data2.num,
+          maxFileNum: res?.data2.maxNum,
+        });
+      } else {
+        this.setState({
+          message: res?.msg,
+        });
+      }
+    });
   }
 
   deleteFile(file) {
@@ -194,31 +199,36 @@ class FilesBox extends React.Component {
     } else {
       fileName = file?.fileName;
     }
-    if (!window.confirm(`${i18next.t("file:Confirm to delete")} ${fileName}${i18next.t("file:?")}`)) {
+    if (
+      !window.confirm(
+        `${i18next.t("file:Confirm to delete")} ${fileName}${i18next.t(
+          "file:?"
+        )}`
+      )
+    ) {
       return;
     }
 
-    FileBackend.deleteFile(file.id)
-      .then((res) => {
-        if (res?.status === "ok") {
-          if (this.state.event !== "upload") {
-            this.props.history.push("/i?p=1");
-          }
-          let index = this.getIndex(file);
-          let files = this.state.files;
-          files.splice(index, 1);
-          this.setState({
-            files: files,
-            message: "",
-            filesNum: res?.data2.num,
-            maxFileNum: res?.data2.maxNum,
-          });
-        } else {
-          this.setState({
-            message: res?.msg
-          });
+    FileBackend.deleteFile(file.id).then((res) => {
+      if (res?.status === "ok") {
+        if (this.state.event !== "upload") {
+          this.props.history.push("/i?p=1");
         }
-      });
+        let index = this.getIndex(file);
+        let files = this.state.files;
+        files.splice(index, 1);
+        this.setState({
+          files: files,
+          message: "",
+          filesNum: res?.data2.num,
+          maxFileNum: res?.data2.maxNum,
+        });
+      } else {
+        this.setState({
+          message: res?.msg,
+        });
+      }
+    });
   }
 
   initForm() {
@@ -226,7 +236,7 @@ class FilesBox extends React.Component {
     form["fileName"] = this.state.file?.fileName;
     form["desc"] = this.state.file?.desc;
     this.setState({
-      form: form
+      form: form,
     });
   }
 
@@ -241,21 +251,24 @@ class FilesBox extends React.Component {
   editDesc() {
     if (this.state.form.fileName === "") {
       this.setState({
-        message: i18next.t("file:The title information of the image is necessary")
+        message: i18next.t(
+          "file:The title information of the image is necessary"
+        ),
       });
       return;
     }
 
-    FileBackend.updateFileDesc(this.state.event, this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
+    FileBackend.updateFileDesc(this.state.event, this.state.form).then(
+      (res) => {
+        if (res.status === "ok") {
           this.props.history.push(`/i/${this.state.event}`);
         } else {
           this.setState({
-            message: i18next.t(`"file:${res?.msg}`)
+            message: i18next.t(`"file:${res?.msg}`),
           });
         }
-      });
+      }
+    );
   }
 
   renderUploadFile(file) {
@@ -263,27 +276,32 @@ class FilesBox extends React.Component {
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width={Setting.PcBrowser ? "300" : "180"} align="left">
-              <Link to={`${file.id}`}>
-                {file.name}
-              </Link>
-            </td>
-            <td width="10"></td>
-            <td width="auto" valign="middle">
-              <span className="item_hot_topic_title">
-                {Setting.getFormattedSize(file.size)}
-              </span>
-            </td>
-            <td width="auto" align="left" style={{textAlign: "center"}}>
-              {
-                file.status ?
-                  <a href="javascript:void(0);" onClick={() => this.deleteFile(file)} className="delete">
+            <tr>
+              <td width={Setting.PcBrowser ? "300" : "180"} align="left">
+                <Link to={`${file.id}`}>{file.name}</Link>
+              </td>
+              <td width="10"></td>
+              <td width="auto" valign="middle">
+                <span className="item_hot_topic_title">
+                  {Setting.getFormattedSize(file.size)}
+                </span>
+              </td>
+              <td width="auto" align="left" style={{ textAlign: "center" }}>
+                {file.status ? (
+                  <a
+                    href="javascript:void(0);"
+                    onClick={() => this.deleteFile(file)}
+                    className="delete"
+                  >
                     {i18next.t("file:Delete")}
-                  </a> : <span className="gray">{i18next.t("file:uploading")}......</span>
-              }
-            </td>
-          </tr>
+                  </a>
+                ) : (
+                  <span className="gray">
+                    {i18next.t("file:uploading")}......
+                  </span>
+                )}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -292,70 +310,101 @@ class FilesBox extends React.Component {
 
   // url: /i/upload
   renderUpload() {
-    let progressWidth = (400/(this.state.maxFileNum)) * this.state.filesNum;
+    let progressWidth = (400 / this.state.maxFileNum) * this.state.filesNum;
 
     return (
       <span>
         <div className="box">
-        <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<Link to="/i">Files</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}{i18next.t("file:Upload new file")}
-        </div>
-          {
-            this.renderProblem()
-          }
-        <div className="cell">
-          <span className="gray">{i18next.t("file:Support all types of files within 6MB")}</span>
-          <div className="sep10"></div>
-          <div id="uploader">
-            <Dropzone onDrop={(acceptedFiles) => this.uploadFile(acceptedFiles)}>
-              {({getRootProps, getInputProps}) => (
-                <section className="container">
-                  <div {...getRootProps({className: 'dropzone'})}>
-                    <input {...getInputProps()} />
-                    <p>{i18next.t("file:Drop files here, or click upload")}</p>
-                  </div>
-                </section>
-              )}
-            </Dropzone>
+          <div className="header">
+            <Link to="/">{Setting.getForumName()}</Link>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            <Link to="/i">Files</Link>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("file:Upload new file")}
           </div>
-        </div>
+          {this.renderProblem()}
+          <div className="cell">
+            <span className="gray">
+              {i18next.t("file:Support all types of files within 6MB")}
+            </span>
+            <div className="sep10"></div>
+            <div id="uploader">
+              <Dropzone
+                onDrop={(acceptedFiles) => this.uploadFile(acceptedFiles)}
+              >
+                {({ getRootProps, getInputProps }) => (
+                  <section className="container">
+                    <div {...getRootProps({ className: "dropzone" })}>
+                      <input {...getInputProps()} />
+                      <p>
+                        {i18next.t("file:Drop files here, or click upload")}
+                      </p>
+                    </div>
+                  </section>
+                )}
+              </Dropzone>
+            </div>
+          </div>
           <div className="box" id="upload">
             <div className="cell">
               <span class="gray">{i18next.t("file:Uploaded file")}</span>
             </div>
-              {
-                this.state.files?.map(file => this.renderUploadFile(file))
-              }
+            {this.state.files?.map((file) => this.renderUploadFile(file))}
           </div>
-        <div className="cell">
-          <div className="fr" style={{paddingTop: "2px"}}>
-            <div style={{width: "400px", height: "10px", backgroundColor: "#e2e2e2"}}>
-              <div style={{width: progressWidth+"px", height: "10px", backgroundColor: "#90909f"}}>&nbsp;</div>
+          <div className="cell">
+            <div className="fr" style={{ paddingTop: "2px" }}>
+              <div
+                style={{
+                  width: "400px",
+                  height: "10px",
+                  backgroundColor: "#e2e2e2",
+                }}
+              >
+                <div
+                  style={{
+                    width: progressWidth + "px",
+                    height: "10px",
+                    backgroundColor: "#90909f",
+                  }}
+                >
+                  &nbsp;
+                </div>
+              </div>
             </div>
+            <span className="gray">
+              <li className="fa fa-cloud-upload"></li>
+              &nbsp; {i18next.t("file:You can upload")}{" "}
+              {this.state.maxFileNum - this.state.filesNum}{" "}
+              {i18next.t("file:files now")}
+            </span>
           </div>
-          <span className="gray">
-            <li className="fa fa-cloud-upload"></li>
-            &nbsp;{" "}{i18next.t("file:You can upload")}
-            {" "}{this.state.maxFileNum - this.state.filesNum}{" "}{i18next.t("file:files now")}</span>
-        </div>
-          <div className="inner"><span className="gray"><li className="fa fa-credit-card"></li>
-            &nbsp; <Link to="/balance/add">{i18next.t("file:Recharge to get more storage space")}</Link></span></div>
+          <div className="inner">
+            <span className="gray">
+              <li className="fa fa-credit-card"></li>
+              &nbsp;{" "}
+              <Link to="/balance/add">
+                {i18next.t("file:Recharge to get more storage space")}
+              </Link>
+            </span>
+          </div>
         </div>
         <div className="sep20"></div>
         <div className="box">
           <div className="header">
-            <li className="fa fa-info-circle"></li>
-            {" "}{i18next.t("file:Privacy and content policy")}
+            <li className="fa fa-info-circle"></li>{" "}
+            {i18next.t("file:Privacy and content policy")}
           </div>
           <div className="cell">
-            <span className="topic_content">{Setting.getForumName()}
-            {" "}{i18next.t("file:File Library is a storage and distribution service for publicly sharing files. The final links of all files will not be protected for privacy, and the Referer will not be checked, so external links without any restrictions can be supported.")}
-            <br/><br/>
-            {i18next.t("file:If the file is something you do not want to be seen by others, then please do not upload it. At the same time, do not upload any file content that is prohibited by law.")}
+            <span className="topic_content">
+              {Setting.getForumName()}{" "}
+              {i18next.t(
+                "file:File Library is a storage and distribution service for publicly sharing files. The final links of all files will not be protected for privacy, and the Referer will not be checked, so external links without any restrictions can be supported."
+              )}
+              <br />
+              <br />
+              {i18next.t(
+                "file:If the file is something you do not want to be seen by others, then please do not upload it. At the same time, do not upload any file content that is prohibited by law."
+              )}
             </span>
           </div>
         </div>
@@ -369,54 +418,63 @@ class FilesBox extends React.Component {
     return (
       <div class="box">
         <div class="header">
-          <Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-          {" "}<Link to="/i?p=1">Files</Link>
-          {" "}<span class="chevron">&nbsp;›&nbsp;</span>
-          {" "}{file?.fileName}
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+          <Link to="/i?p=1">Files</Link>{" "}
+          <span class="chevron">&nbsp;›&nbsp;</span> {file?.fileName}
         </div>
-        <div class="cell" style={{textAlign: "center", padding: "12px"}}>
-          {
-            file?.fileType === "image" ?
-              <a href={file?.fileUrl} className="img_view" target="_blank">
-                <img src={file?.fileUrl} border="0" className="embedded_image"/>
-              </a> :
-              <a href={file?.fileUrl} className="img_view" target="_blank">
-                <div>
-                  {i18next.t("file:There is no preview for this type of file, click to download/view")}
-                </div>
-              </a>
-          }
+        <div class="cell" style={{ textAlign: "center", padding: "12px" }}>
+          {file?.fileType === "image" ? (
+            <a href={file?.fileUrl} className="img_view" target="_blank">
+              <img src={file?.fileUrl} border="0" className="embedded_image" />
+            </a>
+          ) : (
+            <a href={file?.fileUrl} className="img_view" target="_blank">
+              <div>
+                {i18next.t(
+                  "file:There is no preview for this type of file, click to download/view"
+                )}
+              </div>
+            </a>
+          )}
         </div>
-        <div class="cell"><span class="item_title">{file?.fileName}</span>
+        <div class="cell">
+          <span class="item_title">{file?.fileName}</span>
           <div class="sep5"></div>
           <span class="gray">
-            {
-              file?.fileType === "image" ?
-                <span>
-                  {this.state.fileWidth}𝖷{this.state.fileHeight}
-                  {" "}&nbsp;·&nbsp;
-                </span> : null
-            }
-            {file?.fileExt}{" "}{i18next.t("file:file")}
-            {" "}&nbsp;·&nbsp;
-            {" "}{Setting.getFormattedSize(file?.size)}
-            {" "}&nbsp;·&nbsp;
-            {" "}{Setting.getPrettyDate(file?.createdTime)}
-            {" "}<Link to={`/member/${file?.memberId}`}>{file?.memberId}</Link>
-            {" "}{i18next.t("file:upload")}
-            {" "}&nbsp;·&nbsp;
-            {" "}{file?.views}{" "}{i18next.t("file:views")}
+            {file?.fileType === "image" ? (
+              <span>
+                {this.state.fileWidth}𝖷{this.state.fileHeight} &nbsp;·&nbsp;
+              </span>
+            ) : null}
+            {file?.fileExt} {i18next.t("file:file")} &nbsp;·&nbsp;{" "}
+            {Setting.getFormattedSize(file?.size)} &nbsp;·&nbsp;{" "}
+            {Setting.getPrettyDate(file?.createdTime)}{" "}
+            <Link to={`/member/${file?.memberId}`}>{file?.memberId}</Link>{" "}
+            {i18next.t("file:upload")} &nbsp;·&nbsp; {file?.views}{" "}
+            {i18next.t("file:views")}
           </span>
         </div>
-        {
-          file?.desc.length !== 0 ?
-            <div className="cell">
-              <div className="topic_content">{file?.desc}</div>
-            </div> : null
-        }
-        <div class="cell_ops"><div class="fr"><input type="button" value={i18next.t("file:Delete")} class="super normal button" onClick={() => this.deleteFile(file)} /></div>
-          <input type="button" value={i18next.t("file:Edit information")} class="super normal button" onClick={() => this.props.history.push(`/i/edit/${file?.id}`)}/>
+        {file?.desc.length !== 0 ? (
+          <div className="cell">
+            <div className="topic_content">{file?.desc}</div>
+          </div>
+        ) : null}
+        <div class="cell_ops">
+          <div class="fr">
+            <input
+              type="button"
+              value={i18next.t("file:Delete")}
+              class="super normal button"
+              onClick={() => this.deleteFile(file)}
+            />
+          </div>
+          <input
+            type="button"
+            value={i18next.t("file:Edit information")}
+            class="super normal button"
+            onClick={() => this.props.history.push(`/i/edit/${file?.id}`)}
+          />
         </div>
       </div>
     );
@@ -429,66 +487,101 @@ class FilesBox extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<Link to="/i">Files</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}<Link to={`/i/${file?.id}`}>{file?.fileName}</Link>
-          {" "}<span className="chevron">&nbsp;›&nbsp;</span>
-          {" "}{i18next.t("file:Edit file information")}
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          <Link to="/i">Files</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          <Link to={`/i/${file?.id}`}>{file?.fileName}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("file:Edit file information")}
         </div>
-        {
-          this.renderProblem()
-        }
+        {this.renderProblem()}
         <div className="grid">
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
-            <tr>
-              <td width="160" valign="top" align="center" className="image-edit-left">
-                {
-                  file?.fileType === "image" ?
-                    <Link to={`/i/${file?.id}`} target="_blank" title={i18next.t("file:Open in new window")}>
+              <tr>
+                <td
+                  width="160"
+                  valign="top"
+                  align="center"
+                  className="image-edit-left"
+                >
+                  {file?.fileType === "image" ? (
+                    <Link
+                      to={`/i/${file?.id}`}
+                      target="_blank"
+                      title={i18next.t("file:Open in new window")}
+                    >
                       <img src={file?.fileUrl} border="0" width="160" />
-                    </Link> :
+                    </Link>
+                  ) : (
                     <Link to={`/i/${file?.id}`} target="_blank">
-                      <div style={{lineHeight: "100px"}}>
+                      <div style={{ lineHeight: "100px" }}>
                         {i18next.t("file:No preview for this type of file")}
                       </div>
                     </Link>
-                }
-                <div className="inner">
-                  {
-                    file?.fileType === "image" ?
+                  )}
+                  <div className="inner">
+                    {file?.fileType === "image" ? (
                       <span>
                         {this.state.fileWidth}𝖷{this.state.fileHeight}
                         <div className="sep5"></div>
-                      </span> : null
-                  }
-                  {file?.fileExt}{" "}{i18next.t("file:file")}
-                  <div className="sep5"></div>
-                  {Setting.getFormattedSize(file?.size)}
-                  <div className="sep5"></div>
-                  {file?.views}{" "}{i18next.t("file:views")}
-                </div>
-              </td>
-              <td width="auto" valign="top">
-                <table cellPadding="10" cellSpacing="0" border="0" width="100%">
-                  <tr>
-                    <td>
-                      {i18next.t("file:File title")}
-                      <div className="sep5"></div>
-                      <input type="text" className="sl" name="title" maxLength="64" style={{width: "100%"}} value={this.state.form.fileName} onChange={event => this.updateFormField("fileName", event.target.value)} />
-                      <div className="sep10"></div>
-                      {i18next.t("file:Description")}
-                      <div className="sep5"></div>
-                      <textarea className="ml" style={{width: "100%"}} name="description" maxLength="1000" onChange={event => this.updateFormField("desc", event.target.value)} value={this.state.form.desc} />
-                      <div className="sep10"></div>
-                      <input type="submit" value={i18next.t("file:submit")} className="super normal button" onClick={() => this.editDesc()} />
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
+                      </span>
+                    ) : null}
+                    {file?.fileExt} {i18next.t("file:file")}
+                    <div className="sep5"></div>
+                    {Setting.getFormattedSize(file?.size)}
+                    <div className="sep5"></div>
+                    {file?.views} {i18next.t("file:views")}
+                  </div>
+                </td>
+                <td width="auto" valign="top">
+                  <table
+                    cellPadding="10"
+                    cellSpacing="0"
+                    border="0"
+                    width="100%"
+                  >
+                    <tr>
+                      <td>
+                        {i18next.t("file:File title")}
+                        <div className="sep5"></div>
+                        <input
+                          type="text"
+                          className="sl"
+                          name="title"
+                          maxLength="64"
+                          style={{ width: "100%" }}
+                          value={this.state.form.fileName}
+                          onChange={(event) =>
+                            this.updateFormField("fileName", event.target.value)
+                          }
+                        />
+                        <div className="sep10"></div>
+                        {i18next.t("file:Description")}
+                        <div className="sep5"></div>
+                        <textarea
+                          className="ml"
+                          style={{ width: "100%" }}
+                          name="description"
+                          maxLength="1000"
+                          onChange={(event) =>
+                            this.updateFormField("desc", event.target.value)
+                          }
+                          value={this.state.form.desc}
+                        />
+                        <div className="sep10"></div>
+                        <input
+                          type="submit"
+                          value={i18next.t("file:submit")}
+                          className="super normal button"
+                          onClick={() => this.editDesc()}
+                        />
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -502,7 +595,12 @@ class FilesBox extends React.Component {
     }
 
     return (
-      <PageColumn page={this.state.page} total={this.state.filesNum} url={this.state.url} defaultPageNum={this.state.limit} />
+      <PageColumn
+        page={this.state.page}
+        total={this.state.filesNum}
+        url={this.state.url}
+        defaultPageNum={this.state.limit}
+      />
     );
   }
 
@@ -513,22 +611,24 @@ class FilesBox extends React.Component {
       <div className="cell">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width={pcBrowser ? "300" : "auto"} align="left">
-              <Link to={`/i/${file.id}`}>
-                {file?.fileName}
-              </Link>
-            </td>
-            <td width="10"></td>
-            <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
-              <span style={{fontSize: "13px"}}>
-                {Setting.getFormattedSize(file?.size)}
-              </span>
-            </td>
-            <td  width="100" align="left" style={{textAlign: "center"}}>
-              {Setting.getPrettyDate(file?.createdTime)}
-            </td>
-          </tr>
+            <tr>
+              <td width={pcBrowser ? "300" : "auto"} align="left">
+                <Link to={`/i/${file.id}`}>{file?.fileName}</Link>
+              </td>
+              <td width="10"></td>
+              <td
+                width={pcBrowser ? "auto" : "80"}
+                valign="middle"
+                style={{ textAlign: "center" }}
+              >
+                <span style={{ fontSize: "13px" }}>
+                  {Setting.getFormattedSize(file?.size)}
+                </span>
+              </td>
+              <td width="100" align="left" style={{ textAlign: "center" }}>
+                {Setting.getPrettyDate(file?.createdTime)}
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -548,11 +648,9 @@ class FilesBox extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
-        {
-          problems.map((problem, i) => {
-            return <li>{problem}</li>;
-          })
-        }
+        {problems.map((problem, i) => {
+          return <li>{problem}</li>;
+        })}
       </div>
     );
   }
@@ -560,10 +658,17 @@ class FilesBox extends React.Component {
   renderFileNotFound() {
     return (
       <div className="box">
-        <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
-          className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("error:File not found")}</div>
-        <div className="cell"><span className="gray bigger">404 File Not Found</span></div>
-        <div className="inner">←{" "}<Link to="/">{i18next.t("error:Back to Home Page")}</Link></div>
+        <div className="header">
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("error:File not found")}
+        </div>
+        <div className="cell">
+          <span className="gray bigger">404 File Not Found</span>
+        </div>
+        <div className="inner">
+          ← <Link to="/">{i18next.t("error:Back to Home Page")}</Link>
+        </div>
       </div>
     );
   }
@@ -571,9 +676,16 @@ class FilesBox extends React.Component {
   renderFileLoading() {
     return (
       <div className="box">
-        <div className="header"><Link to="/">{Setting.getForumName()}</Link> <span
-          className="chevron">&nbsp;›&nbsp;</span>{" "}{i18next.t("loading:File is loading")}</div>
-        <div className="cell"><span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span></div>
+        <div className="header">
+          <Link to="/">{Setting.getForumName()}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+          {i18next.t("loading:File is loading")}
+        </div>
+        <div className="cell">
+          <span className="gray bigger">
+            {i18next.t("loading:Please wait patiently...")}
+          </span>
+        </div>
       </div>
     );
   }
@@ -583,9 +695,9 @@ class FilesBox extends React.Component {
 
     if (this.props.account !== null && this.props.account !== undefined) {
       if (!this.state.initOSSClientStatus) {
-        Setting.initOSSClient(this.props.account.id)
+        Setting.initOSSClient(this.props.account.id);
         this.setState({
-          initOSSClientStatus: true
+          initOSSClientStatus: true,
         });
       }
     }
@@ -613,36 +725,41 @@ class FilesBox extends React.Component {
     // url: /i?p=x
     return (
       <div class="box">
-        <div class="cell" style={{padding: "0px"}}>
+        <div class="cell" style={{ padding: "0px" }}>
           <table cellpadding="10" cellspacing="0" border="0" width="100%">
             <tbody>
-            <tr>
-              <td width="64">
-                <img src={Setting.getStatic("/static/img/essentials/images.png")} width="64"/>
-              </td>
-              <td width={pcBrowser ? "200" : "auto"}>
-                <span className="item_title">
-                  {this.props.account?.id}{" "}{i18next.t("file:'s file library")}
-                </span>
-                <div className="sep5"></div>
-                <span className="fade">
-                  {i18next.t("file:There are")}{" "}{this.state.filesNum}{" "}{i18next.t("file:files")}
-                </span>
-              </td>
-              <td width="auto" align="center">
-                <li className="fa fa-cloud-upload"></li>
-                {" "}<Link to="/i/upload">{i18next.t("file:Upload new file")}</Link>
-              </td>
-            </tr>
+              <tr>
+                <td width="64">
+                  <img
+                    src={Setting.getStatic("/static/img/essentials/images.png")}
+                    width="64"
+                  />
+                </td>
+                <td width={pcBrowser ? "200" : "auto"}>
+                  <span className="item_title">
+                    {this.props.account?.id} {i18next.t("file:'s file library")}
+                  </span>
+                  <div className="sep5"></div>
+                  <span className="fade">
+                    {i18next.t("file:There are")} {this.state.filesNum}{" "}
+                    {i18next.t("file:files")}
+                  </span>
+                </td>
+                <td width="auto" align="center">
+                  <li className="fa fa-cloud-upload"></li>{" "}
+                  <Link to="/i/upload">
+                    {i18next.t("file:Upload new file")}
+                  </Link>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
-        <div class="cell" style={{padding: "0px", textAlign: "center"}}>
+        <div class="cell" style={{ padding: "0px", textAlign: "center" }}>
           {Setting.PcBrowser ? this.showPageColumn() : null}
-          {
-            this.state.files !== null && this.state.files.length !== 0 ?
-            this.state.files.map(file => this.renderFiles(file)) : null
-          }
+          {this.state.files !== null && this.state.files.length !== 0
+            ? this.state.files.map((file) => this.renderFiles(file))
+            : null}
           {this.showPageColumn()}
         </div>
       </div>

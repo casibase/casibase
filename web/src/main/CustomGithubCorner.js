@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import * as Conf from "../Conf"
+import * as Conf from "../Conf";
 import GithubCorner from "react-github-corner";
 
 class CustomGithubCorner extends React.Component {
@@ -29,9 +29,7 @@ class CustomGithubCorner extends React.Component {
       return null;
     }
 
-    return (
-      <GithubCorner href={Conf.GithubRepo} />
-    );
+    return <GithubCorner href={Conf.GithubRepo} />;
   }
 }
 

@@ -17,7 +17,7 @@ import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import PageColumn from "./PageColumn";
@@ -30,9 +30,9 @@ const pangu = require("pangu");
 class ReplyBox extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this)
-    this.handleReply = this.handleReply.bind(this)
-    this.changeStickyStatus = this.changeStickyStatus.bind(this)
+    this.handleClick = this.handleClick.bind(this);
+    this.handleReply = this.handleReply.bind(this);
+    this.changeStickyStatus = this.changeStickyStatus.bind(this);
     this.state = {
       classes: props,
       topicId: props.match.params.topicId,
@@ -57,7 +57,7 @@ class ReplyBox extends React.Component {
     } else {
       this.state.page = parseInt(this.state.p);
     }
-  
+
     this.state.url = `/t/${this.state.topicId}`;
   }
 
@@ -67,12 +67,15 @@ class ReplyBox extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevState.reply !== this.state.reply || prevState.sticky !== this.state.sticky) {
+    if (
+      prevState.reply !== this.state.reply ||
+      prevState.sticky !== this.state.sticky
+    ) {
       return;
     }
     let url = window.location.href;
-    let id = url.substring(url.lastIndexOf("#")+1);
-    setTimeout(function() {
+    let id = url.substring(url.lastIndexOf("#") + 1);
+    setTimeout(function () {
       let anchorElement = document.getElementById(id);
       if (anchorElement) {
         anchorElement.scrollIntoView();
@@ -87,42 +90,56 @@ class ReplyBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-      }, () => this.getReplies(false));
+      this.setState(
+        {
+          page: parseInt(page),
+        },
+        () => this.getReplies(false)
+      );
     }
   }
 
   getTopic() {
-    TopicBackend.getTopic(this.state.topicId)
-      .then((res) => {
-        this.setState({
-          topic: res,
-        });
+    TopicBackend.getTopic(this.state.topicId).then((res) => {
+      this.setState({
+        topic: res,
       });
+    });
   }
 
   getReplies(init) {
-    ReplyBackend.getReplies(this.state.topicId, this.state.limit, this.state.page, init)
-      .then((res) => {
-        if (init) {
-          this.setState({
+    ReplyBackend.getReplies(
+      this.state.topicId,
+      this.state.limit,
+      this.state.page,
+      init
+    ).then((res) => {
+      if (init) {
+        this.setState(
+          {
             replies: res?.data,
             repliesNum: res?.data2[0],
             page: res?.data2[1],
-            latestReplyTime: Setting.getPrettyDate(res?.data[res?.data.length - 1]?.createdTime)
-          }, () => {
+            latestReplyTime: Setting.getPrettyDate(
+              res?.data[res?.data.length - 1]?.createdTime
+            ),
+          },
+          () => {
             this.getMemberList();
-          });
-          return;
-        }
-        this.setState({
+          }
+        );
+        return;
+      }
+      this.setState(
+        {
           replies: res?.data,
-          repliesNum: res?.data2[0]
-        }, () => {
+          repliesNum: res?.data2[0],
+        },
+        () => {
           this.getMemberList();
-        });
-      });
+        }
+      );
+    });
   }
 
   handleClick(e) {
@@ -133,7 +150,7 @@ class ReplyBox extends React.Component {
     let temp;
     if (this.state.reply.length !== 0) {
       temp = this.state.reply + "\n";
-    }else {
+    } else {
       temp = this.state.reply;
     }
 
@@ -145,22 +162,22 @@ class ReplyBox extends React.Component {
 
   handleReply(content) {
     this.setState({
-      reply: content
+      reply: content,
     });
   }
 
   changeStickyStatus(status) {
     this.setState({
-      sticky: status
+      sticky: status,
     });
   }
 
   getMemberList() {
     let list = [];
     let temp = [];
-    for (let i = 0; i < this.state.replies.length; ++ i) {
+    for (let i = 0; i < this.state.replies.length; ++i) {
       let flag = true;
-      for (let j = 0; j < temp.length; ++ j) {
+      for (let j = 0; j < temp.length; ++j) {
         if (temp[j] === this.state.replies[i].author) {
           flag = false;
           break;
@@ -173,33 +190,35 @@ class ReplyBox extends React.Component {
     }
     //console.log(list)
     this.setState({
-      memberList: list
+      memberList: list,
     });
   }
 
   thanksReply(id, author) {
-    if (window.confirm(`Are you sure to spend ${this.state.replyThanksCost} coins in thanking @${author} for this reply?`)) {
-      BalanceBackend.addThanks(id, 2)
-        .then((res) => {
-          if (res?.status === "ok") {
-            this.getReplies(false);
-          } else {
-            alert(res?.msg);
-          }
-        });
+    if (
+      window.confirm(
+        `Are you sure to spend ${this.state.replyThanksCost} coins in thanking @${author} for this reply?`
+      )
+    ) {
+      BalanceBackend.addThanks(id, 2).then((res) => {
+        if (res?.status === "ok") {
+          this.getReplies(false);
+        } else {
+          alert(res?.msg);
+        }
+      });
     }
   }
 
   deleteReply(id) {
     if (window.confirm(`Are you sure to delete this reply?`)) {
-      ReplyBackend.deleteReply(id)
-        .then((res) => {
-          if (res?.status === "ok") {
-            this.getReplies(false);
-          } else {
-            alert(res?.msg);
-          }
-        });
+      ReplyBackend.deleteReply(id).then((res) => {
+        if (res?.status === "ok") {
+          this.getReplies(false);
+        } else {
+          alert(res?.msg);
+        }
+      });
     }
   }
 
@@ -210,65 +229,67 @@ class ReplyBox extends React.Component {
         anchorElement.scrollIntoView();
       }
     }
-  }
+  };
 
   showPageColumn() {
     if (this.state.repliesNum < this.state.limit) {
       return;
     }
-    
+
     return (
-      <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url} defaultPageNum={this.state.limit} />
+      <PageColumn
+        page={this.state.page}
+        total={this.state.repliesNum}
+        url={this.state.url}
+        defaultPageNum={this.state.limit}
+      />
     );
   }
 
-  renderImage = ({alt, src}) => {
-    return(
-      <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>
-    );
+  renderImage = ({ alt, src }) => {
+    return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
   };
 
   renderLink = (props) => {
     let check = Setting.checkPageLink(props.href);
     if (check) {
-      return (
-        <a {...props} />
-        );
+      return <a {...props} />;
     }
-    return(
-      <a {...props} target="_blank" rel="nofollow noopener noreferrer" />
-    );
+    return <a {...props} target="_blank" rel="nofollow noopener noreferrer" />;
   };
 
   renderReply() {
     return (
       <div className={`box ${this.props.topic.nodeId}`}>
         <div className={`cell ${this.props.topic.nodeId}`}>
-          <div className="fr" style={{margin: "-3px -5px 0px 0px"}}>
-            {
-              this.props.topic?.tags?.map((tag, i) => {
-                return (
-                  <Link to={`/tag/${tag}`} className={`tag ${this.props.topic.nodeId}`}>
-                    <li className="fa fa-tag" />
-                    {tag}
-                  </Link>
-                );
-              })
-            }
+          <div className="fr" style={{ margin: "-3px -5px 0px 0px" }}>
+            {this.props.topic?.tags?.map((tag, i) => {
+              return (
+                <Link
+                  to={`/tag/${tag}`}
+                  className={`tag ${this.props.topic.nodeId}`}
+                >
+                  <li className="fa fa-tag" />
+                  {tag}
+                </Link>
+              );
+            })}
           </div>
           <span className="gray">
-            {this.state.repliesNum}{" "}{i18next.t("reply:replies")}{" "}&nbsp;
+            {this.state.repliesNum} {i18next.t("reply:replies")} &nbsp;
             <strong className="snow">•</strong>
             &nbsp;{this.state.latestReplyTime}
           </span>
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}
-        {
-          this.state.replies?.map((reply, i) => {
-            return (
-              <div id={`r_${reply.id}`} className={`cell ${this.props.topic.nodeId}`}>
-                <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-                  <tbody>
+        {this.state.replies?.map((reply, i) => {
+          return (
+            <div
+              id={`r_${reply.id}`}
+              className={`cell ${this.props.topic.nodeId}`}
+            >
+              <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+                <tbody>
                   <tr>
                     <td width="48" valign="top" align="center">
                       <Avatar username={reply.author} avatar={reply.avatar} />
@@ -276,45 +297,98 @@ class ReplyBox extends React.Component {
                     <td width="10" valign="top" />
                     <td width="auto" valign="top" align="left">
                       <div className="fr">
-                        {
-                          this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ?
-                            reply?.thanksStatus === false ?
-                              <div id={`thank_area__${reply.id}`} className="thank_area">
-                                <a href="#;" onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }" className="thank" style={{color: "#ccc", display: Setting.PcBrowser ? "" : "none"}}>{i18next.t("reply:ignore")}</a>
-                                &nbsp; &nbsp;
-                                <a href="#;" onClick={() => this.thanksReply(reply.id, reply.author)} className="thank">
-                                  {
-                                    Setting.PcBrowser ?
-                                      i18next.t("reply:thank") :
-                                      <img src={Setting.getStatic("/static/img/heart_neue.png")} style={{verticalAlign: "bottom"}} alt={i18next.t("reply:thank")} width="16" />
-                                  }
-                                </a>
-                              </div> :
-                              <div id={`thank_area__${reply.id}`} className="thank_area thanked">
-                                {i18next.t("reply:thanked")}
-                              </div>
-                            : null
-                        }
-                        {" "}&nbsp;
-                        {
-                          reply?.deletable ?
-                            <div id={`thank_area__${reply.id}`} className="thank_area">
-                              <a href="#;" onClick={() => this.deleteReply(reply.id)} className="delete">
-                                {i18next.t("reply:Delete")}
+                        {this.props.account !== null &&
+                        this.props.account !== undefined &&
+                        this.props.account.id !== reply?.author ? (
+                          reply?.thanksStatus === false ? (
+                            <div
+                              id={`thank_area__${reply.id}`}
+                              className="thank_area"
+                            >
+                              <a
+                                href="#;"
+                                onClick="if (confirm('Are you sure to ignore this reply from @xxx?')) { ignoreReply(9032017, '66707'); }"
+                                className="thank"
+                                style={{
+                                  color: "#ccc",
+                                  display: Setting.PcBrowser ? "" : "none",
+                                }}
+                              >
+                                {i18next.t("reply:ignore")}
                               </a>
                               &nbsp; &nbsp;
-                              <a href={`/edit/reply/${reply.id}`} className="edit">
-                                {i18next.t("reply:Edit")}
+                              <a
+                                href="#;"
+                                onClick={() =>
+                                  this.thanksReply(reply.id, reply.author)
+                                }
+                                className="thank"
+                              >
+                                {Setting.PcBrowser ? (
+                                  i18next.t("reply:thank")
+                                ) : (
+                                  <img
+                                    src={Setting.getStatic(
+                                      "/static/img/heart_neue.png"
+                                    )}
+                                    style={{ verticalAlign: "bottom" }}
+                                    alt={i18next.t("reply:thank")}
+                                    width="16"
+                                  />
+                                )}
                               </a>
-                            </div> : null
-                        }
+                            </div>
+                          ) : (
+                            <div
+                              id={`thank_area__${reply.id}`}
+                              className="thank_area thanked"
+                            >
+                              {i18next.t("reply:thanked")}
+                            </div>
+                          )
+                        ) : null}{" "}
                         &nbsp;
-                        {
-                          this.props.account !== undefined && this.props.account !== null ?
-                            <a href="#;" onClick={() => this.handleClick(`@${reply.author} `)}>
-                              <img src={Setting.getStatic("/static/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
-                            </a> : null
-                        }
+                        {reply?.deletable ? (
+                          <div
+                            id={`thank_area__${reply.id}`}
+                            className="thank_area"
+                          >
+                            <a
+                              href="#;"
+                              onClick={() => this.deleteReply(reply.id)}
+                              className="delete"
+                            >
+                              {i18next.t("reply:Delete")}
+                            </a>
+                            &nbsp; &nbsp;
+                            <a
+                              href={`/edit/reply/${reply.id}`}
+                              className="edit"
+                            >
+                              {i18next.t("reply:Edit")}
+                            </a>
+                          </div>
+                        ) : null}
+                        &nbsp;
+                        {this.props.account !== undefined &&
+                        this.props.account !== null ? (
+                          <a
+                            href="#;"
+                            onClick={() =>
+                              this.handleClick(`@${reply.author} `)
+                            }
+                          >
+                            <img
+                              src={Setting.getStatic(
+                                "/static/img/reply_neue.png"
+                              )}
+                              align="absmiddle"
+                              border="0"
+                              alt="Reply"
+                              width="20"
+                            />
+                          </a>
+                        ) : null}
                         &nbsp;&nbsp;
                         <span className={`no ${this.props.topic.nodeId}`}>
                           {i + 1}
@@ -327,38 +401,52 @@ class ReplyBox extends React.Component {
                         </Link>
                       </strong>
                       &nbsp; &nbsp;
-                      <Link className="ago" to={`#r_${reply.id}`} onClick={() => {
-                        this.scrollToAnchor(`r_${reply?.id}`)
-                      }}>
+                      <Link
+                        className="ago"
+                        to={`#r_${reply.id}`}
+                        onClick={() => {
+                          this.scrollToAnchor(`r_${reply?.id}`);
+                        }}
+                      >
                         {Setting.getPrettyDate(reply.createdTime)}
-                      </Link>
-                      {" "}&nbsp;{" "}
-                      {
-                        reply?.thanksNum !== 0 ?
-                          <span className="small fade">
-                            <img src={Setting.getStatic("/static/img/heart_neue_red.png")} width="14" align="absmiddle" alt="❤️"/>
-                            {" "}{reply?.thanksNum}
-                          </span> : null
-                      }
+                      </Link>{" "}
+                      &nbsp;{" "}
+                      {reply?.thanksNum !== 0 ? (
+                        <span className="small fade">
+                          <img
+                            src={Setting.getStatic(
+                              "/static/img/heart_neue_red.png"
+                            )}
+                            width="14"
+                            align="absmiddle"
+                            alt="❤️"
+                          />{" "}
+                          {reply?.thanksNum}
+                        </span>
+                      ) : null}
                       <div className="sep5" />
-                      <div className={`reply_content ${this.props.topic.nodeId}`}>
+                      <div
+                        className={`reply_content ${this.props.topic.nodeId}`}
+                      >
                         <ReactMarkdown
                           renderers={{
                             image: this.renderImage,
-                            link: this.renderLink
+                            link: this.renderLink,
                           }}
-                          source={Setting.getFormattedContent(reply.content, true)}
+                          source={Setting.getFormattedContent(
+                            reply.content,
+                            true
+                          )}
                           escapeHtml={false}
                         />
                       </div>
                     </td>
                   </tr>
-                  </tbody>
-                </table>
-              </div>
-            );
-          })
-        }
+                </tbody>
+              </table>
+            </div>
+          );
+        })}
         {this.showPageColumn()}
       </div>
     );
@@ -371,20 +459,29 @@ class ReplyBox extends React.Component {
 
     return (
       <div>
-        {
-          this.state.replies.length === 0 ?
-            <div id="no-comments-yet">
-              {i18next.t("reply:No reply yet")}
-            </div> :
-            this.renderReply()
-        }
-        {Setting.PcBrowser ? <div className="sep20"/> : <div className="sep5"/>}
-        {
-          this.props.account === null ? null :
-            <NewReplyBox onReplyChange={this.handleReply} content={this.state.reply} sticky={this.state.sticky}
-                         changeStickyStatus={this.changeStickyStatus} member={this.props.account?.id} nodeId={this.props.topic?.nodeId}
-                         memberList={this.state.memberList} refreshReplies={this.getReplies.bind(this)} topic={this.props.topic} />
-        }
+        {this.state.replies.length === 0 ? (
+          <div id="no-comments-yet">{i18next.t("reply:No reply yet")}</div>
+        ) : (
+          this.renderReply()
+        )}
+        {Setting.PcBrowser ? (
+          <div className="sep20" />
+        ) : (
+          <div className="sep5" />
+        )}
+        {this.props.account === null ? null : (
+          <NewReplyBox
+            onReplyChange={this.handleReply}
+            content={this.state.reply}
+            sticky={this.state.sticky}
+            changeStickyStatus={this.changeStickyStatus}
+            member={this.props.account?.id}
+            nodeId={this.props.topic?.nodeId}
+            memberList={this.state.memberList}
+            refreshReplies={this.getReplies.bind(this)}
+            topic={this.props.topic}
+          />
+        )}
       </div>
     );
   }

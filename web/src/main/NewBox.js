@@ -19,18 +19,18 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
-import "../codemirrorSize.css"
-import {withRouter} from "react-router-dom";
+import "../codemirrorSize.css";
+import { withRouter } from "react-router-dom";
 import i18next from "i18next";
-import $ from "jquery"
-import Select2 from 'react-select2-wrapper';
-import {Resizable} from "re-resizable";
-import {Controlled as CodeMirror} from 'react-codemirror2'
-import "codemirror/lib/codemirror.css"
-import Editor from './richTextEditor'
+import $ from "jquery";
+import Select2 from "react-select2-wrapper";
+import { Resizable } from "re-resizable";
+import { Controlled as CodeMirror } from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+import Editor from "./richTextEditor";
 require("codemirror/mode/markdown/markdown");
 
-const ReactMarkdown = require('react-markdown')
+const ReactMarkdown = require("react-markdown");
 
 class NewBox extends React.Component {
   constructor(props) {
@@ -44,14 +44,16 @@ class NewBox extends React.Component {
       message: "",
       isTypingStarted: false,
       nodeId: this.props.match.params.nodeId,
-      editor: [{
-        text: "markdown",
-        id: 0
-      },
-      {
-        text: "richtext",
-        id: 1
-      }]
+      editor: [
+        {
+          text: "markdown",
+          id: 0,
+        },
+        {
+          text: "richtext",
+          id: 1,
+        },
+      ],
     };
   }
 
@@ -60,15 +62,17 @@ class NewBox extends React.Component {
   }
 
   getNodes() {
-    NodeBackend.getNodes()
-      .then((res) => {
-        this.setState({
+    NodeBackend.getNodes().then((res) => {
+      this.setState(
+        {
           nodes: res,
-        }, () => {
+        },
+        () => {
           this.updateFormField("nodeId", "qna");
           this.updateFormField("nodeName", "问与答");
-        });
-      });
+        }
+      );
+    });
   }
 
   updateFormField(key, value) {
@@ -80,7 +84,7 @@ class NewBox extends React.Component {
     });
   }
 
-  handleValueFromEditor(textValue){
+  handleValueFromEditor(textValue) {
     this.updateFormField("body", textValue);
   }
 
@@ -102,23 +106,22 @@ class NewBox extends React.Component {
     if (!this.isOkToSubmit()) {
       return;
     }
-    if(!this.state.form.editorType) {
+    if (!this.state.form.editorType) {
       this.updateFormField("editorType", "markdown");
     }
-    TopicBackend.addTopic(this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.props.history.push(`/t/${res?.data}/review`);
-        } else {
-          this.setState({
-            message: res.msg,
-          });
-        }
-      });
+    TopicBackend.addTopic(this.state.form).then((res) => {
+      if (res.status === "ok") {
+        this.props.history.push(`/t/${res?.data}/review`);
+      } else {
+        this.setState({
+          message: res.msg,
+        });
+      }
+    });
   }
 
   getIndexFromNodeId(nodeId) {
-    for (let i = 0; i < this.state.nodes.length; i ++) {
+    for (let i = 0; i < this.state.nodes.length; i++) {
       if (this.state.nodes[i].id === nodeId) {
         return i;
       }
@@ -160,17 +163,16 @@ class NewBox extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
-        {i18next.t("error:Please resolve the following issues before creating a new topic")}
+        {i18next.t(
+          "error:Please resolve the following issues before creating a new topic"
+        )}
         <ul>
-          {
-            problems.map((problem, i) => {
-              return <li>{problem}</li>;
-            })
-          }
-          {
-            this.state.message !== "" ?
-              <li>{i18next.t(`error:${this.state.message}`)}</li> : null
-          }
+          {problems.map((problem, i) => {
+            return <li>{problem}</li>;
+          })}
+          {this.state.message !== "" ? (
+            <li>{i18next.t(`error:${this.state.message}`)}</li>
+          ) : null}
         </ul>
       </div>
     );
@@ -179,13 +181,17 @@ class NewBox extends React.Component {
   render() {
     if (this.state.nodeId !== undefined && this.props.account !== undefined) {
       return (
-        <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} />
+        <NewNodeTopicBox
+          nodeId={this.state.nodeId}
+          size={"large"}
+          account={this.props.account}
+        />
       );
     }
 
     if (this.props.account !== null) {
       if (!this.state.initOSSClientStatus) {
-        Setting.initOSSClient(this.props.account?.id)
+        Setting.initOSSClient(this.props.account?.id);
         this.setState({
           initOSSClientStatus: true,
         });
@@ -201,36 +207,56 @@ class NewBox extends React.Component {
         <form method="post" action="/new" id="compose">
           <div className="cell">
             <div className="fr fade" id="title_remaining">
-              {
-                120 - this.countField("title")
-              }
+              {120 - this.countField("title")}
             </div>
             {i18next.t("new:Topic Title")}
           </div>
-          <div className="cell" style={{padding: "0px"}}>
-            <textarea onChange={event => {this.updateFormField("title", event.target.value)}} className="msl" rows="1" maxLength="120" id="topic_title" name="title" autoFocus="autofocus" placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")} >
-              {
-                this.state.form.title
-              }
+          <div className="cell" style={{ padding: "0px" }}>
+            <textarea
+              onChange={(event) => {
+                this.updateFormField("title", event.target.value);
+              }}
+              className="msl"
+              rows="1"
+              maxLength="120"
+              id="topic_title"
+              name="title"
+              autoFocus="autofocus"
+              placeholder={i18next.t(
+                "new:Please input the topic title. The body can be empty if the title expresses the full idea"
+              )}
+            >
+              {this.state.form.title}
             </textarea>
           </div>
           <div className="cell">
             <div className="fr fade" id="content_remaining">
-              {
-                20000 - this.countField("body")
-              }
+              {20000 - this.countField("body")}
             </div>
             {i18next.t("new:Body")}
           </div>
           <div>
             {/* markdown editor */}
-            {!this.state.form.editorType || this.state.form.editorType === "markdown" ? (
-              <div style={{ textAlign: "left", borderBottom: "1px solid #e2e2e2",fontSize: "14px",lineHeight: "120%",}}>
-                <textarea style={{ visibility: "hidden", display: "none" }} maxLength="20000" id="editor" name="content" />
-                <Resizable 
-                enable={false} 
-                defaultSize={{
-                  height: 290,
+            {!this.state.form.editorType ||
+            this.state.form.editorType === "markdown" ? (
+              <div
+                style={{
+                  textAlign: "left",
+                  borderBottom: "1px solid #e2e2e2",
+                  fontSize: "14px",
+                  lineHeight: "120%",
+                }}
+              >
+                <textarea
+                  style={{ visibility: "hidden", display: "none" }}
+                  maxLength="20000"
+                  id="editor"
+                  name="content"
+                />
+                <Resizable
+                  enable={false}
+                  defaultSize={{
+                    height: 290,
                   }}
                 >
                   <CodeMirror
@@ -239,41 +265,41 @@ class NewBox extends React.Component {
                     value={this.state.form.body}
                     onDrop={() => Tools.uploadMdFile()}
                     options={{
-                      mode: 'markdown',
+                      mode: "markdown",
                       lineNumbers: true,
                       lineWrapping: true,
                     }}
                     onBeforeChange={(editor, data, value) => {
                       this.updateFormField("body", value);
                     }}
-                    onChange={(editor, data, value) => { }}
+                    onChange={(editor, data, value) => {}}
                   />
                 </Resizable>
               </div>
             ) : (
-                <div
-                    style={{display:"block", height:"100%"}}>
-                  <Editor
-                    height="400px"
-                    id="richTextEditor"
-                    onBeforeChange={(value) => {
-                      this.updateFormField("body", value);
-                    }}
-                  />
-                </div>
-              )}
+              <div style={{ display: "block", height: "100%" }}>
+                <Editor
+                  height="400px"
+                  id="richTextEditor"
+                  onBeforeChange={(value) => {
+                    this.updateFormField("body", value);
+                  }}
+                />
+              </div>
+            )}
           </div>
           {/* select node */}
-          <div className="cell" style={{display:"flex",justifyContent:"space-between"}}>
+          <div
+            className="cell"
+            style={{ display: "flex", justifyContent: "space-between" }}
+          >
             <Select2
               value={this.getIndexFromNodeId(this.state.form.nodeId)}
-              style={{width: "300px", fontSize: "14px"}}
-              data={
-                this.state.nodes.map((node, i) => {
-                  return {text: `${node.name} / ${node.id}`, id: i};
-                })
-              }
-              onSelect={event => {
+              style={{ width: "300px", fontSize: "14px" }}
+              data={this.state.nodes.map((node, i) => {
+                return { text: `${node.name} / ${node.id}`, id: i };
+              })}
+              onSelect={(event) => {
                 const s = $(event.target).val();
                 if (s === null) {
                   return;
@@ -285,21 +311,17 @@ class NewBox extends React.Component {
                 this.updateFormField("nodeId", nodeId);
                 this.updateFormField("nodeName", nodeName);
               }}
-              options={
-                {
-                  placeholder: i18next.t("new:Please select a node"),
-                }
-              }
+              options={{
+                placeholder: i18next.t("new:Please select a node"),
+              }}
             />
             <Select2
-              value={(this.state.form.editorType)}
+              value={this.state.form.editorType}
               style={{ width: "110px", fontSize: "14px" }}
-              data={
-                this.state.editor.map((node, i) => {
-                  return { text: `${node.text}`, id: i };
-                })
-              }
-              onSelect={event => {
+              data={this.state.editor.map((node, i) => {
+                return { text: `${node.text}`, id: i };
+              })}
+              onSelect={(event) => {
                 const s = $(event.target).val();
                 if (s === null) {
                   return;
@@ -307,38 +329,51 @@ class NewBox extends React.Component {
                 const index = parseInt(s);
                 if (index === 0) {
                   this.updateFormField("editorType", "markdown");
-                }
-                else {
+                } else {
                   this.updateFormField("editorType", "richtext");
                 }
               }}
               options={{ placeholder: i18next.t("new:Switch editor") }}
             />
           </div>
-          <div className="cell" style={{lineHeight: "190%"}}>
-            {i18next.t("new:Hottest Nodes")}
-            {" "}&nbsp;{" "}
-            {
-              this.state.nodes.map((node, i) => {
-                return (
-                  <div style={{display: "inline"}}>
-                    <a href="#" onClick={() => {this.updateFormField("nodeId", node.id); this.updateFormField("nodeName", node.name);} } className="node">{node.name}</a> &nbsp;
-                  </div>
-                );
-              })
-            }
+          <div className="cell" style={{ lineHeight: "190%" }}>
+            {i18next.t("new:Hottest Nodes")} &nbsp;{" "}
+            {this.state.nodes.map((node, i) => {
+              return (
+                <div style={{ display: "inline" }}>
+                  <a
+                    href="#"
+                    onClick={() => {
+                      this.updateFormField("nodeId", node.id);
+                      this.updateFormField("nodeName", node.name);
+                    }}
+                    className="node"
+                  >
+                    {node.name}
+                  </a>{" "}
+                  &nbsp;
+                </div>
+              );
+            })}
           </div>
         </form>
         <div className="cell">
           <div className="fr">
             <span id="error_message" /> &nbsp;
-            <button type="button" className="super normal button" onClick={this.publishTopic.bind(this)}>
+            <button
+              type="button"
+              className="super normal button"
+              onClick={this.publishTopic.bind(this)}
+            >
               <li className="fa fa-paper-plane" />
               &nbsp;{i18next.t("new:Publish")}
             </button>
           </div>
           <div>
-            <button className="super normal button" onClick={this.enablePreview.bind(this)}>
+            <button
+              className="super normal button"
+              onClick={this.enablePreview.bind(this)}
+            >
               <li className="fa fa-eye" />
               &nbsp;{i18next.t("new:Preview")}
             </button>
@@ -348,9 +383,12 @@ class NewBox extends React.Component {
           <div className="topic_content">
             {/* preview in markdown */}
             <div className="markdown_body">
-              {
-                !this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} escapeHtml={false} />
-              }
+              {!this.state.isPreviewEnabled ? null : (
+                <ReactMarkdown
+                  source={this.state.form.body}
+                  escapeHtml={false}
+                />
+              )}
             </div>
           </div>
         </div>

@@ -16,7 +16,7 @@ import React from "react";
 import * as PlaneBackend from "../backend/PlaneBackend";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import i18next from "i18next";
 
 class PlaneBox extends React.Component {
@@ -25,7 +25,7 @@ class PlaneBox extends React.Component {
     this.state = {
       classes: props,
       planes: [],
-      nodesNum: 0
+      nodesNum: 0,
     };
   }
 
@@ -35,26 +35,26 @@ class PlaneBox extends React.Component {
   }
 
   getPlaneList() {
-    PlaneBackend.getPlaneList()
-      .then((res) => {
-        this.setState({
-          planes: res?.data,
-        });
+    PlaneBackend.getPlaneList().then((res) => {
+      this.setState({
+        planes: res?.data,
       });
+    });
   }
 
   getNodesNum() {
-    NodeBackend.getNodesNum()
-      .then((res) => {
-        this.setState({
-          nodesNum: res?.data,
-        });
+    NodeBackend.getNodesNum().then((res) => {
+      this.setState({
+        nodesNum: res?.data,
       });
+    });
   }
 
   renderNode(node) {
     return (
-      <Link to={`/go/${node?.id}`} className="item_node">{node?.name}</Link>
+      <Link to={`/go/${node?.id}`} className="item_node">
+        {node?.name}
+      </Link>
     );
   }
 
@@ -63,17 +63,27 @@ class PlaneBox extends React.Component {
       <span>
         <div className="sep20"></div>
         <div className="box">
-          <div className="header" style={{backgroundColor: plane?.backgroundColor, color: plane?.color}}>
-            <img src={plane?.image} border="0" align="absmiddle" width="24"/>{" "}&nbsp;{" "}{plane?.name}
-            <span className="fr" style={{color: plane?.color, lineHeight: "20px"}}>{plane?.id}{" "}•{" "}<span className="small">{plane?.nodes.length}{" "}nodes</span>
+          <div
+            className="header"
+            style={{
+              backgroundColor: plane?.backgroundColor,
+              color: plane?.color,
+            }}
+          >
+            <img src={plane?.image} border="0" align="absmiddle" width="24" />{" "}
+            &nbsp; {plane?.name}
+            <span
+              className="fr"
+              style={{ color: plane?.color, lineHeight: "20px" }}
+            >
+              {plane?.id} •{" "}
+              <span className="small">{plane?.nodes.length} nodes</span>
             </span>
           </div>
           <div className="inner">
-            {
-              plane?.nodes.map((node) => {
-                return this.renderNode(node);
-              })
-            }
+            {plane?.nodes.map((node) => {
+              return this.renderNode(node);
+            })}
           </div>
         </div>
       </span>
@@ -84,26 +94,32 @@ class PlaneBox extends React.Component {
     return (
       <span>
         <div className="box">
-          <div className="cell" style={{padding: "0px"}}>
+          <div className="cell" style={{ padding: "0px" }}>
             <table cellPadding="10" cellSpacing="0" border="0" width="100%">
               <tr>
                 <td width="64">
-                  <img src={Setting.getStatic("/static/img/network.png")} width="64" alt="Nodes"/>
+                  <img
+                    src={Setting.getStatic("/static/img/network.png")}
+                    width="64"
+                    alt="Nodes"
+                  />
                 </td>
                 <td>
-                  <span className="item_title">{Setting.getForumName()}{" "}{i18next.t("plane:Plane list")}</span>
+                  <span className="item_title">
+                    {Setting.getForumName()} {i18next.t("plane:Plane list")}
+                  </span>
                   <div className="sep5"></div>
-                  <span className="fade">{this.state.nodesNum} nodes now and growing.</span>
+                  <span className="fade">
+                    {this.state.nodesNum} nodes now and growing.
+                  </span>
                 </td>
               </tr>
             </table>
           </div>
         </div>
-        {
-          this.state.planes?.map((plane) => {
-            return this.renderPlane(plane);
-          })
-        }
+        {this.state.planes?.map((plane) => {
+          return this.renderPlane(plane);
+        })}
       </span>
     );
   }

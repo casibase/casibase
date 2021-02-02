@@ -16,17 +16,17 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
-import {withRouter, Link} from "react-router-dom";
-import '../Reply.css'
+import { withRouter, Link } from "react-router-dom";
+import "../Reply.css";
 import * as Tools from "./Tools";
-import "../codemirrorSize.css"
-import "../node.css"
-import "./node-casbin.css"
-import * as CodeMirror from "codemirror"
-import "codemirror/addon/hint/show-hint"
-import "./show-hint.css"
-import {Controlled as CodeMirrorsEditor} from "react-codemirror2";
-import {Resizable} from "re-resizable";
+import "../codemirrorSize.css";
+import "../node.css";
+import "./node-casbin.css";
+import * as CodeMirror from "codemirror";
+import "codemirror/addon/hint/show-hint";
+import "./show-hint.css";
+import { Controlled as CodeMirrorsEditor } from "react-codemirror2";
+import { Resizable } from "re-resizable";
 import i18next from "i18next";
 
 class NewReplyBox extends React.Component {
@@ -40,7 +40,7 @@ class NewReplyBox extends React.Component {
       isTypingStarted: false,
       problem: [],
       message: null,
-      initOSSClientStatus: false
+      initOSSClientStatus: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.synonyms = this.synonyms.bind(this);
@@ -51,9 +51,9 @@ class NewReplyBox extends React.Component {
   }
 
   initOSS() {
-    Setting.initOSSClient(this.props.member)
+    Setting.initOSSClient(this.props.member);
     this.setState({
-      initOSSClientStatus: true
+      initOSSClientStatus: true,
     });
   }
 
@@ -76,7 +76,7 @@ class NewReplyBox extends React.Component {
       problems.push(i18next.t("error:Reply content cannot be empty"));
     }
 
-    return problems.length === 0
+    return problems.length === 0;
   }
 
   renderProblem() {
@@ -99,13 +99,13 @@ class NewReplyBox extends React.Component {
 
     return (
       <div className="problem">
-        {i18next.t("reply:Please resolve the following issues before submitting")}
+        {i18next.t(
+          "reply:Please resolve the following issues before submitting"
+        )}
         <ul>
-          {
-            problems.map((problem, i) => {
-              return <li>{problem}</li>;
-            })
-          }
+          {problems.map((problem, i) => {
+            return <li>{problem}</li>;
+          })}
         </ul>
       </div>
     );
@@ -120,18 +120,17 @@ class NewReplyBox extends React.Component {
     }
 
     this.updateFormField("topicId", this.props.topic?.id);
-    ReplyBackend.addReply(this.state.form)
-      .then((res) => {
-        if (res.status === 'ok') {
-          this.props.onReplyChange("");
-          this.props.refreshReplies();
-          Setting.scrollToBottom();
-        } else {
-           this.setState({
-             message: res.msg,
-           });
-        }
-      });
+    ReplyBackend.addReply(this.state.form).then((res) => {
+      if (res.status === "ok") {
+        this.props.onReplyChange("");
+        this.props.refreshReplies();
+        Setting.scrollToBottom();
+      } else {
+        this.setState({
+          message: res.msg,
+        });
+      }
+    });
   }
 
   handleChange(editor, value) {
@@ -142,7 +141,7 @@ class NewReplyBox extends React.Component {
         message: null,
       });
     }
-    if (value.substring(value.length-1) === "@") {
+    if (value.substring(value.length - 1) === "@") {
       CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
     }
   }
@@ -158,17 +157,24 @@ class NewReplyBox extends React.Component {
   synonyms(cm, option) {
     let comp = this.props.memberList;
     let res = [];
-    return new Promise(function(accept) {
-      setTimeout(function() {
-        let cursor = cm.getCursor(), line = cm.getLine(cursor.line);
-        let start = cursor.ch, end = cursor.ch;
+    return new Promise(function (accept) {
+      setTimeout(function () {
+        let cursor = cm.getCursor(),
+          line = cm.getLine(cursor.line);
+        let start = cursor.ch,
+          end = cursor.ch;
         while (start && line.charAt(start - 1) !== "@") --start;
         while (end < line.length && /\w/.test(line.charAt(end))) ++end;
         let word = line.slice(start, end).toLowerCase();
-        for (let i = 0; i < comp.length; i++) if (comp[i].includes(word)) {res.push(comp[i]);}
-        return accept({list: res,
-          from: CodeMirror.Pos(cursor.line, start+1),
-          to: CodeMirror.Pos(cursor.line, end)})
+        for (let i = 0; i < comp.length; i++)
+          if (comp[i].includes(word)) {
+            res.push(comp[i]);
+          }
+        return accept({
+          list: res,
+          from: CodeMirror.Pos(cursor.line, start + 1),
+          to: CodeMirror.Pos(cursor.line, end),
+        });
       }, 100);
     });
   }
@@ -185,28 +191,51 @@ class NewReplyBox extends React.Component {
     }
 
     return (
-      <div className={["box", this.props.sticky ? "sticky" : "", `${this.props.nodeId}`].join(' ')} id="reply-box">
+      <div
+        className={[
+          "box",
+          this.props.sticky ? "sticky" : "",
+          `${this.props.nodeId}`,
+        ].join(" ")}
+        id="reply-box"
+      >
         <div className={`cell ${this.props.nodeId}`}>
           <div className="fr">
-            <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button" className={`${this.props.nodeId}`}>
+            <a
+              onClick={this.undockBox.bind(this)}
+              style={{ display: this.props.sticky ? "" : "none" }}
+              id="undock-button"
+              className={`${this.props.nodeId}`}
+            >
               {i18next.t("reply:Undock")}
-            </a>
-            {" "}&nbsp; &nbsp;{" "}
-            <a href="#" onClick={this.backToTop.bind(this)} className={`${this.props.nodeId}`}>
+            </a>{" "}
+            &nbsp; &nbsp;{" "}
+            <a
+              href="#"
+              onClick={this.backToTop.bind(this)}
+              className={`${this.props.nodeId}`}
+            >
               {i18next.t("reply:Back to Top")}
             </a>
           </div>
           {i18next.t("reply:Add a New Comment")}
         </div>
-        {
-          this.renderProblem()
-        }
-        <div className={`cell ${this.props.nodeId}`} >
-          <div style={{overflow: "hidden", overflowWrap: "break-word", resize: "none", height: "112px"}} className={`mll ${this.props.nodeId}`} id="reply_content" >
+        {this.renderProblem()}
+        <div className={`cell ${this.props.nodeId}`}>
+          <div
+            style={{
+              overflow: "hidden",
+              overflowWrap: "break-word",
+              resize: "none",
+              height: "112px",
+            }}
+            className={`mll ${this.props.nodeId}`}
+            id="reply_content"
+          >
             <Resizable
               enable={false}
               defaultSize={{
-                height:112,
+                height: 112,
               }}
             >
               <CodeMirrorsEditor
@@ -216,14 +245,23 @@ class NewReplyBox extends React.Component {
                 onFocus={() => this.dockBox(true)}
                 onDrop={() => Tools.uploadMdFile()}
                 options={{
-                  mode: 'markdown', lineNumbers: false, lineWrapping: true, theme:`${this.props.nodeId}`,
-                  extraKeys:{"Ctrl-Space": "autocomplete"}, hintOptions: {hint: this.synonyms, alignWithWord: false, closeOnUnfocus:false, closeOnBlur: false, className: "textcomplete-item"}
+                  mode: "markdown",
+                  lineNumbers: false,
+                  lineWrapping: true,
+                  theme: `${this.props.nodeId}`,
+                  extraKeys: { "Ctrl-Space": "autocomplete" },
+                  hintOptions: {
+                    hint: this.synonyms,
+                    alignWithWord: false,
+                    closeOnUnfocus: false,
+                    closeOnBlur: false,
+                    className: "textcomplete-item",
+                  },
                 }}
                 onBeforeChange={(editor, data, value) => {
-                  this.handleChange(editor, value)
+                  this.handleChange(editor, value);
                 }}
-                onChange={(editor, data, value) => {
-                }}
+                onChange={(editor, data, value) => {}}
               />
             </Resizable>
           </div>
@@ -231,15 +269,22 @@ class NewReplyBox extends React.Component {
           <div className="fr">
             <div className="sep5" />
             <span className="gray">
-              {i18next.t("reply:Make your comment helpful for others as much as possible")}
+              {i18next.t(
+                "reply:Make your comment helpful for others as much as possible"
+              )}
             </span>
           </div>
-          <input onClick={this.publishReply.bind(this)} type="submit" value={i18next.t("reply:Reply")} className="super normal button" />
+          <input
+            onClick={this.publishReply.bind(this)}
+            type="submit"
+            value={i18next.t("reply:Reply")}
+            className="super normal button"
+          />
         </div>
         <div className="inner">
           <div className="fr">
             <Link to="/" className={`${this.props.nodeId}`}>
-              ←{" "}{Setting.getForumName()}
+              ← {Setting.getForumName()}
             </Link>
           </div>
           &nbsp;

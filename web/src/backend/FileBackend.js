@@ -16,44 +16,47 @@ import * as Setting from "../Setting";
 
 export function addFileRecord(values) {
   return fetch(`${Setting.ServerUrl}/api/add-file-record`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(values),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function getFiles(limit, page) {
-  return fetch(`${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+  return fetch(
+    `${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }
 
 export function deleteFile(id) {
   return fetch(`${Setting.ServerUrl}/api/delete-file?id=${id}`, {
-    method: 'POST',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getFile(id) {
   return fetch(`${Setting.ServerUrl}/api/get-file?id=${id}`, {
-    method: 'GET',
-    credentials: 'include'
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateFileDesc(id, values) {
   return fetch(`${Setting.ServerUrl}/api/update-file-desc?id=${id}`, {
-    method: 'POST',
-    credentials: 'include',
+    method: "POST",
+    credentials: "include",
     body: JSON.stringify(values),
-  }).then(res => res.json());
+  }).then((res) => res.json());
 }
 
 export function getFileNum() {
   return fetch(`${Setting.ServerUrl}/api/get-file-num`, {
-    method: 'GET',
-    credentials: 'include',
-  }).then(res => res.json());
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }

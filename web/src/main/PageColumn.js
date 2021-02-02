@@ -14,9 +14,9 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
-import '../Bottom.css';
-import './node-casbin.css';
+import { withRouter, Link } from "react-router-dom";
+import "../Bottom.css";
+import "./node-casbin.css";
 import i18next from "i18next";
 
 class PageColumn extends React.Component {
@@ -27,7 +27,7 @@ class PageColumn extends React.Component {
       maxPages: -1,
       minPage: 1,
       showPages: [],
-      defaultPageNum: 20
+      defaultPageNum: 20,
     };
     if (this.props.defaultPageNum !== undefined) {
       this.state.defaultPageNum = this.props.defaultPageNum;
@@ -46,23 +46,28 @@ class PageColumn extends React.Component {
 
   keyUp = (e) => {
     if (e.keyCode === 13) {
-      this.gotoPage(this.props.url ,e.target.value);
+      this.gotoPage(this.props.url, e.target.value);
     }
-  }
+  };
 
   getMaxPage() {
-    this.setState({
-      maxPage: this.handleMaxPage(this.props.total)
-    }, () => {
-      if (this.props.page > this.state.maxPage) this.gotoPage(this.props.url, this.state.maxPage);
-      if (this.props.page < this.state.minPage) this.gotoPage(this.props.url, this.state.minPage);
-      this.getPages();
-    });
+    this.setState(
+      {
+        maxPage: this.handleMaxPage(this.props.total),
+      },
+      () => {
+        if (this.props.page > this.state.maxPage)
+          this.gotoPage(this.props.url, this.state.maxPage);
+        if (this.props.page < this.state.minPage)
+          this.gotoPage(this.props.url, this.state.minPage);
+        this.getPages();
+      }
+    );
   }
 
   getPages() {
     this.setState({
-      showPages: this.getShowPages(this.props.page, this.state.maxPage)
+      showPages: this.getShowPages(this.props.page, this.state.maxPage),
     });
   }
 
@@ -80,13 +85,13 @@ class PageColumn extends React.Component {
     let pages = [];
 
     if (total <= 10) {
-      for (let i = 1; i <= total; i ++) {
+      for (let i = 1; i <= total; i++) {
         pages.push(i);
       }
       return pages;
     }
     if (page < 6) {
-      for (let i = 1; i <= 10; i ++) {
+      for (let i = 1; i <= 10; i++) {
         pages.push(i);
       }
       pages.push("...");
@@ -94,19 +99,21 @@ class PageColumn extends React.Component {
       return pages;
     }
 
-    let left = page, right = page, sum = 9;
+    let left = page,
+      right = page,
+      sum = 9;
     pages.push(page);
 
-    for (let i = 0; i < 5; i ++) {
-      right ++;
+    for (let i = 0; i < 5; i++) {
+      right++;
       if (right >= total) {
         break;
       }
       pages.push(right);
-      sum --;
+      sum--;
     }
-    for (let i = 0; i < sum; i ++) {
-      left --;
+    for (let i = 0; i < sum; i++) {
+      left--;
       pages.unshift(left);
     }
     pages.unshift(1, "...");
@@ -120,14 +127,30 @@ class PageColumn extends React.Component {
   renderPage(i, page, url) {
     return (
       <span>
-        {page === i ? <Link to={`${url}?p=${i}`} className={`page_current ${this.props.nodeId}`}>{i}</Link> : i === "..." ? <span className="fade"> ... </span> : <Link to={`${url}?p=${i}`} className={`page_normal ${this.props.nodeId}`}>{i}</Link>}
+        {page === i ? (
+          <Link
+            to={`${url}?p=${i}`}
+            className={`page_current ${this.props.nodeId}`}
+          >
+            {i}
+          </Link>
+        ) : i === "..." ? (
+          <span className="fade"> ... </span>
+        ) : (
+          <Link
+            to={`${url}?p=${i}`}
+            className={`page_normal ${this.props.nodeId}`}
+          >
+            {i}
+          </Link>
+        )}
         &nbsp;
       </span>
     );
   }
 
   gotoPage(url, page) {
-    this.props.history.push(`${url}?p=${page}`)
+    this.props.history.push(`${url}?p=${page}`);
     //Setting.goToLink(`${url}?p=${page}`);
   }
 
@@ -135,7 +158,7 @@ class PageColumn extends React.Component {
     if (this.state.maxPage <= 1) {
       return null;
     }
-    const {page, url} = this.props;
+    const { page, url } = this.props;
 
     if (!Setting.PcBrowser) {
       return (
@@ -143,9 +166,15 @@ class PageColumn extends React.Component {
           <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
               <td width="120" align="left">
-                <input type="button" onClick={() => {
-                  this.gotoPage(url, page - 1)
-                }} value={`‹ ${i18next.t("topic:Last")}`} className="super normal button" style={{display: page > 1 ? "block" : "none"}}/>
+                <input
+                  type="button"
+                  onClick={() => {
+                    this.gotoPage(url, page - 1);
+                  }}
+                  value={`‹ ${i18next.t("topic:Last")}`}
+                  className="super normal button"
+                  style={{ display: page > 1 ? "block" : "none" }}
+                />
               </td>
               <td width="auto" align="center">
                 <strong class="fade">
@@ -153,9 +182,14 @@ class PageColumn extends React.Component {
                 </strong>
               </td>
               <td width="120" align="right">
-                <input type="button" onClick={() => {
-                  this.gotoPage(url, page + 1)
-                }} value={`${i18next.t("topic:Next")} ›`} className="super normal button" />
+                <input
+                  type="button"
+                  onClick={() => {
+                    this.gotoPage(url, page + 1);
+                  }}
+                  value={`${i18next.t("topic:Next")} ›`}
+                  className="super normal button"
+                />
               </td>
             </tr>
           </table>
@@ -164,65 +198,106 @@ class PageColumn extends React.Component {
     }
 
     return (
-      <div className={`cell ${this.props.nodeId}`}
-           style={{backgroundImage: "url('/static/img/shadow_light.png')", backgroundSize: "20px 20px", backgroundRepeat: "repeat-x"}}>
+      <div
+        className={`cell ${this.props.nodeId}`}
+        style={{
+          backgroundImage: "url('/static/img/shadow_light.png')",
+          backgroundSize: "20px 20px",
+          backgroundRepeat: "repeat-x",
+        }}
+      >
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
-          <tr>
-            <td width="92%" align="left">
-              {
-                this.state.showPages.map((i) => {
+            <tr>
+              <td width="92%" align="left">
+                {this.state.showPages.map((i) => {
                   return this.renderPage(i, page, url);
-                })
-              }
-              <input type="number" className="page_input" autoComplete="off" defaultValue={page} min="1"
-                     max={this.state.maxPage} onKeyDown={this.keyUp}/>
-            </td>
-            <td width="8%" align="right">
-              <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-                <tbody>
-                <tr>
-                  {
-                    page <= 1 ?
-                      <td width="50%" align="center" className="super normal button disable_now"
-                          style={{borderRight: "none", borderTopRightRadius: "0px", borderBottomRightRadius: "0px"}}>
-                        ❮
-                      </td> :
-                      <td width="50%" align="center"
+                })}
+                <input
+                  type="number"
+                  className="page_input"
+                  autoComplete="off"
+                  defaultValue={page}
+                  min="1"
+                  max={this.state.maxPage}
+                  onKeyDown={this.keyUp}
+                />
+              </td>
+              <td width="8%" align="right">
+                <table cellPadding="0" cellSpacing="0" border="0" width="100%">
+                  <tbody>
+                    <tr>
+                      {page <= 1 ? (
+                        <td
+                          width="50%"
+                          align="center"
+                          className="super normal button disable_now"
+                          style={{
+                            borderRight: "none",
+                            borderTopRightRadius: "0px",
+                            borderBottomRightRadius: "0px",
+                          }}
+                        >
+                          ❮
+                        </td>
+                      ) : (
+                        <td
+                          width="50%"
+                          align="center"
                           className={"super normal button button pageColumn"}
-                          style={{borderRight: "none", borderTopRightRadius: "0px", borderBottomRightRadius: "0px"}}
-                          onClick={() => {
-                            this.gotoPage(url, page - 1)
+                          style={{
+                            borderRight: "none",
+                            borderTopRightRadius: "0px",
+                            borderBottomRightRadius: "0px",
                           }}
-                          title="Front page">
-                        ❮
-                      </td>
-                  }
-                  {
-                    page >= this.state.maxPage ?
-                      <td width="50%" align="center" className="super normal_page_right button disable_now"
-                          style={{borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px"}}>
-                        ❯
-                      </td> :
-                      <td width="50%" align="center"
-                          className={"super normal_page_right button pageColumn"}
-                          style={{borderTopLeftRadius: "0px", borderBottomLeftRadius: "0px"}}
                           onClick={() => {
-                            this.gotoPage(url, page + 1)
+                            this.gotoPage(url, page - 1);
                           }}
-                          title="Next page">
-                        ❯
-                      </td>
-                  }
-                </tr>
-                </tbody>
-              </table>
-            </td>
-          </tr>
+                          title="Front page"
+                        >
+                          ❮
+                        </td>
+                      )}
+                      {page >= this.state.maxPage ? (
+                        <td
+                          width="50%"
+                          align="center"
+                          className="super normal_page_right button disable_now"
+                          style={{
+                            borderTopLeftRadius: "0px",
+                            borderBottomLeftRadius: "0px",
+                          }}
+                        >
+                          ❯
+                        </td>
+                      ) : (
+                        <td
+                          width="50%"
+                          align="center"
+                          className={
+                            "super normal_page_right button pageColumn"
+                          }
+                          style={{
+                            borderTopLeftRadius: "0px",
+                            borderBottomLeftRadius: "0px",
+                          }}
+                          onClick={() => {
+                            this.gotoPage(url, page + 1);
+                          }}
+                          title="Next page"
+                        >
+                          ❯
+                        </td>
+                      )}
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
-    )
+    );
   }
 }
 

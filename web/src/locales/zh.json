@@ -1,6 +1,5 @@
 {
-  "general":
-  {
+  "general": {
     "Home": "首页",
     "Sign Up": "注册",
     "Sign In": "登录",
@@ -18,13 +17,11 @@
     "Language": "语言选择",
     "Admin": "后台"
   },
-  "login":
-  {
+  "login": {
     "Are you a bot?": "你是机器人么？",
     "Please enter the verification code in the picture above": "请输入上图中的验证码"
   },
-  "signup":
-  {
+  "signup": {
     "Send the verification code again in": "",
     "seconds": "秒后再次发送验证码",
     "Validate Code": "验证码",
@@ -46,28 +43,24 @@
     "Please select a area code": "请选择国际电话区号",
     "Area code": "国际电话区号"
   },
-  "signin":
-  {
+  "signin": {
     "Sign in with QQ": "通过QQ号登录",
     "Sign in with WeChat": "通过微信号登录",
     "Sign in with Google": "通过Google登录",
     "Sign in with Github": "通过Github登录"
   },
-  "signout":
-  {
+  "signout": {
     "Are you sure to log out?": "确定要登出？",
     "Click to sign out": "点击登出"
   },
-  "edit":
-  {
+  "edit": {
     "Edit content": "编辑内容",
     "You cannot edit this content.": "你不能编辑此内容。",
     "Edit reply": "编辑回复",
     "Save": "保存",
     "Edit topic": "编辑主题"
   },
-  "move":
-  {
+  "move": {
     "Move topic": "移动主题",
     "Topic": "主题",
     "Title": "标题",
@@ -76,8 +69,7 @@
     "You cannot move this topic.": "你不能移动此主题。",
     "Move": "移动"
   },
-  "bar":
-  {
+  "bar": {
     "Nodes": "节点收藏",
     "Topics": "主题收藏",
     "Watch": "特别关注",
@@ -107,8 +99,7 @@
     "Today Top 10": "今日热议主题",
     "File library": "文件库"
   },
-  "balance":
-  {
+  "balance": {
     "Checkin bonus": "每日登录奖励",
     "'s daily checkin bonus": "的每日登录奖励",
     "Received thanks": "收到谢意",
@@ -142,8 +133,7 @@
     "进行置顶操作": "进行置顶操作",
     "copper": "铜币"
   },
-  "mission":
-  {
+  "mission": {
     "Daily tasks": "日常任务",
     "Successfully received daily checkin bonus": "已成功领取每日登录奖励",
     "Logged in continuously": "已连续登录",
@@ -153,8 +143,7 @@
     "Daily checkin bonus": "每日登录奖励",
     "Daily checkin bonus has been received": "每日登录奖励已领取"
   },
-  "topic":
-  {
+  "topic": {
     "last reply from": "最后回复来自",
     "Cancel Favor": "取消收藏",
     "Favor": "加入收藏",
@@ -242,8 +231,7 @@
     "Search": "搜索",
     "Please change the basic information through the topic page": "请通过主题页面来更改部分信息"
   },
-  "new":
-  {
+  "new": {
     "Topic Title": "主题标题",
     "Please select a node": "请选择一个节点",
     "Please input the topic title. The body can be empty if the title expresses the full idea": "请输入主题标题，如果标题能够表达完整内容，则正文可以为空",
@@ -256,8 +244,7 @@
     "Switch editor": "切换编辑器",
     "richtext": "富文本"
   },
-  "fav":
-  {
+  "fav": {
     "Add to favorite": "加入收藏",
     "Cancel favorite": "取消收藏",
     "My Favorite Nodes": "我收藏的节点",
@@ -266,8 +253,7 @@
     "My favorite topics": "我收藏的主题",
     "Latest topics from people I followed": "我关注的人的最新主题"
   },
-  "node":
-  {
+  "node": {
     "members have added this node to favorites": "人收藏了这个节点",
     "Total topics": "主题总数",
     "Ignore this node": "忽略这个节点",
@@ -332,8 +318,7 @@
     "Please go to the background page to continue to improve the information and submit": "请前往背景页面继续完善信息然后提交",
     "sorter": "排序"
   },
-  "tab":
-  {
+  "tab": {
     "Are you sure to delete tab": "你确定要删除该类别",
     "Please delete all the nodes and posts under the tab before deleting the tab": "请先删除该Tab下的所有节点、帖子后，再删除Tab",
     "Currently the number of nodes under the tab is": "目前该Tab下的节点个数为",
@@ -368,8 +353,7 @@
     "Add new tab": "新建类别",
     "Basic Info": "基本信息"
   },
-  "plane":
-  {
+  "plane": {
     "Plane list": "位面列表",
     "Are you sure to delete plane": "你确定删除位面",
     "Please delete all the nodes or move to another plane before deleting the plane": "在删除位面之前请删除位面下所有节点或移动至其他位面",
@@ -410,13 +394,11 @@
     "Basic Info": "基本信息",
     "Display": "显示"
   },
-  "newNodeTopic":
-  {
+  "newNodeTopic": {
     "Publish": "创建",
     "Preview": "预览"
   },
-  "reply":
-  {
+  "reply": {
     "replies": "条回复",
     "thank": "感谢回复者",
     "thanked": "感谢已发送",
@@ -431,8 +413,7 @@
     "Delete": "删除",
     "Edit": "编辑"
   },
-  "member":
-  {
+  "member": {
     "Watch": "加入特别关注",
     "member": "号会员",
     "member, joined on": "号会员，加入于",
@@ -497,8 +478,7 @@
     "Basic Info": "基本信息",
     "Personal Info": "个人信息"
   },
-  "setting":
-  {
+  "setting": {
     "Username": "用户名",
     "Phone": "手机号",
     "Modify phone": "验证手机号",
@@ -552,8 +532,7 @@
     "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.": "账户，现在请设置你的用户名，你只能使用半角英文字母和数字。其他用户可以通过@你的用户名向你发送消息。设置后无法更改用户名。",
     "save": "保存"
   },
-  "notification":
-  {
+  "notification": {
     "Total reminders received": "总共收到提醒",
     "Reminder system": "提醒系统",
     "Thanks for your reply in topic": "感谢了你在主题",
@@ -567,8 +546,7 @@
     "里提到了你": "里提到了你",
     "Delete": "删除"
   },
-  "forgot":
-  {
+  "forgot": {
     "Reset password by phone": "通过手机号重置密码",
     "Reset password by email": "通过邮箱重置密码",
     "Username": "用户名",
@@ -587,8 +565,7 @@
     "The password reset is complete. You can now log in with the new password.": "密码重设完成。现在可以使用新密码登录了。",
     "Log in now": "现在登录"
   },
-  "file":
-  {
+  "file": {
     "Confirm to delete": "确认删除",
     "?": "？",
     "The title information of the image is necessary": "图片的标题信息是必要的",
@@ -620,8 +597,7 @@
     "files": "个文件",
     "Uploading...": "上传中......"
   },
-  "loading":
-  {
+  "loading": {
     "Please wait patiently...": "请耐心等待......",
     "Topic is loading": "主题正在加载",
     "Page is loading": "页面正在加载",
@@ -630,8 +606,7 @@
     "Node is loading": "节点正在加载",
     "File is loading": "文件正在加载"
   },
-  "footer":
-  {
+  "footer": {
     "About": "关于",
     "Mission": "我们的愿景",
     "Advertise": "广告投放",
@@ -660,8 +635,7 @@
     "Desc": "降序",
     "Ignore": "忽略"
   },
-  "error":
-  {
+  "error": {
     "Reply title cannot be empty": "回复内容不能为空",
     "Topic title cannot be empty": "主题标题不能为空",
     "Node not found": "节点未找到",

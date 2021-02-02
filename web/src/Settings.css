@@ -12,17 +12,17 @@
 /* limitations under the License.                                           */
 
 .page-content-header {
-    padding: 10px;
-    align-items: center;
-    display: flex;
+  padding: 10px;
+  align-items: center;
+  display: flex;
 }
 
 .page-content-header h2 {
-    font-weight: 400;
-    font-size: 16px;
-    text-align: left;
-    margin: 0 0 0 20px;
-    padding: 0;
-    border: none;
-    flex: 1 1 100%;
+  font-weight: 400;
+  font-size: 16px;
+  text-align: left;
+  margin: 0 0 0 20px;
+  padding: 0;
+  border: none;
+  flex: 1 1 100%;
 }
