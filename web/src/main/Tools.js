@@ -153,3 +153,65 @@ export function uploadAvatar(file, redirectUrl) {
       Setting.showMessage("error", `Adding image failed：${error}`)
     );
 }
+
+export function myUploadFn(param) {
+  const errorFn = (response) => {
+    // 上传发生错误时调用param.error
+    param.error({
+      msg: "unable to upload.",
+    });
+  };
+  const successFn = (response) => {
+    param.success({
+      url: mdUrl,
+      meta: {
+        id: fileName,
+        title: originalFileName,
+        alt: originalFileName,
+      },
+    });
+  };
+
+  let newClient,
+    url,
+    timestamp,
+    path,
+    filePath,
+    fileName,
+    size,
+    originalFileName,
+    uploadStatus = false;
+
+  newClient = Setting.OSSClient;
+  path = Setting.OSSFileUrl;
+  url = Setting.OSSUrl;
+
+  timestamp = Date.parse(new Date());
+
+  let fileType = Setting.getFileType(param.file.name);
+  size = param.file.size;
+  originalFileName = param.file.name;
+  fileName = timestamp + "." + fileType.ext;
+
+  let mdUrl = `${url}/${fileType.fileType}/${fileName}`;
+  filePath = `${path}/${fileType.fileType}/${fileName}`; //path
+
+  newClient
+    .multipartUpload(`${filePath}`, param.file)
+    .then((res) => {
+      console.log("upload success");
+      // this.onFileUploadResponse(file.name, encodeURI(mdUrl));
+      uploadStatus = true;
+      FileBackend.addFileRecord({
+        fileName: originalFileName,
+        filePath: filePath,
+        fileUrl: mdUrl,
+        size: size,
+      });
+      successFn();
+    })
+    .catch((error) => {
+      errorFn();
+      return Setting.showMessage("error", `Adding image failed：${error}`);
+    });
+}
