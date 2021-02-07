@@ -61,7 +61,7 @@ export function uploadMdFile(addMsg) {
   timestamp = Date.parse(new Date());
 
   /* eslint-disable */ inlineAttachment.prototype.uploadFile = function (file) {
-    if (file.size > 6291456) {
+    if (file.size > 1024 * 1024 * 6) {
       alert("File size exceeds 6MB");
       return;
     }
@@ -76,7 +76,6 @@ export function uploadMdFile(addMsg) {
     newClient
       .multipartUpload(`${filePath}`, file)
       .then((res) => {
-        console.log("upload success");
         this.onFileUploadResponse(file.name, encodeURI(mdUrl));
         uploadStatus = true;
         FileBackend.addFileRecord({
@@ -87,14 +86,17 @@ export function uploadMdFile(addMsg) {
         });
       })
       .catch((error) =>
-        Setting.showMessage("error", `Adding image failed：${error}`)
+        Setting.showMessage(
+          "error",
+          i18next.t("Adding image failed") + `：${error}`
+        )
       );
   };
 }
 
 // upload file through files page
 export function uploadFile(file) {
-  if (file.size > 6291456) {
+  if (file.size > 1024 * 1024 * 6) {
     alert("File size exceeds 6MB");
     return;
   }
@@ -111,11 +113,9 @@ export function uploadFile(file) {
   let filePath = `${path}/${fileType.fileType}/${fileName}`; //path
   newClient
     .multipartUpload(`${filePath}`, file)
-    .then((res) => {
-      console.log("upload success");
-    })
+    .then((res) => {})
     .catch((error) =>
-      Setting.showMessage("error", `Add file failed：${error}`)
+      Setting.showMessage("error", i18next.t("Add file failed") + `：${error}`)
     );
 
   return FileBackend.addFileRecord({
@@ -135,7 +135,7 @@ export function uploadAvatar(file, redirectUrl) {
   url = Setting.OSSUrl;
   timestamp = Date.parse(new Date());
   fileName = timestamp + "." + fileType.ext;
-  if (file.size > 2097152) {
+  if (file.size > 2 * 1024 * 1024) {
     alert("File size exceeds 2MB");
     return;
   }
@@ -144,21 +144,23 @@ export function uploadAvatar(file, redirectUrl) {
   newClient
     .multipartUpload(`${filePath}`, file)
     .then((res) => {
-      console.log("upload success");
       MemberBackend.updateMemberAvatar(`${url}/avatar/${fileName}`).then(
         () => (window.location.href = `${redirectUrl}?success=true`)
       );
     })
     .catch((error) =>
-      Setting.showMessage("error", `Adding image failed：${error}`)
+      Setting.showMessage(
+        "error",
+        i18next.t("Adding image failed") + `：${error}`
+      )
     );
 }
 
 export function myUploadFn(param) {
   const errorFn = (response) => {
-    // 上传发生错误时调用param.error
+    // call the erroFn when the upload process failed.
     param.error({
-      msg: "unable to upload.",
+      msg: i18next.t("Adding image failed"),
     });
   };
   const successFn = (response) => {
@@ -179,8 +181,7 @@ export function myUploadFn(param) {
     filePath,
     fileName,
     size,
-    originalFileName,
-    uploadStatus = false;
+    originalFileName;
 
   newClient = Setting.OSSClient;
   path = Setting.OSSFileUrl;
@@ -195,12 +196,9 @@ export function myUploadFn(param) {
 
   let mdUrl = `${url}/${fileType.fileType}/${fileName}`;
   filePath = `${path}/${fileType.fileType}/${fileName}`; //path
-
   newClient
     .multipartUpload(`${filePath}`, param.file)
     .then((res) => {
-      console.log("upload success");
-      // this.onFileUploadResponse(file.name, encodeURI(mdUrl));
       uploadStatus = true;
       FileBackend.addFileRecord({
         fileName: originalFileName,
@@ -212,6 +210,9 @@ export function myUploadFn(param) {
     })
     .catch((error) => {
       errorFn();
-      return Setting.showMessage("error", `Adding image failed：${error}`);
+      return Setting.showMessage(
+        "error",
+        i18next.t("Adding image failed") + `：${error}`
+      );
     });
 }

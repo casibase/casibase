@@ -703,6 +703,8 @@
     "Please input plane ID": "Please input plane ID",
     "Please input plane name": "Please input plane name",
     "Please sign out before sign up": "Please sign out before sign up",
-    "Please sign out before sign in": "Please sign out before sign in"
+    "Please sign out before sign in": "Please sign out before sign in",
+    "Adding image failed": "Adding image failed",
+    "Add file failed": "Add file failed"
   }
 }

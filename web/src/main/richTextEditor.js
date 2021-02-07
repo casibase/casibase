@@ -44,7 +44,8 @@ export default class Editor extends React.Component {
   };
 
   ValidateFn = (file) => {
-    return file.size < 6291456;
+    //file should be less than 6MB
+    return file.size < 1024 * 1024 * 6;
   };
 
   render() {
