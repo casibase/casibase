@@ -1,6 +1,7 @@
 import React from "react";
 import BraftEditor from "braft-editor";
 import "braft-editor/dist/index.css";
+import { myUploadFn } from "./Tools";
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -42,17 +43,26 @@ export default class Editor extends React.Component {
     this.handleEditorValueSend(htmlContent);
   };
 
+  ValidateFn = (file) => {
+    //file should be less than 6MB
+    return file.size < 1024 * 1024 * 6;
+  };
+
   render() {
     const { editorState, contentStyle } = this.state;
+    const UploadFn = myUploadFn;
     return (
       <div className="my-component">
         <BraftEditor
           value={editorState}
           onChange={this.handleEditorChange}
-          onSave={this.submitContent}
           language={this.language}
           contentStyle={contentStyle}
-        />{" "}
+          media={{
+            uploadFn: UploadFn,
+            validateFn: this.ValidateFn,
+          }}
+        />
       </div>
     );
   }

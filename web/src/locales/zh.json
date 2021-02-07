@@ -705,6 +705,8 @@
     "Please input plane ID": "请填写位面ID",
     "Please input plane name": "请填写位面名称",
     "Please sign out before sign up": "注册前请先登出",
-    "Please sign out before sign in": "登录前请先登出"
+    "Please sign out before sign in": "登录前请先登出",
+    "Adding image failed": "添加图片文件失败",
+    "Add file failed": "添加文件失败"
   }
 }

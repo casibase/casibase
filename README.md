@@ -23,6 +23,10 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
     ```shell
     go get github.com/casbin/casbin-forum
     ```
+    or
+    ```shell
+    git clone https://github.com/casbin/casbin-forum
+    ```
 
 - Custom settings:
     Casbin-forum currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
@@ -223,8 +227,12 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
 
     ```shell
     cd web
+    ## npm
     npm install
     npm run start
+    ## yarn
+    yarn install
+    yarn run start
     ```
 
 - Open browser:
