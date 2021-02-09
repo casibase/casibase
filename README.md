@@ -11,41 +11,77 @@ https://forum.casbin.com/
 
 Casbin-forum contains 2 parts:
 
-Name | Description | Language | Source code
-----|------|----|----
-Frontend | Web frontend UI for Casbin-forum | Javascript + React | https://github.com/casbin/casbin-forum/tree/master/web 
-Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https://github.com/casbin/casbin-forum 
+| Name     | Description                          | Language               | Source code                                            |
+| -------- | ------------------------------------ | ---------------------- | ------------------------------------------------------ |
+| Frontend | Web frontend UI for Casbin-forum     | Javascript + React     | https://github.com/casbin/casbin-forum/tree/master/web |
+| Backend  | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https://github.com/casbin/casbin-forum                 |
 
-## Installation
+
+## Getting Started
+
+### Run back-end applications
+
+> Before continuing, please make golang development environment are properly installed on your machine.
 
 - Get the code:
-
-    ```shell
-    go get github.com/casbin/casbin-forum
-    ```
-    or
-    ```shell
+    form github 
+    ```shell 
     git clone https://github.com/casbin/casbin-forum
     ```
-
-- Custom settings:
-    Casbin-forum currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
-
-    Customizable option:
-
-    * Logo, include `forum Logo` and `organization Logo` which organization by `web/src/main/custom/logo.css`
-
-
-
+    use go get
+    ```
+    go get github.com/casbin/casbin-forum
+    ```
 - Setup database:
+    > Casbin-forum will store its users, nodes and topics informations in a `MySQL` database named: `casbin_forum`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
 
-    Casbin-forum will store its users, nodes and topics informations in a MySQL database named: `casbin_forum`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
 
     ```ini
     dataSourceName = root:123@tcp(localhost:3306)/
     ```
 
-    Casbin-forum uses XORM to connect to DB, so all DBs supported by XORM can also be used.
+    > Casbin-forum uses `XORM` to connect to DB, so all DBs supported by `XORM` can also be used.
+    For more information, please check the official website
+    https://xorm.io/
+- Run backend (in port 7000):
+
+    ```shell
+    go run main.go
+    ```
+
+### Run front-end applications
+
+> Before continuing, please make sure Node.js and npm are properly installed on your machine.
+
+move to workspace : /web/
+```shell 
+cd web
+```
+- Run front-end applications to develop  (Start on the default port 3000):
+
+    use npm
+    ```shell
+    npm install
+    npm run start
+    ```
+    or use yarn
+    
+    ```shell
+    yarn install 
+    yarn run start
+    ```
+- Open browser:
+
+    http://localhost:3000/
+
+## Some Custom settings:
+
+
+  >Casbin-forum currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
+   
+   - Customizable option:
+
+    * Logo, include `forum Logo` and `organization Logo` which organization by `web/src/main/custom/logo.css`
 
 - Setup your forum to enable some third-party login platform:
 
@@ -61,79 +97,79 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
         You could get them by clicking on this url: https://github.com/settings/developers
         You should set `Homepage URL` to fit your own domain address, for local testing, set`http://localhost:3000`. And set the `Authorization callback URL`, the same domain address as before, add `/callback/github` after that, for local testing, set`http://localhost:3000/callback/github`.
 
-    And to improve security, you could set a `state` value determined by **yourself** to make sure the request is requesting by yourself, such as "random".
-    Those information strings can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
+        And to improve security, you could set a `state` value determined by **yourself** to make sure the request is requesting by yourself, such as "random".
+        Those information strings can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
 
-    ```ini
-    GoogleAuthClientID = "xxx" //your own client id
-    GoogleAuthClientSecret = "xxx" //your own client secret
-    GoogleAuthState = "xxx" //set by yourself
-    GithubAuthClientID = "xxx" //your own client id
-    GithubAuthClientSecret = "xxx" //your own client secret
-    GithubAuthState = "xx" //set by yourself, we may change this to a random word in the future
-    ```
+        ```ini
+        GoogleAuthClientID = "xxx" //your own client id
+        GoogleAuthClientSecret = "xxx" //your own client secret
+        GoogleAuthState = "xxx" //set by yourself
+        GithubAuthClientID = "xxx" //your own client id
+        GithubAuthClientSecret = "xxx" //your own client secret
+        GithubAuthState = "xx" //set by yourself, we may change this to a random word in the future
+        ```
 
-    You may also have to fill in the **same** information at: https://github.com/casbin/casbin-forum/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
+        You may also have to fill in the **same** information at: https://github.com/casbin/casbin-forum/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
 
-    ```javascript
-    export const GoogleClientId  = "xxx"
+        ```javascript
+        export const GoogleClientId  = "xxx"
 
-    export const GoogleAuthState  = "xxx"
+        export const GoogleAuthState  = "xxx"
 
-    export const GoogleAuthScope  = "profile+email"
+        export const GoogleAuthScope  = "profile+email"
 
-    export const GithubClientId  = "xxx"
+        export const GithubClientId  = "xxx"
 
-    export const GithubAuthState  = "xxx"
+        export const GithubAuthState  = "xxx"
 
-    export const GithubAuthScope  = "user:email+read:user"
-    ```
+        export const GithubAuthScope  = "user:email+read:user"
+        ```
 
   3. QQ
   
         Before you begin to use QQ login services, you should make sure that you have applied the application at [QQ-connect](https://connect.qq.com/manage.html#/)
 
-    Configuration:
+        Configuration:
 
-    ```javascript
-    export const QQClientId  = ""
-  
-    export const QQAuthState  = ""
-  
-    export const QQAuthScope  = "get_user_info"
-  
-    export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize"
-    ```
+        ```javascript
+        export const QQClientId  = ""
+    
+        export const QQAuthState  = ""
+    
+        export const QQAuthScope  = "get_user_info"
+    
+        export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize"
+        ```
 
-    ```ini
-    QQAPPID = ""
-    QQAPPKey = ""
-    QQAuthState = ""
-    ```
+        ```ini
+        QQAPPID = ""
+        QQAPPKey = ""
+        QQAuthState = ""
+        ```
 
     4. WeChat
 
         Similar to QQ login service, before using WeChat to log in, you need to apply for OAuth2.0 service fee on the WeChat open platform [open weixin](https://open.weixin.qq.com/cgi-bin/frame?t=home/web_tmpl). After completing the configuration, you can log in via WeChat QR code.
 
-    Configuration:
+        Configuration:
 
-    ```javascript
-    export const WechatClientId  = ""
+        ```javascript
+        export const WechatClientId  = ""
 
-    export const WeChatAuthState = ""
+        export const WeChatAuthState = ""
 
-    export const WeChatAuthScope = "snsapi_login"
+        export const WeChatAuthScope = "snsapi_login"
 
-    export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect"
-    ```
+        export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect"
+        ```
 
-    ```ini
-    WeChatAPPID = ""
-    WeChatKey = ""
-    WeChatAuthState = ""
-    ```
+        ```ini
+        WeChatAPPID = ""
+        WeChatKey = ""
+        WeChatAuthState = ""
+        ```
 
-    We would show different login/signup methods depending on your configuration.
+        We would show different login/signup methods depending on your configuration.
 
 - OSS, Mail, and SMS services.
 
@@ -217,24 +253,3 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
   export const GithubRepo = "https://github.com/casbin/casbin-forum" //your github repository
   ```
 
-- Run backend (in port 7000):
-
-    ```shell
-    go run main.go
-    ```
-
-- Run frontend (in the same machine's port 3000):
-
-    ```shell
-    cd web
-    ## npm
-    npm install
-    npm run start
-    ## yarn
-    yarn install
-    yarn run start
-    ```
-
-- Open browser:
-
-    http://localhost:3000/
