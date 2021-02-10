@@ -46,14 +46,15 @@ class NewBox extends React.Component {
       nodeId: this.props.match.params.nodeId,
       editor: [
         {
-          text: "markdown",
+          text: i18next.t("new:markdown"),
           id: 0,
         },
         {
-          text: "richtext",
+          text: i18next.t("new:richtext"),
           id: 1,
         },
       ],
+      placeholder: i18next.t("new:Switch editor"),
     };
   }
 
@@ -329,11 +330,17 @@ class NewBox extends React.Component {
                 const index = parseInt(s);
                 if (index === 0) {
                   this.updateFormField("editorType", "markdown");
+                  this.setState({
+                    placeholder: i18next.t("new:markdown"),
+                  });
                 } else {
                   this.updateFormField("editorType", "richtext");
+                  this.setState({
+                    placeholder: i18next.t("new:richtext"),
+                  });
                 }
               }}
-              options={{ placeholder: i18next.t("new:Switch editor") }}
+              options={{ placeholder: this.state.placeholder }}
             />
           </div>
           <div className="cell" style={{ lineHeight: "190%" }}>
