@@ -240,7 +240,10 @@
     "Hottest Nodes": "Hottest Nodes",
     "Publish": "Publish",
     "New Topic": "New Topic",
-    "Already enabled Markdown": "Already enabled Markdown"
+    "Already enabled Markdown": "Already enabled Markdown",
+    "Switch editor": "Switch editor",
+    "richtext": "RichText",
+    "markdown": "MarkDown"
   },
   "fav": {
     "Add to favorite": "Add to favorite",

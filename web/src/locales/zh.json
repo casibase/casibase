@@ -242,7 +242,8 @@
     "New Topic": "创作新主题",
     "Already enabled Markdown": "已启用Markdown",
     "Switch editor": "切换编辑器",
-    "richtext": "富文本"
+    "richtext": "富文本",
+    "markdown": "MarkDown"
   },
   "fav": {
     "Add to favorite": "加入收藏",
