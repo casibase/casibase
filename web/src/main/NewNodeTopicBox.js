@@ -21,6 +21,9 @@ import { withRouter, Link } from "react-router-dom";
 import "./node-casbin.css";
 import "../codemirrorSize.css";
 import i18next from "i18next";
+import Select2 from "react-select2-wrapper";
+import Editor from "./richTextEditor";
+import $ from "jquery";
 
 import "codemirror/lib/codemirror.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -43,6 +46,17 @@ class NewNodeTopicBox extends React.Component {
       problems: [],
       message: "",
       width: "",
+      editor: [
+        {
+          text: i18next.t("new:markdown"),
+          id: 0,
+        },
+        {
+          text: i18next.t("new:richtext"),
+          id: 1,
+        },
+      ],
+      placeholder: i18next.t("new:markdowm"),
     };
 
     this.renderLargeSize = this.renderLargeSize.bind(this);
@@ -210,50 +224,103 @@ class NewNodeTopicBox extends React.Component {
             {this.state.form.title}
           </textarea>
           <div class="sep10"></div>
-          <div
-            style={{
-              overflow: "hidden",
-              overflowWrap: "break-word",
-              resize: "none",
-              height: "112px",
-            }}
-            name="content"
-            className={`mll ${this.state.nodeInfo.id}`}
-            id="topic_content"
-          >
-            <Resizable
-              enable={false}
-              defaultSize={{
-                height: 100,
+          {!this.state.form.editorType ||
+          this.state.form.editorType === "markdown" ? (
+            <div
+              style={{
+                overflow: "hidden",
+                overflowWrap: "break-word",
+                resize: "none",
+                height: "112px",
               }}
+              name="content"
+              className={`mll ${this.state.nodeInfo.id}`}
+              id="topic_content"
             >
-              <CodeMirror
-                className={`${this.state.nodeInfo.id}`}
-                editorDidMount={(editor) => Tools.attachEditor(editor)}
-                onPaste={() => Tools.uploadMdFile()}
-                value={this.state.form.body}
-                onDrop={() => Tools.uploadMdFile()}
-                options={{
-                  mode: "markdown",
-                  lineNumbers: false,
-                  lineWrapping: true,
-                  theme: `${this.state.nodeInfo.id}`,
+              <Resizable
+                enable={false}
+                defaultSize={{
+                  height: 100,
                 }}
-                onBeforeChange={(editor, data, value) => {
+              >
+                <CodeMirror
+                  className={`${this.state.nodeInfo.id}`}
+                  editorDidMount={(editor) => Tools.attachEditor(editor)}
+                  onPaste={() => Tools.uploadMdFile()}
+                  value={this.state.form.body}
+                  onDrop={() => Tools.uploadMdFile()}
+                  options={{
+                    mode: "markdown",
+                    lineNumbers: false,
+                    lineWrapping: true,
+                    theme: `${this.state.nodeInfo.id}`,
+                  }}
+                  onBeforeChange={(editor, data, value) => {
+                    this.updateFormField("body", value);
+                  }}
+                  onChange={(editor, data, value) => {}}
+                />
+              </Resizable>
+            </div>
+          ) : (
+            <div
+              style={{
+                overflow: "hidden",
+                overflowWrap: "break-word",
+                resize: "none",
+                height: "350px",
+              }}
+              className="mle"
+              id="topic_content"
+            >
+              <Editor
+                height="300px"
+                id="richTextEditor"
+                onBeforeChange={(value) => {
                   this.updateFormField("body", value);
                 }}
-                onChange={(editor, data, value) => {}}
               />
-            </Resizable>
-          </div>
+            </div>
+          )}
           <div class="sep10"></div>
-          <input type="hidden" name="once" />
-          <input
-            type="submit"
-            value={i18next.t("node:Publish")}
-            class="super normal button"
-            onClick={this.publishTopic.bind(this)}
-          />
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <input
+              type="submit"
+              value={i18next.t("node:Publish")}
+              class="super normal button"
+              onClick={this.publishTopic.bind(this)}
+            />
+            <div>
+              {i18next.t("new:Switch editor")}
+              &nbsp;{" "}
+              <Select2
+                value={this.state.form.editorType}
+                style={{ width: "110px", fontSize: "14px" }}
+                data={this.state.editor.map((node, i) => {
+                  return { text: `${node.text}`, id: i };
+                })}
+                onSelect={(event) => {
+                  const s = $(event.target).val();
+                  if (s === null) {
+                    return;
+                  }
+                  const index = parseInt(s);
+                  if (index === 0) {
+                    this.updateFormField("editorType", "markdown");
+                    this.setState({
+                      placeholder: i18next.t("new:markdown"),
+                    });
+                  } else {
+                    this.updateFormField("editorType", "richtext");
+                    this.setState({
+                      placeholder: i18next.t("new:richtext"),
+                    });
+                  }
+                }}
+                options={{ placeholder: this.state.placeholder }}
+              />
+            </div>
+          </div>
         </div>
         <div class="inner">
           <div class="fr">
@@ -314,62 +381,120 @@ class NewNodeTopicBox extends React.Component {
               </tr>
               <tr>
                 <td>
-                  <div
-                    style={{
-                      overflow: "hidden",
-                      overflowWrap: "break-word",
-                      resize: "none",
-                      height: "172",
-                    }}
-                    className="mle"
-                    id="topic_content"
-                  >
-                    <Resizable
-                      enable={false}
-                      defaultSize={{
-                        width: this.state.width,
-                        height: 180,
+                  {!this.state.form.editorType ||
+                  this.state.form.editorType === "markdown" ? (
+                    <div
+                      style={{
+                        overflow: "hidden",
+                        overflowWrap: "break-word",
+                        resize: "none",
+                        height: "172",
                       }}
+                      className="mle"
+                      id="topic_content"
                     >
-                      <CodeMirror
-                        editorDidMount={(editor) => Tools.attachEditor(editor)}
-                        onPaste={() => Tools.uploadMdFile()}
-                        value={this.state.form.body}
-                        onDrop={() => Tools.uploadMdFile()}
-                        options={{
-                          mode: "markdown",
-                          lineNumbers: false,
-                          lineWrapping: true,
+                      <Resizable
+                        enable={false}
+                        defaultSize={{
+                          height: 180,
                         }}
-                        onBeforeChange={(editor, data, value) => {
+                      >
+                        <CodeMirror
+                          editorDidMount={(editor) =>
+                            Tools.attachEditor(editor)
+                          }
+                          onPaste={() => Tools.uploadMdFile()}
+                          value={this.state.form.body}
+                          onDrop={() => Tools.uploadMdFile()}
+                          options={{
+                            mode: "markdown",
+                            lineNumbers: false,
+                            lineWrapping: true,
+                          }}
+                          onBeforeChange={(editor, data, value) => {
+                            this.updateFormField("body", value);
+                          }}
+                          onChange={(editor, data, value) => {}}
+                        />
+                      </Resizable>
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        overflow: "hidden",
+                        overflowWrap: "break-word",
+                        resize: "none",
+                        height: "172",
+                      }}
+                      className="mle"
+                      id="topic_content"
+                    >
+                      {/* <div style={{ display: "block", height: "100%" }}> */}
+                      <Editor
+                        height="300px"
+                        id="richTextEditor"
+                        onBeforeChange={(value) => {
                           this.updateFormField("body", value);
                         }}
-                        onChange={(editor, data, value) => {}}
                       />
-                    </Resizable>
-                  </div>
+                    </div>
+                  )}
                 </td>
               </tr>
               <tr>
-                <td>
-                  <input type="hidden" name="once" />
-                  <button
-                    type="button"
-                    className="super normal button"
-                    onClick={this.enablePreview.bind(this)}
-                  >
-                    <li className="fa fa-eye"></li> &nbsp;
-                    {i18next.t("newNodeTopic:Preview")}{" "}
-                  </button>{" "}
-                  &nbsp;
-                  <button
-                    type="submit"
-                    className="super normal button"
-                    onClick={this.publishTopic.bind(this)}
-                  >
-                    <li className="fa fa-paper-plane"></li> &nbsp;
-                    {i18next.t("newNodeTopic:Publish")}{" "}
-                  </button>
+                <td
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div>
+                    <input type="hidden" name="once" />
+                    <button
+                      type="button"
+                      className="super normal button"
+                      onClick={this.enablePreview.bind(this)}
+                    >
+                      <li className="fa fa-eye"></li> &nbsp;
+                      {i18next.t("newNodeTopic:Preview")}{" "}
+                    </button>{" "}
+                    &nbsp;
+                    <button
+                      type="submit"
+                      className="super normal button"
+                      onClick={this.publishTopic.bind(this)}
+                    >
+                      <li className="fa fa-paper-plane"></li> &nbsp;
+                      {i18next.t("newNodeTopic:Publish")}{" "}
+                    </button>{" "}
+                  </div>
+                  <div>
+                    {i18next.t("new:Switch editor")}
+                    &nbsp;{" "}
+                    <Select2
+                      value={this.state.form.editorType}
+                      style={{ width: "110px", fontSize: "14px" }}
+                      data={this.state.editor.map((node, i) => {
+                        return { text: `${node.text}`, id: i };
+                      })}
+                      onSelect={(event) => {
+                        const s = $(event.target).val();
+                        if (s === null) {
+                          return;
+                        }
+                        const index = parseInt(s);
+                        if (index === 0) {
+                          this.updateFormField("editorType", "markdown");
+                          this.setState({
+                            placeholder: i18next.t("new:markdown"),
+                          });
+                        } else {
+                          this.updateFormField("editorType", "richtext");
+                          this.setState({
+                            placeholder: i18next.t("new:richtext"),
+                          });
+                        }
+                      }}
+                      options={{ placeholder: this.state.placeholder }}
+                    />
+                  </div>
                 </td>
               </tr>
             </tbody>
