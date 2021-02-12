@@ -21,6 +21,9 @@ import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import * as Tools from "./Tools";
 import i18next from "i18next";
+import Editor from "./richTextEditor";
+import Select2 from "react-select2-wrapper";
+import $ from "jquery";
 
 const pangu = require("pangu");
 
@@ -34,6 +37,17 @@ class EditBox extends React.Component {
       editObject: [],
       nodes: [],
       form: {},
+      editor: [
+        {
+          text: i18next.t("new:markdown"),
+          id: 0,
+        },
+        {
+          text: i18next.t("new:richtext"),
+          id: 1,
+        },
+      ],
+      placeholder: i18next.t("new:markdowm"),
     };
   }
 
@@ -56,6 +70,7 @@ class EditBox extends React.Component {
   }
 
   editContent() {
+    // TODO: topic
     if (this.state.editType === "topic") {
       TopicBackend.editTopicContent(this.state.form).then((res) => {
         if (res.status === "ok") {
@@ -66,6 +81,7 @@ class EditBox extends React.Component {
       });
       return;
     }
+    //reply
     ReplyBackend.editReplyContent(this.state.form).then((res) => {
       if (res.status === "ok") {
         this.props.history.push(
@@ -111,20 +127,106 @@ class EditBox extends React.Component {
     });
   }
 
-  editor() {
+  editorSelect() {
     return (
-      <CodeMirror
-        editorDidMount={(editor) => Tools.attachEditor(editor)}
-        onPaste={() => Tools.uploadMdFile()}
-        value={this.state.form.content}
-        onDrop={() => Tools.uploadMdFile()}
-        options={{ mode: "markdown", lineNumbers: false, lineWrapping: true }}
-        onBeforeChange={(editor, data, value) => {
-          this.updateFormField("content", value);
-        }}
-        onChange={(editor, data, value) => {}}
-      />
+      <div>
+        {i18next.t("new:Switch editor")}
+        &nbsp;{" "}
+        <Select2
+          value={this.state.form.editorType}
+          style={{ width: "110px", fontSize: "14px" }}
+          data={this.state.editor.map((node, i) => {
+            return { text: `${node.text}`, id: i };
+          })}
+          onSelect={(event) => {
+            const s = $(event.target).val();
+            if (s === null) {
+              return;
+            }
+            const index = parseInt(s);
+            if (index === 0) {
+              this.updateFormField("editorType", "markdown");
+              this.setState({
+                placeholder: i18next.t("new:markdown"),
+              });
+            } else {
+              this.updateFormField("editorType", "richtext");
+              this.setState({
+                placeholder: i18next.t("new:richtext"),
+              });
+            }
+          }}
+          options={{ placeholder: this.state.placeholder }}
+        />
+      </div>
     );
+  }
+
+  editor() {
+    if (
+      !this.state.form.editorType ||
+      this.state.form.editorType === "markdown"
+    ) {
+      return (
+        <div
+          style={{
+            overflow: "hidden",
+            overflowWrap: "break-word",
+            resize: "none",
+            height: "320",
+          }}
+          name="content"
+          className="mle tall"
+          id="reply_content"
+        >
+          <Resizable
+            enable={false}
+            defaultSize={{
+              width: 730,
+              height: 310,
+            }}
+          >
+            <CodeMirror
+              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              onPaste={() => Tools.uploadMdFile()}
+              value={this.state.form.content}
+              onDrop={() => Tools.uploadMdFile()}
+              options={{
+                mode: "markdown",
+                lineNumbers: false,
+                lineWrapping: true,
+              }}
+              onBeforeChange={(editor, data, value) => {
+                this.updateFormField("content", value);
+              }}
+              onChange={(editor, data, value) => {}}
+            />
+          </Resizable>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            overflow: "hidden",
+            overflowWrap: "break-word",
+            resize: "none",
+            height: "172",
+          }}
+          name="content"
+          className="mle"
+          id="reply_content"
+        >
+          <Editor
+            height="300px"
+            id="richTextEditor"
+            onBeforeChange={(value) => {
+              this.updateFormField("content", value);
+            }}
+          />
+        </div>
+      );
+    }
   }
 
   render() {
@@ -172,38 +274,21 @@ class EditBox extends React.Component {
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
               <tbody>
                 <tr>
-                  <td>
-                    <div
-                      style={{
-                        overflow: "hidden",
-                        overflowWrap: "break-word",
-                        resize: "none",
-                        height: "320",
-                      }}
-                      name="content"
-                      className="mle tall"
-                      id="reply_content"
-                    >
-                      <Resizable
-                        enable={false}
-                        defaultSize={{
-                          width: 730,
-                          height: 310,
-                        }}
-                      >
-                        {this.editor()}
-                      </Resizable>
-                    </div>
-                  </td>
+                  <td>{this.editor()}</td>
                 </tr>
                 <tr>
-                  <td>
-                    <input
-                      type="submit"
-                      value={i18next.t("edit:Save")}
-                      className="super normal button"
-                      onClick={() => this.editContent()}
-                    />
+                  <td
+                    style={{ display: "flex", justifyContent: "space-between" }}
+                  >
+                    <div>
+                      <input
+                        type="submit"
+                        value={i18next.t("edit:Save")}
+                        className="super normal button"
+                        onClick={() => this.editContent()}
+                      />
+                    </div>
+                    {this.editorSelect()}
                   </td>
                 </tr>
               </tbody>
@@ -228,6 +313,7 @@ class EditBox extends React.Component {
           </Link>{" "}
           <span class="chevron">&nbsp;›&nbsp;</span>{" "}
           {i18next.t("edit:Edit topic")}
+          {/* todo */}
         </div>
         <div class="cell">
           <table cellpadding="5" cellspacing="0" border="0" width="100%">
@@ -248,38 +334,21 @@ class EditBox extends React.Component {
                 </td>
               </tr>
               <tr>
-                <td>
-                  <div
-                    style={{
-                      overflow: "hidden",
-                      overflowWrap: "break-word",
-                      resize: "none",
-                      height: "320",
-                    }}
-                    name="content"
-                    class="mle tall"
-                    id="topic_content"
-                  >
-                    <Resizable
-                      enable={false}
-                      defaultSize={{
-                        width: 730,
-                        height: 310,
-                      }}
-                    >
-                      {this.editor()}
-                    </Resizable>
-                  </div>
-                </td>
+                <td>{this.editor()}</td>
               </tr>
               <tr>
-                <td>
-                  <input
-                    type="submit"
-                    value={i18next.t("edit:Save")}
-                    class="super normal button"
-                    onClick={() => this.editContent()}
-                  />
+                <td
+                  style={{ display: "flex", justifyContent: "space-between" }}
+                >
+                  <div>
+                    <input
+                      type="submit"
+                      value={i18next.t("edit:Save")}
+                      class="super normal button"
+                      onClick={() => this.editContent()}
+                    />
+                  </div>
+                  {this.editorSelect()}
                 </td>
               </tr>
             </tbody>
