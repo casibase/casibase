@@ -22,7 +22,6 @@ import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css";
 import { withRouter } from "react-router-dom";
 import i18next from "i18next";
-import $ from "jquery";
 import Select2 from "react-select2-wrapper";
 import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
@@ -54,12 +53,18 @@ class NewBox extends React.Component {
           id: 1,
         },
       ],
-      placeholder: i18next.t("new:Switch editor"),
+      placeholder: i18next.t("new:markdown"),
     };
   }
 
   componentWillMount() {
     this.getNodes();
+  }
+
+  getEditorType() {
+    // TODO: get editor type from backend
+    this.updateFormField("editorType", "markdown");
+    this.state.editorType = "markdown";
   }
 
   getNodes() {
@@ -248,12 +253,6 @@ class NewBox extends React.Component {
                   lineHeight: "120%",
                 }}
               >
-                <textarea
-                  style={{ visibility: "hidden", display: "none" }}
-                  maxLength="20000"
-                  id="editor"
-                  name="content"
-                />
                 <Resizable
                   enable={false}
                   defaultSize={{
@@ -294,54 +293,60 @@ class NewBox extends React.Component {
             className="cell"
             style={{ display: "flex", justifyContent: "space-between" }}
           >
-            <Select2
-              value={this.getIndexFromNodeId(this.state.form.nodeId)}
-              style={{ width: "300px", fontSize: "14px" }}
-              data={this.state.nodes.map((node, i) => {
-                return { text: `${node.name} / ${node.id}`, id: i };
-              })}
-              onSelect={(event) => {
-                const s = $(event.target).val();
-                if (s === null) {
-                  return;
-                }
+            <div>
+              <Select2
+                value={this.getIndexFromNodeId(this.state.form.nodeId)}
+                style={{ width: "300px", fontSize: "14px" }}
+                data={this.state.nodes.map((node, i) => {
+                  return { text: `${node.name} / ${node.id}`, id: i };
+                })}
+                onSelect={(event) => {
+                  const s = event.target.value;
+                  if (s === null) {
+                    return;
+                  }
 
-                const index = parseInt(s);
-                const nodeId = this.state.nodes[index].id;
-                const nodeName = this.state.nodes[index].name;
-                this.updateFormField("nodeId", nodeId);
-                this.updateFormField("nodeName", nodeName);
-              }}
-              options={{
-                placeholder: i18next.t("new:Please select a node"),
-              }}
-            />
-            <Select2
-              value={this.state.form.editorType}
-              style={{ width: "110px", fontSize: "14px" }}
-              data={this.state.editor.map((node, i) => {
-                return { text: `${node.text}`, id: i };
-              })}
-              onSelect={(event) => {
-                const s = $(event.target).val();
-                if (s === null) {
-                  return;
-                }
-                const index = parseInt(s);
-                if (index === 0) {
-                  this.updateFormField("editorType", "markdown");
-                  this.setState({
-                    placeholder: i18next.t("new:markdown"),
-                  });
-                } else {
-                  this.updateFormField("editorType", "richtext");
-                  this.setState({
-                    placeholder: i18next.t("new:richtext"),
-                  });
-                }
-              }}
-              options={{ placeholder: this.state.placeholder }}
-            />
+                  const index = parseInt(s);
+                  const nodeId = this.state.nodes[index].id;
+                  const nodeName = this.state.nodes[index].name;
+                  this.updateFormField("nodeId", nodeId);
+                  this.updateFormField("nodeName", nodeName);
+                }}
+                options={{
+                  placeholder: i18next.t("new:Please select a node"),
+                }}
+              />
+            </div>
+            <div>
+              {i18next.t("new:Switch editor")}
+              &nbsp;{" "}
+              <Select2
+                value={this.state.form.editorType}
+                style={{ width: "110px", fontSize: "14px" }}
+                data={this.state.editor.map((node, i) => {
+                  return { text: `${node.text}`, id: i };
+                })}
+                onSelect={(event) => {
+                  const s = event.target.value;
+                  if (s === null) {
+                    return;
+                  }
+                  const index = parseInt(s);
+                  if (index === 0) {
+                    this.updateFormField("editorType", "markdown");
+                    this.setState({
+                      placeholder: i18next.t("new:markdown"),
+                    });
+                  } else {
+                    this.updateFormField("editorType", "richtext");
+                    this.setState({
+                      placeholder: i18next.t("new:richtext"),
+                    });
+                  }
+                }}
+                options={{ placeholder: this.state.placeholder }}
+              />
+            </div>
           </div>
           <div className="cell" style={{ lineHeight: "190%" }}>
             {i18next.t("new:Hottest Nodes")} &nbsp;{" "}

@@ -17,7 +17,6 @@ import { withRouter, Link } from "react-router-dom";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as Setting from "../Setting";
 import Select2 from "react-select2-wrapper";
-import $ from "jquery";
 import i18next from "i18next";
 
 class AdminTab extends React.Component {
@@ -576,7 +575,7 @@ class AdminTab extends React.Component {
                               };
                             })}
                             onSelect={(event) => {
-                              const s = $(event.target).val();
+                              const s = event.target.value;
                               if (s === null) {
                                 return;
                               }
