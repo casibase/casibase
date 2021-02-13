@@ -16,6 +16,7 @@
     "inline-attachment": "^2.0.3",
     "jquery": "^3.5.1",
     "js-md5": "^0.7.3",
+    "lodash": "^4.17.20",
     "moment": "^2.26.0",
     "pangu": "^4.0.7",
     "rc-collapse": "^2.0.0",
