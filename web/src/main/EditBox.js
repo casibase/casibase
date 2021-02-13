@@ -23,7 +23,6 @@ import * as Tools from "./Tools";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
-import $ from "jquery";
 
 const pangu = require("pangu");
 
@@ -139,7 +138,7 @@ class EditBox extends React.Component {
             return { text: `${node.text}`, id: i };
           })}
           onSelect={(event) => {
-            const s = $(event.target).val();
+            const s = event.target.value;
             if (s === null) {
               return;
             }
