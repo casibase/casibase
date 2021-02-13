@@ -290,36 +290,7 @@ class NewNodeTopicBox extends React.Component {
               class="super normal button"
               onClick={this.publishTopic.bind(this)}
             />
-            <div>
-              {i18next.t("new:Switch editor")}
-              &nbsp;{" "}
-              <Select2
-                value={this.state.form.editorType}
-                style={{ width: "110px", fontSize: "14px" }}
-                data={this.state.editor.map((node, i) => {
-                  return { text: `${node.text}`, id: i };
-                })}
-                onSelect={(event) => {
-                  const s = event.target.value;
-                  if (s === null) {
-                    return;
-                  }
-                  const index = parseInt(s);
-                  if (index === 0) {
-                    this.updateFormField("editorType", "markdown");
-                    this.setState({
-                      placeholder: i18next.t("new:markdown"),
-                    });
-                  } else {
-                    this.updateFormField("editorType", "richtext");
-                    this.setState({
-                      placeholder: i18next.t("new:richtext"),
-                    });
-                  }
-                }}
-                options={{ placeholder: this.state.placeholder }}
-              />
-            </div>
+            {this.renderEditorSelect()}
           </div>
         </div>
         <div class="inner">
@@ -339,6 +310,41 @@ class NewNodeTopicBox extends React.Component {
           </div>
           &nbsp;
         </div>
+      </div>
+    );
+  }
+
+  renderEditorSelect() {
+    return (
+      <div>
+        {i18next.t("new:Switch editor")}
+        &nbsp;{" "}
+        <Select2
+          value={this.state.form.editorType}
+          style={{ width: "110px", fontSize: "14px" }}
+          data={this.state.editor.map((node, i) => {
+            return { text: `${node.text}`, id: i };
+          })}
+          onSelect={(event) => {
+            const s = event.target.value;
+            if (s === null) {
+              return;
+            }
+            const index = parseInt(s);
+            if (index === 0) {
+              this.updateFormField("editorType", "markdown");
+              this.setState({
+                placeholder: i18next.t("new:markdown"),
+              });
+            } else {
+              this.updateFormField("editorType", "richtext");
+              this.setState({
+                placeholder: i18next.t("new:richtext"),
+              });
+            }
+          }}
+          options={{ placeholder: this.state.placeholder }}
+        />
       </div>
     );
   }
@@ -465,36 +471,7 @@ class NewNodeTopicBox extends React.Component {
                       {i18next.t("newNodeTopic:Publish")}{" "}
                     </button>{" "}
                   </div>
-                  <div>
-                    {i18next.t("new:Switch editor")}
-                    &nbsp;{" "}
-                    <Select2
-                      value={this.state.form.editorType}
-                      style={{ width: "110px", fontSize: "14px" }}
-                      data={this.state.editor.map((node, i) => {
-                        return { text: `${node.text}`, id: i };
-                      })}
-                      onSelect={(event) => {
-                        const s = event.target.value;
-                        if (s === null) {
-                          return;
-                        }
-                        const index = parseInt(s);
-                        if (index === 0) {
-                          this.updateFormField("editorType", "markdown");
-                          this.setState({
-                            placeholder: i18next.t("new:markdown"),
-                          });
-                        } else {
-                          this.updateFormField("editorType", "richtext");
-                          this.setState({
-                            placeholder: i18next.t("new:richtext"),
-                          });
-                        }
-                      }}
-                      options={{ placeholder: this.state.placeholder }}
-                    />
-                  </div>
+                  {this.renderEditorSelect()}
                 </td>
               </tr>
             </tbody>

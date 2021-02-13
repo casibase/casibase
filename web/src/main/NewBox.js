@@ -153,6 +153,40 @@ class NewBox extends React.Component {
 
     return problems.length === 0;
   }
+  renderEditorSelect() {
+    return (
+      <div>
+        {i18next.t("new:Switch editor")}
+        &nbsp;{" "}
+        <Select2
+          value={this.state.form.editorType}
+          style={{ width: "110px", fontSize: "14px" }}
+          data={this.state.editor.map((node, i) => {
+            return { text: `${node.text}`, id: i };
+          })}
+          onSelect={(event) => {
+            const s = event.target.value;
+            if (s === null) {
+              return;
+            }
+            const index = parseInt(s);
+            if (index === 0) {
+              this.updateFormField("editorType", "markdown");
+              this.setState({
+                placeholder: i18next.t("new:markdown"),
+              });
+            } else {
+              this.updateFormField("editorType", "richtext");
+              this.setState({
+                placeholder: i18next.t("new:richtext"),
+              });
+            }
+          }}
+          options={{ placeholder: this.state.placeholder }}
+        />
+      </div>
+    );
+  }
 
   renderProblem() {
     let problems = this.state.problems;
@@ -316,32 +350,7 @@ class NewBox extends React.Component {
                 placeholder: i18next.t("new:Please select a node"),
               }}
             />
-            <Select2
-              value={this.state.form.editorType}
-              style={{ width: "110px", fontSize: "14px" }}
-              data={this.state.editor.map((node, i) => {
-                return { text: `${node.text}`, id: i };
-              })}
-              onSelect={(event) => {
-                const s = event.target.value;
-                if (s === null) {
-                  return;
-                }
-                const index = parseInt(s);
-                if (index === 0) {
-                  this.updateFormField("editorType", "markdown");
-                  this.setState({
-                    placeholder: i18next.t("new:markdown"),
-                  });
-                } else {
-                  this.updateFormField("editorType", "richtext");
-                  this.setState({
-                    placeholder: i18next.t("new:richtext"),
-                  });
-                }
-              }}
-              options={{ placeholder: this.state.placeholder }}
-            />
+            {this.renderEditorSelect()}
           </div>
           <div className="cell" style={{ lineHeight: "190%" }}>
             {i18next.t("new:Hottest Nodes")} &nbsp;{" "}
