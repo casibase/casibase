@@ -20,7 +20,6 @@ import PageColumn from "../main/PageColumn";
 import Avatar from "../Avatar";
 import Collapse, { Panel } from "rc-collapse";
 import Select2 from "react-select2-wrapper";
-import $ from "jquery";
 import i18next from "i18next";
 
 class AdminMember extends React.Component {
@@ -628,7 +627,7 @@ class AdminMember extends React.Component {
                             };
                           })}
                           onSelect={(event) => {
-                            const s = $(event.target).val();
+                            const s = event.target.value;
                             if (s === null) {
                               return;
                             }

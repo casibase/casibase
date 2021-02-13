@@ -21,7 +21,6 @@ import * as AccountBackend from "../backend/AccountBackend";
 import * as BasicBackend from "../backend/BasicBackend";
 import "../Signup.css";
 import "./const";
-import $ from "jquery";
 import Select2 from "react-select2-wrapper";
 import { Area_Code } from "./const";
 import i18next from "i18next";
@@ -479,7 +478,7 @@ class SignupBox extends React.Component {
                           return { text: `${code.label}`, id: i };
                         })}
                         onSelect={(event) => {
-                          const s = $(event.target).val();
+                          const s = event.target.value;
                           if (s === null) {
                             return;
                           }

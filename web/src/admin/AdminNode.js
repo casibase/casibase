@@ -25,7 +25,6 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import { SketchPicker } from "react-color";
 import Zmage from "react-zmage";
 import Select2 from "react-select2-wrapper";
-import $ from "jquery";
 import i18next from "i18next";
 
 class AdminNode extends React.Component {
@@ -508,7 +507,7 @@ class AdminNode extends React.Component {
         style={{ width: "300px", fontSize: "14px" }}
         data={data}
         onSelect={(event) => {
-          const s = $(event.target).val();
+          const s = event.target.value;
           if (s === null) {
             return;
           }
