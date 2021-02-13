@@ -273,6 +273,7 @@ class NewNodeTopicBox extends React.Component {
               id="topic_content"
             >
               <Editor
+                language={i18next.language}
                 height="300px"
                 id="richTextEditor"
                 onBeforeChange={(value) => {
@@ -428,8 +429,8 @@ class NewNodeTopicBox extends React.Component {
                       className="mle"
                       id="topic_content"
                     >
-                      {/* <div style={{ display: "block", height: "100%" }}> */}
                       <Editor
+                        language={i18next.language}
                         height="300px"
                         id="richTextEditor"
                         onBeforeChange={(value) => {

@@ -217,6 +217,7 @@ class EditBox extends React.Component {
           id="reply_content"
         >
           <Editor
+            language={i18next.language}
             height="300px"
             id="richTextEditor"
             onBeforeChange={(value) => {

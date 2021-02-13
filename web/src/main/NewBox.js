@@ -279,6 +279,7 @@ class NewBox extends React.Component {
             ) : (
               <div style={{ display: "block", height: "100%" }}>
                 <Editor
+                  language={i18next.language}
                   height="400px"
                   id="richTextEditor"
                   onBeforeChange={(value) => {

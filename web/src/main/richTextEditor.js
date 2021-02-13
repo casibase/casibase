@@ -11,6 +11,7 @@ export default class Editor extends React.Component {
       contentStyle: {
         height: this.props.height ? this.props.height : "350px",
       },
+      language: this.props.language ? this.props.language : "en",
     };
   }
 
@@ -23,7 +24,7 @@ export default class Editor extends React.Component {
 
   async componentDidMount() {
     // Assume here to get the editor content in html format from the server
-    const htmlContent = await this.fetchEditorContent();
+    // const htmlContent = await this.fetchEditorContent();
     // Use BraftEditor.createEditorState to convert html strings to editorState data needed by the editor
     this.setState({
       editorState: "",
@@ -49,10 +50,10 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { editorState, contentStyle } = this.state;
+    const { editorState, contentStyle, language } = this.state;
     const UploadFn = myUploadFn;
     return (
-      <div className="my-component">
+      <div className="">
         <BraftEditor
           value={editorState}
           onChange={this.handleEditorChange}
@@ -62,6 +63,7 @@ export default class Editor extends React.Component {
             uploadFn: UploadFn,
             validateFn: this.ValidateFn,
           }}
+          language={language}
         />
       </div>
     );
