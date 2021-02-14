@@ -126,7 +126,7 @@ class EditBox extends React.Component {
     });
   }
 
-  editorSelect() {
+  renderEditorSelect() {
     return (
       <div>
         {i18next.t("new:Switch editor")}
@@ -217,6 +217,7 @@ class EditBox extends React.Component {
           id="reply_content"
         >
           <Editor
+            language={i18next.language}
             height="300px"
             id="richTextEditor"
             onBeforeChange={(value) => {
@@ -287,7 +288,7 @@ class EditBox extends React.Component {
                         onClick={() => this.editContent()}
                       />
                     </div>
-                    {this.editorSelect()}
+                    {this.renderEditorSelect()}
                   </td>
                 </tr>
               </tbody>
@@ -347,7 +348,7 @@ class EditBox extends React.Component {
                       onClick={() => this.editContent()}
                     />
                   </div>
-                  {this.editorSelect()}
+                  {this.renderEditorSelect()}
                 </td>
               </tr>
             </tbody>
