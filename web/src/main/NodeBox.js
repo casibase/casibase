@@ -432,10 +432,24 @@ class NodeBox extends React.Component {
           </span>
           <div className="sep10"></div>
           <div className="node_header_tabs">
-            <Link to={`/go/${nodeId}`} className="node_header_tab_current">
+            <Link
+              to={`/go/${nodeId}`}
+              className={
+                !this.props.match.params.event
+                  ? "node_header_tab_current"
+                  : "node_header_tab"
+              }
+            >
               {i18next.t("node:All topics")}
             </Link>
-            <Link to={`/go/${nodeId}/links`} className="node_header_tab">
+            <Link
+              to={`/go/${nodeId}/links`}
+              className={
+                this.props.match.params.event
+                  ? "node_header_tab_current"
+                  : "node_header_tab"
+              }
+            >
               {i18next.t("node:Related links")}
             </Link>
           </div>
