@@ -40,6 +40,7 @@ type Member struct {
 	Website            string `xorm:"varchar(100)" json:"website"`
 	Location           string `xorm:"varchar(100)" json:"location"`
 	Language           string `xorm:"varchar(10)"  json:"language"`
+	EditorType         string `xorm:"varchar(10)"  json:"editorType"`
 	FileQuota          int    `xorm:"int" json:"fileQuota"`
 	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
 	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
@@ -241,6 +242,36 @@ func UpdateMemberAvatar(id string, avatar string) bool {
 	}
 
 	return true
+}
+
+func UpdateMemberEditorType(id string, editorType string) bool {
+	if GetMember(id) == nil {
+		return false
+	}
+
+	member := new(Member)
+	member.EditorType = editorType
+
+	_, err := adapter.engine.Id(id).MustCols("editor_type").Update(member)
+	if err != nil {
+		panic(err)
+	}
+
+	return true
+}
+
+func GetMemberEditorType(id string) string {
+	member := Member{}
+	existed, err := adapter.engine.Id(id).Cols("editor_type").Get(&member)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return member.EditorType
+	} else {
+		return ""
+	}
 }
 
 func UpdateMemberLanguage(id string, language string) bool {

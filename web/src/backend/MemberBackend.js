@@ -155,3 +155,13 @@ export function updateMemberLanguage(language) {
     }
   ).then((res) => res.json());
 }
+
+export function updateMemberEditorType(editorType) {
+  return fetch(
+    `${Setting.ServerUrl}/api/update-member-editorType?editorType=${editorType}`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}

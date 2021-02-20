@@ -144,6 +144,43 @@ func (c *APIController) UpdateMemberInfo() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetMemberEditorType() {
+	memberId := c.GetSessionUser()
+
+	var resp Response
+	var editorType string
+
+	if len(memberId) == 0 {
+		editorType = ""
+	} else {
+		editorType = object.GetMemberEditorType(memberId)
+	}
+
+	resp = Response{Status: "ok", Msg: "success", Data: editorType}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UpdateMemberEditorType() {
+	editorType := c.Input().Get("editorType")
+	memberId := c.GetSessionUser()
+
+	var resp Response
+
+	if editorType != "markdown" && editorType != "richtext" {
+		resp = Response{Status: "fail", Msg: "Bad request."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+	}
+
+	res := object.UpdateMemberEditorType(memberId, editorType)
+	resp = Response{Status: "ok", Msg: "success", Data: res}
+
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
 	memberId := c.GetSessionUser()
