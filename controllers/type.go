@@ -85,15 +85,17 @@ type updateTopicNode struct {
 }
 
 type editTopic struct {
-	Id      int    `json:"id"`
-	Title   string `json:"title"`
-	NodeId  string `json:"nodeId"`
-	Content string `json:"content"`
+	Id         int    `json:"id"`
+	Title      string `json:"title"`
+	NodeId     string `json:"nodeId"`
+	Content    string `json:"content"`
+	EditorType string `json:"editorType"`
 }
 
 type editReply struct {
-	Id      int    `json:"id"`
-	Content string `json:"content"`
+	Id         int    `json:"id"`
+	Content    string `json:"content"`
+	EditorType string `json:"editorType"`
 }
 
 type getResetPasswordMember struct {

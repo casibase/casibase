@@ -25,8 +25,8 @@ type Reply struct {
 	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"-"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
-
-	Content string `xorm:"mediumtext" json:"content"`
+	EditorType  string `xorm:"varchar(40)" json:"editorType"`
+	Content     string `xorm:"mediumtext" json:"content"`
 }
 
 // GetReplyCount returns all replies num so far, both deleted and not deleted.

@@ -46,7 +46,7 @@ class EditBox extends React.Component {
           id: 1,
         },
       ],
-      placeholder: i18next.t("new:markdowm"),
+      placeholder: "",
     };
   }
 
@@ -63,8 +63,10 @@ class EditBox extends React.Component {
       form["nodeId"] = this.state.editObject?.nodeId;
     }
     form["content"] = this.state.editObject?.content;
+    form["editorType"] = this.state.editObject?.editorType;
     this.setState({
       form: form,
+      placeholder: i18next.t(`new:${this.state.editObject?.editorType}`),
     });
   }
 
@@ -161,7 +163,7 @@ class EditBox extends React.Component {
     );
   }
 
-  editor() {
+  renderEditor() {
     if (
       !this.state.form.editorType ||
       this.state.form.editorType === "markdown"
@@ -217,6 +219,7 @@ class EditBox extends React.Component {
           id="reply_content"
         >
           <Editor
+            defaultValue={this.state.form.content}
             language={i18next.language}
             height="300px"
             id="richTextEditor"
@@ -274,7 +277,7 @@ class EditBox extends React.Component {
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
               <tbody>
                 <tr>
-                  <td>{this.editor()}</td>
+                  <td>{this.renderEditor()}</td>
                 </tr>
                 <tr>
                   <td
@@ -334,7 +337,7 @@ class EditBox extends React.Component {
                 </td>
               </tr>
               <tr>
-                <td>{this.editor()}</td>
+                <td>{this.renderEditor()}</td>
               </tr>
               <tr>
                 <td
