@@ -202,6 +202,15 @@ export function getOSSClient(initNewOSSClient) {
   });
 }
 
+export function SetEditorType(editorType) {
+  localStorage.setItem("casbin-forum-editorType", editorType);
+}
+
+export function ChangeEditorType(editorType) {
+  localStorage.setItem("casbin-forum-editorType", editorType);
+  MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
+}
+
 export function SetLanguage(language) {
   localStorage.setItem("casbin-forum-language", language);
   changeMomentLanguage(language);

@@ -159,6 +159,16 @@ class Footer extends React.Component {
               />{" "}
               &nbsp; {i18next.t("footer:Select Language")}
             </Link>
+            &nbsp; <span className="snow">·</span> &nbsp;{" "}
+            <Link to="/select/editorType" className="f11">
+              <img
+                src={Setting.getStatic("/static/img/editType.png")}
+                width="16"
+                align="absmiddle"
+                id="ico-select-editorType"
+              />{" "}
+              &nbsp; {i18next.t("footer:Select Editor")}
+            </Link>
             <div className="sep20" />
             {i18next.t("footer:Community of Creators")}
             <div className="sep5" />

@@ -36,6 +36,7 @@ import NodesBox from "./main/NodeBox";
 import FavoritesBox from "./main/FavoritesBox";
 import RecentTopicsBox from "./main/RecentTopicsBox";
 import SelectLanguageBox from "./main/SelectLanguageBox";
+import SelectEditorTypeBox from "./main/SelectEditorTypeBox";
 import RightCommunityHealthBox from "./rightbar/RightCommunityHealthBox";
 import RightFavouriteBox from "./rightbar/RightFavouriteBox";
 import RightNodeBox from "./rightbar/RightNodeBox";
@@ -305,6 +306,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <SelectLanguageBox />
+          </div>
+        </Route>
+        <Route exact path="/select/editorType">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SelectEditorTypeBox />
           </div>
         </Route>
         <Route exact path="/notifications">
