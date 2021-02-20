@@ -28,6 +28,8 @@ import "./show-hint.css";
 import { Controlled as CodeMirrorsEditor } from "react-codemirror2";
 import { Resizable } from "re-resizable";
 import i18next from "i18next";
+import Editor from "./richTextEditor";
+import Select2 from "react-select2-wrapper";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -41,6 +43,17 @@ class NewReplyBox extends React.Component {
       problem: [],
       message: null,
       initOSSClientStatus: false,
+      editor: [
+        {
+          text: i18next.t("new:markdown"),
+          id: 0,
+        },
+        {
+          text: i18next.t("new:richtext"),
+          id: 1,
+        },
+      ],
+      placeholder: "",
     };
     this.handleChange = this.handleChange.bind(this);
     this.synonyms = this.synonyms.bind(this);
@@ -112,7 +125,11 @@ class NewReplyBox extends React.Component {
   }
 
   publishReply() {
-    if (this.props.content !== undefined) {
+    const editorType = this.state.form.editorType;
+    if (
+      (!editorType || editorType === "markdown") &&
+      this.props.content !== undefined
+    ) {
       this.updateFormField("content", this.props.content);
     }
     if (!this.isOkToSubmit()) {
@@ -179,6 +196,118 @@ class NewReplyBox extends React.Component {
     });
   }
 
+  renderEditor() {
+    if (
+      !this.state.form.editorType ||
+      this.state.form.editorType === "markdown"
+    ) {
+      return (
+        <div
+          style={{
+            overflow: "hidden",
+            overflowWrap: "break-word",
+            resize: "none",
+            height: "112px",
+          }}
+          className={`mll ${this.props.nodeId}`}
+          id="reply_content"
+        >
+          <Resizable
+            enable={false}
+            defaultSize={{
+              height: 112,
+            }}
+          >
+            <CodeMirrorsEditor
+              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              onPaste={() => Tools.uploadMdFile()}
+              value={this.props.content}
+              onFocus={() => this.dockBox(true)}
+              onDrop={() => Tools.uploadMdFile()}
+              options={{
+                mode: "markdown",
+                lineNumbers: false,
+                lineWrapping: true,
+                theme: `${this.props.nodeId}`,
+                extraKeys: { "Ctrl-Space": "autocomplete" },
+                hintOptions: {
+                  hint: this.synonyms,
+                  alignWithWord: false,
+                  closeOnUnfocus: false,
+                  closeOnBlur: false,
+                  className: "textcomplete-item",
+                },
+              }}
+              onBeforeChange={(editor, data, value) => {
+                this.handleChange(editor, value);
+              }}
+              onChange={(editor, data, value) => {}}
+            />
+          </Resizable>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          style={{
+            overflow: "hidden",
+            overflowWrap: "break-word",
+            resize: "none",
+            height: "375px",
+          }}
+          name="content"
+          className="mle"
+          id="reply_content"
+        >
+          <Editor
+            defaultValue={this.state.form.content}
+            language={i18next.language}
+            height="300"
+            id="richTextEditor"
+            onBeforeChange={(value) => {
+              this.updateFormField("content", value);
+            }}
+          />
+        </div>
+      );
+    }
+  }
+
+  renderEditorSelect() {
+    return (
+      <div>
+        {i18next.t("new:Switch editor")}
+        &nbsp;{" "}
+        <Select2
+          value={this.state.form.editorType}
+          style={{ width: "110px", fontSize: "14px" }}
+          data={this.state.editor.map((node, i) => {
+            return { text: `${node.text}`, id: i };
+          })}
+          onSelect={(event) => {
+            const s = event.target.value;
+            if (s === null) {
+              return;
+            }
+            const index = parseInt(s);
+            if (index === 0) {
+              this.updateFormField("editorType", "markdown");
+              this.setState({
+                placeholder: i18next.t("new:markdown"),
+              });
+            } else {
+              this.updateFormField("editorType", "richtext");
+              this.setState({
+                placeholder: i18next.t("new:richtext"),
+              });
+            }
+          }}
+          options={{ placeholder: this.state.placeholder }}
+        />
+      </div>
+    );
+  }
+
   render() {
     if (this.props.topic === null) {
       return null;
@@ -225,62 +354,42 @@ class NewReplyBox extends React.Component {
           <div
             style={{
               overflow: "hidden",
-              overflowWrap: "break-word",
-              resize: "none",
-              height: "112px",
             }}
-            className={`mll ${this.props.nodeId}`}
-            id="reply_content"
           >
-            <Resizable
-              enable={false}
-              defaultSize={{
-                height: 112,
-              }}
-            >
-              <CodeMirrorsEditor
-                editorDidMount={(editor) => Tools.attachEditor(editor)}
-                onPaste={() => Tools.uploadMdFile()}
-                value={this.props.content}
-                onFocus={() => this.dockBox(true)}
-                onDrop={() => Tools.uploadMdFile()}
-                options={{
-                  mode: "markdown",
-                  lineNumbers: false,
-                  lineWrapping: true,
-                  theme: `${this.props.nodeId}`,
-                  extraKeys: { "Ctrl-Space": "autocomplete" },
-                  hintOptions: {
-                    hint: this.synonyms,
-                    alignWithWord: false,
-                    closeOnUnfocus: false,
-                    closeOnBlur: false,
-                    className: "textcomplete-item",
-                  },
-                }}
-                onBeforeChange={(editor, data, value) => {
-                  this.handleChange(editor, value);
-                }}
-                onChange={(editor, data, value) => {}}
-              />
-            </Resizable>
+            {this.renderEditor()}
           </div>
           <div className="sep10" />
-          <div className="fr">
-            <div className="sep5" />
-            <span className="gray">
-              {i18next.t(
-                "reply:Make your comment helpful for others as much as possible"
-              )}
-            </span>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+            }}
+          >
+            <input
+              onClick={this.publishReply.bind(this)}
+              type="submit"
+              value={i18next.t("reply:Reply")}
+              className="super normal button"
+            />
+            {this.renderEditorSelect()}
           </div>
-          <input
-            onClick={this.publishReply.bind(this)}
-            type="submit"
-            value={i18next.t("reply:Reply")}
-            className="super normal button"
-          />
+
+          <div
+            style={{
+              overflow: "hidden",
+            }}
+          >
+            <div className="fr">
+              <div className="sep5" />
+              <span className="gray">
+                {i18next.t(
+                  "reply:Make your comment helpful for others as much as possible"
+                )}
+              </span>
+            </div>
+          </div>
         </div>
+
         <div className="inner">
           <div className="fr">
             <Link to="/" className={`${this.props.nodeId}`}>

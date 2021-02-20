@@ -28,8 +28,12 @@ export default class Editor extends React.Component {
     // Assume here to get the editor content in html format from the server
     // const htmlContent = await this.fetchEditorContent();
     // Use BraftEditor.createEditorState to convert html strings to editorState data needed by the editor
+    const rawDefaultVal = this.props.defaultValue;
+    const defaultVal = rawDefaultVal
+      ? BraftEditor.createEditorState(rawDefaultVal)
+      : "";
     this.setState({
-      editorState: "",
+      editorState: defaultVal,
     });
   }
 

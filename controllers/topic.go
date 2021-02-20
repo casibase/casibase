@@ -23,9 +23,9 @@ import (
 )
 
 type NewTopicForm struct {
-	Title  string `json:"title"`
-	Body   string `json:"body"`
-	NodeId string `json:"nodeId"`
+	Title      string `json:"title"`
+	Body       string `json:"body"`
+	NodeId     string `json:"nodeId"`
 	EditorType string `json:"editorType"`
 }
 
@@ -411,7 +411,7 @@ func (c *APIController) EditContent() {
 		if err != nil {
 			panic(err)
 		}
-		id, title, content, nodeId := form.Id, form.Title, form.Content, form.NodeId
+		id, title, content, nodeId, editorType := form.Id, form.Title, form.Content, form.NodeId, form.EditorType
 		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
@@ -420,9 +420,10 @@ func (c *APIController) EditContent() {
 		}
 
 		topic := object.Topic{
-			Id:      id,
-			Title:   title,
-			Content: content,
+			Id:         id,
+			Title:      title,
+			Content:    content,
+			EditorType: editorType,
 		}
 		res := object.UpdateTopicWithLimitCols(id, &topic)
 
@@ -433,7 +434,7 @@ func (c *APIController) EditContent() {
 		if err != nil {
 			panic(err)
 		}
-		id, content := form.Id, form.Content
+		id, content, editorType := form.Id, form.Content, form.EditorType
 		if !object.CheckModIdentity(memberId) && object.GetReplyAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
@@ -442,8 +443,9 @@ func (c *APIController) EditContent() {
 		}
 
 		reply := object.Reply{
-			Id:      id,
-			Content: content,
+			Id:         id,
+			Content:    content,
+			EditorType: editorType,
 		}
 		res := object.UpdateReplyWithLimitCols(id, &reply)
 
