@@ -14,6 +14,8 @@
 
 package object
 
+import "github.com/microcosm-cc/bluemonday"
+
 func HasMember(memberId string) bool {
 	return GetMember(memberId) != nil
 }
@@ -174,4 +176,13 @@ func IsForbidden(id string) bool {
 	status := GetMemberStatus(id)
 
 	return status == 3
+}
+
+func filterUnsafeHTML(content string) string {
+	if content == "" {
+		return content
+	}
+	p := bluemonday.UGCPolicy()
+	res := p.Sanitize(content)
+	return res
 }
