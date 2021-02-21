@@ -4,7 +4,7 @@
   width: 94px;
   height: 30px;
   /* please replace to your own logo */
-  background-image: url(static/logo.png);
+  background-image: url(https://cdn.casbin.com/forum/static/img/logo.png);
   background-size: 94px 30px;
   background-repeat: no-repeat;
   display: inline-block;
@@ -14,7 +14,7 @@
   width: 80px;
   height: 25px;
   /* please replace to your own logo */
-  background-image: url(static/logo.png);
+  background-image: url(https://cdn.casbin.com/forum/static/img/logo.png);
   background-size: 80px 25px;
   background-repeat: no-repeat;
   display: inline-block;
@@ -22,7 +22,7 @@
 
 #logoFooter {
   /* please replace to your own footer logo */
-  background-image: url(static/logo-footer.png);
+  background-image: url(https://cdn.casbin.com/forum/static/img/logo-footer.png);
   width: 163.92px;
   height: 28px;
   background-size: 163.92px 28px;
