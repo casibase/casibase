@@ -15,6 +15,7 @@
 import React from "react";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
+import * as MemberBackend from "../backend/MemberBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import { withRouter, Link } from "react-router-dom";
@@ -55,12 +56,20 @@ class NewNodeTopicBox extends React.Component {
           id: 1,
         },
       ],
-      placeholder: i18next.t("new:markdowm"),
+      placeholder: "",
     };
-
     this.renderLargeSize = this.renderLargeSize.bind(this);
     this.renderSmallSize = this.renderSmallSize.bind(this);
     this.publishTopic = this.publishTopic.bind(this);
+  }
+
+  componentWillMount() {
+    MemberBackend.getMemberEditorType().then((res) => {
+      this.updateFormField("editorType", res.data);
+      this.setState({
+        placeholder: i18next.t(`new:${this.state.form.editorType}`),
+      });
+    });
   }
 
   componentDidMount() {

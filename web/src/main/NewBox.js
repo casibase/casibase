@@ -15,6 +15,7 @@
 import React from "react";
 import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
+import * as MemberBackend from "../backend/MemberBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
@@ -59,6 +60,12 @@ class NewBox extends React.Component {
 
   componentWillMount() {
     this.getNodes();
+    MemberBackend.getMemberEditorType().then((res) => {
+      this.updateFormField("editorType", res.data);
+      this.setState({
+        placeholder: i18next.t(`new:${this.state.form.editorType}`),
+      });
+    });
   }
 
   getNodes() {
