@@ -144,7 +144,7 @@ func UpdateReply(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
-
+	reply.Content = filterUnsafeHTML(reply.Content)
 	_, err := adapter.engine.Id(id).AllCols().Update(reply)
 	if err != nil {
 		panic(err)
@@ -159,7 +159,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
-
+	reply.Content = filterUnsafeHTML(reply.Content)
 	_, err := adapter.engine.Id(id).Update(reply)
 	if err != nil {
 		panic(err)
@@ -172,7 +172,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 // AddReply returns add reply result and reply id.
 func AddReply(reply *Reply) (bool, int) {
 	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
-
+	reply.Content = filterUnsafeHTML(reply.Content)
 	affected, err := adapter.engine.Insert(reply)
 	if err != nil {
 		panic(err)

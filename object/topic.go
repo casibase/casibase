@@ -40,7 +40,7 @@ type Topic struct {
 	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
 	Deleted         bool     `xorm:"bool" json:"-"`
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
-	Content string `xorm:"mediumtext" json:"content"`
+	Content         string   `xorm:"mediumtext" json:"content"`
 }
 
 func GetTopicCount() int {
@@ -315,7 +315,7 @@ func UpdateTopic(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
-
+	topic.Content = filterUnsafeHTML(topic.Content)
 	_, err := adapter.engine.Id(id).AllCols().Update(topic)
 	if err != nil {
 		panic(err)
@@ -329,7 +329,7 @@ func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
-
+	topic.Content = filterUnsafeHTML(topic.Content)
 	_, err := adapter.engine.Id(id).Update(topic)
 	if err != nil {
 		panic(err)
@@ -341,6 +341,7 @@ func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 
 // AddTopic return add topic result and topic id
 func AddTopic(topic *Topic) (bool, int) {
+	topic.Content = filterUnsafeHTML(topic.Content)
 	affected, err := adapter.engine.Insert(topic)
 	if err != nil {
 		panic(err)
