@@ -165,3 +165,10 @@ export function updateMemberEditorType(editorType) {
     }
   ).then((res) => res.json());
 }
+
+export function getMemberEditorType() {
+  return fetch(`${Setting.ServerUrl}/api/get-member-editorType`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
+}

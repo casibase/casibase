@@ -71,7 +71,7 @@ class EditBox extends React.Component {
   }
 
   editContent() {
-    // TODO: topic
+    // topic
     if (this.state.editType === "topic") {
       TopicBackend.editTopicContent(this.state.form).then((res) => {
         if (res.status === "ok") {
@@ -82,7 +82,7 @@ class EditBox extends React.Component {
       });
       return;
     }
-    //reply
+    // reply
     ReplyBackend.editReplyContent(this.state.form).then((res) => {
       if (res.status === "ok") {
         this.props.history.push(

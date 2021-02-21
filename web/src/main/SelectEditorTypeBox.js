@@ -16,7 +16,6 @@ import React from "react";
 import * as Setting from "../Setting";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
-
 class SelectLanguageBox extends React.Component {
   constructor(props) {
     super(props);
@@ -52,14 +51,14 @@ class SelectLanguageBox extends React.Component {
           <a
             href="javascript:void(0);"
             onClick={() => Setting.ChangeEditorType("markdown")}
-            class="lang-selector"
+            className={"lang-selector"}
           >
             {i18next.t("new:MarkDown")}
           </a>
           <a
             href="javascript:void(0);"
             onClick={() => Setting.ChangeEditorType("richtext")}
-            class="lang-selector"
+            className={"lang-selector"}
           >
             {i18next.t("new:RichText")}
           </a>

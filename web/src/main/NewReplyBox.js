@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import * as TopicBackend from "../backend/TopicBackend";
+import * as MemberBackend from "../backend/MemberBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import { withRouter, Link } from "react-router-dom";
 import "../Reply.css";
@@ -57,6 +57,15 @@ class NewReplyBox extends React.Component {
     };
     this.handleChange = this.handleChange.bind(this);
     this.synonyms = this.synonyms.bind(this);
+  }
+
+  componentWillMount() {
+    MemberBackend.getMemberEditorType().then((res) => {
+      this.updateFormField("editorType", res.data);
+      this.setState({
+        placeholder: i18next.t(`new:${this.state.form.editorType}`),
+      });
+    });
   }
 
   backToTop() {
