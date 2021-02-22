@@ -30,6 +30,7 @@ import { Resizable } from "re-resizable";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
+import * as Conf from "../Conf";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -61,7 +62,7 @@ class NewReplyBox extends React.Component {
 
   componentWillMount() {
     MemberBackend.getMemberEditorType().then((res) => {
-      const editorType = res.data ? res.data : "markdown";
+      const editorType = res.data ? res.data : Conf.DefaultEditorType;
       this.updateFormField("editorType", editorType);
       this.setState({
         placeholder: i18next.t(`new:${this.state.form.editorType}`),
