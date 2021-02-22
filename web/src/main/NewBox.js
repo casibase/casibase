@@ -61,7 +61,8 @@ class NewBox extends React.Component {
   componentWillMount() {
     this.getNodes();
     MemberBackend.getMemberEditorType().then((res) => {
-      this.updateFormField("editorType", res.data);
+      const editorType = res.data ? res.data : "markdown";
+      this.updateFormField("editorType", editorType);
       this.setState({
         placeholder: i18next.t(`new:${this.state.form.editorType}`),
       });
