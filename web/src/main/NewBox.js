@@ -28,6 +28,7 @@ import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import Editor from "./richTextEditor";
+import * as Conf from "../Conf";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -61,7 +62,7 @@ class NewBox extends React.Component {
   componentWillMount() {
     this.getNodes();
     MemberBackend.getMemberEditorType().then((res) => {
-      const editorType = res.data ? res.data : "markdown";
+      const editorType = res.data ? res.data : Conf.DefaultEditorType;
       this.updateFormField("editorType", editorType);
       this.setState({
         placeholder: i18next.t(`new:${this.state.form.editorType}`),

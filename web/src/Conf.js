@@ -12,60 +12,63 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const GoogleClientId  = ""
+export const GoogleClientId = "";
 
-export const GoogleAuthState  = ""
+export const GoogleAuthState = "";
 
-export const GoogleAuthScope  = "profile+email"
+export const GoogleAuthScope = "profile+email";
 
-export const GoogleOauthUri = "https://accounts.google.com/signin/oauth"
+export const GoogleOauthUri = "https://accounts.google.com/signin/oauth";
 
-export const GithubClientId  = ""
+export const GithubClientId = "";
 
-export const GithubAuthState  = ""
+export const GithubAuthState = "";
 
-export const GithubAuthScope  = "user:email+read:user"
+export const GithubAuthScope = "user:email+read:user";
 
-export const GithubOauthUri = "https://github.com/login/oauth/authorize"
+export const GithubOauthUri = "https://github.com/login/oauth/authorize";
 
-export const QQClientId  = ""
+export const QQClientId = "";
 
-export const QQAuthState  = ""
+export const QQAuthState = "";
 
-export const QQAuthScope  = "get_user_info"
+export const QQAuthScope = "get_user_info";
 
-export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize"
+export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize";
 
-export const WechatClientId  = ""
+export const WechatClientId = "";
 
-export const WeChatAuthState = ""
+export const WeChatAuthState = "";
 
-export const WeChatAuthScope = "snsapi_login"
+export const WeChatAuthScope = "snsapi_login";
 
-export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect"
+export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect";
 
-export const OSSRegion = ""
+export const OSSRegion = "";
 
 //The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
-export const OSSEndPoint = ""
+export const OSSEndPoint = "";
 
-export const OSSBucket = ""
+export const OSSBucket = "";
 
 //The path stored in your oss
 //eg: `casbin-forum` or `casbin/forum/xxx/xxx`
-export const OSSBasicPath = ""
+export const OSSBasicPath = "";
 
 //If you set a custom domain name in ali-oss bucket, please fill in.
-export const OSSCustomDomain = ""
+export const OSSCustomDomain = "";
 
-export const ShowGithubCorner = true
+export const ShowGithubCorner = true;
 
-export const GithubRepo = "https://github.com/casbin/casbin-forum"
+export const GithubRepo = "https://github.com/casbin/casbin-forum";
 
-export const Domain = "forum.casbin.com"
+export const Domain = "forum.casbin.com";
 
-export const DefaultLanguage = "en"
+export const DefaultLanguage = "en";
+
+// Support: richtext | markdown
+export const DefaultEditorType = "markdown";
 
 //Default search engine
 //Support: baidu(www.baidu.com) | google(www.google.com) | cn-bing(cn.bing.com)
-export const DefaultSearchSite = "google"
+export const DefaultSearchSite = "google";
