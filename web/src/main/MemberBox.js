@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
+import { scoreConverter } from "./Tools";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -159,7 +160,9 @@ class MemberBox extends React.Component {
       this.props.account !== undefined &&
       this.props.account !== null &&
       this.state.memberId !== this.props.account?.id;
-
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(
+      this.state.member.scoreCount
+    );
     return (
       <div className="box">
         <div className="cell">
@@ -253,21 +256,21 @@ class MemberBox extends React.Component {
                   </span>
                   <div className="sep10" />
                   <div className="balance_area">
-                    {this.state.member?.goldCount}{" "}
+                    {goldCount}{" "}
                     <img
                       src={Setting.getStatic("/static/img/gold@2x.png")}
                       height="16"
                       alt="G"
                       border="0"
                     />{" "}
-                    {this.state.member?.silverCount}{" "}
+                    {silverCount}{" "}
                     <img
                       src={Setting.getStatic("/static/img/silver@2x.png")}
                       height="16"
                       alt="S"
                       border="0"
                     />{" "}
-                    {this.state.member?.bronzeCount}{" "}
+                    {bronzeCount}{" "}
                     <img
                       src={Setting.getStatic("/static/img/bronze@2x.png")}
                       height="16"

@@ -64,6 +64,7 @@ import i18next from "i18next";
 import "./node.css";
 import "./i18n";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
+import { scoreConverter } from "./main/Tools";
 
 class App extends Component {
   constructor(props) {
@@ -116,7 +117,7 @@ class App extends Component {
 
   getAccount() {
     AccountBackend.getAccount().then((res) => {
-      const account = Setting.parseJson(res.data);
+      let account = Setting.parseJson(res.data);
       if (account !== null) {
         let language = account?.language;
         if (language !== "" && language !== i18next.language) {

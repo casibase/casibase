@@ -33,9 +33,7 @@ type Member struct {
 	Company            string `xorm:"varchar(100)" json:"company"`
 	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
 	Ranking            int    `json:"ranking"`
-	GoldCount          int    `json:"goldCount"`
-	SilverCount        int    `json:"silverCount"`
-	BronzeCount        int    `json:"bronzeCount"`
+	ScoreCount         int    `json:"scoreCount"`
 	Bio                string `xorm:"varchar(100)" json:"bio"`
 	Website            string `xorm:"varchar(100)" json:"website"`
 	Location           string `xorm:"varchar(100)" json:"location"`

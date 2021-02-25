@@ -22,6 +22,7 @@ import TopicList from "./main/TopicList";
 import { withRouter, Link } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
+import { scoreConverter } from "./main/Tools";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -242,7 +243,9 @@ class TopicPage extends React.Component {
     if (this.props.account === undefined || this.props.account === null) {
       return null;
     }
-
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(
+      this.props.account.scoreCount
+    );
     return (
       <div class="cell">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -276,10 +279,10 @@ class TopicPage extends React.Component {
                   className="balance_area"
                   style={{ margin: "0px" }}
                 >
-                  {this.props.account?.goldCount !== 0 ? (
+                  {goldCount ? (
                     <span>
                       {" "}
-                      {this.props.account?.goldCount}{" "}
+                      {goldCount}{" "}
                       <img
                         src={Setting.getStatic("/static/img/gold@2x.png")}
                         height="16"
@@ -288,14 +291,14 @@ class TopicPage extends React.Component {
                       />
                     </span>
                   ) : null}{" "}
-                  {this.props.account?.silverCount}{" "}
+                  {silverCount}{" "}
                   <img
                     src={Setting.getStatic("/static/img/silver@2x.png")}
                     height="16"
                     alt="S"
                     border="0"
                   />{" "}
-                  {this.props.account?.bronzeCount}{" "}
+                  {bronzeCount}{" "}
                   <img
                     src={Setting.getStatic("/static/img/bronze@2x.png")}
                     height="16"
