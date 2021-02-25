@@ -164,7 +164,7 @@ func (c *APIController) Signup() {
 			Email:        email,
 			Company:      form.Company,
 			CompanyTitle: form.CompanyTitle,
-			SilverCount:  2,
+			ScoreCount:   200,
 			Location:     form.Location,
 			FileQuota:    object.DefaultUploadFileQuota,
 		}

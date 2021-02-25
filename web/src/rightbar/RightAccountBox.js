@@ -20,6 +20,7 @@ import * as NotificationBackend from "../backend/NotificationBackend";
 import { Link } from "react-router-dom";
 import "../node.css";
 import i18next from "i18next";
+import { scoreConverter } from "../main/Tools";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
@@ -65,6 +66,9 @@ class RightAccountBox extends React.Component {
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(
+      this.props.account.scoreCount
+    );
 
     return (
       <div className={`box ${this.props.nodeId}`}>
@@ -230,10 +234,10 @@ class RightAccountBox extends React.Component {
         <div className="inner">
           <div className="fr" id="money" style={{ margin: "-3px 0px 0px 0px" }}>
             <Link to="/balance" className="balance_area">
-              {this.props.account?.goldCount !== 0 ? (
+              {goldCount !== 0 ? (
                 <span>
                   {" "}
-                  {this.props.account?.goldCount}{" "}
+                  {goldCount}{" "}
                   <img
                     src={Setting.getStatic("/static/img/gold@2x.png")}
                     height="16"
@@ -242,14 +246,14 @@ class RightAccountBox extends React.Component {
                   />
                 </span>
               ) : null}{" "}
-              {this.props.account?.silverCount}{" "}
+              {silverCount}{" "}
               <img
                 src={Setting.getStatic("/static/img/silver@2x.png")}
                 height="16"
                 alt="S"
                 border="0"
               />{" "}
-              {this.props.account?.bronzeCount}{" "}
+              {bronzeCount}{" "}
               <img
                 src={Setting.getStatic("/static/img/bronze@2x.png")}
                 height="16"

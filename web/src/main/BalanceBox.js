@@ -18,6 +18,7 @@ import * as BalanceBackend from "../backend/BalanceBackend";
 import PageColumn from "./PageColumn";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
+import { scoreConverter } from "./Tools";
 
 const pangu = require("pangu");
 
@@ -364,6 +365,10 @@ class BalanceBox extends React.Component {
   }
 
   render() {
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(
+      this.props.account?.scoreCount
+    );
+
     return (
       <div className="box">
         <div className="cell">
@@ -395,10 +400,10 @@ class BalanceBox extends React.Component {
                   className="balance_area bigger"
                   style={{ fontSize: "24px", lineHeight: "24px" }}
                 >
-                  {this.props.account?.goldCount !== 0 ? (
+                  {goldCount !== 0 ? (
                     <span>
                       {" "}
-                      {this.props.account?.goldCount}{" "}
+                      {goldCount}{" "}
                       <img
                         src={Setting.getStatic("/static/img/gold@2x.png")}
                         height="16"
@@ -407,14 +412,14 @@ class BalanceBox extends React.Component {
                       />
                     </span>
                   ) : null}{" "}
-                  {this.props.account?.silverCount}{" "}
+                  {silverCount}{" "}
                   <img
                     src={Setting.getStatic("/static/img/silver@2x.png")}
                     height="16"
                     alt="S"
                     border="0"
                   />{" "}
-                  {this.props.account?.bronzeCount}{" "}
+                  {bronzeCount}{" "}
                   <img
                     src={Setting.getStatic("/static/img/bronze@2x.png")}
                     height="16"

@@ -84,12 +84,12 @@ func GetConsumptionRecordId() int {
 
 func GetMemberBalance(id string) int {
 	member := Member{Id: id}
-	existed, err := adapter.engine.Select("gold_count, silver_count, bronze_count").Get(&member)
+	existed, err := adapter.engine.Select("score_count").Get(&member)
 	if err != nil {
 		panic(err)
 	}
 
-	balance := member.GoldCount*10000 + member.SilverCount*100 + member.BronzeCount
+	balance := member.ScoreCount
 
 	if existed {
 		return balance
@@ -101,10 +101,8 @@ func GetMemberBalance(id string) int {
 func UpdateMemberBalances(id string, amount int) bool {
 	balance := GetMemberBalance(id) + amount
 	member := new(Member)
-	member.BronzeCount = balance % 100
-	member.SilverCount = (balance % 10000) / 100
-	member.GoldCount = balance / 10000
-	affected, err := adapter.engine.Id(id).Cols("gold_count, silver_count, bronze_count").Update(member)
+	member.ScoreCount = balance
+	affected, err := adapter.engine.Id(id).Cols("score_count").Update(member)
 	if err != nil {
 		panic(err)
 	}

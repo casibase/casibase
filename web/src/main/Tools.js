@@ -216,3 +216,15 @@ export function myUploadFn(param) {
       );
     });
 }
+
+/**
+ * convert number to coin.
+ * @param {number} score
+ */
+export function scoreConverter(score) {
+  const rate = 100;
+  const goldCount = Math.floor(Math.floor(score / rate) / rate);
+  const silverCount = Math.floor(score / rate) % rate;
+  const bronzeCount = score % rate;
+  return { goldCount, silverCount, bronzeCount };
+}
