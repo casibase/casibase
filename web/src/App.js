@@ -281,15 +281,12 @@ class App extends Component {
           />
         </Route>
         <Route exact path="/go/:nodeId/:event">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <NodesBox
-              account={this.state.account}
-              getNodeBackground={this.getNodeBackground}
-              refreshAccount={this.getAccount.bind(this)}
-              refreshFavorites={this.getFavoriteNum.bind(this)}
-            />
-          </div>
+          <NodesBox
+            account={this.state.account}
+            getNodeBackground={this.getNodeBackground}
+            refreshAccount={this.getAccount.bind(this)}
+            refreshFavorites={this.getFavoriteNum.bind(this)}
+          />
         </Route>
         <Route exact path="/my/:favorites">
           <div id={pcBrowser ? "Main" : ""}>
