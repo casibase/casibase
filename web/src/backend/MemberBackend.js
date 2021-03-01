@@ -158,7 +158,7 @@ export function updateMemberLanguage(language) {
 
 export function updateMemberEditorType(editorType) {
   return fetch(
-    `${Setting.ServerUrl}/api/update-member-editorType?editorType=${editorType}`,
+    `${Setting.ServerUrl}/api/update-member-editor-type?editorType=${editorType}`,
     {
       method: "POST",
       credentials: "include",
@@ -167,7 +167,7 @@ export function updateMemberEditorType(editorType) {
 }
 
 export function getMemberEditorType() {
-  return fetch(`${Setting.ServerUrl}/api/get-member-editorType`, {
+  return fetch(`${Setting.ServerUrl}/api/get-member-editor-type`, {
     method: "GET",
     credentials: "include",
   }).then((res) => res.json());
