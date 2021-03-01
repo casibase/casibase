@@ -54,6 +54,7 @@ import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
 import EditBox from "./main/EditBox";
 import ForgotBox from "./main/ForgotBox";
 import FilesBox from "./main/FilesBox";
+import RankingRichBox from "./main/RankingRichBox";
 import AdminHomepage from "./admin/AdminHomepage";
 import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
@@ -370,6 +371,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <FilesBox account={this.state.account} edit={true} />
+          </div>
+        </Route>
+        <Route exact path="/top/rich">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <RankingRichBox />
           </div>
         </Route>
         {/*BACKSTAGE*/}

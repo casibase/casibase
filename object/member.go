@@ -14,7 +14,9 @@
 
 package object
 
-import "bytes"
+import (
+	"bytes"
+)
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
@@ -62,6 +64,15 @@ func GetMembers() []*Member {
 		panic(err)
 	}
 
+	return members
+}
+
+func GetRankingRich() []*Member {
+	members := []*Member{}
+	err := adapter.engine.Desc("score_count").Limit(25, 0).Find(&members)
+	if err != nil {
+		panic(err)
+	}
 	return members
 }
 
