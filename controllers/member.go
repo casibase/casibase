@@ -162,6 +162,11 @@ func (c *APIController) GetMemberEditorType() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetRankingRich() {
+	c.Data["json"] = object.GetRankingRich()
+	c.ServeJSON()
+}
+
 func (c *APIController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
 	memberId := c.GetSessionUser()

@@ -52,6 +52,7 @@ class Avatar extends React.Component {
           align="default"
           style={style}
           alt={this.props.username}
+          key={this.props.key}
         />
       </Link>
     );

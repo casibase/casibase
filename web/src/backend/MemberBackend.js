@@ -172,3 +172,10 @@ export function getMemberEditorType() {
     credentials: "include",
   }).then((res) => res.json());
 }
+
+export function getRankingRichList() {
+  return fetch(`${Setting.ServerUrl}/api/get-ranking-rich`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
+}
