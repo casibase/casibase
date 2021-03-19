@@ -31,6 +31,7 @@ class RightAccountBox extends React.Component {
       nodeFavoriteNum: 0,
       followingNum: 0,
       unreadNotificationNum: 0,
+      themeMode: undefined,
     };
   }
 
@@ -61,6 +62,32 @@ class RightAccountBox extends React.Component {
     });
   }
 
+  reverseTheme() {
+    var themeMode = undefined;
+    var modeArray = document.cookie.split("; ");
+    for (var i = 0; i < modeArray.length; i++) {
+      var kvset = modeArray[i].split("=");
+      if (kvset[0] == "themeMode") themeMode = kvset[1];
+    }
+    if (themeMode == undefined) themeMode = "true";
+    if (themeMode == "true") themeMode = "false";
+    else themeMode = "true";
+    document.cookie = "themeMode=" + themeMode;
+    window.location.reload();
+  }
+
+  getThemeBtnUrl() {
+    var themeMode = undefined;
+    var modeArray = document.cookie.split("; ");
+    for (var i = 0; i < modeArray.length; i++) {
+      var kvset = modeArray[i].split("=");
+      if (kvset[0] == "themeMode") themeMode = kvset[1];
+    }
+    if (themeMode == undefined) themeMode = "true";
+    if (themeMode == "true") return Setting.getStatic("/static/img/toggle-light.png");
+    else return Setting.getStatic("/static/img/toggle-dark.png")
+  }
+
   render() {
     const username = this.props.account?.id;
     const avatar = this.props.account?.avatar;
@@ -83,18 +110,13 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
-                  <div className="fr">
-                    <Link
-                      to="/settings/night/toggle?once=93095"
-                      className="light-toggle"
-                    >
+                  <div className="fr" onClick={this.reverseTheme}>
                       <img
-                        src={Setting.getStatic("/static/img/toggle-light.png")}
+                        src={this.getThemeBtnUrl()}
                         align="absmiddle"
                         height="10"
                         alt="Light"
                       />
-                    </Link>
                   </div>
                   <span className="bigger">
                     <Link
