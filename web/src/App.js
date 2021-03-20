@@ -535,9 +535,22 @@ class App extends Component {
     });
   }
 
+  getThemeLink() {
+    var themeMode = undefined;
+    var modeArray = document.cookie.split("; ");
+    for (var i = 0; i < modeArray.length; i++) {
+      var kvset = modeArray[i].split("=");
+      if (kvset[0] == "themeMode") themeMode = kvset[1];
+    }
+    if (themeMode == undefined) themeMode = "true";
+    if (themeMode == "true") return "";
+    else return Setting.getStatic("/static/css/night.css");
+  }
+
   render() {
     return (
       <div>
+        <link type="text/css" rel="stylesheet" media="all" id="dark-mode" href={this.getThemeLink()}/>
         <BackTop />
         <Header
           account={this.state.account}
