@@ -57,9 +57,10 @@ class AdminNode extends React.Component {
       color: "#386d97",
       displayColorPicker: false,
     };
+    this.loadData();
   }
 
-  componentDidMount() {
+  loadData() {
     this.getNodes();
     this.getNodeInfo();
     this.getTabs();
@@ -90,10 +91,6 @@ class AdminNode extends React.Component {
   }
 
   getTabs() {
-    if (this.state.nodeId === undefined && this.props.event !== "new") {
-      return;
-    }
-
     TabBackend.getAllTabs().then((res) => {
       this.setState({
         tabs: res,
@@ -102,10 +99,6 @@ class AdminNode extends React.Component {
   }
 
   getPlanes() {
-    if (this.state.nodeId === undefined && this.props.event !== "new") {
-      return;
-    }
-
     PlaneBackend.getPlanesAdmin().then((res) => {
       this.setState({
         planes: res,
