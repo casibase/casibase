@@ -978,6 +978,7 @@ func (c *APIController) GetMemberStsToken() {
 	if accessKeyID == "" {
 		resp := Response{Status: "fail", Msg: "Missing sts config."}
 		c.Data["json"] = resp
+		c.ServeJSON()
 		return
 	}
 
