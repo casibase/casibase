@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const GoogleClientId = "";
+export const GoogleClientId =
+  "972039282305-5uhleabkq2dj89v275u76mmisrf3jj7n.apps.googleusercontent.com";
 
-export const GoogleAuthState = "";
+export const GoogleAuthState = "kunal";
 
 export const GoogleAuthScope = "profile+email";
 

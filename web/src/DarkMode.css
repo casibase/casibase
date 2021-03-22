@@ -1,0 +1,85 @@
+:root {
+  --heavy-dark: #18222d;
+  --light-dark: #22303f;
+  --text-color: #738292;
+  --border-color: #30363d;
+}
+
+body.dark div {
+  color: var(--text-color) !important;
+  border: none;
+}
+
+body.dark #Top {
+  background-color: var(--heavy-dark);
+}
+
+body.dark #Wrapper {
+  background-color: #22303f;
+  color: var(--text-color);
+}
+
+body.dark #Tabs {
+  background-color: var(--heavy-dark);
+}
+
+body.dark #SecondaryTabs {
+  background-color: #001d25;
+}
+
+body.dark div[id*="Main"] div[class*="box"] {
+  background-color: var(--heavy-dark);
+}
+
+body.dark a[class*="grid_item"] {
+  background-color: var(--heavy-dark);
+  height: 145px;
+}
+
+body.dark a[class*="grid_item"]:hover {
+  background-color: var(--light-dark);
+}
+
+body.dark #Rightbar div[class*="box"] {
+  background-color: var(--heavy-dark);
+}
+
+body.dark div[class*="member-activity-bar"] {
+  background-color: #f0f0f0;
+}
+
+body.dark div[class*="member-activity-start"] {
+  background-color: #888;
+}
+
+body.dark #Bottom {
+  background-color: #18222d;
+  color: var(--text-color);
+}
+
+body.dark a {
+  color: #9caec7 !important;
+}
+
+body.dark a.tab:hover {
+  background-color: #393f4e;
+}
+
+body.dark h2 {
+  color: #d1d5d9;
+}
+
+body.dark input[type="submit"] {
+  background: linear-gradient(to bottom, #9caec7 0, #6b7788 100%);
+  text-shadow: none;
+}
+
+body.dark input[class*="sl"] {
+  background-color: var(--heavy-dark);
+  color: var(--text-color);
+}
+
+body.dark textarea {
+  background-color: var(--heavy-dark);
+  color: var(--text-color);
+}

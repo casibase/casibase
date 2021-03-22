@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as NotificationBackend from "../backend/NotificationBackend";
+import DarkMode from "../DarkMode";
 import { Link } from "react-router-dom";
 import "../node.css";
 import i18next from "i18next";
@@ -84,8 +85,9 @@ class RightAccountBox extends React.Component {
       if (kvset[0] == "themeMode") themeMode = kvset[1];
     }
     if (themeMode == undefined) themeMode = "true";
-    if (themeMode == "true") return Setting.getStatic("/static/img/toggle-light.png");
-    else return Setting.getStatic("/static/img/toggle-dark.png")
+    if (themeMode == "true")
+      return Setting.getStatic("/static/img/toggle-light.png");
+    else return Setting.getStatic("/static/img/toggle-dark.png");
   }
 
   render() {
@@ -110,13 +112,16 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
-                  <div className="fr" onClick={this.reverseTheme}>
+                  {/* <div className="fr" onClick={this.reverseTheme}>
                       <img
                         src={this.getThemeBtnUrl()}
                         align="absmiddle"
                         height="10"
                         alt="Light"
                       />
+                  </div> */}
+                  <div className="fr">
+                    <DarkMode />
                   </div>
                   <span className="bigger">
                     <Link
