@@ -625,6 +625,7 @@
     "Node management": "Node management",
     "Topic management": "Topic management",
     "Member management": "Member management",
+    "Sensitive management": "Sensitive management",
     "Tab management": "Tab management",
     "Plane management": "Plane management",
     "Get search result success": "Get search result success",
@@ -637,6 +638,10 @@
     "Asc": "Asc",
     "Desc": "Desc",
     "Ignore": "Ignore"
+  },
+  "sensitive": {
+    "sensitive management": "Sensitive Management",
+    "new sensitive": "New Sensitive Word"
   },
   "error": {
     "Reply title cannot be empty": "Reply title cannot be empty",

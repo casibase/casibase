@@ -49,6 +49,11 @@ class AdminHomepage extends React.Component {
           value: "member",
           image: Setting.getStatic("/static/img/settings.png"),
         },
+        {
+          label: i18next.t("admin:Sensitive management"),
+          value: "sensitive",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
       ],
       message: "",
     };
