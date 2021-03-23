@@ -111,6 +111,13 @@ func (c *APIController) AddReply() {
 	}
 	content, topicId := form.Content, form.TopicId
 
+	if object.ContainsSensitiveWord(content) {
+		resp := Response{Status: "fail", Msg: "Reply contains sensitive word."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	reply := object.Reply{
 		//Id:          util.IntToString(object.GetReplyId()),
 		Author:      memberId,

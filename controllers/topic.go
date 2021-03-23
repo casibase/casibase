@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -147,6 +147,20 @@ func (c *APIController) AddTopic() {
 		panic(err)
 	}
 	title, body, nodeId, editorType := form.Title, form.Body, form.NodeId, form.EditorType
+
+	if object.ContainsSensitiveWord(title) {
+		resp := Response{Status: "fail", Msg: "Topic title contains sensitive word."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if object.ContainsSensitiveWord(body) {
+		resp := Response{Status: "fail", Msg: "Topic body contains sensitive word."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
