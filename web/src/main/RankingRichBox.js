@@ -23,12 +23,16 @@ import { scoreConverter } from "./Tools";
 class RankingRichBox extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      richList: undefined,
+    };
   }
 
   componentDidMount() {
     MemberBackend.getRankingRichList().then((res) => {
-      this.state.richList = res;
+      this.setState({
+        richList: res,
+      });
     });
   }
 
