@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FileBackend from "../backend/FileBackend";
+import i18next from "i18next";
 
 require("inline-attachment/src/inline-attachment");
 require("inline-attachment/src/codemirror-4.inline-attachment");
@@ -77,7 +78,7 @@ export function uploadMdFile(addMsg) {
       .multipartUpload(`${filePath}`, file)
       .then((res) => {
         this.onFileUploadResponse(file.name, encodeURI(mdUrl));
-        uploadStatus = true;
+        this.uploadStatus = true;
         FileBackend.addFileRecord({
           fileName: originalFileName,
           filePath: filePath,
@@ -199,7 +200,7 @@ export function myUploadFn(param) {
   newClient
     .multipartUpload(`${filePath}`, param.file)
     .then((res) => {
-      uploadStatus = true;
+      this.uploadStatus = true;
       FileBackend.addFileRecord({
         fileName: originalFileName,
         filePath: filePath,
