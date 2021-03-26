@@ -30,7 +30,9 @@ class PageColumn extends React.Component {
       defaultPageNum: 20,
     };
     if (this.props.defaultPageNum !== undefined) {
-      this.state.defaultPageNum = this.props.defaultPageNum;
+      this.setState({
+        defaultPageNum: this.props.defaultPageNum,
+      });
     }
   }
 

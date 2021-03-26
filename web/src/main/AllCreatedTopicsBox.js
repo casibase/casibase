@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -73,13 +73,11 @@ class AllCreatedTopicsBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState(
-        {
-          page: parseInt(page),
-          memberId: newProps.match.params.memberId,
-        },
-        () => this.getAllCreatedTopics()
-      );
+      this.setState({
+        page: parseInt(page),
+        memberId: newProps.match.params.memberId,
+      });
+      this.getAllCreatedTopics();
       this.geCreatedTopicsNum();
     }
   }
@@ -105,6 +103,7 @@ class AllCreatedTopicsBox extends React.Component {
     ).then((res) => {
       this.setState({
         topics: res,
+        tab: this.props.match.params.tab,
       });
     });
   }
