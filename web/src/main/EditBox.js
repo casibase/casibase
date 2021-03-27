@@ -52,7 +52,6 @@ class EditBox extends React.Component {
 
   componentDidMount() {
     this.getEditObject();
-    Setting.initOSSClient(this.props.account?.id);
   }
 
   initForm() {

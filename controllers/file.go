@@ -15,7 +15,11 @@
 package controllers
 
 import (
+	"encoding/base64"
 	"encoding/json"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/casbin/casbin-forum/object"
 	"github.com/casbin/casbin-forum/service"
@@ -181,6 +185,44 @@ func (c *APIController) UpdateFileDescribe() {
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	}
 
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UploadFile() {
+	if c.RequireLogin() {
+		return
+	}
+	memberId := c.GetSessionUser()
+	fileBase64 := c.Ctx.Request.Form.Get("file")
+	fileType := c.Ctx.Request.Form.Get("type")
+	fileName := c.Ctx.Request.Form.Get("name")
+	index := strings.Index(fileBase64, ",")
+	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
+	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/file/" + fileName + "." + fileType)
+
+	resp := Response{Status: "ok", Msg: fileName + "." + fileType, Data: fileURL}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UploadAvatar() {
+	if c.RequireLogin() {
+		return
+	}
+	memberId := c.GetSessionUser()
+	avatarBase64 := c.Ctx.Request.Form.Get("avatar")
+	index := strings.Index(avatarBase64, ",")
+	if index < 0 || (avatarBase64[0:index] != "data:image/png;base64" && avatarBase64[0:index] != "data:image/jpeg;base64") {
+		resp := Response{Status: "error", Msg: "File encoding or type error"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+	fileBytes, _ := base64.StdEncoding.DecodeString(avatarBase64[index+1:])
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/avatar/" + timestamp + "." + "png")
+	resp := Response{Status: "ok", Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }

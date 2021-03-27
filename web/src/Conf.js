@@ -44,20 +44,6 @@ export const WeChatAuthScope = "snsapi_login";
 
 export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect";
 
-export const OSSRegion = "";
-
-//The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
-export const OSSEndPoint = "";
-
-export const OSSBucket = "";
-
-//The path stored in your oss
-//eg: `casbin-forum` or `casbin/forum/xxx/xxx`
-export const OSSBasicPath = "";
-
-//If you set a custom domain name in ali-oss bucket, please fill in.
-export const OSSCustomDomain = "";
-
 export const ShowGithubCorner = true;
 
 export const GithubRepo = "https://github.com/casbin/casbin-forum";

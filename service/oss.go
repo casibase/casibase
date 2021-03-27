@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,73 +16,126 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"strconv"
 	"time"
 
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/astaxie/beego"
+	"github.com/qor/oss"
+	"github.com/qor/oss/aliyun"
+	"github.com/qor/oss/s3"
+	awss3 "github.com/aws/aws-sdk-go/service/s3"
 )
 
-var ossURL, ossFilePath string
-var ossClient *oss.Client
-var ossBucket *oss.Bucket
+var ossURL, basicPath string
+var storage oss.StorageInterface
 
-// InitAliOSS initializes ali-oss client.
-func InitAliOSS() {
-	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
-	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
-	//OSSRegion := beego.AppConfig.String("OSSRegion")
-	OSSEndPoint := beego.AppConfig.String("OSSEndPoint")
-	OSSBucket := beego.AppConfig.String("OSSBucket")
-
-	if OSSBucket == "" {
+func InitOSS() {
+	OSSProvider := beego.AppConfig.String("OSSProvider")
+	if OSSProvider == "" {
+		storage = nil
 		return
 	}
-
-	if len(OSSCustomDomain) != 0 {
-		ossURL = "https://" + OSSCustomDomain + "/" + OSSBasicPath + "/"
-	} else {
-		ossURL = "https://" + OSSBucket + "." + OSSEndPoint + "/" + OSSBasicPath + "/"
+	switch OSSProvider {
+	case "Aliyun":
+		AliyunInit()
+		break
+	case "Awss3":
+		Awss3Init()
+		break
 	}
-	ossFilePath = OSSBasicPath + "/"
-	var err error
-	ossClient, err = oss.New(OSSEndPoint, accessKeyID, accessKeySecret)
-	if err != nil {
-		panic(err)
+	if storage == nil {
+		fmt.Println("OSS config error")
+		return
 	}
-
-	ossBucket, err = ossClient.Bucket(OSSBucket)
-	if err != nil {
-		panic(err)
+	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
+	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
+	if OSSBasicPath == "" {
+		OSSBasicPath = "casbin-forum"
 	}
+	if OSSCustomDomain == "" {
+		OSSCustomDomain = storage.GetEndpoint()
+	}
+	ossURL = "https://" + OSSCustomDomain + "/" + OSSBasicPath
+	basicPath = "/" + OSSBasicPath
 }
 
-// UploadAvatarToAliOSS uploads an avatar to ali-oss.
-func UploadAvatarToAliOSS(avatar []byte, memberId string) string {
-	if ossClient == nil || ossBucket == nil {
-		return ""
+func AliyunInit() {
+	accessKeyID := beego.AppConfig.String("accessKeyID")
+	accessKeySecret := beego.AppConfig.String("accessKeySecret")
+	ossBucket := beego.AppConfig.String("OSSBucket")
+	ossEndPoint := beego.AppConfig.String("OSSEndPoint")
+	if accessKeyID == "" || accessKeySecret == "" || ossBucket == "" || ossEndPoint == "" {
+		fmt.Println("OSS config error")
+		return
+	}
+	storage = aliyun.New(&aliyun.Config{
+		AccessID: accessKeyID,
+		AccessKey: accessKeySecret,
+		Bucket: ossBucket,
+		Endpoint: ossEndPoint,
+	})
+}
+
+func Awss3Init() {
+	accessKeyID := beego.AppConfig.String("accessKeyID")
+	accessKeySecret := beego.AppConfig.String("accessKeySecret")
+	ossBucket := beego.AppConfig.String("OSSBucket")
+	ossEndPoint := beego.AppConfig.String("OSSEndPoint")
+	ossRegion := beego.AppConfig.String("OSSRegion")
+	if accessKeyID == "" || accessKeySecret == "" || ossBucket == "" || ossEndPoint == "" || ossRegion == "" {
+		fmt.Println("OSS config error")
+		return
+	}
+	storage = s3.New(&s3.Config{
+		AccessID: accessKeyID,
+		AccessKey: accessKeySecret,
+		Region: ossRegion,
+		Bucket: ossBucket,
+		Endpoint: ossEndPoint,
+		ACL: awss3.BucketCannedACLPublicRead,
+	})
+}
+
+// UploadAvatarToOSS uploads an avatar to oss.
+func UploadAvatarToOSS(avatar []byte, memberId string) string {
+	if storage == nil {
+		fmt.Println("OSS config error")
+		return "oss conf error"
 	}
 
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-
-	err := ossBucket.PutObject(ossFilePath+memberId+"/avatar/"+timestamp+".png", bytes.NewReader(avatar))
+	_, err := storage.Put(basicPath + "/" + memberId + "/avatar/" + timestamp + ".png", bytes.NewReader(avatar))
 	if err != nil {
 		panic(err)
-		return ""
 	}
+	return ossURL + "/" + memberId + "/avatar/" + timestamp + ".png"
+}
 
-	avatarURL := ossURL + memberId + "/avatar/" + timestamp + ".png"
-
-	return avatarURL
+// UploadFileToOSS uploads a file to the path, returns public URL
+func UploadFileToOSS(file []byte, path string) string {
+	if storage == nil {
+		fmt.Println("OSS config error")
+		return "oss conf error"
+	}
+	_, err := storage.Put(basicPath + path, bytes.NewReader(file))
+	if err != nil {
+		panic(err)
+		return "OSS error"
+	}
+	return ossURL + path
 }
 
 // DeleteOSSFile deletes file according to the file path.
 func DeleteOSSFile(filePath string) bool {
-	err := ossBucket.DeleteObject(filePath)
+	if storage == nil {
+		fmt.Println("OSS config error")
+		return false
+	}
+	err := storage.Delete(filePath)
 	if err != nil {
 		panic(err)
 		return false
 	}
-
 	return true
 }

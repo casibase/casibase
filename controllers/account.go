@@ -26,7 +26,6 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/aliyun/aliyun-sts-go-sdk/sts"
 	"github.com/astaxie/beego"
 
 	"github.com/casbin/casbin-forum/object"
@@ -962,40 +961,6 @@ func (c *APIController) AuthWeChat() {
 			object.LinkMemberAccount(memberId, "avatar", avatar)
 		}
 	}
-
-	c.Data["json"] = resp
-
-	c.ServeJSON()
-}
-
-var accessKeyID = beego.AppConfig.String("accessKeyID")
-var accessKeySecret = beego.AppConfig.String("accessKeySecret")
-var roleArn = beego.AppConfig.String("roleArn")
-
-func (c *APIController) GetMemberStsToken() {
-	sessionName := util.ConvertToPinyin(c.GetSessionUser())
-
-	if accessKeyID == "" {
-		resp := Response{Status: "fail", Msg: "Missing sts config."}
-		c.Data["json"] = resp
-		return
-	}
-
-	stsClient := sts.NewClient(accessKeyID, accessKeySecret, roleArn, sessionName)
-
-	authResp, err := stsClient.AssumeRole(3600)
-	if err != nil {
-		panic(err)
-	}
-
-	res := stsTokenResponse{
-		AccessKeyID:     authResp.Credentials.AccessKeyId,
-		AccessKeySecret: authResp.Credentials.AccessKeySecret,
-		StsToken:        authResp.Credentials.SecurityToken,
-	}
-
-	var resp Response
-	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp
 

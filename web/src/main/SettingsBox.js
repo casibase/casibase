@@ -317,9 +317,6 @@ class SettingsBox extends React.Component {
     }
 
     if (this.state.event === "avatar") {
-      if (this.props.account !== undefined) {
-        Setting.initOSSClient(this.props.account?.id);
-      }
       return (
         <div>
           {this.renderHeader()}
