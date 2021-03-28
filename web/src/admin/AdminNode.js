@@ -143,37 +143,22 @@ class AdminNode extends React.Component {
     let file = event.target.files[0];
     let newClient, url, timestamp, path, fileName;
     let fileType = Setting.getFileType(file.name);
-    newClient = Setting.OSSClient;
-    path = Setting.OSSFileUrl;
-    url = Setting.OSSUrl;
     timestamp = Date.parse(new Date());
     fileName = timestamp + "." + fileType.ext;
-
-    let fileUrl = `${url}/${fileType.fileType}/${fileName}`;
-    let filePath = `${path}/${fileType.fileType}/${fileName}`; //path
-    newClient
-      .multipartUpload(`${filePath}`, file)
-      .then((res) => {
-        FileBackend.addFileRecord({
-          fileName: file.name,
-          filePath: filePath,
-          fileUrl: fileUrl,
-          size: file.size,
-        }).then((res) => {
+    let reader = new FileReader();
+    reader.onload = (e) => {
+      FileBackend.uploadFile(e.target.result, fileName, fileType.ext).then(
+        (res) => {
           if (res?.status === "ok") {
-            this.updateFormField("backgroundImage", fileUrl);
+            this.updateFormField("backgroundImage", res.data);
           } else {
             this.setState({
               message: res?.msg,
             });
           }
-        });
-      })
-      .catch((error) =>
-        this.setState({
-          message: error,
-        })
+        }
       );
+    };
   }
 
   initForm() {
@@ -544,10 +529,6 @@ class AdminNode extends React.Component {
   }
 
   render() {
-    if (this.props.account !== undefined) {
-      Setting.initOSSClient(this.props.account?.id);
-    }
-
     const newNode = this.props.event === "new";
 
     if (this.state.nodeId !== undefined || newNode) {

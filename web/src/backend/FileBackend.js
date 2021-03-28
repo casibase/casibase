@@ -60,3 +60,35 @@ export function getFileNum() {
     credentials: "include",
   }).then((res) => res.json());
 }
+
+export function uploadTopicPic(base64) {
+  let formData = new FormData();
+  formData.append("pic", base64);
+  return fetch(`${Setting.ServerUrl}/api/upload-topic-pic`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
+}
+
+export function uploadFile(base64, filename, filetype) {
+  let formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("type", filetype);
+  return fetch(`${Setting.ServerUrl}/api/upload-file`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
+}
+
+export function uploadAvatar(base64) {
+  let formData = new FormData();
+  formData.append("avatar", base64);
+  return fetch(`${Setting.ServerUrl}/api/upload-avatar`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
+}

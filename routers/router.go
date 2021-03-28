@@ -57,6 +57,9 @@ func initAPI() {
 	beego.Router("/api/add-sensitive", &controllers.APIController{}, "GET:AddSensitive")
 	beego.Router("/api/del-sensitive", &controllers.APIController{}, "GET:DelSensitive")
 	beego.Router("/api/get-sensitive", &controllers.APIController{}, "GET:GetSensitive")
+	beego.Router("/api/upload-topic-pic", &controllers.APIController{}, "POST:UploadTopicPic")
+	beego.Router("/api/upload-file", &controllers.APIController{}, "POST:UploadFile")
+	beego.Router("/api/upload-avatar", &controllers.APIController{}, "POST:UploadAvatar")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
@@ -77,7 +80,6 @@ func initAPI() {
 	beego.Router("/api/update-member-info", &controllers.APIController{}, "POST:UpdateMemberInfo")
 	beego.Router("/api/get-member-avatar", &controllers.APIController{}, "GET:GetMemberAvatar")
 	beego.Router("/api/update-member-avatar", &controllers.APIController{}, "POST:UpdateMemberAvatar")
-	beego.Router("/api/get-member-sts-token", &controllers.APIController{}, "GET:GetMemberStsToken")
 	beego.Router("/api/update-member-language", &controllers.APIController{}, "POST:UpdateMemberLanguage")
 	beego.Router("/api/get-member-language", &controllers.APIController{}, "GET:GetMemberLanguage")
 	beego.Router("/api/update-member-editor-type", &controllers.APIController{}, "POST:UpdateMemberEditorType")

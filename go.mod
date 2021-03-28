@@ -8,6 +8,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.1.4+incompatible
 	github.com/aliyun/aliyun-sts-go-sdk v0.0.0-20171106034748-98d3903a2309
 	github.com/astaxie/beego v1.12.2
+	github.com/aws/aws-sdk-go v1.38.7
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
@@ -18,6 +19,7 @@ require (
 	github.com/mileusna/crontab v1.0.1
 	github.com/mozillazg/go-slugify v0.2.0
 	github.com/mozillazg/go-unidecode v0.1.1 // indirect
+	github.com/qor/oss v0.0.0-20191031055114-aef9ba66bf76
 	github.com/satori/go.uuid v1.2.0 // indirect
 	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43

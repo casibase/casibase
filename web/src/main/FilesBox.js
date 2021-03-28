@@ -172,24 +172,7 @@ class FilesBox extends React.Component {
     this.setState({
       files: files,
     });
-    Tools.uploadFile(file[0]).then((res) => {
-      if (res?.status === "ok") {
-        let index = this.getIndex(fileInfo);
-        let files = this.state.files;
-        files[index].status = true;
-        files[index].id = res?.data;
-        this.setState({
-          files: files,
-          message: "",
-          filesNum: res?.data2.num,
-          maxFileNum: res?.data2.maxNum,
-        });
-      } else {
-        this.setState({
-          message: res?.msg,
-        });
-      }
-    });
+    Tools.uploadFile(file[0]);
   }
 
   deleteFile(file) {
@@ -692,15 +675,6 @@ class FilesBox extends React.Component {
 
   render() {
     const pcBrowser = Setting.PcBrowser;
-
-    if (this.props.account !== null && this.props.account !== undefined) {
-      if (!this.state.initOSSClientStatus) {
-        Setting.initOSSClient(this.props.account.id);
-        this.setState({
-          initOSSClientStatus: true,
-        });
-      }
-    }
 
     if (this.state.event === "upload") {
       if (this.props.account === null) {
