@@ -232,14 +232,7 @@ class NewBox extends React.Component {
       );
     }
 
-    if (this.props.account !== null) {
-      if (!this.state.initOSSClientStatus) {
-        Setting.initOSSClient(this.props.account?.id);
-        this.setState({
-          initOSSClientStatus: true,
-        });
-      }
-    } else {
+    if (this.props.account === null) {
       this.props.history.push("/signin");
     }
 

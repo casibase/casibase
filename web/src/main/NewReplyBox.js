@@ -43,7 +43,6 @@ class NewReplyBox extends React.Component {
       isTypingStarted: false,
       problem: [],
       message: null,
-      initOSSClientStatus: false,
       editor: [
         {
           text: i18next.t("new:markdown"),
@@ -72,13 +71,6 @@ class NewReplyBox extends React.Component {
 
   backToTop() {
     Setting.scrollToTop();
-  }
-
-  initOSS() {
-    Setting.initOSSClient(this.props.member);
-    this.setState({
-      initOSSClientStatus: true,
-    });
   }
 
   updateFormField(key, value) {
@@ -322,12 +314,6 @@ class NewReplyBox extends React.Component {
   render() {
     if (this.props.topic === null) {
       return null;
-    }
-
-    if (this.props.member !== null) {
-      if (!this.state.initOSSClientStatus) {
-        this.initOSS();
-      }
     }
 
     return (

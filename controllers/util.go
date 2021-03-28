@@ -69,7 +69,7 @@ func UploadAvatarToOSS(avatar, memberId string) string {
 	defer response.Body.Close()
 	avatarInfo, err := ioutil.ReadAll(response.Body)
 
-	avatarURL := service.UploadAvatarToAliOSS(avatarInfo, memberId)
+	avatarURL := service.UploadAvatarToOSS(avatarInfo, memberId)
 
 	return avatarURL
 }

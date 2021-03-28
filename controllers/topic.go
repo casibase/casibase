@@ -15,10 +15,14 @@
 package controllers
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"strconv"
+	"strings"
+	"time"
 
 	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casbin-forum/service"
 	"github.com/casbin/casbin-forum/util"
 )
 
@@ -206,6 +210,28 @@ func (c *APIController) AddTopic() {
 		resp = Response{Status: "error", Msg: "fail"}
 	}
 
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *APIController) UploadTopicPic() {
+	if c.RequireLogin() {
+		return
+	}
+	memberId := c.GetSessionUser()
+	fileBase64 := c.Ctx.Request.Form.Get("pic")
+	index := strings.Index(fileBase64, ",")
+	if index < 0 || fileBase64[0:index] != "data:image/png;base64" {
+		resp := Response{Status: "error", Msg: "File encoding error"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/image/" + timestamp + ".png")
+
+	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }

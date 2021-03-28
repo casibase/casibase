@@ -75,7 +75,6 @@ class NewNodeTopicBox extends React.Component {
 
   componentDidMount() {
     this.getNodeInfo();
-    Setting.initOSSClient(this.props.account?.id);
   }
 
   updateFormField(key, value) {
