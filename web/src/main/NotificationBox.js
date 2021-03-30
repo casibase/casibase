@@ -53,7 +53,6 @@ class NotificationBox extends React.Component {
 
   componentDidMount() {
     this.getNotifications();
-    this.updateReadStatus();
   }
 
   componentWillReceiveProps(newProps) {
@@ -82,10 +81,6 @@ class NotificationBox extends React.Component {
         notificationNum: res?.data2,
       });
     });
-  }
-
-  updateReadStatus() {
-    NotificationBackend.updateReadStatus();
   }
 
   deleteNotification(id) {

@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 import "../node.css";
 import i18next from "i18next";
 import { scoreConverter } from "../main/Tools";
+import * as Conf from "../Conf";
 
 class RightAccountBox extends React.Component {
   constructor(props) {
@@ -38,6 +39,11 @@ class RightAccountBox extends React.Component {
   componentDidMount() {
     //this.getFavoriteNum();
     this.getUnreadNotificationNum();
+    if (Conf.EnableNotificationAutoUpdate) {
+      setInterval(() => {
+        this.getUnreadNotificationNum();
+      }, Conf.NotificationAutoUpdatePeriod * 1000);
+    }
   }
 
   getUnreadNotificationNum() {
@@ -45,6 +51,16 @@ class RightAccountBox extends React.Component {
       this.setState({
         unreadNotificationNum: res?.data,
       });
+    });
+  }
+
+  readAllNotifications() {
+    NotificationBackend.updateReadStatus().then((res) => {
+      if (res) {
+        this.setState({
+          unreadNotificationNum: 0,
+        });
+      }
     });
   }
 
@@ -84,8 +100,9 @@ class RightAccountBox extends React.Component {
       if (kvset[0] == "themeMode") themeMode = kvset[1];
     }
     if (themeMode == undefined) themeMode = "true";
-    if (themeMode == "true") return Setting.getStatic("/static/img/toggle-light.png");
-    else return Setting.getStatic("/static/img/toggle-dark.png")
+    if (themeMode == "true")
+      return Setting.getStatic("/static/img/toggle-light.png");
+    else return Setting.getStatic("/static/img/toggle-dark.png");
   }
 
   render() {
@@ -111,12 +128,12 @@ class RightAccountBox extends React.Component {
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
                   <div className="fr" onClick={this.reverseTheme}>
-                      <img
-                        src={this.getThemeBtnUrl()}
-                        align="absmiddle"
-                        height="10"
-                        alt="Light"
-                      />
+                    <img
+                      src={this.getThemeBtnUrl()}
+                      align="absmiddle"
+                      height="10"
+                      alt="Light"
+                    />
                   </div>
                   <span className="bigger">
                     <Link
@@ -298,7 +315,11 @@ class RightAccountBox extends React.Component {
             </Link>
           ) : (
             <strong>
-              <Link to="/notifications" className={`fade ${this.props.nodeId}`}>
+              <Link
+                onClick={() => this.readAllNotifications()}
+                to="/notifications"
+                className={`fade ${this.props.nodeId}`}
+              >
                 {this.state.unreadNotificationNum} {i18next.t("bar:unread")}
               </Link>
             </strong>
