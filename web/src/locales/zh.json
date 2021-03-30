@@ -536,7 +536,10 @@
     "Welcome to": "欢迎来到",
     ", you just registered your": "你刚刚注册了你的",
     "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.": "账户，现在请设置你的用户名，你只能使用半角英文字母和数字。其他用户可以通过@你的用户名向你发送消息。设置后无法更改用户名。",
-    "save": "保存"
+    "save": "保存",
+    "Set username failed": "设置用户名失败",
+    "Set username success": "设置用户名成功",
+    "Username existed or email existed": "用户名或邮箱已存在"
   },
   "notification": {
     "Total reminders received": "总共收到提醒",

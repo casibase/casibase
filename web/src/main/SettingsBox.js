@@ -109,14 +109,22 @@ class SettingsBox extends React.Component {
     AccountBackend.signup(name)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", `Set username success`);
+          Setting.showMessage(
+            "success",
+            i18next.t("setting:Set username success")
+          );
           window.location.href = "/";
         } else {
-          Setting.showMessage("error", `Set username failed：${res.msg}`);
+          Setting.showMessage(
+            "error",
+            `${i18next.t("setting:Set username failed")}: ${i18next.t(
+              "setting:" + res.msg
+            )}`
+          );
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `Set username failed：${error}`);
+        Setting.showMessage("error", `setting:Set username failed：${error}`);
       });
   }
 
