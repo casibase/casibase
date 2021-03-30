@@ -532,7 +532,10 @@
     "Welcome to": "Welcome to",
     ", you just registered your": ", you just registered your",
     "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.": "account. Now please set a username here, you can only use half-width English letters and numbers. Other users can send you a message through @ your account name. The user name cannot be changed after setting.",
-    "save": "save"
+    "save": "save",
+    "Set username failed": "Set user name failed",
+    "Set username success": "Set user name success",
+    "Username existed or email existed": "User name or email existed"
   },
   "notification": {
     "Total reminders received": "Total reminders received",
