@@ -87,7 +87,7 @@ class CheckinBonusBox extends React.Component {
               type="button"
               class="super normal button"
               value={i18next.t("mission:Check my account balance")}
-              onClick={() => this.props.history.push("/balance")}
+              onClick={window.location.href = "/balance"}
             />
           </div>
         </div>
