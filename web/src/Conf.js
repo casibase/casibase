@@ -58,3 +58,7 @@ export const DefaultEditorType = "markdown";
 //Default search engine
 //Support: baidu(www.baidu.com) | google(www.google.com) | cn-bing(cn.bing.com)
 export const DefaultSearchSite = "google";
+
+export const EnableNotificationAutoUpdate = false;
+
+export const NotificationAutoUpdatePeriod = 10; // second
