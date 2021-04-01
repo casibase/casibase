@@ -183,6 +183,7 @@ func filterUnsafeHTML(content string) string {
 		return content
 	}
 	p := bluemonday.UGCPolicy()
+	p.AllowAttrs("style").OnElements("span")
 	res := p.Sanitize(content)
 	return res
 }
