@@ -144,6 +144,9 @@ class NewReplyBox extends React.Component {
       if (res.status === "ok") {
         this.props.onReplyChange("");
         this.props.refreshReplies();
+        this.setState({
+          form: {},
+        });
         Setting.scrollToBottom();
       } else {
         this.setState({
