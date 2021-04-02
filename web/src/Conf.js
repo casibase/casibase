@@ -46,7 +46,7 @@ export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect";
 
 export const ShowGithubCorner = true;
 
-export const GithubRepo = "https://github.com/casbin/casbin-forum";
+export const GithubRepo = "https://github.com/casbin/casnode";
 
 export const Domain = "forum.casbin.com";
 

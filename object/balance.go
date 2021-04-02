@@ -17,7 +17,7 @@ package object
 import (
 	"sync"
 
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/util"
 )
 
 // ConsumptionType 1-9 means:

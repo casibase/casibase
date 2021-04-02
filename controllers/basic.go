@@ -17,7 +17,7 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 
-	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casnode/object"
 )
 
 type APIController struct {

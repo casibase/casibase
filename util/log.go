@@ -74,7 +74,7 @@ func LogWarning(ctx *context.Context, f string, v ...interface{}) {
 }
 
 func ReadLog() []string {
-	f, err := os.Open("logs/casbin-forum.log")
+	f, err := os.Open("logs/casnode.log")
 	if err != nil {
 		panic(err)
 	}

@@ -15,8 +15,8 @@
 package controllers
 
 import (
-	"github.com/casbin/casbin-forum/object"
-	"github.com/casbin/casbin-forum/service"
+	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/service"
 )
 
 // GetCaptcha gets captcha.

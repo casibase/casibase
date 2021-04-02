@@ -132,7 +132,7 @@ export function getUserAvatar(username, isLarge = false) {
 }
 
 export function getForumName() {
-  return "Casbin Forum";
+  return "Casnode";
 }
 
 export function getHomeLink(text) {
@@ -156,22 +156,22 @@ export function getWeChatAuthCode(method) {
 }
 
 export function SetEditorType(editorType) {
-  localStorage.setItem("casbin-forum-editorType", editorType);
+  localStorage.setItem("casnode-editorType", editorType);
 }
 
 export function ChangeEditorType(editorType) {
-  localStorage.setItem("casbin-forum-editorType", editorType);
+  localStorage.setItem("casnode-editorType", editorType);
   MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
 }
 
 export function SetLanguage(language) {
-  localStorage.setItem("casbin-forum-language", language);
+  localStorage.setItem("casnode-language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);
 }
 
 export function ChangeLanguage(language) {
-  localStorage.setItem("casbin-forum-language", language);
+  localStorage.setItem("casnode-language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);
   MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"));

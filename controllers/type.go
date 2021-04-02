@@ -14,7 +14,7 @@
 
 package controllers
 
-import "github.com/casbin/casbin-forum/object"
+import "github.com/casbin/casnode/object"
 
 type userInfoFromGoogle struct {
 	Picture string `json:"picture"`

@@ -20,8 +20,8 @@ import (
 
 	"github.com/astaxie/beego/context"
 
-	"github.com/casbin/casbin-forum/object"
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/util"
 )
 
 func TransparentStatic(ctx *context.Context) {
