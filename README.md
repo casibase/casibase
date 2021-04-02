@@ -1,7 +1,7 @@
-Casbin-forum
+Casnode
 ====
 
-Casbin-forum is the official forum for Casbin developers and users. 
+Casnode is the official forum for Casbin developers and users. 
 
 ## Link
 
@@ -9,27 +9,27 @@ https://forum.casbin.com/
 
 ## Architecture
 
-Casbin-forum contains 2 parts:
+Casnode contains 2 parts:
 
 Name | Description | Language | Source code
 ----|------|----|----
-Frontend | Web frontend UI for Casbin-forum | Javascript + React | https://github.com/casbin/casbin-forum/tree/master/web 
-Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https://github.com/casbin/casbin-forum 
+Frontend | Web frontend UI for Casnode | Javascript + React | https://github.com/casbin/casnode/tree/master/web 
+Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://github.com/casbin/casnode 
 
 ## Installation
 
 - Get the code:
 
     ```shell
-    go get github.com/casbin/casbin-forum
+    go get github.com/casbin/casnode
     ```
     or
     ```shell
-    git clone https://github.com/casbin/casbin-forum
+    git clone https://github.com/casbin/casnode
     ```
 
 - Custom settings:
-    Casbin-forum currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
+    Casnode currently allows some user-defined items, and the customized files are located in `web/src/main/custom/`.
 
     Customizable option:
 
@@ -39,17 +39,17 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
 
 - Setup database:
 
-    Casbin-forum will store its users, nodes and topics informations in a MySQL database named: `casbin_forum`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
+    Casnode will store its users, nodes and topics informations in a MySQL database named: `casbin_forum`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casnode/blob/master/conf/app.conf
 
     ```ini
     dataSourceName = root:123@tcp(localhost:3306)/
     ```
 
-    Casbin-forum uses XORM to connect to DB, so all DBs supported by XORM can also be used.
+    Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be used.
 
 - Setup your forum to enable some third-party login platform:
 
-    Casbin-forum provide a way to sign up using Google account, Github account, WeChat account and so on,  so you may have to get your own  ClientID and ClientSecret first.
+    Casnode provide a way to sign up using Google account, Github account, WeChat account and so on,  so you may have to get your own  ClientID and ClientSecret first.
 
     1. Google
 
@@ -62,7 +62,7 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
         You should set `Homepage URL` to fit your own domain address, for local testing, set`http://localhost:3000`. And set the `Authorization callback URL`, the same domain address as before, add `/callback/github` after that, for local testing, set`http://localhost:3000/callback/github`.
 
     And to improve security, you could set a `state` value determined by **yourself** to make sure the request is requesting by yourself, such as "random".
-    Those information strings can be specified at: https://github.com/casbin/casbin-forum/blob/master/conf/app.conf
+    Those information strings can be specified at: https://github.com/casbin/casnode/blob/master/conf/app.conf
 
     ```ini
     GoogleAuthClientID = "xxx" //your own client id
@@ -73,7 +73,7 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
     GithubAuthState = "xx" //set by yourself, we may change this to a random word in the future
     ```
 
-    You may also have to fill in the **same** information at: https://github.com/casbin/casbin-forum/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
+    You may also have to fill in the **same** information at: https://github.com/casbin/casnode/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
 
     ```javascript
     export const GoogleClientId  = "xxx"
@@ -139,7 +139,7 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
 
    We use Ali OSS, Ali Mail, and Ali SMS to save the user's pictures, send emails to users and send short messages to users.
 
-   **You could use another OSS, Mail, and SMS services**, we separate those functions from main code, you could found those functions at https://github.com/casbin/casbin-forum/tree/master/service
+   **You could use another OSS, Mail, and SMS services**, we separate those functions from main code, you could found those functions at https://github.com/casbin/casnode/tree/master/service
 
    We would mainly use Ali services for example in the next.
 
@@ -154,7 +154,7 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
   export const OSSBucket = "" //your oss bucket
 
   //The path stored in your oss
-  //eg: `casbin-forum` or `casbin/forum/xxx/xxx`
+  //eg: `casnode` or `casbin/forum/xxx/xxx`
   export const OSSBasicPath = "" //prefix for saved pictures 
   
   //If you set a custom domain name in ali-oss bucket, please fill in.
@@ -214,7 +214,7 @@ Backend | RESTful API backend for Casbin-forum | Golang + Beego + MySQL | https:
     ```javascript
   export const ShowGithubCorner = true
 
-  export const GithubRepo = "https://github.com/casbin/casbin-forum" //your github repository
+  export const GithubRepo = "https://github.com/casbin/casnode" //your github repository
   ```
 
 - Run backend (in port 7000):

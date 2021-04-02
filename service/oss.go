@@ -51,7 +51,7 @@ func InitOSS() {
 	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
 	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
 	if OSSBasicPath == "" {
-		OSSBasicPath = "casbin-forum"
+		OSSBasicPath = "casnode"
 	}
 	if OSSCustomDomain == "" {
 		OSSCustomDomain = storage.GetEndpoint()

@@ -1,4 +1,4 @@
-module github.com/casbin/casbin-forum
+module github.com/casbin/casnode
 
 go 1.15
 

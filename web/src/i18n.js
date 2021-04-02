@@ -24,7 +24,7 @@ const resources = {
 };
 
 function initLanguage() {
-  let language = localStorage.getItem("casbin-forum-language");
+  let language = localStorage.getItem("casnode-language");
   if (language === undefined || language == null) {
     let userLanguage;
     userLanguage = navigator.language;

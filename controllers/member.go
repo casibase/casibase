@@ -17,8 +17,8 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casbin-forum/object"
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/util"
 )
 
 func (c *APIController) GetMembers() {

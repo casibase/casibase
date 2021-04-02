@@ -17,7 +17,7 @@ package object
 import (
 	"time"
 
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/util"
 )
 
 type Topic struct {

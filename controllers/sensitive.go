@@ -16,7 +16,7 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/casbin/casbin-forum/object"
+	"github.com/casbin/casnode/object"
 )
 
 func (c *APIController) AddSensitive() {

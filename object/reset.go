@@ -1,6 +1,6 @@
 package object
 
-import "github.com/casbin/casbin-forum/util"
+import "github.com/casbin/casnode/util"
 
 // RecordType: 1 means phone, 2 means email, resetInformation means phone number or email.
 type ResetRecord struct {

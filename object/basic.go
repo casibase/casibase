@@ -23,7 +23,7 @@ import (
 
 	"github.com/dchest/captcha"
 
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/util"
 )
 
 type BasicInfo struct {

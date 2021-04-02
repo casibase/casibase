@@ -18,7 +18,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/util"
 )
 
 // ValidateCode table records validate code, for sign up, sign in or reset password using phone or email.

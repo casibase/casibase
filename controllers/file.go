@@ -21,9 +21,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casbin/casbin-forum/object"
-	"github.com/casbin/casbin-forum/service"
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/service"
+	"github.com/casbin/casnode/util"
 )
 
 type NewUploadFile struct {

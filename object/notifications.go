@@ -18,8 +18,8 @@ import (
 	"regexp"
 	"sync"
 
-	"github.com/casbin/casbin-forum/service"
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/service"
+	"github.com/casbin/casnode/util"
 )
 
 // NotificationType 1-6 means: reply(topic), mentioned(reply), mentioned(topic), favorite(topic), thanks(topic), thanks(reply)

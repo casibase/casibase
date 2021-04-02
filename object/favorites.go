@@ -14,7 +14,7 @@
 
 package object
 
-import "github.com/casbin/casbin-forum/util"
+import "github.com/casbin/casnode/util"
 
 // Favorites using figure 1-3 to choose type, 1 means topic, 2 means people, 3 means node.
 type Favorites struct {

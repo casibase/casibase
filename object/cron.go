@@ -7,7 +7,7 @@ import (
 
 	"github.com/mileusna/crontab"
 
-	"github.com/casbin/casbin-forum/util"
+	"github.com/casbin/casnode/util"
 )
 
 type CronJob struct {
