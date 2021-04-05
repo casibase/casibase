@@ -634,12 +634,12 @@ class ForgotBox extends React.Component {
                 <td width="120" align="right">
                   {i18next.t("login:Are you a bot?")}{" "}
                 </td>
-                <td width="auto" align="left">
+                <td width="200" align="left">
                   <div
                     style={{
                       backgroundImage: `url('data:image/png;base64,${this.state.captcha}')`,
                       backgroundRepeat: "no-repeat",
-                      width: "320px",
+                      width: "auto",
                       height: "80px",
                       borderRadius: "3px",
                       border: "1px solid #ccc",

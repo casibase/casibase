@@ -482,7 +482,10 @@ class AdminNode extends React.Component {
     return (
       <Select2
         value={value}
-        style={{ width: "300px", fontSize: "14px" }}
+        style={{
+          width: Setting.PcBrowser ? "300px" : "200px",
+          fontSize: "14px",
+        }}
         data={data}
         onSelect={(event) => {
           const s = event.target.value;
@@ -1001,6 +1004,7 @@ class AdminNode extends React.Component {
                         accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
                         onChange={(event) => this.handleUploadImage(event)}
                         name="backgroundImage"
+                        style={{ width: "200px" }}
                       />
                     </td>
                   </tr>

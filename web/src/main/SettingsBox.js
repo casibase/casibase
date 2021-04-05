@@ -365,6 +365,7 @@ class SettingsBox extends React.Component {
                         accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
                         onChange={(event) => this.handleChangeAvatar(event)}
                         name="avatar"
+                        style={{ width: "200px" }}
                       />
                     </td>
                   </tr>

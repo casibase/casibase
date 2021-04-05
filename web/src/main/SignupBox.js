@@ -473,7 +473,10 @@ class SignupBox extends React.Component {
                         value={this.getIndexFromAreaCode(
                           this.state.form.areaCode
                         )}
-                        style={{ width: "300px", fontSize: "14px" }}
+                        style={{
+                          width: Setting.PcBrowser ? "300px" : "200px",
+                          fontSize: "14px",
+                        }}
                         data={Area_Code.map((code, i) => {
                           return { text: `${code.label}`, id: i };
                         })}

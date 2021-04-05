@@ -184,7 +184,10 @@ class MoveTopicNodeBox extends React.Component {
                 <td width="auto" align="left">
                   <Select2
                     value={this.getIndexFromNodeId(this.state.form.nodeId)}
-                    style={{ width: "300px", fontSize: "14px" }}
+                    style={{
+                      width: Setting.PcBrowser ? "300px" : "200px",
+                      fontSize: "14px",
+                    }}
                     data={this.state.nodes.map((node, i) => {
                       return { text: `${node.name} / ${node.id}`, id: i };
                     })}

@@ -188,7 +188,7 @@ class SigninBox extends React.Component {
                       placeholder={i18next.t(
                         "general:Username, email address or phone number"
                       )}
-                      style={{ width: "280px" }}
+                      style={{ width: Setting.PcBrowser ? "280px" : "100%" }}
                     />
                   </td>
                 </tr>
@@ -208,7 +208,7 @@ class SigninBox extends React.Component {
                       autoCorrect="off"
                       spellCheck="false"
                       autoCapitalize="off"
-                      style={{ width: "280px" }}
+                      style={{ width: Setting.PcBrowser ? "280px" : "100%" }}
                     />
                   </td>
                 </tr>
@@ -221,7 +221,7 @@ class SigninBox extends React.Component {
                       style={{
                         backgroundImage: `url('data:image/png;base64,${this.state.captcha}')`,
                         backgroundRepeat: "no-repeat",
-                        width: Setting.PcBrowser ? "320px" : "280px",
+                        width: Setting.PcBrowser ? "320px" : "100%",
                         height: "80px",
                         borderRadius: "3px",
                         border: "1px solid #ccc",

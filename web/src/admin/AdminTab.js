@@ -567,7 +567,10 @@ class AdminTab extends React.Component {
                             value={this.getIndexFromNodeId(
                               this.state.form?.defaultNode
                             )}
-                            style={{ width: "300px", fontSize: "14px" }}
+                            style={{
+                              width: Setting.PcBrowser ? "300px" : "200px",
+                              fontSize: "14px",
+                            }}
                             data={this.state.nodes.map((node, i) => {
                               return {
                                 text: `${node.name} / ${node.id}`,
