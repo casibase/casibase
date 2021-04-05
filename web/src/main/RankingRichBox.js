@@ -95,7 +95,7 @@ class RankingRichBox extends React.Component {
               ? this.state.richList.map((member, key) => (
                   <tr>
                     <td
-                      width={Setting.PcBrowser ? "73" : "56"}
+                      width={Setting.PcBrowser ? "73" : "36"}
                       valign="top"
                       align="center"
                       key={key}
@@ -120,7 +120,7 @@ class RankingRichBox extends React.Component {
                       <div className="sep5"></div>
                       {/* <span className="fade">第 n 名会员</span> */}
                     </td>
-                    <td width="200" align="center">
+                    <td width="140" align="center">
                       <div>{this.renderRichBox(member.scoreCount)}</div>
                     </td>
                   </tr>

@@ -252,7 +252,7 @@ class TopicPage extends React.Component {
           <tbody>
             <tr>
               <td width="auto">
-                {this.state.unreadNotificationNum !== 0 ? (
+                {this.state.unreadNotificationNum === 0 ? (
                   <Link to="/notifications" className="gray">
                     0 {i18next.t("bar:unread")}
                   </Link>

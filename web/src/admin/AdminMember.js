@@ -518,7 +518,10 @@ class AdminMember extends React.Component {
                 <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                   <tbody>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Username")}
                       </td>
                       <td width="auto" align="left">
@@ -526,7 +529,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Topic num")}
                       </td>
                       <td width="auto" align="left">
@@ -534,7 +540,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Reply num")}
                       </td>
                       <td width="auto" align="left">
@@ -542,7 +551,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Balance")}
                       </td>
                       <td width="auto" align="left">
@@ -550,7 +562,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Latest login")}
                       </td>
                       <td width="auto" align="left">
@@ -558,7 +573,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Files num")}
                       </td>
                       <td width="auto" align="left">
@@ -568,7 +586,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:File quota")}
                       </td>
                       <td width="auto" align="left">
@@ -608,7 +629,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right">
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      >
                         {i18next.t("member:Status")}
                       </td>
                       <td width="auto" align="left">
@@ -616,7 +640,10 @@ class AdminMember extends React.Component {
                           value={this.getIndexFromStatus(
                             this.state.form?.status
                           )}
-                          style={{ width: "300px", fontSize: "14px" }}
+                          style={{
+                            width: Setting.PcBrowser ? "300px" : "200px",
+                            fontSize: "14px",
+                          }}
                           data={this.state.Status_LIST.map((status, i) => {
                             return {
                               text: `${i18next.t(`member:${status.label}`)}`,
@@ -641,7 +668,10 @@ class AdminMember extends React.Component {
                       </td>
                     </tr>
                     <tr>
-                      <td width="120" align="right"></td>
+                      <td
+                        width={Setting.PcBrowser ? "120" : "90"}
+                        align="right"
+                      ></td>
                       <td width="auto" align="left">
                         <input
                           type="submit"
@@ -667,7 +697,7 @@ class AdminMember extends React.Component {
               <table cellPadding="5" cellSpacing="0" border="0" width="100%">
                 <tbody>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       <Avatar
                         username={member?.id}
                         size="small"
@@ -680,7 +710,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Username")}
                     </td>
                     <td width="auto" align="left">
@@ -688,7 +718,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Phone")}
                     </td>
                     <td width="200" align="left">
@@ -702,7 +732,7 @@ class AdminMember extends React.Component {
                         </code>
                       )}
                     </td>
-                    <td width="auto" align="left">
+                    <td width="100" align="left">
                       {member?.phoneVerifiedTime.length === 0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
@@ -715,7 +745,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Email")}
                     </td>
                     <td width="200" align="left">
@@ -727,7 +757,7 @@ class AdminMember extends React.Component {
                         <code>{member?.email}</code>
                       )}
                     </td>
-                    <td width="auto" align="left">
+                    <td width="100" align="left">
                       {member?.emailVerifiedTime.length === 0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
@@ -740,7 +770,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       Google
                     </td>
                     <td width="200" align="left">
@@ -754,7 +784,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       Github
                     </td>
                     <td width="200" align="left">
@@ -768,7 +798,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:WeChat")}
                     </td>
                     <td width="200" align="left">
@@ -782,7 +812,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       QQ
                     </td>
                     <td width="200" align="left">
@@ -794,7 +824,7 @@ class AdminMember extends React.Component {
                         <code>{member?.qqAccount}</code>
                       )}
                     </td>
-                    <td width="auto" align="left">
+                    <td width="100" align="left">
                       {member?.qqVerifiedTime.length === 0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
@@ -807,7 +837,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Website")}
                     </td>
                     <td width="200" align="left">
@@ -815,7 +845,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Company")}
                     </td>
                     <td width="200" align="left">
@@ -823,7 +853,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Company title")}
                     </td>
                     <td width="200" align="left">
@@ -831,7 +861,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Location")}
                     </td>
                     <td width="200" align="left">
@@ -839,7 +869,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Tagline")}
                     </td>
                     <td width="200" align="left">
@@ -847,7 +877,7 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right">
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       {i18next.t("setting:Bio")}
                     </td>
                     <td width="200" align="left">
@@ -855,7 +885,10 @@ class AdminMember extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td width="120" align="right"></td>
+                    <td
+                      width={Setting.PcBrowser ? "120" : "90"}
+                      align="right"
+                    ></td>
                     <td width="auto" align="left">
                       <Link to={`/member/${member?.id}`} target="_blank">
                         {i18next.t("member:Homepage")}&nbsp; ›&nbsp;

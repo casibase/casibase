@@ -181,9 +181,9 @@ class EditBox extends React.Component {
         >
           <Resizable
             enable={false}
-            defaultSize={{
-              width: 730,
-              height: 310,
+            style={{
+              width: "100%",
+              height: "310",
             }}
           >
             <CodeMirror
