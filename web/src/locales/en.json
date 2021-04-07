@@ -482,6 +482,9 @@
   },
   "setting": {
     "Username": "Username",
+    "Password": "Password",
+    "Member already exists": "Member already exists",
+    "Password empty": "Password empty",
     "Phone": "Phone",
     "Modify phone": "Modify phone",
     "Email": "Email",
