@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"strings"
 	"sync"
 
 	"golang.org/x/oauth2"
@@ -87,6 +88,21 @@ func (c *APIController) Signup() {
 	if err != nil {
 		panic(err)
 	}
+
+	if len(form.Password) == 0 {
+		resp = Response{Status: "error", Msg: "Password empty"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
+	if strings.Index(form.Password, " ") >= 0 {
+		resp = Response{Status: "error", Msg: "Password contains space"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	if form.Method != "google" && form.Method != "github" && form.Method != "qq" && form.Method != "wechat" {
 		// Check validate code.
 		var validateCodeRes bool
@@ -107,6 +123,13 @@ func (c *APIController) Signup() {
 	}
 
 	member, password, email, avatar := form.Username, form.Password, form.Email, form.Avatar
+
+	if object.HasMember(member) {
+		resp = Response{Status: "error", Msg: "Member already exists"}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	checkUserName := object.UserNamingRestrictions
 	if checkUserName {
@@ -411,6 +434,16 @@ func (c *APIController) ResetPassword() {
 			recordType = 1
 		} else if form.Method == "email" {
 			recordType = 2
+		}
+
+		if len(form.Password) == 0 {
+			resp = Response{Status: "error", Msg: "Password is empty"}
+			break
+		}
+
+		if strings.Index(form.Password, " ") >= 0 {
+			resp = Response{Status: "error", Msg: "Password contains space"}
+			break
 		}
 
 		res := object.VerifyResetInformation(form.Id, form.Code, form.Username, recordType)

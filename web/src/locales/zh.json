@@ -486,6 +486,9 @@
   },
   "setting": {
     "Username": "用户名",
+    "Password": "密码",
+    "Member already exists": "用户已存在",
+    "Password empty": "密码为空",
     "Phone": "手机号",
     "Modify phone": "验证手机号",
     "Email": "电子邮件",

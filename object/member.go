@@ -16,6 +16,7 @@ package object
 
 import (
 	"bytes"
+	"strings"
 )
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
@@ -525,16 +526,44 @@ func GetMemberFileQuota(memberId string) int {
 // Information could be phone member, email or username.
 // If success, return username.
 func MemberPasswordLogin(information, password string) string {
-	members := []*Member{}
-	err := adapter.engine.Where("password = ? ", password).Cols("id, password, email, email_verified_time, phone, phone_verified_time").Find(&members)
+	if len(password) == 0 || strings.Index(password, " ") >= 0{
+		return ""
+	}
+
+	member := Member{
+		Email: information,
+		Password: password,
+	}
+	exist, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
 	}
+	if exist && member.EmailVerifiedTime != "" {
+		return member.Id
+	}
 
-	for _, v := range members {
-		if (v.Email == information && v.EmailVerifiedTime != "") || (v.Phone == information && v.PhoneVerifiedTime != "") || (v.Id == information) {
-			return v.Id
-		}
+	member = Member{
+		Phone: information,
+		Password: password,
+	}
+	exist, err = adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+	if exist && member.PhoneVerifiedTime != "" {
+		return member.Id
+	}
+
+	member = Member{
+		Id: information,
+		Password: password,
+	}
+	exist, err = adapter.engine.Get(&member)
+	if err != nil {
+		panic(err)
+	}
+	if exist {
+		return member.Id
 	}
 
 	return ""

@@ -33,6 +33,7 @@ class SettingsBox extends React.Component {
       event: props.match.params.event,
       topics: [],
       username: "",
+      password: "",
       form: {},
       avatar: null,
       showSuccess: false,
@@ -96,6 +97,7 @@ class SettingsBox extends React.Component {
     avatar = params.get("avatar");
     return {
       username: this.state.username,
+      password: this.state.password,
       email: email,
       method: method,
       addition: addition,
@@ -128,9 +130,15 @@ class SettingsBox extends React.Component {
       });
   }
 
-  handleChange(e) {
+  handleUsernameChange(e) {
     this.setState({
       username: e.target.value,
+    });
+  }
+
+  handlePasswordChange(e) {
+    this.setState({
+      password: e.target.value,
     });
   }
 
@@ -300,7 +308,21 @@ class SettingsBox extends React.Component {
                       type="text"
                       className="sl"
                       name="username"
-                      onChange={this.handleChange.bind(this)}
+                      onChange={this.handleUsernameChange.bind(this)}
+                      autoComplete="off"
+                    />
+                  </td>
+                </tr>
+                <tr>
+                  <td width="120" align="right">
+                    {i18next.t("setting:Password")}
+                  </td>
+                  <td width="auto" align="left">
+                    <input
+                      type="password"
+                      className="sl"
+                      name="password"
+                      onChange={this.handlePasswordChange.bind(this)}
                       autoComplete="off"
                     />
                   </td>
