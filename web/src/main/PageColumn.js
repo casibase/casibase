@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,20 +24,22 @@ class PageColumn extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      maxPages: -1,
+      maxPage: -1,
       minPage: 1,
       showPages: [],
       defaultPageNum: 20,
     };
-    if (this.props.defaultPageNum !== undefined) {
-      this.setState({
-        defaultPageNum: this.props.defaultPageNum,
-      });
-    }
   }
 
   componentDidMount() {
-    this.getMaxPage();
+    if (this.props.defaultPageNum !== undefined) {
+      this.setState(
+        {
+          defaultPageNum: this.props.defaultPageNum,
+        },
+        () => this.getMaxPage()
+      );
+    }
   }
 
   componentWillReceiveProps(newProps) {

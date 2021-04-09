@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import * as Conf from "../Conf";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
@@ -45,10 +46,11 @@ class ReplyBox extends React.Component {
       latestReplyTime: "",
       p: "",
       page: 1,
-      limit: 50,
+      limit: Conf.DefaultTopicPageReplyNum,
       minPage: 1,
       maxPage: -1,
       sticky: false,
+      url: `/t/${props.match.params.topicId}`,
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
@@ -57,13 +59,24 @@ class ReplyBox extends React.Component {
     } else {
       this.state.page = parseInt(this.state.p);
     }
-
-    this.state.url = `/t/${this.state.topicId}`;
   }
 
   componentDidMount() {
     //this.getTopic();
-    this.getReplies(true);
+    let lastIndex = window.location.href.lastIndexOf("#");
+    if (lastIndex >= 0) {
+      let idString = window.location.href.substring(
+        lastIndex,
+        window.location.href.length
+      );
+      if (document.getElementById(idString) === null) {
+        let targetReply = parseInt(idString.substring(3, idString.length));
+        if (!isNaN(targetReply)) {
+          this.jumpToTargetPage(targetReply);
+        }
+      }
+    }
+    this.getReplies(false);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -99,6 +112,23 @@ class ReplyBox extends React.Component {
     }
   }
 
+  jumpToTargetPage(targetReply) {
+    ReplyBackend.getRepliesOfTopic(this.state.topicId).then((res) => {
+      res.data.map((reply, i) => {
+        if (reply.id === targetReply) {
+          let targetPage = Math.ceil((i + 1) / this.state.limit);
+          window.location.href =
+            "/t/" +
+            this.state.topicId +
+            "?p=" +
+            targetPage +
+            "#r_" +
+            targetReply;
+        }
+      });
+    });
+  }
+
   getTopic() {
     TopicBackend.getTopic(this.state.topicId).then((res) => {
       this.setState({
@@ -114,26 +144,13 @@ class ReplyBox extends React.Component {
       this.state.page,
       init
     ).then((res) => {
-      if (init) {
-        this.setState(
-          {
-            replies: res?.data,
-            repliesNum: res?.data2[0],
-            page: res?.data2[1],
-            latestReplyTime: Setting.getPrettyDate(
-              res?.data[res?.data.length - 1]?.createdTime
-            ),
-          },
-          () => {
-            this.getMemberList();
-          }
-        );
-        return;
-      }
       this.setState(
         {
           replies: res?.data,
           repliesNum: res?.data2[0],
+          latestReplyTime: Setting.getPrettyDate(
+            res?.data[res?.data.length - 1]?.createdTime
+          ),
         },
         () => {
           this.getMemberList();
@@ -403,7 +420,7 @@ class ReplyBox extends React.Component {
                       &nbsp; &nbsp;
                       <Link
                         className="ago"
-                        to={`#r_${reply.id}`}
+                        to={`?p=${this.state.page}#r_${reply.id}`}
                         onClick={() => {
                           this.scrollToAnchor(`r_${reply?.id}`);
                         }}

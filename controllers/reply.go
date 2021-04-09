@@ -59,6 +59,13 @@ func (c *APIController) GetReplies() {
 	c.ServeJSON()
 }
 
+func (c *APIController) GetAllRepliesOfTopic() {
+	topicId := util.ParseInt(c.Input().Get("topicId"))
+	replies := object.GetRepliesOfTopic(topicId)
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: len(replies)}
+	c.ServeJSON()
+}
+
 func (c *APIController) GetReply() {
 	idStr := c.Input().Get("id")
 

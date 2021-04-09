@@ -62,6 +62,15 @@ func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWit
 	return replies
 }
 
+func GetRepliesOfTopic(topicId int) []Reply {
+	var ret []Reply
+	err := adapter.engine.Where("topic_id = ?", topicId).Find(&ret)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
 // GetTopicReplyNum returns topic's reply num.
 func GetTopicReplyNum(topicId int) int {
 	var total int64

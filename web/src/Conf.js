@@ -62,3 +62,5 @@ export const DefaultSearchSite = "google";
 export const EnableNotificationAutoUpdate = false;
 
 export const NotificationAutoUpdatePeriod = 10; // second
+
+export const DefaultTopicPageReplyNum = 50;
