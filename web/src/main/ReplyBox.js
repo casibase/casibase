@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
+import * as Conf from "../Conf";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
@@ -45,10 +46,11 @@ class ReplyBox extends React.Component {
       latestReplyTime: "",
       p: "",
       page: 1,
-      limit: 50,
+      limit: Conf.DefaultTopicPageReplyNum,
       minPage: 1,
       maxPage: -1,
       sticky: false,
+      url: `/t/${props.match.params.topicId}`,
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
@@ -57,13 +59,11 @@ class ReplyBox extends React.Component {
     } else {
       this.state.page = parseInt(this.state.p);
     }
-
-    this.state.url = `/t/${this.state.topicId}`;
   }
 
   componentDidMount() {
     //this.getTopic();
-    this.getReplies(true);
+    this.getReplies(false);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -114,26 +114,13 @@ class ReplyBox extends React.Component {
       this.state.page,
       init
     ).then((res) => {
-      if (init) {
-        this.setState(
-          {
-            replies: res?.data,
-            repliesNum: res?.data2[0],
-            page: res?.data2[1],
-            latestReplyTime: Setting.getPrettyDate(
-              res?.data[res?.data.length - 1]?.createdTime
-            ),
-          },
-          () => {
-            this.getMemberList();
-          }
-        );
-        return;
-      }
       this.setState(
         {
           replies: res?.data,
           repliesNum: res?.data2[0],
+          latestReplyTime: Setting.getPrettyDate(
+            res?.data[res?.data.length - 1]?.createdTime
+          ),
         },
         () => {
           this.getMemberList();

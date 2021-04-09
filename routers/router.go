@@ -62,6 +62,7 @@ func initAPI() {
 	beego.Router("/api/upload-avatar", &controllers.APIController{}, "POST:UploadAvatar")
 
 	beego.Router("/api/get-replies", &controllers.APIController{}, "GET:GetReplies")
+	beego.Router("/api/get-replies-of-topic", &controllers.APIController{}, "GET:GetAllRepliesOfTopic")
 	beego.Router("/api/get-reply", &controllers.APIController{}, "GET:GetReply")
 	beego.Router("/api/update-reply", &controllers.APIController{}, "POST:UpdateReply")
 	beego.Router("/api/add-reply", &controllers.APIController{}, "POST:AddReply")

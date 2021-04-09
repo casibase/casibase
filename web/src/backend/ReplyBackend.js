@@ -24,6 +24,16 @@ export function getReplies(topicId, limit, page, init) {
   ).then((res) => res.json());
 }
 
+export function getRepliesOfTopic(topicId) {
+  return fetch(
+    `${Setting.ServerUrl}/api/get-replies-of-topic?topicId=${topicId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
 export function getReply(id) {
   return fetch(`${Setting.ServerUrl}/api/get-reply?id=${id}`, {
     method: "GET",
