@@ -63,6 +63,19 @@ class ReplyBox extends React.Component {
 
   componentDidMount() {
     //this.getTopic();
+    let lastIndex = window.location.href.lastIndexOf("#");
+    if (lastIndex >= 0) {
+      let idString = window.location.href.substring(
+        lastIndex,
+        window.location.href.length
+      );
+      if (document.getElementById(idString) === null) {
+        let targetReply = parseInt(idString.substring(3, idString.length));
+        if (!isNaN(targetReply)) {
+          this.jumpToTargetPage(targetReply);
+        }
+      }
+    }
     this.getReplies(false);
   }
 
@@ -97,6 +110,23 @@ class ReplyBox extends React.Component {
         () => this.getReplies(false)
       );
     }
+  }
+
+  jumpToTargetPage(targetReply) {
+    ReplyBackend.getRepliesOfTopic(this.state.topicId).then((res) => {
+      res.data.map((reply, i) => {
+        if (reply.id === targetReply) {
+          let targetPage = Math.ceil((i + 1) / this.state.limit);
+          window.location.href =
+            "/t/" +
+            this.state.topicId +
+            "?p=" +
+            targetPage +
+            "#r_" +
+            targetReply;
+        }
+      });
+    });
   }
 
   getTopic() {
@@ -390,7 +420,7 @@ class ReplyBox extends React.Component {
                       &nbsp; &nbsp;
                       <Link
                         className="ago"
-                        to={`#r_${reply.id}`}
+                        to={`?p=${this.state.page}#r_${reply.id}`}
                         onClick={() => {
                           this.scrollToAnchor(`r_${reply?.id}`);
                         }}
