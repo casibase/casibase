@@ -17,7 +17,7 @@ package object
 var (
 	DefaultPageNum             = 20
 	DefaultHomePageNum         = 50
-	DefaultTopicPageReplyNum   = 50
+	DefaultTopicPageReplyNum   = 100
 	DefaultNotificationPageNum = 10
 	DefaultBalancePageNum      = 25
 	DefaultFilePageNum         = 25

@@ -48,4 +48,4 @@ export const EnableNotificationAutoUpdate = false;
 
 export const NotificationAutoUpdatePeriod = 10; // second
 
-export const DefaultTopicPageReplyNum = 50;
+export const DefaultTopicPageReplyNum = 100;
