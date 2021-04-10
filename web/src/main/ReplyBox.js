@@ -45,7 +45,7 @@ class ReplyBox extends React.Component {
       repliesNum: 0,
       latestReplyTime: "",
       p: "",
-      page: 1,
+      page: -1,
       limit: Conf.DefaultTopicPageReplyNum,
       minPage: 1,
       maxPage: -1,
@@ -55,7 +55,7 @@ class ReplyBox extends React.Component {
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1;
+      this.state.page = -1;
     } else {
       this.state.page = parseInt(this.state.p);
     }
@@ -73,7 +73,7 @@ class ReplyBox extends React.Component {
         }
       }
     }
-    this.getReplies(false);
+    this.getReplies(this.state.page === -1);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -144,6 +144,7 @@ class ReplyBox extends React.Component {
         {
           replies: res?.data,
           repliesNum: res?.data2[0],
+          page: res?.data2[1],
           latestReplyTime: Setting.getPrettyDate(
             res?.data[res?.data.length - 1]?.createdTime
           ),
