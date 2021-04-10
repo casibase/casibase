@@ -45,7 +45,7 @@ class ReplyBox extends React.Component {
       repliesNum: 0,
       latestReplyTime: "",
       p: "",
-      page: 1,
+      page: -1,
       limit: Conf.DefaultTopicPageReplyNum,
       minPage: 1,
       maxPage: -1,
@@ -55,7 +55,7 @@ class ReplyBox extends React.Component {
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
     if (this.state.p === null) {
-      this.state.page = 1;
+      this.state.page = -1;
     } else {
       this.state.page = parseInt(this.state.p);
     }
@@ -65,18 +65,15 @@ class ReplyBox extends React.Component {
     //this.getTopic();
     let lastIndex = window.location.href.lastIndexOf("#");
     if (lastIndex >= 0) {
-      let idString = window.location.href.substring(
-        lastIndex,
-        window.location.href.length
-      );
+      let idString = window.location.href.substring(lastIndex + 1);
       if (document.getElementById(idString) === null) {
-        let targetReply = parseInt(idString.substring(3, idString.length));
+        let targetReply = parseInt(idString.substring(2, idString.length));
         if (!isNaN(targetReply)) {
           this.jumpToTargetPage(targetReply);
         }
       }
     }
-    this.getReplies(false);
+    this.getReplies(this.state.page === -1);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -117,13 +114,12 @@ class ReplyBox extends React.Component {
       res.data.map((reply, i) => {
         if (reply.id === targetReply) {
           let targetPage = Math.ceil((i + 1) / this.state.limit);
-          window.location.href =
-            "/t/" +
-            this.state.topicId +
-            "?p=" +
-            targetPage +
-            "#r_" +
-            targetReply;
+          this.setState(
+            {
+              page: targetPage,
+            },
+            () => this.getReplies(false)
+          );
         }
       });
     });
@@ -148,6 +144,7 @@ class ReplyBox extends React.Component {
         {
           replies: res?.data,
           repliesNum: res?.data2[0],
+          page: res?.data2[1],
           latestReplyTime: Setting.getPrettyDate(
             res?.data[res?.data.length - 1]?.createdTime
           ),

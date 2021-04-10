@@ -34,7 +34,6 @@ func (c *APIController) GetReplies() {
 	pageStr := c.Input().Get("page")
 	initStatus := c.Input().Get("init")
 
-	defaultLimit := object.DefaultTopicPageReplyNum
 	topicId := util.ParseInt(topicIdStr)
 
 	var limit, offset, page int
@@ -42,7 +41,9 @@ func (c *APIController) GetReplies() {
 	if len(limitStr) != 0 {
 		limit = util.ParseInt(limitStr)
 	} else {
-		limit = defaultLimit
+		c.Data["json"] = Response{Status: "error", Msg: "Parameter missing: limit"}
+		c.ServeJSON()
+		return
 	}
 	if len(pageStr) != 0 {
 		if initStatus == "false" {
