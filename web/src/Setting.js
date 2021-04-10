@@ -140,19 +140,19 @@ export function getHomeLink(text) {
 }
 
 export function getGoogleAuthCode(method) {
-  window.location.href = `${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`;
+  window.location.href = `${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${ClientUrl}/callback/google/${method}&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.AuthState}`;
 }
 
 export function getGithubAuthCode(method) {
-  window.location.href = `${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
+  window.location.href = `${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${ClientUrl}/callback/github/${method}&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.AuthState}`;
 }
 
 export function getQQAuthCode(method) {
-  window.location.href = `${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.QQAuthState}`;
+  window.location.href = `${Conf.QQOauthUri}?client_id=${Conf.QQClientId}&redirect_uri=${ClientUrl}/callback/qq/${method}&scope=${Conf.QQAuthScope}&response_type=code&state=${Conf.AuthState}`;
 }
 
 export function getWeChatAuthCode(method) {
-  window.location.href = `${Conf.WeChatOauthUri}?appid=${Conf.WechatClientId}&redirect_uri=${ClientUrl}/callback/wechat/${method}&scope=${Conf.WeChatAuthScope}&response_type=code&state=${Conf.WeChatAuthState}#wechat_redirect`;
+  window.location.href = `${Conf.WeChatOauthUri}?appid=${Conf.WechatClientId}&redirect_uri=${ClientUrl}/callback/wechat/${method}&scope=${Conf.WeChatAuthScope}&response_type=code&state=${Conf.AuthState}#wechat_redirect`;
 }
 
 export function SetEditorType(editorType) {

@@ -41,11 +41,11 @@ class SignupBox extends React.Component {
   }
 
   getGoogleAuthCode() {
-    window.location.href = `${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${Setting.ClientUrl}/callback/google&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.GoogleAuthState}`;
+    window.location.href = `${Conf.GoogleOauthUri}?client_id=${Conf.GoogleClientId}&redirect_uri=${Setting.ClientUrl}/callback/google&scope=${Conf.GoogleAuthScope}&response_type=code&state=${Conf.AuthState}`;
   }
 
   getGithubAuthCode() {
-    window.location.href = `${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${Setting.ClientUrl}/callback/github&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.GithubAuthState}`;
+    window.location.href = `${Conf.GithubOauthUri}?client_id=${Conf.GithubClientId}&redirect_uri=${Setting.ClientUrl}/callback/github&scope=${Conf.GithubAuthScope}&response_type=code&state=${Conf.AuthState}`;
   }
 
   componentDidMount() {

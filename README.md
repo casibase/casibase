@@ -67,10 +67,8 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```ini
     GoogleAuthClientID = "xxx" //your own client id
     GoogleAuthClientSecret = "xxx" //your own client secret
-    GoogleAuthState = "xxx" //set by yourself
     GithubAuthClientID = "xxx" //your own client id
     GithubAuthClientSecret = "xxx" //your own client secret
-    GithubAuthState = "xx" //set by yourself, we may change this to a random word in the future
     ```
 
     You may also have to fill in the **same** information at: https://github.com/casbin/casnode/blob/master/web/src/Conf.js. By the way, you could change the value of `scope` to get different user information form them if you need, we just take `profile` and `email`.
@@ -78,13 +76,9 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```javascript
     export const GoogleClientId  = "xxx"
 
-    export const GoogleAuthState  = "xxx"
-
     export const GoogleAuthScope  = "profile+email"
 
     export const GithubClientId  = "xxx"
-
-    export const GithubAuthState  = "xxx"
 
     export const GithubAuthScope  = "user:email+read:user"
     ```
@@ -98,8 +92,6 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```javascript
     export const QQClientId  = ""
   
-    export const QQAuthState  = ""
-  
     export const QQAuthScope  = "get_user_info"
   
     export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize"
@@ -108,7 +100,6 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```ini
     QQAPPID = ""
     QQAPPKey = ""
-    QQAuthState = ""
     ```
 
     4. WeChat
@@ -120,8 +111,6 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```javascript
     export const WechatClientId  = ""
 
-    export const WeChatAuthState = ""
-
     export const WeChatAuthScope = "snsapi_login"
 
     export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect"
@@ -130,7 +119,6 @@ Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://git
     ```ini
     WeChatAPPID = ""
     WeChatKey = ""
-    WeChatAuthState = ""
     ```
 
     We would show different login/signup methods depending on your configuration.

@@ -12,40 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+export const AuthState = "casnode";
+
 export const GoogleClientId = "";
-
-export const GoogleAuthState = "";
-
 export const GoogleAuthScope = "profile+email";
-
 export const GoogleOauthUri = "https://accounts.google.com/signin/oauth";
 
 export const GithubClientId = "";
-
-export const GithubAuthState = "";
-
 export const GithubAuthScope = "user:email+read:user";
-
 export const GithubOauthUri = "https://github.com/login/oauth/authorize";
 
 export const QQClientId = "";
-
-export const QQAuthState = "";
-
 export const QQAuthScope = "get_user_info";
-
 export const QQOauthUri = "https://graph.qq.com/oauth2.0/authorize";
 
 export const WechatClientId = "";
-
-export const WeChatAuthState = "";
-
 export const WeChatAuthScope = "snsapi_login";
-
 export const WeChatOauthUri = "https://open.weixin.qq.com/connect/qrconnect";
 
 export const ShowGithubCorner = true;
-
 export const GithubRepo = "https://github.com/casbin/casnode";
 
 export const Domain = "forum.casbin.com";

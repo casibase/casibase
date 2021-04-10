@@ -508,7 +508,7 @@ func (c *APIController) AuthGoogle() {
 	var res authResponse
 	res.IsAuthenticated = true
 
-	if state != beego.AppConfig.String("GoogleAuthState") {
+	if state != beego.AppConfig.String("AuthState") {
 		res.IsAuthenticated = false
 		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
 		c.Data["json"] = resp
@@ -627,7 +627,7 @@ func (c *APIController) AuthGithub() {
 	var res authResponse
 	res.IsAuthenticated = true
 
-	if state != beego.AppConfig.String("GithubAuthState") {
+	if state != beego.AppConfig.String("AuthState") {
 		res.IsAuthenticated = false
 		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
 		c.ServeJSON()
@@ -776,7 +776,7 @@ func (c *APIController) AuthQQ() {
 	var res authResponse
 	res.IsAuthenticated = true
 
-	if state != beego.AppConfig.String("QQAuthState") {
+	if state != beego.AppConfig.String("AuthState") {
 		res.IsAuthenticated = false
 		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
 		c.ServeJSON()
@@ -900,7 +900,7 @@ func (c *APIController) AuthWeChat() {
 	var res authResponse
 	res.IsAuthenticated = true
 
-	if state != beego.AppConfig.String("WeChatAuthState") {
+	if state != beego.AppConfig.String("AuthState") {
 		res.IsAuthenticated = false
 		resp = Response{Status: "fail", Msg: "unauthorized", Data: res}
 		c.ServeJSON()
