@@ -64,7 +64,7 @@ func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWit
 
 func GetRepliesOfTopic(topicId int) []Reply {
 	var ret []Reply
-	err := adapter.engine.Where("topic_id = ?", topicId).Find(&ret)
+	err := adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Find(&ret)
 	if err != nil {
 		panic(err)
 	}

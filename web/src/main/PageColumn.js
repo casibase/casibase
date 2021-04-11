@@ -133,7 +133,7 @@ class PageColumn extends React.Component {
       <span>
         {page === i ? (
           <Link
-            to={`${url}?p=${i}`}
+            onClick={() => this.gotoPage(url, i)}
             className={`page_current ${this.props.nodeId}`}
           >
             {i}
@@ -142,7 +142,7 @@ class PageColumn extends React.Component {
           <span className="fade"> ... </span>
         ) : (
           <Link
-            to={`${url}?p=${i}`}
+            onClick={() => this.gotoPage(url, i)}
             className={`page_normal ${this.props.nodeId}`}
           >
             {i}
@@ -154,8 +154,12 @@ class PageColumn extends React.Component {
   }
 
   gotoPage(url, page) {
+    if (this.props.onChange !== undefined) {
+      this.props.onChange(page);
+      return;
+    }
     this.props.history.push(`${url}?p=${page}`);
-    //Setting.goToLink(`${url}?p=${page}`);
+    // Setting.goToLink(`${url}?p=${page}`);
   }
 
   render() {
@@ -232,7 +236,7 @@ class PageColumn extends React.Component {
                   <tbody>
                     <tr>
                       {page <= 1 ? (
-                        <td
+                        <Link
                           width="50%"
                           align="center"
                           className="super normal button disable_now"
@@ -243,9 +247,9 @@ class PageColumn extends React.Component {
                           }}
                         >
                           ❮
-                        </td>
+                        </Link>
                       ) : (
-                        <td
+                        <Link
                           width="50%"
                           align="center"
                           className={"super normal button button pageColumn"}
@@ -260,10 +264,10 @@ class PageColumn extends React.Component {
                           title="Front page"
                         >
                           ❮
-                        </td>
+                        </Link>
                       )}
                       {page >= this.state.maxPage ? (
-                        <td
+                        <Link
                           width="50%"
                           align="center"
                           className="super normal_page_right button disable_now"
@@ -273,9 +277,9 @@ class PageColumn extends React.Component {
                           }}
                         >
                           ❯
-                        </td>
+                        </Link>
                       ) : (
-                        <td
+                        <Link
                           width="50%"
                           align="center"
                           className={
@@ -291,7 +295,7 @@ class PageColumn extends React.Component {
                           title="Next page"
                         >
                           ❯
-                        </td>
+                        </Link>
                       )}
                     </tr>
                   </tbody>

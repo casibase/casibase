@@ -67,7 +67,7 @@ class ReplyBox extends React.Component {
     if (lastIndex >= 0) {
       let idString = window.location.href.substring(lastIndex + 1);
       if (document.getElementById(idString) === null) {
-        let targetReply = parseInt(idString.substring(2, idString.length));
+        let targetReply = parseInt(idString.substring(2));
         if (!isNaN(targetReply)) {
           this.jumpToTargetPage(targetReply);
         }
@@ -85,10 +85,15 @@ class ReplyBox extends React.Component {
     }
     let url = window.location.href;
     let id = url.substring(url.lastIndexOf("#") + 1);
-    setTimeout(function () {
+    setTimeout(() => {
       let anchorElement = document.getElementById(id);
       if (anchorElement) {
         anchorElement.scrollIntoView();
+      } else {
+        let targetReply = parseInt(id.substring(2));
+        if (!isNaN(targetReply)) {
+          this.jumpToTargetPage(targetReply);
+        }
       }
     }, 100);
   }
@@ -97,15 +102,14 @@ class ReplyBox extends React.Component {
     if (newProps.location !== this.props.location) {
       let params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
-      if (page === null) {
-        page = 1;
+      if (page !== null) {
+        this.setState(
+          {
+            page: parseInt(page),
+          },
+          () => this.getReplies(false)
+        );
       }
-      this.setState(
-        {
-          page: parseInt(page),
-        },
-        () => this.getReplies(false)
-      );
     }
   }
 
@@ -256,6 +260,14 @@ class ReplyBox extends React.Component {
         total={this.state.repliesNum}
         url={this.state.url}
         defaultPageNum={this.state.limit}
+        onChange={(page) => {
+          this.setState(
+            {
+              page: page,
+            },
+            () => this.getReplies(false)
+          );
+        }}
       />
     );
   }
@@ -417,7 +429,7 @@ class ReplyBox extends React.Component {
                       &nbsp; &nbsp;
                       <Link
                         className="ago"
-                        to={`?p=${this.state.page}#r_${reply.id}`}
+                        to={`#r_${reply.id}`}
                         onClick={() => {
                           this.scrollToAnchor(`r_${reply?.id}`);
                         }}
