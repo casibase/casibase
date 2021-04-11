@@ -33,8 +33,8 @@ class AdminNode extends React.Component {
     this.state = {
       classes: props,
       nodes: null,
-      tabs: [],
-      planes: [],
+      tabs: null,
+      planes: null,
       message: "",
       errorMessage: "",
       form: {},
@@ -57,10 +57,9 @@ class AdminNode extends React.Component {
       color: "#386d97",
       displayColorPicker: false,
     };
-    this.loadData();
   }
 
-  loadData() {
+  componentDidMount() {
     this.getNodes();
     this.getNodeInfo();
     this.getTabs();
@@ -457,6 +456,10 @@ class AdminNode extends React.Component {
   }
 
   renderSelect(item) {
+    if (this.state.nodes === null) return;
+    if (this.state.tabs === null) return;
+    if (this.state.planes === null) return;
+
     let value, data;
     switch (item) {
       case "node":
