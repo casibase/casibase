@@ -49,7 +49,7 @@ func (c *APIController) GetReplies() {
 		if initStatus == "false" {
 			page = util.ParseInt(pageStr)
 		} else {
-			page = repliesNum/limit + 1
+			page = (repliesNum - 1) / limit + 1
 		}
 		offset = page*limit - limit
 	}
