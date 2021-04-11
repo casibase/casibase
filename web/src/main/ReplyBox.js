@@ -72,30 +72,9 @@ class ReplyBox extends React.Component {
           this.jumpToTargetPage(targetReply);
         }
       }
+    } else {
+      this.getReplies(this.state.page === -1);
     }
-    this.getReplies(this.state.page === -1);
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (
-      prevState.reply !== this.state.reply ||
-      prevState.sticky !== this.state.sticky
-    ) {
-      return;
-    }
-    let url = window.location.href;
-    let id = url.substring(url.lastIndexOf("#") + 1);
-    setTimeout(() => {
-      let anchorElement = document.getElementById(id);
-      if (anchorElement) {
-        anchorElement.scrollIntoView();
-      } else {
-        let targetReply = parseInt(id.substring(2));
-        if (!isNaN(targetReply)) {
-          this.jumpToTargetPage(targetReply);
-        }
-      }
-    }, 100);
   }
 
   componentWillReceiveProps(newProps) {
@@ -115,17 +94,36 @@ class ReplyBox extends React.Component {
 
   jumpToTargetPage(targetReply) {
     ReplyBackend.getRepliesOfTopic(this.state.topicId).then((res) => {
+      let found = false;
       res.data.map((reply, i) => {
         if (reply.id === targetReply) {
+          found = true;
           let targetPage = Math.ceil((i + 1) / this.state.limit);
-          this.setState(
-            {
-              page: targetPage,
-            },
-            () => this.getReplies(false)
-          );
+          ReplyBackend.getReplies(
+            this.state.topicId,
+            this.state.limit,
+            targetPage,
+            false
+          ).then((res) => {
+            this.setState(
+              {
+                replies: res?.data,
+                repliesNum: res?.data2[0],
+                page: res?.data2[1],
+                latestReplyTime: Setting.getPrettyDate(
+                  res?.data[res?.data.length - 1]?.createdTime
+                ),
+              },
+              () => {
+                document.getElementById("r_" + targetReply).scrollIntoView();
+              }
+            );
+          });
         }
       });
+      if (!found) {
+        this.getReplies(true);
+      }
     });
   }
 
