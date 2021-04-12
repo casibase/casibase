@@ -51,6 +51,7 @@ class ReplyBox extends React.Component {
       maxPage: -1,
       sticky: false,
       url: `/t/${props.match.params.topicId}`,
+      fullUrl: window.location.href,
     };
     const params = new URLSearchParams(this.props.location.search);
     this.state.p = params.get("p");
@@ -74,6 +75,22 @@ class ReplyBox extends React.Component {
       }
     } else {
       this.getReplies(this.state.page === -1);
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.fullUrl !== window.location.href) {
+      this.state.fullUrl = window.location.href;
+      let lastIndex = window.location.href.lastIndexOf("#");
+      if (lastIndex >= 0) {
+        let idString = window.location.href.substring(lastIndex + 1);
+        if (document.getElementById(idString) === null) {
+          let targetReply = parseInt(idString.substring(2));
+          if (!isNaN(targetReply)) {
+            this.jumpToTargetPage(targetReply);
+          }
+        }
+      }
     }
   }
 
