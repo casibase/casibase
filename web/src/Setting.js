@@ -221,7 +221,8 @@ export function getFormattedContent(content, spacing) {
       .spacing(formattedContent)
       .replace(/\[(.*?)]\((.*?)\)/g, function (w) {
         return w.replace(/ /g, "");
-      });
+      })
+      .replaceAll("% ", "%");
   }
   return formattedContent;
 }
