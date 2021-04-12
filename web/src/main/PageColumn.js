@@ -174,15 +174,17 @@ class PageColumn extends React.Component {
           <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
               <td width="120" align="left">
-                <input
-                  type="button"
-                  onClick={() => {
-                    this.gotoPage(url, page - 1);
-                  }}
-                  value={`‹ ${i18next.t("topic:Last")}`}
-                  className="super normal button"
-                  style={{ display: page > 1 ? "block" : "none" }}
-                />
+                <Link>
+                  <input
+                    type="button"
+                    onClick={() => {
+                      this.gotoPage(url, page - 1);
+                    }}
+                    value={`‹ ${i18next.t("topic:Last")}`}
+                    className="super normal button"
+                    style={{ display: page > 1 ? "block" : "none" }}
+                  />
+                </Link>
               </td>
               <td width="auto" align="center">
                 <strong class="fade">
@@ -190,14 +192,16 @@ class PageColumn extends React.Component {
                 </strong>
               </td>
               <td width="120" align="right">
-                <input
-                  type="button"
-                  onClick={() => {
-                    this.gotoPage(url, page + 1);
-                  }}
-                  value={`${i18next.t("topic:Next")} ›`}
-                  className="super normal button"
-                />
+                <Link>
+                  <input
+                    type="button"
+                    onClick={() => {
+                      this.gotoPage(url, page + 1);
+                    }}
+                    value={`${i18next.t("topic:Next")} ›`}
+                    className="super normal button"
+                  />
+                </Link>
               </td>
             </tr>
           </table>
