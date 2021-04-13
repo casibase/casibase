@@ -482,6 +482,8 @@
   },
   "setting": {
     "Username": "Username",
+    "New Username": "New Username",
+    "Username has been set": "Username has been set. Please login again.",
     "Password": "Password",
     "Member already exists": "Member already exists",
     "Password empty": "Password empty",
@@ -502,6 +504,7 @@
     "Company": "Company",
     "Bio": "Bio",
     "Save Settings": "Save Settings",
+    "Save Username": "Save Username",
     "Settings": "Settings",
     "Company title": "Company title",
     "Location": "Location",

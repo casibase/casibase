@@ -486,6 +486,8 @@
   },
   "setting": {
     "Username": "用户名",
+    "New Username": "新用户名",
+    "Username has been set": "用户名已设置，请重新登陆",
     "Password": "密码",
     "Member already exists": "用户已存在",
     "Password empty": "密码为空",
@@ -506,6 +508,7 @@
     "Company": "所在公司",
     "Bio": "个人简介",
     "Save Settings": "保存设置",
+    "Save Username": "保存用户名",
     "Settings": "设置",
     "Company title": "工作职位",
     "Location": "所在地",

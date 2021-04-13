@@ -58,3 +58,13 @@ export function resetPassword(step, values) {
     body: JSON.stringify(values),
   }).then((res) => res.json());
 }
+
+export function resetUsername(newUsername) {
+  return fetch(
+    `${Setting.ServerUrl}/api/reset-member-username?new=${newUsername}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
