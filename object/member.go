@@ -659,6 +659,7 @@ func ResetUsername(oldUsername string, newUsername string) string {
 		{"reply", "author"},
 		{"reset_record", "member_id"},
 		{"topic", "author"},
+		{"topic", "last_reply_user"},
 		{"upload_file_record", "member_id"},
 	}
 	for _, value := range updateList {
