@@ -33,6 +33,11 @@ type Session struct {
 
 func InitAdapter() {
 	adapter = NewAdapter("mysql", beego.AppConfig.String("dataSourceName"))
+
+	_, err := adapter.engine.Query("update member set rename_quota = ? where rename_quota is null", DefaultRenameQuota)
+	if err != nil {
+		panic(err)
+	}
 }
 
 // Adapter represents the MySQL adapter for policy storage.

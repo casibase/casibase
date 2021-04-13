@@ -21,6 +21,7 @@ var (
 	DefaultBalancePageNum      = 25
 	DefaultFilePageNum         = 25
 	DefaultMemberAdminPageNum  = 100
+	DefaultRenameQuota         = 3
 	UserNamingRestrictions     = false
 	HomePageNodeNum            = 8
 	TopicThanksCost            = 15

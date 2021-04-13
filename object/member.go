@@ -56,6 +56,7 @@ type Member struct {
 	OnlineStatus       bool   `xorm:"bool" json:"onlineStatus"`
 	LastActionDate     string `xorm:"varchar(40)" json:"-"`
 	Status             int    `xorm:"int" json:"-"`
+	RenameQuota        int    `json:"renameQuota"`
 }
 
 func GetMembers() []*Member {
@@ -621,4 +622,51 @@ func GetMemberOnlineNum() int {
 	}
 
 	return int(total)
+}
+
+type UpdateListItem struct {
+	Table string
+	Attribute string
+}
+
+func ResetUsername(oldUsername string, newUsername string) string {
+	if len(newUsername) == 0 || len(newUsername) > 100 || strings.Index(newUsername, " ") >= 0 {
+		return "Illegal username"
+	}
+	if HasMember(newUsername) {
+		return "User exists"
+	}
+
+	member := GetMember(oldUsername)
+	if member.RenameQuota < 1 {
+		return "You have no chance to reset you name."
+	}
+	member.RenameQuota--
+	_, err := adapter.engine.Query("update member set rename_quota = ? where id = ?", member.RenameQuota, oldUsername)
+	if err != nil {
+		panic(err)
+	}
+
+	updateList := []UpdateListItem{
+		{"member", "id"},
+		{"browse_record", "member_id"},
+		{"consumption_record", "consumer_id"},
+		{"consumption_record", "receiver_id"},
+		{"favorites", "member_id"},
+		{"node", "moderators"},
+		{"notification", "sender_id"},
+		{"notification", "receiver_id"},
+		{"reply", "author"},
+		{"reset_record", "member_id"},
+		{"topic", "author"},
+		{"upload_file_record", "member_id"},
+	}
+	for _, value := range updateList {
+		_, err = adapter.engine.Query("update " + value.Table + " set " + value.Attribute + " = ? where " + value.Attribute + " = ?", newUsername, oldUsername)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	return ""
 }

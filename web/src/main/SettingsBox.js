@@ -201,6 +201,18 @@ class SettingsBox extends React.Component {
     });
   }
 
+  submitNewUsername() {
+    let newUsername = document.getElementById("new-username").value;
+    AccountBackend.resetUsername(newUsername).then((res) => {
+      if (res.status === "ok") {
+        alert(i18next.t("setting:Username has been set"));
+        window.location.href = "/signin";
+      } else {
+        alert(res.msg);
+      }
+    });
+  }
+
   renderSettingList(item) {
     return (
       <Link
@@ -519,6 +531,32 @@ class SettingsBox extends React.Component {
                 </td>
                 <td width="auto" align="left">
                   {account?.id}
+                </td>
+              </tr>
+              <tr>
+                <td width="120" align="right">
+                  {i18next.t("setting:New Username")}
+                </td>
+                <td>
+                  <input
+                    type="text"
+                    className="sl"
+                    name="company"
+                    defaultValue={account?.company}
+                    maxLength="32"
+                    id="new-username"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td />
+                <td width="auto" align="left">
+                  <input
+                    type="submit"
+                    className="super normal button"
+                    value={i18next.t("setting:Save Username")}
+                    onClick={this.submitNewUsername}
+                  />
                 </td>
               </tr>
               <tr>

@@ -87,6 +87,7 @@ func initAPI() {
 	beego.Router("/api/get-member-editor-type", &controllers.APIController{}, "GET:GetMemberEditorType")
 	beego.Router("/api/update-member-email-reminder", &controllers.APIController{}, "POST:UpdateMemberEmailReminder")
 	beego.Router("/api/get-ranking-rich", &controllers.APIController{}, "GET:GetRankingRich")
+	beego.Router("/api/reset-member-username", &controllers.APIController{}, "GET:ResetUsername")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
