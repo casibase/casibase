@@ -10,7 +10,8 @@ export default class Editor extends React.Component {
     this.state = {
       editorState: BraftEditor.createEditorState(null),
       contentStyle: {
-        height: this.props.height ? this.props.height : "350px",
+        minHeight: this.props.height ? this.props.height : "112px",
+        height: "auto",
       },
       language: this.props.language ? this.props.language : "en",
     };
