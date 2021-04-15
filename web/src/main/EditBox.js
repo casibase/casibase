@@ -173,17 +173,18 @@ class EditBox extends React.Component {
             overflow: "hidden",
             overflowWrap: "break-word",
             resize: "none",
-            height: "320",
+            height: "auto",
+            minHeight: "320px",
           }}
           name="content"
           className="mle tall"
           id="reply_content"
         >
-          <Resizable
-            enable={false}
+          <div
             style={{
               width: "100%",
-              height: "310",
+              height: "auto",
+              minHeight: "310px",
             }}
           >
             <CodeMirror
@@ -201,7 +202,7 @@ class EditBox extends React.Component {
               }}
               onChange={(editor, data, value) => {}}
             />
-          </Resizable>
+          </div>
         </div>
       );
     } else {
@@ -211,7 +212,8 @@ class EditBox extends React.Component {
             overflow: "hidden",
             overflowWrap: "break-word",
             resize: "none",
-            height: "172",
+            minHeight: "172",
+            height: "auto",
           }}
           name="content"
           className="mle"
@@ -220,7 +222,7 @@ class EditBox extends React.Component {
           <Editor
             defaultValue={this.state.form.content}
             language={i18next.language}
-            height="300px"
+            height="auto"
             id="richTextEditor"
             onBeforeChange={(value) => {
               this.updateFormField("content", value);
@@ -332,7 +334,7 @@ class EditBox extends React.Component {
                     onChange={(event) => {
                       this.updateFormField("title", event.target.value);
                     }}
-                  ></textarea>
+                  />
                 </td>
               </tr>
               <tr>

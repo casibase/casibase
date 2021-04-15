@@ -289,10 +289,10 @@ class NewBox extends React.Component {
                   id="editor"
                   name="content"
                 />
-                <Resizable
-                  enable={false}
-                  defaultSize={{
-                    height: 290,
+                <div
+                  style={{
+                    height: "auto",
+                    minHeight: 290,
                   }}
                 >
                   <CodeMirror
@@ -310,7 +310,7 @@ class NewBox extends React.Component {
                     }}
                     onChange={(editor, data, value) => {}}
                   />
-                </Resizable>
+                </div>
               </div>
             ) : (
               <div style={{ display: "block", height: "100%" }}>

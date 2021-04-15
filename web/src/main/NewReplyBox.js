@@ -213,18 +213,21 @@ class NewReplyBox extends React.Component {
             overflow: "hidden",
             overflowWrap: "break-word",
             resize: "none",
-            height: "112px",
+            height: "auto",
           }}
           className={`mll ${this.props.nodeId}`}
           id="reply_content"
         >
-          <Resizable
-            enable={false}
-            defaultSize={{
-              height: 112,
+          <div
+            style={{
+              height: "auto",
+              minHeight: "112px",
             }}
           >
             <CodeMirrorsEditor
+              style={{
+                height: "100%",
+              }}
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadMdFile()}
               value={this.props.content}
@@ -249,7 +252,7 @@ class NewReplyBox extends React.Component {
               }}
               onChange={(editor, data, value) => {}}
             />
-          </Resizable>
+          </div>
         </div>
       );
     } else {
@@ -259,7 +262,7 @@ class NewReplyBox extends React.Component {
             overflow: "hidden",
             overflowWrap: "break-word",
             resize: "none",
-            height: "375px",
+            height: "auto",
           }}
           name="content"
           className="mle"
@@ -268,7 +271,7 @@ class NewReplyBox extends React.Component {
           <Editor
             defaultValue={this.state.form.content}
             language={i18next.language}
-            height="300"
+            height="auto"
             id="richTextEditor"
             onBeforeChange={(value) => {
               this.updateFormField("content", value);

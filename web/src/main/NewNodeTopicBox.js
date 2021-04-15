@@ -245,13 +245,17 @@ class NewNodeTopicBox extends React.Component {
               className={`mll ${this.state.nodeInfo.id}`}
               id="topic_content"
             >
-              <Resizable
-                enable={false}
-                defaultSize={{
-                  height: 100,
+              <div
+                style={{
+                  minHeight: "100",
+                  height: "auto",
                 }}
               >
                 <CodeMirror
+                  style={{
+                    minHeight: 100,
+                    height: "auto",
+                  }}
                   className={`${this.state.nodeInfo.id}`}
                   editorDidMount={(editor) => Tools.attachEditor(editor)}
                   onPaste={() => Tools.uploadMdFile()}
@@ -268,7 +272,7 @@ class NewNodeTopicBox extends React.Component {
                   }}
                   onChange={(editor, data, value) => {}}
                 />
-              </Resizable>
+              </div>
             </div>
           ) : (
             <div
@@ -408,10 +412,10 @@ class NewNodeTopicBox extends React.Component {
                       className="mle"
                       id="topic_content"
                     >
-                      <Resizable
-                        enable={false}
-                        defaultSize={{
-                          height: 180,
+                      <div
+                        style={{
+                          height: "auto",
+                          minHeight: 310,
                         }}
                       >
                         <CodeMirror
@@ -431,7 +435,7 @@ class NewNodeTopicBox extends React.Component {
                           }}
                           onChange={(editor, data, value) => {}}
                         />
-                      </Resizable>
+                      </div>
                     </div>
                   ) : (
                     <div
