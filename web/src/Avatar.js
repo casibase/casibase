@@ -27,13 +27,13 @@ class Avatar extends React.Component {
   render() {
     let style;
     if (this.props.size === "small") {
-      style = { maxWidth: "24px", maxHeight: "24px", width: "100%" };
+      style = { width: "24px", height: "24px" };
     } else if (this.props.size === "large") {
-      style = { maxWidth: "73px", maxHeight: "73px", width: "100%" };
+      style = { width: "73px", height: "73px" };
     } else if (this.props.size === "middle") {
-      style = { maxWidth: "36px", maxHeight: "36px", width: "100%" };
+      style = { width: "36px", height: "36px" };
     } else {
-      style = { maxWidth: "48px", maxHeight: "48px", width: "100%" };
+      style = { width: "48px", height: "48px" };
     }
 
     let src;
