@@ -146,18 +146,21 @@ class AdminNode extends React.Component {
     fileName = timestamp + "." + fileType.ext;
     let reader = new FileReader();
     reader.onload = (e) => {
-      FileBackend.uploadFile(e.target.result, fileName, fileType.ext).then(
-        (res) => {
-          if (res?.status === "ok") {
-            this.updateFormField("backgroundImage", res.data);
-          } else {
-            this.setState({
-              message: res?.msg,
-            });
-          }
+      FileBackend.moderatorUpload(
+        e.target.result,
+        fileName,
+        "node/background"
+      ).then((res) => {
+        if (res?.status === "ok") {
+          this.updateFormField("backgroundImage", res.data);
+        } else {
+          this.setState({
+            message: res?.msg,
+          });
         }
-      );
+      });
     };
+    reader.readAsDataURL(file);
   }
 
   initForm() {

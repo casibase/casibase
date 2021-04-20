@@ -206,6 +206,28 @@ func (c *APIController) UploadFile() {
 	c.ServeJSON()
 }
 
+func (c *APIController) ModeratorUpload() {
+	if c.RequireLogin() {
+		return
+	}
+	memberId := c.GetSessionUser()
+	if !object.GetMember(memberId).IsModerator {
+		c.Data["json"] = Response{Status: "error", Msg: "You have no permission to upload files here. Need to be moderator."}
+		c.ServeJSON()
+		return
+	}
+	fileBase64 := c.Ctx.Request.Form.Get("file")
+	fileName := c.Ctx.Request.Form.Get("name")
+	filePath := c.Ctx.Request.Form.Get("filepath")
+	index := strings.Index(fileBase64, ",")
+	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
+	fileURL := service.UploadFileToOSS(fileBytes, "/" + filePath + "/" + fileName)
+
+	resp := Response{Status: "ok", Msg: fileName, Data: fileURL}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
 func (c *APIController) UploadAvatar() {
 	if c.RequireLogin() {
 		return
