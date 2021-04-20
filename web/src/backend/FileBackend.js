@@ -83,6 +83,18 @@ export function uploadFile(base64, filename, filetype) {
   }).then((res) => res.json());
 }
 
+export function moderatorUpload(base64, filename, filepath) {
+  let formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("filepath", filepath);
+  return fetch(`${Setting.ServerUrl}/api/upload-moderator`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
+}
+
 export function uploadAvatar(base64) {
   let formData = new FormData();
   formData.append("avatar", base64);
