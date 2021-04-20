@@ -24,6 +24,7 @@ import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
+import * as url from "url";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -314,7 +315,12 @@ class NodeBox extends React.Component {
     const { nodeInfo, nodeId } = this.state;
 
     return (
-      <div className={`node_header ${this.state.nodeId}`}>
+      <div
+        className={`node_header ${this.state.nodeId}`}
+        style={{
+          backgroundImage: "url(" + this.state.nodeInfo?.headerImage + ")",
+        }}
+      >
         <div className="node_avatar">
           <div
             style={{

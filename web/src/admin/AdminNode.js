@@ -136,23 +136,27 @@ class AdminNode extends React.Component {
   }
 
   // upload pic
-  handleUploadImage(event) {
-    this.updateFormField("backgroundImage", i18next.t("file:Uploading..."));
+  handleUploadImage(event, target) {
+    this.updateFormField(target, i18next.t("file:Uploading..."));
 
     let file = event.target.files[0];
-    let newClient, url, timestamp, path, fileName;
-    let fileType = Setting.getFileType(file.name);
-    timestamp = Date.parse(new Date());
-    fileName = timestamp + "." + fileType.ext;
+    let fileName,
+      fileType = Setting.getFileType(file.name);
+
+    if (target === "headerImage") fileName = "header";
+    else if (target === "backgroundImage") fileName = "background";
+    else fileName = "other";
+    fileName += "." + fileType.ext;
+
     let reader = new FileReader();
     reader.onload = (e) => {
       FileBackend.moderatorUpload(
         e.target.result,
         fileName,
-        "node/background"
+        "sitecontent/nodes/" + this.state.nodeInfo.id
       ).then((res) => {
         if (res?.status === "ok") {
-          this.updateFormField("backgroundImage", res.data);
+          this.updateFormField(target, res.data);
         } else {
           this.setState({
             message: res?.msg,
@@ -183,6 +187,7 @@ class AdminNode extends React.Component {
       form["backgroundImage"] = this.state.nodeInfo?.backgroundImage;
       form["backgroundColor"] = this.state.nodeInfo?.backgroundColor;
       form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
+      form["headerImage"] = this.state.nodeInfo?.headerImage;
     }
 
     this.setState({
@@ -962,6 +967,62 @@ class AdminNode extends React.Component {
                 <tbody>
                   <tr>
                     <td width="120" align="right">
+                      {i18next.t("node:Header image")}
+                    </td>
+                    <td width="auto" align="left">
+                      {this.state.form?.headerImage === undefined ||
+                      this.state.form?.headerImage === "" ? (
+                        <span className="gray">
+                          {i18next.t("node:Not set")}
+                        </span>
+                      ) : (
+                        <Zmage
+                          src={this.state.form?.headerImage}
+                          alt={this.state.form?.id}
+                          style={{ maxWidth: "48px", maxHeight: "48px" }}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
+                      {newNode
+                        ? i18next.t("node:Set header image")
+                        : i18next.t("node:Change header image")}
+                    </td>
+                    <td width="auto" align="left">
+                      <input
+                        type="text"
+                        className="sl"
+                        name="image"
+                        id="change_header"
+                        value={
+                          this.state.form?.headerImage === undefined
+                            ? ""
+                            : this.state.form?.headerImage
+                        }
+                        onChange={(event) =>
+                          this.updateFormField(
+                            "headerImage",
+                            event.target.value
+                          )
+                        }
+                        autoComplete="off"
+                      />{" "}
+                      &nbsp;{" "}
+                      <input
+                        type="file"
+                        accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
+                        onChange={(event) =>
+                          this.handleUploadImage(event, "headerImage")
+                        }
+                        name="headerImage"
+                        style={{ width: "200px" }}
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td width="120" align="right">
                       {i18next.t("node:Background image")}
                     </td>
                     <td width="auto" align="left">
@@ -1008,7 +1069,9 @@ class AdminNode extends React.Component {
                       <input
                         type="file"
                         accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
-                        onChange={(event) => this.handleUploadImage(event)}
+                        onChange={(event) =>
+                          this.handleUploadImage(event, "backgroundImage")
+                        }
                         name="backgroundImage"
                         style={{ width: "200px" }}
                       />

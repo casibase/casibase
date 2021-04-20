@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -222,8 +223,8 @@ func (c *APIController) ModeratorUpload() {
 	index := strings.Index(fileBase64, ",")
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	fileURL := service.UploadFileToOSS(fileBytes, "/" + filePath + "/" + fileName)
-
-	resp := Response{Status: "ok", Msg: fileName, Data: fileURL}
+	timeStamp := fmt.Sprintf("?time=%d", time.Now().UnixNano())
+	resp := Response{Status: "ok", Msg: fileName, Data: fileURL + timeStamp}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }

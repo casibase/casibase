@@ -256,6 +256,9 @@
     "Latest topics from people I followed": "我关注的人的最新主题"
   },
   "node": {
+    "Change header image": "更改头部图片",
+    "Set header image": "设置头部图片",
+    "Header image": "头部图片",
     "members have added this node to favorites": "人收藏了这个节点",
     "Total topics": "主题总数",
     "Ignore this node": "忽略这个节点",
