@@ -23,6 +23,7 @@ type Node struct {
 	Desc             string   `xorm:"varchar(500)" json:"desc"`
 	Image            string   `xorm:"varchar(200)" json:"image"`
 	BackgroundImage  string   `xorm:"varchar(200)" json:"backgroundImage"`
+	HeaderImage      string   `xorm:"varchar(200)" json:"headerImage"`
 	BackgroundColor  string   `xorm:"varchar(20)" json:"backgroundColor"`
 	BackgroundRepeat string   `xorm:"varchar(20)" json:"backgroundRepeat"`
 	TabId            string   `xorm:"varchar(100)" json:"tab"`

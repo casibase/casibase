@@ -256,6 +256,9 @@
     "Latest topics from people I followed": "Latest topics from people I followed"
   },
   "node": {
+    "Change header image": "Change header image",
+    "Set header image": "Set header image",
+    "Header image": "Header image",
     "members have added this node to favorites": "members have added this node to favorites",
     "Total topics": "Total topics:",
     "Ignore this node": "Ignore this node",
