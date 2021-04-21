@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,10 +28,15 @@ var mailConn = map[string]string{
 	"port": beego.AppConfig.String("mailPort"),
 }
 
+var dialer *gomail.Dialer
+
+func InitDialer() {
+	port, _ := strconv.Atoi(mailConn["port"])
+	dialer = gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+}
+
 // SendResetPasswordMail sends mail with reset password information.
 func SendResetPasswordMail(email, memberId, url string) error {
-	port, _ := strconv.Atoi(mailConn["port"])
-
 	mail := gomail.NewMessage()
 
 	name := beego.AppConfig.String("appname")
@@ -46,16 +51,16 @@ func SendResetPasswordMail(email, memberId, url string) error {
 	mail.SetHeader("Subject", "["+name+"]"+" 重设密码") // set subject
 	mail.SetBody("text/html", body)                 // set body
 
-	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+	if dialer == nil {
+		InitDialer()
+	}
 
-	err := d.DialAndSend(mail)
+	err := dialer.DialAndSend(mail)
 	return err
 }
 
 // SendRegistrationMail sends mail with registration information.
 func SendRegistrationMail(email, validateCode string) error {
-	port, _ := strconv.Atoi(mailConn["port"])
-
 	mail := gomail.NewMessage()
 
 	name := beego.AppConfig.String("appname")
@@ -70,16 +75,16 @@ func SendRegistrationMail(email, validateCode string) error {
 	mail.SetHeader("Subject", "["+name+"]"+" 用户注册") // set subject
 	mail.SetBody("text/html", body)                 // set body
 
-	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+	if dialer == nil {
+		InitDialer()
+	}
 
-	err := d.DialAndSend(mail)
+	err := dialer.DialAndSend(mail)
 	return err
 }
 
 // SendRemindMail sends mail with remind information.
 func SendRemindMail(title, content, topicId, email, domain string) error {
-	port, _ := strconv.Atoi(mailConn["port"])
-
 	mail := gomail.NewMessage()
 	name := beego.AppConfig.String("appname")
 	body := content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-
@@ -94,8 +99,22 @@ You are receiving this because you are subscribed to this thread.
 	mail.SetHeader("Subject", "Re: ["+name+"] "+title) // set subject
 	mail.SetBody("text/html", body)                    // set body
 
-	d := gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
+	if dialer == nil {
+		InitDialer()
+	}
 
-	err := d.DialAndSend(mail)
+	err := dialer.DialAndSend(mail)
 	return err
+}
+
+func SendEmail(title, content, dest, sender string) error {
+	message := gomail.NewMessage()
+	message.SetAddressHeader("From", beego.AppConfig.String("mailUser"), sender)
+	message.SetHeader("To", dest)
+	message.SetHeader("Subject", title)
+	message.SetBody("text/html", content)
+	if dialer == nil {
+		InitDialer()
+	}
+	return dialer.DialAndSend(message)
 }

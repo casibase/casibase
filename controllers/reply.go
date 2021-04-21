@@ -155,6 +155,7 @@ func (c *APIController) AddReply() {
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, memberId, util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
+		reply.AddReplyToMailingList()
 	}
 
 	c.wrapResponse(affected)

@@ -16,6 +16,9 @@ package object
 
 import (
 	"time"
+
+	"github.com/casbin/casnode/service"
+	"github.com/gomarkdown/markdown"
 )
 
 type Reply struct {
@@ -326,4 +329,14 @@ func GetReplyEditableStatus(member, author, createdTime string) bool {
 	}
 
 	return true
+}
+
+func (r Reply) AddReplyToMailingList() {
+	targetTopic := GetTopic(r.TopicId)
+	targetNode := GetNode(targetTopic.NodeId)
+	if len(targetNode.MailingList) == 0 {
+		return
+	}
+	r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
+	_ = service.SendEmail(targetTopic.Title, r.Content, targetNode.MailingList, r.Author)
 }

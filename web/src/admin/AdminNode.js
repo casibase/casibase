@@ -188,6 +188,7 @@ class AdminNode extends React.Component {
       form["backgroundColor"] = this.state.nodeInfo?.backgroundColor;
       form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
       form["headerImage"] = this.state.nodeInfo?.headerImage;
+      form["mailingList"] = this.state.nodeInfo?.mailingList;
     }
 
     this.setState({
@@ -834,6 +835,26 @@ class AdminNode extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         {this.renderSelect("plane")}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("node:Mailing List")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="text"
+                          className="sl"
+                          name="mailingList"
+                          defaultValue={this.state.form?.mailingList}
+                          onChange={(event) =>
+                            this.updateFormField(
+                              "mailingList",
+                              event.target.value
+                            )
+                          }
+                          autoComplete="off"
+                        />
                       </td>
                     </tr>
                     {!newNode ? (
