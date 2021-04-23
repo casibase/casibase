@@ -205,6 +205,8 @@ func (c *APIController) AddTopic() {
 	if res {
 		object.CreateTopicConsumption(topic.Author, id)
 		object.AddTopicNotification(id, topic.Author, topic.Content)
+		targetNode := object.GetNode(topic.NodeId)
+		targetNode.AddTopicToMailingList(topic.Title, topic.Content, topic.Author)
 		resp = Response{Status: "ok", Msg: "success", Data: topic.Id}
 	} else {
 		resp = Response{Status: "error", Msg: "fail"}

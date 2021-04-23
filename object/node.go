@@ -14,7 +14,12 @@
 
 package object
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/casbin/casnode/service"
+	"github.com/gomarkdown/markdown"
+)
 
 type Node struct {
 	Id               string   `xorm:"varchar(100) notnull pk" json:"id"`
@@ -32,6 +37,7 @@ type Node struct {
 	Sorter           int      `xorm:"int" json:"sorter"`
 	Hot              int      `xorm:"int" json:"hot"`
 	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
+	MailingList      string   `xorm:"varchar(100)" json:"mailingList"`
 }
 
 func GetNodes() []*Node {
@@ -289,4 +295,12 @@ func DeleteNodeModerators(memberId, nodeId string) bool {
 	}
 
 	return affected != 0
+}
+
+func (n Node) AddTopicToMailingList(title, content, author string) {
+	if len(n.MailingList) == 0 {
+		return
+	}
+	content = string(markdown.ToHTML([]byte(content), nil, nil))
+	_ = service.SendEmail(title, content, n.MailingList, author)
 }
