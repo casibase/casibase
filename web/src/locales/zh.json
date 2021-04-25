@@ -256,6 +256,11 @@
     "Latest topics from people I followed": "我关注的人的最新主题"
   },
   "node": {
+    "Google Group": "谷歌组群",
+    "Sync from google group now...": "正在从谷歌组群同步...",
+    "Sync success": "同步成功",
+    "Sync from Google Group": "从谷歌组群同步",
+    "No mailing list yet": "未设置邮件列表",
     "Change header image": "更改头部图片",
     "Mailing List": "邮件列表管理员邮箱",
     "Set header image": "设置头部图片",

@@ -45,6 +45,7 @@ var (
 	UseOAuthProxy              = false
 	DefaultUploadFileQuota     = 50
 	Domain                     = "forum.casbin.com" // domain
+	AutoSyncPeriodSecond       = -1 // auto sync is disabled if < 30
 
 	DefaultCronJobs = []*CronJob{
 		{

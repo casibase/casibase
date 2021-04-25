@@ -17,10 +17,14 @@ package object
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
 
 	"github.com/casbin/casnode/util"
@@ -33,11 +37,19 @@ type BasicInfo struct {
 
 var fileDate, version string
 var onlineMemberNum, highestOnlineNum int
+var httpClient http.Client
 
 func InitForumBasicInfo() {
 	GetForumVersion()
 	GetHighestOnlineNum()
 	UpdateOnlineMemberNum()
+	httpClient = GetProxyHttpClient()
+	if AutoSyncPeriodSecond >= 30 {
+		fmt.Println("Auto sync from google group enabled.")
+		go AutoSyncGoogleGroup()
+	} else {
+		fmt.Println("Auto sync from google group disabled.")
+	}
 }
 
 func GetForumVersion() string {
@@ -245,5 +257,21 @@ func UpdateOnlineMemberNum() {
 	onlineMemberNum = GetMemberOnlineNum()
 	if onlineMemberNum > highestOnlineNum {
 		UpdateHighestOnlineNum(onlineMemberNum)
+	}
+}
+
+func GetProxyHttpClient() http.Client {
+	proxyUrlStr := beego.AppConfig.String("httpproxy")
+	if len(proxyUrlStr) == 0 {
+		return http.Client{}
+	}
+	proxyUrl, err := url.Parse(proxyUrlStr)
+	if err != nil {
+		panic(err)
+	}
+	return http.Client{
+		Transport: &http.Transport{
+			Proxy: http.ProxyURL(proxyUrl),
+		},
 	}
 }

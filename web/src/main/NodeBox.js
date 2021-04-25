@@ -406,14 +406,28 @@ class NodeBox extends React.Component {
                 </a>
               )
             ) : null}
+            <div>
+              {this.state.nodeInfo.mailingList === "" ? (
+                i18next.t("node:No mailing list yet")
+              ) : (
+                <a
+                  href={
+                    "https://groups.google.com/g/" +
+                    this.state.nodeInfo.mailingList.split("@")[0]
+                  }
+                >
+                  {this.state.nodeInfo.mailingList}
+                </a>
+              )}
+            </div>
           </div>
           <Link to="/" className={`${this.state.nodeId}`}>
             {Setting.getForumName()}
           </Link>
           <span className="chevron">&nbsp;›&nbsp;</span>
           {nodeInfo?.name}
-          <div className="sep10"></div>
-          <div className="sep5"></div>
+          <div className="sep20" />
+          <div className="sep5" />
           {this.props.account !== null ? (
             <div className="fr" style={{ paddingLeft: "10px" }}>
               <input

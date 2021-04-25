@@ -256,6 +256,11 @@
     "Latest topics from people I followed": "Latest topics from people I followed"
   },
   "node": {
+    "Google Group": "Google Group",
+    "Sync from google group now...": "Sync from google group now...",
+    "Sync success": "Sync success",
+    "Sync from Google Group": "Sync from Google Group",
+    "No mailing list yet": "No mailing list yet",
     "Change header image": "Change header image",
     "Mailing List": "Mailing List Admin Email",
     "Set header image": "Set header image",

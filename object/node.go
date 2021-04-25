@@ -14,12 +14,7 @@
 
 package object
 
-import (
-	"sync"
-
-	"github.com/casbin/casnode/service"
-	"github.com/gomarkdown/markdown"
-)
+import "sync"
 
 type Node struct {
 	Id               string   `xorm:"varchar(100) notnull pk" json:"id"`
@@ -297,10 +292,15 @@ func DeleteNodeModerators(memberId, nodeId string) bool {
 	return affected != 0
 }
 
-func (n Node) AddTopicToMailingList(title, content, author string) {
-	if len(n.MailingList) == 0 {
-		return
+func (n Node) GetAllTopicTitlesOfNode() []string {
+	var topics []Topic
+	var ret []string
+	err := adapter.engine.Where("node_id = ? and deleted = 0", n.Id).Find(&topics)
+	if err != nil {
+		panic(err)
 	}
-	content = string(markdown.ToHTML([]byte(content), nil, nil))
-	_ = service.SendEmail(title, content, n.MailingList, author)
+	for _, topic := range  topics {
+		ret = append(ret, topic.Title)
+	}
+	return ret
 }

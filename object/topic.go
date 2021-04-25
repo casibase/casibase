@@ -18,6 +18,7 @@ import (
 	"time"
 
 	"github.com/casbin/casnode/util"
+	"github.com/gomarkdown/markdown"
 )
 
 type Topic struct {
@@ -315,7 +316,7 @@ func UpdateTopic(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
-	topic.Content = filterUnsafeHTML(topic.Content)
+	topic.Content = FilterUnsafeHTML(topic.Content)
 	_, err := adapter.engine.Id(id).AllCols().Update(topic)
 	if err != nil {
 		panic(err)
@@ -329,7 +330,7 @@ func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 	if GetTopic(id) == nil {
 		return false
 	}
-	topic.Content = filterUnsafeHTML(topic.Content)
+	topic.Content = FilterUnsafeHTML(topic.Content)
 	_, err := adapter.engine.Id(id).Update(topic)
 	if err != nil {
 		panic(err)
@@ -341,7 +342,7 @@ func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 
 // AddTopic return add topic result and topic id
 func AddTopic(topic *Topic) (bool, int) {
-	topic.Content = filterUnsafeHTML(topic.Content)
+	topic.Content = FilterUnsafeHTML(topic.Content)
 	affected, err := adapter.engine.Insert(topic)
 	if err != nil {
 		panic(err)
@@ -583,4 +584,23 @@ func ExpireTopTopic() int {
 	}
 
 	return num
+}
+
+func (t Topic) GetAllRepliesOfTopic() []string {
+	var ret []string
+	var replies []Reply
+	err := adapter.engine.Where("topic_id = ? and deleted = 0", t.Id).Find(&replies)
+	if err != nil {
+		panic(err)
+	}
+	var content string
+	for _, reply := range replies {
+		if reply.EditorType == "markdown" {
+			content = string(markdown.ToHTML([]byte(reply.Content), nil, nil))
+		} else {
+			content = reply.Content
+		}
+		ret = append(ret, content)
+	}
+	return ret
 }
