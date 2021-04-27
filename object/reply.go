@@ -14,12 +14,7 @@
 
 package object
 
-import (
-	"time"
-
-	"github.com/casbin/casnode/service"
-	"github.com/gomarkdown/markdown"
-)
+import "time"
 
 type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
@@ -156,7 +151,7 @@ func UpdateReply(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
-	reply.Content = filterUnsafeHTML(reply.Content)
+	reply.Content = FilterUnsafeHTML(reply.Content)
 	_, err := adapter.engine.Id(id).AllCols().Update(reply)
 	if err != nil {
 		panic(err)
@@ -171,7 +166,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 	if GetReply(id) == nil {
 		return false
 	}
-	reply.Content = filterUnsafeHTML(reply.Content)
+	reply.Content = FilterUnsafeHTML(reply.Content)
 	_, err := adapter.engine.Id(id).Update(reply)
 	if err != nil {
 		panic(err)
@@ -184,7 +179,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 // AddReply returns add reply result and reply id.
 func AddReply(reply *Reply) (bool, int) {
 	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
-	reply.Content = filterUnsafeHTML(reply.Content)
+	reply.Content = FilterUnsafeHTML(reply.Content)
 	affected, err := adapter.engine.Insert(reply)
 	if err != nil {
 		panic(err)
@@ -329,14 +324,4 @@ func GetReplyEditableStatus(member, author, createdTime string) bool {
 	}
 
 	return true
-}
-
-func (r Reply) AddReplyToMailingList() {
-	targetTopic := GetTopic(r.TopicId)
-	targetNode := GetNode(targetTopic.NodeId)
-	if len(targetNode.MailingList) == 0 {
-		return
-	}
-	r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
-	_ = service.SendEmail(targetTopic.Title, r.Content, targetNode.MailingList, r.Author)
 }

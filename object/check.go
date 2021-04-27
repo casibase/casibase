@@ -178,7 +178,7 @@ func IsForbidden(id string) bool {
 	return status == 3
 }
 
-func filterUnsafeHTML(content string) string {
+func FilterUnsafeHTML(content string) string {
 	if content == "" {
 		return content
 	}

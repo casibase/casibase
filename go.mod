@@ -9,6 +9,7 @@ require (
 	github.com/astaxie/beego v1.12.2
 	github.com/aws/aws-sdk-go v1.38.7
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
+	github.com/casbin/google-groups-crawler v0.0.3
 	github.com/chromedp/chromedp v0.6.10
 	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df

@@ -42,9 +42,9 @@ var (
 	ValidateCodeExpiredTime    = 20   // minutes
 	DefaultTopTopicTime        = 10   // minutes
 	OnlineMemberExpiedTime     = 10   // minutes
-	UseOAuthProxy              = false
 	DefaultUploadFileQuota     = 50
 	Domain                     = "forum.casbin.com" // domain
+	AutoSyncPeriodSecond       = -1 // auto sync is disabled if < 30
 
 	DefaultCronJobs = []*CronJob{
 		{
