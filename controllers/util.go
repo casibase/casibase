@@ -20,38 +20,14 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"golang.org/x/net/proxy"
-
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/service"
 )
 
-var httpClient *http.Client
+var httpClient http.Client
 
 func InitHttpClient() {
-	if !object.UseOAuthProxy {
-		httpClient = &http.Client{}
-		return
-	}
-
-	// https://stackoverflow.com/questions/33585587/creating-a-go-socks5-client
-	proxyAddress := "127.0.0.1:10808"
-	dialer, err := proxy.SOCKS5("tcp", proxyAddress, nil, proxy.Direct)
-	if err != nil {
-		panic(err)
-	}
-
-	tr := &http.Transport{Dial: dialer.Dial}
-	httpClient = &http.Client{
-		Transport: tr,
-	}
-
-	//resp, err2 := httpClient.Get("https://google.com")
-	//if err2 != nil {
-	//	panic(err2)
-	//}
-	//defer resp.Body.Close()
-	//println("Response status: %s", resp.Status)
+	httpClient = object.GetProxyHttpClient()
 }
 
 func UploadAvatarToOSS(avatar, memberId string) string {
