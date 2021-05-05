@@ -34,14 +34,18 @@ func (n Node) SyncFromGoogleGroup() {
 		return false
 	}
 
-	group := crawler.NewGoogleGroup(n.MailingList)
+	group := crawler.NewGoogleGroup(n.MailingList, n.GoogleGroupCookie)
 	conversations := group.GetConversations(httpClient)
 	for _, conv := range conversations {
 		messages := conv.GetAllMessages(httpClient)
 		var newTopic Topic
+		AuthorMember := AddMemberByNameAndEmailIfNotExist(messages[0].Author, conv.AuthorNameToEmail[messages[0].Author])
+		if AuthorMember == nil {
+			continue
+		}
 		if !isInTopicList(conv.Title) {
 			newTopic = Topic{
-				Author:        messages[0].Author,
+				Author:        AuthorMember.Id,
 				NodeId:        n.Id,
 				NodeName:      n.Name,
 				Title:         conv.Title,
@@ -70,11 +74,15 @@ func (n Node) SyncFromGoogleGroup() {
 
 		for _, msg := range messages[1:] {
 			msg.Content = FilterUnsafeHTML(msg.Content)
+			AuthorMember = AddMemberByNameAndEmailIfNotExist(msg.Author, conv.AuthorNameToEmail[msg.Author])
+			if AuthorMember == nil {
+				continue
+			}
 			if isInReplies(msg.Content) {
 				continue
 			}
 			newReply := Reply{
-				Author:      msg.Author,
+				Author:      AuthorMember.Id,
 				TopicId:     newTopic.Id,
 				EditorType:  "richtext",
 				Content:     msg.Content,
@@ -82,7 +90,7 @@ func (n Node) SyncFromGoogleGroup() {
 			}
 			AddReply(&newReply)
 			newTopic.LastReplyTime = util.GetCurrentTime()
-			newTopic.LastReplyUser = msg.Author
+			newTopic.LastReplyUser = AuthorMember.Id
 		}
 		UpdateTopic(newTopic.Id, &newTopic)
 	}

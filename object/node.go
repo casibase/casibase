@@ -33,6 +33,7 @@ type Node struct {
 	Hot              int      `xorm:"int" json:"hot"`
 	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
 	MailingList      string   `xorm:"varchar(100)" json:"mailingList"`
+	GoogleGroupCookie      string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
 }
 
 func GetNodes() []*Node {

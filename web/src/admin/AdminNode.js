@@ -189,6 +189,7 @@ class AdminNode extends React.Component {
       form["backgroundRepeat"] = this.state.nodeInfo?.backgroundRepeat;
       form["headerImage"] = this.state.nodeInfo?.headerImage;
       form["mailingList"] = this.state.nodeInfo?.mailingList;
+      form["googleGroupCookie"] = this.state.nodeInfo?.googleGroupCookie;
     }
 
     this.setState({
@@ -850,6 +851,26 @@ class AdminNode extends React.Component {
                           onChange={(event) =>
                             this.updateFormField(
                               "mailingList",
+                              event.target.value
+                            )
+                          }
+                          autoComplete="off"
+                        />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("node:Google Group Cookie")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="text"
+                          className="sl"
+                          name="googleGroupCookie"
+                          defaultValue={this.state.form?.googleGroupCookie}
+                          onChange={(event) =>
+                            this.updateFormField(
+                              "googleGroupCookie",
                               event.target.value
                             )
                           }

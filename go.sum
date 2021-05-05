@@ -76,6 +76,8 @@ github.com/casbin/google-groups-crawler v0.0.2 h1:/yGWj7yg3QbMiGZxDrS62W2AnAPSJ2
 github.com/casbin/google-groups-crawler v0.0.2/go.mod h1:N80gK73I2liha+W4FLT0GnZtCYDhqv9LfJOuHBPGONY=
 github.com/casbin/google-groups-crawler v0.0.3 h1:II6tzUNZLdXhoxSkcCXLPxVmyWcYMtKpZYGScTOxutg=
 github.com/casbin/google-groups-crawler v0.0.3/go.mod h1:N80gK73I2liha+W4FLT0GnZtCYDhqv9LfJOuHBPGONY=
+github.com/casbin/google-groups-crawler v0.0.5 h1:+4fOZoYCace3HpKxPZuDClLO3KjHLN/qe8xG2fznqFE=
+github.com/casbin/google-groups-crawler v0.0.5/go.mod h1:N80gK73I2liha+W4FLT0GnZtCYDhqv9LfJOuHBPGONY=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1 h1:6MnRN8NT7+YBpUIWxHtefFZOKTAPgGjpQSxqLNn0+qY=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=

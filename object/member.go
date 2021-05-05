@@ -17,6 +17,8 @@ package object
 import (
 	"bytes"
 	"strings"
+
+	"github.com/casbin/casnode/util"
 )
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
@@ -670,4 +672,52 @@ func ResetUsername(oldUsername string, newUsername string) string {
 	}
 
 	return ""
+}
+
+func GetMemberByEmail(email string) *Member {
+	if len(email) == 0 {
+		return nil
+	}
+	var ret Member
+	has, err := adapter.engine.Where("email = ?", email).Get(&ret)
+	if err != nil {
+		panic(err)
+	}
+	if has {
+		return &ret
+	}
+	return nil
+}
+
+func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
+	username = strings.ReplaceAll(username, " ", "")
+	email = strings.ReplaceAll(email, " ", "")
+	if len(username) == 0 {
+		return nil
+	}
+	if HasMember(username) {
+		return GetMember(username)
+	}
+	if len(email) == 0 {
+		return nil
+	}
+	username = strings.Split(email, "@")[0]
+	if HasMember(username) {
+		return GetMember(username)
+	}
+	newMember := GetMemberByEmail(email)
+	if newMember == nil {
+		newMember = &Member{
+			Id: username,
+			No: GetMemberNum() + 1,
+			CreatedTime: util.GetCurrentTime(),
+			Email: email,
+			EmailVerifiedTime: util.GetCurrentTime(),
+			ScoreCount: 200,
+			FileQuota: DefaultUploadFileQuota,
+			RenameQuota: DefaultRenameQuota,
+		}
+		AddMember(newMember)
+	}
+	return newMember
 }
