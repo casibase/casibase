@@ -999,3 +999,36 @@ func (c *APIController) AuthWeChat() {
 
 	c.ServeJSON()
 }
+
+func (c *APIController) UnbindAccount() {
+	if c.RequireLogin() {
+		return
+	}
+
+	memberId := c.GetSessionUser()
+	targetMember := object.GetMember(memberId)
+	if targetMember == nil {
+		c.Data["json"] = Response{Status: "error", Msg: "Member does not exist."}
+		c.ServeJSON()
+		return
+	}
+
+	accountType := c.Input().Get("type")
+	switch accountType {
+	case "google":
+		targetMember.UnbindGoogleAccount()
+	case "github":
+		targetMember.UnbindGithubAccount()
+	case "wechat":
+		targetMember.UnbindWechatAccount()
+	case "qq":
+		targetMember.UnbindQQAccount()
+	default:
+		c.Data["json"] = Response{Status: "error", Msg: "Unknown account type"}
+		c.ServeJSON()
+		return
+	}
+
+	c.Data["json"] = Response{Status: "ok"}
+	c.ServeJSON()
+}

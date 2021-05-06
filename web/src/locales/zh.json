@@ -554,7 +554,9 @@
     "save": "保存",
     "Set username failed": "设置用户名失败",
     "Set username success": "设置用户名成功",
-    "Username existed or email existed": "用户名或邮箱已存在"
+    "Username existed or email existed": "用户名或邮箱已存在",
+    "Unbind Account": "解除绑定",
+    "WeChat Verification": "微信验证"
   },
   "notification": {
     "Total reminders received": "总共收到提醒",

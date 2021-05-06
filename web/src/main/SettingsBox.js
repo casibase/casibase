@@ -23,6 +23,7 @@ import * as Conf from "../Conf";
 import "../Reply.css";
 import "../Settings.css";
 import i18next from "i18next";
+import { getAccount } from "../backend/AccountBackend";
 
 class SettingsBox extends React.Component {
   constructor(props) {
@@ -281,6 +282,27 @@ class SettingsBox extends React.Component {
         />
         {i18next.t("setting:Close")}
       </td>
+    );
+  }
+
+  renderAccountOptions(accountType) {
+    return (
+      <tr>
+        <td width="120" align="right" />
+        <td width="auto" align="left">
+          <a
+            onClick={() =>
+              AccountBackend.unbindAccount(accountType).then((res) => {
+                if (res.status !== "ok") alert(res.msg);
+                else window.location.reload();
+              })
+            }
+            href="javascript:void(0);"
+          >
+            {i18next.t("setting:Unbind Account")}
+          </a>
+        </td>
+      </tr>
     );
   }
 
@@ -658,16 +680,9 @@ class SettingsBox extends React.Component {
                   )}
                 </tr>
               ) : null}
-              {account?.googleAccount === "" ? null : (
-                <tr>
-                  <td width="120" align="right" />
-                  <td width="auto" align="left">
-                    <Link to="/settings/google">
-                      {i18next.t("setting:Modify GoogleAccount")}
-                    </Link>
-                  </td>
-                </tr>
-              )}
+              {account?.googleAccount !== "" && Conf.GoogleClientId !== ""
+                ? this.renderAccountOptions("google")
+                : null}
               {Conf.GithubClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
@@ -689,16 +704,9 @@ class SettingsBox extends React.Component {
                   )}
                 </tr>
               ) : null}
-              {account?.githubAccount === "" ? null : (
-                <tr>
-                  <td width="120" align="right" />
-                  <td width="auto" align="left">
-                    <Link to="/settings/github">
-                      {i18next.t("setting:Modify GithubAccount")}
-                    </Link>
-                  </td>
-                </tr>
-              )}
+              {account?.githubAccount !== "" && Conf.GithubClientId !== ""
+                ? this.renderAccountOptions("github")
+                : null}
               {Conf.WechatClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
@@ -720,19 +728,22 @@ class SettingsBox extends React.Component {
                   )}
                 </tr>
               ) : null}
-              {account?.qqVerifiedTime.length !== 0 ? (
+              {account?.WechatVerifiedTime.length !== 0 ? (
                 <tr>
                   <td width="120" align="right">
-                    {i18next.t("setting:Modify WeChat")}
+                    {i18next.t("setting:WeChat Verification")}
                   </td>
                   <td width="auto" align="left">
                     <span className="green">
                       {i18next.t("setting:Verified on")}{" "}
-                      {Setting.getFormattedDate(account?.wechatVerifiedTime)}
+                      {Setting.getFormattedDate(account?.WechatVerifiedTime)}
                     </span>
                   </td>
                 </tr>
               ) : null}
+              {account?.weChatAccount !== "" && Conf.WechatClientId !== ""
+                ? this.renderAccountOptions("wechat")
+                : null}
               {Conf.QQClientId !== "" ? (
                 <tr>
                   <td width="120" align="right">
@@ -767,6 +778,9 @@ class SettingsBox extends React.Component {
                   </td>
                 </tr>
               ) : null}
+              {account?.qqAccount !== "" && Conf.QQClientId !== ""
+                ? this.renderAccountOptions("qq")
+                : null}
               <tr>
                 <td width="120" align="right">
                   {i18next.t("setting:Website")}

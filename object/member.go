@@ -721,3 +721,39 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 	}
 	return newMember
 }
+
+func (targetMember *Member) UnbindGoogleAccount() {
+	targetMember.GoogleAccount = ""
+	_, err := adapter.engine.Id(targetMember.Id).Cols("google_account").Update(targetMember)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (targetMember *Member) UnbindGithubAccount() {
+	targetMember.GithubAccount = ""
+	_, err := adapter.engine.Id(targetMember.Id).Cols("github_account").Update(targetMember)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (targetMember *Member) UnbindWechatAccount() {
+	targetMember.WechatAccount = ""
+	targetMember.WechatOpenId = ""
+	targetMember.WechatVerifiedTime = ""
+	_, err := adapter.engine.Id(targetMember.Id).Cols("wechat_account, wechat_open_id, wechat_verified_time").Update(targetMember)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (targetMember *Member) UnbindQQAccount() {
+	targetMember.QQAccount = ""
+	targetMember.QQOpenId = ""
+	targetMember.QQVerifiedTime = ""
+	_, err := adapter.engine.Id(targetMember.Id).Cols("qq_account, qq_open_id, qq_verified_time").Update(targetMember)
+	if err != nil {
+		panic(err)
+	}
+}

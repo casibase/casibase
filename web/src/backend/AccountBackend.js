@@ -68,3 +68,10 @@ export function resetUsername(newUsername) {
     }
   ).then((res) => res.json());
 }
+
+export function unbindAccount(type) {
+  return fetch(`${Setting.ServerUrl}/api/unbind?type=${type}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
+}

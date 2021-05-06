@@ -114,6 +114,7 @@ func initAPI() {
 	beego.Router("/api/auth/qq", &controllers.APIController{}, "GET:AuthQQ")
 	beego.Router("/api/auth/wechat", &controllers.APIController{}, "GET:AuthWeChat")
 	beego.Router("/api/reset-password", &controllers.APIController{}, "POST:ResetPassword")
+	beego.Router("/api/unbind", &controllers.APIController{}, "GET:UnbindAccount")
 
 	beego.Router("/api/add-favorites", &controllers.APIController{}, "POST:AddFavorites")
 	beego.Router("/api/get-favorites", &controllers.APIController{}, "GET:GetFavorites")
