@@ -550,7 +550,9 @@
     "save": "save",
     "Set username failed": "Set user name failed",
     "Set username success": "Set user name success",
-    "Username existed or email existed": "User name or email existed"
+    "Username existed or email existed": "User name or email existed",
+    "Unbind Account": "Unbind Account",
+    "WeChat Verification": "WeChat Verification"
   },
   "notification": {
     "Total reminders received": "Total reminders received",
