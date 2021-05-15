@@ -20,11 +20,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/dchest/captcha"
 
 	"github.com/casbin/casnode/util"
@@ -257,21 +255,5 @@ func UpdateOnlineMemberNum() {
 	onlineMemberNum = GetMemberOnlineNum()
 	if onlineMemberNum > highestOnlineNum {
 		UpdateHighestOnlineNum(onlineMemberNum)
-	}
-}
-
-func GetProxyHttpClient() http.Client {
-	proxyUrlStr := beego.AppConfig.String("httpproxy")
-	if len(proxyUrlStr) == 0 {
-		return http.Client{}
-	}
-	proxyUrl, err := url.Parse(proxyUrlStr)
-	if err != nil {
-		panic(err)
-	}
-	return http.Client{
-		Transport: &http.Transport{
-			Proxy: http.ProxyURL(proxyUrl),
-		},
 	}
 }
