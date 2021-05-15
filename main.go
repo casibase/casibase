@@ -30,6 +30,7 @@ import (
 func main() {
 	object.InitAdapter()
 	controllers.InitHttpClient()
+	object.HttpClient = controllers.HttpClient
 	service.InitOSS()
 	util.InitSegmenter()
 	object.InitForumBasicInfo()

@@ -24,10 +24,10 @@ import (
 	"github.com/casbin/casnode/service"
 )
 
-var httpClient http.Client
+var HttpClient http.Client
 
 func InitHttpClient() {
-	httpClient = object.GetProxyHttpClient()
+	HttpClient = object.GetProxyHttpClient()
 }
 
 func UploadAvatarToOSS(avatar, memberId string) string {
@@ -38,7 +38,7 @@ func UploadAvatarToOSS(avatar, memberId string) string {
 		avatar = "https://www.gravatar.com/avatar/" + memberMd5 + "?d=retro"
 	}
 
-	response, err := httpClient.Get(avatar)
+	response, err := HttpClient.Get(avatar)
 	if err != nil {
 		panic(err)
 	}

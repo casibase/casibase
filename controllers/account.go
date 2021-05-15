@@ -519,14 +519,14 @@ func (c *APIController) AuthGoogle() {
 	googleOauthConfig.RedirectURL = RedirectURL
 
 	// https://github.com/golang/oauth2/issues/123#issuecomment-103715338
-	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, httpClient)
+	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, HttpClient)
 	token, err := googleOauthConfig.Exchange(ctx, code)
 	if err != nil {
 		res.IsAuthenticated = false
 		panic(err)
 	}
 
-	response, err := httpClient.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
+	response, err := HttpClient.Get("https://www.googleapis.com/oauth2/v2/userinfo?alt=json&access_token=" + token.AccessToken)
 	defer response.Body.Close()
 	contents, err := ioutil.ReadAll(response.Body)
 	var tempUser userInfoFromGoogle
@@ -637,7 +637,7 @@ func (c *APIController) AuthGithub() {
 	githubOauthConfig.RedirectURL = RedirectURL
 
 	// https://github.com/golang/oauth2/issues/123#issuecomment-103715338
-	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, httpClient)
+	ctx := context.WithValue(oauth2.NoContext, oauth2.HTTPClient, HttpClient)
 	token, err := githubOauthConfig.Exchange(ctx, code)
 	if err != nil {
 		res.IsAuthenticated = false
@@ -658,7 +658,7 @@ func (c *APIController) AuthGithub() {
 	go func() {
 		req, _ := http.NewRequest("GET", "https://api.github.com/user/emails", nil)
 		req.Header.Set("Authorization", "token "+token.AccessToken)
-		response, err := httpClient.Do(req)
+		response, err := HttpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
@@ -681,7 +681,7 @@ func (c *APIController) AuthGithub() {
 	go func() {
 		req, _ := http.NewRequest("GET", "https://api.github.com/user", nil)
 		req.Header.Set("Authorization", "token "+token.AccessToken)
-		response2, err := httpClient.Do(req)
+		response2, err := HttpClient.Do(req)
 		if err != nil {
 			panic(err)
 		}
@@ -791,7 +791,7 @@ func (c *APIController) AuthQQ() {
 	params.Add("redirect_uri", redirectURL)
 	getAccessKeyUrl := fmt.Sprintf("%s?%s", "https://graph.qq.com/oauth2.0/token", params.Encode())
 
-	tokenResponse, err := httpClient.Get(getAccessKeyUrl)
+	tokenResponse, err := HttpClient.Get(getAccessKeyUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -804,7 +804,7 @@ func (c *APIController) AuthQQ() {
 
 	getOpenIdUrl := fmt.Sprintf("https://graph.qq.com/oauth2.0/me?access_token=%s", token)
 
-	openIdResponse, err := httpClient.Get(getOpenIdUrl)
+	openIdResponse, err := HttpClient.Get(getOpenIdUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -816,7 +816,7 @@ func (c *APIController) AuthQQ() {
 	openId := openIdRegRes[0][1]
 
 	getUserInfoUrl := fmt.Sprintf("https://graph.qq.com/user/get_user_info?access_token=%s&oauth_consumer_key=%s&openid=%s", token, QQClientID, openId)
-	getUserInfoResponse, err := httpClient.Get(getUserInfoUrl)
+	getUserInfoResponse, err := HttpClient.Get(getUserInfoUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -915,7 +915,7 @@ func (c *APIController) AuthWeChat() {
 
 	getAccessKeyUrl := fmt.Sprintf("%s?%s", "https://api.weixin.qq.com/sns/oauth2/access_token", params.Encode())
 
-	tokenResponse, err := httpClient.Get(getAccessKeyUrl)
+	tokenResponse, err := HttpClient.Get(getAccessKeyUrl)
 	if err != nil {
 		panic(err)
 	}
@@ -933,7 +933,7 @@ func (c *APIController) AuthWeChat() {
 	openid := accessTokenResp.Openid
 
 	getUserInfoUrl := fmt.Sprintf("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s", token, openid)
-	getUserInfoResponse, err := httpClient.Get(getUserInfoUrl)
+	getUserInfoResponse, err := HttpClient.Get(getUserInfoUrl)
 	if err != nil {
 		panic(err)
 	}

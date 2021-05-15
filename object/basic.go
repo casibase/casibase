@@ -35,13 +35,12 @@ type BasicInfo struct {
 
 var fileDate, version string
 var onlineMemberNum, highestOnlineNum int
-var httpClient http.Client
+var HttpClient http.Client
 
 func InitForumBasicInfo() {
 	GetForumVersion()
 	GetHighestOnlineNum()
 	UpdateOnlineMemberNum()
-	httpClient = GetProxyHttpClient()
 	if AutoSyncPeriodSecond >= 30 {
 		fmt.Println("Auto sync from google group enabled.")
 		go AutoSyncGoogleGroup()
