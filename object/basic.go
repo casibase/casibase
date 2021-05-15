@@ -35,7 +35,7 @@ type BasicInfo struct {
 
 var fileDate, version string
 var onlineMemberNum, highestOnlineNum int
-var HttpClient http.Client
+var HttpClient *http.Client
 
 func InitForumBasicInfo() {
 	GetForumVersion()

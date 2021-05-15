@@ -41,14 +41,14 @@ func isAddressOpen(address string) bool {
 	return false
 }
 
-func GetProxyHttpClient() http.Client {
+func GetProxyHttpClient() *http.Client {
 	httpProxy := beego.AppConfig.String("httpProxy")
 	if len(httpProxy) == 0 {
-		return http.Client{}
+		return &http.Client{}
 	}
 
 	if !isAddressOpen(httpProxy) {
-		return http.Client{}
+		return &http.Client{}
 	}
 
 	// https://stackoverflow.com/questions/33585587/creating-a-go-socks5-client
@@ -58,7 +58,7 @@ func GetProxyHttpClient() http.Client {
 	}
 
 	tr := &http.Transport{Dial: dialer.Dial}
-	return http.Client{
+	return &http.Client{
 		Transport: tr,
 	}
 }

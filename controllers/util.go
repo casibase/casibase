@@ -24,7 +24,7 @@ import (
 	"github.com/casbin/casnode/service"
 )
 
-var HttpClient http.Client
+var HttpClient *http.Client
 
 func InitHttpClient() {
 	HttpClient = object.GetProxyHttpClient()

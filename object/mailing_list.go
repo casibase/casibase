@@ -35,9 +35,9 @@ func (n Node) SyncFromGoogleGroup() {
 	}
 
 	group := crawler.NewGoogleGroup(n.MailingList, n.GoogleGroupCookie)
-	conversations := group.GetConversations(HttpClient)
+	conversations := group.GetConversations(*HttpClient)
 	for _, conv := range conversations {
-		messages := conv.GetAllMessages(HttpClient)
+		messages := conv.GetAllMessages(*HttpClient)
 		var newTopic Topic
 		AuthorMember := AddMemberByNameAndEmailIfNotExist(messages[0].Author, conv.AuthorNameToEmail[messages[0].Author])
 		if AuthorMember == nil {
