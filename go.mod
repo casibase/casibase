@@ -24,7 +24,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1 // indirect
 	github.com/qor/oss v0.0.0-20191031055114-aef9ba66bf76
 	github.com/satori/go.uuid v1.2.0 // indirect
-	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d // indirect
+	golang.org/x/net v0.0.0-20210220033124-5f55cee0dc0d
 	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
