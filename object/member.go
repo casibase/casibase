@@ -16,8 +16,12 @@ package object
 
 import (
 	"bytes"
+	"crypto/md5"
+	"fmt"
+	"io/ioutil"
 	"strings"
 
+	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 )
 
@@ -711,6 +715,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 			Id: username,
 			No: GetMemberNum() + 1,
 			CreatedTime: util.GetCurrentTime(),
+			Avatar: UploadFromGravatar(username, email),
 			Email: email,
 			EmailVerifiedTime: util.GetCurrentTime(),
 			ScoreCount: 200,
@@ -720,6 +725,17 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 		AddMember(newMember)
 	}
 	return newMember
+}
+
+func UploadFromGravatar(username, email string) string {
+	requestUrl := fmt.Sprintf("https://www.gravatar.com/avatar/%x", md5.Sum([]byte(email)))
+	resp, err := HttpClient.Get(requestUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	avatarByte, _ := ioutil.ReadAll(resp.Body)
+	return service.UploadAvatarToOSS(avatarByte, username)
 }
 
 func (targetMember *Member) UnbindGoogleAccount() {
