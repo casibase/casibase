@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
@@ -240,7 +239,20 @@ func (c *APIController) DeleteMember() {
 	c.Data["json"] = object.DeleteMember(id)
 	c.ServeJSON()
 }
-
+func (c *APIController) ResetUserPhone() {
+	var resp Response
+	memberId := c.GetSessionUser()
+	newPhone := c.Input().Get("newPhone")
+	msg := object.ResetUserPhone(memberId, newPhone)
+	if msg == "" {
+		resp = Response{Status: "ok", Msg: "Modify Success"}
+		c.Data["json"] = resp
+	} else {
+		resp = Response{Status: "error", Msg: msg}
+	}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
 func (c *APIController) ResetUsername() {
 	var resp Response
 	memberId := c.GetSessionUser()

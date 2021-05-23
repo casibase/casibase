@@ -214,6 +214,27 @@ class SettingsBox extends React.Component {
     });
   }
 
+  //Change phone number
+  submitNewPhone() {
+    let newPhone = document.getElementById("new-phone").value;
+    AccountBackend.resetPhone(newPhone).then((res) => {
+      if (res.status === "ok") {
+        alert(i18next.t("setting:Phone modified success"));
+        window.location.reload();
+      } else {
+        alert(res.msg);
+      }
+    });
+  }
+  //Determine whether it is the format of the phone number and
+  isTel(s) {
+    let reg = /^0?1[3|4|5|6|7|8][0-9]\d{8}$/;
+    if (s.length != 11 || !reg.test(s)) {
+      document.getElementById("new-phone-button").disabled = true;
+      return;
+    }
+    document.getElementById("new-phone-button").disabled = false;
+  }
   renderSettingList(item) {
     return (
       <Link
@@ -585,19 +606,28 @@ class SettingsBox extends React.Component {
                 <td width="120" align="right">
                   {i18next.t("setting:Phone")}
                 </td>
-                {account?.phone.length === 0 ? (
-                  <td width="auto" align="left">
-                    <span className="negative">
-                      {i18next.t("setting:Phone not verified")}
-                    </span>
-                  </td>
-                ) : (
-                  <td width="auto" align="left">
-                    <code>
-                      {account?.areaCode} {account?.phone}
-                    </code>
-                  </td>
-                )}
+                <td width="200" align="left">
+                  <input
+                    type="text"
+                    className="sl"
+                    name="website"
+                    defaultValue={account?.phone}
+                    autoComplete="off"
+                    id="new-phone"
+                    onChange={(event) => this.isTel(event.target.value)}
+                  />
+                </td>
+                <td width="auto" align="left">
+                  <input
+                    type="submit"
+                    id="new-phone-button"
+                    className="super normal button"
+                    value={i18next.t("setting:Edit Phone")}
+                    onClick={() => {
+                      this.submitNewPhone();
+                    }}
+                  />
+                </td>
               </tr>
               {account?.phoneVerifiedTime.length !== 0 ? (
                 <tr>

@@ -16,7 +16,6 @@ package routers
 
 import (
 	"github.com/astaxie/beego"
-
 	"github.com/casbin/casnode/controllers"
 )
 
@@ -89,6 +88,7 @@ func initAPI() {
 	beego.Router("/api/update-member-email-reminder", &controllers.APIController{}, "POST:UpdateMemberEmailReminder")
 	beego.Router("/api/get-ranking-rich", &controllers.APIController{}, "GET:GetRankingRich")
 	beego.Router("/api/reset-member-username", &controllers.APIController{}, "GET:ResetUsername")
+	beego.Router("/api/reset-member-phone", &controllers.APIController{}, "Get:ResetUserPhone")
 
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
