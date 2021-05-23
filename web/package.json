@@ -12,6 +12,7 @@
     "browser-image-size": "^1.1.0",
     "codemirror": "^5.54.0",
     "i18next": "^19.6.0",
+    "identicon.js": "^2.3.3",
     "inline-attachment": "^2.0.3",
     "jquery": "^3.5.1",
     "js-md5": "^0.7.3",
