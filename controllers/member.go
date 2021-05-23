@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
