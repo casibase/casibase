@@ -24,6 +24,7 @@ import { Link } from "react-router-dom";
 import * as i18n from "./i18n";
 import i18next from "i18next";
 import Zmage from "react-zmage";
+import Identicon from "identicon.js";
 
 const pangu = require("pangu");
 
@@ -126,9 +127,8 @@ export function getUserAvatar(username, isLarge = false) {
     return null;
   }
 
-  let gravatarStr = md5(username);
-  return `https://www.gravatar.com/avatar/${gravatarStr}?d=retro`;
-  //return getStatic(`/static@18114c607de851939b077a090946dc0623e4989c/gravatar/${username}${isLarge ? "" : "_48x48"}.png`);
+  let identicon = new Identicon(md5(username), 420);
+  return "data:image/png;base64," + identicon;
 }
 
 export function getForumName() {
