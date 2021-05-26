@@ -13,6 +13,7 @@
 
 .CodeMirror {
   height: auto !important;
+  cursor: text;
 }
 
 .topic-content .CodeMirror-scroll {
