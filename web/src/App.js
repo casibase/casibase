@@ -55,6 +55,7 @@ import EditBox from "./main/EditBox";
 import ForgotBox from "./main/ForgotBox";
 import FilesBox from "./main/FilesBox";
 import RankingRichBox from "./main/RankingRichBox";
+import NewMember from "./main/NewMember"
 import AdminHomepage from "./admin/AdminHomepage";
 import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
@@ -434,6 +435,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminMember account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/member/new">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <NewMember/>
           </div>
         </Route>
         <Route exact path="/admin/member/edit/:memberId">

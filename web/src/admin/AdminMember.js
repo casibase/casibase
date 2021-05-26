@@ -912,6 +912,10 @@ class AdminMember extends React.Component {
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}
           {i18next.t("member:Member management")}
           <div className="fr f12">
+            <Link to={"/admin/member/new"}>
+              {i18next.t("member:Add new member")}
+            </Link>
+            &nbsp;&nbsp;
             <span className="snow">
               {i18next.t("member:Total members")} &nbsp;
             </span>

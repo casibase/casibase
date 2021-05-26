@@ -225,12 +225,28 @@ func (c *APIController) GetMemberLanguage() {
 
 func (c *APIController) AddMember() {
 	var member object.Member
+	var resp Response
+	if !object.CheckModIdentity(c.GetSessionUser()) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
 	if err != nil {
 		panic(err)
 	}
+	member.No = object.GetMemberNum() + 1
+	member.Avatar = UploadAvatarToOSS("", member.Id)
+	if object.GetMember(member.Id) == nil {
+		if object.AddMember(&member) {
+			resp = Response{Status: "ok", Msg: "success"}
+		}
+	} else {
+		resp = Response{Status: "error", Msg: "Add new member error"}
+	}
 
-	c.Data["json"] = object.AddMember(&member)
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
