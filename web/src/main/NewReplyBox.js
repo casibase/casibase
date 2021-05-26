@@ -207,6 +207,12 @@ class NewReplyBox extends React.Component {
       !this.state.form.editorType ||
       this.state.form.editorType === "markdown"
     ) {
+      const codeMirrorMinLines = 5;
+      let codeMirrorDefaultVal = "";
+      for (let i = 1; i < codeMirrorMinLines; i++) {
+        codeMirrorDefaultVal += "\n";
+      }
+
       return (
         <div
           style={{
@@ -221,14 +227,19 @@ class NewReplyBox extends React.Component {
           <div
             style={{
               height: "auto",
-              minHeight: "112px",
             }}
           >
             <CodeMirrorsEditor
+              ref={(replyEditor) => {
+                this.replyEditor = replyEditor;
+              }}
               style={{
                 height: "100%",
               }}
-              editorDidMount={(editor) => Tools.attachEditor(editor)}
+              editorDidMount={(editor) => {
+                Tools.attachEditor(editor);
+                editor.setValue(codeMirrorDefaultVal);
+              }}
               onPaste={() => Tools.uploadMdFile()}
               value={this.props.content}
               onFocus={() => this.dockBox(true)}
