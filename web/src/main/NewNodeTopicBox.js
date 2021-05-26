@@ -365,12 +365,6 @@ class NewNodeTopicBox extends React.Component {
   renderLargeSize() {
     const title = document.getElementById("topic_title");
 
-    const codeMirrorMinLines = 20;
-    let codeMirrorDefaultVal = "";
-    for (let i = 1; i < codeMirrorMinLines; i++) {
-      codeMirrorDefaultVal += "\n";
-    }
-
     if (title !== null) {
       let contentWidth = title.clientWidth;
       if (this.state.width === "") {
@@ -413,21 +407,16 @@ class NewNodeTopicBox extends React.Component {
                         overflow: "hidden",
                         overflowWrap: "break-word",
                         resize: "none",
-                        height: "172",
+                        height: "auto",
                       }}
                       className="mle"
                       id="topic_content"
                     >
-                      <div
-                        style={{
-                          height: "auto",
-                        }}
-                      >
+                      <div className={`topic-content`}>
                         <CodeMirror
-                          editorDidMount={(editor) => {
-                            Tools.attachEditor(editor);
-                            editor.setValue(codeMirrorDefaultVal);
-                          }}
+                          editorDidMount={(editor) =>
+                            Tools.attachEditor(editor)
+                          }
                           onPaste={() => Tools.uploadMdFile()}
                           value={this.state.form.body}
                           onDrop={() => Tools.uploadMdFile()}

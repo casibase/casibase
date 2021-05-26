@@ -11,12 +11,14 @@
 /* See the License for the specific language governing permissions and      */
 /* limitations under the License.                                           */
 
-.react-codemirror2 {
-  height: 100%;
-  width: 100%;
+.CodeMirror {
+  height: auto !important;
 }
 
-.CodeMirror {
-  height: 100% !important;
-  width: 100%;
+.topic-content .CodeMirror-scroll {
+  min-height: 300px !important;
+}
+
+.reply .CodeMirror-scroll {
+  min-height: 112px !important;
 }
