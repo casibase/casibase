@@ -90,6 +90,9 @@ func initAPI() {
 	beego.Router("/api/get-ranking-rich", &controllers.APIController{}, "GET:GetRankingRich")
 	beego.Router("/api/reset-member-username", &controllers.APIController{}, "GET:ResetUsername")
 
+	beego.Router("/api/update-poster", &controllers.APIController{}, "POST:UpdatePoster")//Update poster api just for admin.
+	beego.Router("/api/read-poster", &controllers.APIController{}, "GET:ReadPoster")
+
 	beego.Router("/api/get-nodes", &controllers.APIController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.APIController{}, "GET:GetNode")
 	beego.Router("/api/update-node", &controllers.APIController{}, "POST:UpdateNode") // Update node api just for admin.

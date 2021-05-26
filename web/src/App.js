@@ -60,6 +60,7 @@ import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
 import AdminMember from "./admin/AdminMember";
 import AdminPlane from "./admin/AdminPlane";
+import AdminPoster from "./admin/AdminPoster";
 import AdminTopic from "./admin/AdminTopic";
 import AdminSensitive from "./admin/AdminSensitive";
 import i18next from "i18next";
@@ -422,6 +423,12 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminTab account={this.state.account} />
           </div>
+        </Route>
+        <Route exact path="/admin/poster">
+              <div id={pcBrowser ? "Main" : ""}>
+                  {pcBrowser ? <div className="sep20" /> : null}
+                  <AdminPoster/>
+              </div>
         </Route>
         <Route exact path="/admin/member">
           <div id={pcBrowser ? "Main" : ""}>
