@@ -71,6 +71,7 @@
   },
   "bar": {
     "Nodes": "节点收藏",
+    "Poster": "广告",
     "Topics": "主题收藏",
     "Watch": "特别关注",
     "Compose": "创作新主题",
@@ -489,6 +490,14 @@
     "Basic Info": "基本信息",
     "Personal Info": "个人信息"
   },
+  "poster": {
+    "Poster management": "广告管理",
+    "Advertiser": "广告商",
+    "Link": "链接",
+    "Picture link": "图片链接",
+    "Save": "保存",
+    "Update poster information success": "更新广告信息成功"
+  },
   "sensitive": {
     "sensitive management": "敏感词管理",
     "new sensitive": "增加敏感词"
@@ -649,6 +658,7 @@
     "Node management": "节点管理",
     "Topic management": "帖子管理",
     "Member management": "用户管理",
+    "Poster management": "广告管理",
     "Tab management": "类别管理",
     "Plane management": "位面管理",
     "Sensitive management": "敏感词管理",

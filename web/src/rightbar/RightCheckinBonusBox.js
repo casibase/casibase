@@ -15,6 +15,7 @@
 import React from "react";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import * as Setting from "../Setting";
+import * as PosterBackend from "../backend/PosterBackend"
 import { Link } from "react-router-dom";
 import "./rightFavourite.css";
 import i18next from "i18next";
@@ -25,11 +26,18 @@ class RightCheckinBonusBox extends React.Component {
     this.state = {
       classes: props,
       info: null,
+      poster: {
+        "name": "",
+        "advertiser": "",
+        "link": "",
+        "picture_link": ""
+      },
     };
   }
 
   componentDidMount() {
     this.getCheckinBonusStatus();
+    this.readposter()
   }
 
   getCheckinBonusStatus() {
@@ -38,6 +46,19 @@ class RightCheckinBonusBox extends React.Component {
         info: res.data,
       });
     });
+  }
+
+  readposter() {
+    PosterBackend.readposter("r_box_poster").then(
+        (res) => {
+          let poster = res
+          if (poster){
+            this.setState({
+              poster: poster
+            })
+          }
+        }
+    );
   }
 
   render() {
@@ -59,6 +80,19 @@ class RightCheckinBonusBox extends React.Component {
             <Link to="/mission/daily">
               {i18next.t("bar:Receive today's checkin bonus")}
             </Link>
+          </div>
+        </div>
+        {Setting.PcBrowser ? <div className="sep20" /> : null}
+        <div className="box">
+          <div className="inner" align="center">
+            <a href={this.state.poster['link']} target="_blank">
+              <img src={this.state.poster['picture_link']} border="0" width="250" height="250" alt={this.state.poster['advertiser']} style={{vertical: 'bottom'}}>
+              </img>
+              </a>
+            </div>
+          <div className="sidebar_compliance flex-one-row" style={{display:'flex',justifyContent:'space-between'}}>
+            <div><a href={this.state.poster['link']} target="_blank" >{this.state.poster['advertiser']}</a></div>
+            <a href="/" target="_blank" >{i18next.t("bar:Poster")}</a>
           </div>
         </div>
       </span>

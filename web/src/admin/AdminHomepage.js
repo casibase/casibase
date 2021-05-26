@@ -45,6 +45,11 @@ class AdminHomepage extends React.Component {
           image: Setting.getStatic("/static/img/settings.png"),
         },
         {
+          label: i18next.t("admin:Poster management"),
+          value: "poster",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
           label: i18next.t("admin:Member management"),
           value: "member",
           image: Setting.getStatic("/static/img/settings.png"),

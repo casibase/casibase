@@ -73,6 +73,7 @@
     "Nodes": "Nodes",
     "Topics": "Topics",
     "Watch": "Watch",
+    "Poster": "Poster",
     "Compose": "Compose",
     "unread": "unread",
     "For Existing Member": "For Existing Member:",
@@ -424,6 +425,14 @@
     "Delete": "Delete",
     "Edit": "Edit"
   },
+  "poster": {
+    "Poster management": "Poster management",
+    "Advertiser":"Advertiser",
+    "Link": "Link",
+    "Picture link": "Picture link",
+    "Save": "Save",
+    "Update poster information success": "Update poster information success"
+  },
   "member": {
     "Watch": "Watch",
     "member": "member",
@@ -644,6 +653,7 @@
     "Backstage management": "Backstage management",
     "Node management": "Node management",
     "Topic management": "Topic management",
+    "Poster management": "Poster management",
     "Member management": "Member management",
     "Sensitive management": "Sensitive management",
     "Tab management": "Tab management",
