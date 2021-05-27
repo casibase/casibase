@@ -218,16 +218,8 @@ class NewReplyBox extends React.Component {
           className={`mll ${this.props.nodeId}`}
           id="reply_content"
         >
-          <div
-            style={{
-              height: "auto",
-              minHeight: "112px",
-            }}
-          >
+          <div className={`reply`}>
             <CodeMirrorsEditor
-              style={{
-                height: "100%",
-              }}
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadMdFile()}
               value={this.props.content}

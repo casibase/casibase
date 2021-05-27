@@ -407,17 +407,12 @@ class NewNodeTopicBox extends React.Component {
                         overflow: "hidden",
                         overflowWrap: "break-word",
                         resize: "none",
-                        height: "172",
+                        height: "auto",
                       }}
                       className="mle"
                       id="topic_content"
                     >
-                      <div
-                        style={{
-                          height: "auto",
-                          minHeight: 310,
-                        }}
-                      >
+                      <div className={`topic-content`}>
                         <CodeMirror
                           editorDidMount={(editor) =>
                             Tools.attachEditor(editor)
