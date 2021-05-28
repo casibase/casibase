@@ -289,12 +289,7 @@ class NewBox extends React.Component {
                   id="editor"
                   name="content"
                 />
-                <div
-                  style={{
-                    height: "auto",
-                    minHeight: 290,
-                  }}
-                >
+                <div className={`cm-long-content`}>
                   <CodeMirror
                     editorDidMount={(editor) => Tools.attachEditor(editor)}
                     onPaste={() => Tools.uploadMdFile()}

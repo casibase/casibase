@@ -239,23 +239,14 @@ class NewNodeTopicBox extends React.Component {
                 overflow: "hidden",
                 overflowWrap: "break-word",
                 resize: "none",
-                height: "112px",
+                height: "auto",
               }}
               name="content"
               className={`mll ${this.state.nodeInfo.id}`}
               id="topic_content"
             >
-              <div
-                style={{
-                  minHeight: "100",
-                  height: "auto",
-                }}
-              >
+              <div className={`cm-short-content`}>
                 <CodeMirror
-                  style={{
-                    minHeight: 100,
-                    height: "auto",
-                  }}
                   className={`${this.state.nodeInfo.id}`}
                   editorDidMount={(editor) => Tools.attachEditor(editor)}
                   onPaste={() => Tools.uploadMdFile()}
@@ -412,7 +403,7 @@ class NewNodeTopicBox extends React.Component {
                       className="mle"
                       id="topic_content"
                     >
-                      <div className={`topic-content`}>
+                      <div className={`cm-long-content`}>
                         <CodeMirror
                           editorDidMount={(editor) =>
                             Tools.attachEditor(editor)
