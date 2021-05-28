@@ -322,6 +322,8 @@ func GetMemberLanguage(id string) string {
 }
 
 func AddMember(member *Member) bool {
+	passwordHash, _ := util.HashPassword(member.Password)
+	member.Password = passwordHash
 	affected, err := adapter.engine.Insert(member)
 	if err != nil {
 		panic(err)
@@ -505,7 +507,7 @@ func CheckModIdentity(memberId string) bool {
 
 func UpdateMemberPassword(id, password string) bool {
 	member := new(Member)
-	member.Password = password
+	member.Password, _ = util.HashPassword(password)
 
 	affected, err := adapter.engine.Id(id).MustCols("password").Update(member)
 	if err != nil {
@@ -539,37 +541,34 @@ func MemberPasswordLogin(information, password string) string {
 
 	member := Member{
 		Email: information,
-		Password: password,
 	}
 	exist, err := adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
 	}
-	if exist && member.EmailVerifiedTime != "" {
+	if exist && util.CheckPasswordHash(password, member.Password) && member.EmailVerifiedTime != "" {
 		return member.Id
 	}
 
 	member = Member{
 		Phone: information,
-		Password: password,
 	}
 	exist, err = adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
 	}
-	if exist && member.PhoneVerifiedTime != "" {
+	if exist && util.CheckPasswordHash(password, member.Password) && member.PhoneVerifiedTime != "" {
 		return member.Id
 	}
 
 	member = Member{
 		Id: information,
-		Password: password,
 	}
 	exist, err = adapter.engine.Get(&member)
 	if err != nil {
 		panic(err)
 	}
-	if exist {
+	if exist && util.CheckPasswordHash(password, member.Password) {
 		return member.Id
 	}
 
