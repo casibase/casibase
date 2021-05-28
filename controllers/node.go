@@ -16,6 +16,8 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
@@ -85,24 +87,17 @@ func (c *APIController) AddNode() {
 		panic(err)
 	}
 
-	if node.Id == "" || node.Name == "" || node.TabId == "" || node.PlaneId == "" {
+	if node.Name == "" || node.TabId == "" || node.PlaneId == "" {
 		resp = Response{Status: "fail", Msg: "Some information is missing"}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
-
-	if object.HasNode(node.Id) {
-		resp = Response{Status: "fail", Msg: "Node ID existed"}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-
+	nodeNum := object.GetNodesNum() + 1
+	node.Id = fmt.Sprint(node.ParentNode, node.Name, strconv.Itoa(nodeNum))
 	node.CreatedTime = util.GetCurrentTime()
 	res := object.AddNode(&node)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
+	resp = Response{Status: "ok", Msg: node.Id, Data: res}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
