@@ -533,12 +533,12 @@ func GetMemberFileQuota(memberId string) int {
 // Information could be phone member, email or username.
 // If success, return username.
 func MemberPasswordLogin(information, password string) string {
-	if len(password) == 0 || strings.Index(password, " ") >= 0{
+	if len(password) == 0 || strings.Index(password, " ") >= 0 {
 		return ""
 	}
 
 	member := Member{
-		Email: information,
+		Email:    information,
 		Password: password,
 	}
 	exist, err := adapter.engine.Get(&member)
@@ -550,7 +550,7 @@ func MemberPasswordLogin(information, password string) string {
 	}
 
 	member = Member{
-		Phone: information,
+		Phone:    information,
 		Password: password,
 	}
 	exist, err = adapter.engine.Get(&member)
@@ -562,7 +562,7 @@ func MemberPasswordLogin(information, password string) string {
 	}
 
 	member = Member{
-		Id: information,
+		Id:       information,
 		Password: password,
 	}
 	exist, err = adapter.engine.Get(&member)
@@ -631,7 +631,7 @@ func GetMemberOnlineNum() int {
 }
 
 type UpdateListItem struct {
-	Table string
+	Table     string
 	Attribute string
 }
 
@@ -669,7 +669,7 @@ func ResetUsername(oldUsername string, newUsername string) string {
 		{"upload_file_record", "member_id"},
 	}
 	for _, value := range updateList {
-		_, err = adapter.engine.Query("update " + value.Table + " set " + value.Attribute + " = ? where " + value.Attribute + " = ?", newUsername, oldUsername)
+		_, err = adapter.engine.Query("update "+value.Table+" set "+value.Attribute+" = ? where "+value.Attribute+" = ?", newUsername, oldUsername)
 		if err != nil {
 			panic(err)
 		}
@@ -712,15 +712,15 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 	newMember := GetMemberByEmail(email)
 	if newMember == nil {
 		newMember = &Member{
-			Id: username,
-			No: GetMemberNum() + 1,
-			CreatedTime: util.GetCurrentTime(),
-			Avatar: UploadFromGravatar(username, email),
-			Email: email,
+			Id:                username,
+			No:                GetMemberNum() + 1,
+			CreatedTime:       util.GetCurrentTime(),
+			Avatar:            UploadFromGravatar(username, email),
+			Email:             email,
 			EmailVerifiedTime: util.GetCurrentTime(),
-			ScoreCount: 200,
-			FileQuota: DefaultUploadFileQuota,
-			RenameQuota: DefaultRenameQuota,
+			ScoreCount:        200,
+			FileQuota:         DefaultUploadFileQuota,
+			RenameQuota:       DefaultRenameQuota,
 		}
 		AddMember(newMember)
 	}
