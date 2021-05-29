@@ -24,6 +24,7 @@ import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { SketchPicker } from "react-color";
 import Zmage from "react-zmage";
+import "../codemirrorSize.css";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
 
@@ -926,18 +927,11 @@ class AdminNode extends React.Component {
                             overflow: "hidden",
                             overflowWrap: "break-word",
                             resize: "none",
-                            height: "172",
                           }}
                           className="mle"
                           id="node_description"
                         >
-                          <Resizable
-                            enable={false}
-                            defaultSize={{
-                              width: this.state.width,
-                              height: 180,
-                            }}
-                          >
+                          <div className={`cm-middle-unresizable-content`}>
                             <CodeMirror
                               editorDidMount={(editor) =>
                                 Tools.attachEditor(editor)
@@ -955,7 +949,7 @@ class AdminNode extends React.Component {
                               }}
                               onChange={(editor, data, value) => {}}
                             />
-                          </Resizable>
+                          </div>
                         </div>
                       </td>
                     </tr>
