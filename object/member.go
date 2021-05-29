@@ -728,7 +728,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 }
 
 func UploadFromGravatar(username, email string) string {
-	requestUrl := fmt.Sprintf("https://www.gravatar.com/avatar/%x", md5.Sum([]byte(email)))
+	requestUrl := fmt.Sprintf("https://www.gravatar.com/avatar/%x?d=retro", md5.Sum([]byte(email)))
 	resp, err := HttpClient.Get(requestUrl)
 	if err != nil {
 		panic(err)
