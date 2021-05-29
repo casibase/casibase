@@ -5,7 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/astaxie/beego/logs"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 	crawler "github.com/casbin/google-groups-crawler"
@@ -40,8 +39,7 @@ func (n Node) SyncFromGoogleGroup() {
 	for _, conv := range conversations {
 		messages := conv.GetAllMessages(*HttpClient, true)
 		if len(messages) < 1 {
-			logText := fmt.Sprintf("Google Groups Crawler: Getting messages from %s failed, please check your cookie. The node id is %s.", group.GroupName, n.Id)
-			logs.Info(logText)
+			fmt.Printf("Google Groups Crawler: Getting messages from Google Group: %s for node: %s failed, please check your cookie.\n", group.GroupName, n.Id)
 			break
 		}
 		var newTopic Topic
