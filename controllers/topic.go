@@ -33,7 +33,7 @@ type NewTopicForm struct {
 	EditorType string `json:"editorType"`
 }
 
-func (c *APIController) GetTopics() {
+func (c *ApiController) GetTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultHomePageNum
@@ -53,7 +53,7 @@ func (c *APIController) GetTopics() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsAdmin() {
+func (c *ApiController) GetTopicsAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 
@@ -89,7 +89,7 @@ func (c *APIController) GetTopicsAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopic() {
+func (c *ApiController) GetTopic() {
 	memberId := c.GetSessionUser()
 	idStr := c.Input().Get("id")
 
@@ -110,7 +110,7 @@ func (c *APIController) GetTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicAdmin() {
+func (c *ApiController) GetTopicAdmin() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -119,7 +119,7 @@ func (c *APIController) GetTopicAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateTopic() {
+func (c *ApiController) UpdateTopic() {
 	idStr := c.Input().Get("id")
 
 	var topic object.Topic
@@ -133,7 +133,7 @@ func (c *APIController) UpdateTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddTopic() {
+func (c *ApiController) AddTopic() {
 	if c.RequireLogin() {
 		return
 	}
@@ -216,7 +216,7 @@ func (c *APIController) AddTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadTopicPic() {
+func (c *ApiController) UploadTopicPic() {
 	if c.RequireLogin() {
 		return
 	}
@@ -238,7 +238,7 @@ func (c *APIController) UploadTopicPic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteTopic() {
+func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
@@ -255,12 +255,12 @@ func (c *APIController) DeleteTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsNum() {
+func (c *ApiController) GetTopicsNum() {
 	c.Data["json"] = object.GetTopicNum()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllCreatedTopics() {
+func (c *ApiController) GetAllCreatedTopics() {
 	author := c.Input().Get("id")
 	tab := c.Input().Get("tab")
 	limitStr := c.Input().Get("limit")
@@ -289,14 +289,14 @@ func (c *APIController) GetAllCreatedTopics() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetCreatedTopicsNum() {
+func (c *ApiController) GetCreatedTopicsNum() {
 	memberId := c.Input().Get("id")
 
 	c.Data["json"] = object.GetCreatedTopicsNum(memberId)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsByNode() {
+func (c *ApiController) GetTopicsByNode() {
 	nodeId := c.Input().Get("node-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -318,7 +318,7 @@ func (c *APIController) GetTopicsByNode() {
 }
 
 //together with node
-func (c *APIController) AddTopicHitCount() {
+func (c *ApiController) AddTopicHitCount() {
 	topicIdStr := c.Input().Get("id")
 
 	var resp Response
@@ -343,7 +343,7 @@ func (c *APIController) AddTopicHitCount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsByTab() {
+func (c *ApiController) GetTopicsByTab() {
 	tabId := c.Input().Get("tab-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -364,7 +364,7 @@ func (c *APIController) GetTopicsByTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddTopicBrowseCount() {
+func (c *ApiController) AddTopicBrowseCount() {
 	topicId := c.Input().Get("id")
 
 	var resp Response
@@ -386,7 +386,7 @@ func (c *APIController) AddTopicBrowseCount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetHotTopic() {
+func (c *ApiController) GetHotTopic() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.HotTopicNum
 
@@ -405,7 +405,7 @@ func (c *APIController) GetHotTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateTopicNode() {
+func (c *ApiController) UpdateTopicNode() {
 	if c.RequireLogin() {
 		return
 	}
@@ -439,7 +439,7 @@ func (c *APIController) UpdateTopicNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) EditContent() {
+func (c *ApiController) EditContent() {
 	if c.RequireLogin() {
 		return
 	}
@@ -499,7 +499,7 @@ func (c *APIController) EditContent() {
 }
 
 // TopTopic tops topic according to the topType in the url.
-func (c *APIController) TopTopic() {
+func (c *ApiController) TopTopic() {
 	if c.RequireLogin() {
 		return
 	}
@@ -544,7 +544,7 @@ func (c *APIController) TopTopic() {
 }
 
 // CancelTopTopic cancels top topic according to the topType in the url.
-func (c *APIController) CancelTopTopic() {
+func (c *ApiController) CancelTopTopic() {
 	if c.RequireLogin() {
 		return
 	}

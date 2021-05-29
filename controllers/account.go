@@ -73,7 +73,7 @@ type Response struct {
 // @Param   password     formData    string  true        "The password"
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signup [post]
-func (c *APIController) Signup() {
+func (c *ApiController) Signup() {
 	var resp Response
 
 	if c.GetSessionUser() != "" {
@@ -238,7 +238,7 @@ func (c *APIController) Signup() {
 // @Param   password     formData    string  true        "The password"
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signin [post]
-func (c *APIController) Signin() {
+func (c *ApiController) Signin() {
 	var resp Response
 
 	if c.GetSessionUser() != "" {
@@ -290,7 +290,7 @@ func (c *APIController) Signin() {
 // @Description sign out the current member
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signout [post]
-func (c *APIController) Signout() {
+func (c *ApiController) Signout() {
 	var resp Response
 
 	member := c.GetSessionUser()
@@ -304,7 +304,7 @@ func (c *APIController) Signout() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAccount() {
+func (c *ApiController) GetAccount() {
 	var resp Response
 
 	if c.GetSessionUser() == "" {
@@ -323,7 +323,7 @@ func (c *APIController) GetAccount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) ResetPassword() {
+func (c *ApiController) ResetPassword() {
 	step := c.Input().Get("step")
 
 	var resp Response
@@ -479,7 +479,7 @@ func (c *APIController) ResetPassword() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetSessionId() {
+func (c *ApiController) GetSessionId() {
 	c.Data["json"] = c.StartSession().SessionID()
 	c.ServeJSON()
 }
@@ -498,7 +498,7 @@ var googleOauthConfig = &oauth2.Config{
 }
 
 //Using addition to judge signup or link
-func (c *APIController) AuthGoogle() {
+func (c *ApiController) AuthGoogle() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 	addition := c.Input().Get("addition")
@@ -617,7 +617,7 @@ var githubOauthConfig = &oauth2.Config{
 	Endpoint:     githubEndpoint,
 }
 
-func (c *APIController) AuthGithub() {
+func (c *ApiController) AuthGithub() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 	addition := c.Input().Get("addition")
@@ -766,7 +766,7 @@ func (c *APIController) AuthGithub() {
 var QQClientID = beego.AppConfig.String("QQAPPID")
 var QQClientSecret = beego.AppConfig.String("QQAPPKey")
 
-func (c *APIController) AuthQQ() {
+func (c *ApiController) AuthQQ() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 	addition := c.Input().Get("addition")
@@ -890,7 +890,7 @@ func (c *APIController) AuthQQ() {
 var WeChatClientID = beego.AppConfig.String("WeChatAPPID")
 var WeChatClientSecret = beego.AppConfig.String("WeChatKey")
 
-func (c *APIController) AuthWeChat() {
+func (c *ApiController) AuthWeChat() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 	addition := c.Input().Get("addition")
@@ -1000,7 +1000,7 @@ func (c *APIController) AuthWeChat() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UnbindAccount() {
+func (c *ApiController) UnbindAccount() {
 	if c.RequireLogin() {
 		return
 	}

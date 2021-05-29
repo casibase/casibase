@@ -20,7 +20,7 @@ import (
 )
 
 // GetCaptcha gets captcha.
-func (c *APIController) GetCaptcha() {
+func (c *ApiController) GetCaptcha() {
 	var resp Response
 
 	id, captcha := object.GetCaptcha()
@@ -32,7 +32,7 @@ func (c *APIController) GetCaptcha() {
 }
 
 // GetValidateCode gets validate code.
-func (c *APIController) GetValidateCode() {
+func (c *ApiController) GetValidateCode() {
 	information := c.Input().Get("information")
 	verifyType := c.Input().Get("type") // verify type: 1: phone, 2: email.
 

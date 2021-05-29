@@ -20,7 +20,7 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-func (c *APIController) UpdatePoster() {
+func (c *ApiController) UpdatePoster() {
 	var resp Response
 	if !object.CheckModIdentity(c.GetSessionUser()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
@@ -39,7 +39,7 @@ func (c *APIController) UpdatePoster() {
 	c.ServeJSON()
 }
 
-func (c *APIController) ReadPoster() {
+func (c *ApiController) ReadPoster() {
 	n := c.Input().Get("id")
 	res := object.GetPoster(n)
 

@@ -34,7 +34,7 @@ type NewUploadFile struct {
 	Size     int    `json:"size"`
 }
 
-func (c *APIController) GetFiles() {
+func (c *ApiController) GetFiles() {
 	if c.RequireLogin() {
 		return
 	}
@@ -63,7 +63,7 @@ func (c *APIController) GetFiles() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFileNum() {
+func (c *ApiController) GetFileNum() {
 	memberId := c.GetSessionUser()
 
 	num := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
@@ -73,7 +73,7 @@ func (c *APIController) GetFileNum() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddFileRecord() {
+func (c *ApiController) AddFileRecord() {
 	if c.RequireLogin() {
 		return
 	}
@@ -119,7 +119,7 @@ func (c *APIController) AddFileRecord() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteFile() {
+func (c *ApiController) DeleteFile() {
 	idStr := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
@@ -146,7 +146,7 @@ func (c *APIController) DeleteFile() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFile() {
+func (c *ApiController) GetFile() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -163,7 +163,7 @@ func (c *APIController) GetFile() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateFileDescribe() {
+func (c *ApiController) UpdateFileDescribe() {
 	idStr := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
@@ -190,7 +190,7 @@ func (c *APIController) UpdateFileDescribe() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadFile() {
+func (c *ApiController) UploadFile() {
 	if c.RequireLogin() {
 		return
 	}
@@ -207,7 +207,7 @@ func (c *APIController) UploadFile() {
 	c.ServeJSON()
 }
 
-func (c *APIController) ModeratorUpload() {
+func (c *ApiController) ModeratorUpload() {
 	if c.RequireLogin() {
 		return
 	}
@@ -229,7 +229,7 @@ func (c *APIController) ModeratorUpload() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadAvatar() {
+func (c *ApiController) UploadAvatar() {
 	if c.RequireLogin() {
 		return
 	}

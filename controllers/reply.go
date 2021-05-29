@@ -27,7 +27,7 @@ type NewReplyForm struct {
 	TopicId int    `json:"topicId"`
 }
 
-func (c *APIController) GetReplies() {
+func (c *ApiController) GetReplies() {
 	memberId := c.GetSessionUser()
 	topicIdStr := c.Input().Get("topicId")
 	limitStr := c.Input().Get("limit")
@@ -60,14 +60,14 @@ func (c *APIController) GetReplies() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllRepliesOfTopic() {
+func (c *ApiController) GetAllRepliesOfTopic() {
 	topicId := util.ParseInt(c.Input().Get("topicId"))
 	replies := object.GetRepliesOfTopic(topicId)
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: len(replies)}
 	c.ServeJSON()
 }
 
-func (c *APIController) GetReply() {
+func (c *ApiController) GetReply() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -76,7 +76,7 @@ func (c *APIController) GetReply() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetReplyWithDetails() {
+func (c *ApiController) GetReplyWithDetails() {
 	memberId := c.GetSessionUser()
 	idStr := c.Input().Get("id")
 
@@ -86,7 +86,7 @@ func (c *APIController) GetReplyWithDetails() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateReply() {
+func (c *ApiController) UpdateReply() {
 	idStr := c.Input().Get("id")
 
 	var reply object.Reply
@@ -100,7 +100,7 @@ func (c *APIController) UpdateReply() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddReply() {
+func (c *ApiController) AddReply() {
 	if c.RequireLogin() {
 		return
 	}
@@ -161,7 +161,7 @@ func (c *APIController) AddReply() {
 	c.wrapResponse(affected)
 }
 
-func (c *APIController) DeleteReply() {
+func (c *ApiController) DeleteReply() {
 	idStr := c.Input().Get("id")
 
 	memberId := c.GetSessionUser()
@@ -189,7 +189,7 @@ func (c *APIController) DeleteReply() {
 	c.wrapResponse(affected)
 }
 
-func (c *APIController) GetLatestReplies() {
+func (c *ApiController) GetLatestReplies() {
 	id := c.Input().Get("id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -219,7 +219,7 @@ func (c *APIController) GetLatestReplies() {
 }
 
 // GetRepliesNum gets member's all replies num.
-func (c *APIController) GetMemberRepliesNum() {
+func (c *ApiController) GetMemberRepliesNum() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberRepliesNum(id)
