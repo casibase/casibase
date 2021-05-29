@@ -19,7 +19,7 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) ChangeExpiredDataStatus() {
+func (c *ApiController) ChangeExpiredDataStatus() {
 	expiredNodeDate := util.GetTimeMonth(-object.NodeHitRecordExpiredTime)
 	expiredTopicDate := util.GetTimeDay(-object.TopicHitRecordExpiredTime)
 
@@ -30,7 +30,7 @@ func (c *APIController) ChangeExpiredDataStatus() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateHotInfo() {
+func (c *ApiController) UpdateHotInfo() {
 	var updateNodeNum int
 	var updateTopicNum int
 	last := object.GetLastRecordId()

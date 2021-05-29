@@ -21,7 +21,7 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) AddFavorites() {
+func (c *ApiController) AddFavorites() {
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
@@ -79,7 +79,7 @@ func (c *APIController) AddFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteFavorites() {
+func (c *ApiController) DeleteFavorites() {
 	memberId := c.GetSessionUser()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
@@ -114,7 +114,7 @@ func (c *APIController) DeleteFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFavoritesStatus() {
+func (c *ApiController) GetFavoritesStatus() {
 	memberId := c.GetSessionUser()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
@@ -132,7 +132,7 @@ func (c *APIController) GetFavoritesStatus() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFavorites() {
+func (c *ApiController) GetFavorites() {
 	memberId := c.GetSessionUser()
 	favoritesTypeStr := c.Input().Get("type")
 	limitStr := c.Input().Get("limit")
@@ -176,7 +176,7 @@ func (c *APIController) GetFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAccountFavoriteNum() {
+func (c *ApiController) GetAccountFavoriteNum() {
 	memberId := c.GetSessionUser()
 
 	var res [4]int

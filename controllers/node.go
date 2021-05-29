@@ -21,12 +21,12 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) GetNodes() {
+func (c *ApiController) GetNodes() {
 	c.Data["json"] = object.GetNodes()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodesAdmin() {
+func (c *ApiController) GetNodesAdmin() {
 	res := []adminNodeInfo{}
 	nodes := object.GetNodes()
 	for _, v := range nodes {
@@ -42,14 +42,14 @@ func (c *APIController) GetNodesAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNode() {
+func (c *ApiController) GetNode() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetNode(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateNode() {
+func (c *ApiController) UpdateNode() {
 	id := c.Input().Get("id")
 
 	var resp Response
@@ -71,7 +71,7 @@ func (c *APIController) UpdateNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddNode() {
+func (c *ApiController) AddNode() {
 	var node object.Node
 	var resp Response
 
@@ -107,7 +107,7 @@ func (c *APIController) AddNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteNode() {
+func (c *ApiController) DeleteNode() {
 	id := c.Input().Get("id")
 
 	if !object.CheckModIdentity(c.GetSessionUser()) {
@@ -119,7 +119,7 @@ func (c *APIController) DeleteNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodesNum() {
+func (c *ApiController) GetNodesNum() {
 	var resp Response
 
 	num := object.GetNodesNum()
@@ -129,7 +129,7 @@ func (c *APIController) GetNodesNum() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodeInfo() {
+func (c *ApiController) GetNodeInfo() {
 	id := c.Input().Get("id")
 
 	var resp Response
@@ -141,7 +141,7 @@ func (c *APIController) GetNodeInfo() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodeFromTab() {
+func (c *ApiController) GetNodeFromTab() {
 	tab := c.Input().Get("tab")
 
 	var resp Response
@@ -152,7 +152,7 @@ func (c *APIController) GetNodeFromTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodeRelation() {
+func (c *ApiController) GetNodeRelation() {
 	id := c.Input().Get("id")
 
 	var resp Response
@@ -163,7 +163,7 @@ func (c *APIController) GetNodeRelation() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetLatestNode() {
+func (c *ApiController) GetLatestNode() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.LatestNodeNum
 
@@ -182,7 +182,7 @@ func (c *APIController) GetLatestNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetHotNode() {
+func (c *ApiController) GetHotNode() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.HotNodeNum
 
@@ -201,7 +201,7 @@ func (c *APIController) GetHotNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddNodeBrowseCount() {
+func (c *ApiController) AddNodeBrowseCount() {
 	nodeId := c.Input().Get("id")
 
 	var resp Response
@@ -223,7 +223,7 @@ func (c *APIController) AddNodeBrowseCount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddNodeModerators() {
+func (c *ApiController) AddNodeModerators() {
 	var moderators addNodeModerator
 	var resp Response
 
@@ -259,7 +259,7 @@ func (c *APIController) AddNodeModerators() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteNodeModerators() {
+func (c *ApiController) DeleteNodeModerators() {
 	var moderators deleteNodeModerator
 	var resp Response
 

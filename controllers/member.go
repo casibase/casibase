@@ -21,12 +21,12 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) GetMembers() {
+func (c *ApiController) GetMembers() {
 	c.Data["json"] = object.GetMembers()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMembersAdmin() {
+func (c *ApiController) GetMembersAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	un := c.Input().Get("un") // search: username
@@ -51,28 +51,28 @@ func (c *APIController) GetMembersAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberAdmin() {
+func (c *ApiController) GetMemberAdmin() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberAdmin(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMember() {
+func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMember(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberAvatar() {
+func (c *ApiController) GetMemberAvatar() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberAvatar(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberAvatar() {
+func (c *ApiController) UpdateMemberAvatar() {
 	memberId := c.GetSessionUser()
 	avatar := c.Input().Get("avatar")
 
@@ -80,7 +80,7 @@ func (c *APIController) UpdateMemberAvatar() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberEmailReminder() {
+func (c *ApiController) UpdateMemberEmailReminder() {
 	memberId := c.GetSessionUser()
 	status := c.Input().Get("status")
 
@@ -88,7 +88,7 @@ func (c *APIController) UpdateMemberEmailReminder() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMember() {
+func (c *ApiController) UpdateMember() {
 	id := c.Input().Get("id")
 
 	var member object.Member
@@ -114,7 +114,7 @@ func (c *APIController) UpdateMember() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberInfo() {
+func (c *ApiController) UpdateMemberInfo() {
 	id := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
@@ -144,7 +144,7 @@ func (c *APIController) UpdateMemberInfo() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberEditorType() {
+func (c *ApiController) GetMemberEditorType() {
 	memberId := c.GetSessionUser()
 
 	var resp Response
@@ -162,12 +162,12 @@ func (c *APIController) GetMemberEditorType() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetRankingRich() {
+func (c *ApiController) GetRankingRich() {
 	c.Data["json"] = object.GetRankingRich()
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberEditorType() {
+func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
 	memberId := c.GetSessionUser()
 
@@ -186,7 +186,7 @@ func (c *APIController) UpdateMemberEditorType() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberLanguage() {
+func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
 	memberId := c.GetSessionUser()
 
@@ -205,7 +205,7 @@ func (c *APIController) UpdateMemberLanguage() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberLanguage() {
+func (c *ApiController) GetMemberLanguage() {
 	memberId := c.GetSessionUser()
 
 	var resp Response
@@ -223,7 +223,7 @@ func (c *APIController) GetMemberLanguage() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddMember() {
+func (c *ApiController) AddMember() {
 	var member object.Member
 	var resp Response
 	if !object.CheckModIdentity(c.GetSessionUser()) {
@@ -250,14 +250,14 @@ func (c *APIController) AddMember() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteMember() {
+func (c *ApiController) DeleteMember() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteMember(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) ResetUsername() {
+func (c *ApiController) ResetUsername() {
 	var resp Response
 	memberId := c.GetSessionUser()
 	newUsername := c.Input().Get("new")

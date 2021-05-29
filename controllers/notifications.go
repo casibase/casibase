@@ -21,7 +21,7 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) AddNotification() {
+func (c *ApiController) AddNotification() {
 	var tempNotification newNotification
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempNotification)
 	if err != nil {
@@ -55,7 +55,7 @@ func (c *APIController) AddNotification() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNotifications() {
+func (c *ApiController) GetNotifications() {
 	memberId := c.GetSessionUser()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -81,7 +81,7 @@ func (c *APIController) GetNotifications() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteNotification() {
+func (c *ApiController) DeleteNotification() {
 	id := c.Input().Get("id")
 
 	var resp Response
@@ -92,7 +92,7 @@ func (c *APIController) DeleteNotification() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetUnreadNotificationNum() {
+func (c *ApiController) GetUnreadNotificationNum() {
 	memberId := c.GetSessionUser()
 
 	var resp Response
@@ -103,7 +103,7 @@ func (c *APIController) GetUnreadNotificationNum() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateReadStatus() {
+func (c *ApiController) UpdateReadStatus() {
 	memberId := c.GetSessionUser()
 
 	c.Data["json"] = object.UpdateReadStatus(memberId)

@@ -21,29 +21,29 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) GetTabs() {
+func (c *ApiController) GetTabs() {
 	c.Data["json"] = object.GetHomePageTabs()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllTabs() {
+func (c *ApiController) GetAllTabs() {
 	c.Data["json"] = object.GetAllTabs()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllTabsAdmin() {
+func (c *ApiController) GetAllTabsAdmin() {
 	c.Data["json"] = object.GetAllTabsAdmin()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTabAdmin() {
+func (c *ApiController) GetTabAdmin() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetTabAdmin(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) AddTab() {
+func (c *ApiController) AddTab() {
 	var tabInfo object.AdminTabInfo
 	var resp Response
 
@@ -82,7 +82,7 @@ func (c *APIController) AddTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateTab() {
+func (c *ApiController) UpdateTab() {
 	id := c.Input().Get("id")
 
 	var resp Response
@@ -112,7 +112,7 @@ func (c *APIController) UpdateTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteTab() {
+func (c *ApiController) DeleteTab() {
 	id := c.Input().Get("id")
 	memberId := c.GetSessionUser()
 
@@ -129,7 +129,7 @@ func (c *APIController) DeleteTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTabWithNodes() {
+func (c *ApiController) GetTabWithNodes() {
 	id := c.Input().Get("id")
 
 	if len(id) == 0 {
@@ -144,7 +144,7 @@ func (c *APIController) GetTabWithNodes() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTabNodes() {
+func (c *ApiController) GetTabNodes() {
 	id := c.Input().Get("id")
 
 	if len(id) == 0 {
