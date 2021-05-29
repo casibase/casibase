@@ -144,5 +144,6 @@ func (r Reply) AddReplyToMailingList() {
 	if r.EditorType == "markdown" {
 		r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
 	}
-	_ = service.SendEmail(targetTopic.Title, r.Content, targetNode.MailingList, r.Author)
+	mailTitle := fmt.Sprintf("Re: %s", targetTopic.Title)
+	_ = service.SendEmail(mailTitle, r.Content, targetNode.MailingList, r.Author)
 }
