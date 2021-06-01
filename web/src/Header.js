@@ -109,7 +109,7 @@ class Header extends React.Component {
   renderItem() {
     const isSignedIn =
       this.props.account !== undefined && this.props.account !== null;
-    const username = this.props.account?.id;
+    const username = this.props.account?.username;
 
     if (!isSignedIn) {
       return (
@@ -219,14 +219,14 @@ class Header extends React.Component {
             <button id="menu-entry" onClick={() => this.changeShowMenuStatus()}>
               {this.props.account?.avatar === "" ? (
                 <img
-                  src={Setting.getUserAvatar(this.props.account?.id)}
+                  src={Setting.getUserAvatar(this.props.account?.username)}
                   width={24}
                   border={0}
                   style={{ borderRadius: "32px", verticalAlign: "middle" }}
                   width="32"
                   height="32"
                   align="absmiddle"
-                  alt={this.props.account?.id}
+                  alt={this.props.account?.username}
                 />
               ) : (
                 <img
@@ -237,13 +237,16 @@ class Header extends React.Component {
                   width="32"
                   height="32"
                   align="absmiddle"
-                  alt={this.props.account?.id}
+                  alt={this.props.account?.username}
                 />
               )}
             </button>
             <div id="user-menu" style={menuStyle}>
               <div>
-                <Link to={`/member/${this.props.account?.id}`} className="top">
+                <Link
+                  to={`/member/${this.props.account?.username}`}
+                  className="top"
+                >
                   {i18next.t("general:Homepage")}
                 </Link>
               </div>

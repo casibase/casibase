@@ -106,7 +106,7 @@ class RightAccountBox extends React.Component {
   }
 
   render() {
-    const username = this.props.account?.id;
+    const username = this.props.account?.username;
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;

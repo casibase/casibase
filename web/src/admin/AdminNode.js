@@ -608,7 +608,7 @@ class AdminNode extends React.Component {
                     <br />
                     <span className="chevron">‹</span> &nbsp;
                     {i18next.t("error:Back to")}{" "}
-                    <Link to={`/member/${this.props.account?.id}`}>
+                    <Link to={`/member/${this.props.account?.username}`}>
                       {i18next.t("error:My profile")}
                     </Link>
                   </span>

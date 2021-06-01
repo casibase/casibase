@@ -153,7 +153,7 @@ class SettingsBox extends React.Component {
 
   publishInfoUpdate() {
     MemberBackend.updateMemberInfo(
-      this.props.account?.id,
+      this.props.account?.username,
       this.state.form
     ).then((res) => {
       if (res.status === "ok") {
@@ -377,18 +377,18 @@ class SettingsBox extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                         size={"large"}
                       />{" "}
                       &nbsp;{" "}
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                       />{" "}
                       &nbsp;{" "}
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                         size={"small"}
                       />
@@ -520,7 +520,7 @@ class SettingsBox extends React.Component {
               <tr>
                 <td width="120" align="right">
                   <Avatar
-                    username={account?.id}
+                    username={account?.username}
                     size="small"
                     avatar={account?.avatar}
                   />
@@ -535,7 +535,7 @@ class SettingsBox extends React.Component {
                   {i18next.t("setting:Username")}
                 </td>
                 <td width="auto" align="left">
-                  {account?.id}
+                  {account?.username}
                 </td>
               </tr>
               <tr>

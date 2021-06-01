@@ -516,7 +516,7 @@ class ReplyBox extends React.Component {
             content={this.state.reply}
             sticky={this.state.sticky}
             changeStickyStatus={this.changeStickyStatus}
-            member={this.props.account?.id}
+            member={this.props.account?.username}
             nodeId={this.props.topic?.nodeId}
             memberList={this.state.memberList}
             refreshReplies={this.getReplies.bind(this)}
