@@ -273,6 +273,7 @@
     "Topic": "第",
     "to": "到",
     "of all": "/共",
+    "all": "共",
     "topics": "个主题",
     "new topic": "创建新主题",
     "All topics": "全部主题",
@@ -409,6 +410,9 @@
   "newNodeTopic": {
     "Publish": "创建",
     "Preview": "预览"
+  },
+  "tag": {
+    "No related pages with tags": "标签未收录"
   },
   "reply": {
     "replies": "条回复",

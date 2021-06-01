@@ -27,6 +27,8 @@ import Editor from "./richTextEditor";
 
 import "codemirror/lib/codemirror.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
+import TagsInput from 'react-tagsinput'
+import '../tagsInput.css'
 import { Resizable } from "re-resizable";
 import * as Conf from "../Conf";
 require("codemirror/mode/markdown/markdown");
@@ -44,6 +46,7 @@ class NewNodeTopicBox extends React.Component {
       nodeId: "",
       nodeInfo: {},
       problems: [],
+      tags : [],
       message: "",
       width: "",
       editor: [
@@ -164,6 +167,13 @@ class NewNodeTopicBox extends React.Component {
         nodeInfo: res,
       });
     });
+  }
+
+  handleChange(tags) {
+    this.updateFormField("tags",tags)
+    this.setState({
+      tags :tags
+    })
   }
 
   renderPreview() {
@@ -446,7 +456,11 @@ class NewNodeTopicBox extends React.Component {
                   )}
                 </td>
               </tr>
+
               <tr>
+                <TagsInput
+                    inputProps={{maxlength:"8",placeholder: 'After adding tags press Enter,only add up to four tags,the length of each tag is up to 8'}}
+                    maxTags="4" value={this.state.tags} onChange={this.handleChange.bind(this)} />
                 <td
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >

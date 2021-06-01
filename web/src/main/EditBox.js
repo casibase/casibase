@@ -19,6 +19,8 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
+import TagsInput from 'react-tagsinput'
+import '../tagsInput.css'
 import * as Tools from "./Tools";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
@@ -35,6 +37,7 @@ class EditBox extends React.Component {
       editType: props.match.params.editType,
       editObject: [],
       nodes: [],
+      tags: [],
       form: {},
       editor: [
         {
@@ -60,6 +63,11 @@ class EditBox extends React.Component {
     if (this.state.editType === "topic") {
       form["title"] = this.state.editObject?.title;
       form["nodeId"] = this.state.editObject?.nodeId;
+      if (this.state.editObject?.tags != null) {
+        this.setState({
+          tags: this.state.editObject?.tags
+        })
+      }
     }
     form["content"] = this.state.editObject?.content;
     form["editorType"] = this.state.editObject?.editorType;
@@ -67,6 +75,13 @@ class EditBox extends React.Component {
       form: form,
       placeholder: i18next.t(`new:${this.state.editObject?.editorType}`),
     });
+  }
+
+  handleChange(tags) {
+    this.updateFormField("tags",tags)
+    this.setState({
+      tags :tags
+    })
   }
 
   editContent() {
@@ -335,6 +350,9 @@ class EditBox extends React.Component {
                 <td>{this.renderEditor()}</td>
               </tr>
               <tr>
+                <TagsInput
+                    inputProps={{maxlength:"8",placeholder: 'After adding tags press Enter,only add up to four tags,the length of each tag is up to 8'}}
+                    maxTags="4" value={this.state.tags} onChange={this.handleChange.bind(this)} />
                 <td
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >

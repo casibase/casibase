@@ -273,6 +273,7 @@
     "Topic": "Topic",
     "to": "to",
     "of all": "of all",
+    "all": "all",
     "topics": "topics",
     "new topic": "new topic",
     "All topics": "All topics",
@@ -674,6 +675,9 @@
   "sensitive": {
     "sensitive management": "Sensitive Management",
     "new sensitive": "New Sensitive Word"
+  },
+  "tag": {
+    "No related pages with tags": "No related pages with tags"
   },
   "error": {
     "Reply title cannot be empty": "Reply title cannot be empty",
