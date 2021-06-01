@@ -170,16 +170,6 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.Engine.Sync2(new(ValidateCode))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.Engine.Sync2(new(ResetRecord))
-	if err != nil {
-		panic(err)
-	}
-
 	err = a.Engine.Sync2(new(UploadFileRecord))
 	if err != nil {
 		panic(err)

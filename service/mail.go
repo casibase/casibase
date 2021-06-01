@@ -35,30 +35,6 @@ func InitDialer() {
 	dialer = gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
 }
 
-// SendRegistrationMail sends mail with registration information.
-func SendRegistrationMail(email, validateCode string) error {
-	mail := gomail.NewMessage()
-
-	name := beego.AppConfig.String("appname")
-	body := `Hi: ` + email + `! <br/><br/> 欢迎注册` + name + `，请将验证码填写到注册页面。<br/><br/>
-验证码：` + validateCode + `<br/><br/>
-如果这个请求不是由你发起的，那没问题，你不用担心，你可以安全地忽略这封邮件。<br/><br/>
-如果你有任何疑问，可以回复这封邮件向我们提问。<br/><br/>
-<front color="#888888">` + name + `</front>`
-
-	mail.SetHeader("From", mail.FormatAddress(mailConn["user"], name))
-	mail.SetHeader("To", email)
-	mail.SetHeader("Subject", "["+name+"]"+" 用户注册") // set subject
-	mail.SetBody("text/html", body)                 // set body
-
-	if dialer == nil {
-		InitDialer()
-	}
-
-	err := dialer.DialAndSend(mail)
-	return err
-}
-
 // SendRemindMail sends mail with remind information.
 func SendRemindMail(title, content, topicId, email, domain string) error {
 	mail := gomail.NewMessage()

@@ -15,15 +15,12 @@
 package object
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/dchest/captcha"
 
 	"github.com/casbin/casnode/util"
 )
@@ -115,25 +112,6 @@ func UpdateHighestOnlineNum(num int) bool {
 	}
 
 	return affected != 0
-}
-
-func GetCaptcha() (string, []byte) {
-	id := captcha.NewLen(5)
-
-	var buffer bytes.Buffer
-
-	err := captcha.WriteImage(&buffer, id, 200, 80)
-	if err != nil {
-		panic(err)
-	}
-
-	return id, buffer.Bytes()
-}
-
-func VerifyCaptcha(id, digits string) bool {
-	res := captcha.VerifyString(id, digits)
-
-	return res
 }
 
 func GetCronJobs() []*CronJob {

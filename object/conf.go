@@ -75,11 +75,6 @@ var (
 			State: "active",
 		},
 		{
-			Id:    "expireValidateCode",
-			JobId: "expireData",
-			State: "active",
-		},
-		{
 			Id:    "expireTopTopic",
 			JobId: "expireData",
 			State: "active",
