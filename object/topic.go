@@ -98,6 +98,16 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	return topics
 }
 
+func GetTopicsByTitleAndAuthor(title string, author string) []*Topic {
+	topics := []*Topic{}
+	err := adapter.Engine.Where("title = ?", title).And("author = ?", author).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return topics
+}
+
 // GetTopicsAdmin *sort: 1 means Asc, 2 means Desc, 0 means no effect.
 func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDeletedTopic, createdTimeSort, lastReplySort, usernameSort, replyCountSort, hotSort, favCountSort string, limit int, offset int) ([]*AdminTopicInfo, int) {
 	topics := []*Topic{}
@@ -351,16 +361,14 @@ func AddTopic(topic *Topic) (bool, int) {
 	return affected != 0, topic.Id
 }
 
-/*
-func DeleteTopic(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Topic{})
+func DeleteTopicHard(id int) bool {
+	affected, err := adapter.Engine.Id(id).Delete(&Topic{})
 	if err != nil {
 		panic(err)
 	}
 
 	return affected != 0
 }
-*/
 
 func DeleteTopic(id int) bool {
 	topic := new(Topic)

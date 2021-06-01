@@ -62,6 +62,25 @@ func GetFiles(memberId string, limit, offset int) []*UploadFileRecord {
 	return records
 }
 
+//func GetFilesByMember(memberId string) []*UploadFileRecord {
+//	records := []*UploadFileRecord{}
+//	err := adapter.Engine.Where("member_id = ?", memberId).Find(&records)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	return records
+//}
+
+func DeleteFilesByMember(memberId string) bool {
+	affected, err := adapter.Engine.Where("member_id = ?", memberId).Delete(&UploadFileRecord{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 func GetFilesNum(memberId string) int {
 	var total int64
 	var err error

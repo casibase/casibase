@@ -199,6 +199,15 @@ func DeleteReply(id string) bool {
 }
 */
 
+func DeleteRepliesHardByTopicId(topicId int) bool {
+	affected, err := adapter.Engine.Where("topic_id = ?", topicId).Delete(&Reply{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 // DeleteReply soft delete reply.
 func DeleteReply(id int) bool {
 	reply := new(Reply)
