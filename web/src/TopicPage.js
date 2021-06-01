@@ -244,7 +244,7 @@ class TopicPage extends React.Component {
       return null;
     }
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.scoreCount
+      this.props.account.score
     );
     return (
       <div class="cell">

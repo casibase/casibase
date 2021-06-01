@@ -89,7 +89,7 @@ func GetMemberBalance(id string) int {
 		panic(err)
 	}
 
-	balance := member.ScoreCount
+	balance := member.Score
 
 	if existed {
 		return balance
@@ -101,7 +101,7 @@ func GetMemberBalance(id string) int {
 func UpdateMemberBalances(id string, amount int) bool {
 	balance := GetMemberBalance(id) + amount
 	member := new(Member)
-	member.ScoreCount = balance
+	member.Score = balance
 	affected, err := adapter.Engine.Id(id).Cols("score_count").Update(member)
 	if err != nil {
 		panic(err)

@@ -111,7 +111,7 @@ class RightAccountBox extends React.Component {
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.scoreCount
+      this.props.account.score
     );
 
     return (

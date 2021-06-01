@@ -501,7 +501,7 @@ class AdminMember extends React.Component {
       const member = this.state.member;
 
       if (this.state.event === "basic") {
-        let balance = member.scoreCount;
+        let balance = member.score;
 
         return (
           <div>

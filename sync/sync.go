@@ -53,7 +53,7 @@ func createCasdoorUserFromMember(member *object.Member) *auth.User {
 		Affiliation:   member.Company,
 		Tag:           member.CompanyTitle,
 		Language:      member.Language,
-		Score:         member.ScoreCount,
+		Score:         member.Score,
 		IsAdmin:       member.IsModerator,
 		IsGlobalAdmin: false,
 		IsForbidden:   false,

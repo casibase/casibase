@@ -366,7 +366,7 @@ class BalanceBox extends React.Component {
 
   render() {
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account?.scoreCount
+      this.props.account?.score
     );
 
     return (

@@ -161,7 +161,7 @@ class MemberBox extends React.Component {
       this.props.account !== null &&
       this.state.memberId !== this.props.account?.id;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.state.member.scoreCount
+      this.state.member.score
     );
     return (
       <div className="box">

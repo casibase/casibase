@@ -42,7 +42,7 @@ type Member struct {
 	Company            string `xorm:"varchar(100)" json:"company"`
 	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
 	Ranking            int    `json:"ranking"`
-	ScoreCount         int    `json:"scoreCount"`
+	Score              int    `json:"score"`
 	Bio                string `xorm:"varchar(100)" json:"bio"`
 	Website            string `xorm:"varchar(100)" json:"website"`
 	Location           string `xorm:"varchar(100)" json:"location"`
@@ -718,7 +718,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 			Avatar:            UploadFromGravatar(username, email),
 			Email:             email,
 			EmailVerifiedTime: util.GetCurrentTime(),
-			ScoreCount:        200,
+			Score:             200,
 			FileQuota:         DefaultUploadFileQuota,
 			RenameQuota:       DefaultRenameQuota,
 		}
