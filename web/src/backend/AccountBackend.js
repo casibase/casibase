@@ -21,11 +21,10 @@ export function getAccount() {
   }).then((res) => res.json());
 }
 
-export function signin(values) {
-  return fetch(`${Setting.ServerUrl}/api/signin`, {
+export function signin(code, state) {
+  return fetch(`${Setting.ServerUrl}/api/signin?code=${code}&state=${state}`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(values),
   }).then((res) => res.json());
 }
 

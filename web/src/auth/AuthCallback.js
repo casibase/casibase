@@ -17,7 +17,6 @@ import { Button, Result, Spin } from "antd";
 import { withRouter } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as Util from "./Util";
-import { signin } from "../backend/AccountBackend";
 
 class AuthCallback extends React.Component {
   constructor(props) {
@@ -28,7 +27,6 @@ class AuthCallback extends React.Component {
     };
   }
 
-  // eslint-disable-next-line react/no-deprecated
   componentWillMount() {
     this.login();
   }

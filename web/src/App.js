@@ -122,7 +122,7 @@ class App extends Component {
 
   getAccount() {
     AccountBackend.getAccount().then((res) => {
-      let account = Setting.parseJson(res.data);
+      let account = res.data;
       if (account !== null) {
         let language = account?.language;
         if (language !== "" && language !== i18next.language) {

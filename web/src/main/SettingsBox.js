@@ -23,10 +23,12 @@ import * as Conf from "../Conf";
 import "../Reply.css";
 import "../Settings.css";
 import i18next from "i18next";
-import { getAccount } from "../backend/AccountBackend";
+import * as Auth from "../auth/Auth";
 
 class SettingsBox extends React.Component {
   constructor(props) {
+    window.location.href = Auth.getMyProfileUrl(props.account);
+
     super(props);
     this.state = {
       classes: props,
