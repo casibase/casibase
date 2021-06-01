@@ -16,7 +16,9 @@ package auth
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"strings"
 
 	"golang.org/x/oauth2"
 )
@@ -35,5 +37,13 @@ func GetOAuthToken(code string, state string) (*oauth2.Token, error) {
 	}
 
 	token, err := config.Exchange(context.Background(), code)
+	if err != nil {
+		return token, err
+	}
+
+	if strings.HasPrefix(token.AccessToken, "error:") {
+		return nil, errors.New(strings.TrimLeft(token.AccessToken, "error: "))
+	}
+
 	return token, err
 }

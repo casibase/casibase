@@ -28,6 +28,8 @@ type AuthConfig struct {
 	JwtSecret    string
 }
 
+var orgName = "casbin-forum"
+
 var authConfig AuthConfig
 
 type User struct {
@@ -70,8 +72,7 @@ func InitConfig(endpoint string, clientId string, clientSecret string, jwtSecret
 	}
 }
 
-func GetUsers(owner string) []*User {
-	url := fmt.Sprintf("%s/api/get-users?owner=%s", authConfig.Endpoint, owner)
+func getBytes(url string) []byte {
 	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)
@@ -83,10 +84,29 @@ func GetUsers(owner string) []*User {
 		panic(err)
 	}
 
+	return bytes
+}
+
+func GetUsers(owner string) []*User {
+	url := fmt.Sprintf("%s/api/get-users?owner=%s", authConfig.Endpoint, owner)
+	bytes := getBytes(url)
+
 	var users []*User
-	err = json.Unmarshal(bytes, &users)
+	err := json.Unmarshal(bytes, &users)
 	if err != nil {
 		panic(err)
 	}
 	return users
+}
+
+func GetUser(name string) *User {
+	url := fmt.Sprintf("%s/api/get-user?id=%s/%s", authConfig.Endpoint, orgName, name)
+	bytes := getBytes(url)
+
+	var user *User
+	err := json.Unmarshal(bytes, &user)
+	if err != nil {
+		panic(err)
+	}
+	return user
 }

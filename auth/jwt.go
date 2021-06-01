@@ -26,6 +26,8 @@ type Claims struct {
 	Phone        string `json:"phone"`
 	Affiliation  string `json:"affiliation"`
 	Tag          string `json:"tag"`
+	Language     string `json:"language"`
+	Score        int    `json:"score"`
 	IsAdmin      bool   `json:"isAdmin"`
 	AccessToken  string `json:"accessToken"`
 	jwt.StandardClaims
