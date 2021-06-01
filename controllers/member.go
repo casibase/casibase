@@ -73,7 +73,7 @@ func (c *ApiController) GetMemberAvatar() {
 }
 
 func (c *ApiController) UpdateMemberAvatar() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	avatar := c.Input().Get("avatar")
 
 	c.Data["json"] = object.UpdateMemberAvatar(memberId, avatar)
@@ -81,7 +81,7 @@ func (c *ApiController) UpdateMemberAvatar() {
 }
 
 func (c *ApiController) UpdateMemberEmailReminder() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	status := c.Input().Get("status")
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.ChangeMemberEmailReminder(memberId, status)}
@@ -95,7 +95,7 @@ func (c *ApiController) UpdateMember() {
 	var memberInfo object.AdminMemberInfo
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -116,7 +116,7 @@ func (c *ApiController) UpdateMember() {
 
 func (c *ApiController) UpdateMemberInfo() {
 	id := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var tempMember object.Member
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempMember)
@@ -145,7 +145,7 @@ func (c *ApiController) UpdateMemberInfo() {
 }
 
 func (c *ApiController) GetMemberEditorType() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 	var editorType string
@@ -169,7 +169,7 @@ func (c *ApiController) GetRankingRich() {
 
 func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 
@@ -188,7 +188,7 @@ func (c *ApiController) UpdateMemberEditorType() {
 
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 
@@ -206,7 +206,7 @@ func (c *ApiController) UpdateMemberLanguage() {
 }
 
 func (c *ApiController) GetMemberLanguage() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 	var language string
@@ -226,7 +226,7 @@ func (c *ApiController) GetMemberLanguage() {
 func (c *ApiController) AddMember() {
 	var member object.Member
 	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUser()) {
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -259,7 +259,7 @@ func (c *ApiController) DeleteMember() {
 
 func (c *ApiController) ResetUsername() {
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	newUsername := c.Input().Get("new")
 
 	if len(memberId) == 0 {
@@ -280,7 +280,7 @@ func (c *ApiController) ResetUsername() {
 
 	if msg == "" {
 		resp = Response{Status: "ok", Msg: "Succeed. Please login again."}
-		c.SetSessionUser("")
+		c.SetSessionUser(nil)
 	} else {
 		resp = Response{Status: "error", Msg: msg}
 	}

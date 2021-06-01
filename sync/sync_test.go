@@ -12,37 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+package sync
 
 import (
-	"encoding/json"
+	"fmt"
+	"testing"
 
 	"github.com/casbin/casnode/object"
 )
 
-func (c *ApiController) UpdatePoster() {
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
+func TestSyncUsers(t *testing.T) {
+	initConfig()
+	initAdapter()
+	object.InitAdapter()
+
+	members := object.GetMembers()
+	for _, member := range members {
+		user := createCasdoorUserFromMember(member)
+		addUser(user)
+		fmt.Printf("%v\n", user)
 	}
-	var tempposter object.Poster
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempposter)
-	if err != nil {
-		panic(err)
-	}
-	object.UpdatePoster(tempposter.Id, tempposter)
-
-	c.Data["json"] = Response{Status: "ok", Msg: "success"}
-	c.ServeJSON()
-}
-
-func (c *ApiController) ReadPoster() {
-	n := c.Input().Get("id")
-	res := object.GetPoster(n)
-
-	c.Data["json"] = res
-	c.ServeJSON()
 }

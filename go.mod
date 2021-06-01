@@ -12,6 +12,7 @@ require (
 	github.com/casbin/google-groups-crawler v0.1.1
 	github.com/chromedp/chromedp v0.6.10
 	github.com/dchest/captcha v0.0.0-20200903113550-03f5f0333e1f
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gomarkdown/markdown v0.0.0-20210408062403-ad838ccf8cdd

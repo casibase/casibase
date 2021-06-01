@@ -28,7 +28,7 @@ func (c *ApiController) AddNotification() {
 		panic(err)
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	notification := object.Notification{
 		//Id:               util.IntToString(object.GetNotificationId()),
 		NotificationType: tempNotification.NotificationType,
@@ -56,7 +56,7 @@ func (c *ApiController) AddNotification() {
 }
 
 func (c *ApiController) GetNotifications() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultNotificationPageNum
@@ -93,7 +93,7 @@ func (c *ApiController) DeleteNotification() {
 }
 
 func (c *ApiController) GetUnreadNotificationNum() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 	res := object.GetUnreadNotificationNum(memberId)
@@ -104,7 +104,7 @@ func (c *ApiController) GetUnreadNotificationNum() {
 }
 
 func (c *ApiController) UpdateReadStatus() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	c.Data["json"] = object.UpdateReadStatus(memberId)
 	c.ServeJSON()

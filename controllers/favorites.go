@@ -26,7 +26,7 @@ func (c *ApiController) AddFavorites() {
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	favorites := object.Favorites{
 		//Id:            util.IntToString(object.GetFavoritesCount()) + memberId,
 		FavoritesType: favoritesType,
@@ -56,7 +56,7 @@ func (c *ApiController) AddFavorites() {
 				NotificationType: 4,
 				ObjectId:         topicId,
 				CreatedTime:      util.GetCurrentTime(),
-				SenderId:         c.GetSessionUser(),
+				SenderId:         c.GetSessionUsername(),
 				ReceiverId:       object.GetTopicAuthor(topicId),
 				Status:           1,
 			}
@@ -80,7 +80,7 @@ func (c *ApiController) AddFavorites() {
 }
 
 func (c *ApiController) DeleteFavorites() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
@@ -115,7 +115,7 @@ func (c *ApiController) DeleteFavorites() {
 }
 
 func (c *ApiController) GetFavoritesStatus() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
@@ -133,7 +133,7 @@ func (c *ApiController) GetFavoritesStatus() {
 }
 
 func (c *ApiController) GetFavorites() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	favoritesTypeStr := c.Input().Get("type")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -177,7 +177,7 @@ func (c *ApiController) GetFavorites() {
 }
 
 func (c *ApiController) GetAccountFavoriteNum() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var res [4]int
 	var wg sync.WaitGroup

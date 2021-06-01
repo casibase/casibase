@@ -19,6 +19,7 @@ import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
+import * as Auth from "./auth/Auth";
 
 class Header extends React.Component {
   constructor(props) {
@@ -117,13 +118,13 @@ class Header extends React.Component {
             {i18next.t("general:Home")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/signup" className="top">
+          <a href={Auth.getSignupUrl()} className="top">
             {i18next.t("general:Sign Up")}
-          </Link>
+          </a>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/signin" className="top">
+          <a href={Auth.getSigninUrl()} className="top">
             {i18next.t("general:Sign In")}
-          </Link>
+          </a>
         </td>
       );
     } else {

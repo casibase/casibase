@@ -90,7 +90,7 @@ func (c *ApiController) GetTopicsAdmin() {
 }
 
 func (c *ApiController) GetTopic() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -138,7 +138,7 @@ func (c *ApiController) AddTopic() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	// check account status
 	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
 		c.mutedAccountResp(memberId)
@@ -220,7 +220,7 @@ func (c *ApiController) UploadTopicPic() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("pic")
 	index := strings.Index(fileBase64, ",")
 	if index < 0 || fileBase64[0:index] != "data:image/png;base64" {
@@ -240,7 +240,7 @@ func (c *ApiController) UploadTopicPic() {
 
 func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	nodeId := object.GetTopicNodeId(id)
@@ -326,7 +326,7 @@ func (c *ApiController) AddTopicHitCount() {
 	res := object.AddTopicHitCount(topicId)
 	topicInfo := object.GetTopic(topicId)
 	hitRecord := object.BrowseRecord{
-		MemberId:    c.GetSessionUser(),
+		MemberId:    c.GetSessionUsername(),
 		RecordType:  1,
 		ObjectId:    topicInfo.NodeId,
 		CreatedTime: util.GetCurrentTime(),
@@ -369,7 +369,7 @@ func (c *ApiController) AddTopicBrowseCount() {
 
 	var resp Response
 	hitRecord := object.BrowseRecord{
-		MemberId:    c.GetSessionUser(),
+		MemberId:    c.GetSessionUsername(),
 		RecordType:  2,
 		ObjectId:    topicId,
 		CreatedTime: util.GetCurrentTime(),
@@ -411,7 +411,7 @@ func (c *ApiController) UpdateTopicNode() {
 	}
 
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	var form updateTopicNode
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -446,7 +446,7 @@ func (c *ApiController) EditContent() {
 
 	editType := c.Input().Get("editType")
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if editType == "topic" {
 		var form editTopic
 		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
@@ -505,7 +505,7 @@ func (c *ApiController) TopTopic() {
 	}
 
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var resp Response
@@ -550,7 +550,7 @@ func (c *ApiController) CancelTopTopic() {
 	}
 
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var resp Response

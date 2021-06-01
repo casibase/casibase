@@ -12,37 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package controllers
+package sync
 
 import (
-	"encoding/json"
-
+	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/object"
+	_ "github.com/go-sql-driver/mysql" // db = mysql
+	//_ "github.com/lib/pq"              // db = postgres
 )
 
-func (c *ApiController) UpdatePoster() {
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-	var tempposter object.Poster
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempposter)
+var adapter *object.Adapter
+
+func initConfig() {
+	err := beego.LoadAppConfig("ini", "../conf/app.conf")
 	if err != nil {
 		panic(err)
 	}
-	object.UpdatePoster(tempposter.Id, tempposter)
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success"}
-	c.ServeJSON()
+	initAdapter()
 }
 
-func (c *ApiController) ReadPoster() {
-	n := c.Input().Get("id")
-	res := object.GetPoster(n)
+func initAdapter() {
+	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), dbName)
+}
 
-	c.Data["json"] = res
-	c.ServeJSON()
+func addUser(user *auth.User) bool {
+	affected, err := adapter.Engine.Insert(user)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }

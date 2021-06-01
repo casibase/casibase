@@ -58,8 +58,8 @@ func (c *ApiController) AddPlane() {
 	var plane object.AdminPlaneInfo
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -105,8 +105,8 @@ func (c *ApiController) UpdatePlane() {
 	var resp Response
 	var plane object.AdminPlaneInfo
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -134,8 +134,8 @@ func (c *ApiController) UpdatePlane() {
 func (c *ApiController) DeletePlane() {
 	id := c.Input().Get("id")
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 

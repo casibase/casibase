@@ -108,16 +108,9 @@ func initAPI() {
 	beego.Router("/api/delete-node-moderators", &controllers.ApiController{}, "POST:DeleteNodeModerators")
 	beego.Router("/api/get-nodes-admin", &controllers.ApiController{}, "GET:GetNodesAdmin")
 
-	beego.Router("/api/signup", &controllers.ApiController{}, "POST:Signup")
 	beego.Router("/api/signin", &controllers.ApiController{}, "POST:Signin")
 	beego.Router("/api/signout", &controllers.ApiController{}, "POST:Signout")
 	beego.Router("/api/get-account", &controllers.ApiController{}, "GET:GetAccount")
-	beego.Router("/api/auth/google", &controllers.ApiController{}, "GET:AuthGoogle")
-	beego.Router("/api/auth/github", &controllers.ApiController{}, "GET:AuthGithub")
-	beego.Router("/api/auth/qq", &controllers.ApiController{}, "GET:AuthQQ")
-	beego.Router("/api/auth/wechat", &controllers.ApiController{}, "GET:AuthWeChat")
-	beego.Router("/api/reset-password", &controllers.ApiController{}, "POST:ResetPassword")
-	beego.Router("/api/unbind", &controllers.ApiController{}, "GET:UnbindAccount")
 
 	beego.Router("/api/add-favorites", &controllers.ApiController{}, "POST:AddFavorites")
 	beego.Router("/api/get-favorites", &controllers.ApiController{}, "GET:GetFavorites")

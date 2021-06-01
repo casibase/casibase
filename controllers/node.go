@@ -55,8 +55,8 @@ func (c *ApiController) UpdateNode() {
 	var resp Response
 	var node object.Node
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -75,8 +75,8 @@ func (c *ApiController) AddNode() {
 	var node object.Node
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -110,8 +110,8 @@ func (c *ApiController) AddNode() {
 func (c *ApiController) DeleteNode() {
 	id := c.Input().Get("id")
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -206,7 +206,7 @@ func (c *ApiController) AddNodeBrowseCount() {
 
 	var resp Response
 	hitRecord := object.BrowseRecord{
-		MemberId:    c.GetSessionUser(),
+		MemberId:    c.GetSessionUsername(),
 		RecordType:  1,
 		ObjectId:    nodeId,
 		CreatedTime: util.GetCurrentTime(),
@@ -227,7 +227,7 @@ func (c *ApiController) AddNodeModerators() {
 	var moderators addNodeModerator
 	var resp Response
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if !object.CheckModIdentity(memberId) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
@@ -263,7 +263,7 @@ func (c *ApiController) DeleteNodeModerators() {
 	var moderators deleteNodeModerator
 	var resp Response
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if !object.CheckModIdentity(memberId) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp

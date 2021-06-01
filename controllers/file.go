@@ -39,7 +39,7 @@ func (c *ApiController) GetFiles() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultFilePageNum
@@ -64,7 +64,7 @@ func (c *ApiController) GetFiles() {
 }
 
 func (c *ApiController) GetFileNum() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	num := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
 	resp := Response{Status: "ok", Msg: "success", Data: num}
@@ -85,7 +85,7 @@ func (c *ApiController) AddFileRecord() {
 	}
 
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	uploadFileNum := object.GetFilesNum(memberId)
 	if uploadFileNum >= object.GetMemberFileQuota(memberId) {
@@ -121,7 +121,7 @@ func (c *ApiController) AddFileRecord() {
 
 func (c *ApiController) DeleteFile() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	fileInfo := object.GetFile(id)
@@ -165,7 +165,7 @@ func (c *ApiController) GetFile() {
 
 func (c *ApiController) UpdateFileDescribe() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var desc fileDescribe
@@ -194,7 +194,7 @@ func (c *ApiController) UploadFile() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("file")
 	fileType := c.Ctx.Request.Form.Get("type")
 	fileName := c.Ctx.Request.Form.Get("name")
@@ -211,7 +211,7 @@ func (c *ApiController) ModeratorUpload() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if !object.GetMember(memberId).IsModerator {
 		c.Data["json"] = Response{Status: "error", Msg: "You have no permission to upload files here. Need to be moderator."}
 		c.ServeJSON()
@@ -233,7 +233,7 @@ func (c *ApiController) UploadAvatar() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	avatarBase64 := c.Ctx.Request.Form.Get("avatar")
 	index := strings.Index(avatarBase64, ",")
 	if index < 0 || (avatarBase64[0:index] != "data:image/png;base64" && avatarBase64[0:index] != "data:image/jpeg;base64") {

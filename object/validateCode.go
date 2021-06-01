@@ -41,7 +41,7 @@ func GetNewValidateCode(information string) (string, string) {
 		CreatedTime: util.GetCurrentTime(),
 		Expired:     false,
 	}
-	affected, err := adapter.engine.Insert(validateCode)
+	affected, err := adapter.Engine.Insert(validateCode)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func GetNewValidateCode(information string) (string, string) {
 // CheckValidateCodeExpired checks whether the verification code has expired.
 func CheckValidateCodeExpired(id string) bool {
 	var code ValidateCode
-	existed, err := adapter.engine.Id(id).Get(&code)
+	existed, err := adapter.Engine.Id(id).Get(&code)
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +69,7 @@ func CheckValidateCodeExpired(id string) bool {
 // VerifyValidateCode verifies validate code.
 func VerifyValidateCode(id, validateCode, information string) bool {
 	var code ValidateCode
-	existed, err := adapter.engine.Id(id).Get(&code)
+	existed, err := adapter.Engine.Id(id).Get(&code)
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +79,7 @@ func VerifyValidateCode(id, validateCode, information string) bool {
 	}
 
 	code.Expired = true
-	affected, err := adapter.engine.Id(id).Cols("expired").Update(code)
+	affected, err := adapter.Engine.Id(id).Cols("expired").Update(code)
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func VerifyValidateCode(id, validateCode, information string) bool {
 func ExpireValidateCode(date string) int {
 	code := new(ValidateCode)
 	code.Expired = true
-	affected, err := adapter.engine.Where("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(code)
+	affected, err := adapter.Engine.Where("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(code)
 	if err != nil {
 		panic(err)
 	}

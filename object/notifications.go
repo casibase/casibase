@@ -36,7 +36,7 @@ type Notification struct {
 }
 
 func AddNotification(notification *Notification) bool {
-	affected, err := adapter.engine.Insert(notification)
+	affected, err := adapter.Engine.Insert(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +47,7 @@ func AddNotification(notification *Notification) bool {
 func DeleteNotification(id string) bool {
 	notification := new(Notification)
 	notification.Status = 3
-	affected, err := adapter.engine.Id(id).Update(notification)
+	affected, err := adapter.Engine.Id(id).Update(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func DeleteNotification(id string) bool {
 }
 
 func GetNotificationCount() int {
-	count, err := adapter.engine.Count(&Notification{})
+	count, err := adapter.Engine.Count(&Notification{})
 	if err != nil {
 		panic(err)
 	}
@@ -66,7 +66,7 @@ func GetNotificationCount() int {
 
 func GetNotifications(memberId string, limit int, offset int) []*NotificationResponse {
 	notifications := []*NotificationResponse{}
-	err := adapter.engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
+	err := adapter.Engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
 		Where("notification.receiver_id = ?", memberId).And("notification.status != ?", 3).
 		Desc("notification.created_time").
 		Cols("notification.*, member.avatar").
@@ -126,7 +126,7 @@ func GetNotificationNum(memberId string) int {
 	var err error
 
 	notification := new(Notification)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).And("status != ?", 3).Count(notification)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).And("status != ?", 3).Count(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -139,7 +139,7 @@ func GetUnreadNotificationNum(memberId string) int {
 	var err error
 
 	notification := new(Notification)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).And("status = ?", 1).Count(notification)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).And("status = ?", 1).Count(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +160,7 @@ func GetNotificationId() int {
 func UpdateReadStatus(id string) bool {
 	notification := new(Notification)
 	notification.Status = 2
-	affected, err := adapter.engine.Where("receiver_id = ?", id).Cols("status").Update(notification)
+	affected, err := adapter.Engine.Where("receiver_id = ?", id).Cols("status").Update(notification)
 	if err != nil {
 		panic(err)
 	}

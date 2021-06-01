@@ -61,7 +61,7 @@ func (n Node) SyncFromGoogleGroup() {
 			AddTopic(&newTopic)
 		} else {
 			var topics []Topic
-			err := adapter.engine.Where("title = ? and deleted = 0", conv.Title).Find(&topics)
+			err := adapter.Engine.Where("title = ? and deleted = 0", conv.Title).Find(&topics)
 			if err != nil {
 				panic(err)
 			}
@@ -126,7 +126,7 @@ func SyncAllNodeFromGoogleGroup() {
 	}
 	fmt.Println("Sync from google group started...")
 	var nodes []Node
-	err := adapter.engine.Find(&nodes)
+	err := adapter.Engine.Find(&nodes)
 	if err != nil {
 		panic(err)
 	}

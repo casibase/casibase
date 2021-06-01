@@ -28,7 +28,7 @@ type NewReplyForm struct {
 }
 
 func (c *ApiController) GetReplies() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	topicIdStr := c.Input().Get("topicId")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -77,7 +77,7 @@ func (c *ApiController) GetReply() {
 }
 
 func (c *ApiController) GetReplyWithDetails() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -105,7 +105,7 @@ func (c *ApiController) AddReply() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	// check account status
 	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
 		c.mutedAccountResp(memberId)
@@ -164,7 +164,7 @@ func (c *ApiController) AddReply() {
 func (c *ApiController) DeleteReply() {
 	idStr := c.Input().Get("id")
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	id := util.ParseInt(idStr)
 	replyInfo := object.GetReply(id)
 	isModerator := object.CheckModIdentity(memberId)

@@ -21,14 +21,6 @@ export function getAccount() {
   }).then((res) => res.json());
 }
 
-export function signup(values) {
-  return fetch(`${Setting.ServerUrl}/api/signup`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(values),
-  }).then((res) => res.json());
-}
-
 export function signin(values) {
   return fetch(`${Setting.ServerUrl}/api/signin`, {
     method: "POST",
@@ -51,14 +43,6 @@ export function getStsToken() {
   }).then((res) => res.json());
 }
 
-export function resetPassword(step, values) {
-  return fetch(`${Setting.ServerUrl}/api/reset-password?step=${step}`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(values),
-  }).then((res) => res.json());
-}
-
 export function resetUsername(newUsername) {
   return fetch(
     `${Setting.ServerUrl}/api/reset-member-username?new=${newUsername}`,
@@ -67,11 +51,4 @@ export function resetUsername(newUsername) {
       credentials: "include",
     }
   ).then((res) => res.json());
-}
-
-export function unbindAccount(type) {
-  return fetch(`${Setting.ServerUrl}/api/unbind?type=${type}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
 }

@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package sync
 
-import "encoding/json"
+var dbName = "casdoor"
+var tableName = "user"
 
-func StructToJson(v interface{}) string {
-	//data, err := json.MarshalIndent(v, "", "  ")
-	data, err := json.Marshal(v)
-	if err != nil {
-		panic(err)
-	}
-
-	return string(data)
-}
-
-func JsonToStruct(data string, v interface{}) error {
-	return json.Unmarshal([]byte(data), v)
-}
+var orgName = "casbin-forum"

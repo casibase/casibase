@@ -108,27 +108,27 @@ class SettingsBox extends React.Component {
   }
 
   postUsername() {
-    const name = this.newUsername();
-    AccountBackend.signup(name)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage(
-            "success",
-            i18next.t("setting:Set username success")
-          );
-          window.location.href = "/";
-        } else {
-          Setting.showMessage(
-            "error",
-            `${i18next.t("setting:Set username failed")}: ${i18next.t(
-              "setting:" + res.msg
-            )}`
-          );
-        }
-      })
-      .catch((error) => {
-        Setting.showMessage("error", `setting:Set username failed：${error}`);
-      });
+    // const name = this.newUsername();
+    // AccountBackend.signup(name)
+    //   .then((res) => {
+    //     if (res.status === "ok") {
+    //       Setting.showMessage(
+    //         "success",
+    //         i18next.t("setting:Set username success")
+    //       );
+    //       window.location.href = "/";
+    //     } else {
+    //       Setting.showMessage(
+    //         "error",
+    //         `${i18next.t("setting:Set username failed")}: ${i18next.t(
+    //           "setting:" + res.msg
+    //         )}`
+    //       );
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     Setting.showMessage("error", `setting:Set username failed：${error}`);
+    //   });
   }
 
   handleUsernameChange(e) {
@@ -286,24 +286,7 @@ class SettingsBox extends React.Component {
   }
 
   renderAccountOptions(accountType) {
-    return (
-      <tr>
-        <td width="120" align="right" />
-        <td width="auto" align="left">
-          <a
-            onClick={() =>
-              AccountBackend.unbindAccount(accountType).then((res) => {
-                if (res.status !== "ok") alert(res.msg);
-                else window.location.reload();
-              })
-            }
-            href="javascript:void(0);"
-          >
-            {i18next.t("setting:Unbind Account")}
-          </a>
-        </td>
-      </tr>
-    );
+    return null;
   }
 
   render() {

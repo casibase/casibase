@@ -88,7 +88,7 @@ func (c *ApiController) UpdateTab() {
 	var resp Response
 	var tabInfo object.AdminTabInfo
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 	}
 
@@ -114,7 +114,7 @@ func (c *ApiController) UpdateTab() {
 
 func (c *ApiController) DeleteTab() {
 	id := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	if !object.CheckModIdentity(memberId) {
 		resp := Response{Status: "fail", Msg: "Unauthorized."}

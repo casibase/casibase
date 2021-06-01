@@ -16,6 +16,8 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/auth"
+	"github.com/casbin/casnode/util"
 
 	"github.com/casbin/casnode/object"
 )
@@ -24,21 +26,41 @@ type ApiController struct {
 	beego.Controller
 }
 
-func (c *ApiController) GetSessionUser() string {
-	user := c.GetSession("username")
-	if user == nil {
-		return ""
+func (c *ApiController) GetSessionUser() *auth.Claims {
+	s := c.GetSession("user")
+	if s == nil {
+		return nil
 	}
 
-	return user.(string)
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
+	if err != nil {
+		panic(err)
+	}
+
+	return claims
 }
 
-func (c *ApiController) SetSessionUser(user string) {
-	c.SetSession("username", user)
+func (c *ApiController) SetSessionUser(claims *auth.Claims) {
+	if claims == nil {
+		c.DelSession("user")
+		return
+	}
+
+	s := util.StructToJson(claims)
+	c.SetSession("user", s)
+}
+
+func (c *ApiController) GetSessionUsername() string {
+	claims := c.GetSessionUser()
+	if claims == nil {
+		return ""
+	}
+	return claims.Username
 }
 
 func (c *ApiController) RequireLogin() bool {
-	if c.GetSessionUser() == "" {
+	if c.GetSessionUser() == nil {
 		c.Data["json"] = Response{Status: "error", Msg: "errorNeedSignin", Data: ""}
 		c.ServeJSON()
 

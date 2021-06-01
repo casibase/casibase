@@ -23,7 +23,7 @@ type Poster struct {
 }
 
 func AddPoster(poster Poster) bool {
-	affected, err := adapter.engine.Insert(poster)
+	affected, err := adapter.Engine.Insert(poster)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func AddPoster(poster Poster) bool {
 
 func GetPoster(id string) *Poster {
 	poster := Poster{Id: id}
-	existed, err := adapter.engine.Get(&poster)
+	existed, err := adapter.Engine.Get(&poster)
 	if err != nil {
 		panic(err)
 	}
@@ -50,7 +50,7 @@ func UpdatePoster(id string, poster Poster) bool {
 		return AddPoster(poster)
 	}
 
-	affected, err := adapter.engine.Id(id).AllCols().Update(poster)
+	affected, err := adapter.Engine.Id(id).AllCols().Update(poster)
 	if err != nil {
 		panic(err)
 	}

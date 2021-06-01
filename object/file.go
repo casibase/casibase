@@ -30,7 +30,7 @@ type UploadFileRecord struct {
 }
 
 func AddFileRecord(record *UploadFileRecord) (bool, int) {
-	affected, err := adapter.engine.Insert(record)
+	affected, err := adapter.Engine.Insert(record)
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +40,7 @@ func AddFileRecord(record *UploadFileRecord) (bool, int) {
 
 func GetFile(id int) *UploadFileRecord {
 	file := UploadFileRecord{Id: id}
-	existed, err := adapter.engine.Get(&file)
+	existed, err := adapter.Engine.Get(&file)
 	if err != nil {
 		panic(err)
 	}
@@ -54,7 +54,7 @@ func GetFile(id int) *UploadFileRecord {
 
 func GetFiles(memberId string, limit, offset int) []*UploadFileRecord {
 	records := []*UploadFileRecord{}
-	err := adapter.engine.Desc("created_time").Where("member_id = ?", memberId).And("deleted = ?", 0).Limit(limit, offset).Find(&records)
+	err := adapter.Engine.Desc("created_time").Where("member_id = ?", memberId).And("deleted = ?", 0).Limit(limit, offset).Find(&records)
 	if err != nil {
 		panic(err)
 	}
@@ -67,7 +67,7 @@ func GetFilesNum(memberId string) int {
 	var err error
 
 	record := new(UploadFileRecord)
-	total, err = adapter.engine.Where("member_id = ?", memberId).And("deleted = ?", 0).Count(record)
+	total, err = adapter.Engine.Where("member_id = ?", memberId).And("deleted = ?", 0).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -78,7 +78,7 @@ func GetFilesNum(memberId string) int {
 func DeleteFileRecord(id int) bool {
 	record := new(UploadFileRecord)
 	record.Deleted = true
-	affected, err := adapter.engine.Id(id).Cols("deleted").Update(record)
+	affected, err := adapter.Engine.Id(id).Cols("deleted").Update(record)
 	if err != nil {
 		panic(err)
 	}
@@ -105,7 +105,7 @@ func AddFileViewsNum(id int) bool {
 	}
 
 	file.Views++
-	affected, err := adapter.engine.Id(id).Cols("views").Update(file)
+	affected, err := adapter.Engine.Id(id).Cols("views").Update(file)
 	if err != nil {
 		panic(err)
 	}
@@ -121,7 +121,7 @@ func UpdateFileDescribe(id int, fileName, desc string) bool {
 
 	file.Desc = desc
 	file.FileName = fileName
-	affected, err := adapter.engine.Id(id).Cols("desc, file_name").Update(file)
+	affected, err := adapter.Engine.Id(id).Cols("desc, file_name").Update(file)
 	if err != nil {
 		panic(err)
 	}

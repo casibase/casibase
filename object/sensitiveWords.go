@@ -25,7 +25,7 @@ var sensitiveWords []CasbinSensitiveWord
 
 func loadSensitiveWords() {
 	if len(sensitiveWords) == 0 {
-		err := adapter.engine.Desc("word").Find(&sensitiveWords)
+		err := adapter.Engine.Desc("word").Find(&sensitiveWords)
 		if err != nil {
 			panic(err)
 		}
@@ -36,24 +36,24 @@ func AddSensitiveWord(word string) {
 	if IsSensitiveWord(word) {
 		return
 	}
-	_, err := adapter.engine.Insert(CasbinSensitiveWord{Word: word})
+	_, err := adapter.Engine.Insert(CasbinSensitiveWord{Word: word})
 	if err != nil {
 		panic(err)
 	}
 	sensitiveWords = nil
-	err = adapter.engine.Desc("word").Find(&sensitiveWords)
+	err = adapter.Engine.Desc("word").Find(&sensitiveWords)
 	if err != nil {
 		panic(err)
 	}
 }
 
 func DeleteSensitiveWord(word string) {
-	_, err := adapter.engine.Delete(CasbinSensitiveWord{Word: word})
+	_, err := adapter.Engine.Delete(CasbinSensitiveWord{Word: word})
 	if err != nil {
 		panic(err)
 	}
 	sensitiveWords = nil
-	err = adapter.engine.Desc("word").Find(&sensitiveWords)
+	err = adapter.Engine.Desc("word").Find(&sensitiveWords)
 	if err != nil {
 		panic(err)
 	}

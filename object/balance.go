@@ -36,7 +36,7 @@ type ConsumptionRecord struct {
 
 func GetBalances() []*ConsumptionRecord {
 	balances := []*ConsumptionRecord{}
-	err := adapter.engine.Desc("created_time").Find(&balances)
+	err := adapter.Engine.Desc("created_time").Find(&balances)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func GetBalances() []*ConsumptionRecord {
 
 func GetMemberBalances(id string, limit, offset int) []*ConsumptionRecord {
 	balances := []*ConsumptionRecord{}
-	err := adapter.engine.Desc("created_time").Where("receiver_id = ?", id).Find(&balances)
+	err := adapter.Engine.Desc("created_time").Where("receiver_id = ?", id).Find(&balances)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func GetMemberBalances(id string, limit, offset int) []*ConsumptionRecord {
 }
 
 func AddBalance(balance *ConsumptionRecord) bool {
-	affected, err := adapter.engine.Insert(balance)
+	affected, err := adapter.Engine.Insert(balance)
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +64,7 @@ func AddBalance(balance *ConsumptionRecord) bool {
 }
 
 func GetConsumptionRecordCount() int {
-	count, err := adapter.engine.Count(&ConsumptionRecord{})
+	count, err := adapter.Engine.Count(&ConsumptionRecord{})
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +84,7 @@ func GetConsumptionRecordId() int {
 
 func GetMemberBalance(id string) int {
 	member := Member{Id: id}
-	existed, err := adapter.engine.Select("score_count").Get(&member)
+	existed, err := adapter.Engine.Select("score_count").Get(&member)
 	if err != nil {
 		panic(err)
 	}
@@ -102,7 +102,7 @@ func UpdateMemberBalances(id string, amount int) bool {
 	balance := GetMemberBalance(id) + amount
 	member := new(Member)
 	member.ScoreCount = balance
-	affected, err := adapter.engine.Id(id).Cols("score_count").Update(member)
+	affected, err := adapter.Engine.Id(id).Cols("score_count").Update(member)
 	if err != nil {
 		panic(err)
 	}
@@ -115,7 +115,7 @@ func GetMemberConsumptionRecordNum(memberId string) int {
 	var err error
 
 	record := new(ConsumptionRecord)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).Count(record)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -223,7 +223,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 
 func GetThanksStatus(memberId string, id, recordType int) bool {
 	record := new(ConsumptionRecord)
-	total, err := adapter.engine.Where("consumption_type = ?", recordType).And("object_id = ?", id).And("receiver_id = ?", memberId).Count(record)
+	total, err := adapter.Engine.Where("consumption_type = ?", recordType).And("object_id = ?", id).And("receiver_id = ?", memberId).Count(record)
 	if err != nil {
 		panic(err)
 	}

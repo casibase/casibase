@@ -23,7 +23,7 @@ import (
 )
 
 func (c *ApiController) AddThanks() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
 
@@ -92,7 +92,7 @@ func (c *ApiController) AddThanks() {
 }
 
 func (c *ApiController) GetConsumptionRecord() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultBalancePageNum
@@ -118,7 +118,7 @@ func (c *ApiController) GetConsumptionRecord() {
 }
 
 func (c *ApiController) GetCheckinBonus() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	checkinDate := object.GetMemberCheckinDate(memberId)
 	date := util.GetDateStr()
@@ -152,7 +152,7 @@ func (c *ApiController) GetCheckinBonus() {
 }
 
 func (c *ApiController) GetCheckinBonusStatus() {
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	checkinDate := object.GetMemberCheckinDate(memberId)
 	date := util.GetDateStr()

@@ -15,7 +15,7 @@ type ResetRecord struct {
 
 func GetMemberResetFrequency(memberId, date string) int {
 	record := new(ResetRecord)
-	total, err := adapter.engine.Where("member_id = ?", memberId).And("created_time > ?", date).Count(record)
+	total, err := adapter.Engine.Where("member_id = ?", memberId).And("created_time > ?", date).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,7 @@ func AddNewResetRecord(resetInformation, memberId string, recordType int) (int, 
 		Expired:          false,
 		ValidateCode:     getRandomId(20),
 	}
-	affected, err := adapter.engine.Insert(record)
+	affected, err := adapter.Engine.Insert(record)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func AddNewResetRecord(resetInformation, memberId string, recordType int) (int, 
 
 func CheckResetCodeExpired(id string) bool {
 	var record ResetRecord
-	existed, err := adapter.engine.Id(id).Get(&record)
+	existed, err := adapter.Engine.Id(id).Get(&record)
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +59,7 @@ func CheckResetCodeExpired(id string) bool {
 
 func VerifyResetInformation(id, validateCode, memberId string, recordType int) bool {
 	var record ResetRecord
-	existed, err := adapter.engine.Id(id).Get(&record)
+	existed, err := adapter.Engine.Id(id).Get(&record)
 	if err != nil {
 		panic(err)
 	}
@@ -69,7 +69,7 @@ func VerifyResetInformation(id, validateCode, memberId string, recordType int) b
 	}
 
 	record.Expired = true
-	affected, err := adapter.engine.Id(id).Cols("expired").Update(record)
+	affected, err := adapter.Engine.Id(id).Cols("expired").Update(record)
 	if err != nil {
 		panic(err)
 	}
@@ -83,7 +83,7 @@ func VerifyResetInformation(id, validateCode, memberId string, recordType int) b
 func ExpireResetRecord(date string) int {
 	record := new(ResetRecord)
 	record.Expired = true
-	affected, err := adapter.engine.Where("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
+	affected, err := adapter.Engine.Where("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
 	if err != nil {
 		panic(err)
 	}

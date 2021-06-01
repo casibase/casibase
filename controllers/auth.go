@@ -14,22 +14,21 @@
 
 package controllers
 
-import "github.com/casbin/casnode/auth"
+import (
+	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/auth"
+)
 
-type Response struct {
-	Status string      `json:"status"`
-	Msg    string      `json:"msg"`
-	Data   interface{} `json:"data"`
-	Data2  interface{} `json:"data2"`
+var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+var ClientId = beego.AppConfig.String("clientId")
+var ClientSecret = beego.AppConfig.String("clientSecret")
+var JwtSecret = beego.AppConfig.String("jwtSecret")
+
+func init() {
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret)
 }
 
-// @Title Signin
-// @Description sign in as a member
-// @Param   username     formData    string  true        "The username to sign in"
-// @Param   password     formData    string  true        "The password"
-// @Success 200 {object} controllers.api_controller.Response The Response object
-// @router /signin [post]
-func (c *ApiController) Signin() {
+func (c *ApiController) Login() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
@@ -51,11 +50,7 @@ func (c *ApiController) Signin() {
 	c.ServeJSON()
 }
 
-// @Title Signout
-// @Description sign out the current member
-// @Success 200 {object} controllers.api_controller.Response The Response object
-// @router /signout [post]
-func (c *ApiController) Signout() {
+func (c *ApiController) Logout() {
 	var resp Response
 
 	c.SetSessionUser(nil)
@@ -65,20 +60,9 @@ func (c *ApiController) Signout() {
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetAccount() {
-	var resp Response
+func (c *ApiController) GetUsers() {
+	owner := c.Input().Get("owner")
 
-	if c.GetSessionUser() == nil {
-		resp = Response{Status: "error", Msg: "please sign in first", Data: c.GetSessionUser()}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-
-	claims := c.GetSessionUser()
-	userObj := claims
-	resp = Response{Status: "ok", Msg: "", Data: userObj}
-
-	c.Data["json"] = resp
+	c.Data["json"] = auth.GetUsers(owner)
 	c.ServeJSON()
 }

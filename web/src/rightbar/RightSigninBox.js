@@ -13,10 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import * as Setting from "../Setting";
-import * as Conf from "../Conf";
 import { withRouter, Link } from "react-router-dom";
-import "./rightSignin.css";
 import i18next from "i18next";
 
 class RightSigninBox extends React.Component {
@@ -28,66 +25,6 @@ class RightSigninBox extends React.Component {
   }
 
   render() {
-    if (window.location.pathname === "/signin") {
-      return (
-        <div className="box">
-          <div className="header">{i18next.t("bar:Other Sign In Methods")}</div>
-          {Conf.QQClientId !== "" ? (
-            <div className="cell" style={{ textAlign: "center" }}>
-              <div
-                className="signin_method"
-                onClick={() => Setting.getQQAuthCode("signup")}
-              >
-                <div className="signin_method_icon signin_method_qq"></div>
-                <div className="signin_method_label" style={{ width: 140 }}>
-                  {i18next.t("signin:Sign in with QQ")}
-                </div>
-              </div>
-            </div>
-          ) : null}
-          {Conf.WechatClientId !== "" ? (
-            <div className="cell" style={{ textAlign: "center" }}>
-              <div
-                className="signin_method"
-                onClick={() => Setting.getWeChatAuthCode("signup")}
-              >
-                <div className="signin_method_icon signin_method_wechat"></div>
-                <div className="signin_method_label" style={{ width: 140 }}>
-                  {i18next.t("signin:Sign in with WeChat")}
-                </div>
-              </div>
-            </div>
-          ) : null}
-          {Conf.GoogleClientId !== "" ? (
-            <div className="cell" style={{ textAlign: "center" }}>
-              <div
-                className="signin_method"
-                onClick={() => Setting.getGoogleAuthCode("signup")}
-              >
-                <div className="signin_method_icon signin_method_google"></div>
-                <div className="signin_method_label" style={{ width: 140 }}>
-                  {i18next.t("signin:Sign in with Google")}
-                </div>
-              </div>
-            </div>
-          ) : null}
-          {Conf.GithubClientId !== "" ? (
-            <div className="cell" style={{ textAlign: "center" }}>
-              <div
-                className="signin_method"
-                onClick={() => Setting.getGithubAuthCode("signup")}
-              >
-                <div className="signin_method_icon signin_method_github"></div>
-                <div className="signin_method_label" style={{ width: 140 }}>
-                  {i18next.t("signin:Sign in with Github")}
-                </div>
-              </div>
-            </div>
-          ) : null}
-        </div>
-      );
-    }
-
     return (
       <div className="box">
         <div className="cell">

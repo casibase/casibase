@@ -35,30 +35,6 @@ func InitDialer() {
 	dialer = gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
 }
 
-// SendResetPasswordMail sends mail with reset password information.
-func SendResetPasswordMail(email, memberId, url string) error {
-	mail := gomail.NewMessage()
-
-	name := beego.AppConfig.String("appname")
-	body := `Hi: ` + memberId + `, <br/><br/> 我们的系统收到一个请求，
-说你希望通过电子邮件重新设置你在 ` + name + ` 的密码。你可以点击下面的链接开始重设密码：<br/><br/><a href="` + url + `">` + url + `</a><br/><br/>
-如果这个请求不是由你发起的，那没问题，你不用担心，你可以安全地忽略这封邮件。<br/><br/>
-如果你有任何疑问，可以回复这封邮件向我们提问。<br/><br/>
-<front color="#888888">` + name + `</front>`
-
-	mail.SetHeader("From", mail.FormatAddress(mailConn["user"], name))
-	mail.SetHeader("To", email)
-	mail.SetHeader("Subject", "["+name+"]"+" 重设密码") // set subject
-	mail.SetBody("text/html", body)                 // set body
-
-	if dialer == nil {
-		InitDialer()
-	}
-
-	err := dialer.DialAndSend(mail)
-	return err
-}
-
 // SendRegistrationMail sends mail with registration information.
 func SendRegistrationMail(email, validateCode string) error {
 	mail := gomail.NewMessage()
