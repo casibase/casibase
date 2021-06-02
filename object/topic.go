@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/casbin/casnode/util"
@@ -307,6 +308,26 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
 		Where("topic.node_id = ?", nodeId).And("topic.deleted = ?", 0).
+		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
+		Cols("topic.*, member.avatar").
+		Limit(limit, offset).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, v := range topics {
+		v.ContentLength = len(v.Content)
+		v.Content = ""
+	}
+
+	return topics
+}
+
+func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
+	topics := []*NodeTopic{}
+	tag := fmt.Sprintf("%%%q%%", tagId)
+	err := adapter.engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+		Where("topic.tags LIKE ?", tag).And("topic.deleted = ?", 0).
 		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
 		Cols("topic.*, member.avatar").
 		Limit(limit, offset).Find(&topics)

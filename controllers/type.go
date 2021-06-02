@@ -45,11 +45,12 @@ type updateTopicNode struct {
 }
 
 type editTopic struct {
-	Id         int    `json:"id"`
-	Title      string `json:"title"`
-	NodeId     string `json:"nodeId"`
-	Content    string `json:"content"`
-	EditorType string `json:"editorType"`
+	Id         int      `json:"id"`
+	Title      string   `json:"title"`
+	NodeId     string   `json:"nodeId"`
+	Content    string   `json:"content"`
+	Tags       []string `json:"tags"`
+	EditorType string   `json:"editorType"`
 }
 
 type editReply struct {

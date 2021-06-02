@@ -465,13 +465,13 @@ class TopicBox extends React.Component {
       (this.state.topic !== null && this.state.topic.length === 0)
     ) {
       return (
-        <div class="box">
-          <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+        <div className="box">
+          <div className="header">
+            {Setting.getHomeLink()} <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("loading:Topic is loading")}
           </div>
-          <div class="cell">
-            <span class="gray bigger">
+          <div className="cell">
+            <span className="gray bigger">
               {i18next.t("loading:Please wait patiently...")}
             </span>
           </div>

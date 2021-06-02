@@ -117,6 +117,16 @@ export function getTopicsWithNode(nodeId, limit, page) {
   ).then((res) => res.json());
 }
 
+export function getTopicsWithTag(tagId, limit, page) {
+  return fetch(
+      `${Setting.ServerUrl}/api/get-topics-by-tag?tag-id=${tagId}&limit=${limit}&page=${page}`,
+      {
+        method: "GET",
+        credentials: "include",
+      }
+  ).then((res) => res.json());
+}
+
 export function getTopicsWithTab(nodeId, limit, page) {
   return fetch(
     `${Setting.ServerUrl}/api/get-topics-by-tab?tab-id=${nodeId}&limit=${limit}&page=${page}`,

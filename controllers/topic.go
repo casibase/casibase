@@ -27,10 +27,11 @@ import (
 )
 
 type NewTopicForm struct {
-	Title      string `json:"title"`
-	Body       string `json:"body"`
-	NodeId     string `json:"nodeId"`
-	EditorType string `json:"editorType"`
+	Title      string   `json:"title"`
+	Body       string   `json:"body"`
+	NodeId     string   `json:"nodeId"`
+	EditorType string   `json:"editorType"`
+	Tags       []string `json:"tags"`
 }
 
 func (c *ApiController) GetTopics() {
@@ -150,7 +151,7 @@ func (c *ApiController) AddTopic() {
 	if err != nil {
 		panic(err)
 	}
-	title, body, nodeId, editorType := form.Title, form.Body, form.NodeId, form.EditorType
+	title, body, nodeId, editorType, tags := form.Title, form.Body, form.NodeId, form.EditorType, form.Tags
 
 	if object.ContainsSensitiveWord(title) {
 		resp := Response{Status: "fail", Msg: "Topic title contains sensitive word."}
@@ -173,7 +174,7 @@ func (c *ApiController) AddTopic() {
 		NodeName:      "",
 		Title:         title,
 		CreatedTime:   util.GetCurrentTime(),
-		Tags:          nil,
+		Tags:          tags,
 		LastReplyUser: "",
 		LastReplyTime: util.GetCurrentTime(),
 		UpCount:       0,
@@ -231,7 +232,7 @@ func (c *ApiController) UploadTopicPic() {
 	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/image/" + timestamp + ".png")
+	fileURL := service.UploadFileToOSS(fileBytes, "/"+memberId+"/image/"+timestamp+".png")
 
 	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileURL}
 	c.Data["json"] = resp
@@ -314,6 +315,27 @@ func (c *ApiController) GetTopicsByNode() {
 	}
 
 	c.Data["json"] = object.GetTopicsWithNode(nodeId, limit, offset)
+	c.ServeJSON()
+}
+
+func (c *ApiController) GetTopicsByTag() {
+	tagId := c.Input().Get("tag-id")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	defaultLimit := object.DefaultPageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	c.Data["json"] = object.GetTopicsWithTag(tagId, limit, offset)
 	c.ServeJSON()
 }
 
@@ -453,7 +475,7 @@ func (c *ApiController) EditContent() {
 		if err != nil {
 			panic(err)
 		}
-		id, title, content, nodeId, editorType := form.Id, form.Title, form.Content, form.NodeId, form.EditorType
+		id, title, content, nodeId, editorType, tags := form.Id, form.Title, form.Content, form.NodeId, form.EditorType, form.Tags
 		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
@@ -466,6 +488,7 @@ func (c *ApiController) EditContent() {
 			Title:      title,
 			Content:    content,
 			EditorType: editorType,
+			Tags:       tags,
 		}
 		res := object.UpdateTopicWithLimitCols(id, &topic)
 
