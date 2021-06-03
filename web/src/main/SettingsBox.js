@@ -209,7 +209,7 @@ class SettingsBox extends React.Component {
     AccountBackend.resetUsername(newUsername).then((res) => {
       if (res.status === "ok") {
         alert(i18next.t("setting:Username has been set"));
-        window.location.href = "/signin";
+        window.location.href = Auth.getSigninUrl();
       } else {
         alert(res.msg);
       }
