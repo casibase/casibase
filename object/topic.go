@@ -326,7 +326,7 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	tag := fmt.Sprintf("%%%q%%", tagId)
-	err := adapter.engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
 		Where("topic.tags LIKE ?", tag).And("topic.deleted = ?", 0).
 		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
 		Cols("topic.*, member.avatar").
