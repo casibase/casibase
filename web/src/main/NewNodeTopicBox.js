@@ -27,8 +27,8 @@ import Editor from "./richTextEditor";
 
 import "codemirror/lib/codemirror.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
-import TagsInput from 'react-tagsinput'
-import '../tagsInput.css'
+import TagsInput from "react-tagsinput";
+import "../tagsInput.css";
 import { Resizable } from "re-resizable";
 import * as Conf from "../Conf";
 require("codemirror/mode/markdown/markdown");
@@ -38,15 +38,17 @@ const ReactMarkdown = require("react-markdown");
 class NewNodeTopicBox extends React.Component {
   constructor(props) {
     super(props);
+    this.auto = React.createRef();
     this.state = {
       classes: props,
+      autoTag: false,
       form: {},
       isPreviewEnabled: false,
       isTypingStarted: false,
       nodeId: "",
       nodeInfo: {},
       problems: [],
-      tags : [],
+      tags: [],
       message: "",
       width: "",
       editor: [
@@ -112,6 +114,18 @@ class NewNodeTopicBox extends React.Component {
     return problems.length === 0;
   }
 
+  autoTag() {
+    if (this.auto.current.checked) {
+      this.setState({
+        autoTag: true,
+      });
+    } else {
+      this.setState({
+        autoTag: false,
+      });
+    }
+  }
+
   publishTopic() {
     if (!this.isOkToSubmit() || !this.state.nodeInfo) {
       return;
@@ -170,10 +184,10 @@ class NewNodeTopicBox extends React.Component {
   }
 
   handleChange(tags) {
-    this.updateFormField("tags",tags)
+    this.updateFormField("tags", tags);
     this.setState({
-      tags :tags
-    })
+      tags: tags,
+    });
   }
 
   renderPreview() {
@@ -458,9 +472,30 @@ class NewNodeTopicBox extends React.Component {
               </tr>
 
               <tr>
-                <TagsInput
-                    inputProps={{maxlength:"8",placeholder: 'After adding tags press Enter,only add up to four tags,the length of each tag is up to 8'}}
-                    maxTags="4" value={this.state.tags} onChange={this.handleChange.bind(this)} />
+                {Setting.PcBrowser ? (
+                  <div>
+                    <span>
+                      <input
+                        ref={this.auto}
+                        type="checkbox"
+                        onChange={this.autoTag.bind(this)}
+                      />
+                      &nbsp;Auto Tag
+                    </span>
+                    {!this.state.autoTag ? (
+                      <TagsInput
+                        inputProps={{
+                          maxlength: "8",
+                          placeholder:
+                            "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+                        }}
+                        maxTags="4"
+                        value={this.state.tags}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    ) : null}
+                  </div>
+                ) : null}
                 <td
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >

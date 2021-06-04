@@ -167,6 +167,10 @@ func (c *ApiController) AddTopic() {
 		return
 	}
 
+	if len(tags) == 0 {
+		tags = service.Finalword(body)
+	}
+
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
 		Author:        memberId,
