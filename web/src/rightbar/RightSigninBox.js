@@ -14,6 +14,7 @@
 
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
+import * as Auth from "../auth/Auth";
 import i18next from "i18next";
 
 class RightSigninBox extends React.Component {
@@ -35,13 +36,13 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <Link to="/signup" className="super normal button">
+            <a href={Auth.getSignupUrl()} className="super normal button">
               {i18next.t("bar:Sign Up Now")}
-            </Link>
+            </a>
             <div className="sep5" />
             <div className="sep10" />
             {i18next.t("bar:For Existing Member")} &nbsp;
-            <Link to="/signin">{i18next.t("bar:Sign In")}</Link>
+            <a href={Auth.getSigninUrl()}>{i18next.t("bar:Sign In")}</a>
           </div>
         </div>
       </div>

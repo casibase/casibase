@@ -19,6 +19,7 @@ import * as MemberBackend from "../backend/MemberBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
+import * as Auth from "../auth/Auth";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css";
 import { withRouter } from "react-router-dom";
@@ -30,7 +31,7 @@ import "codemirror/lib/codemirror.css";
 import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";
-import '../tagsInput.css'
+import "../tagsInput.css";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -150,10 +151,10 @@ class NewBox extends React.Component {
   }
 
   handleChange(tags) {
-    this.updateFormField("tags",tags)
+    this.updateFormField("tags", tags);
     this.setState({
-      tags :tags
-    })
+      tags: tags,
+    });
   }
 
   isOkToSubmit() {
@@ -243,7 +244,7 @@ class NewBox extends React.Component {
     }
 
     if (this.props.account === null) {
-      this.props.history.push("/signin");
+      this.props.history.push(Auth.getSigninUrl());
     }
 
     return (
@@ -384,11 +385,18 @@ class NewBox extends React.Component {
           </div>
         </form>
         <div style={{}}>
-          <div style={{height:1,borderTop:'1px solid black'}}></div>
-          <div style={{height:3}}></div>
+          <div style={{ height: 1, borderTop: "1px solid black" }}></div>
+          <div style={{ height: 3 }}></div>
           <TagsInput
-              inputProps={{maxlength:"8",placeholder: 'After adding tags press Enter,only add up to four tags,the length of each tag is up to 8'}}
-              maxTags="4" value={this.state.tags} onChange={this.handleChange.bind(this)} />
+            inputProps={{
+              maxlength: "8",
+              placeholder:
+                "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+            }}
+            maxTags="4"
+            value={this.state.tags}
+            onChange={this.handleChange.bind(this)}
+          />
         </div>
         <div className="cell">
           <div className="fr">
