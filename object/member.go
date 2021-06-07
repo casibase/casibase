@@ -15,10 +15,10 @@
 package object
 
 import (
-	"bytes"
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
+	"sort"
 	"strings"
 
 	"github.com/casbin/casnode/service"
@@ -66,84 +66,73 @@ type Member struct {
 }
 
 func GetMembers() []*Member {
-	members := []*Member{}
-	err := adapter.Engine.Asc("created_time").Find(&members)
-	if err != nil {
-		panic(err)
-	}
+	members := GetMembersFromCasdoor()
+
+	sort.SliceStable(members, func(i, j int) bool {
+		return members[i].CreatedTime < members[j].CreatedTime
+	})
 
 	return members
 }
 
 func GetRankingRich() []*Member {
-	members := []*Member{}
-	err := adapter.Engine.Desc("score_count").Limit(25, 0).Find(&members)
-	if err != nil {
-		panic(err)
-	}
+	members := GetMembersFromCasdoor()
+	members = Limit(members, 0, 25)
+
+	sort.SliceStable(members, func(i, j int) bool {
+		return members[i].Score > members[j].Score
+	})
+
 	return members
 }
 
 // GetMembersAdmin cs, us: 1 means Asc, 2 means Desc, 0 means no effect.
 func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int) {
-	members := []*Member{}
-	db := adapter.Engine.Table("member")
-
-	var bt bytes.Buffer
+	members := GetMembersFromCasdoor()
 
 	// created time sort
-	switch cs {
-	case "1":
-		bt.WriteString("created_time ASC")
-	case "2":
-		bt.WriteString("created_time DESC")
-	}
-
-	if cs != "0" && us != "0" {
-		bt.WriteString(", ")
-	}
+	sort.SliceStable(members, func(i, j int) bool {
+		if cs == "1" {
+			return members[i].CreatedTime < members[j].CreatedTime
+		}
+		return members[i].CreatedTime > members[j].CreatedTime
+	})
 
 	// id/username sort
-	switch us {
-	case "1":
-		bt.WriteString("id ASC")
-	case "2":
-		bt.WriteString("id DESC")
-	}
-
-	db = db.OrderBy(bt.String())
-
-	if un != "" {
-		// search username
-		db = db.Where("id like ?", "%"+un+"%")
-	}
-	// get result
-	num, err := db.Limit(limit, offset).FindAndCount(&members, &Member{})
-	if err != nil {
-		panic(err)
-	}
-
-	res := []*AdminMemberInfo{}
-	for _, v := range members {
-		temp := AdminMemberInfo{
-			Member: *v,
-			Status: v.Status,
+	sort.SliceStable(members, func(i, j int) bool {
+		if us == "1" {
+			return members[i].Id < members[j].Id
 		}
-		res = append(res, &temp)
+		return members[i].Id > members[j].Id
+	})
+
+	members = Limit(members, offset, limit)
+
+	var res []*AdminMemberInfo
+	count := 0
+
+	// count id like %un%
+	for _, member := range members {
+		if strings.Contains(member.Id, un) {
+			count++
+			res = append(res, &AdminMemberInfo{
+				Member: *member,
+				Status: member.Status,
+			})
+		}
 	}
 
-	return res, int(num)
+	return res, count
 }
 
 func GetMemberAdmin(id string) *AdminMemberInfo {
-	member := Member{Id: id}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return nil
 	}
 
-	res := AdminMemberInfo{
-		Member:        member,
+	return &AdminMemberInfo{
+		Member:        *member,
 		FileQuota:     member.FileQuota,
 		FileUploadNum: GetFilesNum(id),
 		Status:        member.Status,
@@ -151,382 +140,266 @@ func GetMemberAdmin(id string) *AdminMemberInfo {
 		ReplyNum:      GetMemberRepliesNum(id),
 		LatestLogin:   member.CheckinDate,
 	}
-
-	if existed {
-		return &res
-	} else {
-		return nil
-	}
 }
 
 func GetMember(id string) *Member {
-	member := Member{Id: id}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return GetMemberFromCasdoor(id)
 }
 
 func GetMemberAvatar(id string) string {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("avatar").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.Avatar
-	} else {
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
 		return ""
 	}
+	return member.Avatar
 }
 
 func GetMemberNum() int {
-	count, err := adapter.Engine.Count(&Member{})
-	if err != nil {
-		panic(err)
-	}
-
-	return int(count)
+	members := GetMembersFromCasdoor()
+	return len(members)
 }
 
 // UpdateMember could update member's file quota and account status.
 func UpdateMember(id string, member *Member) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(id).Cols("file_quota, status").Update(member)
-	if err != nil {
-		panic(err)
-	}
+	targetMember.FileQuota = member.FileQuota
+	targetMember.Status = member.Status
 
-	//return affected != 0
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 func UpdateMemberInfo(id string, member *Member) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	_, err := adapter.Engine.Id(id).MustCols("company, bio, website, tagline, company_title, location").Update(member)
-	if err != nil {
-		panic(err)
-	}
+	targetMember.Company = member.Company
+	targetMember.Bio = member.Bio
+	targetMember.Website = member.Website
+	targetMember.Tagline = member.Tagline
+	targetMember.CompanyTitle = member.CompanyTitle
+	targetMember.Location = member.Location
 
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 // ChangeMemberEmailReminder change member's email reminder status
 func ChangeMemberEmailReminder(id, status string) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	member := new(Member)
 	if status == "true" {
-		member.EmailReminder = true
+		targetMember.EmailReminder = true
 	} else {
-		member.EmailReminder = false
+		targetMember.EmailReminder = false
 	}
 
-	_, err := adapter.Engine.Id(id).MustCols("email_reminder").Update(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 func UpdateMemberAvatar(id string, avatar string) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	member := new(Member)
-	member.Avatar = avatar
+	targetMember.Avatar = avatar
 
-	_, err := adapter.Engine.Id(id).MustCols("avatar").Update(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 func UpdateMemberEditorType(id string, editorType string) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	member := new(Member)
-	member.EditorType = editorType
+	targetMember.EditorType = editorType
 
-	_, err := adapter.Engine.Id(id).MustCols("editor_type").Update(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 func GetMemberEditorType(id string) string {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("editor_type").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.EditorType
-	} else {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return ""
 	}
+
+	return targetMember.EditorType
 }
 
 func UpdateMemberLanguage(id string, language string) bool {
-	if GetMember(id) == nil {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false
 	}
 
-	member := new(Member)
-	member.Language = language
+	targetMember.Language = language
 
-	_, err := adapter.Engine.Id(id).MustCols("language").Update(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return true
+	return UpdateMemberToCasdoor(targetMember)
 }
 
 func GetMemberLanguage(id string) string {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("language").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.Language
-	} else {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return ""
 	}
+
+	return targetMember.Language
 }
 
 func AddMember(member *Member) bool {
-	affected, err := adapter.Engine.Insert(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return affected != 0
+	return AddMemberToCasdoor(member)
 }
 
 // DeleteMember change this function to update member status.
 func DeleteMember(id string) bool {
-	affected, err := adapter.Engine.Id(id).Delete(&Member{})
-	if err != nil {
-		panic(err)
-	}
-
-	return affected != 0
+	return DeleteMemberFromCasdoor(id)
 }
 
 // GetMemberMail return member's email.
 func GetMemberMail(id string) string {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("email").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.Email
-	} else {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return ""
 	}
+
+	return targetMember.Email
 }
 
-// GetMemberEmailReminder return member's email reminder status, and his email adress.
+// GetMemberEmailReminder return member's email reminder status, and his email address.
 func GetMemberEmailReminder(id string) (bool, string) {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("email_reminder, email").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.EmailReminder, member.Email
-	} else {
+	targetMember := GetMemberFromCasdoor(id)
+	if targetMember == nil {
 		return false, ""
 	}
+
+	return targetMember.EmailReminder, targetMember.Email
 }
 
-func GetMail(email string) *Member {
-	member := Member{Email: email}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+func GetMemberByEmail(email string) *Member {
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.Email == email {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
 func GetPhoneNumber(phoneNumber string) *Member {
-	member := Member{Phone: phoneNumber}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.Phone == phoneNumber {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
 func GetGoogleAccount(googleAccount string) *Member {
-	member := Member{GoogleAccount: googleAccount}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.GoogleAccount == googleAccount {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
 func GetQQAccount(qqOpenId string) *Member {
-	member := Member{QQOpenId: qqOpenId}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.QQOpenId == qqOpenId {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
 func GetWechatAccount(wechatOpenId string) *Member {
-	member := Member{WechatOpenId: wechatOpenId}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.WechatOpenId == wechatOpenId {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
 func GetGithubAccount(githubAccount string) *Member {
-	member := Member{GithubAccount: githubAccount}
-	existed, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.GithubAccount == githubAccount {
+			return member
+		}
 	}
-
-	if existed {
-		return &member
-	} else {
-		return nil
-	}
+	return nil
 }
 
-func LinkMemberAccount(memberId, field, value string) bool {
-	affected, err := adapter.Engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
-	if err != nil {
-		panic(err)
-	}
-
-	return affected != 0
-}
+// LinkMemberAccount is not used
+//func LinkMemberAccount(memberId, field, value string) bool {
+//	affected, err := adapter.Engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	return affected != 0
+//}
 
 func GetMemberCheckinDate(id string) string {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("checkin_date").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.CheckinDate
-	} else {
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
 		return ""
 	}
+
+	return member.CheckinDate
 }
 
 func UpdateMemberCheckinDate(id, date string) bool {
-	member := new(Member)
-	member.CheckinDate = date
-
-	affected, err := adapter.Engine.Id(id).MustCols("checkin_date").Update(member)
-	if err != nil {
-		panic(err)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return false
 	}
 
-	return affected != 0
+	member.CheckinDate = date
+	return UpdateMemberToCasdoor(member)
 }
 
 func CheckModIdentity(memberId string) bool {
-	member := Member{}
-	existed, err := adapter.Engine.Id(memberId).Cols("is_moderator").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.IsModerator
-	} else {
+	member := GetMemberFromCasdoor(memberId)
+	if member == nil {
 		return false
 	}
+
+	return member.IsModerator
 }
 
 func UpdateMemberPassword(id, password string) bool {
-	member := new(Member)
-	member.Password = password
-
-	affected, err := adapter.Engine.Id(id).MustCols("password").Update(member)
-	if err != nil {
-		panic(err)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return false
 	}
 
-	return affected != 0
+	member.Password = password
+
+	return UpdateMemberToCasdoor(member)
 }
 
 func GetMemberFileQuota(memberId string) int {
-	member := Member{}
-	existed, err := adapter.Engine.Id(memberId).Cols("file_quota").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.FileQuota
-	} else {
+	member := GetMemberFromCasdoor(memberId)
+	if member == nil {
 		return 0
 	}
+
+	return member.FileQuota
 }
 
 // MemberPasswordLogin needs information and password to check member login.
@@ -537,40 +410,22 @@ func MemberPasswordLogin(information, password string) string {
 		return ""
 	}
 
-	member := Member{
-		Email:    information,
-		Password: password,
-	}
-	exist, err := adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
-	}
-	if exist && member.EmailVerifiedTime != "" {
-		return member.Id
-	}
+	members := GetMembersFromCasdoor()
 
-	member = Member{
-		Phone:    information,
-		Password: password,
-	}
-	exist, err = adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
-	}
-	if exist && member.PhoneVerifiedTime != "" {
-		return member.Id
-	}
+	for _, member := range members {
+		if member.Password == password {
+			if member.Email == information && member.EmailVerifiedTime != "" {
+				return member.Id
+			}
 
-	member = Member{
-		Id:       information,
-		Password: password,
-	}
-	exist, err = adapter.Engine.Get(&member)
-	if err != nil {
-		panic(err)
-	}
-	if exist {
-		return member.Id
+			if member.Phone == information && member.PhoneVerifiedTime != "" {
+				return member.Id
+			}
+
+			if member.Id == information {
+				return member.Id
+			}
+		}
 	}
 
 	return ""
@@ -578,56 +433,53 @@ func MemberPasswordLogin(information, password string) string {
 
 // GetMemberStatus returns member's account status, default 3(forbidden).
 func GetMemberStatus(id string) int {
-	member := Member{}
-	existed, err := adapter.Engine.Id(id).Cols("status").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return member.Status
-	} else {
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
 		return 3
 	}
+
+	return member.Status
 }
 
 // UpdateMemberOnlineStatus updates member's online information.
 func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate string) bool {
-	member := new(Member)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return false
+	}
 	member.OnlineStatus = onlineStatus
 	member.LastActionDate = lastActionDate
 
-	affected, err := adapter.Engine.Id(id).MustCols("online_status, last_action_date").Update(member)
-	if err != nil {
-		panic(err)
-	}
-
-	return affected != 0
+	return UpdateMemberToCasdoor(member)
 }
 
 func ExpiredMemberOnlineStatus(date string) int {
-	member := new(Member)
-	member.OnlineStatus = false
+	affected := 0
 
-	affected, err := adapter.Engine.Where("online_status = ?", true).And("last_action_date < ?", date).Cols("online_status").Update(member)
-	if err != nil {
-		panic(err)
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.OnlineStatus && member.LastActionDate < date {
+			member.OnlineStatus = false
+			affected++
+		}
 	}
 
-	return int(affected)
+	if UpdateMembersToCasdoor(members) {
+		return affected
+	}
+	return 0
 }
 
 func GetMemberOnlineNum() int {
-	var total int64
-	var err error
-
-	member := new(Member)
-	total, err = adapter.Engine.Where("online_status = ?", true).Count(member)
-	if err != nil {
-		panic(err)
+	total := 0
+	members := GetMembersFromCasdoor()
+	for _, member := range members {
+		if member.OnlineStatus {
+			total++
+		}
 	}
 
-	return int(total)
+	return total
 }
 
 type UpdateListItem struct {
@@ -636,6 +488,8 @@ type UpdateListItem struct {
 }
 
 func ResetUsername(oldUsername string, newUsername string) string {
+	return "Not allowed!"
+
 	if len(newUsername) == 0 || len(newUsername) > 100 || strings.Index(newUsername, " ") >= 0 {
 		return "Illegal username"
 	}
@@ -676,21 +530,6 @@ func ResetUsername(oldUsername string, newUsername string) string {
 	}
 
 	return ""
-}
-
-func GetMemberByEmail(email string) *Member {
-	if len(email) == 0 {
-		return nil
-	}
-	var ret Member
-	has, err := adapter.Engine.Where("email = ?", email).Get(&ret)
-	if err != nil {
-		panic(err)
-	}
-	if has {
-		return &ret
-	}
-	return nil
 }
 
 func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {

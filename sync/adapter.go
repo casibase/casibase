@@ -13,35 +13,35 @@
 // limitations under the License.
 
 package sync
-
-import (
-	"github.com/astaxie/beego"
-	"github.com/casbin/casnode/auth"
-	"github.com/casbin/casnode/object"
-	_ "github.com/go-sql-driver/mysql" // db = mysql
-	//_ "github.com/lib/pq"              // db = postgres
-)
-
-var adapter *object.Adapter
-
-func initConfig() {
-	err := beego.LoadAppConfig("ini", "../conf/app.conf")
-	if err != nil {
-		panic(err)
-	}
-
-	initAdapter()
-}
-
-func initAdapter() {
-	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), dbName)
-}
-
-func addUser(user *auth.User) bool {
-	affected, err := adapter.Engine.Insert(user)
-	if err != nil {
-		panic(err)
-	}
-
-	return affected != 0
-}
+//
+//import (
+//	"github.com/astaxie/beego"
+//	"github.com/casbin/casnode/auth"
+//	"github.com/casbin/casnode/object"
+//	_ "github.com/go-sql-driver/mysql" // db = mysql
+//	//_ "github.com/lib/pq"              // db = postgres
+//)
+//
+//var adapter *object.Adapter
+//
+//func initConfig() {
+//	err := beego.LoadAppConfig("ini", "../conf/app.conf")
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	initAdapter()
+//}
+//
+//func initAdapter() {
+//	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), dbName)
+//}
+//
+//func addUser(user *auth.User) bool {
+//	affected, err := adapter.Engine.Insert(user)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	return affected != 0
+//}

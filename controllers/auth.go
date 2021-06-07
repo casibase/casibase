@@ -25,7 +25,8 @@ var ClientSecret = beego.AppConfig.String("clientSecret")
 var JwtSecret = beego.AppConfig.String("jwtSecret")
 
 func init() {
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret)
+	orgName := beego.AppConfig.String("CasdoorOrganization")
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, orgName)
 }
 
 func (c *ApiController) Login() {
@@ -60,9 +61,10 @@ func (c *ApiController) Logout() {
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetUsers() {
-	owner := c.Input().Get("owner")
-
-	c.Data["json"] = auth.GetUsers(owner)
-	c.ServeJSON()
-}
+// GetUsers is not used
+//func (c *ApiController) GetUsers() {
+//	owner := c.Input().Get("owner")
+//
+//	c.Data["json"] = auth.GetUsers(owner)
+//	c.ServeJSON()
+//}
