@@ -10229,8 +10229,8 @@ react-select2-wrapper@^1.0.4-beta6:
 
 react-tagsinput@^3.19.0:
   version "3.19.0"
-  resolved "https://registry.yarnpkg.com/react-tagsinput/download/react-tagsinput-3.19.0.tgz#6e3b45595f2d295d4657bf194491988f948caabf"
-  integrity sha1-bjtFWV8tKV1GV78ZRJGYj5SMqr8=
+  resolved "https://registry.yarnpkg.com/react-tagsinput/-/react-tagsinput-3.19.0.tgz#6e3b45595f2d295d4657bf194491988f948caabf"
+  integrity sha512-ni+/qnZrYrvLg83LtTFHErKy1KQHL0fi0Y6C5jgC1dNUePE9cS/OlQ4XH6JRSjv9GGoeVE0R/ujSBaS1uzCRYQ==
 
 react-zmage@^0.8.5-beta.36:
   version "0.8.5-beta.36"
