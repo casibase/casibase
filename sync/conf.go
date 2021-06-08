@@ -13,8 +13,5 @@
 // limitations under the License.
 
 package sync
-//
-//var dbName = "casdoor"
-//var tableName = "user"
-//
-//var orgName = "casbin-forum"
+
+var dbName = "casdoor"

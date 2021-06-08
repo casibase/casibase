@@ -14,22 +14,22 @@
 
 package sync
 
-//import (
-//	"fmt"
-//	"testing"
-//
-//	"github.com/casbin/casnode/object"
-//)
-//
-//func TestSyncUsers(t *testing.T) {
-//	initConfig()
-//	initAdapter()
-//	object.InitAdapter()
-//
-//	members := object.GetMembers()
-//	for _, member := range members {
-//		user := CreateCasdoorUserFromMember(member)
-//		addUser(user)
-//		fmt.Printf("%v\n", user)
-//	}
-//}
+import (
+	"fmt"
+	"testing"
+
+	"github.com/casbin/casnode/object"
+)
+
+func TestSyncUsers(t *testing.T) {
+	initConfig()
+	initAdapter()
+	object.InitAdapter()
+
+	members := object.GetMembers()
+	for _, member := range members {
+		user := object.CreateCasdoorUserFromMember(member)
+		addUser(user)
+		fmt.Printf("%v\n", user)
+	}
+}

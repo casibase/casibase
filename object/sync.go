@@ -3,8 +3,11 @@ package object
 import (
 	"strconv"
 
+	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/auth"
 )
+
+var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	if member == nil {
@@ -28,7 +31,7 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	properties["renameQuota"] = strconv.Itoa(member.RenameQuota)
 
 	user := &auth.User{
-		Owner:         "casbin-forum",
+		Owner:         CasdoorOrganization,
 		Name:          member.Id,
 		CreatedTime:   member.CreatedTime,
 		UpdatedTime:   member.LastActionDate,
@@ -132,7 +135,7 @@ func Limit(members []*Member, start, limit int) []*Member {
 		return nil
 	}
 
-	end := minInt(len(members), start + limit)
+	end := minInt(len(members), start+limit)
 	return members[start:end]
 }
 

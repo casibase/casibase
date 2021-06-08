@@ -386,11 +386,7 @@ func (c *ApiController) GetTopicsByTab() {
 		offset = page*limit - limit
 	}
 
-	topics := object.GetTopicsWithTab(tabId, limit, offset)
-	if topics == nil {
-		topics = []*object.TopicWithAvatar{}
-	}
-	c.Data["json"] = topics
+	c.Data["json"] = object.GetTopicsWithTab(tabId, limit, offset)
 	c.ServeJSON()
 }
 
