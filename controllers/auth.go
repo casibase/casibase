@@ -23,10 +23,10 @@ var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
 var ClientId = beego.AppConfig.String("clientId")
 var ClientSecret = beego.AppConfig.String("clientSecret")
 var JwtSecret = beego.AppConfig.String("jwtSecret")
+var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 func init() {
-	orgName := beego.AppConfig.String("CasdoorOrganization")
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, orgName)
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
 }
 
 func (c *ApiController) Login() {
