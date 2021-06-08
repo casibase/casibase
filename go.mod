@@ -5,7 +5,7 @@ go 1.15
 require (
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.1.4+incompatible // indirect
-	github.com/astaxie/beego v1.12.2
+	github.com/astaxie/beego v1.12.3
 	github.com/aws/aws-sdk-go v1.38.7
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/casbin/google-groups-crawler v0.1.1
