@@ -40,14 +40,19 @@ func GetReplyCount() int {
 // GetReplies returns more information about reply of a topic.
 func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWithAvatar {
 	replies := []*ReplyWithAvatar{}
-	err := adapter.Engine.Table("reply").Join("LEFT OUTER", "member", "member.id = reply.author").
+	err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
 		Where("reply.topic_id = ?", topicId).And("reply.deleted = ?", 0).
 		Asc("reply.created_time").
-		Cols("reply.*, member.avatar, consumption_record.amount").
+		Cols("reply.*, consumption_record.amount").
 		Limit(limit, offset).Find(&replies)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, r := range replies {
+		r.Avatar = memberAvatar[r.Author]
 	}
 
 	isModerator := CheckModIdentity(memberId)
@@ -115,11 +120,15 @@ func GetReply(id int) *Reply {
 func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 	reply := ReplyWithAvatar{}
 	existed, err := adapter.Engine.Table("reply").
-		Join("LEFT OUTER", "member", "member.id = reply.author").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
-		Id(id).Cols("reply.*, member.avatar, consumption_record.amount").Get(&reply)
+		Id(id).Cols("reply.*, consumption_record.amount").Get(&reply)
 	if err != nil {
 		panic(err)
+	}
+
+	member := GetMember(memberId)
+	if member != nil {
+		reply.Avatar = member.Avatar
 	}
 
 	isModerator := CheckModIdentity(memberId)

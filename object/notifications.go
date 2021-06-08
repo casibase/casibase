@@ -66,13 +66,18 @@ func GetNotificationCount() int {
 
 func GetNotifications(memberId string, limit int, offset int) []*NotificationResponse {
 	notifications := []*NotificationResponse{}
-	err := adapter.Engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
+	err := adapter.Engine.Table("notification").
 		Where("notification.receiver_id = ?", memberId).And("notification.status != ?", 3).
 		Desc("notification.created_time").
-		Cols("notification.*, member.avatar").
+		Cols("notification.*").
 		Limit(limit, offset).Find(&notifications)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, n := range notifications {
+		n.Avatar = memberAvatar[n.Notification.SenderId]
 	}
 
 	var wg sync.WaitGroup

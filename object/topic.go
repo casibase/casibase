@@ -74,29 +74,28 @@ func GetCreatedTopicsNum(memberId string) int {
 }
 
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
-	topics := []*TopicWithAvatar{}
-	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
-		Where("topic.deleted = ?", 0).
-		Desc("topic.home_page_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
-		Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
+	var topics []*Topic
+	err := adapter.Engine.Table("topic").
+		Where("deleted = ?", 0).
+		Desc("home_page_top_time").
+		Desc("last_reply_time").
+		Desc("created_time").
 		Limit(limit, offset).Find(&topics)
-
 	if err != nil {
 		panic(err)
 	}
-	/*
-		res := []*TopicWithAvatar{}
-		for _, v := range topics {
-			temp := TopicWithAvatar{
-				Topic:  *v,
-				Avatar: GetMemberAvatar(v.Author),
-			}
-			res = append(res, &temp)
-		}
 
-		return res
-	*/
-	return topics
+	memberAvatar := GetMemberAvatarMapping()
+
+	var ret []*TopicWithAvatar
+	for _, topic := range topics {
+		ret = append(ret, &TopicWithAvatar{
+			Topic: *topic,
+			Avatar: memberAvatar[topic.Author],
+		})
+	}
+
+	return ret
 }
 
 func GetTopicsByTitleAndAuthor(title string, author string) []*Topic {
@@ -206,9 +205,14 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 
 func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
-	_, err := adapter.Engine.Table("topic").Id(id).Join("LEFT OUTER", "member", "member.id = topic.author").Cols("topic.*, member.avatar").Get(&topic)
+	_, err := adapter.Engine.Table("topic").Id(id).Cols("topic.*").Get(&topic)
 	if err != nil {
 		panic(err)
+	}
+
+	member := GetMember(topic.Author)
+	if member != nil {
+		topic.Avatar = member.Avatar
 	}
 
 	topic.ThanksStatus = GetThanksStatus(memberId, id, 4)
@@ -306,13 +310,18 @@ func GetTopicNodeId(id int) string {
 
 func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
-	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+	err := adapter.Engine.Table("topic").
 		Where("topic.node_id = ?", nodeId).And("topic.deleted = ?", 0).
 		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
-		Cols("topic.*, member.avatar").
+		Cols("topic.*").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, t := range topics {
+		t.Avatar = memberAvatar[t.Author]
 	}
 
 	for _, v := range topics {
@@ -326,13 +335,18 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	tag := fmt.Sprintf("%%%q%%", tagId)
-	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+	err := adapter.Engine.Table("topic").
 		Where("topic.tags LIKE ?", tag).And("topic.deleted = ?", 0).
 		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
-		Cols("topic.*, member.avatar").
+		Cols("topic.*").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, t := range topics {
+		t.Avatar = memberAvatar[t.Author]
 	}
 
 	for _, v := range topics {
@@ -496,15 +510,20 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 	if tab == "all" {
 		topics = GetTopics(limit, offset)
 	} else {
-		err := adapter.Engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").Join("LEFT OUTER", "member", "member.id = topic.author").
+		err := adapter.Engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").
 			Where("node.tab_id = ?", tab).And("topic.deleted = ?", 0).
 			Desc("topic.tab_top_time").Desc("topic.last_reply_time").
-			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time, member.avatar").
+			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time").
 			Limit(limit, offset).Find(&topics)
 
 		if err != nil {
 			panic(err)
 		}
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, t := range topics {
+		t.Avatar = memberAvatar[t.Author]
 	}
 
 	return topics
@@ -523,14 +542,23 @@ func UpdateTopicHotInfo(topicId string, hot int) bool {
 }
 
 func GetHotTopic(limit int) []*TopicWithAvatar {
-	topics := []*TopicWithAvatar{}
-	err := adapter.Engine.Table("topic").Join("LEFT OUTER", "member", "member.id = topic.author").
+	var topics []*Topic
+	err := adapter.Engine.Table("topic").
 		Desc("hot").And("deleted = ? ", 0).Limit(limit).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
 
-	return topics
+	var ret []*TopicWithAvatar
+	memberAvatar := GetMemberAvatarMapping()
+	for _, t := range topics {
+		ret = append(ret, &TopicWithAvatar{
+			Topic: *t,
+			Avatar: memberAvatar[t.Author],
+		})
+	}
+
+	return ret
 }
 
 func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {

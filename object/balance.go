@@ -83,31 +83,22 @@ func GetConsumptionRecordId() int {
 */
 
 func GetMemberBalance(id string) int {
-	member := Member{Id: id}
-	existed, err := adapter.Engine.Select("score_count").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	balance := member.Score
-
-	if existed {
-		return balance
-	} else {
+	member := GetMember(id)
+	if member == nil {
 		return 0
 	}
+	return member.Score
 }
 
 func UpdateMemberBalances(id string, amount int) bool {
-	balance := GetMemberBalance(id) + amount
-	member := new(Member)
-	member.Score = balance
-	affected, err := adapter.Engine.Id(id).Cols("score_count").Update(member)
-	if err != nil {
-		panic(err)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return false
 	}
 
-	return affected != 0
+	member.Score += amount
+
+	return UpdateMemberToCasdoor(member)
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {
