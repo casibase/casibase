@@ -14,7 +14,10 @@
 
 package controllers
 
-import "github.com/casbin/casnode/auth"
+import (
+	"github.com/casbin/casnode/auth"
+	"github.com/casbin/casnode/object"
+)
 
 type Response struct {
 	Status string      `json:"status"`
@@ -43,6 +46,10 @@ func (c *ApiController) Signin() {
 		panic(err)
 	}
 
+	member := object.GetMemberFromCasdoor(claims.Username)
+	member.OnlineStatus = true
+	object.UpdateMemberToCasdoor(member)
+
 	claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
 
@@ -57,6 +64,13 @@ func (c *ApiController) Signin() {
 // @router /signout [post]
 func (c *ApiController) Signout() {
 	var resp Response
+
+	claim := c.GetSessionUser()
+	if claim != nil {
+		member := object.GetMemberFromCasdoor(claim.Username)
+		member.OnlineStatus = false
+		object.UpdateMemberToCasdoor(member)
+	}
 
 	c.SetSessionUser(nil)
 

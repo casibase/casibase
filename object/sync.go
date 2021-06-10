@@ -1,6 +1,7 @@
 package object
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/astaxie/beego"
@@ -29,6 +30,7 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	properties["oauth_WeChat_verifiedTime"] = member.WechatVerifiedTime
 	properties["editorType"] = member.EditorType
 	properties["renameQuota"] = strconv.Itoa(member.RenameQuota)
+	properties["onlineStatus"] = fmt.Sprint(member.OnlineStatus)
 
 	user := &auth.User{
 		Owner:         CasdoorOrganization,
@@ -66,6 +68,10 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 	no, _ := strconv.Atoi(user.Id)
 	fileQuota, _ := strconv.Atoi(user.Properties["fileQuota"])
 	renameQuota, _ := strconv.Atoi(user.Properties["renameQuota"])
+	onlineStatus := false
+	if user.Properties["onlineStatus"] == "true" {
+		onlineStatus = true
+	}
 
 	return &Member{
 		Id:                 user.Name,
@@ -98,6 +104,7 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 		WechatAccount:      user.Properties["oauth_WeChat_displayName"],
 		WechatVerifiedTime: user.Properties["oauth_WeChat_verifiedTime"],
 		EditorType:         user.Properties["editorType"],
+		OnlineStatus:       onlineStatus,
 		RenameQuota:        renameQuota,
 	}
 }
