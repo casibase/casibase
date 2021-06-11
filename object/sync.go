@@ -51,11 +51,11 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 		IsAdmin:       member.IsModerator,
 		IsGlobalAdmin: false,
 		IsForbidden:   false,
-		Github:        member.GithubAccount,
-		Google:        member.GoogleAccount,
-		QQ:            member.QQOpenId,
-		WeChat:        member.WechatOpenId,
-		Properties:    properties,
+		//Github:        member.GithubAccount,
+		//Google:        member.GoogleAccount,
+		//QQ:            member.QQOpenId,
+		//WeChat:        member.WechatOpenId,
+		Properties: properties,
 	}
 	return user
 }
@@ -87,8 +87,8 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 		Language:           user.Language,
 		Score:              user.Score,
 		IsModerator:        user.IsAdmin,
-		GithubAccount:      user.Github,
-		GoogleAccount:      user.Google,
+		GithubAccount:      user.Properties["oauth_GitHub_username"],
+		GoogleAccount:      user.Properties["oauth_Google_username"],
 		QQOpenId:           user.QQ,
 		WechatOpenId:       user.WeChat,
 		Tagline:            user.Properties["tagline"],
