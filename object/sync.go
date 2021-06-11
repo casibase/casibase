@@ -6,6 +6,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/auth"
+	"github.com/casbin/casnode/util"
 )
 
 var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
@@ -16,6 +17,7 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	}
 
 	properties := map[string]string{}
+	properties["no"] = strconv.Itoa(member.No)
 	properties["tagline"] = member.Tagline
 	properties["bio"] = member.Bio
 	properties["website"] = member.Website
@@ -37,7 +39,7 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 		Name:          member.Id,
 		CreatedTime:   member.CreatedTime,
 		UpdatedTime:   member.LastActionDate,
-		Id:            strconv.Itoa(member.No),
+		Id:            util.GenerateId(),
 		Type:          "normal-user",
 		Password:      member.Password,
 		DisplayName:   member.Id,
@@ -65,7 +67,7 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 		return nil
 	}
 
-	no, _ := strconv.Atoi(user.Id)
+	no, _ := strconv.Atoi(user.Properties["no"])
 	fileQuota, _ := strconv.Atoi(user.Properties["fileQuota"])
 	renameQuota, _ := strconv.Atoi(user.Properties["renameQuota"])
 	onlineStatus := false

@@ -65,6 +65,16 @@ type Member struct {
 	RenameQuota        int    `json:"renameQuota"`
 }
 
+func GetMembersOld() []*Member {
+	members := []*Member{}
+	err := adapter.Engine.Asc("created_time").Find(&members)
+	if err != nil {
+		panic(err)
+	}
+
+	return members
+}
+
 func GetMembers() []*Member {
 	members := GetMembersFromCasdoor()
 
