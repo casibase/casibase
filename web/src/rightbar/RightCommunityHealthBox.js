@@ -50,7 +50,7 @@ class RightCommunityHealthBox extends React.Component {
         <div className="cell">
           <table cellPadding="5" cellSpacing="0" border="0" width="100%">
             <tr>
-              <td width="60" align="right">
+              <td width="70" align="right">
                 <span className="gray">{i18next.t("bar:Member")}</span>
               </td>
               <td width="auto" align="left">
@@ -58,7 +58,7 @@ class RightCommunityHealthBox extends React.Component {
               </td>
             </tr>
             <tr>
-              <td width="60" align="right">
+              <td width="70" align="right">
                 <span className="gray">{i18next.t("bar:Topic")}</span>
               </td>
               <td width="auto" align="left">
@@ -66,7 +66,7 @@ class RightCommunityHealthBox extends React.Component {
               </td>
             </tr>
             <tr>
-              <td width="60" align="right">
+              <td width="70" align="right">
                 <span className="gray">{i18next.t("bar:Reply")}</span>
               </td>
               <td width="auto" align="left">
