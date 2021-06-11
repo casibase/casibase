@@ -99,9 +99,11 @@ class Header extends React.Component {
     AccountBackend.signout().then((res) => {
       if (res.status === "ok") {
         this.props.onSignout();
-        this.props.history.push("/signout");
+        // this.props.history.push("/");
+        window.location.href = "/";
       } else {
-        this.props.history.push("/signout");
+        // this.props.history.push("/");
+        window.location.href = "/";
       }
     });
   }
@@ -146,9 +148,16 @@ class Header extends React.Component {
             {i18next.t("general:Timeline")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/settings" className="top">
+          <a
+            target="_blank"
+            className="top"
+            href={Auth.getMyProfileUrl(this.props.account)}
+          >
             {i18next.t("general:Setting")}
-          </Link>
+          </a>
+          {/*<Link to="/settings" className="top">*/}
+          {/*  {i18next.t("general:Setting")}*/}
+          {/*</Link>*/}
           &nbsp;&nbsp;&nbsp;
           {this.props.account?.isModerator ? (
             <span>
@@ -261,9 +270,16 @@ class Header extends React.Component {
                 </Link>
               </div>
               <div>
-                <Link to="/settings" className="top">
+                <a
+                  target="_blank"
+                  className="top"
+                  href={Auth.getMyProfileUrl(this.state.account)}
+                >
                   {i18next.t("general:Setting")}
-                </Link>
+                </a>
+                {/*<Link to="/settings" className="top">*/}
+                {/*  {i18next.t("general:Setting")}*/}
+                {/*</Link>*/}
               </div>
               <div>
                 <Link to="/admin" className="top">

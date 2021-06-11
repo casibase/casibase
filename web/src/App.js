@@ -24,7 +24,7 @@ import RightSigninBox from "./rightbar/RightSigninBox";
 import RightAccountBox from "./rightbar/RightAccountBox";
 import TopicBox from "./main/TopicBox";
 import MemberBox from "./main/MemberBox";
-import SearchTag from "./main/SearchTag"
+import SearchTag from "./main/SearchTag";
 import SettingsBox from "./main/SettingsBox";
 import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
@@ -213,15 +213,15 @@ class App extends Component {
             <AllCreatedTopicsBox />
           </div>
         </Route>
-        <Route exact path="/settings">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox
-              account={this.state.account}
-              refreshAccount={this.getAccount.bind(this)}
-            />
-          </div>
-        </Route>
+        {/*<Route exact path="/settings">*/}
+        {/*  <div id={pcBrowser ? "Main" : ""}>*/}
+        {/*    {pcBrowser ? <div className="sep20" /> : null}*/}
+        {/*    <SettingsBox*/}
+        {/*      account={this.state.account}*/}
+        {/*      refreshAccount={this.getAccount.bind(this)}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</Route>*/}
         <Route exact path="/callback/:authType/:addition">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -244,10 +244,10 @@ class App extends Component {
           </div>
         </Route>
         <Route exact path="/tag/:tagId">
-           <div id={pcBrowser ? "Main" : ""}>
-              {pcBrowser ? <div className="sep20" /> : null}
-              <SearchTag/>
-           </div>
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SearchTag />
+          </div>
         </Route>
         <Route exact path="/new/:nodeId">
           <div id={pcBrowser ? "Main" : ""}>
