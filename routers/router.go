@@ -160,4 +160,5 @@ func initAPI() {
 	beego.Router("/api/get-forum-version", &controllers.ApiController{}, "GET:GetForumVersion")
 	beego.Router("/api/get-online-num", &controllers.ApiController{}, "GET:GetOnlineNum")
 	beego.Router("/api/node-navigation", &controllers.ApiController{}, "GET:GetNodeNavigation")
+	beego.Router("/api/search", &controllers.ApiController{}, "GET:Search")
 }

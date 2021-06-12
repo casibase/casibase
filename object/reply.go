@@ -14,7 +14,10 @@
 
 package object
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
@@ -342,4 +345,16 @@ func GetReplyEditableStatus(member, author, createdTime string) bool {
 	}
 
 	return true
+}
+
+func SearchReplies(keyword string) []Reply {
+	var ret []Reply
+	keyword = fmt.Sprintf("%%%s%%", keyword)
+
+	err := adapter.Engine.Where("deleted = 0").Where("content like ?", keyword).Find(&ret)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
 }

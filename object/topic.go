@@ -661,3 +661,15 @@ func (t Topic) GetAllRepliesOfTopic() []string {
 	}
 	return ret
 }
+
+func SearchTopics(keyword string) []Topic {
+	var ret []Topic
+	keyword = fmt.Sprintf("%%%s%%", keyword)
+
+	err := adapter.Engine.Where("deleted = 0").Where("title like ? or content like ?", keyword, keyword).Find(&ret)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
+}

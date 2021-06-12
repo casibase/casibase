@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -58,6 +58,7 @@ class Header extends React.Component {
     this.setState({
       searchValue: curSearchVal,
       matchNodes: matchNodes,
+      searchResShow: true,
     });
   }
 
@@ -69,25 +70,10 @@ class Header extends React.Component {
 
   onKeyup(e) {
     if (e.keyCode === 13) {
-      const searchSide = Conf.DefaultSearchSite;
-
-      switch (searchSide) {
-        case "baidu":
-          window.open(
-            `https://www.baidu.com/s?q6=${Conf.Domain}&q3=${this.state.searchValue}`
-          );
-          return;
-        case "bing":
-          window.open(
-            `https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`
-          );
-          return;
-        case "google":
-          window.open(
-            `https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`
-          );
-          return;
-      }
+      this.props.history.push(`/search?keyword=${this.state.searchValue}`);
+      this.setState({
+        searchResShow: false,
+      });
     }
   }
 
@@ -360,6 +346,36 @@ class Header extends React.Component {
     }
   }
 
+  renderSearchEngine() {
+    let searchUrl;
+    switch (Conf.DefaultSearchSite) {
+      case "google":
+      case "Google":
+        searchUrl = `https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`;
+        break;
+      case "bing":
+      case "Bing":
+        searchUrl = `https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`;
+        break;
+      case "baidu":
+      case "Baidu":
+        searchUrl = `https://www.baidu.com/s?q6=${Conf.Domain}&q3=${this.state.searchValue}`;
+        break;
+      default:
+        searchUrl = "/search?keyword=" + this.state.searchValue;
+    }
+
+    return (
+      <div className="cell">
+        <a className="search-item" href={searchUrl} target="blank">
+          {`${i18next.t("search:Click here to search in ")}${
+            Conf.DefaultSearchSite
+          }`}
+        </a>
+      </div>
+    );
+  }
+
   renderSearch() {
     if (Setting.PcBrowser) {
       return (
@@ -373,9 +389,6 @@ class Header extends React.Component {
               autoComplete={"off"}
               value={this.state.searchValue}
               onKeyUp={(event) => this.onKeyup(event)}
-              onSubmit={() =>
-                this.window.open("https://www.google.com/search?1")
-              }
               onChange={(event) => this.onSearchValueChange(event)}
               onFocus={() => {
                 this.setState({
@@ -396,6 +409,9 @@ class Header extends React.Component {
                 className="box"
                 style={{ display: "block" }}
               >
+                <div className="cell">
+                  {i18next.t("search:Press Enter to search in site.")}
+                </div>
                 {this.state.matchNodes.length !== 0 ? (
                   <div className="cell">
                     <span className="fade">
@@ -411,16 +427,7 @@ class Header extends React.Component {
                     })}
                   </div>
                 ) : null}
-                <div className="cell">
-                  <a
-                    className="search-item"
-                    href={`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`}
-                    target="_blank"
-                  >
-                    {" "}
-                    Google&nbsp;{this.state.searchValue}{" "}
-                  </a>
-                </div>
+                {this.renderSearchEngine()}
               </div>
             ) : null}
           </div>

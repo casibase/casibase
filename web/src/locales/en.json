@@ -428,7 +428,7 @@
   },
   "poster": {
     "Poster management": "Poster management",
-    "Advertiser":"Advertiser",
+    "Advertiser": "Advertiser",
     "Link": "Link",
     "Picture link": "Picture link",
     "Save": "Save",
@@ -754,5 +754,12 @@
     "Please sign out before sign in": "Please sign out before sign in",
     "Adding image failed": "Adding image failed",
     "Add file failed": "Add file failed"
+  },
+  "search": {
+    "loading...": "loading...",
+    "Search result of ": "Search result of ",
+    "No topics found": "No topics found",
+    "Click here to search in ": "Click here to search in ",
+    "Press Enter to search in site.": "Press Enter to search in site."
   }
 }

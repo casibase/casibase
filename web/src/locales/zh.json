@@ -754,5 +754,12 @@
     "Please sign out before sign in": "登录前请先登出",
     "Adding image failed": "添加图片文件失败",
     "Add file failed": "添加文件失败"
+  },
+  "search": {
+    "loading...": "加载中...",
+    "Search result of ": "您搜索的关键词：",
+    "No topics found": "没有找到任何帖子",
+    "Click here to search in ": "点击此处跳转搜索：",
+    "Press Enter to search in site.": "按回车键以在站内搜索。"
   }
 }

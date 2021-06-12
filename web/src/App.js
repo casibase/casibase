@@ -70,6 +70,7 @@ import * as FavoritesBackend from "./backend/FavoritesBackend";
 import * as Auth from "./auth/Auth";
 import * as Conf from "./Conf";
 import AuthCallback from "./auth/AuthCallback";
+import SearchResultPage from "./SearchResultPage";
 
 class App extends Component {
   constructor(props) {
@@ -462,6 +463,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminSensitive account={this.state.account} event={"new"} />
+          </div>
+        </Route>
+        <Route exact path="/search">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SearchResultPage />
           </div>
         </Route>
       </Switch>
