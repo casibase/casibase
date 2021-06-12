@@ -19,6 +19,7 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/google/uuid"
 	"github.com/huichen/sego"
 	"github.com/mozillazg/go-slugify"
 )
@@ -34,6 +35,10 @@ func ParseInt(s string) int {
 
 func IntToString(i int) string {
 	return strconv.Itoa(i)
+}
+
+func GenerateId() string {
+	return uuid.NewString()
 }
 
 func IsValidUsername(username string) bool {

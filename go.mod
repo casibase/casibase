@@ -14,6 +14,7 @@ require (
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gomarkdown/markdown v0.0.0-20210408062403-ad838ccf8cdd
+	github.com/google/uuid v1.2.0
 	github.com/huichen/sego v0.0.0-20180617034105-3f3c8a8cfacc
 	github.com/issue9/assert v1.4.1 // indirect
 	github.com/jinzhu/configor v1.2.1 // indirect

@@ -26,7 +26,7 @@ func TestSyncUsers(t *testing.T) {
 	initAdapter()
 	object.InitAdapter()
 
-	members := object.GetMembers()
+	members := object.GetMembersOld()
 	for _, member := range members {
 		user := object.CreateCasdoorUserFromMember(member)
 		addUser(user)
