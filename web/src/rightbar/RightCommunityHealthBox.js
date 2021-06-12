@@ -90,7 +90,9 @@ class RightCommunityHealthBox extends React.Component {
             </a>
           </div>
         </div>
+
         <div className="sep20" />
+
         <div className="box">
           <div className="cell">
             <span className="fade">{i18next.t("bar:Community Stats")}</span>
