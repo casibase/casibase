@@ -19,8 +19,8 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
-import TagsInput from 'react-tagsinput'
-import '../tagsInput.css'
+import TagsInput from "react-tagsinput";
+import "../tagsInput.css";
 import * as Tools from "./Tools";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
@@ -65,8 +65,8 @@ class EditBox extends React.Component {
       form["nodeId"] = this.state.editObject?.nodeId;
       if (this.state.editObject?.tags != null) {
         this.setState({
-          tags: this.state.editObject?.tags
-        })
+          tags: this.state.editObject?.tags,
+        });
       }
     }
     form["content"] = this.state.editObject?.content;
@@ -78,10 +78,10 @@ class EditBox extends React.Component {
   }
 
   handleChange(tags) {
-    this.updateFormField("tags",tags)
+    this.updateFormField("tags", tags);
     this.setState({
-      tags :tags
-    })
+      tags: tags,
+    });
   }
 
   editContent() {
@@ -245,14 +245,14 @@ class EditBox extends React.Component {
   render() {
     if (this.state.editObject !== null && this.state.editObject.length === 0) {
       return (
-        <div class="box">
-          <div class="header">
+        <div className="box">
+          <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("loading:Content loading")}
           </div>
-          <div class="cell">
-            <span class="gray bigger">
+          <div className="cell">
+            <span className="gray bigger">
               {i18next.t("loading:Please wait patiently...")}
             </span>
           </div>
@@ -311,25 +311,25 @@ class EditBox extends React.Component {
       );
     }
     return (
-      <div class="box">
-        <div class="header">
+      <div className="box">
+        <div className="header">
           <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span>
+          <span className="chevron">&nbsp;›&nbsp;</span>
           <Link to={`/go/${this.state.editObject?.nodeId}`}>
             {" "}
             {this.state.editObject?.nodeName}
           </Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span>
+          <span className="chevron">&nbsp;›&nbsp;</span>
           <Link to={`/t/${this.state.editObject?.id}`}>
             {" "}
             {pangu.spacing(this.state.editObject?.title)}
           </Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
           {i18next.t("edit:Edit topic")}
           {/* todo */}
         </div>
-        <div class="cell">
-          <table cellpadding="5" cellspacing="0" border="0" width="100%">
+        <div className="cell">
+          <table cellPadding="5" cellSpacing="0" border="0" width="100%">
             <tbody>
               <tr>
                 <td>
@@ -337,7 +337,7 @@ class EditBox extends React.Component {
                     type="text"
                     maxLength="120"
                     name="title"
-                    class="mle"
+                    className="mle"
                     name="title"
                     value={this.state.form.title}
                     onChange={(event) => {
@@ -351,8 +351,15 @@ class EditBox extends React.Component {
               </tr>
               <tr>
                 <TagsInput
-                    inputProps={{maxlength:"8",placeholder: 'After adding tags press Enter,only add up to four tags,the length of each tag is up to 8'}}
-                    maxTags="4" value={this.state.tags} onChange={this.handleChange.bind(this)} />
+                  inputProps={{
+                    maxLength: "8",
+                    placeholder:
+                      "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+                  }}
+                  maxTags="4"
+                  value={this.state.tags}
+                  onChange={this.handleChange.bind(this)}
+                />
                 <td
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
@@ -360,7 +367,7 @@ class EditBox extends React.Component {
                     <input
                       type="submit"
                       value={i18next.t("edit:Save")}
-                      class="super normal button"
+                      className="super normal button"
                       onClick={() => this.editContent()}
                     />
                   </div>

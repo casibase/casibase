@@ -59,8 +59,8 @@ class RightNodeBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <div class="node rightFavorite node-casbin">
-        <div class="node_compose rightFavorite">
+      <div key={node?.id} className="node rightFavorite node-casbin">
+        <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
             <img
               src={Setting.getStatic("/static/img/compose.png")}
@@ -92,10 +92,10 @@ class RightNodeBox extends React.Component {
     let childNum = this.state.info?.childNode?.length;
 
     return (
-      <div class={`box ${this.state.nodeId}`}>
-        <div class="inner">
-          <strong class="gray">{i18next.t("bar:Parent node")}</strong>
-          <div class="sep10"></div>
+      <div className={`box ${this.state.nodeId}`}>
+        <div className="inner">
+          <strong className="gray">{i18next.t("bar:Parent node")}</strong>
+          <div className="sep10"></div>
           {this.renderNodes(this.state.info?.parentNode)}
         </div>
         {relatedNum !== 0 ? (

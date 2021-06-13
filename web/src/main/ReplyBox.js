@@ -306,13 +306,13 @@ class ReplyBox extends React.Component {
           <div className="fr" style={{ margin: "-3px -5px 0px 0px" }}>
             {this.props.topic?.tags?.map((tag, i) => {
               return (
-                  <Link
-                      to={`/tag/${tag}`}
-                      className={`tag ${this.props.topic.nodeId}`}
-                  >
-                    <li className="fa fa-tag" />
-                    {tag}
-                  </Link>
+                <Link
+                  to={`/tag/${tag}`}
+                  className={`tag ${this.props.topic.nodeId}`}
+                >
+                  <li className="fa fa-tag" />
+                  {tag}
+                </Link>
               );
             })}
           </div>
@@ -506,30 +506,29 @@ class ReplyBox extends React.Component {
           this.renderReply()
         )}
         {Setting.PcBrowser ? (
-            <div className="sep20" />
+          <div className="sep20" />
         ) : (
           <div className="sep5" />
         )}
         {this.state.replies.length === 0 ? (
-            <div>
-              <div className="inner" style={{backgroundColor:"white"}}>
-                {this.props.topic?.tags?.map((tag, i) => {
-                  return (
-                      <Link
-                          to={`/tag/${tag}`}
-                          className={`tag ${this.props.topic.nodeId}`}
-                      >
-                        <li className="fa fa-tag" />
-                        {tag}
-                      </Link>
-                  );
-                })}
-              </div>
-              <div className="sep20" />
+          <div>
+            <div className="inner" style={{ backgroundColor: "white" }}>
+              {this.props.topic?.tags?.map((tag, i) => {
+                return (
+                  <Link
+                    key={tag}
+                    to={`/tag/${tag}`}
+                    className={`tag ${this.props.topic.nodeId}`}
+                  >
+                    <li className="fa fa-tag" />
+                    {tag}
+                  </Link>
+                );
+              })}
             </div>
-        ) : (
-            null
-        )}
+            <div className="sep20" />
+          </div>
+        ) : null}
         {this.props.account === null ? null : (
           <NewReplyBox
             onReplyChange={this.handleReply}

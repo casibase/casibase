@@ -176,6 +176,8 @@ class TopicBox extends React.Component {
     });
   }
 
+  ignoreTopic() {}
+
   deleteTopic() {
     if (window.confirm(`Are you sure to delete this topic?`)) {
       TopicBackend.deleteTopic(this.state.topicId).then((res) => {
@@ -201,6 +203,8 @@ class TopicBox extends React.Component {
       });
     }
   }
+
+  downVoteTopic() {}
 
   topTopic(topType) {
     if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
@@ -243,6 +247,10 @@ class TopicBox extends React.Component {
       });
     }
   }
+
+  upVoteTopic() {}
+
+  openShare() {}
 
   cancelTopTopic(topType) {
     if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
@@ -403,27 +411,15 @@ class TopicBox extends React.Component {
             </a>
           )
         ) : null}
-        <a
-          href="#;"
-          onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
-          className="tb"
-        >
+        <a href="#;" onClick={this.openshare()} className="tb">
           Tweet
         </a>
         &nbsp;
-        <a
-          href="#;"
-          onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');"
-          className="tb"
-        >
+        <a href="#;" onClick={this.openshare()} className="tb">
           Weibo
         </a>
         &nbsp;
-        <a
-          href="#;"
-          onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
-          className="tb"
-        >
+        <a href="#;" onClick={this.ignoretopic()} className="tb">
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
@@ -467,7 +463,8 @@ class TopicBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            {Setting.getHomeLink()} <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {Setting.getHomeLink()}{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("loading:Topic is loading")}
           </div>
           <div className="cell">
@@ -686,16 +683,16 @@ class TopicBox extends React.Component {
               <span>
                 <div id="topic_677954_votes" className="votes">
                   <a
-                    href="javascript:"
-                    onClick="upVoteTopic(677954);"
+                    href="#;"
+                    onClick={this.upVoteTopic()}
                     className={`vote ${this.state.topic.nodeId}`}
                   >
                     <li className="fa fa-chevron-up" />
                   </a>{" "}
                   &nbsp;
                   <a
-                    href="javascript:"
-                    onClick="downVoteTopic(677954);"
+                    href="#;"
+                    onClick={this.downVoteTopic()}
                     className={`vote ${this.state.topic.nodeId}`}
                   >
                     <li className="fa fa-chevron-down" />
@@ -719,7 +716,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.homePageTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("homePage")}
                         className="op"
                       >
@@ -730,7 +727,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("homePage")}
                         className="op"
                       >
@@ -742,7 +739,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.tabTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("tab")}
                         className="op"
                       >
@@ -753,7 +750,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("tab")}
                         className="op"
                       >
@@ -765,7 +762,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("node")}
                         className="op"
                       >
@@ -776,7 +773,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("node")}
                         className="op"
                       >
@@ -791,7 +788,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("node")}
                         className="op"
                       >
@@ -802,7 +799,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("node")}
                         className="op"
                       >
@@ -833,7 +830,7 @@ class TopicBox extends React.Component {
                   this.state.topic?.nodeModerator ? (
                     <Link
                       onClick={() => this.deleteTopic()}
-                      to="javascript:void(0);"
+                      to="#;"
                       className="op"
                     >
                       {i18next.t("topic:DELETE")}

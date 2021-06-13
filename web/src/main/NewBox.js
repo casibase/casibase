@@ -367,7 +367,7 @@ class NewBox extends React.Component {
             {i18next.t("new:Hottest Nodes")} &nbsp;{" "}
             {this.state.nodes.map((node, i) => {
               return (
-                <div style={{ display: "inline" }}>
+                <div key={node.name} style={{ display: "inline" }}>
                   <a
                     href="#"
                     onClick={() => {
@@ -389,7 +389,7 @@ class NewBox extends React.Component {
           <div style={{ height: 3 }}></div>
           <TagsInput
             inputProps={{
-              maxlength: "8",
+              maxLength: "8",
               placeholder:
                 "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
             }}

@@ -99,30 +99,32 @@ class RightCommunityHealthBox extends React.Component {
           </div>
           <div className="cell">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
-              <tr>
-                <td width="60" align="right">
-                  <span className="gray">{i18next.t("bar:Member")}</span>
-                </td>
-                <td width="auto" align="left">
-                  <strong>{this.state.info?.member}</strong>
-                </td>
-              </tr>
-              <tr>
-                <td width="60" align="right">
-                  <span className="gray">{i18next.t("bar:Topic")}</span>
-                </td>
-                <td width="auto" align="left">
-                  <strong>{this.state.info?.topic}</strong>
-                </td>
-              </tr>
-              <tr>
-                <td width="60" align="right">
-                  <span className="gray">{i18next.t("bar:Reply")}</span>
-                </td>
-                <td width="auto" align="left">
-                  <strong>{this.state.info?.reply}</strong>
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td width="60" align="right">
+                    <span className="gray">{i18next.t("bar:Member")}</span>
+                  </td>
+                  <td width="auto" align="left">
+                    <strong>{this.state.info?.member}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="60" align="right">
+                    <span className="gray">{i18next.t("bar:Topic")}</span>
+                  </td>
+                  <td width="auto" align="left">
+                    <strong>{this.state.info?.topic}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td width="60" align="right">
+                    <span className="gray">{i18next.t("bar:Reply")}</span>
+                  </td>
+                  <td width="auto" align="left">
+                    <strong>{this.state.info?.reply}</strong>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
           <div className="inner">

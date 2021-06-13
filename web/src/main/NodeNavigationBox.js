@@ -41,7 +41,7 @@ class NodeNavigationBox extends React.Component {
 
   renderNode(node) {
     return (
-      <span>
+      <span key={node?.id}>
         <Link to={`/go/${node?.id}`} style={{ fontSize: "14px" }}>
           {node?.name}
         </Link>
@@ -56,7 +56,7 @@ class NodeNavigationBox extends React.Component {
     }
 
     return (
-      <div className="cell">
+      <div key={tab?.id} className="cell">
         <table cellPadding="0" cellSpacing="0" border="0">
           <tbody>
             <tr>
@@ -83,12 +83,12 @@ class NodeNavigationBox extends React.Component {
 
   render() {
     return (
-      <div class="box">
-        <div class="cell">
-          <div class="fr">
+      <div className="box">
+        <div className="cell">
+          <div className="fr">
             <Link to="/planes">{i18next.t("node:View all nodes")}</Link>
           </div>
-          <span class="fade">
+          <span className="fade">
             <strong>{Setting.getForumName()}</strong> /{" "}
             {i18next.t("node:Node navigation")}
           </span>

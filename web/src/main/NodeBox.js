@@ -355,7 +355,7 @@ class NodeBox extends React.Component {
                   )}
                   {this.state.nodeInfo?.moderators.map((member) => {
                     return (
-                      <span>
+                      <span key={member}>
                         {" "}
                         <Link to={`/member/${member}`} target="_blank">
                           {member}
@@ -390,7 +390,7 @@ class NodeBox extends React.Component {
                   onClick={() => {
                     this.deleteFavorite();
                   }}
-                  href="javascript:void(0);"
+                  href="#"
                   className="node_header_link"
                 >
                   {i18next.t("fav:Cancel favorite")}
@@ -400,7 +400,7 @@ class NodeBox extends React.Component {
                   onClick={() => {
                     this.addFavorite();
                   }}
-                  href="javascript:void(0);"
+                  href="#"
                   className="node_header_link"
                 >
                   {i18next.t("fav:Add to favorite")}
