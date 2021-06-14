@@ -121,9 +121,7 @@ class RightAccountBox extends React.Component {
             <tbody>
               <tr>
                 <td width="48" valign="top">
-                  <Link to={`/member/${username}`}>
-                    <Avatar username={username} avatar={avatar} />
-                  </Link>
+                  <Avatar username={username} avatar={avatar} />
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">

@@ -46,29 +46,31 @@ class RightHotTopicBox extends React.Component {
 
   renderTopics(topic) {
     return (
-      <div className="cell">
+      <div key={topic?.id} className="cell">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-          <tr>
-            <td width="24" valign="middle" align="center">
-              <Avatar
-                username={topic?.author}
-                avatar={topic?.avatar}
-                size={"small"}
-              />
-            </td>
-            <td width="10"></td>
-            <td width="auto" valign="middle">
-              <span className="item_hot_topic_title">
-                <Link
-                  to={`/t/${topic?.id}?from=${encodeURIComponent(
-                    window.location.href
-                  )}`}
-                >
-                  {pangu.spacing(topic?.title)}
-                </Link>
-              </span>
-            </td>
-          </tr>
+          <tbody>
+            <tr>
+              <td width="24" valign="middle" align="center">
+                <Avatar
+                  username={topic?.author}
+                  avatar={topic?.avatar}
+                  size={"small"}
+                />
+              </td>
+              <td width="10"></td>
+              <td width="auto" valign="middle">
+                <span className="item_hot_topic_title">
+                  <Link
+                    to={`/t/${topic?.id}?from=${encodeURIComponent(
+                      window.location.href
+                    )}`}
+                  >
+                    {pangu.spacing(topic?.title)}
+                  </Link>
+                </span>
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
     );

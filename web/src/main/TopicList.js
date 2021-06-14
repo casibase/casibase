@@ -77,7 +77,11 @@ class TopicList extends React.Component {
     );
 
     return (
-      <div className={`cell item ${this.props.nodeId}`} style={style}>
+      <div
+        key={topic?.id}
+        className={`cell item ${this.props.nodeId}`}
+        style={style}
+      >
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
             <tr>

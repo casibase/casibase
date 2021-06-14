@@ -255,7 +255,7 @@ class NewNodeTopicBox extends React.Component {
           >
             {this.state.form.title}
           </textarea>
-          <div class="sep10"></div>
+          <div className="sep10"></div>
           {!this.state.form.editorType ||
           this.state.form.editorType === "markdown" ? (
             <div
@@ -310,19 +310,19 @@ class NewNodeTopicBox extends React.Component {
               />
             </div>
           )}
-          <div class="sep10"></div>
+          <div className="sep10"></div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <input
               type="submit"
               value={i18next.t("node:Publish")}
-              class="super normal button"
+              className="super normal button"
               onClick={this.publishTopic.bind(this)}
             />
             {this.renderEditorSelect()}
           </div>
         </div>
-        <div class="inner">
-          <div class="fr">
+        <div className="inner">
+          <div className="fr">
             <a
               href="/settings/ignore/node/12"
               className={`${this.state.nodeInfo.id}`}
@@ -330,7 +330,7 @@ class NewNodeTopicBox extends React.Component {
               {i18next.t("node:Ignore this node")}
             </a>
             &nbsp;{" "}
-            <span class="fade">
+            <span className="fade">
               {i18next.t(
                 "node:Topics in the ignored nodes will not appear on the homepage."
               )}
@@ -485,7 +485,7 @@ class NewNodeTopicBox extends React.Component {
                     {!this.state.autoTag ? (
                       <TagsInput
                         inputProps={{
-                          maxlength: "8",
+                          maxLength: "8",
                           placeholder:
                             "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
                         }}

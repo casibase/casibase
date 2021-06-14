@@ -42,9 +42,11 @@ class RightHotNodeBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <Link to={`/go/${node?.id}`} className="item_node">
-        {node?.name}
-      </Link>
+      <div key={node?.id}>
+        <Link to={`/go/${node?.id}`} className="item_node">
+          {node?.name}
+        </Link>
+      </div>
     );
   }
 

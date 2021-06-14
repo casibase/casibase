@@ -176,28 +176,34 @@ class Header extends React.Component {
           <div className="content">
             <div style={{ paddingTop: "6px" }}>
               <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-                <tr>
-                  <td width="5" align="left"></td>
-                  <td width="80" align="left" style={{ paddingTop: "4px" }}>
-                    <Link to="/" name="top">
-                      <div id="logoMobile"></div>
-                    </Link>
-                  </td>
-                  <td width="auto" align="right" style={{ paddingTop: "2px" }}>
-                    <Link to="/" className="top">
-                      {i18next.t("general:Home")}
-                    </Link>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href={Auth.getSignupUrl()} className="top">
-                      {i18next.t("general:Sign Up")}
-                    </a>
-                    &nbsp;&nbsp;&nbsp;
-                    <a href={Auth.getSigninUrl()} className="top">
-                      {i18next.t("general:Sign In")}
-                    </a>
-                  </td>
-                  <td width="10" align="left"></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td width="5" align="left"></td>
+                    <td width="80" align="left" style={{ paddingTop: "4px" }}>
+                      <Link to="/" name="top">
+                        <div id="logoMobile"></div>
+                      </Link>
+                    </td>
+                    <td
+                      width="auto"
+                      align="right"
+                      style={{ paddingTop: "2px" }}
+                    >
+                      <Link to="/" className="top">
+                        {i18next.t("general:Home")}
+                      </Link>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href={Auth.getSignupUrl()} className="top">
+                        {i18next.t("general:Sign Up")}
+                      </a>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href={Auth.getSigninUrl()} className="top">
+                        {i18next.t("general:Sign In")}
+                      </a>
+                    </td>
+                    <td width="10" align="left"></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>

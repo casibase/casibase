@@ -232,7 +232,7 @@ class TopicPage extends React.Component {
 
   renderNode(node) {
     return (
-      <span>
+      <span key={node?.id}>
         <Link to={`/go/${node?.id}`}>{node?.name}</Link>
         &nbsp; &nbsp;
       </span>

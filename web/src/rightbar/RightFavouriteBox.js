@@ -42,8 +42,8 @@ class RightFavouriteBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <div class="node rightFavorite">
-        <div class="node_compose rightFavorite">
+      <div className="node rightFavorite">
+        <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
             <img
               src={Setting.getStatic("/static/img/compose.png")}

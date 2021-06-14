@@ -101,14 +101,14 @@ class MoveTopicNodeBox extends React.Component {
   render() {
     if (this.state.topic !== null && this.state.topic.length === 0) {
       return (
-        <div class="box">
-          <div class="header">
+        <div className="box">
+          <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("loading:Content loading")}
           </div>
-          <div class="cell">
-            <span class="gray bigger">
+          <div className="cell">
+            <span className="gray bigger">
               {i18next.t("loading:Please wait patiently...")}
             </span>
           </div>

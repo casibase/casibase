@@ -124,16 +124,18 @@ class AllCreatedTopicsBox extends React.Component {
     return {
       ...(this.state.tab === tab.value ? (
         <Link
+          key={tab.value}
           to={`/member/${this.state.memberId}/${tab.value}`}
-          class="cell_tab_current"
+          className="cell_tab_current"
         >
           {" "}
           {tab.label}{" "}
         </Link>
       ) : (
         <Link
+          key={tab.value}
           to={`/member/${this.state.memberId}/${tab.value}`}
-          class="cell_tab"
+          className="cell_tab"
         >
           {" "}
           {tab.label}{" "}
@@ -165,7 +167,11 @@ class AllCreatedTopicsBox extends React.Component {
               {i18next.t("member:'s all topics")}
             </option>
             {this.state.TAB_LIST.map((tab) => {
-              return <option value={tab.value}>{tab.label}</option>;
+              return (
+                <option key={tab.value} value={tab.value}>
+                  {tab.label}
+                </option>
+              );
             })}
           </select>
         </label>
@@ -251,8 +257,8 @@ class AllCreatedTopicsBox extends React.Component {
 
     return (
       <div className="box">
-        <div class="cell_tabs">
-          <div class="fl">
+        <div className="cell_tabs">
+          <div className="fl">
             {memberAvatar === "" ? (
               <img
                 src={Setting.getUserAvatar(this.state.memberId)}
@@ -274,7 +280,7 @@ class AllCreatedTopicsBox extends React.Component {
             this.state.tab === undefined ? (
               <Link
                 to={`/member/${this.state.memberId}`}
-                class="cell_tab_current"
+                className="cell_tab_current"
               >
                 {" "}
                 {`${this.state.memberId}${i18next.t(
@@ -282,7 +288,7 @@ class AllCreatedTopicsBox extends React.Component {
                 )}`}{" "}
               </Link>
             ) : (
-              <Link to={`/member/${this.state.memberId}`} class="cell_tab">
+              <Link to={`/member/${this.state.memberId}`} className="cell_tab">
                 {" "}
                 {`${this.state.memberId}${i18next.t(
                   "member:'s all created topics"
