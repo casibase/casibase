@@ -26,7 +26,11 @@ export function initAuthWithConfig(config) {
 }
 
 export function getSignupUrl() {
-  return `${trim(authConfig.serverUrl)}/signup/${authConfig.appName}`;
+  // return `${trim(authConfig.serverUrl)}/signup/${authConfig.appName}`;
+  return getSigninUrl().replace(
+    "/login/oauth/authorize",
+    "/signup/oauth/authorize"
+  );
 }
 
 export function getSigninUrl() {
