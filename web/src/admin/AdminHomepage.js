@@ -111,7 +111,7 @@ class AdminHomepage extends React.Component {
         </div>
       );
     }
-    if (this.props.account === null || !this.props.account?.isModerator) {
+    if (this.props.account === null || !this.props.account?.isAdmin) {
       this.props.history.push("/");
     }
 

@@ -346,7 +346,7 @@ class NodeBox extends React.Component {
               {this.state.nodeInfo?.moderators !== null &&
               this.state.nodeInfo?.moderators.length !== 0 ? (
                 <span>
-                  {this.props.account?.isModerator ? (
+                  {this.props.account?.isAdmin ? (
                     <Link to={`/go/${this.state.nodeId}/moderators`}>
                       {i18next.t("node:Moderator")}
                     </Link>
@@ -364,10 +364,10 @@ class NodeBox extends React.Component {
                     );
                   })}
                 </span>
-              ) : this.props.account?.isModerator ? (
+              ) : this.props.account?.isAdmin ? (
                 <Link
                   to={
-                    this.props.account?.isModerator
+                    this.props.account?.isAdmin
                       ? `/go/${this.state.nodeId}/moderators`
                       : null
                   }
@@ -622,7 +622,7 @@ class NodeBox extends React.Component {
       if (this.props.account === undefined) {
         return null;
       }
-      if (this.props.account === null || !this.props.account?.isModerator) {
+      if (this.props.account === null || !this.props.account?.isAdmin) {
         this.props.history.push(Auth.getSigninUrl());
       }
 
