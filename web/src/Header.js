@@ -145,7 +145,7 @@ class Header extends React.Component {
           {/*  {i18next.t("general:Setting")}*/}
           {/*</Link>*/}
           &nbsp;&nbsp;&nbsp;
-          {this.props.account?.isModerator ? (
+          {this.props.account?.isAdmin ? (
             <span>
               <Link to="/admin" className="top">
                 {i18next.t("general:Admin")}

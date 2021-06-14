@@ -207,7 +207,7 @@ class TopicBox extends React.Component {
   downVoteTopic() {}
 
   topTopic(topType) {
-    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
+    if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
       //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
       if (
         window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)
@@ -253,7 +253,7 @@ class TopicBox extends React.Component {
   openShare() {}
 
   cancelTopTopic(topType) {
-    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
+    if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
       if (
         window.confirm(
           `${i18next.t("topic:Are you sure to cancel top this topic?")}`
@@ -282,7 +282,7 @@ class TopicBox extends React.Component {
               {i18next.t("topic:Sink")} ↓
             </a>
             &nbsp;{" "}
-            {this.props.account?.isModerator ? (
+            {this.props.account?.isAdmin ? (
               <a href="#;" onClick={() => this.topTopic()}>
                 {i18next.t("topic:Top this topic")}
               </a>
@@ -411,15 +411,15 @@ class TopicBox extends React.Component {
             </a>
           )
         ) : null}
-        <a href="#;" onClick={this.openshare()} className="tb">
+        <a href="#;" onClick={this.openShare()} className="tb">
           Tweet
         </a>
         &nbsp;
-        <a href="#;" onClick={this.openshare()} className="tb">
+        <a href="#;" onClick={this.openShare()} className="tb">
           Weibo
         </a>
         &nbsp;
-        <a href="#;" onClick={this.ignoretopic()} className="tb">
+        <a href="#;" onClick={this.ignoreTopic()} className="tb">
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
@@ -711,7 +711,7 @@ class TopicBox extends React.Component {
               · {Setting.getPrettyDate(this.state.topic?.createdTime)} ·{" "}
               {this.state.topic?.hitCount} {i18next.t("topic:hits")}
               &nbsp;{" "}
-              {this.props.account?.isModerator ? (
+              {this.props.account?.isAdmin ? (
                 <span>
                   {this.state.topic?.homePageTopTime === "" ? (
                     <span>
@@ -826,7 +826,7 @@ class TopicBox extends React.Component {
                     {i18next.t("topic:MOVE")}
                   </Link>
                   &nbsp;{" "}
-                  {this.props.account?.isModerator ||
+                  {this.props.account?.isAdmin ||
                   this.state.topic?.nodeModerator ? (
                     <Link
                       onClick={() => this.deleteTopic()}
@@ -865,7 +865,7 @@ class TopicBox extends React.Component {
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <ReplyBox account={this.props.account} topic={this.state.topic} />
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        {this.props.account?.isModerator ? this.renderTopTopic() : null}
+        {this.props.account?.isAdmin ? this.renderTopTopic() : null}
       </div>
     );
   }
