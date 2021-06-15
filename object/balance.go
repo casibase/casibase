@@ -122,9 +122,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 	res := make([]*BalanceResponse, len(record))
 	for k, v := range record {
 		wg.Add(1)
-		v := v
-		k := k
-		go func() {
+		go func(k int, v *ConsumptionRecord) {
 			defer wg.Done()
 			tempRecord := BalanceResponse{
 				Amount:          v.Amount,
@@ -137,58 +135,34 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 			switch v.ConsumptionType {
 			case 2:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
-			case 3:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
 			case 4:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
 				if len(tempRecord.Title) == 0 {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-			case 5:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
 			case 6:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.Length = len(replyInfo.Content)
-				tempRecord.ObjectId = topicInfo.Id
+				fallthrough
+			case 3:
+				fallthrough
+			case 5:
+				fallthrough
 			case 7:
 				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+				if replyInfo == nil || replyInfo.Deleted {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
-			case 8:
-				topicInfo := GetTopic(v.ObjectId)
+				topicInfo := GetTopic(replyInfo.TopicId)
 				if topicInfo == nil || topicInfo.Deleted {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
-				tempRecord.Length = len(topicInfo.Content)
+				tempRecord.ObjectId = topicInfo.Id
+				tempRecord.Length = len(replyInfo.Content)
+			case 8:
+				fallthrough
 			case 9:
 				topicInfo := GetTopic(v.ObjectId)
 				if topicInfo == nil || topicInfo.Deleted {
@@ -197,9 +171,10 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 				}
 				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
+				tempRecord.Length = len(topicInfo.Content)
 			}
 			res[k] = &tempRecord
-		}()
+		}(k, v)
 	}
 	wg.Wait()
 	close(errChan)

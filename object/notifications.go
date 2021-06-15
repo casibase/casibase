@@ -85,19 +85,18 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 	res := make([]*NotificationResponse, len(notifications))
 	for k, v := range notifications {
 		wg.Add(1)
-		v := v
-		k := k
-		go func() {
+		go func(k int, v *NotificationResponse) {
 			defer wg.Done()
 			switch v.NotificationType {
 			case 1:
-
-				replyInfo := GetReply(v.ObjectId)
-				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				v.Content = replyInfo.Content
-				v.ObjectId = replyInfo.TopicId
+				fallthrough
 			case 2:
+				fallthrough
+			case 6:
 				replyInfo := GetReply(v.ObjectId)
+				if replyInfo == nil || replyInfo.Deleted {
+					break
+				}
 				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
 				v.Content = replyInfo.Content
 				v.ObjectId = replyInfo.TopicId
@@ -107,13 +106,9 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 				v.Title = GetTopicTitle(v.ObjectId)
 			case 5:
 				v.Title = GetTopicTitle(v.ObjectId)
-			case 6:
-				replyInfo := GetReply(v.ObjectId)
-				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				v.Content = replyInfo.Content
 			}
 			res[k] = v
-		}()
+		}(k, v)
 	}
 	wg.Wait()
 	close(errChan)
