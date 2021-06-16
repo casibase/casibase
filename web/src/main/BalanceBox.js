@@ -389,63 +389,65 @@ class BalanceBox extends React.Component {
         </div>
         <div className="cell">
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
-            <tr>
-              <td width="200">
-                <span className="gray">
-                  {i18next.t("balance:Current account balance")}
-                </span>
-                <div className="sep10"></div>
-                <div className="sep5"></div>
-                <div
-                  className="balance_area bigger"
-                  style={{ fontSize: "24px", lineHeight: "24px" }}
-                >
-                  {goldCount !== 0 ? (
-                    <span>
-                      {" "}
-                      {goldCount}{" "}
-                      <img
-                        src={Setting.getStatic("/static/img/gold@2x.png")}
-                        height="16"
-                        alt="G"
-                        border="0"
-                      />
-                    </span>
-                  ) : null}{" "}
-                  {silverCount}{" "}
-                  <img
-                    src={Setting.getStatic("/static/img/silver@2x.png")}
-                    height="16"
-                    alt="S"
-                    border="0"
-                  />{" "}
-                  {bronzeCount}{" "}
-                  <img
-                    src={Setting.getStatic("/static/img/bronze@2x.png")}
-                    height="16"
-                    alt="B"
-                    border="0"
-                  />
-                </div>
-                <div className="sep10"></div>
-                <div className="sep5"></div>
-                <li className="fa fa-question-circle gray"></li>
-                <Link to="/help/currency">
-                  {i18next.t(
-                    "balance:Documentation on the virtual currency system"
-                  )}
-                </Link>
-              </td>
-            </tr>
+            <tbody>
+              <tr>
+                <td width="200">
+                  <span className="gray">
+                    {i18next.t("balance:Current account balance")}
+                  </span>
+                  <div className="sep10"></div>
+                  <div className="sep5"></div>
+                  <div
+                    className="balance_area bigger"
+                    style={{ fontSize: "24px", lineHeight: "24px" }}
+                  >
+                    {goldCount !== 0 ? (
+                      <span>
+                        {" "}
+                        {goldCount}{" "}
+                        <img
+                          src={Setting.getStatic("/static/img/gold@2x.png")}
+                          height="16"
+                          alt="G"
+                          border="0"
+                        />
+                      </span>
+                    ) : null}{" "}
+                    {silverCount}{" "}
+                    <img
+                      src={Setting.getStatic("/static/img/silver@2x.png")}
+                      height="16"
+                      alt="S"
+                      border="0"
+                    />{" "}
+                    {bronzeCount}{" "}
+                    <img
+                      src={Setting.getStatic("/static/img/bronze@2x.png")}
+                      height="16"
+                      alt="B"
+                      border="0"
+                    />
+                  </div>
+                  <div className="sep10"></div>
+                  <div className="sep5"></div>
+                  <li className="fa fa-question-circle gray"></li>
+                  <Link to="/help/currency">
+                    {i18next.t(
+                      "balance:Documentation on the virtual currency system"
+                    )}
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
         <div>
           <table
-            cellpadding="5"
-            cellspacing="0"
+            cellPadding="5"
+            cellSpacing="0"
             border="0"
             width="100%"
-            class="data"
+            className="data"
           >
             <tbody>
               <tr>

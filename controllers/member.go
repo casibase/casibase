@@ -198,6 +198,10 @@ func (c *ApiController) UpdateMemberLanguage() {
 		c.ServeJSON()
 	}
 
+	clain := c.GetSessionUser()
+	clain.Language = language
+	c.SetSessionUser(clain)
+
 	res := object.UpdateMemberLanguage(memberId, language)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 

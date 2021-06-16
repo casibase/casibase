@@ -82,6 +82,8 @@ func (c *ApiController) AddThanks() {
 			object.AddReplyThanksNum(id)
 		}
 
+		c.UpdateAccountBalance(consumerRecord.Balance)
+
 		resp = Response{Status: "ok", Msg: "success"}
 	} else {
 		resp = Response{Status: "fail", Msg: "param wrong"}
@@ -144,6 +146,8 @@ func (c *ApiController) GetCheckinBonus() {
 	object.AddBalance(&record)
 	object.UpdateMemberBalances(memberId, bonus)
 	object.UpdateMemberCheckinDate(memberId, date)
+
+	c.UpdateAccountBalance(record.Balance)
 
 	resp = Response{Status: "ok", Msg: "success", Data: bonus}
 
