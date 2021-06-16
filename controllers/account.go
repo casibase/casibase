@@ -96,3 +96,9 @@ func (c *ApiController) GetAccount() {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *ApiController) UpdateAccountBalance(balance int) {
+	claim := c.GetSessionUser()
+	claim.Score = balance
+	c.SetSessionUser(claim)
+}

@@ -49,7 +49,7 @@ func (c *ApiController) GetReplies() {
 		if initStatus == "false" {
 			page = util.ParseInt(pageStr)
 		} else {
-			page = (repliesNum - 1) / limit + 1
+			page = (repliesNum-1)/limit + 1
 		}
 		offset = page*limit - limit
 	}
@@ -152,6 +152,9 @@ func (c *ApiController) AddReply() {
 	if affected {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
 		object.CreateReplyConsumption(reply.Author, id)
+
+		c.UpdateAccountBalance(balance - object.CreateReplyCost)
+
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, memberId, util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)

@@ -209,6 +209,9 @@ func (c *ApiController) AddTopic() {
 	res, id := object.AddTopic(&topic)
 	if res {
 		object.CreateTopicConsumption(topic.Author, id)
+
+		c.UpdateAccountBalance(balance - object.CreateTopicCost)
+
 		object.AddTopicNotification(id, topic.Author, topic.Content)
 		targetNode := object.GetNode(topic.NodeId)
 		targetNode.AddTopicToMailingList(topic.Title, topic.Content, topic.Author)
@@ -556,6 +559,9 @@ func (c *ApiController) TopTopic() {
 			return
 		}
 		object.TopTopicConsumption(memberId, id)
+
+		c.UpdateAccountBalance(balance - object.TopTopicCost)
+
 		date := util.GetTimeMinute(object.DefaultTopTopicTime)
 		res = object.ChangeTopicTopExpiredTime(id, date, "node")
 	} else {
