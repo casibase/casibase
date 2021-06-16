@@ -232,7 +232,7 @@ class TopicPage extends React.Component {
 
   renderNode(node) {
     return (
-      <span>
+      <span key={node?.id}>
         <Link to={`/go/${node?.id}`}>{node?.name}</Link>
         &nbsp; &nbsp;
       </span>
@@ -244,7 +244,7 @@ class TopicPage extends React.Component {
       return null;
     }
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.scoreCount
+      this.props.account.score
     );
     return (
       <div class="cell">

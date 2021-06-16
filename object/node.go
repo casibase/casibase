@@ -17,28 +17,28 @@ package object
 import "sync"
 
 type Node struct {
-	Id               string   `xorm:"varchar(100) notnull pk" json:"id"`
-	Name             string   `xorm:"varchar(100)" json:"name"`
-	CreatedTime      string   `xorm:"varchar(40)" json:"createdTime"`
-	Desc             string   `xorm:"varchar(500)" json:"desc"`
-	Image            string   `xorm:"varchar(200)" json:"image"`
-	BackgroundImage  string   `xorm:"varchar(200)" json:"backgroundImage"`
-	HeaderImage      string   `xorm:"varchar(200)" json:"headerImage"`
-	BackgroundColor  string   `xorm:"varchar(20)" json:"backgroundColor"`
-	BackgroundRepeat string   `xorm:"varchar(20)" json:"backgroundRepeat"`
-	TabId            string   `xorm:"varchar(100)" json:"tab"`
-	ParentNode       string   `xorm:"varchar(200)" json:"parentNode"`
-	PlaneId          string   `xorm:"varchar(50)" json:"planeId"`
-	Sorter           int      `xorm:"int" json:"sorter"`
-	Hot              int      `xorm:"int" json:"hot"`
-	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
-	MailingList      string   `xorm:"varchar(100)" json:"mailingList"`
-	GoogleGroupCookie      string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
+	Id                string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Name              string   `xorm:"varchar(100)" json:"name"`
+	CreatedTime       string   `xorm:"varchar(40)" json:"createdTime"`
+	Desc              string   `xorm:"varchar(500)" json:"desc"`
+	Image             string   `xorm:"varchar(200)" json:"image"`
+	BackgroundImage   string   `xorm:"varchar(200)" json:"backgroundImage"`
+	HeaderImage       string   `xorm:"varchar(200)" json:"headerImage"`
+	BackgroundColor   string   `xorm:"varchar(20)" json:"backgroundColor"`
+	BackgroundRepeat  string   `xorm:"varchar(20)" json:"backgroundRepeat"`
+	TabId             string   `xorm:"varchar(100)" json:"tab"`
+	ParentNode        string   `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId           string   `xorm:"varchar(50)" json:"planeId"`
+	Sorter            int      `xorm:"int" json:"sorter"`
+	Hot               int      `xorm:"int" json:"hot"`
+	Moderators        []string `xorm:"varchar(200)" json:"moderators"`
+	MailingList       string   `xorm:"varchar(100)" json:"mailingList"`
+	GoogleGroupCookie string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
 }
 
 func GetNodes() []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Asc("created_time").Find(&nodes)
+	err := adapter.Engine.Asc("created_time").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func GetNodes() []*Node {
 
 func GetNode(id string) *Node {
 	node := Node{Id: id}
-	existed, err := adapter.engine.Get(&node)
+	existed, err := adapter.Engine.Get(&node)
 	if err != nil {
 		panic(err)
 	}
@@ -65,7 +65,7 @@ func UpdateNode(id string, node *Node) bool {
 		return false
 	}
 
-	_, err := adapter.engine.Id(id).AllCols().Update(node)
+	_, err := adapter.Engine.Id(id).AllCols().Update(node)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +75,7 @@ func UpdateNode(id string, node *Node) bool {
 }
 
 func AddNode(node *Node) bool {
-	affected, err := adapter.engine.Insert(node)
+	affected, err := adapter.Engine.Insert(node)
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +84,7 @@ func AddNode(node *Node) bool {
 }
 
 func DeleteNode(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Node{})
+	affected, err := adapter.Engine.Id(id).Delete(&Node{})
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func DeleteNode(id string) bool {
 
 func GetNodesNum() int {
 	node := new(Node)
-	total, err := adapter.engine.Count(node)
+	total, err := adapter.Engine.Count(node)
 	if err != nil {
 		panic(err)
 	}
@@ -104,7 +104,7 @@ func GetNodesNum() int {
 
 func GetNodeTopicNum(id string) int {
 	topic := new(Topic)
-	total, err := adapter.engine.Where("node_id = ?", id).And("deleted = ?", 0).Count(topic)
+	total, err := adapter.Engine.Where("node_id = ?", id).And("deleted = ?", 0).Count(topic)
 	if err != nil {
 		panic(err)
 	}
@@ -114,7 +114,7 @@ func GetNodeTopicNum(id string) int {
 
 func GetNodeFromTab(tab string) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Where("tab_id = ?", tab).Desc("sorter").Find(&nodes)
+	err := adapter.Engine.Where("tab_id = ?", tab).Desc("sorter").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -124,7 +124,7 @@ func GetNodeFromTab(tab string) []*Node {
 
 func GetNodeFromPlane(plane string) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Where("plane_id = ?", plane).Cols("id, name").Desc("sorter").Find(&nodes)
+	err := adapter.Engine.Where("plane_id = ?", plane).Cols("id, name").Desc("sorter").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -138,7 +138,7 @@ func GetNodeRelation(id string) *NodeRelation {
 	relatedNode := []*Node{}
 	childNode := []*Node{}
 
-	_, err := adapter.engine.Id(id).Cols("parent_node").Get(node)
+	_, err := adapter.Engine.Id(id).Cols("parent_node").Get(node)
 	if err != nil {
 		panic(err)
 	}
@@ -148,21 +148,21 @@ func GetNodeRelation(id string) *NodeRelation {
 
 	go func() {
 		defer wg.Done()
-		_, err = adapter.engine.Id(node.ParentNode).Get(parentNode)
+		_, err = adapter.Engine.Id(node.ParentNode).Get(parentNode)
 		if err != nil {
 			panic(err)
 		}
 	}()
 	go func() {
 		defer wg.Done()
-		err = adapter.engine.Table("node").Where("parent_node = ?", node.ParentNode).And("id != ?", node.ParentNode).Find(&relatedNode)
+		err = adapter.Engine.Table("node").Where("parent_node = ?", node.ParentNode).And("id != ?", node.ParentNode).Find(&relatedNode)
 		if err != nil {
 			panic(err)
 		}
 	}()
 	go func() {
 		defer wg.Done()
-		err = adapter.engine.Table("node").Where("parent_node = ?", id).And("id != ?", node.ParentNode).Find(&childNode)
+		err = adapter.Engine.Table("node").Where("parent_node = ?", id).And("id != ?", node.ParentNode).Find(&childNode)
 		if err != nil {
 			panic(err)
 		}
@@ -194,7 +194,7 @@ func GetNodeNavigation() []*NodeNavigationResponse {
 
 func GetLatestNode(limit int) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Asc("created_time").Limit(limit).Find(&nodes)
+	err := adapter.Engine.Asc("created_time").Limit(limit).Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -204,7 +204,7 @@ func GetLatestNode(limit int) []*Node {
 
 func GetHotNode(limit int) []*Node {
 	nodes := []*Node{}
-	err := adapter.engine.Desc("hot").Limit(limit).Find(&nodes)
+	err := adapter.Engine.Desc("hot").Limit(limit).Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -216,7 +216,7 @@ func UpdateNodeHotInfo(nodeId string, hot int) bool {
 	node := new(Node)
 
 	node.Hot = hot
-	affected, err := adapter.engine.Id(nodeId).Cols("hot").Update(node)
+	affected, err := adapter.Engine.Id(nodeId).Cols("hot").Update(node)
 	if err != nil {
 		panic(err)
 	}
@@ -226,7 +226,7 @@ func UpdateNodeHotInfo(nodeId string, hot int) bool {
 
 func GetNodeModerators(id string) []string {
 	node := Node{Id: id}
-	existed, err := adapter.engine.Cols("moderators").Get(&node)
+	existed, err := adapter.Engine.Cols("moderators").Get(&node)
 	if err != nil {
 		panic(err)
 	}
@@ -240,7 +240,7 @@ func GetNodeModerators(id string) []string {
 
 func CheckNodeModerator(memberId, nodeId string) bool {
 	node := Node{Id: nodeId}
-	existed, err := adapter.engine.Cols("moderators").Get(&node)
+	existed, err := adapter.Engine.Cols("moderators").Get(&node)
 	if err != nil {
 		panic(err)
 	}
@@ -266,7 +266,7 @@ func AddNodeModerators(memberId, nodeId string) bool {
 		}
 	}
 	node.Moderators = append(moderators, memberId)
-	affected, err := adapter.engine.Id(nodeId).Cols("moderators").Update(node)
+	affected, err := adapter.Engine.Id(nodeId).Cols("moderators").Update(node)
 	if err != nil {
 		panic(err)
 	}
@@ -285,7 +285,7 @@ func DeleteNodeModerators(memberId, nodeId string) bool {
 		}
 	}
 	node.Moderators = moderators
-	affected, err := adapter.engine.Id(nodeId).Cols("moderators").Update(node)
+	affected, err := adapter.Engine.Id(nodeId).Cols("moderators").Update(node)
 	if err != nil {
 		panic(err)
 	}
@@ -296,11 +296,11 @@ func DeleteNodeModerators(memberId, nodeId string) bool {
 func (n Node) GetAllTopicTitlesOfNode() []string {
 	var topics []Topic
 	var ret []string
-	err := adapter.engine.Where("node_id = ? and deleted = 0", n.Id).Find(&topics)
+	err := adapter.Engine.Where("node_id = ? and deleted = 0", n.Id).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
-	for _, topic := range  topics {
+	for _, topic := range topics {
 		ret = append(ret, topic.Title)
 	}
 	return ret

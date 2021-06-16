@@ -21,12 +21,12 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) AddFavorites() {
+func (c *ApiController) AddFavorites() {
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	favorites := object.Favorites{
 		//Id:            util.IntToString(object.GetFavoritesCount()) + memberId,
 		FavoritesType: favoritesType,
@@ -56,7 +56,7 @@ func (c *APIController) AddFavorites() {
 				NotificationType: 4,
 				ObjectId:         topicId,
 				CreatedTime:      util.GetCurrentTime(),
-				SenderId:         c.GetSessionUser(),
+				SenderId:         c.GetSessionUsername(),
 				ReceiverId:       object.GetTopicAuthor(topicId),
 				Status:           1,
 			}
@@ -79,8 +79,8 @@ func (c *APIController) AddFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteFavorites() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) DeleteFavorites() {
+	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
@@ -114,8 +114,8 @@ func (c *APIController) DeleteFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFavoritesStatus() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetFavoritesStatus() {
+	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
@@ -132,8 +132,8 @@ func (c *APIController) GetFavoritesStatus() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFavorites() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetFavorites() {
+	memberId := c.GetSessionUsername()
 	favoritesTypeStr := c.Input().Get("type")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -176,8 +176,8 @@ func (c *APIController) GetFavorites() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAccountFavoriteNum() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetAccountFavoriteNum() {
+	memberId := c.GetSessionUsername()
 
 	var res [4]int
 	var wg sync.WaitGroup

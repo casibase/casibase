@@ -1,4 +1,5 @@
-@import "~antd/lib/back-top/style/index.css";
+/*@import "~antd/lib/back-top/style/index.css";*/
+@import "~antd/dist/antd.css";
 
 #logo {
   width: 94px;

@@ -36,7 +36,7 @@ type ConsumptionRecord struct {
 
 func GetBalances() []*ConsumptionRecord {
 	balances := []*ConsumptionRecord{}
-	err := adapter.engine.Desc("created_time").Find(&balances)
+	err := adapter.Engine.Desc("created_time").Find(&balances)
 	if err != nil {
 		panic(err)
 	}
@@ -46,7 +46,7 @@ func GetBalances() []*ConsumptionRecord {
 
 func GetMemberBalances(id string, limit, offset int) []*ConsumptionRecord {
 	balances := []*ConsumptionRecord{}
-	err := adapter.engine.Desc("created_time").Where("receiver_id = ?", id).Find(&balances)
+	err := adapter.Engine.Desc("created_time").Where("receiver_id = ?", id).Find(&balances)
 	if err != nil {
 		panic(err)
 	}
@@ -55,7 +55,7 @@ func GetMemberBalances(id string, limit, offset int) []*ConsumptionRecord {
 }
 
 func AddBalance(balance *ConsumptionRecord) bool {
-	affected, err := adapter.engine.Insert(balance)
+	affected, err := adapter.Engine.Insert(balance)
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +64,7 @@ func AddBalance(balance *ConsumptionRecord) bool {
 }
 
 func GetConsumptionRecordCount() int {
-	count, err := adapter.engine.Count(&ConsumptionRecord{})
+	count, err := adapter.Engine.Count(&ConsumptionRecord{})
 	if err != nil {
 		panic(err)
 	}
@@ -83,31 +83,22 @@ func GetConsumptionRecordId() int {
 */
 
 func GetMemberBalance(id string) int {
-	member := Member{Id: id}
-	existed, err := adapter.engine.Select("score_count").Get(&member)
-	if err != nil {
-		panic(err)
-	}
-
-	balance := member.ScoreCount
-
-	if existed {
-		return balance
-	} else {
+	member := GetMember(id)
+	if member == nil {
 		return 0
 	}
+	return member.Score
 }
 
 func UpdateMemberBalances(id string, amount int) bool {
-	balance := GetMemberBalance(id) + amount
-	member := new(Member)
-	member.ScoreCount = balance
-	affected, err := adapter.engine.Id(id).Cols("score_count").Update(member)
-	if err != nil {
-		panic(err)
+	member := GetMemberFromCasdoor(id)
+	if member == nil {
+		return false
 	}
 
-	return affected != 0
+	member.Score += amount
+
+	return UpdateMemberToCasdoor(member)
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {
@@ -115,7 +106,7 @@ func GetMemberConsumptionRecordNum(memberId string) int {
 	var err error
 
 	record := new(ConsumptionRecord)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).Count(record)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -131,9 +122,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 	res := make([]*BalanceResponse, len(record))
 	for k, v := range record {
 		wg.Add(1)
-		v := v
-		k := k
-		go func() {
+		go func(k int, v *ConsumptionRecord) {
 			defer wg.Done()
 			tempRecord := BalanceResponse{
 				Amount:          v.Amount,
@@ -146,58 +135,34 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 			switch v.ConsumptionType {
 			case 2:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
-			case 3:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
 			case 4:
 				tempRecord.Title = GetTopicTitle(v.ObjectId)
 				if len(tempRecord.Title) == 0 {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-			case 5:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
 			case 6:
-				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
-					tempRecord.ConsumptionType = 10
-					break
-				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.Length = len(replyInfo.Content)
-				tempRecord.ObjectId = topicInfo.Id
+				fallthrough
+			case 3:
+				fallthrough
+			case 5:
+				fallthrough
 			case 7:
 				replyInfo := GetReply(v.ObjectId)
-				topicInfo := GetTopic(replyInfo.TopicId)
-				if replyInfo == nil || topicInfo == nil || topicInfo.Deleted || replyInfo.Deleted {
+				if replyInfo == nil || replyInfo.Deleted {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-				tempRecord.Title = topicInfo.Title
-				tempRecord.ObjectId = topicInfo.Id
-			case 8:
-				topicInfo := GetTopic(v.ObjectId)
+				topicInfo := GetTopic(replyInfo.TopicId)
 				if topicInfo == nil || topicInfo.Deleted {
 					tempRecord.ConsumptionType = 10
 					break
 				}
-				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
-				tempRecord.Length = len(topicInfo.Content)
+				tempRecord.ObjectId = topicInfo.Id
+				tempRecord.Length = len(replyInfo.Content)
+			case 8:
+				fallthrough
 			case 9:
 				topicInfo := GetTopic(v.ObjectId)
 				if topicInfo == nil || topicInfo.Deleted {
@@ -206,9 +171,10 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 				}
 				tempRecord.ObjectId = v.ObjectId
 				tempRecord.Title = topicInfo.Title
+				tempRecord.Length = len(topicInfo.Content)
 			}
 			res[k] = &tempRecord
-		}()
+		}(k, v)
 	}
 	wg.Wait()
 	close(errChan)
@@ -223,7 +189,7 @@ func GetMemberConsumptionRecord(id string, limit, offset int) []*BalanceResponse
 
 func GetThanksStatus(memberId string, id, recordType int) bool {
 	record := new(ConsumptionRecord)
-	total, err := adapter.engine.Where("consumption_type = ?", recordType).And("object_id = ?", id).And("receiver_id = ?", memberId).Count(record)
+	total, err := adapter.Engine.Where("consumption_type = ?", recordType).And("object_id = ?", id).And("receiver_id = ?", memberId).Count(record)
 	if err != nil {
 		panic(err)
 	}

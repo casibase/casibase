@@ -106,6 +106,8 @@ class MemberBox extends React.Component {
     });
   }
 
+  block(memberId) {}
+
   deleteFavorite(memberId) {
     FavoritesBackend.deleteFavorites(memberId, 2).then((res) => {
       if (res.status === "ok") {
@@ -159,9 +161,9 @@ class MemberBox extends React.Component {
     const showWatch =
       this.props.account !== undefined &&
       this.props.account !== null &&
-      this.state.memberId !== this.props.account?.id;
+      this.state.memberId !== this.props.account?.username;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.state.member.scoreCount
+      this.state.member.score
     );
     return (
       <div className="box">
@@ -213,7 +215,7 @@ class MemberBox extends React.Component {
                     <input
                       type="button"
                       value="Block"
-                      onClick="if (confirm('Are you sure to block xxx?')) { location.href = '/block/1024?t=1493648974'; }"
+                      onClick={this.block(this.state.memberId)}
                       className="super normal button"
                     />
                   </div>
@@ -364,51 +366,53 @@ class MemberBox extends React.Component {
       <div className="box">
         <div className="sep5"></div>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-          <tr>
-            <td width="33%" valign="center" align="center">
-              <Link
-                to="/my/nodes"
-                className="dark"
-                style={{ display: "block" }}
+          <tbody>
+            <tr>
+              <td width="33%" valign="center" align="center">
+                <Link
+                  to="/my/nodes"
+                  className="dark"
+                  style={{ display: "block" }}
+                >
+                  <span className="bigger">{this.state.nodeFavoriteNum}</span>
+                  <div className="sep3"></div>
+                  <span className="fade small">{i18next.t("bar:Nodes")}</span>
+                </Link>
+              </td>
+              <td
+                width="33%"
+                valign="center"
+                align="center"
+                style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}
               >
-                <span className="bigger">{this.state.nodeFavoriteNum}</span>
-                <div className="sep3"></div>
-                <span className="fade small">{i18next.t("bar:Nodes")}</span>
-              </Link>
-            </td>
-            <td
-              width="33%"
-              valign="center"
-              align="center"
-              style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}
-            >
-              <Link
-                to="/my/topics"
-                className="dark"
-                style={{ display: "block" }}
+                <Link
+                  to="/my/topics"
+                  className="dark"
+                  style={{ display: "block" }}
+                >
+                  <span className="bigger">{this.state.topicFavoriteNum}</span>
+                  <div className="sep3"></div>
+                  <span className="fade small">{i18next.t("bar:Topics")}</span>
+                </Link>
+              </td>
+              <td
+                width="33%"
+                valign="center"
+                align="center"
+                style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}
               >
-                <span className="bigger">{this.state.topicFavoriteNum}</span>
-                <div className="sep3"></div>
-                <span className="fade small">{i18next.t("bar:Topics")}</span>
-              </Link>
-            </td>
-            <td
-              width="33%"
-              valign="center"
-              align="center"
-              style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}
-            >
-              <Link
-                to="/my/following"
-                className="dark"
-                style={{ display: "block" }}
-              >
-                <span className="bigger">{this.state.followingNum}</span>
-                <div className="sep3"></div>
-                <span className="fade small">{i18next.t("bar:Watch")}</span>
-              </Link>
-            </td>
-          </tr>
+                <Link
+                  to="/my/following"
+                  className="dark"
+                  style={{ display: "block" }}
+                >
+                  <span className="bigger">{this.state.followingNum}</span>
+                  <div className="sep3"></div>
+                  <span className="fade small">{i18next.t("bar:Watch")}</span>
+                </Link>
+              </td>
+            </tr>
+          </tbody>
         </table>
         <div className="sep5"></div>
       </div>
@@ -425,10 +429,11 @@ class MemberBox extends React.Component {
         )}
         {this.renderMember()}
         {!Setting.PcBrowser &&
-        this.props.account?.id === this.state.memberId ? (
+        this.props.account?.username === this.state.memberId ? (
           <div className="sep5" />
         ) : null}
-        {!Setting.PcBrowser && this.props.account?.id === this.state.memberId
+        {!Setting.PcBrowser &&
+        this.props.account?.username === this.state.memberId
           ? this.renderMemberFavorites()
           : null}
         {Setting.PcBrowser ? (

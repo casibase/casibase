@@ -27,6 +27,8 @@ import Editor from "./richTextEditor";
 
 import "codemirror/lib/codemirror.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
+import TagsInput from "react-tagsinput";
+import "../tagsInput.css";
 import { Resizable } from "re-resizable";
 import * as Conf from "../Conf";
 require("codemirror/mode/markdown/markdown");
@@ -36,14 +38,17 @@ const ReactMarkdown = require("react-markdown");
 class NewNodeTopicBox extends React.Component {
   constructor(props) {
     super(props);
+    this.auto = React.createRef();
     this.state = {
       classes: props,
+      autoTag: false,
       form: {},
       isPreviewEnabled: false,
       isTypingStarted: false,
       nodeId: "",
       nodeInfo: {},
       problems: [],
+      tags: [],
       message: "",
       width: "",
       editor: [
@@ -109,6 +114,18 @@ class NewNodeTopicBox extends React.Component {
     return problems.length === 0;
   }
 
+  autoTag() {
+    if (this.auto.current.checked) {
+      this.setState({
+        autoTag: true,
+      });
+    } else {
+      this.setState({
+        autoTag: false,
+      });
+    }
+  }
+
   publishTopic() {
     if (!this.isOkToSubmit() || !this.state.nodeInfo) {
       return;
@@ -163,6 +180,13 @@ class NewNodeTopicBox extends React.Component {
       this.setState({
         nodeInfo: res,
       });
+    });
+  }
+
+  handleChange(tags) {
+    this.updateFormField("tags", tags);
+    this.setState({
+      tags: tags,
     });
   }
 
@@ -231,7 +255,7 @@ class NewNodeTopicBox extends React.Component {
           >
             {this.state.form.title}
           </textarea>
-          <div class="sep10"></div>
+          <div className="sep10"></div>
           {!this.state.form.editorType ||
           this.state.form.editorType === "markdown" ? (
             <div
@@ -239,23 +263,14 @@ class NewNodeTopicBox extends React.Component {
                 overflow: "hidden",
                 overflowWrap: "break-word",
                 resize: "none",
-                height: "112px",
+                height: "auto",
               }}
               name="content"
               className={`mll ${this.state.nodeInfo.id}`}
               id="topic_content"
             >
-              <div
-                style={{
-                  minHeight: "100",
-                  height: "auto",
-                }}
-              >
+              <div className={`cm-short-content`}>
                 <CodeMirror
-                  style={{
-                    minHeight: 100,
-                    height: "auto",
-                  }}
                   className={`${this.state.nodeInfo.id}`}
                   editorDidMount={(editor) => Tools.attachEditor(editor)}
                   onPaste={() => Tools.uploadMdFile()}
@@ -295,19 +310,19 @@ class NewNodeTopicBox extends React.Component {
               />
             </div>
           )}
-          <div class="sep10"></div>
+          <div className="sep10"></div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <input
               type="submit"
               value={i18next.t("node:Publish")}
-              class="super normal button"
+              className="super normal button"
               onClick={this.publishTopic.bind(this)}
             />
             {this.renderEditorSelect()}
           </div>
         </div>
-        <div class="inner">
-          <div class="fr">
+        <div className="inner">
+          <div className="fr">
             <a
               href="/settings/ignore/node/12"
               className={`${this.state.nodeInfo.id}`}
@@ -315,7 +330,7 @@ class NewNodeTopicBox extends React.Component {
               {i18next.t("node:Ignore this node")}
             </a>
             &nbsp;{" "}
-            <span class="fade">
+            <span className="fade">
               {i18next.t(
                 "node:Topics in the ignored nodes will not appear on the homepage."
               )}
@@ -407,17 +422,12 @@ class NewNodeTopicBox extends React.Component {
                         overflow: "hidden",
                         overflowWrap: "break-word",
                         resize: "none",
-                        height: "172",
+                        height: "auto",
                       }}
                       className="mle"
                       id="topic_content"
                     >
-                      <div
-                        style={{
-                          height: "auto",
-                          minHeight: 310,
-                        }}
-                      >
+                      <div className={`cm-long-content`}>
                         <CodeMirror
                           editorDidMount={(editor) =>
                             Tools.attachEditor(editor)
@@ -460,7 +470,32 @@ class NewNodeTopicBox extends React.Component {
                   )}
                 </td>
               </tr>
+
               <tr>
+                {Setting.PcBrowser ? (
+                  <div>
+                    <span>
+                      <input
+                        ref={this.auto}
+                        type="checkbox"
+                        onChange={this.autoTag.bind(this)}
+                      />
+                      &nbsp;Auto Tag
+                    </span>
+                    {!this.state.autoTag ? (
+                      <TagsInput
+                        inputProps={{
+                          maxLength: "8",
+                          placeholder:
+                            "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+                        }}
+                        maxTags="4"
+                        value={this.state.tags}
+                        onChange={this.handleChange.bind(this)}
+                      />
+                    ) : null}
+                  </div>
+                ) : null}
                 <td
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >

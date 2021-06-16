@@ -35,11 +35,15 @@ func (n Node) SyncFromGoogleGroup() {
 	}
 
 	group := crawler.NewGoogleGroup(n.MailingList, n.GoogleGroupCookie)
-	conversations := group.GetConversations(*HttpClient)
+	conversations := group.GetAllConversations(*HttpClient)
 	for _, conv := range conversations {
-		messages := conv.GetAllMessages(*HttpClient)
+		messages := conv.GetAllMessages(*HttpClient, true)
+		if len(messages) < 1 {
+			fmt.Printf("Google Groups Crawler: Getting messages from Google Group: %s for node: %s failed, please check your cookie.\n", group.GroupName, n.Id)
+			break
+		}
 		var newTopic Topic
-		AuthorMember := AddMemberByNameAndEmailIfNotExist(messages[0].Author, conv.AuthorNameToEmail[messages[0].Author])
+		AuthorMember := AddMemberByNameAndEmailIfNotExist(messages[0].Author, messages[0].AuthorEmail)
 		if AuthorMember == nil {
 			continue
 		}
@@ -50,15 +54,25 @@ func (n Node) SyncFromGoogleGroup() {
 				NodeName:      n.Name,
 				Title:         conv.Title,
 				Content:       FilterUnsafeHTML(messages[0].Content),
-				CreatedTime:   util.GetCurrentTime(),
-				LastReplyTime: util.GetCurrentTime(),
+				CreatedTime:   util.GetTimeFromTimestamp(int64(conv.Time)),
+				LastReplyTime: util.GetTimeFromTimestamp(int64(conv.Time)),
 				EditorType:    "richtext",
 			}
 			AddTopic(&newTopic)
 		} else {
-			_, err := adapter.engine.Where("title = ?", conv.Title).Desc("id").Get(&newTopic)
+			var topics []Topic
+			err := adapter.Engine.Where("title = ? and deleted = 0", conv.Title).Find(&topics)
 			if err != nil {
 				panic(err)
+			}
+			if len(topics) == 0 {
+				continue
+			}
+			for _, t := range topics {
+				if conv.Title == t.Title {
+					newTopic = t
+					break
+				}
 			}
 		}
 
@@ -74,7 +88,7 @@ func (n Node) SyncFromGoogleGroup() {
 
 		for _, msg := range messages[1:] {
 			msg.Content = FilterUnsafeHTML(msg.Content)
-			AuthorMember = AddMemberByNameAndEmailIfNotExist(msg.Author, conv.AuthorNameToEmail[msg.Author])
+			AuthorMember = AddMemberByNameAndEmailIfNotExist(msg.Author, msg.AuthorEmail)
 			if AuthorMember == nil {
 				continue
 			}
@@ -86,10 +100,10 @@ func (n Node) SyncFromGoogleGroup() {
 				TopicId:     newTopic.Id,
 				EditorType:  "richtext",
 				Content:     msg.Content,
-				CreatedTime: util.GetCurrentTime(),
+				CreatedTime: util.GetTimeFromTimestamp(int64(msg.Time)),
 			}
 			AddReply(&newReply)
-			newTopic.LastReplyTime = util.GetCurrentTime()
+			newTopic.LastReplyTime = util.GetTimeFromTimestamp(int64(msg.Time))
 			newTopic.LastReplyUser = AuthorMember.Id
 		}
 		UpdateTopic(newTopic.Id, &newTopic)
@@ -112,12 +126,12 @@ func SyncAllNodeFromGoogleGroup() {
 	}
 	fmt.Println("Sync from google group started...")
 	var nodes []Node
-	err := adapter.engine.Find(&nodes)
+	err := adapter.Engine.Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
 	for _, node := range nodes {
-		go node.SyncFromGoogleGroup()
+		node.SyncFromGoogleGroup()
 	}
 }
 
@@ -130,5 +144,6 @@ func (r Reply) AddReplyToMailingList() {
 	if r.EditorType == "markdown" {
 		r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
 	}
-	_ = service.SendEmail(targetTopic.Title, r.Content, targetNode.MailingList, r.Author)
+	mailTitle := fmt.Sprintf("Re: %s", targetTopic.Title)
+	_ = service.SendEmail(mailTitle, r.Content, targetNode.MailingList, r.Author)
 }

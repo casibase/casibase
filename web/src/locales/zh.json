@@ -71,6 +71,7 @@
   },
   "bar": {
     "Nodes": "节点收藏",
+    "Poster": "广告",
     "Topics": "主题收藏",
     "Watch": "特别关注",
     "Compose": "创作新主题",
@@ -272,6 +273,7 @@
     "Topic": "第",
     "to": "到",
     "of all": "/共",
+    "all": "共",
     "topics": "个主题",
     "new topic": "创建新主题",
     "All topics": "全部主题",
@@ -409,6 +411,9 @@
     "Publish": "创建",
     "Preview": "预览"
   },
+  "tag": {
+    "No related pages with tags": "标签未收录"
+  },
   "reply": {
     "replies": "条回复",
     "thank": "感谢回复者",
@@ -428,7 +433,9 @@
     "Watch": "加入特别关注",
     "member": "号会员",
     "member, joined on": "号会员，加入于",
+    "Add member information sucess": "添加用户信息成功",
     "No.": "第",
+    "Add new member": "新增用户",
     "Today's ranking": "今日排行：",
     "'s all topics": "的所有主题",
     "'s all created topics": "创建的所有主题",
@@ -488,6 +495,14 @@
     "Ignore": "忽略",
     "Basic Info": "基本信息",
     "Personal Info": "个人信息"
+  },
+  "poster": {
+    "Poster management": "广告管理",
+    "Advertiser": "广告商",
+    "Link": "链接",
+    "Picture link": "图片链接",
+    "Save": "保存",
+    "Update poster information success": "更新广告信息成功"
   },
   "sensitive": {
     "sensitive management": "敏感词管理",
@@ -649,6 +664,7 @@
     "Node management": "节点管理",
     "Topic management": "帖子管理",
     "Member management": "用户管理",
+    "Poster management": "广告管理",
     "Tab management": "类别管理",
     "Plane management": "位面管理",
     "Sensitive management": "敏感词管理",
@@ -668,6 +684,8 @@
     "Topic title cannot be empty": "主题标题不能为空",
     "Node not found": "节点未找到",
     "Topic not found": "主题未找到",
+    "Unauthorized": "无权限",
+    "Add new member error": "添加用户失败",
     "The node you are trying to view does not exist, there are several possibilities": "你试图查看的节点不存在，有几种可能：",
     "You entered a node ID that does not exist.": "你输入了一个确实不存在的节点 ID",
     "The node is currently in invisible state.": "该节点目前位于一个 invisible 位面",
@@ -736,5 +754,12 @@
     "Please sign out before sign in": "登录前请先登出",
     "Adding image failed": "添加图片文件失败",
     "Add file failed": "添加文件失败"
+  },
+  "search": {
+    "loading...": "加载中...",
+    "Search result of ": "您搜索的关键词：",
+    "No topics found": "没有找到任何帖子",
+    "Click here to search in ": "点击此处跳转搜索：",
+    "Press Enter to search in site.": "按回车键以在站内搜索。"
   }
 }

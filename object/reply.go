@@ -14,7 +14,10 @@
 
 package object
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
@@ -29,7 +32,7 @@ type Reply struct {
 
 // GetReplyCount returns all replies num so far, both deleted and not deleted.
 func GetReplyCount() int {
-	count, err := adapter.engine.Count(&Reply{})
+	count, err := adapter.Engine.Count(&Reply{})
 	if err != nil {
 		panic(err)
 	}
@@ -40,14 +43,19 @@ func GetReplyCount() int {
 // GetReplies returns more information about reply of a topic.
 func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWithAvatar {
 	replies := []*ReplyWithAvatar{}
-	err := adapter.engine.Table("reply").Join("LEFT OUTER", "member", "member.id = reply.author").
+	err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
 		Where("reply.topic_id = ?", topicId).And("reply.deleted = ?", 0).
 		Asc("reply.created_time").
-		Cols("reply.*, member.avatar, consumption_record.amount").
+		Cols("reply.*, consumption_record.amount").
 		Limit(limit, offset).Find(&replies)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, r := range replies {
+		r.Avatar = memberAvatar[r.Author]
 	}
 
 	isModerator := CheckModIdentity(memberId)
@@ -62,7 +70,7 @@ func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWit
 
 func GetRepliesOfTopic(topicId int) []Reply {
 	var ret []Reply
-	err := adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Find(&ret)
+	err := adapter.Engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Find(&ret)
 	if err != nil {
 		panic(err)
 	}
@@ -75,7 +83,7 @@ func GetTopicReplyNum(topicId int) int {
 	var err error
 
 	reply := new(Reply)
-	total, err = adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Count(reply)
+	total, err = adapter.Engine.Where("topic_id = ?", topicId).And("deleted = ?", 0).Count(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -86,7 +94,7 @@ func GetTopicReplyNum(topicId int) int {
 // GetLatestReplyInfo returns topic's latest reply information.
 func GetLatestReplyInfo(topicId int) *Reply {
 	var reply Reply
-	exist, err := adapter.engine.Where("topic_id = ?", topicId).And("deleted = ?", false).Desc("created_time").Limit(1).Omit("content").Get(&reply)
+	exist, err := adapter.Engine.Where("topic_id = ?", topicId).And("deleted = ?", false).Desc("created_time").Limit(1).Omit("content").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
@@ -100,7 +108,7 @@ func GetLatestReplyInfo(topicId int) *Reply {
 // GetReply returns a single reply.
 func GetReply(id int) *Reply {
 	reply := Reply{Id: id}
-	existed, err := adapter.engine.Get(&reply)
+	existed, err := adapter.Engine.Get(&reply)
 	if err != nil {
 		panic(err)
 	}
@@ -114,12 +122,16 @@ func GetReply(id int) *Reply {
 // GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
 func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 	reply := ReplyWithAvatar{}
-	existed, err := adapter.engine.Table("reply").
-		Join("LEFT OUTER", "member", "member.id = reply.author").
+	existed, err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
-		Id(id).Cols("reply.*, member.avatar, consumption_record.amount").Get(&reply)
+		Id(id).Cols("reply.*, consumption_record.amount").Get(&reply)
 	if err != nil {
 		panic(err)
+	}
+
+	member := GetMember(memberId)
+	if member != nil {
+		reply.Avatar = member.Avatar
 	}
 
 	isModerator := CheckModIdentity(memberId)
@@ -135,7 +147,7 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 /*
 func GetReplyId() int {
 	reply := new(Reply)
-	_, err := adapter.engine.Desc("created_time").Omit("content").Limit(1).Get(reply)
+	_, err := adapter.Engine.Desc("created_time").Omit("content").Limit(1).Get(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -152,7 +164,7 @@ func UpdateReply(id int, reply *Reply) bool {
 		return false
 	}
 	reply.Content = FilterUnsafeHTML(reply.Content)
-	_, err := adapter.engine.Id(id).AllCols().Update(reply)
+	_, err := adapter.Engine.Id(id).AllCols().Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -167,7 +179,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 		return false
 	}
 	reply.Content = FilterUnsafeHTML(reply.Content)
-	_, err := adapter.engine.Id(id).Update(reply)
+	_, err := adapter.Engine.Id(id).Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -180,7 +192,7 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 func AddReply(reply *Reply) (bool, int) {
 	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
 	reply.Content = FilterUnsafeHTML(reply.Content)
-	affected, err := adapter.engine.Insert(reply)
+	affected, err := adapter.Engine.Insert(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -190,7 +202,7 @@ func AddReply(reply *Reply) (bool, int) {
 
 /*
 func DeleteReply(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Reply{})
+	affected, err := adapter.Engine.Id(id).Delete(&Reply{})
 	if err != nil {
 		panic(err)
 	}
@@ -199,11 +211,20 @@ func DeleteReply(id string) bool {
 }
 */
 
+func DeleteRepliesHardByTopicId(topicId int) bool {
+	affected, err := adapter.Engine.Where("topic_id = ?", topicId).Delete(&Reply{})
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 // DeleteReply soft delete reply.
 func DeleteReply(id int) bool {
 	reply := new(Reply)
 	reply.Deleted = true
-	affected, err := adapter.engine.Id(id).Cols("deleted").Update(reply)
+	affected, err := adapter.Engine.Id(id).Cols("deleted").Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -214,7 +235,7 @@ func DeleteReply(id int) bool {
 // GetLatestReplies returns member's latest replies.
 func GetLatestReplies(author string, limit int, offset int) []*LatestReply {
 	replys := []*LatestReply{}
-	err := adapter.engine.Table("reply").Join("LEFT OUTER", "topic", "topic.id = reply.topic_id").
+	err := adapter.Engine.Table("reply").Join("LEFT OUTER", "topic", "topic.id = reply.topic_id").
 		Where("reply.author = ?", author).And("reply.deleted = ?", 0).
 		Desc("reply.created_time").
 		Cols("reply.content, reply.author, reply.created_time, topic.id, topic.node_id, topic.node_name, topic.title").
@@ -232,7 +253,7 @@ func GetMemberRepliesNum(memberId string) int {
 	var err error
 
 	reply := new(Reply)
-	total, err = adapter.engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(reply)
+	total, err = adapter.Engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -243,7 +264,7 @@ func GetMemberRepliesNum(memberId string) int {
 // GetReplyTopicTitle only returns reply's topic title.
 func GetReplyTopicTitle(id int) string {
 	topic := Topic{Id: id}
-	existed, err := adapter.engine.Cols("title").Get(&topic)
+	existed, err := adapter.Engine.Cols("title").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
@@ -257,7 +278,7 @@ func GetReplyTopicTitle(id int) string {
 // GetReplyAuthor only returns reply's topic author.
 func GetReplyAuthor(id int) string {
 	reply := Reply{Id: id}
-	existed, err := adapter.engine.Cols("author").Get(&reply)
+	existed, err := adapter.Engine.Cols("author").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
@@ -276,7 +297,7 @@ func AddReplyThanksNum(id int) bool {
 	}
 
 	reply.ThanksNum++
-	affected, err := adapter.engine.Id(id).Cols("thanks_num").Update(reply)
+	affected, err := adapter.Engine.Id(id).Cols("thanks_num").Update(reply)
 	if err != nil {
 		panic(err)
 	}
@@ -324,4 +345,16 @@ func GetReplyEditableStatus(member, author, createdTime string) bool {
 	}
 
 	return true
+}
+
+func SearchReplies(keyword string) []Reply {
+	var ret []Reply
+	keyword = fmt.Sprintf("%%%s%%", keyword)
+
+	err := adapter.Engine.Where("deleted = 0").Where("content like ?", keyword).Find(&ret)
+	if err != nil {
+		panic(err)
+	}
+
+	return ret
 }

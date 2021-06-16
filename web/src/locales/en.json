@@ -73,6 +73,7 @@
     "Nodes": "Nodes",
     "Topics": "Topics",
     "Watch": "Watch",
+    "Poster": "Poster",
     "Compose": "Compose",
     "unread": "unread",
     "For Existing Member": "For Existing Member:",
@@ -272,6 +273,7 @@
     "Topic": "Topic",
     "to": "to",
     "of all": "of all",
+    "all": "all",
     "topics": "topics",
     "new topic": "new topic",
     "All topics": "All topics",
@@ -424,11 +426,21 @@
     "Delete": "Delete",
     "Edit": "Edit"
   },
+  "poster": {
+    "Poster management": "Poster management",
+    "Advertiser": "Advertiser",
+    "Link": "Link",
+    "Picture link": "Picture link",
+    "Save": "Save",
+    "Update poster information success": "Update poster information success"
+  },
   "member": {
     "Watch": "Watch",
     "member": "member",
     "member, joined on": "member, joined on",
+    "Add member information sucess": "Add member information sucess",
     "No.": "No.",
+    "Add new member": "Add new member",
     "Today's ranking": "Today's ranking:",
     "'s all topics": "'s all topics",
     "'s all created topics": "'s all created topics",
@@ -644,6 +656,7 @@
     "Backstage management": "Backstage management",
     "Node management": "Node management",
     "Topic management": "Topic management",
+    "Poster management": "Poster management",
     "Member management": "Member management",
     "Sensitive management": "Sensitive management",
     "Tab management": "Tab management",
@@ -663,6 +676,9 @@
     "sensitive management": "Sensitive Management",
     "new sensitive": "New Sensitive Word"
   },
+  "tag": {
+    "No related pages with tags": "No related pages with tags"
+  },
   "error": {
     "Reply title cannot be empty": "Reply title cannot be empty",
     "Topic title cannot be empty": "Topic title cannot be empty",
@@ -672,6 +688,8 @@
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist.",
     "The node is currently in invisible state.": "The node is currently in invisible state.",
     "Home Page": "Home Page",
+    "Unauthorized": "Unauthorized",
+    "Add new member error": "Add new member error",
     "My profile": "My profile",
     "Back to": "Back to",
     "Back to Home Page": "Back to Home Page",
@@ -736,5 +754,12 @@
     "Please sign out before sign in": "Please sign out before sign in",
     "Adding image failed": "Adding image failed",
     "Add file failed": "Add file failed"
+  },
+  "search": {
+    "loading...": "loading...",
+    "Search result of ": "Search result of ",
+    "No topics found": "No topics found",
+    "Click here to search in ": "Click here to search in ",
+    "Press Enter to search in site.": "Press Enter to search in site."
   }
 }

@@ -21,12 +21,12 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) GetMembers() {
+func (c *ApiController) GetMembers() {
 	c.Data["json"] = object.GetMembers()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMembersAdmin() {
+func (c *ApiController) GetMembersAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	un := c.Input().Get("un") // search: username
@@ -51,51 +51,51 @@ func (c *APIController) GetMembersAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberAdmin() {
+func (c *ApiController) GetMemberAdmin() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberAdmin(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMember() {
+func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMember(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberAvatar() {
+func (c *ApiController) GetMemberAvatar() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberAvatar(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberAvatar() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) UpdateMemberAvatar() {
+	memberId := c.GetSessionUsername()
 	avatar := c.Input().Get("avatar")
 
 	c.Data["json"] = object.UpdateMemberAvatar(memberId, avatar)
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberEmailReminder() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) UpdateMemberEmailReminder() {
+	memberId := c.GetSessionUsername()
 	status := c.Input().Get("status")
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.ChangeMemberEmailReminder(memberId, status)}
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMember() {
+func (c *ApiController) UpdateMember() {
 	id := c.Input().Get("id")
 
 	var member object.Member
 	var memberInfo object.AdminMemberInfo
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -114,9 +114,9 @@ func (c *APIController) UpdateMember() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberInfo() {
+func (c *ApiController) UpdateMemberInfo() {
 	id := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var tempMember object.Member
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempMember)
@@ -144,8 +144,8 @@ func (c *APIController) UpdateMemberInfo() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberEditorType() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetMemberEditorType() {
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 	var editorType string
@@ -162,14 +162,14 @@ func (c *APIController) GetMemberEditorType() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetRankingRich() {
+func (c *ApiController) GetRankingRich() {
 	c.Data["json"] = object.GetRankingRich()
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberEditorType() {
+func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 
@@ -186,9 +186,9 @@ func (c *APIController) UpdateMemberEditorType() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateMemberLanguage() {
+func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 
@@ -205,8 +205,8 @@ func (c *APIController) UpdateMemberLanguage() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetMemberLanguage() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetMemberLanguage() {
+	memberId := c.GetSessionUsername()
 
 	var resp Response
 	var language string
@@ -223,27 +223,43 @@ func (c *APIController) GetMemberLanguage() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddMember() {
+func (c *ApiController) AddMember() {
 	var member object.Member
+	var resp Response
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		resp = Response{Status: "fail", Msg: "Unauthorized."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
 	if err != nil {
 		panic(err)
 	}
+	member.No = object.GetMemberNum() + 1
+	member.Avatar = UploadAvatarToOSS("", member.Id)
+	if object.GetMember(member.Id) == nil {
+		if object.AddMember(&member) {
+			resp = Response{Status: "ok", Msg: "success"}
+		}
+	} else {
+		resp = Response{Status: "error", Msg: "Add new member error"}
+	}
 
-	c.Data["json"] = object.AddMember(&member)
+	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteMember() {
+func (c *ApiController) DeleteMember() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteMember(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) ResetUsername() {
+func (c *ApiController) ResetUsername() {
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	newUsername := c.Input().Get("new")
 
 	if len(memberId) == 0 {
@@ -264,7 +280,7 @@ func (c *APIController) ResetUsername() {
 
 	if msg == "" {
 		resp = Response{Status: "ok", Msg: "Succeed. Please login again."}
-		c.SetSessionUser("")
+		c.SetSessionUser(nil)
 	} else {
 		resp = Response{Status: "error", Msg: msg}
 	}

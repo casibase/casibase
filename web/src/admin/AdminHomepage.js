@@ -45,6 +45,11 @@ class AdminHomepage extends React.Component {
           image: Setting.getStatic("/static/img/settings.png"),
         },
         {
+          label: i18next.t("admin:Poster management"),
+          value: "poster",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
+        {
           label: i18next.t("admin:Member management"),
           value: "member",
           image: Setting.getStatic("/static/img/settings.png"),
@@ -106,7 +111,7 @@ class AdminHomepage extends React.Component {
         </div>
       );
     }
-    if (this.props.account === null || !this.props.account?.isModerator) {
+    if (this.props.account === null || !this.props.account?.isAdmin) {
       this.props.history.push("/");
     }
 

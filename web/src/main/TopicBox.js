@@ -176,6 +176,8 @@ class TopicBox extends React.Component {
     });
   }
 
+  ignoreTopic() {}
+
   deleteTopic() {
     if (window.confirm(`Are you sure to delete this topic?`)) {
       TopicBackend.deleteTopic(this.state.topicId).then((res) => {
@@ -202,8 +204,10 @@ class TopicBox extends React.Component {
     }
   }
 
+  downVoteTopic() {}
+
   topTopic(topType) {
-    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
+    if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
       //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
       if (
         window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)
@@ -244,8 +248,12 @@ class TopicBox extends React.Component {
     }
   }
 
+  upVoteTopic() {}
+
+  openShare() {}
+
   cancelTopTopic(topType) {
-    if (this.props.account?.isModerator || this.state.topic?.nodeModerator) {
+    if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
       if (
         window.confirm(
           `${i18next.t("topic:Are you sure to cancel top this topic?")}`
@@ -274,7 +282,7 @@ class TopicBox extends React.Component {
               {i18next.t("topic:Sink")} ↓
             </a>
             &nbsp;{" "}
-            {this.props.account?.isModerator ? (
+            {this.props.account?.isAdmin ? (
               <a href="#;" onClick={() => this.topTopic()}>
                 {i18next.t("topic:Top this topic")}
               </a>
@@ -341,7 +349,7 @@ class TopicBox extends React.Component {
           &nbsp;
           {this.props.account !== undefined &&
           this.props.account !== null &&
-          this.props.account?.id !== this.state.topic?.author ? (
+          this.props.account?.username !== this.state.topic?.author ? (
             this.state.topic?.thanksStatus === false ? (
               <div id="topic_thank">
                 <a
@@ -403,33 +411,21 @@ class TopicBox extends React.Component {
             </a>
           )
         ) : null}
-        <a
-          href="#;"
-          onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
-          className="tb"
-        >
+        <a href="#;" onClick={this.openShare()} className="tb">
           Tweet
         </a>
         &nbsp;
-        <a
-          href="#;"
-          onClick="window.open('https://service.weibo.com/share/share.php?url=https://www.example.com/t/123456?r=username&amp;title=casbinforum%20-%20title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'weibo.com');"
-          className="tb"
-        >
+        <a href="#;" onClick={this.openShare()} className="tb">
           Weibo
         </a>
         &nbsp;
-        <a
-          href="#;"
-          onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
-          className="tb"
-        >
+        <a href="#;" onClick={this.ignoreTopic()} className="tb">
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
         {this.props.account !== undefined &&
         this.props.account !== null &&
-        this.props.account?.id !== this.state.topic?.author ? (
+        this.props.account?.username !== this.state.topic?.author ? (
           this.state.topic?.thanksStatus === false ? (
             <div id="topic_thank">
               <a
@@ -465,13 +461,14 @@ class TopicBox extends React.Component {
       (this.state.topic !== null && this.state.topic.length === 0)
     ) {
       return (
-        <div class="box">
-          <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+        <div className="box">
+          <div className="header">
+            {Setting.getHomeLink()}{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("loading:Topic is loading")}
           </div>
-          <div class="cell">
-            <span class="gray bigger">
+          <div className="cell">
+            <span className="gray bigger">
               {i18next.t("loading:Please wait patiently...")}
             </span>
           </div>
@@ -499,7 +496,7 @@ class TopicBox extends React.Component {
     if (this.state.event === "review") {
       if (
         this.props.account === null ||
-        this.props.account?.id !== this.state.topic?.author
+        this.props.account?.username !== this.state.topic?.author
       ) {
         this.props.history.push(`/t/${this.state.topic?.id}`);
       }
@@ -686,16 +683,16 @@ class TopicBox extends React.Component {
               <span>
                 <div id="topic_677954_votes" className="votes">
                   <a
-                    href="javascript:"
-                    onClick="upVoteTopic(677954);"
+                    href="#;"
+                    onClick={this.upVoteTopic()}
                     className={`vote ${this.state.topic.nodeId}`}
                   >
                     <li className="fa fa-chevron-up" />
                   </a>{" "}
                   &nbsp;
                   <a
-                    href="javascript:"
-                    onClick="downVoteTopic(677954);"
+                    href="#;"
+                    onClick={this.downVoteTopic()}
                     className={`vote ${this.state.topic.nodeId}`}
                   >
                     <li className="fa fa-chevron-down" />
@@ -714,12 +711,12 @@ class TopicBox extends React.Component {
               · {Setting.getPrettyDate(this.state.topic?.createdTime)} ·{" "}
               {this.state.topic?.hitCount} {i18next.t("topic:hits")}
               &nbsp;{" "}
-              {this.props.account?.isModerator ? (
+              {this.props.account?.isAdmin ? (
                 <span>
                   {this.state.topic?.homePageTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("homePage")}
                         className="op"
                       >
@@ -730,7 +727,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("homePage")}
                         className="op"
                       >
@@ -742,7 +739,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.tabTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("tab")}
                         className="op"
                       >
@@ -753,7 +750,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("tab")}
                         className="op"
                       >
@@ -765,7 +762,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("node")}
                         className="op"
                       >
@@ -776,7 +773,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("node")}
                         className="op"
                       >
@@ -791,7 +788,7 @@ class TopicBox extends React.Component {
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.topTopic("node")}
                         className="op"
                       >
@@ -802,7 +799,7 @@ class TopicBox extends React.Component {
                   ) : (
                     <span>
                       <a
-                        href="javascript:void(0);"
+                        href="#;"
                         onClick={() => this.cancelTopTopic("node")}
                         className="op"
                       >
@@ -829,11 +826,11 @@ class TopicBox extends React.Component {
                     {i18next.t("topic:MOVE")}
                   </Link>
                   &nbsp;{" "}
-                  {this.props.account?.isModerator ||
+                  {this.props.account?.isAdmin ||
                   this.state.topic?.nodeModerator ? (
                     <Link
                       onClick={() => this.deleteTopic()}
-                      to="javascript:void(0);"
+                      to="#;"
                       className="op"
                     >
                       {i18next.t("topic:DELETE")}
@@ -868,7 +865,7 @@ class TopicBox extends React.Component {
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         <ReplyBox account={this.props.account} topic={this.state.topic} />
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        {this.props.account?.isModerator ? this.renderTopTopic() : null}
+        {this.props.account?.isAdmin ? this.renderTopTopic() : null}
       </div>
     );
   }

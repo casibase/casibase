@@ -19,11 +19,11 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-func (c *APIController) AddSensitive() {
+func (c *ApiController) AddSensitive() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	member := object.GetMember(memberId)
 	if !member.IsModerator {
 		resp := Response{Status: "fail", Msg: "You are not admin, you can't add sensitive words."}
@@ -57,11 +57,11 @@ func (c *APIController) AddSensitive() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DelSensitive() {
+func (c *ApiController) DelSensitive() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	member := object.GetMember(memberId)
 	if !member.IsModerator {
 		resp := Response{Status: "fail", Msg: "You are not admin, you can't delete sensitive words."}
@@ -88,7 +88,7 @@ func (c *APIController) DelSensitive() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetSensitive() {
+func (c *ApiController) GetSensitive() {
 	c.Data["json"] = object.GetSensitiveWords()
 	c.ServeJSON()
 }

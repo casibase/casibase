@@ -27,8 +27,8 @@ type NewReplyForm struct {
 	TopicId int    `json:"topicId"`
 }
 
-func (c *APIController) GetReplies() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetReplies() {
+	memberId := c.GetSessionUsername()
 	topicIdStr := c.Input().Get("topicId")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -49,7 +49,7 @@ func (c *APIController) GetReplies() {
 		if initStatus == "false" {
 			page = util.ParseInt(pageStr)
 		} else {
-			page = (repliesNum - 1) / limit + 1
+			page = (repliesNum-1)/limit + 1
 		}
 		offset = page*limit - limit
 	}
@@ -60,14 +60,14 @@ func (c *APIController) GetReplies() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllRepliesOfTopic() {
+func (c *ApiController) GetAllRepliesOfTopic() {
 	topicId := util.ParseInt(c.Input().Get("topicId"))
 	replies := object.GetRepliesOfTopic(topicId)
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: len(replies)}
 	c.ServeJSON()
 }
 
-func (c *APIController) GetReply() {
+func (c *ApiController) GetReply() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -76,8 +76,8 @@ func (c *APIController) GetReply() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetReplyWithDetails() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetReplyWithDetails() {
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -86,7 +86,7 @@ func (c *APIController) GetReplyWithDetails() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateReply() {
+func (c *ApiController) UpdateReply() {
 	idStr := c.Input().Get("id")
 
 	var reply object.Reply
@@ -100,12 +100,12 @@ func (c *APIController) UpdateReply() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddReply() {
+func (c *ApiController) AddReply() {
 	if c.RequireLogin() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	// check account status
 	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
 		c.mutedAccountResp(memberId)
@@ -161,10 +161,10 @@ func (c *APIController) AddReply() {
 	c.wrapResponse(affected)
 }
 
-func (c *APIController) DeleteReply() {
+func (c *ApiController) DeleteReply() {
 	idStr := c.Input().Get("id")
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	id := util.ParseInt(idStr)
 	replyInfo := object.GetReply(id)
 	isModerator := object.CheckModIdentity(memberId)
@@ -189,7 +189,7 @@ func (c *APIController) DeleteReply() {
 	c.wrapResponse(affected)
 }
 
-func (c *APIController) GetLatestReplies() {
+func (c *ApiController) GetLatestReplies() {
 	id := c.Input().Get("id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -219,7 +219,7 @@ func (c *APIController) GetLatestReplies() {
 }
 
 // GetRepliesNum gets member's all replies num.
-func (c *APIController) GetMemberRepliesNum() {
+func (c *ApiController) GetMemberRepliesNum() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetMemberRepliesNum(id)

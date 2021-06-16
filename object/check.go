@@ -99,7 +99,7 @@ func CheckMemberSignupWithWeChat(member string, wechatOpenId string) string {
 }
 
 func HasMail(email string) string {
-	userInfo := GetMail(email)
+	userInfo := GetMemberByEmail(email)
 	if userInfo != nil {
 		return userInfo.Id
 	}

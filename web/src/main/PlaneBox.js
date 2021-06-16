@@ -52,7 +52,7 @@ class PlaneBox extends React.Component {
 
   renderNode(node) {
     return (
-      <Link to={`/go/${node?.id}`} className="item_node">
+      <Link key={node?.id} to={`/go/${node?.id}`} className="item_node">
         {node?.name}
       </Link>
     );
@@ -60,7 +60,7 @@ class PlaneBox extends React.Component {
 
   renderPlane(plane) {
     return (
-      <span>
+      <span key={plane?.id}>
         <div className="sep20"></div>
         <div className="box">
           <div
@@ -96,24 +96,26 @@ class PlaneBox extends React.Component {
         <div className="box">
           <div className="cell" style={{ padding: "0px" }}>
             <table cellPadding="10" cellSpacing="0" border="0" width="100%">
-              <tr>
-                <td width="64">
-                  <img
-                    src={Setting.getStatic("/static/img/network.png")}
-                    width="64"
-                    alt="Nodes"
-                  />
-                </td>
-                <td>
-                  <span className="item_title">
-                    {Setting.getForumName()} {i18next.t("plane:Plane list")}
-                  </span>
-                  <div className="sep5"></div>
-                  <span className="fade">
-                    {this.state.nodesNum} nodes now and growing.
-                  </span>
-                </td>
-              </tr>
+              <tbody>
+                <tr>
+                  <td width="64">
+                    <img
+                      src={Setting.getStatic("/static/img/network.png")}
+                      width="64"
+                      alt="Nodes"
+                    />
+                  </td>
+                  <td>
+                    <span className="item_title">
+                      {Setting.getForumName()} {i18next.t("plane:Plane list")}
+                    </span>
+                    <div className="sep5"></div>
+                    <span className="fade">
+                      {this.state.nodesNum} nodes now and growing.
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
             </table>
           </div>
         </div>

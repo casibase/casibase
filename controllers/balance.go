@@ -22,8 +22,8 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) AddThanks() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) AddThanks() {
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
 
@@ -91,8 +91,8 @@ func (c *APIController) AddThanks() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetConsumptionRecord() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetConsumptionRecord() {
+	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultBalancePageNum
@@ -117,8 +117,8 @@ func (c *APIController) GetConsumptionRecord() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetCheckinBonus() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetCheckinBonus() {
+	memberId := c.GetSessionUsername()
 
 	checkinDate := object.GetMemberCheckinDate(memberId)
 	date := util.GetDateStr()
@@ -151,8 +151,8 @@ func (c *APIController) GetCheckinBonus() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetCheckinBonusStatus() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetCheckinBonusStatus() {
+	memberId := c.GetSessionUsername()
 
 	checkinDate := object.GetMemberCheckinDate(memberId)
 	date := util.GetDateStr()

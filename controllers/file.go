@@ -34,12 +34,12 @@ type NewUploadFile struct {
 	Size     int    `json:"size"`
 }
 
-func (c *APIController) GetFiles() {
+func (c *ApiController) GetFiles() {
 	if c.RequireLogin() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultFilePageNum
@@ -63,8 +63,8 @@ func (c *APIController) GetFiles() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFileNum() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetFileNum() {
+	memberId := c.GetSessionUsername()
 
 	num := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
 	resp := Response{Status: "ok", Msg: "success", Data: num}
@@ -73,7 +73,7 @@ func (c *APIController) GetFileNum() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddFileRecord() {
+func (c *ApiController) AddFileRecord() {
 	if c.RequireLogin() {
 		return
 	}
@@ -85,7 +85,7 @@ func (c *APIController) AddFileRecord() {
 	}
 
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	uploadFileNum := object.GetFilesNum(memberId)
 	if uploadFileNum >= object.GetMemberFileQuota(memberId) {
@@ -119,9 +119,9 @@ func (c *APIController) AddFileRecord() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteFile() {
+func (c *ApiController) DeleteFile() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	fileInfo := object.GetFile(id)
@@ -146,7 +146,7 @@ func (c *APIController) DeleteFile() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetFile() {
+func (c *ApiController) GetFile() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -163,9 +163,9 @@ func (c *APIController) GetFile() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateFileDescribe() {
+func (c *ApiController) UpdateFileDescribe() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var desc fileDescribe
@@ -190,28 +190,28 @@ func (c *APIController) UpdateFileDescribe() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadFile() {
+func (c *ApiController) UploadFile() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("file")
 	fileType := c.Ctx.Request.Form.Get("type")
 	fileName := c.Ctx.Request.Form.Get("name")
 	index := strings.Index(fileBase64, ",")
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
-	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/file/" + fileName + "." + fileType)
+	fileURL := service.UploadFileToOSS(fileBytes, "/"+memberId+"/file/"+fileName+"."+fileType)
 
 	resp := Response{Status: "ok", Msg: fileName + "." + fileType, Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) ModeratorUpload() {
+func (c *ApiController) ModeratorUpload() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if !object.GetMember(memberId).IsModerator {
 		c.Data["json"] = Response{Status: "error", Msg: "You have no permission to upload files here. Need to be moderator."}
 		c.ServeJSON()
@@ -222,18 +222,18 @@ func (c *APIController) ModeratorUpload() {
 	filePath := c.Ctx.Request.Form.Get("filepath")
 	index := strings.Index(fileBase64, ",")
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
-	fileURL := service.UploadFileToOSS(fileBytes, "/" + filePath + "/" + fileName)
+	fileURL := service.UploadFileToOSS(fileBytes, "/"+filePath+"/"+fileName)
 	timeStamp := fmt.Sprintf("?time=%d", time.Now().UnixNano())
 	resp := Response{Status: "ok", Msg: fileName, Data: fileURL + timeStamp}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadAvatar() {
+func (c *ApiController) UploadAvatar() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	avatarBase64 := c.Ctx.Request.Form.Get("avatar")
 	index := strings.Index(avatarBase64, ",")
 	if index < 0 || (avatarBase64[0:index] != "data:image/png;base64" && avatarBase64[0:index] != "data:image/jpeg;base64") {
@@ -244,7 +244,7 @@ func (c *APIController) UploadAvatar() {
 	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(avatarBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/avatar/" + timestamp + "." + "png")
+	fileURL := service.UploadFileToOSS(fileBytes, "/"+memberId+"/avatar/"+timestamp+"."+"png")
 	resp := Response{Status: "ok", Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()

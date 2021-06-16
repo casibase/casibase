@@ -32,34 +32,32 @@ type Session struct {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter("mysql", beego.AppConfig.String("dataSourceName"))
-
-	_, err := adapter.engine.Query("update member set rename_quota = ? where rename_quota is null", DefaultRenameQuota)
-	if err != nil {
-		panic(err)
-	}
+	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
+	adapter.createTable()
 }
 
 // Adapter represents the MySQL adapter for policy storage.
 type Adapter struct {
 	driverName     string
 	dataSourceName string
-	engine         *xorm.Engine
+	dbName         string
+	Engine         *xorm.Engine
 }
 
 // finalizer is the destructor for Adapter.
 func finalizer(a *Adapter) {
-	err := a.engine.Close()
+	err := a.Engine.Close()
 	if err != nil {
 		panic(err)
 	}
 }
 
 // NewAdapter is the constructor for Adapter.
-func NewAdapter(driverName string, dataSourceName string) *Adapter {
+func NewAdapter(driverName string, dataSourceName string, dbName string) *Adapter {
 	a := &Adapter{}
 	a.driverName = driverName
 	a.dataSourceName = dataSourceName
+	a.dbName = dbName
 
 	// Open the DB, create it if not existed.
 	a.open()
@@ -71,112 +69,103 @@ func NewAdapter(driverName string, dataSourceName string) *Adapter {
 }
 
 func (a *Adapter) createDatabase() error {
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName)
+	Engine, err := xorm.NewEngine(a.driverName, a.dataSourceName)
 	if err != nil {
 		return err
 	}
-	defer engine.Close()
+	defer Engine.Close()
 
-	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8 COLLATE utf8_general_ci", beego.AppConfig.String("dbName")))
+	_, err = Engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8 COLLATE utf8_general_ci", a.dbName))
 	return err
 }
 
 func (a *Adapter) open() {
-	if err := a.createDatabase(); err != nil {
-		panic(err)
+	if a.driverName != "postgres" {
+		if err := a.createDatabase(); err != nil {
+			panic(err)
+		}
 	}
 
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+beego.AppConfig.String("dbName"))
+	Engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.dbName)
 	if err != nil {
 		panic(err)
 	}
 
-	a.engine = engine
-	a.createTable()
+	a.Engine = Engine
 }
 
 func (a *Adapter) close() {
-	a.engine.Close()
-	a.engine = nil
+	a.Engine.Close()
+	a.Engine = nil
 }
 
 func (a *Adapter) createTable() {
-	err := a.engine.Sync2(new(Session))
+	err := a.Engine.Sync2(new(Session))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Topic))
+	err = a.Engine.Sync2(new(Topic))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Reply))
+	err = a.Engine.Sync2(new(Reply))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Member))
+	err = a.Engine.Sync2(new(Poster))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Node))
+	err = a.Engine.Sync2(new(Node))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Favorites))
+	err = a.Engine.Sync2(new(Favorites))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Tab))
+	err = a.Engine.Sync2(new(Tab))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Notification))
+	err = a.Engine.Sync2(new(Notification))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(BasicInfo))
+	err = a.Engine.Sync2(new(BasicInfo))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Plane))
+	err = a.Engine.Sync2(new(Plane))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(ConsumptionRecord))
+	err = a.Engine.Sync2(new(ConsumptionRecord))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(BrowseRecord))
+	err = a.Engine.Sync2(new(BrowseRecord))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(ValidateCode))
+	err = a.Engine.Sync2(new(UploadFileRecord))
 	if err != nil {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(ResetRecord))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(UploadFileRecord))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(CasbinSensitiveWord))
+	err = a.Engine.Sync2(new(CasbinSensitiveWord))
 	if err != nil {
 		panic(err)
 	}

@@ -36,7 +36,7 @@ type Notification struct {
 }
 
 func AddNotification(notification *Notification) bool {
-	affected, err := adapter.engine.Insert(notification)
+	affected, err := adapter.Engine.Insert(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -47,7 +47,7 @@ func AddNotification(notification *Notification) bool {
 func DeleteNotification(id string) bool {
 	notification := new(Notification)
 	notification.Status = 3
-	affected, err := adapter.engine.Id(id).Update(notification)
+	affected, err := adapter.Engine.Id(id).Update(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func DeleteNotification(id string) bool {
 }
 
 func GetNotificationCount() int {
-	count, err := adapter.engine.Count(&Notification{})
+	count, err := adapter.Engine.Count(&Notification{})
 	if err != nil {
 		panic(err)
 	}
@@ -66,13 +66,18 @@ func GetNotificationCount() int {
 
 func GetNotifications(memberId string, limit int, offset int) []*NotificationResponse {
 	notifications := []*NotificationResponse{}
-	err := adapter.engine.Table("notification").Join("LEFT OUTER", "member", "notification.sender_id = member.id").
+	err := adapter.Engine.Table("notification").
 		Where("notification.receiver_id = ?", memberId).And("notification.status != ?", 3).
 		Desc("notification.created_time").
-		Cols("notification.*, member.avatar").
+		Cols("notification.*").
 		Limit(limit, offset).Find(&notifications)
 	if err != nil {
 		panic(err)
+	}
+
+	memberAvatar := GetMemberAvatarMapping()
+	for _, n := range notifications {
+		n.Avatar = memberAvatar[n.Notification.SenderId]
 	}
 
 	var wg sync.WaitGroup
@@ -80,19 +85,18 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 	res := make([]*NotificationResponse, len(notifications))
 	for k, v := range notifications {
 		wg.Add(1)
-		v := v
-		k := k
-		go func() {
+		go func(k int, v *NotificationResponse) {
 			defer wg.Done()
 			switch v.NotificationType {
 			case 1:
-
-				replyInfo := GetReply(v.ObjectId)
-				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				v.Content = replyInfo.Content
-				v.ObjectId = replyInfo.TopicId
+				fallthrough
 			case 2:
+				fallthrough
+			case 6:
 				replyInfo := GetReply(v.ObjectId)
+				if replyInfo == nil || replyInfo.Deleted {
+					break
+				}
 				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
 				v.Content = replyInfo.Content
 				v.ObjectId = replyInfo.TopicId
@@ -102,13 +106,9 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 				v.Title = GetTopicTitle(v.ObjectId)
 			case 5:
 				v.Title = GetTopicTitle(v.ObjectId)
-			case 6:
-				replyInfo := GetReply(v.ObjectId)
-				v.Title = GetReplyTopicTitle(replyInfo.TopicId)
-				v.Content = replyInfo.Content
 			}
 			res[k] = v
-		}()
+		}(k, v)
 	}
 	wg.Wait()
 	close(errChan)
@@ -126,7 +126,7 @@ func GetNotificationNum(memberId string) int {
 	var err error
 
 	notification := new(Notification)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).And("status != ?", 3).Count(notification)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).And("status != ?", 3).Count(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -139,7 +139,7 @@ func GetUnreadNotificationNum(memberId string) int {
 	var err error
 
 	notification := new(Notification)
-	total, err = adapter.engine.Where("receiver_id = ?", memberId).And("status = ?", 1).Count(notification)
+	total, err = adapter.Engine.Where("receiver_id = ?", memberId).And("status = ?", 1).Count(notification)
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +160,7 @@ func GetNotificationId() int {
 func UpdateReadStatus(id string) bool {
 	notification := new(Notification)
 	notification.Status = 2
-	affected, err := adapter.engine.Where("receiver_id = ?", id).Cols("status").Update(notification)
+	affected, err := adapter.Engine.Where("receiver_id = ?", id).Cols("status").Update(notification)
 	if err != nil {
 		panic(err)
 	}

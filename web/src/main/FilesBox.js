@@ -16,6 +16,7 @@ import React from "react";
 import * as FileBackend from "../backend/FileBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
+import * as Auth from "../auth/Auth";
 import PageColumn from "./PageColumn";
 import { withRouter, Link } from "react-router-dom";
 import "../deopzone.css";
@@ -330,7 +331,7 @@ class FilesBox extends React.Component {
           </div>
           <div className="box" id="upload">
             <div className="cell">
-              <span class="gray">{i18next.t("file:Uploaded file")}</span>
+              <span className="gray">{i18next.t("file:Uploaded file")}</span>
             </div>
             {this.state.files?.map((file) => this.renderUploadFile(file))}
           </div>
@@ -399,14 +400,14 @@ class FilesBox extends React.Component {
     const file = this.state.file;
 
     return (
-      <div class="box">
-        <div class="header">
+      <div className="box">
+        <div className="header">
           <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
           <Link to="/i?p=1">Files</Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span> {file?.fileName}
+          <span className="chevron">&nbsp;›&nbsp;</span> {file?.fileName}
         </div>
-        <div class="cell" style={{ textAlign: "center", padding: "12px" }}>
+        <div className="cell" style={{ textAlign: "center", padding: "12px" }}>
           {file?.fileType === "image" ? (
             <a href={file?.fileUrl} className="img_view" target="_blank">
               <img src={file?.fileUrl} border="0" className="embedded_image" />
@@ -421,10 +422,10 @@ class FilesBox extends React.Component {
             </a>
           )}
         </div>
-        <div class="cell">
-          <span class="item_title">{file?.fileName}</span>
-          <div class="sep5"></div>
-          <span class="gray">
+        <div className="cell">
+          <span className="item_title">{file?.fileName}</span>
+          <div className="sep5"></div>
+          <span className="gray">
             {file?.fileType === "image" ? (
               <span>
                 {this.state.fileWidth}𝖷{this.state.fileHeight} &nbsp;·&nbsp;
@@ -443,19 +444,19 @@ class FilesBox extends React.Component {
             <div className="topic_content">{file?.desc}</div>
           </div>
         ) : null}
-        <div class="cell_ops">
-          <div class="fr">
+        <div className="cell_ops">
+          <div className="fr">
             <input
               type="button"
               value={i18next.t("file:Delete")}
-              class="super normal button"
+              className="super normal button"
               onClick={() => this.deleteFile(file)}
             />
           </div>
           <input
             type="button"
             value={i18next.t("file:Edit information")}
-            class="super normal button"
+            className="super normal button"
             onClick={() => this.props.history.push(`/i/edit/${file?.id}`)}
           />
         </div>
@@ -678,7 +679,7 @@ class FilesBox extends React.Component {
 
     if (this.state.event === "upload") {
       if (this.props.account === null) {
-        this.props.history.push("/signin");
+        this.props.history.push(Auth.getSigninUrl());
       }
       return this.renderUpload();
     }
@@ -698,9 +699,9 @@ class FilesBox extends React.Component {
 
     // url: /i?p=x
     return (
-      <div class="box">
-        <div class="cell" style={{ padding: "0px" }}>
-          <table cellpadding="10" cellspacing="0" border="0" width="100%">
+      <div className="box">
+        <div className="cell" style={{ padding: "0px" }}>
+          <table cellPadding="10" cellSpacing="0" border="0" width="100%">
             <tbody>
               <tr>
                 <td width="64">
@@ -711,7 +712,8 @@ class FilesBox extends React.Component {
                 </td>
                 <td width={pcBrowser ? "200" : "auto"}>
                   <span className="item_title">
-                    {this.props.account?.id} {i18next.t("file:'s file library")}
+                    {this.props.account?.username}{" "}
+                    {i18next.t("file:'s file library")}
                   </span>
                   <div className="sep5"></div>
                   <span className="fade">
@@ -729,7 +731,7 @@ class FilesBox extends React.Component {
             </tbody>
           </table>
         </div>
-        <div class="cell" style={{ padding: "0px", textAlign: "center" }}>
+        <div className="cell" style={{ padding: "0px", textAlign: "center" }}>
           {Setting.PcBrowser ? this.showPageColumn() : null}
           {this.state.files !== null && this.state.files.length !== 0
             ? this.state.files.map((file) => this.renderFiles(file))

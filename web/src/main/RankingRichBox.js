@@ -121,7 +121,7 @@ class RankingRichBox extends React.Component {
                       {/* <span className="fade">第 n 名会员</span> */}
                     </td>
                     <td width="140" align="center">
-                      <div>{this.renderRichBox(member.scoreCount)}</div>
+                      <div>{this.renderRichBox(member.score)}</div>
                     </td>
                   </tr>
                 ))

@@ -41,20 +41,3 @@ export function getNodeNavigation() {
     credentials: "include",
   }).then((res) => res.json());
 }
-
-export function getCaptcha() {
-  return fetch(`${Setting.ServerUrl}/api/get-captcha`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function getValidateCode(information, verifyType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-validate-code?information=${information}&type=${verifyType}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
-}

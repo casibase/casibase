@@ -64,10 +64,10 @@ class CheckinBonusBox extends React.Component {
   render() {
     if (this.state.checkinBonusStatus) {
       return (
-        <div class="box">
-          <div class="cell">
+        <div className="box">
+          <div className="cell">
             <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("mission:Daily tasks")}
           </div>
           {this.state.showSuccess ? (
@@ -77,41 +77,42 @@ class CheckinBonusBox extends React.Component {
               {i18next.t("mission:Successfully received daily checkin bonus")}
             </div>
           ) : null}
-          <div class="cell">
-            <span class="gray">
-              <li class="fa fa-ok-sign" style={{ color: "#0c0" }}></li> &nbsp;
+          <div className="cell">
+            <span className="gray">
+              <li className="fa fa-ok-sign" style={{ color: "#0c0" }}></li>{" "}
+              &nbsp;
               {i18next.t("mission:Daily checkin bonus has been received")}
             </span>
-            <div class="sep10"></div>
+            <div className="sep10"></div>
             <input
               type="button"
-              class="super normal button"
+              className="super normal button"
               value={i18next.t("mission:Check my account balance")}
-              onClick={window.location.href = "/balance"}
+              onClick={(window.location.href = "/balance")}
             />
           </div>
         </div>
       );
     }
     return (
-      <div class="box">
-        <div class="cell">
+      <div className="box">
+        <div className="cell">
           <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
           {i18next.t("mission:Daily tasks")}
         </div>
-        <div class="cell">
+        <div className="cell">
           <h1>
             {i18next.t("mission:Daily checkin bonus")} {this.state.date}
           </h1>
           <input
             type="button"
-            class="super normal button"
+            className="super normal button"
             value={i18next.t("mission:Receive X copper coins")}
             onClick={() => this.getDailyCheckinBonus()}
           />
         </div>
-        <div class="cell">
+        <div className="cell">
           {i18next.t("mission:Logged in continuously")} 1{" "}
           {i18next.t("mission:Successfully received daily checkin bonus")}
         </div>

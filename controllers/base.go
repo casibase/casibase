@@ -16,29 +16,51 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/auth"
+	"github.com/casbin/casnode/util"
 
 	"github.com/casbin/casnode/object"
 )
 
-type APIController struct {
+type ApiController struct {
 	beego.Controller
 }
 
-func (c *APIController) GetSessionUser() string {
-	user := c.GetSession("username")
-	if user == nil {
-		return ""
+func (c *ApiController) GetSessionUser() *auth.Claims {
+	s := c.GetSession("user")
+	if s == nil {
+		return nil
 	}
 
-	return user.(string)
+	claims := &auth.Claims{}
+	err := util.JsonToStruct(s.(string), claims)
+	if err != nil {
+		panic(err)
+	}
+
+	return claims
 }
 
-func (c *APIController) SetSessionUser(user string) {
-	c.SetSession("username", user)
+func (c *ApiController) SetSessionUser(claims *auth.Claims) {
+	if claims == nil {
+		c.DelSession("user")
+		return
+	}
+
+	s := util.StructToJson(claims)
+	c.SetSession("user", s)
 }
 
-func (c *APIController) RequireLogin() bool {
-	if c.GetSessionUser() == "" {
+func (c *ApiController) GetSessionUsername() string {
+	claims := c.GetSessionUser()
+	if claims == nil {
+		return ""
+	}
+	return claims.Username
+}
+
+func (c *ApiController) RequireLogin() bool {
+	if c.GetSessionUser() == nil {
 		c.Data["json"] = Response{Status: "error", Msg: "errorNeedSignin", Data: ""}
 		c.ServeJSON()
 
@@ -48,7 +70,7 @@ func (c *APIController) RequireLogin() bool {
 	return false
 }
 
-func (c *APIController) wrapResponse(res bool) {
+func (c *ApiController) wrapResponse(res bool) {
 	var resp Response
 
 	if res {
@@ -62,25 +84,25 @@ func (c *APIController) wrapResponse(res bool) {
 	}
 }
 
-func (c *APIController) mutedAccountResp(memberId string) {
+func (c *ApiController) mutedAccountResp(memberId string) {
 	resp := Response{Status: "error", Msg: "Your account has been muted", Data: memberId}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) forbiddenAccountResp(memberId string) {
+func (c *ApiController) forbiddenAccountResp(memberId string) {
 	resp := Response{Status: "error", Msg: "Your account has been forbidden to log in", Data: memberId}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) RequireAdmin(memberId string) {
+func (c *ApiController) RequireAdmin(memberId string) {
 	resp := Response{Status: "error", Msg: "Unauthorized.", Data: memberId}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) GetCommunityHealth() {
+func (c *ApiController) GetCommunityHealth() {
 	var resp Response
 
 	res := object.CommunityHealth{
@@ -95,7 +117,7 @@ func (c *APIController) GetCommunityHealth() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetForumVersion() {
+func (c *ApiController) GetForumVersion() {
 	var resp Response
 
 	res := object.GetForumVersion()
@@ -106,7 +128,7 @@ func (c *APIController) GetForumVersion() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetOnlineNum() {
+func (c *ApiController) GetOnlineNum() {
 	var resp Response
 
 	onlineNum := object.GetOnlineMemberNum()
@@ -118,7 +140,7 @@ func (c *APIController) GetOnlineNum() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetNodeNavigation() {
+func (c *ApiController) GetNodeNavigation() {
 	var resp Response
 
 	res := object.GetNodeNavigation()

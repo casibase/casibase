@@ -27,13 +27,14 @@ import (
 )
 
 type NewTopicForm struct {
-	Title      string `json:"title"`
-	Body       string `json:"body"`
-	NodeId     string `json:"nodeId"`
-	EditorType string `json:"editorType"`
+	Title      string   `json:"title"`
+	Body       string   `json:"body"`
+	NodeId     string   `json:"nodeId"`
+	EditorType string   `json:"editorType"`
+	Tags       []string `json:"tags"`
 }
 
-func (c *APIController) GetTopics() {
+func (c *ApiController) GetTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultHomePageNum
@@ -53,7 +54,7 @@ func (c *APIController) GetTopics() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsAdmin() {
+func (c *ApiController) GetTopicsAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 
@@ -89,8 +90,8 @@ func (c *APIController) GetTopicsAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopic() {
-	memberId := c.GetSessionUser()
+func (c *ApiController) GetTopic() {
+	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -110,7 +111,7 @@ func (c *APIController) GetTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicAdmin() {
+func (c *ApiController) GetTopicAdmin() {
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
@@ -119,7 +120,7 @@ func (c *APIController) GetTopicAdmin() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateTopic() {
+func (c *ApiController) UpdateTopic() {
 	idStr := c.Input().Get("id")
 
 	var topic object.Topic
@@ -133,12 +134,12 @@ func (c *APIController) UpdateTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddTopic() {
+func (c *ApiController) AddTopic() {
 	if c.RequireLogin() {
 		return
 	}
 
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	// check account status
 	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
 		c.mutedAccountResp(memberId)
@@ -150,7 +151,7 @@ func (c *APIController) AddTopic() {
 	if err != nil {
 		panic(err)
 	}
-	title, body, nodeId, editorType := form.Title, form.Body, form.NodeId, form.EditorType
+	title, body, nodeId, editorType, tags := form.Title, form.Body, form.NodeId, form.EditorType, form.Tags
 
 	if object.ContainsSensitiveWord(title) {
 		resp := Response{Status: "fail", Msg: "Topic title contains sensitive word."}
@@ -166,6 +167,10 @@ func (c *APIController) AddTopic() {
 		return
 	}
 
+	if len(tags) == 0 {
+		tags = service.Finalword(body)
+	}
+
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
 		Author:        memberId,
@@ -173,7 +178,7 @@ func (c *APIController) AddTopic() {
 		NodeName:      "",
 		Title:         title,
 		CreatedTime:   util.GetCurrentTime(),
-		Tags:          nil,
+		Tags:          tags,
 		LastReplyUser: "",
 		LastReplyTime: util.GetCurrentTime(),
 		UpCount:       0,
@@ -216,11 +221,11 @@ func (c *APIController) AddTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UploadTopicPic() {
+func (c *ApiController) UploadTopicPic() {
 	if c.RequireLogin() {
 		return
 	}
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("pic")
 	index := strings.Index(fileBase64, ",")
 	if index < 0 || fileBase64[0:index] != "data:image/png;base64" {
@@ -231,16 +236,16 @@ func (c *APIController) UploadTopicPic() {
 	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileURL := service.UploadFileToOSS(fileBytes, "/" + memberId + "/image/" + timestamp + ".png")
+	fileURL := service.UploadFileToOSS(fileBytes, "/"+memberId+"/image/"+timestamp+".png")
 
 	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
 
-func (c *APIController) DeleteTopic() {
+func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	nodeId := object.GetTopicNodeId(id)
@@ -255,12 +260,12 @@ func (c *APIController) DeleteTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsNum() {
+func (c *ApiController) GetTopicsNum() {
 	c.Data["json"] = object.GetTopicNum()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetAllCreatedTopics() {
+func (c *ApiController) GetAllCreatedTopics() {
 	author := c.Input().Get("id")
 	tab := c.Input().Get("tab")
 	limitStr := c.Input().Get("limit")
@@ -289,14 +294,14 @@ func (c *APIController) GetAllCreatedTopics() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetCreatedTopicsNum() {
+func (c *ApiController) GetCreatedTopicsNum() {
 	memberId := c.Input().Get("id")
 
 	c.Data["json"] = object.GetCreatedTopicsNum(memberId)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsByNode() {
+func (c *ApiController) GetTopicsByNode() {
 	nodeId := c.Input().Get("node-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -317,8 +322,29 @@ func (c *APIController) GetTopicsByNode() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetTopicsByTag() {
+	tagId := c.Input().Get("tag-id")
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	defaultLimit := object.DefaultPageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	c.Data["json"] = object.GetTopicsWithTag(tagId, limit, offset)
+	c.ServeJSON()
+}
+
 //together with node
-func (c *APIController) AddTopicHitCount() {
+func (c *ApiController) AddTopicHitCount() {
 	topicIdStr := c.Input().Get("id")
 
 	var resp Response
@@ -326,7 +352,7 @@ func (c *APIController) AddTopicHitCount() {
 	res := object.AddTopicHitCount(topicId)
 	topicInfo := object.GetTopic(topicId)
 	hitRecord := object.BrowseRecord{
-		MemberId:    c.GetSessionUser(),
+		MemberId:    c.GetSessionUsername(),
 		RecordType:  1,
 		ObjectId:    topicInfo.NodeId,
 		CreatedTime: util.GetCurrentTime(),
@@ -343,7 +369,7 @@ func (c *APIController) AddTopicHitCount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetTopicsByTab() {
+func (c *ApiController) GetTopicsByTab() {
 	tabId := c.Input().Get("tab-id")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -364,12 +390,12 @@ func (c *APIController) GetTopicsByTab() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddTopicBrowseCount() {
+func (c *ApiController) AddTopicBrowseCount() {
 	topicId := c.Input().Get("id")
 
 	var resp Response
 	hitRecord := object.BrowseRecord{
-		MemberId:    c.GetSessionUser(),
+		MemberId:    c.GetSessionUsername(),
 		RecordType:  2,
 		ObjectId:    topicId,
 		CreatedTime: util.GetCurrentTime(),
@@ -386,7 +412,7 @@ func (c *APIController) AddTopicBrowseCount() {
 	c.ServeJSON()
 }
 
-func (c *APIController) GetHotTopic() {
+func (c *ApiController) GetHotTopic() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.HotTopicNum
 
@@ -405,13 +431,13 @@ func (c *APIController) GetHotTopic() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdateTopicNode() {
+func (c *ApiController) UpdateTopicNode() {
 	if c.RequireLogin() {
 		return
 	}
 
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	var form updateTopicNode
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -439,21 +465,21 @@ func (c *APIController) UpdateTopicNode() {
 	c.ServeJSON()
 }
 
-func (c *APIController) EditContent() {
+func (c *ApiController) EditContent() {
 	if c.RequireLogin() {
 		return
 	}
 
 	editType := c.Input().Get("editType")
 	var resp Response
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 	if editType == "topic" {
 		var form editTopic
 		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 		if err != nil {
 			panic(err)
 		}
-		id, title, content, nodeId, editorType := form.Id, form.Title, form.Content, form.NodeId, form.EditorType
+		id, title, content, nodeId, editorType, tags := form.Id, form.Title, form.Content, form.NodeId, form.EditorType, form.Tags
 		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
@@ -466,6 +492,7 @@ func (c *APIController) EditContent() {
 			Title:      title,
 			Content:    content,
 			EditorType: editorType,
+			Tags:       tags,
 		}
 		res := object.UpdateTopicWithLimitCols(id, &topic)
 
@@ -499,13 +526,13 @@ func (c *APIController) EditContent() {
 }
 
 // TopTopic tops topic according to the topType in the url.
-func (c *APIController) TopTopic() {
+func (c *ApiController) TopTopic() {
 	if c.RequireLogin() {
 		return
 	}
 
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var resp Response
@@ -544,13 +571,13 @@ func (c *APIController) TopTopic() {
 }
 
 // CancelTopTopic cancels top topic according to the topType in the url.
-func (c *APIController) CancelTopTopic() {
+func (c *ApiController) CancelTopTopic() {
 	if c.RequireLogin() {
 		return
 	}
 
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUser()
+	memberId := c.GetSessionUsername()
 
 	id := util.ParseInt(idStr)
 	var resp Response

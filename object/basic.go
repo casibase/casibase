@@ -15,15 +15,12 @@
 package object
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/dchest/captcha"
 
 	"github.com/casbin/casnode/util"
 )
@@ -82,7 +79,7 @@ func GetHighestOnlineNum() int {
 	}
 
 	info := BasicInfo{Id: "HighestOnlineNum"}
-	existed, err := adapter.engine.Get(&info)
+	existed, err := adapter.Engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
@@ -96,7 +93,7 @@ func GetHighestOnlineNum() int {
 			Value: "0",
 		}
 
-		_, err := adapter.engine.Insert(&info)
+		_, err := adapter.Engine.Insert(&info)
 		if err != nil {
 			panic(err)
 		}
@@ -109,7 +106,7 @@ func UpdateHighestOnlineNum(num int) bool {
 	highestOnlineNum = num
 	info := new(BasicInfo)
 	info.Value = util.IntToString(num)
-	affected, err := adapter.engine.Where("id = ?", "HighestOnlineNum").Cols("value").Update(info)
+	affected, err := adapter.Engine.Where("id = ?", "HighestOnlineNum").Cols("value").Update(info)
 	if err != nil {
 		panic(err)
 	}
@@ -117,28 +114,9 @@ func UpdateHighestOnlineNum(num int) bool {
 	return affected != 0
 }
 
-func GetCaptcha() (string, []byte) {
-	id := captcha.NewLen(5)
-
-	var buffer bytes.Buffer
-
-	err := captcha.WriteImage(&buffer, id, 200, 80)
-	if err != nil {
-		panic(err)
-	}
-
-	return id, buffer.Bytes()
-}
-
-func VerifyCaptcha(id, digits string) bool {
-	res := captcha.VerifyString(id, digits)
-
-	return res
-}
-
 func GetCronJobs() []*CronJob {
 	info := BasicInfo{Id: "CronJobs"}
-	existed, err := adapter.engine.Get(&info)
+	existed, err := adapter.Engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
@@ -160,7 +138,7 @@ func GetCronJobs() []*CronJob {
 			Value: string(jobs),
 		}
 
-		_, err = adapter.engine.Insert(&info)
+		_, err = adapter.Engine.Insert(&info)
 		if err != nil {
 			panic(err)
 		}
@@ -171,7 +149,7 @@ func GetCronJobs() []*CronJob {
 
 func GetCronUpdateJobs() []*UpdateJob {
 	info := BasicInfo{Id: "CronUpdateJobs"}
-	existed, err := adapter.engine.Get(&info)
+	existed, err := adapter.Engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
@@ -193,7 +171,7 @@ func GetCronUpdateJobs() []*UpdateJob {
 			Value: string(posts),
 		}
 
-		_, err = adapter.engine.Insert(&info)
+		_, err = adapter.Engine.Insert(&info)
 		if err != nil {
 			panic(err)
 		}
@@ -204,7 +182,7 @@ func GetCronUpdateJobs() []*UpdateJob {
 
 func GetLatestSyncedRecordId() int {
 	info := BasicInfo{Id: "LatestSyncedRecordId"}
-	existed, err := adapter.engine.Get(&info)
+	existed, err := adapter.Engine.Get(&info)
 	if err != nil {
 		panic(err)
 	}
@@ -217,7 +195,7 @@ func GetLatestSyncedRecordId() int {
 			Value: "0",
 		}
 
-		_, err := adapter.engine.Insert(&info)
+		_, err := adapter.Engine.Insert(&info)
 		if err != nil {
 			panic(err)
 		}
@@ -229,7 +207,7 @@ func GetLatestSyncedRecordId() int {
 func UpdateLatestSyncedRecordId(id int) bool {
 	info := new(BasicInfo)
 	info.Value = util.IntToString(id)
-	affected, err := adapter.engine.Where("id = ?", "LatestSyncedRecordId").Cols("value").Update(info)
+	affected, err := adapter.Engine.Where("id = ?", "LatestSyncedRecordId").Cols("value").Update(info)
 	if err != nil {
 		panic(err)
 	}

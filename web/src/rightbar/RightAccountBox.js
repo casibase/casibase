@@ -106,12 +106,12 @@ class RightAccountBox extends React.Component {
   }
 
   render() {
-    const username = this.props.account?.id;
+    const username = this.props.account?.username;
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.scoreCount
+      this.props.account.score
     );
 
     return (
@@ -121,9 +121,7 @@ class RightAccountBox extends React.Component {
             <tbody>
               <tr>
                 <td width="48" valign="top">
-                  <Link to={`/member/${username}`}>
-                    <Avatar username={username} avatar={avatar} />
-                  </Link>
+                  <Avatar username={username} avatar={avatar} />
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">

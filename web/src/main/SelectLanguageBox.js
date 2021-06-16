@@ -28,15 +28,15 @@ class SelectLanguageBox extends React.Component {
     return (
       <div align="center">
         <div
-          class="box"
+          className="box"
           style={{ width: Setting.PcBrowser ? "600px" : "auto" }}
         >
-          <div class="header">
+          <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span> Select Language /
+            <span className="chevron">&nbsp;›&nbsp;</span> Select Language /
             选择语言
           </div>
-          <div class="cell">
+          <div className="cell">
             {Setting.PcBrowser ? (
               <span>
                 Please select the language you would like to use on{" "}

@@ -7,7 +7,7 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "antd": "^4.3.0",
+    "antd": "^4.16.0",
     "braft-editor": "^2.3.9",
     "browser-image-size": "^1.1.0",
     "codemirror": "^5.54.0",
@@ -33,6 +33,7 @@
     "react-scripts": "3.4.1",
     "react-scroll": "^1.7.16",
     "react-select2-wrapper": "^1.0.4-beta6",
+    "react-tagsinput": "^3.19.0",
     "react-zmage": "^0.8.5-beta.36"
   },
   "scripts": {

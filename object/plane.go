@@ -29,7 +29,7 @@ type Plane struct {
 
 func GetPlanes() []*Plane {
 	planes := []*Plane{}
-	err := adapter.engine.Asc("sorter").Where("visible = ?", 1).Find(&planes)
+	err := adapter.Engine.Asc("sorter").Where("visible = ?", 1).Find(&planes)
 	if err != nil {
 		panic(err)
 	}
@@ -39,7 +39,7 @@ func GetPlanes() []*Plane {
 
 func GetAllPlanes() []*AdminPlaneInfo {
 	planes := []*Plane{}
-	err := adapter.engine.Asc("sorter").Find(&planes)
+	err := adapter.Engine.Asc("sorter").Find(&planes)
 	if err != nil {
 		panic(err)
 	}
@@ -59,7 +59,7 @@ func GetAllPlanes() []*AdminPlaneInfo {
 
 func GetPlane(id string) *Plane {
 	plane := Plane{Id: id}
-	existed, err := adapter.engine.Get(&plane)
+	existed, err := adapter.Engine.Get(&plane)
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +73,7 @@ func GetPlane(id string) *Plane {
 
 func GetPlaneAdmin(id string) *AdminPlaneInfo {
 	plane := Plane{Id: id}
-	existed, err := adapter.engine.Get(&plane)
+	existed, err := adapter.Engine.Get(&plane)
 	if err != nil {
 		panic(err)
 	}
@@ -95,7 +95,7 @@ func GetPlaneAdmin(id string) *AdminPlaneInfo {
 }
 
 func AddPlane(plane *Plane) bool {
-	affected, err := adapter.engine.Insert(plane)
+	affected, err := adapter.Engine.Insert(plane)
 	if err != nil {
 		panic(err)
 	}
@@ -108,7 +108,7 @@ func UpdatePlane(id string, plane *Plane) bool {
 		return false
 	}
 
-	affected, err := adapter.engine.Id(id).AllCols().Update(plane)
+	affected, err := adapter.Engine.Id(id).AllCols().Update(plane)
 	if err != nil {
 		panic(err)
 	}
@@ -140,7 +140,7 @@ func GetPlaneList() []*PlaneWithNodes {
 }
 
 func DeletePlane(id string) bool {
-	affected, err := adapter.engine.Id(id).Delete(&Plane{})
+	affected, err := adapter.Engine.Id(id).Delete(&Plane{})
 	if err != nil {
 		panic(err)
 	}
@@ -150,7 +150,7 @@ func DeletePlane(id string) bool {
 
 func GetPlaneNodesNum(id string) int {
 	node := new(Node)
-	total, err := adapter.engine.Where("plane_id = ?", id).Count(node)
+	total, err := adapter.Engine.Where("plane_id = ?", id).Count(node)
 	if err != nil {
 		panic(err)
 	}

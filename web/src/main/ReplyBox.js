@@ -510,13 +510,32 @@ class ReplyBox extends React.Component {
         ) : (
           <div className="sep5" />
         )}
+        {this.state.replies.length === 0 ? (
+          <div>
+            <div className="inner" style={{ backgroundColor: "white" }}>
+              {this.props.topic?.tags?.map((tag, i) => {
+                return (
+                  <Link
+                    key={tag}
+                    to={`/tag/${tag}`}
+                    className={`tag ${this.props.topic.nodeId}`}
+                  >
+                    <li className="fa fa-tag" />
+                    {tag}
+                  </Link>
+                );
+              })}
+            </div>
+            <div className="sep20" />
+          </div>
+        ) : null}
         {this.props.account === null ? null : (
           <NewReplyBox
             onReplyChange={this.handleReply}
             content={this.state.reply}
             sticky={this.state.sticky}
             changeStickyStatus={this.changeStickyStatus}
-            member={this.props.account?.id}
+            member={this.props.account?.username}
             nodeId={this.props.topic?.nodeId}
             memberList={this.state.memberList}
             refreshReplies={this.getReplies.bind(this)}

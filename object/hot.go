@@ -26,7 +26,7 @@ type BrowseRecord struct {
 
 func GetBrowseRecordNum(recordType int, objectId string) int {
 	record := new(BrowseRecord)
-	total, err := adapter.engine.Where("object_id = ?", objectId).And("record_type = ?", recordType).And("expired = ?", false).Count(record)
+	total, err := adapter.Engine.Where("object_id = ?", objectId).And("record_type = ?", recordType).And("expired = ?", false).Count(record)
 	if err != nil {
 		panic(err)
 	}
@@ -35,7 +35,7 @@ func GetBrowseRecordNum(recordType int, objectId string) int {
 }
 
 func DeletedExpiredData(recordType int, date string) bool {
-	affected, err := adapter.engine.Where("record_type = ?", recordType).And("date < ?", date).Delete(&BrowseRecord{})
+	affected, err := adapter.Engine.Where("record_type = ?", recordType).And("date < ?", date).Delete(&BrowseRecord{})
 	if err != nil {
 		panic(err)
 	}
@@ -44,7 +44,7 @@ func DeletedExpiredData(recordType int, date string) bool {
 }
 
 func AddBrowseRecordNum(record *BrowseRecord) bool {
-	affected, err := adapter.engine.Insert(record)
+	affected, err := adapter.Engine.Insert(record)
 	if err != nil {
 		panic(err)
 	}
@@ -56,7 +56,7 @@ func ChangeExpiredDataStatus(recordType int, date string) int {
 	var res int
 	record := new(BrowseRecord)
 	record.Expired = true
-	affected, err := adapter.engine.Where("record_type = ?", recordType).And("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
+	affected, err := adapter.Engine.Where("record_type = ?", recordType).And("expired = ?", 0).And("created_time < ?", date).Cols("expired").Update(record)
 	res += int(affected)
 	if err != nil {
 		panic(err)
@@ -67,7 +67,7 @@ func ChangeExpiredDataStatus(recordType int, date string) int {
 
 func GetLastRecordId() int {
 	record := new(BrowseRecord)
-	_, err := adapter.engine.Desc("id").Cols("id").Limit(1).Get(record)
+	_, err := adapter.Engine.Desc("id").Cols("id").Limit(1).Get(record)
 	if err != nil {
 		panic(err)
 	}
@@ -79,7 +79,7 @@ func GetLastRecordId() int {
 
 func UpdateHotNode(last int) int {
 	var record []*BrowseRecord
-	err := adapter.engine.Table("browse_record").Where("id > ?", last).And("record_type = ?", 1).GroupBy("object_id").Find(&record)
+	err := adapter.Engine.Table("browse_record").Where("id > ?", last).And("record_type = ?", 1).GroupBy("object_id").Find(&record)
 	if err != nil {
 		panic(err)
 	}
@@ -94,7 +94,7 @@ func UpdateHotNode(last int) int {
 
 func UpdateHotTopic(last int) int {
 	var record []*BrowseRecord
-	err := adapter.engine.Table("browse_record").Where("id > ? ", last).And("record_type = ?", 2).GroupBy("object_id").Find(&record)
+	err := adapter.Engine.Table("browse_record").Where("id > ? ", last).And("record_type = ?", 2).GroupBy("object_id").Find(&record)
 	if err != nil {
 		panic(err)
 	}

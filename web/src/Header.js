@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2021 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
+import * as Auth from "./auth/Auth";
 
 class Header extends React.Component {
   constructor(props) {
@@ -57,6 +58,7 @@ class Header extends React.Component {
     this.setState({
       searchValue: curSearchVal,
       matchNodes: matchNodes,
+      searchResShow: true,
     });
   }
 
@@ -68,25 +70,10 @@ class Header extends React.Component {
 
   onKeyup(e) {
     if (e.keyCode === 13) {
-      const searchSide = Conf.DefaultSearchSite;
-
-      switch (searchSide) {
-        case "baidu":
-          window.open(
-            `https://www.baidu.com/s?q6=${Conf.Domain}&q3=${this.state.searchValue}`
-          );
-          return;
-        case "bing":
-          window.open(
-            `https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`
-          );
-          return;
-        case "google":
-          window.open(
-            `https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`
-          );
-          return;
-      }
+      this.props.history.push(`/search?keyword=${this.state.searchValue}`);
+      this.setState({
+        searchResShow: false,
+      });
     }
   }
 
@@ -98,9 +85,11 @@ class Header extends React.Component {
     AccountBackend.signout().then((res) => {
       if (res.status === "ok") {
         this.props.onSignout();
-        this.props.history.push("/signout");
+        // this.props.history.push("/");
+        window.location.href = "/";
       } else {
-        this.props.history.push("/signout");
+        // this.props.history.push("/");
+        window.location.href = "/";
       }
     });
   }
@@ -108,7 +97,7 @@ class Header extends React.Component {
   renderItem() {
     const isSignedIn =
       this.props.account !== undefined && this.props.account !== null;
-    const username = this.props.account?.id;
+    const username = this.props.account?.username;
 
     if (!isSignedIn) {
       return (
@@ -117,13 +106,13 @@ class Header extends React.Component {
             {i18next.t("general:Home")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/signup" className="top">
+          <a href={Auth.getSignupUrl()} className="top">
             {i18next.t("general:Sign Up")}
-          </Link>
+          </a>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/signin" className="top">
+          <a href={Auth.getSigninUrl()} className="top">
             {i18next.t("general:Sign In")}
-          </Link>
+          </a>
         </td>
       );
     } else {
@@ -145,11 +134,18 @@ class Header extends React.Component {
             {i18next.t("general:Timeline")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <Link to="/settings" className="top">
+          <a
+            target="_blank"
+            className="top"
+            href={Auth.getMyProfileUrl(this.props.account)}
+          >
             {i18next.t("general:Setting")}
-          </Link>
+          </a>
+          {/*<Link to="/settings" className="top">*/}
+          {/*  {i18next.t("general:Setting")}*/}
+          {/*</Link>*/}
           &nbsp;&nbsp;&nbsp;
-          {this.props.account?.isModerator ? (
+          {this.props.account?.isAdmin ? (
             <span>
               <Link to="/admin" className="top">
                 {i18next.t("general:Admin")}
@@ -180,28 +176,34 @@ class Header extends React.Component {
           <div className="content">
             <div style={{ paddingTop: "6px" }}>
               <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-                <tr>
-                  <td width="5" align="left"></td>
-                  <td width="80" align="left" style={{ paddingTop: "4px" }}>
-                    <Link to="/" name="top">
-                      <div id="logoMobile"></div>
-                    </Link>
-                  </td>
-                  <td width="auto" align="right" style={{ paddingTop: "2px" }}>
-                    <Link to="/" className="top">
-                      {i18next.t("general:Home")}
-                    </Link>
-                    &nbsp;&nbsp;&nbsp;
-                    <Link to="/signup" className="top">
-                      {i18next.t("general:Sign Up")}
-                    </Link>
-                    &nbsp;&nbsp;&nbsp;
-                    <Link to="/signin" className="top">
-                      {i18next.t("general:Sign In")}
-                    </Link>
-                  </td>
-                  <td width="10" align="left"></td>
-                </tr>
+                <tbody>
+                  <tr>
+                    <td width="5" align="left"></td>
+                    <td width="80" align="left" style={{ paddingTop: "4px" }}>
+                      <Link to="/" name="top">
+                        <div id="logoMobile"></div>
+                      </Link>
+                    </td>
+                    <td
+                      width="auto"
+                      align="right"
+                      style={{ paddingTop: "2px" }}
+                    >
+                      <Link to="/" className="top">
+                        {i18next.t("general:Home")}
+                      </Link>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href={Auth.getSignupUrl()} className="top">
+                        {i18next.t("general:Sign Up")}
+                      </a>
+                      &nbsp;&nbsp;&nbsp;
+                      <a href={Auth.getSigninUrl()} className="top">
+                        {i18next.t("general:Sign In")}
+                      </a>
+                    </td>
+                    <td width="10" align="left"></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -218,14 +220,14 @@ class Header extends React.Component {
             <button id="menu-entry" onClick={() => this.changeShowMenuStatus()}>
               {this.props.account?.avatar === "" ? (
                 <img
-                  src={Setting.getUserAvatar(this.props.account?.id)}
+                  src={Setting.getUserAvatar(this.props.account?.username)}
                   width={24}
                   border={0}
                   style={{ borderRadius: "32px", verticalAlign: "middle" }}
                   width="32"
                   height="32"
                   align="absmiddle"
-                  alt={this.props.account?.id}
+                  alt={this.props.account?.username}
                 />
               ) : (
                 <img
@@ -236,13 +238,16 @@ class Header extends React.Component {
                   width="32"
                   height="32"
                   align="absmiddle"
-                  alt={this.props.account?.id}
+                  alt={this.props.account?.username}
                 />
               )}
             </button>
             <div id="user-menu" style={menuStyle}>
               <div>
-                <Link to={`/member/${this.props.account?.id}`} className="top">
+                <Link
+                  to={`/member/${this.props.account?.username}`}
+                  className="top"
+                >
                   {i18next.t("general:Homepage")}
                 </Link>
               </div>
@@ -257,9 +262,16 @@ class Header extends React.Component {
                 </Link>
               </div>
               <div>
-                <Link to="/settings" className="top">
+                <a
+                  target="_blank"
+                  className="top"
+                  href={Auth.getMyProfileUrl(this.state.account)}
+                >
                   {i18next.t("general:Setting")}
-                </Link>
+                </a>
+                {/*<Link to="/settings" className="top">*/}
+                {/*  {i18next.t("general:Setting")}*/}
+                {/*</Link>*/}
               </div>
               <div>
                 <Link to="/admin" className="top">
@@ -340,6 +352,36 @@ class Header extends React.Component {
     }
   }
 
+  renderSearchEngine() {
+    let searchUrl;
+    switch (Conf.DefaultSearchSite) {
+      case "google":
+      case "Google":
+        searchUrl = `https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`;
+        break;
+      case "bing":
+      case "Bing":
+        searchUrl = `https://cn.bing.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`;
+        break;
+      case "baidu":
+      case "Baidu":
+        searchUrl = `https://www.baidu.com/s?q6=${Conf.Domain}&q3=${this.state.searchValue}`;
+        break;
+      default:
+        searchUrl = "/search?keyword=" + this.state.searchValue;
+    }
+
+    return (
+      <div className="cell">
+        <a className="search-item" href={searchUrl} target="blank">
+          {`${i18next.t("search:Click here to search in ")}${
+            Conf.DefaultSearchSite
+          }`}
+        </a>
+      </div>
+    );
+  }
+
   renderSearch() {
     if (Setting.PcBrowser) {
       return (
@@ -353,9 +395,6 @@ class Header extends React.Component {
               autoComplete={"off"}
               value={this.state.searchValue}
               onKeyUp={(event) => this.onKeyup(event)}
-              onSubmit={() =>
-                this.window.open("https://www.google.com/search?1")
-              }
               onChange={(event) => this.onSearchValueChange(event)}
               onFocus={() => {
                 this.setState({
@@ -376,6 +415,9 @@ class Header extends React.Component {
                 className="box"
                 style={{ display: "block" }}
               >
+                <div className="cell">
+                  {i18next.t("search:Press Enter to search in site.")}
+                </div>
                 {this.state.matchNodes.length !== 0 ? (
                   <div className="cell">
                     <span className="fade">
@@ -391,16 +433,7 @@ class Header extends React.Component {
                     })}
                   </div>
                 ) : null}
-                <div className="cell">
-                  <a
-                    className="search-item"
-                    href={`https://www.google.com/search?q=site:${Conf.Domain}/t ${this.state.searchValue}`}
-                    target="_blank"
-                  >
-                    {" "}
-                    Google&nbsp;{this.state.searchValue}{" "}
-                  </a>
-                </div>
+                {this.renderSearchEngine()}
               </div>
             ) : null}
           </div>

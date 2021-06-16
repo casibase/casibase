@@ -11,12 +11,31 @@
 /* See the License for the specific language governing permissions and      */
 /* limitations under the License.                                           */
 
-.react-codemirror2 {
-  height: 100%;
-  width: 100%;
+.CodeMirror {
+  height: auto !important;
+  cursor: text;
 }
 
-.CodeMirror {
-  height: 100% !important;
-  width: 100%;
+.cm-short-content .CodeMirror-scroll {
+  min-height: 120px !important;
+}
+
+.cm-middle-content .CodeMirror-scroll {
+  min-height: 220px !important;
+}
+
+.cm-long-content .CodeMirror-scroll {
+  min-height: 320px !important;
+}
+
+.cm-short-unresizable-content .CodeMirror-scroll {
+  height: 120px !important;
+}
+
+.cm-middle-unresizable-content .CodeMirror-scroll {
+  height: 220px !important;
+}
+
+.cm-middle-unresizable-content .CodeMirror-scroll {
+  height: 320px !important;
 }

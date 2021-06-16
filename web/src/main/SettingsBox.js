@@ -23,7 +23,7 @@ import * as Conf from "../Conf";
 import "../Reply.css";
 import "../Settings.css";
 import i18next from "i18next";
-import { getAccount } from "../backend/AccountBackend";
+import * as Auth from "../auth/Auth";
 
 class SettingsBox extends React.Component {
   constructor(props) {
@@ -108,27 +108,27 @@ class SettingsBox extends React.Component {
   }
 
   postUsername() {
-    const name = this.newUsername();
-    AccountBackend.signup(name)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage(
-            "success",
-            i18next.t("setting:Set username success")
-          );
-          window.location.href = "/";
-        } else {
-          Setting.showMessage(
-            "error",
-            `${i18next.t("setting:Set username failed")}: ${i18next.t(
-              "setting:" + res.msg
-            )}`
-          );
-        }
-      })
-      .catch((error) => {
-        Setting.showMessage("error", `setting:Set username failed：${error}`);
-      });
+    // const name = this.newUsername();
+    // AccountBackend.signup(name)
+    //   .then((res) => {
+    //     if (res.status === "ok") {
+    //       Setting.showMessage(
+    //         "success",
+    //         i18next.t("setting:Set username success")
+    //       );
+    //       window.location.href = "/";
+    //     } else {
+    //       Setting.showMessage(
+    //         "error",
+    //         `${i18next.t("setting:Set username failed")}: ${i18next.t(
+    //           "setting:" + res.msg
+    //         )}`
+    //       );
+    //     }
+    //   })
+    //   .catch((error) => {
+    //     Setting.showMessage("error", `setting:Set username failed：${error}`);
+    //   });
   }
 
   handleUsernameChange(e) {
@@ -153,7 +153,7 @@ class SettingsBox extends React.Component {
 
   publishInfoUpdate() {
     MemberBackend.updateMemberInfo(
-      this.props.account?.id,
+      this.props.account?.username,
       this.state.form
     ).then((res) => {
       if (res.status === "ok") {
@@ -207,7 +207,7 @@ class SettingsBox extends React.Component {
     AccountBackend.resetUsername(newUsername).then((res) => {
       if (res.status === "ok") {
         alert(i18next.t("setting:Username has been set"));
-        window.location.href = "/signin";
+        window.location.href = Auth.getSigninUrl();
       } else {
         alert(res.msg);
       }
@@ -286,24 +286,7 @@ class SettingsBox extends React.Component {
   }
 
   renderAccountOptions(accountType) {
-    return (
-      <tr>
-        <td width="120" align="right" />
-        <td width="auto" align="left">
-          <a
-            onClick={() =>
-              AccountBackend.unbindAccount(accountType).then((res) => {
-                if (res.status !== "ok") alert(res.msg);
-                else window.location.reload();
-              })
-            }
-            href="javascript:void(0);"
-          >
-            {i18next.t("setting:Unbind Account")}
-          </a>
-        </td>
-      </tr>
-    );
+    return null;
   }
 
   render() {
@@ -394,18 +377,18 @@ class SettingsBox extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                         size={"large"}
                       />{" "}
                       &nbsp;{" "}
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                       />{" "}
                       &nbsp;{" "}
                       <Avatar
-                        username={this.props.account?.id}
+                        username={this.props.account?.username}
                         avatar={this.props.account?.avatar}
                         size={"small"}
                       />
@@ -537,7 +520,7 @@ class SettingsBox extends React.Component {
               <tr>
                 <td width="120" align="right">
                   <Avatar
-                    username={account?.id}
+                    username={account?.username}
                     size="small"
                     avatar={account?.avatar}
                   />
@@ -552,7 +535,7 @@ class SettingsBox extends React.Component {
                   {i18next.t("setting:Username")}
                 </td>
                 <td width="auto" align="left">
-                  {account?.id}
+                  {account?.username}
                 </td>
               </tr>
               <tr>

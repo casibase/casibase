@@ -22,10 +22,9 @@ import Header from "./Header";
 import Footer from "./Footer";
 import RightSigninBox from "./rightbar/RightSigninBox";
 import RightAccountBox from "./rightbar/RightAccountBox";
-import SignupBox from "./main/SignupBox";
-import SigninBox from "./main/SigninBox";
 import TopicBox from "./main/TopicBox";
 import MemberBox from "./main/MemberBox";
+import SearchTag from "./main/SearchTag";
 import SettingsBox from "./main/SettingsBox";
 import * as AccountBackend from "./backend/AccountBackend";
 import SignoutBox from "./main/SignoutBox";
@@ -52,21 +51,26 @@ import RightHotNodeBox from "./rightbar/RightHotNodeBox";
 import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
 import EditBox from "./main/EditBox";
-import ForgotBox from "./main/ForgotBox";
 import FilesBox from "./main/FilesBox";
 import RankingRichBox from "./main/RankingRichBox";
+import NewMember from "./main/NewMember";
 import AdminHomepage from "./admin/AdminHomepage";
 import AdminNode from "./admin/AdminNode";
 import AdminTab from "./admin/AdminTab";
 import AdminMember from "./admin/AdminMember";
 import AdminPlane from "./admin/AdminPlane";
+import AdminPoster from "./admin/AdminPoster";
 import AdminTopic from "./admin/AdminTopic";
 import AdminSensitive from "./admin/AdminSensitive";
 import i18next from "i18next";
 import "./node.css";
 import "./i18n";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
-import { scoreConverter } from "./main/Tools";
+
+import * as Auth from "./auth/Auth";
+import * as Conf from "./Conf";
+import AuthCallback from "./auth/AuthCallback";
+import SearchResultPage from "./SearchResultPage";
 
 class App extends Component {
   constructor(props) {
@@ -82,6 +86,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
+    Auth.initAuthWithConfig(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();
     this.getNodeBackground = this.getNodeBackground.bind(this);
@@ -119,7 +124,7 @@ class App extends Component {
 
   getAccount() {
     AccountBackend.getAccount().then((res) => {
-      let account = Setting.parseJson(res.data);
+      let account = res.data;
       if (account !== null) {
         let language = account?.language;
         if (language !== "" && language !== i18next.language) {
@@ -153,6 +158,7 @@ class App extends Component {
     const pcBrowser = Setting.PcBrowser;
     return (
       <Switch>
+        <Route exact path="/callback" component={AuthCallback} />
         <Route exact path="/">
           {pcBrowser ? null : (
             <RightCheckinBonusBox account={this.state.account} />
@@ -163,36 +169,6 @@ class App extends Component {
             <TopicPage account={this.state.account} />
             {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
             <NodeNavigationBox />
-          </div>
-        </Route>
-        <Route exact path="/signup">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox
-              onSignout={this.onSignout.bind(this)}
-              refreshAccount={this.getAccount.bind(this)}
-            />
-          </div>
-        </Route>
-        <Route exact path="/signup/:signupMethod">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <SignupBox
-              account={this.state.account}
-              onSignout={this.onSignout.bind(this)}
-              refreshAccount={this.getAccount.bind(this)}
-            />
-          </div>
-        </Route>
-        <Route exact path="/signin">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <SigninBox
-              onSignin={this.onSignin.bind(this)}
-              onSignout={this.onSignout.bind(this)}
-            />
-            {pcBrowser ? null : <div className="sep5" />}
-            {pcBrowser ? null : <RightSigninBox />}
           </div>
         </Route>
         <Route exact path="/signout">
@@ -238,15 +214,15 @@ class App extends Component {
             <AllCreatedTopicsBox />
           </div>
         </Route>
-        <Route exact path="/settings">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <SettingsBox
-              account={this.state.account}
-              refreshAccount={this.getAccount.bind(this)}
-            />
-          </div>
-        </Route>
+        {/*<Route exact path="/settings">*/}
+        {/*  <div id={pcBrowser ? "Main" : ""}>*/}
+        {/*    {pcBrowser ? <div className="sep20" /> : null}*/}
+        {/*    <SettingsBox*/}
+        {/*      account={this.state.account}*/}
+        {/*      refreshAccount={this.getAccount.bind(this)}*/}
+        {/*    />*/}
+        {/*  </div>*/}
+        {/*</Route>*/}
         <Route exact path="/callback/:authType/:addition">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -266,6 +242,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <NewBox account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/tag/:tagId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SearchTag />
           </div>
         </Route>
         <Route exact path="/new/:nodeId">
@@ -350,12 +332,6 @@ class App extends Component {
             <EditBox account={this.state.account} />
           </div>
         </Route>
-        <Route exact path="/forgot">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <ForgotBox account={this.state.account} />
-          </div>
-        </Route>
         <Route exact path="/i">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -423,10 +399,22 @@ class App extends Component {
             <AdminTab account={this.state.account} />
           </div>
         </Route>
+        <Route exact path="/admin/poster">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminPoster />
+          </div>
+        </Route>
         <Route exact path="/admin/member">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminMember account={this.state.account} />
+          </div>
+        </Route>
+        <Route exact path="/admin/member/new">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <NewMember />
           </div>
         </Route>
         <Route exact path="/admin/member/edit/:memberId">
@@ -475,6 +463,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminSensitive account={this.state.account} event={"new"} />
+          </div>
+        </Route>
+        <Route exact path="/search">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SearchResultPage />
           </div>
         </Route>
       </Switch>

@@ -25,6 +25,7 @@ import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 import * as url from "url";
+import * as Auth from "../auth/Auth";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -345,7 +346,7 @@ class NodeBox extends React.Component {
               {this.state.nodeInfo?.moderators !== null &&
               this.state.nodeInfo?.moderators.length !== 0 ? (
                 <span>
-                  {this.props.account?.isModerator ? (
+                  {this.props.account?.isAdmin ? (
                     <Link to={`/go/${this.state.nodeId}/moderators`}>
                       {i18next.t("node:Moderator")}
                     </Link>
@@ -354,7 +355,7 @@ class NodeBox extends React.Component {
                   )}
                   {this.state.nodeInfo?.moderators.map((member) => {
                     return (
-                      <span>
+                      <span key={member}>
                         {" "}
                         <Link to={`/member/${member}`} target="_blank">
                           {member}
@@ -363,10 +364,10 @@ class NodeBox extends React.Component {
                     );
                   })}
                 </span>
-              ) : this.props.account?.isModerator ? (
+              ) : this.props.account?.isAdmin ? (
                 <Link
                   to={
-                    this.props.account?.isModerator
+                    this.props.account?.isAdmin
                       ? `/go/${this.state.nodeId}/moderators`
                       : null
                   }
@@ -389,7 +390,7 @@ class NodeBox extends React.Component {
                   onClick={() => {
                     this.deleteFavorite();
                   }}
-                  href="javascript:void(0);"
+                  href="#"
                   className="node_header_link"
                 >
                   {i18next.t("fav:Cancel favorite")}
@@ -399,7 +400,7 @@ class NodeBox extends React.Component {
                   onClick={() => {
                     this.addFavorite();
                   }}
-                  href="javascript:void(0);"
+                  href="#"
                   className="node_header_link"
                 >
                   {i18next.t("fav:Add to favorite")}
@@ -606,7 +607,7 @@ class NodeBox extends React.Component {
                   <br />
                   <span className="chevron">‹</span> &nbsp;
                   {i18next.t("error:Back to")}{" "}
-                  <Link to={`/member/${this.props.account?.id}`}>
+                  <Link to={`/member/${this.props.account?.username}`}>
                     {i18next.t("error:My profile")}
                   </Link>
                 </span>
@@ -621,8 +622,8 @@ class NodeBox extends React.Component {
       if (this.props.account === undefined) {
         return null;
       }
-      if (this.props.account === null || !this.props.account?.isModerator) {
-        this.props.history.push("/signin");
+      if (this.props.account === null || !this.props.account?.isAdmin) {
+        this.props.history.push(Auth.getSigninUrl());
       }
 
       return (

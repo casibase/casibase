@@ -21,31 +21,31 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func (c *APIController) GetPlanes() {
+func (c *ApiController) GetPlanes() {
 	c.Data["json"] = object.GetPlanes()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetPlanesAdmin() {
+func (c *ApiController) GetPlanesAdmin() {
 	c.Data["json"] = object.GetAllPlanes()
 	c.ServeJSON()
 }
 
-func (c *APIController) GetPlane() {
+func (c *ApiController) GetPlane() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetPlane(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetPlaneAdmin() {
+func (c *ApiController) GetPlaneAdmin() {
 	id := c.Input().Get("id")
 
 	c.Data["json"] = object.GetPlaneAdmin(id)
 	c.ServeJSON()
 }
 
-func (c *APIController) GetPlaneList() {
+func (c *ApiController) GetPlaneList() {
 	var resp Response
 
 	resp = Response{Status: "ok", Msg: "success", Data: object.GetPlaneList()}
@@ -54,12 +54,12 @@ func (c *APIController) GetPlaneList() {
 	c.ServeJSON()
 }
 
-func (c *APIController) AddPlane() {
+func (c *ApiController) AddPlane() {
 	var plane object.AdminPlaneInfo
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -99,14 +99,14 @@ func (c *APIController) AddPlane() {
 	c.ServeJSON()
 }
 
-func (c *APIController) UpdatePlane() {
+func (c *ApiController) UpdatePlane() {
 	id := c.Input().Get("id")
 
 	var resp Response
 	var plane object.AdminPlaneInfo
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
@@ -131,11 +131,11 @@ func (c *APIController) UpdatePlane() {
 	c.ServeJSON()
 }
 
-func (c *APIController) DeletePlane() {
+func (c *ApiController) DeletePlane() {
 	id := c.Input().Get("id")
 
-	if !object.CheckModIdentity(c.GetSessionUser()) {
-		c.RequireAdmin(c.GetSessionUser())
+	if !object.CheckModIdentity(c.GetSessionUsername()) {
+		c.RequireAdmin(c.GetSessionUsername())
 		return
 	}
 
