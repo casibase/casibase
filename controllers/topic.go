@@ -17,7 +17,7 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
-	"github.com/astaxie/beego"
+	beego "github.com/beego/beego/v2/adapter"
 	"io/ioutil"
 	"net/http"
 	"net/url"
