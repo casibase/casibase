@@ -44,6 +44,11 @@ class TopicBox extends React.Component {
       favoritesStatus: false,
       defaultTopTopicTime: 10,
       from: "/",
+      transl: {
+        translated: false,
+        from: "",
+        content: "",
+      },
     };
 
     const params = new URLSearchParams(this.props.location.search);
@@ -177,6 +182,30 @@ class TopicBox extends React.Component {
   }
 
   ignoreTopic() {}
+
+  translTopic() {
+    //https://html.spec.whatwg.org/multipage/system-state.html#language-preferences
+    //Use navigator.languages to get an array of language tags representing the user's preferred languages
+
+    if (!this.state.transl.translated) {
+      TopicBackend.translTopic(this.state.topicId, navigator.language).then(
+        (res) => {
+          this.setState((prevState) => {
+            prevState.transl.content = res.target;
+            prevState.transl.from = res.srcLang;
+            prevState.transl.translated = true;
+            return prevState;
+          });
+        }
+      );
+    } else {
+      this.setState({
+        transl: {
+          translated: false,
+        },
+      });
+    }
+  }
 
   deleteTopic() {
     if (window.confirm(`Are you sure to delete this topic?`)) {
@@ -411,15 +440,15 @@ class TopicBox extends React.Component {
             </a>
           )
         ) : null}
-        <a href="#;" onClick={this.openShare()} className="tb">
+        <a href="#;" onClick={() => this.openShare()} className="tb">
           Tweet
         </a>
         &nbsp;
-        <a href="#;" onClick={this.openShare()} className="tb">
+        <a href="#;" onClick={() => this.openShare()} className="tb">
           Weibo
         </a>
         &nbsp;
-        <a href="#;" onClick={this.ignoreTopic()} className="tb">
+        <a href="#;" onClick={() => this.ignoreTopic()} className="tb">
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
@@ -855,6 +884,38 @@ class TopicBox extends React.Component {
                   )}
                   escapeHtml={false}
                 />
+                <a href="#;" onClick={() => this.translTopic()}>
+                  <p style={{ margin: 15 }}>
+                    {this.state.transl.translated ? (
+                      <span>
+                        {i18next
+                          .t("topic:Translated from {lang} by")
+                          .replace("{lang}", this.state.transl.from)}
+                        <img
+                          height={18}
+                          src="https://raw.githubusercontent.com/WindSpiritSR/static/e9b98c0df22846f220f1cbf1b9efb89bac416f63/img/logo_google.svg"
+                        ></img>
+                      </span>
+                    ) : (
+                      <span>{i18next.t("topic:Translate")}</span>
+                    )}
+                  </p>
+                </a>
+                {this.state.transl.translated ? (
+                  <ReactMarkdown
+                    renderers={{
+                      image: this.renderImage,
+                      link: this.renderLink,
+                    }}
+                    source={Setting.getFormattedContent(
+                      this.state.transl.content,
+                      true
+                    )}
+                    escapeHtml={false}
+                  />
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>

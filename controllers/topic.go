@@ -17,6 +17,11 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"github.com/astaxie/beego"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -526,6 +531,95 @@ func (c *ApiController) EditContent() {
 
 	c.Data["json"] = resp
 	c.ServeJSON()
+}
+
+func (c *ApiController) TranslTopic() {
+	topicIdStr := c.Input().Get("id")
+	targetLang := c.Input().Get("target")
+
+	//ISO/IEC 15897 to ISO 639-1
+	targetLang = targetLang[0:2]
+
+	topicId := util.ParseInt(topicIdStr)
+
+	var result TopicTranslData
+
+	topic := object.GetTopic(topicId)
+	if topic == nil || topic.Deleted {
+		result.ErrMsg = "Invalid TopicId"
+		c.Data["json"] = result
+		c.ServeJSON()
+		return
+	}
+
+	contentStr := topic.Content
+
+	replaceStr := "<code>RplaceWithCasnodeTranslator<code/>"
+	contentReg := regexp.MustCompile(`(?s)\x60{1,3}[^\x60](.*?)\x60{1,3}`)
+	translReg := regexp.MustCompile(`` + replaceStr + ``)
+
+	codeBlocks := contentReg.FindAllString(contentStr, -1)
+	var cbList []string
+
+	if codeBlocks != nil {
+		for _, cbItem := range codeBlocks {
+			cbList = append(cbList, cbItem)
+		}
+	}
+
+	contentStr = contentReg.ReplaceAllString(contentStr, replaceStr)
+
+	params := url.Values{
+		"target": {targetLang},
+		"format": {"text"},
+		"key": {beego.AppConfig.String("googleTranslKey")},
+		"q": {contentStr},
+	}
+	resp, _:= http.PostForm("https://translation.googleapis.com/language/translate/v2", params)
+	defer resp.Body.Close()
+
+	respByte, _:= ioutil.ReadAll(resp.Body)
+	var translResp GoogleTranslResult
+	translResp.Error.Code = 0
+
+	err := json.Unmarshal(respByte, &translResp)
+	if err != nil {
+		panic(err)
+	}
+	translStr := translResp.Data.Translations[0].TranslatedText
+	detectSrcLang := translResp.Data.Translations[0].DetectedSourceLanguage
+
+	replacedCb := translReg.FindAllString(translStr, -1)
+	var replacedCbList []string
+	if replacedCb != nil {
+		for _, replacedCbItem := range replacedCb {
+			replacedCbList = append(replacedCbList, replacedCbItem)
+		}
+	}
+
+	if len(replacedCbList) != len(codeBlocks) {
+		result.ErrMsg = "Translate Failed"
+		c.Data["json"] = result
+		c.ServeJSON()
+		return
+	}
+
+	replaceIndex := 0
+	translStr = translReg.ReplaceAllStringFunc(translStr, func(src string) string {
+		replaceIndex = replaceIndex + 1
+		return cbList[replaceIndex - 1]
+	})
+
+	if translResp.Error.Code != 0 {
+		result.ErrMsg = translResp.Error.Message
+	} else {
+		result.SrcLang = detectSrcLang
+		result.Target = translStr
+	}
+
+	c.Data["json"] = result
+	c.ServeJSON()
+	return
 }
 
 // TopTopic tops topic according to the topType in the url.
