@@ -1,6 +1,7 @@
 {
   "general": {
     "Home": "首页",
+    "Swagger": "API文档",
     "Sign Up": "注册",
     "Sign In": "登录",
     "Note": "记事本",

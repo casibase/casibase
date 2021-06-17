@@ -28,8 +28,8 @@ type Response struct {
 
 // @Title Signin
 // @Description sign in as a member
-// @Param   username     formData    string  true        "The username to sign in"
-// @Param   password     formData    string  true        "The password"
+// @Param   code     QueryString    string  true        "The code to sign in"
+// @Param   state     QueryString    string  true        "The state"
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signin [post]
 func (c *ApiController) Signin() {
@@ -79,6 +79,10 @@ func (c *ApiController) Signout() {
 	c.ServeJSON()
 }
 
+// @Title GetAccount
+// @Description Get current account
+// @Success 200 {object} controllers.api_controller.Response The Response object
+// @router /get-account [get]
 func (c *ApiController) GetAccount() {
 	var resp Response
 
