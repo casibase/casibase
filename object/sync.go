@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/astaxie/beego"
+	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/util"
 )

@@ -17,7 +17,7 @@ package main
 import (
 	"testing"
 
-	"github.com/astaxie/beego"
+	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/service"
 )

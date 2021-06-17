@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/astaxie/beego"
+	beego "github.com/beego/beego/v2/adapter"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
