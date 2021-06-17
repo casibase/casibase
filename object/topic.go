@@ -666,7 +666,7 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 	var topics []Topic
 	keyword = fmt.Sprintf("%%%s%%", keyword)
 
-	err := adapter.Engine.Where("deleted = 0").Where("title like ? or content like ?", keyword, keyword).Find(&topics)
+	err := adapter.Engine.Where("deleted = 0").Where("regexp_replace(title, '<[^>]+>', '') like ? or regexp_replace(content, '<[^>]+>', '') like ?", keyword, keyword).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
