@@ -39,6 +39,12 @@ type NewTopicForm struct {
 	Tags       []string `json:"tags"`
 }
 
+// @Title GetTopics
+// @Description get current topics
+// @Param   limit     query    string  true        "topics size"
+// @Param   page     query    string  true        "offset"
+// @Success 200 {array} object.TopicWithAvatar The Response object
+// @router /get-topics [get]
 func (c *ApiController) GetTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -59,6 +65,22 @@ func (c *ApiController) GetTopics() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicsAdmin
+// @Description get topics for admin
+// @Param   limit     query    string  true        "topics size"
+// @Param   page     query    string  true        "offset"
+// @Param   un     query    string  true        "username(author)"
+// @Param   ti     query    string  true        "search: title"
+// @Param   cn     query    string  true        "search: content"
+// @Param   sdt     query    string  true        "sort: show deleted topics"
+// @Param   cs     query    string  true        "sort: created time"
+// @Param   lrs     query    string  true        "sort: last reply time"
+// @Param   us     query    string  true        "sort: username"
+// @Param   rcs     query    string  true        "sort: reply count"
+// @Param   hs     query    string  true        "sort: hot"
+// @Param   fcs     query    string  true        "sort: favorite count"
+// @Success 200 {object} controllers.Response The Response object
+// @router /get-topics-admin [get]
 func (c *ApiController) GetTopicsAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -95,6 +117,11 @@ func (c *ApiController) GetTopicsAdmin() {
 	c.ServeJSON()
 }
 
+// @Title GetTopic
+// @Description get one topic by id
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} object.TopicWithAvatar The Response object
+// @router /get-topic [get]
 func (c *ApiController) GetTopic() {
 	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
@@ -116,6 +143,11 @@ func (c *ApiController) GetTopic() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicAdmin
+// @Description get topic for admin by id
+//@Param   id     query    string  true        "id"
+// @Success 200 {object} object.AdminTopicInfo The Response object
+// @router /get-topic-admin [get]
 func (c *ApiController) GetTopicAdmin() {
 	idStr := c.Input().Get("id")
 
@@ -139,6 +171,11 @@ func (c *ApiController) UpdateTopic() {
 	c.ServeJSON()
 }
 
+// @Title AddTopic
+// @Description add one topic
+// @Param   form     body    controllers.NewTopicForm  true        "topic info"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-topic [post]
 func (c *ApiController) AddTopic() {
 	if c.RequireLogin() {
 		return
@@ -229,6 +266,11 @@ func (c *ApiController) AddTopic() {
 	c.ServeJSON()
 }
 
+// @Title UploadTopicPic
+// @Description upload topic picture
+// @Param   pic     formData    string  true        "the picture base64 code"
+// @Success 200 {object} _controllers.Response The Response object
+// @router /upload-topic-pic [post]
 func (c *ApiController) UploadTopicPic() {
 	if c.RequireLogin() {
 		return
@@ -251,6 +293,11 @@ func (c *ApiController) UploadTopicPic() {
 	c.ServeJSON()
 }
 
+// @Title DeleteTopic
+// @Description delete a topic by id
+// @Param   id     query    string  true        "topic id"
+// @Success 200 {bool} bool Delete success or failure
+// @router /delete-topic [post]
 func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
 	memberId := c.GetSessionUsername()
@@ -268,11 +315,23 @@ func (c *ApiController) DeleteTopic() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicsNum
+// @Description get the total number of topics
+// @Success 200 {int} int The topic nums
+// @router /get-topics-num [get]
 func (c *ApiController) GetTopicsNum() {
 	c.Data["json"] = object.GetTopicNum()
 	c.ServeJSON()
 }
 
+// @Title GetAllCreatedTopics
+// @Description get all created topics
+// @Param   id     query    string  true        "author id"
+// @Param   tab     query    string  true        "tab"
+// @Param   limit     query    string  true        "mumber of topics"
+// @Param   page     query    string  true        "page offset"
+// @Success 200 {array} object.Topic The Response object
+// @router /get-all-created-topics [get]
 func (c *ApiController) GetAllCreatedTopics() {
 	author := c.Input().Get("id")
 	tab := c.Input().Get("tab")
@@ -302,6 +361,11 @@ func (c *ApiController) GetAllCreatedTopics() {
 	c.ServeJSON()
 }
 
+// @Title GetCreatedTopicsNum
+// @Description get created topics count
+// @Param   id     query    string  true        "member id"
+// @Success 200 {int} int topics count
+// @router /get-created-tp[ics-num [get]
 func (c *ApiController) GetCreatedTopicsNum() {
 	memberId := c.Input().Get("id")
 
@@ -309,6 +373,13 @@ func (c *ApiController) GetCreatedTopicsNum() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicsByNode
+// @Description get topics by node
+// @Param   node-id     query    string  true        "node id"
+// @Param   limit     query    string  true        "number of topics"
+// @Param   page     query    string  true        "page offset"
+// @Success 200 {array} object.NodeTopic The Response object
+// @router /get-topics-by-node [get]
 func (c *ApiController) GetTopicsByNode() {
 	nodeId := c.Input().Get("node-id")
 	limitStr := c.Input().Get("limit")
@@ -330,6 +401,13 @@ func (c *ApiController) GetTopicsByNode() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicsByTag
+// @Description get topics by tag
+// @Param   tag-id     query    string  true        "tag id"
+// @Param   limit     query    string  true        "number of topics"
+// @Param   page     query    string  true        "page offset"
+// @Success 200 {array} object.NodeTopic The Response object
+// @router /get-topics-by-tag [get]
 func (c *ApiController) GetTopicsByTag() {
 	tagId := c.Input().Get("tag-id")
 	limitStr := c.Input().Get("limit")
@@ -351,7 +429,11 @@ func (c *ApiController) GetTopicsByTag() {
 	c.ServeJSON()
 }
 
-//together with node
+// @Title AddTopicHitCount
+// @Description add topic hit count,together with node
+// @Param   id     query    string  true        "topic id"
+// @Success 200 {object} controller.Response The Response object
+// @router /add-topic-hit-count [post]
 func (c *ApiController) AddTopicHitCount() {
 	topicIdStr := c.Input().Get("id")
 
@@ -377,6 +459,13 @@ func (c *ApiController) AddTopicHitCount() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicsByTab
+// @Description get topics by tab
+// @Param   tab-id     query    string  true        "tab id"
+// @Param   limit     query    string  true        "number of topics"
+// @Param   page     query    string  true        "page offset"
+// @Success 200 {array} object.TopicWithAvatar The Response object
+// @router /get-topics-by-tab [get]
 func (c *ApiController) GetTopicsByTab() {
 	tabId := c.Input().Get("tab-id")
 	limitStr := c.Input().Get("limit")
@@ -398,6 +487,11 @@ func (c *ApiController) GetTopicsByTab() {
 	c.ServeJSON()
 }
 
+// @Title AddTopicBrowseCount
+// @Description add topic browse count
+// @Param   id     query    string  true        "topicId"
+// @Success 200 {object} controller.Response The Response object
+// @router /add-topic-browse-record [post]
 func (c *ApiController) AddTopicBrowseCount() {
 	topicId := c.Input().Get("id")
 
@@ -420,6 +514,11 @@ func (c *ApiController) AddTopicBrowseCount() {
 	c.ServeJSON()
 }
 
+// @Title GetHotTopic
+// @Description get hot topic
+// @Param   limit     query    string  true        "limit size"
+// @Success 200 {object} controller.Response The Response object
+// @router /get-hot-topic [get]
 func (c *ApiController) GetHotTopic() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.HotTopicNum
@@ -439,6 +538,11 @@ func (c *ApiController) GetHotTopic() {
 	c.ServeJSON()
 }
 
+// @Title UpdateTopicNode
+// @Description update the topic node
+// @Param   updateTopicNode     body    controllers.updateTopicNode  true        "topic node info"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-topic-node [post]
 func (c *ApiController) UpdateTopicNode() {
 	if c.RequireLogin() {
 		return
@@ -473,6 +577,11 @@ func (c *ApiController) UpdateTopicNode() {
 	c.ServeJSON()
 }
 
+// @Title EditContent
+// @Description edit content
+// @Param   editType     query    string  true        "edit Type"
+// @Success 200 {object} controllers.Response The Response object
+// @router /edit-content [post]
 func (c *ApiController) EditContent() {
 	if c.RequireLogin() {
 		return
@@ -623,6 +732,11 @@ func (c *ApiController) TranslTopic() {
 }
 
 // TopTopic tops topic according to the topType in the url.
+// @Title TopTopic
+// @Description tops topic according to the topType in the url.
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} controllers.Response The Response object
+// @router /top-topic [post]
 func (c *ApiController) TopTopic() {
 	if c.RequireLogin() {
 		return
@@ -670,7 +784,11 @@ func (c *ApiController) TopTopic() {
 	c.ServeJSON()
 }
 
-// CancelTopTopic cancels top topic according to the topType in the url.
+// @Title CancelTopTopic
+// @Description cancels top topic according to the topType in the url.
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} controllers.Response The Response object
+// @router /cancel-top-topic [post]
 func (c *ApiController) CancelTopTopic() {
 	if c.RequireLogin() {
 		return
