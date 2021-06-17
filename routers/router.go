@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// @APIVersion 1.0.0
+// @Title Casnode API
+// @Description Documentation of Casdoor API
+// @Contact admin@casbin.org
 package routers
 
 import (
@@ -23,6 +27,7 @@ import (
 func init() {
 	initAPI()
 }
+
 
 func initAPI() {
 	ns :=

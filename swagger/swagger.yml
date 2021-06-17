@@ -1,0 +1,783 @@
+swagger: "2.0"
+info:
+  title: Casnode API
+  description: Documentation of Casdoor API
+  version: 1.0.0
+  contact:
+    email: admin@casbin.org
+basePath: /api
+paths:
+  /add-topic:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: add one topic
+      operationId: ApiController.AddTopic
+      parameters:
+      - in: body
+        name: form
+        description: topic info
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.NewTopicForm'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /add-topic-browse-record:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: add topic browse count
+      operationId: ApiController.AddTopicBrowseCount
+      parameters:
+      - in: query
+        name: id
+        description: topicId
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controller.Response'
+  /add-topic-hit-count:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: add topic hit count,together with node
+      operationId: ApiController.AddTopicHitCount
+      parameters:
+      - in: query
+        name: id
+        description: topic id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controller.Response'
+  /cancel-top-topic:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: cancels top topic according to the topType in the url.
+      operationId: ApiController.CancelTopTopic
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /delete-topic:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: delete a topic by id
+      operationId: ApiController.DeleteTopic
+      parameters:
+      - in: query
+        name: id
+        description: topic id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{bool} bool Delete success or failure'
+  /edit-content:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: edit content
+      operationId: ApiController.EditContent
+      parameters:
+      - in: query
+        name: editType
+        description: edit Type
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /get-account:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: Get current account
+      operationId: ApiController.GetAccount
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.api_controller.Response'
+  /get-all-created-topics:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get all created topics
+      operationId: ApiController.GetAllCreatedTopics
+      parameters:
+      - in: query
+        name: id
+        description: author id
+        required: true
+        type: string
+      - in: query
+        name: tab
+        description: tab
+        required: true
+        type: string
+      - in: query
+        name: limit
+        description: mumber of topics
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: page offset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Topic'
+  /get-created-tp[ics-num:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get created topics count
+      operationId: ApiController.GetCreatedTopicsNum
+      parameters:
+      - in: query
+        name: id
+        description: member id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{int} int topics count'
+  /get-hot-topic:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get hot topic
+      operationId: ApiController.GetHotTopic
+      parameters:
+      - in: query
+        name: limit
+        description: limit size
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controller.Response'
+  /get-topic:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get one topic by id
+      operationId: ApiController.GetTopic
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.TopicWithAvatar'
+  /get-topic-admin:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get topic for admin by id
+      operationId: ApiController.GetTopicAdmin
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.AdminTopicInfo'
+  /get-topics:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get current topics
+      operationId: ApiController.GetTopics
+      parameters:
+      - in: query
+        name: limit
+        description: topics size
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: offset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.TopicWithAvatar'
+  /get-topics-admin:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get topics for admin
+      operationId: ApiController.GetTopicsAdmin
+      parameters:
+      - in: query
+        name: limit
+        description: topics size
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: offset
+        required: true
+        type: string
+      - in: query
+        name: un
+        description: username(author)
+        required: true
+        type: string
+      - in: query
+        name: ti
+        description: 'search: title'
+        required: true
+        type: string
+      - in: query
+        name: cn
+        description: 'search: content'
+        required: true
+        type: string
+      - in: query
+        name: sdt
+        description: 'sort: show deleted topics'
+        required: true
+        type: string
+      - in: query
+        name: cs
+        description: 'sort: created time'
+        required: true
+        type: string
+      - in: query
+        name: lrs
+        description: 'sort: last reply time'
+        required: true
+        type: string
+      - in: query
+        name: us
+        description: 'sort: username'
+        required: true
+        type: string
+      - in: query
+        name: rcs
+        description: 'sort: reply count'
+        required: true
+        type: string
+      - in: query
+        name: hs
+        description: 'sort: hot'
+        required: true
+        type: string
+      - in: query
+        name: fcs
+        description: 'sort: favorite count'
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /get-topics-by-node:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get topics by node
+      operationId: ApiController.GetTopicsByNode
+      parameters:
+      - in: query
+        name: node-id
+        description: node id
+        required: true
+        type: string
+      - in: query
+        name: limit
+        description: number of topics
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: page offset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.NodeTopic'
+  /get-topics-by-tab:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get topics by tab
+      operationId: ApiController.GetTopicsByTab
+      parameters:
+      - in: query
+        name: tab-id
+        description: tab id
+        required: true
+        type: string
+      - in: query
+        name: limit
+        description: number of topics
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: page offset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.TopicWithAvatar'
+  /get-topics-by-tag:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get topics by tag
+      operationId: ApiController.GetTopicsByTag
+      parameters:
+      - in: query
+        name: tag-id
+        description: tag id
+        required: true
+        type: string
+      - in: query
+        name: limit
+        description: number of topics
+        required: true
+        type: string
+      - in: query
+        name: page
+        description: page offset
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.NodeTopic'
+  /get-topics-num:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get the total number of topics
+      operationId: ApiController.GetTopicsNum
+      responses:
+        "200":
+          description: '{int} int The topic nums'
+  /signin:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: sign in as a member
+      operationId: ApiController.Signin
+      parameters:
+      - in: QueryString
+        name: code
+        description: The code to sign in
+        required: true
+        type: string
+      - in: QueryString
+        name: state
+        description: The state
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.api_controller.Response'
+  /signout:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: sign out the current member
+      operationId: ApiController.Signout
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.api_controller.Response'
+  /top-topic:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: tops topic according to the topType in the url.
+      operationId: ApiController.TopTopic
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /update-topic-node:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: update the topic node
+      operationId: ApiController.UpdateTopicNode
+      parameters:
+      - in: body
+        name: updateTopicNode
+        description: topic node info
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.updateTopicNode'
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /upload-topic-pic:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: upload topic picture
+      operationId: ApiController.UploadTopicPic
+      parameters:
+      - in: formData
+        name: pic
+        description: the picture base64 code
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/_controllers.Response'
+definitions:
+  _controllers.Response:
+    title: Response
+    type: object
+  823.0xc0001ccea0.false:
+    title: "false"
+    type: object
+  857.0xc0001cced0.false:
+    title: "false"
+    type: object
+  controller.Response:
+    title: Response
+    type: object
+  controllers.NewTopicForm:
+    title: NewTopicForm
+    type: object
+    properties:
+      body:
+        type: string
+      editorType:
+        type: string
+      nodeId:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+  controllers.Response:
+    title: Response
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/823.0xc0001ccea0.false'
+      data2:
+        $ref: '#/definitions/857.0xc0001cced0.false'
+      msg:
+        type: string
+      status:
+        type: string
+  controllers.api_controller.Response:
+    title: Response
+    type: object
+    properties:
+      data:
+        $ref: '#/definitions/823.0xc0001ccea0.false'
+      data2:
+        $ref: '#/definitions/857.0xc0001cced0.false'
+      msg:
+        type: string
+      status:
+        type: string
+  controllers.updateTopicNode:
+    title: updateTopicNode
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      nodeId:
+        type: string
+      nodeName:
+        type: string
+  object.AdminTopicInfo:
+    title: AdminTopicInfo
+    type: object
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      createdTime:
+        type: string
+      deleted:
+        type: boolean
+      editorType:
+        type: string
+      favoriteCount:
+        type: integer
+        format: int64
+      hitCount:
+        type: integer
+        format: int64
+      homePageTopTime:
+        type: string
+      hot:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      lastReplyTime:
+        type: string
+      lastReplyUser:
+        type: string
+      nodeId:
+        type: string
+      nodeName:
+        type: string
+      nodeTopTime:
+        type: string
+      replyCount:
+        type: integer
+        format: int64
+      tabTopTime:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+      upCount:
+        type: integer
+        format: int64
+  object.NodeTopic:
+    title: NodeTopic
+    type: object
+    properties:
+      author:
+        type: string
+      avatar:
+        type: string
+      content:
+        type: string
+      contentLength:
+        type: integer
+        format: int64
+      createdTime:
+        type: string
+      editable:
+        type: boolean
+      editorType:
+        type: string
+      favoriteCount:
+        type: integer
+        format: int64
+      hitCount:
+        type: integer
+        format: int64
+      homePageTopTime:
+        type: string
+      hot:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      lastReplyTime:
+        type: string
+      lastReplyUser:
+        type: string
+      nodeId:
+        type: string
+      nodeModerator:
+        type: boolean
+      nodeName:
+        type: string
+      nodeTopTime:
+        type: string
+      replyCount:
+        type: integer
+        format: int64
+      tabTopTime:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      thanksStatus:
+        type: boolean
+      title:
+        type: string
+      upCount:
+        type: integer
+        format: int64
+  object.Topic:
+    title: Topic
+    type: object
+    properties:
+      author:
+        type: string
+      content:
+        type: string
+      createdTime:
+        type: string
+      editorType:
+        type: string
+      favoriteCount:
+        type: integer
+        format: int64
+      hitCount:
+        type: integer
+        format: int64
+      homePageTopTime:
+        type: string
+      hot:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      lastReplyTime:
+        type: string
+      lastReplyUser:
+        type: string
+      nodeId:
+        type: string
+      nodeName:
+        type: string
+      nodeTopTime:
+        type: string
+      replyCount:
+        type: integer
+        format: int64
+      tabTopTime:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      title:
+        type: string
+      upCount:
+        type: integer
+        format: int64
+  object.TopicWithAvatar:
+    title: TopicWithAvatar
+    type: object
+    properties:
+      author:
+        type: string
+      avatar:
+        type: string
+      content:
+        type: string
+      createdTime:
+        type: string
+      editable:
+        type: boolean
+      editorType:
+        type: string
+      favoriteCount:
+        type: integer
+        format: int64
+      hitCount:
+        type: integer
+        format: int64
+      homePageTopTime:
+        type: string
+      hot:
+        type: integer
+        format: int64
+      id:
+        type: integer
+        format: int64
+      lastReplyTime:
+        type: string
+      lastReplyUser:
+        type: string
+      nodeId:
+        type: string
+      nodeModerator:
+        type: boolean
+      nodeName:
+        type: string
+      nodeTopTime:
+        type: string
+      replyCount:
+        type: integer
+        format: int64
+      tabTopTime:
+        type: string
+      tags:
+        type: array
+        items:
+          type: string
+      thanksStatus:
+        type: boolean
+      title:
+        type: string
+      upCount:
+        type: integer
+        format: int64

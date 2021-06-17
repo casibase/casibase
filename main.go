@@ -45,6 +45,9 @@ func main() {
 
 	//beego.DelStaticPath("/static")
 	beego.SetStaticPath("/static", "web/build/static")
+	beego.SetStaticPath("/swagger", "swagger")
+	beego.BConfig.WebConfig.DirectoryIndex = true
+
 	// https://studygolang.com/articles/2303
 	beego.InsertFilter("/", beego.BeforeRouter, routers.BotFilter)
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.BotFilter)
