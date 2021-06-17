@@ -17,9 +17,9 @@ package main
 import (
 	"os"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
-	_ "github.com/astaxie/beego/session/mysql"
+	beego "github.com/beego/beego/v2/adapter"
+	"github.com/beego/beego/v2/adapter/plugins/cors"
+	_ "github.com/beego/beego/v2/adapter/session/mysql"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/routers"

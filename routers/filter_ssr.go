@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	beegoContext "github.com/astaxie/beego/context"
+	beegoContext "github.com/beego/beego/v2/adapter/context"
 	"github.com/chromedp/chromedp"
 )
 

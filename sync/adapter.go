@@ -15,7 +15,7 @@
 package sync
 
 import (
-	"github.com/astaxie/beego"
+	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/object"
 	_ "github.com/go-sql-driver/mysql" // db = mysql
