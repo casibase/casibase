@@ -893,7 +893,7 @@ class TopicBox extends React.Component {
                           .replace("{lang}", this.state.transl.from)}
                         <img
                           height={18}
-                          src="https://raw.githubusercontent.com/WindSpiritSR/static/e9b98c0df22846f220f1cbf1b9efb89bac416f63/img/logo_google.svg"
+                          src="https://cdn.casbin.com/forum/static/img/logo_google.svg"
                         ></img>
                       </span>
                     ) : (
