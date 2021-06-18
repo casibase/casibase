@@ -43,6 +43,7 @@ class SearchResultPage extends React.Component {
         {
           keyword: params[1],
           msg: i18next.t("search:loading..."),
+          topics: [],
         },
         () =>
           SearchBackend.search(this.state.keyword).then((res) =>
@@ -62,21 +63,23 @@ class SearchResultPage extends React.Component {
   }
 
   renderResult() {
-    if (this.state.topics != null && this.state.topics.length !== 0) {
-      return (
-        <TopicList
-          topics={this.state.topics}
-          showNodeName={true}
-          showAvatar={true}
-        />
-      );
-    } else {
+    if (this.state.topics === null) {
       return (
         <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
           {i18next.t("search:No topics found")}
         </div>
       );
     }
+
+    if (this.state.topics.length === 0) return null;
+
+    return (
+      <TopicList
+        topics={this.state.topics}
+        showNodeName={true}
+        showAvatar={true}
+      />
+    );
   }
 
   render() {

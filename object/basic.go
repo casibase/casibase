@@ -20,6 +20,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"regexp"
 	"strings"
 
 	"github.com/casbin/casnode/util"
@@ -233,4 +234,13 @@ func UpdateOnlineMemberNum() {
 	if onlineMemberNum > highestOnlineNum {
 		UpdateHighestOnlineNum(onlineMemberNum)
 	}
+}
+
+var recognizeHtmlTags *regexp.Regexp
+
+func RemoveHtmlTags(text string) string {
+	if recognizeHtmlTags == nil {
+		recognizeHtmlTags = regexp.MustCompile("<[^>]+>")
+	}
+	return recognizeHtmlTags.ReplaceAllString(text, "")
 }

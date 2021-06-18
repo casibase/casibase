@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/casbin/casnode/util"
@@ -664,9 +665,9 @@ func (t Topic) GetAllRepliesOfTopic() []string {
 
 func SearchTopics(keyword string) []TopicWithAvatar {
 	var topics []Topic
-	keyword = fmt.Sprintf("%%%s%%", keyword)
+	sqlKeyword := fmt.Sprintf("%%%s%%", keyword)
 
-	err := adapter.Engine.Where("deleted = 0").Where("regexp_replace(title, '<[^>]+>', '') like ? or regexp_replace(content, '<[^>]+>', '') like ?", keyword, keyword).Find(&topics)
+	err := adapter.Engine.Where("deleted = 0").Where("title like ? or content like ?", sqlKeyword, sqlKeyword).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
@@ -674,6 +675,11 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 	memberAvatar := GetMemberAvatarMapping()
 	var ret []TopicWithAvatar
 	for _, topic := range topics {
+		content := RemoveHtmlTags(topic.Content)
+		if !strings.Contains(content, keyword) && !strings.Contains(topic.Title, keyword) {
+			continue
+		}
+
 		ret = append(ret, TopicWithAvatar{
 			Topic: topic,
 			Avatar: memberAvatar[topic.Author],
