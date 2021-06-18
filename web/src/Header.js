@@ -128,6 +128,10 @@ class Header extends React.Component {
             {i18next.t("general:Home")}
           </Link>
           &nbsp;&nbsp;&nbsp;
+          <a href={`${ServerUrl}/swagger`} className="top">
+            {i18next.t("general:Swagger")}
+          </a>
+          &nbsp;&nbsp;&nbsp;
           <Link to={`/member/${username}`} className="top">
             {username}
           </Link>
