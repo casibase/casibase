@@ -16,7 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
-
+	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
@@ -199,7 +199,13 @@ func (c *ApiController) UpdateMemberLanguage() {
 	}
 
 	clain := c.GetSessionUser()
-	clain.Language = language
+	if clain == nil {
+		clain = &auth.Claims{
+			Language: language,
+		}
+	} else {
+		clain.Language = language
+	}
 	c.SetSessionUser(clain)
 
 	res := object.UpdateMemberLanguage(memberId, language)
