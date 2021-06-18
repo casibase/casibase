@@ -201,9 +201,9 @@ export function cancelTopTopic(id, topType) {
   ).then((res) => res.json());
 }
 
-export function translTopic(id, target, content) {
+export function translateTopic(id, target, content) {
   return fetch(
-    `${Setting.ServerUrl}/api/transl-topic?id=${id}&target=${target}`,
+    `${Setting.ServerUrl}/api/translate-topic?id=${id}&target=${target}`,
     {
       method: "POST",
       credentials: "include",

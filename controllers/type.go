@@ -85,13 +85,13 @@ type adminNodeInfo struct {
 	FavoritesNum int         `json:"favoritesNum"`
 }
 
-type TopicTranslData struct {
+type TopicTranslateData struct {
 	SrcLang string `json:"srcLang"`
 	Target  string `json:"target"`
 	ErrMsg  string `json:"err_msg"`
 }
 
-type GoogleTranslResult struct {
+type GoogleTranslationResult struct {
 	Data struct {
 		Translations []struct {
 			TranslatedText         string `json:"translatedText"`

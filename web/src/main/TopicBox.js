@@ -44,7 +44,7 @@ class TopicBox extends React.Component {
       favoritesStatus: false,
       defaultTopTopicTime: 10,
       from: "/",
-      transl: {
+      translation: {
         translated: false,
         from: "",
         content: "",
@@ -183,24 +183,24 @@ class TopicBox extends React.Component {
 
   ignoreTopic() {}
 
-  translTopic() {
+  translateTopic() {
     //https://html.spec.whatwg.org/multipage/system-state.html#language-preferences
     //Use navigator.languages to get an array of language tags representing the user's preferred languages
 
-    if (!this.state.transl.translated) {
-      TopicBackend.translTopic(this.state.topicId, navigator.language).then(
+    if (!this.state.translation.translated) {
+      TopicBackend.translateTopic(this.state.topicId, navigator.language).then(
         (res) => {
           this.setState((prevState) => {
-            prevState.transl.content = res.target;
-            prevState.transl.from = res.srcLang;
-            prevState.transl.translated = true;
+            prevState.translation.content = res.target;
+            prevState.translation.from = res.srcLang;
+            prevState.translation.translated = true;
             return prevState;
           });
         }
       );
     } else {
       this.setState({
-        transl: {
+        translation: {
           translated: false,
         },
       });
@@ -884,13 +884,13 @@ class TopicBox extends React.Component {
                   )}
                   escapeHtml={false}
                 />
-                <a href="#;" onClick={() => this.translTopic()}>
+                <a href="#;" onClick={() => this.translateTopic()}>
                   <p style={{ margin: 15 }}>
-                    {this.state.transl.translated ? (
+                    {this.state.translation.translated ? (
                       <span>
                         {i18next
                           .t("topic:Translated from {lang} by")
-                          .replace("{lang}", this.state.transl.from)}
+                          .replace("{lang}", this.state.translation.from)}
                         <img
                           height={18}
                           src="https://cdn.casbin.org/img/logo_google.svg"
@@ -901,14 +901,14 @@ class TopicBox extends React.Component {
                     )}
                   </p>
                 </a>
-                {this.state.transl.translated ? (
+                {this.state.translation.translated ? (
                   <ReactMarkdown
                     renderers={{
                       image: this.renderImage,
                       link: this.renderLink,
                     }}
                     source={Setting.getFormattedContent(
-                      this.state.transl.content,
+                      this.state.translation.content,
                       true
                     )}
                     escapeHtml={false}

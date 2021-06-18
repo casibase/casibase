@@ -642,7 +642,7 @@ func (c *ApiController) EditContent() {
 	c.ServeJSON()
 }
 
-func (c *ApiController) TranslTopic() {
+func (c *ApiController) TranslateTopic() {
 	topicIdStr := c.Input().Get("id")
 	targetLang := c.Input().Get("target")
 
@@ -651,7 +651,7 @@ func (c *ApiController) TranslTopic() {
 
 	topicId := util.ParseInt(topicIdStr)
 
-	var result TopicTranslData
+	var result TopicTranslateData
 
 	topic := object.GetTopic(topicId)
 	if topic == nil || topic.Deleted {
@@ -665,7 +665,7 @@ func (c *ApiController) TranslTopic() {
 
 	replaceStr := "<code>RplaceWithCasnodeTranslator<code/>"
 	contentReg := regexp.MustCompile(`(?s)\x60{1,3}[^\x60](.*?)\x60{1,3}`)
-	translReg := regexp.MustCompile(`` + replaceStr + ``)
+	translateReg := regexp.MustCompile(replaceStr)
 
 	codeBlocks := contentReg.FindAllString(contentStr, -1)
 	var cbList []string
@@ -681,24 +681,24 @@ func (c *ApiController) TranslTopic() {
 	params := url.Values{
 		"target": {targetLang},
 		"format": {"text"},
-		"key": {beego.AppConfig.String("googleTranslKey")},
+		"key": {beego.AppConfig.String("googleTranslationKey")},
 		"q": {contentStr},
 	}
 	resp, _:= http.PostForm("https://translation.googleapis.com/language/translate/v2", params)
 	defer resp.Body.Close()
 
 	respByte, _:= ioutil.ReadAll(resp.Body)
-	var translResp GoogleTranslResult
-	translResp.Error.Code = 0
+	var translateResp GoogleTranslationResult
+	translateResp.Error.Code = 0
 
-	err := json.Unmarshal(respByte, &translResp)
+	err := json.Unmarshal(respByte, &translateResp)
 	if err != nil {
 		panic(err)
 	}
-	translStr := translResp.Data.Translations[0].TranslatedText
-	detectSrcLang := translResp.Data.Translations[0].DetectedSourceLanguage
+	translateStr := translateResp.Data.Translations[0].TranslatedText
+	detectSrcLang := translateResp.Data.Translations[0].DetectedSourceLanguage
 
-	replacedCb := translReg.FindAllString(translStr, -1)
+	replacedCb := translateReg.FindAllString(translateStr, -1)
 	var replacedCbList []string
 	if replacedCb != nil {
 		for _, replacedCbItem := range replacedCb {
@@ -714,16 +714,16 @@ func (c *ApiController) TranslTopic() {
 	}
 
 	replaceIndex := 0
-	translStr = translReg.ReplaceAllStringFunc(translStr, func(src string) string {
+	translateStr = translateReg.ReplaceAllStringFunc(translateStr, func(src string) string {
 		replaceIndex = replaceIndex + 1
 		return cbList[replaceIndex - 1]
 	})
 
-	if translResp.Error.Code != 0 {
-		result.ErrMsg = translResp.Error.Message
+	if translateResp.Error.Code != 0 {
+		result.ErrMsg = translateResp.Error.Message
 	} else {
 		result.SrcLang = detectSrcLang
-		result.Target = translStr
+		result.Target = translateStr
 	}
 
 	c.Data["json"] = result
