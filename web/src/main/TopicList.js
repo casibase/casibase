@@ -226,7 +226,7 @@ class TopicList extends React.Component {
   render() {
     return (
       <div className={`box ${this.props.nodeId}`}>
-        {this.props.topics.map((topic) => {
+        {this.props.topics?.map((topic) => {
           return this.renderTopic(topic);
         })}
       </div>

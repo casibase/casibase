@@ -17,6 +17,11 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	beego "github.com/beego/beego/v2/adapter"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -637,6 +642,96 @@ func (c *ApiController) EditContent() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) TranslateTopic() {
+	topicIdStr := c.Input().Get("id")
+	targetLang := c.Input().Get("target")
+
+	//ISO/IEC 15897 to ISO 639-1
+	targetLang = targetLang[0:2]
+
+	topicId := util.ParseInt(topicIdStr)
+
+	var result TopicTranslateData
+
+	topic := object.GetTopic(topicId)
+	if topic == nil || topic.Deleted {
+		result.ErrMsg = "Invalid TopicId"
+		c.Data["json"] = result
+		c.ServeJSON()
+		return
+	}
+
+	contentStr := topic.Content
+
+	replaceStr := "<code>RplaceWithCasnodeTranslator<code/>"
+	contentReg := regexp.MustCompile(`(?s)\x60{1,3}[^\x60](.*?)\x60{1,3}`)
+	translateReg := regexp.MustCompile(replaceStr)
+
+	codeBlocks := contentReg.FindAllString(contentStr, -1)
+	var cbList []string
+
+	if codeBlocks != nil {
+		for _, cbItem := range codeBlocks {
+			cbList = append(cbList, cbItem)
+		}
+	}
+
+	contentStr = contentReg.ReplaceAllString(contentStr, replaceStr)
+
+	params := url.Values{
+		"target": {targetLang},
+		"format": {"text"},
+		"key": {beego.AppConfig.String("googleTranslationKey")},
+		"q": {contentStr},
+	}
+	resp, _:= http.PostForm("https://translation.googleapis.com/language/translate/v2", params)
+	defer resp.Body.Close()
+
+	respByte, _:= ioutil.ReadAll(resp.Body)
+	var translateResp GoogleTranslationResult
+	translateResp.Error.Code = 0
+
+	err := json.Unmarshal(respByte, &translateResp)
+	if err != nil {
+		panic(err)
+	}
+	translateStr := translateResp.Data.Translations[0].TranslatedText
+	detectSrcLang := translateResp.Data.Translations[0].DetectedSourceLanguage
+
+	replacedCb := translateReg.FindAllString(translateStr, -1)
+	var replacedCbList []string
+	if replacedCb != nil {
+		for _, replacedCbItem := range replacedCb {
+			replacedCbList = append(replacedCbList, replacedCbItem)
+		}
+	}
+
+	if len(replacedCbList) != len(codeBlocks) {
+		result.ErrMsg = "Translate Failed"
+		c.Data["json"] = result
+		c.ServeJSON()
+		return
+	}
+
+	replaceIndex := 0
+	translateStr = translateReg.ReplaceAllStringFunc(translateStr, func(src string) string {
+		replaceIndex = replaceIndex + 1
+		return cbList[replaceIndex - 1]
+	})
+
+	if translateResp.Error.Code != 0 {
+		result.ErrMsg = translateResp.Error.Message
+	} else {
+		result.SrcLang = detectSrcLang
+		result.Target = translateStr
+	}
+
+	c.Data["json"] = result
+	c.ServeJSON()
+	return
+}
+
+// TopTopic tops topic according to the topType in the url.
 // @Title TopTopic
 // @Description tops topic according to the topType in the url.
 // @Param   id     query    string  true        "id"

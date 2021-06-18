@@ -47,6 +47,7 @@ func initAPI() {
 	//beego.Router("/api/update-topic", &controllers.ApiController{}, "POST:UpdateTopic") // no necessary to explore this api.
 	beego.Router("/api/add-topic", &controllers.ApiController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.ApiController{}, "POST:DeleteTopic")
+	beego.Router("/api/translate-topic", &controllers.ApiController{}, "POST:TranslateTopic")
 	beego.Router("/api/get-all-created-topics", &controllers.ApiController{}, "GET:GetAllCreatedTopics")
 	beego.Router("/api/get-created-topics-num", &controllers.ApiController{}, "GET:GetCreatedTopicsNum")
 	beego.Router("/api/get-topics-by-node", &controllers.ApiController{}, "GET:GetTopicsByNode")

@@ -119,11 +119,11 @@ export function getTopicsWithNode(nodeId, limit, page) {
 
 export function getTopicsWithTag(tagId, limit, page) {
   return fetch(
-      `${Setting.ServerUrl}/api/get-topics-by-tag?tag-id=${tagId}&limit=${limit}&page=${page}`,
-      {
-        method: "GET",
-        credentials: "include",
-      }
+    `${Setting.ServerUrl}/api/get-topics-by-tag?tag-id=${tagId}&limit=${limit}&page=${page}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
   ).then((res) => res.json());
 }
 
@@ -194,6 +194,16 @@ export function topTopic(id, time, topType) {
 export function cancelTopTopic(id, topType) {
   return fetch(
     `${Setting.ServerUrl}/api/cancel-top-topic?id=${id}&topType=${topType}`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}
+
+export function translateTopic(id, target, content) {
+  return fetch(
+    `${Setting.ServerUrl}/api/translate-topic?id=${id}&target=${target}`,
     {
       method: "POST",
       credentials: "include",

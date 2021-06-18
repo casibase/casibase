@@ -152,6 +152,8 @@
     "Favor": "Favor",
     "hits": "hits",
     "Ignore": "Ignore",
+    "Translate": "Translate",
+    "Translated from {lang} by": "Translated from {lang} by",
     "Thank": "Thank",
     "Thanked": "Thanked",
     "Total Topics": "Total Topics",
