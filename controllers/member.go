@@ -20,11 +20,24 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
+// @Title GetMembers
+// @Description Get all members
+// @Success 200 {array} object.Member The Response object
+// @router /get-members [get]
 func (c *ApiController) GetMembers() {
 	c.Data["json"] = object.GetMembers()
 	c.ServeJSON()
 }
 
+// @Title GetMembersAdmin
+// @Description Get admin allmembers
+// @Param limit query int true "limit"
+// @Param page query int true "page"
+// @Param un query string true "search: username"
+// @Param cs query int true "sort: created time"
+// @Param us query int true "sort: username"
+// @Success 200 {object} controllers.api_controller.Response The Response object
+// @router /get-members-admin [get]
 func (c *ApiController) GetMembersAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -50,6 +63,11 @@ func (c *ApiController) GetMembersAdmin() {
 	c.ServeJSON()
 }
 
+// @Title GetMemberAdmin
+// @Description get member for admin by id
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} object.AdminMemberInfo The Response object
+// @router /get-member-admin [get]
 func (c *ApiController) GetMemberAdmin() {
 	id := c.Input().Get("id")
 
@@ -57,6 +75,11 @@ func (c *ApiController) GetMemberAdmin() {
 	c.ServeJSON()
 }
 
+// @Title GetMember
+// @Description get member by id
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} object.Member The Response object
+// @router /get-member [get]
 func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
 
@@ -64,6 +87,11 @@ func (c *ApiController) GetMember() {
 	c.ServeJSON()
 }
 
+// @Title GetMemberAvatar
+// @Description get member avatar by id
+// @Param   id     query    string  true        "id"
+// @Success 200 {string} string Avatarlink
+// @router /get-member-avatar [get]
 func (c *ApiController) GetMemberAvatar() {
 	id := c.Input().Get("id")
 
@@ -143,6 +171,10 @@ func (c *ApiController) UpdateMemberInfo() {
 	c.ServeJSON()
 }
 
+// @Title GetMemberEditorType
+// @Description member editortype
+// @Success 200 {object} controllers.Response The Response object
+// @router /get-member-editor-type [get]
 func (c *ApiController) GetMemberEditorType() {
 	memberId := c.GetSessionUsername()
 
@@ -161,6 +193,10 @@ func (c *ApiController) GetMemberEditorType() {
 	c.ServeJSON()
 }
 
+// @Title GetRankingRich
+// @Description RankingRich
+// @Success 200 {array} object.Member The Response object
+// @router /get-ranking-rich [get]
 func (c *ApiController) GetRankingRich() {
 	c.Data["json"] = object.GetRankingRich()
 	c.ServeJSON()
@@ -215,6 +251,10 @@ func (c *ApiController) UpdateMemberLanguage() {
 	c.ServeJSON()
 }
 
+// @Title GetMemberLanguage
+// @Description MemberLanguage
+// @Success 200 {object} controllers.Response The Response object
+// @router /get-member-language [get]
 func (c *ApiController) GetMemberLanguage() {
 	memberId := c.GetSessionUsername()
 
@@ -233,6 +273,10 @@ func (c *ApiController) GetMemberLanguage() {
 	c.ServeJSON()
 }
 
+// @Title AddMember
+// @Description AddMember
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-member [post]
 func (c *ApiController) AddMember() {
 	var member object.Member
 	var resp Response

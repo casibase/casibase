@@ -7,6 +7,17 @@ info:
     email: admin@casbin.org
 basePath: /api
 paths:
+  /add-member:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: AddMember
+      operationId: ApiController.AddMember
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /add-topic:
     post:
       tags:
@@ -153,7 +164,7 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Topic'
-  /get-created-tp[ics-num:
+  /get-created-topics-num:
     get:
       tags:
       - github.com/casbin/casnode/controllersApiController
@@ -185,6 +196,144 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controller.Response'
+  /get-member:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get member by id
+      operationId: ApiController.GetMember
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Member'
+  /get-member-admin:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get member for admin by id
+      operationId: ApiController.GetMemberAdmin
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.AdminMemberInfo'
+  /get-member-avatar:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get member avatar by id
+      operationId: ApiController.GetMemberAvatar
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: '{string} string Avatarlink'
+  /get-member-editor-type:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: member editortype
+      operationId: ApiController.GetMemberEditorType
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /get-member-language:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: MemberLanguage
+      operationId: ApiController.GetMemberLanguage
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
+  /get-members:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: Get all members
+      operationId: ApiController.GetMembers
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Member'
+  /get-members-admin:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: Get admin allmembers
+      operationId: ApiController.GetMembersAdmin
+      parameters:
+      - in: query
+        name: limit
+        description: limit
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: page
+        description: page
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: un
+        description: 'search: username'
+        required: true
+        type: string
+      - in: query
+        name: cs
+        description: 'sort: created time'
+        required: true
+        type: integer
+        format: int64
+      - in: query
+        name: us
+        description: 'sort: username'
+        required: true
+        type: integer
+        format: int64
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.api_controller.Response'
+  /get-ranking-rich:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: RankingRich
+      operationId: ApiController.GetRankingRich
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/object.Member'
   /get-topic:
     get:
       tags:
@@ -411,6 +560,23 @@ paths:
       responses:
         "200":
           description: '{int} int The topic nums'
+  /read-poster:
+    get:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: get poster by id
+      operationId: ApiController.ReadPoster
+      parameters:
+      - in: query
+        name: id
+        description: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/object.Poster'
   /signin:
     post:
       tags:
@@ -461,6 +627,17 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
+  /update-poster:
+    post:
+      tags:
+      - github.com/casbin/casnode/controllersApiController
+      description: update poster message
+      operationId: ApiController.UpdatePoster
+      responses:
+        "200":
+          description: The Response object
+          schema:
+            $ref: '#/definitions/controllers.Response'
   /update-topic-node:
     post:
       tags:
@@ -500,10 +677,10 @@ definitions:
   _controllers.Response:
     title: Response
     type: object
-  823.0xc0001ccea0.false:
+  847.0xc00069b140.false:
     title: "false"
     type: object
-  857.0xc0001cced0.false:
+  882.0xc00069b170.false:
     title: "false"
     type: object
   controller.Response:
@@ -530,9 +707,9 @@ definitions:
     type: object
     properties:
       data:
-        $ref: '#/definitions/823.0xc0001ccea0.false'
+        $ref: '#/definitions/847.0xc00069b140.false'
       data2:
-        $ref: '#/definitions/857.0xc0001cced0.false'
+        $ref: '#/definitions/882.0xc00069b170.false'
       msg:
         type: string
       status:
@@ -542,9 +719,9 @@ definitions:
     type: object
     properties:
       data:
-        $ref: '#/definitions/823.0xc0001ccea0.false'
+        $ref: '#/definitions/847.0xc00069b140.false'
       data2:
-        $ref: '#/definitions/857.0xc0001cced0.false'
+        $ref: '#/definitions/882.0xc00069b170.false'
       msg:
         type: string
       status:
@@ -559,6 +736,89 @@ definitions:
       nodeId:
         type: string
       nodeName:
+        type: string
+  object.AdminMemberInfo:
+    title: AdminMemberInfo
+    type: object
+    properties:
+      WechatVerifiedTime:
+        type: string
+      areaCode:
+        type: string
+      avatar:
+        type: string
+      bio:
+        type: string
+      company:
+        type: string
+      companyTitle:
+        type: string
+      createdTime:
+        type: string
+      editorType:
+        type: string
+      email:
+        type: string
+      emailReminder:
+        type: boolean
+      emailVerifiedTime:
+        type: string
+      fileQuota:
+        type: integer
+        format: int64
+      fileUploadNum:
+        type: integer
+        format: int64
+      githubAccount:
+        type: string
+      googleAccount:
+        type: string
+      id:
+        type: string
+      isModerator:
+        type: boolean
+      language:
+        type: string
+      latestLogin:
+        type: string
+      location:
+        type: string
+      "no":
+        type: integer
+        format: int64
+      onlineStatus:
+        type: boolean
+      phone:
+        type: string
+      phoneVerifiedTime:
+        type: string
+      qqAccount:
+        type: string
+      qqVerifiedTime:
+        type: string
+      ranking:
+        type: integer
+        format: int64
+      renameQuota:
+        type: integer
+        format: int64
+      replyNum:
+        type: integer
+        format: int64
+      score:
+        type: integer
+        format: int64
+      status:
+        type: integer
+        format: int64
+      tagline:
+        type: string
+      topicNum:
+        type: integer
+        format: int64
+      weChatAccount:
+        type: string
+      website:
         type: string
   object.AdminTopicInfo:
     title: AdminTopicInfo
@@ -612,6 +872,75 @@ definitions:
       upCount:
         type: integer
         format: int64
+  object.Member:
+    title: Member
+    type: object
+    properties:
+      WechatVerifiedTime:
+        type: string
+      areaCode:
+        type: string
+      avatar:
+        type: string
+      bio:
+        type: string
+      company:
+        type: string
+      companyTitle:
+        type: string
+      createdTime:
+        type: string
+      editorType:
+        type: string
+      email:
+        type: string
+      emailReminder:
+        type: boolean
+      emailVerifiedTime:
+        type: string
+      fileQuota:
+        type: integer
+        format: int64
+      githubAccount:
+        type: string
+      googleAccount:
+        type: string
+      id:
+        type: string
+      isModerator:
+        type: boolean
+      language:
+        type: string
+      location:
+        type: string
+      "no":
+        type: integer
+        format: int64
+      onlineStatus:
+        type: boolean
+      phone:
+        type: string
+      phoneVerifiedTime:
+        type: string
+      qqAccount:
+        type: string
+      qqVerifiedTime:
+        type: string
+      ranking:
+        type: integer
+        format: int64
+      renameQuota:
+        type: integer
+        format: int64
+      score:
+        type: integer
+        format: int64
+      tagline:
+        type: string
+      weChatAccount:
+        type: string
+      website:
+        type: string
   object.NodeTopic:
     title: NodeTopic
     type: object
@@ -673,6 +1002,20 @@ definitions:
       upCount:
         type: integer
         format: int64
+  object.Poster:
+    title: Poster
+    type: object
+    properties:
+      advertiser:
+        type: string
+      id:
+        type: string
+      link:
+        type: string
+      picture_link:
+        type: string
+      state:
+        type: string
   object.Topic:
     title: Topic
     type: object
