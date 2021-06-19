@@ -24,6 +24,11 @@ class SelectLanguageBox extends React.Component {
     };
   }
 
+  ChangeLanguage(language) {
+    Setting.ChangeLanguage(language);
+    window.history.back(-1);
+  }
+
   render() {
     return (
       <div align="center">
@@ -47,15 +52,15 @@ class SelectLanguageBox extends React.Component {
             )}
           </div>
           <a
-            href="javascript:void(0);"
-            onClick={() => Setting.ChangeLanguage("en")}
+            href="#"
+            onClick={() => this.ChangeLanguage("en")}
             className={"lang-selector"}
           >
             English
           </a>
           <a
-            href="javascript:void(0);"
-            onClick={() => Setting.ChangeLanguage("zh")}
+            href="#"
+            onClick={() => this.ChangeLanguage("zh")}
             className={"lang-selector"}
           >
             简体中文
