@@ -32,6 +32,7 @@ import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
 import CallbackBox from "./main/AuthBox";
 import NewBox from "./main/NewBox";
 import NodesBox from "./main/NodeBox";
+import AboutForum from "./main/AboutForum";
 import FavoritesBox from "./main/FavoritesBox";
 import RecentTopicsBox from "./main/RecentTopicsBox";
 import SelectLanguageBox from "./main/SelectLanguageBox";
@@ -463,6 +464,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminSensitive account={this.state.account} event={"new"} />
+          </div>
+        </Route>
+        <Route exact path="/about">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AboutForum />
           </div>
         </Route>
         <Route exact path="/search">

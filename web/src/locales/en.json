@@ -18,6 +18,13 @@
     "Language": "Language",
     "Admin": "Admin"
   },
+  "about": {
+    "Official website": "Official website",
+    "About": "About",
+    "Version": "Version",
+    "Introduction": "Introduction",
+    "Introduction-content": "Casnode is the official forum for Casbin developers and users. It is an open source light forum"
+  },
   "login": {
     "Are you a bot?": "Are you a bot?",
     "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"

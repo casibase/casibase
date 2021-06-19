@@ -136,6 +136,13 @@
     "进行置顶操作": "进行置顶操作",
     "copper": "铜币"
   },
+  "about": {
+    "Official website": "官网",
+    "About": "关于",
+    "Version": "版本",
+    "Introduction": "简介",
+    "Introduction-content": "Casnode 是 Casbin 开发者和用户的官方论坛。它是一个开源轻论坛 "
+  },
   "mission": {
     "Daily tasks": "日常任务",
     "Successfully received daily checkin bonus": "已成功领取每日登录奖励",
