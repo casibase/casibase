@@ -20,6 +20,10 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+// @Title UpdatePoster
+// @Description update poster message
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-poster [post]
 func (c *ApiController) UpdatePoster() {
 	var resp Response
 	if !object.CheckModIdentity(c.GetSessionUsername()) {
@@ -39,6 +43,11 @@ func (c *ApiController) UpdatePoster() {
 	c.ServeJSON()
 }
 
+// @Title ReadPoster
+// @Description get poster by id
+// @Param   id     query    string  true        "id"
+// @Success 200 {object} object.Poster The Response object
+// @router /read-poster [get]
 func (c *ApiController) ReadPoster() {
 	n := c.Input().Get("id")
 	res := object.GetPoster(n)

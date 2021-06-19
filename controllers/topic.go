@@ -365,7 +365,7 @@ func (c *ApiController) GetAllCreatedTopics() {
 // @Description get created topics count
 // @Param   id     query    string  true        "member id"
 // @Success 200 {int} int topics count
-// @router /get-created-tp[ics-num [get]
+// @router /get-created-topics-num [get]
 func (c *ApiController) GetCreatedTopicsNum() {
 	memberId := c.Input().Get("id")
 
@@ -681,13 +681,13 @@ func (c *ApiController) TranslateTopic() {
 	params := url.Values{
 		"target": {targetLang},
 		"format": {"text"},
-		"key": {beego.AppConfig.String("googleTranslationKey")},
-		"q": {contentStr},
+		"key":    {beego.AppConfig.String("googleTranslationKey")},
+		"q":      {contentStr},
 	}
-	resp, _:= http.PostForm("https://translation.googleapis.com/language/translate/v2", params)
+	resp, _ := http.PostForm("https://translation.googleapis.com/language/translate/v2", params)
 	defer resp.Body.Close()
 
-	respByte, _:= ioutil.ReadAll(resp.Body)
+	respByte, _ := ioutil.ReadAll(resp.Body)
 	var translateResp GoogleTranslationResult
 	translateResp.Error.Code = 0
 
@@ -716,7 +716,7 @@ func (c *ApiController) TranslateTopic() {
 	replaceIndex := 0
 	translateStr = translateReg.ReplaceAllStringFunc(translateStr, func(src string) string {
 		replaceIndex = replaceIndex + 1
-		return cbList[replaceIndex - 1]
+		return cbList[replaceIndex-1]
 	})
 
 	if translateResp.Error.Code != 0 {
