@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 
 class SelectLanguageBox extends React.Component {
   constructor(props) {
@@ -26,7 +26,7 @@ class SelectLanguageBox extends React.Component {
 
   ChangeLanguage(language) {
     Setting.ChangeLanguage(language);
-    window.history.back(-1);
+    this.props.history.goBack();
   }
 
   render() {
@@ -71,4 +71,4 @@ class SelectLanguageBox extends React.Component {
   }
 }
 
-export default SelectLanguageBox;
+export default withRouter(SelectLanguageBox);

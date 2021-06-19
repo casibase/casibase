@@ -174,7 +174,7 @@ export function ChangeLanguage(language) {
   localStorage.setItem("casnode-language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);
-  MemberBackend.updateMemberLanguage(language).then(() => goToLink("/"));
+  MemberBackend.updateMemberLanguage(language);
 }
 
 export function changeMomentLanguage(lng) {
