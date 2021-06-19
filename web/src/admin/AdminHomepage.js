@@ -59,6 +59,11 @@ class AdminHomepage extends React.Component {
           value: "sensitive",
           image: Setting.getStatic("/static/img/settings.png"),
         },
+        {
+          label: i18next.t("admin:Translation management"),
+          value: "translation",
+          image: Setting.getStatic("/static/img/settings.png"),
+        },
       ],
       message: "",
     };
