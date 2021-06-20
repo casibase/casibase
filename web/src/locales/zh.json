@@ -159,8 +159,6 @@
     "Favor": "加入收藏",
     "hits": "次点击",
     "Ignore": "忽略主题",
-    "Translate": "Translate",
-    "Translated from {lang} by": "翻译自 {lang} 通过",
     "Thank": "感谢",
     "Thanked": "已感谢",
     "Total Topics": "主题总数",
@@ -514,6 +512,34 @@
     "Save": "保存",
     "Update poster information success": "更新广告信息成功"
   },
+  "translator": {
+    "Translator management": "翻译管理",
+    "Translation Platform ID": "平台 ID",
+    "Translation Platform Name": "平台名称",
+    "Translation Platform": "翻译平台",
+    "Translation API": "翻译 API",
+    "Key": "Key",
+    "Visible": "可见性",
+    "Save": "保存",
+    "Update translator information success": "更新翻译信息成功",
+    "Add translator information success": "添加翻译信息成功",
+    "Delete translator success": "删除翻译平台成功",
+    "Please select a translator platform": "请选择翻译平台",
+    "Please input id": "请输入 ID",
+    "Please input name": "请输入平台名称",
+    "Please input key": "请输入 key",
+    "Please select a translator api": "请选择翻译 API",
+    "No translator yet": "暂无平台",
+    "Config Translator": "配置翻译",
+    "Are you sure to delete translator": "确定删除翻译平台",
+    "Please disable it first": "请先禁用该平台",
+    "Delete": "删除",
+    "Enable": "启用",
+    "Disable": "禁用",
+    "Create": "新建",
+    "Success": "成功",
+    "Manage": "管理"
+  },
   "sensitive": {
     "sensitive management": "敏感词管理",
     "new sensitive": "增加敏感词"
@@ -678,6 +704,7 @@
     "Tab management": "类别管理",
     "Plane management": "位面管理",
     "Sensitive management": "敏感词管理",
+    "Translation management": "翻译管理",
     "Get search result success": "获取搜索结果成功",
     "Sorter": "排序",
     "Show": "显示",
@@ -763,7 +790,10 @@
     "Please sign out before sign up": "注册前请先登出",
     "Please sign out before sign in": "登录前请先登出",
     "Adding image failed": "添加图片文件失败",
-    "Add file failed": "添加文件失败"
+    "Add file failed": "添加文件失败",
+    "Translator ID existed": "翻译平台 ID 已存在",
+    "Add translator failed": "添加翻译平台失败",
+    "Delete translator failed": "删除翻译平台失败"
   },
   "search": {
     "loading...": "加载中...",

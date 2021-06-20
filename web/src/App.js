@@ -63,6 +63,7 @@ import AdminPlane from "./admin/AdminPlane";
 import AdminPoster from "./admin/AdminPoster";
 import AdminTopic from "./admin/AdminTopic";
 import AdminSensitive from "./admin/AdminSensitive";
+import AdminTranslation from "./admin/AdminTranslation";
 import i18next from "i18next";
 import "./node.css";
 import "./i18n";
@@ -404,6 +405,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <AdminPoster />
+          </div>
+        </Route>
+        <Route exact path="/admin/translation">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminTranslation />
           </div>
         </Route>
         <Route exact path="/admin/member">

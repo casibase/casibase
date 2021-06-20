@@ -84,27 +84,3 @@ type adminNodeInfo struct {
 	TopicNum     int         `json:"topicNum"`
 	FavoritesNum int         `json:"favoritesNum"`
 }
-
-type TopicTranslateData struct {
-	SrcLang string `json:"srcLang"`
-	Target  string `json:"target"`
-	ErrMsg  string `json:"err_msg"`
-}
-
-type GoogleTranslationResult struct {
-	Data struct {
-		Translations []struct {
-			TranslatedText         string `json:"translatedText"`
-			DetectedSourceLanguage string `json:"detectedSourceLanguage"`
-		} `json:"translations"`
-	} `json:"data"`
-	Error struct {
-		Code    int    `json:"code"`
-		Message string `json:"message"`
-		Errors  []struct {
-			Message string `json:"message"`
-			Domain  string `json:"domain"`
-			Reason  string `json:"reason"`
-		} `json:"errors"`
-	} `json:"error"`
-}

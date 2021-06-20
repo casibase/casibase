@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import ReplyBox from "./ReplyBox";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
+import * as TranslatorBackend from "../backend/TranslatorBackend";
 import "../node.css";
 import Zmage from "react-zmage";
 import { Link } from "react-router-dom";
@@ -44,6 +45,7 @@ class TopicBox extends React.Component {
       favoritesStatus: false,
       defaultTopTopicTime: 10,
       from: "/",
+      showTranslateBtn: false,
       translation: {
         translated: false,
         from: "",
@@ -64,6 +66,7 @@ class TopicBox extends React.Component {
     this.getTopic();
     this.getFavoriteStatus();
     TopicBackend.addTopicBrowseCount(this.state.topicId);
+    this.renderTranslateButton();
   }
 
   componentWillUnmount() {
@@ -407,6 +410,18 @@ class TopicBox extends React.Component {
         &nbsp;{" "}
       </div>
     );
+  }
+
+  renderTranslateButton() {
+    TranslatorBackend.visibleTranslator().then((res) => {
+      let translateBtn = false;
+      if (res?.data) {
+        translateBtn = true;
+      }
+      this.setState({
+        showTranslateBtn: translateBtn,
+      });
+    });
   }
 
   renderDesktopButtons() {
@@ -884,23 +899,25 @@ class TopicBox extends React.Component {
                   )}
                   escapeHtml={false}
                 />
-                <a href="#;" onClick={() => this.translateTopic()}>
-                  <p style={{ margin: 15 }}>
-                    {this.state.translation.translated ? (
-                      <span>
-                        {i18next
-                          .t("topic:Translated from {lang} by")
-                          .replace("{lang}", this.state.translation.from)}
-                        <img
-                          height={18}
-                          src="https://cdn.casbin.org/img/logo_google.svg"
-                        ></img>
-                      </span>
-                    ) : (
-                      <span>{i18next.t("topic:Translate")}</span>
-                    )}
-                  </p>
-                </a>
+                {this.state.showTranslateBtn ? (
+                  <a href="#;" onClick={() => this.translateTopic()}>
+                    <p style={{ margin: 15 }}>
+                      {this.state.translation.translated ? (
+                        <span>
+                          {`Translate from ${this.state.translation.from} by  `}
+                          <img
+                            height={18}
+                            src="https://cdn.casbin.org/img/logo_google.svg"
+                          ></img>
+                        </span>
+                      ) : (
+                        <span>Translate</span>
+                      )}
+                    </p>
+                  </a>
+                ) : (
+                  ""
+                )}
                 {this.state.translation.translated ? (
                   <ReactMarkdown
                     renderers={{

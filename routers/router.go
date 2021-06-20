@@ -100,6 +100,12 @@ func initAPI() {
 	beego.Router("/api/update-poster", &controllers.ApiController{}, "POST:UpdatePoster") //Update poster api just for admin.
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")
 
+	beego.Router("/api/update-translator", &controllers.ApiController{}, "POST:UpdateTranslator") //Update translator api just for admin.
+	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator") //Add translator api just for admin.
+	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator") //Delete translator api just for admin.
+	beego.Router("/api/get-translator", &controllers.ApiController{}, "GET:GetTranslator")
+	beego.Router("/api/visible-translator", &controllers.ApiController{}, "GET:VisibleTranslator")
+
 	beego.Router("/api/get-nodes", &controllers.ApiController{}, "GET:GetNodes")
 	beego.Router("/api/get-node", &controllers.ApiController{}, "GET:GetNode")
 	beego.Router("/api/update-node", &controllers.ApiController{}, "POST:UpdateNode") // Update node api just for admin.
