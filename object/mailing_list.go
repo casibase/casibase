@@ -47,6 +47,15 @@ func (n Node) SyncFromGoogleGroup() {
 		if AuthorMember == nil {
 			continue
 		}
+
+		for msgIndex, msgItem := range messages {
+			if msgItem.Files != nil {
+				for _, msgFileItem := range msgItem.Files {
+					messages[msgIndex].Content = fmt.Sprintf("%s<br>[%s](%s)", messages[msgIndex].Content, msgFileItem.FileName, msgFileItem.Url)
+				}
+			}
+		}
+
 		if !isInTopicList(conv.Title) {
 			newTopic = Topic{
 				Author:        AuthorMember.Id,
