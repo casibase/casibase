@@ -29,3 +29,16 @@
   background-size: 163.92px 28px;
   background-repeat: no-repeat;
 }
+
+@media (max-width: 1200px) {
+  .header-content-nav {
+    padding-right: 2.5rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .header-content-nav {
+    padding-top: 0 !important;
+    padding-right: 4rem;
+  }
+}
