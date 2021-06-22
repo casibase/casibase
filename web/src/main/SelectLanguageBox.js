@@ -21,12 +21,17 @@ class SelectLanguageBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      previous: "",
     };
+    this.state.previous = this.props.location.query?.previous;
   }
 
   ChangeLanguage(language) {
-    Setting.ChangeLanguage(language);
-    this.props.history.goBack();
+    if (this.state.previous == undefined) {
+      Setting.ChangeLanguage(language, "/");
+    } else {
+      Setting.ChangeLanguage(language, this.state.previous);
+    }
   }
 
   render() {

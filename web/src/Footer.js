@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 import * as BasicBackend from "./backend/BasicBackend";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
 
@@ -80,7 +80,10 @@ class Footer extends React.Component {
                   </Link>
                   &nbsp;·&nbsp;
                   <Link
-                    to="/select/language"
+                    to={{
+                      pathname: "/select/language",
+                      query: { previous: this.props.location.pathname },
+                    }}
                     title="Select Language"
                     className="dark"
                   >
@@ -150,7 +153,13 @@ class Footer extends React.Component {
               {i18next.t("footer:Highest")} {this.state.highest}
             </span>{" "}
             &nbsp; <span className="snow">·</span> &nbsp;{" "}
-            <Link to="/select/language" className="f11">
+            <Link
+              to={{
+                pathname: "/select/language",
+                query: { previous: this.props.location.pathname },
+              }}
+              className="f11"
+            >
               <img
                 src={Setting.getStatic("/static/img/language.png")}
                 width="16"
@@ -194,4 +203,4 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+export default withRouter(Footer);

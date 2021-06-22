@@ -170,11 +170,13 @@ export function SetLanguage(language) {
   i18next.changeLanguage(language);
 }
 
-export function ChangeLanguage(language) {
-  localStorage.setItem("casnode-language", language);
-  changeMomentLanguage(language);
-  i18next.changeLanguage(language);
-  MemberBackend.updateMemberLanguage(language);
+export function ChangeLanguage(language, previous) {
+  MemberBackend.updateMemberLanguage(language).then(() => {
+    localStorage.setItem("casnode-language", language);
+    changeMomentLanguage(language);
+    i18next.changeLanguage(language);
+    goToLink(previous);
+  });
 }
 
 export function changeMomentLanguage(lng) {
