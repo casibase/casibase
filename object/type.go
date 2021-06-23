@@ -115,6 +115,7 @@ type AdminMemberInfo struct {
 	TopicNum      int    `json:"topicNum"`
 	ReplyNum      int    `json:"replyNum"`
 	LatestLogin   string `json:"latestLogin"`
+	Score         int    `json:"score"`
 }
 
 type AdminPlaneInfo struct {
