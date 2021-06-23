@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { trim } from "./Util";
+import * as ConfigBackend from "../backend/ConfigBackend";
 
 export let authConfig = {
   serverUrl: "http://example.com", // your Casdoor URL, like the official one: https://door.casbin.com
@@ -21,8 +22,11 @@ export let authConfig = {
   organizationName: "org-example", // your Casdoor organization name, like: "built-in"
 };
 
-export function initAuthWithConfig(config) {
-  authConfig = config;
+export async function initAuthWithConfig(config) {
+  let resp = await ConfigBackend.getAuthConfig();
+  if (resp && resp.data) {
+    authConfig = resp.data;
+  }
 }
 
 export function getSignupUrl() {

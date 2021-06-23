@@ -44,7 +44,7 @@ var (
 	OnlineMemberExpiedTime     = 10   // minutes
 	DefaultUploadFileQuota     = 50
 	Domain                     = "forum.casbin.com" // domain
-	AutoSyncPeriodSecond       = -1 // auto sync is disabled if < 30
+	AutoSyncPeriodSecond       = -1                 // auto sync is disabled if < 30
 
 	DefaultCronJobs = []*CronJob{
 		{
@@ -86,3 +86,10 @@ var (
 		},
 	}
 )
+
+type AuthConfig struct {
+	AppName          string `json:"appName"`
+	OrganizationName string `json:"organizationName"`
+	ClientId         string `json:"clientId"`
+	ServerUrl        string `json:"serverUrl"`
+}

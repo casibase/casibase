@@ -28,7 +28,6 @@ func init() {
 	initAPI()
 }
 
-
 func initAPI() {
 	ns :=
 		beego.NewNamespace("/api",
@@ -39,6 +38,8 @@ func initAPI() {
 	beego.AddNamespace(ns)
 
 	beego.InsertFilter("/*", beego.BeforeRouter, FreshAccountActiveStatus)
+
+	beego.Router("/api/get-auth-config", &controllers.ApiController{}, "GET:GetAuthConfig")
 
 	beego.Router("/api/get-topics", &controllers.ApiController{}, "GET:GetTopics")
 	beego.Router("/api/get-topics-admin", &controllers.ApiController{}, "GET:GetTopicsAdmin")
@@ -101,8 +102,8 @@ func initAPI() {
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")
 
 	beego.Router("/api/update-translator", &controllers.ApiController{}, "POST:UpdateTranslator") //Update translator api just for admin.
-	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator") //Add translator api just for admin.
-	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator") //Delete translator api just for admin.
+	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator")       //Add translator api just for admin.
+	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator")       //Delete translator api just for admin.
 	beego.Router("/api/get-translator", &controllers.ApiController{}, "GET:GetTranslator")
 	beego.Router("/api/visible-translator", &controllers.ApiController{}, "GET:VisibleTranslator")
 

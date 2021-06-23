@@ -12,14 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const AuthConfig = {
-  // serverUrl: "https://door.casbin.com",
-  serverUrl: "http://localhost:7001",
-  clientId: "014ae4bd048734ca2dea",
-  appName: "app-casbin-forum",
-  organizationName: "casbin-forum",
-};
-
 export const AuthState = "casnode";
 
 export const GoogleClientId = "";

@@ -88,7 +88,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Auth.initAuthWithConfig(Conf.AuthConfig);
+    Auth.initAuthWithConfig();
     Setting.initFullClientUrl();
     Setting.initBrowserType();
     this.getNodeBackground = this.getNodeBackground.bind(this);

@@ -17,6 +17,7 @@ package controllers
 import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/auth"
+	"github.com/casbin/casnode/object"
 )
 
 var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
@@ -27,6 +28,21 @@ var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 func init() {
 	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
+}
+
+func (c *ApiController) GetAuthConfig() {
+	app := beego.AppConfig.String("appname")
+	srv := beego.AppConfig.String("casdoorEndpoint")
+	conf := &object.AuthConfig{
+		AppName:          app,
+		OrganizationName: CasdoorOrganization,
+		ClientId:         ClientId,
+		ServerUrl:        srv,
+	}
+
+	resp := &Response{Status: "ok", Msg: "", Data: conf}
+	c.Data["json"] = resp
+	c.ServeJSON()
 }
 
 func (c *ApiController) Login() {
