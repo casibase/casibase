@@ -149,6 +149,7 @@ func GetMemberAdmin(id string) *AdminMemberInfo {
 		TopicNum:      GetCreatedTopicsNum(id),
 		ReplyNum:      GetMemberRepliesNum(id),
 		LatestLogin:   member.CheckinDate,
+		Score:         member.Score,
 	}
 }
 
@@ -178,6 +179,7 @@ func UpdateMember(id string, member *Member) bool {
 
 	targetMember.FileQuota = member.FileQuota
 	targetMember.Status = member.Status
+	targetMember.Score = member.Score
 
 	return UpdateMemberToCasdoor(targetMember)
 }

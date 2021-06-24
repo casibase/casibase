@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
@@ -117,10 +118,12 @@ func (c *ApiController) UpdateMemberEmailReminder() {
 
 func (c *ApiController) UpdateMember() {
 	id := c.Input().Get("id")
+	memberId := c.GetSessionUsername()
 
 	var member object.Member
 	var memberInfo object.AdminMemberInfo
 	var resp Response
+	var balanceType int
 
 	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
@@ -136,6 +139,25 @@ func (c *ApiController) UpdateMember() {
 
 	member.FileQuota = memberInfo.FileQuota
 	member.Status = memberInfo.Status
+	member.Score = memberInfo.Score
+
+	amount := member.Score - object.GetMemberBalance(id)
+	if amount != 0 {
+		if amount > 0 {
+			balanceType = 10
+		} else {
+			balanceType = 11
+		}
+		record := object.ConsumptionRecord{
+			Amount:          amount,
+			Balance:         member.Score,
+			ReceiverId:      id,
+			ConsumerId:      memberId,
+			CreatedTime:     util.GetCurrentTime(),
+			ConsumptionType: balanceType,
+		}
+		object.AddBalance(&record)
+	}
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.UpdateMember(id, &member)}
 	c.ServeJSON()

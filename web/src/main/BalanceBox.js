@@ -361,6 +361,64 @@ class BalanceBox extends React.Component {
             </td>
           </tr>
         );
+      case 10:
+        return (
+          <tr>
+            <td className="d">
+              <small className="gray">
+                {Setting.getFormattedDate(record?.createdTime)}
+              </small>
+            </td>
+            <td className="d">{i18next.t("balance:Admin revision")}</td>
+            <td className="d" style={{ textAlign: "right" }}>
+              <span className="positive">
+                <strong>{record?.amount + ".0"}</strong>
+              </span>
+            </td>
+            <td className="d" style={{ textAlign: "right" }}>
+              {record?.balance + ".0"}
+            </td>
+            <td className="d" style={{ borderRight: "none" }}>
+              <span className="gray">
+                {i18next.t("balance:Admin")}{" "}
+                <Link to={`/member/${record?.consumerId}`}>
+                  {record?.consumerId}
+                </Link>{" "}
+                {i18next.t("balance:Add balance")} {Math.abs(record?.amount)}{" "}
+                {i18next.t("balance:copper")}
+              </span>
+            </td>
+          </tr>
+        );
+      case 11:
+        return (
+          <tr>
+            <td className="d">
+              <small className="gray">
+                {Setting.getFormattedDate(record?.createdTime)}
+              </small>
+            </td>
+            <td className="d">{i18next.t("balance:Admin revision")}</td>
+            <td className="d" style={{ textAlign: "right" }}>
+              <span className="negative">
+                <strong>{record?.amount + ".0"}</strong>
+              </span>
+            </td>
+            <td className="d" style={{ textAlign: "right" }}>
+              {record?.balance + ".0"}
+            </td>
+            <td className="d" style={{ borderRight: "none" }}>
+              <span className="gray">
+                {i18next.t("balance:Admin")}{" "}
+                <Link to={`/member/${record?.consumerId}`}>
+                  {record?.consumerId}
+                </Link>{" "}
+                {i18next.t("balance:Reduce balance")} {Math.abs(record?.amount)}{" "}
+                {i18next.t("balance:copper")}
+              </span>
+            </td>
+          </tr>
+        );
     }
   }
 

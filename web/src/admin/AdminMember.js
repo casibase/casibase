@@ -135,6 +135,7 @@ class AdminMember extends React.Component {
     let form = this.state.form;
     form["fileQuota"] = this.state.member?.fileQuota;
     form["status"] = this.state.member?.status;
+    form["score"] = this.state.member?.score;
     this.setState({
       form: form,
     });
@@ -501,8 +502,6 @@ class AdminMember extends React.Component {
       const member = this.state.member;
 
       if (this.state.event === "basic") {
-        let balance = member.score;
-
         return (
           <div>
             {this.renderHeader()}
@@ -558,7 +557,16 @@ class AdminMember extends React.Component {
                         {i18next.t("member:Balance")}
                       </td>
                       <td width="auto" align="left">
-                        <span className="gray">{balance}</span>
+                        <input
+                          type="number"
+                          value={this.state.form["score"]}
+                          onChange={(e) =>
+                            this.updateFormField(
+                              "score",
+                              Number(e.target.value)
+                            )
+                          }
+                        />
                       </td>
                     </tr>
                     <tr>
