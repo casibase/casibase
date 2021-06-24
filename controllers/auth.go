@@ -32,7 +32,7 @@ func init() {
 
 func (c *ApiController) GetAuthConfig() {
 	app := beego.AppConfig.String("appname")
-	srv := beego.AppConfig.String("casdoorEndpoint")
+	srv := beego.AppConfig.String("webCasdoorUrl")
 	conf := &object.AuthConfig{
 		AppName:          app,
 		OrganizationName: CasdoorOrganization,

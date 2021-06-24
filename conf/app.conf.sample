@@ -26,3 +26,4 @@ clientId = 014ae4bd048734ca2dea
 clientSecret = xxx
 jwtSecret = CasdoorSecret
 casdoorOrganization = "casbin-forum"
+webCasdoorUrl = http://192.168.0.100:8000
