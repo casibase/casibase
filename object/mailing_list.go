@@ -144,15 +144,13 @@ func SyncAllNodeFromGoogleGroup() {
 	}
 }
 
-func (r Reply) AddReplyToMailingList() {
-	targetTopic := GetTopic(r.TopicId)
-	targetNode := GetNode(targetTopic.NodeId)
+func (r Reply) AddReplyToMailingList(title string, targetNode *Node) {
 	if len(targetNode.MailingList) == 0 {
 		return
 	}
 	if r.EditorType == "markdown" {
 		r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
 	}
-	mailTitle := fmt.Sprintf("Re: %s", targetTopic.Title)
+	mailTitle := fmt.Sprintf("Re: %s", title)
 	_ = service.SendEmail(mailTitle, r.Content, targetNode.MailingList, r.Author)
 }

@@ -242,6 +242,14 @@ func (c *ApiController) AddTopic() {
 		panic(err)
 	}
 
+	targetNode := object.GetNode(topic.NodeId)
+	if targetNode == nil {
+		resp := Response{Status: "fail", Msg: "Invalid node."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	var resp Response
 	res, id := object.AddTopic(&topic)
 	if res {
@@ -250,7 +258,6 @@ func (c *ApiController) AddTopic() {
 		c.UpdateAccountBalance(balance - object.CreateTopicCost)
 
 		object.AddTopicNotification(id, topic.Author, topic.Content)
-		targetNode := object.GetNode(topic.NodeId)
 		targetNode.AddTopicToMailingList(topic.Title, topic.Content, topic.Author)
 		resp = Response{Status: "ok", Msg: "success", Data: topic.Id}
 	} else {

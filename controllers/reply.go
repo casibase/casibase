@@ -148,6 +148,21 @@ func (c *ApiController) AddReply() {
 		return
 	}
 
+	targetTopic := object.GetTopic(reply.TopicId)
+	if targetTopic == nil {
+		resp := Response{Status: "fail", Msg: "Invalid topic."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+	targetNode := object.GetNode(targetTopic.NodeId)
+	if targetNode == nil {
+		resp := Response{Status: "fail", Msg: "Invalid node."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	affected, id := object.AddReply(&reply)
 	if affected {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
@@ -158,7 +173,7 @@ func (c *ApiController) AddReply() {
 		object.ChangeTopicReplyCount(topicId, 1)
 		object.ChangeTopicLastReplyUser(topicId, memberId, util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
-		reply.AddReplyToMailingList()
+		reply.AddReplyToMailingList(targetTopic.Title, targetNode)
 	}
 
 	c.wrapResponse(affected)
