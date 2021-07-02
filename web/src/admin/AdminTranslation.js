@@ -19,6 +19,7 @@ import * as Setting from "../Setting";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
 import i18n from "i18next";
+import Button from "../components/Button";
 
 class AdminTranslation extends React.Component {
   constructor(props) {
@@ -490,10 +491,8 @@ class AdminTranslation extends React.Component {
                       align="right"
                     ></td>
                     <td width="auto" align="left">
-                      <input
-                        type="submit"
-                        className="super normal button"
-                        value={i18next.t("translator:Save")}
+                      <Button
+                        text={i18next.t("translator:Save")}
                         onClick={() => this.updateTranslator()}
                       />
                     </td>
@@ -616,10 +615,8 @@ class AdminTranslation extends React.Component {
                       align="right"
                     ></td>
                     <td width="auto" align="left">
-                      <input
-                        type="submit"
-                        className="super normal button"
-                        value={i18next.t("translator:Save")}
+                      <Button
+                        text={i18next.t("translator:Save")}
                         onClick={() => this.addTranslator()}
                       />
                     </td>

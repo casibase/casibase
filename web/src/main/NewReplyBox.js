@@ -31,6 +31,7 @@ import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
 import * as Conf from "../Conf";
+import Button from "../components/Button";
 
 class NewReplyBox extends React.Component {
   constructor(props) {
@@ -360,11 +361,9 @@ class NewReplyBox extends React.Component {
               justifyContent: "space-between",
             }}
           >
-            <input
-              onClick={this.publishReply.bind(this)}
-              type="submit"
-              value={i18next.t("reply:Reply")}
-              className="super normal button"
+            <Button
+              onClick={() => this.publishReply()}
+              text={i18next.t("reply:Reply")}
             />
             {this.renderEditorSelect()}
           </div>

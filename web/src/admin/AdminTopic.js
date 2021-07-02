@@ -21,6 +21,7 @@ import Collapse, { Panel } from "rc-collapse";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class AdminTopic extends React.Component {
   constructor(props) {
@@ -524,10 +525,8 @@ class AdminTopic extends React.Component {
           <tr>
             <td width="10"></td>
             <td width="auto" align="left">
-              <input
-                type="submit"
-                className="super normal button"
-                value={i18next.t("topic:Search")}
+              <Button
+                text={i18next.t("topic:Search")}
                 onClick={() => this.getSearchResult()}
               />
             </td>

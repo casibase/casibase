@@ -27,6 +27,7 @@ import Zmage from "react-zmage";
 import "../codemirrorSize.css";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class AdminNode extends React.Component {
   constructor(props) {
@@ -957,11 +958,9 @@ class AdminNode extends React.Component {
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
                         {!newNode ? (
-                          <input
-                            type="submit"
-                            className="super normal button"
-                            value={i18next.t("node:Save")}
+                          <Button
                             onClick={() => this.updateNodeInfo()}
+                            text={i18next.t("node:Save")}
                           />
                         ) : null}
                       </td>
@@ -1196,17 +1195,13 @@ class AdminNode extends React.Component {
                     <td width="120" align="right"></td>
                     <td width="auto" align="left">
                       {newNode ? (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("node:Create")}
+                        <Button
+                          text={i18next.t("node:Create")}
                           onClick={() => this.postNewNode()}
                         />
                       ) : (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("node:Save")}
+                        <Button
+                          text={i18next.t("node:Save")}
                           onClick={() => this.updateNodeInfo()}
                         />
                       )}

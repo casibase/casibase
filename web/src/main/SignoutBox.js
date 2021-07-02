@@ -18,6 +18,7 @@ import { withRouter } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import * as Auth from "../auth/Auth";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class SignoutBox extends React.Component {
   constructor(props) {
@@ -55,11 +56,9 @@ class SignoutBox extends React.Component {
               "member:You have signed out completely, no personal information is left on this computer."
             )}
             <div className="sep20" />
-            <input
-              type="button"
-              className="super normal button"
+            <Button
               onClick={this.onSigninAgain.bind(this)}
-              value={i18next.t("member:Sign In Again")}
+              text={i18next.t("member:Sign In Again")}
             />
           </div>
         </div>
@@ -73,11 +72,9 @@ class SignoutBox extends React.Component {
               "error:We had a problem when you signed out, please try again."
             )}
             <div className="sep20" />
-            <input
-              type="button"
-              className="super normal button"
+            <Button
               onClick={this.onRetrySignout.bind(this)}
-              value={i18next.t("error:Retry Sign Out")}
+              text={i18next.t("error:Retry Sign Out")}
             />
           </div>
         </div>

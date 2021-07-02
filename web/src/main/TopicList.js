@@ -79,7 +79,7 @@ class TopicList extends React.Component {
     return (
       <div
         key={topic?.id}
-        className={`cell item ${this.props.nodeId}`}
+        className={`cell item change-color-on-hover ${this.props.nodeId}`}
         style={style}
       >
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">

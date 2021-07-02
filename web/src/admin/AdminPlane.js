@@ -19,6 +19,7 @@ import * as Setting from "../Setting";
 import Zmage from "react-zmage";
 import { SketchPicker } from "react-color";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class AdminPlane extends React.Component {
   constructor(props) {
@@ -656,11 +657,9 @@ class AdminPlane extends React.Component {
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
                         {!newPlane ? (
-                          <input
-                            type="submit"
-                            className="super normal button"
-                            value={i18next.t("plane:Save")}
+                          <Button
                             onClick={() => this.updatePlaneInfo()}
+                            text={i18next.t("plane:Save")}
                           />
                         ) : null}
                       </td>
@@ -867,17 +866,13 @@ class AdminPlane extends React.Component {
                     <td width="120" align="right"></td>
                     <td width="auto" align="left">
                       {newPlane ? (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("plane:Create")}
+                        <Button
+                          text={i18next.t("plane:Create")}
                           onClick={() => this.postNewPlane()}
                         />
                       ) : (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("plane:Save")}
+                        <Button
+                          text={i18next.t("plane:Save")}
                           onClick={() => this.updatePlaneInfo()}
                         />
                       )}

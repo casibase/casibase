@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class CheckinBonusBox extends React.Component {
   constructor(props) {
@@ -84,10 +85,8 @@ class CheckinBonusBox extends React.Component {
               {i18next.t("mission:Daily checkin bonus has been received")}
             </span>
             <div className="sep10"></div>
-            <input
-              type="button"
-              className="super normal button"
-              value={i18next.t("mission:Check my account balance")}
+            <Button
+              text={i18next.t("mission:Check my account balance")}
               onClick={() => (window.location.href = "/balance")}
             />
           </div>
@@ -105,10 +104,8 @@ class CheckinBonusBox extends React.Component {
           <h1>
             {i18next.t("mission:Daily checkin bonus")} {this.state.date}
           </h1>
-          <input
-            type="button"
-            className="super normal button"
-            value={i18next.t("mission:Receive X copper coins")}
+          <Button
+            text={i18next.t("mission:Receive X copper coins")}
             onClick={() => this.getDailyCheckinBonus()}
           />
         </div>

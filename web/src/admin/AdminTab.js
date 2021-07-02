@@ -18,6 +18,7 @@ import * as TabBackend from "../backend/TabBackend.js";
 import * as Setting from "../Setting";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class AdminTab extends React.Component {
   constructor(props) {
@@ -617,17 +618,13 @@ class AdminTab extends React.Component {
                     <td width="120" align="right"></td>
                     <td width="auto" align="left">
                       {!newTab ? (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("tab:Save")}
+                        <Button
+                          text={i18next.t("tab:Save")}
                           onClick={() => this.updateTabInfo()}
                         />
                       ) : (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("tab:Create")}
+                        <Button
+                          text={i18next.t("tab:Create")}
                           onClick={() => this.postNewTab()}
                         />
                       )}

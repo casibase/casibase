@@ -32,6 +32,7 @@ import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
+import Button from "../components/Button";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -401,23 +402,16 @@ class NewBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <span id="error_message" /> &nbsp;
-            <button
-              type="button"
-              className="super normal button"
+            <Button
               onClick={this.publishTopic.bind(this)}
-            >
-              <li className="fa fa-paper-plane" />
-              &nbsp;{i18next.t("new:Publish")}
-            </button>
+              text={i18next.t("new:Publish")}
+            />
           </div>
           <div>
-            <button
-              className="super normal button"
+            <Button
               onClick={this.enablePreview.bind(this)}
-            >
-              <li className="fa fa-eye" />
-              &nbsp;{i18next.t("new:Preview")}
-            </button>
+              text={i18next.t("new:Preview")}
+            />
           </div>
         </div>
         <div className="inner" id="topic_preview">

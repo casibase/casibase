@@ -22,6 +22,7 @@ import { withRouter, Link } from "react-router-dom";
 import "../deopzone.css";
 import Dropzone from "react-dropzone";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 const browserImageSize = require("browser-image-size");
 
@@ -446,17 +447,13 @@ class FilesBox extends React.Component {
         ) : null}
         <div className="cell_ops">
           <div className="fr">
-            <input
-              type="button"
-              value={i18next.t("file:Delete")}
-              className="super normal button"
+            <Button
+              text={i18next.t("file:Delete")}
               onClick={() => this.deleteFile(file)}
             />
           </div>
-          <input
-            type="button"
-            value={i18next.t("file:Edit information")}
-            className="super normal button"
+          <Button
+            text={i18next.t("file:Edit information")}
             onClick={() => this.props.history.push(`/i/edit/${file?.id}`)}
           />
         </div>
@@ -555,10 +552,8 @@ class FilesBox extends React.Component {
                           value={this.state.form.desc}
                         />
                         <div className="sep10"></div>
-                        <input
-                          type="submit"
-                          value={i18next.t("file:submit")}
-                          className="super normal button"
+                        <Button
+                          text={i18next.t("file:submit")}
                           onClick={() => this.editDesc()}
                         />
                       </td>

@@ -31,6 +31,7 @@ import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
 import { Resizable } from "re-resizable";
 import * as Conf from "../Conf";
+import Button from "../components/Button";
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -312,10 +313,8 @@ class NewNodeTopicBox extends React.Component {
           )}
           <div className="sep10"></div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <input
-              type="submit"
-              value={i18next.t("node:Publish")}
-              className="super normal button"
+            <Button
+              text={i18next.t("node:Publish")}
               onClick={this.publishTopic.bind(this)}
             />
             {this.renderEditorSelect()}
@@ -501,23 +500,15 @@ class NewNodeTopicBox extends React.Component {
                 >
                   <div>
                     <input type="hidden" name="once" />
-                    <button
-                      type="button"
-                      className="super normal button"
+                    <Button
                       onClick={this.enablePreview.bind(this)}
-                    >
-                      <li className="fa fa-eye"></li> &nbsp;
-                      {i18next.t("newNodeTopic:Preview")}{" "}
-                    </button>{" "}
+                      text={i18next.t("newNodeTopic:Preview")}
+                    />{" "}
                     &nbsp;
-                    <button
-                      type="submit"
-                      className="super normal button"
+                    <Button
                       onClick={this.publishTopic.bind(this)}
-                    >
-                      <li className="fa fa-paper-plane"></li> &nbsp;
-                      {i18next.t("newNodeTopic:Publish")}{" "}
-                    </button>{" "}
+                      text={i18next.t("newNodeTopic:Publish")}
+                    />
                   </div>
                   {this.renderEditorSelect()}
                 </td>

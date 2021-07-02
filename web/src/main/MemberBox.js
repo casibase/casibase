@@ -22,6 +22,7 @@ import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
 import { scoreConverter } from "./Tools";
+import Button from "../components/Button";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -212,11 +213,9 @@ class MemberBox extends React.Component {
                       />
                     )}
                     <div className="sep10" />
-                    <input
-                      type="button"
-                      value="Block"
+                    <Button
+                      text="Block"
                       onClick={this.block(this.state.memberId)}
-                      className="super normal button"
                     />
                   </div>
                   <h1 style={{ marginBottom: "5px" }}>

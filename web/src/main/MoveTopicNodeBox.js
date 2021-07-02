@@ -19,6 +19,7 @@ import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 const pangu = require("pangu");
 
@@ -212,10 +213,8 @@ class MoveTopicNodeBox extends React.Component {
               <tr>
                 <td width="120" align="right"></td>
                 <td width="auto" align="left">
-                  <input
-                    type="submit"
-                    className="super normal button"
-                    value={i18next.t("move:Move")}
+                  <Button
+                    text={i18next.t("move:Move")}
                     onClick={() => this.moveTopicNode()}
                   />
                 </td>

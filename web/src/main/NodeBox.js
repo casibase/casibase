@@ -26,6 +26,7 @@ import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 import * as url from "url";
 import * as Auth from "../auth/Auth";
+import Button from "../components/Button";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -297,10 +298,8 @@ class NodeBox extends React.Component {
         <div className="sep5"></div>
         {this.props.account !== null ? (
           <div align="right">
-            <input
-              type="button"
-              className="super normal button"
-              value={i18next.t("node:new topic")}
+            <Button
+              text={i18next.t("node:new topic")}
               onClick={() =>
                 this.props.history.push(`/new/${this.state.nodeId}`)
               }
@@ -431,10 +430,8 @@ class NodeBox extends React.Component {
           <div className="sep5" />
           {this.props.account !== null ? (
             <div className="fr" style={{ paddingLeft: "10px" }}>
-              <input
-                type="button"
-                className="super normal button"
-                value={i18next.t("node:new topic")}
+              <Button
+                text={i18next.t("node:new topic")}
                 onClick={() => {
                   this.props.history.push(`/new/${nodeId}`);
                 }}
@@ -718,10 +715,8 @@ class NodeBox extends React.Component {
                 <tr>
                   <td width="120" align="right"></td>
                   <td width="auto" align="left">
-                    <input
-                      type="submit"
-                      className="super normal button"
-                      value={i18next.t("node:Add")}
+                    <Button
+                      text={i18next.t("node:Add")}
                       onClick={() =>
                         this.addNodeModerator(this.state.newModerator)
                       }

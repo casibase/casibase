@@ -18,6 +18,7 @@ import { withRouter, Link } from "react-router-dom";
 import "../Bottom.css";
 import "./node-casbin.css";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class PageColumn extends React.Component {
   constructor(props) {
@@ -175,13 +176,11 @@ class PageColumn extends React.Component {
             <tr>
               <td width="120" align="left">
                 <Link>
-                  <input
-                    type="button"
+                  <Button
                     onClick={() => {
                       this.gotoPage(url, page - 1);
                     }}
-                    value={`‹ ${i18next.t("topic:Last")}`}
-                    className="super normal button"
+                    text={`‹ ${i18next.t("topic:Last")}`}
                     style={{ display: page > 1 ? "block" : "none" }}
                   />
                 </Link>
@@ -193,13 +192,11 @@ class PageColumn extends React.Component {
               </td>
               <td width="120" align="right">
                 <Link>
-                  <input
-                    type="button"
+                  <Button
                     onClick={() => {
                       this.gotoPage(url, page + 1);
                     }}
-                    value={`${i18next.t("topic:Next")} ›`}
-                    className="super normal button"
+                    text={`${i18next.t("topic:Next")} ›`}
                   />
                 </Link>
               </td>

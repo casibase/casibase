@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import Collapse, { Panel } from "rc-collapse";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import Button from "../components/Button";
 
 class AdminMember extends React.Component {
   constructor(props) {
@@ -341,10 +342,8 @@ class AdminMember extends React.Component {
           <tr>
             <td width="10"></td>
             <td width="auto" align="left">
-              <input
-                type="submit"
-                className="super normal button"
-                value={i18next.t("member:Search")}
+              <Button
+                text={i18next.t("member:Search")}
                 onClick={() => this.getSearchResult()}
               />
             </td>
@@ -681,10 +680,8 @@ class AdminMember extends React.Component {
                         align="right"
                       ></td>
                       <td width="auto" align="left">
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("member:Save")}
+                        <Button
+                          text={i18next.t("member:Save")}
                           onClick={() => this.updateMemberInfo()}
                         />
                       </td>

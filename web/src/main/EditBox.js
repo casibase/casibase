@@ -25,6 +25,7 @@ import * as Tools from "./Tools";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
+import Button from "../components/Button";
 
 const pangu = require("pangu");
 
@@ -294,10 +295,8 @@ class EditBox extends React.Component {
                     style={{ display: "flex", justifyContent: "space-between" }}
                   >
                     <div>
-                      <input
-                        type="submit"
-                        value={i18next.t("edit:Save")}
-                        className="super normal button"
+                      <Button
+                        text={i18next.t("edit:Save")}
                         onClick={() => this.editContent()}
                       />
                     </div>
@@ -364,10 +363,8 @@ class EditBox extends React.Component {
                   style={{ display: "flex", justifyContent: "space-between" }}
                 >
                   <div>
-                    <input
-                      type="submit"
-                      value={i18next.t("edit:Save")}
-                      className="super normal button"
+                    <Button
+                      text={i18next.t("edit:Save")}
                       onClick={() => this.editContent()}
                     />
                   </div>
