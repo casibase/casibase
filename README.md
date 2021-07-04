@@ -11,13 +11,13 @@ https://forum.casbin.com/
 
 Casnode contains 2 parts:
 
-Name | Description | Language | Source code
-----|------|----|----
-Frontend | Web frontend UI for Casnode | Javascript + React | https://github.com/casbin/casnode/tree/master/web 
-Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://github.com/casbin/casnode 
+| Name     | Description                     | Language               | Source code                                       |
+| -------- | ------------------------------- | ---------------------- | ------------------------------------------------- |
+| Frontend | Web frontend UI for Casnode     | Javascript + React     | https://github.com/casbin/casnode/tree/master/web |
+| Backend  | RESTful API backend for Casnode | Golang + Beego + MySQL | https://github.com/casbin/casnode                 |
 
 ## Installation
-
+If you want to install casnode using BT panel, look [use BT panel install Casnode.](./BTpanel.md)
 - Get the code:
 
     ```shell
