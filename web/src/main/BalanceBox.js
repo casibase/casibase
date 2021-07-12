@@ -179,7 +179,7 @@ class BalanceBox extends React.Component {
                 <Link to={`/t/${record?.objectId}`}>
                   {pangu.spacing(record?.title)}
                 </Link>{" "}
-                {i18next.t("balance:的回复")}
+                {i18next.t("balance:Reply in")}
               </span>
             </td>
           </tr>
@@ -356,7 +356,7 @@ class BalanceBox extends React.Component {
                 <Link to={`t/${record?.objectId}`}>
                   {pangu.spacing(record?.title)}
                 </Link>{" "}
-                {i18next.t("balance:进行置顶操作")}
+                {i18next.t("balance:Pin it to the top")}
               </span>
             </td>
           </tr>
