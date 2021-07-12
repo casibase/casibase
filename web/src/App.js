@@ -41,6 +41,8 @@ import * as Auth from "./auth/Auth";
 import * as Conf from "./Conf";
 import AuthCallback from "./auth/AuthCallback";
 import LazyLoad from "./components/LazyLoad";
+import { Casdoor } from "./Casdoor/Casdoor";
+import { AuthConfig } from "./Conf";
 
 // lazy load imports
 const SignoutBox = React.lazy(() => import("./main/SignoutBox"));
@@ -79,6 +81,7 @@ const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
 const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
+const SigninBox = React.lazy(() => import("./main/SigninBox"));
 
 class App extends Component {
   constructor(props) {
@@ -91,6 +94,8 @@ class App extends Component {
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
       nodeBackgroundRepeat: "",
+      casdoor: null,
+      OAuthObjects: [],
     };
 
     Setting.initServerUrl();
@@ -105,6 +110,7 @@ class App extends Component {
     //Setting.SetLanguage();
     this.getAccount();
     this.getFavoriteNum();
+    this.initCasdoor();
   }
 
   onSignin() {
@@ -127,6 +133,26 @@ class App extends Component {
       nodeBackgroundImage: backgroundImage,
       nodeBackgroundColor: backgroundColor,
       nodeBackgroundRepeat: backgroundRepeat,
+    });
+  }
+
+  initCasdoor() {
+    let url = `${window.location.protocol}//${window.location.hostname}`;
+    let port = window.location.port;
+    if (port !== "") url = `${url}:${port}`;
+    url += "/callback";
+    let casdoor = new Casdoor(
+      AuthConfig.serverUrl,
+      AuthConfig.organizationName,
+      AuthConfig.appName,
+      AuthConfig.clientId,
+      url
+    );
+    casdoor.connect().then((c) => {
+      this.setState({
+        casdoor: c,
+        OAuthObjects: c.getOAuthSigninObjects(),
+      });
     });
   }
 
@@ -177,6 +203,22 @@ class App extends Component {
             <TopicPage account={this.state.account} />
             {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
             <NodeNavigationBox />
+          </div>
+        </Route>
+        <Route exact path="/signin">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <SigninBox
+                onSignin={this.onSignin.bind(this)}
+                onSignout={this.onSignout.bind(this)}
+                Casdoor={this.state.casdoor}
+              />
+            </LazyLoad>
+            {pcBrowser ? null : <div className="sep5" />}
+            {pcBrowser ? null : (
+              <RightSigninBox OAuthObjects={this.state.OAuthObjects} />
+            )}
           </div>
         </Route>
         <Route exact path="/signout">
@@ -616,7 +658,10 @@ class App extends Component {
             favorites={this.state.favorites}
           />
         ) : (
-          <RightSigninBox nodeId={this.state.nodeId} />
+          <RightSigninBox
+            OAuthObjects={this.state.OAuthObjects}
+            nodeId={this.state.nodeId}
+          />
         )}
         <Switch>
           <Route exact path="/">

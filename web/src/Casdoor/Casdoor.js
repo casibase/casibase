@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { CasdoorOAuthObject } from "./OAuth";
+
 export class Casdoor {
   constructor(endpoint, organization, application, clientId, redirectUri) {
     this.endpoint = endpoint;
@@ -19,8 +21,10 @@ export class Casdoor {
     this.applicationName = application;
     this.clientId = clientId;
     this.redirectUri = redirectUri;
+  }
 
-    fetch(
+  connect() {
+    return fetch(
       `${this.endpoint}/api/get-app-login?clientId=${this.clientId}&responseType=code&redirectUri=${this.redirectUri}&scope=read&state=${this.application}`,
       {
         method: "GET",
@@ -31,13 +35,14 @@ export class Casdoor {
       .then((res) => {
         if (res.status !== "ok") return;
         this.application = res.data;
+        return this;
       });
   }
 
-  login(username, password, remember) {
-    if (this.application === undefined) return false;
-    if (this.application === null) return false;
-    if (!this.application.enablePassword) return false;
+  signin(username, password, remember) {
+    if (this.application === undefined) return;
+    if (this.application === null) return;
+    if (!this.application.enablePassword) return;
 
     let values = {};
     values["application"] = this.applicationName;
@@ -48,8 +53,8 @@ export class Casdoor {
     values["autoSignin"] = remember;
     values["type"] = "code";
 
-    fetch(
-      `${this.endpoint}/api/login?clientId=${this.clientId}&responseType=code&&redirectUri=${this.redirectUri}$scope=read&state=${this.applicationName}`,
+    return fetch(
+      `${this.endpoint}/api/login?clientId=${this.clientId}&responseType=code&redirectUri=${this.redirectUri}$scope=read&state=${this.applicationName}`,
       {
         method: "POST",
         credentials: "include",
@@ -58,9 +63,30 @@ export class Casdoor {
     )
       .then((res) => res.json())
       .then((res) => {
-        if (res.status !== "ok") return false;
+        if (res.status !== "ok") return res.msg;
         let code = res.data;
         window.location.href = `${this.redirectUri}?code=${code}&state=${this.applicationName}`;
+        return "";
       });
+  }
+
+  getOAuthSigninObjects() {
+    let ret = [];
+    if (this.application === undefined || this.application === null) return ret;
+    let providers = this.application.providers;
+    if (providers === undefined || providers === null) return ret;
+    providers.forEach((provider) => {
+      if (provider.canSignIn) {
+        ret.push(
+          new CasdoorOAuthObject(
+            this,
+            provider.provider,
+            "signup",
+            this.redirectUri
+          )
+        );
+      }
+    });
+    return ret;
   }
 }

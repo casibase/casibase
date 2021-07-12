@@ -41,37 +41,43 @@ const WeiboAuthUri = "https://api.weibo.com/oauth2/authorize";
 const GiteeAuthScope = "user_info,emails";
 const GiteeAuthUri = "https://gitee.com/oauth/authorize";
 
-export function getAuthUrl(application, provider, method) {
-  if (application === null || provider === null) {
+function getAuthUrl(casdoor, provider, method, redirectUri) {
+  if (casdoor.application === null || provider === null) {
     return "";
   }
 
-  const redirectUri = `${window.location.origin}/callback`;
-  const state = getQueryParamsToState(application.name, provider.name, method);
+  const state = getQueryParamsToState(casdoor, provider, method, redirectUri);
   if (provider.type === "Google") {
-    return `${GoogleAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${GoogleAuthScope}&response_type=code&state=${state}`;
+    return `${GoogleAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${GoogleAuthScope}&response_type=code&state=${state}`;
   } else if (provider.type === "GitHub") {
-    return `${GithubAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${GithubAuthScope}&response_type=code&state=${state}`;
+    return `${GithubAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${GithubAuthScope}&response_type=code&state=${state}`;
   } else if (provider.type === "QQ") {
-    return `${QqAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${QqAuthScope}&response_type=code&state=${state}`;
+    return `${QqAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${QqAuthScope}&response_type=code&state=${state}`;
   } else if (provider.type === "WeChat") {
-    return `${WeChatAuthUri}?appid=${provider.clientId}&redirect_uri=${redirectUri}&scope=${WeChatAuthScope}&response_type=code&state=${state}#wechat_redirect`;
+    return `${WeChatAuthUri}?appid=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${WeChatAuthScope}&response_type=code&state=${state}#wechat_redirect`;
   } else if (provider.type === "Facebook") {
-    return `${FacebookAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${FacebookAuthScope}&response_type=code&state=${state}`;
+    return `${FacebookAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${FacebookAuthScope}&response_type=code&state=${state}`;
   } else if (provider.type === "DingTalk") {
-    return `${DingTalkAuthUri}?appid=${provider.clientId}&redirect_uri=${redirectUri}&scope=snsapi_login&response_type=code&state=${state}`;
+    return `${DingTalkAuthUri}?appid=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=snsapi_login&response_type=code&state=${state}`;
   } else if (provider.type === "Weibo") {
-    return `${WeiboAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${WeiboAuthScope}&response_type=code&state=${state}`;
+    return `${WeiboAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${WeiboAuthScope}&response_type=code&state=${state}`;
   } else if (provider.type === "Gitee") {
-    return `${GiteeAuthUri}?client_id=${provider.clientId}&redirect_uri=${redirectUri}&scope=${GiteeAuthScope}&response_type=code&state=${state}`;
+    return `${GiteeAuthUri}?client_id=${provider.clientId}&redirect_uri=${casdoor.endpoint}/callback&scope=${GiteeAuthScope}&response_type=code&state=${state}`;
   }
 }
 
-export function getQueryParamsToState(applicationName, providerName, method) {
+function getQueryParamsToState(casdoor, provider, method, redirectUri) {
   let query = window.location.search;
-  query = `${query}&application=${applicationName}&provider=${providerName}&method=${method}`;
+  query = `${query}&client_id=${casdoor.clientId}&application=${casdoor.application.name}&provider=${provider.name}&method=${method}&redirect_uri=${redirectUri}&response_type=code`;
   if (method === "link") {
     query = `${query}&from=${window.location.pathname}`;
   }
   return btoa(query);
+}
+
+export class CasdoorOAuthObject {
+  constructor(casdoor, provider, method, redirectUri) {
+    this.type = provider.type;
+    this.link = getAuthUrl(casdoor, provider, method, redirectUri);
+  }
 }
