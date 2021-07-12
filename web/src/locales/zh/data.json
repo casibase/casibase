@@ -119,7 +119,7 @@
     "Admin": "Admin",
     "Add balance": "Add balance",
     "Reduce balance": "Reduce balance",
-    "的回复": "",
+    "Replied you in": "Replied you in",
     "Send thanks": "Send thanks",
     "Thanks": "Thanks",
     "'s topic": "'s topic",
@@ -144,7 +144,7 @@
     "Recharge": "Recharge",
     "Top topic": "Top topic",
     "Topped topic": "Topped topic",
-    "进行置顶操作": "",
+    "Pin it to the top": "Pin it to the top",
     "copper": "copper"
   },
   "mission": {
@@ -610,14 +610,13 @@
     "Total reminders received": "Total reminders received",
     "Reminder system": "Reminder system",
     "Thanks for your reply in topic": "Thanks for your reply in topic",
-    "里的回复": "",
+    "Repied to you in": "Replied to you in",
     "Favorite you topic": "Favorite you topic",
     "Thanks for you topic": "Thanks for you topic",
     "Replied to you in": "Replied to you in",
     "Mentioned you in topic": "Mentioned you in topic",
     "Mentioned you in": "Mentioned you in",
-    "里回复了你": "",
-    "里提到了你": "",
+    "Replied you in": "Replied you in",
     "Delete": "Delete"
   },
   "forgot": {
@@ -631,7 +630,7 @@
     "Reset password for account": "Reset password for account",
     "New password": "New password",
     "Password again": "Password again",
-    "重新设置密码": "",
+    "Reset password": "Reset password",
     "The verification code has been sent to the mobile phone": "The verification code has been sent to the mobile phone",
     ", please enter it within 20 minutes and do not leave the interface": ", please enter it within 20 minutes and do not leave the interface",
     "An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.": "An email containing instructions for resetting your password has been sent to your registered mailbox. Follow the instructions in the email to reset your password.",
