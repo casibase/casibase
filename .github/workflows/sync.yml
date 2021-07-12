@@ -1,0 +1,33 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    env: 
+      CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
+
+    strategy:
+      matrix:
+        node-version: [12.x]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: |
+        cd web
+        npm install
+        npm run crowdin:sync
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Sync from crowdin
+        file_pattern: web/src/locales/*
+        commit_author: ${{ secrets.CROWDIN_BOT }}

@@ -13,14 +13,24 @@
 // limitations under the License.
 
 import i18n from "i18next";
-import zh from "./locales/zh.json";
-import en from "./locales/en.json";
+import zh from "./locales/zh/data.json";
+import en from "./locales/en/data.json";
+import fr from "./locales/fr/data.json";
+import de from "./locales/de/data.json";
+import ko from "./locales/ko/data.json";
+import ru from "./locales/ru/data.json";
+import ja from "./locales/ja/data.json";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 
 const resources = {
   en: en,
   zh: zh,
+  fr: fr,
+  de: de,
+  ko: ko,
+  ru: ru,
+  ja: ja,
 };
 
 function initLanguage() {
@@ -40,6 +50,21 @@ function initLanguage() {
         break;
       case "en-US":
         language = "en";
+        break;
+      case "fr":
+        language = "fr";
+        break;
+      case "de":
+        language = "de";
+        break;
+      case "ko":
+        language = "ko";
+        break;
+      case "ru":
+        language = "ru";
+        break;
+      case "ja":
+        language = "ja";
         break;
       default:
         language = Conf.DefaultLanguage;
