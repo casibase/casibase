@@ -175,7 +175,7 @@ class NotificationBox extends React.Component {
               >
                 {pangu.spacing(notification?.title)}
               </Link>{" "}
-              {i18next.t("notification:里回复了你")}
+              {i18next.t("notification:Replied to you in")}
             </span>
             {this.renderDelete(
               notification?.createdTime,
@@ -200,7 +200,7 @@ class NotificationBox extends React.Component {
               >
                 {pangu.spacing(notification?.title)}
               </Link>{" "}
-              {i18next.t("notification:里提到了你")}
+              {i18next.t("notification:Mentioned you in")}
             </span>
             {this.renderDelete(
               notification?.createdTime,
@@ -225,7 +225,7 @@ class NotificationBox extends React.Component {
               >
                 {pangu.spacing(notification?.title)}
               </Link>{" "}
-              {i18next.t("notification:里提到了你")}
+              {i18next.t("notification:Mentioned you in")}
             </span>
             {this.renderDelete(
               notification?.createdTime,
@@ -287,7 +287,7 @@ class NotificationBox extends React.Component {
               >
                 {pangu.spacing(notification?.title)}
               </Link>{" "}
-              {i18next.t("notification:里的回复")}
+              {i18next.t("notification:Replies in")}
             </span>
             {this.renderDelete(
               notification?.createdTime,
