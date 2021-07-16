@@ -14,7 +14,9 @@
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
-  serverUrl: "http://localhost:7001",
+  // It seems like that React frontend can not handle CORS error,
+  // so I changed the serverUrl to Golang backend.
+  serverUrl: "http://localhost:8000",
   clientId: "014ae4bd048734ca2dea",
   appName: "app-casbin-forum",
   organizationName: "casbin-forum",

@@ -16,6 +16,7 @@ import React from "react";
 import { withRouter, Link } from "react-router-dom";
 import * as Auth from "../auth/Auth";
 import i18next from "i18next";
+import "./rightSignin.css";
 
 class RightSigninBox extends React.Component {
   constructor(props) {
@@ -25,7 +26,90 @@ class RightSigninBox extends React.Component {
     };
   }
 
+  redirectTo(link) {
+    window.location.href = link;
+  }
+
+  renderWechatSignin(link) {
+    return (
+      <div className="cell" style={{ textAlign: "center" }}>
+        <div className="signin_method" onClick={() => this.redirectTo(link)}>
+          <div className="signin_method_icon signin_method_wechat" />
+          <div className="signin_method_label" style={{ width: 140 }}>
+            {i18next.t("signin:Sign in with WeChat")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderGoogleSignin(link) {
+    return (
+      <div className="cell" style={{ textAlign: "center" }}>
+        <div className="signin_method" onClick={() => this.redirectTo(link)}>
+          <div className="signin_method_icon signin_method_google" />
+          <div className="signin_method_label" style={{ width: 140 }}>
+            {i18next.t("signin:Sign in with Google")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderGithubSignin(link) {
+    return (
+      <div className="cell" style={{ textAlign: "center" }}>
+        <div className="signin_method" onClick={() => this.redirectTo(link)}>
+          <div className="signin_method_icon signin_method_github" />
+          <div className="signin_method_label" style={{ width: 140 }}>
+            {i18next.t("signin:Sign in with Github")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  renderQQSignin(link) {
+    return (
+      <div className="cell" style={{ textAlign: "center" }}>
+        <div className="signin_method" onClick={() => this.redirectTo(link)}>
+          <div className="signin_method_icon signin_method_qq" />
+          <div className="signin_method_label" style={{ width: 140 }}>
+            {i18next.t("signin:Sign in with QQ")}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
+    if (
+      window.location.pathname === "/signin" &&
+      this.props.OAuthObjects !== undefined &&
+      this.props.OAuthObjects !== null &&
+      this.props.OAuthObjects.length !== 0
+    ) {
+      return (
+        <div className="box">
+          <div className="header">{i18next.t("bar:Other Sign In Methods")}</div>
+          {this.props.OAuthObjects.map((obj) => {
+            switch (obj.type) {
+              case "Google":
+                return this.renderGoogleSignin(obj.link);
+              case "GitHub":
+                return this.renderGithubSignin(obj.link);
+              case "WeChat":
+                return this.renderWechatSignin(obj.link);
+              case "QQ":
+                return this.renderQQSignin(obj.link);
+              default:
+                return null;
+            }
+          })}
+        </div>
+      );
+    }
+
     return (
       <div className="box">
         <div className="cell">
