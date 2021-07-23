@@ -21,7 +21,7 @@ require (
 	github.com/issue9/assert v1.4.1 // indirect
 	github.com/jinzhu/configor v1.2.1 // indirect
 	github.com/lib/pq v1.10.2 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.4
+	github.com/microcosm-cc/bluemonday v1.0.5
 	github.com/mileusna/crontab v1.0.1
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/mozillazg/go-slugify v0.2.0
