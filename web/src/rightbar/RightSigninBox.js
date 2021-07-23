@@ -15,6 +15,7 @@
 import React from "react";
 import { withRouter, Link } from "react-router-dom";
 import * as Auth from "../auth/Auth";
+import * as Conf from "../Conf";
 import i18next from "i18next";
 import "./rightSignin.css";
 
@@ -113,9 +114,9 @@ class RightSigninBox extends React.Component {
     return (
       <div className="box">
         <div className="cell">
-          <strong>Casbin = way to authorization</strong>
+          <strong>{Conf.FrontConfig.signinBoxStrong}</strong>
           <div className="sep5" />
-          <span className="fade">A place for Casbin developers and users</span>
+          <span className="fade">{Conf.FrontConfig.signinBoxSpan}</span>
         </div>
         <div className="inner">
           <div className="sep5" />
