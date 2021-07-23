@@ -223,7 +223,9 @@ class Header extends React.Component {
       return (
         <header className="site-header">
           <div className="site-header-logo">
-            <div id="logoMobile" onClick={() => this.props.history.push("/")} />
+            <div id="logoMobile"
+                 style={{backgroundImage:`url(${Conf.FrontConfig.logoMobileImage})`}}
+                 onClick={() => this.props.history.push("/")} />
           </div>
           <div className="site-header-menu">
             {this.renderSearch()}
@@ -496,7 +498,7 @@ class Header extends React.Component {
                 <tr>
                   <td width="110" align="left">
                     <Link to="/" name="top" title="way to explore">
-                      <div id="logo" />
+                      <div id="logo" style={{backgroundImage:`url(${Conf.FrontConfig.logoImage})`}} />
                     </Link>
                   </td>
                   <td width="auto" align="left">
