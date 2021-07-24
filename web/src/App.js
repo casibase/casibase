@@ -82,6 +82,7 @@ const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
 const SigninBox = React.lazy(() => import("./main/SigninBox"));
+const SignupBox = React.lazy(() => import("./main/SignupBox"));
 
 class App extends Component {
   constructor(props) {
@@ -212,6 +213,21 @@ class App extends Component {
               <SigninBox
                 onSignin={this.onSignin.bind(this)}
                 onSignout={this.onSignout.bind(this)}
+                Casdoor={this.state.casdoor}
+              />
+            </LazyLoad>
+            {pcBrowser ? null : <div className="sep5" />}
+            {pcBrowser ? null : (
+              <RightSigninBox OAuthObjects={this.state.OAuthObjects} />
+            )}
+          </div>
+        </Route>
+        <Route exact path="/signup">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <SignupBox
+                onSignin={this.onSignin.bind(this)}
                 Casdoor={this.state.casdoor}
               />
             </LazyLoad>
@@ -643,7 +659,7 @@ class App extends Component {
 
     const isSignedIn = this.state.account !== null;
     if (!isSignedIn) {
-      if (uri === "/signup" || uri.startsWith("/member/")) {
+      if (uri.startsWith("/member/")) {
         return null;
       }
     }

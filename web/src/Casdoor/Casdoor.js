@@ -16,6 +16,10 @@ import { CasdoorOAuthObject } from "./OAuth";
 
 export class Casdoor {
   constructor(endpoint, organization, application, clientId, redirectUri) {
+    if (endpoint === "http://localhost:7001") {
+      // if Casdoor runs on port 7001 localhost, we think we are in dev mode
+      endpoint = "http://localhost:8000";
+    }
     this.endpoint = endpoint;
     this.organizationName = organization;
     this.applicationName = application;
@@ -67,6 +71,74 @@ export class Casdoor {
         let code = res.data;
         window.location.href = `${this.redirectUri}?code=${code}&state=${this.applicationName}`;
         return "";
+      });
+  }
+
+  getCaptcha() {
+    return fetch(`${this.endpoint}/api/get-human-check`, {
+      method: "GET",
+      credentials: "include",
+    }).then((res) => res.json());
+  }
+
+  sendCode(captchaId, captchaCode, type, dest) {
+    let fd = new FormData();
+    fd.append("checkType", "captcha");
+    fd.append("checkId", captchaId);
+    fd.append("checkKey", captchaCode);
+    fd.append("dest", dest);
+    fd.append("type", type);
+    fd.append("organizationId", `admin/${this.organizationName}`);
+    return fetch(`${this.endpoint}/api/send-verification-code`, {
+      method: "POST",
+      credentials: "include",
+      body: fd,
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        return res.status === "ok";
+      });
+  }
+
+  sendPhoneCode(captchaId, captchaCode, phone) {
+    return this.sendCode(captchaId, captchaCode, "phone", phone);
+  }
+
+  sendEmailCode(captchaId, captchaCode, email) {
+    return this.sendCode(captchaId, captchaCode, "email", email);
+  }
+
+  signup(
+    username,
+    displayName,
+    password,
+    email,
+    emailCode,
+    phone,
+    phoneCode,
+    phonePrefix
+  ) {
+    let data = {};
+    data["agreement"] = true;
+    data["application"] = this.applicationName;
+    data["organization"] = this.organizationName;
+    data["password"] = password;
+    data["confirm"] = password;
+    data["email"] = email;
+    data["emailCode"] = emailCode;
+    data["username"] = username;
+    data["name"] = displayName;
+    data["phone"] = phone;
+    data["phoneCode"] = phoneCode;
+    data["phonePrefix"] = phonePrefix;
+    return fetch(`${this.endpoint}/api/signup`, {
+      method: "POST",
+      credentials: "include",
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        return res.msg;
       });
   }
 

@@ -27,8 +27,9 @@ export const FrontConfig = {
   logoFooterUrl: "https://www.digitalocean.com/",
   signinBoxStrong: "Casbin = way to authorization",
   signinBoxSpan: "A place for Casbin developers and users",
-  footerDeclaration :"World is powered by code",
-  footerAdvise :"♥ Do have faith in what you're doing.",
+  footerDeclaration: "World is powered by code",
+  footerAdvise: "♥ Do have faith in what you're doing.",
+  isCasdoorPagesEnabled: false,
 };
 
 export const AuthState = "casnode";

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import { trim } from "./Util";
+import * as Conf from "../Conf";
 
 export let authConfig = {
   serverUrl: "http://example.com", // your Casdoor URL, like the official one: https://door.casbin.com
@@ -26,7 +27,7 @@ export function initAuthWithConfig(config) {
 }
 
 export function getSignupUrl() {
-  // return `${trim(authConfig.serverUrl)}/signup/${authConfig.appName}`;
+  if (!Conf.FrontConfig.isCasdoorPagesEnabled) return `/signup`;
   return getSigninUrl().replace(
     "/login/oauth/authorize",
     "/signup/oauth/authorize"
@@ -34,6 +35,7 @@ export function getSignupUrl() {
 }
 
 export function getSigninUrl() {
+  if (!Conf.FrontConfig.isCasdoorPagesEnabled) return "/signin";
   const redirectUri = `${window.location.origin}/callback`;
   const scope = "read";
   const state = authConfig.appName;
