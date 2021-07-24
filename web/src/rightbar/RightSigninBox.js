@@ -85,7 +85,8 @@ class RightSigninBox extends React.Component {
 
   render() {
     if (
-      window.location.pathname === "/signin" &&
+      (window.location.pathname === "/signin" ||
+        window.location.pathname === "/signup") &&
       this.props.OAuthObjects !== undefined &&
       this.props.OAuthObjects !== null &&
       this.props.OAuthObjects.length !== 0

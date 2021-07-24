@@ -17,6 +17,7 @@ import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import { withRouter } from "react-router-dom";
 import i18next from "i18next";
+import * as Auth from "../auth/Auth";
 
 class CallbackBox extends React.Component {
   constructor(props) {
@@ -55,7 +56,7 @@ class CallbackBox extends React.Component {
               }
             }
             if (!res.data.isAuthenticated) {
-              window.location.href = "/signup";
+              window.location.href = Auth.getSignupUrl();
               return;
             }
             if (!res.data.isSignedUp) {
@@ -84,7 +85,7 @@ class CallbackBox extends React.Component {
               }
             }
             if (!res.data.isAuthenticated) {
-              window.location.href = "/signup";
+              window.location.href = Auth.getSignupUrl();
               return;
             }
             if (!res.data.isSignedUp) {
@@ -113,7 +114,7 @@ class CallbackBox extends React.Component {
               }
             }
             if (!res.data.isAuthenticated) {
-              window.location.href = "/signup";
+              window.location.href = Auth.getSignupUrl();
               return;
             }
             if (!res.data.isSignedUp) {
@@ -142,7 +143,7 @@ class CallbackBox extends React.Component {
               }
             }
             if (!res.data.isAuthenticated) {
-              window.location.href = "/signup";
+              window.location.href = Auth.getSignupUrl();
               return;
             }
             if (!res.data.isSignedUp) {
