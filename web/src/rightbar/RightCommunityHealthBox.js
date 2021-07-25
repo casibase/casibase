@@ -60,9 +60,9 @@ class RightCommunityHealthBox extends React.Component {
     });
   }
 
-  render() {
+  renderAd() {
     return (
-      <div>
+      <React.Fragment>
         <div className="box">
           <div className="inner" align="center">
             <a href={this.state.poster["link"]} target="_blank">
@@ -73,7 +73,7 @@ class RightCommunityHealthBox extends React.Component {
                 height="250"
                 alt={this.state.poster["advertiser"]}
                 style={{ vertical: "bottom" }}
-              ></img>
+              />
             </a>
           </div>
           <div
@@ -90,9 +90,15 @@ class RightCommunityHealthBox extends React.Component {
             </a>
           </div>
         </div>
-
         <div className="sep20" />
+      </React.Fragment>
+    );
+  }
 
+  render() {
+    return (
+      <div>
+        {this.renderAd()}
         <div className="box">
           <div className="cell">
             <span className="fade">{i18next.t("bar:Community Stats")}</span>
@@ -130,7 +136,7 @@ class RightCommunityHealthBox extends React.Component {
           <div className="inner">
             <span className="chevron">›</span>{" "}
             <Link to="/top/rich">{i18next.t("bar:Rich List")}</Link>
-            <div className="sep5"></div>
+            <div className="sep5" />
             <span className="chevron">›</span>{" "}
             <Link to="/top/player">{i18next.t("bar:Consumption list")}</Link>
           </div>
