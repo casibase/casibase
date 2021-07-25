@@ -4,11 +4,11 @@
   "private": true,
   "dependencies": {
     "@ant-design/icons": "^4.2.1",
+    "@crowdin/cli": "^3.6.4",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
-    "antd": "^4.16.0",
-    "@crowdin/cli": "^3.6.4",
+    "antd": "^4.16.8",
     "braft-editor": "^2.3.9",
     "browser-image-size": "^1.1.0",
     "codemirror": "^5.54.0",
