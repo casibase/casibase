@@ -15,8 +15,8 @@
 package controllers
 
 import (
-	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/object"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 type Response struct {

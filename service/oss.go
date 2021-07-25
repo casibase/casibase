@@ -20,11 +20,11 @@ import (
 	"strconv"
 	"time"
 
+	awss3 "github.com/aws/aws-sdk-go/service/s3"
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/qor/oss"
 	"github.com/qor/oss/aliyun"
 	"github.com/qor/oss/s3"
-	awss3 "github.com/aws/aws-sdk-go/service/s3"
 )
 
 var ossURL, basicPath string
@@ -70,10 +70,10 @@ func AliyunInit() {
 		return
 	}
 	storage = aliyun.New(&aliyun.Config{
-		AccessID: accessKeyID,
+		AccessID:  accessKeyID,
 		AccessKey: accessKeySecret,
-		Bucket: ossBucket,
-		Endpoint: ossEndPoint,
+		Bucket:    ossBucket,
+		Endpoint:  ossEndPoint,
 	})
 }
 
@@ -88,12 +88,12 @@ func Awss3Init() {
 		return
 	}
 	storage = s3.New(&s3.Config{
-		AccessID: accessKeyID,
+		AccessID:  accessKeyID,
 		AccessKey: accessKeySecret,
-		Region: ossRegion,
-		Bucket: ossBucket,
-		Endpoint: ossEndPoint,
-		ACL: awss3.BucketCannedACLPublicRead,
+		Region:    ossRegion,
+		Bucket:    ossBucket,
+		Endpoint:  ossEndPoint,
+		ACL:       awss3.BucketCannedACLPublicRead,
 	})
 }
 
