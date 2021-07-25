@@ -1,33 +1,33 @@
 {
   "general": {
-    "Home": "Home",
+    "Home": "Домой",
     "Swagger": "Swagger",
-    "Sign Up": "Sign Up",
-    "Sign In": "Sign In",
-    "Note": "Note",
-    "Timeline": "Timeline",
-    "Setting": "Setting",
-    "Sign Out": "Sign Out",
-    "Username": "Username",
-    "Password": "Password",
-    "Forgot Password": "Forgot Password",
-    "Username, email address or phone number": "Username, email address or phone number",
-    "true": "true",
-    "false": "false",
-    "Homepage": "Homepage",
-    "Language": "Language",
-    "Admin": "Admin"
+    "Sign Up": "Зарегистрироваться",
+    "Sign In": "Авторизоваться",
+    "Note": "Заметка",
+    "Timeline": "Лента",
+    "Setting": "Настройки",
+    "Sign Out": "Выйти",
+    "Username": "Имя пользователя",
+    "Password": "Пароль",
+    "Forgot Password": "Забыли пароль?",
+    "Username, email address or phone number": "Имя пользователя, е-маил или номер телефона",
+    "true": "правда",
+    "false": "ложь",
+    "Homepage": "Домашняя страница",
+    "Language": "Язык",
+    "Admin": "Админ"
   },
   "about": {
-    "Official website": "Official website",
-    "About": "About",
-    "Version": "Version",
-    "Introduction": "Introduction",
-    "Introduction-content": "Casnode is the official forum for Casbin developers and users. It is an open source light forum"
+    "Official website": "Официальный сайт",
+    "About": "О проекте",
+    "Version": "Версия",
+    "Introduction": "Вступление",
+    "Introduction-content": "Casnode - официальный форум для разработчиков и пользователей Casbin. Это простенький форум с открытым исходным кодом."
   },
   "login": {
-    "Are you a bot?": "Are you a bot?",
-    "Please enter the verification code in the picture above": "Please enter the verification code in the picture above"
+    "Are you a bot?": "Вы бот?",
+    "Please enter the verification code in the picture above": "Пожалуйста, введите проверочный код на изображении выше"
   },
   "signup": {
     "Send the verification code again in": "Send the verification code again in",
