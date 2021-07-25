@@ -226,7 +226,7 @@ class Header extends React.Component {
             <div
               id="logoMobile"
               style={{
-                backgroundImage: `url(${Conf.FrontConfig.logoMobileImage})`,
+                backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
               }}
               onClick={() => this.props.history.push("/")}
             />

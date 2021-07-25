@@ -23,7 +23,6 @@ export const AuthConfig = {
 export const FrontConfig = {
   forumName: "Casnode",
   logoImage: "https://cdn.casbin.com/forum/static/img/logo.png",
-  logoMobileImage: "https://cdn.casbin.com/forum/static/img/logo.png",
   logoFooterImage: "https://cdn.casbin.com/forum/static/img/logo-footer.png",
   logoFooterUrl: "https://www.digitalocean.com/",
   signinBoxStrong: "Casbin = way to authorization",
