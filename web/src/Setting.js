@@ -13,15 +13,13 @@
 // limitations under the License.
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { message } from "antd";
 import moment from "moment";
 import { animateScroll as scroll } from "react-scroll";
 import md5 from "js-md5";
 import * as Conf from "./Conf";
-import * as AccountBackend from "./backend/AccountBackend";
 import * as MemberBackend from "./backend/MemberBackend";
-import { Link } from "react-router-dom";
-import * as i18n from "./i18n";
 import i18next from "i18next";
 import Zmage from "react-zmage";
 import Identicon from "identicon.js";
@@ -132,7 +130,7 @@ export function getUserAvatar(username, isLarge = false) {
 }
 
 export function getForumName() {
-  return "Casnode";
+  return Conf.FrontConfig.forumName;
 }
 
 export function getHomeLink(text) {

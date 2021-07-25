@@ -21,14 +21,15 @@ export const AuthConfig = {
 };
 
 export const FrontConfig = {
+  forumName: "Casnode",
   logoImage: "https://cdn.casbin.com/forum/static/img/logo.png",
   logoMobileImage: "https://cdn.casbin.com/forum/static/img/logo.png",
   logoFooterImage: "https://cdn.casbin.com/forum/static/img/logo-footer.png",
   logoFooterUrl: "https://www.digitalocean.com/",
   signinBoxStrong: "Casbin = way to authorization",
   signinBoxSpan: "A place for Casbin developers and users",
-  footerDeclaration :"World is powered by code",
-  footerAdvise :"♥ Do have faith in what you're doing.",
+  footerDeclaration: "World is powered by code",
+  footerAdvise: "♥ Do have faith in what you're doing.",
 };
 
 export const AuthState = "casnode";
