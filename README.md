@@ -117,8 +117,6 @@ Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be use
   OSSRegion = ""
   OSSEndPoint = ""
   OSSBucket = ""
-  SMSSignName = ""
-  SMSTemplateCode = ""
   mailUser = ""
   mailPass = ""
   mailHost = ""
