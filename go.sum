@@ -69,6 +69,8 @@ github.com/bradfitz/gomemcache v0.0.0-20180710155616-bc664df96737/go.mod h1:PmM6
 github.com/casbin/casbin v1.7.0/go.mod h1:c67qKN6Oum3UF5Q1+BByfFxkwKvhwW57ITjqwtzR1KE=
 github.com/casbin/google-groups-crawler v0.1.3 h1:kmbzjLK88dtSTk7ycDvjKH6hwVB0z6dAJGpJvvqRFsg=
 github.com/casbin/google-groups-crawler v0.1.3/go.mod h1:JHKvWP8blOe/Mbob3R4aaU5RvVIOC83eBcCSlKsbKSI=
+github.com/casdoor/casdoor-go-sdk v0.0.1 h1:zTmejxbl22rKFH4KOJv64oRjB6eE88Ae8vMiz7x3fGE=
+github.com/casdoor/casdoor-go-sdk v0.0.1/go.mod h1:PlKduZO7RV1E/Gcpfk5Y1LuzROl5ZELn0PCYPGRF6o8=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1 h1:6MnRN8NT7+YBpUIWxHtefFZOKTAPgGjpQSxqLNn0+qY=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=

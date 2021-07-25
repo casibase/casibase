@@ -16,8 +16,8 @@ package sync
 
 import (
 	beego "github.com/beego/beego/v2/adapter"
-	"github.com/casbin/casnode/auth"
 	"github.com/casbin/casnode/object"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	_ "github.com/go-sql-driver/mysql" // db = mysql
 	//_ "github.com/lib/pq"              // db = postgres
 )
