@@ -61,6 +61,10 @@ class RightCommunityHealthBox extends React.Component {
   }
 
   renderAd() {
+    if (this.state.poster.picture_link === "") {
+      return null;
+    }
+
     return (
       <React.Fragment>
         <div className="box">
@@ -86,7 +90,7 @@ class RightCommunityHealthBox extends React.Component {
               </a>
             </div>
             <a href="/" target="_blank">
-              {i18next.t("bar:Poster")}
+              {i18next.t("bar:Ad")}
             </a>
           </div>
         </div>
