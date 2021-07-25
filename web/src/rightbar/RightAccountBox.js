@@ -83,10 +83,10 @@ class RightAccountBox extends React.Component {
     var modeArray = document.cookie.split("; ");
     for (var i = 0; i < modeArray.length; i++) {
       var kvset = modeArray[i].split("=");
-      if (kvset[0] == "themeMode") themeMode = kvset[1];
+      if (kvset[0] === "themeMode") themeMode = kvset[1];
     }
-    if (themeMode == undefined) themeMode = "true";
-    if (themeMode == "true") themeMode = "false";
+    if (themeMode === undefined) themeMode = "true";
+    if (themeMode === "true") themeMode = "false";
     else themeMode = "true";
     document.cookie = "themeMode=" + themeMode;
     window.location.reload();
@@ -95,12 +95,12 @@ class RightAccountBox extends React.Component {
   getThemeBtnUrl() {
     var themeMode = undefined;
     var modeArray = document.cookie.split("; ");
-    for (var i = 0; i < modeArray.length; i++) {
-      var kvset = modeArray[i].split("=");
-      if (kvset[0] == "themeMode") themeMode = kvset[1];
+    for (let i = 0; i < modeArray.length; i++) {
+      let kvset = modeArray[i].split("=");
+      if (kvset[0] === "themeMode") themeMode = kvset[1];
     }
-    if (themeMode == undefined) themeMode = "true";
-    if (themeMode == "true")
+    if (themeMode === undefined) themeMode = "true";
+    if (themeMode === "true")
       return Setting.getStatic("/static/img/toggle-light.png");
     else return Setting.getStatic("/static/img/toggle-dark.png");
   }

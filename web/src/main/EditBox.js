@@ -17,7 +17,6 @@ import * as Setting from "../Setting";
 import { withRouter, Link } from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
-import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
@@ -336,7 +335,6 @@ class EditBox extends React.Component {
                   <textarea
                     type="text"
                     maxLength="120"
-                    name="title"
                     className="mle"
                     name="title"
                     value={this.state.form.title}

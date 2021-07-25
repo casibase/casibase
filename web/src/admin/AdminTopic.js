@@ -422,6 +422,8 @@ class AdminTopic extends React.Component {
             {i18next.t("admin:Ignore")}
           </span>
         );
+      default:
+        return null;
     }
   }
 

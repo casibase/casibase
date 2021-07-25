@@ -76,16 +76,14 @@ export function openLink(link) {
 
 export function getLink(link) {
   return (
-    <a target="_blank" href={link}>
+    <a target="_blank" href={link} rel="noopener noreferrer">
       {link}
     </a>
   );
 }
 
 export function showMessage(type, text) {
-  if (type === "") {
-    return;
-  } else if (type === "success") {
+  if (type === "success") {
     message.success(text);
   } else if (type === "error") {
     message.error(text);

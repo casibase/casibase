@@ -25,7 +25,6 @@ import "../codemirrorSize.css";
 import { withRouter } from "react-router-dom";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
-import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 import Editor from "./richTextEditor";

@@ -63,7 +63,7 @@ class RightHotNodeBox extends React.Component {
           })}
         </div>
         <div className="inner">
-          <a href="/index.xml" target="_blank">
+          <a href="/index.xml" target="_blank" rel="noopener noreferrer">
             <img
               src={Setting.getStatic("/static/img/rss.png")}
               align="absmiddle"
@@ -72,7 +72,7 @@ class RightHotNodeBox extends React.Component {
             />
           </a>
           &nbsp;
-          <a href="/index.xml" target="_blank">
+          <a href="/index.xml" target="_blank" rel="noopener noreferrer">
             RSS
           </a>
         </div>

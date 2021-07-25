@@ -18,7 +18,6 @@ import * as TranslatorBackend from "../backend/TranslatorBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
-import i18n from "i18next";
 
 class AdminTranslation extends React.Component {
   constructor(props) {
@@ -300,6 +299,8 @@ class AdminTranslation extends React.Component {
       case "manage":
         this.getAll();
         break;
+      default:
+        break;
     }
 
     this.setState({
@@ -503,7 +504,6 @@ class AdminTranslation extends React.Component {
             </div>
           </div>
         );
-        break;
       case "create":
         return this.renderFormBox(
           <div className="box">
@@ -629,7 +629,6 @@ class AdminTranslation extends React.Component {
             </div>
           </div>
         );
-        break;
       case "manage":
         return this.renderFormBox(
           <div className="box">
@@ -663,7 +662,6 @@ class AdminTranslation extends React.Component {
             </div>
           </div>
         );
-        break;
     }
   }
 }

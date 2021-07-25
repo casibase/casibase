@@ -72,6 +72,7 @@ class AboutForum extends React.Component {
                     <a
                       href={`${Conf.GithubRepo}/commit/${this.state.version}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                     >
                       {this.state.version.substring(0, 7)}
                     </a>
@@ -82,7 +83,7 @@ class AboutForum extends React.Component {
                     Github:{"  "}
                   </td>
                   <td width="auto" align="left">
-                    <a href={`${Conf.GithubRepo}`} target="_blank">
+                    <a href={`${Conf.GithubRepo}`} target="_blank" rel="noopener noreferrer">
                       Casnode
                     </a>
                   </td>
@@ -93,7 +94,7 @@ class AboutForum extends React.Component {
                     {":"}
                   </td>
                   <td width="auto" align="left">
-                    <a href={`https://casnode.org/`} target="_blank">
+                    <a href={`https://casnode.org/`} target="_blank" rel="noopener noreferrer">
                       Casnode-website
                     </a>
                   </td>

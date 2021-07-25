@@ -37,7 +37,7 @@ class AdminSensitive extends React.Component {
 
   delSensitive(item) {
     SensitiveBackend.delSensitive(item).then((res) => {
-      if (res.status == "ok") {
+      if (res.status === "ok") {
         SensitiveBackend.getSensitiveList().then((res) => {
           this.setState({
             sensitiveList: res,
@@ -67,7 +67,7 @@ class AdminSensitive extends React.Component {
     SensitiveBackend.addSensitive(
       document.getElementById("newsensitive").value
     ).then((res) => {
-      if (res.status == "ok") {
+      if (res.status === "ok") {
         SensitiveBackend.getSensitiveList().then((res) => {
           this.setState({
             sensitiveList: res,

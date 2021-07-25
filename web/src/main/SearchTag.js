@@ -91,7 +91,7 @@ class SearchTag extends React.Component {
     render() {
         const pcBrowser = Setting.PcBrowser;
 
-        if (this.state.topics.length == 0) {
+        if (this.state.topics.length === 0) {
             return (
                 <div>
                     <div className="box">

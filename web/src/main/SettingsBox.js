@@ -291,7 +291,7 @@ class SettingsBox extends React.Component {
 
   render() {
     const account = this.props.account;
-    const pcBrowser = Setting.PcBrowser;
+    // const pcBrowser = Setting.PcBrowser;
 
     if (this.state.event === "username") {
       return (

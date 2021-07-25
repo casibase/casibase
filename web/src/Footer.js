@@ -70,6 +70,7 @@ class Footer extends React.Component {
               <a
                 href={`${Conf.GithubRepo}/commit/${this.state.version}`}
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 {this.state.version.substring(0, 7)}
               </a>
@@ -108,7 +109,7 @@ class Footer extends React.Component {
           <div className="inner">
             <div className="sep10" />
             <div className="fr">
-              <a href={Conf.FrontConfig.logoFooterUrl} target="_blank">
+              <a href={Conf.FrontConfig.logoFooterUrl} target="_blank" rel="noopener noreferrer">
                 <div id="logoFooter" style={{backgroundImage:`url(${Conf.FrontConfig.logoFooterImage})`}} />
               </a>
             </div>
@@ -188,6 +189,7 @@ class Footer extends React.Component {
               <a
                 href={`${Conf.GithubRepo}/commit/${this.state.version}`}
                 target="_blank"
+                rel="noopener noreferrer"
               >
                 {this.state.version.substring(0, 7)}
               </a>{" "}

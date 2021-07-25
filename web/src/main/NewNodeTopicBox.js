@@ -24,12 +24,10 @@ import "../codemirrorSize.css";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
 import Editor from "./richTextEditor";
-
 import "codemirror/lib/codemirror.css";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
-import { Resizable } from "re-resizable";
 import * as Conf from "../Conf";
 require("codemirror/mode/markdown/markdown");
 

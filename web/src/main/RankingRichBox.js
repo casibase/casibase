@@ -14,7 +14,6 @@
 import { withRouter, Link } from "react-router-dom";
 import React from "react";
 import i18next from "i18next";
-import Header from "./Header";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as MemberBackend from "../backend/MemberBackend";

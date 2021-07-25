@@ -47,13 +47,13 @@ class AdminPoster extends React.Component {
         let a_val = this.state.form["advertiser"]
         let l_val = this.state.form["link"]
         let p_val = this.state.form["picture_link"]
-        if (a_val != undefined){
+        if (a_val !== undefined){
             this.adver.current.value = a_val
         }
-        if (l_val != undefined){
+        if (l_val !== undefined){
             this.links.current.value = l_val
         }
-        if (p_val != undefined){
+        if (p_val !== undefined){
             this.p_link.current.value = p_val
         }
     }
