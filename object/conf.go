@@ -14,6 +14,8 @@
 
 package object
 
+import beego "github.com/beego/beego/v2/adapter"
+
 var (
 	DefaultPageNum             = 20
 	DefaultHomePageNum         = 50
@@ -43,8 +45,8 @@ var (
 	DefaultTopTopicTime        = 10   // minutes
 	OnlineMemberExpiedTime     = 10   // minutes
 	DefaultUploadFileQuota     = 50
-	Domain                     = "forum.casbin.com" // domain
-	AutoSyncPeriodSecond       = -1 // auto sync is disabled if < 30
+	Domain                     = beego.AppConfig.String("domain") // domain
+	AutoSyncPeriodSecond       = -1                               // auto sync is disabled if < 30
 
 	DefaultCronJobs = []*CronJob{
 		{
