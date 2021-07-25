@@ -36,6 +36,7 @@ export const GithubRepo = "https://github.com/casbin/casnode";
 
 export const Domain = "forum.casbin.com";
 
+export const ForceLanguage = "";
 export const DefaultLanguage = "en";
 
 // Support: richtext | markdown

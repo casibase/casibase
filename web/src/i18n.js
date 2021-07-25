@@ -36,38 +36,42 @@ const resources = {
 function initLanguage() {
   let language = localStorage.getItem("casnode-language");
   if (language === undefined || language == null) {
-    let userLanguage;
-    userLanguage = navigator.language;
-    switch (userLanguage) {
-      case "zh-CN":
-        language = "zh";
-        break;
-      case "zh":
-        language = "zh";
-        break;
-      case "en":
-        language = "en";
-        break;
-      case "en-US":
-        language = "en";
-        break;
-      case "fr":
-        language = "fr";
-        break;
-      case "de":
-        language = "de";
-        break;
-      case "ko":
-        language = "ko";
-        break;
-      case "ru":
-        language = "ru";
-        break;
-      case "ja":
-        language = "ja";
-        break;
-      default:
-        language = Conf.DefaultLanguage;
+    if (Conf.ForceLanguage !== "") {
+      language = Conf.ForceLanguage;
+    } else {
+      let userLanguage;
+      userLanguage = navigator.language;
+      switch (userLanguage) {
+        case "zh-CN":
+          language = "zh";
+          break;
+        case "zh":
+          language = "zh";
+          break;
+        case "en":
+          language = "en";
+          break;
+        case "en-US":
+          language = "en";
+          break;
+        case "fr":
+          language = "fr";
+          break;
+        case "de":
+          language = "de";
+          break;
+        case "ko":
+          language = "ko";
+          break;
+        case "ru":
+          language = "ru";
+          break;
+        case "ja":
+          language = "ja";
+          break;
+        default:
+          language = Conf.DefaultLanguage;
+      }
     }
   }
   Setting.changeMomentLanguage(language);
