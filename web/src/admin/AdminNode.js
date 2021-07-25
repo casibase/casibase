@@ -20,7 +20,6 @@ import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
 import * as Tools from "../main/Tools";
 import * as FileBackend from "../backend/FileBackend";
-import { Resizable } from "re-resizable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import { SketchPicker } from "react-color";
 import Zmage from "react-zmage";
@@ -491,6 +490,8 @@ class AdminNode extends React.Component {
           return { text: `${plane.name} / ${plane.id}`, id: i };
         });
         break;
+      default:
+        break;
     }
 
     return (
@@ -520,6 +521,8 @@ class AdminNode extends React.Component {
             case "plane":
               const planeId = this.state.planes[index].id;
               this.updateFormField("planeId", planeId);
+              break;
+            default:
               break;
           }
         }}

@@ -27,7 +27,7 @@ class SelectLanguageBox extends React.Component {
   }
 
   ChangeLanguage(language) {
-    if (this.state.previous == undefined) {
+    if (this.state.previous === undefined) {
       Setting.ChangeLanguage(language, "/");
     } else {
       Setting.ChangeLanguage(language, this.state.previous);

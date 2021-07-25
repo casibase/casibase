@@ -214,8 +214,9 @@ class FavoritesBox extends React.Component {
             {this.showPageColumn()}
           </div>
         );
+      default:
+        return <div className="box">{this.state.favoritesType}</div>;
     }
-    return <div className="box">{this.state.favoritesType}</div>;
   }
 }
 

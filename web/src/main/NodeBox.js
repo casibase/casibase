@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import { Route, withRouter, Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
@@ -24,7 +24,6 @@ import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
-import * as url from "url";
 import * as Auth from "../auth/Auth";
 
 class NodeBox extends React.Component {

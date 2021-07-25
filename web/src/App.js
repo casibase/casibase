@@ -655,14 +655,14 @@ class App extends Component {
   }
 
   getThemeLink() {
-    var themeMode = undefined;
-    var modeArray = document.cookie.split("; ");
-    for (var i = 0; i < modeArray.length; i++) {
-      var kvset = modeArray[i].split("=");
-      if (kvset[0] == "themeMode") themeMode = kvset[1];
+    let themeMode = undefined;
+    let modeArray = document.cookie.split("; ");
+    for (let i = 0; i < modeArray.length; i++) {
+      let kvset = modeArray[i].split("=");
+      if (kvset[0] === "themeMode") themeMode = kvset[1];
     }
-    if (themeMode == undefined) themeMode = "true";
-    if (themeMode == "true") return "";
+    if (themeMode === undefined) themeMode = "true";
+    if (themeMode === "true") return "";
     else return Setting.getStatic("/static/css/night.css");
   }
 

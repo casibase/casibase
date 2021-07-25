@@ -419,6 +419,8 @@ class BalanceBox extends React.Component {
             </td>
           </tr>
         );
+      default:
+        return null;
     }
   }
 

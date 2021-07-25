@@ -156,6 +156,8 @@ class CallbackBox extends React.Component {
           }
         });
         break;
+      default:
+        break;
     }
   }
 

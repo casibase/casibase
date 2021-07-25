@@ -26,7 +26,7 @@ import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
 
-const pangu = require("pangu");
+// const pangu = require("pangu");
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -80,7 +80,7 @@ class ReplyBox extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.fullUrl !== window.location.href) {
-      this.state.fullUrl = window.location.href;
+      this.setState({fullUrl: window.location.href});
       let lastIndex = window.location.href.lastIndexOf("#");
       if (lastIndex >= 0) {
         let idString = window.location.href.substring(lastIndex + 1);

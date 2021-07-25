@@ -64,8 +64,10 @@ class TopicList extends React.Component {
         if (homePageTopTime !== "") {
           return this.topTopicStyle;
         }
+        return null;
+      default:
+        return null;
     }
-    return null;
   }
 
   renderTopic(topic) {

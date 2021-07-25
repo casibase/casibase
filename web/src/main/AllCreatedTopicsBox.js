@@ -201,52 +201,51 @@ class AllCreatedTopicsBox extends React.Component {
       return null;
     }
 
-    {
-      if (this.state.tab === "replies") {
-        if (this.state.member === null) {
-          this.props.history.push(`/member/${this.state.memberId}`);
-        }
-        return <LatestReplyBox size={"large"} />;
+    if (this.state.tab === "replies") {
+      if (this.state.member === null) {
+        this.props.history.push(`/member/${this.state.memberId}`);
       }
+      return <LatestReplyBox size={"large"}/>;
     }
-    {
-      if (this.state.tab === "topics") {
-        if (this.state.member === null) {
-          this.props.history.push(`/member/${this.state.memberId}`);
-        }
-        {
-          return (
-            <div className="box">
-              <div className="header">
-                <Link to="/">{Setting.getForumName()} </Link>
-                <span className="chevron">&nbsp;›&nbsp;</span>
-                <Link to={`/member/${this.state.memberId}`}>
-                  {" "}
-                  {this.state.memberId}
-                </Link>{" "}
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                {i18next.t("member:All Topics")}
-                <div className="fr f12">
+
+
+    if (this.state.tab === "topics") {
+      if (this.state.member === null) {
+        this.props.history.push(`/member/${this.state.memberId}`);
+      }
+
+      return (
+        <div className="box">
+          <div className="header">
+            <Link to="/">{Setting.getForumName()} </Link>
+            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to={`/member/${this.state.memberId}`}>
+              {" "}
+              {this.state.memberId}
+            </Link>{" "}
+            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+            {i18next.t("member:All Topics")}
+            <div className="fr f12">
                   <span className="snow">
                     {i18next.t("member:Total Topics")}&nbsp;
                   </span>{" "}
-                  <strong className="gray">{this.state.topicsNum}</strong>
-                </div>
-              </div>
-              {pcBrowser
-                ? this.showPageColumn(`/member/${this.state.memberId}/topics`)
-                : null}
-              <TopicList
-                topics={this.state.topics}
-                showNodeName={true}
-                showAvatar={false}
-              />
-              {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
+              <strong className="gray">{this.state.topicsNum}</strong>
             </div>
-          );
-        }
-      }
+          </div>
+          {pcBrowser
+            ? this.showPageColumn(`/member/${this.state.memberId}/topics`)
+            : null}
+          <TopicList
+            topics={this.state.topics}
+            showNodeName={true}
+            showAvatar={false}
+          />
+          {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
+        </div>
+      );
+
     }
+
 
     let memberAvatar;
     if (this.state.tab === undefined) {
@@ -265,6 +264,7 @@ class AllCreatedTopicsBox extends React.Component {
                 width={24}
                 border={0}
                 style={{ borderRadius: "24px", marginTop: "-2px" }}
+                alt="Member Avatar"
               />
             ) : (
               <img
@@ -272,6 +272,7 @@ class AllCreatedTopicsBox extends React.Component {
                 width={24}
                 border={0}
                 style={{ borderRadius: "24px", marginTop: "-2px" }}
+                alt="Member Avatar"
               />
             )}
           </div>

@@ -167,7 +167,7 @@ class AdminMember extends React.Component {
   }
 
   getSearchResult() {
-    this.state.loading = true;
+    this.setState({loading: true});
     MemberBackend.getMembersAdmin(
       this.state.cs,
       this.state.us,
@@ -299,6 +299,8 @@ class AdminMember extends React.Component {
             {i18next.t("member:Ignore")}
           </span>
         );
+      default:
+        return null;
     }
   }
 

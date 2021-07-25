@@ -299,6 +299,8 @@ class NotificationBox extends React.Component {
             </div>
           </td>
         );
+      default:
+        return null;
     }
   }
 

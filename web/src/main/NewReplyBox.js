@@ -26,7 +26,6 @@ import * as CodeMirror from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "./show-hint.css";
 import { Controlled as CodeMirrorsEditor } from "react-codemirror2";
-import { Resizable } from "re-resizable";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
