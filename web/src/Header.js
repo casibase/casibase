@@ -20,8 +20,8 @@ import * as Conf from "./Conf";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
 import * as Auth from "./auth/Auth";
-import {ServerUrl} from "./Setting";
-import {authConfig} from "./auth/Auth";
+import { ServerUrl } from "./Setting";
+import { authConfig } from "./auth/Auth";
 
 class Header extends React.Component {
   constructor(props) {
@@ -223,9 +223,13 @@ class Header extends React.Component {
       return (
         <header className="site-header">
           <div className="site-header-logo">
-            <div id="logoMobile"
-                 style={{backgroundImage:`url(${Conf.FrontConfig.logoMobileImage})`}}
-                 onClick={() => this.props.history.push("/")} />
+            <div
+              id="logoMobile"
+              style={{
+                backgroundImage: `url(${Conf.FrontConfig.logoMobileImage})`,
+              }}
+              onClick={() => this.props.history.push("/")}
+            />
           </div>
           <div className="site-header-menu">
             {this.renderSearch()}
@@ -497,8 +501,17 @@ class Header extends React.Component {
               <tbody>
                 <tr>
                   <td width="110" align="left">
-                    <Link to="/" name="top" title="way to explore">
-                      <div id="logo" style={{backgroundImage:`url(${Conf.FrontConfig.logoImage})`}} />
+                    <Link
+                      to="/"
+                      name="top"
+                      title={Conf.FrontConfig.signinBoxSpan}
+                    >
+                      <div
+                        id="logo"
+                        style={{
+                          backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
+                        }}
+                      />
                     </Link>
                   </td>
                   <td width="auto" align="left">
