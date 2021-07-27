@@ -40,7 +40,7 @@ class TopicList extends React.Component {
 
   topTopicStyle = {
     backgroundImage: `url('${Setting.getStatic(
-      "/static/img/corner_star.png"
+      "/img/corner_star.png"
     )}')`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "20px 20px",

@@ -63,7 +63,7 @@ class RightNodeBox extends React.Component {
         <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
             <img
-              src={Setting.getStatic("/static/img/compose.png")}
+              src={Setting.getStatic("/img/compose.png")}
               align="absmiddle"
               border="0"
               width="23"

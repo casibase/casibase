@@ -247,7 +247,7 @@ class MemberBox extends React.Component {
                     <div className="sep5" />
                     {this.state.member?.isModerator ? (
                       <img
-                        src={Setting.getStatic("/static/img/mod@2x.png")}
+                        src={Setting.getStatic("/img/mod@2x.png")}
                         height="14px"
                         align="absmiddle"
                       />
@@ -260,21 +260,21 @@ class MemberBox extends React.Component {
                   <div className="balance_area">
                     {goldCount}{" "}
                     <img
-                      src={Setting.getStatic("/static/img/gold@2x.png")}
+                      src={Setting.getStatic("/img/gold@2x.png")}
                       height="16"
                       alt="G"
                       border="0"
                     />{" "}
                     {silverCount}{" "}
                     <img
-                      src={Setting.getStatic("/static/img/silver@2x.png")}
+                      src={Setting.getStatic("/img/silver@2x.png")}
                       height="16"
                       alt="S"
                       border="0"
                     />{" "}
                     {bronzeCount}{" "}
                     <img
-                      src={Setting.getStatic("/static/img/bronze@2x.png")}
+                      src={Setting.getStatic("/img/bronze@2x.png")}
                       height="16"
                       alt="B"
                       border="0"
@@ -295,7 +295,7 @@ class MemberBox extends React.Component {
               rel="nofollow noopener noreferrer"
             >
               <img
-                src={Setting.getStatic("/static/img/social_home.png")}
+                src={Setting.getStatic("/img/social_home.png")}
                 width="24"
                 alt="Website"
                 align="absmiddle"
@@ -311,7 +311,7 @@ class MemberBox extends React.Component {
               rel="nofollow noopener noreferrer"
             >
               <img
-                src={Setting.getStatic("/static/img/social_geo.png")}
+                src={Setting.getStatic("/img/social_geo.png")}
                 width="24"
                 alt="Geo"
                 align="absmiddle"
@@ -327,7 +327,7 @@ class MemberBox extends React.Component {
               rel="nofollow noopener noreferrer"
             >
               <img
-                src={Setting.getStatic("/static/img/social_github.png")}
+                src={Setting.getStatic("/img/social_github.png")}
                 width="24"
                 alt="GitHub"
                 align="absmiddle"
@@ -343,7 +343,7 @@ class MemberBox extends React.Component {
               rel="nofollow noopener noreferrer"
             >
               <img
-                src={Setting.getStatic("/static/img/social_google.png")}
+                src={Setting.getStatic("/img/social_google.png")}
                 width="24"
                 alt="Google"
                 align="absmiddle"

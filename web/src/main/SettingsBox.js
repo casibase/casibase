@@ -230,7 +230,7 @@ class SettingsBox extends React.Component {
       <div className="box">
         <div className="page-content-header">
           <img
-            src={Setting.getStatic("/static/img/settings.png")}
+            src={Setting.getStatic("/img/settings.png")}
             width="64"
             alt="Settings"
           />

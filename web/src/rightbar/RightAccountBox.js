@@ -101,8 +101,8 @@ class RightAccountBox extends React.Component {
     }
     if (themeMode === undefined) themeMode = "true";
     if (themeMode === "true")
-      return Setting.getStatic("/static/img/toggle-light.png");
-    else return Setting.getStatic("/static/img/toggle-dark.png");
+      return Setting.getStatic("/img/toggle-light.png");
+    else return Setting.getStatic("/img/toggle-dark.png");
   }
 
   render() {
@@ -223,7 +223,7 @@ class RightAccountBox extends React.Component {
                   <Link to="/i">
                     <img
                       src={Setting.getStatic(
-                        "/static/img/essentials/images.png"
+                        "/img/essentials/images.png"
                       )}
                       width="28"
                       border="0"
@@ -250,7 +250,7 @@ class RightAccountBox extends React.Component {
                   <Link to="/new">
                     <img
                       src={Setting.getStatic(
-                        "/static/img/essentials/compose.png"
+                        "/img/essentials/compose.png"
                       )}
                       width="28"
                       border="0"
@@ -276,7 +276,7 @@ class RightAccountBox extends React.Component {
                   {" "}
                   {goldCount}{" "}
                   <img
-                    src={Setting.getStatic("/static/img/gold@2x.png")}
+                    src={Setting.getStatic("/img/gold@2x.png")}
                     height="16"
                     alt="G"
                     border="0"
@@ -285,14 +285,14 @@ class RightAccountBox extends React.Component {
               ) : null}{" "}
               {silverCount}{" "}
               <img
-                src={Setting.getStatic("/static/img/silver@2x.png")}
+                src={Setting.getStatic("/img/silver@2x.png")}
                 height="16"
                 alt="S"
                 border="0"
               />{" "}
               {bronzeCount}{" "}
               <img
-                src={Setting.getStatic("/static/img/bronze@2x.png")}
+                src={Setting.getStatic("/img/bronze@2x.png")}
                 height="16"
                 alt="B"
                 border="0"
@@ -302,7 +302,7 @@ class RightAccountBox extends React.Component {
           {this.state.unreadNotificationNum !== 0 ? (
             <span>
               <img
-                src={Setting.getStatic("/static/img/dot_orange.png")}
+                src={Setting.getStatic("/img/dot_orange.png")}
                 align="absmiddle"
               />{" "}
             </span>

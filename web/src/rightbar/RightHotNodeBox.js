@@ -65,7 +65,7 @@ class RightHotNodeBox extends React.Component {
         <div className="inner">
           <a href="/index.xml" target="_blank" rel="noopener noreferrer">
             <img
-              src={Setting.getStatic("/static/img/rss.png")}
+              src={Setting.getStatic("/img/rss.png")}
               align="absmiddle"
               border="0"
               style={{ marginTop: "-3px" }}

@@ -162,7 +162,7 @@ class Footer extends React.Component {
               className="f11"
             >
               <img
-                src={Setting.getStatic("/static/img/language.png")}
+                src={Setting.getStatic("/img/language.png")}
                 width="16"
                 align="absmiddle"
                 id="ico-select-language"
@@ -172,7 +172,7 @@ class Footer extends React.Component {
             &nbsp; <span className="snow">·</span> &nbsp;{" "}
             <Link to="/select/editorType" className="f11">
               <img
-                src={Setting.getStatic("/static/img/editType.png")}
+                src={Setting.getStatic("/img/editType.png")}
                 width="16"
                 align="absmiddle"
                 id="ico-select-editorType"

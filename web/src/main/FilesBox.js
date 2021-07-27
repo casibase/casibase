@@ -706,7 +706,7 @@ class FilesBox extends React.Component {
               <tr>
                 <td width="64">
                   <img
-                    src={Setting.getStatic("/static/img/essentials/images.png")}
+                    src={Setting.getStatic("/img/essentials/images.png")}
                     width="64"
                   />
                 </td>

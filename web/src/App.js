@@ -663,7 +663,7 @@ class App extends Component {
     }
     if (themeMode === undefined) themeMode = "true";
     if (themeMode === "true") return "";
-    else return Setting.getStatic("/static/css/night.css");
+    else return Setting.getStatic("/css/night.css");
   }
 
   render() {
