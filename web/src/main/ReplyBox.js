@@ -370,7 +370,7 @@ class ReplyBox extends React.Component {
                                 ) : (
                                   <img
                                     src={Setting.getStatic(
-                                      "/static/img/heart_neue.png"
+                                      "/img/heart_neue.png"
                                     )}
                                     style={{ verticalAlign: "bottom" }}
                                     alt={i18next.t("reply:thank")}
@@ -421,7 +421,7 @@ class ReplyBox extends React.Component {
                           >
                             <img
                               src={Setting.getStatic(
-                                "/static/img/reply_neue.png"
+                                "/img/reply_neue.png"
                               )}
                               align="absmiddle"
                               border="0"
@@ -456,7 +456,7 @@ class ReplyBox extends React.Component {
                         <span className="small fade">
                           <img
                             src={Setting.getStatic(
-                              "/static/img/heart_neue_red.png"
+                              "/img/heart_neue_red.png"
                             )}
                             width="14"
                             align="absmiddle"

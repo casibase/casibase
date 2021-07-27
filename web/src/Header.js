@@ -296,7 +296,7 @@ class Header extends React.Component {
               <div>
                 <Link to="/i" className="top">
                   <img
-                    src={Setting.getStatic("/static/img/neue_image.png")}
+                    src={Setting.getStatic("/img/neue_image.png")}
                     height="14"
                     border="0"
                     align="absmiddle"
@@ -307,7 +307,7 @@ class Header extends React.Component {
               <div>
                 <Link to="/notes" className="top">
                   <img
-                    src={Setting.getStatic("/static/img/neue_notepad.png")}
+                    src={Setting.getStatic("/img/neue_notepad.png")}
                     height="14"
                     border="0"
                     align="absmiddle"
@@ -318,7 +318,7 @@ class Header extends React.Component {
               <div>
                 <Link to="/t" className="top">
                   <img
-                    src={Setting.getStatic("/static/img/neue_comment.png")}
+                    src={Setting.getStatic("/img/neue_comment.png")}
                     height="14"
                     border="0"
                     align="absmiddle"
@@ -336,7 +336,7 @@ class Header extends React.Component {
               <div>
                 <Link to="/settings/night/toggle" className="top">
                   <img
-                    src={Setting.getStatic("/static/img/toggle-light.png")}
+                    src={Setting.getStatic("/img/toggle-light.png")}
                     align="absmiddle"
                     height="10"
                     alt="Light"

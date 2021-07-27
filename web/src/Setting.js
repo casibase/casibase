@@ -115,7 +115,7 @@ export function getDiffDays(date) {
 }
 
 export function getStatic(path) {
-  return `https://cdn.jsdelivr.net/gh/casbin${path}`;
+  return `https://cdn.casbin.org${path}`;
 }
 
 export function getUserAvatar(username, isLarge = false) {

@@ -158,7 +158,7 @@ class TopicPage extends React.Component {
         ? null
         : {
             backgroundImage: `url('${Setting.getStatic(
-              "/static/img/corner_star.png"
+              "/img/corner_star.png"
             )}')`,
             backgroundRepeat: "no-repeat",
             backgroundSize: "20px 20px",
@@ -284,7 +284,7 @@ class TopicPage extends React.Component {
                       {" "}
                       {goldCount}{" "}
                       <img
-                        src={Setting.getStatic("/static/img/gold@2x.png")}
+                        src={Setting.getStatic("/img/gold@2x.png")}
                         height="16"
                         alt="G"
                         border="0"
@@ -293,14 +293,14 @@ class TopicPage extends React.Component {
                   ) : null}{" "}
                   {silverCount}{" "}
                   <img
-                    src={Setting.getStatic("/static/img/silver@2x.png")}
+                    src={Setting.getStatic("/img/silver@2x.png")}
                     height="16"
                     alt="S"
                     border="0"
                   />{" "}
                   {bronzeCount}{" "}
                   <img
-                    src={Setting.getStatic("/static/img/bronze@2x.png")}
+                    src={Setting.getStatic("/img/bronze@2x.png")}
                     height="16"
                     alt="B"
                     border="0"

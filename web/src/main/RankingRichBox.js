@@ -44,21 +44,21 @@ class RankingRichBox extends React.Component {
       >
         {goldCount}&nbsp;
         <img
-          src={Setting.getStatic("/static/img/gold@2x.png")}
+          src={Setting.getStatic("/img/gold@2x.png")}
           height="16"
           alt="G"
           border="0"
         />
         &nbsp;{silverCount}&nbsp;
         <img
-          src={Setting.getStatic("/static/img/silver@2x.png")}
+          src={Setting.getStatic("/img/silver@2x.png")}
           height="16"
           alt="S"
           border="0"
         />
         &nbsp;{bronzeCount}&nbsp;
         <img
-          src={Setting.getStatic("/static/img/bronze@2x.png")}
+          src={Setting.getStatic("/img/bronze@2x.png")}
           height="16"
           alt="B"
           border="0"
