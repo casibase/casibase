@@ -137,7 +137,7 @@ class LatestReplyBox extends React.Component {
                   </div>
                   <span className="gray">
                     {i18next.t("member:replied")}{" "}
-                    <Link to={`/member/${reply.author}`}> {reply.author} </Link>{" "}
+                    <Link to={`/member/${reply.topicAuthor}`}> {reply.topicAuthor} </Link>{" "}
                     {i18next.t("member:'s topic")}{" "}
                     <span className="chevron">›</span>{" "}
                     <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>

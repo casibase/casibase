@@ -73,12 +73,16 @@ class AllCreatedTopicsBox extends React.Component {
       if (page === null) {
         page = 1;
       }
-      this.setState({
-        page: parseInt(page),
-        memberId: newProps.match.params.memberId,
-      });
-      this.getAllCreatedTopics();
-      this.geCreatedTopicsNum();
+      this.setState(
+        {
+          page: parseInt(page),
+          memberId: newProps.match.params.memberId,
+        },
+        () => {
+          this.getAllCreatedTopics();
+          this.geCreatedTopicsNum();
+        }
+      );
     }
   }
 
