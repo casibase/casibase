@@ -22,6 +22,7 @@ type LatestReply struct {
 	ReplyContent string `xorm:"content" json:"replyContent"`
 	TopicTitle   string `xorm:"title" json:"topicTitle"`
 	ReplyTime    string `xorm:"created_time" json:"replyTime"`
+	TopicAuthor  string `xorm:"author" json:"topicAuthor"`
 }
 
 type TopicWithAvatar struct {

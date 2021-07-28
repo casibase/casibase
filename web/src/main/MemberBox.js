@@ -42,10 +42,11 @@ class MemberBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      this.setState({
-        memberId: newProps.match.params.memberId,
-      });
-      this.getMember();
+      this.setState(
+        {
+          memberId: newProps.match.params.memberId,
+        },() => this.getMember()
+      );
     }
   }
 

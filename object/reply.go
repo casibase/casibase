@@ -238,7 +238,7 @@ func GetLatestReplies(author string, limit int, offset int) []*LatestReply {
 	err := adapter.Engine.Table("reply").Join("LEFT OUTER", "topic", "topic.id = reply.topic_id").
 		Where("reply.author = ?", author).And("reply.deleted = ?", 0).
 		Desc("reply.created_time").
-		Cols("reply.content, reply.author, reply.created_time, topic.id, topic.node_id, topic.node_name, topic.title").
+		Cols("reply.content, reply.author, reply.created_time, topic.id, topic.node_id, topic.node_name, topic.title, topic.author").
 		Limit(limit, offset).Find(&replys)
 	if err != nil {
 		panic(err)
