@@ -87,11 +87,12 @@ func GetMembers() []*Member {
 
 func GetRankingRich() []*Member {
 	members := GetMembersFromCasdoor()
-	members = Limit(members, 0, 25)
 
 	sort.SliceStable(members, func(i, j int) bool {
 		return members[i].Score > members[j].Score
 	})
+
+	members = Limit(members, 0, 25)
 
 	return members
 }
