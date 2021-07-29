@@ -16,8 +16,8 @@ import React from "react";
 import Header from "./Header";
 import { withRouter } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
-import * as Auth from "../auth/Auth";
 import i18next from "i18next";
+import * as Setting from "../Setting";
 
 class SignoutBox extends React.Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class SignoutBox extends React.Component {
   }
 
   onSigninAgain() {
-    this.props.history.push(Auth.getSigninUrl());
+    this.props.history.push(Setting.getSigninUrl());
   }
 
   onRetrySignout() {

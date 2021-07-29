@@ -37,9 +37,8 @@ import i18next from "i18next";
 import "./node.css";
 import "./i18n";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
-import * as Auth from "./auth/Auth";
 import * as Conf from "./Conf";
-import AuthCallback from "./auth/AuthCallback";
+import AuthCallback from "./AuthCallback";
 import LazyLoad from "./components/LazyLoad";
 
 // lazy load imports
@@ -93,7 +92,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
-    Auth.initAuthWithConfig(Conf.AuthConfig);
+    Setting.initCasdoorSdk(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();
     this.getNodeBackground = this.getNodeBackground.bind(this);

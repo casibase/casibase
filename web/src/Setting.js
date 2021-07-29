@@ -23,11 +23,13 @@ import * as MemberBackend from "./backend/MemberBackend";
 import i18next from "i18next";
 import Zmage from "react-zmage";
 import Identicon from "identicon.js";
+import Sdk from "casdoor-js-sdk";
 
 const pangu = require("pangu");
 
 export let ServerUrl = "";
 export let ClientUrl = "";
+export let CasdoorSdk;
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
@@ -43,6 +45,30 @@ export function initFullClientUrl() {
   } else {
     ClientUrl = `https://${hostname}`;
   }
+}
+
+export function initCasdoorSdk(config) {
+  CasdoorSdk = new Sdk(config);
+}
+
+export function getSignupUrl() {
+  return CasdoorSdk.getSignupUrl();
+}
+
+export function getSigninUrl() {
+  return CasdoorSdk.getSigninUrl();
+}
+
+export function getUserProfileUrl(userName, account) {
+  return CasdoorSdk.getUserProfileUrl(userName, account);
+}
+
+export function getMyProfileUrl(account) {
+  return CasdoorSdk.getMyProfileUrl(account);
+}
+
+export function signin() {
+  return CasdoorSdk.signin(ServerUrl);
 }
 
 export function parseJson(s) {
