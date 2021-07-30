@@ -1185,7 +1185,7 @@ class AdminNode extends React.Component {
                         id="Wrapper"
                         style={{
                           backgroundColor: `${this.state.form?.backgroundColor}`,
-                          backgroundImage: `url(${this.state.form?.backgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`,
+                          backgroundImage: `url(${this.state.form?.backgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
                           backgroundSize: "contain",
                           backgroundRepeat: `${this.state.form?.backgroundRepeat}, repeat-x`,
                           width: Setting.PcBrowser ? "500px" : "200px",

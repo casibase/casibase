@@ -11,13 +11,6 @@
 /* See the License for the specific language governing permissions and      */
 /* limitations under the License.                                           */
 
-.Wrapper {
-  text-align: center;
-  background-color: #e2e2e2;
-  background-image: url("https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png");
-  background-repeat: repeat-x;
-}
-
 .nodejs.node_header {
   background-color: #aaaaaa;
 }

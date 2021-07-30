@@ -687,7 +687,7 @@ class App extends Component {
           id="Wrapper"
           style={{
             backgroundColor: `${this.state.nodeBackgroundColor}`,
-            backgroundImage: `url(${this.state.nodeBackgroundImage}), url(https://cdn.jsdelivr.net/gh/casbin/static/img/shadow_light.png)`,
+            backgroundImage: `url(${this.state.nodeBackgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
             backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`,
           }}
           className={this.state.nodeId}
