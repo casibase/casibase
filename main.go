@@ -20,6 +20,7 @@ import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/beego/beego/v2/adapter/plugins/cors"
 	_ "github.com/beego/beego/v2/adapter/session/mysql"
+	_ "github.com/beego/beego/v2/server/web/session/redis"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/routers"
@@ -54,12 +55,14 @@ func main() {
 	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic) // must has this for default page
 	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
 
-	beego.BConfig.WebConfig.Session.SessionProvider = "file"
-	beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
-	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
-	//beego.BConfig.WebConfig.Session.SessionProvider = "mysql"
-	//beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("dataSourceName") + beego.AppConfig.String("dbName")
-	//beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
+	if beego.AppConfig.String("redisEndpoint") == "" {
+		beego.BConfig.WebConfig.Session.SessionProvider = "file"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
+	} else {
+		beego.BConfig.WebConfig.Session.SessionProvider = "redis"
+		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
+	}
+	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
 	port := beego.AppConfig.String("httpport")
 	if len(os.Args) > 1 {

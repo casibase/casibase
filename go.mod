@@ -11,7 +11,6 @@ require (
 	github.com/casbin/google-groups-crawler v0.1.3
 	github.com/casdoor/casdoor-go-sdk v0.0.1
 	github.com/chromedp/chromedp v0.6.10
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df
 	github.com/go-sql-driver/mysql v1.6.0
@@ -34,7 +33,6 @@ require (
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
-	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
 	golang.org/x/text v0.3.5 // indirect
 	golang.org/x/tools v0.1.2 // indirect
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
