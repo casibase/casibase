@@ -19,8 +19,10 @@ import (
 	"fmt"
 	"io/ioutil"
 	"sort"
+	"strconv"
 	"strings"
 
+	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 )
@@ -562,6 +564,13 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 		return GetMember(username)
 	}
 	newMember := GetMemberByEmail(email)
+
+	var score int
+	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
+	if err != nil {
+		panic(err)
+	}
+
 	if newMember == nil {
 		newMember = &Member{
 			Id:                username,
@@ -570,7 +579,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 			Avatar:            UploadFromGravatar(username, email),
 			Email:             email,
 			EmailVerifiedTime: util.GetCurrentTime(),
-			Score:             200,
+			Score:             score,
 			FileQuota:         DefaultUploadFileQuota,
 			RenameQuota:       DefaultRenameQuota,
 		}
