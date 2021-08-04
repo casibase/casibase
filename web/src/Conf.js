@@ -51,3 +51,6 @@ export const EnableNotificationAutoUpdate = false;
 export const NotificationAutoUpdatePeriod = 10; // second
 
 export const DefaultTopicPageReplyNum = 100;
+
+export const ReplyMaxDepth = 10;
+export const ReplyMobileMaxDepth = 3;

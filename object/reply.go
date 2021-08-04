@@ -17,18 +17,23 @@ package object
 import (
 	"fmt"
 	"time"
+
+	beego "github.com/beego/beego/v2/adapter"
 )
 
 type Reply struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	Author      string `xorm:"varchar(100) index" json:"author"`
 	TopicId     int    `xorm:"int index" json:"topicId"`
+	ParentId    int    `xorm:"int" json:"parentId"`
 	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
-	Deleted     bool   `xorm:"bool" json:"-"`
+	Deleted     bool   `xorm:"bool" json:"deleted"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
 	EditorType  string `xorm:"varchar(40)" json:"editorType"`
 	Content     string `xorm:"mediumtext" json:"content"`
 }
+
+var enableCascadingReply, _ = beego.AppConfig.Bool("cascadingReply")
 
 // GetReplyCount returns all replies num so far, both deleted and not deleted.
 func GetReplyCount() int {
@@ -41,14 +46,15 @@ func GetReplyCount() int {
 }
 
 // GetReplies returns more information about reply of a topic.
-func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWithAvatar {
+func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWithAvatar, int) {
 	replies := []*ReplyWithAvatar{}
+	realPage := page
 	err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
-		Where("reply.topic_id = ?", topicId).And("reply.deleted = ?", 0).
+		Where("reply.topic_id = ?", topicId).
 		Asc("reply.created_time").
 		Cols("reply.*, consumption_record.amount").
-		Limit(limit, offset).Find(&replies)
+		Find(&replies)
 	if err != nil {
 		panic(err)
 	}
@@ -65,6 +71,106 @@ func GetReplies(topicId int, memberId string, limit int, offset int) []*ReplyWit
 		v.Editable = isModerator || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
 	}
 
+	var resultReplies []*ReplyWithAvatar
+
+	if enableCascadingReply {
+		replies = bulidReplies(replies)
+		//Use limit to calculate offset
+		//If limit is 2, but the first reply have 2 child replies(3 replies)
+		//We need put these replies to offset, so cannot use (page * limit) to calculate offset
+		pageLimit := limit
+		for index, reply := range replies {
+			replyLen := getReplyLen(reply)
+			//Ignore replies until page == 1
+			if page > 1 {
+				//Calculate limit in every ignore page
+				pageLimit -= replyLen
+				//Get replices for init == true(get the latest replies)
+				resultReplies = append(resultReplies, reply)
+				if pageLimit <= 0 {
+					page--
+					pageLimit = limit
+					if index + 1 < len(replies) {
+						//If the page is a usable value when we get the latest replies, clear the result
+						resultReplies = nil
+					}
+				}
+			} else if limit > 0 {
+				//if page == 1, prove that we are processing current page now
+				//So we can only calculate the limit and put replies to result slice
+				limit -= replyLen
+				resultReplies = append(resultReplies, reply)
+				page--
+			} else {
+				//if page == 1, and limit < 0, prove that we get all replies in this page now
+				break
+			}
+		}
+
+		if page > 0 {
+			realPage -= page
+		}
+	} else {
+		offset := page*limit - limit
+		for _, reply := range replies {
+			if offset > 0 {
+				offset--
+			} else {
+				if limit > 0 {
+					resultReplies = append(resultReplies, reply)
+				} else {
+					break
+				}
+			}
+		}
+	}
+
+	return resultReplies, realPage
+}
+
+func makeReplyTree(replies []*ReplyWithAvatar, reply *ReplyWithAvatar) bool {
+	if len(replies) == 0 {
+		return false
+	}
+	for _, r := range replies {
+		if r.Id == reply.ParentId {
+			r.Child = append(r.Child, reply)
+			return true
+		} else {
+			if makeReplyTree(r.Child, reply) {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func getReplyLen(reply *ReplyWithAvatar) int {
+	replyLen := 1
+	for _, child := range reply.Child {
+		replyLen += getReplyLen(child)
+	}
+	return replyLen
+}
+
+func bulidReplies(replies []*ReplyWithAvatar) []*ReplyWithAvatar {
+	var childReplies []*ReplyWithAvatar
+	var repliesResult []*ReplyWithAvatar
+	for _, reply := range replies {
+		if reply.ParentId != 0 {
+			childReplies = append(childReplies, reply)
+		} else {
+			repliesResult = append(repliesResult, reply)
+		}
+		if reply.Deleted {
+			reply.Content = ""
+		}
+	}
+	replies = repliesResult
+
+	for _, child := range childReplies {
+		makeReplyTree(replies, child)
+	}
 	return replies
 }
 

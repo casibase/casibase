@@ -36,8 +36,9 @@ func (c *ApiController) GetReplies() {
 
 	topicId := util.ParseInt(topicIdStr)
 
-	var limit, offset, page int
+	var limit, page int
 	repliesNum := object.GetTopicReplyNum(topicId)
+
 	if len(limitStr) != 0 {
 		limit = util.ParseInt(limitStr)
 	} else {
@@ -51,12 +52,11 @@ func (c *ApiController) GetReplies() {
 		} else {
 			page = (repliesNum-1)/limit + 1
 		}
-		offset = page*limit - limit
 	}
 
-	replies := object.GetReplies(topicId, memberId, limit, offset)
+	replies, realPage := object.GetReplies(topicId, memberId, limit, page)
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: []int{repliesNum, page}}
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: []int{repliesNum, realPage}}
 	c.ServeJSON()
 }
 
@@ -112,37 +112,27 @@ func (c *ApiController) AddReply() {
 		return
 	}
 
-	var form NewReplyForm
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
-	if err != nil {
-		panic(err)
-	}
-	content, topicId := form.Content, form.TopicId
-
-	if object.ContainsSensitiveWord(content) {
-		resp := Response{Status: "fail", Msg: "Reply contains sensitive word."}
+	balance := object.GetMemberBalance(memberId)
+	if balance < object.CreateReplyCost {
+		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
 
 	reply := object.Reply{
-		//Id:          util.IntToString(object.GetReplyId()),
 		Author:      memberId,
-		TopicId:     topicId,
 		CreatedTime: util.GetCurrentTime(),
-		Content:     content,
 		Deleted:     false,
 	}
 
-	err = json.Unmarshal(c.Ctx.Input.RequestBody, &reply)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &reply)
 	if err != nil {
 		panic(err)
 	}
 
-	balance := object.GetMemberBalance(memberId)
-	if balance < object.CreateReplyCost {
-		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
+	if object.ContainsSensitiveWord(reply.Content) {
+		resp := Response{Status: "fail", Msg: "Reply contains sensitive word."}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
@@ -155,8 +145,8 @@ func (c *ApiController) AddReply() {
 
 		c.UpdateAccountBalance(balance - object.CreateReplyCost)
 
-		object.ChangeTopicReplyCount(topicId, 1)
-		object.ChangeTopicLastReplyUser(topicId, memberId, util.GetCurrentTime())
+		object.ChangeTopicReplyCount(reply.TopicId, 1)
+		object.ChangeTopicLastReplyUser(reply.TopicId, memberId, util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
 		reply.AddReplyToMailingList()
 	}
