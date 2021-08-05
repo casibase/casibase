@@ -279,7 +279,7 @@ class Header extends React.Component {
                 <a
                   target="_blank"
                   className="top"
-                  href={Auth.getMyProfileUrl(this.state.account)}
+                  href={Auth.getMyProfileUrl(this.props.account)}
                 >
                   {i18next.t("general:Setting")}
                 </a>
