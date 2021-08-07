@@ -20,7 +20,7 @@ import (
 )
 
 func (c *ApiController) AddSensitive() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()
@@ -58,7 +58,7 @@ func (c *ApiController) AddSensitive() {
 }
 
 func (c *ApiController) DelSensitive() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()

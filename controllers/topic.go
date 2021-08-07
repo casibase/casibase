@@ -172,7 +172,7 @@ func (c *ApiController) UpdateTopic() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-topic [post]
 func (c *ApiController) AddTopic() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -267,7 +267,7 @@ func (c *ApiController) AddTopic() {
 // @Success 200 {object} _controllers.Response The Response object
 // @router /upload-topic-pic [post]
 func (c *ApiController) UploadTopicPic() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()
@@ -539,7 +539,7 @@ func (c *ApiController) GetHotTopic() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-topic-node [post]
 func (c *ApiController) UpdateTopicNode() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -578,7 +578,7 @@ func (c *ApiController) UpdateTopicNode() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /edit-content [post]
 func (c *ApiController) EditContent() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -668,7 +668,7 @@ func (c *ApiController) TranslateTopic() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /top-topic [post]
 func (c *ApiController) TopTopic() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -720,7 +720,7 @@ func (c *ApiController) TopTopic() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /cancel-top-topic [post]
 func (c *ApiController) CancelTopTopic() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 

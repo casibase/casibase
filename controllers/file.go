@@ -35,7 +35,7 @@ type NewUploadFile struct {
 }
 
 func (c *ApiController) GetFiles() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -74,7 +74,7 @@ func (c *ApiController) GetFileNum() {
 }
 
 func (c *ApiController) AddFileRecord() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
@@ -191,7 +191,7 @@ func (c *ApiController) UpdateFileDescribe() {
 }
 
 func (c *ApiController) UploadFile() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()
@@ -208,7 +208,7 @@ func (c *ApiController) UploadFile() {
 }
 
 func (c *ApiController) ModeratorUpload() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()
@@ -230,7 +230,7 @@ func (c *ApiController) ModeratorUpload() {
 }
 
 func (c *ApiController) UploadAvatar() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 	memberId := c.GetSessionUsername()

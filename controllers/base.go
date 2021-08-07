@@ -59,7 +59,7 @@ func (c *ApiController) GetSessionUsername() string {
 	return claims.Username
 }
 
-func (c *ApiController) RequireLogin() bool {
+func (c *ApiController) RequireSignedIn() bool {
 	if c.GetSessionUser() == nil {
 		c.Data["json"] = Response{Status: "error", Msg: "errorNeedSignin", Data: ""}
 		c.ServeJSON()

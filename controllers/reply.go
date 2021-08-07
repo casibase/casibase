@@ -101,7 +101,7 @@ func (c *ApiController) UpdateReply() {
 }
 
 func (c *ApiController) AddReply() {
-	if c.RequireLogin() {
+	if c.RequireSignedIn() {
 		return
 	}
 
