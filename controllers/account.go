@@ -15,9 +15,20 @@
 package controllers
 
 import (
+	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/object"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
+
+var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+var ClientId = beego.AppConfig.String("clientId")
+var ClientSecret = beego.AppConfig.String("clientSecret")
+var JwtSecret = beego.AppConfig.String("jwtSecret")
+var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+
+func init() {
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
+}
 
 type Response struct {
 	Status string      `json:"status"`
