@@ -33,7 +33,7 @@ type Reply struct {
 	Content     string `xorm:"mediumtext" json:"content"`
 }
 
-var enableCascadingReply, _ = beego.AppConfig.Bool("cascadingReply")
+var enableNestedReply, _ = beego.AppConfig.Bool("enableNestedReply")
 
 // GetReplyCount returns all replies num so far, both deleted and not deleted.
 func GetReplyCount() int {
@@ -73,7 +73,7 @@ func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWith
 
 	var resultReplies []*ReplyWithAvatar
 
-	if enableCascadingReply {
+	if enableNestedReply {
 		replies = bulidReplies(replies)
 		//Use limit to calculate offset
 		//If limit is 2, but the first reply have 2 child replies(3 replies)

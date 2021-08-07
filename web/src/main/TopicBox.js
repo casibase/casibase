@@ -310,7 +310,7 @@ class TopicBox extends React.Component {
         <div className="inner">
           <div className="fr">
             &nbsp;{" "}
-            <a href="#;" onClick="">
+            <a href="#;" onClick={() => {}}>
               {i18next.t("topic:Sink")} ↓
             </a>
             &nbsp;{" "}

@@ -467,7 +467,7 @@ class ReplyBox extends React.Component {
     );
   }
 
-  renderCascadingReply(reply, no, depth) {
+  renderNestedReply(reply, no, depth) {
     depth++;
     let result = [];
     if (no >= 0) {
@@ -481,7 +481,7 @@ class ReplyBox extends React.Component {
             childResult.push(this.renderReplyBox(childItem, -1));
           }
           if (childItem.child) {
-            childResult.push(this.renderCascadingReply(childItem, -1, depth));
+            childResult.push(this.renderNestedReply(childItem, -1, depth));
           }
           return childResult;
         })}
@@ -521,7 +521,7 @@ class ReplyBox extends React.Component {
               id={`r_${reply.id}`}
               className={`cell ${this.props.topic.nodeId}`}
             >
-              {this.renderCascadingReply(reply, no, 0)}
+              {this.renderNestedReply(reply, no, 0)}
             </div>
           ) : null;
         })}
