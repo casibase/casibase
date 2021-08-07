@@ -118,12 +118,30 @@ func (c *ApiController) GetTopicsAdmin() {
 // @Success 200 {object} object.TopicWithAvatar The Response object
 // @router /get-topic [get]
 func (c *ApiController) GetTopic() {
+	var topic *object.TopicWithAvatar
 	memberId := c.GetSessionUsername()
 	idStr := c.Input().Get("id")
 
+	if len(idStr) == 0 {
+		urlBase64Str := c.Input().Get("url")
+		title := c.Input().Get("title")
+		if len(urlBase64Str) == 0 || len(title) == 0 {
+			c.Data["json"] = nil
+			c.ServeJSON()
+			return
+		}
+
+		urlBytes, _ := base64.StdEncoding.DecodeString(urlBase64Str)
+		topic = object.GetTopicByUrlAndTitle(string(urlBytes), title)
+
+		c.Data["json"] = topic
+		c.ServeJSON()
+		return
+	}
+
 	id := util.ParseInt(idStr)
 
-	topic := object.GetTopicWithAvatar(id, memberId)
+	topic = object.GetTopicWithAvatar(id, memberId)
 	if topic == nil || topic.Deleted {
 		c.Data["json"] = nil
 		c.ServeJSON()
