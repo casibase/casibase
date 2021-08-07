@@ -50,7 +50,6 @@ const AllCreatedTopicsBox = React.lazy(() =>
   import("./main/AllCreatedTopicsBox")
 );
 const CallbackBox = React.lazy(() => import("./main/AuthBox"));
-const SettingsBox = React.lazy(() => import("./main/SettingsBox"));
 const NewBox = React.lazy(() => import("./main/NewBox"));
 const NodesBox = React.lazy(() => import("./main/NodeBox"));
 const FavoritesBox = React.lazy(() => import("./main/FavoritesBox"));
@@ -232,31 +231,11 @@ class App extends Component {
             </LazyLoad>
           </div>
         </Route>
-        {/*<Route exact path="/settings">*/}
-        {/*  <div id={pcBrowser ? "Main" : ""}>*/}
-        {/*    {pcBrowser ? <div className="sep20" /> : null}*/}
-        {/*    <SettingsBox*/}
-        {/*      account={this.state.account}*/}
-        {/*      refreshAccount={this.getAccount.bind(this)}*/}
-        {/*    />*/}
-        {/*  </div>*/}
-        {/*</Route>*/}
         <Route exact path="/callback/:authType/:addition">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <CallbackBox />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/settings/:event">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SettingsBox
-                account={this.state.account}
-                refreshAccount={this.getAccount.bind(this)}
-              />
             </LazyLoad>
           </div>
         </Route>
@@ -687,7 +666,9 @@ class App extends Component {
           id="Wrapper"
           style={{
             backgroundColor: `${this.state.nodeBackgroundColor}`,
-            backgroundImage: `url(${this.state.nodeBackgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
+            backgroundImage: `url(${
+              this.state.nodeBackgroundImage
+            }), url(${Setting.getStatic("/img/shadow_light.png")})`,
             backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`,
           }}
           className={this.state.nodeId}
