@@ -56,12 +56,12 @@ func (c *ApiController) GetSessionUsername() string {
 	if claims == nil {
 		return ""
 	}
-	return claims.Username
+	return claims.Name
 }
 
 func (c *ApiController) RequireSignedIn() bool {
 	if c.GetSessionUser() == nil {
-		c.Data["json"] = Response{Status: "error", Msg: "errorNeedSignin", Data: ""}
+		c.Data["json"] = Response{Status: "error", Msg: "please sign in first"}
 		c.ServeJSON()
 
 		return true

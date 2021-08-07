@@ -45,7 +45,8 @@ class MemberBox extends React.Component {
       this.setState(
         {
           memberId: newProps.match.params.memberId,
-        },() => this.getMember()
+        },
+        () => this.getMember()
       );
     }
   }
@@ -162,7 +163,7 @@ class MemberBox extends React.Component {
     const showWatch =
       this.props.account !== undefined &&
       this.props.account !== null &&
-      this.state.memberId !== this.props.account?.username;
+      this.state.memberId !== this.props.account?.name;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
       this.state.member.score
     );
@@ -430,11 +431,10 @@ class MemberBox extends React.Component {
         )}
         {this.renderMember()}
         {!Setting.PcBrowser &&
-        this.props.account?.username === this.state.memberId ? (
+        this.props.account?.name === this.state.memberId ? (
           <div className="sep5" />
         ) : null}
-        {!Setting.PcBrowser &&
-        this.props.account?.username === this.state.memberId
+        {!Setting.PcBrowser && this.props.account?.name === this.state.memberId
           ? this.renderMemberFavorites()
           : null}
         {Setting.PcBrowser ? (

@@ -255,16 +255,16 @@ func (c *ApiController) UpdateMemberLanguage() {
 		c.ServeJSON()
 	}
 
-	clain := c.GetSessionUser()
-	if clain == nil {
+	claims := c.GetSessionUser()
+	if claims == nil {
 		resp = Response{Status: "ok", Msg: "success"}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	} else {
-		clain.Language = language
+		claims.Language = language
 	}
-	c.SetSessionUser(clain)
+	c.SetSessionUser(claims)
 
 	res := object.UpdateMemberLanguage(memberId, language)
 	resp = Response{Status: "ok", Msg: "success", Data: res}

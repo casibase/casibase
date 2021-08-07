@@ -611,7 +611,7 @@ class AdminNode extends React.Component {
                     <br />
                     <span className="chevron">‹</span> &nbsp;
                     {i18next.t("error:Back to")}{" "}
-                    <Link to={`/member/${this.props.account?.username}`}>
+                    <Link to={`/member/${this.props.account?.name}`}>
                       {i18next.t("error:My profile")}
                     </Link>
                   </span>
@@ -1185,7 +1185,11 @@ class AdminNode extends React.Component {
                         id="Wrapper"
                         style={{
                           backgroundColor: `${this.state.form?.backgroundColor}`,
-                          backgroundImage: `url(${this.state.form?.backgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
+                          backgroundImage: `url(${
+                            this.state.form?.backgroundImage
+                          }), url(${Setting.getStatic(
+                            "/img/shadow_light.png"
+                          )})`,
                           backgroundSize: "contain",
                           backgroundRepeat: `${this.state.form?.backgroundRepeat}, repeat-x`,
                           width: Setting.PcBrowser ? "500px" : "200px",

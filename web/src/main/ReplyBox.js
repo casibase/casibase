@@ -80,7 +80,7 @@ class ReplyBox extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.fullUrl !== window.location.href) {
-      this.setState({fullUrl: window.location.href});
+      this.setState({ fullUrl: window.location.href });
       let lastIndex = window.location.href.lastIndexOf("#");
       if (lastIndex >= 0) {
         let idString = window.location.href.substring(lastIndex + 1);
@@ -420,9 +420,7 @@ class ReplyBox extends React.Component {
                             }
                           >
                             <img
-                              src={Setting.getStatic(
-                                "/img/reply_neue.png"
-                              )}
+                              src={Setting.getStatic("/img/reply_neue.png")}
                               align="absmiddle"
                               border="0"
                               alt="Reply"
@@ -455,9 +453,7 @@ class ReplyBox extends React.Component {
                       {reply?.thanksNum !== 0 ? (
                         <span className="small fade">
                           <img
-                            src={Setting.getStatic(
-                              "/img/heart_neue_red.png"
-                            )}
+                            src={Setting.getStatic("/img/heart_neue_red.png")}
                             width="14"
                             align="absmiddle"
                             alt="❤️"
@@ -535,7 +531,7 @@ class ReplyBox extends React.Component {
             content={this.state.reply}
             sticky={this.state.sticky}
             changeStickyStatus={this.changeStickyStatus}
-            member={this.props.account?.username}
+            member={this.props.account?.name}
             nodeId={this.props.topic?.nodeId}
             memberList={this.state.memberList}
             refreshReplies={this.getReplies.bind(this)}

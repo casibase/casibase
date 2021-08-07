@@ -57,7 +57,7 @@ func (c *ApiController) Signin() {
 		panic(err)
 	}
 
-	member := object.GetMemberFromCasdoor(claims.Username)
+	member := object.GetMemberFromCasdoor(claims.Name)
 	member.OnlineStatus = true
 	object.UpdateMemberToCasdoor(member)
 
@@ -76,9 +76,9 @@ func (c *ApiController) Signin() {
 func (c *ApiController) Signout() {
 	var resp Response
 
-	claim := c.GetSessionUser()
-	if claim != nil {
-		member := object.GetMemberFromCasdoor(claim.Username)
+	memberId := c.GetSessionUsername()
+	if memberId != "" {
+		member := object.GetMemberFromCasdoor(memberId)
 		member.OnlineStatus = false
 		object.UpdateMemberToCasdoor(member)
 	}
@@ -95,14 +95,11 @@ func (c *ApiController) Signout() {
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /get-account [get]
 func (c *ApiController) GetAccount() {
-	var resp Response
-
-	if c.GetSessionUser() == nil {
-		resp = Response{Status: "error", Msg: "please sign in first", Data: c.GetSessionUser()}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if c.RequireSignedIn() {
 		return
 	}
+
+	var resp Response
 
 	claims := c.GetSessionUser()
 	userObj := claims
@@ -113,7 +110,7 @@ func (c *ApiController) GetAccount() {
 }
 
 func (c *ApiController) UpdateAccountBalance(balance int) {
-	claim := c.GetSessionUser()
-	claim.Score = balance
-	c.SetSessionUser(claim)
+	claims := c.GetSessionUser()
+	claims.Score = balance
+	c.SetSessionUser(claims)
 }

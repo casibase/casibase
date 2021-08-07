@@ -381,7 +381,7 @@ class TopicBox extends React.Component {
           &nbsp;
           {this.props.account !== undefined &&
           this.props.account !== null &&
-          this.props.account?.username !== this.state.topic?.author ? (
+          this.props.account?.name !== this.state.topic?.author ? (
             this.state.topic?.thanksStatus === false ? (
               <div id="topic_thank">
                 <a
@@ -469,7 +469,7 @@ class TopicBox extends React.Component {
         &nbsp;
         {this.props.account !== undefined &&
         this.props.account !== null &&
-        this.props.account?.username !== this.state.topic?.author ? (
+        this.props.account?.name !== this.state.topic?.author ? (
           this.state.topic?.thanksStatus === false ? (
             <div id="topic_thank">
               <a
@@ -540,7 +540,7 @@ class TopicBox extends React.Component {
     if (this.state.event === "review") {
       if (
         this.props.account === null ||
-        this.props.account?.username !== this.state.topic?.author
+        this.props.account?.name !== this.state.topic?.author
       ) {
         this.props.history.push(`/t/${this.state.topic?.id}`);
       }

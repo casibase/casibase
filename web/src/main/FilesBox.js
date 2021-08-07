@@ -712,7 +712,7 @@ class FilesBox extends React.Component {
                 </td>
                 <td width={pcBrowser ? "200" : "auto"}>
                   <span className="item_title">
-                    {this.props.account?.username}{" "}
+                    {this.props.account?.name}{" "}
                     {i18next.t("file:'s file library")}
                   </span>
                   <div className="sep5"></div>

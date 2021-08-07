@@ -100,13 +100,12 @@ class RightAccountBox extends React.Component {
       if (kvset[0] === "themeMode") themeMode = kvset[1];
     }
     if (themeMode === undefined) themeMode = "true";
-    if (themeMode === "true")
-      return Setting.getStatic("/img/toggle-light.png");
+    if (themeMode === "true") return Setting.getStatic("/img/toggle-light.png");
     else return Setting.getStatic("/img/toggle-dark.png");
   }
 
   render() {
-    const username = this.props.account?.username;
+    const username = this.props.account?.name;
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;
@@ -222,9 +221,7 @@ class RightAccountBox extends React.Component {
                 <td width="28">
                   <Link to="/i">
                     <img
-                      src={Setting.getStatic(
-                        "/img/essentials/images.png"
-                      )}
+                      src={Setting.getStatic("/img/essentials/images.png")}
                       width="28"
                       border="0"
                       style={{ verticalAlign: "bottom" }}
@@ -249,9 +246,7 @@ class RightAccountBox extends React.Component {
                 <td width="28">
                   <Link to="/new">
                     <img
-                      src={Setting.getStatic(
-                        "/img/essentials/compose.png"
-                      )}
+                      src={Setting.getStatic("/img/essentials/compose.png")}
                       width="28"
                       border="0"
                       style={{ verticalAlign: "bottom" }}
