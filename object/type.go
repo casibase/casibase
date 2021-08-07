@@ -44,11 +44,12 @@ type NodeTopic struct {
 
 type ReplyWithAvatar struct {
 	Reply             `xorm:"extends"`
-	Avatar            string `json:"avatar"`
-	ThanksStatus      bool   `json:"thanksStatus"`
-	Deletable         bool   `json:"deletable"`
-	Editable          bool   `json:"editable"`
-	ConsumptionAmount int    `xorm:"amount" json:"amount"`
+	Avatar            string             `json:"avatar"`
+	ThanksStatus      bool               `json:"thanksStatus"`
+	Deletable         bool               `json:"deletable"`
+	Editable          bool               `json:"editable"`
+	ConsumptionAmount int                `xorm:"amount" json:"amount"`
+	Child             []*ReplyWithAvatar `json:"child"`
 }
 
 type NodeFavoritesRes struct {

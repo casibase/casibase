@@ -436,7 +436,8 @@
     "Make your comment helpful for others as much as possible": "Make your comment helpful for others as much as possible",
     "Please resolve the following issues before submitting": "Please resolve the following issues before submitting:",
     "Delete": "Delete",
-    "Edit": "Edit"
+    "Edit": "Edit",
+    "Cancel": "Cancel reply to {username}"
   },
   "poster": {
     "Poster management": "Poster management",

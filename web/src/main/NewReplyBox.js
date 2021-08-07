@@ -137,12 +137,14 @@ class NewReplyBox extends React.Component {
     if (!this.isOkToSubmit()) {
       return;
     }
+    this.updateFormField("parentId", this.props.parent.id);
 
     this.updateFormField("topicId", this.props.topic?.id);
     ReplyBackend.addReply(this.state.form).then((res) => {
       if (res.status === "ok") {
         this.props.onReplyChange("");
         this.props.refreshReplies();
+        this.props.cancelReply();
         this.setState({
           form: {},
         });
@@ -324,6 +326,19 @@ class NewReplyBox extends React.Component {
       >
         <div className={`cell ${this.props.nodeId}`}>
           <div className="fr">
+            {this.props.parent?.id > 0 ? (
+              <a
+                onClick={this.props.cancelReply.bind(this)}
+                style={{ display: this.props.sticky ? "" : "none" }}
+                id="cancel-button"
+                className={`${this.props.nodeId}`}
+              >
+                {i18next
+                  .t("reply:Cancel reply to {username}")
+                  .replace("{username}", this.props.parent.username)}
+              </a>
+            ) : null}{" "}
+            &nbsp; &nbsp;{" "}
             <a
               onClick={this.undockBox.bind(this)}
               style={{ display: this.props.sticky ? "" : "none" }}
