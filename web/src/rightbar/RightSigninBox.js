@@ -14,9 +14,9 @@
 
 import React from "react";
 import { withRouter } from "react-router-dom";
-import * as Auth from "../auth/Auth";
 import * as Conf from "../Conf";
 import i18next from "i18next";
+import * as Setting from "../Setting";
 
 class RightSigninBox extends React.Component {
   constructor(props) {
@@ -37,13 +37,13 @@ class RightSigninBox extends React.Component {
         <div className="inner">
           <div className="sep5" />
           <div align="center">
-            <a href={Auth.getSignupUrl()} className="super normal button">
+            <a href={Setting.getSignupUrl()} className="super normal button">
               {i18next.t("bar:Sign Up Now")}
             </a>
             <div className="sep5" />
             <div className="sep10" />
             {i18next.t("bar:For Existing Member")} &nbsp;
-            <a href={Auth.getSigninUrl()}>{i18next.t("bar:Sign In")}</a>
+            <a href={Setting.getSigninUrl()}>{i18next.t("bar:Sign In")}</a>
           </div>
         </div>
       </div>

@@ -24,7 +24,6 @@ import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
-import * as Auth from "../auth/Auth";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -622,7 +621,7 @@ class NodeBox extends React.Component {
         return null;
       }
       if (this.props.account === null || !this.props.account?.isAdmin) {
-        this.props.history.push(Auth.getSigninUrl());
+        this.props.history.push(Setting.getSigninUrl());
       }
 
       return (

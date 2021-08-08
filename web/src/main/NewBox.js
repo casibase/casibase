@@ -19,7 +19,6 @@ import * as MemberBackend from "../backend/MemberBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
-import * as Auth from "../auth/Auth";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css";
 import { withRouter } from "react-router-dom";
@@ -243,7 +242,7 @@ class NewBox extends React.Component {
     }
 
     if (this.props.account === null) {
-      this.props.history.push(Auth.getSigninUrl());
+      this.props.history.push(Setting.getSigninUrl());
     }
 
     return (
