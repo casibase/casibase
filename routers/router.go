@@ -44,6 +44,7 @@ func initAPI() {
 	beego.Router("/api/get-topics-admin", &controllers.ApiController{}, "GET:GetTopicsAdmin")
 	beego.Router("/api/get-topic", &controllers.ApiController{}, "GET:GetTopic")
 	beego.Router("/api/get-topic-admin", &controllers.ApiController{}, "GET:GetTopicAdmin")
+	beego.Router("/api/get-topic-by-url-and-title", &controllers.ApiController{}, "GET:GetTopicByUrlAndTitle")
 	//beego.Router("/api/update-topic", &controllers.ApiController{}, "POST:UpdateTopic") // no necessary to explore this api.
 	beego.Router("/api/add-topic", &controllers.ApiController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.ApiController{}, "POST:DeleteTopic")

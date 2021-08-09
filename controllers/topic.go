@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -744,5 +745,41 @@ func (c *ApiController) CancelTopTopic() {
 
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *ApiController) GetTopicByUrlAndTitle() {
+	urlStr := c.Input().Get("url")
+	title := c.Input().Get("title")
+	nodeId := c.Input().Get("nodeId")
+
+	if len(urlStr) == 0 || len(title) == 0 {
+		c.Data["json"] = Response{Status: "error", Msg: "Miss url or title"}
+		c.ServeJSON()
+		return
+	}
+	node := object.GetNode(nodeId)
+	if node == nil {
+		c.Data["json"] = Response{Status: "error", Msg: "Node not exists."}
+		c.ServeJSON()
+		return
+	}
+
+	topic := object.GetTopicByUrlAndTitle(urlStr, title)
+	if topic == nil {
+		topic = &object.Topic{
+			Author:        "Embed Plugin",
+			NodeId:        nodeId,
+			NodeName:      node.Name,
+			Title:         title,
+			CreatedTime:   util.GetCurrentTime(),
+			LastReplyTime: util.GetCurrentTime(),
+			Content:       fmt.Sprintf("URL: %s", urlStr),
+			EditorType:    "markdown",
+		}
+		object.AddTopic(topic)
+	}
+
+	c.Data["json"] = Response{Status: "ok", Data: topic}
 	c.ServeJSON()
 }

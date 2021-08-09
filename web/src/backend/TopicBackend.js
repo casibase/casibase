@@ -210,3 +210,13 @@ export function translateTopic(id, target, content) {
     }
   ).then((res) => res.json());
 }
+
+export function getTopicByUrlAndTitle(nodeId, url, title) {
+  return fetch(
+    `${Setting.ServerUrl}/api/get-topic-by-url-and-title?url=${url}&title=${title}&nodeId=${nodeId}`,
+    {
+      method: "GET",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
+}

@@ -47,6 +47,9 @@ func GetNodes() []*Node {
 }
 
 func GetNode(id string) *Node {
+	if len(id) == 0 {
+		return nil
+	}
 	node := Node{Id: id}
 	existed, err := adapter.Engine.Get(&node)
 	if err != nil {

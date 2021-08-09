@@ -236,6 +236,23 @@ func GetTopic(id int) *Topic {
 	}
 }
 
+func GetTopicByUrlAndTitle(url, title string) *Topic {
+	topic := Topic{}
+	urlMatchStr := fmt.Sprintf("URL: %s", url)
+	existed, err := adapter.Engine.
+		Where("content like ?", urlMatchStr).
+		And("title = ?", title).Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if !existed {
+		return nil
+	}
+
+	return &topic
+}
+
 func GetTopicBasicInfo(id int) *Topic {
 	topic := Topic{Id: id}
 	existed, err := adapter.Engine.Id(id).Omit("content").Get(&topic)
