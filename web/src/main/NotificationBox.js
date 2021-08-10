@@ -306,20 +306,22 @@ class NotificationBox extends React.Component {
 
   renderNotification(notification) {
     return (
-      <div className="cell" id="n_13397482">
+      <div key={notification.createdTime} className="cell" id="n_13397482">
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-          <tr>
-            <td width="32" align="left" valign="top">
-              <Link to={`/member/${notification?.senderId}`}>
-                <Avatar
-                  username={notification?.senderId}
-                  avatar={notification?.avatar}
-                  size={"small"}
-                />
-              </Link>
-            </td>
-            {this.renderNotificationContent(notification)}
-          </tr>
+          <tbody>
+            <tr>
+              <td width="32" align="left" valign="top">
+                <Link to={`/member/${notification?.senderId}`}>
+                  <Avatar
+                    username={notification?.senderId}
+                    avatar={notification?.avatar}
+                    size={"small"}
+                  />
+                </Link>
+              </td>
+              {this.renderNotificationContent(notification)}
+            </tr>
+          </tbody>
         </table>
       </div>
     );

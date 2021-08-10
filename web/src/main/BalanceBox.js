@@ -99,7 +99,7 @@ class BalanceBox extends React.Component {
     switch (record?.consumptionType) {
       case 1:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -125,7 +125,7 @@ class BalanceBox extends React.Component {
         );
       case 2:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -155,7 +155,7 @@ class BalanceBox extends React.Component {
         );
       case 3:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -186,7 +186,7 @@ class BalanceBox extends React.Component {
         );
       case 4:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -217,7 +217,7 @@ class BalanceBox extends React.Component {
         );
       case 5:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -248,7 +248,7 @@ class BalanceBox extends React.Component {
         );
       case 6:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -276,7 +276,7 @@ class BalanceBox extends React.Component {
         );
       case 7:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -307,7 +307,7 @@ class BalanceBox extends React.Component {
         );
       case 8:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -335,7 +335,7 @@ class BalanceBox extends React.Component {
         );
       case 9:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -363,7 +363,7 @@ class BalanceBox extends React.Component {
         );
       case 10:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}
@@ -392,7 +392,7 @@ class BalanceBox extends React.Component {
         );
       case 11:
         return (
-          <tr>
+          <tr key={record.createdTime}>
             <td className="d">
               <small className="gray">
                 {Setting.getFormattedDate(record?.createdTime)}

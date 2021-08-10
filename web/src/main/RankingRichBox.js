@@ -90,41 +90,39 @@ class RankingRichBox extends React.Component {
         {/* richList */}
         <div className="inner">
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
-            {this.state.richList
-              ? this.state.richList.map((member, key) => (
-                  <tr>
-                    <td
-                      width={Setting.PcBrowser ? "73" : "36"}
-                      valign="top"
-                      align="center"
-                      key={key}
-                    >
-                      <Avatar
-                        username={member.id}
-                        avatar={member.avatar}
+            <tbody>
+              {this.state.richList
+                ? this.state.richList.map((member, key) => (
+                    <tr key={key}>
+                      <td
+                        width={Setting.PcBrowser ? "73" : "36"}
+                        valign="top"
+                        align="center"
                         key={key}
-                      />
-                    </td>
-                    <td width="auto" align="left">
-                      <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
-                        <span class="gray">{key + 1}.</span>{" "}
-                        <a href={`/member/${member.id}`}>{member.id}</a>
-                      </h2>
-                      <span className="gray f12"> {member.tagline} </span>
-                      <div className="sep5"></div>
-                      <span className="gray f12">
-                        {" "}
-                        <a href={member.website}>{member.website}</a>{" "}
-                      </span>
-                      <div className="sep5"></div>
-                      {/* <span className="fade">第 n 名会员</span> */}
-                    </td>
-                    <td width="140" align="center">
-                      <div>{this.renderRichBox(member.score)}</div>
-                    </td>
-                  </tr>
-                ))
-              : null}
+                      >
+                        <Avatar username={member.id} avatar={member.avatar} />
+                      </td>
+                      <td width="auto" align="left">
+                        <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
+                          <span className="gray">{key + 1}.</span>{" "}
+                          <a href={`/member/${member.id}`}>{member.id}</a>
+                        </h2>
+                        <span className="gray f12"> {member.tagline} </span>
+                        <div className="sep5"></div>
+                        <span className="gray f12">
+                          {" "}
+                          <a href={member.website}>{member.website}</a>{" "}
+                        </span>
+                        <div className="sep5"></div>
+                        {/* <span className="fade">第 n 名会员</span> */}
+                      </td>
+                      <td width="140" align="center">
+                        <div>{this.renderRichBox(member.score)}</div>
+                      </td>
+                    </tr>
+                  ))
+                : null}
+            </tbody>
           </table>
         </div>
       </div>

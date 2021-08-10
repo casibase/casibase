@@ -118,7 +118,7 @@ class LatestReplyBox extends React.Component {
 
   renderReplies(reply) {
     return (
-      <div>
+      <div key={reply.replyTime}>
         <div className="dock_area">
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
@@ -137,7 +137,10 @@ class LatestReplyBox extends React.Component {
                   </div>
                   <span className="gray">
                     {i18next.t("member:replied")}{" "}
-                    <Link to={`/member/${reply.topicAuthor}`}> {reply.topicAuthor} </Link>{" "}
+                    <Link to={`/member/${reply.topicAuthor}`}>
+                      {" "}
+                      {reply.topicAuthor}{" "}
+                    </Link>{" "}
                     {i18next.t("member:'s topic")}{" "}
                     <span className="chevron">›</span>{" "}
                     <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>
