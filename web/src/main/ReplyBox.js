@@ -328,21 +328,19 @@ class ReplyBox extends React.Component {
                     className="thank_area"
                     style={{ marginRight: "10px" }}
                   >
+                    {/*<a*/}
+                    {/*  className="thank"*/}
+                    {/*  style={{*/}
+                    {/*    color: "#ccc",*/}
+                    {/*    display: Setting.PcBrowser ? "" : "none",*/}
+                    {/*    marginRight: "10px",*/}
+                    {/*  }}*/}
+                    {/*>*/}
+                    {/*  {i18next.t("reply:ignore")}*/}
+                    {/*</a>*/}
                     <a
-                      href="#;"
-                      className="thank"
-                      style={{
-                        color: "#ccc",
-                        display: Setting.PcBrowser ? "" : "none",
-                        marginRight: "10px",
-                      }}
-                    >
-                      {i18next.t("reply:ignore")}
-                    </a>
-                    <a
-                      href="#;"
                       onClick={() => this.thanksReply(reply.id, reply.author)}
-                      className="thank"
+                      className="thank link-btn"
                     >
                       {Setting.PcBrowser ? (
                         i18next.t("reply:thank")
@@ -372,14 +370,13 @@ class ReplyBox extends React.Component {
                   style={{ marginRight: "10px" }}
                 >
                   <a
-                    href="#;"
-                    className="delete"
+                    className="delete link-btn"
                     style={{ marginRight: "10px" }}
                     onClick={() => this.deleteReply(reply.id)}
                   >
                     {i18next.t("reply:Delete")}
                   </a>
-                  <a href={`/edit/reply/${reply.id}`} className="edit">
+                  <a href={`/edit/reply/${reply.id}`} className="edit link-btn">
                     {i18next.t("reply:Edit")}
                   </a>
                 </div>
@@ -387,7 +384,6 @@ class ReplyBox extends React.Component {
               {this.props.account !== undefined &&
               this.props.account !== null ? (
                 <a
-                  href="#;"
                   onClick={() => {
                     this.handleClick(`@${reply.author} `);
                     this.setState({
