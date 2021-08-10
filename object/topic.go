@@ -44,6 +44,7 @@ type Topic struct {
 	Deleted         bool     `xorm:"bool" json:"-"`
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content         string   `xorm:"mediumtext" json:"content"`
+	UrlPath         string   `xorm:"varchar(100)" json:"urlPath"`
 }
 
 func GetTopicCount() int {
@@ -234,6 +235,20 @@ func GetTopic(id int) *Topic {
 	} else {
 		return nil
 	}
+}
+
+func GetTopicByUrlPathAndTitle(urlPath, title string) *Topic {
+	topic := Topic{UrlPath: urlPath, Title: title}
+	existed, err := adapter.Engine.Get(&topic)
+	if err != nil {
+		panic(err)
+	}
+
+	if !existed {
+		return nil
+	}
+
+	return &topic
 }
 
 func GetTopicBasicInfo(id int) *Topic {

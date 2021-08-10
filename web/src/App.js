@@ -77,6 +77,7 @@ const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
 const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
+const Embed = React.lazy(() => import("./Embed"));
 
 class App extends Component {
   constructor(props) {
@@ -645,6 +646,13 @@ class App extends Component {
   }
 
   render() {
+    if (window.location.pathname.startsWith("/embedded-replies")) {
+      return (
+        <LazyLoad>
+          <Embed account={this.state.account} />
+        </LazyLoad>
+      );
+    }
     return (
       <div>
         <link

@@ -15,7 +15,6 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as Conf from "../Conf";
-import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import { withRouter, Link } from "react-router-dom";
@@ -39,8 +38,8 @@ class ReplyBox extends React.Component {
     this.changeStickyStatus = this.changeStickyStatus.bind(this);
     this.state = {
       classes: props,
-      topicId: props.match.params.topicId,
-      topic: null,
+      topicId: this.props.topic.id,
+      topic: this.props.topic,
       replies: [],
       reply: "",
       memberList: [],
@@ -151,14 +150,6 @@ class ReplyBox extends React.Component {
     });
   }
 
-  getTopic() {
-    TopicBackend.getTopic(this.state.topicId).then((res) => {
-      this.setState({
-        topic: res,
-      });
-    });
-  }
-
   getReplies(init) {
     ReplyBackend.getReplies(
       this.state.topicId,
@@ -171,9 +162,7 @@ class ReplyBox extends React.Component {
           replies: res?.data,
           repliesNum: res?.data2[0],
           page: res?.data2[1],
-          latestReplyTime: Setting.getPrettyDate(
-            res?.data[res?.data.length - 1]?.createdTime
-          ),
+          latestReplyTime: this.props.topic.lastReplyTime,
         },
         () => {
           this.getMemberList();
@@ -562,7 +551,8 @@ class ReplyBox extends React.Component {
             <div className="sep20" />
           </div>
         ) : null}
-        {this.props.account === null ? null : (
+        {this.props.account ===
+        <div>{i18next.t("edit:Please login first")}</div> ? null : (
           <NewReplyBox
             onReplyChange={this.handleReply}
             content={this.state.reply}

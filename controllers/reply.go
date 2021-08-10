@@ -55,6 +55,9 @@ func (c *ApiController) GetReplies() {
 	}
 
 	replies, realPage := object.GetReplies(topicId, memberId, limit, page)
+	if replies == nil {
+		replies = []*object.ReplyWithAvatar{}
+	}
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: replies, Data2: []int{repliesNum, realPage}}
 	c.ServeJSON()
