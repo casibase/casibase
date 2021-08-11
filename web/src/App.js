@@ -75,6 +75,7 @@ const NewMember = React.lazy(() => import("./main/NewMember"));
 const AdminPlane = React.lazy(() => import("./admin/AdminPlane"));
 const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
 const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
+const AdminFrontConf = React.lazy(() => import("./admin/AdminFrontConf"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
 
@@ -89,12 +90,14 @@ class App extends Component {
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
       nodeBackgroundRepeat: "",
+      reRender: true,
     };
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();
+    Conf.getFrontConf("visualConf", this.Rerender.bind(this));
     this.getNodeBackground = this.getNodeBackground.bind(this);
     this.changeMenuStatus = this.changeMenuStatus.bind(this);
   }
@@ -103,6 +106,12 @@ class App extends Component {
     //Setting.SetLanguage();
     this.getAccount();
     this.getFavoriteNum();
+  }
+
+  Rerender() {
+    this.setState({
+      reRender: false,
+    });
   }
 
   onSignin() {
@@ -542,6 +551,14 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <AdminSensitive account={this.state.account} event={"new"} />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/admin/frontconf">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <AdminFrontConf account={this.state.account} />
             </LazyLoad>
           </div>
         </Route>
