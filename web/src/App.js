@@ -138,6 +138,12 @@ class App extends Component {
           Setting.SetLanguage(language);
         }
         // i18n.changeCustomLanguage(language)
+        let loginCallbackUrl = localStorage.getItem("loginCallbackUrl");
+        localStorage.removeItem("loginCallbackUrl");
+        if (loginCallbackUrl !== null) {
+          loginCallbackUrl = decodeURIComponent(loginCallbackUrl);
+          window.location.href = loginCallbackUrl;
+        }
       }
       this.setState({
         account: account,
