@@ -64,6 +64,11 @@ class AdminHomepage extends React.Component {
           value: "translation",
           image: Setting.getStatic("/img/settings.png"),
         },
+        {
+          label: i18next.t("admin:FrontConf management"),
+          value: "frontconf",
+          image: Setting.getStatic("/img/settings.png"),
+        },
       ],
       message: "",
     };

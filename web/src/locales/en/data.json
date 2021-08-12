@@ -18,6 +18,18 @@
     "Language": "Language",
     "Admin": "Admin"
   },
+  "frontConf": {
+    "forumName": "forumName",
+    "logoImage": "logoImage",
+    "footerLogoImage": "footerLogoImage",
+    "footerLogoUrl": "footerLogoUrl",
+    "signinBoxStrongText": "signinBoxStrongText",
+    "signinBoxSpanText": "signinBoxSpanText",
+    "footerDeclaration": "footerDeclaration",
+    "footerAdvise": "footerAdvise",
+    "Save": "Save",
+    "Reset": "Reset"
+  },
   "about": {
     "Official website": "Official website",
     "About": "About",
@@ -700,6 +712,7 @@
     "Topic management": "Topic management",
     "Poster management": "Poster management",
     "Member management": "Member management",
+    "FrontConf management": "FrontConf management",
     "Sensitive management": "Sensitive management",
     "Translation management": "Translation management",
     "Tab management": "Tab management",

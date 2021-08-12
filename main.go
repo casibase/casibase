@@ -35,6 +35,7 @@ func main() {
 	service.InitOSS()
 	util.InitSegmenter()
 	object.InitForumBasicInfo()
+	object.InitFrontConf()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

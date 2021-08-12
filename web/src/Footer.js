@@ -109,8 +109,17 @@ class Footer extends React.Component {
           <div className="inner">
             <div className="sep10" />
             <div className="fr">
-              <a href={Conf.FrontConfig.logoFooterUrl} target="_blank" rel="noopener noreferrer">
-                <div id="logoFooter" style={{backgroundImage:`url(${Conf.FrontConfig.logoFooterImage})`}} />
+              <a
+                href={Conf.FrontConfig.footerLogoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  id="logoFooter"
+                  style={{
+                    backgroundImage: `url(${Conf.FrontConfig.footerLogoImage})`,
+                  }}
+                />
               </a>
             </div>
             {/*<div className="fr">*/}
@@ -195,7 +204,8 @@ class Footer extends React.Component {
               </a>{" "}
               · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime}{" "}
               · JFK {jfkTime}
-              <br />{Conf.FrontConfig.footerAdvise}
+              <br />
+              {Conf.FrontConfig.footerAdvise}
             </span>
             <div className="sep10" />
           </div>

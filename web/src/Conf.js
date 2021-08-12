@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import * as ConfBackend from "./backend/ConfBackend.js";
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
@@ -20,16 +21,34 @@ export const AuthConfig = {
   organizationName: "casbin-forum",
 };
 
-export const FrontConfig = {
-  forumName: "Casnode",
-  logoImage: "https://cdn.casbin.com/forum/static/img/logo.png",
-  logoFooterImage: "https://cdn.casbin.com/forum/static/img/logo-footer.png",
-  logoFooterUrl: "https://www.digitalocean.com/",
-  signinBoxStrong: "Casbin = way to authorization",
-  signinBoxSpan: "A place for Casbin developers and users",
-  footerDeclaration: "World is powered by code",
-  footerAdvise: "♥ Do have faith in what you're doing.",
+export let FrontConfig = {
+  forumName: "",
+  logoImage: "",
+  footerLogoImage: "",
+  footerLogoUrl: "",
+  signinBoxStrong: "",
+  signinBoxSpan: "",
+  footerDeclaration: "",
+  footerAdvise: "",
 };
+
+export function getFrontConf(field, callback) {
+  var storage = window.localStorage;
+  for (let conf in FrontConfig) {
+    if (storage[conf] != undefined) {
+      FrontConfig[conf] = storage[conf];
+    }
+  }
+  ConfBackend.getFrontConfByField(field).then((res) => {
+    for (let key in res) {
+      if (res[key].Value != "") {
+        FrontConfig[res[key].Id] = res[key].Value;
+      }
+      storage[res[key].Id] = FrontConfig[res[key].Id];
+    }
+    callback();
+  });
+}
 
 export const ShowGithubCorner = true;
 export const GithubRepo = "https://github.com/casbin/casnode";
