@@ -25,7 +25,16 @@ class AdminFrontConf extends React.Component {
       classes: props,
       Management_LIST: [{ label: "Visual Conf", value: "visualConf" }],
       field: "visualConf",
-      conf: [],
+      conf: [
+        { Id: "forumName", Value: "" },
+        { Id: "logoImage", Value: "" },
+        { Id: "signinBoxStrong", Value: "" },
+        { Id: "signinBoxSpan", Value: "" },
+        { Id: "footerAdvise", Value: "" },
+        { Id: "footerDeclaration", Value: "" },
+        { Id: "footerLogoImage", Value: "" },
+        { Id: "footerLogoUrl", Value: "" },
+      ],
       form: {},
       changeForm: {},
       message: "",
@@ -64,11 +73,16 @@ class AdminFrontConf extends React.Component {
   getFrontConf(field) {
     ConfBackend.getFrontConfByField(field).then((res) => {
       let form = this.state.form;
+      let conf = this.state.conf;
       for (var k in res) {
         form[res[k].Id] = res[k].Value;
       }
+      for (var i in conf) {
+        conf[i].Value = form[conf[i].Id];
+      }
       this.setState({
-        conf: res,
+        conf: conf,
+        form: form,
       });
     });
   }
@@ -80,6 +94,7 @@ class AdminFrontConf extends React.Component {
   }
 
   inputChange(event, id) {
+    event.target.style.height = event.target.scrollHeight + "px";
     let forms = this.state.changeForm;
     let form = this.state.form;
     form[id] = event.target.value;
@@ -191,7 +206,9 @@ class AdminFrontConf extends React.Component {
                         {this.convert(item.Id)}
                       </td>
                       <td width="auto" align="left">
-                        <input
+                        <textarea
+                          rows="1"
+                          style={{ width: "80%" }}
                           value={this.state.form[item.Id]}
                           onChange={(event) => this.inputChange(event, item.Id)}
                         />
