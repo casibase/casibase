@@ -547,22 +547,20 @@ class ReplyBox extends React.Component {
             <div className="sep20" />
           </div>
         ) : null}
-        {this.props.account ===
-        <div>{i18next.t("edit:Please login first")}</div> ? null : (
-          <NewReplyBox
-            onReplyChange={this.handleReply}
-            content={this.state.reply}
-            sticky={this.state.sticky}
-            changeStickyStatus={this.changeStickyStatus}
-            member={this.props.account?.name}
-            nodeId={this.props.topic?.nodeId}
-            memberList={this.state.memberList}
-            refreshReplies={this.getReplies.bind(this)}
-            topic={this.props.topic}
-            parent={this.state.parent}
-            cancelReply={this.handleCancelReply.bind(this)}
-          />
-        )}
+        <NewReplyBox
+          account={this.props.account}
+          onReplyChange={this.handleReply}
+          content={this.state.reply}
+          sticky={this.state.sticky}
+          changeStickyStatus={this.changeStickyStatus}
+          member={this.props.account?.name}
+          nodeId={this.props.topic?.nodeId}
+          memberList={this.state.memberList}
+          refreshReplies={this.getReplies.bind(this)}
+          topic={this.props.topic}
+          parent={this.state.parent}
+          cancelReply={this.handleCancelReply.bind(this)}
+        />
       </div>
     );
   }
