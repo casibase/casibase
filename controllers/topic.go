@@ -765,7 +765,7 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 		return
 	}
 
-	topic := object.GetTopicByUrlPathAndTitle(urlPath, title)
+	topic := object.GetTopicByUrlPathAndTitle(urlPath, title, nodeId)
 	if topic == nil {
 		topic = &object.Topic{
 			Author:        "Embed Plugin",
