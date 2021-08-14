@@ -237,8 +237,8 @@ func GetTopic(id int) *Topic {
 	}
 }
 
-func GetTopicByUrlPathAndTitle(urlPath, title string) *Topic {
-	topic := Topic{UrlPath: urlPath, Title: title}
+func GetTopicByUrlPathAndTitle(urlPath, title, nodeId string) *Topic {
+	topic := Topic{UrlPath: urlPath, Title: title, NodeId: nodeId}
 	existed, err := adapter.Engine.Get(&topic)
 	if err != nil {
 		panic(err)
