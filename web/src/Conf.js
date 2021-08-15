@@ -35,13 +35,13 @@ export let FrontConfig = {
 export function getFrontConf(field, callback) {
   var storage = window.localStorage;
   for (let conf in FrontConfig) {
-    if (storage[conf] != undefined) {
+    if (storage[conf] !== undefined) {
       FrontConfig[conf] = storage[conf];
     }
   }
   ConfBackend.getFrontConfByField(field).then((res) => {
     for (let key in res) {
-      if (res[key].Value != "") {
+      if (res[key].Value !== "") {
         FrontConfig[res[key].Id] = res[key].Value;
       }
       storage[res[key].Id] = FrontConfig[res[key].Id];
@@ -49,6 +49,8 @@ export function getFrontConf(field, callback) {
     callback();
   });
 }
+
+export const ShowEmbedButtons = false;
 
 export const ShowGithubCorner = true;
 export const GithubRepo = "https://github.com/casbin/casnode";

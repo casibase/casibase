@@ -205,33 +205,50 @@ class NewReplyBox extends React.Component {
 
   renderEditor(needLogin) {
     if (needLogin) {
-      return (
-        <div style={{ width: "100%", textAlign: "center" }}>
-          <div style={{ marginTop: 30, marginBottom: 30 }}>
-            <input
-              style={{ marginRight: 20 }}
-              onClick={() => {
-                let encodedUrl = encodeURIComponent(window.location.href);
-                localStorage.setItem("loginCallbackUrl", encodedUrl);
-                window.location.href = Setting.getSigninUrl();
-              }}
-              type="submit"
-              value={i18next.t("reply:Sign in")}
-              className="super normal button"
-            />
-            <input
-              onClick={() => {
-                let encodedUrl = encodeURIComponent(window.location.href);
-                localStorage.setItem("loginCallbackUrl", encodedUrl);
-                window.location.href = Setting.getSignupUrl();
-              }}
-              type="submit"
-              value={i18next.t("reply:Sign up")}
-              className="super normal button"
-            />
+      if (Conf.ShowEmbedButtons) {
+        return (
+          <div style={{ width: "100%", textAlign: "center" }}>
+            <div style={{ marginTop: 30, marginBottom: 30 }}>
+              <input
+                style={{ marginRight: 20 }}
+                onClick={() => {
+                  let encodedUrl = encodeURIComponent(window.location.href);
+                  localStorage.setItem("loginCallbackUrl", encodedUrl);
+                  window.location.href = Setting.getSigninUrl();
+                }}
+                type="submit"
+                value={i18next.t("reply:Sign in")}
+                className="super normal button"
+              />
+              <input
+                onClick={() => {
+                  let encodedUrl = encodeURIComponent(window.location.href);
+                  localStorage.setItem("loginCallbackUrl", encodedUrl);
+                  window.location.href = Setting.getSignupUrl();
+                }}
+                type="submit"
+                value={i18next.t("reply:Sign up")}
+                className="super normal button"
+              />
+            </div>
           </div>
-        </div>
-      );
+        );
+      } else {
+        return (
+          <div style={{ width: "100%", textAlign: "center" }}>
+            <div style={{ marginTop: 30, marginBottom: 30 }}>
+              <input
+                onClick={() => {}}
+                type="submit"
+                value={i18next.t(
+                  "reply:Want to leave comment? Please go to the top-right of this page to sign in/sign up"
+                )}
+                className="super normal button"
+              />
+            </div>
+          </div>
+        );
+      }
     }
 
     if (
