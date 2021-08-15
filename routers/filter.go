@@ -24,7 +24,7 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func TransparentStatic(ctx *context.Context) {
+func Static(ctx *context.Context) {
 	urlPath := ctx.Request.URL.Path
 	if strings.HasPrefix(urlPath, "/api/") {
 		return

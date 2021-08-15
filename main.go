@@ -51,10 +51,8 @@ func main() {
 	beego.BConfig.WebConfig.DirectoryIndex = true
 
 	// https://studygolang.com/articles/2303
-	beego.InsertFilter("/", beego.BeforeRouter, routers.BotFilter)
-	beego.InsertFilter("/*", beego.BeforeRouter, routers.BotFilter)
-	beego.InsertFilter("/", beego.BeforeRouter, routers.TransparentStatic) // must has this for default page
-	beego.InsertFilter("/*", beego.BeforeRouter, routers.TransparentStatic)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.BotFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.Static)
 
 	if beego.AppConfig.String("redisEndpoint") == "" {
 		beego.BConfig.WebConfig.Session.SessionProvider = "file"
