@@ -19,6 +19,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import TagsInput from "react-tagsinput";
+import "codemirror/lib/codemirror.css";
 import "../tagsInput.css";
 import * as Tools from "./Tools";
 import i18next from "i18next";
