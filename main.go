@@ -53,6 +53,7 @@ func main() {
 	// https://studygolang.com/articles/2303
 	beego.InsertFilter("*", beego.BeforeRouter, routers.BotFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.Static)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.AutoSigninFilter)
 
 	if beego.AppConfig.String("redisEndpoint") == "" {
 		beego.BConfig.WebConfig.Session.SessionProvider = "file"

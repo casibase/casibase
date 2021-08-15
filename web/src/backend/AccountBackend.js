@@ -15,15 +15,15 @@
 import * as Setting from "../Setting";
 
 export function getAccount() {
-  return fetch(`${Setting.ServerUrl}/api/get-account`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
+  const params = new URLSearchParams(window.location.search);
+  const accessToken = params.get("accessToken");
+  let query = "";
+  if (accessToken !== null) {
+    query = `?accessToken=${accessToken}`;
+  }
 
-export function signin(code, state) {
-  return fetch(`${Setting.ServerUrl}/api/signin?code=${code}&state=${state}`, {
-    method: "POST",
+  return fetch(`${Setting.ServerUrl}/api/get-account${query}`, {
+    method: "GET",
     credentials: "include",
   }).then((res) => res.json());
 }
@@ -33,21 +33,4 @@ export function signout() {
     method: "POST",
     credentials: "include",
   }).then((res) => res.json());
-}
-
-export function getStsToken() {
-  return fetch(`${Setting.ServerUrl}/api/get-member-sts-token`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function resetUsername(newUsername) {
-  return fetch(
-    `${Setting.ServerUrl}/api/reset-member-username?new=${newUsername}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
 }
