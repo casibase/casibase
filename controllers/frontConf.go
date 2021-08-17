@@ -20,6 +20,10 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+// @Title GetFrontConfsByField
+// @Description Get front confs by field
+// @Success 200 {array} object.FrontConf The Response object
+// @router /get-front-conf-by-field [get]
 func (c *ApiController) GetFrontConfByField() {
 	field := c.Input().Get("field")
 
@@ -27,6 +31,10 @@ func (c *ApiController) GetFrontConfByField() {
 	c.ServeJSON()
 }
 
+// @Title GetFrontConfs
+// @Description Get all front confs
+// @Success 200 {array} array The Response object
+// @router /get-front-confs [get]
 func (c *ApiController) GetFrontConfs() {
 	confs := make(map[string]string)
 	conf := object.GetFrontConfs()
