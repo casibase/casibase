@@ -25,59 +25,12 @@ import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
-type Member struct {
-	Id                 string `xorm:"varchar(100) notnull pk" json:"id"`
-	Password           string `xorm:"varchar(100) notnull" json:"-"`
-	No                 int    `json:"no"`
-	IsModerator        bool   `xorm:"bool" json:"isModerator"`
-	CreatedTime        string `xorm:"varchar(40)" json:"createdTime"`
-	Phone              string `xorm:"varchar(100)" json:"phone"`
-	AreaCode           string `xorm:"varchar(10)" json:"areaCode"` // phone area code
-	PhoneVerifiedTime  string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
-	Avatar             string `xorm:"varchar(150)" json:"avatar"`
-	Email              string `xorm:"varchar(100)" json:"email"`
-	EmailVerifiedTime  string `xorm:"varchar(40)" json:"emailVerifiedTime"`
-	Tagline            string `xorm:"varchar(100)" json:"tagline"`
-	Company            string `xorm:"varchar(100)" json:"company"`
-	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
-	Ranking            int    `json:"ranking"`
-	Score              int    `json:"score"`
-	Bio                string `xorm:"varchar(100)" json:"bio"`
-	Website            string `xorm:"varchar(100)" json:"website"`
-	Location           string `xorm:"varchar(100)" json:"location"`
-	Language           string `xorm:"varchar(10)"  json:"language"`
-	EditorType         string `xorm:"varchar(10)"  json:"editorType"`
-	FileQuota          int    `xorm:"int" json:"fileQuota"`
-	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
-	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
-	WechatAccount      string `xorm:"varchar(100)" json:"weChatAccount"`
-	WechatOpenId       string `xorm:"varchar(100)" json:"-"`
-	WechatVerifiedTime string `xorm:"varchar(40)" json:"WechatVerifiedTime"`
-	QQAccount          string `xorm:"qq_account varchar(100)" json:"qqAccount"`
-	QQOpenId           string `xorm:"qq_open_id varchar(100)" json:"-"`
-	QQVerifiedTime     string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
-	EmailReminder      bool   `xorm:"bool" json:"emailReminder"`
-	CheckinDate        string `xorm:"varchar(20)" json:"-"`
-	OnlineStatus       bool   `xorm:"bool" json:"onlineStatus"`
-	LastActionDate     string `xorm:"varchar(40)" json:"-"`
-	Status             int    `xorm:"int" json:"-"`
-	RenameQuota        int    `json:"renameQuota"`
-}
 
-func GetMembersOld() []*Member {
-	members := []*Member{}
-	err := adapter.Engine.Asc("created_time").Find(&members)
-	if err != nil {
-		panic(err)
-	}
-
-	return members
-}
-
-func GetMembers() []*Member {
+func GetMembers() []*auth.User {
 	members := GetMembersFromCasdoor()
 
 	sort.SliceStable(members, func(i, j int) bool {
@@ -87,7 +40,7 @@ func GetMembers() []*Member {
 	return members
 }
 
-func GetRankingRich() []*Member {
+func GetRankingRich() []*auth.User {
 	members := GetMembersFromCasdoor()
 
 	sort.SliceStable(members, func(i, j int) bool {
@@ -114,9 +67,9 @@ func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberIn
 	// id/username sort
 	sort.SliceStable(members, func(i, j int) bool {
 		if us == "1" {
-			return members[i].Id < members[j].Id
+			return members[i].Name < members[j].Name
 		}
-		return members[i].Id > members[j].Id
+		return members[i].Name > members[j].Name
 	})
 
 	members = Limit(members, offset, limit)
@@ -126,11 +79,15 @@ func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberIn
 
 	// count id like %un%
 	for _, member := range members {
-		if strings.Contains(member.Id, un) {
+		if strings.Contains(member.Name, un) {
 			count++
+			status, err := strconv.Atoi(member.Properties["status"])
+			if err != nil {
+				status = 0
+			}
 			res = append(res, &AdminMemberInfo{
-				Member: *member,
-				Status: member.Status,
+				User:   *member,
+				Status: status,
 			})
 		}
 	}
@@ -144,19 +101,22 @@ func GetMemberAdmin(id string) *AdminMemberInfo {
 		return nil
 	}
 
+	fileQuota, err := strconv.Atoi(member.Properties["fileQuota"])
+	if err != nil {
+		fileQuota = 0
+	}
 	return &AdminMemberInfo{
-		Member:        *member,
-		FileQuota:     member.FileQuota,
+		User:          *member,
+		FileQuota:     fileQuota,
 		FileUploadNum: GetFilesNum(id),
-		Status:        member.Status,
 		TopicNum:      GetCreatedTopicsNum(id),
 		ReplyNum:      GetMemberRepliesNum(id),
-		LatestLogin:   member.CheckinDate,
+		LatestLogin:   member.Properties["checkinDate"],
 		Score:         member.Score,
 	}
 }
 
-func GetMember(id string) *Member {
+func GetMember(id string) *auth.User {
 	return GetMemberFromCasdoor(id)
 }
 
@@ -174,33 +134,36 @@ func GetMemberNum() int {
 }
 
 // UpdateMember could update member's file quota and account status.
-func UpdateMember(id string, member *Member) bool {
+func UpdateMember(id string, member *auth.User) bool {
 	targetMember := GetMemberFromCasdoor(id)
 	if targetMember == nil {
 		return false
 	}
 
-	targetMember.FileQuota = member.FileQuota
-	targetMember.Status = member.Status
+	targetMember.Properties = member.Properties
 	targetMember.Score = member.Score
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
-func UpdateMemberInfo(id string, member *Member) bool {
+func UpdateMemberInfo(id string, member *auth.User) bool {
 	targetMember := GetMemberFromCasdoor(id)
 	if targetMember == nil {
 		return false
 	}
 
-	targetMember.Company = member.Company
-	targetMember.Bio = member.Bio
-	targetMember.Website = member.Website
-	targetMember.Tagline = member.Tagline
-	targetMember.CompanyTitle = member.CompanyTitle
-	targetMember.Location = member.Location
+	targetMember.Affiliation = member.Affiliation
+	targetMember.Properties = member.Properties
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 // ChangeMemberEmailReminder change member's email reminder status
@@ -210,13 +173,13 @@ func ChangeMemberEmailReminder(id, status string) bool {
 		return false
 	}
 
-	if status == "true" {
-		targetMember.EmailReminder = true
-	} else {
-		targetMember.EmailReminder = false
-	}
+	targetMember.Properties["emailReminder"] = status
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func UpdateMemberAvatar(id string, avatar string) bool {
@@ -227,7 +190,11 @@ func UpdateMemberAvatar(id string, avatar string) bool {
 
 	targetMember.Avatar = avatar
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func UpdateMemberEditorType(id string, editorType string) bool {
@@ -236,9 +203,13 @@ func UpdateMemberEditorType(id string, editorType string) bool {
 		return false
 	}
 
-	targetMember.EditorType = editorType
+	targetMember.Properties["editorType"] = editorType
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func GetMemberEditorType(id string) string {
@@ -247,7 +218,7 @@ func GetMemberEditorType(id string) string {
 		return ""
 	}
 
-	return targetMember.EditorType
+	return targetMember.Properties["editorType"]
 }
 
 func UpdateMemberLanguage(id string, language string) bool {
@@ -258,7 +229,11 @@ func UpdateMemberLanguage(id string, language string) bool {
 
 	targetMember.Language = language
 
-	return UpdateMemberToCasdoor(targetMember)
+	affected, err := auth.UpdateUser(*targetMember)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func GetMemberLanguage(id string) string {
@@ -270,13 +245,21 @@ func GetMemberLanguage(id string) string {
 	return targetMember.Language
 }
 
-func AddMember(member *Member) bool {
-	return AddMemberToCasdoor(member)
+func AddMember(member *auth.User) bool {
+	affected, err := auth.AddUser(*member)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 // DeleteMember change this function to update member status.
 func DeleteMember(id string) bool {
-	return DeleteMemberFromCasdoor(id)
+	affected, err := auth.DeleteUser(*GetMemberFromCasdoor(id))
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 // GetMemberMail return member's email.
@@ -296,10 +279,14 @@ func GetMemberEmailReminder(id string) (bool, string) {
 		return false, ""
 	}
 
-	return targetMember.EmailReminder, targetMember.Email
+	emailReminder, err := strconv.ParseBool(targetMember.Properties["emailReminder"])
+	if err != nil {
+		emailReminder = false
+	}
+	return emailReminder, targetMember.Email
 }
 
-func GetMemberByEmail(email string) *Member {
+func GetMemberByEmail(email string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
 		if member.Email == email {
@@ -309,7 +296,7 @@ func GetMemberByEmail(email string) *Member {
 	return nil
 }
 
-func GetPhoneNumber(phoneNumber string) *Member {
+func GetPhoneNumber(phoneNumber string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
 		if member.Phone == phoneNumber {
@@ -319,40 +306,40 @@ func GetPhoneNumber(phoneNumber string) *Member {
 	return nil
 }
 
-func GetGoogleAccount(googleAccount string) *Member {
+func GetGoogleAccount(googleAccount string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.GoogleAccount == googleAccount {
+		if member.Google == googleAccount {
 			return member
 		}
 	}
 	return nil
 }
 
-func GetQQAccount(qqOpenId string) *Member {
+func GetQQAccount(qqOpenId string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.QQOpenId == qqOpenId {
+		if member.QQ == qqOpenId {
 			return member
 		}
 	}
 	return nil
 }
 
-func GetWechatAccount(wechatOpenId string) *Member {
+func GetWechatAccount(wechatOpenId string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.WechatOpenId == wechatOpenId {
+		if member.WeChat == wechatOpenId {
 			return member
 		}
 	}
 	return nil
 }
 
-func GetGithubAccount(githubAccount string) *Member {
+func GetGithubAccount(githubAccount string) *auth.User {
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.GithubAccount == githubAccount {
+		if member.Github == githubAccount {
 			return member
 		}
 	}
@@ -375,7 +362,7 @@ func GetMemberCheckinDate(id string) string {
 		return ""
 	}
 
-	return member.CheckinDate
+	return member.Properties["checkinDate"]
 }
 
 func UpdateMemberCheckinDate(id, date string) bool {
@@ -384,8 +371,12 @@ func UpdateMemberCheckinDate(id, date string) bool {
 		return false
 	}
 
-	member.CheckinDate = date
-	return UpdateMemberToCasdoor(member)
+	member.Properties["checkinDate"] = date
+	affected, err := auth.UpdateUser(*member)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func CheckModIdentity(memberId string) bool {
@@ -394,7 +385,7 @@ func CheckModIdentity(memberId string) bool {
 		return false
 	}
 
-	return member.IsModerator
+	return member.IsAdmin
 }
 
 func UpdateMemberPassword(id, password string) bool {
@@ -405,7 +396,11 @@ func UpdateMemberPassword(id, password string) bool {
 
 	member.Password = password
 
-	return UpdateMemberToCasdoor(member)
+	affected, err := auth.UpdateUser(*member)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func GetMemberFileQuota(memberId string) int {
@@ -414,7 +409,11 @@ func GetMemberFileQuota(memberId string) int {
 		return 0
 	}
 
-	return member.FileQuota
+	fileQuota, err := strconv.Atoi(member.Properties["fileQuota"])
+	if err != nil {
+		fileQuota = 0
+	}
+	return fileQuota
 }
 
 // MemberPasswordLogin needs information and password to check member login.
@@ -429,16 +428,16 @@ func MemberPasswordLogin(information, password string) string {
 
 	for _, member := range members {
 		if member.Password == password {
-			if member.Email == information && member.EmailVerifiedTime != "" {
-				return member.Id
+			if member.Email == information && member.Properties["emailVerifiedTime"] != "" {
+				return member.Name
 			}
 
-			if member.Phone == information && member.PhoneVerifiedTime != "" {
-				return member.Id
+			if member.Phone == information && member.Properties["phoneVerifiedTime"] != "" {
+				return member.Name
 			}
 
-			if member.Id == information {
-				return member.Id
+			if member.Name == information {
+				return member.Name
 			}
 		}
 	}
@@ -453,7 +452,11 @@ func GetMemberStatus(id string) int {
 		return 3
 	}
 
-	return member.Status
+	status, err := strconv.Atoi(member.Properties["status"])
+	if err != nil {
+		status = 0
+	}
+	return status
 }
 
 // UpdateMemberOnlineStatus updates member's online information.
@@ -462,10 +465,14 @@ func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate strin
 	if member == nil {
 		return false
 	}
-	member.OnlineStatus = onlineStatus
-	member.LastActionDate = lastActionDate
+	member.Properties["onlineStatus"] = strconv.FormatBool(onlineStatus)
+	member.Properties["lastActionDate"] = lastActionDate
 
-	return UpdateMemberToCasdoor(member)
+	affected, err := auth.UpdateUser(*member)
+	if err != nil {
+		panic(err)
+	}
+	return affected
 }
 
 func ExpiredMemberOnlineStatus(date string) int {
@@ -473,8 +480,12 @@ func ExpiredMemberOnlineStatus(date string) int {
 
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.OnlineStatus && member.LastActionDate < date {
-			member.OnlineStatus = false
+		onlineStatus, err := strconv.ParseBool(member.Properties["onlineStatus"])
+		if err != nil {
+			panic(err)
+		}
+		if onlineStatus && member.UpdatedTime < date {
+			member.Properties["onlineStatus"] = "false"
 			affected++
 		}
 	}
@@ -489,7 +500,7 @@ func GetMemberOnlineNum() int {
 	total := 0
 	members := GetMembersFromCasdoor()
 	for _, member := range members {
-		if member.OnlineStatus {
+		if member.Properties["onlineStatus"] == "true" {
 			total++
 		}
 	}
@@ -513,11 +524,16 @@ func ResetUsername(oldUsername string, newUsername string) string {
 	}
 
 	member := GetMember(oldUsername)
-	if member.RenameQuota < 1 {
+	renameQuota, err := strconv.Atoi(member.Properties["renameQuota"])
+	if err != nil {
+		panic(err)
+	}
+	if renameQuota < 1 {
 		return "You have no chance to reset you name."
 	}
-	member.RenameQuota--
-	_, err := adapter.Engine.Query("update member set rename_quota = ? where id = ?", member.RenameQuota, oldUsername)
+	renameQuota--
+	member.Properties["renameQuota"] = strconv.Itoa(renameQuota)
+	_, err = adapter.Engine.Query("update member set rename_quota = ? where id = ?", renameQuota, oldUsername)
 	if err != nil {
 		panic(err)
 	}
@@ -547,7 +563,7 @@ func ResetUsername(oldUsername string, newUsername string) string {
 	return ""
 }
 
-func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
+func AddMemberByNameAndEmailIfNotExist(username, email string) *auth.User {
 	username = strings.ReplaceAll(username, " ", "")
 	email = strings.ReplaceAll(email, " ", "")
 	if len(username) == 0 {
@@ -572,16 +588,18 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
 	}
 
 	if newMember == nil {
-		newMember = &Member{
-			Id:                username,
-			No:                GetMemberNum() + 1,
-			CreatedTime:       util.GetCurrentTime(),
-			Avatar:            UploadFromGravatar(username, email),
-			Email:             email,
-			EmailVerifiedTime: util.GetCurrentTime(),
-			Score:             score,
-			FileQuota:         DefaultUploadFileQuota,
-			RenameQuota:       DefaultRenameQuota,
+		newMember = &auth.User{
+			Name:        username,
+			CreatedTime: util.GetCurrentTime(),
+			Avatar:      UploadFromGravatar(username, email),
+			Email:       email,
+			Score:       score,
+			Properties: map[string]string{
+				"no":                strconv.Itoa(GetMemberNum() + 1),
+				"emailVerifiedTime": util.GetCurrentTime(),
+				"fileQuota":         strconv.Itoa(DefaultUploadFileQuota),
+				"renameQuota":       strconv.Itoa(DefaultRenameQuota),
+			},
 		}
 		AddMember(newMember)
 	}

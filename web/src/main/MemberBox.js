@@ -179,12 +179,12 @@ class MemberBox extends React.Component {
                   align="center"
                 >
                   <Avatar
-                    username={this.state.member?.id}
+                    username={this.state.member?.name}
                     size={Setting.PcBrowser ? "large" : "middle"}
                     avatar={this.state.member?.avatar}
                   />
                   <div className="sep10" />
-                  {this.state.member?.onlineStatus ? (
+                  {this.state.member?.properties["onlineStatus"] ? (
                     <strong className="online"> {i18next.t("ONLINE")} </strong>
                   ) : (
                     ""
@@ -201,7 +201,7 @@ class MemberBox extends React.Component {
                         type="button"
                         value={i18next.t("member:Cancel Following")}
                         onClick={() =>
-                          this.deleteFavorite(this.state.member?.id)
+                          this.deleteFavorite(this.state.member?.name)
                         }
                         className="super inverse button"
                       />
@@ -209,7 +209,9 @@ class MemberBox extends React.Component {
                       <input
                         type="button"
                         value={i18next.t("member:Watch")}
-                        onClick={() => this.addFavorite(this.state.member?.id)}
+                        onClick={() =>
+                          this.addFavorite(this.state.member?.name)
+                        }
                         className="super special button"
                       />
                     )}
@@ -222,39 +224,43 @@ class MemberBox extends React.Component {
                     />
                   </div>
                   <h1 style={{ marginBottom: "5px" }}>
-                    {this.state.member?.id}
+                    {this.state.member?.name}
                   </h1>
-                  <span className="bigger">{this.state.member?.tagline}</span>
+                  <span className="bigger">
+                    {this.state.member?.properties["tagline"]}
+                  </span>
                   <div className="sep10" />
-                  {this.state.member?.company.length !== 0 ||
-                  this.state.member?.companyTitle.length !== 0 ? (
+                  {this.state.member?.affiliation.length !== 0 ||
+                  this.state.member?.tag.length !== 0 ? (
                     <span>
-                      🏢&nbsp; <strong>{this.state.member?.company}</strong> /{" "}
-                      {this.state.member?.companyTitle}
+                      🏢&nbsp; <strong>{this.state.member?.affiliation}</strong>{" "}
+                      / {this.state.member?.tag}
                     </span>
                   ) : null}
                   <div className={Setting.PcBrowser ? "sep10" : "sep5"} />
                   <span className="gray">
                     {Setting.getForumName()} {i18next.t("member:No.")}{" "}
-                    {this.state.member?.no}{" "}
+                    {this.state.member?.properties["no"]}{" "}
                     {i18next.t("member:member, joined on")}{" "}
                     {Setting.getFormattedDate(this.state.member?.createdTime)}
                     {Setting.PcBrowser ? (
                       <span>
                         <div className="sep5" />
                         {i18next.t("member:Today's ranking")}{" "}
-                        <Link to="/top/dau">{this.state.member?.ranking}</Link>
+                        <Link to="/top/dau">
+                          {this.state.member?.properties["ranking"] || 0}
+                        </Link>
                       </span>
                     ) : null}
                     <div className="sep5" />
-                    {this.state.member?.isModerator ? (
+                    {this.state.member?.isAdmin ? (
                       <img
                         src={Setting.getStatic("/img/mod@2x.png")}
                         height="14px"
                         align="absmiddle"
                       />
                     ) : null}{" "}
-                    {this.state.member?.isModerator
+                    {this.state.member?.isAdmin
                       ? i18next.t("member:authorized to manage the community")
                       : null}
                   </span>
@@ -289,9 +295,9 @@ class MemberBox extends React.Component {
           <div className="sep5" />
         </div>
         <div className="widgets">
-          {this.state.member?.website.length !== 0 ? (
+          {this.state.member?.properties["website"].length !== 0 ? (
             <a
-              href={this.state.member?.website}
+              href={this.state.member?.properties["website"]}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -302,12 +308,12 @@ class MemberBox extends React.Component {
                 alt="Website"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.website}
+              &nbsp;{this.state.member?.properties["website"]}
             </a>
           ) : null}
-          {this.state.member?.location.length !== 0 ? (
+          {this.state.member?.properties["location"].length !== 0 ? (
             <a
-              href={`http://www.google.com/maps?q=${this.state.member?.location}`}
+              href={`http://www.google.com/maps?q=${this.state.member?.properties["location"]}`}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -318,12 +324,12 @@ class MemberBox extends React.Component {
                 alt="Geo"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.location}
+              &nbsp;{this.state.member?.properties["location"]}
             </a>
           ) : null}
-          {this.state.member?.githubAccount.length !== 0 ? (
+          {this.state.member?.github.length !== 0 ? (
             <a
-              href={`https://github.com/${this.state.member?.githubAccount}`}
+              href={`https://github.com/${this.state.member?.properties["oauth_GitHub_username"]}`}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -334,12 +340,14 @@ class MemberBox extends React.Component {
                 alt="GitHub"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.githubAccount}
+              &nbsp;
+              {this.state.member?.properties["oauth_GitHub_displayName"] ||
+                this.state.member?.github}
             </a>
           ) : null}
-          {this.state.member?.googleAccount.length !== 0 ? (
+          {this.state.member?.google.length !== 0 ? (
             <a
-              href={`mailto:${this.state.member?.googleAccount}`}
+              href={`mailto:${this.state.member?.google}`}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -350,12 +358,12 @@ class MemberBox extends React.Component {
                 alt="Google"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.googleAccount}
+              &nbsp;{this.state.member?.google}
             </a>
           ) : null}
         </div>
-        {this.state.member?.bio === "" ? (
-          <div className="cell">{this.state.member?.bio}</div>
+        {this.state.member?.properties["bio"] === "" ? (
+          <div className="cell">{this.state.member?.properties["bio"]}</div>
         ) : null}
       </div>
     );

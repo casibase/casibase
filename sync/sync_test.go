@@ -15,7 +15,6 @@
 package sync
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/casbin/casnode/object"
@@ -25,11 +24,4 @@ func TestSyncUsers(t *testing.T) {
 	initConfig()
 	initAdapter()
 	object.InitAdapter()
-
-	members := object.GetMembersOld()
-	for _, member := range members {
-		user := object.CreateCasdoorUserFromMember(member)
-		addUser(user)
-		fmt.Printf("%v\n", user)
-	}
 }

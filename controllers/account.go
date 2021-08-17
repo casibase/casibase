@@ -58,9 +58,11 @@ func (c *ApiController) Signin() {
 	}
 
 	member := object.GetMemberFromCasdoor(claims.Name)
-	member.OnlineStatus = true
-	object.UpdateMemberToCasdoor(member)
-
+	member.Properties["onlineStatus"] = "true"
+	affected, err := auth.UpdateUser(*member)
+	if !affected {
+		panic(err)
+	}
 	claims.AccessToken = token.AccessToken
 	c.SetSessionUser(claims)
 
@@ -79,8 +81,11 @@ func (c *ApiController) Signout() {
 	memberId := c.GetSessionUsername()
 	if memberId != "" {
 		member := object.GetMemberFromCasdoor(memberId)
-		member.OnlineStatus = false
-		object.UpdateMemberToCasdoor(member)
+		member.Properties["onlineStatus"] = "false"
+		affected, err := auth.UpdateUser(*member)
+		if !affected {
+			panic(err)
+		}
 	}
 
 	c.SetSessionUser(nil)

@@ -109,7 +109,7 @@ func HasMail(email string) string {
 func HasPhone(phoneNumber string) string {
 	userInfo := GetPhoneNumber(phoneNumber)
 	if userInfo != nil {
-		return userInfo.Id
+		return userInfo.Name
 	}
 	return ""
 }
@@ -117,7 +117,7 @@ func HasPhone(phoneNumber string) string {
 func HasGithubAccount(githubAccount string) string {
 	userInfo := GetGithubAccount(githubAccount)
 	if userInfo != nil {
-		return userInfo.Id
+		return userInfo.Name
 	}
 	return ""
 }
@@ -125,7 +125,7 @@ func HasGithubAccount(githubAccount string) string {
 func HasGoogleAccount(googleAccount string) string {
 	userInfo := GetGoogleAccount(googleAccount)
 	if userInfo != nil {
-		return userInfo.Id
+		return userInfo.Name
 	}
 	return ""
 }
@@ -133,7 +133,7 @@ func HasGoogleAccount(googleAccount string) string {
 func HasQQAccount(qqOpenId string) string {
 	userInfo := GetQQAccount(qqOpenId)
 	if userInfo != nil {
-		return userInfo.Id
+		return userInfo.Name
 	}
 	return ""
 }
@@ -141,7 +141,7 @@ func HasQQAccount(qqOpenId string) string {
 func HasWeChatAccount(wechatOpenId string) string {
 	userInfo := GetWechatAccount(wechatOpenId)
 	if userInfo != nil {
-		return userInfo.Id
+		return userInfo.Name
 	}
 	return ""
 }

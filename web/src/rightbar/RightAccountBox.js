@@ -107,7 +107,7 @@ class RightAccountBox extends React.Component {
   render() {
     const username = this.props.account?.name;
     const avatar = this.props.account?.avatar;
-    const tagline = this.props.account?.tagline;
+    const tagline = this.props.account?.properties["tagline"];
     const favorites = this.props.favorites;
     const { goldCount, silverCount, bronzeCount } = scoreConverter(
       this.props.account.score

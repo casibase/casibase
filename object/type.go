@@ -14,6 +14,8 @@
 
 package object
 
+import "github.com/casdoor/casdoor-go-sdk/auth"
+
 type LatestReply struct {
 	TopicId      int    `xorm:"id" json:"topicId"`
 	NodeId       string `json:"nodeId"`
@@ -110,7 +112,7 @@ type AdminTabInfo struct {
 }
 
 type AdminMemberInfo struct {
-	Member
+	auth.User
 	FileQuota     int    `json:"fileQuota"`
 	FileUploadNum int    `json:"fileUploadNum"`
 	Status        int    `json:"status"`

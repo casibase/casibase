@@ -16,9 +16,11 @@ package controllers
 
 import (
 	"encoding/json"
+	"strconv"
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // @Title GetMembers
@@ -120,7 +122,7 @@ func (c *ApiController) UpdateMember() {
 	id := c.Input().Get("id")
 	memberId := c.GetSessionUsername()
 
-	var member object.Member
+	var member *auth.User
 	var memberInfo object.AdminMemberInfo
 	var resp Response
 	var balanceType int
@@ -137,11 +139,12 @@ func (c *ApiController) UpdateMember() {
 		panic(err)
 	}
 
-	member.FileQuota = memberInfo.FileQuota
-	member.Status = memberInfo.Status
-	member.Score = memberInfo.Score
+	member = object.GetMember(id)
 
-	amount := member.Score - object.GetMemberBalance(id)
+	member.Properties["fileQuota"] = strconv.Itoa(memberInfo.FileQuota)
+	member.Properties["status"] = memberInfo.Properties["status"]
+
+	amount := memberInfo.Score - member.Score
 	if amount != 0 {
 		if amount > 0 {
 			balanceType = 10
@@ -150,7 +153,7 @@ func (c *ApiController) UpdateMember() {
 		}
 		record := object.ConsumptionRecord{
 			Amount:          amount,
-			Balance:         member.Score,
+			Balance:         memberInfo.Score,
 			ReceiverId:      id,
 			ConsumerId:      memberId,
 			CreatedTime:     util.GetCurrentTime(),
@@ -159,7 +162,7 @@ func (c *ApiController) UpdateMember() {
 		object.AddBalance(&record)
 	}
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.UpdateMember(id, &member)}
+	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.UpdateMember(id, member)}
 	c.ServeJSON()
 }
 
@@ -167,7 +170,7 @@ func (c *ApiController) UpdateMemberInfo() {
 	id := c.Input().Get("id")
 	memberId := c.GetSessionUsername()
 
-	var tempMember object.Member
+	var tempMember auth.User
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempMember)
 	if err != nil {
 		panic(err)
@@ -177,13 +180,15 @@ func (c *ApiController) UpdateMemberInfo() {
 	if memberId != id {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 	} else {
-		var member = object.Member{
-			Company:      tempMember.Company,
-			CompanyTitle: tempMember.CompanyTitle,
-			Bio:          tempMember.Bio,
-			Website:      tempMember.Website,
-			Tagline:      tempMember.Tagline,
-			Location:     tempMember.Location,
+		var member = auth.User{
+			Affiliation: tempMember.Affiliation,
+			Tag:         tempMember.Tag,
+			Properties: map[string]string{
+				"bio":      tempMember.Properties["bio"],
+				"website":  tempMember.Properties["website"],
+				"tagline":  tempMember.Properties["tagline"],
+				"location": tempMember.Properties["location"],
+			},
 		}
 		res := object.UpdateMemberInfo(id, &member)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
@@ -300,7 +305,7 @@ func (c *ApiController) GetMemberLanguage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-member [post]
 func (c *ApiController) AddMember() {
-	var member object.Member
+	var member auth.User
 	var resp Response
 	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
@@ -312,9 +317,12 @@ func (c *ApiController) AddMember() {
 	if err != nil {
 		panic(err)
 	}
-	member.No = object.GetMemberNum() + 1
-	member.Avatar = UploadAvatarToOSS("", member.Id)
-	if object.GetMember(member.Id) == nil {
+
+	member.Properties = make(map[string]string)
+	member.Properties["no"] = strconv.Itoa(object.GetMemberNum() + 1)
+	member.Avatar = UploadAvatarToOSS("", member.Name)
+
+	if object.GetMember(member.Name) == nil {
 		if object.AddMember(&member) {
 			resp = Response{Status: "ok", Msg: "success"}
 		}

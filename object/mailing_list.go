@@ -58,7 +58,7 @@ func (n Node) SyncFromGoogleGroup() {
 
 		if !isInTopicList(conv.Title) {
 			newTopic = Topic{
-				Author:        AuthorMember.Id,
+				Author:        AuthorMember.Name,
 				NodeId:        n.Id,
 				NodeName:      n.Name,
 				Title:         conv.Title,
@@ -105,7 +105,7 @@ func (n Node) SyncFromGoogleGroup() {
 				continue
 			}
 			newReply := Reply{
-				Author:      AuthorMember.Id,
+				Author:      AuthorMember.Name,
 				TopicId:     newTopic.Id,
 				EditorType:  "richtext",
 				Content:     msg.Content,
@@ -113,7 +113,7 @@ func (n Node) SyncFromGoogleGroup() {
 			}
 			AddReply(&newReply)
 			newTopic.LastReplyTime = util.GetTimeFromTimestamp(int64(msg.Time))
-			newTopic.LastReplyUser = AuthorMember.Id
+			newTopic.LastReplyUser = AuthorMember.Name
 		}
 		UpdateTopic(newTopic.Id, &newTopic)
 	}

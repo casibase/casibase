@@ -321,7 +321,7 @@ class ReplyBox extends React.Component {
             <div className="fr">
               {this.props.account !== null &&
               this.props.account !== undefined &&
-              this.props.account.id !== reply?.author ? (
+              this.props.account.name !== reply?.author ? (
                 reply?.thanksStatus === false ? (
                   <div
                     id={`thank_area__${reply.id}`}

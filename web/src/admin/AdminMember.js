@@ -167,7 +167,7 @@ class AdminMember extends React.Component {
   }
 
   getSearchResult() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     MemberBackend.getMembersAdmin(
       this.state.cs,
       this.state.us,
@@ -444,10 +444,10 @@ class AdminMember extends React.Component {
           <tbody>
             <tr>
               <td width={pcBrowser ? "200" : "auto"} align="left">
-                <span className="gray">{member?.id}</span>
+                <span className="gray">{member?.name}</span>
               </td>
               <td width="200" align="center">
-                <Link to={`/admin/member/edit/${member?.id}`}>
+                <Link to={`/admin/member/edit/${member?.name}`}>
                   {i18next.t("member:Manage")}
                 </Link>
               </td>
@@ -526,7 +526,7 @@ class AdminMember extends React.Component {
                         {i18next.t("member:Username")}
                       </td>
                       <td width="auto" align="left">
-                        <span className="gray">{member?.id}</span>
+                        <span className="gray">{member?.name}</span>
                       </td>
                     </tr>
                     <tr>
@@ -591,7 +591,8 @@ class AdminMember extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <span className="gray">
-                          {member?.fileUploadNum} / {member?.fileQuota}
+                          {member?.fileUploadNum} /{" "}
+                          {member?.properties["fileQuota"]}
                         </span>
                       </td>
                     </tr>
@@ -611,14 +612,14 @@ class AdminMember extends React.Component {
                           value={
                             this.state.form?.fileQuota === undefined
                               ? 0
-                              : this.state.form?.fileQuota
+                              : this.state.form.fileQuota
                           }
-                          onChange={(event) =>
+                          onChange={(event) => {
                             this.updateFormField(
                               "fileQuota",
-                              parseInt(event.target.value)
-                            )
-                          }
+                              event.target.valueAsNumber
+                            );
+                          }}
                         />
                         &nbsp; &nbsp;{" "}
                         <input
@@ -629,12 +630,12 @@ class AdminMember extends React.Component {
                           step="1"
                           value={this.state.form?.fileQuota}
                           style={{ width: "50px" }}
-                          onChange={(event) =>
+                          onChange={(event) => {
                             this.updateFormField(
                               "fileQuota",
-                              parseInt(event.target.value)
-                            )
-                          }
+                              event.target.valueAsNumber
+                            );
+                          }}
                         />
                       </td>
                     </tr>
@@ -709,14 +710,14 @@ class AdminMember extends React.Component {
                   <tr>
                     <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                       <Avatar
-                        username={member?.id}
+                        username={member?.name}
                         size="small"
                         avatar={member?.avatar}
                       />
                     </td>
                     <td width="auto" align="left">
                       {Setting.getForumName()} {i18next.t("member:No.")}{" "}
-                      {member?.no} {i18next.t("member:member")}
+                      {member?.properties["no"]} {i18next.t("member:member")}
                     </td>
                   </tr>
                   <tr>
@@ -724,7 +725,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Username")}
                     </td>
                     <td width="auto" align="left">
-                      {member?.id}
+                      {member?.name}
                     </td>
                   </tr>
                   <tr>
@@ -738,12 +739,13 @@ class AdminMember extends React.Component {
                         </span>
                       ) : (
                         <code>
-                          {member?.areaCode} {member?.phone}
+                          {/*{member?.areaCode} */}
+                          {member?.phone}
                         </code>
                       )}
                     </td>
                     <td width="100" align="left">
-                      {member?.phoneVerifiedTime.length === 0 ? (
+                      {member?.properties["phoneVerifiedTime"].length === 0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
                         </span>
@@ -768,7 +770,7 @@ class AdminMember extends React.Component {
                       )}
                     </td>
                     <td width="100" align="left">
-                      {member?.emailVerifiedTime.length === 0 ? (
+                      {member?.properties["emailVerifiedTime"].length === 0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
                         </span>
@@ -784,12 +786,12 @@ class AdminMember extends React.Component {
                       Google
                     </td>
                     <td width="200" align="left">
-                      {member?.googleAccount.length === 0 ? (
+                      {member?.google.length === 0 ? (
                         <span className="gray">
                           {i18next.t("member:Not set")}
                         </span>
                       ) : (
-                        <code>{member?.googleAccount}</code>
+                        <code>{member?.google}</code>
                       )}
                     </td>
                   </tr>
@@ -798,12 +800,15 @@ class AdminMember extends React.Component {
                       Github
                     </td>
                     <td width="200" align="left">
-                      {member?.githubAccount.length === 0 ? (
+                      {member?.github.length === 0 ? (
                         <span className="gray">
                           {i18next.t("member:Not set")}
                         </span>
                       ) : (
-                        <code>{member?.githubAccount}</code>
+                        <code>
+                          {member?.properties["oauth_GitHub_displayName"] ||
+                            member?.github}
+                        </code>
                       )}
                     </td>
                   </tr>
@@ -812,12 +817,15 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:WeChat")}
                     </td>
                     <td width="200" align="left">
-                      {member?.weChatAccount.length === 0 ? (
+                      {member?.properties["oauth_WeChat_displayName"].length ===
+                      0 ? (
                         <span className="gray">
                           {i18next.t("member:Not set")}
                         </span>
                       ) : (
-                        <code>{member?.weChatAccount}</code>
+                        <code>
+                          {member?.properties["oauth_WeChat_displayName"]}
+                        </code>
                       )}
                     </td>
                   </tr>
@@ -826,16 +834,20 @@ class AdminMember extends React.Component {
                       QQ
                     </td>
                     <td width="200" align="left">
-                      {member?.qqAccount.length === 0 ? (
+                      {member?.properties["oauth_QQ_displayName"].length ===
+                      0 ? (
                         <span className="gray">
                           {i18next.t("member:Not set")}
                         </span>
                       ) : (
-                        <code>{member?.qqAccount}</code>
+                        <code>
+                          {member?.properties["oauth_QQ_displayName"]}
+                        </code>
                       )}
                     </td>
                     <td width="100" align="left">
-                      {member?.qqVerifiedTime.length === 0 ? (
+                      {member?.properties["oauth_QQ_verifiedTime"].length ===
+                      0 ? (
                         <span className="negative">
                           {i18next.t("member:Unverified")}
                         </span>
@@ -851,7 +863,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Website")}
                     </td>
                     <td width="200" align="left">
-                      {member?.website}
+                      {member?.properties["website"]}
                     </td>
                   </tr>
                   <tr>
@@ -859,7 +871,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Company")}
                     </td>
                     <td width="200" align="left">
-                      {member?.company}
+                      {member?.affiliation}
                     </td>
                   </tr>
                   <tr>
@@ -867,7 +879,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Company title")}
                     </td>
                     <td width="200" align="left">
-                      {member?.companyTitle}
+                      {member?.tag}
                     </td>
                   </tr>
                   <tr>
@@ -883,7 +895,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Tagline")}
                     </td>
                     <td width="200" align="left">
-                      {member?.tagline}
+                      {member?.properties["tagline"]}
                     </td>
                   </tr>
                   <tr>
@@ -891,7 +903,7 @@ class AdminMember extends React.Component {
                       {i18next.t("setting:Bio")}
                     </td>
                     <td width="200" align="left">
-                      {member?.bio}
+                      {member?.properties["bio"]}
                     </td>
                   </tr>
                   <tr>
@@ -900,7 +912,7 @@ class AdminMember extends React.Component {
                       align="right"
                     ></td>
                     <td width="auto" align="left">
-                      <Link to={`/member/${member?.id}`} target="_blank">
+                      <Link to={`/member/${member?.name}`} target="_blank">
                         {i18next.t("member:Homepage")}&nbsp; ›&nbsp;
                       </Link>
                     </td>

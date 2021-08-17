@@ -100,7 +100,7 @@ class RankingRichBox extends React.Component {
                       key={key}
                     >
                       <Avatar
-                        username={member.id}
+                        username={member.name}
                         avatar={member.avatar}
                         key={key}
                       />
@@ -108,13 +108,18 @@ class RankingRichBox extends React.Component {
                     <td width="auto" align="left">
                       <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
                         <span class="gray">{key + 1}.</span>{" "}
-                        <a href={`/member/${member.id}`}>{member.id}</a>
+                        <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
-                      <span className="gray f12"> {member.tagline} </span>
+                      <span className="gray f12">
+                        {" "}
+                        {member.properties["tagline"]}{" "}
+                      </span>
                       <div className="sep5"></div>
                       <span className="gray f12">
                         {" "}
-                        <a href={member.website}>{member.website}</a>{" "}
+                        <a href={member.properties["website"]}>
+                          {member.properties["website"]}
+                        </a>{" "}
                       </span>
                       <div className="sep5"></div>
                       {/* <span className="fade">第 n 名会员</span> */}

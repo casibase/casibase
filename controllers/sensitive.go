@@ -25,7 +25,7 @@ func (c *ApiController) AddSensitive() {
 	}
 	memberId := c.GetSessionUsername()
 	member := object.GetMember(memberId)
-	if !member.IsModerator {
+	if !member.IsAdmin {
 		resp := Response{Status: "fail", Msg: "You are not admin, you can't add sensitive words."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -63,7 +63,7 @@ func (c *ApiController) DelSensitive() {
 	}
 	memberId := c.GetSessionUsername()
 	member := object.GetMember(memberId)
-	if !member.IsModerator {
+	if !member.IsAdmin {
 		resp := Response{Status: "fail", Msg: "You are not admin, you can't delete sensitive words."}
 		c.Data["json"] = resp
 		c.ServeJSON()
