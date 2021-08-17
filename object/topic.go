@@ -45,6 +45,7 @@ type Topic struct {
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content         string   `xorm:"mediumtext" json:"content"`
 	UrlPath         string   `xorm:"varchar(100)" json:"urlPath"`
+	IsHidden        bool     `xorm:"bool" json:"isHidden"`
 }
 
 func GetTopicCount() int {
@@ -78,7 +79,7 @@ func GetCreatedTopicsNum(memberId string) int {
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
-		Where("deleted = ?", 0).
+		Where("deleted = ? and is_hidden <> ?", 0, 1).
 		Desc("home_page_top_time").
 		Desc("last_reply_time").
 		Desc("created_time").
@@ -92,7 +93,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var ret []*TopicWithAvatar
 	for _, topic := range topics {
 		ret = append(ret, &TopicWithAvatar{
-			Topic: *topic,
+			Topic:  *topic,
 			Avatar: memberAvatar[topic.Author],
 		})
 	}
@@ -569,7 +570,7 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	memberAvatar := GetMemberAvatarMapping()
 	for _, t := range topics {
 		ret = append(ret, &TopicWithAvatar{
-			Topic: *t,
+			Topic:  *t,
 			Avatar: memberAvatar[t.Author],
 		})
 	}
@@ -696,7 +697,7 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 		}
 
 		ret = append(ret, TopicWithAvatar{
-			Topic: topic,
+			Topic:  topic,
 			Avatar: memberAvatar[topic.Author],
 		})
 	}

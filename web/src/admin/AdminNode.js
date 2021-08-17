@@ -190,6 +190,7 @@ class AdminNode extends React.Component {
       form["headerImage"] = this.state.nodeInfo?.headerImage;
       form["mailingList"] = this.state.nodeInfo?.mailingList;
       form["googleGroupCookie"] = this.state.nodeInfo?.googleGroupCookie;
+      form["isHidden"] = this.state.nodeInfo?.isHidden;
     }
 
     this.setState({
@@ -292,7 +293,7 @@ class AdminNode extends React.Component {
             setTimeout(
               () =>
                 this.props.history.push(
-                  `/admin/node/edit/${this.state.form.id}`
+                  `/admin/node/edit/${encodeURIComponent(this.state.form.id)}`
                 ),
               1600
             );
@@ -427,7 +428,11 @@ class AdminNode extends React.Component {
                 </Link>
               </td>
               <td width={pcBrowser ? "200" : "auto"} align="center">
-                <Link to={`/admin/node/edit/${node?.nodeInfo.id}`}>
+                <Link
+                  to={`/admin/node/edit/${encodeURIComponent(
+                    node?.nodeInfo.id
+                  )}`}
+                >
                   {i18next.t("node:Manage")}
                 </Link>
               </td>
@@ -882,6 +887,29 @@ class AdminNode extends React.Component {
                           }
                           autoComplete="off"
                         />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("node:Is hidden")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input
+                          type="radio"
+                          onClick={() =>
+                            this.updateFormField("isHidden", false)
+                          }
+                          checked={!this.state.form?.isHidden}
+                          name="visible"
+                        />
+                        {i18next.t("plane:Visible")}{" "}
+                        <input
+                          type="radio"
+                          onClick={() => this.updateFormField("isHidden", true)}
+                          checked={this.state.form?.isHidden}
+                          name="invisible"
+                        />
+                        {i18next.t("plane:Invisible")}
                       </td>
                     </tr>
                     {!newNode ? (
