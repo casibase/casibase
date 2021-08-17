@@ -183,7 +183,10 @@ class TopicPage extends React.Component {
                 <div className="sep5" />
                 <span className="topic_info">
                   <div className="votes" />
-                  <Link className="node" to={`/go/${topic.nodeId}`}>
+                  <Link
+                    className="node"
+                    to={`/go/${encodeURIComponent(topic.nodeId)}`}
+                  >
                     {topic.nodeName}
                   </Link>{" "}
                   &nbsp;•&nbsp;{" "}
@@ -233,7 +236,7 @@ class TopicPage extends React.Component {
   renderNode(node) {
     return (
       <span key={node?.id}>
-        <Link to={`/go/${node?.id}`}>{node?.name}</Link>
+        <Link to={`/go/${encodeURIComponent(node?.id)}`}>{node?.name}</Link>
         &nbsp; &nbsp;
       </span>
     );

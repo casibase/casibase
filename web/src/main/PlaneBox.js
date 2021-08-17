@@ -52,7 +52,11 @@ class PlaneBox extends React.Component {
 
   renderNode(node) {
     return (
-      <Link key={node?.id} to={`/go/${node?.id}`} className="item_node">
+      <Link
+        key={node?.id}
+        to={`/go/${encodeURIComponent(node?.id)}`}
+        className="item_node"
+      >
         {node?.name}
       </Link>
     );

@@ -222,7 +222,7 @@ class NewNodeTopicBox extends React.Component {
       <div className="header">
         <Link to="/">{Setting.getForumName()}</Link>
         <span className="chevron">&nbsp;›&nbsp;</span>
-        <Link to={`/go/${this.props.nodeId}`}>
+        <Link to={`/go/${encodeURIComponent(this.props.nodeId)}`}>
           {" "}
           {this.state.nodeInfo?.name}{" "}
         </Link>

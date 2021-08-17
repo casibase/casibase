@@ -72,7 +72,7 @@ class RightNodeBox extends React.Component {
             />
           </Link>
         </div>
-        <Link to={`/go/${node?.id}`} id="linkAvatar">
+        <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
           <div
             id="avatar"
             style={{ backgroundImage: `url(${node?.image})` }}
@@ -80,7 +80,7 @@ class RightNodeBox extends React.Component {
           />
         </Link>
         &nbsp;{" "}
-        <Link to={`/go/${node?.id}`} id="linkTitle">
+        <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
           {node?.name}
         </Link>
       </div>

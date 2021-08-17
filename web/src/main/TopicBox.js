@@ -548,7 +548,7 @@ class TopicBox extends React.Component {
         <div class="box">
           <div class="header">
             {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span>{" "}
-            <Link to={`/go/${this.state.topic?.nodeId}`}>
+            <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
               {this.state.topic?.nodeName}
             </Link>{" "}
             <span class="chevron">&nbsp;›&nbsp;</span>{" "}
@@ -562,7 +562,7 @@ class TopicBox extends React.Component {
               {i18next.t(
                 "topic:The new topic has been successfully created on the"
               )}{" "}
-              <Link to={`/go/${this.state.topic?.nodeId}`}>
+              <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
                 {this.state.topic?.nodeName}
               </Link>{" "}
               {i18next.t(
@@ -583,7 +583,9 @@ class TopicBox extends React.Component {
             <ul>
               <li>
                 {i18next.t("topic:The topic is currently at")}&nbsp;
-                <Link to={`/go/${this.state.topic?.nodeId}`}>
+                <Link
+                  to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
+                >
                   {this.state.topic?.nodeName}
                 </Link>{" "}
                 {i18next.t(
@@ -623,7 +625,9 @@ class TopicBox extends React.Component {
               <tr>
                 <td align="right">{i18next.t("topic:Node")}</td>
                 <td align="left">
-                  <Link to={`/go/${this.state.topic?.nodeId}`}>
+                  <Link
+                    to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
+                  >
                     {this.state.topic?.nodeName}
                   </Link>
                 </td>
@@ -674,7 +678,9 @@ class TopicBox extends React.Component {
             <h3>{i18next.t("topic:Related resources")}</h3>
             <ul>
               <li>
-                <Link to={`/go/${this.state.topic?.nodeId}`}>
+                <Link
+                  to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
+                >
                   {this.state.topic?.nodeName}
                 </Link>
                 <Link to="/help/currency">
@@ -716,7 +722,7 @@ class TopicBox extends React.Component {
             </Link>{" "}
             <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             <Link
-              to={`/go/${this.state.topic?.nodeId}`}
+              to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
               className={`${this.state.topic?.nodeId}`}
             >
               {this.state.topic?.nodeName}

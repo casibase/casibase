@@ -399,7 +399,7 @@ class AdminNode extends React.Component {
           {this.props.event === "new" ? (
             <span>{i18next.t("node:New node")}</span>
           ) : (
-            <Link to={`/go/${this.state.nodeId}`}>
+            <Link to={`/go/${encodeURIComponent(this.state.nodeId)}`}>
               {this.state.nodeInfo?.name}
             </Link>
           )}
@@ -422,7 +422,7 @@ class AdminNode extends React.Component {
           <tbody>
             <tr>
               <td width={pcBrowser ? "200" : "auto"} align="left">
-                <Link to={`/go/${node?.nodeInfo.id}`}>
+                <Link to={`/go/${encodeURIComponent(node?.nodeInfo.id)}`}>
                   {node?.nodeInfo.name}
                 </Link>
               </td>
@@ -691,7 +691,9 @@ class AdminNode extends React.Component {
                             autoComplete="off"
                           />
                         ) : (
-                          <Link to={`/go/${this.state.nodeId}`}>
+                          <Link
+                            to={`/go/${encodeURIComponent(this.state.nodeId)}`}
+                          >
                             {node?.name}
                           </Link>
                         )}
@@ -913,7 +915,11 @@ class AdminNode extends React.Component {
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
                           <span className="gray">
-                            <Link to={`/go/${this.state.nodeId}/moderators`}>
+                            <Link
+                              to={`/go/${encodeURIComponent(
+                                this.state.nodeId
+                              )}/moderators`}
+                            >
                               {i18next.t("node:Manage moderators")}
                             </Link>
                           </span>

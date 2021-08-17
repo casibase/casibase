@@ -315,7 +315,7 @@ class EditBox extends React.Component {
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link>{" "}
           <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${this.state.editObject?.nodeId}`}>
+          <Link to={`/go/${encodeURIComponent(this.state.editObject?.nodeId)}`}>
             {" "}
             {this.state.editObject?.nodeName}
           </Link>{" "}

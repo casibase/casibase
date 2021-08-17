@@ -39,9 +39,7 @@ class TopicList extends React.Component {
   }
 
   topTopicStyle = {
-    backgroundImage: `url('${Setting.getStatic(
-      "/img/corner_star.png"
-    )}')`,
+    backgroundImage: `url('${Setting.getStatic("/img/corner_star.png")}')`,
     backgroundRepeat: "no-repeat",
     backgroundSize: "20px 20px",
     backgroundPosition: "right top",
@@ -104,7 +102,10 @@ class TopicList extends React.Component {
               <td width="auto" valign="middle">
                 {!pcBrowser && this.props.showNodeName ? (
                   <span className="small fade">
-                    <Link to={`/go/${topic.nodeId}`} className="node">
+                    <Link
+                      to={`/go/${encodeURIComponent(topic.nodeId)}`}
+                      className="node"
+                    >
                       {topic.nodeName}
                     </Link>{" "}
                     &nbsp;•&nbsp;{" "}
@@ -134,7 +135,10 @@ class TopicList extends React.Component {
                       <div className="votes" />
                       {this.props.showNodeName ? (
                         <span>
-                          <Link to={`/go/${topic.nodeId}`} className="node">
+                          <Link
+                            to={`/go/${encodeURIComponent(topic.nodeId)}`}
+                            className="node"
+                          >
                             {topic.nodeName}
                           </Link>{" "}
                           &nbsp;•&nbsp;{" "}
