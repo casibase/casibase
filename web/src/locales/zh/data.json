@@ -692,14 +692,14 @@
     "Select Editor": "选择编辑器"
   },
   "frontConf": {
-    "forumName": "论坛名字",
-    "logoImage": "logo图片",
-    "footerLogoImage": "底部logo图片",
-    "footerLogoUrl": "底部logo图片超链接",
-    "signinBoxStrongText": "登录栏标题",
-    "signinBoxSpanText": "登录栏子标题",
-    "footerDeclaration": "底部描述",
-    "footerAdvise": "底部建言",
+    "Forum name": "论坛名字",
+    "Logo image": "logo图片",
+    "Footer Logo image": "底部logo图片",
+    "Footer Logo URL": "底部logo图片超链接",
+    "Right title": "登录栏标题",
+    "Right subtitle": "登录栏子标题",
+    "Footer title": "底部描述",
+    "Footer subtitle": "底部建言",
     "Save": "保存",
     "Reset": "重置"
   },

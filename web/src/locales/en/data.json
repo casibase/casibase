@@ -19,14 +19,14 @@
     "Admin": "Admin"
   },
   "frontConf": {
-    "forumName": "forumName",
-    "logoImage": "logoImage",
-    "footerLogoImage": "footerLogoImage",
-    "footerLogoUrl": "footerLogoUrl",
-    "signinBoxStrongText": "signinBoxStrongText",
-    "signinBoxSpanText": "signinBoxSpanText",
-    "footerDeclaration": "footerDeclaration",
-    "footerAdvise": "footerAdvise",
+    "Forum name": "Forum name",
+    "Logo image": "Logo image",
+    "Footer Logo image": "Footer Logo image",
+    "Footer Logo URL": "Footer Logo URL",
+    "Right title": "Right title",
+    "Right subtitle": "Right subtitle",
+    "Footer title": "Footer title",
+    "Footer subtitle": "Footer subtitle",
     "Save": "Save",
     "Reset": "Reset"
   },
