@@ -17,23 +17,24 @@ package object
 import "sync"
 
 type Node struct {
-	Id               string   `xorm:"varchar(100) notnull pk" json:"id"`
-	Name             string   `xorm:"varchar(100)" json:"name"`
-	CreatedTime      string   `xorm:"varchar(40)" json:"createdTime"`
-	Desc             string   `xorm:"varchar(500)" json:"desc"`
-	Image            string   `xorm:"varchar(200)" json:"image"`
-	BackgroundImage  string   `xorm:"varchar(200)" json:"backgroundImage"`
-	HeaderImage      string   `xorm:"varchar(200)" json:"headerImage"`
-	BackgroundColor  string   `xorm:"varchar(20)" json:"backgroundColor"`
-	BackgroundRepeat string   `xorm:"varchar(20)" json:"backgroundRepeat"`
-	TabId            string   `xorm:"varchar(100)" json:"tab"`
-	ParentNode       string   `xorm:"varchar(200)" json:"parentNode"`
-	PlaneId          string   `xorm:"varchar(50)" json:"planeId"`
-	Sorter           int      `xorm:"int" json:"sorter"`
-	Hot              int      `xorm:"int" json:"hot"`
-	Moderators       []string `xorm:"varchar(200)" json:"moderators"`
-	MailingList      string   `xorm:"varchar(100)" json:"mailingList"`
-	GoogleGroupCookie      string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
+	Id                string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Name              string   `xorm:"varchar(100)" json:"name"`
+	CreatedTime       string   `xorm:"varchar(40)" json:"createdTime"`
+	Desc              string   `xorm:"varchar(500)" json:"desc"`
+	Image             string   `xorm:"varchar(200)" json:"image"`
+	BackgroundImage   string   `xorm:"varchar(200)" json:"backgroundImage"`
+	HeaderImage       string   `xorm:"varchar(200)" json:"headerImage"`
+	BackgroundColor   string   `xorm:"varchar(20)" json:"backgroundColor"`
+	BackgroundRepeat  string   `xorm:"varchar(20)" json:"backgroundRepeat"`
+	TabId             string   `xorm:"varchar(100)" json:"tab"`
+	ParentNode        string   `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId           string   `xorm:"varchar(50)" json:"planeId"`
+	Sorter            int      `xorm:"int" json:"sorter"`
+	Hot               int      `xorm:"int" json:"hot"`
+	Moderators        []string `xorm:"varchar(200)" json:"moderators"`
+	MailingList       string   `xorm:"varchar(100)" json:"mailingList"`
+	GoogleGroupCookie string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
+	IsHidden          bool     `xorm:"bool" json:"isHidden"`
 }
 
 func GetNodes() []*Node {
@@ -69,6 +70,16 @@ func UpdateNode(id string, node *Node) bool {
 	}
 
 	_, err := adapter.Engine.Id(id).AllCols().Update(node)
+	if err != nil {
+		panic(err)
+	}
+
+	isHidden := "0"
+	if node.IsHidden {
+		isHidden = "1"
+	}
+
+	_, err = adapter.Engine.Query("update topic set is_hidden = ? where node_id = ?", isHidden, node.Id)
 	if err != nil {
 		panic(err)
 	}
@@ -303,7 +314,7 @@ func (n Node) GetAllTopicTitlesOfNode() []string {
 	if err != nil {
 		panic(err)
 	}
-	for _, topic := range  topics {
+	for _, topic := range topics {
 		ret = append(ret, topic.Title)
 	}
 	return ret

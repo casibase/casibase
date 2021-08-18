@@ -42,7 +42,10 @@ class NodeNavigationBox extends React.Component {
   renderNode(node) {
     return (
       <span key={node?.id}>
-        <Link to={`/go/${node?.id}`} style={{ fontSize: "14px" }}>
+        <Link
+          to={`/go/${encodeURIComponent(node?.id)}`}
+          style={{ fontSize: "14px" }}
+        >
           {node?.name}
         </Link>
         &nbsp; &nbsp;

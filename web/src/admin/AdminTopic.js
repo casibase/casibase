@@ -746,7 +746,10 @@ class AdminTopic extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <span className="gray">
-                          <Link to={`/go/${topic?.nodeId}`} target="_blank">
+                          <Link
+                            to={`/go/${encodeURIComponent(topic?.nodeId)}`}
+                            target="_blank"
+                          >
                             {topic?.nodeName}
                           </Link>
                         </span>

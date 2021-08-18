@@ -309,7 +309,8 @@ class AdminPlane extends React.Component {
   renderNode(node) {
     return (
       <span>
-        <Link to={`/go/${node.id}`}>{node.name}</Link> &nbsp;{" "}
+        <Link to={`/go/${encodeURIComponent(node.id)}`}>{node.name}</Link>{" "}
+        &nbsp;{" "}
       </span>
     );
   }

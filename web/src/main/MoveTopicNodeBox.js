@@ -136,7 +136,7 @@ class MoveTopicNodeBox extends React.Component {
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link>{" "}
           <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${this.state.topic?.nodeId}`}>
+          <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
             {this.state.topic?.nodeName}
           </Link>{" "}
           <span className="chevron">&nbsp;›&nbsp;</span>{" "}
@@ -172,7 +172,10 @@ class MoveTopicNodeBox extends React.Component {
                   {i18next.t("move:Current node")}
                 </td>
                 <td width="auto" align="left">
-                  <Link to={`/go/${this.state.topic?.nodeId}`} target="_blank">
+                  <Link
+                    to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
+                    target="_blank"
+                  >
                     {this.state.topic?.nodeName}
                   </Link>
                 </td>

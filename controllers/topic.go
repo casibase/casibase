@@ -191,15 +191,23 @@ func (c *ApiController) AddTopic() {
 	}
 	title, body, nodeId, editorType, tags := form.Title, form.Body, form.NodeId, form.EditorType, form.Tags
 
+	node := object.GetNode(nodeId)
+	if node == nil {
+		resp := Response{Status: "error", Msg: "Node does not exist."}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
+
 	if object.ContainsSensitiveWord(title) {
-		resp := Response{Status: "fail", Msg: "Topic title contains sensitive word."}
+		resp := Response{Status: "error", Msg: "Topic title contains sensitive word."}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
 	}
 
 	if object.ContainsSensitiveWord(body) {
-		resp := Response{Status: "fail", Msg: "Topic body contains sensitive word."}
+		resp := Response{Status: "error", Msg: "Topic body contains sensitive word."}
 		c.Data["json"] = resp
 		c.ServeJSON()
 		return
@@ -225,6 +233,7 @@ func (c *ApiController) AddTopic() {
 		Content:       body,
 		Deleted:       false,
 		EditorType:    editorType,
+		IsHidden:      node.IsHidden,
 	}
 
 	balance := object.GetMemberBalance(memberId)
@@ -777,6 +786,7 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 			Content:       fmt.Sprintf("URL: %s%s", nodeId, urlPath),
 			UrlPath:       urlPath,
 			EditorType:    "markdown",
+			IsHidden:      node.IsHidden,
 		}
 		object.AddTopic(topic)
 	}

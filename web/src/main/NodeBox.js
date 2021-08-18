@@ -55,7 +55,7 @@ class NodeBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/go/${this.state.nodeId}`;
+    this.state.url = `/go/${encodeURIComponent(this.state.nodeId)}`;
   }
 
   componentDidMount() {
@@ -345,7 +345,11 @@ class NodeBox extends React.Component {
               this.state.nodeInfo?.moderators.length !== 0 ? (
                 <span>
                   {this.props.account?.isAdmin ? (
-                    <Link to={`/go/${this.state.nodeId}/moderators`}>
+                    <Link
+                      to={`/go/${encodeURIComponent(
+                        this.state.nodeId
+                      )}/moderators`}
+                    >
                       {i18next.t("node:Moderator")}
                     </Link>
                   ) : (
@@ -366,7 +370,9 @@ class NodeBox extends React.Component {
                 <Link
                   to={
                     this.props.account?.isAdmin
-                      ? `/go/${this.state.nodeId}/moderators`
+                      ? `/go/${encodeURIComponent(
+                          this.state.nodeId
+                        )}/moderators`
                       : null
                   }
                 >
@@ -452,7 +458,7 @@ class NodeBox extends React.Component {
           <div className="sep10"></div>
           <div className="node_header_tabs">
             <Link
-              to={`/go/${nodeId}`}
+              to={`/go/${encodeURIComponent(nodeId)}`}
               className={
                 !this.props.match.params.event
                   ? "node_header_tab_current"
@@ -462,7 +468,7 @@ class NodeBox extends React.Component {
               {i18next.t("node:All topics")}
             </Link>
             <Link
-              to={`/go/${nodeId}/links`}
+              to={`/go/${encodeURIComponent(nodeId)}/links`}
               className={
                 this.props.match.params.event
                   ? "node_header_tab_current"
