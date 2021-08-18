@@ -272,6 +272,46 @@
                 }
             }
         },
+        "/get-front-conf-by-field": {
+            "get": {
+                "tags": [
+                    "github.com/casbin/casnode/controllersApiController"
+                ],
+                "description": "Get front confs by field",
+                "operationId": "ApiController.GetFrontConfsByField",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.FrontConf"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-front-confs": {
+            "get": {
+                "tags": [
+                    "github.com/casbin/casnode/controllersApiController"
+                ],
+                "description": "Get all front confs",
+                "operationId": "ApiController.GetFrontConfs",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/array"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/get-hot-topic": {
             "get": {
                 "tags": [
@@ -1014,16 +1054,20 @@
         }
     },
     "definitions": {
-        "847.0xc00069b140.false": {
+        "1278.0xc000185860.false": {
             "title": "false",
             "type": "object"
         },
-        "882.0xc00069b170.false": {
+        "1312.0xc000185890.false": {
             "title": "false",
             "type": "object"
         },
         "_controllers.Response": {
             "title": "Response",
+            "type": "object"
+        },
+        "array": {
+            "title": "array",
             "type": "object"
         },
         "controller.Response": {
@@ -1059,10 +1103,10 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/847.0xc00069b140.false"
+                    "$ref": "#/definitions/1278.0xc000185860.false"
                 },
                 "data2": {
-                    "$ref": "#/definitions/882.0xc00069b170.false"
+                    "$ref": "#/definitions/1312.0xc000185890.false"
                 },
                 "msg": {
                     "type": "string"
@@ -1077,10 +1121,10 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/847.0xc00069b140.false"
+                    "$ref": "#/definitions/1278.0xc000185860.false"
                 },
                 "data2": {
-                    "$ref": "#/definitions/882.0xc00069b170.false"
+                    "$ref": "#/definitions/1312.0xc000185890.false"
                 },
                 "msg": {
                     "type": "string"
@@ -1298,6 +1342,24 @@
                 "upCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "urlPath": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.FrontConf": {
+            "title": "FrontConf",
+            "type": "object",
+            "properties": {
+                "Field": {
+                    "type": "string"
+                },
+                "Id": {
+                    "type": "string"
+                },
+                "Value": {
+                    "type": "string"
                 }
             }
         },
@@ -1487,6 +1549,9 @@
                 "upCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "urlPath": {
+                    "type": "string"
                 }
             }
         },
@@ -1580,6 +1645,9 @@
                 "upCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "urlPath": {
+                    "type": "string"
                 }
             }
         },
@@ -1664,6 +1732,9 @@
                 "upCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "urlPath": {
+                    "type": "string"
                 }
             }
         }
