@@ -15,7 +15,6 @@
 import React from "react";
 import ReplyBox from "./main/ReplyBox";
 import * as TopicBackend from "./backend/TopicBackend";
-import "codemirror/lib/codemirror.css";
 
 export default class Embed extends React.Component {
   constructor(props) {

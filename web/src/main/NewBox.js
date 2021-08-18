@@ -25,7 +25,6 @@ import { withRouter } from "react-router-dom";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
 import { Controlled as CodeMirror } from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
 import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";

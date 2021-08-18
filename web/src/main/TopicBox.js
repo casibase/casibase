@@ -25,7 +25,6 @@ import * as TranslatorBackend from "../backend/TranslatorBackend";
 import "../node.css";
 import Zmage from "react-zmage";
 import { Link } from "react-router-dom";
-import "codemirror/lib/codemirror.css";
 import i18next from "i18next";
 
 require("codemirror/mode/markdown/markdown");
