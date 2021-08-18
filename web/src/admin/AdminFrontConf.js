@@ -142,28 +142,28 @@ class AdminFrontConf extends React.Component {
     let str;
     switch (s) {
       case "forumName":
-        str = i18next.t("frontConf:forumName");
+        str = i18next.t("frontConf:Forum name");
         break;
       case "logoImage":
-        str = i18next.t("frontConf:logoImage");
+        str = i18next.t("frontConf:Logo image");
         break;
       case "footerLogoImage":
-        str = i18next.t("frontConf:footerLogoImage");
+        str = i18next.t("frontConf:Footer Logo image");
         break;
       case "footerLogoUrl":
-        str = i18next.t("frontConf:footerLogoUrl");
+        str = i18next.t("frontConf:Footer Logo URL");
         break;
       case "signinBoxStrong":
-        str = i18next.t("frontConf:signinBoxStrongText");
+        str = i18next.t("frontConf:Right title");
         break;
       case "signinBoxSpan":
-        str = i18next.t("frontConf:signinBoxSpanText");
+        str = i18next.t("frontConf:Right subtitle");
         break;
       case "footerDeclaration":
-        str = i18next.t("frontConf:footerDeclaration");
+        str = i18next.t("frontConf:Footer title");
         break;
       case "footerAdvise":
-        str = i18next.t("frontConf:footerAdvise");
+        str = i18next.t("frontConf:Footer subtitle");
         break;
     }
     return str;
