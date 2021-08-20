@@ -543,6 +543,41 @@ func (c *ApiController) GetHotTopic() {
 	c.ServeJSON()
 }
 
+// @Title GetSortedTopics
+// @Description get sorted topics
+// @Param   lps     query    string  true        "sort: last reply count"
+// @Param   hs     query    string  true        "sort: hot"
+// @Param   fcs     query    string  true        "sort: favorite count"
+// @Param   cts     query    string  true        "sort: created time"
+// @Param   page     query    string  true        "offset"
+// @Param   limit     query    string  true        "limit size"
+// @Success 200 {object} controller.Response The Response object
+// @router /get-hot-topic [get]
+func (c *ApiController) GetSortedTopics() {
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	lastReplySort := c.Input().Get("lps")   // sort: last reply time
+	hotSort := c.Input().Get("hs")          // sort: hot
+	favCountSort := c.Input().Get("fcs")    // sort: favorite count
+	createdTimeSort := c.Input().Get("cts") // sort: created time
+
+	defaultLimit := object.DefaultHomePageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	c.Data["json"] = object.GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort, limit, offset)
+	c.ServeJSON()
+}
+
 // @Title UpdateTopicNode
 // @Description update the topic node
 // @Param   updateTopicNode     body    controllers.updateTopicNode  true        "topic node info"
