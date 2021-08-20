@@ -78,6 +78,7 @@ const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
 const AdminFrontConf = React.lazy(() => import("./admin/AdminFrontConf"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
+const NoMatch = React.lazy(() => import("./main/NoMatch"));
 const Embed = React.lazy(() => import("./Embed"));
 
 class App extends Component {
@@ -582,6 +583,14 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <SearchResultPage />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route path="*">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <NoMatch />
             </LazyLoad>
           </div>
         </Route>
