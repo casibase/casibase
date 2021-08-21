@@ -16,7 +16,8 @@
     "false": "false",
     "Homepage": "Homepage",
     "Language": "Language",
-    "Admin": "Admin"
+    "Admin": "Admin",
+    "Navigation": "Navigation"
   },
   "frontConf": {
     "Forum name": "Forum name",
