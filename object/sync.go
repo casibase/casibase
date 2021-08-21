@@ -58,94 +58,13 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	return user
 }
 
-func CreateMemberFromCasdoorUser(user *auth.User) *Member {
-	if user == nil {
-		return nil
-	}
-
-	fileQuota, _ := strconv.Atoi(user.Properties["fileQuota"])
-	renameQuota, _ := strconv.Atoi(user.Properties["renameQuota"])
-	onlineStatus := false
-	if user.Properties["onlineStatus"] == "true" {
-		onlineStatus = true
-	}
-
-	return &Member{
-		Id:                 user.Name,
-		CreatedTime:        user.CreatedTime,
-		LastActionDate:     user.UpdatedTime,
-		No:                 user.Ranking,
-		Password:           user.Password,
-		Avatar:             user.Avatar,
-		Email:              user.Email,
-		Phone:              user.Phone,
-		Company:            user.Affiliation,
-		CompanyTitle:       user.Title,
-		Language:           user.Language,
-		Score:              user.Score,
-		IsModerator:        user.IsAdmin,
-		QQOpenId:           user.QQ,
-		WechatOpenId:       user.WeChat,
-		Tagline:            user.Tag,
-		Bio:                user.Properties["bio"],
-		Website:            user.Homepage,
-		Location:           user.Location,
-		CheckinDate:        user.Properties["checkinDate"],
-		EmailVerifiedTime:  user.Properties["emailVerifiedTime"],
-		PhoneVerifiedTime:  user.Properties["phoneVerifiedTime"],
-		QQAccount:          user.Properties["oauth_QQ_displayName"],
-		QQVerifiedTime:     user.Properties["oauth_QQ_verifiedTime"],
-		FileQuota:          fileQuota,
-		WechatAccount:      user.Properties["oauth_WeChat_displayName"],
-		WechatVerifiedTime: user.Properties["oauth_WeChat_verifiedTime"],
-		EditorType:         user.Properties["editorType"],
-		OnlineStatus:       onlineStatus,
-		RenameQuota:        renameQuota,
-	}
-}
-
-func ConvertFromCasdoorUsers(users []*auth.User) []*Member {
-	var members []*Member
-	var member *Member
-
-	for _, user := range users {
-		member = CreateMemberFromCasdoorUser(user)
-		members = append(members, member)
-	}
-
-	return members
-}
-
-func GetMembersFromCasdoor() []*Member {
-	users, err := auth.GetUsers()
-	if err != nil {
-		panic(err)
-	}
-
-	return ConvertFromCasdoorUsers(users)
-}
-
-func minInt(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func Limit(users []*auth.User, start, limit int) []*auth.User {
-	if start >= len(users) {
-		return nil
-	}
-
-	end := minInt(len(users), start+limit)
-	return users[start:end]
-}
-
 func GetMemberAvatarMapping() map[string]string {
-	members := GetMembersFromCasdoor()
-	memberAvatar := make(map[string]string)
-	for _, member := range members {
-		memberAvatar[member.Id] = member.Avatar
+	m := map[string]string{}
+
+	users := GetUsers()
+	for _, user := range users {
+		m[user.Name] = user.Avatar
 	}
-	return memberAvatar
+
+	return m
 }
