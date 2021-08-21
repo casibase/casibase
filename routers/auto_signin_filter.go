@@ -61,7 +61,7 @@ func AutoSigninFilter(ctx *context.Context) {
 	}
 
 	if claims != nil {
-		ok, _ := auth.CheckUserPassword(claims.User)
+		ok, _ := auth.CheckUserPassword(&claims.User)
 		if ok {
 			setSessionUser(ctx, claims)
 		}

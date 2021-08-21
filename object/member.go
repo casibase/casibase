@@ -127,14 +127,9 @@ func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberIn
 		if strings.Contains(user.Id, un) {
 			count++
 
-			status := 0
-			if user.IsForbidden {
-				status = 1
-			}
-
 			res = append(res, &AdminMemberInfo{
 				User:   *user,
-				Status: status,
+				Status: BoolToInt(user.IsForbidden),
 			})
 		}
 	}
@@ -148,95 +143,57 @@ func GetMemberAdmin(id string) (*AdminMemberInfo, error) {
 		return nil, err
 	}
 
-	status := 0
-	if user.IsForbidden {
-		status = 1
-	}
-
 	return &AdminMemberInfo{
 		User:          *user,
-		FileQuota:     getUserFieldInt(user, "fileQuota"),
+		FileQuota:     GetUserFieldInt(user, "fileQuota"),
 		FileUploadNum: GetFilesNum(id),
-		Status:        status,
+		Status:        BoolToInt(user.IsForbidden),
 		TopicNum:      GetCreatedTopicsNum(id),
 		ReplyNum:      GetMemberRepliesNum(id),
-		LatestLogin:   getUserField(user, "checkinDate"),
+		LatestLogin:   GetUserField(user, "checkinDate"),
 		Score:         user.Score,
 	}, nil
 }
 
-func GetMember(id string) *Member {
-	return GetMemberFromCasdoor(id)
+func GetUser(id string) *auth.User {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		panic(err)
+	}
+
+	return user
+}
+
+func GetUsers() []*auth.User {
+	users, err := auth.GetUsers()
+	if err != nil {
+		panic(err)
+	}
+
+	return users
 }
 
 func GetMemberAvatar(id string) string {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return ""
-	}
-	return member.Avatar
+	user := GetUser(id)
+	return user.Avatar
 }
 
 func GetMemberNum() int {
-	members := GetMembersFromCasdoor()
-	return len(members)
+	users := GetUsers()
+	return len(users)
 }
 
 // UpdateMember could update member's file quota and account status.
-func UpdateMember(id string, member *Member) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
+func UpdateMember(id string, user *auth.User) (bool, error) {
+	newUser := GetUser(id)
+	if newUser == nil {
+		return false, nil
 	}
 
-	targetMember.FileQuota = member.FileQuota
-	targetMember.Status = member.Status
-	targetMember.Score = member.Score
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-func UpdateMemberInfo(id string, member *Member) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.Company = member.Company
-	targetMember.Bio = member.Bio
-	targetMember.Website = member.Website
-	targetMember.Tagline = member.Tagline
-	targetMember.CompanyTitle = member.CompanyTitle
-	targetMember.Location = member.Location
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-// ChangeMemberEmailReminder change member's email reminder status
-func ChangeMemberEmailReminder(id, status string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	if status == "true" {
-		targetMember.EmailReminder = true
-	} else {
-		targetMember.EmailReminder = false
-	}
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-func UpdateMemberAvatar(id string, avatar string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.Avatar = avatar
-
-	return UpdateMemberToCasdoor(targetMember)
+	SetUserFieldInt(newUser, "fileQuota", GetUserFieldInt(user, "fileQuota"))
+	SetUserFieldInt(newUser, "status", GetUserFieldInt(user, "status"))
+	newUser.Score = user.Score
+	return auth.UpdateUser(newUser)
 }
 
 func UpdateMemberEditorType(id string, editorType string) bool {
@@ -251,12 +208,12 @@ func UpdateMemberEditorType(id string, editorType string) bool {
 }
 
 func GetMemberEditorType(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
+	user := GetUser(id)
+	if user == nil {
 		return ""
 	}
 
-	return targetMember.EditorType
+	return GetUserField(user, "editorType")
 }
 
 func UpdateMemberLanguage(id string, language string) bool {
@@ -459,7 +416,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Properties:        properties,
 		}
 
-		_, err = auth.AddUser(*newUser)
+		_, err = auth.AddUser(newUser)
 		if err != nil {
 			return newUser, err
 		}

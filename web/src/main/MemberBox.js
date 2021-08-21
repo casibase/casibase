@@ -54,7 +54,7 @@ class MemberBox extends React.Component {
   getMember() {
     MemberBackend.getMember(this.state.memberId).then((res) => {
       this.setState({
-        member: res,
+        member: res.data,
       });
     });
   }
@@ -179,7 +179,7 @@ class MemberBox extends React.Component {
                   align="center"
                 >
                   <Avatar
-                    username={this.state.member?.id}
+                    username={this.state.member?.name}
                     size={Setting.PcBrowser ? "large" : "middle"}
                     avatar={this.state.member?.avatar}
                   />
@@ -201,7 +201,7 @@ class MemberBox extends React.Component {
                         type="button"
                         value={i18next.t("member:Cancel Following")}
                         onClick={() =>
-                          this.deleteFavorite(this.state.member?.id)
+                          this.deleteFavorite(this.state.member?.name)
                         }
                         className="super inverse button"
                       />
@@ -209,7 +209,9 @@ class MemberBox extends React.Component {
                       <input
                         type="button"
                         value={i18next.t("member:Watch")}
-                        onClick={() => this.addFavorite(this.state.member?.id)}
+                        onClick={() =>
+                          this.addFavorite(this.state.member?.name)
+                        }
                         className="super special button"
                       />
                     )}
@@ -222,15 +224,15 @@ class MemberBox extends React.Component {
                     />
                   </div>
                   <h1 style={{ marginBottom: "5px" }}>
-                    {this.state.member?.id}
+                    {this.state.member?.name}
                   </h1>
                   <span className="bigger">{this.state.member?.tagline}</span>
                   <div className="sep10" />
-                  {this.state.member?.company.length !== 0 ||
-                  this.state.member?.companyTitle.length !== 0 ? (
+                  {this.state.member?.affiliation?.length !== 0 ||
+                  this.state.member?.title?.length !== 0 ? (
                     <span>
-                      🏢&nbsp; <strong>{this.state.member?.company}</strong> /{" "}
-                      {this.state.member?.companyTitle}
+                      🏢&nbsp; <strong>{this.state.member?.affiliation}</strong>{" "}
+                      / {this.state.member?.title}
                     </span>
                   ) : null}
                   <div className={Setting.PcBrowser ? "sep10" : "sep5"} />
@@ -289,9 +291,9 @@ class MemberBox extends React.Component {
           <div className="sep5" />
         </div>
         <div className="widgets">
-          {this.state.member?.website.length !== 0 ? (
+          {this.state.member?.homepage?.length !== 0 ? (
             <a
-              href={this.state.member?.website}
+              href={this.state.member?.homepage}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -302,10 +304,10 @@ class MemberBox extends React.Component {
                 alt="Website"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.website}
+              &nbsp;{this.state.member?.homepage}
             </a>
           ) : null}
-          {this.state.member?.location.length !== 0 ? (
+          {this.state.member?.location?.length !== 0 ? (
             <a
               href={`http://www.google.com/maps?q=${this.state.member?.location}`}
               className="social_label"
@@ -321,7 +323,7 @@ class MemberBox extends React.Component {
               &nbsp;{this.state.member?.location}
             </a>
           ) : null}
-          {this.state.member?.githubAccount.length !== 0 ? (
+          {this.state.member?.githubAccount?.length !== 0 ? (
             <a
               href={`https://github.com/${this.state.member?.githubAccount}`}
               className="social_label"
@@ -337,7 +339,7 @@ class MemberBox extends React.Component {
               &nbsp;{this.state.member?.githubAccount}
             </a>
           ) : null}
-          {this.state.member?.googleAccount.length !== 0 ? (
+          {this.state.member?.googleAccount?.length !== 0 ? (
             <a
               href={`mailto:${this.state.member?.googleAccount}`}
               className="social_label"

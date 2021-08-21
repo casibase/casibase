@@ -83,7 +83,7 @@ func GetConsumptionRecordId() int {
 */
 
 func GetMemberBalance(id string) int {
-	member := GetMember(id)
+	member := GetUser(id)
 	if member == nil {
 		return 0
 	}

@@ -240,7 +240,7 @@ func (c *ApiController) AddNodeModerators() {
 		panic(err)
 	}
 
-	moderator := object.GetMember(moderators.MemberId)
+	moderator := object.GetUser(moderators.MemberId)
 	if moderator == nil {
 		resp = Response{Status: "fail", Msg: "Member doesn't exist."}
 		c.Data["json"] = resp

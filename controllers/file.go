@@ -212,7 +212,7 @@ func (c *ApiController) ModeratorUpload() {
 		return
 	}
 	memberId := c.GetSessionUsername()
-	if !object.GetMember(memberId).IsModerator {
+	if !object.GetUser(memberId).IsAdmin {
 		c.Data["json"] = Response{Status: "error", Msg: "You have no permission to upload files here. Need to be moderator."}
 		c.ServeJSON()
 		return

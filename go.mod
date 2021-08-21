@@ -9,7 +9,7 @@ require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beego/beego/v2 v2.0.2-0.20210531141155-ea87fba943cf
 	github.com/casbin/google-groups-crawler v0.1.3
-	github.com/casdoor/casdoor-go-sdk v0.0.4
+	github.com/casdoor/casdoor-go-sdk v0.0.5
 	github.com/chromedp/chromedp v0.6.10
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/go-gomail/gomail v0.0.0-20160411212932-81ebce5c23df

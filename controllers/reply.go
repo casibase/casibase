@@ -163,8 +163,8 @@ func (c *ApiController) DeleteReply() {
 	memberId := c.GetSessionUsername()
 	id := util.ParseInt(idStr)
 	replyInfo := object.GetReply(id)
-	isModerator := object.CheckModIdentity(memberId)
-	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) && !isModerator {
+	isAdmin := object.CheckModIdentity(memberId)
+	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) && !isAdmin {
 		resp := Response{Status: "fail", Msg: "Permission denied."}
 		c.Data["json"] = resp
 		c.ServeJSON()

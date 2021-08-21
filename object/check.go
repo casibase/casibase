@@ -16,10 +16,6 @@ package object
 
 import "github.com/microcosm-cc/bluemonday"
 
-func HasMember(memberId string) bool {
-	return GetMember(memberId) != nil
-}
-
 func HasNode(id string) bool {
 	node := GetNode(id)
 

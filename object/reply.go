@@ -235,7 +235,7 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 		panic(err)
 	}
 
-	member := GetMember(memberId)
+	member := GetUser(memberId)
 	if member != nil {
 		reply.Avatar = member.Avatar
 	}

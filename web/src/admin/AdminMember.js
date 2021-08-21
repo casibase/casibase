@@ -167,7 +167,7 @@ class AdminMember extends React.Component {
   }
 
   getSearchResult() {
-    this.setState({loading: true});
+    this.setState({ loading: true });
     MemberBackend.getMembersAdmin(
       this.state.cs,
       this.state.us,
@@ -848,26 +848,26 @@ class AdminMember extends React.Component {
                   </tr>
                   <tr>
                     <td width={Setting.PcBrowser ? "120" : "90"} align="right">
-                      {i18next.t("setting:Website")}
+                      {i18next.t("setting:Homepage")}
                     </td>
                     <td width="200" align="left">
-                      {member?.website}
+                      {member?.homepage}
                     </td>
                   </tr>
                   <tr>
                     <td width={Setting.PcBrowser ? "120" : "90"} align="right">
-                      {i18next.t("setting:Company")}
+                      {i18next.t("setting:Affiliation")}
                     </td>
                     <td width="200" align="left">
-                      {member?.company}
+                      {member?.affiliation}
                     </td>
                   </tr>
                   <tr>
                     <td width={Setting.PcBrowser ? "120" : "90"} align="right">
-                      {i18next.t("setting:Company title")}
+                      {i18next.t("setting:Title")}
                     </td>
                     <td width="200" align="left">
-                      {member?.companyTitle}
+                      {member?.title}
                     </td>
                   </tr>
                   <tr>

@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
@@ -33,8 +34,7 @@ func (c *ApiController) GetMembers() {
 		return
 	}
 
-	c.Data["json"] = users
-	c.ServeJSON()
+	c.ResponseOk(users)
 }
 
 // @Title GetMembersAdmin
@@ -71,8 +71,7 @@ func (c *ApiController) GetMembersAdmin() {
 		return
 	}
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
-	c.ServeJSON()
+	c.ResponseOk(res, num)
 }
 
 // @Title GetMemberAdmin
@@ -89,8 +88,7 @@ func (c *ApiController) GetMemberAdmin() {
 		return
 	}
 
-	c.Data["json"] = users
-	c.ServeJSON()
+	c.ResponseOk(users)
 }
 
 // @Title GetMember
@@ -101,8 +99,7 @@ func (c *ApiController) GetMemberAdmin() {
 func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetMember(id)
-	c.ServeJSON()
+	c.ResponseOk(object.GetUser(id))
 }
 
 // @Title GetMemberAvatar
@@ -113,35 +110,14 @@ func (c *ApiController) GetMember() {
 func (c *ApiController) GetMemberAvatar() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetMemberAvatar(id)
-	c.ServeJSON()
-}
-
-func (c *ApiController) UpdateMemberAvatar() {
-	memberId := c.GetSessionUsername()
-	avatar := c.Input().Get("avatar")
-
-	c.Data["json"] = object.UpdateMemberAvatar(memberId, avatar)
-	c.ServeJSON()
-}
-
-func (c *ApiController) UpdateMemberEmailReminder() {
-	memberId := c.GetSessionUsername()
-	status := c.Input().Get("status")
-
-	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.ChangeMemberEmailReminder(memberId, status)}
-	c.ServeJSON()
+	c.ResponseOk(object.GetMemberAvatar(id))
 }
 
 func (c *ApiController) UpdateMember() {
 	id := c.Input().Get("id")
 	memberId := c.GetSessionUsername()
 
-	var member object.Member
-	var memberInfo object.AdminMemberInfo
 	var resp Response
-	var balanceType int
-
 	if !object.CheckModIdentity(c.GetSessionUsername()) {
 		resp = Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
@@ -149,17 +125,21 @@ func (c *ApiController) UpdateMember() {
 		return
 	}
 
+	var memberInfo object.AdminMemberInfo
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &memberInfo)
 	if err != nil {
 		panic(err)
 	}
 
-	member.FileQuota = memberInfo.FileQuota
-	member.Status = memberInfo.Status
-	member.Score = memberInfo.Score
+	user := &auth.User{
+		Score:       memberInfo.Score,
+		IsForbidden: object.IntToBool(memberInfo.Status),
+	}
+	object.SetUserFieldInt(user, "fileQuota", memberInfo.FileQuota)
 
-	amount := member.Score - object.GetMemberBalance(id)
+	amount := user.Score - object.GetMemberBalance(id)
 	if amount != 0 {
+		var balanceType int
 		if amount > 0 {
 			balanceType = 10
 		} else {
@@ -167,7 +147,7 @@ func (c *ApiController) UpdateMember() {
 		}
 		record := object.ConsumptionRecord{
 			Amount:          amount,
-			Balance:         member.Score,
+			Balance:         user.Score,
 			ReceiverId:      id,
 			ConsumerId:      memberId,
 			CreatedTime:     util.GetCurrentTime(),
@@ -176,38 +156,13 @@ func (c *ApiController) UpdateMember() {
 		object.AddBalance(&record)
 	}
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.UpdateMember(id, &member)}
-	c.ServeJSON()
-}
-
-func (c *ApiController) UpdateMemberInfo() {
-	id := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
-
-	var tempMember object.Member
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempMember)
+	affected, err := object.UpdateMember(id, user)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	var resp Response
-	if memberId != id {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-	} else {
-		var member = object.Member{
-			Company:      tempMember.Company,
-			CompanyTitle: tempMember.CompanyTitle,
-			Bio:          tempMember.Bio,
-			Website:      tempMember.Website,
-			Tagline:      tempMember.Tagline,
-			Location:     tempMember.Location,
-		}
-		res := object.UpdateMemberInfo(id, &member)
-		resp = Response{Status: "ok", Msg: "success", Data: res}
-	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(affected)
 }
 
 // @Title GetMemberEditorType
@@ -215,21 +170,14 @@ func (c *ApiController) UpdateMemberInfo() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-editor-type [get]
 func (c *ApiController) GetMemberEditorType() {
-	memberId := c.GetSessionUsername()
+	username := c.GetSessionUsername()
 
-	var resp Response
-	var editorType string
-
-	if len(memberId) == 0 {
-		editorType = ""
-	} else {
-		editorType = object.GetMemberEditorType(memberId)
+	editorType := ""
+	if username != "" {
+		editorType = object.GetMemberEditorType(username)
 	}
 
-	resp = Response{Status: "ok", Msg: "success", Data: editorType}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(editorType)
 }
 
 // @Title GetRankingRich
@@ -243,57 +191,42 @@ func (c *ApiController) GetRankingRich() {
 		return
 	}
 
-	c.Data["json"] = users
-	c.ServeJSON()
+	c.ResponseOk(users)
 }
 
 func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
-	memberId := c.GetSessionUsername()
-
-	var resp Response
+	username := c.GetSessionUsername()
 
 	if editorType != "markdown" && editorType != "richtext" {
-		resp = Response{Status: "fail", Msg: "Bad request."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError(fmt.Errorf("unsupported editor type: %s", editorType).Error())
+		return
 	}
 
-	res := object.UpdateMemberEditorType(memberId, editorType)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	res := object.UpdateMemberEditorType(username, editorType)
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
 	memberId := c.GetSessionUsername()
 
-	var resp Response
-
 	if language != "zh" && language != "en" {
-		resp = Response{Status: "fail", Msg: "Bad request."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError(fmt.Errorf("unsupported language: %s", language).Error())
+		return
 	}
 
 	claims := c.GetSessionUser()
 	if claims == nil {
-		resp = Response{Status: "ok", Msg: "success"}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseOk()
 		return
-	} else {
-		claims.Language = language
 	}
+
+	claims.Language = language
 	c.SetSessionUser(claims)
 
 	res := object.UpdateMemberLanguage(memberId, language)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 // @Title GetMemberLanguage
@@ -303,19 +236,12 @@ func (c *ApiController) UpdateMemberLanguage() {
 func (c *ApiController) GetMemberLanguage() {
 	memberId := c.GetSessionUsername()
 
-	var resp Response
-	var language string
-
-	if len(memberId) == 0 {
-		language = ""
-	} else {
+	language := ""
+	if memberId != "" {
 		language = object.GetMemberLanguage(memberId)
 	}
 
-	resp = Response{Status: "ok", Msg: "success", Data: language}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(language)
 }
 
 // @Title AddMember
@@ -331,27 +257,24 @@ func (c *ApiController) AddMember() {
 		c.ServeJSON()
 		return
 	}
+
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
 	if err != nil {
 		panic(err)
 	}
+
 	member.No = object.GetMemberNum() + 1
 	member.Avatar = UploadAvatarToOSS("", member.Id)
-	if object.GetMember(member.Id) == nil {
-		if object.AddMember(&member) {
-			resp = Response{Status: "ok", Msg: "success"}
-		}
+	if object.GetUser(member.Id) == nil {
+		affected := object.AddMember(&member)
+		c.ResponseOk(affected)
 	} else {
-		resp = Response{Status: "error", Msg: "Add new member error"}
+		c.ResponseError("Add new member error")
 	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) DeleteMember() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.DeleteMember(id)
-	c.ServeJSON()
+	c.ResponseOk(object.DeleteMember(id))
 }
