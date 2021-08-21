@@ -51,8 +51,7 @@ func (c *ApiController) UpdateFrontConf() {
 	var confs []*object.FrontConf
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
 
@@ -70,8 +69,7 @@ func (c *ApiController) UpdateFrontConf() {
 func (c *ApiController) UpdateFrontConfToDefault() {
 	var resp Response
 
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
 

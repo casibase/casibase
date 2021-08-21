@@ -25,13 +25,10 @@ import (
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-poster [post]
 func (c *ApiController) UpdatePoster() {
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
+
 	var tempposter object.Poster
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tempposter)
 	if err != nil {

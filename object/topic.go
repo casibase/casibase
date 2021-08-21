@@ -582,6 +582,7 @@ func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {
 	if CheckModIdentity(member) || CheckNodeModerator(member, nodeId) {
 		return true
 	}
+
 	if member != author {
 		return false
 	}

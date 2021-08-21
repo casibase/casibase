@@ -77,3 +77,19 @@ func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
+
+func (c *ApiController) RequireAdmin(memberId string) {
+	resp := Response{Status: "error", Msg: "Unauthorized.", Data: memberId}
+	c.Data["json"] = resp
+	c.ServeJSON()
+}
+
+func (c *ApiController) RequireAdminRight() bool {
+	username := c.GetSessionUsername()
+	if !object.CheckModIdentity(username) {
+		c.ResponseError("This operation requires admin privilege")
+		return false
+	}
+
+	return true
+}

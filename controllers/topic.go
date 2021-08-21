@@ -280,6 +280,7 @@ func (c *ApiController) UploadTopicPic() {
 	if c.RequireSignedIn() {
 		return
 	}
+
 	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("pic")
 	index := strings.Index(fileBase64, ",")

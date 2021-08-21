@@ -95,12 +95,6 @@ func (c *ApiController) forbiddenAccountResp(memberId string) {
 	c.ServeJSON()
 }
 
-func (c *ApiController) RequireAdmin(memberId string) {
-	resp := Response{Status: "error", Msg: "Unauthorized.", Data: memberId}
-	c.Data["json"] = resp
-	c.ServeJSON()
-}
-
 func (c *ApiController) GetCommunityHealth() {
 	var resp Response
 

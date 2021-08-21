@@ -64,11 +64,11 @@ func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWith
 		r.Avatar = memberAvatar[r.Author]
 	}
 
-	isModerator := CheckModIdentity(memberId)
+	isAdmin := CheckModIdentity(memberId)
 	for _, v := range replies {
 		v.ThanksStatus = v.ConsumptionAmount != 0
-		v.Deletable = isModerator || ReplyDeletable(v.CreatedTime, memberId, v.Author)
-		v.Editable = isModerator || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
+		v.Deletable = isAdmin || ReplyDeletable(v.CreatedTime, memberId, v.Author)
+		v.Editable = isAdmin || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
 	}
 
 	var resultReplies []*ReplyWithAvatar
@@ -240,11 +240,11 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 		reply.Avatar = member.Avatar
 	}
 
-	isModerator := CheckModIdentity(memberId)
+	isAdmin := CheckModIdentity(memberId)
 	if existed {
 		reply.ThanksStatus = reply.ConsumptionAmount != 0
-		reply.Deletable = isModerator || ReplyDeletable(reply.CreatedTime, memberId, reply.Author)
-		reply.Editable = isModerator || GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime)
+		reply.Deletable = isAdmin || ReplyDeletable(reply.CreatedTime, memberId, reply.Author)
+		reply.Editable = isAdmin || GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime)
 		return &reply
 	}
 	return nil

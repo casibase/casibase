@@ -44,9 +44,12 @@ func (c *ApiController) GetTabAdmin() {
 }
 
 func (c *ApiController) AddTab() {
+	if !c.RequireAdminRight() {
+		return
+	}
+
 	var tabInfo object.AdminTabInfo
 	var resp Response
-
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tabInfo)
 	if err != nil {
 		panic(err)
@@ -83,14 +86,14 @@ func (c *ApiController) AddTab() {
 }
 
 func (c *ApiController) UpdateTab() {
+	if !c.RequireAdminRight() {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	var resp Response
 	var tabInfo object.AdminTabInfo
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-	}
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tabInfo)
 	if err != nil {
@@ -113,16 +116,11 @@ func (c *ApiController) UpdateTab() {
 }
 
 func (c *ApiController) DeleteTab() {
-	id := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
-
-	if !object.CheckModIdentity(memberId) {
-		resp := Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
 
+	id := c.Input().Get("id")
 	resp := Response{Status: "ok", Msg: "success", Data: object.DeleteTab(id)}
 
 	c.Data["json"] = resp

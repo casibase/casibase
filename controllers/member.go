@@ -114,16 +114,12 @@ func (c *ApiController) GetMemberAvatar() {
 }
 
 func (c *ApiController) UpdateMember() {
-	id := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
-
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	id := c.Input().Get("id")
+	memberId := c.GetSessionUsername()
 
 	var memberInfo object.AdminMemberInfo
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &memberInfo)
@@ -249,15 +245,11 @@ func (c *ApiController) GetMemberLanguage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-member [post]
 func (c *ApiController) AddMember() {
-	var member object.Member
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
 
+	var member object.Member
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
 	if err != nil {
 		panic(err)
