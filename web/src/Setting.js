@@ -71,14 +71,6 @@ export function signin() {
   return CasdoorSdk.signin(ServerUrl);
 }
 
-export function parseJson(s) {
-  if (s === "") {
-    return null;
-  } else {
-    return JSON.parse(s);
-  }
-}
-
 export function scrollToTop() {
   scroll.scrollToTop();
 }

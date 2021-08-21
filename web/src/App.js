@@ -49,7 +49,6 @@ const MemberBox = React.lazy(() => import("./main/MemberBox"));
 const AllCreatedTopicsBox = React.lazy(() =>
   import("./main/AllCreatedTopicsBox")
 );
-const CallbackBox = React.lazy(() => import("./main/AuthBox"));
 const NewBox = React.lazy(() => import("./main/NewBox"));
 const NodesBox = React.lazy(() => import("./main/NodeBox"));
 const FavoritesBox = React.lazy(() => import("./main/FavoritesBox"));
@@ -245,14 +244,6 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <AllCreatedTopicsBox />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/callback/:authType/:addition">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <CallbackBox />
             </LazyLoad>
           </div>
         </Route>
