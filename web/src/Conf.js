@@ -13,12 +13,12 @@
 // limitations under the License.
 import * as ConfBackend from "./backend/ConfBackend.js";
 
-export const AuthConfig = {
+export let AuthConfig = {
   // serverUrl: "https://door.casbin.com",
-  serverUrl: "http://localhost:7001",
-  clientId: "014ae4bd048734ca2dea",
-  appName: "app-casbin-forum",
-  organizationName: "casbin-forum",
+  serverUrl: "",
+  clientId: "",
+  appName: "",
+  organizationName: "",
 };
 
 export let FrontConfig = {
@@ -33,18 +33,24 @@ export let FrontConfig = {
 };
 
 export function getFrontConf(field, callback) {
+  let config;
+  if (field == "visualConf") {
+    config = FrontConfig;
+  } else if (field == "authConf") {
+    config = AuthConfig;
+  }
   var storage = window.localStorage;
-  for (let conf in FrontConfig) {
+  for (let conf in config) {
     if (storage[conf] !== undefined) {
-      FrontConfig[conf] = storage[conf];
+      config[conf] = storage[conf];
     }
   }
   ConfBackend.getFrontConfByField(field).then((res) => {
     for (let key in res) {
       if (res[key].Value !== "") {
-        FrontConfig[res[key].Id] = res[key].Value;
+        config[res[key].Id] = res[key].Value;
       }
-      storage[res[key].Id] = FrontConfig[res[key].Id];
+      storage[res[key].Id] = config[res[key].Id];
     }
     callback();
   });

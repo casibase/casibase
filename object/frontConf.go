@@ -21,7 +21,7 @@ type FrontConf struct {
 }
 
 var (
-	Confs = []*FrontConf{
+	VisualConfs = []*FrontConf{
 		{Id: "forumName", Value: "Casnode", Field: "visualConf"},
 		{Id: "logoImage", Value: "https://cdn.casbin.com/forum/static/img/logo.png", Field: "visualConf"},
 		{Id: "footerLogoImage", Value: "https://cdn.casbin.com/forum/static/img/logo-footer.png", Field: "visualConf"},
@@ -31,6 +31,12 @@ var (
 		{Id: "footerDeclaration", Value: "World is powered by code", Field: "visualConf"},
 		{Id: "footerAdvise", Value: "♥ Do have faith in what you're doing.", Field: "visualConf"},
 	}
+	AuthConfs = []*FrontConf{
+		{Id: "serverUrl", Value: "http://localhost:7001", Field: "authConf"},
+		{Id: "clientId", Value: "014ae4bd048734ca2dea", Field: "authConf"},
+		{Id: "appName", Value: "app-casbin-forum", Field: "authConf"},
+		{Id: "organizationName", Value: "casbin-forum", Field: "authConf"},
+	}
 )
 
 func InitFrontConf() {
@@ -39,7 +45,7 @@ func InitFrontConf() {
 		return
 	}
 
-	conf = Confs
+	conf = append(VisualConfs,AuthConfs...)
 
 	_, err := adapter.Engine.Insert(&conf)
 	if err != nil {

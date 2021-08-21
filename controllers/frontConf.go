@@ -75,7 +75,15 @@ func (c *ApiController) UpdateFrontConfToDefault() {
 		return
 	}
 
-	res := object.UpdateFrontConf(object.Confs)
+	field := c.Input().Get("field")
+
+	res := false
+	if field == "visualConf" {
+		res = object.UpdateFrontConf(object.VisualConfs)
+	}else if field == "authConf" {
+		res = object.UpdateFrontConf(object.AuthConfs)
+	}
+
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	c.Data["json"] = resp

@@ -97,6 +97,7 @@ class App extends Component {
     };
 
     Setting.initServerUrl();
+    Conf.getFrontConf("authConf", this.Rerender.bind(this));
     Setting.initCasdoorSdk(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();

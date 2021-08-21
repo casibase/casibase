@@ -32,9 +32,12 @@ export function updateFrontConfs(confs) {
   }).then((res) => res.json());
 }
 
-export function updateFrontConfToDefault() {
-  return fetch(`${Setting.ServerUrl}/api/update-to-default-conf`, {
-    method: "POST",
-    credentials: "include",
-  }).then((res) => res.json());
+export function updateFrontConfToDefault(field) {
+  return fetch(
+    `${Setting.ServerUrl}/api/update-to-default-conf?field=${field}`,
+    {
+      method: "POST",
+      credentials: "include",
+    }
+  ).then((res) => res.json());
 }

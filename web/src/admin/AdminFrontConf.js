@@ -23,18 +23,12 @@ class AdminFrontConf extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      Management_LIST: [{ label: "Visual Conf", value: "visualConf" }],
-      field: "visualConf",
-      conf: [
-        { Id: "forumName", Value: "" },
-        { Id: "logoImage", Value: "" },
-        { Id: "signinBoxStrong", Value: "" },
-        { Id: "signinBoxSpan", Value: "" },
-        { Id: "footerAdvise", Value: "" },
-        { Id: "footerDeclaration", Value: "" },
-        { Id: "footerLogoImage", Value: "" },
-        { Id: "footerLogoUrl", Value: "" },
+      Management_LIST: [
+        { label: "Visual Conf", value: "visualConf" },
+        { label: "Auth Conf", value: "authConf" },
       ],
+      field: "visualConf",
+      conf: [],
       form: {},
       changeForm: {},
       message: "",
@@ -72,13 +66,13 @@ class AdminFrontConf extends React.Component {
 
   getFrontConf(field) {
     ConfBackend.getFrontConfByField(field).then((res) => {
-      let form = this.state.form;
-      let conf = this.state.conf;
+      let form = {};
+      let conf = [];
       for (var k in res) {
         form[res[k].Id] = res[k].Value;
       }
-      for (var i in conf) {
-        conf[i].Value = form[conf[i].Id];
+      for (var k in form) {
+        conf.push({ Id: k, Value: form[k] });
       }
       this.setState({
         conf: conf,
@@ -123,8 +117,8 @@ class AdminFrontConf extends React.Component {
     });
   }
 
-  updateConfToDefault() {
-    ConfBackend.updateFrontConfToDefault().then((res) => {
+  updateConfToDefault(field) {
+    ConfBackend.updateFrontConfToDefault(field).then((res) => {
       if (res.status === "ok") {
         this.setState({
           message: i18next.t("poster:Update frontconf information success"),
@@ -164,6 +158,18 @@ class AdminFrontConf extends React.Component {
         break;
       case "footerAdvise":
         str = i18next.t("frontConf:Footer subtitle");
+        break;
+      case "serverUrl":
+        str = i18next.t("frontConf:Server Url");
+        break;
+      case "clientId":
+        str = i18next.t("frontConf:Client Id");
+        break;
+      case "appName":
+        str = i18next.t("frontConf:App Name");
+        break;
+      case "organizationName":
+        str = i18next.t("frontConf:Organization Name");
         break;
     }
     return str;
@@ -233,7 +239,7 @@ class AdminFrontConf extends React.Component {
                       type="button"
                       className="super normal button"
                       value={i18next.t("frontConf:Reset")}
-                      onClick={() => this.updateConfToDefault()}
+                      onClick={() => this.updateConfToDefault(this.state.field)}
                     />
                   </td>
                 </tr>
