@@ -19,6 +19,7 @@ import (
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // @Title GetMembers
@@ -26,7 +27,13 @@ import (
 // @Success 200 {array} object.Member The Response object
 // @router /get-members [get]
 func (c *ApiController) GetMembers() {
-	c.Data["json"] = object.GetMembers()
+	users, err := auth.GetUsers()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.Data["json"] = users
 	c.ServeJSON()
 }
 
@@ -58,7 +65,11 @@ func (c *ApiController) GetMembersAdmin() {
 		offset = page*limit - limit
 	}
 
-	res, num := object.GetMembersAdmin(cs, us, un, limit, offset)
+	res, num, err := object.GetMembersAdmin(cs, us, un, limit, offset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 	c.ServeJSON()
@@ -72,7 +83,13 @@ func (c *ApiController) GetMembersAdmin() {
 func (c *ApiController) GetMemberAdmin() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetMemberAdmin(id)
+	users, err := object.GetMemberAdmin(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.Data["json"] = users
 	c.ServeJSON()
 }
 
@@ -220,7 +237,13 @@ func (c *ApiController) GetMemberEditorType() {
 // @Success 200 {array} object.Member The Response object
 // @router /get-ranking-rich [get]
 func (c *ApiController) GetRankingRich() {
-	c.Data["json"] = object.GetRankingRich()
+	users, err := object.GetRankingRich()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.Data["json"] = users
 	c.ServeJSON()
 }
 

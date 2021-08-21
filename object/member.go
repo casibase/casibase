@@ -25,7 +25,10 @@ import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
+
+var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
@@ -77,83 +80,89 @@ func GetMembersOld() []*Member {
 	return members
 }
 
-func GetMembers() []*Member {
-	members := GetMembersFromCasdoor()
+func GetRankingRich() ([]*auth.User, error) {
+	users, err := auth.GetUsers()
+	if err != nil {
+		return nil, err
+	}
 
-	sort.SliceStable(members, func(i, j int) bool {
-		return members[i].CreatedTime < members[j].CreatedTime
+	sort.SliceStable(users, func(i, j int) bool {
+		return users[i].Score > users[j].Score
 	})
 
-	return members
-}
-
-func GetRankingRich() []*Member {
-	members := GetMembersFromCasdoor()
-
-	sort.SliceStable(members, func(i, j int) bool {
-		return members[i].Score > members[j].Score
-	})
-
-	members = Limit(members, 0, 25)
-
-	return members
+	users = Limit(users, 0, 25)
+	return users, nil
 }
 
 // GetMembersAdmin cs, us: 1 means Asc, 2 means Desc, 0 means no effect.
-func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int) {
-	members := GetMembersFromCasdoor()
+func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int, error) {
+	users, err := auth.GetUsers()
+	if err != nil {
+		return nil, 0, err
+	}
 
 	// created time sort
-	sort.SliceStable(members, func(i, j int) bool {
+	sort.SliceStable(users, func(i, j int) bool {
 		if cs == "1" {
-			return members[i].CreatedTime < members[j].CreatedTime
+			return users[i].CreatedTime < users[j].CreatedTime
 		}
-		return members[i].CreatedTime > members[j].CreatedTime
+		return users[i].CreatedTime > users[j].CreatedTime
 	})
 
 	// id/username sort
-	sort.SliceStable(members, func(i, j int) bool {
+	sort.SliceStable(users, func(i, j int) bool {
 		if us == "1" {
-			return members[i].Id < members[j].Id
+			return users[i].Id < users[j].Id
 		}
-		return members[i].Id > members[j].Id
+		return users[i].Id > users[j].Id
 	})
 
-	members = Limit(members, offset, limit)
+	users = Limit(users, offset, limit)
 
 	var res []*AdminMemberInfo
 	count := 0
 
 	// count id like %un%
-	for _, member := range members {
-		if strings.Contains(member.Id, un) {
+	for _, user := range users {
+		if strings.Contains(user.Id, un) {
 			count++
+
+			status := 0
+			if user.IsForbidden {
+				status = 1
+			}
+
 			res = append(res, &AdminMemberInfo{
-				Member: *member,
-				Status: member.Status,
+				User:   *user,
+				Status: status,
 			})
 		}
 	}
 
-	return res, count
+	return res, count, nil
 }
 
-func GetMemberAdmin(id string) *AdminMemberInfo {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return nil
+func GetMemberAdmin(id string) (*AdminMemberInfo, error) {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		return nil, err
+	}
+
+	status := 0
+	if user.IsForbidden {
+		status = 1
 	}
 
 	return &AdminMemberInfo{
-		Member:        *member,
-		FileQuota:     member.FileQuota,
+		User:          *user,
+		FileQuota:     getUserFieldInt(user, "fileQuota"),
 		FileUploadNum: GetFilesNum(id),
-		Status:        member.Status,
+		Status:        status,
 		TopicNum:      GetCreatedTopicsNum(id),
 		ReplyNum:      GetMemberRepliesNum(id),
-		LatestLogin:   member.CheckinDate,
-		Score:         member.Score,
-	}
+		LatestLogin:   getUserField(user, "checkinDate"),
+		Score:         user.Score,
+	}, nil
 }
 
 func GetMember(id string) *Member {
@@ -289,14 +298,18 @@ func GetMemberEmailReminder(id string) (bool, string) {
 	return targetMember.EmailReminder, targetMember.Email
 }
 
-func GetMemberByEmail(email string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.Email == email {
-			return member
+func GetUserByEmail(email string) (*auth.User, error) {
+	users, err := auth.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range users {
+		if user.Email == email {
+			return user, nil
 		}
 	}
-	return nil
+	return nil, fmt.Errorf("user not found for Email: %s", email)
 }
 
 func GetMemberCheckinDate(id string) string {
@@ -375,45 +388,84 @@ type UpdateListItem struct {
 	Attribute string
 }
 
-func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
+func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, error) {
 	username = strings.ReplaceAll(username, " ", "")
-	email = strings.ReplaceAll(email, " ", "")
-	if len(username) == 0 {
-		return nil
+	if username == "" {
+		return nil, fmt.Errorf("username is empty")
 	}
-	if HasMember(username) {
-		return GetMember(username)
-	}
-	if len(email) == 0 {
-		return nil
-	}
-	username = strings.Split(email, "@")[0]
-	if HasMember(username) {
-		return GetMember(username)
-	}
-	newMember := GetMemberByEmail(email)
 
-	var score int
+	email = strings.ReplaceAll(email, " ", "")
+	if email == "" {
+		return nil, fmt.Errorf("email is empty")
+	}
+
+	user, err := auth.GetUser(username)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return user, nil
+	}
+
+	username = strings.Split(email, "@")[0]
+	user, err = auth.GetUser(username)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return user, nil
+	}
+
+	newUser, err := GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
 	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
 	if err != nil {
 		panic(err)
 	}
 
-	if newMember == nil {
-		newMember = &Member{
-			Id:                username,
-			No:                GetMemberNum() + 1,
+	if newUser == nil {
+		properties := map[string]string{}
+		properties["emailVerifiedTime"] = util.GetCurrentTime()
+		properties["fileQuota"] = strconv.Itoa(DefaultUploadFileQuota)
+		properties["renameQuota"] = strconv.Itoa(DefaultRenameQuota)
+
+		newUser = &auth.User{
+			Name:              username,
 			CreatedTime:       util.GetCurrentTime(),
+			UpdatedTime:       util.GetCurrentTime(),
+			Id:                "",
+			Type:              "",
+			Password:          "",
+			DisplayName:       "",
 			Avatar:            UploadFromGravatar(username, email),
 			Email:             email,
-			EmailVerifiedTime: util.GetCurrentTime(),
+			Phone:             "",
+			Location:          "",
+			Address:           nil,
+			Affiliation:       "",
+			Title:             "",
+			Homepage:          "",
+			Tag:               "",
 			Score:             score,
-			FileQuota:         DefaultUploadFileQuota,
-			RenameQuota:       DefaultRenameQuota,
+			Ranking:           GetMemberNum() + 1,
+			IsOnline:          false,
+			IsAdmin:           false,
+			IsGlobalAdmin:     false,
+			IsForbidden:       false,
+			SignupApplication: CasdoorApplication,
+			Properties:        properties,
 		}
-		AddMember(newMember)
+
+		_, err = auth.AddUser(*newUser)
+		if err != nil {
+			return newUser, err
+		}
 	}
-	return newMember
+
+	return newUser, nil
 }
 
 func UploadFromGravatar(username, email string) string {

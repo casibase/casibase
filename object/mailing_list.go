@@ -43,7 +43,10 @@ func (n Node) SyncFromGoogleGroup() {
 			break
 		}
 		var newTopic Topic
-		AuthorMember := AddMemberByNameAndEmailIfNotExist(messages[0].Author, messages[0].AuthorEmail)
+		AuthorMember, err := AddMemberByNameAndEmailIfNotExist(messages[0].Author, messages[0].AuthorEmail)
+		if err != nil {
+			panic(err)
+		}
 		if AuthorMember == nil {
 			continue
 		}
@@ -97,7 +100,10 @@ func (n Node) SyncFromGoogleGroup() {
 
 		for _, msg := range messages[1:] {
 			msg.Content = FilterUnsafeHTML(msg.Content)
-			AuthorMember = AddMemberByNameAndEmailIfNotExist(msg.Author, msg.AuthorEmail)
+			AuthorMember, err = AddMemberByNameAndEmailIfNotExist(msg.Author, msg.AuthorEmail)
+			if err != nil {
+				panic(err)
+			}
 			if AuthorMember == nil {
 				continue
 			}

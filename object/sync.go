@@ -132,13 +132,13 @@ func minInt(a, b int) int {
 	return b
 }
 
-func Limit(members []*Member, start, limit int) []*Member {
-	if start >= len(members) {
+func Limit(users []*auth.User, start, limit int) []*auth.User {
+	if start >= len(users) {
 		return nil
 	}
 
-	end := minInt(len(members), start+limit)
-	return members[start:end]
+	end := minInt(len(users), start+limit)
+	return users[start:end]
 }
 
 func GetMemberFromCasdoor(id string) *Member {
