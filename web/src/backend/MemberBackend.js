@@ -45,23 +45,6 @@ export function getMemberAdmin(id) {
   }).then((res) => res.json());
 }
 
-export function getMemberAvatar(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-member-avatar?id=${id}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function updateMemberAvatar(avatar) {
-  return fetch(
-    `${Setting.ServerUrl}/api/update-member-avatar?avatar=${avatar}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
-}
-
 export function updateMember(id, member) {
   return fetch(`${Setting.ServerUrl}/api/update-member?id=${id}`, {
     method: "POST",

@@ -102,17 +102,6 @@ func (c *ApiController) GetMember() {
 	c.ResponseOk(object.GetUser(id))
 }
 
-// @Title GetMemberAvatar
-// @Description get member avatar by id
-// @Param   id     query    string  true        "id"
-// @Success 200 {string} string Avatarlink
-// @router /get-member-avatar [get]
-func (c *ApiController) GetMemberAvatar() {
-	id := c.Input().Get("id")
-
-	c.ResponseOk(object.GetMemberAvatar(id))
-}
-
 func (c *ApiController) UpdateMember() {
 	if !c.RequireAdminRight() {
 		return
@@ -199,13 +188,18 @@ func (c *ApiController) UpdateMemberEditorType() {
 		return
 	}
 
-	res := object.UpdateMemberEditorType(username, editorType)
-	c.ResponseOk(res)
+	affected, err := object.UpdateMemberEditorType(username, editorType)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(affected)
 }
 
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
-	memberId := c.GetSessionUsername()
+	username := c.GetSessionUsername()
 
 	if language != "zh" && language != "en" {
 		c.ResponseError(fmt.Errorf("unsupported language: %s", language).Error())
@@ -221,8 +215,13 @@ func (c *ApiController) UpdateMemberLanguage() {
 	claims.Language = language
 	c.SetSessionUser(claims)
 
-	res := object.UpdateMemberLanguage(memberId, language)
-	c.ResponseOk(res)
+	affected, err := object.UpdateMemberLanguage(username, language)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(affected)
 }
 
 // @Title GetMemberLanguage
@@ -230,43 +229,12 @@ func (c *ApiController) UpdateMemberLanguage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-language [get]
 func (c *ApiController) GetMemberLanguage() {
-	memberId := c.GetSessionUsername()
+	username := c.GetSessionUsername()
 
 	language := ""
-	if memberId != "" {
-		language = object.GetMemberLanguage(memberId)
+	if username != "" {
+		language = object.GetMemberLanguage(username)
 	}
 
 	c.ResponseOk(language)
-}
-
-// @Title AddMember
-// @Description AddMember
-// @Success 200 {object} controllers.Response The Response object
-// @router /add-member [post]
-func (c *ApiController) AddMember() {
-	if !c.RequireAdminRight() {
-		return
-	}
-
-	var member object.Member
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &member)
-	if err != nil {
-		panic(err)
-	}
-
-	member.No = object.GetMemberNum() + 1
-	member.Avatar = UploadAvatarToOSS("", member.Id)
-	if object.GetUser(member.Id) == nil {
-		affected := object.AddMember(&member)
-		c.ResponseOk(affected)
-	} else {
-		c.ResponseError("Add new member error")
-	}
-}
-
-func (c *ApiController) DeleteMember() {
-	id := c.Input().Get("id")
-
-	c.ResponseOk(object.DeleteMember(id))
 }

@@ -18,6 +18,7 @@ import (
 	"sync"
 
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // ConsumptionType 1-9 means:
@@ -63,42 +64,22 @@ func AddBalance(balance *ConsumptionRecord) bool {
 	return affected != 0
 }
 
-func GetConsumptionRecordCount() int {
-	count, err := adapter.Engine.Count(&ConsumptionRecord{})
-	if err != nil {
-		panic(err)
-	}
-
-	return int(count)
-}
-
-/*
-func GetConsumptionRecordId() int {
-	num := GetConsumptionRecordCount()
-
-	res := num + 1
-
-	return res
-}
-*/
-
 func GetMemberBalance(id string) int {
-	member := GetUser(id)
-	if member == nil {
+	user := GetUser(id)
+	if user == nil {
 		return 0
 	}
-	return member.Score
+	return user.Score
 }
 
-func UpdateMemberBalances(id string, amount int) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
+func UpdateMemberBalances(id string, amount int) (bool, error) {
+	user := GetUser(id)
+	if user == nil {
+		return false, nil
 	}
 
-	member.Score += amount
-
-	return UpdateMemberToCasdoor(member)
+	user.Score += amount
+	return auth.UpdateUser(user)
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {

@@ -173,11 +173,6 @@ func GetUsers() []*auth.User {
 	return users
 }
 
-func GetMemberAvatar(id string) string {
-	user := GetUser(id)
-	return user.Avatar
-}
-
 func GetMemberNum() int {
 	users := GetUsers()
 	return len(users)
@@ -196,15 +191,14 @@ func UpdateMember(id string, user *auth.User) (bool, error) {
 	return auth.UpdateUser(newUser)
 }
 
-func UpdateMemberEditorType(id string, editorType string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
+func UpdateMemberEditorType(id string, editorType string) (bool, error) {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		return false, err
 	}
 
-	targetMember.EditorType = editorType
-
-	return UpdateMemberToCasdoor(targetMember)
+	SetUserField(user, "editorType", editorType)
+	return auth.UpdateUser(user)
 }
 
 func GetMemberEditorType(id string) string {
@@ -216,43 +210,33 @@ func GetMemberEditorType(id string) string {
 	return GetUserField(user, "editorType")
 }
 
-func UpdateMemberLanguage(id string, language string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
+func UpdateMemberLanguage(id string, language string) (bool, error) {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		return false, err
 	}
 
-	targetMember.Language = language
-
-	return UpdateMemberToCasdoor(targetMember)
+	SetUserField(user, "language", language)
+	return auth.UpdateUser(user)
 }
 
 func GetMemberLanguage(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
+	user := GetUser(id)
+	if user == nil {
 		return ""
 	}
 
-	return targetMember.Language
-}
-
-func AddMember(member *Member) bool {
-	return AddMemberToCasdoor(member)
-}
-
-// DeleteMember change this function to update member status.
-func DeleteMember(id string) bool {
-	return DeleteMemberFromCasdoor(id)
+	return GetUserField(user, "language")
 }
 
 // GetMemberEmailReminder return member's email reminder status, and his email address.
 func GetMemberEmailReminder(id string) (bool, string) {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
+	user := GetUser(id)
+	if user == nil {
 		return false, ""
 	}
 
-	return targetMember.EmailReminder, targetMember.Email
+	return true, user.Email
 }
 
 func GetUserByEmail(email string) (*auth.User, error) {
@@ -270,74 +254,75 @@ func GetUserByEmail(email string) (*auth.User, error) {
 }
 
 func GetMemberCheckinDate(id string) string {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
+	user := GetUser(id)
+	if user == nil {
 		return ""
 	}
 
-	return member.CheckinDate
+	return GetUserField(user, "checkinDate")
 }
 
-func UpdateMemberCheckinDate(id, date string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
+func UpdateMemberCheckinDate(id, checkinDate string) (bool, error) {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		return false, err
+	}
+
+	SetUserField(user, "checkinDate", checkinDate)
+	return auth.UpdateUser(user)
+}
+
+func CheckModIdentity(username string) bool {
+	user := GetUser(username)
+	if user == nil {
 		return false
 	}
 
-	member.CheckinDate = date
-	return UpdateMemberToCasdoor(member)
+	return user.IsAdmin
 }
 
-func CheckModIdentity(memberId string) bool {
-	member := GetMemberFromCasdoor(memberId)
-	if member == nil {
-		return false
-	}
-
-	return member.IsModerator
-}
-
-func GetMemberFileQuota(memberId string) int {
-	member := GetMemberFromCasdoor(memberId)
-	if member == nil {
+func GetMemberFileQuota(id string) int {
+	user := GetUser(id)
+	if user == nil {
 		return 0
 	}
 
-	return member.FileQuota
+	return GetUserFieldInt(user, "fileQuota")
 }
 
 // GetMemberStatus returns member's account status, default 3(forbidden).
 func GetMemberStatus(id string) int {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return 3
+	user := GetUser(id)
+	if user == nil {
+		return 0
 	}
 
-	return member.Status
+	return GetUserFieldInt(user, "status")
 }
 
 // UpdateMemberOnlineStatus updates member's online information.
-func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
+func UpdateMemberOnlineStatus(id string, isOnline bool, lastActionDate string) (bool, error) {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		return false, err
 	}
-	member.OnlineStatus = onlineStatus
-	member.LastActionDate = lastActionDate
 
-	return UpdateMemberToCasdoor(member)
+	user.IsOnline = isOnline
+	SetUserField(user, "lastActionDate", lastActionDate)
+	return auth.UpdateUser(user)
 }
 
-func GetMemberOnlineNum() int {
-	total := 0
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.OnlineStatus {
-			total++
+func GetOnlineUserCount() int {
+	res := 0
+
+	users := GetUsers()
+	for _, user := range users {
+		if user.IsOnline {
+			res++
 		}
 	}
 
-	return total
+	return res
 }
 
 type UpdateListItem struct {

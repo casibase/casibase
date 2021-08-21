@@ -85,9 +85,6 @@ func initAPI() {
 	beego.Router("/api/get-member", &controllers.ApiController{}, "GET:GetMember")
 	beego.Router("/api/get-member-admin", &controllers.ApiController{}, "GET:GetMemberAdmin")
 	beego.Router("/api/update-member", &controllers.ApiController{}, "POST:UpdateMember") // Update member api just for admin.
-	beego.Router("/api/add-member", &controllers.ApiController{}, "POST:AddMember")
-	//beego.Router("/api/delete-member", &controllers.ApiController{}, "POST:DeleteMember") // Change this api to update member.
-	beego.Router("/api/get-member-avatar", &controllers.ApiController{}, "GET:GetMemberAvatar")
 	beego.Router("/api/update-member-language", &controllers.ApiController{}, "POST:UpdateMemberLanguage")
 	beego.Router("/api/get-member-language", &controllers.ApiController{}, "GET:GetMemberLanguage")
 	beego.Router("/api/update-member-editor-type", &controllers.ApiController{}, "POST:UpdateMemberEditorType")
