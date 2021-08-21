@@ -279,16 +279,6 @@ func DeleteMember(id string) bool {
 	return DeleteMemberFromCasdoor(id)
 }
 
-// GetMemberMail return member's email.
-func GetMemberMail(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return ""
-	}
-
-	return targetMember.Email
-}
-
 // GetMemberEmailReminder return member's email reminder status, and his email address.
 func GetMemberEmailReminder(id string) (bool, string) {
 	targetMember := GetMemberFromCasdoor(id)
@@ -308,66 +298,6 @@ func GetMemberByEmail(email string) *Member {
 	}
 	return nil
 }
-
-func GetPhoneNumber(phoneNumber string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.Phone == phoneNumber {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetGoogleAccount(googleAccount string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.GoogleAccount == googleAccount {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetQQAccount(qqOpenId string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.QQOpenId == qqOpenId {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetWechatAccount(wechatOpenId string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.WechatOpenId == wechatOpenId {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetGithubAccount(githubAccount string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.GithubAccount == githubAccount {
-			return member
-		}
-	}
-	return nil
-}
-
-// LinkMemberAccount is not used
-//func LinkMemberAccount(memberId, field, value string) bool {
-//	affected, err := adapter.Engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	return affected != 0
-//}
 
 func GetMemberCheckinDate(id string) string {
 	member := GetMemberFromCasdoor(id)
@@ -397,17 +327,6 @@ func CheckModIdentity(memberId string) bool {
 	return member.IsModerator
 }
 
-func UpdateMemberPassword(id, password string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
-	}
-
-	member.Password = password
-
-	return UpdateMemberToCasdoor(member)
-}
-
 func GetMemberFileQuota(memberId string) int {
 	member := GetMemberFromCasdoor(memberId)
 	if member == nil {
@@ -415,35 +334,6 @@ func GetMemberFileQuota(memberId string) int {
 	}
 
 	return member.FileQuota
-}
-
-// MemberPasswordLogin needs information and password to check member login.
-// Information could be phone member, email or username.
-// If success, return username.
-func MemberPasswordLogin(information, password string) string {
-	if len(password) == 0 || strings.Index(password, " ") >= 0 {
-		return ""
-	}
-
-	members := GetMembersFromCasdoor()
-
-	for _, member := range members {
-		if member.Password == password {
-			if member.Email == information && member.EmailVerifiedTime != "" {
-				return member.Id
-			}
-
-			if member.Phone == information && member.PhoneVerifiedTime != "" {
-				return member.Id
-			}
-
-			if member.Id == information {
-				return member.Id
-			}
-		}
-	}
-
-	return ""
 }
 
 // GetMemberStatus returns member's account status, default 3(forbidden).
@@ -468,23 +358,6 @@ func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate strin
 	return UpdateMemberToCasdoor(member)
 }
 
-func ExpiredMemberOnlineStatus(date string) int {
-	affected := 0
-
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.OnlineStatus && member.LastActionDate < date {
-			member.OnlineStatus = false
-			affected++
-		}
-	}
-
-	if UpdateMembersToCasdoor(members) {
-		return affected
-	}
-	return 0
-}
-
 func GetMemberOnlineNum() int {
 	total := 0
 	members := GetMembersFromCasdoor()
@@ -500,51 +373,6 @@ func GetMemberOnlineNum() int {
 type UpdateListItem struct {
 	Table     string
 	Attribute string
-}
-
-func ResetUsername(oldUsername string, newUsername string) string {
-	return "Not allowed!"
-
-	if len(newUsername) == 0 || len(newUsername) > 100 || strings.Index(newUsername, " ") >= 0 {
-		return "Illegal username"
-	}
-	if HasMember(newUsername) {
-		return "User exists"
-	}
-
-	member := GetMember(oldUsername)
-	if member.RenameQuota < 1 {
-		return "You have no chance to reset you name."
-	}
-	member.RenameQuota--
-	_, err := adapter.Engine.Query("update member set rename_quota = ? where id = ?", member.RenameQuota, oldUsername)
-	if err != nil {
-		panic(err)
-	}
-
-	updateList := []UpdateListItem{
-		{"member", "id"},
-		{"browse_record", "member_id"},
-		{"consumption_record", "consumer_id"},
-		{"consumption_record", "receiver_id"},
-		{"favorites", "member_id"},
-		{"node", "moderators"},
-		{"notification", "sender_id"},
-		{"notification", "receiver_id"},
-		{"reply", "author"},
-		{"reset_record", "member_id"},
-		{"topic", "author"},
-		{"topic", "last_reply_user"},
-		{"upload_file_record", "member_id"},
-	}
-	for _, value := range updateList {
-		_, err = adapter.Engine.Query("update "+value.Table+" set "+value.Attribute+" = ? where "+value.Attribute+" = ?", newUsername, oldUsername)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	return ""
 }
 
 func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {

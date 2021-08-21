@@ -332,35 +332,3 @@ func (c *ApiController) DeleteMember() {
 	c.Data["json"] = object.DeleteMember(id)
 	c.ServeJSON()
 }
-
-func (c *ApiController) ResetUsername() {
-	var resp Response
-	memberId := c.GetSessionUsername()
-	newUsername := c.Input().Get("new")
-
-	if len(memberId) == 0 {
-		resp = Response{Status: "error", Msg: "Login first"}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-
-	if len(newUsername) == 0 {
-		resp = Response{Status: "error", Msg: "Parameter lost: new"}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-
-	msg := object.ResetUsername(memberId, newUsername)
-
-	if msg == "" {
-		resp = Response{Status: "ok", Msg: "Succeed. Please login again."}
-		c.SetSessionUser(nil)
-	} else {
-		resp = Response{Status: "error", Msg: msg}
-	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
-}
