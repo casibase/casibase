@@ -88,13 +88,11 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-
 	var ret []*TopicWithAvatar
 	for _, topic := range topics {
 		ret = append(ret, &TopicWithAvatar{
 			Topic:  *topic,
-			Avatar: memberAvatar[topic.Author],
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 
@@ -336,14 +334,11 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
-		t.Avatar = memberAvatar[t.Author]
-	}
+	for _, topic := range topics {
+		topic.Avatar = getUserAvatar(topic.Author)
 
-	for _, v := range topics {
-		v.ContentLength = len(v.Content)
-		v.Content = ""
+		topic.ContentLength = len(topic.Content)
+		topic.Content = ""
 	}
 
 	return topics
@@ -361,14 +356,11 @@ func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
-		t.Avatar = memberAvatar[t.Author]
-	}
+	for _, topic := range topics {
+		topic.Avatar = getUserAvatar(topic.Author)
 
-	for _, v := range topics {
-		v.ContentLength = len(v.Content)
-		v.Content = ""
+		topic.ContentLength = len(topic.Content)
+		topic.Content = ""
 	}
 
 	return topics
@@ -567,11 +559,10 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	}
 
 	var ret []*TopicWithAvatar
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
+	for _, topic := range topics {
 		ret = append(ret, &TopicWithAvatar{
-			Topic:  *t,
-			Avatar: memberAvatar[t.Author],
+			Topic:  *topic,
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 
@@ -689,7 +680,6 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
 	var ret []TopicWithAvatar
 	for _, topic := range topics {
 		content := RemoveHtmlTags(topic.Content)
@@ -699,7 +689,7 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 
 		ret = append(ret, TopicWithAvatar{
 			Topic:  topic,
-			Avatar: memberAvatar[topic.Author],
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 

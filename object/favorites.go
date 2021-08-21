@@ -93,10 +93,8 @@ func GetFollowingNewAction(memberId string, limit int, offset int) []*TopicWithA
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-
 	for _, topic := range topics {
-		topic.Avatar = memberAvatar[topic.Author]
+		topic.Avatar = getUserAvatar(topic.Author)
 	}
 
 	return topics

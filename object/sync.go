@@ -57,14 +57,3 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	}
 	return user
 }
-
-func GetMemberAvatarMapping() map[string]string {
-	m := map[string]string{}
-
-	users := GetUsers()
-	for _, user := range users {
-		m[user.Name] = user.Avatar
-	}
-
-	return m
-}

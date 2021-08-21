@@ -59,9 +59,8 @@ func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWith
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, r := range replies {
-		r.Avatar = memberAvatar[r.Author]
+	for _, reply := range replies {
+		reply.Avatar = getUserAvatar(reply.Author)
 	}
 
 	isAdmin := CheckModIdentity(memberId)
