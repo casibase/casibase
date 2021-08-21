@@ -17,11 +17,7 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	}
 
 	properties := map[string]string{}
-	properties["no"] = strconv.Itoa(member.No)
-	properties["tagline"] = member.Tagline
 	properties["bio"] = member.Bio
-	properties["website"] = member.Website
-	properties["location"] = member.Location
 	properties["checkinDate"] = member.CheckinDate
 	properties["emailVerifiedTime"] = member.EmailVerifiedTime
 	properties["phoneVerifiedTime"] = member.PhoneVerifiedTime
@@ -46,18 +42,18 @@ func CreateCasdoorUserFromMember(member *Member) *auth.User {
 		Avatar:        member.Avatar,
 		Email:         member.Email,
 		Phone:         member.Phone,
+		Location:      member.Location,
 		Affiliation:   member.Company,
-		Tag:           member.CompanyTitle,
+		Title:         member.CompanyTitle,
+		Homepage:      member.Website,
+		Tag:           member.Tagline,
 		Language:      member.Language,
 		Score:         member.Score,
+		Ranking:       member.No,
 		IsAdmin:       member.IsModerator,
 		IsGlobalAdmin: false,
 		IsForbidden:   false,
-		//Github:        member.GithubAccount,
-		//Google:        member.GoogleAccount,
-		//QQ:            member.QQOpenId,
-		//WeChat:        member.WechatOpenId,
-		Properties: properties,
+		Properties:    properties,
 	}
 	return user
 }
@@ -67,7 +63,6 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 		return nil
 	}
 
-	no, _ := strconv.Atoi(user.Properties["no"])
 	fileQuota, _ := strconv.Atoi(user.Properties["fileQuota"])
 	renameQuota, _ := strconv.Atoi(user.Properties["renameQuota"])
 	onlineStatus := false
@@ -79,24 +74,22 @@ func CreateMemberFromCasdoorUser(user *auth.User) *Member {
 		Id:                 user.Name,
 		CreatedTime:        user.CreatedTime,
 		LastActionDate:     user.UpdatedTime,
-		No:                 no,
+		No:                 user.Ranking,
 		Password:           user.Password,
 		Avatar:             user.Avatar,
 		Email:              user.Email,
 		Phone:              user.Phone,
 		Company:            user.Affiliation,
-		CompanyTitle:       user.Tag,
+		CompanyTitle:       user.Title,
 		Language:           user.Language,
 		Score:              user.Score,
 		IsModerator:        user.IsAdmin,
-		GithubAccount:      user.Properties["oauth_GitHub_username"],
-		GoogleAccount:      user.Properties["oauth_Google_username"],
 		QQOpenId:           user.QQ,
 		WechatOpenId:       user.WeChat,
-		Tagline:            user.Properties["tagline"],
+		Tagline:            user.Tag,
 		Bio:                user.Properties["bio"],
-		Website:            user.Properties["website"],
-		Location:           user.Properties["location"],
+		Website:            user.Homepage,
+		Location:           user.Location,
 		CheckinDate:        user.Properties["checkinDate"],
 		EmailVerifiedTime:  user.Properties["emailVerifiedTime"],
 		PhoneVerifiedTime:  user.Properties["phoneVerifiedTime"],
@@ -158,6 +151,8 @@ func GetMemberFromCasdoor(id string) *Member {
 }
 
 func UpdateMemberToCasdoor(member *Member) bool {
+	return false
+
 	if member == nil {
 		return false
 	}
@@ -171,6 +166,8 @@ func UpdateMemberToCasdoor(member *Member) bool {
 }
 
 func UpdateMembersToCasdoor(members []*Member) bool {
+	return false
+
 	for _, member := range members {
 		if !UpdateMemberToCasdoor(member) {
 			return false
@@ -180,6 +177,8 @@ func UpdateMembersToCasdoor(members []*Member) bool {
 }
 
 func AddMemberToCasdoor(member *Member) bool {
+	return false
+
 	if member == nil {
 		return false
 	}
@@ -193,6 +192,8 @@ func AddMemberToCasdoor(member *Member) bool {
 }
 
 func DeleteMemberFromCasdoor(id string) bool {
+	return false
+
 	user, err := auth.GetUser(id)
 	if err != nil {
 		panic(err)
