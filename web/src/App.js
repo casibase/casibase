@@ -92,14 +92,13 @@ class App extends Component {
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
       nodeBackgroundRepeat: "",
-      reRender: true,
     };
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();
-    Conf.getFrontConf("visualConf", this.Rerender.bind(this));
+    Setting.getFrontConf("visualConf");
     this.getNodeBackground = this.getNodeBackground.bind(this);
     this.changeMenuStatus = this.changeMenuStatus.bind(this);
   }
@@ -108,12 +107,6 @@ class App extends Component {
     //Setting.SetLanguage();
     this.getAccount();
     this.getFavoriteNum();
-  }
-
-  Rerender() {
-    this.setState({
-      reRender: false,
-    });
   }
 
   onSignin() {

@@ -234,10 +234,7 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 		panic(err)
 	}
 
-	member := GetUser(memberId)
-	if member != nil {
-		reply.Avatar = member.Avatar
-	}
+	reply.Avatar = getUserAvatar(reply.Author)
 
 	isAdmin := CheckModIdentity(memberId)
 	if existed {

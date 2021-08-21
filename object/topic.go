@@ -211,10 +211,7 @@ func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 		panic(err)
 	}
 
-	member := GetUser(topic.Author)
-	if member != nil {
-		topic.Avatar = member.Avatar
-	}
+	topic.Avatar = getUserAvatar(topic.Author)
 
 	topic.ThanksStatus = GetThanksStatus(memberId, id, 4)
 	topic.Editable = GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime)
@@ -529,11 +526,6 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 			panic(err)
 		}
 	}
-
-	//memberAvatar := GetMemberAvatarMapping()
-	//for _, t := range topics {
-	//	t.Avatar = memberAvatar[t.Author]
-	//}
 
 	return topics
 }

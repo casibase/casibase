@@ -96,18 +96,13 @@ func (c *ApiController) forbiddenAccountResp(memberId string) {
 }
 
 func (c *ApiController) GetCommunityHealth() {
-	var resp Response
-
 	res := object.CommunityHealth{
 		Member: object.GetMemberNum(),
 		Topic:  object.GetTopicCount(),
 		Reply:  object.GetReplyCount(),
 	}
 
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) GetForumVersion() {
@@ -122,15 +117,10 @@ func (c *ApiController) GetForumVersion() {
 }
 
 func (c *ApiController) GetOnlineNum() {
-	var resp Response
-
 	onlineNum := object.GetOnlineMemberNum()
 	highest := object.GetHighestOnlineNum()
 
-	resp = Response{Status: "ok", Msg: "success", Data: onlineNum, Data2: highest}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(onlineNum, highest)
 }
 
 func (c *ApiController) GetNodeNavigation() {

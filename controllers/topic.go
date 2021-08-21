@@ -119,20 +119,18 @@ func (c *ApiController) GetTopicsAdmin() {
 // @Success 200 {object} object.TopicWithAvatar The Response object
 // @router /get-topic [get]
 func (c *ApiController) GetTopic() {
-	memberId := c.GetSessionUsername()
-	idStr := c.Input().Get("id")
+	username := c.GetSessionUsername()
+	id := util.ParseInt(c.Input().Get("id"))
 
-	id := util.ParseInt(idStr)
-
-	topic := object.GetTopicWithAvatar(id, memberId)
+	topic := object.GetTopicWithAvatar(id, username)
 	if topic == nil || topic.Deleted {
 		c.Data["json"] = nil
 		c.ServeJSON()
 		return
 	}
 
-	if memberId != "" {
-		topic.NodeModerator = object.CheckNodeModerator(memberId, topic.NodeId)
+	if username != "" {
+		topic.NodeModerator = object.CheckNodeModerator(username, topic.NodeId)
 	}
 
 	c.Data["json"] = topic
