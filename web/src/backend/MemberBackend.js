@@ -14,56 +14,9 @@
 
 import * as Setting from "../Setting";
 
-export function getMembers() {
-  return fetch(`${Setting.ServerUrl}/api/get-members`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function getMembersAdmin(cs, us, un, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-members-admin?cs=${cs}&us=${us}&un=${un}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
-}
-
 export function getMember(id) {
   return fetch(`${Setting.ServerUrl}/api/get-member?id=${id}`, {
     method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function getMemberAdmin(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-member-admin?id=${id}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
-}
-
-export function updateMember(id, member) {
-  return fetch(`${Setting.ServerUrl}/api/update-member?id=${id}`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(member),
-  }).then((res) => res.json());
-}
-
-export function addMember(member) {
-  return fetch(`${Setting.ServerUrl}/api/add-member`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(member),
-  }).then((res) => res.json());
-}
-
-export function deleteMember(id) {
-  return fetch(`${Setting.ServerUrl}/api/delete-member?id=${id}`, {
-    method: "POST",
     credentials: "include",
   }).then((res) => res.json());
 }

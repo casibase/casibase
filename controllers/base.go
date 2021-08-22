@@ -25,7 +25,15 @@ type ApiController struct {
 	beego.Controller
 }
 
-func (c *ApiController) GetSessionUser() *auth.Claims {
+func GetUserName(user *auth.User) string {
+	if user == nil {
+		return ""
+	}
+
+	return GetUserName(user)
+}
+
+func (c *ApiController) GetSessionClaims() *auth.Claims {
 	s := c.GetSession("user")
 	if s == nil {
 		return nil
@@ -40,7 +48,7 @@ func (c *ApiController) GetSessionUser() *auth.Claims {
 	return claims
 }
 
-func (c *ApiController) SetSessionUser(claims *auth.Claims) {
+func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 	if claims == nil {
 		c.DelSession("user")
 		return
@@ -50,12 +58,36 @@ func (c *ApiController) SetSessionUser(claims *auth.Claims) {
 	c.SetSession("user", s)
 }
 
-func (c *ApiController) GetSessionUsername() string {
-	claims := c.GetSessionUser()
+func (c *ApiController) GetSessionUser() *auth.User {
+	claims := c.GetSessionClaims()
 	if claims == nil {
+		return nil
+	}
+
+	return &claims.User
+}
+
+func (c *ApiController) SetSessionUser(user *auth.User) {
+	if user == nil {
+		c.DelSession("user")
+		return
+	}
+
+	claims := c.GetSessionClaims()
+	if claims == nil {
+		claims = &auth.Claims{}
+	}
+
+	claims.User = *user
+	c.SetSession("user", claims)
+}
+
+func (c *ApiController) GetSessionUsername() string {
+	user := c.GetSessionUser()
+	if user == nil {
 		return ""
 	}
-	return claims.Name
+	return GetUserName(user)
 }
 
 func (c *ApiController) RequireSignedIn() bool {
@@ -81,18 +113,6 @@ func (c *ApiController) wrapResponse(res bool) {
 		c.Data["json"] = resp
 		c.ServeJSON()
 	}
-}
-
-func (c *ApiController) mutedAccountResp(memberId string) {
-	resp := Response{Status: "error", Msg: "Your account has been muted", Data: memberId}
-	c.Data["json"] = resp
-	c.ServeJSON()
-}
-
-func (c *ApiController) forbiddenAccountResp(memberId string) {
-	resp := Response{Status: "error", Msg: "Your account has been forbidden to log in", Data: memberId}
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) GetCommunityHealth() {

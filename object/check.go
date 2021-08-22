@@ -14,7 +14,10 @@
 
 package object
 
-import "github.com/microcosm-cc/bluemonday"
+import (
+	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/microcosm-cc/bluemonday"
+)
 
 func HasNode(id string) bool {
 	node := GetNode(id)
@@ -34,18 +37,9 @@ func HasPlane(id string) bool {
 	return plane != nil
 }
 
-// IsMuted check member whether is muted.
-func IsMuted(id string) bool {
-	status := GetMemberStatus(id)
-
-	return status == 2
-}
-
 // IsForbidden check member whether is forbidden.
-func IsForbidden(id string) bool {
-	status := GetMemberStatus(id)
-
-	return status == 3
+func IsForbidden(user *auth.User) bool {
+	return user.IsForbidden
 }
 
 func FilterUnsafeHTML(content string) string {

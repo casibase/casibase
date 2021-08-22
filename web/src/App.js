@@ -70,8 +70,6 @@ const AdminNode = React.lazy(() => import("./admin/AdminNode"));
 const AdminTab = React.lazy(() => import("./admin/AdminTab"));
 const AdminPoster = React.lazy(() => import("./admin/AdminPoster"));
 const AdminTranslation = React.lazy(() => import("./admin/AdminTranslation"));
-const AdminMember = React.lazy(() => import("./admin/AdminMember"));
-const NewMember = React.lazy(() => import("./main/NewMember"));
 const AdminPlane = React.lazy(() => import("./admin/AdminPlane"));
 const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
 const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
@@ -464,30 +462,6 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <AdminTranslation />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/admin/member">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminMember account={this.state.account} />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/admin/member/new">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NewMember />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/admin/member/edit/:memberId">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminMember account={this.state.account} />
             </LazyLoad>
           </div>
         </Route>

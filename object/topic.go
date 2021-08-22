@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"github.com/gomarkdown/markdown"
 )
 
@@ -204,7 +205,7 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 	return res, int(num)
 }
 
-func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
+func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
 	_, err := adapter.Engine.Table("topic").Id(id).Cols("topic.*").Get(&topic)
 	if err != nil {
@@ -213,8 +214,13 @@ func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
 
 	topic.Avatar = getUserAvatar(topic.Author)
 
-	topic.ThanksStatus = GetThanksStatus(memberId, id, 4)
-	topic.Editable = GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime)
+	name := ""
+	if user != nil {
+		name = GetUserName(user)
+	}
+
+	topic.ThanksStatus = GetThanksStatus(name, id, 4)
+	topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
 
 	return &topic
 }
@@ -292,18 +298,18 @@ func GetTopicTitle(id int) string {
 	}
 }
 
-func GetTopicAuthor(id int) string {
+func GetTopicAuthor(id int) *auth.User {
 	topic := Topic{Id: id}
 	existed, err := adapter.Engine.Cols("author").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
 
-	if existed {
-		return topic.Author
-	} else {
-		return ""
+	if !existed {
+		return nil
 	}
+
+	return GetUser(topic.Author)
 }
 
 func GetTopicNodeId(id int) string {
@@ -561,12 +567,12 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	return ret
 }
 
-func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {
-	if CheckModIdentity(member) || CheckNodeModerator(member, nodeId) {
+func GetTopicEditableStatus(user *auth.User, author, nodeId, createdTime string) bool {
+	if CheckIsAdmin(user) || CheckNodeModerator(user, nodeId) {
 		return true
 	}
 
-	if member != author {
+	if GetUserName(user) != author {
 		return false
 	}
 

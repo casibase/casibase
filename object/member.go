@@ -94,67 +94,6 @@ func GetRankingRich() ([]*auth.User, error) {
 	return users, nil
 }
 
-// GetMembersAdmin cs, us: 1 means Asc, 2 means Desc, 0 means no effect.
-func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int, error) {
-	users, err := auth.GetUsers()
-	if err != nil {
-		return nil, 0, err
-	}
-
-	// created time sort
-	sort.SliceStable(users, func(i, j int) bool {
-		if cs == "1" {
-			return users[i].CreatedTime < users[j].CreatedTime
-		}
-		return users[i].CreatedTime > users[j].CreatedTime
-	})
-
-	// id/username sort
-	sort.SliceStable(users, func(i, j int) bool {
-		if us == "1" {
-			return users[i].Id < users[j].Id
-		}
-		return users[i].Id > users[j].Id
-	})
-
-	users = Limit(users, offset, limit)
-
-	var res []*AdminMemberInfo
-	count := 0
-
-	// count id like %un%
-	for _, user := range users {
-		if strings.Contains(user.Id, un) {
-			count++
-
-			res = append(res, &AdminMemberInfo{
-				User:   *user,
-				Status: BoolToInt(user.IsForbidden),
-			})
-		}
-	}
-
-	return res, count, nil
-}
-
-func GetMemberAdmin(id string) (*AdminMemberInfo, error) {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		return nil, err
-	}
-
-	return &AdminMemberInfo{
-		User:          *user,
-		FileQuota:     GetUserFieldInt(user, "fileQuota"),
-		FileUploadNum: GetFilesNum(id),
-		Status:        BoolToInt(user.IsForbidden),
-		TopicNum:      GetCreatedTopicsNum(id),
-		ReplyNum:      GetMemberRepliesNum(id),
-		LatestLogin:   GetUserField(user, "checkinDate"),
-		Score:         user.Score,
-	}, nil
-}
-
 func GetUser(id string) *auth.User {
 	user, err := auth.GetUser(id)
 	if err != nil {
@@ -178,54 +117,25 @@ func GetMemberNum() int {
 	return len(users)
 }
 
-// UpdateMember could update member's file quota and account status.
-func UpdateMember(id string, user *auth.User) (bool, error) {
-	newUser := GetUser(id)
-	if newUser == nil {
-		return false, nil
-	}
-
-	SetUserFieldInt(newUser, "fileQuota", GetUserFieldInt(user, "fileQuota"))
-	SetUserFieldInt(newUser, "status", GetUserFieldInt(user, "status"))
-	newUser.Score = user.Score
-	return auth.UpdateUser(newUser)
-}
-
-func UpdateMemberEditorType(id string, editorType string) (bool, error) {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		return false, err
+func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
+	if user == nil {
+		return false, fmt.Errorf("user is nil")
 	}
 
 	SetUserField(user, "editorType", editorType)
 	return auth.UpdateUser(user)
 }
 
-func GetMemberEditorType(id string) string {
-	user := GetUser(id)
-	if user == nil {
-		return ""
-	}
-
+func GetMemberEditorType(user *auth.User) string {
 	return GetUserField(user, "editorType")
 }
 
-func UpdateMemberLanguage(id string, language string) (bool, error) {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		return false, err
-	}
-
+func UpdateMemberLanguage(user *auth.User, language string) (bool, error) {
 	SetUserField(user, "language", language)
 	return auth.UpdateUser(user)
 }
 
-func GetMemberLanguage(id string) string {
-	user := GetUser(id)
-	if user == nil {
-		return ""
-	}
-
+func GetMemberLanguage(user *auth.User) string {
 	return GetUserField(user, "language")
 }
 
@@ -253,27 +163,24 @@ func GetUserByEmail(email string) (*auth.User, error) {
 	return nil, fmt.Errorf("user not found for Email: %s", email)
 }
 
-func GetMemberCheckinDate(id string) string {
-	user := GetUser(id)
-	if user == nil {
-		return ""
-	}
-
+func GetMemberCheckinDate(user *auth.User) string {
 	return GetUserField(user, "checkinDate")
 }
 
-func UpdateMemberCheckinDate(id, checkinDate string) (bool, error) {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		return false, err
-	}
-
+func UpdateMemberCheckinDate(user *auth.User, checkinDate string) (bool, error) {
 	SetUserField(user, "checkinDate", checkinDate)
 	return auth.UpdateUser(user)
 }
 
-func CheckModIdentity(username string) bool {
-	user := GetUser(username)
+func GetUserName(user *auth.User) string {
+	if user == nil {
+		return ""
+	}
+
+	return GetUserName(user)
+}
+
+func CheckIsAdmin(user *auth.User) bool {
 	if user == nil {
 		return false
 	}
@@ -281,8 +188,7 @@ func CheckModIdentity(username string) bool {
 	return user.IsAdmin
 }
 
-func GetMemberFileQuota(id string) int {
-	user := GetUser(id)
+func GetMemberFileQuota(user *auth.User) int {
 	if user == nil {
 		return 0
 	}
@@ -290,21 +196,10 @@ func GetMemberFileQuota(id string) int {
 	return GetUserFieldInt(user, "fileQuota")
 }
 
-// GetMemberStatus returns member's account status, default 3(forbidden).
-func GetMemberStatus(id string) int {
-	user := GetUser(id)
-	if user == nil {
-		return 0
-	}
-
-	return GetUserFieldInt(user, "status")
-}
-
 // UpdateMemberOnlineStatus updates member's online information.
-func UpdateMemberOnlineStatus(id string, isOnline bool, lastActionDate string) (bool, error) {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		return false, err
+func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate string) (bool, error) {
+	if user != nil {
+		return false, fmt.Errorf("user is nil")
 	}
 
 	user.IsOnline = isOnline

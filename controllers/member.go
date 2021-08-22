@@ -15,81 +15,10 @@
 package controllers
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/casbin/casnode/object"
-	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
 )
-
-// @Title GetMembers
-// @Description Get all members
-// @Success 200 {array} object.Member The Response object
-// @router /get-members [get]
-func (c *ApiController) GetMembers() {
-	users, err := auth.GetUsers()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(users)
-}
-
-// @Title GetMembersAdmin
-// @Description Get admin allmembers
-// @Param limit query int true "limit"
-// @Param page query int true "page"
-// @Param un query string true "search: username"
-// @Param cs query int true "sort: created time"
-// @Param us query int true "sort: username"
-// @Success 200 {object} controllers.api_controller.Response The Response object
-// @router /get-members-admin [get]
-func (c *ApiController) GetMembersAdmin() {
-	limitStr := c.Input().Get("limit")
-	pageStr := c.Input().Get("page")
-	un := c.Input().Get("un") // search: username
-	cs := c.Input().Get("cs") // sort: created time
-	us := c.Input().Get("us") // sort: username
-	defaultLimit := object.DefaultMemberAdminPageNum
-
-	var limit, offset int
-	if len(limitStr) != 0 {
-		limit = util.ParseInt(limitStr)
-	} else {
-		limit = defaultLimit
-	}
-	if len(pageStr) != 0 {
-		page := util.ParseInt(pageStr)
-		offset = page*limit - limit
-	}
-
-	res, num, err := object.GetMembersAdmin(cs, us, un, limit, offset)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(res, num)
-}
-
-// @Title GetMemberAdmin
-// @Description get member for admin by id
-// @Param   id     query    string  true        "id"
-// @Success 200 {object} object.AdminMemberInfo The Response object
-// @router /get-member-admin [get]
-func (c *ApiController) GetMemberAdmin() {
-	id := c.Input().Get("id")
-
-	users, err := object.GetMemberAdmin(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(users)
-}
 
 // @Title GetMember
 // @Description get member by id
@@ -102,64 +31,16 @@ func (c *ApiController) GetMember() {
 	c.ResponseOk(object.GetUser(id))
 }
 
-func (c *ApiController) UpdateMember() {
-	if !c.RequireAdminRight() {
-		return
-	}
-
-	id := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
-
-	var memberInfo object.AdminMemberInfo
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &memberInfo)
-	if err != nil {
-		panic(err)
-	}
-
-	user := &auth.User{
-		Score:       memberInfo.Score,
-		IsForbidden: object.IntToBool(memberInfo.Status),
-	}
-	object.SetUserFieldInt(user, "fileQuota", memberInfo.FileQuota)
-
-	amount := user.Score - object.GetMemberBalance(id)
-	if amount != 0 {
-		var balanceType int
-		if amount > 0 {
-			balanceType = 10
-		} else {
-			balanceType = 11
-		}
-		record := object.ConsumptionRecord{
-			Amount:          amount,
-			Balance:         user.Score,
-			ReceiverId:      id,
-			ConsumerId:      memberId,
-			CreatedTime:     util.GetCurrentTime(),
-			ConsumptionType: balanceType,
-		}
-		object.AddBalance(&record)
-	}
-
-	affected, err := object.UpdateMember(id, user)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	c.ResponseOk(affected)
-}
-
 // @Title GetMemberEditorType
 // @Description member editortype
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-editor-type [get]
 func (c *ApiController) GetMemberEditorType() {
-	username := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
 	editorType := ""
-	if username != "" {
-		editorType = object.GetMemberEditorType(username)
+	if user != nil {
+		editorType = object.GetMemberEditorType(user)
 	}
 
 	c.ResponseOk(editorType)
@@ -181,14 +62,14 @@ func (c *ApiController) GetRankingRich() {
 
 func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
-	username := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
 	if editorType != "markdown" && editorType != "richtext" {
 		c.ResponseError(fmt.Errorf("unsupported editor type: %s", editorType).Error())
 		return
 	}
 
-	affected, err := object.UpdateMemberEditorType(username, editorType)
+	affected, err := object.UpdateMemberEditorType(user, editorType)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -199,23 +80,22 @@ func (c *ApiController) UpdateMemberEditorType() {
 
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
-	username := c.GetSessionUsername()
 
 	if language != "zh" && language != "en" {
 		c.ResponseError(fmt.Errorf("unsupported language: %s", language).Error())
 		return
 	}
 
-	claims := c.GetSessionUser()
-	if claims == nil {
+	user := c.GetSessionUser()
+	if user == nil {
 		c.ResponseOk()
 		return
 	}
 
-	claims.Language = language
-	c.SetSessionUser(claims)
+	user.Language = language
+	c.SetSessionUser(user)
 
-	affected, err := object.UpdateMemberLanguage(username, language)
+	affected, err := object.UpdateMemberLanguage(user, language)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -229,11 +109,11 @@ func (c *ApiController) UpdateMemberLanguage() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-language [get]
 func (c *ApiController) GetMemberLanguage() {
-	username := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
 	language := ""
-	if username != "" {
-		language = object.GetMemberLanguage(username)
+	if user != nil {
+		language = object.GetMemberLanguage(user)
 	}
 
 	c.ResponseOk(language)

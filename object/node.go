@@ -14,7 +14,11 @@
 
 package object
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/casdoor/casdoor-go-sdk/auth"
+)
 
 type Node struct {
 	Id                string   `xorm:"varchar(100) notnull pk" json:"id"`
@@ -252,7 +256,7 @@ func GetNodeModerators(id string) []string {
 	}
 }
 
-func CheckNodeModerator(memberId, nodeId string) bool {
+func CheckNodeModerator(user *auth.User, nodeId string) bool {
 	node := Node{Id: nodeId}
 	existed, err := adapter.Engine.Cols("moderators").Get(&node)
 	if err != nil {
@@ -263,7 +267,7 @@ func CheckNodeModerator(memberId, nodeId string) bool {
 		return false
 	}
 	for _, v := range node.Moderators {
-		if v == memberId {
+		if v == GetUserName(user) {
 			return true
 		}
 	}

@@ -72,7 +72,7 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWith
 	topics := []*TopicWithAvatar{}
 	for _, v := range favorites {
 		topicId := util.ParseInt(v.ObjectId)
-		temp := GetTopicWithAvatar(topicId, "")
+		temp := GetTopicWithAvatar(topicId, nil)
 		topics = append(topics, temp)
 	}
 

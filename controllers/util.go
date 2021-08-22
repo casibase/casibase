@@ -85,8 +85,8 @@ func (c *ApiController) RequireAdmin(memberId string) {
 }
 
 func (c *ApiController) RequireAdminRight() bool {
-	username := c.GetSessionUsername()
-	if !object.CheckModIdentity(username) {
+	user := c.GetSessionUser()
+	if user == nil || !object.CheckIsAdmin(user) {
 		c.ResponseError("This operation requires admin privilege")
 		return false
 	}

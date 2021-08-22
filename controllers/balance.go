@@ -15,19 +15,26 @@
 package controllers
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 func (c *ApiController) AddThanks() {
-	memberId := c.GetSessionUsername()
+	if !c.RequireSignedIn() {
+		return
+	}
+
+	user := c.GetSessionUser()
+
 	idStr := c.Input().Get("id")
 	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
 
-	var author string
+	var author *auth.User
 	id := util.ParseInt(idStr)
 	if thanksType == "2" {
 		author = object.GetReplyAuthor(id)
@@ -37,16 +44,16 @@ func (c *ApiController) AddThanks() {
 
 	consumerRecord := object.ConsumptionRecord{
 		//Id:          util.IntToString(object.GetConsumptionRecordId()),
-		ConsumerId:  author,
-		ReceiverId:  memberId,
+		ConsumerId:  author.Name,
+		ReceiverId:  GetUserName(user),
 		ObjectId:    id,
 		CreatedTime: util.GetCurrentTime(),
 	}
 
 	receiverRecord := object.ConsumptionRecord{
 		//Id:          util.IntToString(object.GetConsumptionRecordId() + 1),
-		ConsumerId:  memberId,
-		ReceiverId:  author,
+		ConsumerId:  GetUserName(user),
+		ReceiverId:  author.Name,
 		ObjectId:    id,
 		CreatedTime: util.GetCurrentTime(),
 	}
@@ -66,35 +73,43 @@ func (c *ApiController) AddThanks() {
 			consumerRecord.ConsumptionType = 4
 			receiverRecord.ConsumptionType = 2
 		}
-		consumerRecord.Balance = object.GetMemberBalance(memberId) + consumerRecord.Amount
+		consumerRecord.Balance = object.GetMemberBalance(user) + consumerRecord.Amount
 		if consumerRecord.Balance < 0 {
 			resp = Response{Status: "fail", Msg: "You don't have enough balance."}
 			c.Data["json"] = resp
 			c.ServeJSON()
 			return
 		}
-		receiverRecord.Balance = object.GetMemberBalance(memberId) + receiverRecord.Amount
+		receiverRecord.Balance = object.GetMemberBalance(user) + receiverRecord.Amount
 		object.AddBalance(&receiverRecord)
 		object.AddBalance(&consumerRecord)
-		object.UpdateMemberBalances(memberId, consumerRecord.Amount)
-		object.UpdateMemberBalances(author, receiverRecord.Amount)
+
+		_, err := object.UpdateMemberBalances(user, consumerRecord.Amount)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		_, err = object.UpdateMemberBalances(user, receiverRecord.Amount)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
 		if thanksType == "2" {
 			object.AddReplyThanksNum(id)
 		}
 
 		c.UpdateAccountBalance(consumerRecord.Balance)
 
-		resp = Response{Status: "ok", Msg: "success"}
+		c.ResponseOk()
 	} else {
-		resp = Response{Status: "fail", Msg: "param wrong"}
+		c.ResponseError(fmt.Sprintf("wrong thanksType: %s", thanksType))
 	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) GetConsumptionRecord() {
-	memberId := c.GetSessionUsername()
+	username := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultBalancePageNum
@@ -110,27 +125,26 @@ func (c *ApiController) GetConsumptionRecord() {
 		offset = page*limit - limit
 	}
 
-	var resp Response
-	res := object.GetMemberConsumptionRecord(memberId, limit, offset)
-	num := object.GetMemberConsumptionRecordNum(memberId)
-	resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
+	res := object.GetMemberConsumptionRecord(username, limit, offset)
+	num := object.GetMemberConsumptionRecordNum(username)
 
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res, num)
 }
 
 func (c *ApiController) GetCheckinBonus() {
-	memberId := c.GetSessionUsername()
-
-	checkinDate := object.GetMemberCheckinDate(memberId)
-	date := util.GetDateStr()
-	if date == checkinDate {
-		resp := Response{Status: "fail", Msg: "You have received the daily checkin bonus today."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if c.RequireSignedIn() {
+		return
 	}
 
-	var resp Response
+	user := c.GetSessionUser()
+
+	checkinDate := object.GetMemberCheckinDate(user)
+	date := util.GetDateStr()
+	if date == checkinDate {
+		c.ResponseError("You have received the daily checkin bonus today.")
+		return
+	}
+
 	maxBonus := object.MaxDailyCheckinBonus
 	rand.Seed(time.Now().UnixNano())
 	bonus := rand.Intn(maxBonus)
@@ -138,33 +152,41 @@ func (c *ApiController) GetCheckinBonus() {
 	record := object.ConsumptionRecord{
 		//Id:              util.IntToString(object.GetConsumptionRecordId() + 1),
 		Amount:          bonus,
-		Balance:         object.GetMemberBalance(memberId) + bonus,
-		ReceiverId:      memberId,
+		Balance:         object.GetMemberBalance(user) + bonus,
+		ReceiverId:      GetUserName(user),
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 1,
 	}
 	object.AddBalance(&record)
-	object.UpdateMemberBalances(memberId, bonus)
-	object.UpdateMemberCheckinDate(memberId, date)
+
+	_, err := object.UpdateMemberBalances(user, bonus)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	_, err = object.UpdateMemberCheckinDate(user, date)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	c.UpdateAccountBalance(record.Balance)
 
-	resp = Response{Status: "ok", Msg: "success", Data: bonus}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(bonus)
 }
 
 func (c *ApiController) GetCheckinBonusStatus() {
-	memberId := c.GetSessionUsername()
+	if c.RequireSignedIn() {
+		return
+	}
 
-	checkinDate := object.GetMemberCheckinDate(memberId)
+	user := c.GetSessionUser()
+
+	checkinDate := object.GetMemberCheckinDate(user)
 	date := util.GetDateStr()
 
 	res := checkinDate == date
 
-	resp := Response{Status: "ok", Msg: "success", Data: res, Data2: date}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res, date)
 }

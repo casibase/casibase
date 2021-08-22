@@ -19,7 +19,6 @@ import (
 	"strings"
 
 	"github.com/beego/beego/v2/adapter/context"
-
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
@@ -46,8 +45,13 @@ func Static(ctx *context.Context) {
 
 // FreshAccountActiveStatus fresh member's online status.
 func FreshAccountActiveStatus(ctx *context.Context) {
-	id, ok := ctx.Input.Session("username").(string)
-	if ok && id != "" {
-		object.UpdateMemberOnlineStatus(id, true, util.GetCurrentTime())
+	claims := getSessionClaims(ctx)
+	if claims == nil {
+		return
+	}
+
+	_, err := object.UpdateMemberOnlineStatus(&claims.User, true, util.GetCurrentTime())
+	if err != nil {
+		panic(err)
 	}
 }

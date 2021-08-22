@@ -119,18 +119,19 @@ func (c *ApiController) GetTopicsAdmin() {
 // @Success 200 {object} object.TopicWithAvatar The Response object
 // @router /get-topic [get]
 func (c *ApiController) GetTopic() {
-	username := c.GetSessionUsername()
+	user := c.GetSessionUser()
+
 	id := util.ParseInt(c.Input().Get("id"))
 
-	topic := object.GetTopicWithAvatar(id, username)
+	topic := object.GetTopicWithAvatar(id, user)
 	if topic == nil || topic.Deleted {
 		c.Data["json"] = nil
 		c.ServeJSON()
 		return
 	}
 
-	if username != "" {
-		topic.NodeModerator = object.CheckNodeModerator(username, topic.NodeId)
+	if user != nil {
+		topic.NodeModerator = object.CheckNodeModerator(user, topic.NodeId)
 	}
 
 	c.Data["json"] = topic
@@ -175,10 +176,10 @@ func (c *ApiController) AddTopic() {
 		return
 	}
 
-	memberId := c.GetSessionUsername()
-	// check account status
-	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
-		c.mutedAccountResp(memberId)
+	user := c.GetSessionUser()
+
+	if object.IsForbidden(user) {
+		c.ResponseError("Your account has been forbidden to perform this operation")
 		return
 	}
 
@@ -191,23 +192,17 @@ func (c *ApiController) AddTopic() {
 
 	node := object.GetNode(nodeId)
 	if node == nil {
-		resp := Response{Status: "error", Msg: "Node does not exist."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Node does not exist.")
 		return
 	}
 
 	if object.ContainsSensitiveWord(title) {
-		resp := Response{Status: "error", Msg: "Topic title contains sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Topic title contains sensitive word.")
 		return
 	}
 
 	if object.ContainsSensitiveWord(body) {
-		resp := Response{Status: "error", Msg: "Topic body contains sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Topic body contains sensitive word.")
 		return
 	}
 
@@ -217,7 +212,7 @@ func (c *ApiController) AddTopic() {
 
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
-		Author:        memberId,
+		Author:        GetUserName(user),
 		NodeId:        nodeId,
 		NodeName:      "",
 		Title:         title,
@@ -234,11 +229,9 @@ func (c *ApiController) AddTopic() {
 		IsHidden:      node.IsHidden,
 	}
 
-	balance := object.GetMemberBalance(memberId)
+	balance := object.GetMemberBalance(user)
 	if balance < object.CreateTopicCost {
-		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("You don't have enough balance.")
 		return
 	}
 	//payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
@@ -250,23 +243,20 @@ func (c *ApiController) AddTopic() {
 		panic(err)
 	}
 
-	var resp Response
 	res, id := object.AddTopic(&topic)
 	if res {
-		object.CreateTopicConsumption(topic.Author, id)
+		object.CreateTopicConsumption(user, id)
 
 		c.UpdateAccountBalance(balance - object.CreateTopicCost)
 
 		object.AddTopicNotification(id, topic.Author, topic.Content)
 		targetNode := object.GetNode(topic.NodeId)
 		targetNode.AddTopicToMailingList(topic.Title, topic.Content, topic.Author)
-		resp = Response{Status: "ok", Msg: "success", Data: topic.Id}
-	} else {
-		resp = Response{Status: "error", Msg: "fail"}
-	}
 
-	c.Data["json"] = resp
-	c.ServeJSON()
+		c.ResponseOk(topic.Id)
+	} else {
+		c.ResponseError("Failed to add topic.")
+	}
 }
 
 // @Title UploadTopicPic
@@ -304,11 +294,11 @@ func (c *ApiController) UploadTopicPic() {
 // @router /delete-topic [post]
 func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
 	id := util.ParseInt(idStr)
 	nodeId := object.GetTopicNodeId(id)
-	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) {
+	if !object.CheckIsAdmin(user) && !object.CheckNodeModerator(user, nodeId) {
 		resp := Response{Status: "fail", Msg: "Unauthorized."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -552,8 +542,9 @@ func (c *ApiController) UpdateTopicNode() {
 		return
 	}
 
+	user := c.GetSessionUser()
+
 	var resp Response
-	memberId := c.GetSessionUsername()
 	var form updateTopicNode
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -562,10 +553,8 @@ func (c *ApiController) UpdateTopicNode() {
 	id, nodeName, nodeId := form.Id, form.NodeName, form.NodeId
 
 	originalNode := object.GetTopicNodeId(id)
-	if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, originalNode) && object.GetTopicAuthor(id) != memberId {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !object.CheckIsAdmin(user) && !object.CheckNodeModerator(user, originalNode) && object.GetTopicAuthor(id).Name != GetUserName(user) {
+		c.ResponseError("Unauthorized.")
 		return
 	}
 
@@ -591,9 +580,10 @@ func (c *ApiController) EditContent() {
 		return
 	}
 
+	user := c.GetSessionUser()
+
 	editType := c.Input().Get("editType")
 	var resp Response
-	memberId := c.GetSessionUsername()
 	if editType == "topic" {
 		var form editTopic
 		err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
@@ -601,7 +591,7 @@ func (c *ApiController) EditContent() {
 			panic(err)
 		}
 		id, title, content, nodeId, editorType, tags := form.Id, form.Title, form.Content, form.NodeId, form.EditorType, form.Tags
-		if !object.CheckModIdentity(memberId) && !object.CheckNodeModerator(memberId, nodeId) && object.GetTopicAuthor(id) != memberId {
+		if !object.CheckIsAdmin(user) && !object.CheckNodeModerator(user, nodeId) && object.GetTopicAuthor(id).Name != GetUserName(user) {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
 			c.ServeJSON()
@@ -625,7 +615,7 @@ func (c *ApiController) EditContent() {
 			panic(err)
 		}
 		id, content, editorType := form.Id, form.Content, form.EditorType
-		if !object.CheckModIdentity(memberId) && object.GetReplyAuthor(id) != memberId {
+		if !object.CheckIsAdmin(user) && object.GetReplyAuthor(id).Name != GetUserName(user) {
 			resp = Response{Status: "fail", Msg: "Unauthorized."}
 			c.Data["json"] = resp
 			c.ServeJSON()
@@ -681,15 +671,15 @@ func (c *ApiController) TopTopic() {
 		return
 	}
 
-	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
+	id := util.ParseInt(c.Input().Get("id"))
 
-	id := util.ParseInt(idStr)
+	user := c.GetSessionUser()
+
 	var resp Response
 	var res bool
 
 	nodeId := object.GetTopicNodeId(id)
-	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
+	if object.CheckIsAdmin(user) || object.CheckNodeModerator(user, nodeId) {
 		//timeStr := c.Input().Get("time")
 		//time := util.ParseInt(timeStr)
 		//date := util.GetTimeMinute(time)
@@ -697,15 +687,15 @@ func (c *ApiController) TopTopic() {
 		topType := c.Input().Get("topType")
 		date := util.GetTimeYear(100)
 		res = object.ChangeTopicTopExpiredTime(id, date, topType)
-	} else if object.GetTopicAuthor(id) == memberId {
-		balance := object.GetMemberBalance(memberId)
+	} else if object.GetTopicAuthor(id).Name == GetUserName(user) {
+		balance := object.GetMemberBalance(user)
 		if balance < object.TopTopicCost {
 			resp = Response{Status: "fail", Msg: "You don't have enough balance."}
 			c.Data["json"] = resp
 			c.ServeJSON()
 			return
 		}
-		object.TopTopicConsumption(memberId, id)
+		object.TopTopicConsumption(user, id)
 
 		c.UpdateAccountBalance(balance - object.TopTopicCost)
 
@@ -734,14 +724,14 @@ func (c *ApiController) CancelTopTopic() {
 	}
 
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
 	id := util.ParseInt(idStr)
 	var resp Response
 	var res bool
 
 	nodeId := object.GetTopicNodeId(id)
-	if object.CheckModIdentity(memberId) || object.CheckNodeModerator(memberId, nodeId) {
+	if object.CheckIsAdmin(user) || object.CheckNodeModerator(user, nodeId) {
 		topType := c.Input().Get("topType")
 		res = object.ChangeTopicTopExpiredTime(id, "", topType)
 	} else {

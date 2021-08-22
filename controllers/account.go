@@ -58,16 +58,14 @@ func (c *ApiController) Signin() {
 		panic(err)
 	}
 
-	username := claims.Name
-
-	affected, err := object.UpdateMemberOnlineStatus(username, true, util.GetCurrentTime())
+	affected, err := object.UpdateMemberOnlineStatus(&claims.User, true, util.GetCurrentTime())
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
 	claims.AccessToken = token.AccessToken
-	c.SetSessionUser(claims)
+	c.SetSessionClaims(claims)
 
 	c.ResponseOk(claims, affected)
 }
@@ -77,16 +75,16 @@ func (c *ApiController) Signin() {
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signout [post]
 func (c *ApiController) Signout() {
-	username := c.GetSessionUsername()
-	if username != "" {
-		_, err := object.UpdateMemberOnlineStatus(username, false, util.GetCurrentTime())
+	claims := c.GetSessionClaims()
+	if claims != nil {
+		_, err := object.UpdateMemberOnlineStatus(&claims.User, false, util.GetCurrentTime())
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 	}
 
-	c.SetSessionUser(nil)
+	c.SetSessionClaims(nil)
 
 	c.ResponseOk()
 }
@@ -100,13 +98,13 @@ func (c *ApiController) GetAccount() {
 		return
 	}
 
-	claims := c.GetSessionUser()
+	claims := c.GetSessionClaims()
 
 	c.ResponseOk(claims)
 }
 
 func (c *ApiController) UpdateAccountBalance(balance int) {
-	claims := c.GetSessionUser()
-	claims.Score = balance
-	c.SetSessionUser(claims)
+	user := c.GetSessionUser()
+	user.Score = balance
+	c.SetSessionUser(user)
 }

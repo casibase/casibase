@@ -20,7 +20,7 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-func getSessionUser(ctx *context.Context) *auth.Claims {
+func getSessionClaims(ctx *context.Context) *auth.Claims {
 	s := ctx.Input.CruSession.Get(nil, "user")
 	if s == nil {
 		return nil
@@ -35,7 +35,7 @@ func getSessionUser(ctx *context.Context) *auth.Claims {
 	return claims
 }
 
-func setSessionUser(ctx *context.Context, claims *auth.Claims) {
+func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
 	if claims == nil {
 		err := ctx.Input.CruSession.Delete(nil, "user")
 		if err != nil {

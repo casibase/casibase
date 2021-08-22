@@ -226,8 +226,6 @@ func (c *ApiController) AddNodeModerators() {
 	}
 
 	var moderators addNodeModerator
-	var resp Response
-
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
 	if err != nil {
 		panic(err)
@@ -235,21 +233,16 @@ func (c *ApiController) AddNodeModerators() {
 
 	moderator := object.GetUser(moderators.MemberId)
 	if moderator == nil {
-		resp = Response{Status: "fail", Msg: "Member doesn't exist."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Member doesn't exist.")
 		return
 	}
 
 	res := object.AddNodeModerators(moderators.MemberId, moderators.NodeId)
 	if res {
-		resp = Response{Status: "ok", Msg: "success", Data: res}
+		c.ResponseOk(res)
 	} else {
-		resp = Response{Status: "fail", Msg: "Moderator already exist."}
+		c.ResponseError("Moderator already exist.")
 	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) DeleteNodeModerators() {

@@ -15,77 +15,51 @@
 package controllers
 
 import (
-	"fmt"
 	"github.com/casbin/casnode/object"
 )
 
 func (c *ApiController) AddSensitive() {
-	if c.RequireSignedIn() {
+	if c.RequireAdminRight() {
 		return
 	}
-	memberId := c.GetSessionUsername()
-	member := object.GetUser(memberId)
-	if !member.IsAdmin {
-		resp := Response{Status: "fail", Msg: "You are not admin, you can't add sensitive words."}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
+
 	sensitiveWord := c.Input().Get("word")
 	if sensitiveWord == "" {
-		resp := Response{Status: "fail", Msg: "You didn't input a sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("You didn't input a sensitive word.")
 		return
 	}
 	if len(sensitiveWord) > 64 {
-		resp := Response{Status: "fail", Msg: "This sensitive word is too long."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("This sensitive word is too long.")
 		return
 	}
 	if object.IsSensitiveWord(sensitiveWord) {
-		resp := Response{Status: "fail", Msg: "This is already a sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("This is already a sensitive word.")
 		return
 	}
+
 	object.AddSensitiveWord(sensitiveWord)
-	fmt.Println("Sensitive word added: " + sensitiveWord)
-	resp := Response{Status: "ok"}
-	c.Data["json"] = resp
-	c.ServeJSON()
+
+	c.ResponseOk()
 }
 
 func (c *ApiController) DelSensitive() {
-	if c.RequireSignedIn() {
+	if c.RequireAdminRight() {
 		return
 	}
-	memberId := c.GetSessionUsername()
-	member := object.GetUser(memberId)
-	if !member.IsAdmin {
-		resp := Response{Status: "fail", Msg: "You are not admin, you can't delete sensitive words."}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
+
 	sensitiveWord := c.Input().Get("word")
 	if sensitiveWord == "" {
-		resp := Response{Status: "fail", Msg: "You didn't input a sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("You didn't input a sensitive word.")
 		return
 	}
 	if !object.IsSensitiveWord(sensitiveWord) {
-		resp := Response{Status: "fail", Msg: "This is not a sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("This is not a sensitive word.")
 		return
 	}
+
 	object.DeleteSensitiveWord(sensitiveWord)
-	resp := Response{Status: "ok"}
-	c.Data["json"] = resp
-	c.ServeJSON()
+
+	c.ResponseOk()
 }
 
 func (c *ApiController) GetSensitive() {
