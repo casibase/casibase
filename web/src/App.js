@@ -49,7 +49,6 @@ const MemberBox = React.lazy(() => import("./main/MemberBox"));
 const AllCreatedTopicsBox = React.lazy(() =>
   import("./main/AllCreatedTopicsBox")
 );
-const CallbackBox = React.lazy(() => import("./main/AuthBox"));
 const NewBox = React.lazy(() => import("./main/NewBox"));
 const NodesBox = React.lazy(() => import("./main/NodeBox"));
 const FavoritesBox = React.lazy(() => import("./main/FavoritesBox"));
@@ -71,14 +70,13 @@ const AdminNode = React.lazy(() => import("./admin/AdminNode"));
 const AdminTab = React.lazy(() => import("./admin/AdminTab"));
 const AdminPoster = React.lazy(() => import("./admin/AdminPoster"));
 const AdminTranslation = React.lazy(() => import("./admin/AdminTranslation"));
-const AdminMember = React.lazy(() => import("./admin/AdminMember"));
-const NewMember = React.lazy(() => import("./main/NewMember"));
 const AdminPlane = React.lazy(() => import("./admin/AdminPlane"));
 const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
 const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
 const AdminFrontConf = React.lazy(() => import("./admin/AdminFrontConf"));
 const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
+const NoMatch = React.lazy(() => import("./main/NoMatch"));
 const Embed = React.lazy(() => import("./Embed"));
 
 class App extends Component {
@@ -92,14 +90,13 @@ class App extends Component {
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
       nodeBackgroundRepeat: "",
-      reRender: true,
     };
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     Setting.initFullClientUrl();
     Setting.initBrowserType();
-    Conf.getFrontConf("visualConf", this.Rerender.bind(this));
+    Setting.getFrontConf("visualConf");
     this.getNodeBackground = this.getNodeBackground.bind(this);
     this.changeMenuStatus = this.changeMenuStatus.bind(this);
   }
@@ -108,12 +105,6 @@ class App extends Component {
     //Setting.SetLanguage();
     this.getAccount();
     this.getFavoriteNum();
-  }
-
-  Rerender() {
-    this.setState({
-      reRender: false,
-    });
   }
 
   onSignin() {
@@ -244,14 +235,6 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <AllCreatedTopicsBox />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/callback/:authType/:addition">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <CallbackBox />
             </LazyLoad>
           </div>
         </Route>
@@ -482,30 +465,6 @@ class App extends Component {
             </LazyLoad>
           </div>
         </Route>
-        <Route exact path="/admin/member">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminMember account={this.state.account} />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/admin/member/new">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NewMember />
-            </LazyLoad>
-          </div>
-        </Route>
-        <Route exact path="/admin/member/edit/:memberId">
-          <div id={pcBrowser ? "Main" : ""}>
-            {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminMember account={this.state.account} />
-            </LazyLoad>
-          </div>
-        </Route>
         <Route exact path="/admin/plane">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -583,6 +542,14 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <SearchResultPage />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route path="*">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <NoMatch />
             </LazyLoad>
           </div>
         </Route>

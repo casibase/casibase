@@ -75,9 +75,8 @@ func GetNotifications(memberId string, limit int, offset int) []*NotificationRes
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, n := range notifications {
-		n.Avatar = memberAvatar[n.Notification.SenderId]
+	for _, notification := range notifications {
+		notification.Avatar = getUserAvatar(notification.Notification.SenderId)
 	}
 
 	var wg sync.WaitGroup

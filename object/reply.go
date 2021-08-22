@@ -19,6 +19,7 @@ import (
 	"time"
 
 	beego "github.com/beego/beego/v2/adapter"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 type Reply struct {
@@ -46,7 +47,7 @@ func GetReplyCount() int {
 }
 
 // GetReplies returns more information about reply of a topic.
-func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWithAvatar, int) {
+func GetReplies(topicId int, user *auth.User, limit int, page int) ([]*ReplyWithAvatar, int) {
 	replies := []*ReplyWithAvatar{}
 	realPage := page
 	err := adapter.Engine.Table("reply").
@@ -59,16 +60,15 @@ func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWith
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, r := range replies {
-		r.Avatar = memberAvatar[r.Author]
+	for _, reply := range replies {
+		reply.Avatar = getUserAvatar(reply.Author)
 	}
 
-	isModerator := CheckModIdentity(memberId)
+	isAdmin := CheckIsAdmin(user)
 	for _, v := range replies {
 		v.ThanksStatus = v.ConsumptionAmount != 0
-		v.Deletable = isModerator || ReplyDeletable(v.CreatedTime, memberId, v.Author)
-		v.Editable = isModerator || GetReplyEditableStatus(memberId, v.Author, v.CreatedTime)
+		v.Deletable = isAdmin || ReplyDeletable(v.CreatedTime, GetUserName(user), v.Author)
+		v.Editable = isAdmin || GetReplyEditableStatus(GetUserName(user), v.Author, v.CreatedTime)
 	}
 
 	var resultReplies []*ReplyWithAvatar
@@ -90,7 +90,7 @@ func GetReplies(topicId int, memberId string, limit int, page int) ([]*ReplyWith
 				if pageLimit <= 0 {
 					page--
 					pageLimit = limit
-					if index + 1 < len(replies) {
+					if index+1 < len(replies) {
 						//If the page is a usable value when we get the latest replies, clear the result
 						resultReplies = nil
 					}
@@ -226,7 +226,7 @@ func GetReply(id int) *Reply {
 }
 
 // GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
-func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
+func GetReplyWithDetails(user *auth.User, id int) *ReplyWithAvatar {
 	reply := ReplyWithAvatar{}
 	existed, err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
@@ -235,16 +235,13 @@ func GetReplyWithDetails(memberId string, id int) *ReplyWithAvatar {
 		panic(err)
 	}
 
-	member := GetMember(memberId)
-	if member != nil {
-		reply.Avatar = member.Avatar
-	}
+	reply.Avatar = getUserAvatar(reply.Author)
 
-	isModerator := CheckModIdentity(memberId)
+	isAdmin := CheckIsAdmin(user)
 	if existed {
 		reply.ThanksStatus = reply.ConsumptionAmount != 0
-		reply.Deletable = isModerator || ReplyDeletable(reply.CreatedTime, memberId, reply.Author)
-		reply.Editable = isModerator || GetReplyEditableStatus(memberId, reply.Author, reply.CreatedTime)
+		reply.Deletable = isAdmin || ReplyDeletable(reply.CreatedTime, GetUserName(user), reply.Author)
+		reply.Editable = isAdmin || GetReplyEditableStatus(GetUserName(user), reply.Author, reply.CreatedTime)
 		return &reply
 	}
 	return nil
@@ -382,17 +379,18 @@ func GetReplyTopicTitle(id int) string {
 }
 
 // GetReplyAuthor only returns reply's topic author.
-func GetReplyAuthor(id int) string {
+func GetReplyAuthor(id int) *auth.User {
 	reply := Reply{Id: id}
 	existed, err := adapter.Engine.Cols("author").Get(&reply)
 	if err != nil {
 		panic(err)
 	}
 
-	if existed {
-		return reply.Author
+	if !existed {
+		return nil
 	}
-	return ""
+
+	return GetUser(reply.Author)
 }
 
 // AddReplyThanksNum updates reply's thanks num.

@@ -28,7 +28,8 @@ type NewReplyForm struct {
 }
 
 func (c *ApiController) GetReplies() {
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
+
 	topicIdStr := c.Input().Get("topicId")
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -54,7 +55,7 @@ func (c *ApiController) GetReplies() {
 		}
 	}
 
-	replies, realPage := object.GetReplies(topicId, memberId, limit, page)
+	replies, realPage := object.GetReplies(topicId, user, limit, page)
 	if replies == nil {
 		replies = []*object.ReplyWithAvatar{}
 	}
@@ -80,12 +81,13 @@ func (c *ApiController) GetReply() {
 }
 
 func (c *ApiController) GetReplyWithDetails() {
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
+
 	idStr := c.Input().Get("id")
 
 	id := util.ParseInt(idStr)
 
-	c.Data["json"] = object.GetReplyWithDetails(memberId, id)
+	c.Data["json"] = object.GetReplyWithDetails(user, id)
 	c.ServeJSON()
 }
 
@@ -108,23 +110,21 @@ func (c *ApiController) AddReply() {
 		return
 	}
 
-	memberId := c.GetSessionUsername()
-	// check account status
-	if object.IsMuted(memberId) || object.IsForbidden(memberId) {
-		c.mutedAccountResp(memberId)
+	user := c.GetSessionUser()
+
+	if object.IsForbidden(user) {
+		c.ResponseError("Your account has been forbidden to perform this operation")
 		return
 	}
 
-	balance := object.GetMemberBalance(memberId)
+	balance := object.GetMemberBalance(user)
 	if balance < object.CreateReplyCost {
-		resp := Response{Status: "fail", Msg: "You don't have enough balance."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("You don't have enough balance.")
 		return
 	}
 
 	reply := object.Reply{
-		Author:      memberId,
+		Author:      GetUserName(user),
 		CreatedTime: util.GetCurrentTime(),
 		Deleted:     false,
 	}
@@ -135,21 +135,19 @@ func (c *ApiController) AddReply() {
 	}
 
 	if object.ContainsSensitiveWord(reply.Content) {
-		resp := Response{Status: "fail", Msg: "Reply contains sensitive word."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Reply contains sensitive word.")
 		return
 	}
 
 	affected, id := object.AddReply(&reply)
 	if affected {
-		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), reply.Author, id)
-		object.CreateReplyConsumption(reply.Author, id)
+		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), user, id)
+		object.CreateReplyConsumption(user, id)
 
 		c.UpdateAccountBalance(balance - object.CreateReplyCost)
 
 		object.ChangeTopicReplyCount(reply.TopicId, 1)
-		object.ChangeTopicLastReplyUser(reply.TopicId, memberId, util.GetCurrentTime())
+		object.ChangeTopicLastReplyUser(reply.TopicId, GetUserName(user), util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
 		reply.AddReplyToMailingList()
 	}
@@ -158,13 +156,13 @@ func (c *ApiController) AddReply() {
 }
 
 func (c *ApiController) DeleteReply() {
-	idStr := c.Input().Get("id")
+	id := util.ParseInt(c.Input().Get("id"))
 
-	memberId := c.GetSessionUsername()
-	id := util.ParseInt(idStr)
+	user := c.GetSessionUser()
+
 	replyInfo := object.GetReply(id)
-	isModerator := object.CheckModIdentity(memberId)
-	if !object.ReplyDeletable(replyInfo.CreatedTime, memberId, replyInfo.Author) && !isModerator {
+	isAdmin := object.CheckIsAdmin(user)
+	if !object.ReplyDeletable(replyInfo.CreatedTime, GetUserName(user), replyInfo.Author) && !isAdmin {
 		resp := Response{Status: "fail", Msg: "Permission denied."}
 		c.Data["json"] = resp
 		c.ServeJSON()

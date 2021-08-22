@@ -230,7 +230,7 @@ func GetOnlineMemberNum() int {
 
 // UpdateOnlineMemberNum updates online member num and updates highest online member num at the same time.
 func UpdateOnlineMemberNum() {
-	onlineMemberNum = GetMemberOnlineNum()
+	onlineMemberNum = GetOnlineUserCount()
 	if onlineMemberNum > highestOnlineNum {
 		UpdateHighestOnlineNum(onlineMemberNum)
 	}

@@ -80,23 +80,12 @@ func initAPI() {
 	beego.Router("/api/get-member-replies-num", &controllers.ApiController{}, "GET:GetMemberRepliesNum")
 	beego.Router("/api/get-reply-with-details", &controllers.ApiController{}, "GET:GetReplyWithDetails")
 
-	beego.Router("/api/get-members", &controllers.ApiController{}, "GET:GetMembers")
-	beego.Router("/api/get-members-admin", &controllers.ApiController{}, "GET:GetMembersAdmin")
 	beego.Router("/api/get-member", &controllers.ApiController{}, "GET:GetMember")
-	beego.Router("/api/get-member-admin", &controllers.ApiController{}, "GET:GetMemberAdmin")
-	beego.Router("/api/update-member", &controllers.ApiController{}, "POST:UpdateMember") // Update member api just for admin.
-	beego.Router("/api/add-member", &controllers.ApiController{}, "POST:AddMember")
-	//beego.Router("/api/delete-member", &controllers.ApiController{}, "POST:DeleteMember") // Change this api to update member.
-	beego.Router("/api/update-member-info", &controllers.ApiController{}, "POST:UpdateMemberInfo")
-	beego.Router("/api/get-member-avatar", &controllers.ApiController{}, "GET:GetMemberAvatar")
-	beego.Router("/api/update-member-avatar", &controllers.ApiController{}, "POST:UpdateMemberAvatar")
 	beego.Router("/api/update-member-language", &controllers.ApiController{}, "POST:UpdateMemberLanguage")
 	beego.Router("/api/get-member-language", &controllers.ApiController{}, "GET:GetMemberLanguage")
 	beego.Router("/api/update-member-editor-type", &controllers.ApiController{}, "POST:UpdateMemberEditorType")
 	beego.Router("/api/get-member-editor-type", &controllers.ApiController{}, "GET:GetMemberEditorType")
-	beego.Router("/api/update-member-email-reminder", &controllers.ApiController{}, "POST:UpdateMemberEmailReminder")
 	beego.Router("/api/get-ranking-rich", &controllers.ApiController{}, "GET:GetRankingRich")
-	beego.Router("/api/reset-member-username", &controllers.ApiController{}, "GET:ResetUsername")
 
 	beego.Router("/api/update-poster", &controllers.ApiController{}, "POST:UpdatePoster") //Update poster api just for admin.
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")

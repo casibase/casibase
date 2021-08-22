@@ -95,25 +95,6 @@ export function uploadFile(file) {
   reader.readAsDataURL(file);
 }
 
-// upload avatar
-export function uploadAvatar(file, redirectUrl) {
-  if (file.size > 2 * 1024 * 1024) {
-    alert("File size exceeds 2MB");
-    return;
-  }
-  let reader = new FileReader();
-  reader.onload = (e) => {
-    FileBackend.uploadAvatar(e.target.result).then((res) => {
-      if (res.status == "ok") {
-        MemberBackend.updateMemberAvatar(res.data).then(
-          () => (window.location.href = `${redirectUrl}?success=true`)
-        );
-      } else alert("Uploading failed: " + res.msg);
-    });
-  };
-  reader.readAsDataURL(file);
-}
-
 export function myUploadFn(param) {
   const errorFn = (response) => {
     // call the erroFn when the upload process failed.

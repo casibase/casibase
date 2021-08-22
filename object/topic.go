@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 	"github.com/gomarkdown/markdown"
 )
 
@@ -88,13 +89,11 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-
 	var ret []*TopicWithAvatar
 	for _, topic := range topics {
 		ret = append(ret, &TopicWithAvatar{
 			Topic:  *topic,
-			Avatar: memberAvatar[topic.Author],
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 
@@ -206,20 +205,22 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 	return res, int(num)
 }
 
-func GetTopicWithAvatar(id int, memberId string) *TopicWithAvatar {
+func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
 	_, err := adapter.Engine.Table("topic").Id(id).Cols("topic.*").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
 
-	member := GetMember(topic.Author)
-	if member != nil {
-		topic.Avatar = member.Avatar
+	topic.Avatar = getUserAvatar(topic.Author)
+
+	name := ""
+	if user != nil {
+		name = GetUserName(user)
 	}
 
-	topic.ThanksStatus = GetThanksStatus(memberId, id, 4)
-	topic.Editable = GetTopicEditableStatus(memberId, topic.Author, topic.NodeId, topic.CreatedTime)
+	topic.ThanksStatus = GetThanksStatus(name, id, 4)
+	topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
 
 	return &topic
 }
@@ -297,18 +298,18 @@ func GetTopicTitle(id int) string {
 	}
 }
 
-func GetTopicAuthor(id int) string {
+func GetTopicAuthor(id int) *auth.User {
 	topic := Topic{Id: id}
 	existed, err := adapter.Engine.Cols("author").Get(&topic)
 	if err != nil {
 		panic(err)
 	}
 
-	if existed {
-		return topic.Author
-	} else {
-		return ""
+	if !existed {
+		return nil
 	}
+
+	return GetUser(topic.Author)
 }
 
 func GetTopicNodeId(id int) string {
@@ -336,14 +337,11 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
-		t.Avatar = memberAvatar[t.Author]
-	}
+	for _, topic := range topics {
+		topic.Avatar = getUserAvatar(topic.Author)
 
-	for _, v := range topics {
-		v.ContentLength = len(v.Content)
-		v.Content = ""
+		topic.ContentLength = len(topic.Content)
+		topic.Content = ""
 	}
 
 	return topics
@@ -361,14 +359,11 @@ func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
-		t.Avatar = memberAvatar[t.Author]
-	}
+	for _, topic := range topics {
+		topic.Avatar = getUserAvatar(topic.Author)
 
-	for _, v := range topics {
-		v.ContentLength = len(v.Content)
-		v.Content = ""
+		topic.ContentLength = len(topic.Content)
+		topic.Content = ""
 	}
 
 	return topics
@@ -538,11 +533,6 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 		}
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
-		t.Avatar = memberAvatar[t.Author]
-	}
-
 	return topics
 }
 
@@ -567,16 +557,16 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	}
 
 	var ret []*TopicWithAvatar
-	memberAvatar := GetMemberAvatarMapping()
-	for _, t := range topics {
+	for _, topic := range topics {
 		ret = append(ret, &TopicWithAvatar{
-			Topic:  *t,
-			Avatar: memberAvatar[t.Author],
+			Topic:  *topic,
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 
 	return ret
 }
+
 
 // GetSortedTopics *sort: 1 means Asc, 2 means Desc, 0 means no effect.
 func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort string, limit int, offset int) []*TopicWithAvatar {
@@ -632,11 +622,12 @@ func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort strin
 	return ret
 }
 
-func GetTopicEditableStatus(member, author, nodeId, createdTime string) bool {
-	if CheckModIdentity(member) || CheckNodeModerator(member, nodeId) {
+func GetTopicEditableStatus(user *auth.User, author, nodeId, createdTime string) bool {
+	if CheckIsAdmin(user) || CheckNodeModerator(user, nodeId) {
 		return true
 	}
-	if member != author {
+
+	if GetUserName(user) != author {
 		return false
 	}
 
@@ -742,7 +733,6 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 		panic(err)
 	}
 
-	memberAvatar := GetMemberAvatarMapping()
 	var ret []TopicWithAvatar
 	for _, topic := range topics {
 		content := RemoveHtmlTags(topic.Content)
@@ -752,7 +742,7 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 
 		ret = append(ret, TopicWithAvatar{
 			Topic:  topic,
-			Avatar: memberAvatar[topic.Author],
+			Avatar: getUserAvatar(topic.Author),
 		})
 	}
 

@@ -26,13 +26,13 @@ func (c *ApiController) AddFavorites() {
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
-	memberId := c.GetSessionUsername()
+	username := c.GetSessionUsername()
 	favorites := object.Favorites{
-		//Id:            util.IntToString(object.GetFavoritesCount()) + memberId,
+		//Id:            util.IntToString(object.GetFavoritesCount()) + username,
 		FavoritesType: favoritesType,
 		ObjectId:      objectId,
 		CreatedTime:   util.GetCurrentTime(),
-		MemberId:      memberId,
+		MemberId:      username,
 	}
 
 	var wg sync.WaitGroup
@@ -57,7 +57,7 @@ func (c *ApiController) AddFavorites() {
 				ObjectId:         topicId,
 				CreatedTime:      util.GetCurrentTime(),
 				SenderId:         c.GetSessionUsername(),
-				ReceiverId:       object.GetTopicAuthor(topicId),
+				ReceiverId:       object.GetTopicAuthor(topicId).Name,
 				Status:           1,
 			}
 			if notification.ReceiverId != notification.SenderId {

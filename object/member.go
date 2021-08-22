@@ -25,7 +25,10 @@ import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
+
+var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
@@ -77,424 +80,144 @@ func GetMembersOld() []*Member {
 	return members
 }
 
-func GetMembers() []*Member {
-	members := GetMembersFromCasdoor()
-
-	sort.SliceStable(members, func(i, j int) bool {
-		return members[i].CreatedTime < members[j].CreatedTime
-	})
-
-	return members
-}
-
-func GetRankingRich() []*Member {
-	members := GetMembersFromCasdoor()
-
-	sort.SliceStable(members, func(i, j int) bool {
-		return members[i].Score > members[j].Score
-	})
-
-	members = Limit(members, 0, 25)
-
-	return members
-}
-
-// GetMembersAdmin cs, us: 1 means Asc, 2 means Desc, 0 means no effect.
-func GetMembersAdmin(cs, us, un string, limit int, offset int) ([]*AdminMemberInfo, int) {
-	members := GetMembersFromCasdoor()
-
-	// created time sort
-	sort.SliceStable(members, func(i, j int) bool {
-		if cs == "1" {
-			return members[i].CreatedTime < members[j].CreatedTime
-		}
-		return members[i].CreatedTime > members[j].CreatedTime
-	})
-
-	// id/username sort
-	sort.SliceStable(members, func(i, j int) bool {
-		if us == "1" {
-			return members[i].Id < members[j].Id
-		}
-		return members[i].Id > members[j].Id
-	})
-
-	members = Limit(members, offset, limit)
-
-	var res []*AdminMemberInfo
-	count := 0
-
-	// count id like %un%
-	for _, member := range members {
-		if strings.Contains(member.Id, un) {
-			count++
-			res = append(res, &AdminMemberInfo{
-				Member: *member,
-				Status: member.Status,
-			})
-		}
+func GetRankingRich() ([]*auth.User, error) {
+	users, err := auth.GetUsers()
+	if err != nil {
+		return nil, err
 	}
 
-	return res, count
+	sort.SliceStable(users, func(i, j int) bool {
+		return users[i].Score > users[j].Score
+	})
+
+	users = Limit(users, 0, 25)
+	return users, nil
 }
 
-func GetMemberAdmin(id string) *AdminMemberInfo {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return nil
+func GetUser(id string) *auth.User {
+	user, err := auth.GetUser(id)
+	if err != nil {
+		panic(err)
 	}
 
-	return &AdminMemberInfo{
-		Member:        *member,
-		FileQuota:     member.FileQuota,
-		FileUploadNum: GetFilesNum(id),
-		Status:        member.Status,
-		TopicNum:      GetCreatedTopicsNum(id),
-		ReplyNum:      GetMemberRepliesNum(id),
-		LatestLogin:   member.CheckinDate,
-		Score:         member.Score,
-	}
+	return user
 }
 
-func GetMember(id string) *Member {
-	return GetMemberFromCasdoor(id)
-}
-
-func GetMemberAvatar(id string) string {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return ""
+func GetUsers() []*auth.User {
+	users, err := auth.GetUsers()
+	if err != nil {
+		panic(err)
 	}
-	return member.Avatar
+
+	return users
 }
 
 func GetMemberNum() int {
-	members := GetMembersFromCasdoor()
-	return len(members)
+	users := GetUsers()
+	return len(users)
 }
 
-// UpdateMember could update member's file quota and account status.
-func UpdateMember(id string, member *Member) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
+func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
+	if user == nil {
+		return false, fmt.Errorf("user is nil")
 	}
 
-	targetMember.FileQuota = member.FileQuota
-	targetMember.Status = member.Status
-	targetMember.Score = member.Score
-
-	return UpdateMemberToCasdoor(targetMember)
+	SetUserField(user, "editorType", editorType)
+	return auth.UpdateUser(user)
 }
 
-func UpdateMemberInfo(id string, member *Member) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.Company = member.Company
-	targetMember.Bio = member.Bio
-	targetMember.Website = member.Website
-	targetMember.Tagline = member.Tagline
-	targetMember.CompanyTitle = member.CompanyTitle
-	targetMember.Location = member.Location
-
-	return UpdateMemberToCasdoor(targetMember)
+func GetMemberEditorType(user *auth.User) string {
+	return GetUserField(user, "editorType")
 }
 
-// ChangeMemberEmailReminder change member's email reminder status
-func ChangeMemberEmailReminder(id, status string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	if status == "true" {
-		targetMember.EmailReminder = true
-	} else {
-		targetMember.EmailReminder = false
-	}
-
-	return UpdateMemberToCasdoor(targetMember)
+func UpdateMemberLanguage(user *auth.User, language string) (bool, error) {
+	SetUserField(user, "language", language)
+	return auth.UpdateUser(user)
 }
 
-func UpdateMemberAvatar(id string, avatar string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.Avatar = avatar
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-func UpdateMemberEditorType(id string, editorType string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.EditorType = editorType
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-func GetMemberEditorType(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return ""
-	}
-
-	return targetMember.EditorType
-}
-
-func UpdateMemberLanguage(id string, language string) bool {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return false
-	}
-
-	targetMember.Language = language
-
-	return UpdateMemberToCasdoor(targetMember)
-}
-
-func GetMemberLanguage(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return ""
-	}
-
-	return targetMember.Language
-}
-
-func AddMember(member *Member) bool {
-	return AddMemberToCasdoor(member)
-}
-
-// DeleteMember change this function to update member status.
-func DeleteMember(id string) bool {
-	return DeleteMemberFromCasdoor(id)
-}
-
-// GetMemberMail return member's email.
-func GetMemberMail(id string) string {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
-		return ""
-	}
-
-	return targetMember.Email
+func GetMemberLanguage(user *auth.User) string {
+	return GetUserField(user, "language")
 }
 
 // GetMemberEmailReminder return member's email reminder status, and his email address.
 func GetMemberEmailReminder(id string) (bool, string) {
-	targetMember := GetMemberFromCasdoor(id)
-	if targetMember == nil {
+	user := GetUser(id)
+	if user == nil {
 		return false, ""
 	}
 
-	return targetMember.EmailReminder, targetMember.Email
+	return true, user.Email
 }
 
-func GetMemberByEmail(email string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.Email == email {
-			return member
+func GetUserByEmail(email string) (*auth.User, error) {
+	users, err := auth.GetUsers()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, user := range users {
+		if user.Email == email {
+			return user, nil
 		}
 	}
-	return nil
+	return nil, fmt.Errorf("user not found for Email: %s", email)
 }
 
-func GetPhoneNumber(phoneNumber string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.Phone == phoneNumber {
-			return member
-		}
-	}
-	return nil
+func GetMemberCheckinDate(user *auth.User) string {
+	return GetUserField(user, "checkinDate")
 }
 
-func GetGoogleAccount(googleAccount string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.GoogleAccount == googleAccount {
-			return member
-		}
-	}
-	return nil
+func UpdateMemberCheckinDate(user *auth.User, checkinDate string) (bool, error) {
+	SetUserField(user, "checkinDate", checkinDate)
+	return auth.UpdateUser(user)
 }
 
-func GetQQAccount(qqOpenId string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.QQOpenId == qqOpenId {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetWechatAccount(wechatOpenId string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.WechatOpenId == wechatOpenId {
-			return member
-		}
-	}
-	return nil
-}
-
-func GetGithubAccount(githubAccount string) *Member {
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.GithubAccount == githubAccount {
-			return member
-		}
-	}
-	return nil
-}
-
-// LinkMemberAccount is not used
-//func LinkMemberAccount(memberId, field, value string) bool {
-//	affected, err := adapter.Engine.Table(new(Member)).ID(memberId).Update(map[string]interface{}{field: value})
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	return affected != 0
-//}
-
-func GetMemberCheckinDate(id string) string {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
+func GetUserName(user *auth.User) string {
+	if user == nil {
 		return ""
 	}
 
-	return member.CheckinDate
+	return GetUserName(user)
 }
 
-func UpdateMemberCheckinDate(id, date string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
+func CheckIsAdmin(user *auth.User) bool {
+	if user == nil {
 		return false
 	}
 
-	member.CheckinDate = date
-	return UpdateMemberToCasdoor(member)
+	return user.IsAdmin
 }
 
-func CheckModIdentity(memberId string) bool {
-	member := GetMemberFromCasdoor(memberId)
-	if member == nil {
-		return false
-	}
-
-	return member.IsModerator
-}
-
-func UpdateMemberPassword(id, password string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
-	}
-
-	member.Password = password
-
-	return UpdateMemberToCasdoor(member)
-}
-
-func GetMemberFileQuota(memberId string) int {
-	member := GetMemberFromCasdoor(memberId)
-	if member == nil {
+func GetMemberFileQuota(user *auth.User) int {
+	if user == nil {
 		return 0
 	}
 
-	return member.FileQuota
-}
-
-// MemberPasswordLogin needs information and password to check member login.
-// Information could be phone member, email or username.
-// If success, return username.
-func MemberPasswordLogin(information, password string) string {
-	if len(password) == 0 || strings.Index(password, " ") >= 0 {
-		return ""
-	}
-
-	members := GetMembersFromCasdoor()
-
-	for _, member := range members {
-		if member.Password == password {
-			if member.Email == information && member.EmailVerifiedTime != "" {
-				return member.Id
-			}
-
-			if member.Phone == information && member.PhoneVerifiedTime != "" {
-				return member.Id
-			}
-
-			if member.Id == information {
-				return member.Id
-			}
-		}
-	}
-
-	return ""
-}
-
-// GetMemberStatus returns member's account status, default 3(forbidden).
-func GetMemberStatus(id string) int {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return 3
-	}
-
-	return member.Status
+	return GetUserFieldInt(user, "fileQuota")
 }
 
 // UpdateMemberOnlineStatus updates member's online information.
-func UpdateMemberOnlineStatus(id string, onlineStatus bool, lastActionDate string) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
+func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate string) (bool, error) {
+	if user != nil {
+		return false, fmt.Errorf("user is nil")
 	}
-	member.OnlineStatus = onlineStatus
-	member.LastActionDate = lastActionDate
 
-	return UpdateMemberToCasdoor(member)
+	user.IsOnline = isOnline
+	SetUserField(user, "lastActionDate", lastActionDate)
+	return auth.UpdateUser(user)
 }
 
-func ExpiredMemberOnlineStatus(date string) int {
-	affected := 0
+func GetOnlineUserCount() int {
+	res := 0
 
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.OnlineStatus && member.LastActionDate < date {
-			member.OnlineStatus = false
-			affected++
+	users := GetUsers()
+	for _, user := range users {
+		if user.IsOnline {
+			res++
 		}
 	}
 
-	if UpdateMembersToCasdoor(members) {
-		return affected
-	}
-	return 0
-}
-
-func GetMemberOnlineNum() int {
-	total := 0
-	members := GetMembersFromCasdoor()
-	for _, member := range members {
-		if member.OnlineStatus {
-			total++
-		}
-	}
-
-	return total
+	return res
 }
 
 type UpdateListItem struct {
@@ -502,90 +225,84 @@ type UpdateListItem struct {
 	Attribute string
 }
 
-func ResetUsername(oldUsername string, newUsername string) string {
-	return "Not allowed!"
-
-	if len(newUsername) == 0 || len(newUsername) > 100 || strings.Index(newUsername, " ") >= 0 {
-		return "Illegal username"
-	}
-	if HasMember(newUsername) {
-		return "User exists"
-	}
-
-	member := GetMember(oldUsername)
-	if member.RenameQuota < 1 {
-		return "You have no chance to reset you name."
-	}
-	member.RenameQuota--
-	_, err := adapter.Engine.Query("update member set rename_quota = ? where id = ?", member.RenameQuota, oldUsername)
-	if err != nil {
-		panic(err)
-	}
-
-	updateList := []UpdateListItem{
-		{"member", "id"},
-		{"browse_record", "member_id"},
-		{"consumption_record", "consumer_id"},
-		{"consumption_record", "receiver_id"},
-		{"favorites", "member_id"},
-		{"node", "moderators"},
-		{"notification", "sender_id"},
-		{"notification", "receiver_id"},
-		{"reply", "author"},
-		{"reset_record", "member_id"},
-		{"topic", "author"},
-		{"topic", "last_reply_user"},
-		{"upload_file_record", "member_id"},
-	}
-	for _, value := range updateList {
-		_, err = adapter.Engine.Query("update "+value.Table+" set "+value.Attribute+" = ? where "+value.Attribute+" = ?", newUsername, oldUsername)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-	return ""
-}
-
-func AddMemberByNameAndEmailIfNotExist(username, email string) *Member {
+func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, error) {
 	username = strings.ReplaceAll(username, " ", "")
-	email = strings.ReplaceAll(email, " ", "")
-	if len(username) == 0 {
-		return nil
+	if username == "" {
+		return nil, fmt.Errorf("username is empty")
 	}
-	if HasMember(username) {
-		return GetMember(username)
-	}
-	if len(email) == 0 {
-		return nil
-	}
-	username = strings.Split(email, "@")[0]
-	if HasMember(username) {
-		return GetMember(username)
-	}
-	newMember := GetMemberByEmail(email)
 
-	var score int
+	email = strings.ReplaceAll(email, " ", "")
+	if email == "" {
+		return nil, fmt.Errorf("email is empty")
+	}
+
+	user, err := auth.GetUser(username)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return user, nil
+	}
+
+	username = strings.Split(email, "@")[0]
+	user, err = auth.GetUser(username)
+	if err != nil {
+		return nil, err
+	}
+	if user != nil {
+		return user, nil
+	}
+
+	newUser, err := GetUserByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+
 	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
 	if err != nil {
 		panic(err)
 	}
 
-	if newMember == nil {
-		newMember = &Member{
-			Id:                username,
-			No:                GetMemberNum() + 1,
+	if newUser == nil {
+		properties := map[string]string{}
+		properties["emailVerifiedTime"] = util.GetCurrentTime()
+		properties["fileQuota"] = strconv.Itoa(DefaultUploadFileQuota)
+		properties["renameQuota"] = strconv.Itoa(DefaultRenameQuota)
+
+		newUser = &auth.User{
+			Name:              username,
 			CreatedTime:       util.GetCurrentTime(),
+			UpdatedTime:       util.GetCurrentTime(),
+			Id:                "",
+			Type:              "",
+			Password:          "",
+			DisplayName:       "",
 			Avatar:            UploadFromGravatar(username, email),
 			Email:             email,
-			EmailVerifiedTime: util.GetCurrentTime(),
+			Phone:             "",
+			Location:          "",
+			Address:           nil,
+			Affiliation:       "",
+			Title:             "",
+			Homepage:          "",
+			Tag:               "",
 			Score:             score,
-			FileQuota:         DefaultUploadFileQuota,
-			RenameQuota:       DefaultRenameQuota,
+			Ranking:           GetMemberNum() + 1,
+			IsOnline:          false,
+			IsAdmin:           false,
+			IsGlobalAdmin:     false,
+			IsForbidden:       false,
+			SignupApplication: CasdoorApplication,
+			Properties:        properties,
 		}
-		AddMember(newMember)
+
+		_, err = auth.AddUser(newUser)
+		if err != nil {
+			return newUser, err
+		}
 	}
-	return newMember
+
+	return newUser, nil
 }
 
 func UploadFromGravatar(username, email string) string {

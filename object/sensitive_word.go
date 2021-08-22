@@ -16,12 +16,12 @@ package object
 
 import "strings"
 
-type CasbinSensitiveWord struct {
+type SensitiveWord struct {
 	Word string `xorm:"varchar(64) notnull"`
 	Id int64
 }
 
-var sensitiveWords []CasbinSensitiveWord
+var sensitiveWords []SensitiveWord
 
 func loadSensitiveWords() {
 	if len(sensitiveWords) == 0 {
@@ -36,7 +36,7 @@ func AddSensitiveWord(word string) {
 	if IsSensitiveWord(word) {
 		return
 	}
-	_, err := adapter.Engine.Insert(CasbinSensitiveWord{Word: word})
+	_, err := adapter.Engine.Insert(SensitiveWord{Word: word})
 	if err != nil {
 		panic(err)
 	}
@@ -48,7 +48,7 @@ func AddSensitiveWord(word string) {
 }
 
 func DeleteSensitiveWord(word string) {
-	_, err := adapter.Engine.Delete(CasbinSensitiveWord{Word: word})
+	_, err := adapter.Engine.Delete(SensitiveWord{Word: word})
 	if err != nil {
 		panic(err)
 	}

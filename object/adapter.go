@@ -170,7 +170,7 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.Engine.Sync2(new(CasbinSensitiveWord))
+	err = a.Engine.Sync2(new(SensitiveWord))
 	if err != nil {
 		panic(err)
 	}

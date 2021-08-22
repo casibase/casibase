@@ -15,39 +15,13 @@
 package object
 
 import (
-	"github.com/casdoor/casdoor-go-sdk/auth"
-	"github.com/microcosm-cc/bluemonday"
+	"fmt"
+
+	beego "github.com/beego/beego/v2/adapter"
 )
 
-func HasNode(id string) bool {
-	node := GetNode(id)
+var CasdoorStorageEndpoint = beego.AppConfig.String("casdoorStorageEndpoint")
 
-	return node != nil
-}
-
-func HasTab(id string) bool {
-	tab := GetTab(id)
-
-	return tab != nil
-}
-
-func HasPlane(id string) bool {
-	plane := GetPlane(id)
-
-	return plane != nil
-}
-
-// IsForbidden check member whether is forbidden.
-func IsForbidden(user *auth.User) bool {
-	return user.IsForbidden
-}
-
-func FilterUnsafeHTML(content string) string {
-	if content == "" {
-		return content
-	}
-	p := bluemonday.UGCPolicy()
-	p.AllowAttrs("style").OnElements("span")
-	res := p.Sanitize(content)
-	return res
+func getUserAvatar(username string) string {
+	return fmt.Sprintf("%scasdoor/avatar/%s/%s.png", CasdoorStorageEndpoint, CasdoorOrganization, username)
 }

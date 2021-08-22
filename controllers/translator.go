@@ -2,17 +2,15 @@ package controllers
 
 import (
 	"encoding/json"
+
 	"github.com/casbin/casnode/object"
 )
 
 func (c *ApiController) UpdateTranslator() {
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
+
 	var translator object.Translator
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &translator)
 	if err != nil {
@@ -25,13 +23,11 @@ func (c *ApiController) UpdateTranslator() {
 }
 
 func (c *ApiController) AddTranslator() {
-	var resp Response
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	var resp Response
 	var translator object.Translator
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &translator)
 	if err != nil {

@@ -50,16 +50,15 @@ func (c *ApiController) GetNode() {
 }
 
 func (c *ApiController) UpdateNode() {
-	id := c.Input().Get("id")
-
-	var resp Response
-	var node object.Node
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
 
+	id := c.Input().Get("id")
+
+	var resp Response
+
+	var node object.Node
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
@@ -72,13 +71,12 @@ func (c *ApiController) UpdateNode() {
 }
 
 func (c *ApiController) AddNode() {
-	var node object.Node
-	var resp Response
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	var node object.Node
+	var resp Response
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
@@ -108,12 +106,11 @@ func (c *ApiController) AddNode() {
 }
 
 func (c *ApiController) DeleteNode() {
-	id := c.Input().Get("id")
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	id := c.Input().Get("id")
 
 	c.Data["json"] = object.DeleteNode(id)
 	c.ServeJSON()
@@ -224,53 +221,38 @@ func (c *ApiController) AddNodeBrowseCount() {
 }
 
 func (c *ApiController) AddNodeModerators() {
-	var moderators addNodeModerator
-	var resp Response
-
-	memberId := c.GetSessionUsername()
-	if !object.CheckModIdentity(memberId) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
 
+	var moderators addNodeModerator
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
 	if err != nil {
 		panic(err)
 	}
 
-	moderator := object.GetMember(moderators.MemberId)
+	moderator := object.GetUser(moderators.MemberId)
 	if moderator == nil {
-		resp = Response{Status: "fail", Msg: "Member doesn't exist."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Member doesn't exist.")
 		return
 	}
 
 	res := object.AddNodeModerators(moderators.MemberId, moderators.NodeId)
 	if res {
-		resp = Response{Status: "ok", Msg: "success", Data: res}
+		c.ResponseOk(res)
 	} else {
-		resp = Response{Status: "fail", Msg: "Moderator already exist."}
+		c.ResponseError("Moderator already exist.")
 	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) DeleteNodeModerators() {
-	var moderators deleteNodeModerator
-	var resp Response
-
-	memberId := c.GetSessionUsername()
-	if !object.CheckModIdentity(memberId) {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !c.RequireAdminRight() {
 		return
 	}
 
+	var resp Response
+
+	var moderators deleteNodeModerator
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
 	if err != nil {
 		panic(err)

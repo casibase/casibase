@@ -39,7 +39,8 @@ func (c *ApiController) GetFiles() {
 		return
 	}
 
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
+
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
 	defaultLimit := object.DefaultFilePageNum
@@ -54,19 +55,20 @@ func (c *ApiController) GetFiles() {
 		page := util.ParseInt(pageStr)
 		offset = page*limit - limit
 	}
-	files := object.GetFiles(memberId, limit, offset)
-	fileNum := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
+	files := object.GetFiles(GetUserName(user), limit, offset)
+	fileNum := fileNumResp{Num: object.GetFilesNum(GetUserName(user)), MaxNum: object.GetMemberFileQuota(user)}
 
-	resp := Response{Status: "ok", Msg: "success", Data: files, Data2: fileNum}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(files, fileNum)
 }
 
 func (c *ApiController) GetFileNum() {
-	memberId := c.GetSessionUsername()
+	if c.RequireSignedIn() {
+		return
+	}
 
-	num := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
+	user := c.GetSessionUser()
+
+	num := fileNumResp{Num: object.GetFilesNum(GetUserName(user)), MaxNum: object.GetMemberFileQuota(user)}
 	resp := Response{Status: "ok", Msg: "success", Data: num}
 
 	c.Data["json"] = resp
@@ -78,6 +80,8 @@ func (c *ApiController) AddFileRecord() {
 		return
 	}
 
+	user := c.GetSessionUser()
+
 	var file NewUploadFile
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &file)
 	if err != nil {
@@ -85,10 +89,8 @@ func (c *ApiController) AddFileRecord() {
 	}
 
 	var resp Response
-	memberId := c.GetSessionUsername()
-
-	uploadFileNum := object.GetFilesNum(memberId)
-	if uploadFileNum >= object.GetMemberFileQuota(memberId) {
+	uploadFileNum := object.GetFilesNum(GetUserName(user))
+	if uploadFileNum >= object.GetMemberFileQuota(user) {
 		resp = Response{Status: "fail", Msg: "You have exceeded the upload limit."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -101,7 +103,7 @@ func (c *ApiController) AddFileRecord() {
 		FileUrl:     file.FileUrl,
 		FileType:    util.FileType(file.FileName),
 		FileExt:     util.FileExt(file.FileName),
-		MemberId:    memberId,
+		MemberId:    GetUserName(user),
 		CreatedTime: util.GetCurrentTime(),
 		Size:        file.Size,
 		Deleted:     false,
@@ -109,7 +111,7 @@ func (c *ApiController) AddFileRecord() {
 
 	affected, id := object.AddFileRecord(&record)
 	if affected {
-		fileNum := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
+		fileNum := fileNumResp{Num: object.GetFilesNum(GetUserName(user)), MaxNum: object.GetMemberFileQuota(user)}
 		resp = Response{Status: "ok", Msg: "success", Data: id, Data2: fileNum}
 	} else {
 		resp = Response{Status: "fail", Msg: "Add file failed, please try again.", Data: id}
@@ -121,14 +123,13 @@ func (c *ApiController) AddFileRecord() {
 
 func (c *ApiController) DeleteFile() {
 	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
+
+	user := c.GetSessionUser()
 
 	id := util.ParseInt(idStr)
 	fileInfo := object.GetFile(id)
-	if !object.FileEditable(memberId, fileInfo.MemberId) {
-		resp := Response{Status: "fail", Msg: "Permission denied."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+	if !object.FileEditable(user, fileInfo.MemberId) {
+		c.ResponseError("Permission denied.")
 		return
 	}
 
@@ -136,7 +137,7 @@ func (c *ApiController) DeleteFile() {
 	var resp Response
 	if affected {
 		service.DeleteOSSFile(fileInfo.FilePath)
-		fileNum := fileNumResp{Num: object.GetFilesNum(memberId), MaxNum: object.GetMemberFileQuota(memberId)}
+		fileNum := fileNumResp{Num: object.GetFilesNum(GetUserName(user)), MaxNum: object.GetMemberFileQuota(user)}
 		resp = Response{Status: "ok", Msg: "success", Data: id, Data2: fileNum}
 	} else {
 		resp = Response{Status: "fail", Msg: "Delete file failed, please try again."}
@@ -164,10 +165,10 @@ func (c *ApiController) GetFile() {
 }
 
 func (c *ApiController) UpdateFileDescribe() {
-	idStr := c.Input().Get("id")
-	memberId := c.GetSessionUsername()
+	user := c.GetSessionUser()
 
-	id := util.ParseInt(idStr)
+	id := util.ParseInt(c.Input().Get("id"))
+
 	var desc fileDescribe
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &desc)
 	if err != nil {
@@ -176,7 +177,7 @@ func (c *ApiController) UpdateFileDescribe() {
 
 	var resp Response
 	file := object.GetFile(id)
-	if !object.FileEditable(memberId, file.MemberId) {
+	if !object.FileEditable(user, file.MemberId) {
 		resp = Response{Status: "fail", Msg: "Permission denied."}
 		c.Data["json"] = resp
 		c.ServeJSON()
@@ -211,12 +212,14 @@ func (c *ApiController) ModeratorUpload() {
 	if c.RequireSignedIn() {
 		return
 	}
-	memberId := c.GetSessionUsername()
-	if !object.GetMember(memberId).IsModerator {
-		c.Data["json"] = Response{Status: "error", Msg: "You have no permission to upload files here. Need to be moderator."}
-		c.ServeJSON()
+
+	user := c.GetSessionUser()
+
+	if !user.IsAdmin {
+		c.ResponseError("You have no permission to upload files here. Need to be moderator.")
 		return
 	}
+
 	fileBase64 := c.Ctx.Request.Form.Get("file")
 	fileName := c.Ctx.Request.Form.Get("name")
 	filePath := c.Ctx.Request.Form.Get("filepath")
@@ -224,9 +227,9 @@ func (c *ApiController) ModeratorUpload() {
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	fileURL := service.UploadFileToOSS(fileBytes, "/" + filePath + "/" + fileName)
 	timeStamp := fmt.Sprintf("?time=%d", time.Now().UnixNano())
-	resp := Response{Status: "ok", Msg: fileName, Data: fileURL + timeStamp}
-	c.Data["json"] = resp
-	c.ServeJSON()
+
+	c.ResponseOk(fileURL + timeStamp)
+	//resp := Response{Status: "ok", Msg: fileName, Data: fileURL + timeStamp}
 }
 
 func (c *ApiController) UploadAvatar() {

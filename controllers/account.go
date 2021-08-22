@@ -17,6 +17,7 @@ package controllers
 import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -57,16 +58,16 @@ func (c *ApiController) Signin() {
 		panic(err)
 	}
 
-	member := object.GetMemberFromCasdoor(claims.Name)
-	member.OnlineStatus = true
-	object.UpdateMemberToCasdoor(member)
+	affected, err := object.UpdateMemberOnlineStatus(&claims.User, true, util.GetCurrentTime())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	claims.AccessToken = token.AccessToken
-	c.SetSessionUser(claims)
+	c.SetSessionClaims(claims)
 
-	resp := &Response{Status: "ok", Msg: "", Data: claims}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(claims, affected)
 }
 
 // @Title Signout
@@ -74,20 +75,18 @@ func (c *ApiController) Signin() {
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signout [post]
 func (c *ApiController) Signout() {
-	var resp Response
-
-	memberId := c.GetSessionUsername()
-	if memberId != "" {
-		member := object.GetMemberFromCasdoor(memberId)
-		member.OnlineStatus = false
-		object.UpdateMemberToCasdoor(member)
+	claims := c.GetSessionClaims()
+	if claims != nil {
+		_, err := object.UpdateMemberOnlineStatus(&claims.User, false, util.GetCurrentTime())
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
-	c.SetSessionUser(nil)
+	c.SetSessionClaims(nil)
 
-	resp = Response{Status: "ok", Msg: ""}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk()
 }
 
 // @Title GetAccount
@@ -99,18 +98,13 @@ func (c *ApiController) GetAccount() {
 		return
 	}
 
-	var resp Response
+	claims := c.GetSessionClaims()
 
-	claims := c.GetSessionUser()
-	userObj := claims
-	resp = Response{Status: "ok", Msg: "", Data: userObj}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(claims)
 }
 
 func (c *ApiController) UpdateAccountBalance(balance int) {
-	claims := c.GetSessionUser()
-	claims.Score = balance
-	c.SetSessionUser(claims)
+	user := c.GetSessionUser()
+	user.Score = balance
+	c.SetSessionUser(user)
 }

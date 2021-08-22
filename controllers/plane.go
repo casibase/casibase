@@ -55,13 +55,12 @@ func (c *ApiController) GetPlaneList() {
 }
 
 func (c *ApiController) AddPlane() {
-	var plane object.AdminPlaneInfo
-	var resp Response
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	var plane object.AdminPlaneInfo
+	var resp Response
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &plane)
 	if err != nil {
@@ -100,15 +99,14 @@ func (c *ApiController) AddPlane() {
 }
 
 func (c *ApiController) UpdatePlane() {
+	if !c.RequireAdminRight() {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	var resp Response
 	var plane object.AdminPlaneInfo
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
-		return
-	}
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &plane)
 	if err != nil {
@@ -132,12 +130,11 @@ func (c *ApiController) UpdatePlane() {
 }
 
 func (c *ApiController) DeletePlane() {
-	id := c.Input().Get("id")
-
-	if !object.CheckModIdentity(c.GetSessionUsername()) {
-		c.RequireAdmin(c.GetSessionUsername())
+	if !c.RequireAdminRight() {
 		return
 	}
+
+	id := c.Input().Get("id")
 
 	c.Data["json"] = Response{Status: "ok", Msg: "success", Data: object.DeletePlane(id)}
 	c.ServeJSON()

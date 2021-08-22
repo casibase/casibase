@@ -44,7 +44,7 @@ func AutoSigninFilter(ctx *context.Context) {
 	accessToken := queryMap.Get("accessToken")
 	if accessToken == "signout" {
 		// sign out
-		setSessionUser(ctx, nil)
+		setSessionClaims(ctx, nil)
 		return
 	}
 
@@ -56,14 +56,14 @@ func AutoSigninFilter(ctx *context.Context) {
 			return
 		}
 
-		setSessionUser(ctx, claims)
+		setSessionClaims(ctx, claims)
 		return
 	}
 
 	if claims != nil {
-		ok, _ := auth.CheckUserPassword(claims.User)
+		ok, _ := auth.CheckUserPassword(&claims.User)
 		if ok {
-			setSessionUser(ctx, claims)
+			setSessionClaims(ctx, claims)
 		}
 	}
 }

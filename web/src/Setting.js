@@ -24,6 +24,8 @@ import i18next from "i18next";
 import Zmage from "react-zmage";
 import Identicon from "identicon.js";
 import Sdk from "casdoor-js-sdk";
+import * as ConfBackend from "./backend/ConfBackend";
+import { FrontConfig } from "./Conf";
 
 const pangu = require("pangu");
 
@@ -69,14 +71,6 @@ export function getMyProfileUrl(account) {
 
 export function signin() {
   return CasdoorSdk.signin(ServerUrl);
-}
-
-export function parseJson(s) {
-  if (s === "") {
-    return null;
-  } else {
-    return JSON.parse(s);
-  }
 }
 
 export function scrollToTop() {
@@ -308,4 +302,22 @@ export function renderImage({ alt, src }) {
 
 export function renderLink(props) {
   return <a {...props} target="_blank" rel="nofollow noopener noreferrer" />;
+}
+
+export function getFrontConf(field) {
+  let storage = window.localStorage;
+  for (let conf in FrontConfig) {
+    if (storage[conf] !== undefined) {
+      FrontConfig[conf] = storage[conf];
+    }
+  }
+
+  ConfBackend.getFrontConfByField(field).then((res) => {
+    for (let key in res) {
+      if (res[key].Value !== "") {
+        FrontConfig[res[key].Id] = res[key].Value;
+      }
+      storage[res[key].Id] = FrontConfig[res[key].Id];
+    }
+  });
 }

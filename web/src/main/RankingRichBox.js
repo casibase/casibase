@@ -110,11 +110,11 @@ class RankingRichBox extends React.Component {
                         <span class="gray">{key + 1}.</span>{" "}
                         <a href={`/member/${member.id}`}>{member.id}</a>
                       </h2>
-                      <span className="gray f12"> {member.tagline} </span>
+                      <span className="gray f12"> {member.tag} </span>
                       <div className="sep5"></div>
                       <span className="gray f12">
                         {" "}
-                        <a href={member.website}>{member.website}</a>{" "}
+                        <a href={member.homepage}>{member.homepage}</a>{" "}
                       </span>
                       <div className="sep5"></div>
                       {/* <span className="fade">第 n 名会员</span> */}

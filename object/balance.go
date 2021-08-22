@@ -18,6 +18,7 @@ import (
 	"sync"
 
 	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // ConsumptionType 1-9 means:
@@ -63,42 +64,13 @@ func AddBalance(balance *ConsumptionRecord) bool {
 	return affected != 0
 }
 
-func GetConsumptionRecordCount() int {
-	count, err := adapter.Engine.Count(&ConsumptionRecord{})
-	if err != nil {
-		panic(err)
-	}
-
-	return int(count)
+func GetMemberBalance(user *auth.User) int {
+	return user.Score
 }
 
-/*
-func GetConsumptionRecordId() int {
-	num := GetConsumptionRecordCount()
-
-	res := num + 1
-
-	return res
-}
-*/
-
-func GetMemberBalance(id string) int {
-	member := GetMember(id)
-	if member == nil {
-		return 0
-	}
-	return member.Score
-}
-
-func UpdateMemberBalances(id string, amount int) bool {
-	member := GetMemberFromCasdoor(id)
-	if member == nil {
-		return false
-	}
-
-	member.Score += amount
-
-	return UpdateMemberToCasdoor(member)
+func UpdateMemberBalances(user *auth.User, amount int) (bool, error) {
+	user.Score += amount
+	return auth.UpdateUser(user)
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {
@@ -197,87 +169,87 @@ func GetThanksStatus(memberId string, id, recordType int) bool {
 	return total != 0
 }
 
-func CreateTopicConsumption(consumerId string, id int) bool {
+func CreateTopicConsumption(user *auth.User, id int) bool {
 	record := ConsumptionRecord{
 		//Id:              util.IntToString(GetConsumptionRecordId()),
-		ReceiverId:      consumerId,
+		ReceiverId:      GetUserName(user),
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 8,
 	}
 	record.Amount = CreateTopicCost
 	record.Amount = -record.Amount
-	balance := GetMemberBalance(consumerId)
+	balance := GetMemberBalance(user)
 	if balance+record.Amount < 0 {
 		return false
 	}
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(consumerId, record.Amount)
+	UpdateMemberBalances(user, record.Amount)
 
 	return true
 }
 
-func CreateReplyConsumption(consumerId string, id int) bool {
+func CreateReplyConsumption(user *auth.User, id int) bool {
 	record := ConsumptionRecord{
 		//Id:              util.IntToString(GetConsumptionRecordId()),
-		ReceiverId:      consumerId,
+		ReceiverId:      GetUserName(user),
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 6,
 	}
 	record.Amount = CreateReplyCost
 	record.Amount = -record.Amount
-	balance := GetMemberBalance(consumerId)
+	balance := GetMemberBalance(user)
 	if balance+record.Amount < 0 {
 		return false
 	}
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(consumerId, record.Amount)
+	UpdateMemberBalances(user, record.Amount)
 
 	return true
 }
 
-func GetReplyBonus(author, consumerId string, id int) {
-	if author == consumerId {
+func GetReplyBonus(author *auth.User, consumer *auth.User, id int) {
+	if author.Name == consumer.Name {
 		return
 	}
 
 	record := ConsumptionRecord{
 		//Id:              util.IntToString(GetConsumptionRecordId()),
-		ConsumerId:      consumerId,
-		ReceiverId:      author,
+		ConsumerId:      consumer.Name,
+		ReceiverId:      author.Name,
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 7,
 	}
 	record.Amount = ReceiveReplyBonus
-	balance := GetMemberBalance(consumerId)
+	balance := GetMemberBalance(consumer)
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalances(author, record.Amount)
 }
 
-func TopTopicConsumption(consumerId string, id int) bool {
+func TopTopicConsumption(user *auth.User, id int) bool {
 	record := ConsumptionRecord{
-		ReceiverId:      consumerId,
+		ReceiverId:      GetUserName(user),
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
 		ConsumptionType: 9,
 	}
 	record.Amount = TopTopicCost
 	record.Amount = -record.Amount
-	balance := GetMemberBalance(consumerId)
+	balance := GetMemberBalance(user)
 	if balance+record.Amount < 0 {
 		return false
 	}
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(consumerId, record.Amount)
+	UpdateMemberBalances(user, record.Amount)
 
 	return true
 }
