@@ -16,7 +16,6 @@ package routers
 
 import (
 	"github.com/beego/beego/v2/adapter/context"
-	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -26,12 +25,7 @@ func getSessionClaims(ctx *context.Context) *auth.Claims {
 		return nil
 	}
 
-	claims := &auth.Claims{}
-	err := util.JsonToStruct(s.(string), claims)
-	if err != nil {
-		panic(err)
-	}
-
+	claims := s.(*auth.Claims)
 	return claims
 }
 
@@ -45,8 +39,7 @@ func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
 		return
 	}
 
-	s := util.StructToJson(claims)
-	err := ctx.Input.CruSession.Set(nil, "user", s)
+	err := ctx.Input.CruSession.Set(nil, "user", claims)
 	if err != nil {
 		panic(err)
 	}

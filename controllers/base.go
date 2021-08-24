@@ -17,7 +17,6 @@ package controllers
 import (
 	beego "github.com/beego/beego/v2/adapter"
 	"github.com/casbin/casnode/object"
-	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -39,12 +38,7 @@ func (c *ApiController) GetSessionClaims() *auth.Claims {
 		return nil
 	}
 
-	claims := &auth.Claims{}
-	err := util.JsonToStruct(s.(string), claims)
-	if err != nil {
-		panic(err)
-	}
-
+	claims := s.(*auth.Claims)
 	return claims
 }
 
@@ -54,8 +48,7 @@ func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 		return
 	}
 
-	s := util.StructToJson(claims)
-	c.SetSession("user", s)
+	c.SetSession("user", claims)
 }
 
 func (c *ApiController) GetSessionUser() *auth.User {
