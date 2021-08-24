@@ -81,11 +81,7 @@ func GetMembersOld() []*Member {
 }
 
 func GetRankingRich() ([]*auth.User, error) {
-	users, err := auth.GetUsers()
-	if err != nil {
-		return nil, err
-	}
-
+	users := GetUsers()
 	sort.SliceStable(users, func(i, j int) bool {
 		return users[i].Score > users[j].Score
 	})
@@ -150,11 +146,7 @@ func GetMemberEmailReminder(id string) (bool, string) {
 }
 
 func GetUserByEmail(email string) (*auth.User, error) {
-	users, err := auth.GetUsers()
-	if err != nil {
-		return nil, err
-	}
-
+	users := GetUsers()
 	for _, user := range users {
 		if user.Email == email {
 			return user, nil

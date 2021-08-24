@@ -362,8 +362,12 @@ class NewReplyBox extends React.Component {
       return null;
     }
 
-    let needLogin =
+    const needLogin =
       this.props.account === undefined || this.props.account === null;
+    if (!this.props.isEmbedded && needLogin) {
+      return null;
+    }
+
     let blurStyle = needLogin ? { color: "#ccc", pointerEvents: "none" } : null;
 
     return (

@@ -51,6 +51,12 @@ export default class Embed extends React.Component {
     if (this.state.topic === null) {
       return "Loading...";
     }
-    return <ReplyBox account={this.props.account} topic={this.state.topic} />;
+    return (
+      <ReplyBox
+        account={this.props.account}
+        topic={this.state.topic}
+        isEmbedded={true}
+      />
+    );
   }
 }

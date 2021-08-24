@@ -549,6 +549,7 @@ class ReplyBox extends React.Component {
         ) : null}
         <NewReplyBox
           account={this.props.account}
+          isEmbedded={this.props.isEmbedded}
           onReplyChange={this.handleReply}
           content={this.state.reply}
           sticky={this.state.sticky}
