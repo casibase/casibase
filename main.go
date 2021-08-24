@@ -21,6 +21,7 @@ import (
 	"github.com/beego/beego/v2/adapter/plugins/cors"
 	_ "github.com/beego/beego/v2/adapter/session/mysql"
 	_ "github.com/beego/beego/v2/server/web/session/redis"
+	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/routers"
@@ -30,6 +31,7 @@ import (
 
 func main() {
 	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
 	controllers.InitHttpClient()
 	object.HttpClient = controllers.HttpClient
 	service.InitOSS()

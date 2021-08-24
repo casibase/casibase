@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	beego "github.com/beego/beego/v2/adapter"
+	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
@@ -91,20 +92,12 @@ func GetRankingRich() ([]*auth.User, error) {
 }
 
 func GetUser(id string) *auth.User {
-	user, err := auth.GetUser(id)
-	if err != nil {
-		panic(err)
-	}
-
+	user := casdoor.GetUser(id)
 	return user
 }
 
 func GetUsers() []*auth.User {
-	users, err := auth.GetUsers()
-	if err != nil {
-		panic(err)
-	}
-
+	users := casdoor.GetUsers()
 	return users
 }
 
