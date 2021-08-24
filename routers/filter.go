@@ -37,6 +37,10 @@ func Static(ctx *context.Context) {
 	}
 
 	if util.FileExist(path) {
+		if path == "web/build/index.html" {
+			FreshAccountActiveStatus(ctx)
+		}
+
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, path)
 	} else {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
