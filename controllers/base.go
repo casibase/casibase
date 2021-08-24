@@ -30,7 +30,7 @@ func GetUserName(user *auth.User) string {
 		return ""
 	}
 
-	return GetUserName(user)
+	return user.Name
 }
 
 func (c *ApiController) GetSessionClaims() *auth.Claims {

@@ -177,7 +177,7 @@ func GetUserName(user *auth.User) string {
 		return ""
 	}
 
-	return GetUserName(user)
+	return user.Name
 }
 
 func CheckIsAdmin(user *auth.User) bool {
@@ -198,7 +198,7 @@ func GetMemberFileQuota(user *auth.User) int {
 
 // UpdateMemberOnlineStatus updates member's online information.
 func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate string) (bool, error) {
-	if user != nil {
+	if user == nil {
 		return false, fmt.Errorf("user is nil")
 	}
 
