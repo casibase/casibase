@@ -78,28 +78,46 @@ class AdminHomepage extends React.Component {
     //
   }
 
+  renderManageItemInternal(item) {
+    return (
+      <div
+        style={{
+          display: "table",
+          padding: "20px 0px 20px 0px",
+          width: "100%",
+          textAlign: "center",
+          fontSize: "14px",
+        }}
+      >
+        <img
+          src={item?.image}
+          border="0"
+          align="default"
+          width="73"
+          alt={item?.value}
+        />
+        <div className="sep10" />
+        {item?.label}
+      </div>
+    );
+  }
+
   renderManageItem(item) {
+    if (item.value === "member") {
+      return (
+        <a
+          className="grid_item"
+          target="_blank"
+          href={Setting.getMyProfileUrl(this.props.account)}
+        >
+          {this.renderManageItemInternal(item)}
+        </a>
+      );
+    }
+
     return (
       <Link className="grid_item" to={`admin/${item?.value}`}>
-        <div
-          style={{
-            display: "table",
-            padding: "20px 0px 20px 0px",
-            width: "100%",
-            textAlign: "center",
-            fontSize: "14px",
-          }}
-        >
-          <img
-            src={item?.image}
-            border="0"
-            align="default"
-            width="73"
-            alt={item?.value}
-          />
-          <div className="sep10"></div>
-          {item?.label}
-        </div>
+        {this.renderManageItemInternal(item)}
       </Link>
     );
   }

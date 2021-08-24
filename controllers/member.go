@@ -23,7 +23,7 @@ import (
 // @Title GetMember
 // @Description get member by id
 // @Param   id     query    string  true        "id"
-// @Success 200 {object} object.Member The Response object
+// @Success 200 {object} auth.User The Response object
 // @router /get-member [get]
 func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
@@ -48,7 +48,7 @@ func (c *ApiController) GetMemberEditorType() {
 
 // @Title GetRankingRich
 // @Description RankingRich
-// @Success 200 {array} object.Member The Response object
+// @Success 200 {array} auth.User The Response object
 // @router /get-ranking-rich [get]
 func (c *ApiController) GetRankingRich() {
 	users, err := object.GetRankingRich()

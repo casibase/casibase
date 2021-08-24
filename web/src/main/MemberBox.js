@@ -323,9 +323,10 @@ class MemberBox extends React.Component {
               &nbsp;{this.state.member?.location}
             </a>
           ) : null}
-          {this.state.member?.githubAccount?.length !== 0 ? (
+          {this.state.member?.properties?.oauth_GitHub_username?.length !==
+          0 ? (
             <a
-              href={`https://github.com/${this.state.member?.githubAccount}`}
+              href={`https://github.com/${this.state.member?.properties?.oauth_GitHub_username}`}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -336,12 +337,12 @@ class MemberBox extends React.Component {
                 alt="GitHub"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.githubAccount}
+              &nbsp;{this.state.member?.properties?.oauth_GitHub_username}
             </a>
           ) : null}
-          {this.state.member?.googleAccount?.length !== 0 ? (
+          {this.state.member?.properties.oauth_Google_username?.length !== 0 ? (
             <a
-              href={`mailto:${this.state.member?.googleAccount}`}
+              href={`mailto:${this.state.member?.properties.oauth_Google_username}`}
               className="social_label"
               target="_blank"
               rel="nofollow noopener noreferrer"
@@ -352,11 +353,11 @@ class MemberBox extends React.Component {
                 alt="Google"
                 align="absmiddle"
               />{" "}
-              &nbsp;{this.state.member?.googleAccount}
+              &nbsp;{this.state.member?.properties.oauth_Google_username}
             </a>
           ) : null}
         </div>
-        {this.state.member?.bio === "" ? (
+        {this.state.member?.bio !== "" ? (
           <div className="cell">{this.state.member?.bio}</div>
         ) : null}
       </div>
