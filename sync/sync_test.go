@@ -29,7 +29,11 @@ func TestSyncUsers(t *testing.T) {
 	members := object.GetMembersOld()
 	for _, member := range members {
 		user := object.CreateCasdoorUserFromMember(member)
-		addUser(user)
-		fmt.Printf("%v\n", user)
+		if getUser(user.Name) != nil {
+			fmt.Printf("User already exists: %v\n", user)
+		}
+
+		//addUser(user)
+		//fmt.Printf("%v\n", user)
 	}
 }

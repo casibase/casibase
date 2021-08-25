@@ -24,6 +24,8 @@ import (
 
 var adapter *object.Adapter
 
+var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+
 func initConfig() {
 	err := beego.LoadAppConfig("ini", "../conf/app.conf")
 	if err != nil {
@@ -34,7 +36,22 @@ func initConfig() {
 }
 
 func initAdapter() {
-	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), dbName)
+	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("casdoorDbName"))
+}
+
+func getUser(name string) *auth.User {
+	owner := CasdoorOrganization
+	user := auth.User{Owner: owner, Name: name}
+	existed, err := adapter.Engine.Get(&user)
+	if err != nil {
+		panic(err)
+	}
+
+	if existed {
+		return &user
+	} else {
+		return nil
+	}
 }
 
 func addUser(user *auth.User) bool {
