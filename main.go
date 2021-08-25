@@ -35,6 +35,7 @@ func main() {
 	controllers.InitHttpClient()
 	object.HttpClient = controllers.HttpClient
 	service.InitOSS()
+	service.InitDictionary()
 	util.InitSegmenter()
 	object.InitForumBasicInfo()
 	object.InitFrontConf()

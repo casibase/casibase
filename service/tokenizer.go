@@ -28,7 +28,7 @@ type wordfreq struct {
 	num  int
 }
 
-func init() {
+func InitDictionary() {
 	segmenter.LoadDictionary("./dictionary/dictionary.txt")
 }
 
