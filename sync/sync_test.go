@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/object"
 )
 
@@ -25,15 +26,26 @@ func TestSyncUsers(t *testing.T) {
 	initConfig()
 	initAdapter()
 	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
 
 	members := object.GetMembersOld()
-	for _, member := range members {
-		user := object.CreateCasdoorUserFromMember(member)
-		if getUser(user.Name) != nil {
-			fmt.Printf("User already exists: %v\n", user)
-		}
+	userMap := getUserMap()
 
-		//addUser(user)
-		//fmt.Printf("%v\n", user)
+	i := 0
+	for _, member := range members {
+		newUser := object.CreateCasdoorUserFromMember(member)
+		user := userMap[newUser.Name]
+
+		if user != nil {
+			fmt.Printf("[%d] Update user, user: %v, member: %v\n", i, user, newUser)
+
+			mergedUser := mergeUser(*newUser, *user)
+			updateUser(mergedUser)
+
+			i += 1
+		} else {
+			addUser(newUser)
+			fmt.Printf("New user: %v\n", newUser)
+		}
 	}
 }
