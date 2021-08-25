@@ -22,7 +22,7 @@ import (
 	"strconv"
 	"strings"
 
-	beego "github.com/beego/beego/v2/adapter"
+	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"

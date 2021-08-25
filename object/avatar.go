@@ -17,7 +17,7 @@ package object
 import (
 	"fmt"
 
-	beego "github.com/beego/beego/v2/adapter"
+	"github.com/astaxie/beego"
 )
 
 var CasdoorStorageEndpoint = beego.AppConfig.String("casdoorStorageEndpoint")

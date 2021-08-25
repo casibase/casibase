@@ -17,7 +17,7 @@ package routers
 import (
 	"net/url"
 
-	"github.com/beego/beego/v2/adapter/context"
+	"github.com/astaxie/beego/context"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"

@@ -21,7 +21,7 @@ import (
 	"time"
 
 	awss3 "github.com/aws/aws-sdk-go/service/s3"
-	beego "github.com/beego/beego/v2/adapter"
+	"github.com/astaxie/beego"
 	"github.com/qor/oss"
 	"github.com/qor/oss/aliyun"
 	"github.com/qor/oss/s3"

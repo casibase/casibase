@@ -15,12 +15,10 @@
 package main
 
 import (
-	"os"
-
-	beego "github.com/beego/beego/v2/adapter"
-	"github.com/beego/beego/v2/adapter/plugins/cors"
-	_ "github.com/beego/beego/v2/adapter/session/mysql"
-	_ "github.com/beego/beego/v2/server/web/session/redis"
+	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/logs"
+	"github.com/astaxie/beego/plugins/cors"
+	_ "github.com/astaxie/beego/session/redis"
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
@@ -39,6 +37,7 @@ func main() {
 	util.InitSegmenter()
 	object.InitForumBasicInfo()
 	object.InitFrontConf()
+	object.InitTimer()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},
@@ -50,6 +49,7 @@ func main() {
 
 	//beego.DelStaticPath("/static")
 	beego.SetStaticPath("/static", "web/build/static")
+	beego.BConfig.WebConfig.DirectoryIndex = true
 	beego.SetStaticPath("/swagger", "swagger")
 	beego.BConfig.WebConfig.DirectoryIndex = true
 
@@ -67,13 +67,12 @@ func main() {
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
 
-	port := beego.AppConfig.String("httpport")
-	if len(os.Args) > 1 {
-		port = os.Args[1]
+	err := logs.SetLogger("file", `{"filename":"logs/casnode.log","maxdays":99999}`)
+	if err != nil {
+		panic(err)
 	}
+	logs.SetLevel(logs.LevelInformational)
+	logs.SetLogFuncCall(false)
 
-	//controllers.InitBeegoSession()
-	object.InitTimer()
-
-	beego.Run("0.0.0.0:" + port)
+	beego.Run()
 }

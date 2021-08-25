@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	beego "github.com/beego/beego/v2/adapter"
+	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 

@@ -14,7 +14,7 @@
 
 package object
 
-import beego "github.com/beego/beego/v2/adapter"
+import "github.com/astaxie/beego"
 
 var (
 	DefaultPageNum             = 20

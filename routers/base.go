@@ -15,12 +15,12 @@
 package routers
 
 import (
-	"github.com/beego/beego/v2/adapter/context"
+	"github.com/astaxie/beego/context"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 func getSessionClaims(ctx *context.Context) *auth.Claims {
-	s := ctx.Input.CruSession.Get(nil, "user")
+	s := ctx.Input.CruSession.Get("user")
 	if s == nil {
 		return nil
 	}
@@ -31,7 +31,7 @@ func getSessionClaims(ctx *context.Context) *auth.Claims {
 
 func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
 	if claims == nil {
-		err := ctx.Input.CruSession.Delete(nil, "user")
+		err := ctx.Input.CruSession.Delete("user")
 		if err != nil {
 			panic(err)
 		}
@@ -39,11 +39,11 @@ func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
 		return
 	}
 
-	err := ctx.Input.CruSession.Set(nil, "user", claims)
+	err := ctx.Input.CruSession.Set("user", claims)
 	if err != nil {
 		panic(err)
 	}
 
 	// https://github.com/beego/beego/issues/3445#issuecomment-455411915
-	ctx.Input.CruSession.SessionRelease(nil, ctx.ResponseWriter)
+	ctx.Input.CruSession.SessionRelease(ctx.ResponseWriter)
 }

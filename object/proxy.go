@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"time"
 
-	beego "github.com/beego/beego/v2/adapter"
+	"github.com/astaxie/beego"
 	"golang.org/x/net/proxy"
 )
 

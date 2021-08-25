@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"context"
+	ctx "context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	beegoContext "github.com/beego/beego/v2/adapter/context"
+	"github.com/astaxie/beego/context"
 	"github.com/chromedp/chromedp"
 )
 
-var chromeCtx context.Context
+var chromeCtx ctx.Context
 var isChromeInstalled bool
 var isChromeInit bool
 
@@ -54,17 +54,17 @@ func isChromeFound() bool {
 	return false
 }
 
-func InitSsr() {
+func InitChromeDp() {
 	isChromeInit = true
 	isChromeInstalled = isChromeFound()
 	if isChromeInstalled {
-		chromeCtx, _ = chromedp.NewContext(context.Background())
+		chromeCtx, _ = chromedp.NewContext(ctx.Background())
 	}
 }
 
 func RenderPage(urlString string) string {
 	if !isChromeInit {
-		InitSsr()
+		InitChromeDp()
 	}
 	if !isChromeInstalled {
 		return "Chrome is not installed in your server"
@@ -91,7 +91,7 @@ func isBot(userAgent string) bool {
 	return botRegex.MatchString(userAgent)
 }
 
-func BotFilter(ctx *beegoContext.Context) {
+func BotFilter(ctx *context.Context) {
 	if strings.HasPrefix(ctx.Request.URL.Path, "/api/") {
 		return
 	}
