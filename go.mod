@@ -8,7 +8,6 @@ require (
 	github.com/astaxie/beego v1.12.3
 	github.com/aws/aws-sdk-go v1.38.7
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
-	github.com/beego/beego/v2 v2.0.2-0.20210531141155-ea87fba943cf
 	github.com/casbin/google-groups-crawler v0.1.3
 	github.com/casdoor/casdoor-go-sdk v0.0.6
 	github.com/chromedp/chromedp v0.6.10
@@ -38,5 +37,6 @@ require (
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	xorm.io/core v0.7.2
 	xorm.io/xorm v0.8.1
 )
