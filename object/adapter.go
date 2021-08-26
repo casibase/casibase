@@ -24,6 +24,8 @@ import (
 )
 
 var adapter *Adapter
+var CasdoorOrganization string
+var CasdoorApplication string
 
 type Session struct {
 	SessionKey    string  `xorm:"char(64) notnull pk"`
@@ -34,6 +36,9 @@ type Session struct {
 func InitAdapter() {
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
 	adapter.createTable()
+
+	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 }
 
 // Adapter represents the MySQL adapter for policy storage.

@@ -3,12 +3,9 @@ package object
 import (
 	"strconv"
 
-	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
-
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 func CreateCasdoorUserFromMember(member *Member) *auth.User {
 	if member == nil {

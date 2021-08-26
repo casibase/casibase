@@ -14,12 +14,7 @@
 
 package casdoor
 
-import (
-	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
-)
-
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+import "github.com/casdoor/casdoor-go-sdk/auth"
 
 func GetUsers() []*auth.User {
 	owner := CasdoorOrganization

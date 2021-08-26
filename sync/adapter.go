@@ -15,6 +15,9 @@
 package sync
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/object"
 	"github.com/casdoor/casdoor-go-sdk/auth"
@@ -24,8 +27,6 @@ import (
 )
 
 var adapter *object.Adapter
-
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 
 func initConfig() {
 	err := beego.LoadAppConfig("ini", "../conf/app.conf")
@@ -40,19 +41,23 @@ func initAdapter() {
 	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("casdoorDbName"))
 }
 
-func getUser(name string) *auth.User {
-	owner := CasdoorOrganization
-	user := auth.User{Owner: owner, Name: name}
-	existed, err := adapter.Engine.Get(&user)
-	if err != nil {
-		panic(err)
-	}
+//func getUser(name string) *auth.User {
+//	owner := object.CasdoorOrganization
+//	user := auth.User{Owner: owner, Name: name}
+//	existed, err := adapter.Engine.Get(&user)
+//	if err != nil {
+//		panic(err)
+//	}
+//
+//	if existed {
+//		return &user
+//	} else {
+//		return nil
+//	}
+//}
 
-	if existed {
-		return &user
-	} else {
-		return nil
-	}
+func GetId(user *auth.User) string {
+	return fmt.Sprintf("%s/%s", user.Owner, strings.ToLower(user.Name))
 }
 
 func addUser(user *auth.User) bool {
@@ -77,7 +82,7 @@ func getUserMap() map[string]*auth.User {
 	m := map[string]*auth.User{}
 	users := object.GetUsers()
 	for _, user := range users {
-		m[user.Name] = user
+		m[GetId(user)] = user
 	}
 	return m
 }

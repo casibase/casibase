@@ -29,8 +29,6 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
-
 // Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
 type Member struct {
 	Id                 string `xorm:"varchar(100) notnull pk" json:"id"`

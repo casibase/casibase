@@ -34,7 +34,7 @@ func TestSyncUsers(t *testing.T) {
 	i := 0
 	for _, member := range members {
 		newUser := object.CreateCasdoorUserFromMember(member)
-		user := userMap[newUser.Name]
+		user := userMap[GetId(newUser)]
 
 		if user != nil {
 			fmt.Printf("[%d] Update user, user: %v, member: %v\n", i, user, newUser)
