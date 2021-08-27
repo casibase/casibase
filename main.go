@@ -18,7 +18,6 @@ import (
 	"encoding/gob"
 
 	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/logs"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
 	"github.com/casbin/casnode/casdoor"
@@ -70,13 +69,6 @@ func main() {
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = beego.AppConfig.String("redisEndpoint")
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 30
-
-	err := logs.SetLogger("file", `{"filename":"logs/casnode.log","maxdays":99999}`)
-	if err != nil {
-		panic(err)
-	}
-	logs.SetLevel(logs.LevelInformational)
-	logs.SetLogFuncCall(false)
 
 	beego.Run()
 }
