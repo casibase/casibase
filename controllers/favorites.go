@@ -196,9 +196,5 @@ func (c *ApiController) GetAccountFavoriteNum() {
 	}
 	wg.Wait()
 
-	var resp Response
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }

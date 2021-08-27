@@ -46,12 +46,7 @@ func (c *ApiController) GetPlaneAdmin() {
 }
 
 func (c *ApiController) GetPlaneList() {
-	var resp Response
-
-	resp = Response{Status: "ok", Msg: "success", Data: object.GetPlaneList()}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(object.GetPlaneList())
 }
 
 func (c *ApiController) AddPlane() {
@@ -92,10 +87,7 @@ func (c *ApiController) AddPlane() {
 		Visible:         plane.Visible,
 	}
 	res := object.AddPlane(&newPlane)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) UpdatePlane() {
@@ -105,7 +97,6 @@ func (c *ApiController) UpdatePlane() {
 
 	id := c.Input().Get("id")
 
-	var resp Response
 	var plane object.AdminPlaneInfo
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &plane)
@@ -123,10 +114,7 @@ func (c *ApiController) UpdatePlane() {
 		Visible:         plane.Visible,
 	}
 	res := object.UpdatePlane(id, &newPlane)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) DeletePlane() {

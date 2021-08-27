@@ -524,12 +524,9 @@ func (c *ApiController) GetHotTopic() {
 		limit = defaultLimit
 	}
 
-	var resp Response
 	res := object.GetHotTopic(limit)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.ResponseOk(res)
 
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 // @Title UpdateTopicNode
@@ -544,7 +541,6 @@ func (c *ApiController) UpdateTopicNode() {
 
 	user := c.GetSessionUser()
 
-	var resp Response
 	var form updateTopicNode
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -565,9 +561,7 @@ func (c *ApiController) UpdateTopicNode() {
 	}
 	res := object.UpdateTopicWithLimitCols(id, &topic)
 
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 // @Title EditContent
@@ -752,14 +746,12 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 	nodeId := c.Input().Get("nodeId")
 
 	if urlPath == "" || title == "" {
-		c.Data["json"] = Response{Status: "error", Msg: "Miss urlPath or title"}
-		c.ServeJSON()
+		c.ResponseError("Miss urlPath or title")
 		return
 	}
 	node := object.GetNode(nodeId)
 	if node == nil {
-		c.Data["json"] = Response{Status: "error", Msg: "Node not exists."}
-		c.ServeJSON()
+		c.ResponseError("Node not exists.")
 		return
 	}
 
@@ -780,6 +772,5 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 		object.AddTopic(topic)
 	}
 
-	c.Data["json"] = Response{Status: "ok", Data: topic}
-	c.ServeJSON()
+	c.ResponseOk(topic)
 }

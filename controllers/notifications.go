@@ -72,35 +72,23 @@ func (c *ApiController) GetNotifications() {
 		offset = page*limit - limit
 	}
 
-	var resp Response
 	res := object.GetNotifications(memberId, limit, offset)
 	num := object.GetNotificationNum(memberId)
-	resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res, num)
 }
 
 func (c *ApiController) DeleteNotification() {
 	id := c.Input().Get("id")
 
-	var resp Response
 	res := object.DeleteNotification(id)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) GetUnreadNotificationNum() {
 	memberId := c.GetSessionUsername()
 
-	var resp Response
 	res := object.GetUnreadNotificationNum(memberId)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) UpdateReadStatus() {

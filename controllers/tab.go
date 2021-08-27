@@ -79,10 +79,7 @@ func (c *ApiController) AddTab() {
 	}
 
 	res := object.AddTab(&tab)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) UpdateTab() {
@@ -92,7 +89,6 @@ func (c *ApiController) UpdateTab() {
 
 	id := c.Input().Get("id")
 
-	var resp Response
 	var tabInfo object.AdminTabInfo
 
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &tabInfo)
@@ -109,10 +105,7 @@ func (c *ApiController) UpdateTab() {
 		HomePage:    tabInfo.HomePage,
 	}
 	res := object.UpdateTab(id, &tab)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) DeleteTab() {

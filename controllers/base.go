@@ -95,16 +95,10 @@ func (c *ApiController) RequireSignedIn() bool {
 }
 
 func (c *ApiController) wrapResponse(res bool) {
-	var resp Response
-
 	if res {
-		resp = Response{Status: "ok", Msg: "", Data: ""}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseOk()
 	} else {
-		resp = Response{Status: "error", Msg: "errorUnknown", Data: ""}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("errorUnknown")
 	}
 }
 
@@ -119,14 +113,8 @@ func (c *ApiController) GetCommunityHealth() {
 }
 
 func (c *ApiController) GetForumVersion() {
-	var resp Response
-
 	res := object.GetForumVersion()
-
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) GetOnlineNum() {
@@ -137,11 +125,6 @@ func (c *ApiController) GetOnlineNum() {
 }
 
 func (c *ApiController) GetNodeNavigation() {
-	var resp Response
-
 	res := object.GetNodeNavigation()
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }

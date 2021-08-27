@@ -49,7 +49,6 @@ func (c *ApiController) GetFrontConfs() {
 
 func (c *ApiController) UpdateFrontConf() {
 	var confs []*object.FrontConf
-	var resp Response
 
 	if !c.RequireAdminRight() {
 		return
@@ -60,22 +59,17 @@ func (c *ApiController) UpdateFrontConf() {
 		panic(err)
 	}
 	res := object.UpdateFrontConf(confs)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.ResponseOk(res)
 
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) UpdateFrontConfToDefault() {
-	var resp Response
 
 	if !c.RequireAdminRight() {
 		return
 	}
 
 	res := object.UpdateFrontConf(object.Confs)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.ResponseOk(res)
 
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
