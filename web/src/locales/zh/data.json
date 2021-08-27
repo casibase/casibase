@@ -19,6 +19,18 @@
     "Admin": "后台",
     "Navigation": "导航"
   },
+  "frontConf": {
+    "Forum name": "论坛名字",
+    "Logo image": "logo图片",
+    "Footer Logo image": "底部logo图片",
+    "Footer Logo URL": "底部logo图片超链接",
+    "Right title": "登录栏标题",
+    "Right subtitle": "登录栏子标题",
+    "Footer title": "底部描述",
+    "Footer subtitle": "底部建言",
+    "Save": "保存",
+    "Reset": "重置"
+  },
   "about": {
     "Official website": "官网",
     "About": "关于",
@@ -67,7 +79,8 @@
     "You cannot edit this content.": "你不能编辑此内容。",
     "Edit reply": "编辑回复",
     "Save": "保存",
-    "Edit topic": "编辑主题"
+    "Edit topic": "编辑主题",
+    "Please login first": "Please login first"
   },
   "move": {
     "Move topic": "移动主题",
@@ -342,7 +355,8 @@
     "Creat node success": "创建节点成功",
     "Add new node": "新增节点",
     "Please go to the background page to continue to improve the information and submit": "请前往背景页面继续完善信息然后提交",
-    "sorter": "排序"
+    "sorter": "排序",
+    "Is hidden": "Is hidden"
   },
   "tab": {
     "Are you sure to delete tab": "你确定要删除该类别",
@@ -437,7 +451,8 @@
     "Make your comment helpful for others as much as possible": "请尽量让自己的回复能够对别人有帮助",
     "Please resolve the following issues before submitting": "创建新回复过程中遇到一些问题：",
     "Delete": "删除",
-    "Edit": "编辑"
+    "Edit": "编辑",
+    "Cancel": "Cancel reply to {username}"
   },
   "poster": {
     "Poster management": "广告管理",
@@ -692,27 +707,15 @@
     "Select Language": "选择语言",
     "Select Editor": "选择编辑器"
   },
-  "frontConf": {
-    "Forum name": "论坛名字",
-    "Logo image": "logo图片",
-    "Footer Logo image": "底部logo图片",
-    "Footer Logo URL": "底部logo图片超链接",
-    "Right title": "登录栏标题",
-    "Right subtitle": "登录栏子标题",
-    "Footer title": "底部描述",
-    "Footer subtitle": "底部建言",
-    "Save": "保存",
-    "Reset": "重置"
-  },
   "admin": {
     "Backstage management": "后台管理",
     "Node management": "节点管理",
     "Topic management": "帖子管理",
     "Poster management": "广告管理",
     "Member management": "用户管理",
+    "FrontConf management": "前端配置管理",
     "Sensitive management": "敏感词管理",
     "Translation management": "翻译管理",
-    "FrontConf management": "前端配置管理",
     "Tab management": "类别管理",
     "Plane management": "位面管理",
     "Get search result success": "获取搜索结果成功",
