@@ -25,8 +25,8 @@ func getSessionClaims(ctx *context.Context) *auth.Claims {
 		return nil
 	}
 
-	claims := s.(*auth.Claims)
-	return claims
+	claims := s.(auth.Claims)
+	return &claims
 }
 
 func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
@@ -39,7 +39,7 @@ func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
 		return
 	}
 
-	err := ctx.Input.CruSession.Set("user", claims)
+	err := ctx.Input.CruSession.Set("user", *claims)
 	if err != nil {
 		panic(err)
 	}

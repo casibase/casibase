@@ -38,8 +38,8 @@ func (c *ApiController) GetSessionClaims() *auth.Claims {
 		return nil
 	}
 
-	claims := s.(*auth.Claims)
-	return claims
+	claims := s.(auth.Claims)
+	return &claims
 }
 
 func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
@@ -48,7 +48,7 @@ func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 		return
 	}
 
-	c.SetSession("user", claims)
+	c.SetSession("user", *claims)
 }
 
 func (c *ApiController) GetSessionUser() *auth.User {
