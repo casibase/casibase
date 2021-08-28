@@ -29,56 +29,6 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-// Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
-type Member struct {
-	Id                 string `xorm:"varchar(100) notnull pk" json:"id"`
-	Password           string `xorm:"varchar(100) notnull" json:"-"`
-	No                 int    `json:"no"`
-	IsModerator        bool   `xorm:"bool" json:"isModerator"`
-	CreatedTime        string `xorm:"varchar(40)" json:"createdTime"`
-	Phone              string `xorm:"varchar(100)" json:"phone"`
-	AreaCode           string `xorm:"varchar(10)" json:"areaCode"` // phone area code
-	PhoneVerifiedTime  string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
-	Avatar             string `xorm:"varchar(150)" json:"avatar"`
-	Email              string `xorm:"varchar(100)" json:"email"`
-	EmailVerifiedTime  string `xorm:"varchar(40)" json:"emailVerifiedTime"`
-	Tagline            string `xorm:"varchar(100)" json:"tagline"`
-	Company            string `xorm:"varchar(100)" json:"company"`
-	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
-	Ranking            int    `json:"ranking"`
-	Score              int    `json:"score"`
-	Bio                string `xorm:"varchar(100)" json:"bio"`
-	Website            string `xorm:"varchar(100)" json:"website"`
-	Location           string `xorm:"varchar(100)" json:"location"`
-	Language           string `xorm:"varchar(10)"  json:"language"`
-	EditorType         string `xorm:"varchar(10)"  json:"editorType"`
-	FileQuota          int    `xorm:"int" json:"fileQuota"`
-	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
-	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
-	WechatAccount      string `xorm:"varchar(100)" json:"weChatAccount"`
-	WechatOpenId       string `xorm:"varchar(100)" json:"-"`
-	WechatVerifiedTime string `xorm:"varchar(40)" json:"WechatVerifiedTime"`
-	QQAccount          string `xorm:"qq_account varchar(100)" json:"qqAccount"`
-	QQOpenId           string `xorm:"qq_open_id varchar(100)" json:"-"`
-	QQVerifiedTime     string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
-	EmailReminder      bool   `xorm:"bool" json:"emailReminder"`
-	CheckinDate        string `xorm:"varchar(20)" json:"-"`
-	OnlineStatus       bool   `xorm:"bool" json:"onlineStatus"`
-	LastActionDate     string `xorm:"varchar(40)" json:"-"`
-	Status             int    `xorm:"int" json:"-"`
-	RenameQuota        int    `json:"renameQuota"`
-}
-
-func GetMembersOld() []*Member {
-	members := []*Member{}
-	err := adapter.Engine.Asc("created_time").Find(&members)
-	if err != nil {
-		panic(err)
-	}
-
-	return members
-}
-
 func GetRankingRich() ([]*auth.User, error) {
 	users := GetUsers()
 	sort.SliceStable(users, func(i, j int) bool {
