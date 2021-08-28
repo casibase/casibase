@@ -675,9 +675,7 @@ func (c *ApiController) TopTopic() {
 
 	user := c.GetSessionUser()
 
-	var resp Response
 	var res bool
-
 	nodeId := object.GetTopicNodeId(id)
 	if object.CheckIsAdmin(user) || object.CheckNodeModerator(user, nodeId) {
 		//timeStr := c.Input().Get("time")
@@ -690,11 +688,10 @@ func (c *ApiController) TopTopic() {
 	} else if object.GetTopicAuthor(id).Name == GetUserName(user) {
 		balance := object.GetMemberBalance(user)
 		if balance < object.TopTopicCost {
-			resp = Response{Status: "fail", Msg: "You don't have enough balance."}
-			c.Data["json"] = resp
-			c.ServeJSON()
+			c.ResponseError("You don't have enough balance.")
 			return
 		}
+
 		object.TopTopicConsumption(user, id)
 
 		c.UpdateAccountBalance(-object.TopTopicCost)
@@ -702,15 +699,11 @@ func (c *ApiController) TopTopic() {
 		date := util.GetTimeMinute(object.DefaultTopTopicTime)
 		res = object.ChangeTopicTopExpiredTime(id, date, "node")
 	} else {
-		resp = Response{Status: "fail", Msg: "Unauthorized."}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Unauthorized.")
 		return
 	}
 
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 // @Title CancelTopTopic
