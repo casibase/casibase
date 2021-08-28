@@ -18,7 +18,6 @@ import (
 	"crypto/md5"
 	"fmt"
 	"io/ioutil"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -30,13 +29,7 @@ import (
 )
 
 func GetRankingRich() ([]*auth.User, error) {
-	users := GetUsers()
-	sort.SliceStable(users, func(i, j int) bool {
-		return users[i].Score > users[j].Score
-	})
-
-	users = Limit(users, 0, 25)
-	return users, nil
+	return casdoor.GetSortedUsers("score", 25), nil
 }
 
 func GetUser(id string) *auth.User {
@@ -50,8 +43,7 @@ func GetUsers() []*auth.User {
 }
 
 func GetMemberNum() int {
-	users := GetUsers()
-	return len(users)
+	return casdoor.GetUserCount()
 }
 
 func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
@@ -86,14 +78,8 @@ func GetMemberEmailReminder(id string) (bool, string) {
 	return true, user.Email
 }
 
-func GetUserByEmail(email string) (*auth.User, error) {
-	users := GetUsers()
-	for _, user := range users {
-		if user.Email == email {
-			return user, nil
-		}
-	}
-	return nil, fmt.Errorf("user not found for Email: %s", email)
+func GetUserByEmail(email string) *auth.User {
+	return casdoor.GetUserByEmail(email)
 }
 
 func GetMemberCheckinDate(user *auth.User) string {
@@ -141,16 +127,7 @@ func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate str
 }
 
 func GetOnlineUserCount() int {
-	res := 0
-
-	users := GetUsers()
-	for _, user := range users {
-		if user.IsOnline {
-			res++
-		}
-	}
-
-	return res
+	return casdoor.GetOnlineUserCount()
 }
 
 type UpdateListItem struct {
@@ -186,10 +163,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 		return user, nil
 	}
 
-	newUser, err := GetUserByEmail(email)
-	if err != nil {
-		return nil, err
-	}
+	newUser := GetUserByEmail(email)
 
 	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
 	if err != nil {
