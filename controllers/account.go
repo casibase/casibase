@@ -103,8 +103,8 @@ func (c *ApiController) GetAccount() {
 	c.ResponseOk(claims)
 }
 
-func (c *ApiController) UpdateAccountBalance(balance int) {
+func (c *ApiController) UpdateAccountBalance(amount int) {
 	user := c.GetSessionUser()
-	user.Score = balance
+	user.Score += amount
 	c.SetSessionUser(user)
 }

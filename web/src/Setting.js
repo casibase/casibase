@@ -33,6 +33,9 @@ export let ServerUrl = "";
 export let ClientUrl = "";
 export let CasdoorSdk;
 
+// export const StaticBaseUrl = "https://cdn.jsdelivr.net/gh/casbin/static";
+export const StaticBaseUrl = "https://cdn.casbin.org";
+
 export function initServerUrl() {
   const hostname = window.location.hostname;
   if (hostname === "localhost") {
@@ -320,4 +323,9 @@ export function getFrontConf(field) {
       storage[res[key].Id] = FrontConfig[res[key].Id];
     }
   });
+}
+
+export function getProviderLogoLink(provider) {
+  const idp = provider.type.toLowerCase();
+  return `${StaticBaseUrl}/img/social_${idp}.png`;
 }

@@ -21,7 +21,6 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
@@ -164,12 +163,6 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 	}
 
 	newUser := GetUserByEmail(email)
-
-	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
-	if err != nil {
-		panic(err)
-	}
-
 	if newUser == nil {
 		properties := map[string]string{}
 		properties["emailVerifiedTime"] = util.GetCurrentTime()
@@ -193,7 +186,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Title:             "",
 			Homepage:          "",
 			Tag:               "",
-			Score:             score,
+			Score:             getInitScore(),
 			Ranking:           GetMemberNum() + 1,
 			IsOnline:          false,
 			IsAdmin:           false,

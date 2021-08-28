@@ -247,7 +247,7 @@ func (c *ApiController) AddTopic() {
 	if res {
 		object.CreateTopicConsumption(user, id)
 
-		c.UpdateAccountBalance(balance - object.CreateTopicCost)
+		c.UpdateAccountBalance(-object.CreateTopicCost)
 
 		object.AddTopicNotification(id, topic.Author, topic.Content)
 		targetNode := object.GetNode(topic.NodeId)
@@ -697,7 +697,7 @@ func (c *ApiController) TopTopic() {
 		}
 		object.TopTopicConsumption(user, id)
 
-		c.UpdateAccountBalance(balance - object.TopTopicCost)
+		c.UpdateAccountBalance(-object.TopTopicCost)
 
 		date := util.GetTimeMinute(object.DefaultTopTopicTime)
 		res = object.ChangeTopicTopExpiredTime(id, date, "node")

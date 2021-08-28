@@ -31,11 +31,10 @@ func (c *ApiController) AddThanks() {
 
 	user := c.GetSessionUser()
 
-	idStr := c.Input().Get("id")
+	id := util.ParseInt(c.Input().Get("id"))
 	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
 
 	var author *auth.User
-	id := util.ParseInt(idStr)
 	if thanksType == "2" {
 		author = object.GetReplyAuthor(id)
 	} else {
@@ -43,7 +42,6 @@ func (c *ApiController) AddThanks() {
 	}
 
 	consumerRecord := object.ConsumptionRecord{
-		//Id:          util.IntToString(object.GetConsumptionRecordId()),
 		ConsumerId:  author.Name,
 		ReceiverId:  GetUserName(user),
 		ObjectId:    id,
@@ -51,46 +49,42 @@ func (c *ApiController) AddThanks() {
 	}
 
 	receiverRecord := object.ConsumptionRecord{
-		//Id:          util.IntToString(object.GetConsumptionRecordId() + 1),
 		ConsumerId:  GetUserName(user),
 		ReceiverId:  author.Name,
 		ObjectId:    id,
 		CreatedTime: util.GetCurrentTime(),
 	}
 
-	var resp Response
 	if thanksType == "2" || thanksType == "1" {
 		if thanksType == "2" {
-			consumerRecord.Amount = object.ReplyThanksCost
-			consumerRecord.Amount = -consumerRecord.Amount
+			consumerRecord.Amount = -object.ReplyThanksCost
 			receiverRecord.Amount = object.ReplyThanksCost
 			consumerRecord.ConsumptionType = 5
 			receiverRecord.ConsumptionType = 3
 		} else {
-			consumerRecord.Amount = object.TopicThanksCost
-			consumerRecord.Amount = -consumerRecord.Amount
+			consumerRecord.Amount = -object.TopicThanksCost
 			receiverRecord.Amount = object.TopicThanksCost
 			consumerRecord.ConsumptionType = 4
 			receiverRecord.ConsumptionType = 2
 		}
+
 		consumerRecord.Balance = object.GetMemberBalance(user) + consumerRecord.Amount
 		if consumerRecord.Balance < 0 {
-			resp = Response{Status: "fail", Msg: "You don't have enough balance."}
-			c.Data["json"] = resp
-			c.ServeJSON()
+			c.ResponseError("You don't have enough balance.")
 			return
 		}
+
 		receiverRecord.Balance = object.GetMemberBalance(user) + receiverRecord.Amount
 		object.AddBalance(&receiverRecord)
 		object.AddBalance(&consumerRecord)
 
-		_, err := object.UpdateMemberBalances(user, consumerRecord.Amount)
+		_, err := object.UpdateMemberBalance(user, consumerRecord.Amount)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 
-		_, err = object.UpdateMemberBalances(user, receiverRecord.Amount)
+		_, err = object.UpdateMemberBalance(user, receiverRecord.Amount)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
@@ -100,7 +94,7 @@ func (c *ApiController) AddThanks() {
 			object.AddReplyThanksNum(id)
 		}
 
-		c.UpdateAccountBalance(consumerRecord.Balance)
+		c.UpdateAccountBalance(consumerRecord.Amount)
 
 		c.ResponseOk()
 	} else {
@@ -159,7 +153,7 @@ func (c *ApiController) GetCheckinBonus() {
 	}
 	object.AddBalance(&record)
 
-	_, err := object.UpdateMemberBalances(user, bonus)
+	_, err := object.UpdateMemberBalance(user, bonus)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -171,7 +165,7 @@ func (c *ApiController) GetCheckinBonus() {
 		return
 	}
 
-	c.UpdateAccountBalance(record.Balance)
+	c.UpdateAccountBalance(record.Amount)
 
 	c.ResponseOk(bonus)
 }
