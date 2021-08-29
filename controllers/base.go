@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
-	"github.com/casbin/casnode/object"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -106,42 +105,4 @@ func (c *ApiController) wrapResponse(res bool) {
 		c.Data["json"] = resp
 		c.ServeJSON()
 	}
-}
-
-func (c *ApiController) GetCommunityHealth() {
-	res := object.CommunityHealth{
-		Member: object.GetMemberNum(),
-		Topic:  object.GetTopicCount(),
-		Reply:  object.GetReplyCount(),
-	}
-
-	c.ResponseOk(res)
-}
-
-func (c *ApiController) GetForumVersion() {
-	var resp Response
-
-	res := object.GetForumVersion()
-
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
-}
-
-func (c *ApiController) GetOnlineNum() {
-	onlineNum := object.GetOnlineMemberNum()
-	highest := object.GetHighestOnlineNum()
-
-	c.ResponseOk(onlineNum, highest)
-}
-
-func (c *ApiController) GetNodeNavigation() {
-	var resp Response
-
-	res := object.GetNodeNavigation()
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
