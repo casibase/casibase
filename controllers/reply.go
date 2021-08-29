@@ -152,7 +152,7 @@ func (c *ApiController) AddReply() {
 		reply.AddReplyToMailingList()
 	}
 
-	c.wrapResponse(affected)
+	c.ResponseOk(affected)
 }
 
 func (c *ApiController) DeleteReply() {
@@ -180,7 +180,7 @@ func (c *ApiController) DeleteReply() {
 		}
 	}
 
-	c.wrapResponse(affected)
+	c.ResponseOk(affected)
 }
 
 func (c *ApiController) GetLatestReplies() {

@@ -81,28 +81,3 @@ func (c *ApiController) GetSessionUsername() string {
 	}
 	return GetUserName(user)
 }
-
-func (c *ApiController) RequireSignedIn() bool {
-	if c.GetSessionUser() == nil {
-		c.Data["json"] = Response{Status: "error", Msg: "please sign in first"}
-		c.ServeJSON()
-
-		return true
-	}
-
-	return false
-}
-
-func (c *ApiController) wrapResponse(res bool) {
-	var resp Response
-
-	if res {
-		resp = Response{Status: "ok", Msg: "", Data: ""}
-		c.Data["json"] = resp
-		c.ServeJSON()
-	} else {
-		resp = Response{Status: "error", Msg: "errorUnknown", Data: ""}
-		c.Data["json"] = resp
-		c.ServeJSON()
-	}
-}

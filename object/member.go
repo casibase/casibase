@@ -15,14 +15,11 @@
 package object
 
 import (
-	"crypto/md5"
 	"fmt"
-	"io/ioutil"
 	"strconv"
 	"strings"
 
 	"github.com/casbin/casnode/casdoor"
-	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -177,7 +174,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Type:              "",
 			Password:          "",
 			DisplayName:       "",
-			Avatar:            UploadFromGravatar(username, email),
+			Avatar:            "",
 			Email:             email,
 			Phone:             "",
 			Location:          "",
@@ -203,15 +200,4 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 	}
 
 	return newUser, nil
-}
-
-func UploadFromGravatar(username, email string) string {
-	requestUrl := fmt.Sprintf("https://www.gravatar.com/avatar/%x?d=retro", md5.Sum([]byte(email)))
-	resp, err := HttpClient.Get(requestUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	avatarByte, _ := ioutil.ReadAll(resp.Body)
-	return service.UploadAvatarToOSS(avatarByte, username)
 }
