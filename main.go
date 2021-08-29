@@ -15,8 +15,6 @@
 package main
 
 import (
-	"encoding/gob"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
@@ -26,7 +24,6 @@ import (
 	"github.com/casbin/casnode/routers"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 func main() {
@@ -40,7 +37,6 @@ func main() {
 	object.InitForumBasicInfo()
 	object.InitFrontConf()
 	object.InitTimer()
-	gob.Register(auth.Claims{})
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

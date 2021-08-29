@@ -22,6 +22,13 @@ import (
 
 var HttpClient *http.Client
 
+type Response struct {
+	Status string      `json:"status"`
+	Msg    string      `json:"msg"`
+	Data   interface{} `json:"data"`
+	Data2  interface{} `json:"data2"`
+}
+
 func InitHttpClient() {
 	HttpClient = object.GetProxyHttpClient()
 }

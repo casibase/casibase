@@ -15,12 +15,18 @@
 package controllers
 
 import (
+	"encoding/gob"
+
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 type ApiController struct {
 	beego.Controller
+}
+
+func init() {
+	gob.Register(auth.Claims{})
 }
 
 func GetUserName(user *auth.User) string {
@@ -79,5 +85,6 @@ func (c *ApiController) GetSessionUsername() string {
 	if user == nil {
 		return ""
 	}
+
 	return GetUserName(user)
 }

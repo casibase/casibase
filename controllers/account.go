@@ -31,13 +31,6 @@ func init() {
 	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
 }
 
-type Response struct {
-	Status string      `json:"status"`
-	Msg    string      `json:"msg"`
-	Data   interface{} `json:"data"`
-	Data2  interface{} `json:"data2"`
-}
-
 // @Title Signin
 // @Description sign in as a member
 // @Param   code     QueryString    string  true        "The code to sign in"
