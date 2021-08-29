@@ -25,7 +25,7 @@ import (
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-poster [post]
 func (c *ApiController) UpdatePoster() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

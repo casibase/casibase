@@ -44,7 +44,7 @@ func (c *ApiController) GetTabAdmin() {
 }
 
 func (c *ApiController) AddTab() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -86,7 +86,7 @@ func (c *ApiController) AddTab() {
 }
 
 func (c *ApiController) UpdateTab() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -116,7 +116,7 @@ func (c *ApiController) UpdateTab() {
 }
 
 func (c *ApiController) DeleteTab() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

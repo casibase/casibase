@@ -61,12 +61,12 @@ func (c *ApiController) RequireSignedIn() bool {
 	return false
 }
 
-func (c *ApiController) RequireAdminRight() bool {
+func (c *ApiController) RequireAdmin() bool {
 	user := c.GetSessionUser()
 	if user == nil || !object.CheckIsAdmin(user) {
-		c.ResponseError("This operation requires admin privilege")
-		return false
+		c.ResponseError("this operation requires admin privilege")
+		return true
 	}
 
-	return true
+	return false
 }

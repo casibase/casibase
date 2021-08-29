@@ -25,7 +25,7 @@ import (
 )
 
 func (c *ApiController) AddThanks() {
-	if !c.RequireSignedIn() {
+	if c.RequireSignedIn() {
 		return
 	}
 

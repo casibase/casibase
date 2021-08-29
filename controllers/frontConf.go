@@ -51,7 +51,7 @@ func (c *ApiController) UpdateFrontConf() {
 	var confs []*object.FrontConf
 	var resp Response
 
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -69,7 +69,7 @@ func (c *ApiController) UpdateFrontConf() {
 func (c *ApiController) UpdateFrontConfToDefault() {
 	var resp Response
 
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

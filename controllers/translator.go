@@ -7,7 +7,7 @@ import (
 )
 
 func (c *ApiController) UpdateTranslator() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -23,7 +23,7 @@ func (c *ApiController) UpdateTranslator() {
 }
 
 func (c *ApiController) AddTranslator() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

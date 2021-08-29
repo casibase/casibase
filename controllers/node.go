@@ -50,7 +50,7 @@ func (c *ApiController) GetNode() {
 }
 
 func (c *ApiController) UpdateNode() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -71,7 +71,7 @@ func (c *ApiController) UpdateNode() {
 }
 
 func (c *ApiController) AddNode() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -106,7 +106,7 @@ func (c *ApiController) AddNode() {
 }
 
 func (c *ApiController) DeleteNode() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -221,7 +221,7 @@ func (c *ApiController) AddNodeBrowseCount() {
 }
 
 func (c *ApiController) AddNodeModerators() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -246,7 +246,7 @@ func (c *ApiController) AddNodeModerators() {
 }
 
 func (c *ApiController) DeleteNodeModerators() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
