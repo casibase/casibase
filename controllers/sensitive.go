@@ -19,7 +19,7 @@ import (
 )
 
 func (c *ApiController) AddSensitive() {
-	if c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -43,7 +43,7 @@ func (c *ApiController) AddSensitive() {
 }
 
 func (c *ApiController) DelSensitive() {
-	if c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

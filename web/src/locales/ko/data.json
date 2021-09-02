@@ -16,7 +16,20 @@
     "false": "false",
     "Homepage": "Homepage",
     "Language": "Language",
-    "Admin": "Admin"
+    "Admin": "Admin",
+    "Navigation": "Navigation"
+  },
+  "frontConf": {
+    "Forum name": "Forum name",
+    "Logo image": "Logo image",
+    "Footer Logo image": "Footer Logo image",
+    "Footer Logo URL": "Footer Logo URL",
+    "Right title": "Right title",
+    "Right subtitle": "Right subtitle",
+    "Footer title": "Footer title",
+    "Footer subtitle": "Footer subtitle",
+    "Save": "Save",
+    "Reset": "Reset"
   },
   "about": {
     "Official website": "Official website",
@@ -66,7 +79,8 @@
     "You cannot edit this content.": "You cannot edit this content.",
     "Edit reply": "Edit reply",
     "Save": "Save",
-    "Edit topic": "Edit topic"
+    "Edit topic": "Edit topic",
+    "Please login first": "Please login first"
   },
   "move": {
     "Move topic": "Move topic",
@@ -341,7 +355,8 @@
     "Creat node success": "Creat node success",
     "Add new node": "Add new node",
     "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
-    "sorter": "sorter"
+    "sorter": "sorter",
+    "Is hidden": "Is hidden"
   },
   "tab": {
     "Are you sure to delete tab": "Are you sure to delete tab",
@@ -436,7 +451,8 @@
     "Make your comment helpful for others as much as possible": "Make your comment helpful for others as much as possible",
     "Please resolve the following issues before submitting": "Please resolve the following issues before submitting:",
     "Delete": "Delete",
-    "Edit": "Edit"
+    "Edit": "Edit",
+    "Cancel": "Cancel reply to {username}"
   },
   "poster": {
     "Poster management": "Poster management",
@@ -697,6 +713,7 @@
     "Topic management": "Topic management",
     "Poster management": "Poster management",
     "Member management": "Member management",
+    "FrontConf management": "FrontConf management",
     "Sensitive management": "Sensitive management",
     "Translation management": "Translation management",
     "Tab management": "Tab management",

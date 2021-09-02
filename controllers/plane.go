@@ -50,7 +50,7 @@ func (c *ApiController) GetPlaneList() {
 }
 
 func (c *ApiController) AddPlane() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -91,7 +91,7 @@ func (c *ApiController) AddPlane() {
 }
 
 func (c *ApiController) UpdatePlane() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 
@@ -118,7 +118,7 @@ func (c *ApiController) UpdatePlane() {
 }
 
 func (c *ApiController) DeletePlane() {
-	if !c.RequireAdminRight() {
+	if c.RequireAdmin() {
 		return
 	}
 

@@ -68,7 +68,7 @@ func GetMemberBalance(user *auth.User) int {
 	return user.Score
 }
 
-func UpdateMemberBalances(user *auth.User, amount int) (bool, error) {
+func UpdateMemberBalance(user *auth.User, amount int) (bool, error) {
 	user.Score += amount
 	return auth.UpdateUser(user)
 }
@@ -186,7 +186,7 @@ func CreateTopicConsumption(user *auth.User, id int) bool {
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(user, record.Amount)
+	UpdateMemberBalance(user, record.Amount)
 
 	return true
 }
@@ -208,7 +208,7 @@ func CreateReplyConsumption(user *auth.User, id int) bool {
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(user, record.Amount)
+	UpdateMemberBalance(user, record.Amount)
 
 	return true
 }
@@ -230,7 +230,7 @@ func GetReplyBonus(author *auth.User, consumer *auth.User, id int) {
 	balance := GetMemberBalance(consumer)
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(author, record.Amount)
+	UpdateMemberBalance(author, record.Amount)
 }
 
 func TopTopicConsumption(user *auth.User, id int) bool {
@@ -249,7 +249,7 @@ func TopTopicConsumption(user *auth.User, id int) bool {
 
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
-	UpdateMemberBalances(user, record.Amount)
+	UpdateMemberBalance(user, record.Amount)
 
 	return true
 }

@@ -15,80 +15,17 @@
 package object
 
 import (
-	"crypto/md5"
 	"fmt"
-	"io/ioutil"
-	"sort"
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/casdoor"
-	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
-
-// Member using figure 1-3 to show member's account status, 1 means normal, 2 means mute(couldn't reply or post new topic), 3 means forbidden(couldn't login).
-type Member struct {
-	Id                 string `xorm:"varchar(100) notnull pk" json:"id"`
-	Password           string `xorm:"varchar(100) notnull" json:"-"`
-	No                 int    `json:"no"`
-	IsModerator        bool   `xorm:"bool" json:"isModerator"`
-	CreatedTime        string `xorm:"varchar(40)" json:"createdTime"`
-	Phone              string `xorm:"varchar(100)" json:"phone"`
-	AreaCode           string `xorm:"varchar(10)" json:"areaCode"` // phone area code
-	PhoneVerifiedTime  string `xorm:"varchar(40)" json:"phoneVerifiedTime"`
-	Avatar             string `xorm:"varchar(150)" json:"avatar"`
-	Email              string `xorm:"varchar(100)" json:"email"`
-	EmailVerifiedTime  string `xorm:"varchar(40)" json:"emailVerifiedTime"`
-	Tagline            string `xorm:"varchar(100)" json:"tagline"`
-	Company            string `xorm:"varchar(100)" json:"company"`
-	CompanyTitle       string `xorm:"varchar(100)" json:"companyTitle"`
-	Ranking            int    `json:"ranking"`
-	Score              int    `json:"score"`
-	Bio                string `xorm:"varchar(100)" json:"bio"`
-	Website            string `xorm:"varchar(100)" json:"website"`
-	Location           string `xorm:"varchar(100)" json:"location"`
-	Language           string `xorm:"varchar(10)"  json:"language"`
-	EditorType         string `xorm:"varchar(10)"  json:"editorType"`
-	FileQuota          int    `xorm:"int" json:"fileQuota"`
-	GoogleAccount      string `xorm:"varchar(100)" json:"googleAccount"`
-	GithubAccount      string `xorm:"varchar(100)" json:"githubAccount"`
-	WechatAccount      string `xorm:"varchar(100)" json:"weChatAccount"`
-	WechatOpenId       string `xorm:"varchar(100)" json:"-"`
-	WechatVerifiedTime string `xorm:"varchar(40)" json:"WechatVerifiedTime"`
-	QQAccount          string `xorm:"qq_account varchar(100)" json:"qqAccount"`
-	QQOpenId           string `xorm:"qq_open_id varchar(100)" json:"-"`
-	QQVerifiedTime     string `xorm:"qq_verified_time varchar(40)" json:"qqVerifiedTime"`
-	EmailReminder      bool   `xorm:"bool" json:"emailReminder"`
-	CheckinDate        string `xorm:"varchar(20)" json:"-"`
-	OnlineStatus       bool   `xorm:"bool" json:"onlineStatus"`
-	LastActionDate     string `xorm:"varchar(40)" json:"-"`
-	Status             int    `xorm:"int" json:"-"`
-	RenameQuota        int    `json:"renameQuota"`
-}
-
-func GetMembersOld() []*Member {
-	members := []*Member{}
-	err := adapter.Engine.Asc("created_time").Find(&members)
-	if err != nil {
-		panic(err)
-	}
-
-	return members
-}
-
 func GetRankingRich() ([]*auth.User, error) {
-	users := GetUsers()
-	sort.SliceStable(users, func(i, j int) bool {
-		return users[i].Score > users[j].Score
-	})
-
-	users = Limit(users, 0, 25)
-	return users, nil
+	return casdoor.GetSortedUsers("score", 25), nil
 }
 
 func GetUser(id string) *auth.User {
@@ -102,8 +39,7 @@ func GetUsers() []*auth.User {
 }
 
 func GetMemberNum() int {
-	users := GetUsers()
-	return len(users)
+	return casdoor.GetUserCount()
 }
 
 func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
@@ -138,14 +74,8 @@ func GetMemberEmailReminder(id string) (bool, string) {
 	return true, user.Email
 }
 
-func GetUserByEmail(email string) (*auth.User, error) {
-	users := GetUsers()
-	for _, user := range users {
-		if user.Email == email {
-			return user, nil
-		}
-	}
-	return nil, fmt.Errorf("user not found for Email: %s", email)
+func GetUserByEmail(email string) *auth.User {
+	return casdoor.GetUserByEmail(email)
 }
 
 func GetMemberCheckinDate(user *auth.User) string {
@@ -193,16 +123,7 @@ func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate str
 }
 
 func GetOnlineUserCount() int {
-	res := 0
-
-	users := GetUsers()
-	for _, user := range users {
-		if user.IsOnline {
-			res++
-		}
-	}
-
-	return res
+	return casdoor.GetOnlineUserCount()
 }
 
 type UpdateListItem struct {
@@ -238,16 +159,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 		return user, nil
 	}
 
-	newUser, err := GetUserByEmail(email)
-	if err != nil {
-		return nil, err
-	}
-
-	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
-	if err != nil {
-		panic(err)
-	}
-
+	newUser := GetUserByEmail(email)
 	if newUser == nil {
 		properties := map[string]string{}
 		properties["emailVerifiedTime"] = util.GetCurrentTime()
@@ -262,7 +174,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Type:              "",
 			Password:          "",
 			DisplayName:       "",
-			Avatar:            UploadFromGravatar(username, email),
+			Avatar:            "",
 			Email:             email,
 			Phone:             "",
 			Location:          "",
@@ -271,7 +183,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Title:             "",
 			Homepage:          "",
 			Tag:               "",
-			Score:             score,
+			Score:             getInitScore(),
 			Ranking:           GetMemberNum() + 1,
 			IsOnline:          false,
 			IsAdmin:           false,
@@ -288,15 +200,4 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 	}
 
 	return newUser, nil
-}
-
-func UploadFromGravatar(username, email string) string {
-	requestUrl := fmt.Sprintf("https://www.gravatar.com/avatar/%x?d=retro", md5.Sum([]byte(email)))
-	resp, err := HttpClient.Get(requestUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	avatarByte, _ := ioutil.ReadAll(resp.Body)
-	return service.UploadAvatarToOSS(avatarByte, username)
 }

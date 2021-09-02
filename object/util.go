@@ -17,6 +17,7 @@ package object
 import (
 	"strconv"
 
+	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -41,34 +42,11 @@ func SetUserFieldInt(user *auth.User, field string, value int) {
 	user.Properties[field] = strconv.Itoa(value)
 }
 
-func IntToBool(i int) bool {
-	b := false
-	if i == 1 {
-		b = true
-	}
-	return b
-}
-
-func BoolToInt(i bool) int {
-	b := 0
-	if i {
-		b = 1
-	}
-	return b
-}
-
-func minInt(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
-
-func Limit(users []*auth.User, start, limit int) []*auth.User {
-	if start >= len(users) {
-		return nil
+func getInitScore() int {
+	score, err := strconv.Atoi(beego.AppConfig.String("initScore"))
+	if err != nil {
+		panic(err)
 	}
 
-	end := minInt(len(users), start+limit)
-	return users[start:end]
+	return score
 }

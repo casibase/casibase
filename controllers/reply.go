@@ -144,7 +144,7 @@ func (c *ApiController) AddReply() {
 		object.GetReplyBonus(object.GetTopicAuthor(reply.TopicId), user, id)
 		object.CreateReplyConsumption(user, id)
 
-		c.UpdateAccountBalance(balance - object.CreateReplyCost)
+		c.UpdateAccountBalance(-object.CreateReplyCost)
 
 		object.ChangeTopicReplyCount(reply.TopicId, 1)
 		object.ChangeTopicLastReplyUser(reply.TopicId, GetUserName(user), util.GetCurrentTime())
@@ -152,7 +152,7 @@ func (c *ApiController) AddReply() {
 		reply.AddReplyToMailingList()
 	}
 
-	c.wrapResponse(affected)
+	c.ResponseOk(affected)
 }
 
 func (c *ApiController) DeleteReply() {
@@ -180,7 +180,7 @@ func (c *ApiController) DeleteReply() {
 		}
 	}
 
-	c.wrapResponse(affected)
+	c.ResponseOk(affected)
 }
 
 func (c *ApiController) GetLatestReplies() {

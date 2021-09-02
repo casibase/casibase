@@ -17,11 +17,9 @@ package service
 import (
 	"bytes"
 	"fmt"
-	"strconv"
-	"time"
 
-	awss3 "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/astaxie/beego"
+	awss3 "github.com/aws/aws-sdk-go/service/s3"
 	"github.com/qor/oss"
 	"github.com/qor/oss/aliyun"
 	"github.com/qor/oss/s3"
@@ -97,28 +95,13 @@ func Awss3Init() {
 	})
 }
 
-// UploadAvatarToOSS uploads an avatar to oss.
-func UploadAvatarToOSS(avatar []byte, memberId string) string {
-	if storage == nil {
-		fmt.Println("OSS config error")
-		return "oss conf error"
-	}
-
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	_, err := storage.Put(basicPath + "/" + memberId + "/avatar/" + timestamp + ".png", bytes.NewReader(avatar))
-	if err != nil {
-		panic(err)
-	}
-	return ossURL + "/" + memberId + "/avatar/" + timestamp + ".png"
-}
-
 // UploadFileToOSS uploads a file to the path, returns public URL
 func UploadFileToOSS(file []byte, path string) string {
 	if storage == nil {
 		fmt.Println("OSS config error")
 		return "oss conf error"
 	}
-	_, err := storage.Put(basicPath + path, bytes.NewReader(file))
+	_, err := storage.Put(basicPath+path, bytes.NewReader(file))
 	if err != nil {
 		panic(err)
 		return "OSS error"
