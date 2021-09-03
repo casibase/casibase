@@ -23,7 +23,6 @@ func init() {
 	initAPI()
 }
 
-
 func initAPI() {
 	ns :=
 		beego.NewNamespace("/api",
@@ -50,6 +49,7 @@ func initAPI() {
 	beego.Router("/api/get-topics-num", &controllers.ApiController{}, "GET:GetTopicsNum")
 	beego.Router("/api/add-topic-hit-count", &controllers.ApiController{}, "POST:AddTopicHitCount")
 	beego.Router("/api/get-hot-topic", &controllers.ApiController{}, "GET:GetHotTopic")
+	beego.Router("/api/get-sorted-topics", &controllers.ApiController{}, "GET:GetSortedTopics")
 	beego.Router("/api/add-topic-browse-record", &controllers.ApiController{}, "POST:AddTopicBrowseCount")
 	beego.Router("/api/update-topic-node", &controllers.ApiController{}, "POST:UpdateTopicNode")
 	beego.Router("/api/edit-content", &controllers.ApiController{}, "POST:EditContent")
@@ -84,8 +84,8 @@ func initAPI() {
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")
 
 	beego.Router("/api/update-translator", &controllers.ApiController{}, "POST:UpdateTranslator") //Update translator api just for admin.
-	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator") //Add translator api just for admin.
-	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator") //Delete translator api just for admin.
+	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator")       //Add translator api just for admin.
+	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator")       //Delete translator api just for admin.
 	beego.Router("/api/get-translator", &controllers.ApiController{}, "GET:GetTranslator")
 	beego.Router("/api/visible-translator", &controllers.ApiController{}, "GET:VisibleTranslator")
 

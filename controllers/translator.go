@@ -18,8 +18,7 @@ func (c *ApiController) UpdateTranslator() {
 	}
 	object.UpdateTranslator(translator)
 
-	c.Data["json"] = Response{Status: "ok", Msg: "success"}
-	c.ServeJSON()
+	c.ResponseOk()
 }
 
 func (c *ApiController) AddTranslator() {
@@ -43,9 +42,7 @@ func (c *ApiController) AddTranslator() {
 	}
 
 	if object.AddTranslator(translator) {
-		resp = Response{Status: "ok", Msg: "Success"}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseOk()
 		return
 	} else {
 		resp = Response{Status: "fail", Msg: "Add translator failed"}
@@ -71,17 +68,14 @@ func (c *ApiController) GetEnableTranslator() {
 }
 
 func (c *ApiController) VisibleTranslator() {
-	resp := Response{Status: "ok", Data: false}
+	c.ResponseOk(false)
 
 	res := object.GetEnableTranslator()
 	if res != nil {
 		if res.Visible {
-			resp = Response{Status: "ok", Data: true}
+			c.ResponseOk(true)
 		}
 	}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
 
 func (c *ApiController) DelTranslator() {

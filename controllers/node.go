@@ -56,18 +56,13 @@ func (c *ApiController) UpdateNode() {
 
 	id := c.Input().Get("id")
 
-	var resp Response
-
 	var node object.Node
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		panic(err)
 	}
 	res := object.UpdateNode(id, &node)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) AddNode() {
@@ -99,10 +94,7 @@ func (c *ApiController) AddNode() {
 
 	node.CreatedTime = util.GetCurrentTime()
 	res := object.AddNode(&node)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) DeleteNode() {
@@ -117,47 +109,30 @@ func (c *ApiController) DeleteNode() {
 }
 
 func (c *ApiController) GetNodesNum() {
-	var resp Response
-
 	num := object.GetNodesNum()
-	resp = Response{Status: "ok", Msg: "success", Data: num}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(num)
 }
 
 func (c *ApiController) GetNodeInfo() {
 	id := c.Input().Get("id")
 
-	var resp Response
 	num := object.GetNodeTopicNum(id)
 	favoriteNum := object.GetNodeFavoritesNum(id)
-	resp = Response{Status: "ok", Msg: "success", Data: num, Data2: favoriteNum}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(num, favoriteNum)
 }
 
 func (c *ApiController) GetNodeFromTab() {
 	tab := c.Input().Get("tab")
 
-	var resp Response
 	nodes := object.GetNodeFromTab(tab)
-	resp = Response{Status: "ok", Msg: "success", Data: nodes}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(nodes)
 }
 
 func (c *ApiController) GetNodeRelation() {
 	id := c.Input().Get("id")
 
-	var resp Response
 	res := object.GetNodeRelation(id)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) GetLatestNode() {
@@ -171,12 +146,8 @@ func (c *ApiController) GetLatestNode() {
 		limit = defaultLimit
 	}
 
-	var resp Response
 	res := object.GetLatestNode(limit)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) GetHotNode() {
@@ -190,12 +161,8 @@ func (c *ApiController) GetHotNode() {
 		limit = defaultLimit
 	}
 
-	var resp Response
 	res := object.GetHotNode(limit)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 func (c *ApiController) AddNodeBrowseCount() {
@@ -211,7 +178,7 @@ func (c *ApiController) AddNodeBrowseCount() {
 	}
 	res := object.AddBrowseRecordNum(&hitRecord)
 	if res {
-		resp = Response{Status: "ok", Msg: "success"}
+		c.ResponseOk()
 	} else {
 		resp = Response{Status: "fail", Msg: "add node hit count failed"}
 	}
@@ -250,8 +217,6 @@ func (c *ApiController) DeleteNodeModerators() {
 		return
 	}
 
-	var resp Response
-
 	var moderators deleteNodeModerator
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &moderators)
 	if err != nil {
@@ -259,8 +224,5 @@ func (c *ApiController) DeleteNodeModerators() {
 	}
 
 	res := object.DeleteNodeModerators(moderators.MemberId, moderators.NodeId)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }

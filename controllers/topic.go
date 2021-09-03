@@ -524,12 +524,45 @@ func (c *ApiController) GetHotTopic() {
 		limit = defaultLimit
 	}
 
-	var resp Response
 	res := object.GetHotTopic(limit)
-	resp = Response{Status: "ok", Msg: "success", Data: res}
+	c.ResponseOk(res)
 
-	c.Data["json"] = resp
-	c.ServeJSON()
+}
+
+// @Title GetSortedTopics
+// @Description get sorted topics
+// @Param   lps     query    string  true        "sort: last reply count"
+// @Param   hs     query    string  true        "sort: hot"
+// @Param   fcs     query    string  true        "sort: favorite count"
+// @Param   cts     query    string  true        "sort: created time"
+// @Param   page     query    string  true        "offset"
+// @Param   limit     query    string  true        "limit size"
+// @Success 200 {object} controller.Response The Response object
+// @router /get-hot-topic [get]
+func (c *ApiController) GetSortedTopics() {
+	limitStr := c.Input().Get("limit")
+	pageStr := c.Input().Get("page")
+	lastReplySort := c.Input().Get("lps")   // sort: last reply time
+	hotSort := c.Input().Get("hs")          // sort: hot
+	favCountSort := c.Input().Get("fcs")    // sort: favorite count
+	createdTimeSort := c.Input().Get("cts") // sort: created time
+
+	defaultLimit := object.DefaultHomePageNum
+
+	var limit, offset int
+	if len(limitStr) != 0 {
+		limit = util.ParseInt(limitStr)
+	} else {
+		limit = defaultLimit
+	}
+	if len(pageStr) != 0 {
+		page := util.ParseInt(pageStr)
+		offset = page*limit - limit
+	}
+
+	res := object.GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort, limit, offset)
+
+	c.ResponseOk(res)
 }
 
 // @Title UpdateTopicNode
@@ -544,7 +577,6 @@ func (c *ApiController) UpdateTopicNode() {
 
 	user := c.GetSessionUser()
 
-	var resp Response
 	var form updateTopicNode
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &form)
 	if err != nil {
@@ -565,9 +597,7 @@ func (c *ApiController) UpdateTopicNode() {
 	}
 	res := object.UpdateTopicWithLimitCols(id, &topic)
 
-	resp = Response{Status: "ok", Msg: "success", Data: res}
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(res)
 }
 
 // @Title EditContent
@@ -745,14 +775,12 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 	nodeId := c.Input().Get("nodeId")
 
 	if urlPath == "" || title == "" {
-		c.Data["json"] = Response{Status: "error", Msg: "Miss urlPath or title"}
-		c.ServeJSON()
+		c.ResponseError("Miss urlPath or title")
 		return
 	}
 	node := object.GetNode(nodeId)
 	if node == nil {
-		c.Data["json"] = Response{Status: "error", Msg: "Node not exists."}
-		c.ServeJSON()
+		c.ResponseError("Node not exists.")
 		return
 	}
 
@@ -773,6 +801,5 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 		object.AddTopic(topic)
 	}
 
-	c.Data["json"] = Response{Status: "ok", Data: topic}
-	c.ServeJSON()
+	c.ResponseOk(topic)
 }

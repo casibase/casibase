@@ -567,6 +567,60 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 	return ret
 }
 
+// GetSortedTopics *sort: 1 means Asc, 2 means Desc, 0 means no effect.
+func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort string, limit int, offset int) []*TopicWithAvatar {
+	var topics []*Topic
+	db := adapter.Engine.Table("topic")
+	//last reply time sort
+	switch lastReplySort {
+	case "1":
+		db = db.Asc("last_reply_time")
+	case "2":
+		db = db.Desc("last_reply_time")
+	}
+
+	// hot sort
+	switch hotSort {
+	case "1":
+		db = db.Asc("hot")
+	case "2":
+		db = db.Desc("hot")
+	}
+
+	// favorite count sort
+	switch favCountSort {
+	case "1":
+		db = db.Asc("favorite_count")
+	case "2":
+		db = db.Desc("favorite_count")
+	}
+
+	// created time sort
+	switch createdTimeSort {
+	case "1":
+		db = db.Desc("created_time")
+	case "2":
+		db = db.Desc("created_time")
+	}
+
+	err := db.
+		Where("deleted = ? and is_hidden <> ?", 0, 1).
+		Limit(limit, offset).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	var ret []*TopicWithAvatar
+	for _, topic := range topics {
+		ret = append(ret, &TopicWithAvatar{
+			Topic:  *topic,
+			Avatar: getUserAvatar(topic.Author),
+		})
+	}
+
+	return ret
+}
+
 func GetTopicEditableStatus(user *auth.User, author, nodeId, createdTime string) bool {
 	if CheckIsAdmin(user) || CheckNodeModerator(user, nodeId) {
 		return true
