@@ -26,9 +26,10 @@ var ClientId = beego.AppConfig.String("clientId")
 var ClientSecret = beego.AppConfig.String("clientSecret")
 var JwtSecret = beego.AppConfig.String("jwtSecret")
 var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 
 func init() {
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization)
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization, CasdoorApplication)
 }
 
 // @Title Signin

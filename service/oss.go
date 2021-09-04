@@ -14,111 +14,24 @@
 
 package service
 
-import (
-	"bytes"
-	"fmt"
+import "github.com/casdoor/casdoor-go-sdk/auth"
 
-	"github.com/astaxie/beego"
-	awss3 "github.com/aws/aws-sdk-go/service/s3"
-	"github.com/qor/oss"
-	"github.com/qor/oss/aliyun"
-	"github.com/qor/oss/s3"
-)
-
-var ossURL, basicPath string
-var storage oss.StorageInterface
-
-func InitOSS() {
-	OSSProvider := beego.AppConfig.String("OSSProvider")
-	if OSSProvider == "" {
-		storage = nil
-		return
-	}
-	switch OSSProvider {
-	case "Aliyun":
-		AliyunInit()
-		break
-	case "Awss3":
-		Awss3Init()
-		break
-	}
-	if storage == nil {
-		fmt.Println("OSS config error")
-		return
-	}
-	OSSBasicPath := beego.AppConfig.String("OSSBasicPath")
-	OSSCustomDomain := beego.AppConfig.String("OSSCustomDomain")
-	if OSSBasicPath == "" {
-		OSSBasicPath = "casnode"
-	}
-	if OSSCustomDomain == "" {
-		OSSCustomDomain = storage.GetEndpoint()
-	}
-	ossURL = "https://" + OSSCustomDomain + "/" + OSSBasicPath
-	basicPath = "/" + OSSBasicPath
-}
-
-func AliyunInit() {
-	accessKeyID := beego.AppConfig.String("accessKeyID")
-	accessKeySecret := beego.AppConfig.String("accessKeySecret")
-	ossBucket := beego.AppConfig.String("OSSBucket")
-	ossEndPoint := beego.AppConfig.String("OSSEndPoint")
-	if accessKeyID == "" || accessKeySecret == "" || ossBucket == "" || ossEndPoint == "" {
-		fmt.Println("OSS config error")
-		return
-	}
-	storage = aliyun.New(&aliyun.Config{
-		AccessID:  accessKeyID,
-		AccessKey: accessKeySecret,
-		Bucket:    ossBucket,
-		Endpoint:  ossEndPoint,
-	})
-}
-
-func Awss3Init() {
-	accessKeyID := beego.AppConfig.String("accessKeyID")
-	accessKeySecret := beego.AppConfig.String("accessKeySecret")
-	ossBucket := beego.AppConfig.String("OSSBucket")
-	ossEndPoint := beego.AppConfig.String("OSSEndPoint")
-	ossRegion := beego.AppConfig.String("OSSRegion")
-	if accessKeyID == "" || accessKeySecret == "" || ossBucket == "" || ossEndPoint == "" || ossRegion == "" {
-		fmt.Println("OSS config error")
-		return
-	}
-	storage = s3.New(&s3.Config{
-		AccessID:  accessKeyID,
-		AccessKey: accessKeySecret,
-		Region:    ossRegion,
-		Bucket:    ossBucket,
-		Endpoint:  ossEndPoint,
-		ACL:       awss3.BucketCannedACLPublicRead,
-	})
-}
-
-// UploadFileToOSS uploads a file to the path, returns public URL
-func UploadFileToOSS(file []byte, path string) string {
-	if storage == nil {
-		fmt.Println("OSS config error")
-		return "oss conf error"
-	}
-	_, err := storage.Put(basicPath+path, bytes.NewReader(file))
+// UploadFileToStorage uploads a file to the path, returns public URL
+func UploadFileToStorage(tag string, parent string, fullFilePath string, fileBytes []byte) string {
+	fileUrl, _, err := auth.UploadResource(tag, parent, fullFilePath, fileBytes)
 	if err != nil {
 		panic(err)
-		return "OSS error"
 	}
-	return ossURL + path
+
+	return fileUrl
 }
 
-// DeleteOSSFile deletes file according to the file path.
-func DeleteOSSFile(filePath string) bool {
-	if storage == nil {
-		fmt.Println("OSS config error")
-		return false
-	}
-	err := storage.Delete(filePath)
+// DeleteFileFromStorage deletes file according to the file path.
+func DeleteFileFromStorage(filePath string) bool {
+	affected, err := auth.DeleteResource(filePath)
 	if err != nil {
 		panic(err)
-		return false
 	}
-	return true
+
+	return affected
 }
