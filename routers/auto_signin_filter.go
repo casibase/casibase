@@ -15,52 +15,30 @@
 package routers
 
 import (
-	"net/url"
-
 	"github.com/astaxie/beego/context"
-	"github.com/casbin/casnode/controllers"
-	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-func returnRequest(ctx *context.Context, msg string) {
-	w := ctx.ResponseWriter
-	w.WriteHeader(200)
-	resp := &controllers.Response{Status: "error", Msg: msg}
-	_, err := w.Write([]byte(util.StructToJson(resp)))
-	if err != nil {
-		panic(err)
-	}
-}
-
 func AutoSigninFilter(ctx *context.Context) {
-	query := ctx.Request.URL.RawQuery
-	queryMap, err := url.ParseQuery(query)
-	if err != nil {
-		panic(err)
-	}
+	//if getSessionUser(ctx) != "" {
+	//	return
+	//}
 
 	// "/page?access_token=123"
-	accessToken := queryMap.Get("accessToken")
+	accessToken := ctx.Input.Query("accessToken")
 	if accessToken == "signout" {
 		// sign out
 		setSessionClaims(ctx, nil)
 		return
 	}
 
-	var claims *auth.Claims = nil
 	if accessToken != "" {
-		claims, err = auth.ParseJwtToken(accessToken)
+		claims, err := auth.ParseJwtToken(accessToken)
 		if err != nil {
-			returnRequest(ctx, "Invalid JWT token")
+			responseError(ctx, "invalid JWT token")
 			return
 		}
 
-		setSessionClaims(ctx, claims)
-		return
-	}
-
-	if claims != nil {
 		ok, _ := auth.CheckUserPassword(&claims.User)
 		if ok {
 			setSessionClaims(ctx, claims)

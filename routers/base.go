@@ -19,6 +19,29 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
+type Response struct {
+	Status string      `json:"status"`
+	Msg    string      `json:"msg"`
+	Data   interface{} `json:"data"`
+	Data2  interface{} `json:"data2"`
+}
+
+func responseError(ctx *context.Context, error string, data ...interface{}) {
+	resp := Response{Status: "error", Msg: error}
+	switch len(data) {
+	case 2:
+		resp.Data2 = data[1]
+		fallthrough
+	case 1:
+		resp.Data = data[0]
+	}
+
+	err := ctx.Output.JSON(resp, true, false)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func getSessionClaims(ctx *context.Context) *auth.Claims {
 	s := ctx.Input.CruSession.Get("user")
 	if s == nil {
