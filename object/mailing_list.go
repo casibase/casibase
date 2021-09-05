@@ -16,7 +16,7 @@ func (n Node) AddTopicToMailingList(title, content, author string) {
 		return
 	}
 	content = string(markdown.ToHTML([]byte(content), nil, nil))
-	_ = service.SendEmail(title, content, n.MailingList, author)
+	_ = service.SendEmail(title, content, author, n.MailingList)
 }
 
 func (n Node) SyncFromGoogleGroup() {
@@ -160,5 +160,5 @@ func (r Reply) AddReplyToMailingList() {
 		r.Content = string(markdown.ToHTML([]byte(r.Content), nil, nil))
 	}
 	mailTitle := fmt.Sprintf("Re: %s", targetTopic.Title)
-	_ = service.SendEmail(mailTitle, r.Content, targetNode.MailingList, r.Author)
+	_ = service.SendEmail(mailTitle, r.Content, r.Author, targetNode.MailingList)
 }

@@ -15,58 +15,29 @@
 package service
 
 import (
-	"strconv"
+	"fmt"
 
 	"github.com/astaxie/beego"
-	"github.com/go-gomail/gomail"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-var mailConn = map[string]string{
-	"user": beego.AppConfig.String("mailUser"),
-	"pass": beego.AppConfig.String("mailPass"),
-	"host": beego.AppConfig.String("mailHost"),
-	"port": beego.AppConfig.String("mailPort"),
-}
-
-var dialer *gomail.Dialer
-
-func InitDialer() {
-	port, _ := strconv.Atoi(mailConn["port"])
-	dialer = gomail.NewDialer(mailConn["host"], port, mailConn["user"], mailConn["pass"])
-}
-
 // SendRemindMail sends mail with remind information.
-func SendRemindMail(title, content, topicId, email, domain string) error {
-	mail := gomail.NewMessage()
-	name := beego.AppConfig.String("appname")
-	body := content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-
+func SendRemindMail(title string, content string, topicId string, receiver string, domain string) error {
+	sender := beego.AppConfig.String("appname")
+
+	title = fmt.Sprintf("Re: [%s] %s", sender, title)
+
+	content = content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-
 <br>
 You are receiving this because you are subscribed to this thread.
 <br> Reply to this email directly, 
-<a href="https://` + domain + "/t/" + topicId + `">view it on ` + name + `</a>` + `
+<a href="https://` + domain + "/t/" + topicId + `">view it on ` + sender + `</a>` + `
 , or <a href="https://` + domain + `/settings/forum">unsubscribe` + `</a>`
 
-	mail.SetHeader("From", mail.FormatAddress(mailConn["user"], name))
-	mail.SetHeader("To", email)
-	mail.SetHeader("Subject", "Re: ["+name+"] "+title) // set subject
-	mail.SetBody("text/html", body)                    // set body
-
-	if dialer == nil {
-		InitDialer()
-	}
-
-	err := dialer.DialAndSend(mail)
-	return err
+	return SendEmail(title, content, sender, receiver)
 }
 
-func SendEmail(title, content, dest, sender string) error {
-	message := gomail.NewMessage()
-	message.SetAddressHeader("From", beego.AppConfig.String("mailUser"), sender)
-	message.SetHeader("To", dest)
-	message.SetHeader("Subject", title)
-	message.SetBody("text/html", content)
-	if dialer == nil {
-		InitDialer()
-	}
-	return dialer.DialAndSend(message)
+func SendEmail(title string, content string, sender string, receivers ...string) error {
+	err := auth.SendEmail(title, content, sender, receivers...)
+	return err
 }

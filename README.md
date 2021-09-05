@@ -58,70 +58,7 @@ Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be use
 
 #### OSS, Mail, and SMS services
 
-   We use Ali OSS, Ali Mail, and Ali SMS to save the user's pictures, send emails to users and send short messages to users.
-
-   **You could use another OSS, Mail, and SMS services**, we separate those functions from main code, you could found those functions at https://github.com/casbin/casnode/tree/master/service
-
-   We would mainly use Ali services for example in the next.
-
-   Information in Conf.js
-
-   ```javascript
-  export const OSSRegion = "" //your oss region
-
-  //The endpoint of your oss region, find it on https://help.aliyun.com/document_detail/31837.html
-  export const OSSEndPoint = "" //your oss end point
-
-  export const OSSBucket = "" //your oss bucket
-
-  //The path stored in your oss
-  //eg: `casnode` or `casbin/forum/xxx/xxx`
-  export const OSSBasicPath = "" //prefix for saved pictures 
-  
-  //If you set a custom domain name in ali-oss bucket, please fill in.
-  export const OSSCustomDomain = ""
-  ```
-
-  Information in app.conf.
-  You could get your roleArn in https://ram.console.aliyun.com/roles.
-  Before that, you should have an independent account for this application, and add corresponding permissions.
-  Such as:
-  ```
-  {
-      "Statement": [
-          {
-              "Effect": "Allow",
-              "Action": [
-                  "oss:PutObject",
-                  "oss:GetObject",
-                  "oss:AbortMultipartUpload",
-                  "oss:DeleteObject"
-              ],
-              "Resource": [
-                  "acs:oss:*:*:yourbucket",
-                  "acs:oss:*:*:yourbucket/*"
-              ]
-          }
-      ],
-      "Version": "1"
-  }
-  ```  
-  By the way, you should set your bucket permissions to public read.
-
-  ```ini
-  accessKeyID     = ""
-  accessKeySecret = ""
-  roleArn         = ""
-  OSSCustomDomain = ""
-  OSSBasicPath = ""
-  OSSRegion = ""
-  OSSEndPoint = ""
-  OSSBucket = ""
-  mailUser = ""
-  mailPass = ""
-  mailHost = ""
-  mailPort = ""
-  ```
+  Casnode uses Casdoor to upload files to cloud storage, send Emails and send SMSs. See Casdoor for more details.
 
 #### Github corner
 

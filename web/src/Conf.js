@@ -17,8 +17,8 @@ export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
   serverUrl: "http://localhost:7001",
   clientId: "014ae4bd048734ca2dea",
-  appName: "app-casbin-forum",
-  organizationName: "casbin-forum",
+  organizationName: "casbin",
+  appName: "app-casnode",
 };
 
 export let FrontConfig = {
