@@ -17,8 +17,8 @@ package service
 import "github.com/casdoor/casdoor-go-sdk/auth"
 
 // UploadFileToStorage uploads a file to the path, returns public URL
-func UploadFileToStorage(tag string, parent string, fullFilePath string, fileBytes []byte) string {
-	fileUrl, _, err := auth.UploadResource(tag, parent, fullFilePath, fileBytes)
+func UploadFileToStorage(user string, tag string, parent string, fullFilePath string, fileBytes []byte) string {
+	fileUrl, _, err := auth.UploadResource(user, tag, parent, fullFilePath, fileBytes)
 	if err != nil {
 		panic(err)
 	}

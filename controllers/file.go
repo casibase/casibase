@@ -195,13 +195,15 @@ func (c *ApiController) UploadFile() {
 	if c.RequireSignedIn() {
 		return
 	}
+
 	memberId := c.GetSessionUsername()
+
 	fileBase64 := c.Ctx.Request.Form.Get("file")
 	fileType := c.Ctx.Request.Form.Get("type")
 	fileName := c.Ctx.Request.Form.Get("name")
 	index := strings.Index(fileBase64, ",")
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
-	fileURL := service.UploadFileToStorage("file", memberId, fmt.Sprintf("casnode/file/%s/%s.%s", memberId, fileName, fileType), fileBytes)
+	fileURL := service.UploadFileToStorage(memberId, "file", "UploadFile", fmt.Sprintf("casnode/file/%s/%s.%s", memberId, fileName, fileType), fileBytes)
 
 	resp := Response{Status: "ok", Msg: fileName + "." + fileType, Data: fileURL}
 	c.Data["json"] = resp
@@ -225,7 +227,7 @@ func (c *ApiController) ModeratorUpload() {
 	filePath := c.Ctx.Request.Form.Get("filepath")
 	index := strings.Index(fileBase64, ",")
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
-	fileURL := service.UploadFileToStorage("file", user.Name, fmt.Sprintf("casnode/file/%s/%s/%s", user.Name, filePath, fileName), fileBytes)
+	fileURL := service.UploadFileToStorage(user.Name, "file", "ModeratorUpload", fmt.Sprintf("casnode/file/%s/%s/%s", user.Name, filePath, fileName), fileBytes)
 	timeStamp := fmt.Sprintf("?time=%d", time.Now().UnixNano())
 
 	c.ResponseOk(fileURL + timeStamp)
@@ -236,6 +238,7 @@ func (c *ApiController) UploadAvatar() {
 	if c.RequireSignedIn() {
 		return
 	}
+
 	memberId := c.GetSessionUsername()
 	avatarBase64 := c.Ctx.Request.Form.Get("avatar")
 	index := strings.Index(avatarBase64, ",")
@@ -247,7 +250,7 @@ func (c *ApiController) UploadAvatar() {
 	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(avatarBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileURL := service.UploadFileToStorage("avatar", memberId, fmt.Sprintf("casnode/avatar/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
+	fileURL := service.UploadFileToStorage(memberId, "avatar", "UploadAvatar", fmt.Sprintf("casnode/avatar/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
 	resp := Response{Status: "ok", Data: fileURL}
 	c.Data["json"] = resp
 	c.ServeJSON()
