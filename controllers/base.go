@@ -72,12 +72,10 @@ func (c *ApiController) SetSessionUser(user *auth.User) {
 	}
 
 	claims := c.GetSessionClaims()
-	if claims == nil {
-		claims = &auth.Claims{}
+	if claims != nil {
+		claims.User = *user
+		c.SetSessionClaims(claims)
 	}
-
-	claims.User = *user
-	c.SetSession("user", claims)
 }
 
 func (c *ApiController) GetSessionUsername() string {
