@@ -19,7 +19,6 @@ import (
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
 	"github.com/casbin/casnode/casdoor"
-	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/routers"
 	"github.com/casbin/casnode/service"
@@ -28,9 +27,8 @@ import (
 
 func main() {
 	object.InitAdapter()
+	object.InitHttpClient()
 	casdoor.InitCasdoorAdapter()
-	controllers.InitHttpClient()
-	object.HttpClient = controllers.HttpClient
 	service.InitDictionary()
 	util.InitSegmenter()
 	object.InitForumBasicInfo()

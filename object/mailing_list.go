@@ -35,9 +35,9 @@ func (n Node) SyncFromGoogleGroup() {
 	}
 
 	group := crawler.NewGoogleGroup(n.MailingList, n.GoogleGroupCookie)
-	conversations := group.GetAllConversations(*HttpClient)
+	conversations := group.GetAllConversations(*httpClient)
 	for _, conv := range conversations {
-		messages := conv.GetAllMessages(*HttpClient, true)
+		messages := conv.GetAllMessages(*httpClient, true)
 		if len(messages) < 1 {
 			fmt.Printf("Google Groups Crawler: Getting messages from Google Group: %s for node: %s failed, please check your cookie.\n", group.GroupName, n.Id)
 			break

@@ -24,6 +24,12 @@ import (
 	"golang.org/x/net/proxy"
 )
 
+var httpClient *http.Client
+
+func InitHttpClient() {
+	httpClient = getProxyHttpClient()
+}
+
 func isAddressOpen(address string) bool {
 	timeout := time.Millisecond * 100
 	conn, err := net.DialTimeout("tcp", address, timeout)
@@ -41,9 +47,9 @@ func isAddressOpen(address string) bool {
 	return false
 }
 
-func GetProxyHttpClient() *http.Client {
+func getProxyHttpClient() *http.Client {
 	httpProxy := beego.AppConfig.String("httpProxy")
-	if len(httpProxy) == 0 {
+	if httpProxy == "" {
 		return &http.Client{}
 	}
 

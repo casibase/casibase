@@ -14,23 +14,11 @@
 
 package controllers
 
-import (
-	"net/http"
-
-	"github.com/casbin/casnode/object"
-)
-
-var HttpClient *http.Client
-
 type Response struct {
 	Status string      `json:"status"`
 	Msg    string      `json:"msg"`
 	Data   interface{} `json:"data"`
 	Data2  interface{} `json:"data2"`
-}
-
-func InitHttpClient() {
-	HttpClient = object.GetProxyHttpClient()
 }
 
 func (c *ApiController) ResponseOk(data ...interface{}) {
@@ -70,7 +58,7 @@ func (c *ApiController) RequireSignedIn() bool {
 
 func (c *ApiController) RequireAdmin() bool {
 	user := c.GetSessionUser()
-	if user == nil || !object.CheckIsAdmin(user) {
+	if user == nil || !user.IsAdmin {
 		c.ResponseError("this operation requires admin privilege")
 		return true
 	}
