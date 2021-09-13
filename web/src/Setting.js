@@ -159,27 +159,27 @@ export function getHomeLink(text) {
 }
 
 export function changeEditorType(editorType) {
-  localStorage.setItem("casnode-editorType", editorType);
+  localStorage.setItem("editorType", editorType);
   MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
 }
 
 export function setLanguage(language) {
-  localStorage.setItem("casnode-language", language);
+  localStorage.setItem("language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);
 }
 
-export function ChangeLanguage(language, previous) {
+export function changeLanguage(language, previous) {
   MemberBackend.updateMemberLanguage(language).then(() => {
-    localStorage.setItem("casnode-language", language);
+    localStorage.setItem("language", language);
     changeMomentLanguage(language);
     i18next.changeLanguage(language);
     goToLink(previous);
   });
 }
 
-export function changeMomentLanguage(lng) {
-  if (lng === "zh") {
+export function changeMomentLanguage(language) {
+  if (language === "zh") {
     moment.locale("zh", {
       relativeTime: {
         future: "%s内",

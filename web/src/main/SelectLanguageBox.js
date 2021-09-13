@@ -26,11 +26,11 @@ class SelectLanguageBox extends React.Component {
     this.state.previous = this.props.location.query?.previous;
   }
 
-  ChangeLanguage(language) {
+  changeLanguage(language) {
     if (this.state.previous === undefined) {
-      Setting.ChangeLanguage(language, "/");
+      Setting.changeLanguage(language, "/");
     } else {
-      Setting.ChangeLanguage(language, this.state.previous);
+      Setting.changeLanguage(language, this.state.previous);
     }
   }
 
@@ -58,49 +58,49 @@ class SelectLanguageBox extends React.Component {
           </div>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("en")}
+            onClick={() => this.changeLanguage("en")}
             className={"lang-selector"}
           >
             English
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("zh")}
+            onClick={() => this.changeLanguage("zh")}
             className={"lang-selector"}
           >
             简体中文
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("fr")}
+            onClick={() => this.changeLanguage("fr")}
             className={"lang-selector"}
           >
             Français
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("de")}
+            onClick={() => this.changeLanguage("de")}
             className={"lang-selector"}
           >
             Deutsch
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("ko")}
+            onClick={() => this.changeLanguage("ko")}
             className={"lang-selector"}
           >
             한국어
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("ru")}
+            onClick={() => this.changeLanguage("ru")}
             className={"lang-selector"}
           >
             Русский
           </a>
           <a
             href="#"
-            onClick={() => this.ChangeLanguage("ja")}
+            onClick={() => this.changeLanguage("ja")}
             className={"lang-selector"}
           >
             日本語

@@ -28,7 +28,7 @@ class TopicPage extends React.Component {
   constructor(props) {
     super(props);
     const rootTabId = "all"; // should be set as the root tab id
-    const lastTabOpen = localStorage.getItem("casnode-lastUsedTab");
+    const lastTabOpen = localStorage.getItem("lastUsedTab");
     this.state = {
       classes: props,
       topics: [],
@@ -69,7 +69,7 @@ class TopicPage extends React.Component {
       },
       () => {
         window.history.pushState({}, 0, `/?tab=${this.state.tab}`);
-        localStorage.setItem("casnode-lastUsedTab", tab);
+        localStorage.setItem("lastUsedTab", tab);
         this.getNodeInfo();
         this.getTopics();
       }

@@ -83,7 +83,11 @@ class AboutForum extends React.Component {
                     Github:{"  "}
                   </td>
                   <td width="auto" align="left">
-                    <a href={`${Conf.GithubRepo}`} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={`${Conf.GithubRepo}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       Casnode
                     </a>
                   </td>
@@ -94,8 +98,12 @@ class AboutForum extends React.Component {
                     {":"}
                   </td>
                   <td width="auto" align="left">
-                    <a href={`https://casnode.org/`} target="_blank" rel="noopener noreferrer">
-                      Casnode-website
+                    <a
+                      href={`https://casnode.org/`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Casnode official website
                     </a>
                   </td>
                 </tr>
