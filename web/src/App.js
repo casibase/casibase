@@ -130,15 +130,19 @@ class App extends Component {
     });
   }
 
+  setLanguage(account) {
+    let language = account?.language;
+    if (language !== "" && language !== i18next.language) {
+      Setting.SetLanguage(language);
+    }
+  }
+
   getAccount() {
     AccountBackend.getAccount().then((res) => {
       let account = res.data;
       if (account !== null) {
-        let language = account?.language;
-        if (language !== "" && language !== i18next.language) {
-          Setting.SetLanguage(language);
-        }
-        // i18n.changeCustomLanguage(language)
+        this.setLanguage(account);
+
         let loginCallbackUrl = localStorage.getItem("loginCallbackUrl");
         localStorage.removeItem("loginCallbackUrl");
         if (loginCallbackUrl !== null) {
