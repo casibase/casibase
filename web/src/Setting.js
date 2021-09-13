@@ -158,12 +158,12 @@ export function getHomeLink(text) {
   return <Link to={"/"}>{text === undefined ? getForumName() : text}</Link>;
 }
 
-export function ChangeEditorType(editorType) {
+export function changeEditorType(editorType) {
   localStorage.setItem("casnode-editorType", editorType);
   MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
 }
 
-export function SetLanguage(language) {
+export function setLanguage(language) {
   localStorage.setItem("casnode-language", language);
   changeMomentLanguage(language);
   i18next.changeLanguage(language);

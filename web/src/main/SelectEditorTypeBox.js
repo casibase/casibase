@@ -50,14 +50,14 @@ class SelectLanguageBox extends React.Component {
           </div>
           <a
             href="javascript:void(0);"
-            onClick={() => Setting.ChangeEditorType("markdown")}
+            onClick={() => Setting.changeEditorType("markdown")}
             className={"lang-selector"}
           >
             {i18next.t("new:MarkDown")}
           </a>
           <a
             href="javascript:void(0);"
-            onClick={() => Setting.ChangeEditorType("richtext")}
+            onClick={() => Setting.changeEditorType("richtext")}
             className={"lang-selector"}
           >
             {i18next.t("new:RichText")}

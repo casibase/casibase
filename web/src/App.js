@@ -133,7 +133,7 @@ class App extends Component {
   setLanguage(account) {
     let language = account?.language;
     if (language !== "" && language !== i18next.language) {
-      Setting.SetLanguage(language);
+      Setting.setLanguage(language);
     }
   }
 
