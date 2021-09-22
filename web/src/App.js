@@ -21,6 +21,7 @@ import { Switch, Route } from "react-router-dom";
 import TopicPage from "./TopicPage";
 import Header from "./Header";
 import Footer from "./Footer";
+import SigninPage from "./SigninPage";
 import RightSigninBox from "./rightbar/RightSigninBox";
 import RightAccountBox from "./rightbar/RightAccountBox";
 import SearchTag from "./main/SearchTag";
@@ -197,6 +198,14 @@ class App extends Component {
                 account={this.state.account}
                 onSignout={this.onSignout.bind(this)}
               />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/login">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <SigninPage />
             </LazyLoad>
           </div>
         </Route>

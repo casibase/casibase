@@ -13,8 +13,10 @@
 // limitations under the License.
 
 import React from "react";
+import { withRouter } from "react-router-dom";
+import * as Setting from "./Setting";
 
-class HomePage extends React.Component {
+class SigninPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,11 +24,13 @@ class HomePage extends React.Component {
     };
   }
 
-  componentDidMount() {}
+  componentWillMount() {
+    Setting.goToLink(Setting.getSigninUrl());
+  }
 
   render() {
-    return <div></div>;
+    return null;
   }
 }
 
-export default HomePage;
+export default withRouter(SigninPage);
