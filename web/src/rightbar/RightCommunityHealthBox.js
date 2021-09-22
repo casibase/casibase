@@ -69,12 +69,15 @@ class RightCommunityHealthBox extends React.Component {
       <React.Fragment>
         <div className="box">
           <div className="inner" align="center">
-            <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
+            <a
+              href={this.state.poster["link"]}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <img
                 src={this.state.poster["picture_link"]}
                 border="0"
                 width="250"
-                height="250"
                 alt={this.state.poster["advertiser"]}
                 style={{ vertical: "bottom" }}
               />
@@ -85,7 +88,11 @@ class RightCommunityHealthBox extends React.Component {
             style={{ display: "flex", justifyContent: "space-between" }}
           >
             <div>
-              <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
+              <a
+                href={this.state.poster["link"]}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 {this.state.poster["advertiser"]}
               </a>
             </div>
