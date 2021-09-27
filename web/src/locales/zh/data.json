@@ -19,6 +19,20 @@
     "Admin": "后台",
     "Navigation": "导航"
   },
+  "note": {
+    "Create": "新建",
+    "Folder Name": "文件夹名",
+    "File Name": "文件名",
+    "File Content": "文件内容",
+    "Save": "保存",
+    "Edit": "编辑",
+    "Delete": "删除",
+    "Parent Folder": "父文件夹",
+    "File or folder added successfully": "文件或文件夹添加成功",
+    "File or folder updated successfully": "文件或文件夹更新成功",
+    "Create File": "新建文件",
+    "Create Folder": "新建文件夹"
+  },
   "frontConf": {
     "Forum name": "论坛名字",
     "Logo image": "logo图片",

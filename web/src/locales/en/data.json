@@ -19,6 +19,20 @@
     "Admin": "Admin",
     "Navigation": "Navigation"
   },
+  "note": {
+    "Create": "Create",
+    "Folder Name": "Folder Name",
+    "File Name": "File Name",
+    "Parent Folder": "Parent Folder",
+    "File Content": "File Content",
+    "Edit": "Edit",
+    "Delete": "Delete",
+    "Save": "Save",
+    "File or folder added successfully": "File or folder added successfully",
+    "File or folder updated successfully": "File or folder updated successfully",
+    "Create File": "Create File",
+    "Create Folder": "Create Folder"
+  },
   "frontConf": {
     "Forum name": "Forum name",
     "Logo image": "Logo image",

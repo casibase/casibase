@@ -78,6 +78,9 @@ const AboutForum = React.lazy(() => import("./main/AboutForum"));
 const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
 const NoMatch = React.lazy(() => import("./main/NoMatch"));
 const Embed = React.lazy(() => import("./Embed"));
+const NoteBox = React.lazy(() => import("./main/NoteBox"));
+const NewNote = React.lazy(() => import("./main/NewNote"));
+const EditNote = React.lazy(() => import("./main/EditNote"));
 
 class App extends Component {
   constructor(props) {
@@ -257,6 +260,38 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <NewBox account={this.state.account} />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/notes">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <NoteBox />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/notes/new">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <NewNote />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/notes/edit/:noteId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <EditNote />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/notes/:noteId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <NoteBox />
             </LazyLoad>
           </div>
         </Route>

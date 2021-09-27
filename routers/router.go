@@ -161,4 +161,10 @@ func initAPI() {
 	beego.Router("/api/get-front-confs", &controllers.ApiController{}, "GET:GetFrontConfs")
 	beego.Router("/api/update-front-conf", &controllers.ApiController{}, "POST:UpdateFrontConf")
 	beego.Router("/api/update-to-default-conf", &controllers.ApiController{}, "POST:UpdateFrontConfToDefault")
+
+	beego.Router("/api/get-notes-by-parent", &controllers.ApiController{}, "GET:GetNotesByParent")
+	beego.Router("/api/get-note", &controllers.ApiController{}, "GET:GetNote")
+	beego.Router("/api/delete-note", &controllers.ApiController{}, "GET:DeleteNote")
+	beego.Router("/api/update-note", &controllers.ApiController{}, "POST:UpdateNote")
+	beego.Router("/api/add-note", &controllers.ApiController{}, "POST:AddNote")
 }

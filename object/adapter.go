@@ -184,4 +184,9 @@ func (a *Adapter) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = a.Engine.Sync2(new(Note))
+	if err != nil {
+		panic(err)
+	}
 }
