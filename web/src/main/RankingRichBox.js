@@ -30,7 +30,7 @@ class RankingRichBox extends React.Component {
   componentDidMount() {
     MemberBackend.getRankingRichList().then((res) => {
       this.setState({
-        richList: res,
+        richList: res.data,
       });
     });
   }
@@ -100,7 +100,7 @@ class RankingRichBox extends React.Component {
                       key={key}
                     >
                       <Avatar
-                        username={member.id}
+                        username={member.name}
                         avatar={member.avatar}
                         key={key}
                       />
@@ -108,7 +108,7 @@ class RankingRichBox extends React.Component {
                     <td width="auto" align="left">
                       <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
                         <span class="gray">{key + 1}.</span>{" "}
-                        <a href={`/member/${member.id}`}>{member.id}</a>
+                        <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
                       <span className="gray f12"> {member.tag} </span>
                       <div className="sep5"></div>
