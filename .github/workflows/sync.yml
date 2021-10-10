@@ -31,5 +31,5 @@ jobs:
 
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CROWDIN_PROJECT_ID: '478439'
+        CROWDIN_PROJECT_ID: '479711'
         CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
