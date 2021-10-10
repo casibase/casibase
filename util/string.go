@@ -16,10 +16,8 @@ package util
 
 import (
 	"io/ioutil"
-	"regexp"
 	"strconv"
 
-	"github.com/google/uuid"
 	"github.com/huichen/sego"
 	"github.com/mozillazg/go-slugify"
 )
@@ -35,17 +33,6 @@ func ParseInt(s string) int {
 
 func IntToString(i int) string {
 	return strconv.Itoa(i)
-}
-
-func GenerateId() string {
-	return uuid.NewString()
-}
-
-func IsValidUsername(username string) bool {
-	if ok, _ := regexp.MatchString("^[a-zA-Z0-9_]{4,20}$", username); !ok {
-		return false
-	}
-	return true
 }
 
 func ReadStringFromPath(path string) string {
