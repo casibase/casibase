@@ -15,6 +15,8 @@
 package controllers
 
 import (
+	_ "embed"
+
 	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
@@ -24,12 +26,14 @@ import (
 var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
 var ClientId = beego.AppConfig.String("clientId")
 var ClientSecret = beego.AppConfig.String("clientSecret")
-var JwtSecret = beego.AppConfig.String("jwtSecret")
 var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
 var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 
+//go:embed token_jwt_key.pem
+var JwtPublicKey string
+
 func init() {
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtSecret, CasdoorOrganization, CasdoorApplication)
+	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtPublicKey, CasdoorOrganization, CasdoorApplication)
 }
 
 // @Title Signin
