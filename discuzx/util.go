@@ -1,0 +1,76 @@
+// Copyright 2021 The casbin Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package discuzx
+
+import (
+	"regexp"
+	"strings"
+	"time"
+)
+
+var reBold *regexp.Regexp
+var reAlign *regexp.Regexp
+var reFont *regexp.Regexp
+var reUrl *regexp.Regexp
+var reSize *regexp.Regexp
+var reSize2 *regexp.Regexp
+var reSize3 *regexp.Regexp
+var reVideo *regexp.Regexp
+
+func init() {
+	reBold, _ = regexp.Compile("\\[b](.*?)\\[/b]")
+	reAlign, _ = regexp.Compile("\\[align=([a-z]+)](.*?)\\[/align]")
+	reFont, _ = regexp.Compile("\\[font=([^]]+)](.*?)\\[/font]")
+	reUrl, _ = regexp.Compile("\\[url=([^]]+)](.*?)\\[/url]")
+	reSize, _ = regexp.Compile("\\[[a-z]+(=[^]]+)?]")
+	reSize2, _ = regexp.Compile("\\[/align]")
+	reSize3, _ = regexp.Compile("\\[/[a-z]+]")
+	//reSize, _ = regexp.Compile("\\[size=\\d+\\].*\\[/size\\]")
+	reVideo, _ = regexp.Compile("\\[media=x,(\\d+),(\\d+)\\].*/id_(.*)\\.html\\[/media\\]")
+}
+
+func getTimeFromUnixSeconds(t int) string {
+	tm := time.Unix(int64(t), 0)
+	return tm.Format(time.RFC3339)
+}
+
+func getYearFromUnixSeconds(t int) int {
+	tm := time.Unix(int64(t), 0)
+	return tm.Year()
+}
+
+func escapeVideo(text string) string {
+	// [media=x,500,375]https://v.youku.com/v_show/id_XNDU0NjEyODg0MA==.html[/media]
+	// <iframe height=498 width=510 src='https://player.youku.com/embed/XNDU0NjEyODg0MA==' frameborder=0 'allowfullscreen'></iframe>
+	text = reVideo.ReplaceAllString(text, "\n<iframe width=$1 height=$2 src='https://player.youku.com/embed/$3' frameborder=0 'allowfullscreen'></iframe>\n")
+	return text
+}
+
+func escapeContent(text string) string {
+	text = strings.ReplaceAll(text, "[quote]", "```\n")
+	text = strings.ReplaceAll(text, "[/quote]", "\n```")
+	text = reBold.ReplaceAllString(text, "<b>$1</b>")
+	text = reAlign.ReplaceAllString(text, "<p align=\"$1\">$2</p>")
+	text = reFont.ReplaceAllString(text, "<font face=\"$1\">$2</font>")
+	text = reUrl.ReplaceAllString(text, "[$2]($1)")
+	text = reSize.ReplaceAllString(text, "")
+	text = reSize2.ReplaceAllString(text, "\n")
+	text = reSize3.ReplaceAllString(text, "")
+	text = escapeVideo(text)
+	text = strings.ReplaceAll(text, "\n", "\n\n")
+	text = strings.ReplaceAll(text, "\r", "")
+	text = strings.ReplaceAll(text, "\n\n\n", "\n\n<br />\n\n")
+	return text
+}
