@@ -17,111 +17,66 @@ package casdoor
 import "github.com/casdoor/casdoor-go-sdk/auth"
 
 func GetUsers() []*auth.User {
-	owner := CasdoorOrganization
+	if adapter != nil {
+		return getUsers()
+	} else {
+		users, err := auth.GetUsers()
+		if err != nil {
+			panic(err)
+		}
 
-	if adapter == nil {
-		panic("casdoor adapter is nil")
+		return users
 	}
-
-	users := []*auth.User{}
-	err := adapter.Engine.Desc("created_time").Find(&users, &auth.User{Owner: owner})
-	if err != nil {
-		panic(err)
-	}
-
-	return users
 }
 
-func GetSortedUsers(sortColName string, limit int) []*auth.User {
-	owner := CasdoorOrganization
+func GetSortedUsers(sorter string, limit int) []*auth.User {
+	if adapter != nil {
+		return getSortedUsers(sorter, limit)
+	} else {
+		users, err := auth.GetSortedUsers(sorter, limit)
+		if err != nil {
+			panic(err)
+		}
 
-	if adapter == nil {
-		panic("casdoor adapter is nil")
+		return users
 	}
-
-	users := []*auth.User{}
-	err := adapter.Engine.Desc(sortColName).Limit(25, 0).Find(&users, &auth.User{Owner: owner})
-	if err != nil {
-		panic(err)
-	}
-
-	return users
 }
 
 func GetUserCount() int {
-	owner := CasdoorOrganization
+	if adapter != nil {
+		return getUserCount()
+	} else {
+		count, err := auth.GetUserCount("")
+		if err != nil {
+			panic(err)
+		}
 
-	if adapter == nil {
-		panic("casdoor adapter is nil")
+		return count
 	}
-
-	count, err := adapter.Engine.Count(&auth.User{Owner: owner})
-	if err != nil {
-		panic(err)
-	}
-
-	return int(count)
 }
 
 func GetOnlineUserCount() int {
-	owner := CasdoorOrganization
-
-	if adapter == nil {
-		panic("casdoor adapter is nil")
-	}
-
-	count, err := adapter.Engine.Where("is_online = ?", 1).Count(&auth.User{Owner: owner})
-	if err != nil {
-		panic(err)
-	}
-
-	return int(count)
-}
-
-func GetUser(name string) *auth.User {
-	owner := CasdoorOrganization
-
-	if adapter == nil {
-		panic("casdoor adapter is nil")
-	}
-
-	if owner == "" || name == "" {
-		return nil
-	}
-
-	user := auth.User{Owner: owner, Name: name}
-	existed, err := adapter.Engine.Get(&user)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return &user
+	if adapter != nil {
+		return getOnlineUserCount()
 	} else {
-		return nil
+		count, err := auth.GetUserCount("1")
+		if err != nil {
+			panic(err)
+		}
+
+		return count
 	}
 }
 
 func GetUserByEmail(email string) *auth.User {
-	owner := CasdoorOrganization
-
-	if adapter == nil {
-		panic("casdoor adapter is nil")
-	}
-
-	if owner == "" || email == "" {
-		return nil
-	}
-
-	user := auth.User{Owner: owner, Email: email}
-	existed, err := adapter.Engine.Get(&user)
-	if err != nil {
-		panic(err)
-	}
-
-	if existed {
-		return &user
+	if adapter != nil {
+		return getUserByEmail(email)
 	} else {
-		return nil
+		user, err := auth.GetUserByEmail(email)
+		if err != nil {
+			panic(err)
+		}
+
+		return user
 	}
 }
