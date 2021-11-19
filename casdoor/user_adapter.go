@@ -125,3 +125,16 @@ func getUserByEmail(email string) *auth.User {
 		return nil
 	}
 }
+
+func AddUser(user *auth.User) bool {
+	if adapter == nil {
+		panic("casdoor adapter is nil")
+	}
+
+	affected, err := adapter.Engine.Insert(user)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}

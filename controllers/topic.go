@@ -280,9 +280,9 @@ func (c *ApiController) UploadTopicPic() {
 	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileURL := service.UploadFileToStorage(memberId, "topicPic", "UploadTopicPic", fmt.Sprintf("casnode/topicPic/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
+	fileUrl := service.UploadFileToStorage(memberId, "topicPic", "UploadTopicPic", fmt.Sprintf("casnode/topicPic/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
 
-	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileURL}
+	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileUrl}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }

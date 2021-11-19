@@ -23,16 +23,20 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
-var ClientId = beego.AppConfig.String("clientId")
-var ClientSecret = beego.AppConfig.String("clientSecret")
-var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
-
 //go:embed token_jwt_key.pem
 var JwtPublicKey string
 
 func init() {
+	InitAuthConfig()
+}
+
+func InitAuthConfig() {
+	var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
+	var ClientId = beego.AppConfig.String("clientId")
+	var ClientSecret = beego.AppConfig.String("clientSecret")
+	var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+	var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
+
 	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtPublicKey, CasdoorOrganization, CasdoorApplication)
 }
 

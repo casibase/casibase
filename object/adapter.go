@@ -33,6 +33,13 @@ type Session struct {
 	SessionExpiry int     `xorm:"notnull"`
 }
 
+func InitConfig() {
+	err := beego.LoadAppConfig("ini", "../conf/app.conf")
+	if err != nil {
+		panic(err)
+	}
+}
+
 func InitAdapter() {
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
 	adapter.createTable()
