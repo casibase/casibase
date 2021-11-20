@@ -31,8 +31,14 @@ func TestAddUsers(t *testing.T) {
 	controllers.InitAuthConfig()
 
 	membersEx := getMembersEx()
+
+	sem := make(chan int, 20)
 	for i, memberEx := range membersEx {
-		addUser(memberEx)
-		fmt.Printf("[%d/%d]: Added user: [%d, %s] to Casdoor\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
+		sem <- 1
+		go func(i int, memberEx *MemberEx) {
+			addUser(memberEx)
+			fmt.Printf("[%d/%d]: Added user: [%d, %s] to Casdoor\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
+			<-sem
+		}(i, memberEx)
 	}
 }

@@ -15,121 +15,56 @@
 package discuzx
 
 import (
-	"bytes"
+	"crypto/x509"
 	"fmt"
-	"image/gif"
-	"image/jpeg"
-	"image/png"
-	"io"
-	"io/ioutil"
-	"net/http"
-	"path"
+	"net/url"
 
-	"github.com/casbin/casnode/service"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-func getRedirectUrl(url string) string {
-	client := &http.Client{}
+func syncAvatarForUser(user *auth.User) string {
+	uid := user.Ranking
+	username := user.Name
 
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		panic(err)
-	}
+	oldAvatarUrl := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, uid)
 
-	newUrl := ""
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		newUrl = req.URL.String()
-		return http.ErrUseLastResponse
-	}
-
-	_, err = client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	if newUrl == "" {
-		newUrl = url
-	}
-
-	return newUrl
-}
-
-func downloadImage(url string) ([]byte, string, error) {
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, "", err
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, "", err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
+	var fileBytes []byte
+	var fileExt string
+	var err error
+	times := 0
+	for {
+		fileBytes, fileExt, err = downloadImage(oldAvatarUrl)
 		if err != nil {
-			return
-		}
-	}(resp.Body)
+			if urlError, ok := err.(*url.Error); ok {
+				if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {
+					times += 1
+					fmt.Printf("[%d]: getUploadedAvatarUrl() error: %s, times = %d, use default avatar\n", uid, hostnameError.Error(), times)
+					if times >= 10 {
+						panic(err)
+					}
 
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
+					oldAvatarUrl = fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, 1)
+					continue
+				}
+			}
+
+			times += 1
+			fmt.Printf("[%d]: getUploadedAvatarUrl() error: %s, times = %d\n", uid, err.Error(), times)
+			if times >= 10 {
+				panic(err)
+			}
+		} else {
+			break
+		}
 	}
 
-	newUrl := resp.Request.URL.String()
-	if url == newUrl {
-		panic(fmt.Errorf("downloadImage() error: url == newUrl: %s", url))
+	if fileExt != ".png" {
+		fileBytes, fileExt, err = convertImageToPng(fileBytes)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	fileExt := path.Ext(newUrl)
-	return bs, fileExt, nil
-}
-
-func uploadDiscuzxAvatar(username string, fileBytes []byte, fileExt string) string {
-	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
-	fileUrl := service.UploadFileToStorage(memberId, "syncAvatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes)
-	return fileUrl
-}
-
-func convertImageToPng(imageBytes []byte) ([]byte, string, error) {
-	// Converting jpeg images to png with Golang
-	// https://medium.com/@daetam/converting-jpeg-to-png-with-golang-85905105cf47
-
-	contentType := http.DetectContentType(imageBytes)
-
-	switch contentType {
-	case "image/png":
-		return imageBytes, ".png", nil
-	case "image/jpeg":
-		img, err := jpeg.Decode(bytes.NewReader(imageBytes))
-		if err != nil {
-			return nil, "", err
-		}
-
-		buf := new(bytes.Buffer)
-		err = png.Encode(buf, img)
-		if err != nil {
-			return nil, "", err
-		}
-
-		return buf.Bytes(), ".png", nil
-	case "image/gif":
-		img, err := gif.Decode(bytes.NewReader(imageBytes))
-		if err != nil {
-			return nil, "", err
-		}
-
-		buf := new(bytes.Buffer)
-		err = png.Encode(buf, img)
-		if err != nil {
-			return nil, "", err
-		}
-
-		return buf.Bytes(), ".png", nil
-	default:
-		return nil, "", fmt.Errorf("convertImageToPng() error: unsupported contentType: %s", contentType)
-	}
+	avatarUrl := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	return avatarUrl
 }

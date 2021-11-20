@@ -15,10 +15,13 @@
 package discuzx
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/casbin/casnode/casdoor"
+	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 func TestAvatar(t *testing.T) {
@@ -29,4 +32,26 @@ func TestAvatar(t *testing.T) {
 
 	url := "https://casbin.org/img/casbin.svg"
 	downloadImage(url)
+}
+
+func TestSyncAvatars(t *testing.T) {
+	object.InitConfig()
+	InitAdapter()
+	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
+	controllers.InitAuthConfig()
+
+	users := casdoor.GetUsers()
+
+	sem := make(chan int, 5)
+	for i, user := range users {
+		sem <- 1
+		go func(i int, user *auth.User) {
+			if user.Avatar == "" {
+				avatarUrl := syncAvatarForUser(user)
+				fmt.Printf("[%d/%d]: Synced avatar for user: [%d, %s] as URL: %s\n", i, len(users), user.Ranking, user.Name, avatarUrl)
+			}
+			<-sem
+		}(i, user)
+	}
 }
