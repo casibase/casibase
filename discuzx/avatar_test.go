@@ -43,7 +43,7 @@ func TestSyncAvatars(t *testing.T) {
 
 	users := casdoor.GetUsers()
 
-	sem := make(chan int, 5)
+	sem := make(chan int, 10)
 	for i, user := range users {
 		sem <- 1
 		go func(i int, user *auth.User) {

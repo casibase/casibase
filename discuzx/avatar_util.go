@@ -92,7 +92,7 @@ func downloadImage(url string) ([]byte, string, error) {
 func uploadDiscuzxAvatar(username string, fileBytes []byte, fileExt string) string {
 	username = url.QueryEscape(username)
 	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
-	fileUrl := service.UploadFileToStorage(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes)
+	fileUrl, _ := service.UploadFileToStorageSafe(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes)
 	return fileUrl
 }
 
