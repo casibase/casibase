@@ -23,8 +23,20 @@ import (
 )
 
 func addUser(memberEx *MemberEx) bool {
-	avatar := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, memberEx.Member.Uid)
-	avatar = getRedirectUrl(avatar)
+	oldAvatarUrl := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, memberEx.Member.Uid)
+	fileBytes, fileExt, err := downloadImage(oldAvatarUrl)
+	if err != nil {
+		panic(err)
+	}
+
+	if fileExt != ".png" {
+		fileBytes, fileExt, err = convertImageToPng(fileBytes)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	avatarUrl := uploadDiscuzxAvatar(memberEx.Member.Username, fileBytes, fileExt)
 
 	user := &auth.User{
 		Owner:       CasdoorOrganization,
@@ -35,8 +47,8 @@ func addUser(memberEx *MemberEx) bool {
 		//Password:          memberEx.UcenterMember.Password,
 		//PasswordSalt:      memberEx.UcenterMember.Salt,
 		//DisplayName:       displayName,
-		Avatar:          avatar,
-		PermanentAvatar: avatar,
+		Avatar:          avatarUrl,
+		PermanentAvatar: avatarUrl,
 		Email:           memberEx.Member.Email,
 		//Phone:             memberEx.Profile.Mobile,
 		//Location:          memberEx.Profile.Residecity,

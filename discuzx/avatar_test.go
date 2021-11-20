@@ -15,24 +15,18 @@
 package discuzx
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/casbin/casnode/casdoor"
-	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 )
 
-func TestAddUsers(t *testing.T) {
+func TestAvatar(t *testing.T) {
 	object.InitConfig()
 	InitAdapter()
 	object.InitAdapter()
 	casdoor.InitCasdoorAdapter()
-	controllers.InitAuthConfig()
 
-	membersEx := getMembersEx()
-	for i, memberEx := range membersEx {
-		addUser(memberEx)
-		fmt.Printf("[%d/%d]: Added user: [%d, %s] to Casdoor\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
-	}
+	url := "https://casbin.org/img/casbin.svg"
+	downloadImage(url)
 }
