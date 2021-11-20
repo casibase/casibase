@@ -31,7 +31,7 @@ type Thread struct {
 
 func getThreads() []*Thread {
 	threads := []*Thread{}
-	err := adapter.Engine.Table("forum_thread").Find(&threads)
+	err := adapter.Engine.Table("pre_forum_thread").Find(&threads)
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func getThreads() []*Thread {
 
 func getThread(id int) *Thread {
 	thread := Thread{Tid: id}
-	existed, err := adapter.Engine.Table("forum_thread").Get(&thread)
+	existed, err := adapter.Engine.Table("pre_forum_thread").Get(&thread)
 	if err != nil {
 		panic(err)
 	}

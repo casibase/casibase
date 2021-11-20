@@ -15,24 +15,22 @@
 package discuzx
 
 import (
-	"github.com/astaxie/beego"
+	"fmt"
+	"testing"
+
+	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/object"
 )
 
-var dbName = "ultrax"
-var ossEndpoint = ""
-var ossAccessKeyId = ""
-var ossAccessKeySecret = ""
-var ossBucketName = "casnode"
-var cdnDomain = "https://cdn.casbin.com/"
-var discuzxDomain = "https://forum.casbin.com/"
-
-var CasdoorOrganization = ""
-var CasdoorApplication = ""
-
-func init() {
+func TestAddUsers(t *testing.T) {
 	object.InitConfig()
+	InitAdapter()
+	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
 
-	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
+	membersEx := getMembersEx()
+	for i, memberEx := range membersEx {
+		addUser(memberEx)
+		fmt.Printf("[%d/%d]: Added user: [%d, %s] to Casdoor\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
+	}
 }
