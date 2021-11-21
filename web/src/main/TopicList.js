@@ -54,7 +54,7 @@ class TopicList extends React.Component {
         }
         return null;
       case "tab":
-        if (tabTopTime !== "") {
+        if (tabTopTime !== "" || homePageTopTime !== "") {
           return this.topTopicStyle;
         }
         return null;
