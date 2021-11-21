@@ -638,15 +638,12 @@ class App extends Component {
   }
 
   getThemeLink() {
-    let themeMode = undefined;
-    let modeArray = document.cookie.split("; ");
-    for (let i = 0; i < modeArray.length; i++) {
-      let kvset = modeArray[i].split("=");
-      if (kvset[0] === "themeMode") themeMode = kvset[1];
+    let themeMode = localStorage.getItem("themeMode");
+    if (themeMode === null) {
+      themeMode = "light";
     }
-    if (themeMode === undefined) themeMode = "true";
-    if (themeMode === "true") return "";
-    else return Setting.getStatic("/css/night.css");
+
+    return themeMode === "light" ? "" : Setting.getStatic("/css/night.css");
   }
 
   render() {

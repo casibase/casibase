@@ -78,30 +78,29 @@ class RightAccountBox extends React.Component {
     });
   }
 
-  reverseTheme() {
-    var themeMode = undefined;
-    var modeArray = document.cookie.split("; ");
-    for (var i = 0; i < modeArray.length; i++) {
-      var kvset = modeArray[i].split("=");
-      if (kvset[0] === "themeMode") themeMode = kvset[1];
+  toggleThemeMode() {
+    let themeMode = localStorage.getItem("themeMode");
+    if (themeMode === null) {
+      themeMode = "light";
     }
-    if (themeMode === undefined) themeMode = "true";
-    if (themeMode === "true") themeMode = "false";
-    else themeMode = "true";
-    document.cookie = "themeMode=" + themeMode;
+
+    if (themeMode === "light") {
+      themeMode = "dark";
+    } else {
+      themeMode = "light";
+    }
+    localStorage.setItem("themeMode", themeMode);
+
     window.location.reload();
   }
 
   getThemeBtnUrl() {
-    var themeMode = undefined;
-    var modeArray = document.cookie.split("; ");
-    for (let i = 0; i < modeArray.length; i++) {
-      let kvset = modeArray[i].split("=");
-      if (kvset[0] === "themeMode") themeMode = kvset[1];
+    let themeMode = localStorage.getItem("themeMode");
+    if (themeMode === null) {
+      themeMode = "light";
     }
-    if (themeMode === undefined) themeMode = "true";
-    if (themeMode === "true") return Setting.getStatic("/img/toggle-light.png");
-    else return Setting.getStatic("/img/toggle-dark.png");
+
+    return Setting.getStatic(`/img/toggle-${themeMode}.png`);
   }
 
   render() {
@@ -124,7 +123,11 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
-                  <div className="fr" onClick={this.reverseTheme}>
+                  <div
+                    className="fr"
+                    style={{ cursor: "pointer" }}
+                    onClick={this.toggleThemeMode}
+                  >
                     <img
                       src={this.getThemeBtnUrl()}
                       align="absmiddle"
