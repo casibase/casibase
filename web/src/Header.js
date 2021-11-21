@@ -332,15 +332,15 @@ class Header extends React.Component {
               </div>
               <div className="menu_sep"></div>
               <div>
-                <Link to="/settings/night/toggle" className="top">
+                <div className="top" onClick={Setting.toggleThemeMode}>
                   <img
-                    src={Setting.getStatic("/img/toggle-light.png")}
+                    src={Setting.getThemeBtnUrl()}
                     align="absmiddle"
                     height="10"
                     alt="Light"
                     style={{ verticalAlign: "middle" }}
                   />
-                </Link>
+                </div>
               </div>
               <div className="menu_sep"></div>
               <div style={{ padding: "10px" }}>

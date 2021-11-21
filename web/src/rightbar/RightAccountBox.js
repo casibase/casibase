@@ -78,31 +78,6 @@ class RightAccountBox extends React.Component {
     });
   }
 
-  toggleThemeMode() {
-    let themeMode = localStorage.getItem("themeMode");
-    if (themeMode === null) {
-      themeMode = "light";
-    }
-
-    if (themeMode === "light") {
-      themeMode = "dark";
-    } else {
-      themeMode = "light";
-    }
-    localStorage.setItem("themeMode", themeMode);
-
-    window.location.reload();
-  }
-
-  getThemeBtnUrl() {
-    let themeMode = localStorage.getItem("themeMode");
-    if (themeMode === null) {
-      themeMode = "light";
-    }
-
-    return Setting.getStatic(`/img/toggle-${themeMode}.png`);
-  }
-
   render() {
     const username = this.props.account?.name;
     const avatar = this.props.account?.avatar;
@@ -126,10 +101,10 @@ class RightAccountBox extends React.Component {
                   <div
                     className="fr"
                     style={{ cursor: "pointer" }}
-                    onClick={this.toggleThemeMode}
+                    onClick={Setting.toggleThemeMode}
                   >
                     <img
-                      src={this.getThemeBtnUrl()}
+                      src={Setting.getThemeBtnUrl()}
                       align="absmiddle"
                       height="10"
                       alt="Light"

@@ -329,3 +329,28 @@ export function getProviderLogoLink(provider) {
   const idp = provider.type.toLowerCase();
   return `${StaticBaseUrl}/img/social_${idp}.png`;
 }
+
+export function toggleThemeMode() {
+  let themeMode = localStorage.getItem("themeMode");
+  if (themeMode === null) {
+    themeMode = "light";
+  }
+
+  if (themeMode === "light") {
+    themeMode = "dark";
+  } else {
+    themeMode = "light";
+  }
+  localStorage.setItem("themeMode", themeMode);
+
+  window.location.reload();
+}
+
+export function getThemeBtnUrl() {
+  let themeMode = localStorage.getItem("themeMode");
+  if (themeMode === null) {
+    themeMode = "light";
+  }
+
+  return getStatic(`/img/toggle-${themeMode}.png`);
+}
