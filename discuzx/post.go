@@ -17,14 +17,15 @@ package discuzx
 import "github.com/casbin/casnode/object"
 
 type Post struct {
-	Pid      int
-	Tid      int
-	First    int
-	Author   string
-	Subject  string
-	Dateline int
-	Message  string
-	Useip    string
+	Pid       int
+	Tid       int
+	First     int
+	Author    string
+	Subject   string
+	Dateline  int
+	Message   string
+	Useip     string
+	Invisible int
 
 	UploadFileRecords []*object.UploadFileRecord `xorm:"-"`
 }

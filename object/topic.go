@@ -36,6 +36,7 @@ type Topic struct {
 	LastReplyTime   string   `xorm:"varchar(40)" json:"lastReplyTime"`
 	ReplyCount      int      `json:"replyCount"`
 	UpCount         int      `json:"upCount"`
+	DownCount       int      `json:"downCount"`
 	HitCount        int      `json:"hitCount"`
 	Hot             int      `json:"hot"`
 	FavoriteCount   int      `json:"favoriteCount"`
@@ -47,6 +48,8 @@ type Topic struct {
 	Content         string   `xorm:"mediumtext" json:"content"`
 	UrlPath         string   `xorm:"varchar(100)" json:"urlPath"`
 	IsHidden        bool     `xorm:"bool" json:"isHidden"`
+	Ip              string   `xorm:"varchar(100)" json:"ip"`
+	State           string   `xorm:"varchar(100)" json:"state"`
 }
 
 func GetTopicCount() int {

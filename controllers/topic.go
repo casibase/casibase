@@ -221,6 +221,7 @@ func (c *ApiController) AddTopic() {
 		LastReplyUser: "",
 		LastReplyTime: util.GetCurrentTime(),
 		UpCount:       0,
+		DownCount:     0,
 		HitCount:      0,
 		FavoriteCount: 0,
 		Content:       body,

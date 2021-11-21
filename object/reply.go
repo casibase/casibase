@@ -29,9 +29,12 @@ type Reply struct {
 	ParentId    int    `xorm:"int" json:"parentId"`
 	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
 	Deleted     bool   `xorm:"bool" json:"deleted"`
+	IsHidden    bool   `xorm:"bool" json:"isHidden"`
 	ThanksNum   int    `xorm:"int" json:"thanksNum"`
 	EditorType  string `xorm:"varchar(40)" json:"editorType"`
 	Content     string `xorm:"mediumtext" json:"content"`
+	Ip          string `xorm:"varchar(100)" json:"ip"`
+	State       string `xorm:"varchar(100)" json:"state"`
 }
 
 var enableNestedReply, _ = beego.AppConfig.Bool("enableNestedReply")

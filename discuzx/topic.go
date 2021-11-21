@@ -21,10 +21,14 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+var MaxTopTime = "9999-00-00T00:00:00+08:00"
+
 func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 	content := ""
+	ip := ""
 	if thread.Posts[0].First == 1 {
 		content = thread.Posts[0].Message
+		ip = thread.Posts[0].Useip
 	} else {
 		panic("addTopic(): thread.Posts[0].First != 1")
 	}
@@ -36,29 +40,63 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 		tags = append(tags, class.Name)
 	}
 
+	homePageTopTime := ""
+	tabTopTime := ""
+	nodeTopTime := ""
+	deleted := false
+	isHidden := false
+	state := ""
+	// https://blog.csdn.net/daily886/article/details/79569894
+	if thread.Displayorder == 3 {
+		homePageTopTime = MaxTopTime
+	} else if thread.Displayorder == 2 {
+		tabTopTime = MaxTopTime
+	} else if thread.Displayorder == 1 {
+		nodeTopTime = MaxTopTime
+	} else if thread.Displayorder == -1 {
+		deleted = true
+	} else if thread.Displayorder == -2 {
+		isHidden = true
+		state = "Reviewing"
+	} else if thread.Displayorder == -3 {
+		isHidden = true
+		state = "ReviewIgnored"
+	} else if thread.Displayorder == -4 {
+		isHidden = true
+		state = "Draft"
+	}
+
 	nodeName := strconv.Itoa(thread.Fid)
 	if forum != nil {
 		nodeName = forum.Name
+	} else {
+		isHidden = true
 	}
 
 	topic := object.Topic{
-		Id:            thread.Tid,
-		Author:        thread.Author,
-		NodeId:        nodeName,
-		NodeName:      nodeName,
-		Title:         thread.Subject,
-		CreatedTime:   getTimeFromUnixSeconds(thread.Dateline),
-		Tags:          tags,
-		LastReplyUser: thread.Lastposter,
-		LastReplyTime: getTimeFromUnixSeconds(thread.Lastpost),
-		ReplyCount:    thread.Replies,
-		UpCount:       thread.RecommendAdd,
-		HitCount:      thread.Views,
-		Hot:           thread.Heats,
-		FavoriteCount: thread.Favtimes,
-		Deleted:       false,
-		Content:       content,
-		IsHidden:      false,
+		Id:              thread.Tid,
+		Author:          thread.Author,
+		NodeId:          nodeName,
+		NodeName:        nodeName,
+		Title:           thread.Subject,
+		CreatedTime:     getTimeFromUnixSeconds(thread.Dateline),
+		Tags:            tags,
+		LastReplyUser:   thread.Lastposter,
+		LastReplyTime:   getTimeFromUnixSeconds(thread.Lastpost),
+		ReplyCount:      thread.Replies,
+		UpCount:         thread.RecommendAdd,
+		DownCount:       thread.RecommendSub,
+		HitCount:        thread.Views,
+		Hot:             thread.Heats,
+		FavoriteCount:   thread.Favtimes,
+		HomePageTopTime: homePageTopTime,
+		TabTopTime:      tabTopTime,
+		NodeTopTime:     nodeTopTime,
+		Deleted:         deleted,
+		Content:         content,
+		IsHidden:        isHidden,
+		Ip:              ip,
+		State:           state,
 	}
 
 	res, id := object.AddTopic(&topic)
@@ -72,14 +110,31 @@ func addReply(topicId int, post *Post) int {
 	content := escapeContent(post.Message)
 	content = addAttachmentsToContent(content, post.UploadFileRecords)
 
+	deleted := false
+	isHidden := false
+	state := ""
+	// https://blog.csdn.net/fengda2870/article/details/8699229
+	if post.Invisible == -2 {
+		isHidden = true
+		state = "Reviewing"
+	} else if post.Invisible == -3 {
+		isHidden = true
+		state = "ReviewIgnored"
+	} else if post.Invisible == -5 {
+		deleted = true
+	}
+
 	reply := object.Reply{
 		Id:          post.Pid,
 		Author:      post.Author,
 		TopicId:     topicId,
 		CreatedTime: getTimeFromUnixSeconds(post.Dateline),
-		Deleted:     false,
+		Deleted:     deleted,
+		IsHidden:    isHidden,
 		ThanksNum:   0,
 		Content:     content,
+		Ip:          post.Useip,
+		State:       state,
 	}
 
 	res, id := object.AddReply(&reply)

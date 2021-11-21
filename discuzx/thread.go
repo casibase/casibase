@@ -25,7 +25,9 @@ type Thread struct {
 	Lastposter   string
 	Views        int
 	Replies      int
+	Displayorder int
 	RecommendAdd int
+	RecommendSub int
 	Heats        int
 	Favtimes     int
 
