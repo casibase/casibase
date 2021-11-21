@@ -16,47 +16,12 @@ package discuzx
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/casbin/casnode/object"
 )
 
-func getNodeFromThread(thread *Thread) *object.Node {
-	if thread.Fid == 2 {
-		if thread.Typeid == 23 {
-			return object.GetNode("resolved")
-		} else if thread.Typeid == 26 {
-			return object.GetNode("room")
-		} else if thread.Typeid == 27 {
-			return object.GetNode("qq-group")
-		} else if thread.Typeid == 28 {
-			return object.GetNode("forum-online")
-		} else if thread.Typeid == 30 {
-			return object.GetNode("academic")
-		} else if thread.Typeid == 35 {
-			return object.GetNode("other-category")
-		} else {
-			return object.GetNode("no-category")
-		}
-	} else if thread.Fid == 100 {
-		year := getYearFromUnixSeconds(thread.Dateline)
-		if year < 2019 {
-			year = 2019
-		}
-		return object.GetNode(fmt.Sprintf("read-%d", year))
-	} else if thread.Fid == 40 {
-		year := getYearFromUnixSeconds(thread.Dateline)
-		if year < 2019 {
-			year = 2019
-		}
-		return object.GetNode(fmt.Sprintf("show-%d", year))
-	} else {
-		return nil
-	}
-}
-
-func addTopic(thread *Thread) int {
-	node := getNodeFromThread(thread)
-
+func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 	content := ""
 	if thread.Posts[0].First == 1 {
 		content = thread.Posts[0].Message
@@ -66,22 +31,33 @@ func addTopic(thread *Thread) int {
 	content = escapeContent(content)
 	content = addAttachmentsToContent(content, thread.Posts[0].UploadFileRecords)
 
+	tags := []string{}
+	if class, ok := classMap[thread.Typeid]; ok {
+		tags = append(tags, class.Name)
+	}
+
+	nodeName := strconv.Itoa(thread.Fid)
+	if forum != nil {
+		nodeName = forum.Name
+	}
+
 	topic := object.Topic{
 		Author:        thread.Author,
-		NodeId:        node.Id,
-		NodeName:      node.Name,
+		NodeId:        nodeName,
+		NodeName:      nodeName,
 		Title:         thread.Subject,
 		CreatedTime:   getTimeFromUnixSeconds(thread.Dateline),
-		Tags:          nil,
+		Tags:          tags,
 		LastReplyUser: thread.Lastposter,
 		LastReplyTime: getTimeFromUnixSeconds(thread.Lastpost),
 		ReplyCount:    thread.Replies,
-		UpCount:       0,
+		UpCount:       thread.RecommendAdd,
 		HitCount:      thread.Views,
-		Hot:           0,
-		FavoriteCount: 0,
+		Hot:           thread.Heats,
+		FavoriteCount: thread.Favtimes,
 		Deleted:       false,
 		Content:       content,
+		IsHidden:      false,
 	}
 
 	res, id := object.AddTopic(&topic)
@@ -165,7 +141,7 @@ func addAttachmentsToContent(content string, records []*object.UploadFileRecord)
 	return content
 }
 
-func addWholeTopic(thread *Thread) {
+func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 	// remove leading useless posts
 	posts := []*Post{}
 	isBeforeFirstPosition := true
@@ -182,7 +158,7 @@ func addWholeTopic(thread *Thread) {
 		return
 	}
 
-	topicId := addTopic(thread)
+	topicId := addTopic(thread, forum, classMap)
 	for i, post := range thread.Posts {
 		if i == 0 {
 			continue

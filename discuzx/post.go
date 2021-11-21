@@ -31,7 +31,7 @@ type Post struct {
 
 func getPosts() []*Post {
 	posts := []*Post{}
-	err := adapter.Engine.Table("forum_post").Find(&posts)
+	err := adapter.Engine.Table("pre_forum_post").Find(&posts)
 	if err != nil {
 		panic(err)
 	}
@@ -41,7 +41,7 @@ func getPosts() []*Post {
 
 func getPostsForThread(threadId int) []*Post {
 	posts := []*Post{}
-	err := adapter.Engine.Table("forum_post").Where("tid = ?", threadId).Find(&posts)
+	err := adapter.Engine.Table("pre_forum_post").Where("tid = ?", threadId).Find(&posts)
 	if err != nil {
 		panic(err)
 	}
@@ -55,4 +55,10 @@ func getPostMapFromPosts(posts []*Post) map[int]*Post {
 		res[post.Pid] = post
 	}
 	return res
+}
+
+func getPostMapForThread(threadId int) ([]*Post, map[int]*Post) {
+	posts := getPostsForThread(threadId)
+	postMap := getPostMapFromPosts(posts)
+	return posts, postMap
 }

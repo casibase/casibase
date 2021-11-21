@@ -34,20 +34,10 @@ type Attachment struct {
 	Width       int
 }
 
-//func getAttachments() []*Attachment {
-//	attachments := []*Attachment{}
-//	err := adapter.Engine.Table("forum_attachment").Find(&attachments)
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	return attachments
-//}
-
-func getAttachmentsForThreadInTable(tableIndex int, threadId int) []*Attachment {
+func getAttachmentsInTable(tableIndex int) []*Attachment {
 	attachments := []*Attachment{}
-	tableName := fmt.Sprintf("forum_attachment_%d", tableIndex)
-	err := adapter.Engine.Table(tableName).Where("tid = ?", threadId).Find(&attachments)
+	tableName := fmt.Sprintf("pre_forum_attachment_%d", tableIndex)
+	err := adapter.Engine.Table(tableName).Find(&attachments)
 	if err != nil {
 		panic(err)
 	}
@@ -55,13 +45,27 @@ func getAttachmentsForThreadInTable(tableIndex int, threadId int) []*Attachment 
 	return attachments
 }
 
-func getAttachmentsForThread(threadId int) []*Attachment {
+func getAttachments() []*Attachment {
 	attachments := []*Attachment{}
 	for i := 0; i < 10; i++ {
-		tmp := getAttachmentsForThreadInTable(i, threadId)
+		tmp := getAttachmentsInTable(i)
 		attachments = append(attachments, tmp...)
 	}
 	return attachments
+}
+
+func getAttachmentMap() map[int][]*Attachment {
+	attachments := getAttachments()
+	m := map[int][]*Attachment{}
+
+	for _, attachment := range attachments {
+		if _, ok := m[attachment.Tid]; !ok {
+			m[attachment.Tid] = []*Attachment{}
+		}
+
+		m[attachment.Tid] = append(m[attachment.Tid], attachment)
+	}
+	return m
 }
 
 func uploadAttachmentAndUpdatePost(cdnDomain string, attachment *Attachment, postMap map[int]*Post) {

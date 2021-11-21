@@ -14,54 +14,43 @@
 
 package discuzx
 
-type Thread struct {
-	Tid          int
-	Fid          int
+type Class struct {
 	Typeid       int
-	Author       string
-	Subject      string
-	Dateline     int
-	Lastpost     int
-	Lastposter   string
-	Views        int
-	Replies      int
-	RecommendAdd int
-	Heats        int
-	Favtimes     int
-
-	Posts []*Post `xorm:"-"`
+	Fid          int
+	Name         string
+	Displayorder int
 }
 
-func getThreads() []*Thread {
-	threads := []*Thread{}
-	err := adapter.Engine.Table("pre_forum_thread").Find(&threads)
+func getClasses() []*Class {
+	classes := []*Class{}
+	err := adapter.Engine.Table("pre_forum_threadclass").Find(&classes)
 	if err != nil {
 		panic(err)
 	}
 
-	return threads
+	return classes
 }
 
-func getThread(id int) *Thread {
-	thread := Thread{Tid: id}
-	existed, err := adapter.Engine.Table("pre_forum_thread").Get(&thread)
+func getClass(id int) *Class {
+	class := Class{Typeid: id}
+	existed, err := adapter.Engine.Table("pre_forum_threadclass").Get(&class)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return &thread
+		return &class
 	} else {
 		return nil
 	}
 }
 
-func getThreadMap() map[int]*Thread {
-	threads := getThreads()
+func getClassMap() map[int]*Class {
+	classes := getClasses()
 
-	m := map[int]*Thread{}
-	for _, thread := range threads {
-		m[thread.Tid] = thread
+	m := map[int]*Class{}
+	for _, class := range classes {
+		m[class.Typeid] = class
 	}
 	return m
 }

@@ -43,56 +43,40 @@ func TestGetThreads(t *testing.T) {
 	thread := threadMap[126239]
 	println(thread)
 
-	addWholeTopic(thread)
-	//for _, thread := range threadMap {
-	//	thread.
-	//}
+	addWholeTopic(thread, nil, nil)
 }
 
-func syncThread(threadId int) {
-	//threadId := 1
-	//threadId := 459
-	//threadId := 36643
-	//threadId := 126239
-	attachments := getAttachmentsForThread(threadId)
+func syncThread(threadId int, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
 	thread := getThread(threadId)
 	if thread == nil {
 		return
 	}
 
-	posts := getPostsForThread(thread.Tid)
-	thread.Posts = append(thread.Posts, posts...)
-	postMap := getPostMapFromPosts(posts)
+	posts, postMap := getPostMapForThread(thread.Tid)
+	thread.Posts = posts
 
 	deleteWholeTopic(thread)
 
 	for _, attachment := range attachments {
 		uploadAttachmentAndUpdatePost(cdnDomain, attachment, postMap)
 	}
-	addWholeTopic(thread)
+	addWholeTopic(thread, forum, classMap)
 }
 
-func TestGetThread(t *testing.T) {
+func TestSyncThreads(t *testing.T) {
+	object.InitConfig()
 	InitAdapter()
 	object.InitAdapter()
 
-	//syncThread(114)
+	attachmentMap := getAttachmentMap()
+	forumMap := getForumMap()
+	classMap := getClassMap()
 
 	threads := getThreads()
-	for _, thread := range threads {
-		if thread.Fid != 2 && thread.Fid != 100 && thread.Fid != 40 {
-			continue
-		}
-
-		if thread.Tid <= 125956 {
-			continue
-		}
-
-		syncThread(thread.Tid)
-		fmt.Printf("Processed thread, tid = %d, fid = %d\n", thread.Tid, thread.Fid)
+	for i, thread := range threads {
+		attachments := attachmentMap[thread.Tid]
+		forum := forumMap[thread.Fid]
+		syncThread(thread.Tid, attachments, forum, classMap)
+		fmt.Printf("[%d/%d]: Synced thread: tid = %d, fid = %d\n", i, len(threads), thread.Tid, thread.Fid)
 	}
-
-	//for i := 0; i < 10; i ++ {
-	//	syncThread(i)
-	//}
 }
