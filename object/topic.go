@@ -77,6 +77,18 @@ func GetCreatedTopicsNum(memberId string) int {
 	return int(total)
 }
 
+func getAvataredTopics(topics []*Topic) []*TopicWithAvatar {
+	res := []*TopicWithAvatar{}
+	for _, topic := range topics {
+		topicWithAvatar := &TopicWithAvatar{
+			Topic:  *topic,
+			Avatar: getUserAvatar(topic.Author),
+		}
+		res = append(res, topicWithAvatar)
+	}
+	return res
+}
+
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
@@ -89,15 +101,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 		panic(err)
 	}
 
-	var ret []*TopicWithAvatar
-	for _, topic := range topics {
-		ret = append(ret, &TopicWithAvatar{
-			Topic:  *topic,
-			Avatar: getUserAvatar(topic.Author),
-		})
-	}
-
-	return ret
+	return getAvataredTopics(topics)
 }
 
 func GetTopicsByTitleAndAuthor(title string, author string) []*Topic {
@@ -517,23 +521,22 @@ func ChangeTopicLastReplyUser(topicId int, memberId string, updateTime string) b
 }
 
 func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
-	topics := []*TopicWithAvatar{}
-
 	if tab == "all" {
-		topics = GetTopics(limit, offset)
+		topics := GetTopics(limit, offset)
+		return topics
 	} else {
+		topics := []*Topic{}
 		err := adapter.Engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").
 			Where("node.tab_id = ?", tab).And("topic.deleted = ?", 0).
 			Desc("topic.tab_top_time").Desc("topic.last_reply_time").
 			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time").
 			Limit(limit, offset).Find(&topics)
-
 		if err != nil {
 			panic(err)
 		}
-	}
 
-	return topics
+		return getAvataredTopics(topics)
+	}
 }
 
 func UpdateTopicHotInfo(topicId string, hot int) bool {
@@ -556,15 +559,7 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 		panic(err)
 	}
 
-	var ret []*TopicWithAvatar
-	for _, topic := range topics {
-		ret = append(ret, &TopicWithAvatar{
-			Topic:  *topic,
-			Avatar: getUserAvatar(topic.Author),
-		})
-	}
-
-	return ret
+	return getAvataredTopics(topics)
 }
 
 // GetSortedTopics *sort: 1 means Asc, 2 means Desc, 0 means no effect.
@@ -610,15 +605,7 @@ func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort strin
 		panic(err)
 	}
 
-	var ret []*TopicWithAvatar
-	for _, topic := range topics {
-		ret = append(ret, &TopicWithAvatar{
-			Topic:  *topic,
-			Avatar: getUserAvatar(topic.Author),
-		})
-	}
-
-	return ret
+	return getAvataredTopics(topics)
 }
 
 func GetTopicEditableStatus(user *auth.User, author, nodeId, createdTime string) bool {
@@ -723,8 +710,8 @@ func (t Topic) GetAllRepliesOfTopic() []string {
 	return ret
 }
 
-func SearchTopics(keyword string) []TopicWithAvatar {
-	var topics []Topic
+func SearchTopics(keyword string) []*TopicWithAvatar {
+	topics := []*Topic{}
 	sqlKeyword := fmt.Sprintf("%%%s%%", keyword)
 
 	err := adapter.Engine.Where("deleted = 0").Where("title like ? or content like ?", sqlKeyword, sqlKeyword).Find(&topics)
@@ -732,18 +719,15 @@ func SearchTopics(keyword string) []TopicWithAvatar {
 		panic(err)
 	}
 
-	var ret []TopicWithAvatar
+	topics2 := []*Topic{}
 	for _, topic := range topics {
 		content := RemoveHtmlTags(topic.Content)
 		if !strings.Contains(content, keyword) && !strings.Contains(topic.Title, keyword) {
 			continue
 		}
 
-		ret = append(ret, TopicWithAvatar{
-			Topic:  topic,
-			Avatar: getUserAvatar(topic.Author),
-		})
+		topics2 = append(topics2, topic)
 	}
 
-	return ret
+	return getAvataredTopics(topics2)
 }
