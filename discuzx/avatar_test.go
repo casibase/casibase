@@ -31,7 +31,7 @@ func TestAvatar(t *testing.T) {
 	casdoor.InitCasdoorAdapter()
 
 	url := "https://casbin.org/img/casbin.svg"
-	downloadImage(url)
+	downloadFile(url)
 }
 
 func TestSyncAvatars(t *testing.T) {

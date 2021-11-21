@@ -15,37 +15,16 @@
 package discuzx
 
 import (
-	"fmt"
-
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/object"
 )
 
-var bucket *oss.Bucket
+var CasdoorOrganization = ""
+var CasdoorApplication = ""
 
 func init() {
-	bucket = getBucket()
-}
+	object.InitConfig()
 
-func getBucket() *oss.Bucket {
-	client, err := oss.New(ossEndpoint, ossAccessKeyId, ossAccessKeySecret)
-	if err != nil {
-		panic(err)
-	}
-
-	bucket, err := client.Bucket(ossBucketName)
-	if err != nil {
-		panic(err)
-	}
-
-	return bucket
-}
-
-func copyFile(attachmentPath string, dstObjectKey string) {
-	// attachmentPath = "202004/22/xxx.jpg"
-	srcObjectKey := fmt.Sprintf("old_attachment/forum/%s", attachmentPath)
-	_, err := bucket.CopyObject(srcObjectKey, dstObjectKey)
-	if err != nil {
-		println(err)
-		//panic(err)
-	}
+	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
 }

@@ -18,6 +18,7 @@ import (
 	"crypto/x509"
 	"fmt"
 	"net/url"
+	"path"
 
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
@@ -29,11 +30,17 @@ func syncAvatarForUser(user *auth.User) string {
 	oldAvatarUrl := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, uid)
 
 	var fileBytes []byte
+	var newUrl string
 	var fileExt string
 	var err error
 	times := 0
 	for {
-		fileBytes, fileExt, err = downloadImage(oldAvatarUrl)
+		fileBytes, newUrl, err = downloadFile(oldAvatarUrl)
+		if oldAvatarUrl == newUrl {
+			panic(fmt.Errorf("downloadFile() error: oldAvatarUrl == newUrl: %s", oldAvatarUrl))
+		}
+
+		fileExt = path.Ext(newUrl)
 		if err != nil {
 			if urlError, ok := err.(*url.Error); ok {
 				if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {

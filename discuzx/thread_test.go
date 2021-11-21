@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
 )
 
@@ -58,7 +59,7 @@ func syncThread(threadId int, attachments []*Attachment, forum *Forum, classMap 
 	deleteWholeTopic(thread)
 
 	for _, attachment := range attachments {
-		uploadAttachmentAndUpdatePost(cdnDomain, attachment, postMap)
+		uploadAttachmentAndUpdatePost(attachment, postMap)
 	}
 	addWholeTopic(thread, forum, classMap)
 }
@@ -67,6 +68,7 @@ func TestSyncThreads(t *testing.T) {
 	object.InitConfig()
 	InitAdapter()
 	object.InitAdapter()
+	controllers.InitAuthConfig()
 
 	attachmentMap := getAttachmentMap()
 	forumMap := getForumMap()

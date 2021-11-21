@@ -16,9 +16,10 @@ package discuzx
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/casbin/casnode/object"
-	"github.com/casbin/casnode/util"
+	"github.com/casbin/casnode/service"
 )
 
 type Attachment struct {
@@ -68,33 +69,33 @@ func getAttachmentMap() map[int][]*Attachment {
 	return m
 }
 
-func uploadAttachmentAndUpdatePost(cdnDomain string, attachment *Attachment, postMap map[int]*Post) {
+func uploadDiscuzxFile(username string, fileBytes []byte, fileName string, createdTime string, description string) string {
+	username = url.QueryEscape(username)
+	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
+	fileUrl, _ := service.UploadFileToStorageSafe(memberId, "file", "uploadDiscuzxFile", fmt.Sprintf("file/%s/%s", memberId, fileName), fileBytes, createdTime, description)
+	return fileUrl
+}
+
+func uploadAttachmentAndUpdatePost(attachment *Attachment, postMap map[int]*Post) {
 	post := postMap[attachment.Pid]
+
+	oldFileUrl := fmt.Sprintf("%s%s", discuzxAttachmentBaseUrl, attachment.Attachment)
+	fileBytes, _, err := downloadFile(oldFileUrl)
+	if err != nil {
+		panic(err)
+	}
+
+	fileUrl := uploadDiscuzxFile(post.Author, fileBytes, attachment.Filename, getTimeFromUnixSeconds(attachment.Dateline), attachment.Description)
 
 	fileType := "file"
 	if attachment.Isimage == 1 {
 		fileType = "image"
 	}
-	filePath := fmt.Sprintf("usercontent/%s/%s/%s", post.Author, fileType, attachment.Filename)
 
 	record := object.UploadFileRecord{
-		FileName:    attachment.Filename,
-		FilePath:    filePath,
-		FileUrl:     cdnDomain + filePath,
-		FileType:    fileType,
-		FileExt:     util.FileExt(attachment.Filename),
-		MemberId:    post.Author,
-		CreatedTime: getTimeFromUnixSeconds(attachment.Dateline),
-		Size:        attachment.Filesize,
-		Views:       0,
-		Desc:        attachment.Description,
-		Deleted:     false,
-	}
-
-	affected, _ := object.AddFileRecord(&record)
-	if affected {
-		// upload to OSS
-		copyFile(attachment.Attachment, filePath)
+		FileName: attachment.Filename,
+		FileUrl:  fileUrl,
+		FileType: fileType,
 	}
 
 	if post.UploadFileRecords == nil {

@@ -20,79 +20,16 @@ import (
 	"image/gif"
 	"image/jpeg"
 	"image/png"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"net/url"
-	"path"
 
 	"github.com/casbin/casnode/service"
 )
 
-func getRedirectUrl(url string) string {
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		panic(err)
-	}
-
-	newUrl := ""
-	client.CheckRedirect = func(req *http.Request, via []*http.Request) error {
-		newUrl = req.URL.String()
-		return http.ErrUseLastResponse
-	}
-
-	_, err = client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-
-	if newUrl == "" {
-		newUrl = url
-	}
-
-	return newUrl
-}
-
-func downloadImage(url string) ([]byte, string, error) {
-	client := &http.Client{}
-
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, "", err
-	}
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, "", err
-	}
-
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			return
-		}
-	}(resp.Body)
-
-	bs, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, "", err
-	}
-
-	newUrl := resp.Request.URL.String()
-	if url == newUrl {
-		panic(fmt.Errorf("downloadImage() error: url == newUrl: %s", url))
-	}
-
-	fileExt := path.Ext(newUrl)
-	return bs, fileExt, nil
-}
-
 func uploadDiscuzxAvatar(username string, fileBytes []byte, fileExt string) string {
 	username = url.QueryEscape(username)
 	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
-	fileUrl, _ := service.UploadFileToStorageSafe(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes)
+	fileUrl, _ := service.UploadFileToStorageSafe(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes, "", "")
 	return fileUrl
 }
 

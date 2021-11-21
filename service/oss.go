@@ -22,12 +22,12 @@ func UploadFileToStorage(user string, tag string, parent string, fullFilePath st
 	return fileUrl, err
 }
 
-func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (string, error) {
+func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePath string, fileBytes []byte, createdTime string, description string) (string, error) {
 	var fileUrl string
 	var err error
 	times := 0
 	for {
-		fileUrl, err = UploadFileToStorage(user, tag, parent, fullFilePath, fileBytes)
+		fileUrl, _, err = auth.UploadResourceEx(user, tag, parent, fullFilePath, fileBytes, createdTime, description)
 		if err != nil {
 			times += 1
 			if times >= 5 {

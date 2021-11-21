@@ -14,25 +14,6 @@
 
 package discuzx
 
-import (
-	"github.com/astaxie/beego"
-	"github.com/casbin/casnode/object"
-)
-
 var dbName = "ultrax"
-var ossEndpoint = ""
-var ossAccessKeyId = ""
-var ossAccessKeySecret = ""
-var ossBucketName = "casnode"
-var cdnDomain = "https://cdn.casbin.com/"
-var discuzxDomain = "https://forum.casbin.com/"
-
-var CasdoorOrganization = ""
-var CasdoorApplication = ""
-
-func init() {
-	object.InitConfig()
-
-	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
-}
+var discuzxDomain = "https://www.discuz.net/"
+var discuzxAttachmentBaseUrl = "https://attachment.discuz.net/forum/"

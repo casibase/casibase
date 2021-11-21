@@ -42,6 +42,7 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 	}
 
 	topic := object.Topic{
+		Id:            thread.Tid,
 		Author:        thread.Author,
 		NodeId:        nodeName,
 		NodeName:      nodeName,
@@ -72,6 +73,7 @@ func addReply(topicId int, post *Post) int {
 	content = addAttachmentsToContent(content, post.UploadFileRecords)
 
 	reply := object.Reply{
+		Id:          post.Pid,
 		Author:      post.Author,
 		TopicId:     topicId,
 		CreatedTime: getTimeFromUnixSeconds(post.Dateline),
@@ -123,7 +125,7 @@ func addAttachmentsToContent(content string, records []*object.UploadFileRecord)
 	}
 
 	if len(images) != 0 {
-		content += "\n\n### Images: \n\n"
+		content += "\n\n### 图片：\n\n"
 		for _, record := range images {
 			content += recordToHyperlink(record)
 		}
@@ -131,7 +133,7 @@ func addAttachmentsToContent(content string, records []*object.UploadFileRecord)
 	}
 
 	if len(files) != 0 {
-		content += "\n\n### Attachments: \n\n"
+		content += "\n\n### 附件：\n\n"
 		for _, record := range files {
 			content += recordToHyperlink(record)
 		}
