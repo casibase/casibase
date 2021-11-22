@@ -238,10 +238,14 @@ class NewReplyBox extends React.Component {
           <div style={{ width: "100%", textAlign: "center" }}>
             <div style={{ marginTop: 30, marginBottom: 30 }}>
               <input
-                onClick={() => {}}
+                onClick={() => {
+                  let encodedUrl = encodeURIComponent(window.location.href);
+                  localStorage.setItem("loginCallbackUrl", encodedUrl);
+                  window.location.href = Setting.getSignupUrl();
+                }}
                 type="submit"
                 value={i18next.t(
-                  "reply:Want to leave comment? Please go to the top-right of this page to sign in/sign up"
+                  "reply:Want to leave comment? Please sign in/sign up"
                 )}
                 className="super normal button"
               />
