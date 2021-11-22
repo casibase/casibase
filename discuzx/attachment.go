@@ -15,7 +15,6 @@
 package discuzx
 
 import (
-	"crypto/x509"
 	"fmt"
 	"net/url"
 
@@ -87,12 +86,8 @@ func uploadAttachmentAndUpdatePost(attachment *Attachment, postMap map[int]*Post
 	fileBytes, _, err := downloadFile(oldFileUrl)
 	if err != nil {
 		if urlError, ok := err.(*url.Error); ok {
-			if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {
-				fmt.Printf("[%d]: uploadAttachmentAndUpdatePost() error: %s, the attachement is deleted: %s\n", post.Pid, hostnameError.Error(), attachment.Attachment)
-				return
-			} else {
-				panic(err)
-			}
+			fmt.Printf("[%d]: uploadAttachmentAndUpdatePost() error: %s, the attachement is deleted: %s\n", post.Pid, urlError.Error(), attachment.Attachment)
+			return
 		} else {
 			panic(err)
 		}

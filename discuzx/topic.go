@@ -30,7 +30,7 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 		content = thread.Posts[0].Message
 		ip = thread.Posts[0].Useip
 	} else {
-		panic("addTopic(): thread.Posts[0].First != 1")
+		panic("addTopic() error: thread.Posts[0].First != 1")
 	}
 	content = escapeContent(content)
 	content = addAttachmentsToContent(content, thread.Posts[0].UploadFileRecords)
@@ -221,9 +221,9 @@ func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 			continue
 		}
 
-		if post.First == 1 {
-			panic("addWholeTopic(): thread.Posts[0].First == 1")
-		}
+		//if post.First == 1 {
+		//	panic(fmt.Errorf("addWholeTopic() error: thread.Posts[%d].First == 1", i))
+		//}
 
 		addReply(topicId, post)
 	}
