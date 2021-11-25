@@ -39,9 +39,6 @@ func AutoSigninFilter(ctx *context.Context) {
 			return
 		}
 
-		ok, _ := auth.CheckUserPassword(&claims.User)
-		if ok {
-			setSessionClaims(ctx, claims)
-		}
+		setSessionClaims(ctx, claims)
 	}
 }
