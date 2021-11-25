@@ -238,7 +238,13 @@ class NewReplyBox extends React.Component {
           <div style={{ width: "100%", textAlign: "center" }}>
             <div style={{ marginTop: 30, marginBottom: 30 }}>
               <input
-                onClick={() => {}}
+                onClick={() => {
+                  const data = {
+                    tag: "casnode",
+                    action: "login",
+                  };
+                  window.parent.postMessage(data, "*");
+                }}
                 type="submit"
                 value={i18next.t(
                   "reply:Want to leave comment? Please go to the top-right of this page to sign in/sign up"
