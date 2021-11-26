@@ -31,13 +31,13 @@ func init() {
 }
 
 func InitAuthConfig() {
-	var CasdoorEndpoint = beego.AppConfig.String("casdoorEndpoint")
-	var ClientId = beego.AppConfig.String("clientId")
-	var ClientSecret = beego.AppConfig.String("clientSecret")
-	var CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	var CasdoorApplication = beego.AppConfig.String("casdoorApplication")
+	casdoorEndpoint := beego.AppConfig.String("casdoorEndpoint")
+	clientId := beego.AppConfig.String("clientId")
+	clientSecret := beego.AppConfig.String("clientSecret")
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 
-	auth.InitConfig(CasdoorEndpoint, ClientId, ClientSecret, JwtPublicKey, CasdoorOrganization, CasdoorApplication)
+	auth.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
 }
 
 // @Title Signin
