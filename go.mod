@@ -4,9 +4,11 @@ go 1.16
 
 require (
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
+	github.com/aliyun/aliyun-oss-go-sdk v2.1.10+incompatible
 	github.com/astaxie/beego v1.12.3
+	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/casbin/google-groups-crawler v0.1.3
-	github.com/casdoor/casdoor-go-sdk v0.1.4
+	github.com/casdoor/casdoor-go-sdk v0.1.5
 	github.com/chromedp/chromedp v0.6.10
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
@@ -28,5 +30,6 @@ require (
 	golang.org/x/text v0.3.5 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	xorm.io/core v0.7.2
 	xorm.io/xorm v0.8.1
 )

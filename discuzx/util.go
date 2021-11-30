@@ -15,6 +15,8 @@
 package discuzx
 
 import (
+	"fmt"
+	"hash/fnv"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -131,4 +133,17 @@ func downloadFile(url string) ([]byte, string, error) {
 
 	newUrl := resp.Request.URL.String()
 	return bs, newUrl, nil
+}
+
+func getStringHash(s string) int {
+	h := fnv.New32a()
+	h.Write([]byte(s))
+	return int(h.Sum32())
+}
+
+func getDefaultAvatarUrl(s string) string {
+	i := getStringHash(s)
+	i = i%244 + 1
+	avatarUrl := fmt.Sprintf("%s%d.png", avatarPoolBaseUrl, i)
+	return avatarUrl
 }

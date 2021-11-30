@@ -40,12 +40,11 @@ func syncAvatarForUser(user *auth.User) string {
 			panic(fmt.Errorf("downloadFile() error: oldAvatarUrl == newUrl: %s", oldAvatarUrl))
 		}
 
-		fileExt = path.Ext(newUrl)
 		if err != nil {
 			if urlError, ok := err.(*url.Error); ok {
 				if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {
 					times += 1
-					fmt.Printf("[%d]: getUploadedAvatarUrl() error: %s, times = %d, use default avatar\n", uid, hostnameError.Error(), times)
+					fmt.Printf("[%d]: downloadFile() error: %s, times = %d, use default avatar\n", uid, hostnameError.Error(), times)
 					if times >= 10 {
 						panic(err)
 					}
@@ -56,7 +55,7 @@ func syncAvatarForUser(user *auth.User) string {
 			}
 
 			times += 1
-			fmt.Printf("[%d]: getUploadedAvatarUrl() error: %s, times = %d\n", uid, err.Error(), times)
+			fmt.Printf("[%d]: downloadFile() error: %s, times = %d\n", uid, err.Error(), times)
 			if times >= 10 {
 				panic(err)
 			}
@@ -65,12 +64,44 @@ func syncAvatarForUser(user *auth.User) string {
 		}
 	}
 
+	fileExt = path.Ext(newUrl)
 	if fileExt != ".png" {
 		fileBytes, fileExt, err = convertImageToPng(fileBytes)
 		if err != nil {
 			panic(err)
 		}
 	}
+
+	avatarUrl := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	return avatarUrl
+}
+
+func updateDefaultAvatarForUser(user *auth.User) string {
+	uid := user.Ranking
+	username := user.Name
+
+	defaultAvatarUrl := getDefaultAvatarUrl(username)
+
+	var fileBytes []byte
+	var newUrl string
+	var fileExt string
+	var err error
+	times := 0
+	for {
+		fileBytes, newUrl, err = downloadFile(defaultAvatarUrl)
+
+		if err != nil {
+			times += 1
+			fmt.Printf("[%d]: downloadFile() error: %s, times = %d\n", uid, err.Error(), times)
+			if times >= 10 {
+				panic(err)
+			}
+		} else {
+			break
+		}
+	}
+
+	fileExt = path.Ext(newUrl)
 
 	avatarUrl := uploadDiscuzxAvatar(username, fileBytes, fileExt)
 	return avatarUrl

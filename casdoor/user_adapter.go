@@ -14,7 +14,12 @@
 
 package casdoor
 
-import "github.com/casdoor/casdoor-go-sdk/auth"
+import (
+	"net"
+
+	"github.com/casdoor/casdoor-go-sdk/auth"
+	"xorm.io/core"
+)
 
 func getUsers() []*auth.User {
 	owner := CasdoorOrganization
@@ -137,4 +142,39 @@ func AddUser(user *auth.User) bool {
 	}
 
 	return affected != 0
+}
+
+func updateUser(owner string, name string, user *auth.User) (bool, error) {
+	affected, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(user)
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
+func UpdateUser(owner string, name string, user *auth.User) bool {
+	if adapter == nil {
+		panic("casdoor adapter is nil")
+	}
+
+	var affected bool
+	var err error
+	times := 0
+	for {
+		affected, err = updateUser(owner, name, user)
+		if err != nil {
+			if opError, ok := err.(*net.OpError); ok {
+				times += 1
+				if times >= 5 {
+					panic(opError)
+				}
+			} else {
+				panic(err)
+			}
+		} else {
+			break
+		}
+	}
+	return affected
 }

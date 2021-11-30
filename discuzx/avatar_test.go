@@ -55,3 +55,25 @@ func TestSyncAvatars(t *testing.T) {
 		}(i, user)
 	}
 }
+
+func TestUpdateDefaultAvatars(t *testing.T) {
+	object.InitConfig()
+	InitAdapter()
+	object.InitAdapter()
+	casdoor.InitCasdoorAdapter()
+	controllers.InitAuthConfig()
+
+	users := casdoor.GetUsers()
+
+	sem := make(chan int, 10)
+	for i, user := range users {
+		sem <- 1
+		go func(i int, user *auth.User) {
+			if user.IsDefaultAvatar {
+				avatarUrl := updateDefaultAvatarForUser(user)
+				fmt.Printf("[%d/%d]: Updated default avatar for user: [%d, %s] as URL: %s\n", i, len(users), user.Ranking, user.Name, avatarUrl)
+			}
+			<-sem
+		}(i, user)
+	}
+}
