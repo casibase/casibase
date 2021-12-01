@@ -24,6 +24,7 @@ import PageColumn from "./PageColumn";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
+import UserLink from "../UserLink";
 
 // const pangu = require("pangu");
 const maxReplyDepth = Setting.PcBrowser
@@ -408,9 +409,7 @@ class ReplyBox extends React.Component {
               )}
             </div>
             <strong>
-              <Link to={`/member/${reply.author}`} className="dark">
-                {reply.author}
-              </Link>
+              <UserLink username={reply.author} classNameText={"dark"} />
             </strong>
             <Link
               className="ago"

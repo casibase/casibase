@@ -26,6 +26,7 @@ import "../node.css";
 import Zmage from "react-zmage";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
+import UserLink from "../UserLink";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -616,9 +617,7 @@ class TopicBox extends React.Component {
               <tr>
                 <td align="right">{i18next.t("topic:Creator")}</td>
                 <td align="left">
-                  <Link to={`/member/${this.state.topic?.author}`}>
-                    {this.state.topic?.author}
-                  </Link>
+                  <UserLink username={this.state.topic?.author} />
                 </td>
               </tr>
               <tr>
@@ -751,12 +750,10 @@ class TopicBox extends React.Component {
               </span>
             ) : null}
             <small className="gray">
-              <Link
-                to={`/member/${this.state.topic?.author}`}
-                className={`${this.state.topic.nodeId}`}
-              >
-                {this.state.topic?.author}
-              </Link>{" "}
+              <UserLink
+                username={this.state.topic?.author}
+                classNameText={`${this.state.topic.nodeId}`}
+              />{" "}
               · {Setting.getPrettyDate(this.state.topic?.createdTime)} ·{" "}
               {this.state.topic?.hitCount} {i18next.t("topic:hits")}
               &nbsp;{" "}

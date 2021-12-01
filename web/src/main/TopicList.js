@@ -19,6 +19,7 @@ import Avatar from "../Avatar";
 import "../node.css";
 import i18next from "i18next";
 import { Link } from "react-router-dom";
+import UserLink from "../UserLink";
 const pangu = require("pangu");
 
 class TopicList extends React.Component {
@@ -110,9 +111,10 @@ class TopicList extends React.Component {
                     </Link>{" "}
                     &nbsp;•&nbsp;{" "}
                     <strong>
-                      <Link to={`/member/${topic.author}`} className="node">
-                        {topic.author}
-                      </Link>
+                      <UserLink
+                        username={topic.author}
+                        classNameText={"node"}
+                      />
                     </strong>
                   </span>
                 ) : null}
@@ -145,12 +147,10 @@ class TopicList extends React.Component {
                         </span>
                       ) : null}
                       <strong>
-                        <Link
-                          to={`/member/${topic.author}`}
-                          className={`${this.props.nodeId} member`}
-                        >
-                          {topic.author}
-                        </Link>
+                        <UserLink
+                          username={topic.author}
+                          classNameText={`${this.props.nodeId} member`}
+                        />
                       </strong>{" "}
                       &nbsp;•&nbsp;{" "}
                       {topic.lastReplyTime === "" ||
@@ -164,12 +164,10 @@ class TopicList extends React.Component {
                             "topic:last reply from"
                           )}{" "}
                           <strong>
-                            <Link
-                              to={`/member/${topic.lastReplyUser}`}
-                              className={`${this.props.nodeId} member`}
-                            >
-                              {topic.lastReplyUser}
-                            </Link>
+                            <UserLink
+                              username={topic.lastReplyUser}
+                              classNameText={`${this.props.nodeId} member`}
+                            />
                           </strong>
                         </div>
                       )}
@@ -189,12 +187,10 @@ class TopicList extends React.Component {
                                 "topic:last reply from"
                               )}{" "}
                               <strong>
-                                <Link
-                                  to={`/member/${topic.lastReplyUser}`}
-                                  className={`${this.props.nodeId} member`}
-                                >
-                                  {topic.lastReplyUser}
-                                </Link>
+                                <UserLink
+                                  username={topic.lastReplyUser}
+                                  classNameText={`${this.props.nodeId} member`}
+                                />
                               </strong>
                             </div>
                           )}

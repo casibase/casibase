@@ -22,7 +22,6 @@ import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
 import { scoreConverter } from "./Tools";
-import { getProviderLogoLink } from "../Setting";
 
 class MemberBox extends React.Component {
   constructor(props) {

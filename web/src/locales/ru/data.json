@@ -181,6 +181,7 @@
   },
   "general": {
     "Admin": "Админ",
+    "Anonymous": "Anonymous",
     "Home": "Домой",
     "Homepage": "Домашняя страница",
     "Language": "Язык",

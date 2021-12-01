@@ -181,6 +181,7 @@
   },
   "general": {
     "Admin": "后台",
+    "Anonymous": "匿名",
     "Home": "首页",
     "Homepage": "个人主页",
     "Language": "语言选择",

@@ -181,6 +181,7 @@
   },
   "general": {
     "Admin": "Admin",
+    "Anonymous": "Anonymous",
     "Home": "Home",
     "Homepage": "Homepage",
     "Language": "Language",

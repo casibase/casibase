@@ -48,6 +48,20 @@ class Avatar extends React.Component {
       src = Setting.getUserAvatar(this.props.username);
     }
 
+    if (this.props.username === "" || this.props.username === "客人") {
+      return (
+        <img
+          src={"https://cdn.casbin.com/avatar-pool/anonymous.png"}
+          className="avatar"
+          border="0"
+          align="default"
+          style={style}
+          alt={"Anonymous User"}
+          key={this.props.key}
+        />
+      );
+    }
+
     return (
       <Link to={`/member/${this.props.username}`}>
         <img
