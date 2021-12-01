@@ -83,7 +83,7 @@ class RecentTopicsBox extends React.Component {
   }
 
   showPageColumn() {
-    if (this.state.topicNum < this.state.limit) {
+    if (this.state.topicsNum < this.state.limit) {
       return;
     }
 

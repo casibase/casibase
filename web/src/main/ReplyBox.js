@@ -484,6 +484,7 @@ class ReplyBox extends React.Component {
             {this.props.topic?.tags?.map((tag, i) => {
               return (
                 <Link
+                  key={i}
                   to={`/tag/${tag}`}
                   className={`tag ${this.props.topic.nodeId}`}
                 >

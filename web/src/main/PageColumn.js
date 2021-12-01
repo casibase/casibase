@@ -130,7 +130,7 @@ class PageColumn extends React.Component {
 
   renderPage(i, page, url) {
     return (
-      <span>
+      <span key={i}>
         {page === i ? (
           <Link
             onClick={() => this.gotoPage(url, i)}
@@ -158,8 +158,8 @@ class PageColumn extends React.Component {
       this.props.onChange(page);
       return;
     }
-    this.props.history.push(`${url}?p=${page}`);
-    // Setting.goToLink(`${url}?p=${page}`);
+    // this.props.history.push(`${url}?p=${page}`);
+    Setting.goToLink(`${url}?p=${page}`);
   }
 
   render() {
@@ -239,68 +239,70 @@ class PageColumn extends React.Component {
                 <table cellPadding="0" cellSpacing="0" border="0" width="100%">
                   <tbody>
                     <tr>
-                      {page <= 1 ? (
-                        <Link
-                          width="50%"
-                          align="center"
-                          className="super normal button disable_now"
-                          style={{
-                            borderRight: "none",
-                            borderTopRightRadius: "0px",
-                            borderBottomRightRadius: "0px",
-                          }}
-                        >
-                          ❮
-                        </Link>
-                      ) : (
-                        <Link
-                          width="50%"
-                          align="center"
-                          className={"super normal button button pageColumn"}
-                          style={{
-                            borderRight: "none",
-                            borderTopRightRadius: "0px",
-                            borderBottomRightRadius: "0px",
-                          }}
-                          onClick={() => {
-                            this.gotoPage(url, page - 1);
-                          }}
-                          title="Front page"
-                        >
-                          ❮
-                        </Link>
-                      )}
-                      {page >= this.state.maxPage ? (
-                        <Link
-                          width="50%"
-                          align="center"
-                          className="super normal_page_right button disable_now"
-                          style={{
-                            borderTopLeftRadius: "0px",
-                            borderBottomLeftRadius: "0px",
-                          }}
-                        >
-                          ❯
-                        </Link>
-                      ) : (
-                        <Link
-                          width="50%"
-                          align="center"
-                          className={
-                            "super normal_page_right button pageColumn"
-                          }
-                          style={{
-                            borderTopLeftRadius: "0px",
-                            borderBottomLeftRadius: "0px",
-                          }}
-                          onClick={() => {
-                            this.gotoPage(url, page + 1);
-                          }}
-                          title="Next page"
-                        >
-                          ❯
-                        </Link>
-                      )}
+                      <td>
+                        {page <= 1 ? (
+                          <Link
+                            width="50%"
+                            align="center"
+                            className="super normal button disable_now"
+                            style={{
+                              borderRight: "none",
+                              borderTopRightRadius: "0px",
+                              borderBottomRightRadius: "0px",
+                            }}
+                          >
+                            ❮
+                          </Link>
+                        ) : (
+                          <Link
+                            width="50%"
+                            align="center"
+                            className={"super normal button button pageColumn"}
+                            style={{
+                              borderRight: "none",
+                              borderTopRightRadius: "0px",
+                              borderBottomRightRadius: "0px",
+                            }}
+                            onClick={() => {
+                              this.gotoPage(url, page - 1);
+                            }}
+                            title="Front page"
+                          >
+                            ❮
+                          </Link>
+                        )}
+                        {page >= this.state.maxPage ? (
+                          <Link
+                            width="50%"
+                            align="center"
+                            className="super normal_page_right button disable_now"
+                            style={{
+                              borderTopLeftRadius: "0px",
+                              borderBottomLeftRadius: "0px",
+                            }}
+                          >
+                            ❯
+                          </Link>
+                        ) : (
+                          <Link
+                            width="50%"
+                            align="center"
+                            className={
+                              "super normal_page_right button pageColumn"
+                            }
+                            style={{
+                              borderTopLeftRadius: "0px",
+                              borderBottomLeftRadius: "0px",
+                            }}
+                            onClick={() => {
+                              this.gotoPage(url, page + 1);
+                            }}
+                            title="Next page"
+                          >
+                            ❯
+                          </Link>
+                        )}
+                      </td>
                     </tr>
                   </tbody>
                 </table>
