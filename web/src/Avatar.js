@@ -15,6 +15,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf";
 
 class Avatar extends React.Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class Avatar extends React.Component {
     if (this.props.username === "" || this.props.username === "客人") {
       return (
         <img
-          src={"https://cdn.casbin.com/avatar-pool/anonymous.png"}
+          src={Conf.AvatarAnonymousUrl}
           className="avatar"
           border="0"
           align="default"
@@ -72,6 +73,11 @@ class Avatar extends React.Component {
           style={style}
           alt={this.props.username}
           key={this.props.key}
+          onError={(event) => {
+            event.target.onerror = "";
+            event.target.src = Conf.AvatarErrorUrl;
+            return true;
+          }}
         />
       </Link>
     );

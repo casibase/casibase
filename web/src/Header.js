@@ -232,27 +232,24 @@ class Header extends React.Component {
           <div className="site-header-menu">
             {this.renderSearch()}
             <button id="menu-entry" onClick={() => this.changeShowMenuStatus()}>
-              {this.props.account?.avatar === "" ? (
-                <img
-                  src={Setting.getUserAvatar(this.props.account?.name)}
-                  width={24}
-                  border={0}
-                  style={{ borderRadius: "32px", verticalAlign: "middle" }}
-                  height="32"
-                  align="absmiddle"
-                  alt={this.props.account?.name}
-                />
-              ) : (
-                <img
-                  src={this.props.account?.avatar}
-                  width={24}
-                  border={0}
-                  style={{ borderRadius: "32px", verticalAlign: "middle" }}
-                  height="32"
-                  align="absmiddle"
-                  alt={this.props.account?.name}
-                />
-              )}
+              <img
+                src={
+                  this.props.account?.avatar !== ""
+                    ? this.props.account?.avatar
+                    : Setting.getUserAvatar(this.props.account?.name)
+                }
+                width={24}
+                border={0}
+                style={{ borderRadius: "32px", verticalAlign: "middle" }}
+                height="32"
+                align="absmiddle"
+                alt={this.props.account?.name}
+                onError={(event) => {
+                  event.target.onerror = "";
+                  event.target.src = Conf.AvatarErrorUrl;
+                  return true;
+                }}
+              />
             </button>
             <div id="user-menu" style={menuStyle}>
               <div>

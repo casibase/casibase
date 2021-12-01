@@ -21,6 +21,7 @@ import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
 import * as MemberBackend from "../backend/MemberBackend";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class AllCreatedTopicsBox extends React.Component {
   constructor(props) {
@@ -209,9 +210,8 @@ class AllCreatedTopicsBox extends React.Component {
       if (this.state.member === null) {
         this.props.history.push(`/member/${this.state.memberId}`);
       }
-      return <LatestReplyBox size={"large"}/>;
+      return <LatestReplyBox size={"large"} />;
     }
-
 
     if (this.state.tab === "topics") {
       if (this.state.member === null) {
@@ -230,9 +230,9 @@ class AllCreatedTopicsBox extends React.Component {
             <span className="chevron">&nbsp;›&nbsp;</span>{" "}
             {i18next.t("member:All Topics")}
             <div className="fr f12">
-                  <span className="snow">
-                    {i18next.t("member:Total Topics")}&nbsp;
-                  </span>{" "}
+              <span className="snow">
+                {i18next.t("member:Total Topics")}&nbsp;
+              </span>{" "}
               <strong className="gray">{this.state.topicsNum}</strong>
             </div>
           </div>
@@ -247,9 +247,7 @@ class AllCreatedTopicsBox extends React.Component {
           {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
         </div>
       );
-
     }
-
 
     let memberAvatar;
     if (this.state.tab === undefined) {
@@ -262,23 +260,22 @@ class AllCreatedTopicsBox extends React.Component {
       <div className="box">
         <div className="cell_tabs">
           <div className="fl">
-            {memberAvatar === "" ? (
-              <img
-                src={Setting.getUserAvatar(this.state.memberId)}
-                width={24}
-                border={0}
-                style={{ borderRadius: "24px", marginTop: "-2px" }}
-                alt="Member Avatar"
-              />
-            ) : (
-              <img
-                src={memberAvatar}
-                width={24}
-                border={0}
-                style={{ borderRadius: "24px", marginTop: "-2px" }}
-                alt="Member Avatar"
-              />
-            )}
+            <img
+              src={
+                memberAvatar !== ""
+                  ? memberAvatar
+                  : Setting.getUserAvatar(this.state.memberId)
+              }
+              width={24}
+              border={0}
+              style={{ borderRadius: "24px", marginTop: "-2px" }}
+              alt={this.state.memberId}
+              onError={(event) => {
+                event.target.onerror = "";
+                event.target.src = Conf.AvatarErrorUrl;
+                return true;
+              }}
+            />
           </div>
           {!pcBrowser ? this.renderMobileTab() : null}
           {pcBrowser ? (
