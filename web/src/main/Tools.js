@@ -99,7 +99,7 @@ export function myUploadFn(param) {
   const errorFn = (response) => {
     // call the erroFn when the upload process failed.
     param.error({
-      msg: i18next.t("Adding image failed"),
+      msg: i18next.t("node:Adding image failed"),
     });
   };
   const successFn = (mdUrl) => {

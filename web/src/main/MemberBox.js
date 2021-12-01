@@ -186,7 +186,10 @@ class MemberBox extends React.Component {
                   />
                   <div className="sep10" />
                   {this.state.member?.onlineStatus ? (
-                    <strong className="online"> {i18next.t("ONLINE")} </strong>
+                    <strong className="online">
+                      {" "}
+                      {i18next.t("member:ONLINE")}{" "}
+                    </strong>
                   ) : (
                     ""
                   )}
