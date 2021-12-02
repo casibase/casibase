@@ -415,6 +415,40 @@ func AddTopic(topic *Topic) (bool, int) {
 	return affected != 0, topic.Id
 }
 
+func AddTopics(topics []*Topic) bool {
+	affected, err := adapter.Engine.Insert(topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func AddTopicsInBatch(topics []*Topic) bool {
+	batchSize := 1000
+
+	if len(topics) == 0 {
+		return false
+	}
+
+	affected := false
+	for i := 0; i < (len(topics)-1)/batchSize+1; i++ {
+		start := i * batchSize
+		end := (i + 1) * batchSize
+		if end > len(topics) {
+			end = len(topics)
+		}
+
+		tmp := topics[start:end]
+		fmt.Printf("Add topics: [%d - %d].\n", start, end)
+		if AddTopics(tmp) {
+			affected = true
+		}
+	}
+
+	return affected
+}
+
 func DeleteTopicHard(id int) bool {
 	affected, err := adapter.Engine.Id(id).Delete(&Topic{})
 	if err != nil {

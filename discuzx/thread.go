@@ -14,7 +14,11 @@
 
 package discuzx
 
-import "sync"
+import (
+	"sync"
+
+	"github.com/casbin/casnode/object"
+)
 
 type Thread struct {
 	Tid          int
@@ -70,7 +74,7 @@ func getThreadMap() map[int]*Thread {
 	return m
 }
 
-func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
+func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*Attachment, forum *Forum, classMap map[int]*Class) (*object.Topic, []*object.Reply) {
 	posts := threadPostsMap[thread.Tid]
 	postMap := getPostMapFromPosts(posts)
 
@@ -92,5 +96,6 @@ func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*At
 	}
 	wg.Wait()
 
-	addWholeTopic(thread, forum, classMap)
+	topic, replies := getTopicAndReplies(thread, forum, classMap)
+	return topic, replies
 }

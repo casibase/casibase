@@ -23,14 +23,14 @@ import (
 
 var MaxTopTime = "9999-00-00T00:00:00+08:00"
 
-func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
+func getTopicFromThread(thread *Thread, forum *Forum, classMap map[int]*Class) *object.Topic {
 	content := ""
 	ip := ""
 	if thread.Posts[0].First == 1 {
 		content = thread.Posts[0].Message
 		ip = thread.Posts[0].Useip
 	} else {
-		panic("addTopic() error: thread.Posts[0].First != 1")
+		panic("getTopicFromThread() error: thread.Posts[0].First != 1")
 	}
 	content = escapeContent(content)
 	content = addAttachmentsToContent(content, thread.Posts[0].UploadFileRecords)
@@ -73,7 +73,7 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 		isHidden = true
 	}
 
-	topic := object.Topic{
+	topic := &object.Topic{
 		Id:              thread.Tid,
 		Author:          thread.Author,
 		NodeId:          nodeName,
@@ -98,12 +98,7 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 		Ip:              ip,
 		State:           state,
 	}
-
-	res, id := object.AddTopic(&topic)
-	if !res {
-		panic("addTopic(): not affected")
-	}
-	return id
+	return topic
 }
 
 func getReplyFromPost(topicId int, post *Post) *object.Reply {
@@ -193,7 +188,7 @@ func addAttachmentsToContent(content string, records []*object.UploadFileRecord)
 	return content
 }
 
-func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
+func getTopicAndReplies(thread *Thread, forum *Forum, classMap map[int]*Class) (*object.Topic, []*object.Reply) {
 	// remove leading useless posts
 	posts := []*Post{}
 	isBeforeFirstPosition := true
@@ -207,10 +202,10 @@ func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 
 	if len(thread.Posts) == 0 {
 		// thread is deleted.
-		return
+		return nil, nil
 	}
 
-	topicId := addTopic(thread, forum, classMap)
+	topic := getTopicFromThread(thread, forum, classMap)
 
 	replies := []*object.Reply{}
 	for i, post := range thread.Posts {
@@ -219,11 +214,12 @@ func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 		}
 
 		//if post.First == 1 {
-		//	panic(fmt.Errorf("addWholeTopic() error: thread.Posts[%d].First == 1", i))
+		//	panic(fmt.Errorf("getTopicAndReplies() error: thread.Posts[%d].First == 1", i))
 		//}
 
-		reply := getReplyFromPost(topicId, post)
+		reply := getReplyFromPost(thread.Tid, post)
 		replies = append(replies, reply)
 	}
-	object.AddReplies(replies)
+
+	return topic, replies
 }

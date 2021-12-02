@@ -42,5 +42,5 @@ func TestGetThreads(t *testing.T) {
 	thread := threadMap[126239]
 	println(thread)
 
-	addWholeTopic(thread, nil, nil)
+	getTopicAndReplies(thread, nil, nil)
 }

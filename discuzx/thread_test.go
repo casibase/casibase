@@ -16,6 +16,7 @@ package discuzx
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/casbin/casnode/controllers"
@@ -41,15 +42,33 @@ func TestAddThreads(t *testing.T) {
 	threadPostsMap, postCount := getThreadPostsMap()
 	fmt.Printf("Loaded posts: %d\n", postCount)
 
+	arrayMutex := sync.RWMutex{}
+
+	var wg sync.WaitGroup
+	wg.Add(len(threads))
+
 	sem := make(chan int, SyncAvatarsConcurrency)
+	topics := []*object.Topic{}
+	replies := []*object.Reply{}
 	for i, thread := range threads {
 		sem <- 1
 		go func(i int, thread *Thread) {
+			defer wg.Done()
+
 			attachments := attachmentMap[thread.Tid]
 			forum := forumMap[thread.Fid]
-			addThread(thread, threadPostsMap, attachments, forum, classMap)
-			fmt.Printf("[%d/%d]: Added thread: tid = %d, fid = %d\n", i+1, len(threads), thread.Tid, thread.Fid)
+			topic, replies2 := addThread(thread, threadPostsMap, attachments, forum, classMap)
+			arrayMutex.Lock()
+			topics = append(topics, topic)
+			replies = append(replies, replies2...)
+			arrayMutex.Unlock()
+			fmt.Printf("[%d/%d]: Added thread: tid = %d, fid = %d, replies = %d\n", i+1, len(threads), thread.Tid, thread.Fid, len(replies2))
 			<-sem
 		}(i, thread)
 	}
+
+	wg.Wait()
+
+	object.AddTopicsInBatch(topics)
+	object.AddRepliesInBatch(replies)
 }

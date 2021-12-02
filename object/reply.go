@@ -315,6 +315,31 @@ func AddReplies(replies []*Reply) bool {
 	return affected != 0
 }
 
+func AddRepliesInBatch(relies []*Reply) bool {
+	batchSize := 1000
+
+	if len(relies) == 0 {
+		return false
+	}
+
+	affected := false
+	for i := 0; i < (len(relies)-1)/batchSize+1; i++ {
+		start := i * batchSize
+		end := (i + 1) * batchSize
+		if end > len(relies) {
+			end = len(relies)
+		}
+
+		tmp := relies[start:end]
+		fmt.Printf("Add relies: [%d - %d].\n", start, end)
+		if AddReplies(tmp) {
+			affected = true
+		}
+	}
+
+	return affected
+}
+
 /*
 func DeleteReply(id string) bool {
 	affected, err := adapter.Engine.Id(id).Delete(&Reply{})

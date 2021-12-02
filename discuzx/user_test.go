@@ -16,6 +16,7 @@ package discuzx
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/casbin/casnode/casdoor"
@@ -35,16 +36,24 @@ func TestAddUsers(t *testing.T) {
 
 	membersEx := getMembersEx()
 
+	var wg sync.WaitGroup
+	wg.Add(len(membersEx))
+
 	sem := make(chan int, AddUsersConcurrency)
 	users := []*auth.User{}
 	for i, memberEx := range membersEx {
 		sem <- 1
 		go func(i int, memberEx *MemberEx) {
+			defer wg.Done()
+
 			user := getUserFromMember(memberEx)
 			users = append(users, user)
 			fmt.Printf("[%d/%d]: Added user: [%d, %s]\n", i+1, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
 			<-sem
 		}(i, memberEx)
 	}
+
+	wg.Wait()
+
 	casdoor.AddUsersInBatch(users)
 }
