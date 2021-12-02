@@ -24,6 +24,8 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
+var AddUsersConcurrency = 20
+
 func TestAddUsers(t *testing.T) {
 	object.InitConfig()
 	InitAdapter()
@@ -33,7 +35,7 @@ func TestAddUsers(t *testing.T) {
 
 	membersEx := getMembersEx()
 
-	sem := make(chan int, 20)
+	sem := make(chan int, AddUsersConcurrency)
 	users := []*auth.User{}
 	for i, memberEx := range membersEx {
 		sem <- 1

@@ -20,6 +20,7 @@ import (
 	"net/url"
 	"path"
 
+	"github.com/casbin/casnode/casdoor"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
@@ -28,6 +29,7 @@ func syncAvatarForUser(user *auth.User) string {
 	username := user.Name
 
 	oldAvatarUrl := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, uid)
+	defaultAvatarUrl := getDefaultAvatarUrl(username)
 
 	var fileBytes []byte
 	var newUrl string
@@ -36,8 +38,15 @@ func syncAvatarForUser(user *auth.User) string {
 	times := 0
 	for {
 		fileBytes, newUrl, err = downloadFile(oldAvatarUrl)
-		if oldAvatarUrl == newUrl {
+		if oldAvatarUrl == newUrl && newUrl != defaultAvatarUrl {
 			panic(fmt.Errorf("downloadFile() error: oldAvatarUrl == newUrl: %s", oldAvatarUrl))
+		}
+
+		if newUrl == fmt.Sprintf("%suc_server/images/noavatar_middle.gif", discuzxDomain) {
+			user.IsDefaultAvatar = true
+			oldAvatarUrl = defaultAvatarUrl
+			go casdoor.UpdateUser(user.Owner, user.Name, user)
+			continue
 		}
 
 		if err != nil {
