@@ -24,7 +24,7 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-var SyncAvatarsConcurrency = 50
+var SyncAvatarsConcurrency = 20
 
 func TestSyncAvatars(t *testing.T) {
 	object.InitConfig()

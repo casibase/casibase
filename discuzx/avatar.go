@@ -95,7 +95,11 @@ func syncAvatarForUser(user *auth.User) string {
 		}
 	}
 
-	avatarUrl := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	avatarUrl, err := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	if err != nil {
+		panic(err)
+	}
+
 	return avatarUrl
 }
 
@@ -126,6 +130,10 @@ func updateDefaultAvatarForUser(user *auth.User) string {
 
 	fileExt = path.Ext(newUrl)
 
-	avatarUrl := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	avatarUrl, err := uploadDiscuzxAvatar(username, fileBytes, fileExt)
+	if err != nil {
+		panic(err)
+	}
+
 	return avatarUrl
 }

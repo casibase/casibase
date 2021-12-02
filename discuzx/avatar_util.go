@@ -26,11 +26,11 @@ import (
 	"github.com/casbin/casnode/service"
 )
 
-func uploadDiscuzxAvatar(username string, fileBytes []byte, fileExt string) string {
+func uploadDiscuzxAvatar(username string, fileBytes []byte, fileExt string) (string, error) {
 	username = url.QueryEscape(username)
 	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
-	fileUrl, _ := service.UploadFileToStorageSafe(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes, "", "")
-	return fileUrl
+	fileUrl, err := service.UploadFileToStorageSafe(memberId, "avatar", "uploadDiscuzxAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes, "", "")
+	return fileUrl, err
 }
 
 func convertImageToPng(imageBytes []byte) ([]byte, string, error) {

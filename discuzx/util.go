@@ -99,7 +99,8 @@ func getRedirectUrl(url string) string {
 		_, err = client.Do(req)
 		if err != nil {
 			times += 1
-			if times >= 5 {
+			time.Sleep(3 * time.Second)
+			if times >= 10 {
 				panic(err)
 			}
 		} else {

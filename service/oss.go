@@ -14,7 +14,11 @@
 
 package service
 
-import "github.com/casdoor/casdoor-go-sdk/auth"
+import (
+	"time"
+
+	"github.com/casdoor/casdoor-go-sdk/auth"
+)
 
 // UploadFileToStorage uploads a file to the path, returns public URL
 func UploadFileToStorage(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (string, error) {
@@ -30,7 +34,8 @@ func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePat
 		fileUrl, _, err = auth.UploadResourceEx(user, tag, parent, fullFilePath, fileBytes, createdTime, description)
 		if err != nil {
 			times += 1
-			if times >= 5 {
+			time.Sleep(3 * time.Second)
+			if times >= 10 {
 				return "", err
 			}
 		} else {
