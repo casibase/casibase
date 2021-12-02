@@ -22,44 +22,17 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-func TestGetThreads(t *testing.T) {
-	InitAdapter()
-	object.InitAdapter()
-
-	threadMap := getThreadMap()
-	for _, thread := range threadMap {
-		thread.Posts = []*Post{}
-	}
-
-	posts := getPosts()
-	for _, post := range posts {
-		if thread, ok := threadMap[post.Tid]; ok {
-			thread.Posts = append(thread.Posts, post)
-		} else {
-			//fmt.Printf("Failed to find thread: %d for post: %s\n", post.Tid, post.Message)
-		}
-	}
-
-	//thread := threadMap[126152]
-	thread := threadMap[126239]
-	println(thread)
-
-	addWholeTopic(thread, nil, nil)
-}
-
-func syncThread(threadId int, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
-	thread := getThread(threadId)
-	if thread == nil {
-		return
-	}
-
+func syncThread(thread *Thread, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
 	posts, postMap := getPostMapForThread(thread.Tid)
 	thread.Posts = posts
 
-	deleteWholeTopic(thread)
+	//deleteWholeTopic(thread)
 
 	for _, attachment := range attachments {
-		uploadAttachmentAndUpdatePost(attachment, postMap)
+		post := postMap[attachment.Pid]
+		if post != nil {
+			uploadAttachmentAndUpdatePost(attachment, post)
+		}
 	}
 	addWholeTopic(thread, forum, classMap)
 }
@@ -71,14 +44,20 @@ func TestSyncThreads(t *testing.T) {
 	controllers.InitAuthConfig()
 
 	attachmentMap := getAttachmentMap()
+	fmt.Printf("Loaded attachments: %d\n", len(attachmentMap))
 	forumMap := getForumMap()
+	fmt.Printf("Loaded forums: %d\n", len(forumMap))
 	classMap := getClassMap()
-
+	fmt.Printf("Loaded classes: %d\n", len(classMap))
 	threads := getThreads()
+	fmt.Printf("Loaded threads: %d\n", len(threads))
+	posts := getPosts()
+	fmt.Printf("Loaded posts: %d\n", len(posts))
+
 	for i, thread := range threads {
 		attachments := attachmentMap[thread.Tid]
 		forum := forumMap[thread.Fid]
-		syncThread(thread.Tid, attachments, forum, classMap)
+		syncThread(thread, attachments, forum, classMap)
 		fmt.Printf("[%d/%d]: Synced thread: tid = %d, fid = %d\n", i+1, len(threads), thread.Tid, thread.Fid)
 	}
 }

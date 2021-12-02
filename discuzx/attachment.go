@@ -76,12 +76,7 @@ func uploadDiscuzxFile(username string, fileBytes []byte, fileName string, creat
 	return fileUrl
 }
 
-func uploadAttachmentAndUpdatePost(attachment *Attachment, postMap map[int]*Post) {
-	post := postMap[attachment.Pid]
-	if post == nil {
-		return
-	}
-
+func uploadAttachmentAndUpdatePost(attachment *Attachment, post *Post) {
 	oldFileUrl := fmt.Sprintf("%s%s", discuzxAttachmentBaseUrl, attachment.Attachment)
 	fileBytes, _, err := downloadFile(oldFileUrl)
 	if err != nil {
