@@ -33,6 +33,7 @@ type Post struct {
 func getPosts() []*Post {
 	posts := []*Post{}
 	err := adapter.Engine.Table("pre_forum_post").Find(&posts)
+	//err := adapter.Engine.Table("pre_forum_post").Where("tid = ?", threadId).Find(&posts)
 	if err != nil {
 		panic(err)
 	}
@@ -40,14 +41,19 @@ func getPosts() []*Post {
 	return posts
 }
 
-func getPostsForThread(threadId int) []*Post {
-	posts := []*Post{}
-	err := adapter.Engine.Table("pre_forum_post").Where("tid = ?", threadId).Find(&posts)
-	if err != nil {
-		panic(err)
+func getThreadPostsMap() (map[int][]*Post, int) {
+	threadPostsMap := map[int][]*Post{}
+
+	posts := getPosts()
+	for _, post := range posts {
+		tid := post.Tid
+		if _, ok := threadPostsMap[tid]; !ok {
+			threadPostsMap[tid] = []*Post{}
+		}
+		threadPostsMap[tid] = append(threadPostsMap[tid], post)
 	}
 
-	return posts
+	return threadPostsMap, len(posts)
 }
 
 func getPostMapFromPosts(posts []*Post) map[int]*Post {
@@ -56,10 +62,4 @@ func getPostMapFromPosts(posts []*Post) map[int]*Post {
 		res[post.Pid] = post
 	}
 	return res
-}
-
-func getPostMapForThread(threadId int) ([]*Post, map[int]*Post) {
-	posts := getPostsForThread(threadId)
-	postMap := getPostMapFromPosts(posts)
-	return posts, postMap
 }

@@ -14,6 +14,8 @@
 
 package discuzx
 
+import "sync"
+
 type Thread struct {
 	Tid          int
 	Fid          int
@@ -66,4 +68,29 @@ func getThreadMap() map[int]*Thread {
 		m[thread.Tid] = thread
 	}
 	return m
+}
+
+func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
+	posts := threadPostsMap[thread.Tid]
+	postMap := getPostMapFromPosts(posts)
+
+	thread.Posts = posts
+
+	//deleteWholeTopic(thread)
+
+	var wg sync.WaitGroup
+	wg.Add(len(attachments))
+	for _, attachment := range attachments {
+		go func(attachment *Attachment) {
+			defer wg.Done()
+
+			post := postMap[attachment.Pid]
+			if post != nil {
+				uploadAttachmentAndUpdatePost(attachment, post)
+			}
+		}(attachment)
+	}
+	wg.Wait()
+
+	addWholeTopic(thread, forum, classMap)
 }

@@ -20,10 +20,10 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-func TestSyncForums(t *testing.T) {
+func TestAddForums(t *testing.T) {
 	object.InitConfig()
 	InitAdapter()
 	object.InitAdapter()
 
-	syncForums()
+	addForums()
 }

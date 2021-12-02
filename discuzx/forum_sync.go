@@ -21,7 +21,7 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
-func syncForums() {
+func addForums() {
 	tabs := []*object.Tab{}
 	nodes := []*object.Node{}
 

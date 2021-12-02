@@ -22,22 +22,9 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-func syncThread(thread *Thread, attachments []*Attachment, forum *Forum, classMap map[int]*Class) {
-	posts, postMap := getPostMapForThread(thread.Tid)
-	thread.Posts = posts
+var AddThreadsConcurrency = 20
 
-	//deleteWholeTopic(thread)
-
-	for _, attachment := range attachments {
-		post := postMap[attachment.Pid]
-		if post != nil {
-			uploadAttachmentAndUpdatePost(attachment, post)
-		}
-	}
-	addWholeTopic(thread, forum, classMap)
-}
-
-func TestSyncThreads(t *testing.T) {
+func TestAddThreads(t *testing.T) {
 	object.InitConfig()
 	InitAdapter()
 	object.InitAdapter()
@@ -51,13 +38,18 @@ func TestSyncThreads(t *testing.T) {
 	fmt.Printf("Loaded classes: %d\n", len(classMap))
 	threads := getThreads()
 	fmt.Printf("Loaded threads: %d\n", len(threads))
-	posts := getPosts()
-	fmt.Printf("Loaded posts: %d\n", len(posts))
+	threadPostsMap, postCount := getThreadPostsMap()
+	fmt.Printf("Loaded posts: %d\n", postCount)
 
+	sem := make(chan int, SyncAvatarsConcurrency)
 	for i, thread := range threads {
-		attachments := attachmentMap[thread.Tid]
-		forum := forumMap[thread.Fid]
-		syncThread(thread, attachments, forum, classMap)
-		fmt.Printf("[%d/%d]: Synced thread: tid = %d, fid = %d\n", i+1, len(threads), thread.Tid, thread.Fid)
+		sem <- 1
+		go func(i int, thread *Thread) {
+			attachments := attachmentMap[thread.Tid]
+			forum := forumMap[thread.Fid]
+			addThread(thread, threadPostsMap, attachments, forum, classMap)
+			fmt.Printf("[%d/%d]: Added thread: tid = %d, fid = %d\n", i+1, len(threads), thread.Tid, thread.Fid)
+			<-sem
+		}(i, thread)
 	}
 }
