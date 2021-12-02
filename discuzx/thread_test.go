@@ -79,6 +79,6 @@ func TestSyncThreads(t *testing.T) {
 		attachments := attachmentMap[thread.Tid]
 		forum := forumMap[thread.Fid]
 		syncThread(thread.Tid, attachments, forum, classMap)
-		fmt.Printf("[%d/%d]: Synced thread: tid = %d, fid = %d\n", i, len(threads), thread.Tid, thread.Fid)
+		fmt.Printf("[%d/%d]: Synced thread: tid = %d, fid = %d\n", i+1, len(threads), thread.Tid, thread.Fid)
 	}
 }

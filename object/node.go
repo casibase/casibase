@@ -101,6 +101,15 @@ func AddNode(node *Node) bool {
 	return affected != 0
 }
 
+func AddNodes(nodes []*Node) bool {
+	affected, err := adapter.Engine.Insert(nodes)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 func DeleteNode(id string) bool {
 	affected, err := adapter.Engine.Id(id).Delete(&Node{})
 	if err != nil {

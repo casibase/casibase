@@ -49,7 +49,7 @@ func TestUpdateDefaultAvatars(t *testing.T) {
 		go func(i int, user *auth.User) {
 			if user.IsDefaultAvatar {
 				avatarUrl := updateDefaultAvatarForUser(user)
-				fmt.Printf("[%d/%d]: Updated default avatar for user: [%d, %s] as URL: %s\n", i, len(users), user.Ranking, user.Name, avatarUrl)
+				fmt.Printf("[%d/%d]: Updated default avatar for user: [%d, %s] as URL: %s\n", i+1, len(users), user.Ranking, user.Name, avatarUrl)
 			}
 			<-sem
 		}(i, user)

@@ -42,7 +42,7 @@ func TestAddUsers(t *testing.T) {
 		go func(i int, memberEx *MemberEx) {
 			user := getUserFromMember(memberEx)
 			users = append(users, user)
-			fmt.Printf("[%d/%d]: getUserFromMember: [%d, %s]\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
+			fmt.Printf("[%d/%d]: getUserFromMember: [%d, %s]\n", i+1, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
 			<-sem
 		}(i, memberEx)
 	}

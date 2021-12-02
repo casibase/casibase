@@ -46,6 +46,15 @@ func AddTab(tab *Tab) bool {
 	return affected != 0
 }
 
+func AddTabs(tabs []*Tab) bool {
+	affected, err := adapter.Engine.Insert(tabs)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 func UpdateTab(id string, tab *Tab) bool {
 	if GetTab(id) == nil {
 		return false

@@ -15,13 +15,18 @@
 package discuzx
 
 import (
+	"fmt"
+
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
 
 func syncForums() {
+	tabs := []*object.Tab{}
+	nodes := []*object.Node{}
+
 	forums := getStructuredForums()
-	for _, groupForum := range forums {
+	for i, groupForum := range forums {
 		tab := &object.Tab{
 			Id:          groupForum.Name,
 			Name:        groupForum.Name,
@@ -30,9 +35,10 @@ func syncForums() {
 			DefaultNode: "",
 			HomePage:    false,
 		}
-		object.AddTab(tab)
+		tabs = append(tabs, tab)
+		fmt.Printf("[%d/%d]: Synced group forum: %s\n", i+1, len(forums), groupForum.Name)
 
-		for _, forum := range groupForum.Forums {
+		for j, forum := range groupForum.Forums {
 			forumNode := &object.Node{
 				Id:                forum.Name,
 				Name:              forum.Name,
@@ -49,9 +55,10 @@ func syncForums() {
 				GoogleGroupCookie: "",
 				IsHidden:          forum.Status == 0,
 			}
-			object.AddNode(forumNode)
+			nodes = append(nodes, forumNode)
+			fmt.Printf("\t[%d/%d]: Synced forum: %s\n", j+1, len(groupForum.Forums), forum.Name)
 
-			for _, subForum := range forum.Forums {
+			for k, subForum := range forum.Forums {
 				subForumNode := &object.Node{
 					Id:                subForum.Name,
 					Name:              subForum.Name,
@@ -68,8 +75,12 @@ func syncForums() {
 					GoogleGroupCookie: "",
 					IsHidden:          subForum.Status == 0,
 				}
-				object.AddNode(subForumNode)
+				nodes = append(nodes, subForumNode)
+				fmt.Printf("\t\t[%d/%d]: Synced sub forum: %s\n", k+1, len(forum.Forums), subForum.Name)
 			}
 		}
 	}
+
+	object.AddTabs(tabs)
+	object.AddNodes(nodes)
 }

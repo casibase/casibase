@@ -42,7 +42,7 @@ func TestSyncAvatars(t *testing.T) {
 		go func(i int, user *auth.User) {
 			if user.Avatar == "" {
 				avatarUrl := syncAvatarForUser(user)
-				fmt.Printf("[%d/%d]: Synced avatar for user: [%d, %s] as URL: %s\n", i, len(users), user.Ranking, user.Name, avatarUrl)
+				fmt.Printf("[%d/%d]: Synced avatar for user: [%d, %s] as URL: %s\n", i+1, len(users), user.Ranking, user.Name, avatarUrl)
 			}
 			<-sem
 		}(i, user)
