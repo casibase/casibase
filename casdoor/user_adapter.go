@@ -15,6 +15,7 @@
 package casdoor
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/casdoor/casdoor-go-sdk/auth"
@@ -142,6 +143,48 @@ func AddUser(user *auth.User) bool {
 	}
 
 	return affected != 0
+}
+
+func AddUsers(users []*auth.User) bool {
+	if adapter == nil {
+		panic("casdoor adapter is nil")
+	}
+
+	if len(users) == 0 {
+		return false
+	}
+
+	affected, err := adapter.Engine.Insert(users)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func AddUsersInBatch(users []*auth.User) bool {
+	batchSize := 1000
+
+	if len(users) == 0 {
+		return false
+	}
+
+	affected := false
+	for i := 0; i < (len(users)-1)/batchSize+1; i++ {
+		start := i * batchSize
+		end := (i + 1) * batchSize
+		if end > len(users) {
+			end = len(users)
+		}
+
+		tmp := users[start:end]
+		fmt.Printf("Add users: [%d - %d].\n", start, end)
+		if AddUsers(tmp) {
+			affected = true
+		}
+	}
+
+	return affected
 }
 
 func updateUser(owner string, name string, user *auth.User) (bool, error) {

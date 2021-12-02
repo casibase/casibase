@@ -18,11 +18,10 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/casbin/casnode/casdoor"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-func addUser(memberEx *MemberEx) bool {
+func getUserFromMember(memberEx *MemberEx) *auth.User {
 	user := &auth.User{
 		Owner:       CasdoorOrganization,
 		Name:        memberEx.Member.Username,
@@ -129,10 +128,5 @@ func addUser(memberEx *MemberEx) bool {
 		user.Education = memberEx.Profile.Education
 	}
 
-	affected := casdoor.AddUser(user)
-
-	if !affected {
-		panic("addTopic(): not affected")
-	}
-	return affected
+	return user
 }

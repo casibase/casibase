@@ -21,6 +21,7 @@ import (
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
+	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 func TestAddUsers(t *testing.T) {
@@ -33,12 +34,15 @@ func TestAddUsers(t *testing.T) {
 	membersEx := getMembersEx()
 
 	sem := make(chan int, 20)
+	users := []*auth.User{}
 	for i, memberEx := range membersEx {
 		sem <- 1
 		go func(i int, memberEx *MemberEx) {
-			addUser(memberEx)
-			fmt.Printf("[%d/%d]: Added user: [%d, %s] to Casdoor\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
+			user := getUserFromMember(memberEx)
+			users = append(users, user)
+			fmt.Printf("[%d/%d]: getUserFromMember: [%d, %s]\n", i, len(membersEx), memberEx.Member.Uid, memberEx.Member.Username)
 			<-sem
 		}(i, memberEx)
 	}
+	casdoor.AddUsersInBatch(users)
 }
