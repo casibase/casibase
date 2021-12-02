@@ -106,7 +106,7 @@ func addTopic(thread *Thread, forum *Forum, classMap map[int]*Class) int {
 	return id
 }
 
-func addReply(topicId int, post *Post) int {
+func getReplyFromPost(topicId int, post *Post) *object.Reply {
 	content := escapeContent(post.Message)
 	content = addAttachmentsToContent(content, post.UploadFileRecords)
 
@@ -124,7 +124,7 @@ func addReply(topicId int, post *Post) int {
 		deleted = true
 	}
 
-	reply := object.Reply{
+	reply := &object.Reply{
 		Id:          post.Pid,
 		Author:      post.Author,
 		TopicId:     topicId,
@@ -136,12 +136,7 @@ func addReply(topicId int, post *Post) int {
 		Ip:          post.Useip,
 		State:       state,
 	}
-
-	res, id := object.AddReply(&reply)
-	if !res {
-		panic("addReply(): not affected")
-	}
-	return id
+	return reply
 }
 
 func deleteWholeTopic(thread *Thread) {
@@ -216,6 +211,8 @@ func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 	}
 
 	topicId := addTopic(thread, forum, classMap)
+
+	replies := []*object.Reply{}
 	for i, post := range thread.Posts {
 		if i == 0 {
 			continue
@@ -225,6 +222,8 @@ func addWholeTopic(thread *Thread, forum *Forum, classMap map[int]*Class) {
 		//	panic(fmt.Errorf("addWholeTopic() error: thread.Posts[%d].First == 1", i))
 		//}
 
-		addReply(topicId, post)
+		reply := getReplyFromPost(topicId, post)
+		replies = append(replies, reply)
 	}
+	object.AddReplies(replies)
 }

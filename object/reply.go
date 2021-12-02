@@ -306,6 +306,15 @@ func AddReply(reply *Reply) (bool, int) {
 	return affected != 0, reply.Id
 }
 
+func AddReplies(replies []*Reply) bool {
+	affected, err := adapter.Engine.Insert(replies)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
 /*
 func DeleteReply(id string) bool {
 	affected, err := adapter.Engine.Id(id).Delete(&Reply{})
