@@ -16,7 +16,6 @@ package casdoor
 
 import (
 	"fmt"
-	"net"
 
 	"github.com/casdoor/casdoor-go-sdk/auth"
 	"xorm.io/core"
@@ -207,12 +206,8 @@ func UpdateUser(owner string, name string, user *auth.User) bool {
 	for {
 		affected, err = updateUser(owner, name, user)
 		if err != nil {
-			if opError, ok := err.(*net.OpError); ok {
-				times += 1
-				if times >= 5 {
-					panic(opError)
-				}
-			} else {
+			times += 1
+			if times >= 5 {
 				panic(err)
 			}
 		} else {

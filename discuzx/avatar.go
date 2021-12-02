@@ -24,60 +24,74 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
+var discuzxDefaultAvatarUrl string
+
+func init() {
+	discuzxDefaultAvatarUrl = fmt.Sprintf("%suc_server/images/noavatar_middle.gif", discuzxDomain)
+}
+
 func syncAvatarForUser(user *auth.User) string {
 	uid := user.Ranking
 	username := user.Name
 
 	oldAvatarUrl := fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, uid)
-	defaultAvatarUrl := getDefaultAvatarUrl(username)
-
-	var fileBytes []byte
-	var newUrl string
-	var fileExt string
-	var err error
-	times := 0
-	for {
-		fileBytes, newUrl, err = downloadFile(oldAvatarUrl)
-		if oldAvatarUrl == newUrl && newUrl != defaultAvatarUrl {
-			panic(fmt.Errorf("downloadFile() error: oldAvatarUrl == newUrl: %s", oldAvatarUrl))
-		}
-
-		if newUrl == fmt.Sprintf("%suc_server/images/noavatar_middle.gif", discuzxDomain) {
-			user.IsDefaultAvatar = true
-			oldAvatarUrl = defaultAvatarUrl
-			go casdoor.UpdateUser(user.Owner, user.Name, user)
-			continue
-		}
-
-		if err != nil {
-			if urlError, ok := err.(*url.Error); ok {
-				if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {
-					times += 1
-					fmt.Printf("[%d]: downloadFile() error: %s, times = %d, use default avatar\n", uid, hostnameError.Error(), times)
-					if times >= 10 {
-						panic(err)
-					}
-
-					oldAvatarUrl = fmt.Sprintf("%suc_server/avatar.php?uid=%d", discuzxDomain, 1)
-					continue
-				}
-			}
-
-			times += 1
-			fmt.Printf("[%d]: downloadFile() error: %s, times = %d\n", uid, err.Error(), times)
-			if times >= 10 {
-				panic(err)
-			}
-		} else {
-			break
-		}
+	newAvatarUrl := getRedirectUrl(oldAvatarUrl)
+	if oldAvatarUrl == newAvatarUrl || newAvatarUrl == "" {
+		panic(fmt.Errorf("getRedirectUrl() error: oldAvatarUrl == newAvatarUrl, oldAvatarUrl = %s, newAvatarUrl = %s", oldAvatarUrl, newAvatarUrl))
 	}
 
-	fileExt = path.Ext(newUrl)
-	if fileExt != ".png" {
-		fileBytes, fileExt, err = convertImageToPng(fileBytes)
-		if err != nil {
-			panic(err)
+	var fileBytes []byte
+	var fileExt string
+
+	if newAvatarUrl == discuzxDefaultAvatarUrl {
+		randomAvatarUrl := getRandomAvatarUrl(username)
+		fileBytes = getRandomAvatar(randomAvatarUrl)
+		fileExt = ".png"
+
+		user.IsDefaultAvatar = true
+		go casdoor.UpdateUser(user.Owner, user.Name, user)
+	} else {
+		var err error
+		times := 0
+		for {
+			fileBytes, _, err = downloadFile(newAvatarUrl)
+			if err != nil {
+				if urlError, ok := err.(*url.Error); ok {
+					if hostnameError, ok := urlError.Err.(x509.HostnameError); ok {
+						times += 1
+						fmt.Printf("[%d]: downloadFile() error: %s, times = %d, use random avatar\n", uid, hostnameError.Error(), times)
+						if times >= 10 {
+							panic(err)
+						}
+
+						randomAvatarUrl := getRandomAvatarUrl(username)
+						fileBytes = getRandomAvatar(randomAvatarUrl)
+						fileExt = ".png"
+
+						user.IsDefaultAvatar = true
+						go casdoor.UpdateUser(user.Owner, user.Name, user)
+						break
+					}
+				}
+
+				times += 1
+				fmt.Printf("[%d]: downloadFile() error: %s, times = %d\n", uid, err.Error(), times)
+				if times >= 10 {
+					panic(err)
+				}
+			} else {
+				break
+			}
+		}
+
+		if fileExt == "" {
+			fileExt = path.Ext(newAvatarUrl)
+		}
+		if fileExt != ".png" {
+			fileBytes, fileExt, err = convertImageToPng(fileBytes)
+			if err != nil {
+				panic(err)
+			}
 		}
 	}
 
@@ -89,7 +103,7 @@ func updateDefaultAvatarForUser(user *auth.User) string {
 	uid := user.Ranking
 	username := user.Name
 
-	defaultAvatarUrl := getDefaultAvatarUrl(username)
+	defaultAvatarUrl := getRandomAvatarUrl(username)
 
 	var fileBytes []byte
 	var newUrl string

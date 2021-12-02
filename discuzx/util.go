@@ -94,9 +94,17 @@ func getRedirectUrl(url string) string {
 		return http.ErrUseLastResponse
 	}
 
-	_, err = client.Do(req)
-	if err != nil {
-		panic(err)
+	times := 0
+	for {
+		_, err = client.Do(req)
+		if err != nil {
+			times += 1
+			if times >= 5 {
+				panic(err)
+			}
+		} else {
+			break
+		}
 	}
 
 	if newUrl == "" {
@@ -141,7 +149,7 @@ func getStringHash(s string) int {
 	return int(h.Sum32())
 }
 
-func getDefaultAvatarUrl(s string) string {
+func getRandomAvatarUrl(s string) string {
 	i := getStringHash(s)
 	i = i%244 + 1
 	avatarUrl := fmt.Sprintf("%s%d.png", avatarPoolBaseUrl, i)
