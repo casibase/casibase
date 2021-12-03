@@ -19,6 +19,7 @@ export const AuthConfig = {
   clientId: "014ae4bd048734ca2dea",
   organizationName: "casbin",
   appName: "app-casnode",
+  redirectPath: "/callback",
 };
 
 export let FrontConfig = {
