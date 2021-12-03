@@ -246,9 +246,7 @@ class NewReplyBox extends React.Component {
                   window.parent.postMessage(data, "*");
                 }}
                 type="submit"
-                value={i18next.t(
-                  "reply:Want to leave comment? Please go to the top-right of this page to sign in/sign up"
-                )}
+                value={i18next.t("general:Sign In")}
                 className="super normal button"
               />
             </div>
