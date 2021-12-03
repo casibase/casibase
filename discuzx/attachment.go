@@ -76,13 +76,13 @@ func uploadDiscuzxFile(username string, fileBytes []byte, fileName string, creat
 	return fileUrl
 }
 
-func uploadAttachmentAndUpdatePost(attachment *Attachment, post *Post) {
+func getRecordFromAttachment(attachment *Attachment, post *Post) *object.UploadFileRecord {
 	oldFileUrl := fmt.Sprintf("%s%s", discuzxAttachmentBaseUrl, attachment.Attachment)
 	fileBytes, _, err := downloadFile(oldFileUrl)
 	if err != nil {
 		if urlError, ok := err.(*url.Error); ok {
-			fmt.Printf("[%d]: uploadAttachmentAndUpdatePost() error: %s, the attachement is deleted: %s\n", post.Pid, urlError.Error(), attachment.Attachment)
-			return
+			fmt.Printf("\t\t[%d]: getRecordFromAttachment() error: %s, the attachement is deleted: %s\n", post.Pid, urlError.Error(), attachment.Attachment)
+			return nil
 		} else {
 			panic(err)
 		}
@@ -95,14 +95,10 @@ func uploadAttachmentAndUpdatePost(attachment *Attachment, post *Post) {
 		fileType = "image"
 	}
 
-	record := object.UploadFileRecord{
+	record := &object.UploadFileRecord{
 		FileName: attachment.Filename,
 		FileUrl:  fileUrl,
 		FileType: fileType,
 	}
-
-	if post.UploadFileRecords == nil {
-		post.UploadFileRecords = []*object.UploadFileRecord{}
-	}
-	post.UploadFileRecords = append(post.UploadFileRecords, &record)
+	return record
 }

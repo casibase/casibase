@@ -82,6 +82,8 @@ func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*At
 
 	//deleteWholeTopic(thread)
 
+	mutex := sync.RWMutex{}
+
 	var wg sync.WaitGroup
 	wg.Add(len(attachments))
 	for _, attachment := range attachments {
@@ -90,7 +92,16 @@ func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*At
 
 			post := postMap[attachment.Pid]
 			if post != nil {
-				uploadAttachmentAndUpdatePost(attachment, post)
+				record := getRecordFromAttachment(attachment, post)
+				if record != nil {
+					mutex.Lock()
+					if post.UploadFileRecords == nil {
+						post.UploadFileRecords = []*object.UploadFileRecord{}
+					}
+					post.UploadFileRecords = append(post.UploadFileRecords, record)
+					mutex.Unlock()
+				}
+
 			}
 		}(attachment)
 	}

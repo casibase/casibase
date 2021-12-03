@@ -23,7 +23,44 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-var AddThreadsConcurrency = 20
+var AddThreadsConcurrency = 100
+var AddThreadsBatchSize = 10000
+
+func addThreads(threads []*Thread, threadPostsMap map[int][]*Post, attachmentMap map[int][]*Attachment, forumMap map[int]*Forum, classMap map[int]*Class) {
+	arrayMutex := sync.RWMutex{}
+
+	var wg sync.WaitGroup
+	wg.Add(len(threads))
+
+	sem := make(chan int, AddThreadsConcurrency)
+	topics := []*object.Topic{}
+	replies := []*object.Reply{}
+	for i, thread := range threads {
+		sem <- 1
+		go func(i int, thread *Thread) {
+			defer wg.Done()
+
+			attachments := attachmentMap[thread.Tid]
+			forum := forumMap[thread.Fid]
+			topic, replies2 := addThread(thread, threadPostsMap, attachments, forum, classMap)
+			if topic != nil && replies2 != nil {
+				arrayMutex.Lock()
+				topics = append(topics, topic)
+				replies = append(replies, replies2...)
+				arrayMutex.Unlock()
+				fmt.Printf("\t[%d/%d]: Added thread: tid = %d, fid = %d, replies = %d\n", i+1, len(threads), thread.Tid, thread.Fid, len(replies2))
+			} else {
+				fmt.Printf("\t[%d/%d]: Added thread: tid = %d, fid = %d, empty thread, removed\n", i+1, len(threads), thread.Tid, thread.Fid)
+			}
+			<-sem
+		}(i, thread)
+	}
+
+	wg.Wait()
+
+	object.AddTopicsInBatch(topics)
+	object.AddRepliesInBatch(replies)
+}
 
 func TestAddThreads(t *testing.T) {
 	object.InitConfig()
@@ -42,33 +79,15 @@ func TestAddThreads(t *testing.T) {
 	threadPostsMap, postCount := getThreadPostsMap()
 	fmt.Printf("Loaded posts: %d\n", postCount)
 
-	arrayMutex := sync.RWMutex{}
+	for i := 0; i < (len(threads)-1)/AddThreadsBatchSize+1; i++ {
+		start := i * AddThreadsBatchSize
+		end := (i + 1) * AddThreadsBatchSize
+		if end > len(threads) {
+			end = len(threads)
+		}
 
-	var wg sync.WaitGroup
-	wg.Add(len(threads))
-
-	sem := make(chan int, SyncAvatarsConcurrency)
-	topics := []*object.Topic{}
-	replies := []*object.Reply{}
-	for i, thread := range threads {
-		sem <- 1
-		go func(i int, thread *Thread) {
-			defer wg.Done()
-
-			attachments := attachmentMap[thread.Tid]
-			forum := forumMap[thread.Fid]
-			topic, replies2 := addThread(thread, threadPostsMap, attachments, forum, classMap)
-			arrayMutex.Lock()
-			topics = append(topics, topic)
-			replies = append(replies, replies2...)
-			arrayMutex.Unlock()
-			fmt.Printf("[%d/%d]: Added thread: tid = %d, fid = %d, replies = %d\n", i+1, len(threads), thread.Tid, thread.Fid, len(replies2))
-			<-sem
-		}(i, thread)
+		tmp := threads[start:end]
+		fmt.Printf("Add threads: [%d - %d].\n", start, end)
+		addThreads(tmp, threadPostsMap, attachmentMap, forumMap, classMap)
 	}
-
-	wg.Wait()
-
-	object.AddTopicsInBatch(topics)
-	object.AddRepliesInBatch(replies)
 }
