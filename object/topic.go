@@ -354,12 +354,12 @@ func GetTopicNodeId(id int) string {
 	}
 }
 
-func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
+func GetTopicsByNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	err := adapter.Engine.Table("topic").
-		Where("topic.node_id = ?", nodeId).And("topic.deleted = ?", 0).
-		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
-		Cols("topic.*").
+		Where("node_id = ?", nodeId).And("deleted = ?", 0).
+		Desc("last_reply_time", "node_top_time").
+		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
@@ -375,13 +375,13 @@ func GetTopicsWithNode(nodeId string, limit int, offset int) []*NodeTopic {
 	return topics
 }
 
-func GetTopicsWithTag(tagId string, limit int, offset int) []*NodeTopic {
+func GetTopicsByTag(tagId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	tag := fmt.Sprintf("%%%q%%", tagId)
 	err := adapter.Engine.Table("topic").
-		Where("topic.tags LIKE ?", tag).And("topic.deleted = ?", 0).
-		Desc("topic.node_top_time").Desc("topic.last_reply_time").Desc("topic.created_time").
-		Cols("topic.*").
+		Where("deleted = ?", 0).And("tags LIKE ?", tag).
+		Desc("last_reply_time", "node_top_time").
+		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)

@@ -393,7 +393,7 @@ func (c *ApiController) GetTopicsByNode() {
 		offset = page*limit - limit
 	}
 
-	c.Data["json"] = object.GetTopicsWithNode(nodeId, limit, offset)
+	c.Data["json"] = object.GetTopicsByNode(nodeId, limit, offset)
 	c.ServeJSON()
 }
 
@@ -421,7 +421,7 @@ func (c *ApiController) GetTopicsByTag() {
 		offset = page*limit - limit
 	}
 
-	c.Data["json"] = object.GetTopicsWithTag(tagId, limit, offset)
+	c.Data["json"] = object.GetTopicsByTag(tagId, limit, offset)
 	c.ServeJSON()
 }
 
