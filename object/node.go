@@ -45,7 +45,7 @@ type Node struct {
 
 func GetNodes() []*Node {
 	nodes := []*Node{}
-	err := adapter.Engine.Asc("created_time").Find(&nodes)
+	err := adapter.Engine.Desc("sorter").Find(&nodes)
 	if err != nil {
 		panic(err)
 	}
@@ -209,12 +209,21 @@ func GetNodeRelation(id string) *NodeRelation {
 
 func GetNodeNavigation() []*NodeNavigationResponse {
 	tabs := GetAllTabs()
-	//res := make([]*NodeNavigationResponse, len(notifications))
+	nodes := GetNodes()
+
+	nodesMap := map[string][]*Node{}
+	for _, node := range nodes {
+		if _, ok := nodesMap[node.TabId]; !ok {
+			nodesMap[node.TabId] = []*Node{}
+		}
+		nodesMap[node.TabId] = append(nodesMap[node.TabId], node)
+	}
+
 	res := []*NodeNavigationResponse{}
-	for _, v := range tabs {
+	for _, tab := range tabs {
 		temp := NodeNavigationResponse{
-			Tab:   v,
-			Nodes: GetNodeFromTab(v.Id),
+			Tab:   tab,
+			Nodes: nodesMap[tab.Id],
 		}
 		res = append(res, &temp)
 	}
