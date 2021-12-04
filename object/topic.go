@@ -29,26 +29,26 @@ type Topic struct {
 	Author          string   `xorm:"varchar(100) index" json:"author"`
 	NodeId          string   `xorm:"varchar(100) index" json:"nodeId"`
 	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
-	TabId           string   `xorm:"varchar(100)" json:"tabId"`
+	TabId           string   `xorm:"varchar(100) index" json:"tabId"`
 	Title           string   `xorm:"varchar(100)" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
 	Tags            []string `xorm:"varchar(200)" json:"tags"`
 	LastReplyUser   string   `xorm:"varchar(100)" json:"lastReplyUser"`
-	LastReplyTime   string   `xorm:"varchar(40)" json:"lastReplyTime"`
+	LastReplyTime   string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt) index(IDX_topic_htt_lrt)" json:"lastReplyTime"`
 	ReplyCount      int      `json:"replyCount"`
 	UpCount         int      `json:"upCount"`
 	DownCount       int      `json:"downCount"`
 	HitCount        int      `json:"hitCount"`
 	Hot             int      `json:"hot"`
 	FavoriteCount   int      `json:"favoriteCount"`
-	HomePageTopTime string   `xorm:"varchar(40)" json:"homePageTopTime"`
-	TabTopTime      string   `xorm:"varchar(40)" json:"tabTopTime"`
+	HomePageTopTime string   `xorm:"varchar(40) index(IDX_topic_htt_lrt)" json:"homePageTopTime"`
+	TabTopTime      string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt)" json:"tabTopTime"`
 	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
-	Deleted         bool     `xorm:"bool" json:"-"`
+	Deleted         bool     `xorm:"bool index" json:"-"`
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content         string   `xorm:"mediumtext" json:"content"`
 	UrlPath         string   `xorm:"varchar(100)" json:"urlPath"`
-	IsHidden        bool     `xorm:"bool" json:"isHidden"`
+	IsHidden        bool     `xorm:"bool index" json:"isHidden"`
 	Ip              string   `xorm:"varchar(100)" json:"ip"`
 	State           string   `xorm:"varchar(100)" json:"state"`
 }
@@ -96,10 +96,9 @@ func getAvataredTopics(topics []*Topic) []*TopicWithAvatar {
 func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
-		Where("deleted = ? and is_hidden <> ?", 0, 1).
-		Desc("home_page_top_time").
-		Desc("last_reply_time").
-		Desc("created_time").
+		Where("deleted = ?", 0).And("is_hidden = ?", 0).
+		Desc("home_page_top_time").Desc("last_reply_time").
+		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
 		panic(err)
@@ -587,10 +586,10 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 		return topics
 	} else {
 		topics := []*Topic{}
-		err := adapter.Engine.Table("topic").Join("INNER", "node", "node.id = topic.node_id").
-			Where("node.tab_id = ?", tab).And("topic.deleted = ?", 0).
-			Desc("topic.tab_top_time").Desc("topic.last_reply_time").
-			Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time").
+		err := adapter.Engine.Table("topic").
+			Where("tab_id = ?", tab).And("deleted = ?", 0).
+			Desc("tab_top_time").Desc("last_reply_time").
+			Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 			Limit(limit, offset).Find(&topics)
 		if err != nil {
 			panic(err)
