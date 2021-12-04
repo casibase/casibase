@@ -246,7 +246,7 @@ class NewReplyBox extends React.Component {
                   window.parent.postMessage(data, "*");
                 }}
                 type="submit"
-                value={i18next.t("general:Sign In")}
+                value={i18next.t("general:Sign In to Comment")}
                 className="super normal button"
               />
             </div>
