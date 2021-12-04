@@ -14,13 +14,39 @@
 
 package controllers
 
-import "github.com/casbin/casnode/object"
+import (
+	"sync"
+
+	"github.com/casbin/casnode/object"
+)
 
 func (c *ApiController) GetCommunityHealth() {
+	var memberCount int
+	var topicCount int
+	var replyCount int
+
+	var wg sync.WaitGroup
+	wg.Add(3)
+
+	go func() {
+		defer wg.Done()
+		memberCount = object.GetMemberNum()
+	}()
+	go func() {
+		defer wg.Done()
+		topicCount = object.GetTopicCount()
+	}()
+	go func() {
+		defer wg.Done()
+		replyCount = object.GetReplyCount()
+	}()
+
+	wg.Wait()
+
 	res := object.CommunityHealth{
-		Member: object.GetMemberNum(),
-		Topic:  object.GetTopicCount(),
-		Reply:  object.GetReplyCount(),
+		Member: memberCount,
+		Topic:  topicCount,
+		Reply:  replyCount,
 	}
 
 	c.ResponseOk(res)
