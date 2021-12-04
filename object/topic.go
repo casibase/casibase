@@ -108,6 +108,16 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	return getAvataredTopics(topics)
 }
 
+func GetAllTopics() []*Topic {
+	var topics []*Topic
+	err := adapter.Engine.Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return topics
+}
+
 func GetTopicsByTitleAndAuthor(title string, author string) []*Topic {
 	topics := []*Topic{}
 	err := adapter.Engine.Where("title = ?", title).And("author = ?", author).Find(&topics)
@@ -393,6 +403,15 @@ func UpdateTopic(id int, topic *Topic) bool {
 
 	//return affected != 0
 	return true
+}
+
+func updateTopicSimple(id int, topic *Topic) bool {
+	affected, err := adapter.Engine.Id(id).AllCols().Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
 }
 
 func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
