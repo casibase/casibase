@@ -97,7 +97,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
 		Where("deleted = ?", 0).And("is_hidden = ?", 0).
-		Desc("home_page_top_time").Desc("last_reply_time").
+		Desc("last_reply_time", "home_page_top_time").
 		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
@@ -588,7 +588,7 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 		topics := []*Topic{}
 		err := adapter.Engine.Table("topic").
 			Where("tab_id = ?", tab).And("deleted = ?", 0).
-			Desc("tab_top_time").Desc("last_reply_time").
+			Desc("last_reply_time", "tab_top_time").
 			Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 			Limit(limit, offset).Find(&topics)
 		if err != nil {
