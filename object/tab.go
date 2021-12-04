@@ -17,7 +17,8 @@ package object
 type Tab struct {
 	Id          string `xorm:"varchar(100) notnull pk" json:"id"`
 	Name        string `xorm:"varchar(100)" json:"name"`
-	Sorter      int    `xorm:"int" json:"-"`
+	Sorter      int    `json:"sorter"`
+	Ranking     int    `json:"ranking"`
 	CreatedTime string `xorm:"varchar(40)" json:"-"`
 	DefaultNode string `xorm:"varchar(100)" json:"defaultNode"`
 	HomePage    bool   `xorm:"bool" json:"-"`

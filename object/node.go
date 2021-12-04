@@ -33,8 +33,9 @@ type Node struct {
 	TabId             string   `xorm:"varchar(100)" json:"tab"`
 	ParentNode        string   `xorm:"varchar(200)" json:"parentNode"`
 	PlaneId           string   `xorm:"varchar(50)" json:"planeId"`
-	Sorter            int      `xorm:"int" json:"sorter"`
-	Hot               int      `xorm:"int" json:"hot"`
+	Sorter            int      `json:"sorter"`
+	Ranking           int      `json:"ranking"`
+	Hot               int      `json:"hot"`
 	Moderators        []string `xorm:"varchar(200)" json:"moderators"`
 	MailingList       string   `xorm:"varchar(100)" json:"mailingList"`
 	GoogleGroupCookie string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
