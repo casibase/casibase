@@ -66,10 +66,14 @@ func getTopicFromThread(thread *Thread, forum *Forum, classMap map[int]*Class) *
 		state = "Draft"
 	}
 
-	nodeName := strconv.Itoa(thread.Fid)
+	nodeId := strconv.Itoa(thread.Fid)
 	tabId := ""
 	if forum != nil {
-		nodeName = forum.Name
+		nodeId = forum.Name
+
+		if forum.Type == "group" || forum.Parent == nil {
+			return nil
+		}
 
 		parentForum := forum.Parent
 		if parentForum.Parent != nil {
@@ -83,8 +87,8 @@ func getTopicFromThread(thread *Thread, forum *Forum, classMap map[int]*Class) *
 	topic := &object.Topic{
 		Id:              thread.Tid,
 		Author:          thread.Author,
-		NodeId:          nodeName,
-		NodeName:        nodeName,
+		NodeId:          nodeId,
+		NodeName:        nodeId,
 		TabId:           tabId,
 		Title:           thread.Subject,
 		CreatedTime:     getTimeFromUnixSeconds(thread.Dateline),
@@ -214,6 +218,10 @@ func getTopicAndReplies(thread *Thread, forum *Forum, classMap map[int]*Class) (
 	}
 
 	topic := getTopicFromThread(thread, forum, classMap)
+	if topic == nil {
+		// thread doesn't belong to any forum, ignore it
+		return nil, nil
+	}
 
 	replies := []*object.Reply{}
 	for i, post := range thread.Posts {
