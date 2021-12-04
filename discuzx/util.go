@@ -144,6 +144,26 @@ func downloadFile(url string) ([]byte, string, error) {
 	return bs, newUrl, nil
 }
 
+func downloadFileSafe(url string) ([]byte, string, error) {
+	var bs []byte
+	var newUrl string
+	var err error
+	times := 0
+	for {
+		bs, newUrl, err = downloadFile(url)
+		if err != nil {
+			times += 1
+			time.Sleep(3 * time.Second)
+			if times >= 10 {
+				return nil, "", err
+			}
+		} else {
+			break
+		}
+	}
+	return bs, newUrl, nil
+}
+
 func getStringHash(s string) int {
 	h := fnv.New32a()
 	h.Write([]byte(s))

@@ -78,7 +78,7 @@ func uploadDiscuzxFile(username string, fileBytes []byte, fileName string, creat
 
 func getRecordFromAttachment(attachment *Attachment, post *Post) *object.UploadFileRecord {
 	oldFileUrl := fmt.Sprintf("%s%s", discuzxAttachmentBaseUrl, attachment.Attachment)
-	fileBytes, _, err := downloadFile(oldFileUrl)
+	fileBytes, _, err := downloadFileSafe(oldFileUrl)
 	if err != nil {
 		if urlError, ok := err.(*url.Error); ok {
 			fmt.Printf("\t\t[%d]: getRecordFromAttachment() error: %s, the attachement is deleted: %s\n", post.Pid, urlError.Error(), attachment.Attachment)
