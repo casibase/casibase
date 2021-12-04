@@ -29,3 +29,13 @@
   background-size: 163.92px 28px;
   background-repeat: no-repeat;
 }
+
+a:hover {
+  color: #4d5256;
+  text-decoration: underline;
+  transition: none;
+}
+
+a:link {
+  transition: none;
+}
