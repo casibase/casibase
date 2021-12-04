@@ -215,9 +215,13 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 
 func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
-	_, err := adapter.Engine.Table("topic").Id(id).Cols("topic.*").Get(&topic)
+	affected, err := adapter.Engine.Table("topic").ID(id).Cols("topic.*").Get(&topic)
 	if err != nil {
 		panic(err)
+	}
+
+	if !affected {
+		return nil
 	}
 
 	topic.Avatar = getUserAvatar(topic.Author)
