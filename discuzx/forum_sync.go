@@ -16,16 +16,34 @@ package discuzx
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 )
+
+func getInfoFromField(field *Field) (string, string, []string) {
+	if field == nil {
+		return "", "", []string{}
+	}
+
+	desc := field.Description
+	extra := field.Rules
+
+	moderators := []string{}
+	if field.Moderators != "" {
+		moderators = strings.Split(field.Moderators, "\t")
+	}
+
+	return desc, extra, moderators
+}
 
 func addForums() {
 	tabs := []*object.Tab{}
 	nodes := []*object.Node{}
 
 	forumTree, _ := getForumTree()
+	forumFieldMap := getFieldMap()
 	for i, groupForum := range forumTree {
 		defaultNode := ""
 		if len(groupForum.Forums) != 0 {
@@ -46,11 +64,15 @@ func addForums() {
 		fmt.Printf("[%d/%d]: Synced group forum: %s\n", i+1, len(forumTree), groupForum.Name)
 
 		for j, forum := range groupForum.Forums {
+			field := forumFieldMap[forum.Fid]
+			desc, extra, moderators := getInfoFromField(field)
+
 			forumNode := &object.Node{
 				Id:                forum.Name,
 				Name:              forum.Name,
 				CreatedTime:       util.GetCurrentTime(),
-				Desc:              forum.Name,
+				Desc:              desc,
+				Extra:             extra,
 				Image:             "https://cdn.v2ex.com/navatar/3b8a/6142/215_xxlarge.png?m=1523190513",
 				TabId:             groupForum.Name,
 				ParentNode:        "",
@@ -58,7 +80,7 @@ func addForums() {
 				Sorter:            forum.Displayorder,
 				Ranking:           forum.Fid,
 				Hot:               forum.Threads,
-				Moderators:        []string{},
+				Moderators:        moderators,
 				MailingList:       "",
 				GoogleGroupCookie: "",
 				IsHidden:          forum.Status == 0,
@@ -67,11 +89,15 @@ func addForums() {
 			fmt.Printf("\t[%d/%d]: Synced forum: %s\n", j+1, len(groupForum.Forums), forum.Name)
 
 			for k, subForum := range forum.Forums {
+				field2 := forumFieldMap[subForum.Fid]
+				desc2, extra2, moderators2 := getInfoFromField(field2)
+
 				subForumNode := &object.Node{
 					Id:                subForum.Name,
 					Name:              subForum.Name,
 					CreatedTime:       util.GetCurrentTime(),
-					Desc:              subForum.Name,
+					Desc:              desc2,
+					Extra:             extra2,
 					Image:             "https://cdn.v2ex.com/navatar/3b8a/6142/215_xxlarge.png?m=1523190513",
 					TabId:             groupForum.Name,
 					ParentNode:        forum.Name,
@@ -79,7 +105,7 @@ func addForums() {
 					Sorter:            subForum.Displayorder,
 					Ranking:           subForum.Fid,
 					Hot:               subForum.Threads,
-					Moderators:        []string{},
+					Moderators:        moderators2,
 					MailingList:       "",
 					GoogleGroupCookie: "",
 					IsHidden:          subForum.Status == 0,

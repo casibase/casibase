@@ -24,7 +24,8 @@ type Node struct {
 	Id                string   `xorm:"varchar(100) notnull pk" json:"id"`
 	Name              string   `xorm:"varchar(100)" json:"name"`
 	CreatedTime       string   `xorm:"varchar(40)" json:"createdTime"`
-	Desc              string   `xorm:"varchar(500)" json:"desc"`
+	Desc              string   `xorm:"mediumtext" json:"desc"`
+	Extra             string   `xorm:"mediumtext" json:"extra"`
 	Image             string   `xorm:"varchar(200)" json:"image"`
 	BackgroundImage   string   `xorm:"varchar(200)" json:"backgroundImage"`
 	HeaderImage       string   `xorm:"varchar(200)" json:"headerImage"`
