@@ -25,8 +25,8 @@ func addForums() {
 	tabs := []*object.Tab{}
 	nodes := []*object.Node{}
 
-	forums := getStructuredForums()
-	for i, groupForum := range forums {
+	forumTree, _ := getForumTree()
+	for i, groupForum := range forumTree {
 		tab := &object.Tab{
 			Id:          groupForum.Name,
 			Name:        groupForum.Name,
@@ -36,7 +36,7 @@ func addForums() {
 			HomePage:    false,
 		}
 		tabs = append(tabs, tab)
-		fmt.Printf("[%d/%d]: Synced group forum: %s\n", i+1, len(forums), groupForum.Name)
+		fmt.Printf("[%d/%d]: Synced group forum: %s\n", i+1, len(forumTree), groupForum.Name)
 
 		for j, forum := range groupForum.Forums {
 			forumNode := &object.Node{

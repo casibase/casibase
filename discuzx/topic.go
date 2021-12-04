@@ -67,8 +67,15 @@ func getTopicFromThread(thread *Thread, forum *Forum, classMap map[int]*Class) *
 	}
 
 	nodeName := strconv.Itoa(thread.Fid)
+	tabId := ""
 	if forum != nil {
 		nodeName = forum.Name
+
+		parentForum := forum.Parent
+		if parentForum.Parent != nil {
+			parentForum = parentForum.Parent
+		}
+		tabId = parentForum.Name
 	} else {
 		isHidden = true
 	}
@@ -78,6 +85,7 @@ func getTopicFromThread(thread *Thread, forum *Forum, classMap map[int]*Class) *
 		Author:          thread.Author,
 		NodeId:          nodeName,
 		NodeName:        nodeName,
+		TabId:           tabId,
 		Title:           thread.Subject,
 		CreatedTime:     getTimeFromUnixSeconds(thread.Dateline),
 		Tags:            tags,

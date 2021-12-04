@@ -64,6 +64,7 @@ func (n Node) SyncFromGoogleGroup() {
 				Author:        AuthorMember.Id,
 				NodeId:        n.Id,
 				NodeName:      n.Name,
+				TabId:         n.TabId,
 				Title:         conv.Title,
 				Content:       FilterUnsafeHTML(messages[0].Content),
 				CreatedTime:   util.GetTimeFromTimestamp(int64(conv.Time)),

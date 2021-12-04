@@ -70,7 +70,7 @@ func TestAddThreads(t *testing.T) {
 
 	attachmentMap := getAttachmentMap()
 	fmt.Printf("Loaded attachments: %d\n", len(attachmentMap))
-	forumMap := getForumMap()
+	_, forumMap := getForumTree()
 	fmt.Printf("Loaded forums: %d\n", len(forumMap))
 	classMap := getClassMap()
 	fmt.Printf("Loaded classes: %d\n", len(classMap))

@@ -26,6 +26,7 @@ type Forum struct {
 	Threads      int
 
 	Forums []*Forum `xorm:"-"`
+	Parent *Forum   `xorm:"-"`
 }
 
 func getForums() []*Forum {
@@ -62,7 +63,7 @@ func getForumMap() map[int]*Forum {
 	return m
 }
 
-func getStructuredForums() []*Forum {
+func getForumTree() ([]*Forum, map[int]*Forum) {
 	res := []*Forum{}
 
 	forumMap := getForumMap()
@@ -72,6 +73,7 @@ func getStructuredForums() []*Forum {
 		} else {
 			parentForum := forumMap[forum.Fup]
 			parentForum.Forums = append(parentForum.Forums, forum)
+			forum.Parent = parentForum
 		}
 	}
 
@@ -96,5 +98,5 @@ func getStructuredForums() []*Forum {
 		}
 	}
 
-	return res
+	return res, forumMap
 }

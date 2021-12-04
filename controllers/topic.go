@@ -213,8 +213,9 @@ func (c *ApiController) AddTopic() {
 	topic := object.Topic{
 		//Id:            util.IntToString(object.GetTopicId()),
 		Author:        GetUserName(user),
-		NodeId:        nodeId,
-		NodeName:      "",
+		NodeId:        node.Id,
+		NodeName:      node.Name,
+		TabId:         node.TabId,
 		Title:         title,
 		CreatedTime:   util.GetCurrentTime(),
 		Tags:          tags,
@@ -583,7 +584,7 @@ func (c *ApiController) UpdateTopicNode() {
 	if err != nil {
 		panic(err)
 	}
-	id, nodeName, nodeId := form.Id, form.NodeName, form.NodeId
+	id, _, nodeId := form.Id, form.NodeName, form.NodeId
 
 	originalNode := object.GetTopicNodeId(id)
 	if !object.CheckIsAdmin(user) && !object.CheckNodeModerator(user, originalNode) && object.GetTopicAuthor(id).Name != GetUserName(user) {
@@ -591,10 +592,17 @@ func (c *ApiController) UpdateTopicNode() {
 		return
 	}
 
+	node := object.GetNode(nodeId)
+	if node == nil {
+		c.ResponseError("Node does not exist.")
+		return
+	}
+
 	topic := object.Topic{
 		//Id:       id,
-		NodeId:   nodeId,
-		NodeName: nodeName,
+		NodeId:   node.Id,
+		NodeName: node.Name,
+		TabId:    node.TabId,
 	}
 	res := object.UpdateTopicWithLimitCols(id, &topic)
 
@@ -791,6 +799,7 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 			Author:        "Embed Plugin",
 			NodeId:        nodeId,
 			NodeName:      node.Name,
+			TabId:         node.TabId,
 			Title:         title,
 			CreatedTime:   util.GetCurrentTime(),
 			LastReplyTime: util.GetCurrentTime(),

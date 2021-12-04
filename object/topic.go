@@ -29,6 +29,7 @@ type Topic struct {
 	Author          string   `xorm:"varchar(100) index" json:"author"`
 	NodeId          string   `xorm:"varchar(100) index" json:"nodeId"`
 	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
+	TabId           string   `xorm:"varchar(100)" json:"tabId"`
 	Title           string   `xorm:"varchar(100)" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
 	Tags            []string `xorm:"varchar(200)" json:"tags"`
