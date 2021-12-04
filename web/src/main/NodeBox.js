@@ -36,7 +36,7 @@ class NodeBox extends React.Component {
       topics: [],
       p: "",
       page: 1,
-      limit: 20,
+      limit: 25,
       minPage: 1,
       maxPage: -1,
       showPages: [],
@@ -236,6 +236,7 @@ class NodeBox extends React.Component {
         total={this.state.topicNum}
         url={this.state.url}
         nodeId={this.state.nodeId}
+        defaultPageNum={this.state.limit}
       />
     );
   }
