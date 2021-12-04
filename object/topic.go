@@ -39,7 +39,7 @@ type Topic struct {
 	UpCount         int      `json:"upCount"`
 	DownCount       int      `json:"downCount"`
 	HitCount        int      `json:"hitCount"`
-	Hot             int      `json:"hot"`
+	Hot             int      `xorm:"index" json:"hot"`
 	FavoriteCount   int      `json:"favoriteCount"`
 	HomePageTopTime string   `xorm:"varchar(40) index(IDX_topic_htt_lrt)" json:"homePageTopTime"`
 	TabTopTime      string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt)" json:"tabTopTime"`
@@ -614,7 +614,10 @@ func UpdateTopicHotInfo(topicId string, hot int) bool {
 func GetHotTopic(limit int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
-		Desc("hot").And("deleted = ? ", 0).Limit(limit).Find(&topics)
+		Where("deleted = ? ", 0).
+		Desc("hot").
+		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
+		Limit(limit).Find(&topics)
 	if err != nil {
 		panic(err)
 	}
