@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/casbin/casnode/util"
@@ -224,24 +225,30 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 
 func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
-	affected, err := adapter.Engine.Table("topic").ID(id).Cols("topic.*").Get(&topic)
-	if err != nil {
-		panic(err)
-	}
 
-	if !affected {
-		return nil
-	}
+	var wg sync.WaitGroup
+	wg.Add(3)
 
-	topic.Avatar = getUserAvatar(topic.Author)
+	go func() {
+		defer wg.Done()
+		topic.Topic = *GetTopic(id)
+		topic.Avatar = getUserAvatar(topic.Author)
+	}()
+	go func() {
+		defer wg.Done()
+		name := ""
+		if user != nil {
+			name = GetUserName(user)
+		}
 
-	name := ""
-	if user != nil {
-		name = GetUserName(user)
-	}
+		topic.ThanksStatus = GetThanksStatus(name, id, 4)
+	}()
+	go func() {
+		defer wg.Done()
+		topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
+	}()
 
-	topic.ThanksStatus = GetThanksStatus(name, id, 4)
-	topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
+	wg.Wait()
 
 	return &topic
 }
