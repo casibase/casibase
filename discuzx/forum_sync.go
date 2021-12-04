@@ -27,14 +27,20 @@ func addForums() {
 
 	forumTree, _ := getForumTree()
 	for i, groupForum := range forumTree {
+		defaultNode := ""
+		if len(groupForum.Forums) != 0 {
+			defaultNode = groupForum.Forums[0].Name
+		}
+
 		tab := &object.Tab{
 			Id:          groupForum.Name,
 			Name:        groupForum.Name,
 			Sorter:      groupForum.Displayorder,
 			CreatedTime: util.GetCurrentTime(),
-			DefaultNode: "",
-			HomePage:    false,
+			DefaultNode: defaultNode,
+			HomePage:    true,
 		}
+
 		tabs = append(tabs, tab)
 		fmt.Printf("[%d/%d]: Synced group forum: %s\n", i+1, len(forumTree), groupForum.Name)
 
@@ -80,6 +86,21 @@ func addForums() {
 			}
 		}
 	}
+
+	defaultNode := ""
+	if len(nodes) > 0 {
+		defaultNode = nodes[0].Id
+	}
+
+	tab := &object.Tab{
+		Id:          "all",
+		Name:        "全部",
+		Sorter:      100,
+		CreatedTime: util.GetCurrentTime(),
+		DefaultNode: defaultNode,
+		HomePage:    true,
+	}
+	tabs = append(tabs, tab)
 
 	object.AddTabs(tabs)
 	object.AddNodes(nodes)
