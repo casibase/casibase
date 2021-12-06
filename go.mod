@@ -4,9 +4,7 @@ go 1.16
 
 require (
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
-	github.com/aliyun/aliyun-oss-go-sdk v2.1.10+incompatible
 	github.com/astaxie/beego v1.12.3
-	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/casbin/google-groups-crawler v0.1.3
 	github.com/casdoor/casdoor-go-sdk v0.1.5
 	github.com/chromedp/chromedp v0.6.10
@@ -22,7 +20,6 @@ require (
 	github.com/mozillazg/go-slugify v0.2.0
 	github.com/mozillazg/go-unidecode v0.1.1 // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect

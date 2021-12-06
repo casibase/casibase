@@ -18,6 +18,9 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+// @Title AddSensitive
+// @router /add-sensitive [get]
+// @Tag Seneistive API
 func (c *ApiController) AddSensitive() {
 	if c.RequireAdmin() {
 		return
@@ -42,6 +45,9 @@ func (c *ApiController) AddSensitive() {
 	c.ResponseOk()
 }
 
+// @Title DelSensitive
+// @router /del-sensitive [get]
+// @Tag Seneistive API
 func (c *ApiController) DelSensitive() {
 	if c.RequireAdmin() {
 		return
@@ -62,6 +68,9 @@ func (c *ApiController) DelSensitive() {
 	c.ResponseOk()
 }
 
+// @Title GetSensitive
+// @router /get-sensitive [get]
+// @Tag Seneistive API
 func (c *ApiController) GetSensitive() {
 	c.Data["json"] = object.GetSensitiveWords()
 	c.ServeJSON()

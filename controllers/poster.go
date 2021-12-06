@@ -24,6 +24,7 @@ import (
 // @Description update poster message
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-poster [post]
+// @Tag Poster API
 func (c *ApiController) UpdatePoster() {
 	if c.RequireAdmin() {
 		return
@@ -45,6 +46,7 @@ func (c *ApiController) UpdatePoster() {
 // @Param   id     query    string  true        "id"
 // @Success 200 {object} object.Poster The Response object
 // @router /read-poster [get]
+// @Tag Poster API
 func (c *ApiController) ReadPoster() {
 	n := c.Input().Get("id")
 	res := object.GetPoster(n)

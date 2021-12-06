@@ -55,6 +55,9 @@ func (c *ApiController) AddNotification() {
 	c.ServeJSON()
 }
 
+// @router /get-notifications [get]
+// @Title GetNotifications
+// @Tag Notification API
 func (c *ApiController) GetNotifications() {
 	memberId := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
@@ -77,6 +80,9 @@ func (c *ApiController) GetNotifications() {
 	c.ResponseOk(res, num)
 }
 
+// @Title DeleteNotification
+// @router /delete-notifications [get]
+// @Tag Notification API
 func (c *ApiController) DeleteNotification() {
 	id := c.Input().Get("id")
 
@@ -84,6 +90,9 @@ func (c *ApiController) DeleteNotification() {
 	c.ResponseOk(res)
 }
 
+// @Title GetUnreadNotificationNum
+// @router /get-unread-notification-num [post]
+// @Tag Notification API
 func (c *ApiController) GetUnreadNotificationNum() {
 	memberId := c.GetSessionUsername()
 
@@ -91,6 +100,9 @@ func (c *ApiController) GetUnreadNotificationNum() {
 	c.ResponseOk(res)
 }
 
+// @Title UpdateReadStatus
+// @router /update-read-status [post]
+// @Tag Notification API
 func (c *ApiController) UpdateReadStatus() {
 	memberId := c.GetSessionUsername()
 

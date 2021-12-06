@@ -24,6 +24,9 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
+// @Tag Balance API
+// @Title AddThanks
+// @router /add-thanks [post]
 func (c *ApiController) AddThanks() {
 	if c.RequireSignedIn() {
 		return
@@ -102,6 +105,9 @@ func (c *ApiController) AddThanks() {
 	}
 }
 
+// @Tag Balance API
+// @Title GetConsumptionRecord
+// @router /get-consumption-record [get]
 func (c *ApiController) GetConsumptionRecord() {
 	username := c.GetSessionUsername()
 	limitStr := c.Input().Get("limit")
@@ -125,6 +131,9 @@ func (c *ApiController) GetConsumptionRecord() {
 	c.ResponseOk(res, num)
 }
 
+// @Tag Balance API
+// @Title GetCheckinBonus
+// @router /get-checkin-bonus [get]
 func (c *ApiController) GetCheckinBonus() {
 	if c.RequireSignedIn() {
 		return
@@ -170,6 +179,9 @@ func (c *ApiController) GetCheckinBonus() {
 	c.ResponseOk(bonus)
 }
 
+// @router /get-checkin-bonus-status [get]
+// @Tag Balance API
+// @Title GetCheckinBonusStatus
 func (c *ApiController) GetCheckinBonusStatus() {
 	if c.RequireSignedIn() {
 		return

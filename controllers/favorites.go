@@ -21,6 +21,9 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
+// @router /add-favorites [post]
+// @Tag Favorite API
+// @Title AddFavorites
 func (c *ApiController) AddFavorites() {
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
@@ -79,6 +82,9 @@ func (c *ApiController) AddFavorites() {
 	c.ServeJSON()
 }
 
+// @router /delete-favorites [post]
+// @Tag Favorite API
+// @Title DeleteFavorites
 func (c *ApiController) DeleteFavorites() {
 	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
@@ -114,6 +120,9 @@ func (c *ApiController) DeleteFavorites() {
 	c.ServeJSON()
 }
 
+// @router /get-favorites-status [get]
+// @Tag Favorite API
+// @Title GetFavoritesStatus
 func (c *ApiController) GetFavoritesStatus() {
 	memberId := c.GetSessionUsername()
 	objectId := c.Input().Get("id")
@@ -132,6 +141,9 @@ func (c *ApiController) GetFavoritesStatus() {
 	c.ServeJSON()
 }
 
+// @router /get-favorites [get]
+// @Tag Favorite API
+// @Title GetFavorites
 func (c *ApiController) GetFavorites() {
 	memberId := c.GetSessionUsername()
 	favoritesTypeStr := c.Input().Get("type")
@@ -176,6 +188,9 @@ func (c *ApiController) GetFavorites() {
 	c.ServeJSON()
 }
 
+// @router /get-account-favorite-num [get]
+// @Tag Favorite API
+// @Title GetAccountFavoriteNum
 func (c *ApiController) GetAccountFavoriteNum() {
 	memberId := c.GetSessionUsername()
 

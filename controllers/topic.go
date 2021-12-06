@@ -41,6 +41,7 @@ type NewTopicForm struct {
 // @Param   page     query    string  true        "offset"
 // @Success 200 {array} object.TopicWithAvatar The Response object
 // @router /get-topics [get]
+// @Tag Topic API
 func (c *ApiController) GetTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -77,6 +78,7 @@ func (c *ApiController) GetTopics() {
 // @Param   fcs     query    string  true        "sort: favorite count"
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-topics-admin [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicsAdmin() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -118,6 +120,7 @@ func (c *ApiController) GetTopicsAdmin() {
 // @Param   id     query    string  true        "id"
 // @Success 200 {object} object.TopicWithAvatar The Response object
 // @router /get-topic [get]
+// @Tag Topic API
 func (c *ApiController) GetTopic() {
 	user := c.GetSessionUser()
 
@@ -143,6 +146,7 @@ func (c *ApiController) GetTopic() {
 //@Param   id     query    string  true        "id"
 // @Success 200 {object} object.AdminTopicInfo The Response object
 // @router /get-topic-admin [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicAdmin() {
 	idStr := c.Input().Get("id")
 
@@ -171,6 +175,7 @@ func (c *ApiController) UpdateTopic() {
 // @Param   form     body    controllers.NewTopicForm  true        "topic info"
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-topic [post]
+// @Tag Topic API
 func (c *ApiController) AddTopic() {
 	if c.RequireSignedIn() {
 		return
@@ -266,6 +271,7 @@ func (c *ApiController) AddTopic() {
 // @Param   pic     formData    string  true        "the picture base64 code"
 // @Success 200 {object} _controllers.Response The Response object
 // @router /upload-topic-pic [post]
+// @Tag Topic API
 func (c *ApiController) UploadTopicPic() {
 	if c.RequireSignedIn() {
 		return
@@ -294,6 +300,7 @@ func (c *ApiController) UploadTopicPic() {
 // @Param   id     query    string  true        "topic id"
 // @Success 200 {bool} bool Delete success or failure
 // @router /delete-topic [post]
+// @Tag Topic API
 func (c *ApiController) DeleteTopic() {
 	idStr := c.Input().Get("id")
 	user := c.GetSessionUser()
@@ -315,6 +322,7 @@ func (c *ApiController) DeleteTopic() {
 // @Description get the total number of topics
 // @Success 200 {int} int The topic nums
 // @router /get-topics-num [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicsNum() {
 	c.Data["json"] = object.GetTopicNum()
 	c.ServeJSON()
@@ -328,6 +336,7 @@ func (c *ApiController) GetTopicsNum() {
 // @Param   page     query    string  true        "page offset"
 // @Success 200 {array} object.Topic The Response object
 // @router /get-all-created-topics [get]
+// @Tag Topic API
 func (c *ApiController) GetAllCreatedTopics() {
 	author := c.Input().Get("id")
 	tab := c.Input().Get("tab")
@@ -362,6 +371,7 @@ func (c *ApiController) GetAllCreatedTopics() {
 // @Param   id     query    string  true        "member id"
 // @Success 200 {int} int topics count
 // @router /get-created-topics-num [get]
+// @Tag Topic API
 func (c *ApiController) GetCreatedTopicsNum() {
 	memberId := c.Input().Get("id")
 
@@ -376,6 +386,7 @@ func (c *ApiController) GetCreatedTopicsNum() {
 // @Param   page     query    string  true        "page offset"
 // @Success 200 {array} object.NodeTopic The Response object
 // @router /get-topics-by-node [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicsByNode() {
 	nodeId := c.Input().Get("node-id")
 	limitStr := c.Input().Get("limit")
@@ -404,6 +415,7 @@ func (c *ApiController) GetTopicsByNode() {
 // @Param   page     query    string  true        "page offset"
 // @Success 200 {array} object.NodeTopic The Response object
 // @router /get-topics-by-tag [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicsByTag() {
 	tagId := c.Input().Get("tag-id")
 	limitStr := c.Input().Get("limit")
@@ -430,6 +442,7 @@ func (c *ApiController) GetTopicsByTag() {
 // @Param   id     query    string  true        "topic id"
 // @Success 200 {object} controller.Response The Response object
 // @router /add-topic-hit-count [post]
+// @Tag Topic API
 func (c *ApiController) AddTopicHitCount() {
 	topicIdStr := c.Input().Get("id")
 
@@ -462,6 +475,7 @@ func (c *ApiController) AddTopicHitCount() {
 // @Param   page     query    string  true        "page offset"
 // @Success 200 {array} object.TopicWithAvatar The Response object
 // @router /get-topics-by-tab [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicsByTab() {
 	tabId := c.Input().Get("tab-id")
 	limitStr := c.Input().Get("limit")
@@ -488,6 +502,7 @@ func (c *ApiController) GetTopicsByTab() {
 // @Param   id     query    string  true        "topicId"
 // @Success 200 {object} controller.Response The Response object
 // @router /add-topic-browse-record [post]
+// @Tag Topic API
 func (c *ApiController) AddTopicBrowseCount() {
 	topicId := c.Input().Get("id")
 
@@ -515,6 +530,7 @@ func (c *ApiController) AddTopicBrowseCount() {
 // @Param   limit     query    string  true        "limit size"
 // @Success 200 {object} controller.Response The Response object
 // @router /get-hot-topic [get]
+// @Tag Topic API
 func (c *ApiController) GetHotTopic() {
 	limitStr := c.Input().Get("limit")
 	defaultLimit := object.HotTopicNum
@@ -541,6 +557,7 @@ func (c *ApiController) GetHotTopic() {
 // @Param   limit     query    string  true        "limit size"
 // @Success 200 {object} controller.Response The Response object
 // @router /get-hot-topic [get]
+// @Tag Topic API
 func (c *ApiController) GetSortedTopics() {
 	limitStr := c.Input().Get("limit")
 	pageStr := c.Input().Get("page")
@@ -572,6 +589,7 @@ func (c *ApiController) GetSortedTopics() {
 // @Param   updateTopicNode     body    controllers.updateTopicNode  true        "topic node info"
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-topic-node [post]
+// @Tag Topic API
 func (c *ApiController) UpdateTopicNode() {
 	if c.RequireSignedIn() {
 		return
@@ -614,6 +632,7 @@ func (c *ApiController) UpdateTopicNode() {
 // @Param   editType     query    string  true        "edit Type"
 // @Success 200 {object} controllers.Response The Response object
 // @router /edit-content [post]
+// @Tag Topic API
 func (c *ApiController) EditContent() {
 	if c.RequireSignedIn() {
 		return
@@ -675,6 +694,9 @@ func (c *ApiController) EditContent() {
 	c.ServeJSON()
 }
 
+// @Title TranslateTopic
+// @router /translate-topic [get]
+// @Tag Topic API
 func (c *ApiController) TranslateTopic() {
 	topicIdStr := c.Input().Get("id")
 	targetLang := c.Input().Get("target")
@@ -705,6 +727,7 @@ func (c *ApiController) TranslateTopic() {
 // @Param   id     query    string  true        "id"
 // @Success 200 {object} controllers.Response The Response object
 // @router /top-topic [post]
+// @Tag Topic API
 func (c *ApiController) TopTopic() {
 	if c.RequireSignedIn() {
 		return
@@ -750,6 +773,7 @@ func (c *ApiController) TopTopic() {
 // @Param   id     query    string  true        "id"
 // @Success 200 {object} controllers.Response The Response object
 // @router /cancel-top-topic [post]
+// @Tag Topic API
 func (c *ApiController) CancelTopTopic() {
 	if c.RequireSignedIn() {
 		return
@@ -778,6 +802,9 @@ func (c *ApiController) CancelTopTopic() {
 	c.ServeJSON()
 }
 
+// @Title GetTopicByUrlPathAndTitle
+// @router /get-topic-by-urlpath-and-title [get]
+// @Tag Topic API
 func (c *ApiController) GetTopicByUrlPathAndTitle() {
 	urlPath := c.Input().Get("urlPath")
 	title := c.Input().Get("title")

@@ -6,6 +6,9 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+// @router /update-translator [post]
+// @Title UpdateTranslator
+// @Tag Translator API
 func (c *ApiController) UpdateTranslator() {
 	if c.RequireAdmin() {
 		return
@@ -21,6 +24,9 @@ func (c *ApiController) UpdateTranslator() {
 	c.ResponseOk()
 }
 
+// @router /add-translator [post]
+// @Title AddTranslator
+// @Tag Translator API
 func (c *ApiController) AddTranslator() {
 	if c.RequireAdmin() {
 		return
@@ -52,6 +58,9 @@ func (c *ApiController) AddTranslator() {
 	}
 }
 
+// @router /get-translator [get]
+// @Title GetTranslator
+// @Tag Translator API
 func (c *ApiController) GetTranslator() {
 	id := c.Input().Get("id")
 	res := object.GetTranslator(id)
@@ -67,6 +76,9 @@ func (c *ApiController) GetEnableTranslator() {
 	c.ServeJSON()
 }
 
+// @router /visible-translator [get]
+// @Title VisibleTranslator
+// @Tag Translator API
 func (c *ApiController) VisibleTranslator() {
 	c.ResponseOk(false)
 
@@ -78,6 +90,9 @@ func (c *ApiController) VisibleTranslator() {
 	}
 }
 
+// @router /del-translator [post]
+// @Title DelTranslator
+// @Tag Translator API
 func (c *ApiController) DelTranslator() {
 	id := c.Input().Get("id")
 	resp := Response{Status: "fail", Msg: "Delete translator failed"}

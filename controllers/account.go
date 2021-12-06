@@ -46,6 +46,7 @@ func InitAuthConfig() {
 // @Param   state     QueryString    string  true        "The state"
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signin [post]
+// @Tag Account API
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
@@ -76,6 +77,7 @@ func (c *ApiController) Signin() {
 // @Description sign out the current member
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /signout [post]
+// @Tag Account API
 func (c *ApiController) Signout() {
 	claims := c.GetSessionClaims()
 	if claims != nil {
@@ -95,6 +97,7 @@ func (c *ApiController) Signout() {
 // @Description Get current account
 // @Success 200 {object} controllers.api_controller.Response The Response object
 // @router /get-account [get]
+// @Tag Account API
 func (c *ApiController) GetAccount() {
 	if c.RequireSignedIn() {
 		return

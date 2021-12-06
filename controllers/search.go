@@ -16,6 +16,9 @@ package controllers
 
 import "github.com/casbin/casnode/object"
 
+// @Title Search
+// @router /search
+// @Tag Search API
 func (c *ApiController) Search() {
 	keyword := c.Input().Get("keyword")
 

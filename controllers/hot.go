@@ -19,6 +19,9 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
+// @Tag Hot API
+// @Title ChangeExpiredDataStatus
+// @router /update-expired-data [post]
 func (c *ApiController) ChangeExpiredDataStatus() {
 	expiredNodeDate := util.GetTimeMonth(-object.NodeHitRecordExpiredTime)
 	expiredTopicDate := util.GetTimeDay(-object.TopicHitRecordExpiredTime)
@@ -30,6 +33,9 @@ func (c *ApiController) ChangeExpiredDataStatus() {
 	c.ServeJSON()
 }
 
+// @Tag Hot API
+// @Title UpdateHotInfo
+// @router /update-hot-info [post]
 func (c *ApiController) UpdateHotInfo() {
 	var updateNodeNum int
 	var updateTopicNum int

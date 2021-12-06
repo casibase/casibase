@@ -24,6 +24,7 @@ import (
 // @Description Get front confs by field
 // @Success 200 {array} object.FrontConf The Response object
 // @router /get-front-conf-by-field [get]
+// @Tag FrontConf API
 func (c *ApiController) GetFrontConfByField() {
 	field := c.Input().Get("field")
 
@@ -35,6 +36,7 @@ func (c *ApiController) GetFrontConfByField() {
 // @Description Get all front confs
 // @Success 200 {array} array The Response object
 // @router /get-front-confs [get]
+// @Tag FrontConf API
 func (c *ApiController) GetFrontConfs() {
 	confs := make(map[string]string)
 	conf := object.GetFrontConfs()
@@ -47,6 +49,9 @@ func (c *ApiController) GetFrontConfs() {
 	c.ServeJSON()
 }
 
+// @router /update-front-conf [post] 
+// @Tag FrontConf API
+// @Title UpdateFrontConf
 func (c *ApiController) UpdateFrontConf() {
 	var confs []*object.FrontConf
 
@@ -63,6 +68,9 @@ func (c *ApiController) UpdateFrontConf() {
 
 }
 
+// @router /update-to-default-conf [post] 
+// @Tag FrontConf API
+// @Title UpdateFrontConfToDefault
 func (c *ApiController) UpdateFrontConfToDefault() {
 
 	if c.RequireAdmin() {

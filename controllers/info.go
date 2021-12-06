@@ -20,6 +20,9 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
+// @Tag Info API
+// @Title GetCommunityHealth
+// @router /get-community-health [get]
 func (c *ApiController) GetCommunityHealth() {
 	var memberCount int
 	var topicCount int
@@ -52,6 +55,9 @@ func (c *ApiController) GetCommunityHealth() {
 	c.ResponseOk(res)
 }
 
+// @Tag Info API
+// @Title GetForumVersion
+// @router /get-forum-version [get]
 func (c *ApiController) GetForumVersion() {
 	var resp Response
 
@@ -63,6 +69,9 @@ func (c *ApiController) GetForumVersion() {
 	c.ServeJSON()
 }
 
+// @Tag Info API
+// @Title GetOnlineNum
+// @router /get-online-num [get]
 func (c *ApiController) GetOnlineNum() {
 	onlineNum := object.GetOnlineMemberNum()
 	highest := object.GetHighestOnlineNum()
@@ -70,6 +79,9 @@ func (c *ApiController) GetOnlineNum() {
 	c.ResponseOk(onlineNum, highest)
 }
 
+// @Tag Info API
+// @Title GetNodeNavigation
+// @router /node-navigation [get]
 func (c *ApiController) GetNodeNavigation() {
 	var resp Response
 

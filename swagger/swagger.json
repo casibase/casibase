@@ -1,36 +1,78 @@
 {
     "swagger": "2.0",
     "info": {
-        "title": "Casnode API",
-        "description": "Documentation of Casdoor API",
-        "version": "1.0.0",
-        "contact": {
-            "email": "admin@casbin.org"
-        }
+        "contact": {}
     },
     "basePath": "/api",
     "paths": {
-        "/add-member": {
+        "/add-favorites": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Favorite API"
                 ],
-                "description": "AddMember",
-                "operationId": "ApiController.AddMember",
-                "responses": {
-                    "200": {
-                        "description": "The Response object",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.Response"
-                        }
-                    }
-                }
+                "operationId": "ApiController.AddFavorites"
+            }
+        },
+        "/add-node": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.AddNode"
+            }
+        },
+        "/add-node-browse-record": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.AddNodeBrowseCount"
+            }
+        },
+        "/add-node-moderators": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.AddNodeModerators"
+            }
+        },
+        "/add-plane": {
+            "post": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.AddPlane"
+            }
+        },
+        "/add-reply": {
+            "post": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.AddReply"
+            }
+        },
+        "/add-sensitive": {
+            "get": {
+                "tags": [
+                    "Seneistive API"
+                ],
+                "operationId": "ApiController.AddSensitive"
+            }
+        },
+        "/add-thanks": {
+            "post": {
+                "tags": [
+                    "Balance API"
+                ],
+                "operationId": "ApiController.AddThanks"
             }
         },
         "/add-topic": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "add one topic",
                 "operationId": "ApiController.AddTopic",
@@ -58,7 +100,7 @@
         "/add-topic-browse-record": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "add topic browse count",
                 "operationId": "ApiController.AddTopicBrowseCount",
@@ -84,7 +126,7 @@
         "/add-topic-hit-count": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "add topic hit count,together with node",
                 "operationId": "ApiController.AddTopicHitCount",
@@ -107,10 +149,18 @@
                 }
             }
         },
+        "/add-translator": {
+            "post": {
+                "tags": [
+                    "Translator API"
+                ],
+                "operationId": "ApiController.AddTranslator"
+            }
+        },
         "/cancel-top-topic": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "cancels top topic according to the topType in the url.",
                 "operationId": "ApiController.CancelTopTopic",
@@ -133,10 +183,82 @@
                 }
             }
         },
+        "/del-sensitive": {
+            "get": {
+                "tags": [
+                    "Seneistive API"
+                ],
+                "operationId": "ApiController.DelSensitive"
+            }
+        },
+        "/del-translator": {
+            "post": {
+                "tags": [
+                    "Translator API"
+                ],
+                "operationId": "ApiController.DelTranslator"
+            }
+        },
+        "/delete-favorites": {
+            "post": {
+                "tags": [
+                    "Favorite API"
+                ],
+                "operationId": "ApiController.DeleteFavorites"
+            }
+        },
+        "/delete-node": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.DeleteNode"
+            }
+        },
+        "/delete-node-moderators": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.DeleteNodeModerators"
+            }
+        },
+        "/delete-notifications": {
+            "get": {
+                "tags": [
+                    "Notification API"
+                ],
+                "operationId": "ApiController.DeleteNotification"
+            }
+        },
+        "/delete-plane": {
+            "post": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.DeletePlane"
+            }
+        },
+        "/delete-reply": {
+            "post": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.DeleteReply"
+            }
+        },
+        "/delete-tab": {
+            "post": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.DeleteTab"
+            }
+        },
         "/delete-topic": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "delete a topic by id",
                 "operationId": "ApiController.DeleteTopic",
@@ -159,7 +281,7 @@
         "/edit-content": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "edit content",
                 "operationId": "ApiController.EditContent",
@@ -185,7 +307,7 @@
         "/get-account": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Account API"
                 ],
                 "description": "Get current account",
                 "operationId": "ApiController.GetAccount",
@@ -199,10 +321,18 @@
                 }
             }
         },
+        "/get-account-favorite-num": {
+            "get": {
+                "tags": [
+                    "Favorite API"
+                ],
+                "operationId": "ApiController.GetAccountFavoriteNum"
+            }
+        },
         "/get-all-created-topics": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get all created topics",
                 "operationId": "ApiController.GetAllCreatedTopics",
@@ -249,10 +379,50 @@
                 }
             }
         },
+        "/get-all-tabs": {
+            "get": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.GetAllTabs"
+            }
+        },
+        "/get-checkin-bonus": {
+            "get": {
+                "tags": [
+                    "Balance API"
+                ],
+                "operationId": "ApiController.GetCheckinBonus"
+            }
+        },
+        "/get-checkin-bonus-status": {
+            "get": {
+                "tags": [
+                    "Balance API"
+                ],
+                "operationId": "ApiController.GetCheckinBonusStatus"
+            }
+        },
+        "/get-community-health": {
+            "get": {
+                "tags": [
+                    "Info API"
+                ],
+                "operationId": "ApiController.GetCommunityHealth"
+            }
+        },
+        "/get-consumption-record": {
+            "get": {
+                "tags": [
+                    "Balance API"
+                ],
+                "operationId": "ApiController.GetConsumptionRecord"
+            }
+        },
         "/get-created-topics-num": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get created topics count",
                 "operationId": "ApiController.GetCreatedTopicsNum",
@@ -272,10 +442,34 @@
                 }
             }
         },
+        "/get-favorites": {
+            "get": {
+                "tags": [
+                    "Favorite API"
+                ],
+                "operationId": "ApiController.GetFavorites"
+            }
+        },
+        "/get-favorites-status": {
+            "get": {
+                "tags": [
+                    "Favorite API"
+                ],
+                "operationId": "ApiController.GetFavoritesStatus"
+            }
+        },
+        "/get-forum-version": {
+            "get": {
+                "tags": [
+                    "Info API"
+                ],
+                "operationId": "ApiController.GetForumVersion"
+            }
+        },
         "/get-front-conf-by-field": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "FrontConf API"
                 ],
                 "description": "Get front confs by field",
                 "operationId": "ApiController.GetFrontConfsByField",
@@ -295,7 +489,7 @@
         "/get-front-confs": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "FrontConf API"
                 ],
                 "description": "Get all front confs",
                 "operationId": "ApiController.GetFrontConfs",
@@ -312,14 +506,57 @@
                 }
             }
         },
+        "/get-hot-node": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetHotNod"
+            }
+        },
         "/get-hot-topic": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
-                "description": "get hot topic",
-                "operationId": "ApiController.GetHotTopic",
+                "description": "get sorted topics",
+                "operationId": "ApiController.GetSortedTopics",
                 "parameters": [
+                    {
+                        "in": "query",
+                        "name": "lps",
+                        "description": "sort: last reply count",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "hs",
+                        "description": "sort: hot",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "fcs",
+                        "description": "sort: favorite count",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "cts",
+                        "description": "sort: created time",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "offset",
+                        "required": true,
+                        "type": "string"
+                    },
                     {
                         "in": "query",
                         "name": "limit",
@@ -338,10 +575,26 @@
                 }
             }
         },
+        "/get-latest-node": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetLatestNode"
+            }
+        },
+        "/get-latest-replies": {
+            "get": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.GetLatestReplies"
+            }
+        },
         "/get-member": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Member API"
                 ],
                 "description": "get member by id",
                 "operationId": "ApiController.GetMember",
@@ -358,57 +611,8 @@
                     "200": {
                         "description": "The Response object",
                         "schema": {
-                            "$ref": "#/definitions/object.Member"
+                            "$ref": "#/definitions/auth.User"
                         }
-                    }
-                }
-            }
-        },
-        "/get-member-admin": {
-            "get": {
-                "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
-                ],
-                "description": "get member for admin by id",
-                "operationId": "ApiController.GetMemberAdmin",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "id",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "The Response object",
-                        "schema": {
-                            "$ref": "#/definitions/object.AdminMemberInfo"
-                        }
-                    }
-                }
-            }
-        },
-        "/get-member-avatar": {
-            "get": {
-                "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
-                ],
-                "description": "get member avatar by id",
-                "operationId": "ApiController.GetMemberAvatar",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "id",
-                        "description": "id",
-                        "required": true,
-                        "type": "string"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "{string} string Avatarlink"
                     }
                 }
             }
@@ -416,7 +620,7 @@
         "/get-member-editor-type": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Member API"
                 ],
                 "description": "member editortype",
                 "operationId": "ApiController.GetMemberEditorType",
@@ -433,7 +637,7 @@
         "/get-member-language": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Member API"
                 ],
                 "description": "MemberLanguage",
                 "operationId": "ApiController.GetMemberLanguage",
@@ -447,88 +651,107 @@
                 }
             }
         },
-        "/get-members": {
+        "/get-member-replies-num": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Reply API"
                 ],
-                "description": "Get all members",
-                "operationId": "ApiController.GetMembers",
-                "responses": {
-                    "200": {
-                        "description": "The Response object",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/object.Member"
-                            }
-                        }
-                    }
-                }
+                "description": "GetRepliesNum gets member's all replies num.",
+                "operationId": "ApiController.GetMemberRepliesNum"
             }
         },
-        "/get-members-admin": {
+        "/get-node": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Node API"
                 ],
-                "description": "Get admin allmembers",
-                "operationId": "ApiController.GetMembersAdmin",
-                "parameters": [
-                    {
-                        "in": "query",
-                        "name": "limit",
-                        "description": "limit",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "page",
-                        "description": "page",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "un",
-                        "description": "search: username",
-                        "required": true,
-                        "type": "string"
-                    },
-                    {
-                        "in": "query",
-                        "name": "cs",
-                        "description": "sort: created time",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    },
-                    {
-                        "in": "query",
-                        "name": "us",
-                        "description": "sort: username",
-                        "required": true,
-                        "type": "integer",
-                        "format": "int64"
-                    }
+                "operationId": "ApiController.GetNode"
+            }
+        },
+        "/get-node-info": {
+            "get": {
+                "tags": [
+                    "Node API"
                 ],
-                "responses": {
-                    "200": {
-                        "description": "The Response object",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.api_controller.Response"
-                        }
-                    }
-                }
+                "operationId": "ApiController.GetNodeInfo"
+            }
+        },
+        "/get-node-relation": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetNodeRelation"
+            }
+        },
+        "/get-nodes": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetNodes"
+            }
+        },
+        "/get-nodes-admin": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetNodesAdmin"
+            }
+        },
+        "/get-nodes-num": {
+            "get": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.GetNodesNum"
+            }
+        },
+        "/get-notifications": {
+            "get": {
+                "tags": [
+                    "Notification API"
+                ],
+                "operationId": "ApiController.GetNotifications"
+            }
+        },
+        "/get-online-num": {
+            "get": {
+                "tags": [
+                    "Info API"
+                ],
+                "operationId": "ApiController.GetOnlineNum"
+            }
+        },
+        "/get-plane": {
+            "get": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.GetPlane"
+            }
+        },
+        "/get-plane-list": {
+            "get": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.GetPlaneLis"
+            }
+        },
+        "/get-planes-admin": {
+            "get": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.GetPlaneAdmin"
             }
         },
         "/get-ranking-rich": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Member API"
                 ],
                 "description": "RankingRich",
                 "operationId": "ApiController.GetRankingRich",
@@ -538,17 +761,81 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/object.Member"
+                                "$ref": "#/definitions/auth.User"
                             }
                         }
                     }
                 }
             }
         },
+        "/get-replies": {
+            "get": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.GetReplies"
+            }
+        },
+        "/get-replies-of-topic": {
+            "get": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.GetAllRepliesOfTopic"
+            }
+        },
+        "/get-reply": {
+            "get": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.GetReply"
+            }
+        },
+        "/get-reply-with-details": {
+            "get": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.GetReplyWithDetails"
+            }
+        },
+        "/get-sensitive": {
+            "get": {
+                "tags": [
+                    "Seneistive API"
+                ],
+                "operationId": "ApiController.GetSensitive"
+            }
+        },
+        "/get-tab-with-nodes": {
+            "get": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.GetTabWithNodes"
+            }
+        },
+        "/get-tabs": {
+            "get": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.GetTabs"
+            }
+        },
+        "/get-tabs-admin": {
+            "get": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.AddTab"
+            }
+        },
         "/get-topic": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get one topic by id",
                 "operationId": "ApiController.GetTopic",
@@ -574,7 +861,7 @@
         "/get-topic-admin": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get topic for admin by id",
                 "operationId": "ApiController.GetTopicAdmin",
@@ -597,10 +884,18 @@
                 }
             }
         },
+        "/get-topic-by-urlpath-and-title": {
+            "get": {
+                "tags": [
+                    "Topic API"
+                ],
+                "operationId": "ApiController.GetTopicByUrlPathAndTitle"
+            }
+        },
         "/get-topics": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get current topics",
                 "operationId": "ApiController.GetTopics",
@@ -636,7 +931,7 @@
         "/get-topics-admin": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get topics for admin",
                 "operationId": "ApiController.GetTopicsAdmin",
@@ -739,7 +1034,7 @@
         "/get-topics-by-node": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get topics by node",
                 "operationId": "ApiController.GetTopicsByNode",
@@ -782,7 +1077,7 @@
         "/get-topics-by-tab": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get topics by tab",
                 "operationId": "ApiController.GetTopicsByTab",
@@ -825,7 +1120,7 @@
         "/get-topics-by-tag": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get topics by tag",
                 "operationId": "ApiController.GetTopicsByTag",
@@ -868,7 +1163,7 @@
         "/get-topics-num": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "get the total number of topics",
                 "operationId": "ApiController.GetTopicsNum",
@@ -879,10 +1174,34 @@
                 }
             }
         },
+        "/get-translator": {
+            "get": {
+                "tags": [
+                    "Translator API"
+                ],
+                "operationId": "ApiController.GetTranslator"
+            }
+        },
+        "/get-unread-notification-num": {
+            "post": {
+                "tags": [
+                    "Notification API"
+                ],
+                "operationId": "ApiController.GetUnreadNotificationNum"
+            }
+        },
+        "/node-navigation": {
+            "get": {
+                "tags": [
+                    "Info API"
+                ],
+                "operationId": "ApiController.GetNodeNavigation"
+            }
+        },
         "/read-poster": {
             "get": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Poster API"
                 ],
                 "description": "get poster by id",
                 "operationId": "ApiController.ReadPoster",
@@ -905,10 +1224,18 @@
                 }
             }
         },
+        "/search": {
+            "get": {
+                "tags": [
+                    "Search API"
+                ],
+                "operationId": "ApiController.Search"
+            }
+        },
         "/signin": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Account API"
                 ],
                 "description": "sign in as a member",
                 "operationId": "ApiController.Signin",
@@ -941,7 +1268,7 @@
         "/signout": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Account API"
                 ],
                 "description": "sign out the current member",
                 "operationId": "ApiController.Signout",
@@ -958,7 +1285,7 @@
         "/top-topic": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "tops topic according to the topType in the url.",
                 "operationId": "ApiController.TopTopic",
@@ -981,10 +1308,74 @@
                 }
             }
         },
+        "/translate-topic": {
+            "get": {
+                "tags": [
+                    "Topic API"
+                ],
+                "operationId": "ApiController.TranslateTopic"
+            }
+        },
+        "/update-expired-data": {
+            "post": {
+                "tags": [
+                    "Hot API"
+                ],
+                "operationId": "ApiController.ChangeExpiredDataStatus"
+            }
+        },
+        "/update-front-conf": {
+            "post": {
+                "tags": [
+                    "FrontConf API"
+                ],
+                "operationId": "ApiController.UpdateFrontConf"
+            }
+        },
+        "/update-hot-info": {
+            "post": {
+                "tags": [
+                    "Hot API"
+                ],
+                "operationId": "ApiController.UpdateHotInfo"
+            }
+        },
+        "/update-member-editor-type": {
+            "post": {
+                "tags": [
+                    "Member API"
+                ],
+                "operationId": "ApiController.UpdateMemberEditorType"
+            }
+        },
+        "/update-member-language": {
+            "post": {
+                "tags": [
+                    "Member API"
+                ],
+                "operationId": "ApiController.UpdateMemberLanguage"
+            }
+        },
+        "/update-node": {
+            "post": {
+                "tags": [
+                    "Node API"
+                ],
+                "operationId": "ApiController.UpdateNode"
+            }
+        },
+        "/update-plane": {
+            "post": {
+                "tags": [
+                    "Plane API"
+                ],
+                "operationId": "ApiController.UpdatePlane"
+            }
+        },
         "/update-poster": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Poster API"
                 ],
                 "description": "update poster message",
                 "operationId": "ApiController.UpdatePoster",
@@ -998,10 +1389,42 @@
                 }
             }
         },
+        "/update-read-status": {
+            "post": {
+                "tags": [
+                    "Notification API"
+                ],
+                "operationId": "ApiController.UpdateReadStatus"
+            }
+        },
+        "/update-reply": {
+            "post": {
+                "tags": [
+                    "Reply API"
+                ],
+                "operationId": "ApiController.UpdateReply"
+            }
+        },
+        "/update-tab": {
+            "post": {
+                "tags": [
+                    "Tab API"
+                ],
+                "operationId": "ApiController.UpdateTab"
+            }
+        },
+        "/update-to-default-conf": {
+            "post": {
+                "tags": [
+                    "FrontConf API"
+                ],
+                "operationId": "ApiController.UpdateFrontConfToDefault"
+            }
+        },
         "/update-topic-node": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "update the topic node",
                 "operationId": "ApiController.UpdateTopicNode",
@@ -1026,10 +1449,42 @@
                 }
             }
         },
+        "/update-translator": {
+            "post": {
+                "tags": [
+                    "Translator API"
+                ],
+                "operationId": "ApiController.UpdateTranslator"
+            }
+        },
+        "/upload-avatar": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "operationId": "ApiController.UploadAvatar"
+            }
+        },
+        "/upload-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "operationId": "ApiController.UploadFile"
+            }
+        },
+        "/upload-moderator": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "operationId": "ApiController.ModeratorUpload"
+            }
+        },
         "/upload-topic-pic": {
             "post": {
                 "tags": [
-                    "github.com/casbin/casnode/controllersApiController"
+                    "Topic API"
                 ],
                 "description": "upload topic picture",
                 "operationId": "ApiController.UploadTopicPic",
@@ -1051,14 +1506,22 @@
                     }
                 }
             }
+        },
+        "/visible-translator": {
+            "get": {
+                "tags": [
+                    "Translator API"
+                ],
+                "operationId": "ApiController.VisibleTranslator"
+            }
         }
     },
     "definitions": {
-        "1278.0xc000185860.false": {
+        "87715.0xc0004fa000.false": {
             "title": "false",
             "type": "object"
         },
-        "1312.0xc000185890.false": {
+        "87749.0xc0004fa030.false": {
             "title": "false",
             "type": "object"
         },
@@ -1068,6 +1531,10 @@
         },
         "array": {
             "title": "array",
+            "type": "object"
+        },
+        "auth.User": {
+            "title": "User",
             "type": "object"
         },
         "controller.Response": {
@@ -1103,10 +1570,10 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/1278.0xc000185860.false"
+                    "$ref": "#/definitions/87715.0xc0004fa000.false"
                 },
                 "data2": {
-                    "$ref": "#/definitions/1312.0xc000185890.false"
+                    "$ref": "#/definitions/87749.0xc0004fa030.false"
                 },
                 "msg": {
                     "type": "string"
@@ -1121,10 +1588,10 @@
             "type": "object",
             "properties": {
                 "data": {
-                    "$ref": "#/definitions/1278.0xc000185860.false"
+                    "$ref": "#/definitions/87715.0xc0004fa000.false"
                 },
                 "data2": {
-                    "$ref": "#/definitions/1312.0xc000185890.false"
+                    "$ref": "#/definitions/87749.0xc0004fa030.false"
                 },
                 "msg": {
                     "type": "string"
@@ -1150,126 +1617,6 @@
                 }
             }
         },
-        "object.AdminMemberInfo": {
-            "title": "AdminMemberInfo",
-            "type": "object",
-            "properties": {
-                "WechatVerifiedTime": {
-                    "type": "string"
-                },
-                "areaCode": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "bio": {
-                    "type": "string"
-                },
-                "company": {
-                    "type": "string"
-                },
-                "companyTitle": {
-                    "type": "string"
-                },
-                "createdTime": {
-                    "type": "string"
-                },
-                "editorType": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "emailReminder": {
-                    "type": "boolean"
-                },
-                "emailVerifiedTime": {
-                    "type": "string"
-                },
-                "fileQuota": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "fileUploadNum": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "githubAccount": {
-                    "type": "string"
-                },
-                "googleAccount": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "isModerator": {
-                    "type": "boolean"
-                },
-                "language": {
-                    "type": "string"
-                },
-                "latestLogin": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "string"
-                },
-                "no": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "onlineStatus": {
-                    "type": "boolean"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "phoneVerifiedTime": {
-                    "type": "string"
-                },
-                "qqAccount": {
-                    "type": "string"
-                },
-                "qqVerifiedTime": {
-                    "type": "string"
-                },
-                "ranking": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "renameQuota": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "replyNum": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "score": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "status": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "tagline": {
-                    "type": "string"
-                },
-                "topicNum": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "weChatAccount": {
-                    "type": "string"
-                },
-                "website": {
-                    "type": "string"
-                }
-            }
-        },
         "object.AdminTopicInfo": {
             "title": "AdminTopicInfo",
             "type": "object",
@@ -1285,6 +1632,10 @@
                 },
                 "deleted": {
                     "type": "boolean"
+                },
+                "downCount": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "editorType": {
                     "type": "string"
@@ -1308,6 +1659,12 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "ip": {
+                    "type": "string"
+                },
+                "isHidden": {
+                    "type": "boolean"
+                },
                 "lastReplyTime": {
                     "type": "string"
                 },
@@ -1326,6 +1683,12 @@
                 "replyCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tabId": {
+                    "type": "string"
                 },
                 "tabTopTime": {
                     "type": "string"
@@ -1363,107 +1726,6 @@
                 }
             }
         },
-        "object.Member": {
-            "title": "Member",
-            "type": "object",
-            "properties": {
-                "WechatVerifiedTime": {
-                    "type": "string"
-                },
-                "areaCode": {
-                    "type": "string"
-                },
-                "avatar": {
-                    "type": "string"
-                },
-                "bio": {
-                    "type": "string"
-                },
-                "company": {
-                    "type": "string"
-                },
-                "companyTitle": {
-                    "type": "string"
-                },
-                "createdTime": {
-                    "type": "string"
-                },
-                "editorType": {
-                    "type": "string"
-                },
-                "email": {
-                    "type": "string"
-                },
-                "emailReminder": {
-                    "type": "boolean"
-                },
-                "emailVerifiedTime": {
-                    "type": "string"
-                },
-                "fileQuota": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "githubAccount": {
-                    "type": "string"
-                },
-                "googleAccount": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "string"
-                },
-                "isModerator": {
-                    "type": "boolean"
-                },
-                "language": {
-                    "type": "string"
-                },
-                "location": {
-                    "type": "string"
-                },
-                "no": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "onlineStatus": {
-                    "type": "boolean"
-                },
-                "phone": {
-                    "type": "string"
-                },
-                "phoneVerifiedTime": {
-                    "type": "string"
-                },
-                "qqAccount": {
-                    "type": "string"
-                },
-                "qqVerifiedTime": {
-                    "type": "string"
-                },
-                "ranking": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "renameQuota": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "score": {
-                    "type": "integer",
-                    "format": "int64"
-                },
-                "tagline": {
-                    "type": "string"
-                },
-                "weChatAccount": {
-                    "type": "string"
-                },
-                "website": {
-                    "type": "string"
-                }
-            }
-        },
         "object.NodeTopic": {
             "title": "NodeTopic",
             "type": "object",
@@ -1483,6 +1745,10 @@
                 },
                 "createdTime": {
                     "type": "string"
+                },
+                "downCount": {
+                    "type": "integer",
+                    "format": "int64"
                 },
                 "editable": {
                     "type": "boolean"
@@ -1509,6 +1775,12 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "ip": {
+                    "type": "string"
+                },
+                "isHidden": {
+                    "type": "boolean"
+                },
                 "lastReplyTime": {
                     "type": "string"
                 },
@@ -1530,6 +1802,12 @@
                 "replyCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tabId": {
+                    "type": "string"
                 },
                 "tabTopTime": {
                     "type": "string"
@@ -1589,6 +1867,10 @@
                 "createdTime": {
                     "type": "string"
                 },
+                "downCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "editorType": {
                     "type": "string"
                 },
@@ -1611,6 +1893,12 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "ip": {
+                    "type": "string"
+                },
+                "isHidden": {
+                    "type": "boolean"
+                },
                 "lastReplyTime": {
                     "type": "string"
                 },
@@ -1629,6 +1917,12 @@
                 "replyCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tabId": {
+                    "type": "string"
                 },
                 "tabTopTime": {
                     "type": "string"
@@ -1667,6 +1961,10 @@
                 "createdTime": {
                     "type": "string"
                 },
+                "downCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
                 "editable": {
                     "type": "boolean"
                 },
@@ -1692,6 +1990,12 @@
                     "type": "integer",
                     "format": "int64"
                 },
+                "ip": {
+                    "type": "string"
+                },
+                "isHidden": {
+                    "type": "boolean"
+                },
                 "lastReplyTime": {
                     "type": "string"
                 },
@@ -1713,6 +2017,12 @@
                 "replyCount": {
                     "type": "integer",
                     "format": "int64"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "tabId": {
+                    "type": "string"
                 },
                 "tabTopTime": {
                     "type": "string"
