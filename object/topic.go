@@ -42,9 +42,9 @@ type Topic struct {
 	FavoriteCount   int      `json:"favoriteCount"`
 	HomePageTopTime string   `xorm:"varchar(40) index(IDX_topic_htt_lrt)" json:"homePageTopTime"`
 	TabTopTime      string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt)" json:"tabTopTime"`
-	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
+	NodeTopTime     string   `xorm:"varchar(40) index(IDX_topic_ntt_lrt)" json:"nodeTopTime"`
 	LastReplyUser   string   `xorm:"varchar(100)" json:"lastReplyUser"`
-	LastReplyTime   string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt) index(IDX_topic_htt_lrt)" json:"lastReplyTime"`
+	LastReplyTime   string   `xorm:"varchar(40) index(IDX_topic_htt_lrt) index(IDX_topic_ttt_lrt) index(IDX_topic_ntt_lrt)" json:"lastReplyTime"`
 	Deleted         bool     `xorm:"bool index" json:"-"`
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content         string   `xorm:"mediumtext" json:"content"`
