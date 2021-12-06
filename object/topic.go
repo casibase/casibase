@@ -34,8 +34,6 @@ type Topic struct {
 	Title           string   `xorm:"varchar(100)" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
 	Tags            []string `xorm:"varchar(200)" json:"tags"`
-	LastReplyUser   string   `xorm:"varchar(100)" json:"lastReplyUser"`
-	LastReplyTime   string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt) index(IDX_topic_htt_lrt)" json:"lastReplyTime"`
 	ReplyCount      int      `json:"replyCount"`
 	UpCount         int      `json:"upCount"`
 	DownCount       int      `json:"downCount"`
@@ -45,6 +43,8 @@ type Topic struct {
 	HomePageTopTime string   `xorm:"varchar(40) index(IDX_topic_htt_lrt)" json:"homePageTopTime"`
 	TabTopTime      string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt)" json:"tabTopTime"`
 	NodeTopTime     string   `xorm:"varchar(40)" json:"nodeTopTime"`
+	LastReplyUser   string   `xorm:"varchar(100)" json:"lastReplyUser"`
+	LastReplyTime   string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt) index(IDX_topic_htt_lrt)" json:"lastReplyTime"`
 	Deleted         bool     `xorm:"bool index" json:"-"`
 	EditorType      string   `xorm:"varchar(40)" json:"editorType"`
 	Content         string   `xorm:"mediumtext" json:"content"`
@@ -98,7 +98,7 @@ func GetTopics(limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	err := adapter.Engine.Table("topic").
 		Where("deleted = ?", 0).And("is_hidden = ?", 0).
-		Desc("last_reply_time", "home_page_top_time").
+		Desc("home_page_top_time", "last_reply_time").
 		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
@@ -358,7 +358,7 @@ func GetTopicsByNode(nodeId string, limit int, offset int) []*NodeTopic {
 	topics := []*NodeTopic{}
 	err := adapter.Engine.Table("topic").
 		Where("node_id = ?", nodeId).And("deleted = ?", 0).
-		Desc("last_reply_time", "node_top_time").
+		Desc("node_top_time", "last_reply_time").
 		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
@@ -380,7 +380,7 @@ func GetTopicsByTag(tagId string, limit int, offset int) []*NodeTopic {
 	tag := fmt.Sprintf("%%%q%%", tagId)
 	err := adapter.Engine.Table("topic").
 		Where("deleted = ?", 0).And("tags LIKE ?", tag).
-		Desc("last_reply_time", "node_top_time").
+		Desc("node_top_time", "last_reply_time").
 		Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 		Limit(limit, offset).Find(&topics)
 	if err != nil {
@@ -595,7 +595,7 @@ func GetTopicsWithTab(tab string, limit, offset int) []*TopicWithAvatar {
 		topics := []*Topic{}
 		err := adapter.Engine.Table("topic").
 			Where("tab_id = ?", tab).And("deleted = ?", 0).
-			Desc("last_reply_time", "tab_top_time").
+			Desc("tab_top_time", "last_reply_time").
 			Cols("id, author, node_id, node_name, title, created_time, last_reply_user, last_Reply_time, reply_count, favorite_count, deleted, home_page_top_time, tab_top_time, node_top_time").
 			Limit(limit, offset).Find(&topics)
 		if err != nil {
