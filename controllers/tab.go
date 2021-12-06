@@ -21,21 +21,33 @@ import (
 	"github.com/casbin/casnode/util"
 )
 
+// @router /get-tabs [get]
+// @Title GetTabs
+// @Tag Tab API
 func (c *ApiController) GetTabs() {
 	c.Data["json"] = object.GetHomePageTabs()
 	c.ServeJSON()
 }
 
+// @router /get-all-tabs [get]
+// @Title GetAllTabs
+// @Tag Tab API
 func (c *ApiController) GetAllTabs() {
 	c.Data["json"] = object.GetAllTabs()
 	c.ServeJSON()
 }
 
+// @router /get-tabs-admin [get]
+// @Title GetAllTabsAdmin
+// @Tag Tab API
 func (c *ApiController) GetAllTabsAdmin() {
 	c.Data["json"] = object.GetAllTabsAdmin()
 	c.ServeJSON()
 }
 
+// @router /get-tabs-admin [get]
+// @Title GetTabAdmin
+// @Tag Tab API
 func (c *ApiController) GetTabAdmin() {
 	id := c.Input().Get("id")
 
@@ -43,6 +55,9 @@ func (c *ApiController) GetTabAdmin() {
 	c.ServeJSON()
 }
 
+// @router /get-tabs-admin [get]
+// @Title AddTab
+// @Tag Tab API
 func (c *ApiController) AddTab() {
 	if c.RequireAdmin() {
 		return
@@ -82,6 +97,9 @@ func (c *ApiController) AddTab() {
 	c.ResponseOk(res)
 }
 
+// @router /update-tab [post]
+// @Title UpdateTab
+// @Tag Tab API
 func (c *ApiController) UpdateTab() {
 	if c.RequireAdmin() {
 		return
@@ -108,6 +126,9 @@ func (c *ApiController) UpdateTab() {
 	c.ResponseOk(res)
 }
 
+// @router /delete-tab [post]
+// @Title DeleteTab
+// @Tag Tab API
 func (c *ApiController) DeleteTab() {
 	if c.RequireAdmin() {
 		return
@@ -120,6 +141,9 @@ func (c *ApiController) DeleteTab() {
 	c.ServeJSON()
 }
 
+// @router /get-tab-with-nodes [get]
+// @Title GetTabWithNodes
+// @Tag Tab API
 func (c *ApiController) GetTabWithNodes() {
 	id := c.Input().Get("id")
 

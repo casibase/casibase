@@ -191,6 +191,9 @@ func (c *ApiController) UpdateFileDescribe() {
 	c.ServeJSON()
 }
 
+// @Title UploadFile
+// @Tag File API 
+// @router /upload-file [post]
 func (c *ApiController) UploadFile() {
 	if c.RequireSignedIn() {
 		return
@@ -210,6 +213,9 @@ func (c *ApiController) UploadFile() {
 	c.ServeJSON()
 }
 
+// @Title ModeratorUpload
+// @Tag File API 
+// @router /upload-moderator [post]
 func (c *ApiController) ModeratorUpload() {
 	if c.RequireSignedIn() {
 		return
@@ -234,6 +240,9 @@ func (c *ApiController) ModeratorUpload() {
 	//resp := Response{Status: "ok", Msg: fileName, Data: fileUrl + timeStamp}
 }
 
+// @Title UploadAvatar
+// @Tag File API 
+// @router /upload-avatar [post]
 func (c *ApiController) UploadAvatar() {
 	if c.RequireSignedIn() {
 		return

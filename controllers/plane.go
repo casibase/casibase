@@ -26,11 +26,17 @@ func (c *ApiController) GetPlanes() {
 	c.ServeJSON()
 }
 
+// @Title GetPlanesAdmin
+// @router /get-planes-admin [get]
+// @Tag Plane API
 func (c *ApiController) GetPlanesAdmin() {
 	c.Data["json"] = object.GetAllPlanes()
 	c.ServeJSON()
 }
 
+// @Title GetPlane
+// @router /get-plane [get]
+// @Tag Plane API
 func (c *ApiController) GetPlane() {
 	id := c.Input().Get("id")
 
@@ -38,6 +44,9 @@ func (c *ApiController) GetPlane() {
 	c.ServeJSON()
 }
 
+// @Title GetPlaneAdmin
+// @router /get-planes-admin [get]
+// @Tag Plane API
 func (c *ApiController) GetPlaneAdmin() {
 	id := c.Input().Get("id")
 
@@ -45,10 +54,16 @@ func (c *ApiController) GetPlaneAdmin() {
 	c.ServeJSON()
 }
 
+// @Title GetPlaneLis
+// @router /get-plane-list [get]
+// @Tag Plane API
 func (c *ApiController) GetPlaneList() {
 	c.ResponseOk(object.GetPlaneList())
 }
 
+// @Title AddPlane
+// @router /add-plane [post]
+// @Tag Plane API
 func (c *ApiController) AddPlane() {
 	if c.RequireAdmin() {
 		return
@@ -90,6 +105,9 @@ func (c *ApiController) AddPlane() {
 	c.ResponseOk(res)
 }
 
+// @Title UpdatePlane
+// @router /update-plane [post]
+// @Tag Plane API
 func (c *ApiController) UpdatePlane() {
 	if c.RequireAdmin() {
 		return
@@ -117,6 +135,9 @@ func (c *ApiController) UpdatePlane() {
 	c.ResponseOk(res)
 }
 
+// @Title DeletePlane
+// @router /delete-plane [post]
+// @Tag Plane API
 func (c *ApiController) DeletePlane() {
 	if c.RequireAdmin() {
 		return

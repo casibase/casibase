@@ -25,6 +25,7 @@ import (
 // @Param   id     query    string  true        "id"
 // @Success 200 {object} auth.User The Response object
 // @router /get-member [get]
+// @Tag Member API
 func (c *ApiController) GetMember() {
 	id := c.Input().Get("id")
 
@@ -35,6 +36,7 @@ func (c *ApiController) GetMember() {
 // @Description member editortype
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-editor-type [get]
+// @Tag Member API
 func (c *ApiController) GetMemberEditorType() {
 	user := c.GetSessionUser()
 
@@ -50,6 +52,7 @@ func (c *ApiController) GetMemberEditorType() {
 // @Description RankingRich
 // @Success 200 {array} auth.User The Response object
 // @router /get-ranking-rich [get]
+// @Tag Member API
 func (c *ApiController) GetRankingRich() {
 	users, err := object.GetRankingRich()
 	if err != nil {
@@ -60,6 +63,9 @@ func (c *ApiController) GetRankingRich() {
 	c.ResponseOk(users)
 }
 
+// @Tag Member API
+// @Title UpdateMemberEditorType
+// @router /update-member-editor-type [post]
 func (c *ApiController) UpdateMemberEditorType() {
 	editorType := c.Input().Get("editorType")
 	user := c.GetSessionUser()
@@ -78,6 +84,9 @@ func (c *ApiController) UpdateMemberEditorType() {
 	c.ResponseOk(affected)
 }
 
+// @Tag Member API
+// @Title UpdateMemberLanguage
+// @router /update-member-language [post] 
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
 
@@ -108,6 +117,7 @@ func (c *ApiController) UpdateMemberLanguage() {
 // @Description MemberLanguage
 // @Success 200 {object} controllers.Response The Response object
 // @router /get-member-language [get]
+// @Tag Member API
 func (c *ApiController) GetMemberLanguage() {
 	user := c.GetSessionUser()
 

@@ -27,6 +27,9 @@ type NewReplyForm struct {
 	TopicId int    `json:"topicId"`
 }
 
+// @Title GetReplies
+// @Tag Reply API
+// @router /get-replies [get]
 func (c *ApiController) GetReplies() {
 	user := c.GetSessionUser()
 
@@ -64,6 +67,9 @@ func (c *ApiController) GetReplies() {
 	c.ServeJSON()
 }
 
+// @Title GetAllRepliesOfTopic
+// @Tag Reply API
+// @router /get-replies-of-topic [get]
 func (c *ApiController) GetAllRepliesOfTopic() {
 	topicId := util.ParseInt(c.Input().Get("topicId"))
 	replies := object.GetRepliesOfTopic(topicId)
@@ -71,6 +77,9 @@ func (c *ApiController) GetAllRepliesOfTopic() {
 	c.ServeJSON()
 }
 
+// @Title GetReply
+// @Tag Reply API
+// @router /get-reply [get]
 func (c *ApiController) GetReply() {
 	idStr := c.Input().Get("id")
 
@@ -80,6 +89,9 @@ func (c *ApiController) GetReply() {
 	c.ServeJSON()
 }
 
+// @Title GetReplyWithDetails
+// @Tag Reply API
+// @router /get-reply-with-details [get]
 func (c *ApiController) GetReplyWithDetails() {
 	user := c.GetSessionUser()
 
@@ -91,6 +103,9 @@ func (c *ApiController) GetReplyWithDetails() {
 	c.ServeJSON()
 }
 
+// @Title UpdateReply
+// @Tag Reply API
+// @router /update-reply [post]
 func (c *ApiController) UpdateReply() {
 	idStr := c.Input().Get("id")
 
@@ -105,6 +120,9 @@ func (c *ApiController) UpdateReply() {
 	c.ServeJSON()
 }
 
+// @Title AddReply
+// @Tag Reply API
+// @router /add-reply [post]
 func (c *ApiController) AddReply() {
 	if c.RequireSignedIn() {
 		return
@@ -155,6 +173,9 @@ func (c *ApiController) AddReply() {
 	c.ResponseOk(affected)
 }
 
+// @Title DeleteReply
+// @Tag Reply API
+// @router /delete-reply [post]
 func (c *ApiController) DeleteReply() {
 	id := util.ParseInt(c.Input().Get("id"))
 
@@ -183,6 +204,9 @@ func (c *ApiController) DeleteReply() {
 	c.ResponseOk(affected)
 }
 
+// @Title GetLatestReplies
+// @Tag Reply API
+// @router /get-latest-replies [get]
 func (c *ApiController) GetLatestReplies() {
 	id := c.Input().Get("id")
 	limitStr := c.Input().Get("limit")
@@ -211,8 +235,10 @@ func (c *ApiController) GetLatestReplies() {
 	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
 	c.ServeJSON()
 }
-
-// GetRepliesNum gets member's all replies num.
+// @Title GetMemberRepliesNum
+// @Tag Reply API
+// @router /get-member-replies-num [get]
+// @Description GetRepliesNum gets member's all replies num.
 func (c *ApiController) GetMemberRepliesNum() {
 	id := c.Input().Get("id")
 

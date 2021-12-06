@@ -49,7 +49,10 @@ func GetReplyCount() int {
 	return int(count)
 }
 
-// GetReplies returns more information about reply of a topic.
+// @Title GetReplies
+// @router /get-replies [get]
+// @Description GetReplies returns more information about reply of a topic.
+// @Tag Reply API
 func GetReplies(topicId int, user *auth.User, limit int, page int) ([]*ReplyWithAvatar, int) {
 	replies := []*ReplyWithAvatar{}
 	realPage := page
