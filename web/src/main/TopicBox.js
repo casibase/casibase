@@ -27,6 +27,7 @@ import Zmage from "react-zmage";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
 import UserLink from "../UserLink";
+import * as Conf from "../Conf";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -504,6 +505,10 @@ class TopicBox extends React.Component {
       this.props.account === undefined ||
       (this.state.topic !== null && this.state.topic.length === 0)
     ) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div className="box">
           <div className="header">

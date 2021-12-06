@@ -24,6 +24,7 @@ import * as Tools from "./Tools";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
+import * as Conf from "../Conf";
 
 const pangu = require("pangu");
 
@@ -243,6 +244,10 @@ class EditBox extends React.Component {
 
   render() {
     if (this.state.editObject !== null && this.state.editObject.length === 0) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div className="box">
           <div className="header">

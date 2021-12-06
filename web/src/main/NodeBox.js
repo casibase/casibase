@@ -24,6 +24,7 @@ import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -553,6 +554,10 @@ class NodeBox extends React.Component {
     const pcBrowser = Setting.PcBrowser;
 
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div id={pcBrowser ? "Main" : ""}>
           <div className="box">

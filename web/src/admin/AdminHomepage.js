@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class AdminHomepage extends React.Component {
   constructor(props) {
@@ -124,6 +125,10 @@ class AdminHomepage extends React.Component {
 
   render() {
     if (this.props.account === undefined) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div className="box">
           <div className="header">

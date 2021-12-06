@@ -19,6 +19,7 @@ import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 const pangu = require("pangu");
 
@@ -100,6 +101,10 @@ class MoveTopicNodeBox extends React.Component {
 
   render() {
     if (this.state.topic !== null && this.state.topic.length === 0) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div className="box">
           <div className="header">

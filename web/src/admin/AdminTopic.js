@@ -21,6 +21,7 @@ import Collapse, { Panel } from "rc-collapse";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class AdminTopic extends React.Component {
   constructor(props) {
@@ -668,6 +669,10 @@ class AdminTopic extends React.Component {
   render() {
     if (this.state.topicId !== undefined) {
       if (this.state.topic !== null && this.state.topic.length === 0) {
+        if (!Conf.ShowLoadingIndicator) {
+          return null;
+        }
+
         return (
           <div className="box">
             <div className="header">

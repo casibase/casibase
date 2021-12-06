@@ -22,6 +22,7 @@ import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
 import { scoreConverter } from "./Tools";
+import * as Conf from "../Conf";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -126,6 +127,10 @@ class MemberBox extends React.Component {
 
   renderMember() {
     if (this.state.member !== null && this.state.member.length === 0) {
+      if (!Conf.ShowLoadingIndicator) {
+        return null;
+      }
+
       return (
         <div className="box">
           <div className="header">

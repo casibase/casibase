@@ -26,6 +26,7 @@ import Zmage from "react-zmage";
 import "../codemirrorSize.css";
 import Select2 from "react-select2-wrapper";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class AdminNode extends React.Component {
   constructor(props) {
@@ -559,6 +560,10 @@ class AdminNode extends React.Component {
     if (this.state.nodeId !== undefined || newNode) {
       if (this.state.nodeId !== undefined) {
         if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
+          if (!Conf.ShowLoadingIndicator) {
+            return null;
+          }
+
           return (
             <div className="box">
               <div className="header">

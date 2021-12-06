@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React, { Suspense } from "react";
+import * as Conf from "../Conf";
 
 export default class LazyLoad extends React.Component {
   constructor(props) {
@@ -24,6 +25,10 @@ export default class LazyLoad extends React.Component {
 
   // edit this function to modify the loading style
   renderFallback() {
+    if (!Conf.ShowLoadingIndicator) {
+      return null;
+    }
+
     return <div>loading...</div>;
   }
 

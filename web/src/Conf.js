@@ -62,3 +62,5 @@ export const ReplyMobileMaxDepth = 3;
 export const AvatarAnonymousUrl =
   "https://cdn.casbin.com/avatar-pool/anonymous.png";
 export const AvatarErrorUrl = "https://cdn.casbin.com/avatar-pool/error.png";
+
+export const ShowLoadingIndicator = false;

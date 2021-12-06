@@ -21,6 +21,7 @@ import { withRouter, Link } from "react-router-dom";
 import "../deopzone.css";
 import Dropzone from "react-dropzone";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 const browserImageSize = require("browser-image-size");
 
@@ -657,6 +658,10 @@ class FilesBox extends React.Component {
   }
 
   renderFileLoading() {
+    if (!Conf.ShowLoadingIndicator) {
+      return null;
+    }
+
     return (
       <div className="box">
         <div className="header">

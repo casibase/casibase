@@ -19,6 +19,7 @@ import * as Setting from "../Setting";
 import Zmage from "react-zmage";
 import { SketchPicker } from "react-color";
 import i18next from "i18next";
+import * as Conf from "../Conf";
 
 class AdminPlane extends React.Component {
   constructor(props) {
@@ -441,6 +442,10 @@ class AdminPlane extends React.Component {
     if (this.state.planeId !== undefined || newPlane) {
       if (this.state.planeId !== undefined) {
         if (this.state.plane !== null && this.state.plane.length === 0) {
+          if (!Conf.ShowLoadingIndicator) {
+            return null;
+          }
+
           return (
             <div className="box">
               <div className="header">
