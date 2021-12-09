@@ -40,7 +40,7 @@ You are receiving this because you are subscribed to this thread.
 
 func SendEmail(title string, content string, sender string, receivers ...string) error {
 	err := auth.SendEmail(title, content, sender, receivers...)
-	if strings.HasPrefix(err.Error(), "No provider for category: \"Email\" is found") {
+	if err != nil && strings.HasPrefix(err.Error(), "No provider for category: \"Email\" is found") {
 		return nil
 	}
 	return err
