@@ -234,7 +234,12 @@ class MemberBox extends React.Component {
 
   getUserProperty(user, providerType, propertyName) {
     const key = `oauth_${providerType}_${propertyName}`;
-    if (user.properties === null) return "";
+    if (user.properties === null) {
+      return "";
+    }
+    if (user.properties[key] === undefined || user.properties[key] === null) {
+      return "";
+    }
     return user.properties[key];
   }
 
@@ -268,15 +273,19 @@ class MemberBox extends React.Component {
 
     const profileUrl = this.getProviderLink(user, provider, username);
 
-    let name = username === undefined ? displayName : `${displayName} (${username})`;
-    if (name === undefined) {
-      if (id !== undefined) {
-        name = id;
-      } else if (email !== undefined) {
-        name = email;
-      } else {
-        name = linkedValue;
-      }
+    let name;
+    if (username !== "" && displayName !== "") {
+      name = `${displayName} (${username})`;
+    } else if (username !== "") {
+      name = username;
+    } else if (displayName !== "") {
+      name = displayName;
+    } else if (id !== "") {
+      name = id;
+    } else if (email !== "") {
+      name = email;
+    } else {
+      name = linkedValue;
     }
 
     return (
