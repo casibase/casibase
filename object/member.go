@@ -48,7 +48,7 @@ func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
 	}
 
 	SetUserField(user, "editorType", editorType)
-	return auth.UpdateUser(user)
+	return auth.UpdateUserForColumns(user, []string{"properties"})
 }
 
 func GetMemberEditorType(user *auth.User) string {
@@ -57,7 +57,7 @@ func GetMemberEditorType(user *auth.User) string {
 
 func UpdateMemberLanguage(user *auth.User, language string) (bool, error) {
 	SetUserField(user, "language", language)
-	return auth.UpdateUser(user)
+	return auth.UpdateUserForColumns(user, []string{"properties"})
 }
 
 func GetMemberLanguage(user *auth.User) string {
@@ -84,7 +84,7 @@ func GetMemberCheckinDate(user *auth.User) string {
 
 func UpdateMemberCheckinDate(user *auth.User, checkinDate string) (bool, error) {
 	SetUserField(user, "checkinDate", checkinDate)
-	return auth.UpdateUser(user)
+	return auth.UpdateUserForColumns(user, []string{"properties"})
 }
 
 func GetUserName(user *auth.User) string {
@@ -119,7 +119,7 @@ func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate str
 
 	user.IsOnline = isOnline
 	SetUserField(user, "lastActionDate", lastActionDate)
-	return auth.UpdateUser(user)
+	return auth.UpdateUserForColumns(user, []string{"isOnline", "properties"})
 }
 
 func GetOnlineUserCount() int {

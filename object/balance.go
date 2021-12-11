@@ -70,7 +70,7 @@ func GetMemberBalance(user *auth.User) int {
 
 func UpdateMemberBalance(user *auth.User, amount int) (bool, error) {
 	user.Score += amount
-	return auth.UpdateUser(user)
+	return auth.UpdateUserForColumns(user, []string{"score"})
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {
