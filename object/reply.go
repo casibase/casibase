@@ -57,7 +57,7 @@ func GetReplies(topicId int, user *auth.User, limit int, page int) ([]*ReplyWith
 	replies := []*ReplyWithAvatar{}
 	realPage := page
 	err := adapter.Engine.Table("reply").
-		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
+		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ? and consumption_record.receiver_id = ?", 5, user.Name).
 		Where("reply.topic_id = ?", topicId).
 		Asc("reply.created_time").
 		Cols("reply.*, consumption_record.amount").
