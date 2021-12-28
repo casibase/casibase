@@ -117,7 +117,8 @@
     "The node is currently in invisible state.": "该节点目前位于一个隐藏位面中",
     "Topic does not exist": "主题不存在",
     "Topic not found": "主题未找到",
-    "Topic title cannot be empty": "主题标题不能为空"
+    "Topic title cannot be empty": "主题标题不能为空",
+    "We had a problem when you signed out, please try again.": "登出有点问题，请重试一次"
   },
   "fav": {
     "Add to favorite": "加入收藏",
@@ -192,7 +193,7 @@
     "Sign In to Comment": "登录后评论",
     "Sign Out": "登出",
     "Sign Up": "注册",
-    "Swagger": "Swagger API文档",
+    "Swagger": "API文档",
     "Timeline": "时间轴",
     "false": "否",
     "true": "是"
@@ -215,7 +216,7 @@
     "All Topics": "全部主题",
     "Cancel Following": "取消特别关注",
     "No.": "第",
-    "ONLINE": "ONLINE",
+    "ONLINE": "在线",
     "Sign In Again": "重新登录",
     "Sign Out": "登出",
     "Switch topic list": "切换主题列表",
@@ -320,6 +321,7 @@
     "Total topics": "主题总数",
     "Update node information success": "更新节点信息成功",
     "View all nodes": "浏览全部节点",
+    "all": "共",
     "hot": "热度",
     "new topic": "创建新主题",
     "to": "到",
@@ -384,7 +386,9 @@
     "Back to Top": "回到顶部",
     "Delete": "删除",
     "Edit": "编辑",
+    "Make your comment helpful for others as much as possible": "请尽量让自己的回复能够对别人有帮助",
     "No reply yet": "目前尚无回复",
+    "Please resolve the following issues before submitting": "创建新回复过程中遇到一些问题：",
     "Reply": "回复",
     "Sign in": "登录",
     "Sign up": "注册",
@@ -439,7 +443,6 @@
     "No related pages with tags": "标签未收录"
   },
   "topic": {
-    " No reply yet": " No reply yet",
     "Appendable": "可增加附言",
     "Are you sure to cancel top this topic?": "你确认要取消置顶此主题？",
     "Are you sure to top this topic?": "你确认要将此主题置顶？",
@@ -479,6 +482,7 @@
     "Node usage help": "节点使用帮助",
     "NodeTop": "节点置顶",
     "Normal": "正常",
+    "Please change the basic information through the topic page": "请通过主题页面来更改部分信息",
     "Post a Question": "我要提问",
     "Recent Topics": "最近的主题",
     "Related resources": "相关资源",
@@ -513,6 +517,7 @@
     "edit topic": "编辑主题",
     "favorites": "人收藏",
     "hits": "次点击",
+    "last reply from": "最后回复来自",
     "minutes": "分钟",
     "move freely": "自由移动",
     "words": "个字符"

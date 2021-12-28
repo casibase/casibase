@@ -43,24 +43,16 @@ class SignoutBox extends React.Component {
   }
 
   render() {
-    const isSignedIn =
-      this.props.account !== undefined && this.props.account !== null;
+    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
 
     if (!isSignedIn) {
       return (
         <div className="box">
           <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            {i18next.t(
-              "member:You have signed out completely, no personal information is left on this computer."
-            )}
+            {i18next.t("member:You have signed out completely, no personal information is left on this computer.")}
             <div className="sep20" />
-            <input
-              type="button"
-              className="super normal button"
-              onClick={this.onSigninAgain.bind(this)}
-              value={i18next.t("member:Sign In Again")}
-            />
+            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value={i18next.t("member:Sign In Again")} />
           </div>
         </div>
       );
@@ -69,16 +61,9 @@ class SignoutBox extends React.Component {
         <div className="box">
           <Header item={i18next.t("member:Sign Out")} />
           <div className="inner">
-            {i18next.t(
-              "error:We had a problem when you signed out, please try again."
-            )}
+            {i18next.t("error:We had a problem when you signed out, please try again.")}
             <div className="sep20" />
-            <input
-              type="button"
-              className="super normal button"
-              onClick={this.onRetrySignout.bind(this)}
-              value={i18next.t("error:Retry Sign Out")}
-            />
+            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value={i18next.t("error:Retry Sign Out")} />
           </div>
         </div>
       );

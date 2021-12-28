@@ -97,11 +97,7 @@ class TopicPage extends React.Component {
 
   getTopics() {
     if (this.state.tab !== undefined) {
-      TopicBackend.getTopicsWithTab(
-        this.state.tab,
-        this.state.defaultHomePageNum,
-        1
-      ).then((res) => {
+      TopicBackend.getTopicsWithTab(this.state.tab, this.state.defaultHomePageNum, 1).then((res) => {
         this.setState({
           topics: res,
         });
@@ -154,11 +150,7 @@ class TopicPage extends React.Component {
 
   renderTab(tab) {
     return (
-      <a
-        href="javascript:void(0)"
-        onClick={() => this.changeTab(tab?.id)}
-        className={this.state.tab === tab?.id ? "tab_current" : "tab"}
-      >
+      <a href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>
         {tab?.name}
       </a>
     );
@@ -177,9 +169,7 @@ class TopicPage extends React.Component {
     if (this.props.account === undefined || this.props.account === null) {
       return null;
     }
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.score
-    );
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(this.props.account.score);
     return (
       <div class="cell">
         <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -194,9 +184,7 @@ class TopicPage extends React.Component {
                   <input
                     type="button"
                     className="super special button"
-                    value={`${this.state.unreadNotificationNum} ${i18next.t(
-                      "bar:unread"
-                    )}`}
+                    value={`${this.state.unreadNotificationNum} ${i18next.t("bar:unread")}`}
                     onClick={() => this.props.history.push("/notifications")}
                     style={{
                       marginLeft: "2px",
@@ -208,37 +196,14 @@ class TopicPage extends React.Component {
               </td>
               <td width="10"></td>
               <td width="150" align="right">
-                <Link
-                  to="/balance"
-                  className="balance_area"
-                  style={{ margin: "0px" }}
-                >
+                <Link to="/balance" className="balance_area" style={{ margin: "0px" }}>
                   {goldCount ? (
                     <span>
                       {" "}
-                      {goldCount}{" "}
-                      <img
-                        src={Setting.getStatic("/img/gold@2x.png")}
-                        height="16"
-                        alt="G"
-                        border="0"
-                      />
+                      {goldCount} <img src={Setting.getStatic("/img/gold@2x.png")} height="16" alt="G" border="0" />
                     </span>
                   ) : null}{" "}
-                  {silverCount}{" "}
-                  <img
-                    src={Setting.getStatic("/img/silver@2x.png")}
-                    height="16"
-                    alt="S"
-                    border="0"
-                  />{" "}
-                  {bronzeCount}{" "}
-                  <img
-                    src={Setting.getStatic("/img/bronze@2x.png")}
-                    height="16"
-                    alt="B"
-                    border="0"
-                  />
+                  {silverCount} <img src={Setting.getStatic("/img/silver@2x.png")} height="16" alt="S" border="0" /> {bronzeCount} <img src={Setting.getStatic("/img/bronze@2x.png")} height="16" alt="B" border="0" />
                 </Link>
                 &nbsp;
               </td>
@@ -264,15 +229,9 @@ class TopicPage extends React.Component {
           })}
         </div>
         <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
-          {this.props.account !== undefined &&
-          this.props.account !== null &&
-          this.state.tabInfo?.defaultNode !== "" ? (
+          {this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== "" ? (
             <div className="fr">
-              <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>
-                {this.state.tab === "all"
-                  ? i18next.t("topic:Post a Question")
-                  : i18next.t("topic:Create a Post")}
-              </Link>
+              <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</Link>
               &nbsp;
               <li className="fa fa-caret-right gray" />
             </div>
@@ -282,12 +241,7 @@ class TopicPage extends React.Component {
           })}
           &nbsp;
         </div>
-        <TopicList
-          topics={this.state.topics}
-          showNodeName={true}
-          showAvatar={true}
-          topType={topType}
-        />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} topType={topType} />
         <div className="inner">
           <span className="chevron">»</span> &nbsp;
           <Link to="/recent">{i18next.t("topic:More Topics")}</Link>

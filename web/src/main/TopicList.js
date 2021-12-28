@@ -71,62 +71,34 @@ class TopicList extends React.Component {
 
   renderTopic(topic) {
     const pcBrowser = Setting.PcBrowser;
-    const style = this.topStyle(
-      topic?.nodeTopTime,
-      topic?.tabTopTime,
-      topic?.homePageTopTime
-    );
+    const style = this.topStyle(topic?.nodeTopTime, topic?.tabTopTime, topic?.homePageTopTime);
 
     return (
-      <div
-        key={topic?.id}
-        className={`cell item ${this.props.nodeId}`}
-        style={style}
-      >
+      <div key={topic?.id} className={`cell item ${this.props.nodeId}`} style={style}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
             <tr>
               {this.props.showAvatar ? (
-                <td
-                  width={Setting.PcBrowser ? "48" : "24"}
-                  valign="top"
-                  align="center"
-                >
-                  <Avatar
-                    username={topic?.author}
-                    avatar={topic?.avatar}
-                    size={Setting.PcBrowser ? "" : "small"}
-                  />
+                <td width={Setting.PcBrowser ? "48" : "24"} valign="top" align="center">
+                  <Avatar username={topic?.author} avatar={topic?.avatar} size={Setting.PcBrowser ? "" : "small"} />
                 </td>
               ) : null}
               {this.props.showAvatar ? <td width="10" /> : null}
               <td width="auto" valign="middle">
                 {!pcBrowser && this.props.showNodeName ? (
                   <span className="small fade">
-                    <Link
-                      to={`/go/${encodeURIComponent(topic.nodeId)}`}
-                      className="node"
-                    >
+                    <Link to={`/go/${encodeURIComponent(topic.nodeId)}`} className="node">
                       {topic.nodeName}
                     </Link>{" "}
                     &nbsp;•&nbsp;{" "}
                     <strong>
-                      <UserLink
-                        username={topic.author}
-                        classNameText={"node"}
-                      />
+                      <UserLink username={topic.author} classNameText={"node"} />
                     </strong>
                   </span>
                 ) : null}
-                {!pcBrowser && this.props.showNodeName ? (
-                  <div className="sep5" />
-                ) : null}
+                {!pcBrowser && this.props.showNodeName ? <div className="sep5" /> : null}
                 <span className="item_title">
-                  <Link
-                    to={`/t/${topic?.id}`}
-                    onClick={() => this.addTopicHitCount(topic?.id)}
-                    className={`topic-link b ${this.props.nodeId}`}
-                  >
+                  <Link to={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`topic-link b ${this.props.nodeId}`}>
                     {pangu.spacing(topic.title)}
                   </Link>
                 </span>
@@ -137,37 +109,22 @@ class TopicList extends React.Component {
                       <div className="votes" />
                       {this.props.showNodeName ? (
                         <span>
-                          <Link
-                            to={`/go/${encodeURIComponent(topic.nodeId)}`}
-                            className="node"
-                          >
+                          <Link to={`/go/${encodeURIComponent(topic.nodeId)}`} className="node">
                             {topic.nodeName}
                           </Link>{" "}
                           &nbsp;•&nbsp;{" "}
                         </span>
                       ) : null}
                       <strong>
-                        <UserLink
-                          username={topic.author}
-                          classNameText={`${this.props.nodeId} member`}
-                        />
+                        <UserLink username={topic.author} classNameText={`${this.props.nodeId} member`} />
                       </strong>{" "}
-                      &nbsp;•&nbsp;{" "}
-                      {topic.lastReplyTime === "" ||
-                      this.props.timeStandard === "createdTime"
-                        ? Setting.getPrettyDate(topic.createdTime)
-                        : Setting.getPrettyDate(topic.lastReplyTime)}
+                      &nbsp;•&nbsp; {topic.lastReplyTime === "" || this.props.timeStandard === "createdTime" ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)}
                       {topic.lastReplyUser === "" ? null : (
                         <div style={{ display: "inline" }}>
                           {" "}
-                          &nbsp;•&nbsp; {i18next.t(
-                            "topic:last reply from"
-                          )}{" "}
+                          &nbsp;•&nbsp; {i18next.t("topic:last reply from")}{" "}
                           <strong>
-                            <UserLink
-                              username={topic.lastReplyUser}
-                              classNameText={`${this.props.nodeId} member`}
-                            />
+                            <UserLink username={topic.lastReplyUser} classNameText={`${this.props.nodeId} member`} />
                           </strong>
                         </div>
                       )}
@@ -176,31 +133,20 @@ class TopicList extends React.Component {
                     <span>
                       {this.props.showNodeName ? (
                         <span>
-                          {topic.lastReplyTime === "" ||
-                          this.props.timeStandard === "createdTime"
-                            ? Setting.getPrettyDate(topic.createdTime)
-                            : Setting.getPrettyDate(topic.lastReplyTime)}
+                          {topic.lastReplyTime === "" || this.props.timeStandard === "createdTime" ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)}
                           {topic.lastReplyUser === "" ? null : (
                             <div style={{ display: "inline" }}>
                               {" "}
-                              &nbsp;•&nbsp; {i18next.t(
-                                "topic:last reply from"
-                              )}{" "}
+                              &nbsp;•&nbsp; {i18next.t("topic:last reply from")}{" "}
                               <strong>
-                                <UserLink
-                                  username={topic.lastReplyUser}
-                                  classNameText={`${this.props.nodeId} member`}
-                                />
+                                <UserLink username={topic.lastReplyUser} classNameText={`${this.props.nodeId} member`} />
                               </strong>
                             </div>
                           )}
                         </span>
                       ) : (
                         <span>
-                          <strong>{topic.author}</strong> &nbsp;•&nbsp;{" "}
-                          {topic.contentLength} {i18next.t("topic:words")}{" "}
-                          &nbsp;•&nbsp; {topic.hitCount}{" "}
-                          {i18next.t("topic:hits")}
+                          <strong>{topic.author}</strong> &nbsp;•&nbsp; {topic.contentLength} {i18next.t("topic:words")} &nbsp;•&nbsp; {topic.hitCount} {i18next.t("topic:hits")}
                         </span>
                       )}
                     </span>
@@ -209,11 +155,7 @@ class TopicList extends React.Component {
               </td>
               <td width="70" align="right" valign="middle">
                 {topic.replyCount === 0 ? null : (
-                  <Link
-                    to={`/t/${topic?.id}`}
-                    onClick={() => this.addTopicHitCount(topic?.id)}
-                    className={`count_livid ${this.props.nodeId}`}
-                  >
+                  <Link to={`/t/${topic?.id}`} onClick={() => this.addTopicHitCount(topic?.id)} className={`count_livid ${this.props.nodeId}`}>
                     {topic.replyCount}
                   </Link>
                 )}

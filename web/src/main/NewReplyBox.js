@@ -114,9 +114,7 @@ class NewReplyBox extends React.Component {
 
     return (
       <div className="problem">
-        {i18next.t(
-          "reply:Please resolve the following issues before submitting"
-        )}
+        {i18next.t("reply:Please resolve the following issues before submitting")}
         <ul>
           {problems.map((problem, i) => {
             return <li>{problem}</li>;
@@ -128,10 +126,7 @@ class NewReplyBox extends React.Component {
 
   publishReply() {
     const editorType = this.state.form.editorType;
-    if (
-      (!editorType || editorType === "markdown") &&
-      this.props.content !== undefined
-    ) {
+    if ((!editorType || editorType === "markdown") && this.props.content !== undefined) {
       this.updateFormField("content", this.props.content);
     }
     if (!this.isOkToSubmit()) {
@@ -255,10 +250,7 @@ class NewReplyBox extends React.Component {
       }
     }
 
-    if (
-      !this.state.form.editorType ||
-      this.state.form.editorType === "markdown"
-    ) {
+    if (!this.state.form.editorType || this.state.form.editorType === "markdown") {
       return (
         <div
           style={{
@@ -366,8 +358,7 @@ class NewReplyBox extends React.Component {
       return null;
     }
 
-    const needLogin =
-      this.props.account === undefined || this.props.account === null;
+    const needLogin = this.props.account === undefined || this.props.account === null;
     if (!this.props.isEmbedded && needLogin) {
       return null;
     }
@@ -375,44 +366,20 @@ class NewReplyBox extends React.Component {
     let blurStyle = needLogin ? { color: "#ccc", pointerEvents: "none" } : null;
 
     return (
-      <div
-        className={[
-          "box",
-          this.props.sticky ? "sticky" : "",
-          `${this.props.nodeId}`,
-        ].join(" ")}
-        id="reply-box"
-      >
+      <div className={["box", this.props.sticky ? "sticky" : "", `${this.props.nodeId}`].join(" ")} id="reply-box">
         <div style={blurStyle} className={`cell ${this.props.nodeId}`}>
           <div className="fr">
             {this.props.parent?.id > 0 ? (
-              <a
-                onClick={this.props.cancelReply.bind(this)}
-                style={{ display: this.props.sticky ? "" : "none" }}
-                id="cancel-button"
-                className={`${this.props.nodeId}`}
-              >
-                {i18next
-                  .t("reply:Cancel reply to {username}")
-                  .replace("{username}", this.props.parent.username)}
+              <a onClick={this.props.cancelReply.bind(this)} style={{ display: this.props.sticky ? "" : "none" }} id="cancel-button" className={`${this.props.nodeId}`}>
+                {i18next.t("reply:Cancel reply to {username}").replace("{username}", this.props.parent.username)}
               </a>
             ) : null}{" "}
             &nbsp; &nbsp;{" "}
-            <a
-              onClick={this.undockBox.bind(this)}
-              style={{ display: this.props.sticky ? "" : "none" }}
-              id="undock-button"
-              className={`${this.props.nodeId}`}
-            >
+            <a onClick={this.undockBox.bind(this)} style={{ display: this.props.sticky ? "" : "none" }} id="undock-button" className={`${this.props.nodeId}`}>
               {i18next.t("reply:Undock")}
             </a>{" "}
             &nbsp; &nbsp;{" "}
-            <a
-              href="#"
-              onClick={this.backToTop.bind(this)}
-              className={`${this.props.nodeId}`}
-              style={blurStyle}
-            >
+            <a href="#" onClick={this.backToTop.bind(this)} className={`${this.props.nodeId}`} style={blurStyle}>
               {i18next.t("reply:Back to Top")}
             </a>
           </div>
@@ -434,13 +401,7 @@ class NewReplyBox extends React.Component {
               justifyContent: "space-between",
             }}
           >
-            <input
-              style={blurStyle}
-              onClick={this.publishReply.bind(this)}
-              type="submit"
-              value={i18next.t("reply:Reply")}
-              className="super normal button"
-            />
+            <input style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" value={i18next.t("reply:Reply")} className="super normal button" />
             {this.renderEditorSelect(blurStyle)}
           </div>
 
@@ -452,9 +413,7 @@ class NewReplyBox extends React.Component {
             <div style={blurStyle} className="fr">
               <div className="sep5" />
               <span className="gray" style={blurStyle}>
-                {i18next.t(
-                  "reply:Make your comment helpful for others as much as possible"
-                )}
+                {i18next.t("reply:Make your comment helpful for others as much as possible")}
               </span>
             </div>
           </div>
