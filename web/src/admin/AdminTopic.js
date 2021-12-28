@@ -110,20 +110,7 @@ class AdminTopic extends React.Component {
     }
 
     //un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs
-    TopicBackend.getTopicsAdmin(
-      this.state.un,
-      this.state.ti,
-      this.state.cn,
-      this.state.sdt,
-      this.state.cs,
-      this.state.lrs,
-      this.state.us,
-      this.state.rcs,
-      this.state.hs,
-      this.state.fcs,
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    TopicBackend.getTopicsAdmin(this.state.un, this.state.ti, this.state.cn, this.state.sdt, this.state.cs, this.state.lrs, this.state.us, this.state.rcs, this.state.hs, this.state.fcs, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res?.data,
         topicsNum: res?.data2,
@@ -165,20 +152,7 @@ class AdminTopic extends React.Component {
   }
 
   getSearchResult() {
-    TopicBackend.getTopicsAdmin(
-      this.state.un,
-      this.state.ti,
-      this.state.cn,
-      this.state.sdt,
-      this.state.cs,
-      this.state.lrs,
-      this.state.us,
-      this.state.rcs,
-      this.state.hs,
-      this.state.fcs,
-      this.state.limit,
-      1
-    ).then((res) => {
+    TopicBackend.getTopicsAdmin(this.state.un, this.state.ti, this.state.cn, this.state.sdt, this.state.cs, this.state.lrs, this.state.us, this.state.rcs, this.state.hs, this.state.fcs, this.state.limit, 1).then((res) => {
       if (res.status === "ok") {
         window.history.pushState({}, 0, `/admin/topic`);
         this.setState({
@@ -208,14 +182,7 @@ class AdminTopic extends React.Component {
       return;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.topicsNum}
-        url={this.state.url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url} defaultPageNum={this.state.limit} />;
   }
 
   clearMessage() {
@@ -251,175 +218,62 @@ class AdminTopic extends React.Component {
       case "sdt":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ sdt: 1 })}
-              checked={this.state.sdt === 1}
-              name="sdt"
-            />
-            {i18next.t("admin:Show")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ sdt: 0 })}
-              checked={this.state.sdt === 0}
-              name="sdt"
-            />
+            <input type="radio" onClick={() => this.setState({ sdt: 1 })} checked={this.state.sdt === 1} name="sdt" />
+            {i18next.t("admin:Show")} <input type="radio" onClick={() => this.setState({ sdt: 0 })} checked={this.state.sdt === 0} name="sdt" />
             {i18next.t("admin:Hidden")}
           </span>
         );
       case "us":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ us: 1 })}
-              checked={this.state.us === 1}
-              name="us"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ us: 2 })}
-              checked={this.state.us === 2}
-              name="us"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ us: 0 })}
-              checked={this.state.us === 0}
-              name="us"
-            />
+            <input type="radio" onClick={() => this.setState({ us: 1 })} checked={this.state.us === 1} name="us" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ us: 2 })} checked={this.state.us === 2} name="us" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ us: 0 })} checked={this.state.us === 0} name="us" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "cs":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ cs: 1 })}
-              checked={this.state.cs === 1}
-              name="cs"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ cs: 2 })}
-              checked={this.state.cs === 2}
-              name="cs"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ cs: 0 })}
-              checked={this.state.cs === 0}
-              name="cs"
-            />
+            <input type="radio" onClick={() => this.setState({ cs: 1 })} checked={this.state.cs === 1} name="cs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ cs: 2 })} checked={this.state.cs === 2} name="cs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ cs: 0 })} checked={this.state.cs === 0} name="cs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "lrs":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ lrs: 1 })}
-              checked={this.state.lrs === 1}
-              name="lrs"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ lrs: 2 })}
-              checked={this.state.lrs === 2}
-              name="lrs"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ lrs: 0 })}
-              checked={this.state.lrs === 0}
-              name="lrs"
-            />
+            <input type="radio" onClick={() => this.setState({ lrs: 1 })} checked={this.state.lrs === 1} name="lrs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ lrs: 2 })} checked={this.state.lrs === 2} name="lrs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ lrs: 0 })} checked={this.state.lrs === 0} name="lrs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "rcs":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ rcs: 1 })}
-              checked={this.state.rcs === 1}
-              name="rcs"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ rcs: 2 })}
-              checked={this.state.rcs === 2}
-              name="rcs"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ rcs: 0 })}
-              checked={this.state.rcs === 0}
-              name="rcs"
-            />
+            <input type="radio" onClick={() => this.setState({ rcs: 1 })} checked={this.state.rcs === 1} name="rcs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ rcs: 2 })} checked={this.state.rcs === 2} name="rcs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ rcs: 0 })} checked={this.state.rcs === 0} name="rcs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "hs":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ hs: 1 })}
-              checked={this.state.hs === 1}
-              name="hs"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ hs: 2 })}
-              checked={this.state.hs === 2}
-              name="hs"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ hs: 0 })}
-              checked={this.state.hs === 0}
-              name="hs"
-            />
+            <input type="radio" onClick={() => this.setState({ hs: 1 })} checked={this.state.hs === 1} name="hs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ hs: 2 })} checked={this.state.hs === 2} name="hs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ hs: 0 })} checked={this.state.hs === 0} name="hs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "fcs":
         return (
           <span>
-            <input
-              type="radio"
-              onClick={() => this.setState({ fcs: 1 })}
-              checked={this.state.fcs === 1}
-              name="fcs"
-            />
-            {i18next.t("admin:Asc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ fcs: 2 })}
-              checked={this.state.fcs === 2}
-              name="fcs"
-            />
-            {i18next.t("admin:Desc")}{" "}
-            <input
-              type="radio"
-              onClick={() => this.setState({ fcs: 0 })}
-              checked={this.state.fcs === 0}
-              name="fcs"
-            />
+            <input type="radio" onClick={() => this.setState({ fcs: 1 })} checked={this.state.fcs === 1} name="fcs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ fcs: 2 })} checked={this.state.fcs === 2} name="fcs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ fcs: 0 })} checked={this.state.fcs === 0} name="fcs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
@@ -439,10 +293,7 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Author")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input
-                value={this.state.un}
-                onChange={(event) => this.setState({ un: event.target.value })}
-              />
+              <input value={this.state.un} onChange={(event) => this.setState({ un: event.target.value })} />
             </td>
           </tr>
           <tr>
@@ -450,10 +301,7 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Title")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input
-                value={this.state.ti}
-                onChange={(event) => this.setState({ ti: event.target.value })}
-              />
+              <input value={this.state.ti} onChange={(event) => this.setState({ ti: event.target.value })} />
             </td>
           </tr>
           <tr>
@@ -461,17 +309,12 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Content")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input
-                value={this.state.cn}
-                onChange={(event) => this.setState({ cn: event.target.value })}
-              />
+              <input value={this.state.cn} onChange={(event) => this.setState({ cn: event.target.value })} />
             </td>
           </tr>
           <tr>
             <td width={pcBrowser ? "200" : "auto"} align="left">
-              <span className="gray">
-                {i18next.t("topic:Show deleted topics")}
-              </span>
+              <span className="gray">{i18next.t("topic:Show deleted topics")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
               {this.renderRadioButton("sdt")}
@@ -527,12 +370,7 @@ class AdminTopic extends React.Component {
           <tr>
             <td width="10"></td>
             <td width="auto" align="left">
-              <input
-                type="submit"
-                className="super normal button"
-                value={i18next.t("topic:Search")}
-                onClick={() => this.getSearchResult()}
-              />
+              <input type="submit" className="super normal button" value={i18next.t("topic:Search")} onClick={() => this.getSearchResult()} />
             </td>
           </tr>
         </tbody>
@@ -542,11 +380,7 @@ class AdminTopic extends React.Component {
 
   renderManagementList(item) {
     return (
-      <a
-        href="javascript:void(0);"
-        className={this.state.event === item.value ? "tab_current" : "tab"}
-        onClick={() => this.changeEvent(item.value)}
-      >
+      <a href="javascript:void(0);" className={this.state.event === item.value ? "tab_current" : "tab"} onClick={() => this.changeEvent(item.value)}>
         {i18next.t(`topic:${item.label}`)}
       </a>
     );
@@ -556,16 +390,9 @@ class AdminTopic extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to="/admin">
-            {i18next.t("admin:Backstage management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to="/admin/topic">
-            {i18next.t("topic:Topic management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/admin">{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/admin/topic">{i18next.t("topic:Topic management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.state.topic?.title}</span>
         </div>
         <div className="cell">
@@ -600,23 +427,13 @@ class AdminTopic extends React.Component {
       case 2:
         return <span className="negative">{i18next.t("topic:Deleted")}</span>;
       case 3:
-        return (
-          <span className="positive">{i18next.t("topic:Node Topping")}</span>
-        );
+        return <span className="positive">{i18next.t("topic:Node Topping")}</span>;
       case 4:
-        return (
-          <span className="positive">{i18next.t("topic:Tab Topping")}</span>
-        );
+        return <span className="positive">{i18next.t("topic:Tab Topping")}</span>;
       case 5:
-        return (
-          <span className="positive">
-            {i18next.t("topic:Homepage Topping")}
-          </span>
-        );
+        return <span className="positive">{i18next.t("topic:Homepage Topping")}</span>;
       default:
-        return (
-          <span className="gray">{i18next.t("topic:Unknown status")}</span>
-        );
+        return <span className="gray">{i18next.t("topic:Unknown status")}</span>;
     }
   }
 
@@ -630,15 +447,8 @@ class AdminTopic extends React.Component {
             <tr>
               <td width={pcBrowser ? "200" : "auto"} align="left">
                 <span className="gray">
-                  <Link
-                    to={`/t/${topic?.id}?from=${encodeURIComponent(
-                      window.location.href
-                    )}`}
-                    target="_blank"
-                  >
-                    {topic?.title.length > 30
-                      ? topic?.title.slice(0, 30) + "..."
-                      : topic?.title}
+                  <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
+                    {topic?.title.length > 30 ? topic?.title.slice(0, 30) + "..." : topic?.title}
                   </Link>
                 </span>
               </td>
@@ -646,18 +456,11 @@ class AdminTopic extends React.Component {
                 <Link to={`/member/${topic?.author}`}>{topic?.author}</Link>
               </td>
               <td width="100" align="center">
-                <Link to={`/admin/topic/edit/${topic?.id}`}>
-                  {i18next.t("admin:Manage")}
-                </Link>
+                <Link to={`/admin/topic/edit/${topic?.id}`}>{i18next.t("admin:Manage")}</Link>
               </td>
               <td width="10"></td>
               <td width="60" align="left" style={{ textAlign: "right" }}>
-                {this.renderTopicStatus(
-                  topic?.deleted,
-                  topic?.homePageTopTime,
-                  topic?.tabTopTime,
-                  topic?.nodeTopTime
-                )}
+                {this.renderTopicStatus(topic?.deleted, topic?.homePageTopTime, topic?.tabTopTime, topic?.nodeTopTime)}
               </td>
             </tr>
           </tbody>
@@ -677,13 +480,10 @@ class AdminTopic extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("loading:Page is loading")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Page is loading")}
             </div>
             <div className="cell">
-              <span className="gray bigger">
-                {i18next.t("loading:Please wait patiently...")}
-              </span>
+              <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
             </div>
           </div>
         );
@@ -694,9 +494,7 @@ class AdminTopic extends React.Component {
           <div class="box">
             <div className="box">
               <div className="header">
-                <Link to="/">{Setting.getForumName()}</Link>{" "}
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                {i18next.t("error:Topic does not exist")}
+                <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Topic does not exist")}
               </div>
               <div className="cell">
                 <span className="gray bigger">404 Topic Not Found</span>
@@ -751,19 +549,12 @@ class AdminTopic extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <span className="gray">
-                          <Link
-                            to={`/go/${encodeURIComponent(topic?.nodeId)}`}
-                            target="_blank"
-                          >
+                          <Link to={`/go/${encodeURIComponent(topic?.nodeId)}`} target="_blank">
                             {topic?.nodeName}
                           </Link>
                         </span>
                         &nbsp; &nbsp;{" "}
-                        <Link
-                          to={`/move/topic/${topic?.id}`}
-                          style={{ fontWeight: "bolder" }}
-                          target="_blank"
-                        >
+                        <Link to={`/move/topic/${topic?.id}`} style={{ fontWeight: "bolder" }} target="_blank">
                           {i18next.t("topic:Move topic")}
                         </Link>
                       </td>
@@ -781,15 +572,7 @@ class AdminTopic extends React.Component {
                         {i18next.t("topic:Last reply user")}
                       </td>
                       <td width="auto" align="left">
-                        <span className="gray">
-                          {topic.lastReplyUser === "" ? (
-                            i18next.t("topic: No reply yet")
-                          ) : (
-                            <Link to={`/member/${topic?.lastReplyUser}`}>
-                              {topic?.lastReplyUser}
-                            </Link>
-                          )}
-                        </span>
+                        <span className="gray">{topic.lastReplyUser === "" ? i18next.t("reply:No reply yet") : <Link to={`/member/${topic?.lastReplyUser}`}>{topic?.lastReplyUser}</Link>}</span>
                       </td>
                     </tr>
                     {topic.lastReplyUser !== "" ? (
@@ -839,24 +622,13 @@ class AdminTopic extends React.Component {
                         {i18next.t("topic:Status")}
                       </td>
                       <td width="auto" align="left">
-                        <span className="gray">
-                          {this.renderTopicStatus(
-                            topic?.deleted,
-                            topic?.homePageTopTime,
-                            topic?.tabTopTime,
-                            topic?.nodeTopTime
-                          )}
-                        </span>
+                        <span className="gray">{this.renderTopicStatus(topic?.deleted, topic?.homePageTopTime, topic?.tabTopTime, topic?.nodeTopTime)}</span>
                       </td>
                     </tr>
                     <tr>
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
-                        <span className="gray">
-                          {i18next.t(
-                            "topic:Please change the basic information through the topic page"
-                          )}
-                        </span>
+                        <span className="gray">{i18next.t("topic:Please change the basic information through the topic page")}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -879,12 +651,7 @@ class AdminTopic extends React.Component {
                       {i18next.t("topic:Title")}
                     </td>
                     <td width="500" align="left">
-                      <Link
-                        to={`/t/${topic?.id}?from=${encodeURIComponent(
-                          window.location.href
-                        )}`}
-                        target="_blank"
-                      >
+                      <Link to={`/t/${topic?.id}?from=${encodeURIComponent(window.location.href)}`} target="_blank">
                         {topic?.title}
                       </Link>
                     </td>
@@ -905,10 +672,7 @@ class AdminTopic extends React.Component {
                             image: this.renderImage,
                             link: this.renderLink,
                           }}
-                          source={Setting.getFormattedContent(
-                            this.state.topic?.content,
-                            true
-                          )}
+                          source={Setting.getFormattedContent(this.state.topic?.content, true)}
                           escapeHtml={false}
                         />
                       </div>
@@ -937,15 +701,11 @@ class AdminTopic extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("topic:Topic management")}
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("topic:Topic management")}
           <div className="fr f12">
-            <span className="snow">
-              {i18next.t("topic:Total Topics")} &nbsp;
-            </span>
+            <span className="snow">{i18next.t("topic:Total Topics")} &nbsp;</span>
             <strong className="gray">{this.state.topicsNum}</strong>
           </div>
         </div>
@@ -965,15 +725,7 @@ class AdminTopic extends React.Component {
               backgroundColor: "#ffffff",
             }}
           >
-            <Panel
-              header={
-                <span style={{ color: "#666" }}>
-                  {i18next.t("admin:Condition search")}
-                </span>
-              }
-            >
-              {this.renderSearchList()}
-            </Panel>
+            <Panel header={<span style={{ color: "#666" }}>{i18next.t("admin:Condition search")}</span>}>{this.renderSearchList()}</Panel>
           </Collapse>
         </div>
         {this.showPageColumn()}
@@ -989,9 +741,7 @@ class AdminTopic extends React.Component {
                 lineHeight: "100px",
               }}
             >
-              {this.state.topics === null
-                ? i18next.t("loading:Data is loading...")
-                : i18next.t("admin:No matching data")}
+              {this.state.topics === null ? i18next.t("loading:Data is loading...") : i18next.t("admin:No matching data")}
             </div>
           )}
         </div>
