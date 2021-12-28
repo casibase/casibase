@@ -53,12 +53,14 @@ func (c *ApiController) Signin() {
 
 	token, err := auth.GetOAuthToken(code, state)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
 	claims, err := auth.ParseJwtToken(token.AccessToken)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
 	affected, err := object.UpdateMemberOnlineStatus(&claims.User, true, util.GetCurrentTime())
