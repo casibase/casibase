@@ -66,6 +66,9 @@ class SelectLanguageBox extends React.Component {
           <a href="#" onClick={() => this.changeLanguage("ja")} className={"lang-selector"}>
             日本語
           </a>
+          <a href="#" onClick={() => this.changeLanguage("kk")} className={"lang-selector"}>
+            قازاق ٴتىلى
+          </a>
         </div>
       </div>
     );

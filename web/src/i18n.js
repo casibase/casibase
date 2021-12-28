@@ -21,6 +21,7 @@ import de from "./locales/de/data.json";
 import ko from "./locales/ko/data.json";
 import ru from "./locales/ru/data.json";
 import ja from "./locales/ja/data.json";
+import kk from "./locales/kk/data.json";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 
@@ -33,6 +34,7 @@ const resources = {
   ko: ko,
   ru: ru,
   ja: ja,
+  kk: kk,
 };
 
 function getBrowserLanguage() {
@@ -53,6 +55,8 @@ function getBrowserLanguage() {
     return "ru";
   } else if (language.startsWith("ja")) {
     return "ja";
+  } else if (language.startsWith("kk")) {
+    return "kk";
   } else {
     return Conf.DefaultLanguage;
   }
