@@ -34,4 +34,5 @@ func TestGenerateI18nStrings(t *testing.T) {
 	applyToOtherLanguage(dataEn, "ko")
 	applyToOtherLanguage(dataEn, "ru")
 	applyToOtherLanguage(dataEn, "zh")
+	applyToOtherLanguage(dataEn, "zh-TW")
 }

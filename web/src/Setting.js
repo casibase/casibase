@@ -178,7 +178,7 @@ export function changeLanguage(language, previous) {
 }
 
 export function changeMomentLanguage(language) {
-  if (language === "zh") {
+  if (language.startsWith("zh")) {
     moment.locale("zh", {
       relativeTime: {
         future: "%s内",
@@ -201,21 +201,12 @@ export function changeMomentLanguage(language) {
 }
 
 export function getFormattedContent(content, spacing) {
-  let formattedContent = content.replace(
-    /@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g,
-    function (w) {
-      if (w[w.length - 1] !== " ") {
-        return `@[${w.substring(
-          1,
-          w.length
-        )}](${ClientUrl}/member/${w.substring(1)})`;
-      }
-      return `@[${w.substring(
-        1,
-        w.length - 1
-      )}](${ClientUrl}/member/${w.substring(1)}) `;
+  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
+    if (w[w.length - 1] !== " ") {
+      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1)})`;
     }
-  );
+    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1)}) `;
+  });
   if (spacing) {
     return pangu
       .spacing(formattedContent)

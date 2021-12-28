@@ -37,72 +37,33 @@ class SelectLanguageBox extends React.Component {
   render() {
     return (
       <div align="center">
-        <div
-          className="box"
-          style={{ width: Setting.PcBrowser ? "600px" : "auto" }}
-        >
+        <div className="box" style={{ width: Setting.PcBrowser ? "600px" : "auto" }}>
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span> Select Language /
-            选择语言
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> Select Language / 选择语言
           </div>
-          <div className="cell">
-            {Setting.PcBrowser ? (
-              <span>
-                Please select the language you would like to use on{" "}
-                {Setting.getForumName()}
-              </span>
-            ) : (
-              <span>Please select the language you would like to use:</span>
-            )}
-          </div>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("en")}
-            className={"lang-selector"}
-          >
+          <div className="cell">{Setting.PcBrowser ? <span>Please select the language you would like to use on {Setting.getForumName()}</span> : <span>Please select the language you would like to use:</span>}</div>
+          <a href="#" onClick={() => this.changeLanguage("en")} className={"lang-selector"}>
             English
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("zh")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("zh")} className={"lang-selector"}>
             简体中文
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("fr")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("zh-TW")} className={"lang-selector"}>
+            繁體中文
+          </a>
+          <a href="#" onClick={() => this.changeLanguage("fr")} className={"lang-selector"}>
             Français
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("de")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("de")} className={"lang-selector"}>
             Deutsch
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("ko")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("ko")} className={"lang-selector"}>
             한국어
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("ru")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("ru")} className={"lang-selector"}>
             Русский
           </a>
-          <a
-            href="#"
-            onClick={() => this.changeLanguage("ja")}
-            className={"lang-selector"}
-          >
+          <a href="#" onClick={() => this.changeLanguage("ja")} className={"lang-selector"}>
             日本語
           </a>
         </div>

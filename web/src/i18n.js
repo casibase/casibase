@@ -14,6 +14,7 @@
 
 import i18n from "i18next";
 import zh from "./locales/zh/data.json";
+import zhTW from "./locales/zh-TW/data.json";
 import en from "./locales/en/data.json";
 import fr from "./locales/fr/data.json";
 import de from "./locales/de/data.json";
@@ -26,6 +27,7 @@ import * as Setting from "./Setting";
 const resources = {
   en: en,
   zh: zh,
+  "zh-TW": zhTW,
   fr: fr,
   de: de,
   ko: ko,
@@ -33,45 +35,36 @@ const resources = {
   ja: ja,
 };
 
+function getBrowserLanguage() {
+  const language = navigator.language;
+  if (language === "zh-HK" || language === "zh-TW" || language === "zh-SG") {
+    return "zh-TW";
+  } else if (language.startsWith("zh")) {
+    return "zh";
+  } else if (language.startsWith("en")) {
+    return "en";
+  } else if (language.startsWith("fr")) {
+    return "fr";
+  } else if (language.startsWith("de")) {
+    return "de";
+  } else if (language.startsWith("ko")) {
+    return "ko";
+  } else if (language.startsWith("ru")) {
+    return "ru";
+  } else if (language.startsWith("ja")) {
+    return "ja";
+  } else {
+    return Conf.DefaultLanguage;
+  }
+}
+
 function initLanguage() {
   let language = localStorage.getItem("language");
   if (language === undefined || language == null) {
     if (Conf.ForceLanguage !== "") {
       language = Conf.ForceLanguage;
     } else {
-      let userLanguage;
-      userLanguage = navigator.language;
-      switch (userLanguage) {
-        case "zh-CN":
-          language = "zh";
-          break;
-        case "zh":
-          language = "zh";
-          break;
-        case "en":
-          language = "en";
-          break;
-        case "en-US":
-          language = "en";
-          break;
-        case "fr":
-          language = "fr";
-          break;
-        case "de":
-          language = "de";
-          break;
-        case "ko":
-          language = "ko";
-          break;
-        case "ru":
-          language = "ru";
-          break;
-        case "ja":
-          language = "ja";
-          break;
-        default:
-          language = Conf.DefaultLanguage;
-      }
+      language = getBrowserLanguage();
     }
   }
   Setting.changeMomentLanguage(language);
@@ -80,12 +73,9 @@ function initLanguage() {
 }
 
 i18n.init({
-  lng: initLanguage(),
-
   resources: resources,
-
+  lng: initLanguage(),
   keySeparator: false,
-
   interpolation: {
     escapeValue: false,
   },
