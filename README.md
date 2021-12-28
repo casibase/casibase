@@ -1,11 +1,47 @@
-Casnode
-====
+<h1 align="center" style="border-bottom: none;">📦⚡️ Casnode</h1>
+<h3 align="center">An open-source forum (BBS) software developed by Go and React.</h3>
+<p align="center">
+  <a href="#badge">
+    <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
+  </a>
+  <a href="https://hub.docker.com/r/casbin/casnode">
+    <img alt="docker pull casbin/casnode" src="https://img.shields.io/docker/pulls/casbin/casnode.svg">
+  </a>
+  <a href="https://github.com/casbin/casnode/actions/workflows/build.yml">
+    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casbin/jcasbin/workflows/build/badge.svg?style=flat-square">
+  </a>
+  <a href="https://github.com/casbin/casnode/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casbin/casnode.svg">
+  </a>
+  <a href="https://hub.docker.com/repository/docker/casbin/casnode">
+    <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
+  </a>
+</p>
 
-Casnode is the official forum for Casbin developers and users. 
+<p align="center">
+  <a href="https://goreportcard.com/report/github.com/casbin/casnode">
+    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casbin/casnode?style=flat-square">
+  </a>
+  <a href="https://github.com/casbin/casnode/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/casbin/casnode?style=flat-square" alt="license">
+  </a>
+  <a href="https://github.com/casbin/casnode/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/casbin/casnode?style=flat-square">
+  </a>
+  <a href="#">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casnode?style=flat-square">
+  </a>
+  <a href="https://github.com/casbin/casnode/network">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/casbin/casnode?style=flat-square">
+  </a>
+  <a href="https://crowdin.com/project/casnode">
+    <img alt="Crowdin" src="https://badges.crowdin.net/casnode/localized.svg">
+  </a>
+</p>
 
-## Link
+## Online demo
 
-https://forum.casbin.com/
+Deployed site: https://forum.casbin.com/
 
 ## Architecture
 
@@ -24,12 +60,12 @@ Casnode uses Casdoor to manage members. So you need to create an organization an
 
 ```shell
 go get github.com/casbin/casnode
-go get github.com/casbin/casdoor
+go get github.com/casdoor/casdoor
 ```
 or
 ```shell
 git clone https://github.com/casbin/casnode
-git clone https://github.com/casbin/casdoor
+git clone https://github.com/casdoor/casdoor
 ```
 
 #### Setup database
