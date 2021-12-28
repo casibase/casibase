@@ -44,11 +44,11 @@ class NewReplyBox extends React.Component {
       message: null,
       editor: [
         {
-          text: i18next.t("new:markdown"),
+          text: i18next.t("new:Markdown"),
           id: 0,
         },
         {
-          text: i18next.t("new:richtext"),
+          text: i18next.t("new:RichText"),
           id: 1,
         },
       ],
@@ -338,12 +338,12 @@ class NewReplyBox extends React.Component {
             if (index === 0) {
               this.updateFormField("editorType", "markdown");
               this.setState({
-                placeholder: i18next.t("new:markdown"),
+                placeholder: i18next.t("new:Markdown"),
               });
             } else {
               this.updateFormField("editorType", "richtext");
               this.setState({
-                placeholder: i18next.t("new:richtext"),
+                placeholder: i18next.t("new:RichText"),
               });
             }
           }}

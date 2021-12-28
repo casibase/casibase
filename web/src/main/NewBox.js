@@ -48,11 +48,11 @@ class NewBox extends React.Component {
       nodeId: this.props.match.params.nodeId,
       editor: [
         {
-          text: i18next.t("new:markdown"),
+          text: i18next.t("new:Markdown"),
           id: 0,
         },
         {
-          text: i18next.t("new:richtext"),
+          text: i18next.t("new:RichText"),
           id: 1,
         },
       ],
@@ -190,12 +190,12 @@ class NewBox extends React.Component {
             if (index === 0) {
               this.updateFormField("editorType", "markdown");
               this.setState({
-                placeholder: i18next.t("new:markdown"),
+                placeholder: i18next.t("new:Markdown"),
               });
             } else {
               this.updateFormField("editorType", "richtext");
               this.setState({
-                placeholder: i18next.t("new:richtext"),
+                placeholder: i18next.t("new:RichText"),
               });
             }
           }}
@@ -214,16 +214,12 @@ class NewBox extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
-        {i18next.t(
-          "error:Please resolve the following issues before creating a new topic"
-        )}
+        {i18next.t("error:Please resolve the following issues before creating a new topic")}
         <ul>
           {problems.map((problem, i) => {
             return <li>{problem}</li>;
           })}
-          {this.state.message !== "" ? (
-            <li>{i18next.t(`error:${this.state.message}`)}</li>
-          ) : null}
+          {this.state.message !== "" ? <li>{i18next.t(`error:${this.state.message}`)}</li> : null}
         </ul>
       </div>
     );
@@ -231,13 +227,7 @@ class NewBox extends React.Component {
 
   render() {
     if (this.state.nodeId !== undefined && this.props.account !== undefined) {
-      return (
-        <NewNodeTopicBox
-          nodeId={this.state.nodeId}
-          size={"large"}
-          account={this.props.account}
-        />
-      );
+      return <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} />;
     }
 
     if (this.props.account === null) {
@@ -266,9 +256,7 @@ class NewBox extends React.Component {
               id="topic_title"
               name="title"
               autoFocus="autofocus"
-              placeholder={i18next.t(
-                "new:Please input the topic title. The body can be empty if the title expresses the full idea"
-              )}
+              placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")}
             >
               {this.state.form.title}
             </textarea>
@@ -281,8 +269,7 @@ class NewBox extends React.Component {
           </div>
           <div>
             {/* markdown editor */}
-            {!this.state.form.editorType ||
-            this.state.form.editorType === "markdown" ? (
+            {!this.state.form.editorType || this.state.form.editorType === "markdown" ? (
               <div
                 style={{
                   textAlign: "left",
@@ -291,12 +278,7 @@ class NewBox extends React.Component {
                   lineHeight: "120%",
                 }}
               >
-                <textarea
-                  style={{ visibility: "hidden", display: "none" }}
-                  maxLength="20000"
-                  id="editor"
-                  name="content"
-                />
+                <textarea style={{ visibility: "hidden", display: "none" }} maxLength="20000" id="editor" name="content" />
                 <div className={`cm-long-content`}>
                   <CodeMirror
                     editorDidMount={(editor) => Tools.attachEditor(editor)}
@@ -329,10 +311,7 @@ class NewBox extends React.Component {
             )}
           </div>
           {/* select node */}
-          <div
-            className="cell"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
+          <div className="cell" style={{ display: "flex", justifyContent: "space-between" }}>
             <Select2
               value={this.getIndexFromNodeId(this.state.form.nodeId)}
               style={{
@@ -387,8 +366,7 @@ class NewBox extends React.Component {
           <TagsInput
             inputProps={{
               maxLength: "8",
-              placeholder:
-                "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+              placeholder: "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
             }}
             maxTags="4"
             value={this.state.tags}
@@ -398,20 +376,13 @@ class NewBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <span id="error_message" /> &nbsp;
-            <button
-              type="button"
-              className="super normal button"
-              onClick={this.publishTopic.bind(this)}
-            >
+            <button type="button" className="super normal button" onClick={this.publishTopic.bind(this)}>
               <li className="fa fa-paper-plane" />
               &nbsp;{i18next.t("new:Publish")}
             </button>
           </div>
           <div>
-            <button
-              className="super normal button"
-              onClick={this.enablePreview.bind(this)}
-            >
+            <button className="super normal button" onClick={this.enablePreview.bind(this)}>
               <li className="fa fa-eye" />
               &nbsp;{i18next.t("new:Preview")}
             </button>
@@ -420,14 +391,7 @@ class NewBox extends React.Component {
         <div className="inner" id="topic_preview">
           <div className="topic_content">
             {/* preview in markdown */}
-            <div className="markdown_body">
-              {!this.state.isPreviewEnabled ? null : (
-                <ReactMarkdown
-                  source={this.state.form.body}
-                  escapeHtml={false}
-                />
-              )}
-            </div>
+            <div className="markdown_body">{!this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} escapeHtml={false} />}</div>
           </div>
         </div>
       </div>

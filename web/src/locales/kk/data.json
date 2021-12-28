@@ -224,6 +224,7 @@
     "Total Replies": "Total Replies",
     "Total Topics": "Total Topics",
     "Watch": "Watch",
+    "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
     "authorized to manage the community": "authorized to manage the community",
     "member, joined on": "member, joined on",
     "replied": "replied"
@@ -250,16 +251,14 @@
     "Already enabled Markdown": "Already enabled Markdown",
     "Body": "Body",
     "Hottest Nodes": "Hottest Nodes",
-    "MarkDown": "MarkDown",
+    "Markdown": "Markdown",
     "New Topic": "New Topic",
     "Please select a node": "Please select a node",
     "Preview": "Preview",
     "Publish": "Publish",
     "RichText": "RichText",
     "Switch editor": "Switch editor",
-    "Topic Title": "Topic Title",
-    "markdown": "markdown",
-    "richtext": "richtext"
+    "Topic Title": "Topic Title"
   },
   "newNodeTopic": {
     "Preview": "Preview",
@@ -384,6 +383,7 @@
   "reply": {
     "Add a New Comment": "Add a New Comment",
     "Back to Top": "Back to Top",
+    "Cancel reply to {username}": "Cancel reply to {username}",
     "Delete": "Delete",
     "Edit": "Edit",
     "Make your comment helpful for others as much as possible": "Make your comment helpful for others as much as possible",

@@ -224,6 +224,7 @@
     "Total Replies": "回復總數",
     "Total Topics": "主題總數",
     "Watch": "加入特別關註",
+    "You have signed out completely, no personal information is left on this computer.": "你已經完全登出，沒有任何個人信息留在這臺電腦上。",
     "authorized to manage the community": "具有管理社區的權限",
     "member, joined on": "號會員，加入於",
     "replied": "回復了"
@@ -250,16 +251,14 @@
     "Already enabled Markdown": "已啟用Markdown",
     "Body": "正文",
     "Hottest Nodes": "最熱節點",
-    "MarkDown": "MarkDown",
+    "Markdown": "Markdown",
     "New Topic": "創作新主題",
     "Please select a node": "請選擇一個節點",
     "Preview": "預覽主題",
     "Publish": "發布主題",
     "RichText": "富文本",
     "Switch editor": "切換編輯器",
-    "Topic Title": "主題標題",
-    "markdown": "Markdown",
-    "richtext": "富文本"
+    "Topic Title": "主題標題"
   },
   "newNodeTopic": {
     "Preview": "預覽",
@@ -384,6 +383,7 @@
   "reply": {
     "Add a New Comment": "添加一條新回復",
     "Back to Top": "回到頂部",
+    "Cancel reply to {username}": "取消對 {username} 的回復",
     "Delete": "刪除",
     "Edit": "編輯",
     "Make your comment helpful for others as much as possible": "請盡量讓自己的回復能夠對別人有幫助",

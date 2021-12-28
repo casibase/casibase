@@ -27,39 +27,15 @@ class SelectLanguageBox extends React.Component {
   render() {
     return (
       <div align="center">
-        <div
-          className="box"
-          style={{ width: Setting.PcBrowser ? "600px" : "auto" }}
-        >
+        <div className="box" style={{ width: Setting.PcBrowser ? "600px" : "auto" }}>
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span> Select Default Editor
-            / 选择默认编辑器
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> Select Default Editor / 选择默认编辑器
           </div>
-          <div className="cell">
-            {Setting.PcBrowser ? (
-              <span>
-                Please select the Default Editor you would like to use on{" "}
-                {Setting.getForumName()}
-              </span>
-            ) : (
-              <span>
-                Please select the Default Editor you would like to use:
-              </span>
-            )}
-          </div>
-          <a
-            href="javascript:void(0);"
-            onClick={() => Setting.changeEditorType("markdown")}
-            className={"lang-selector"}
-          >
-            {i18next.t("new:MarkDown")}
+          <div className="cell">{Setting.PcBrowser ? <span>Please select the Default Editor you would like to use on {Setting.getForumName()}</span> : <span>Please select the Default Editor you would like to use:</span>}</div>
+          <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("markdown")} className={"lang-selector"}>
+            {i18next.t("new:Markdown")}
           </a>
-          <a
-            href="javascript:void(0);"
-            onClick={() => Setting.changeEditorType("richtext")}
-            className={"lang-selector"}
-          >
+          <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("richtext")} className={"lang-selector"}>
             {i18next.t("new:RichText")}
           </a>
         </div>

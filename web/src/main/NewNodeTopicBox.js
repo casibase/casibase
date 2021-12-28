@@ -50,11 +50,11 @@ class NewNodeTopicBox extends React.Component {
       width: "",
       editor: [
         {
-          text: i18next.t("new:markdown"),
+          text: i18next.t("new:Markdown"),
           id: 0,
         },
         {
-          text: i18next.t("new:richtext"),
+          text: i18next.t("new:RichText"),
           id: 1,
         },
       ],
@@ -157,16 +157,12 @@ class NewNodeTopicBox extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
-        {i18next.t(
-          "error:Please resolve the following issues before creating a new topic"
-        )}
+        {i18next.t("error:Please resolve the following issues before creating a new topic")}
         <ul>
           {problems.map((problem, i) => {
             return <li>{problem}</li>;
           })}
-          {this.state.message !== "" ? (
-            <li>{i18next.t(`error:${this.state.message}`)}</li>
-          ) : null}
+          {this.state.message !== "" ? <li>{i18next.t(`error:${this.state.message}`)}</li> : null}
         </ul>
       </div>
     );
@@ -202,14 +198,7 @@ class NewNodeTopicBox extends React.Component {
         )}
         <div className="inner" id="topic_preview">
           <div className="topic_content">
-            <div className="markdown_body">
-              {!this.state.isPreviewEnabled ? null : (
-                <ReactMarkdown
-                  source={this.state.form.body}
-                  escapeHtml={false}
-                />
-              )}
-            </div>
+            <div className="markdown_body">{!this.state.isPreviewEnabled ? null : <ReactMarkdown source={this.state.form.body} escapeHtml={false} />}</div>
           </div>
         </div>
       </div>
@@ -221,12 +210,8 @@ class NewNodeTopicBox extends React.Component {
       <div className="header">
         <Link to="/">{Setting.getForumName()}</Link>
         <span className="chevron">&nbsp;›&nbsp;</span>
-        <Link to={`/go/${encodeURIComponent(this.props.nodeId)}`}>
-          {" "}
-          {this.state.nodeInfo?.name}{" "}
-        </Link>
-        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-        {i18next.t("new:New Topic")}
+        <Link to={`/go/${encodeURIComponent(this.props.nodeId)}`}> {this.state.nodeInfo?.name} </Link>
+        <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("new:New Topic")}
       </div>
     );
   }
@@ -246,15 +231,12 @@ class NewNodeTopicBox extends React.Component {
             onChange={(event) => {
               this.updateFormField("title", event.target.value);
             }}
-            placeholder={i18next.t(
-              "new:Please input the topic title. The body can be empty if the title expresses the full idea"
-            )}
+            placeholder={i18next.t("new:Please input the topic title. The body can be empty if the title expresses the full idea")}
           >
             {this.state.form.title}
           </textarea>
           <div className="sep10"></div>
-          {!this.state.form.editorType ||
-          this.state.form.editorType === "markdown" ? (
+          {!this.state.form.editorType || this.state.form.editorType === "markdown" ? (
             <div
               style={{
                 overflow: "hidden",
@@ -309,29 +291,16 @@ class NewNodeTopicBox extends React.Component {
           )}
           <div className="sep10"></div>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <input
-              type="submit"
-              value={i18next.t("node:Publish")}
-              className="super normal button"
-              onClick={this.publishTopic.bind(this)}
-            />
+            <input type="submit" value={i18next.t("node:Publish")} className="super normal button" onClick={this.publishTopic.bind(this)} />
             {this.renderEditorSelect()}
           </div>
         </div>
         <div className="inner">
           <div className="fr">
-            <a
-              href="/settings/ignore/node/12"
-              className={`${this.state.nodeInfo.id}`}
-            >
+            <a href="/settings/ignore/node/12" className={`${this.state.nodeInfo.id}`}>
               {i18next.t("node:Ignore this node")}
             </a>
-            &nbsp;{" "}
-            <span className="fade">
-              {i18next.t(
-                "node:Topics in the ignored nodes will not appear on the homepage."
-              )}
-            </span>
+            &nbsp; <span className="fade">{i18next.t("node:Topics in the ignored nodes will not appear on the homepage.")}</span>
           </div>
           &nbsp;
         </div>
@@ -359,12 +328,12 @@ class NewNodeTopicBox extends React.Component {
             if (index === 0) {
               this.updateFormField("editorType", "markdown");
               this.setState({
-                placeholder: i18next.t("new:markdown"),
+                placeholder: i18next.t("new:Markdown"),
               });
             } else {
               this.updateFormField("editorType", "richtext");
               this.setState({
-                placeholder: i18next.t("new:richtext"),
+                placeholder: i18next.t("new:RichText"),
               });
             }
           }}
@@ -412,8 +381,7 @@ class NewNodeTopicBox extends React.Component {
               </tr>
               <tr>
                 <td>
-                  {!this.state.form.editorType ||
-                  this.state.form.editorType === "markdown" ? (
+                  {!this.state.form.editorType || this.state.form.editorType === "markdown" ? (
                     <div
                       style={{
                         overflow: "hidden",
@@ -426,9 +394,7 @@ class NewNodeTopicBox extends React.Component {
                     >
                       <div className={`cm-long-content`}>
                         <CodeMirror
-                          editorDidMount={(editor) =>
-                            Tools.attachEditor(editor)
-                          }
+                          editorDidMount={(editor) => Tools.attachEditor(editor)}
                           onPaste={() => Tools.uploadMdFile()}
                           value={this.state.form.body}
                           onDrop={() => Tools.uploadMdFile()}
@@ -472,19 +438,14 @@ class NewNodeTopicBox extends React.Component {
                 {Setting.PcBrowser ? (
                   <div>
                     <span>
-                      <input
-                        ref={this.auto}
-                        type="checkbox"
-                        onChange={this.autoTag.bind(this)}
-                      />
+                      <input ref={this.auto} type="checkbox" onChange={this.autoTag.bind(this)} />
                       &nbsp;Auto Tag
                     </span>
                     {!this.state.autoTag ? (
                       <TagsInput
                         inputProps={{
                           maxLength: "8",
-                          placeholder:
-                            "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+                          placeholder: "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
                         }}
                         maxTags="4"
                         value={this.state.tags}
@@ -493,25 +454,15 @@ class NewNodeTopicBox extends React.Component {
                     ) : null}
                   </div>
                 ) : null}
-                <td
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
+                <td style={{ display: "flex", justifyContent: "space-between" }}>
                   <div>
                     <input type="hidden" name="once" />
-                    <button
-                      type="button"
-                      className="super normal button"
-                      onClick={this.enablePreview.bind(this)}
-                    >
+                    <button type="button" className="super normal button" onClick={this.enablePreview.bind(this)}>
                       <li className="fa fa-eye"></li> &nbsp;
                       {i18next.t("newNodeTopic:Preview")}{" "}
                     </button>{" "}
                     &nbsp;
-                    <button
-                      type="submit"
-                      className="super normal button"
-                      onClick={this.publishTopic.bind(this)}
-                    >
+                    <button type="submit" className="super normal button" onClick={this.publishTopic.bind(this)}>
                       <li className="fa fa-paper-plane"></li> &nbsp;
                       {i18next.t("newNodeTopic:Publish")}{" "}
                     </button>{" "}

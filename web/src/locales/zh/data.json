@@ -224,6 +224,7 @@
     "Total Replies": "回复总数",
     "Total Topics": "主题总数",
     "Watch": "加入特别关注",
+    "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。",
     "authorized to manage the community": "具有管理社区的权限",
     "member, joined on": "号会员，加入于",
     "replied": "回复了"
@@ -250,16 +251,14 @@
     "Already enabled Markdown": "已启用Markdown",
     "Body": "正文",
     "Hottest Nodes": "最热节点",
-    "MarkDown": "MarkDown",
+    "Markdown": "Markdown",
     "New Topic": "创作新主题",
     "Please select a node": "请选择一个节点",
     "Preview": "预览主题",
     "Publish": "发布主题",
     "RichText": "富文本",
     "Switch editor": "切换编辑器",
-    "Topic Title": "主题标题",
-    "markdown": "Markdown",
-    "richtext": "富文本"
+    "Topic Title": "主题标题"
   },
   "newNodeTopic": {
     "Preview": "预览",
@@ -384,6 +383,7 @@
   "reply": {
     "Add a New Comment": "添加一条新回复",
     "Back to Top": "回到顶部",
+    "Cancel reply to {username}": "取消对 {username} 的回复",
     "Delete": "删除",
     "Edit": "编辑",
     "Make your comment helpful for others as much as possible": "请尽量让自己的回复能够对别人有帮助",

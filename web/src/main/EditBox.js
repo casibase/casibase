@@ -41,11 +41,11 @@ class EditBox extends React.Component {
       form: {},
       editor: [
         {
-          text: i18next.t("new:markdown"),
+          text: i18next.t("new:Markdown"),
           id: 0,
         },
         {
-          text: i18next.t("new:richtext"),
+          text: i18next.t("new:RichText"),
           id: 1,
         },
       ],
@@ -99,9 +99,7 @@ class EditBox extends React.Component {
     // reply
     ReplyBackend.editReplyContent(this.state.form).then((res) => {
       if (res.status === "ok") {
-        this.props.history.push(
-          `/t/${this.state.editObject?.topicId}#r_${this.state.editObject?.id}`
-        );
+        this.props.history.push(`/t/${this.state.editObject?.topicId}#r_${this.state.editObject?.id}`);
       } else {
         Setting.showMessage("error", res?.msg);
       }
@@ -162,12 +160,12 @@ class EditBox extends React.Component {
             if (index === 0) {
               this.updateFormField("editorType", "markdown");
               this.setState({
-                placeholder: i18next.t("new:markdown"),
+                placeholder: i18next.t("new:Markdown"),
               });
             } else {
               this.updateFormField("editorType", "richtext");
               this.setState({
-                placeholder: i18next.t("new:richtext"),
+                placeholder: i18next.t("new:RichText"),
               });
             }
           }}
@@ -178,10 +176,7 @@ class EditBox extends React.Component {
   }
 
   renderEditor() {
-    if (
-      !this.state.form.editorType ||
-      this.state.form.editorType === "markdown"
-    ) {
+    if (!this.state.form.editorType || this.state.form.editorType === "markdown") {
       return (
         <div
           style={{
@@ -251,14 +246,10 @@ class EditBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("loading:Content loading")}
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Content loading")}
           </div>
           <div className="cell">
-            <span className="gray bigger">
-              {i18next.t("loading:Please wait patiently...")}
-            </span>
+            <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
           </div>
         </div>
       );
@@ -268,13 +259,9 @@ class EditBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("edit:Edit content")}
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("edit:Edit content")}
           </div>
-          <div className="inner">
-            {i18next.t("edit:You cannot edit this content.")}
-          </div>
+          <div className="inner">{i18next.t("edit:You cannot edit this content.")}</div>
         </div>
       );
     }
@@ -283,9 +270,7 @@ class EditBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("edit:Edit reply")}
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("edit:Edit reply")}
           </div>
           <div className="cell">
             <table cellPadding="5" cellSpacing="0" border="0" width="100%">
@@ -294,16 +279,9 @@ class EditBox extends React.Component {
                   <td>{this.renderEditor()}</td>
                 </tr>
                 <tr>
-                  <td
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
+                  <td style={{ display: "flex", justifyContent: "space-between" }}>
                     <div>
-                      <input
-                        type="submit"
-                        value={i18next.t("edit:Save")}
-                        className="super normal button"
-                        onClick={() => this.editContent()}
-                      />
+                      <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                     </div>
                     {this.renderEditorSelect()}
                   </td>
@@ -317,19 +295,9 @@ class EditBox extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${encodeURIComponent(this.state.editObject?.nodeId)}`}>
-            {" "}
-            {this.state.editObject?.nodeName}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/t/${this.state.editObject?.id}`}>
-            {" "}
-            {pangu.spacing(this.state.editObject?.title)}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("edit:Edit topic")}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/go/${encodeURIComponent(this.state.editObject?.nodeId)}`}> {this.state.editObject?.nodeName}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/t/${this.state.editObject?.id}`}> {pangu.spacing(this.state.editObject?.title)}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("edit:Edit topic")}
           {/* todo */}
         </div>
         <div className="cell">
@@ -356,23 +324,15 @@ class EditBox extends React.Component {
                 <TagsInput
                   inputProps={{
                     maxLength: "8",
-                    placeholder:
-                      "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
+                    placeholder: "After adding tags press Enter,only add up to four tags,the length of each tag is up to 8",
                   }}
                   maxTags="4"
                   value={this.state.tags}
                   onChange={this.handleChange.bind(this)}
                 />
-                <td
-                  style={{ display: "flex", justifyContent: "space-between" }}
-                >
+                <td style={{ display: "flex", justifyContent: "space-between" }}>
                   <div>
-                    <input
-                      type="submit"
-                      value={i18next.t("edit:Save")}
-                      className="super normal button"
-                      onClick={() => this.editContent()}
-                    />
+                    <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                   </div>
                   {this.renderEditorSelect()}
                 </td>
