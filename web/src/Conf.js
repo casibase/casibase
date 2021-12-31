@@ -35,7 +35,7 @@ export let FrontConfig = {
 
 export const ShowEmbedButtons = false;
 
-export const ShowGithubCorner = true;
+export const ShowGithubCorner = false;
 export const GithubRepo = "https://github.com/casbin/casnode";
 
 export const Domain = "forum.casbin.com";
@@ -59,8 +59,7 @@ export const DefaultTopicPageReplyNum = 100;
 export const ReplyMaxDepth = 10;
 export const ReplyMobileMaxDepth = 3;
 
-export const AvatarAnonymousUrl =
-  "https://cdn.casbin.com/avatar-pool/anonymous.png";
+export const AvatarAnonymousUrl = "https://cdn.casbin.com/avatar-pool/anonymous.png";
 export const AvatarErrorUrl = "https://cdn.casbin.com/avatar-pool/error.png";
 
 export const ShowLoadingIndicator = false;
