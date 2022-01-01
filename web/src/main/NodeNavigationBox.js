@@ -42,10 +42,7 @@ class NodeNavigationBox extends React.Component {
   renderNode(node) {
     return (
       <span key={node?.id}>
-        <Link
-          to={`/go/${encodeURIComponent(node?.id)}`}
-          style={{ fontSize: "14px" }}
-        >
+        <Link to={`/go/${encodeURIComponent(node?.id)}`} style={{ fontSize: "14px" }}>
           {node?.name}
         </Link>
         &nbsp; &nbsp;
@@ -73,7 +70,7 @@ class NodeNavigationBox extends React.Component {
                   wordBreak: "keep-all",
                 }}
               >
-                {tab?.nodes.map((node) => {
+                {tab?.nodes?.map((node) => {
                   return this.renderNode(node);
                 })}
               </td>
@@ -92,8 +89,7 @@ class NodeNavigationBox extends React.Component {
             <Link to="/planes">{i18next.t("node:View all nodes")}</Link>
           </div>
           <span className="fade">
-            <strong>{Setting.getForumName()}</strong> /{" "}
-            {i18next.t("node:Node navigation")}
+            <strong>{Setting.getForumName()}</strong> / {i18next.t("node:Node navigation")}
           </span>
         </div>
         {this.state.nodeNavigation?.map((tab) => {
