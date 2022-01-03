@@ -229,7 +229,7 @@ class TopicPage extends React.Component {
           })}
         </div>
         <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
-          {this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== "" ? (
+          {this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== undefined && this.state.tabInfo?.defaultNode !== null && this.state.tabInfo?.defaultNode !== "" ? (
             <div className="fr">
               <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</Link>
               &nbsp;
