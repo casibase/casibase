@@ -83,9 +83,7 @@ class RightAccountBox extends React.Component {
     const avatar = this.props.account?.avatar;
     const tagline = this.props.account?.tagline;
     const favorites = this.props.favorites;
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(
-      this.props.account.score
-    );
+    const { goldCount, silverCount, bronzeCount } = scoreConverter(this.props.account.score);
 
     return (
       <div className={`box ${this.props.nodeId}`}>
@@ -98,23 +96,11 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
-                  <div
-                    className="fr"
-                    style={{ cursor: "pointer" }}
-                    onClick={Setting.toggleThemeMode}
-                  >
-                    <img
-                      src={Setting.getThemeBtnUrl()}
-                      align="absmiddle"
-                      height="10"
-                      alt="Light"
-                    />
+                  <div className="fr" style={{ cursor: "pointer" }} onClick={Setting.toggleThemeMode}>
+                    <img src={Setting.getThemeBtnUrl()} align="absmiddle" height="10" alt="Light" />
                   </div>
                   <span className="bigger">
-                    <Link
-                      to={`/member/${username}`}
-                      className={`${this.props.nodeId}`}
-                    >
+                    <Link to={`/member/${username}`} className={`${this.props.nodeId}`}>
                       {username}
                     </Link>
                   </span>
@@ -129,16 +115,8 @@ class RightAccountBox extends React.Component {
             <tbody>
               <tr>
                 <td width="33%" align="center">
-                  <Link
-                    to="/my/nodes"
-                    className="dark"
-                    style={{ display: "block" }}
-                  >
-                    <span className="bigger">
-                      {favorites === undefined
-                        ? this.state.nodeFavoriteNum
-                        : favorites[3]}
-                    </span>
+                  <Link to="/my/nodes" className="dark" style={{ display: "block" }}>
+                    <span className="bigger">{favorites === undefined ? this.state.nodeFavoriteNum : favorites[3]}</span>
                     <div className="sep3" />
                     <span className="fade">{i18next.t("bar:Nodes")}</span>
                   </Link>
@@ -151,31 +129,15 @@ class RightAccountBox extends React.Component {
                   }}
                   align="center"
                 >
-                  <Link
-                    to="/my/topics"
-                    className="dark"
-                    style={{ display: "block" }}
-                  >
-                    <span className="bigger">
-                      {favorites === undefined
-                        ? this.state.topicFavoriteNum
-                        : favorites[1]}
-                    </span>
+                  <Link to="/my/topics" className="dark" style={{ display: "block" }}>
+                    <span className="bigger">{favorites === undefined ? this.state.topicFavoriteNum : favorites[1]}</span>
                     <div className="sep3" />
                     <span className="fade">{i18next.t("bar:Topics")}</span>
                   </Link>
                 </td>
                 <td width="33%" align="center">
-                  <Link
-                    to="/my/following"
-                    className="dark"
-                    style={{ display: "block" }}
-                  >
-                    <span className="bigger">
-                      {favorites === undefined
-                        ? this.state.followingNum
-                        : favorites[2]}
-                    </span>
+                  <Link to="/my/following" className="dark" style={{ display: "block" }}>
+                    <span className="bigger">{favorites === undefined ? this.state.followingNum : favorites[2]}</span>
                     <div className="sep3" />
                     <span className="fade">{i18next.t("bar:Watch")}</span>
                   </Link>
@@ -189,46 +151,32 @@ class RightAccountBox extends React.Component {
             <div className="member-activity-start" style={{ width: "80px" }} />
           </div>
         </div>
-        <div
-          className={`cell ${this.props.nodeId}`}
-          style={{ padding: "8px", lineHeight: "100%" }}
-        >
+        <div className={`cell ${this.props.nodeId}`} style={{ padding: "8px", lineHeight: "100%" }}>
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
               <tr>
                 <td width="28">
                   <Link to="/i">
-                    <img
-                      src={Setting.getStatic("/img/essentials/images.png")}
-                      width="28"
-                      border="0"
-                      style={{ verticalAlign: "bottom" }}
-                    />
+                    <img src={Setting.getStatic("/img/essentials/images.png")} width="28" border="0" style={{ verticalAlign: "bottom" }} />
                   </Link>
                 </td>
                 <td width="10"></td>
                 <td width="auto" valign="middle" align="left">
-                  <Link to="/i">{i18next.t("bar:File library")}</Link>
+                  <a target="_blank" href={Setting.getMyResourcesUrl(this.props.account)}>
+                    {i18next.t("bar:File library")}
+                  </a>
                 </td>
               </tr>
             </tbody>
           </table>
         </div>
-        <div
-          className={`cell ${this.props.nodeId}`}
-          style={{ padding: "8px", lineHeight: "100%" }}
-        >
+        <div className={`cell ${this.props.nodeId}`} style={{ padding: "8px", lineHeight: "100%" }}>
           <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tbody>
               <tr>
                 <td width="28">
                   <Link to="/new">
-                    <img
-                      src={Setting.getStatic("/img/essentials/compose.png")}
-                      width="28"
-                      border="0"
-                      style={{ verticalAlign: "bottom" }}
-                    />
+                    <img src={Setting.getStatic("/img/essentials/compose.png")} width="28" border="0" style={{ verticalAlign: "bottom" }} />
                   </Link>
                 </td>
                 <td width="10" />
@@ -247,37 +195,15 @@ class RightAccountBox extends React.Component {
               {goldCount !== 0 ? (
                 <span>
                   {" "}
-                  {goldCount}{" "}
-                  <img
-                    src={Setting.getStatic("/img/gold@2x.png")}
-                    height="16"
-                    alt="G"
-                    border="0"
-                  />
+                  {goldCount} <img src={Setting.getStatic("/img/gold@2x.png")} height="16" alt="G" border="0" />
                 </span>
               ) : null}{" "}
-              {silverCount}{" "}
-              <img
-                src={Setting.getStatic("/img/silver@2x.png")}
-                height="16"
-                alt="S"
-                border="0"
-              />{" "}
-              {bronzeCount}{" "}
-              <img
-                src={Setting.getStatic("/img/bronze@2x.png")}
-                height="16"
-                alt="B"
-                border="0"
-              />
+              {silverCount} <img src={Setting.getStatic("/img/silver@2x.png")} height="16" alt="S" border="0" /> {bronzeCount} <img src={Setting.getStatic("/img/bronze@2x.png")} height="16" alt="B" border="0" />
             </Link>
           </div>
           {this.state.unreadNotificationNum !== 0 ? (
             <span>
-              <img
-                src={Setting.getStatic("/img/dot_orange.png")}
-                align="absmiddle"
-              />{" "}
+              <img src={Setting.getStatic("/img/dot_orange.png")} align="absmiddle" />{" "}
             </span>
           ) : null}
           {this.state.unreadNotificationNum === 0 ? (
@@ -286,11 +212,7 @@ class RightAccountBox extends React.Component {
             </Link>
           ) : (
             <strong>
-              <Link
-                onClick={() => this.readAllNotifications()}
-                to="/notifications"
-                className={`fade ${this.props.nodeId}`}
-              >
+              <Link onClick={() => this.readAllNotifications()} to="/notifications" className={`fade ${this.props.nodeId}`}>
                 {this.state.unreadNotificationNum} {i18next.t("bar:unread")}
               </Link>
             </strong>

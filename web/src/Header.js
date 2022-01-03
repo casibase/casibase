@@ -95,8 +95,7 @@ class Header extends React.Component {
   }
 
   renderItem() {
-    const isSignedIn =
-      this.props.account !== undefined && this.props.account !== null;
+    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
     const username = this.props.account?.name;
 
     if (!isSignedIn) {
@@ -142,11 +141,7 @@ class Header extends React.Component {
             {i18next.t("general:Timeline")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <a
-            target="_blank"
-            className="top"
-            href={Setting.getMyProfileUrl(this.props.account)}
-          >
+          <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)}>
             {i18next.t("general:Setting")}
           </a>
           {/*<Link to="/settings" className="top">*/}
@@ -170,8 +165,7 @@ class Header extends React.Component {
   }
 
   renderMobileHeader() {
-    const isSignedIn =
-      this.props.account !== undefined && this.props.account !== null;
+    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
     const menuStyle = this.props.showMenu
       ? {
           "--show-dropdown": "block",
@@ -192,11 +186,7 @@ class Header extends React.Component {
                         <div id="logoMobile"></div>
                       </Link>
                     </td>
-                    <td
-                      width="auto"
-                      align="right"
-                      style={{ paddingTop: "2px" }}
-                    >
+                    <td width="auto" align="right" style={{ paddingTop: "2px" }}>
                       <Link to="/" className="top">
                         {i18next.t("general:Home")}
                       </Link>
@@ -233,11 +223,7 @@ class Header extends React.Component {
             {this.renderSearch()}
             <button id="menu-entry" onClick={() => this.changeShowMenuStatus()}>
               <img
-                src={
-                  this.props.account?.avatar !== ""
-                    ? this.props.account?.avatar
-                    : Setting.getUserAvatar(this.props.account?.name)
-                }
+                src={this.props.account?.avatar !== "" ? this.props.account?.avatar : Setting.getUserAvatar(this.props.account?.name)}
                 width={24}
                 border={0}
                 style={{ borderRadius: "32px", verticalAlign: "middle" }}
@@ -253,10 +239,7 @@ class Header extends React.Component {
             </button>
             <div id="user-menu" style={menuStyle}>
               <div>
-                <Link
-                  to={`/member/${this.props.account?.name}`}
-                  className="top"
-                >
+                <Link to={`/member/${this.props.account?.name}`} className="top">
                   {i18next.t("general:Homepage")}
                 </Link>
               </div>
@@ -271,11 +254,7 @@ class Header extends React.Component {
                 </Link>
               </div>
               <div>
-                <a
-                  target="_blank"
-                  className="top"
-                  href={Setting.getMyProfileUrl(this.props.account)}
-                >
+                <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)}>
                   {i18next.t("general:Setting")}
                 </a>
                 {/*<Link to="/settings" className="top">*/}
@@ -289,36 +268,18 @@ class Header extends React.Component {
               </div>
               <div className="menu_sep"></div>
               <div>
-                <Link to="/i" className="top">
-                  <img
-                    src={Setting.getStatic("/img/neue_image.png")}
-                    height="14"
-                    border="0"
-                    align="absmiddle"
-                  />{" "}
-                  &nbsp;{i18next.t("bar:File library")}
-                </Link>
+                <a target="_blank" className="top" href={Setting.getMyResourcesUrl(this.props.account)}>
+                  <img src={Setting.getStatic("/img/neue_image.png")} height="14" border="0" align="absmiddle" /> &nbsp;{i18next.t("bar:File library")}
+                </a>
               </div>
               <div>
                 <Link to="/notes" className="top">
-                  <img
-                    src={Setting.getStatic("/img/neue_notepad.png")}
-                    height="14"
-                    border="0"
-                    align="absmiddle"
-                  />{" "}
-                  &nbsp;{i18next.t("general:Note")}
+                  <img src={Setting.getStatic("/img/neue_notepad.png")} height="14" border="0" align="absmiddle" /> &nbsp;{i18next.t("general:Note")}
                 </Link>
               </div>
               <div>
                 <Link to="/t" className="top">
-                  <img
-                    src={Setting.getStatic("/img/neue_comment.png")}
-                    height="14"
-                    border="0"
-                    align="absmiddle"
-                  />{" "}
-                  &nbsp;{i18next.t("general:Timeline")}
+                  <img src={Setting.getStatic("/img/neue_comment.png")} height="14" border="0" align="absmiddle" /> &nbsp;{i18next.t("general:Timeline")}
                 </Link>
               </div>
               <div className="menu_sep"></div>
@@ -330,22 +291,13 @@ class Header extends React.Component {
               <div className="menu_sep"></div>
               <div>
                 <div className="top" onClick={Setting.toggleThemeMode}>
-                  <img
-                    src={Setting.getThemeBtnUrl()}
-                    align="absmiddle"
-                    height="10"
-                    alt="Light"
-                    style={{ verticalAlign: "middle" }}
-                  />
+                  <img src={Setting.getThemeBtnUrl()} align="absmiddle" height="10" alt="Light" style={{ verticalAlign: "middle" }} />
                 </div>
               </div>
               <div className="menu_sep"></div>
               <div style={{ padding: "10px" }}>
                 <div className="member-activity-bar">
-                  <div
-                    className="member-activity-start"
-                    style={{ width: "5%" }}
-                  ></div>
+                  <div className="member-activity-start" style={{ width: "5%" }}></div>
                 </div>
               </div>
               <div className="menu_sep"></div>
@@ -383,9 +335,7 @@ class Header extends React.Component {
     return (
       <div className="cell">
         <a className="search-item" href={searchUrl} target="blank">
-          {`${i18next.t("search:Click here to search in ")}${
-            Conf.DefaultSearchSite
-          }`}
+          {`${i18next.t("search:Click here to search in ")}${Conf.DefaultSearchSite}`}
         </a>
       </div>
     );
@@ -419,19 +369,11 @@ class Header extends React.Component {
               }}
             />
             {this.state.searchResShow && this.state.searchValue ? (
-              <div
-                id="search-result"
-                className="box"
-                style={{ display: "block" }}
-              >
-                <div className="cell">
-                  {i18next.t("search:Press Enter to search in site.")}
-                </div>
+              <div id="search-result" className="box" style={{ display: "block" }}>
+                <div className="cell">{i18next.t("search:Press Enter to search in site.")}</div>
                 {this.state.matchNodes.length !== 0 ? (
                   <div className="cell">
-                    <span className="fade">
-                      节点&nbsp;&nbsp;/&nbsp;&nbsp;Nodes
-                    </span>
+                    <span className="fade">节点&nbsp;&nbsp;/&nbsp;&nbsp;Nodes</span>
                     {this.state.matchNodes.map((val) => {
                       //TODO: maybe weshould add `active` iterm
                       return (
@@ -455,15 +397,7 @@ class Header extends React.Component {
     }
 
     // mobile
-    return (
-      <input
-        type="text"
-        id="site-search"
-        value={this.state.searchValue}
-        onKeyUp={(event) => this.onKeyup(event)}
-        onChange={(event) => this.onSearchValueChange(event)}
-      />
-    );
+    return <input type="text" id="site-search" value={this.state.searchValue} onKeyUp={(event) => this.onKeyup(event)} onChange={(event) => this.onSearchValueChange(event)} />;
   }
 
   changeShowMenuStatus() {
@@ -494,11 +428,7 @@ class Header extends React.Component {
               <tbody>
                 <tr>
                   <td width="110" align="left">
-                    <Link
-                      to="/"
-                      name="top"
-                      title={Conf.FrontConfig.signinBoxSpan}
-                    >
+                    <Link to="/" name="top" title={Conf.FrontConfig.signinBoxSpan}>
                       <div
                         id="logo"
                         style={{

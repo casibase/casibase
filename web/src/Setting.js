@@ -71,6 +71,10 @@ export function getMyProfileUrl(account) {
   return CasdoorSdk.getMyProfileUrl(account);
 }
 
+export function getMyResourcesUrl(account) {
+  return CasdoorSdk.getMyProfileUrl(account).replace("/account?", "/resources?");
+}
+
 export function signin() {
   return CasdoorSdk.signin(ServerUrl);
 }
