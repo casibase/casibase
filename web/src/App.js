@@ -13,6 +13,7 @@
 // limitations under the License.
 
 import React, { Component } from "react";
+import classNames from "classnames";
 import "./App.css";
 import "codemirror/lib/codemirror.css";
 import { BackTop } from "antd";
@@ -34,6 +35,7 @@ import NodeNavigationBox from "./main/NodeNavigationBox";
 import RightCheckinBonusBox from "./rightbar/RightCheckinBonusBox";
 import RightLatestNodeBox from "./rightbar/RightLatestNodeBox";
 import RightHotNodeBox from "./rightbar/RightHotNodeBox";
+import RightThemeBox from "./rightbar/RightThemeBox";
 import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 import i18next from "i18next";
 import "./node.css";
@@ -47,17 +49,13 @@ import LazyLoad from "./components/LazyLoad";
 const SignoutBox = React.lazy(() => import("./main/SignoutBox"));
 const TopicBox = React.lazy(() => import("./main/TopicBox"));
 const MemberBox = React.lazy(() => import("./main/MemberBox"));
-const AllCreatedTopicsBox = React.lazy(() =>
-  import("./main/AllCreatedTopicsBox")
-);
+const AllCreatedTopicsBox = React.lazy(() => import("./main/AllCreatedTopicsBox"));
 const NewBox = React.lazy(() => import("./main/NewBox"));
 const NodesBox = React.lazy(() => import("./main/NodeBox"));
 const FavoritesBox = React.lazy(() => import("./main/FavoritesBox"));
 const RecentTopicsBox = React.lazy(() => import("./main/RecentTopicsBox"));
 const SelectLanguageBox = React.lazy(() => import("./main/SelectLanguageBox"));
-const SelectEditorTypeBox = React.lazy(() =>
-  import("./main/SelectEditorTypeBox")
-);
+const SelectEditorTypeBox = React.lazy(() => import("./main/SelectEditorTypeBox"));
 const NotificationBox = React.lazy(() => import("./main/NotificationBox"));
 const PlaneBox = React.lazy(() => import("./main/PlaneBox"));
 const BalanceBox = React.lazy(() => import("./main/BalanceBox"));
@@ -179,9 +177,7 @@ class App extends Component {
       <Switch>
         <Route exact path="/callback" component={AuthCallback} />
         <Route exact path="/">
-          {pcBrowser ? null : (
-            <RightCheckinBonusBox account={this.state.account} />
-          )}
+          {pcBrowser ? null : <RightCheckinBonusBox account={this.state.account} />}
           {pcBrowser ? null : <div className="sep5" />}
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
@@ -194,10 +190,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <SignoutBox
-                account={this.state.account}
-                onSignout={this.onSignout.bind(this)}
-              />
+              <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -213,11 +206,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <TopicBox
-                account={this.state.account}
-                getNodeBackground={this.getNodeBackground}
-                refreshFavorites={this.getFavoriteNum.bind(this)}
-              />
+              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -225,21 +214,14 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <TopicBox
-                account={this.state.account}
-                getNodeBackground={this.getNodeBackground}
-                refreshFavorites={this.getFavoriteNum.bind(this)}
-              />
+              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
         <Route exact path="/member/:memberId">
           <div id={pcBrowser ? "Main" : ""}>
             <LazyLoad>
-              <MemberBox
-                account={this.state.account}
-                refreshFavorites={this.getFavoriteNum.bind(this)}
-              />
+              <MemberBox account={this.state.account} refreshFavorites={this.getFavoriteNum.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -275,22 +257,12 @@ class App extends Component {
         </Route>
         <Route exact path="/go/:nodeId">
           <LazyLoad>
-            <NodesBox
-              account={this.state.account}
-              getNodeBackground={this.getNodeBackground}
-              refreshAccount={this.getAccount.bind(this)}
-              refreshFavorites={this.getFavoriteNum.bind(this)}
-            />
+            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </LazyLoad>
         </Route>
         <Route exact path="/go/:nodeId/:event">
           <LazyLoad>
-            <NodesBox
-              account={this.state.account}
-              getNodeBackground={this.getNodeBackground}
-              refreshAccount={this.getAccount.bind(this)}
-              refreshFavorites={this.getFavoriteNum.bind(this)}
-            />
+            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </LazyLoad>
         </Route>
         <Route exact path="/my/:favorites">
@@ -592,15 +564,7 @@ class App extends Component {
     return (
       <div id="Rightbar">
         <div className="sep20" />
-        {isSignedIn ? (
-          <RightAccountBox
-            account={this.state.account}
-            nodeId={this.state.nodeId}
-            favorites={this.state.favorites}
-          />
-        ) : (
-          <RightSigninBox nodeId={this.state.nodeId} />
-        )}
+        {isSignedIn ? <RightAccountBox account={this.state.account} nodeId={this.state.nodeId} favorites={this.state.favorites} /> : <RightSigninBox nodeId={this.state.nodeId} />}
         <Switch>
           <Route exact path="/">
             <span>
@@ -624,6 +588,8 @@ class App extends Component {
             </span>
           </Route>
         </Switch>
+        <div className="sep20" />
+        <RightThemeBox />
       </div>
     );
   }
@@ -656,30 +622,17 @@ class App extends Component {
     }
     return (
       <div>
-        <link
-          type="text/css"
-          rel="stylesheet"
-          media="all"
-          id="dark-mode"
-          href={this.getThemeLink()}
-        />
+        <link type="text/css" rel="stylesheet" media="all" id="dark-mode" href={this.getThemeLink()} />
         <BackTop />
-        <Header
-          account={this.state.account}
-          onSignout={this.onSignout.bind(this)}
-          changeMenuStatus={this.changeMenuStatus.bind(this)}
-          showMenu={this.state.showMenu}
-        />
+        <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu} />
         <div
           id="Wrapper"
           style={{
             backgroundColor: `${this.state.nodeBackgroundColor}`,
-            backgroundImage: `url(${
-              this.state.nodeBackgroundImage
-            }), url(${Setting.getStatic("/img/shadow_light.png")})`,
+            backgroundImage: `url(${this.state.nodeBackgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
             backgroundRepeat: `${this.state.nodeBackgroundRepeat}, repeat-x`,
           }}
-          className={this.state.nodeId}
+          className={classNames(this.state.nodeId, localStorage.getItem("themeMode") === "dark" ? "Night" : "")}
           onClick={() => this.changeMenuStatus(false)}
         >
           <div className="content">

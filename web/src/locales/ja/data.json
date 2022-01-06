@@ -543,5 +543,10 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "翻訳者管理",
     "Visible": "表示"
+  },
+  "theme": {
+    "Choose theme": "テーマを選ぶ",
+    "Default": "既定値",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

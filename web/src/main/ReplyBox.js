@@ -27,9 +27,7 @@ import i18next from "i18next";
 import UserLink from "../UserLink";
 
 // const pangu = require("pangu");
-const maxReplyDepth = Setting.PcBrowser
-  ? Conf.ReplyMaxDepth
-  : Conf.ReplyMobileMaxDepth;
+const maxReplyDepth = Setting.PcBrowser ? Conf.ReplyMaxDepth : Conf.ReplyMobileMaxDepth;
 
 class ReplyBox extends React.Component {
   constructor(props) {
@@ -123,20 +121,13 @@ class ReplyBox extends React.Component {
         if (reply.id === targetReply) {
           found = true;
           let targetPage = Math.ceil((i + 1) / this.state.limit);
-          ReplyBackend.getReplies(
-            this.state.topicId,
-            this.state.limit,
-            targetPage,
-            false
-          ).then((res) => {
+          ReplyBackend.getReplies(this.state.topicId, this.state.limit, targetPage, false).then((res) => {
             this.setState(
               {
                 replies: res?.data,
                 repliesNum: res?.data2[0],
                 page: res?.data2[1],
-                latestReplyTime: Setting.getPrettyDate(
-                  res?.data[res?.data.length - 1]?.createdTime
-                ),
+                latestReplyTime: Setting.getPrettyDate(res?.data[res?.data.length - 1]?.createdTime),
               },
               () => {
                 document.getElementById("r_" + targetReply).scrollIntoView();
@@ -152,12 +143,7 @@ class ReplyBox extends React.Component {
   }
 
   getReplies(init) {
-    ReplyBackend.getReplies(
-      this.state.topicId,
-      this.state.limit,
-      this.state.page,
-      init
-    ).then((res) => {
+    ReplyBackend.getReplies(this.state.topicId, this.state.limit, this.state.page, init).then((res) => {
       this.setState(
         {
           replies: res?.data,
@@ -234,11 +220,7 @@ class ReplyBox extends React.Component {
   }
 
   thanksReply(id, author) {
-    if (
-      window.confirm(
-        `Are you sure to spend ${this.state.replyThanksCost} coins in thanking @${author} for this reply?`
-      )
-    ) {
+    if (window.confirm(`Are you sure to spend ${this.state.replyThanksCost} coins in thanking @${author} for this reply?`)) {
       BalanceBackend.addThanks(id, 2).then((res) => {
         if (res?.status === "ok") {
           this.getReplies(false);
@@ -312,23 +294,13 @@ class ReplyBox extends React.Component {
       <div id={`r_${reply.id}`}>
         <div style={{ minHeight: isChild ? "48px" : "60px" }}>
           <div style={{ width: isChild ? "36px" : "48px", float: "left" }}>
-            <Avatar
-              username={reply.author}
-              avatar={reply.avatar}
-              size={isChild ? "middle" : ""}
-            />
+            <Avatar username={reply.author} avatar={reply.avatar} size={isChild ? "middle" : ""} />
           </div>
           <div style={{ marginLeft: isChild ? "48px" : "60px" }}>
             <div className="fr">
-              {this.props.account !== null &&
-              this.props.account !== undefined &&
-              this.props.account.id !== reply?.author ? (
+              {this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ? (
                 reply?.thanksStatus === false ? (
-                  <div
-                    id={`thank_area__${reply.id}`}
-                    className="thank_area"
-                    style={{ marginRight: "10px" }}
-                  >
+                  <div id={`thank_area__${reply.id}`} className="thank_area" style={{ marginRight: "10px" }}>
                     {/*<a*/}
                     {/*  className="thank"*/}
                     {/*  style={{*/}
@@ -339,42 +311,19 @@ class ReplyBox extends React.Component {
                     {/*>*/}
                     {/*  {i18next.t("reply:ignore")}*/}
                     {/*</a>*/}
-                    <a
-                      onClick={() => this.thanksReply(reply.id, reply.author)}
-                      className="thank link-btn"
-                    >
-                      {Setting.PcBrowser ? (
-                        i18next.t("reply:thank")
-                      ) : (
-                        <img
-                          src={Setting.getStatic("/img/heart_neue.png")}
-                          width="16"
-                          style={{ verticalAlign: "bottom" }}
-                          alt={i18next.t("reply:thank")}
-                        />
-                      )}
+                    <a onClick={() => this.thanksReply(reply.id, reply.author)} className="thank link-btn">
+                      {Setting.PcBrowser ? i18next.t("reply:thank") : <img src={Setting.getStatic("/img/heart_neue.png")} width="16" style={{ verticalAlign: "bottom" }} alt={i18next.t("reply:thank")} />}
                     </a>
                   </div>
                 ) : (
-                  <div
-                    id={`thank_area__${reply.id}`}
-                    className="thank_area thanked"
-                  >
+                  <div id={`thank_area__${reply.id}`} className="thank_area thanked">
                     {i18next.t("reply:thanked")}
                   </div>
                 )
               ) : null}
               {reply?.deletable ? (
-                <div
-                  id={`thank_area__${reply.id}`}
-                  className="thank_area"
-                  style={{ marginRight: "10px" }}
-                >
-                  <a
-                    className="delete link-btn"
-                    style={{ marginRight: "10px" }}
-                    onClick={() => this.deleteReply(reply.id)}
-                  >
+                <div id={`thank_area__${reply.id}`} className="thank_area" style={{ marginRight: "10px" }}>
+                  <a className="delete link-btn" style={{ marginRight: "10px" }} onClick={() => this.deleteReply(reply.id)}>
                     {i18next.t("reply:Delete")}
                   </a>
                   <a href={`/edit/reply/${reply.id}`} className="edit link-btn">
@@ -382,8 +331,7 @@ class ReplyBox extends React.Component {
                   </a>
                 </div>
               ) : null}
-              {this.props.account !== undefined &&
-              this.props.account !== null ? (
+              {this.props.account !== undefined && this.props.account !== null ? (
                 <a
                   onClick={() => {
                     this.handleClick(`@${reply.author} `);
@@ -393,20 +341,10 @@ class ReplyBox extends React.Component {
                   }}
                   style={{ marginRight: "10px" }}
                 >
-                  <img
-                    src={Setting.getStatic("/img/reply_neue.png")}
-                    align="absmiddle"
-                    border="0"
-                    alt="Reply"
-                    width="20"
-                  />
+                  <img src={Setting.getStatic("/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
                 </a>
               ) : null}
-              {isChild ? null : (
-                <span className={`no ${this.props.topic.nodeId}`}>
-                  {no + 1}
-                </span>
-              )}
+              {isChild ? null : <span className={`no ${this.props.topic.nodeId}`}>{no + 1}</span>}
             </div>
             <strong>
               <UserLink username={reply.author} classNameText={"dark"} />
@@ -423,26 +361,15 @@ class ReplyBox extends React.Component {
             </Link>
             {reply?.thanksNum !== 0 ? (
               <span className="small fade">
-                <img
-                  src={Setting.getStatic("/img/heart_neue_red.png")}
-                  width="14"
-                  align="absmiddle"
-                  alt="❤️"
-                />
+                <img src={Setting.getStatic("/img/heart_neue_red.png")} width="14" align="absmiddle" alt="❤️" />
                 {reply?.thanksNum}
               </span>
             ) : null}
             <div className={`reply_content ${this.props.topic.nodeId}`}>
               {reply.deleted ? (
-                <span style={{ color: "#ccc" }}>
-                  This reply has been deleted
-                </span>
+                <span style={{ color: "#ccc" }}>This reply has been deleted</span>
               ) : (
-                <ReactMarkdown
-                  escapeHtml={false}
-                  renderers={{ image: this.renderImage, link: this.renderLink }}
-                  source={Setting.getFormattedContent(reply.content, true)}
-                />
+                <ReactMarkdown escapeHtml={false} renderers={{ image: this.renderImage, link: this.renderLink }} source={Setting.getFormattedContent(reply.content, true)} />
               )}
             </div>
           </div>
@@ -458,7 +385,7 @@ class ReplyBox extends React.Component {
       result.push(this.renderReplyBox(reply, no));
     }
     result.push(
-      <div style={{ paddingLeft: depth < maxReplyDepth ? "40px" : "" }}>
+      <div style={{ paddingLeft: depth < maxReplyDepth ? "40px" : "", marginTop: 16 }}>
         {reply.child?.map((childItem) => {
           let childResult = [];
           if (!(childItem.deleted && childItem.child === null)) {
@@ -482,11 +409,7 @@ class ReplyBox extends React.Component {
           <div className="fr" style={{ margin: "-3px -5px 0px 0px" }}>
             {this.props.topic?.tags?.map((tag, i) => {
               return (
-                <Link
-                  key={i}
-                  to={`/tag/${tag}`}
-                  className={`tag ${this.props.topic.nodeId}`}
-                >
+                <Link key={i} to={`/tag/${tag}`} className={`tag ${this.props.topic.nodeId}`}>
                   <li className="fa fa-tag" />
                   {tag}
                 </Link>
@@ -502,10 +425,7 @@ class ReplyBox extends React.Component {
         {Setting.PcBrowser ? this.showPageColumn() : null}
         {this.state.replies?.map((reply, no) => {
           return !(reply.deleted && reply.child === null) ? (
-            <div
-              id={`r_${reply.id}`}
-              className={`cell ${this.props.topic.nodeId}`}
-            >
+            <div id={`r_${reply.id}`} className={`cell ${this.props.topic.nodeId}`}>
               {this.renderNestedReply(reply, no, 0)}
             </div>
           ) : null;
@@ -522,22 +442,14 @@ class ReplyBox extends React.Component {
 
     return (
       <div>
-        {this.state.replies.length === 0 ? (
-          <div id="no-comments-yet">{i18next.t("reply:No reply yet")}</div>
-        ) : (
-          this.renderReply()
-        )}
+        {this.state.replies.length === 0 ? <div id="no-comments-yet">{i18next.t("reply:No reply yet")}</div> : this.renderReply()}
         <div className={Setting.PcBrowser ? "sep20" : "sep5"} />
         {this.state.replies.length === 0 ? (
           <div>
             <div className="inner" style={{ backgroundColor: "white" }}>
               {this.props.topic?.tags?.map((tag) => {
                 return (
-                  <Link
-                    key={tag}
-                    to={`/tag/${tag}`}
-                    className={`tag ${this.props.topic.nodeId}`}
-                  >
+                  <Link key={tag} to={`/tag/${tag}`} className={`tag ${this.props.topic.nodeId}`}>
                     <li className="fa fa-tag" />
                     {tag}
                   </Link>

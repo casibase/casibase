@@ -96,7 +96,7 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10" valign="top" />
                 <td width="auto" align="left">
-                  <div className="fr" style={{ cursor: "pointer" }} onClick={Setting.toggleThemeMode}>
+                  <div className="fr light-toggle" style={{ cursor: "pointer" }} onClick={Setting.toggleThemeMode}>
                     <img src={Setting.getThemeBtnUrl()} align="absmiddle" height="10" alt="Light" />
                   </div>
                   <span className="bigger">

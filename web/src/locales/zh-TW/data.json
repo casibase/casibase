@@ -543,5 +543,10 @@
     "Translation Platform Name": "平臺名稱",
     "Translator management": "翻譯管理",
     "Visible": "可見性"
+  },
+  "theme": {
+    "Choose theme": "主題樣式選擇",
+    "Default": "默認主題樣式",
+    "v2ex-zhihu-theme": "知乎主題樣式"
   }
 }

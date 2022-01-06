@@ -39,3 +39,32 @@ a:hover {
 a:link {
   transition: none;
 }
+
+#search-container::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 26px;
+  height: 100%;
+  transition: filter 0.15s;
+  background-image: url(https://cdn.casbin.org/img/search_icon_light.png);
+  background-color: transparent;
+  background-size: 17px 17px;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: opacity(40%);
+}
+
+.site-nav {
+  padding-top: 6px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.site-nav .tools {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
