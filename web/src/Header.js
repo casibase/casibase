@@ -100,7 +100,7 @@ class Header extends React.Component {
 
     if (!isSignedIn) {
       return (
-        <td width="570" align="right" style={{ paddingTop: "2px" }}>
+        <div className="tools">
           <Link to="/" className="top">
             {i18next.t("general:Home")}
           </Link>
@@ -116,11 +116,11 @@ class Header extends React.Component {
           <a href={Setting.getSigninUrl()} className="top">
             {i18next.t("general:Sign In")}
           </a>
-        </td>
+        </div>
       );
     } else {
       return (
-        <td width="570" align="right" style={{ paddingTop: "2px" }}>
+        <div className="tools">
           <Link to="/" className="top">
             {i18next.t("general:Home")}
           </Link>
@@ -159,7 +159,7 @@ class Header extends React.Component {
           <a href="#;" onClick={this.signout.bind(this)} className="top">
             {i18next.t("general:Sign Out")}
           </a>
-        </td>
+        </div>
       );
     }
   }
@@ -345,12 +345,12 @@ class Header extends React.Component {
     if (Setting.PcBrowser) {
       return (
         <div id="Search">
-          <div id="qbar" className="">
+          <div id="search-container" className="">
             <input
               type="text"
               maxLength="40"
               name="q"
-              id="q"
+              id="search"
               autoComplete={"off"}
               value={this.state.searchValue}
               onKeyUp={(event) => this.onKeyup(event)}
@@ -391,13 +391,6 @@ class Header extends React.Component {
         </div>
       );
     }
-
-    if (this.props.account === undefined || this.props.account === null) {
-      return null;
-    }
-
-    // mobile
-    return <input type="text" id="site-search" value={this.state.searchValue} onKeyUp={(event) => this.onKeyup(event)} onChange={(event) => this.onSearchValueChange(event)} />;
   }
 
   changeShowMenuStatus() {
@@ -423,27 +416,17 @@ class Header extends React.Component {
     return (
       <div id="Top">
         <div className="content">
-          <div style={{ paddingTop: "6px" }}>
-            <table cellPadding="0" cellSpacing="0" border="0" width="100%">
-              <tbody>
-                <tr>
-                  <td width="110" align="left">
-                    <Link to="/" name="top" title={Conf.FrontConfig.signinBoxSpan}>
-                      <div
-                        id="logo"
-                        style={{
-                          backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
-                        }}
-                      />
-                    </Link>
-                  </td>
-                  <td width="auto" align="left">
-                    {this.renderSearch()}
-                  </td>
-                  {this.renderItem()}
-                </tr>
-              </tbody>
-            </table>
+          <div className="site-nav">
+            <Link to="/" name="top" style={{ fontSize: 0 }} title={Conf.FrontConfig.signinBoxSpan}>
+              <div
+                id="logo"
+                style={{
+                  backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
+                }}
+              />
+            </Link>
+            {this.renderSearch()}
+            {this.renderItem()}
           </div>
         </div>
       </div>

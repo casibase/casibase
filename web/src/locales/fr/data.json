@@ -543,5 +543,10 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "Gestion des traducteurs",
     "Visible": "Visible"
+  },
+  "theme": {
+    "Choose theme": "Choisir le thème",
+    "Default": "Défaut",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

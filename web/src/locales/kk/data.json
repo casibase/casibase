@@ -543,5 +543,10 @@
     "Translation Platform Name": "Translation Platform Name",
     "Translator management": "Аудармашыны басқару",
     "Visible": "Көрінетін"
+  },
+  "theme": {
+    "Choose theme": "Choose theme",
+    "Default": "Default",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }
