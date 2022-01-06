@@ -14,7 +14,10 @@
 
 import React from "react";
 import i18next from "i18next";
+<<<<<<< HEAD
 import { loadTheme, THEME_OPTIONS } from "../theme";
+=======
+>>>>>>> f3312a8700ea2908f8d68f247e3da8e1a72eee56
 import "./rightTheme.css";
 
 class RightThemeBox extends React.Component {
@@ -22,10 +25,32 @@ class RightThemeBox extends React.Component {
     super(props);
     this.state = {
       theme: localStorage.getItem("CASNODE_THEME") || "default",
+<<<<<<< HEAD
       themeOptions: THEME_OPTIONS,
     };
   }
 
+=======
+      themeOptions: [
+        {
+          label: i18next.t("theme:Default"),
+          value: "default",
+          link: "",
+        },
+        {
+          label: i18next.t("theme:v2ex-zhihu-theme"),
+          value: "v2ex-zhihu-theme",
+          link: "https://cdn.jsdelivr.net/gh/viewweiwu/v2ex-zhihu-theme/v2ex.css",
+        },
+      ],
+    };
+  }
+
+  componentDidMount() {
+    this.loadThemeFile();
+  }
+
+>>>>>>> f3312a8700ea2908f8d68f247e3da8e1a72eee56
   handleThemeSelect(item) {
     this.setState(
       {
@@ -39,8 +64,28 @@ class RightThemeBox extends React.Component {
   }
 
   loadThemeFile() {
+<<<<<<< HEAD
     let { theme } = this.state;
     loadTheme(theme);
+=======
+    let { theme, themeOptions } = this.state;
+    let currTheme = themeOptions.find((item) => item.value === theme);
+
+    let before = document.querySelector("#casnodeTheme");
+    if (before) {
+      before.parentNode.removeChild(before);
+    }
+
+    if (currTheme.link) {
+      let after = document.createElement("link");
+      after.rel = "stylesheet";
+      after.type = "text/css";
+      after.id = "casnodeTheme";
+      after.href = currTheme?.link;
+
+      document.body.appendChild(after);
+    }
+>>>>>>> f3312a8700ea2908f8d68f247e3da8e1a72eee56
   }
 
   render() {
@@ -49,7 +94,11 @@ class RightThemeBox extends React.Component {
         <div className="cell">{i18next.t("theme:Choose theme")}</div>
         {this.state.themeOptions.map((item) => {
           return (
+<<<<<<< HEAD
             <div className="cell rt-line" key={item.value} onClick={() => this.handleThemeSelect(item)}>
+=======
+            <div className="cell rt-line" key={item.label} onClick={() => this.handleThemeSelect(item)}>
+>>>>>>> f3312a8700ea2908f8d68f247e3da8e1a72eee56
               {item.label}&nbsp;{item.value === this.state.theme ? "✅" : ""}
             </div>
           );
