@@ -39,7 +39,6 @@ import RightThemeBox from "./rightbar/RightThemeBox";
 import RightHotTopicBox from "./rightbar/RightHotTopicBox";
 import i18next from "i18next";
 import "./node.css";
-import "./i18n";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
 import * as Conf from "./Conf";
 import AuthCallback from "./AuthCallback";
