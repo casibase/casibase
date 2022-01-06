@@ -445,8 +445,8 @@ class ReplyBox extends React.Component {
         {this.state.replies.length === 0 ? <div id="no-comments-yet">{i18next.t("reply:No reply yet")}</div> : this.renderReply()}
         <div className={Setting.PcBrowser ? "sep20" : "sep5"} />
         {this.state.replies.length === 0 ? (
-          <div>
-            <div className="inner" style={{ backgroundColor: "white" }}>
+          <div className="box">
+            <div className="inner">
               {this.props.topic?.tags?.map((tag) => {
                 return (
                   <Link key={tag} to={`/tag/${tag}`} className={`tag ${this.props.topic.nodeId}`}>
@@ -456,7 +456,6 @@ class ReplyBox extends React.Component {
                 );
               })}
             </div>
-            <div className="sep20" />
           </div>
         ) : null}
         <NewReplyBox

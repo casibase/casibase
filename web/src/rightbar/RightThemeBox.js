@@ -14,6 +14,7 @@
 
 import React from "react";
 import i18next from "i18next";
+import { loadTheme, THEME_OPTIONS } from "../theme";
 import "./rightTheme.css";
 
 class RightThemeBox extends React.Component {
@@ -21,23 +22,8 @@ class RightThemeBox extends React.Component {
     super(props);
     this.state = {
       theme: localStorage.getItem("CASNODE_THEME") || "default",
-      themeOptions: [
-        {
-          label: i18next.t("theme:Default"),
-          value: "default",
-          link: "",
-        },
-        {
-          label: i18next.t("theme:v2ex-zhihu-theme"),
-          value: "v2ex-zhihu-theme",
-          link: "https://cdn.jsdelivr.net/gh/viewweiwu/v2ex-zhihu-theme/v2ex.css",
-        },
-      ],
+      themeOptions: THEME_OPTIONS,
     };
-  }
-
-  componentDidMount() {
-    this.loadThemeFile();
   }
 
   handleThemeSelect(item) {
@@ -53,23 +39,8 @@ class RightThemeBox extends React.Component {
   }
 
   loadThemeFile() {
-    let { theme, themeOptions } = this.state;
-    let currTheme = themeOptions.find((item) => item.value === theme);
-
-    let before = document.querySelector("#casnodeTheme");
-    if (before) {
-      before.parentNode.removeChild(before);
-    }
-
-    if (currTheme.link) {
-      let after = document.createElement("link");
-      after.rel = "stylesheet";
-      after.type = "text/css";
-      after.id = "casnodeTheme";
-      after.href = currTheme?.link;
-
-      document.body.appendChild(after);
-    }
+    let { theme } = this.state;
+    loadTheme(theme);
   }
 
   render() {
@@ -78,7 +49,7 @@ class RightThemeBox extends React.Component {
         <div className="cell">{i18next.t("theme:Choose theme")}</div>
         {this.state.themeOptions.map((item) => {
           return (
-            <div className="cell rt-line" key={item.label} onClick={() => this.handleThemeSelect(item)}>
+            <div className="cell rt-line" key={item.value} onClick={() => this.handleThemeSelect(item)}>
               {item.label}&nbsp;{item.value === this.state.theme ? "✅" : ""}
             </div>
           );
