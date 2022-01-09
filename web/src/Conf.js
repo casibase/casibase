@@ -15,7 +15,7 @@ import * as ConfBackend from "./backend/ConfBackend.js";
 
 export const AuthConfig = {
   // serverUrl: "https://door.casbin.com",
-  serverUrl: "http://localhost:7001",
+  serverUrl: "http://localhost:8000",
   clientId: "014ae4bd048734ca2dea",
   organizationName: "casbin",
   appName: "app-casnode",
