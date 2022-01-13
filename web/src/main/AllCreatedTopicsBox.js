@@ -94,18 +94,13 @@ class AllCreatedTopicsBox extends React.Component {
 
     MemberBackend.getMember(this.state.memberId).then((res) => {
       this.setState({
-        member: res,
+        member: res.data,
       });
     });
   }
 
   getAllCreatedTopics() {
-    TopicBackend.getAllCreatedTopics(
-      this.state.memberId,
-      this.state.tab,
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    TopicBackend.getAllCreatedTopics(this.state.memberId, this.state.tab, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res,
         tab: this.props.match.params.tab,
@@ -128,20 +123,12 @@ class AllCreatedTopicsBox extends React.Component {
   renderTab(tab) {
     return {
       ...(this.state.tab === tab.value ? (
-        <Link
-          key={tab.value}
-          to={`/member/${this.state.memberId}/${tab.value}`}
-          className="cell_tab_current"
-        >
+        <Link key={tab.value} to={`/member/${this.state.memberId}/${tab.value}`} className="cell_tab_current">
           {" "}
           {tab.label}{" "}
         </Link>
       ) : (
-        <Link
-          key={tab.value}
-          to={`/member/${this.state.memberId}/${tab.value}`}
-          className="cell_tab"
-        >
+        <Link key={tab.value} to={`/member/${this.state.memberId}/${tab.value}`} className="cell_tab">
           {" "}
           {tab.label}{" "}
         </Link>
@@ -161,9 +148,7 @@ class AllCreatedTopicsBox extends React.Component {
               if (event.target.value === "all") {
                 this.props.history.push(`/member/${this.state.memberId}/`);
               } else {
-                this.props.history.push(
-                  `/member/${this.state.memberId}/${event.target.value}`
-                );
+                this.props.history.push(`/member/${this.state.memberId}/${event.target.value}`);
               }
             }}
           >
@@ -189,14 +174,7 @@ class AllCreatedTopicsBox extends React.Component {
       return;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.topicsNum}
-        url={url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.topicsNum} url={url} defaultPageNum={this.state.limit} />;
   }
 
   render() {
@@ -223,27 +201,13 @@ class AllCreatedTopicsBox extends React.Component {
           <div className="header">
             <Link to="/">{Setting.getForumName()} </Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <Link to={`/member/${this.state.memberId}`}>
-              {" "}
-              {this.state.memberId}
-            </Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("member:All Topics")}
+            <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("member:All Topics")}
             <div className="fr f12">
-              <span className="snow">
-                {i18next.t("member:Total Topics")}&nbsp;
-              </span>{" "}
-              <strong className="gray">{this.state.topicsNum}</strong>
+              <span className="snow">{i18next.t("member:Total Topics")}&nbsp;</span> <strong className="gray">{this.state.topicsNum}</strong>
             </div>
           </div>
-          {pcBrowser
-            ? this.showPageColumn(`/member/${this.state.memberId}/topics`)
-            : null}
-          <TopicList
-            topics={this.state.topics}
-            showNodeName={true}
-            showAvatar={false}
-          />
+          {pcBrowser ? this.showPageColumn(`/member/${this.state.memberId}/topics`) : null}
+          <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} />
           {this.showPageColumn(`/member/${this.state.memberId}/topics`)}
         </div>
       );
@@ -261,11 +225,7 @@ class AllCreatedTopicsBox extends React.Component {
         <div className="cell_tabs">
           <div className="fl">
             <img
-              src={
-                memberAvatar !== ""
-                  ? memberAvatar
-                  : Setting.getUserAvatar(this.state.memberId)
-              }
+              src={memberAvatar !== "" ? memberAvatar : Setting.getUserAvatar(this.state.memberId)}
               width={24}
               border={0}
               style={{ borderRadius: "24px", marginTop: "-2px" }}
@@ -280,48 +240,29 @@ class AllCreatedTopicsBox extends React.Component {
           {!pcBrowser ? this.renderMobileTab() : null}
           {pcBrowser ? (
             this.state.tab === undefined ? (
-              <Link
-                to={`/member/${this.state.memberId}`}
-                className="cell_tab_current"
-              >
+              <Link to={`/member/${this.state.memberId}`} className="cell_tab_current">
                 {" "}
-                {`${this.state.memberId}${i18next.t(
-                  "member:'s all created topics"
-                )}`}{" "}
+                {`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}
               </Link>
             ) : (
               <Link to={`/member/${this.state.memberId}`} className="cell_tab">
                 {" "}
-                {`${this.state.memberId}${i18next.t(
-                  "member:'s all created topics"
-                )}`}{" "}
+                {`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}
               </Link>
             )
           ) : null}
-          {!pcBrowser ? (
-            <div className="sep10" style={{ clear: "both" }} />
-          ) : null}
+          {!pcBrowser ? <div className="sep10" style={{ clear: "both" }} /> : null}
           {pcBrowser
             ? this.state.TAB_LIST.map((tab) => {
                 return this.renderTab(tab);
               })
             : null}
         </div>
-        <TopicList
-          topics={this.state.topics}
-          showNodeName={true}
-          showAvatar={false}
-          timeStandard={"createdTime"}
-        />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} timeStandard={"createdTime"} />
         {this.state.tab === undefined ? (
           <div className="inner">
             <span className="chevron">»</span>
-            <Link to={`/member/${this.state.memberId}/topics`}>
-              {" "}
-              {`${this.state.memberId}${i18next.t(
-                "member:'s more topics"
-              )}`}{" "}
-            </Link>
+            <Link to={`/member/${this.state.memberId}/topics`}> {`${this.state.memberId}${i18next.t("member:'s more topics")}`} </Link>
           </div>
         ) : null}
       </div>
