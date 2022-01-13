@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "子ノード",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "コミュニティの統計",
     "Compose": "作成",
     "Consumption list": "消費リスト",
@@ -111,6 +112,7 @@
     "My profile": "マイプロフィール",
     "Node not found": "ノードが見つかりません",
     "Plane not found": "平面が見つかりません",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "返信内容は空にできません",
     "Retry Sign Out": "サインアウトを再試行する",
     "Tab not found": "タブが見つかりません",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "のファイルライブラリ",
+    "?": "?",
     "Confirm to delete": "削除の確認",
     "Delete": "削除",
     "Description": "説明",
@@ -209,8 +212,11 @@
     "Topic is loading": "トピックを読み込み中です"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "すべてのトピック",
+    "'s latest replies": "'s latest replies",
     "'s more replies": "より多くの返信",
+    "'s more topics": "'s more topics",
     "'s topic": "s topic",
     "All Replies": "すべての返信",
     "All Topics": "すべてのトピック",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "一番ホットなノード",
     "Markdown": "Markdown",
     "New Topic": "新規トピック",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "ノードを選択してください",
     "Preview": "プレビュー",
     "Publish": "公開",
@@ -315,6 +322,8 @@
     "Set image": "画像を設定",
     "Sorter": "ソート",
     "Tab": "Tab",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "お気に入りの合計",
     "Total nodes": "ノードの合計",
     "Total topics": "Total topics:",
@@ -322,7 +331,9 @@
     "View all nodes": "すべてのノードを表示",
     "all": "すべて",
     "hot": "ホット",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "新しいトピック",
+    "of all": "of all",
     "to": "to",
     "topics": "トピック"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "Creat plane success",
     "Create": "作成",
     "Created time": "作成日時",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "削除",
     "Delete plane": "平面を削除",
     "Font color": "Font color",
@@ -360,6 +372,7 @@
     "Plane list": "平面リスト",
     "Plane management": "平面管理",
     "Plane name": "平面名",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "プレビュー",
     "Restore": "復元",
     "Save": "保存",
@@ -369,7 +382,8 @@
     "Total planes": "合計面数",
     "Update plane information success": "平面情報の更新に成功しました",
     "Visible": "表示",
-    "nodes": "nodes"
+    "nodes": "nodes",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "広告者",
@@ -417,6 +431,7 @@
     "Creat tab success": "タブの作成に成功",
     "Create": "作成",
     "Created time": "作成日時",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "デフォルトノード",
     "Delete": "削除",
     "Delete tab": "タブを削除",
@@ -425,6 +440,7 @@
     "New tab": "New tab",
     "No node exists in this tab": "このタブにはノードが存在しません",
     "No tab yet": "タブはまだありません",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "保存",
     "Sorter": "ソート",
     "Tab ID": "Tab ID",
@@ -437,10 +453,16 @@
     "hidden": "hidden",
     "nodes": "nodes",
     "show": "表示",
+    "success": "success",
     "topics": "トピック"
   },
   "tag": {
     "No related pages with tags": "タグ付きの関連ページはありません"
+  },
+  "theme": {
+    "Choose theme": "テーマを選ぶ",
+    "Default": "既定値",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   },
   "topic": {
     "Appendable": "追加可能",
@@ -519,6 +541,7 @@
     "hits": "ヒット",
     "last reply from": "最後の返信",
     "minutes": "分",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "自由に移動",
     "words": "単語"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "翻訳者管理",
     "Visible": "表示"
-  },
-  "theme": {
-    "Choose theme": "テーマを選ぶ",
-    "Default": "既定値",
-    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

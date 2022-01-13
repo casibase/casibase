@@ -2,7 +2,7 @@
   "about": {
     "About": "关于",
     "Introduction": "简介",
-    "Introduction-content": "Casnode 是 Casbin 开发者和用户的官方论坛。它是一个开源轻论坛 ",
+    "Introduction-content": "Casnode 是 Casbin 社区开发的开源轻论坛程序",
     "Official website": "官网",
     "Version": "版本"
   },
@@ -67,8 +67,9 @@
     "receive": "收到"
   },
   "bar": {
-    "Ad": "Ad",
+    "Ad": "广告",
     "Child nodes": "子节点",
+    "Collapse the extra nodes below": "折叠下方多余节点",
     "Community Stats": "社区运行状况",
     "Compose": "创作新主题",
     "Consumption list": "消费排行榜",
@@ -111,6 +112,7 @@
     "My profile": "我的个人主页",
     "Node not found": "节点未找到",
     "Plane not found": "位面未找到",
+    "Please resolve the following issues before creating a new topic": "请在创建新主题前解决以下问题",
     "Reply content cannot be empty": "回复内容不能为空",
     "Retry Sign Out": "重新登出",
     "Tab not found": "类别未找到",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "的文件库",
+    "?": "?",
     "Confirm to delete": "确认删除",
     "Delete": "删除",
     "Description": "简介文字",
@@ -209,8 +212,11 @@
     "Topic is loading": "主题正在加载"
   },
   "member": {
+    "'s all created topics": " 创建的主题",
     "'s all topics": "的所有主题",
+    "'s latest replies": " 的最新回复",
     "'s more replies": " 创建的更多回复",
+    "'s more topics": " 创建的更多主题",
     "'s topic": "创建的主题",
     "All Replies": "全部回复",
     "All Topics": "全部主题",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "最热节点",
     "Markdown": "Markdown",
     "New Topic": "创作新主题",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "请输入主题标题，如果标题能够表达完整内容，则正文可以为空",
     "Please select a node": "请选择一个节点",
     "Preview": "预览主题",
     "Publish": "发布主题",
@@ -313,8 +320,10 @@
     "Set background image": "设置背景图片",
     "Set header image": "设置头部图片",
     "Set image": "设置图标",
-    "Sorter": "Sorter",
+    "Sorter": "排序",
     "Tab": "类别",
+    "Topic": "第",
+    "Topics in the ignored nodes will not appear on the homepage.": "被忽略的节点中的主题将不会在首页出现",
     "Total favorites": "总收藏人数",
     "Total nodes": "总节点数",
     "Total topics": "主题总数",
@@ -322,7 +331,9 @@
     "View all nodes": "浏览全部节点",
     "all": "共",
     "hot": "热度",
+    "members have added this node to favorites": " 人收藏了这个节点",
     "new topic": "创建新主题",
+    "of all": "/ 共 ",
     "to": "到",
     "topics": "个主题"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "创建位面成功",
     "Create": "创建",
     "Created time": "创建时间",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "删除",
     "Delete plane": "删除位面",
     "Font color": "文字颜色",
@@ -360,6 +372,7 @@
     "Plane list": "位面列表",
     "Plane management": "位面管理",
     "Plane name": "位面名称",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "预览",
     "Restore": "恢复",
     "Save": "保存",
@@ -369,7 +382,8 @@
     "Total planes": "总位面",
     "Update plane information success": "更新位面信息成功",
     "Visible": "可见",
-    "nodes": "节点"
+    "nodes": "节点",
+    "success": "成功"
   },
   "poster": {
     "Advertiser": "广告商",
@@ -417,6 +431,7 @@
     "Creat tab success": "创建类别成功",
     "Create": "创建",
     "Created time": "创建时间",
+    "Currently the number of nodes under the tab is": "当前这个类别下的节点个数是 ",
     "Default node": "默认节点",
     "Delete": "删除",
     "Delete tab": "删除节点",
@@ -424,7 +439,8 @@
     "Manage": "管理",
     "New tab": "新建类别",
     "No node exists in this tab": "此类别下不存在节点",
-    "No tab yet": "暂无Tab",
+    "No tab yet": "暂无类别",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "请删除类别下的所有节点和主题后，再尝试删除类别",
     "Save": "保存",
     "Sorter": "类别排序",
     "Tab ID": "类别 ID",
@@ -437,10 +453,16 @@
     "hidden": "隐藏",
     "nodes": "节点",
     "show": "显示",
+    "success": "成功",
     "topics": "主题"
   },
   "tag": {
     "No related pages with tags": "标签未收录"
+  },
+  "theme": {
+    "Choose theme": "主题样式选择",
+    "Default": "默认主题样式",
+    "v2ex-zhihu-theme": "知乎主题样式"
   },
   "topic": {
     "Appendable": "可增加附言",
@@ -451,7 +473,7 @@
     "Cancel Favor": "取消收藏",
     "CancelHomePageTop": "取消首页置顶",
     "CancelNodeTop": "取消节点置顶",
-    "CancelTabTop": "取消Tab置顶",
+    "CancelTabTop": "取消类别置顶",
     "Content": "内容",
     "Create a Post": "发布我的新作品",
     "Created time": "创建时间",
@@ -494,7 +516,7 @@
     "Status": "状态",
     "Sticky state": "是否处于置顶状态",
     "Tab Topping": "类别置顶",
-    "TabTop": "Tab置顶",
+    "TabTop": "类别置顶",
     "Text syntax format": "正文语法格式",
     "Thank": "感谢",
     "Thanked": "已感谢",
@@ -509,7 +531,7 @@
     "Topic management": "帖子管理",
     "Topic meta information": "主题元信息",
     "Total Topics": "主题总数",
-    "Treatment of link handling type spam": "对于链接搬运类型 spam 的处理",
+    "Treatment of link handling type spam": "对于链接搬运类型 Spam 的处理",
     "Unknown status": "未知状态",
     "Virtual currency system": "虚拟货币系统",
     "community": "社区的主题管理相关功能：",
@@ -519,6 +541,7 @@
     "hits": "次点击",
     "last reply from": "最后回复来自",
     "minutes": "分钟",
+    "minutes? The operation price is 200 copper coins.": "分钟？该操作价格为 200 铜币。",
     "move freely": "自由移动",
     "words": "个字符"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "平台名称",
     "Translator management": "翻译管理",
     "Visible": "可见性"
-  },
-  "theme": {
-    "Choose theme": "主题样式选择",
-    "Default": "默认主题样式",
-    "v2ex-zhihu-theme": "知乎主题样式"
   }
 }

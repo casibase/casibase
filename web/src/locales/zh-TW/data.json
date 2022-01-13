@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "子節點",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "社區運行狀況",
     "Compose": "創作新主題",
     "Consumption list": "消費排行榜",
@@ -111,6 +112,7 @@
     "My profile": "我的個人主頁",
     "Node not found": "節點未找到",
     "Plane not found": "位面未找到",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "回復內容不能為空",
     "Retry Sign Out": "重新登出",
     "Tab not found": "類別未找到",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "的文件庫",
+    "?": "?",
     "Confirm to delete": "確認刪除",
     "Delete": "刪除",
     "Description": "簡介文字",
@@ -209,8 +212,11 @@
     "Topic is loading": "主題正在加載"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "的所有主題",
+    "'s latest replies": "'s latest replies",
     "'s more replies": " 創建的更多回復",
+    "'s more topics": "'s more topics",
     "'s topic": "創建的主題",
     "All Replies": "全部回復",
     "All Topics": "全部主題",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "最熱節點",
     "Markdown": "Markdown",
     "New Topic": "創作新主題",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "請選擇一個節點",
     "Preview": "預覽主題",
     "Publish": "發布主題",
@@ -315,6 +322,8 @@
     "Set image": "設置圖標",
     "Sorter": "Sorter",
     "Tab": "類別",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "總收藏人數",
     "Total nodes": "總節點數",
     "Total topics": "主題總數",
@@ -322,7 +331,9 @@
     "View all nodes": "瀏覽全部節點",
     "all": "共",
     "hot": "熱度",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "創建新主題",
+    "of all": "of all",
     "to": "到",
     "topics": "個主題"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "創建位面成功",
     "Create": "創建",
     "Created time": "創建時間",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "刪除",
     "Delete plane": "刪除位面",
     "Font color": "文字顏色",
@@ -360,6 +372,7 @@
     "Plane list": "位面列表",
     "Plane management": "位面管理",
     "Plane name": "位面名稱",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "預覽",
     "Restore": "恢復",
     "Save": "保存",
@@ -369,7 +382,8 @@
     "Total planes": "總位面",
     "Update plane information success": "更新位面信息成功",
     "Visible": "可見",
-    "nodes": "節點"
+    "nodes": "節點",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "廣告商",
@@ -417,6 +431,7 @@
     "Creat tab success": "創建類別成功",
     "Create": "創建",
     "Created time": "創建時間",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "默認節點",
     "Delete": "刪除",
     "Delete tab": "刪除節點",
@@ -425,6 +440,7 @@
     "New tab": "新建類別",
     "No node exists in this tab": "此類別下不存在節點",
     "No tab yet": "暫無Tab",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "保存",
     "Sorter": "類別排序",
     "Tab ID": "類別 ID",
@@ -437,10 +453,16 @@
     "hidden": "隱藏",
     "nodes": "節點",
     "show": "顯示",
+    "success": "success",
     "topics": "主題"
   },
   "tag": {
     "No related pages with tags": "標簽未收錄"
+  },
+  "theme": {
+    "Choose theme": "主題樣式選擇",
+    "Default": "默認主題樣式",
+    "v2ex-zhihu-theme": "知乎主題樣式"
   },
   "topic": {
     "Appendable": "可增加附言",
@@ -519,6 +541,7 @@
     "hits": "次點擊",
     "last reply from": "最後回復來自",
     "minutes": "分鐘",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "自由移動",
     "words": "個字符"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "平臺名稱",
     "Translator management": "翻譯管理",
     "Visible": "可見性"
-  },
-  "theme": {
-    "Choose theme": "主題樣式選擇",
-    "Default": "默認主題樣式",
-    "v2ex-zhihu-theme": "知乎主題樣式"
   }
 }

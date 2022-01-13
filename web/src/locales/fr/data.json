@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "Nœuds enfants",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "Statistiques de la communauté",
     "Compose": "Composer",
     "Consumption list": "Liste de consommation",
@@ -111,6 +112,7 @@
     "My profile": "Mon profil",
     "Node not found": "Noeud introuvable",
     "Plane not found": "Plan introuvable",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "Le contenu de la réponse ne peut pas être vide",
     "Retry Sign Out": "Réessayez de vous déconnecter",
     "Tab not found": "Onglet introuvable",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "bibliothèque de fichiers",
+    "?": "?",
     "Confirm to delete": "Confirmer la suppression",
     "Delete": "Supprimez",
     "Description": "Libellé",
@@ -209,8 +212,11 @@
     "Topic is loading": "Le sujet est en cours de chargement"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "est tous les sujets",
+    "'s latest replies": "'s latest replies",
     "'s more replies": "a plus de réponses",
+    "'s more topics": "'s more topics",
     "'s topic": "s topic",
     "All Replies": "Toutes les réponses",
     "All Topics": "Tous les sujets",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "Noeuds les plus chauds",
     "Markdown": "Markdown",
     "New Topic": "Nouveau sujet",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "Veuillez sélectionner un noeud",
     "Preview": "Aperçu",
     "Publish": "Publier",
@@ -315,6 +322,8 @@
     "Set image": "Définir l'image",
     "Sorter": "Tri",
     "Tab": "Tab",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "Total des favoris",
     "Total nodes": "Nombre total de nœuds",
     "Total topics": "Total topics:",
@@ -322,7 +331,9 @@
     "View all nodes": "Voir tous les nœuds",
     "all": "Tous",
     "hot": "chaud",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "nouveau sujet",
+    "of all": "of all",
     "to": "à",
     "topics": "Sujets"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "Plan de création réussi",
     "Create": "Créer",
     "Created time": "Date de création",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "Supprimez",
     "Delete plane": "Supprimer l'avion",
     "Font color": "Font color",
@@ -360,6 +372,7 @@
     "Plane list": "Liste des plans",
     "Plane management": "Gestion des plans",
     "Plane name": "Nom du plan",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "Aperçu",
     "Restore": "Restaurer",
     "Save": "Enregistrer",
@@ -369,7 +382,8 @@
     "Total planes": "Total des avions",
     "Update plane information success": "Mise à jour des informations de plan réussie",
     "Visible": "Visible",
-    "nodes": "nodes"
+    "nodes": "nodes",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "Annonceur",
@@ -417,6 +431,7 @@
     "Creat tab success": "Onglet créé avec succès",
     "Create": "Créer",
     "Created time": "Date de création",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "Noeud par défaut",
     "Delete": "Supprimez",
     "Delete tab": "Supprimer l'onglet",
@@ -425,6 +440,7 @@
     "New tab": "New tab",
     "No node exists in this tab": "Aucun noeud n'existe dans cet onglet",
     "No tab yet": "Pas encore d'onglet",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "Enregistrer",
     "Sorter": "Tri",
     "Tab ID": "Tab ID",
@@ -437,10 +453,16 @@
     "hidden": "hidden",
     "nodes": "nodes",
     "show": "afficher",
+    "success": "success",
     "topics": "Sujets"
   },
   "tag": {
     "No related pages with tags": "Aucune page liée avec des tags"
+  },
+  "theme": {
+    "Choose theme": "Choisir le thème",
+    "Default": "Défaut",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   },
   "topic": {
     "Appendable": "Ajoutable",
@@ -519,6 +541,7 @@
     "hits": "hits",
     "last reply from": "dernière réponse de",
     "minutes": "minutes",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "se déplacer librement",
     "words": "mots"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "Gestion des traducteurs",
     "Visible": "Visible"
-  },
-  "theme": {
-    "Choose theme": "Choisir le thème",
-    "Default": "Défaut",
-    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

@@ -93,12 +93,7 @@ class NodeBox extends React.Component {
           nodeInfo: res,
         },
         () => {
-          this.props.getNodeBackground(
-            this.state.nodeId,
-            this.state.nodeInfo?.backgroundImage,
-            this.state.nodeInfo?.backgroundColor,
-            this.state.nodeInfo?.backgroundRepeat
-          );
+          this.props.getNodeBackground(this.state.nodeId, this.state.nodeInfo?.backgroundImage, this.state.nodeInfo?.backgroundColor, this.state.nodeInfo?.backgroundRepeat);
         }
       );
     });
@@ -145,11 +140,7 @@ class NodeBox extends React.Component {
       return;
     }
 
-    TopicBackend.getTopicsWithNode(
-      this.state.nodeId,
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    TopicBackend.getTopicsWithNode(this.state.nodeId, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res,
       });
@@ -231,15 +222,7 @@ class NodeBox extends React.Component {
       return null;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.topicNum}
-        url={this.state.url}
-        nodeId={this.state.nodeId}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.topicNum} url={this.state.url} nodeId={this.state.nodeId} defaultPageNum={this.state.limit} />;
   }
 
   clearMessage() {
@@ -264,11 +247,7 @@ class NodeBox extends React.Component {
     return (
       <div className="header">
         <div className="fr f12">
-          <span className="snow">{i18next.t("node:Total topics")}</span>{" "}
-          <strong className="gray">{this.state.topicNum}</strong>{" "}
-          {this.props.account !== null ? (
-            <span className="snow">&nbsp;•&nbsp;</span>
-          ) : null}{" "}
+          <span className="snow">{i18next.t("node:Total topics")}</span> <strong className="gray">{this.state.topicNum}</strong> {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}{" "}
           {this.props.account !== null ? (
             this.state.favoritesStatus ? (
               <a
@@ -291,21 +270,11 @@ class NodeBox extends React.Component {
             )
           ) : null}
         </div>
-        <Link to="/">{Setting.getForumName()}</Link>{" "}
-        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-        {this.state.nodeInfo?.name}
+        <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {this.state.nodeInfo?.name}
         <div className="sep5"></div>
         {this.props.account !== null ? (
           <div align="right">
-            <input
-              type="button"
-              className="super normal button"
-              value={i18next.t("node:new topic")}
-              onClick={() =>
-                this.props.history.push(`/new/${this.state.nodeId}`)
-              }
-              style={{ width: "100%", lineHeight: "20px" }}
-            />
+            <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={() => this.props.history.push(`/new/${this.state.nodeId}`)} style={{ width: "100%", lineHeight: "20px" }} />
           </div>
         ) : null}
       </div>
@@ -331,32 +300,15 @@ class NodeBox extends React.Component {
               marginBottom: "initial!important",
             }}
           >
-            <img
-              src={nodeInfo?.image}
-              border="0"
-              align="default"
-              width="72"
-              alt={nodeInfo?.nodeName}
-            />
+            <img src={nodeInfo?.image} border="0" align="default" width="72" alt={nodeInfo?.nodeName} />
           </div>
         </div>
         <div className="node_info">
           <div className="fr f12">
             <span className="gray">
-              {this.state.nodeInfo?.moderators !== null &&
-              this.state.nodeInfo?.moderators.length !== 0 ? (
+              {this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ? (
                 <span>
-                  {this.props.account?.isAdmin ? (
-                    <Link
-                      to={`/go/${encodeURIComponent(
-                        this.state.nodeId
-                      )}/moderators`}
-                    >
-                      {i18next.t("node:Moderator")}
-                    </Link>
-                  ) : (
-                    <span>{i18next.t("node:Moderator")}</span>
-                  )}
+                  {this.props.account?.isAdmin ? <Link to={`/go/${encodeURIComponent(this.state.nodeId)}/moderators`}>{i18next.t("node:Moderator")}</Link> : <span>{i18next.t("node:Moderator")}</span>}
                   {this.state.nodeInfo?.moderators.map((member) => {
                     return (
                       <span key={member}>
@@ -369,17 +321,7 @@ class NodeBox extends React.Component {
                   })}
                 </span>
               ) : this.props.account?.isAdmin ? (
-                <Link
-                  to={
-                    this.props.account?.isAdmin
-                      ? `/go/${encodeURIComponent(
-                          this.state.nodeId
-                        )}/moderators`
-                      : null
-                  }
-                >
-                  {i18next.t("node:No moderators")}
-                </Link>
+                <Link to={this.props.account?.isAdmin ? `/go/${encodeURIComponent(this.state.nodeId)}/moderators` : null}>{i18next.t("node:No moderators")}</Link>
               ) : (
                 <span>{i18next.t("node:No moderators")}</span>
               )}{" "}
@@ -387,9 +329,7 @@ class NodeBox extends React.Component {
             </span>
             <span>{i18next.t("node:Total topics")}&nbsp;</span>
             <strong>{this.state.topicNum}</strong>
-            {this.props.account !== null ? (
-              <span className="snow">&nbsp;•&nbsp;</span>
-            ) : null}
+            {this.props.account !== null ? <span className="snow">&nbsp;•&nbsp;</span> : null}
             {this.props.account !== null ? (
               this.state.favoritesStatus ? (
                 <a
@@ -413,20 +353,7 @@ class NodeBox extends React.Component {
                 </a>
               )
             ) : null}
-            <div>
-              {this.state.nodeInfo.mailingList === "" ? (
-                i18next.t("node:No mailing list yet")
-              ) : (
-                <a
-                  href={
-                    "https://groups.google.com/g/" +
-                    this.state.nodeInfo.mailingList.split("@")[0]
-                  }
-                >
-                  {this.state.nodeInfo.mailingList}
-                </a>
-              )}
-            </div>
+            <div>{this.state.nodeInfo.mailingList === "" ? i18next.t("node:No mailing list yet") : <a href={"https://groups.google.com/g/" + this.state.nodeInfo.mailingList.split("@")[0]}>{this.state.nodeInfo.mailingList}</a>}</div>
           </div>
           <Link to="/" className={`${this.state.nodeId}`}>
             {Setting.getForumName()}
@@ -459,24 +386,10 @@ class NodeBox extends React.Component {
           </span>
           <div className="sep10"></div>
           <div className="node_header_tabs">
-            <Link
-              to={`/go/${encodeURIComponent(nodeId)}`}
-              className={
-                !this.props.match.params.event
-                  ? "node_header_tab_current"
-                  : "node_header_tab"
-              }
-            >
+            <Link to={`/go/${encodeURIComponent(nodeId)}`} className={!this.props.match.params.event ? "node_header_tab_current" : "node_header_tab"}>
               {i18next.t("node:All topics")}
             </Link>
-            <Link
-              to={`/go/${encodeURIComponent(nodeId)}/links`}
-              className={
-                this.props.match.params.event
-                  ? "node_header_tab_current"
-                  : "node_header_tab"
-              }
-            >
+            <Link to={`/go/${encodeURIComponent(nodeId)}/links`} className={this.props.match.params.event ? "node_header_tab_current" : "node_header_tab"}>
               {i18next.t("node:Related links")}
             </Link>
           </div>
@@ -497,27 +410,13 @@ class NodeBox extends React.Component {
 
     return (
       <div className={`box ${this.state.nodeId}`}>
-        {Setting.PcBrowser
-          ? this.renderDesktopHeader()
-          : this.renderMobileHeader()}
+        {Setting.PcBrowser ? this.renderDesktopHeader() : this.renderMobileHeader()}
         {Setting.PcBrowser ? this.showPageColumn() : null}
-        <TopicList
-          nodeId={this.state.nodeId}
-          topics={this.state.topics}
-          showNodeName={false}
-          showAvatar={true}
-          topType={"node"}
-        />
+        <TopicList nodeId={this.state.nodeId} topics={this.state.topics} showNodeName={false} showAvatar={true} topType={"node"} />
         {this.showPageColumn()}
         <div className="cell" align="center">
-          <div className="fr">{`${this.state.favoritesNum} ${i18next.t(
-            "node:members have added this node to favorites"
-          )}`}</div>
-          <span className="gray">{`${i18next.t(
-            "node:Topic"
-          )} ${from} ${i18next.t("node:to")} ${end} ${i18next.t(
-            "node:of all"
-          )} ${this.state.topicNum} ${i18next.t("node:topics")}`}</span>
+          <div className="fr">{`${this.state.favoritesNum} ${i18next.t("node:members have added this node to favorites")}`}</div>
+          <span className="gray">{`${i18next.t("node:Topic")} ${from} ${i18next.t("node:to")} ${end} ${i18next.t("node:of all")} ${this.state.topicNum} ${i18next.t("node:topics")}`}</span>
         </div>
       </div>
     );
@@ -528,11 +427,7 @@ class NodeBox extends React.Component {
       <tr>
         <td width="120" align="right"></td>
         <td width="auto" align="left">
-          <Link
-            to={`/member/${moderators}`}
-            style={{ fontWeight: "bolder" }}
-            target="_blank"
-          >
+          <Link to={`/member/${moderators}`} style={{ fontWeight: "bolder" }} target="_blank">
             {moderators}
           </Link>
         </td>
@@ -563,13 +458,10 @@ class NodeBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("loading:Node is loading")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Node is loading")}
             </div>
             <div className="cell">
-              <span className="gray bigger">
-                {i18next.t("loading:Please wait patiently...")}
-              </span>
+              <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
             </div>
           </div>
         </div>
@@ -583,43 +475,29 @@ class NodeBox extends React.Component {
           <div class="box">
             <div class="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("error:Node not found")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Node not found")}
             </div>
             <div class="cell">
-              {i18next.t(
-                "error:The node you are trying to view does not exist, there are several possibilities"
-              )}
+              {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
               <div class="sep10"></div>
               <ul>
-                <li>
-                  {i18next.t(
-                    "error:You entered a node ID that does not exist."
-                  )}
-                </li>
-                <li>
-                  {i18next.t("error:The node is currently in invisible state.")}
-                </li>
+                <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
+                <li>{i18next.t("error:The node is currently in invisible state.")}</li>
               </ul>
             </div>
             <div class="inner">
               {this.props.account === null ? (
                 <span className="gray">
                   <span className="chevron">‹</span> &nbsp;
-                  {i18next.t("error:Back to")}{" "}
-                  <Link to="/">{i18next.t("error:Home Page")}</Link>
+                  {i18next.t("error:Back to")} <Link to="/">{i18next.t("error:Home Page")}</Link>
                 </span>
               ) : (
                 <span className="gray">
                   <span className="chevron">‹</span> &nbsp;
-                  {i18next.t("error:Back to")}{" "}
-                  <Link to="/">{i18next.t("error:Home Page")}</Link>
+                  {i18next.t("error:Back to")} <Link to="/">{i18next.t("error:Home Page")}</Link>
                   <br />
                   <span className="chevron">‹</span> &nbsp;
-                  {i18next.t("error:Back to")}{" "}
-                  <Link to={`/member/${this.props.account?.name}`}>
-                    {i18next.t("error:My profile")}
-                  </Link>
+                  {i18next.t("error:Back to")} <Link to={`/member/${this.props.account?.name}`}>{i18next.t("error:My profile")}</Link>
                 </span>
               )}
             </div>
@@ -640,8 +518,7 @@ class NodeBox extends React.Component {
         <div className={`box ${this.state.nodeId}`}>
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("node:Moderator Management")}
+            <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("node:Moderator Management")}
           </div>
           {this.renderMessage()}
           <div className="cell">
@@ -655,27 +532,20 @@ class NodeBox extends React.Component {
                     {this.state.nodeInfo?.name}
                   </td>
                 </tr>
-                {this.state.nodeInfo?.moderators !== null &&
-                this.state.nodeInfo?.moderators.length !== 0 ? (
+                {this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ? (
                   <tr>
                     <td width="120" align="right">
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <Link
-                        to={`/member/${this.state.nodeInfo?.moderators[0]}`}
-                        style={{ fontWeight: "bolder" }}
-                        target="_blank"
-                      >
+                      <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{ fontWeight: "bolder" }} target="_blank">
                         {this.state.nodeInfo?.moderators[0]}
                       </Link>
                     </td>
                     <td width="auto" align="left">
                       <a
                         onClick={() => {
-                          this.deleteNodeModerator(
-                            this.state.nodeInfo?.moderators[0]
-                          );
+                          this.deleteNodeModerator(this.state.nodeInfo?.moderators[0]);
                         }}
                         href="javascript:void(0);"
                       >
@@ -689,19 +559,11 @@ class NodeBox extends React.Component {
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <span class="gray">
-                        {i18next.t("node:No moderators")}
-                      </span>
+                      <span class="gray">{i18next.t("node:No moderators")}</span>
                     </td>
                   </tr>
                 )}
-                {this.state.nodeInfo?.moderators !== null
-                  ? this.state.nodeInfo?.moderators
-                      .slice(1)
-                      .map((moderators) =>
-                        this.renderNodeModerators(moderators)
-                      )
-                  : null}
+                {this.state.nodeInfo?.moderators !== null ? this.state.nodeInfo?.moderators.slice(1).map((moderators) => this.renderNodeModerators(moderators)) : null}
               </tbody>
             </table>
           </div>
@@ -713,29 +575,13 @@ class NodeBox extends React.Component {
                     {i18next.t("node:Add moderator")}
                   </td>
                   <td width="auto" align="left">
-                    <input
-                      type="text"
-                      className="sl"
-                      name="title"
-                      maxLength="64"
-                      value={this.state.newModerator}
-                      onChange={(event) =>
-                        this.inputNewModerator(event.target.value)
-                      }
-                    />
+                    <input type="text" className="sl" name="title" maxLength="64" value={this.state.newModerator} onChange={(event) => this.inputNewModerator(event.target.value)} />
                   </td>
                 </tr>
                 <tr>
                   <td width="120" align="right"></td>
                   <td width="auto" align="left">
-                    <input
-                      type="submit"
-                      className="super normal button"
-                      value={i18next.t("node:Add")}
-                      onClick={() =>
-                        this.addNodeModerator(this.state.newModerator)
-                      }
-                    />
+                    <input type="submit" className="super normal button" value={i18next.t("node:Add")} onClick={() => this.addNodeModerator(this.state.newModerator)} />
                   </td>
                 </tr>
               </tbody>
@@ -750,15 +596,7 @@ class NodeBox extends React.Component {
         {pcBrowser ? <div className="sep20" /> : null}
         {this.renderNode()}
         {pcBrowser ? <div className="sep20" /> : null}
-        {this.props.account !== undefined &&
-        this.props.account !== null &&
-        pcBrowser ? (
-          <NewNodeTopicBox
-            nodeId={this.state.nodeId}
-            account={this.props.account}
-            size={"small"}
-          />
-        ) : null}
+        {this.props.account !== undefined && this.props.account !== null && pcBrowser ? <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} /> : null}
       </div>
     );
   }

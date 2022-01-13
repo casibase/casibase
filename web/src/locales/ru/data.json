@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "Дочерние узлы",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "Статистика сообщества",
     "Compose": "Написать",
     "Consumption list": "Список потребления",
@@ -111,6 +112,7 @@
     "My profile": "Мой профиль",
     "Node not found": "Узел не найден",
     "Plane not found": "Самолет не найден",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "Содержимое ответа не может быть пустым",
     "Retry Sign Out": "Повторить выход",
     "Tab not found": "Вкладка не найдена",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "библиотека файлов",
+    "?": "?",
     "Confirm to delete": "Подтвердить удаление",
     "Delete": "Удалить",
     "Description": "Описание",
@@ -209,8 +212,11 @@
     "Topic is loading": "Тема загружается"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "все темы",
+    "'s latest replies": "'s latest replies",
     "'s more replies": "больше ответов",
+    "'s more topics": "'s more topics",
     "'s topic": "s topic",
     "All Replies": "Все ответы",
     "All Topics": "Все темы",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "Самые популярные узлы",
     "Markdown": "Markdown",
     "New Topic": "Новая тема",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "Пожалуйста, выберите узел",
     "Preview": "Предпросмотр",
     "Publish": "Опубликовать",
@@ -315,6 +322,8 @@
     "Set image": "Установить изображение",
     "Sorter": "Сортировать",
     "Tab": "Tab",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "Всего избранных",
     "Total nodes": "Всего узлов",
     "Total topics": "Total topics:",
@@ -322,7 +331,9 @@
     "View all nodes": "Просмотреть все узлы",
     "all": "все",
     "hot": "горячий",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "новая тема",
+    "of all": "of all",
     "to": "до",
     "topics": "темы"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "Плоскость креата выполнена",
     "Create": "Создать",
     "Created time": "Время создания",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "Удалить",
     "Delete plane": "Удалить плоскость",
     "Font color": "Font color",
@@ -360,6 +372,7 @@
     "Plane list": "Список плоскости",
     "Plane management": "Управление плоскостью",
     "Plane name": "Имя плоскости",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "Предпросмотр",
     "Restore": "Восстановить",
     "Save": "Сохранить",
@@ -369,7 +382,8 @@
     "Total planes": "Всего самолетов",
     "Update plane information success": "Информация о самолете успешно обновлена",
     "Visible": "Видимый",
-    "nodes": "nodes"
+    "nodes": "nodes",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "Рекламодатель",
@@ -417,6 +431,7 @@
     "Creat tab success": "Успешная вкладка Creat",
     "Create": "Создать",
     "Created time": "Время создания",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "Точка по умолчанию",
     "Delete": "Удалить",
     "Delete tab": "Удалить вкладку",
@@ -425,6 +440,7 @@
     "New tab": "New tab",
     "No node exists in this tab": "В этой вкладке нет узла",
     "No tab yet": "Пока нет вкладки",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "Сохранить",
     "Sorter": "Сортировать",
     "Tab ID": "Tab ID",
@@ -437,10 +453,16 @@
     "hidden": "hidden",
     "nodes": "nodes",
     "show": "показать",
+    "success": "success",
     "topics": "темы"
   },
   "tag": {
     "No related pages with tags": "Нет связанных страниц с тэгами"
+  },
+  "theme": {
+    "Choose theme": "выбрать тему",
+    "Default": "По умолчанию",
+    "v2ex-zhihu-theme": "Четкий стиль"
   },
   "topic": {
     "Appendable": "Добавимый",
@@ -519,6 +541,7 @@
     "hits": "хитов",
     "last reply from": "последний ответ от",
     "minutes": "минуты",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "свободно двигаться",
     "words": "слова"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "Управление переводчиком",
     "Visible": "Видимый"
-  },
-  "theme": {
-    "Choose theme": "выбрать тему",
-    "Default": "По умолчанию",
-    "v2ex-zhihu-theme": "Четкий стиль"
   }
 }

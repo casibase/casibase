@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "Child nodes",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "Community Stats",
     "Compose": "Compose",
     "Consumption list": "Consumption list",
@@ -111,6 +112,7 @@
     "My profile": "My profile",
     "Node not found": "Node not found",
     "Plane not found": "Plane not found",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "Reply content cannot be empty",
     "Retry Sign Out": "Retry Sign Out",
     "Tab not found": "Tab not found",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "'s file library",
+    "?": "?",
     "Confirm to delete": "Confirm to delete",
     "Delete": "Delete",
     "Description": "Description",
@@ -209,8 +212,11 @@
     "Topic is loading": "Topic is loading"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "'s all topics",
+    "'s latest replies": "'s latest replies",
     "'s more replies": "'s more replies",
+    "'s more topics": "'s more topics",
     "'s topic": "s topic",
     "All Replies": "All Replies",
     "All Topics": "All Topics",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "Hottest Nodes",
     "Markdown": "Markdown",
     "New Topic": "New Topic",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "Please select a node",
     "Preview": "Preview",
     "Publish": "Publish",
@@ -315,6 +322,8 @@
     "Set image": "Set image",
     "Sorter": "Sorter",
     "Tab": "Tab",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "Total favorites",
     "Total nodes": "Total nodes",
     "Total topics": "Total topics:",
@@ -322,7 +331,9 @@
     "View all nodes": "View all nodes",
     "all": "all",
     "hot": "hot",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "new topic",
+    "of all": "of all",
     "to": "to",
     "topics": "topics"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "Creat plane success",
     "Create": "Create",
     "Created time": "Created time",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "Delete",
     "Delete plane": "Delete plane",
     "Font color": "Font color",
@@ -360,6 +372,7 @@
     "Plane list": "Plane list",
     "Plane management": "Plane management",
     "Plane name": "Plane name",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "Preview",
     "Restore": "Restore",
     "Save": "Save",
@@ -369,7 +382,8 @@
     "Total planes": "Total planes",
     "Update plane information success": "Update plane information success",
     "Visible": "Visible",
-    "nodes": "nodes"
+    "nodes": "nodes",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "Advertiser",
@@ -417,6 +431,7 @@
     "Creat tab success": "Creat tab success",
     "Create": "Create",
     "Created time": "Created time",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "Default node",
     "Delete": "Delete",
     "Delete tab": "Delete tab",
@@ -425,6 +440,7 @@
     "New tab": "New tab",
     "No node exists in this tab": "No node exists in this tab",
     "No tab yet": "No tab yet",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "Save",
     "Sorter": "Sorter",
     "Tab ID": "Tab ID",
@@ -437,10 +453,16 @@
     "hidden": "hidden",
     "nodes": "nodes",
     "show": "show",
+    "success": "success",
     "topics": "topics"
   },
   "tag": {
     "No related pages with tags": "No related pages with tags"
+  },
+  "theme": {
+    "Choose theme": "Choose theme",
+    "Default": "Default",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   },
   "topic": {
     "Appendable": "Appendable",
@@ -519,6 +541,7 @@
     "hits": "hits",
     "last reply from": "last reply from",
     "minutes": "minutes",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "move freely",
     "words": "words"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "Translator management",
     "Visible": "Visible"
-  },
-  "theme": {
-    "Choose theme": "Choose theme",
-    "Default": "Default",
-    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

@@ -78,11 +78,7 @@ class LatestReplyBox extends React.Component {
   }
 
   getLatestReplies() {
-    ReplyBackend.getLatestReplies(
-      this.state.memberId,
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    ReplyBackend.getLatestReplies(this.state.memberId, this.state.limit, this.state.page).then((res) => {
       this.setState({
         replies: res,
       });
@@ -106,14 +102,7 @@ class LatestReplyBox extends React.Component {
       return;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.repliesNum}
-        url={this.state.url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.repliesNum} url={this.state.url} defaultPageNum={this.state.limit} />;
   }
 
   renderReplies(reply) {
@@ -131,28 +120,11 @@ class LatestReplyBox extends React.Component {
                   }}
                 >
                   <div className="fr">
-                    <span className="fade">
-                      {Setting.getPrettyDate(reply.replyTime)}
-                    </span>
+                    <span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span>
                   </div>
                   <span className="gray">
-                    {i18next.t("member:replied")}{" "}
-                    <Link to={`/member/${reply.topicAuthor}`}>
-                      {" "}
-                      {reply.topicAuthor}{" "}
-                    </Link>{" "}
-                    {i18next.t("member:'s topic")}{" "}
-                    <span className="chevron">›</span>{" "}
-                    <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>
-                    <span className="chevron">›</span>{" "}
-                    <Link
-                      to={`/t/${reply.topicId}?from=${encodeURIComponent(
-                        window.location.href
-                      )}`}
-                    >
-                      {" "}
-                      {pangu.spacing(reply.topicTitle)}{" "}
-                    </Link>
+                    {i18next.t("member:replied")} <Link to={`/member/${reply.topicAuthor}`}> {reply.topicAuthor} </Link> {i18next.t("member:'s topic")} <span className="chevron">›</span> <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>
+                    <span className="chevron">›</span> <Link to={`/t/${reply.topicId}?from=${encodeURIComponent(window.location.href)}`}> {pangu.spacing(reply.topicTitle)} </Link>
                   </span>
                 </td>
               </tr>
@@ -186,17 +158,9 @@ class LatestReplyBox extends React.Component {
           <div className="header">
             <Link to="/">{Setting.getForumName()} </Link>
             <span className="chevron">&nbsp;›&nbsp;</span>
-            <Link to={`/member/${this.state.memberId}`}>
-              {" "}
-              {this.state.memberId}
-            </Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("member:All Replies")}
+            <Link to={`/member/${this.state.memberId}`}> {this.state.memberId}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("member:All Replies")}
             <div className="fr f12">
-              <span className="snow">
-                {i18next.t("member:Total Replies")}&nbsp;
-              </span>{" "}
-              <strong className="gray">{this.state.repliesNum}</strong>
+              <span className="snow">{i18next.t("member:Total Replies")}&nbsp;</span> <strong className="gray">{this.state.repliesNum}</strong>
             </div>
           </div>
           {Setting.PcBrowser ? this.showPageColumn() : null}
@@ -211,18 +175,13 @@ class LatestReplyBox extends React.Component {
     return (
       <div className="box">
         <div className="cell">
-          <span className="gray">{`${this.state.memberId}${i18next.t(
-            "member:'s latest replies"
-          )}`}</span>
+          <span className="gray">{`${this.state.memberId}${i18next.t("member:'s latest replies")}`}</span>
         </div>
         {this.state.replies?.map((reply) => {
           return this.renderReplies(reply);
         })}
         <div className="inner">
-          <span className="chevron">»</span>{" "}
-          <Link to={`/member/${this.state.memberId}/replies`}>{`${
-            this.state.memberId
-          }${i18next.t("member:'s more replies")}`}</Link>
+          <span className="chevron">»</span> <Link to={`/member/${this.state.memberId}/replies`}>{`${this.state.memberId}${i18next.t("member:'s more replies")}`}</Link>
         </div>
       </div>
     );

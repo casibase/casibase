@@ -62,22 +62,11 @@ class RightNodeBox extends React.Component {
       <div key={node?.id} className="node rightFavorite node-casbin">
         <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
-            <img
-              src={Setting.getStatic("/img/compose.png")}
-              align="absmiddle"
-              border="0"
-              width="23"
-              height="18"
-              alt="New Topic"
-            />
+            <img src={Setting.getStatic("/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic" />
           </Link>
         </div>
         <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
-          <div
-            id="avatar"
-            style={{ backgroundImage: `url(${node?.image})` }}
-            className="rightFavorite"
-          />
+          <div id="avatar" style={{ backgroundImage: `url(${node?.image})` }} className="rightFavorite" />
         </Link>
         &nbsp;{" "}
         <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
@@ -115,35 +104,19 @@ class RightNodeBox extends React.Component {
                   <Panel
                     header={
                       <span>
-                        <i
-                          className={
-                            this.state.showRelatedNode
-                              ? "fa fa-caret-down"
-                              : "fa fa-caret-right"
-                          }
-                        >
+                        <i className={this.state.showRelatedNode ? "fa fa-caret-down" : "fa fa-caret-right"}>
                           {" "}
                           &nbsp;
-                          <span>
-                            {this.state.showRelatedNode
-                              ? `${i18next.t(
-                                  "bar:Collapse the extra nodes below"
-                                )}`
-                              : `${i18next.t("bar:show")} ${
-                                  relatedNum - 5
-                                } ${i18next.t("bar:more related nodes")}`}
-                          </span>
+                          <span>{this.state.showRelatedNode ? `${i18next.t("bar:Collapse the extra nodes below")}` : `${i18next.t("bar:show")} ${relatedNum - 5} ${i18next.t("bar:more related nodes")}`}</span>
                         </i>
                       </span>
                     }
                     showArrow={false}
                     className="toggle-more-nodes"
                   >
-                    {this.state.info?.relatedNode
-                      .slice(5, relatedNum)
-                      .map((node) => {
-                        return this.renderNodes(node);
-                      })}
+                    {this.state.info?.relatedNode.slice(5, relatedNum).map((node) => {
+                      return this.renderNodes(node);
+                    })}
                   </Panel>
                 </Collapse>
               ) : null}
@@ -167,35 +140,19 @@ class RightNodeBox extends React.Component {
                   <Panel
                     header={
                       <span>
-                        <i
-                          className={
-                            this.state.showChildNode
-                              ? "fa fa-caret-down"
-                              : "fa fa-caret-right"
-                          }
-                        >
+                        <i className={this.state.showChildNode ? "fa fa-caret-down" : "fa fa-caret-right"}>
                           {" "}
                           &nbsp;
-                          <span>
-                            {this.state.showChildNode
-                              ? `${i18next.t(
-                                  "bar:Collapse the extra nodes below"
-                                )}`
-                              : `${i18next.t("bar:show")} ${
-                                  childNum - 5
-                                } ${i18next.t("bar:more child nodes")}`}
-                          </span>
+                          <span>{this.state.showChildNode ? `${i18next.t("bar:Collapse the extra nodes below")}` : `${i18next.t("bar:show")} ${childNum - 5} ${i18next.t("bar:more child nodes")}`}</span>
                         </i>
                       </span>
                     }
                     showArrow={false}
                     className="toggle-more-nodes"
                   >
-                    {this.state.info?.childNode
-                      .slice(5, childNum)
-                      .map((node) => {
-                        return this.renderNodes(node);
-                      })}
+                    {this.state.info?.childNode.slice(5, childNum).map((node) => {
+                      return this.renderNodes(node);
+                    })}
                   </Panel>
                 </Collapse>
               ) : null}

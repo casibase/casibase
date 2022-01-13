@@ -69,6 +69,7 @@
   "bar": {
     "Ad": "Ad",
     "Child nodes": "Unterknoten",
+    "Collapse the extra nodes below": "Collapse the extra nodes below",
     "Community Stats": "Community-Statistik",
     "Compose": "Verfassen",
     "Consumption list": "Verbrauchsliste",
@@ -111,6 +112,7 @@
     "My profile": "Mein Profil",
     "Node not found": "Knoten nicht gefunden",
     "Plane not found": "Ebene nicht gefunden",
+    "Please resolve the following issues before creating a new topic": "Please resolve the following issues before creating a new topic",
     "Reply content cannot be empty": "Antwortinhalt darf nicht leer sein",
     "Retry Sign Out": "Abmeldung wiederholen",
     "Tab not found": "Tab nicht gefunden",
@@ -131,6 +133,7 @@
   },
   "file": {
     "'s file library": "'s Dateibibliothek",
+    "?": "?",
     "Confirm to delete": "Löschen bestätigen",
     "Delete": "Löschen",
     "Description": "Beschreibung",
@@ -209,8 +212,11 @@
     "Topic is loading": "Thema wird geladen"
   },
   "member": {
+    "'s all created topics": "'s all created topics",
     "'s all topics": "'s alle Themen",
+    "'s latest replies": "'s latest replies",
     "'s more replies": "'s mehr Antworten",
+    "'s more topics": "'s more topics",
     "'s topic": "s topic",
     "All Replies": "Alle Antworten",
     "All Topics": "Alle Themen",
@@ -253,6 +259,7 @@
     "Hottest Nodes": "Heißste Knoten",
     "Markdown": "Markdown",
     "New Topic": "Neues Thema",
+    "Please input the topic title. The body can be empty if the title expresses the full idea": "Please input the topic title. The body can be empty if the title expresses the full idea",
     "Please select a node": "Bitte wählen Sie einen Knoten",
     "Preview": "Vorschau",
     "Publish": "Veröffentlichen",
@@ -315,6 +322,8 @@
     "Set image": "Bild festlegen",
     "Sorter": "Sortierer",
     "Tab": "Tab",
+    "Topic": "Topic",
+    "Topics in the ignored nodes will not appear on the homepage.": "Topics in the ignored nodes will not appear on the homepage.",
     "Total favorites": "Favoriten insgesamt",
     "Total nodes": "Knoten insgesamt",
     "Total topics": "Total topics:",
@@ -322,7 +331,9 @@
     "View all nodes": "Alle Knoten anzeigen",
     "all": "alle",
     "hot": "heiß",
+    "members have added this node to favorites": "members have added this node to favorites",
     "new topic": "neues Thema",
+    "of all": "of all",
     "to": "zu",
     "topics": "themen"
   },
@@ -345,6 +356,7 @@
     "Creat plane success": "Ebene erfolgreich erstellen",
     "Create": "Anlegen",
     "Created time": "Erstellte Zeit",
+    "Currently the number of nodes under the plane is": "Currently the number of nodes under the plane is",
     "Delete": "Löschen",
     "Delete plane": "Ebene löschen",
     "Font color": "Font color",
@@ -360,6 +372,7 @@
     "Plane list": "Ebenenliste",
     "Plane management": "Ebenenmanagement",
     "Plane name": "Ebenenname",
+    "Please delete all the nodes or move to another plane before deleting the plane": "Please delete all the nodes or move to another plane before deleting the plane",
     "Preview": "Vorschau",
     "Restore": "Wiederherstellen",
     "Save": "Speichern",
@@ -369,7 +382,8 @@
     "Total planes": "Gesamte Flugzeuge",
     "Update plane information success": "Aktualisierung der Fluginformationen erfolgreich",
     "Visible": "Sichtbar",
-    "nodes": "nodes"
+    "nodes": "nodes",
+    "success": "success"
   },
   "poster": {
     "Advertiser": "Werbetreibender",
@@ -417,6 +431,7 @@
     "Creat tab success": "Tab erfolgreich erstellen",
     "Create": "Anlegen",
     "Created time": "Erstellte Zeit",
+    "Currently the number of nodes under the tab is": "Currently the number of nodes under the tab is",
     "Default node": "Standardknoten",
     "Delete": "Löschen",
     "Delete tab": "Tab löschen",
@@ -425,6 +440,7 @@
     "New tab": "New tab",
     "No node exists in this tab": "In diesem Tab existiert kein Knoten",
     "No tab yet": "Noch kein Tab",
+    "Please delete all the nodes and posts under the tab before deleting the tab": "Please delete all the nodes and posts under the tab before deleting the tab",
     "Save": "Speichern",
     "Sorter": "Sortierer",
     "Tab ID": "Tab ID",
@@ -437,10 +453,16 @@
     "hidden": "hidden",
     "nodes": "nodes",
     "show": "zeigen",
+    "success": "success",
     "topics": "themen"
   },
   "tag": {
     "No related pages with tags": "Keine verwandten Seiten mit Tags"
+  },
+  "theme": {
+    "Choose theme": "Thema wählen",
+    "Default": "Standard",
+    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   },
   "topic": {
     "Appendable": "Angewandt",
@@ -519,6 +541,7 @@
     "hits": "hits",
     "last reply from": "letzte Antwort von",
     "minutes": "minuten",
+    "minutes? The operation price is 200 copper coins.": "minutes? The operation price is 200 copper coins.",
     "move freely": "frei bewegen",
     "words": "worte"
   },
@@ -543,10 +566,5 @@
     "Translation Platform Name": "Platform Name",
     "Translator management": "Übersetzerverwaltung",
     "Visible": "Sichtbar"
-  },
-  "theme": {
-    "Choose theme": "Thema wählen",
-    "Default": "Standard",
-    "v2ex-zhihu-theme": "v2ex-zhihu-theme"
   }
 }

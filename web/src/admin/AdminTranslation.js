@@ -102,9 +102,7 @@ class AdminTranslation extends React.Component {
           });
         }}
         options={{
-          placeholder: i18next.t(
-            "translator:Please select a translator platform"
-          ),
+          placeholder: i18next.t("translator:Please select a translator platform"),
         }}
       />
     );
@@ -176,9 +174,7 @@ class AdminTranslation extends React.Component {
         TranslatorBackend.updateTranslator(this.state.form).then((res) => {
           if (res.status === "ok") {
             this.setState({
-              message: i18next.t(
-                "translator:Update translator information success"
-              ),
+              message: i18next.t("translator:Update translator information success"),
             });
           } else {
             this.setState({
@@ -235,13 +231,7 @@ class AdminTranslation extends React.Component {
   }
 
   deleteTranslator(translator) {
-    if (
-      window.confirm(
-        `${i18next.t(`translator:Are you sure to delete translator`)} ${
-          translator.name
-        } ?`
-      )
-    ) {
+    if (window.confirm(`${i18next.t(`translator:Are you sure to delete translator`)} ${translator.name} ?`)) {
       if (translator.enable) {
         alert(i18next.t("translator:Please disable it first"));
         return;
@@ -323,9 +313,7 @@ class AdminTranslation extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearErrorMessage()}>
-        {i18next.t(
-          "error:Please resolve the following issues before submitting"
-        )}
+        {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
           {problems.map((problem) => {
             return <li>{problem}</li>;
@@ -341,11 +329,7 @@ class AdminTranslation extends React.Component {
 
   renderManagementList(item) {
     return (
-      <a
-        href="javascript:void(0);"
-        className={this.state.event === item.value ? "tab_current" : "tab"}
-        onClick={() => this.changeEvent(item.value)}
-      >
+      <a href="javascript:void(0);" className={this.state.event === item.value ? "tab_current" : "tab"} onClick={() => this.changeEvent(item.value)}>
         {i18next.t(`translator:${item.label}`)}
       </a>
     );
@@ -369,20 +353,10 @@ class AdminTranslation extends React.Component {
                 <span>{translator?.translator}</span>
               </td>
               <td width={pcBrowser ? "200" : "auto"} align="center">
-                {translator?.enable ? (
-                  <span className="positive">
-                    {i18next.t("translator:Enable")}
-                  </span>
-                ) : (
-                  <span className="gray">
-                    {i18next.t("translator:Disable")}
-                  </span>
-                )}
+                {translator?.enable ? <span className="positive">{i18next.t("translator:Enable")}</span> : <span className="gray">{i18next.t("translator:Disable")}</span>}
               </td>
               <td>
-                <a onClick={() => this.deleteTranslator(translator)}>
-                  {i18next.t("translator:Delete")}
-                </a>
+                <a onClick={() => this.deleteTranslator(translator)}>{i18next.t("translator:Delete")}</a>
               </td>
             </tr>
           </tbody>
@@ -396,11 +370,9 @@ class AdminTranslation extends React.Component {
       <div>
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("translator:Translator management")}
+            <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("translator:Translator management")}
           </div>
           <div className="cell">
             {this.state.Management_LIST.map((item) => {
@@ -486,17 +458,9 @@ class AdminTranslation extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td
-                      width={Setting.PcBrowser ? "120" : "90"}
-                      align="right"
-                    ></td>
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right"></td>
                     <td width="auto" align="left">
-                      <input
-                        type="submit"
-                        className="super normal button"
-                        value={i18next.t("translator:Save")}
-                        onClick={() => this.updateTranslator()}
-                      />
+                      <input type="submit" className="super normal button" value={i18next.t("translator:Save")} onClick={() => this.updateTranslator()} />
                     </td>
                   </tr>
                 </tbody>
@@ -611,17 +575,9 @@ class AdminTranslation extends React.Component {
                     </td>
                   </tr>
                   <tr>
-                    <td
-                      width={Setting.PcBrowser ? "120" : "90"}
-                      align="right"
-                    ></td>
+                    <td width={Setting.PcBrowser ? "120" : "90"} align="right"></td>
                     <td width="auto" align="left">
-                      <input
-                        type="submit"
-                        className="super normal button"
-                        value={i18next.t("translator:Save")}
-                        onClick={() => this.addTranslator()}
-                      />
+                      <input type="submit" className="super normal button" value={i18next.t("translator:Save")} onClick={() => this.addTranslator()} />
                     </td>
                   </tr>
                 </tbody>
@@ -640,11 +596,8 @@ class AdminTranslation extends React.Component {
               </div>
             ) : null}
             <div id="all-translators">
-              {this.state.translators !== null &&
-              this.state.translators.length !== 0 ? (
-                this.state.translators.map((translator) =>
-                  this.renderTranslators(translator)
-                )
+              {this.state.translators !== null && this.state.translators.length !== 0 ? (
+                this.state.translators.map((translator) => this.renderTranslators(translator))
               ) : (
                 <div
                   className="cell"
@@ -654,9 +607,7 @@ class AdminTranslation extends React.Component {
                     lineHeight: "100px",
                   }}
                 >
-                  {this.state.translators === null
-                    ? i18next.t("loading:Data is loading...")
-                    : i18next.t("translator:No translator yet")}
+                  {this.state.translators === null ? i18next.t("loading:Data is loading...") : i18next.t("translator:No translator yet")}
                 </div>
               )}
             </div>

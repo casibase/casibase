@@ -117,12 +117,7 @@ class TopicBox extends React.Component {
 
   getNodeInfo() {
     NodeBackend.getNode(this.state.topic?.nodeId).then((res) => {
-      this.props.getNodeBackground(
-        this.state.nodeId,
-        res?.backgroundImage,
-        res?.backgroundColor,
-        res?.backgroundRepeat
-      );
+      this.props.getNodeBackground(this.state.nodeId, res?.backgroundImage, res?.backgroundColor, res?.backgroundRepeat);
     });
   }
 
@@ -151,8 +146,7 @@ class TopicBox extends React.Component {
 
     return (
       <div className="outdated">
-        {i18next.t("topic:This is a topic created")} {diffDays}{" "}
-        {i18next.t("topic:days ago, the information in it may have changed.")}
+        {i18next.t("topic:This is a topic created")} {diffDays} {i18next.t("topic:days ago, the information in it may have changed.")}
       </div>
     );
   }
@@ -192,16 +186,14 @@ class TopicBox extends React.Component {
     //Use navigator.languages to get an array of language tags representing the user's preferred languages
 
     if (!this.state.translation.translated) {
-      TopicBackend.translateTopic(this.state.topicId, navigator.language).then(
-        (res) => {
-          this.setState((prevState) => {
-            prevState.translation.content = res.target;
-            prevState.translation.from = res.srcLang;
-            prevState.translation.translated = true;
-            return prevState;
-          });
-        }
-      );
+      TopicBackend.translateTopic(this.state.topicId, navigator.language).then((res) => {
+        this.setState((prevState) => {
+          prevState.translation.content = res.target;
+          prevState.translation.from = res.srcLang;
+          prevState.translation.translated = true;
+          return prevState;
+        });
+      });
     } else {
       this.setState({
         translation: {
@@ -222,11 +214,7 @@ class TopicBox extends React.Component {
   }
 
   thanksTopic(id, author) {
-    if (
-      window.confirm(
-        `Are you sure to spend ${this.state.topicThanksCost} coins in thanking @${author} for this topic?`
-      )
-    ) {
+    if (window.confirm(`Are you sure to spend ${this.state.topicThanksCost} coins in thanking @${author} for this topic?`)) {
       BalanceBackend.addThanks(id, 1).then((res) => {
         if (res?.status === "ok") {
           this.getTopic("refresh");
@@ -242,9 +230,7 @@ class TopicBox extends React.Component {
   topTopic(topType) {
     if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
       //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
-      if (
-        window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)
-      ) {
+      if (window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)) {
         TopicBackend.topTopic(this.state.topic?.id, "", topType).then((res) => {
           if (res?.status === "ok") {
             this.getTopic("refresh");
@@ -262,15 +248,7 @@ class TopicBox extends React.Component {
       return;
     }
 
-    if (
-      window.confirm(
-        `${i18next.t("topic:Are you sure you want to pin this topic for")} ${
-          this.state.defaultTopTopicTime
-        } ${i18next.t(
-          "topic:minutes? The operation price is 200 copper coins."
-        )}`
-      )
-    ) {
+    if (window.confirm(`${i18next.t("topic:Are you sure you want to pin this topic for")} ${this.state.defaultTopTopicTime} ${i18next.t("topic:minutes? The operation price is 200 copper coins.")}`)) {
       TopicBackend.topTopic(this.state.topic?.id, 10, topType).then((res) => {
         if (res?.status === "ok") {
           this.props.history.push("/");
@@ -287,20 +265,14 @@ class TopicBox extends React.Component {
 
   cancelTopTopic(topType) {
     if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
-      if (
-        window.confirm(
-          `${i18next.t("topic:Are you sure to cancel top this topic?")}`
-        )
-      ) {
-        TopicBackend.cancelTopTopic(this.state.topic?.id, topType).then(
-          (res) => {
-            if (res?.status === "ok") {
-              this.getTopic("refresh");
-            } else {
-              alert(i18next.t(`error:${res?.msg}`));
-            }
+      if (window.confirm(`${i18next.t("topic:Are you sure to cancel top this topic?")}`)) {
+        TopicBackend.cancelTopTopic(this.state.topic?.id, topType).then((res) => {
+          if (res?.status === "ok") {
+            this.getTopic("refresh");
+          } else {
+            alert(i18next.t(`error:${res?.msg}`));
           }
-        );
+        });
       }
     }
   }
@@ -321,8 +293,7 @@ class TopicBox extends React.Component {
               </a>
             ) : (
               <a href="#;" onClick={() => this.topTopic()}>
-                {i18next.t("topic:Top")} {this.state.defaultTopTopicTime}{" "}
-                {i18next.t("topic:minutes")}
+                {i18next.t("topic:Top")} {this.state.defaultTopTopicTime} {i18next.t("topic:minutes")}
               </a>
             )}
           </div>
@@ -372,37 +343,20 @@ class TopicBox extends React.Component {
             Share
           </a>{" "}
           &nbsp;
-          <a
-            href="#;"
-            onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }"
-            className="op"
-          >
+          <a href="#;" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="op">
             {i18next.t("topic:Ignore")}
           </a>{" "}
           &nbsp;
-          {this.props.account !== undefined &&
-          this.props.account !== null &&
-          this.props.account?.name !== this.state.topic?.author ? (
+          {this.props.account !== undefined && this.props.account !== null && this.props.account?.name !== this.state.topic?.author ? (
             this.state.topic?.thanksStatus === false ? (
               <div id="topic_thank">
-                <a
-                  href="#;"
-                  onClick={() =>
-                    this.thanksTopic(
-                      this.state.topic?.id,
-                      this.state.topic?.author
-                    )
-                  }
-                  className="op"
-                >
+                <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="op">
                   {i18next.t("topic:Thank")}
                 </a>
               </div>
             ) : (
               <div id="topic_thank">
-                <span className="topic_thanked">
-                  {i18next.t("topic:Thanked")}
-                </span>
+                <span className="topic_thanked">{i18next.t("topic:Thanked")}</span>
               </div>
             )
           ) : null}{" "}
@@ -429,9 +383,7 @@ class TopicBox extends React.Component {
     return (
       <div className="topic_buttons">
         <div className="fr topic_stats" style={{ paddingTop: "4px" }}>
-          {this.state.topic?.hitCount} {i18next.t("topic:hits")} &nbsp;∙&nbsp;{" "}
-          {this.state.topic?.favoriteCount} {i18next.t("topic:favorites")}{" "}
-          &nbsp;
+          {this.state.topic?.hitCount} {i18next.t("topic:hits")} &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} {i18next.t("topic:favorites")} &nbsp;
         </div>
         {this.props.account !== undefined && this.props.account !== null ? (
           this.state.favoritesStatus ? (
@@ -468,29 +420,16 @@ class TopicBox extends React.Component {
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
-        {this.props.account !== undefined &&
-        this.props.account !== null &&
-        this.props.account?.name !== this.state.topic?.author ? (
+        {this.props.account !== undefined && this.props.account !== null && this.props.account?.name !== this.state.topic?.author ? (
           this.state.topic?.thanksStatus === false ? (
             <div id="topic_thank">
-              <a
-                href="#;"
-                onClick={() =>
-                  this.thanksTopic(
-                    this.state.topic?.id,
-                    this.state.topic?.author
-                  )
-                }
-                className="tb"
-              >
+              <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="tb">
                 {i18next.t("topic:Thank")}
               </a>
             </div>
           ) : (
             <div id="topic_thank">
-              <span className="topic_thanked">
-                {i18next.t("topic:Thanked")}
-              </span>
+              <span className="topic_thanked">{i18next.t("topic:Thanked")}</span>
             </div>
           )
         ) : null}
@@ -501,10 +440,7 @@ class TopicBox extends React.Component {
   render() {
     const pcBrowser = Setting.PcBrowser;
 
-    if (
-      this.props.account === undefined ||
-      (this.state.topic !== null && this.state.topic.length === 0)
-    ) {
+    if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       if (!Conf.ShowLoadingIndicator) {
         return null;
       }
@@ -512,14 +448,10 @@ class TopicBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            {Setting.getHomeLink()}{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("loading:Topic is loading")}
+            {Setting.getHomeLink()} <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Topic is loading")}
           </div>
           <div className="cell">
-            <span className="gray bigger">
-              {i18next.t("loading:Please wait patiently...")}
-            </span>
+            <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
           </div>
         </div>
       );
@@ -529,84 +461,45 @@ class TopicBox extends React.Component {
       return (
         <div class="box">
           <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("error:Topic not found")}
+            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Topic not found")}
           </div>
           <div class="cell">
             <span class="gray bigger">404 Topic Not Found</span>
           </div>
-          <div class="inner">
-            ← {Setting.getHomeLink(i18next.t("error:Back to Home Page"))}
-          </div>
+          <div class="inner">← {Setting.getHomeLink(i18next.t("error:Back to Home Page"))}</div>
         </div>
       );
     }
 
     if (this.state.event === "review") {
-      if (
-        this.props.account === null ||
-        this.props.account?.name !== this.state.topic?.author
-      ) {
+      if (this.props.account === null || this.props.account?.name !== this.state.topic?.author) {
         this.props.history.push(`/t/${this.state.topic?.id}`);
       }
       return (
         <div class="box">
           <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span>{" "}
-            <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
-              {this.state.topic?.nodeName}
-            </Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span>{" "}
-            <Link to={`/t/${this.state.topic?.id}`}>
-              {pangu.spacing(this.state.topic?.title)}
-            </Link>{" "}
-            <span class="chevron">&nbsp;›&nbsp;</span> Review
+            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link> <span class="chevron">&nbsp;›&nbsp;</span>{" "}
+            <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link> <span class="chevron">&nbsp;›&nbsp;</span> Review
           </div>
           <div class="cell topic_content markdown_body">
             <p>
-              {i18next.t(
-                "topic:The new topic has been successfully created on the"
-              )}{" "}
-              <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
-                {this.state.topic?.nodeName}
-              </Link>{" "}
-              {i18next.t(
-                "topic:node, you can click on the title below to continue to view"
-              )}
+              {i18next.t("topic:The new topic has been successfully created on the")} <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>{" "}
+              {i18next.t("topic:node, you can click on the title below to continue to view")}
             </p>
             <h1>
-              <Link to={`/t/${this.state.topic?.id}`}>
-                {pangu.spacing(this.state.topic?.title)}
-              </Link>
+              <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link>
             </h1>
             <p>
-              {i18next.t(
-                "topic:Following are some guides to help you better use the topic management related functions of the"
-              )}{" "}
-              {Setting.getForumName()} {i18next.t("topic:community")}
+              {i18next.t("topic:Following are some guides to help you better use the topic management related functions of the")} {Setting.getForumName()} {i18next.t("topic:community")}
             </p>
             <ul>
               <li>
                 {i18next.t("topic:The topic is currently at")}&nbsp;
-                <Link
-                  to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
-                >
-                  {this.state.topic?.nodeName}
-                </Link>{" "}
-                {i18next.t(
-                  "topic:node, within 10 minutes after creation, you can"
-                )}{" "}
-                <Link to={`/move/topic/${this.state.topic?.id}`}>
-                  {i18next.t("topic:move freely")}
-                </Link>
+                <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link> {i18next.t("topic:node, within 10 minutes after creation, you can")}{" "}
+                <Link to={`/move/topic/${this.state.topic?.id}`}>{i18next.t("topic:move freely")}</Link>
               </li>
               <li>
-                {i18next.t(
-                  "topic:If you are not satisfied with the content, within 10 minutes of creation, you can"
-                )}{" "}
-                <Link to={`/edit/topic/${this.state.topic?.id}`}>
-                  {i18next.t("topic:edit topic")}
-                </Link>
+                {i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")} <Link to={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</Link>
               </li>
             </ul>
           </div>
@@ -628,11 +521,7 @@ class TopicBox extends React.Component {
               <tr>
                 <td align="right">{i18next.t("topic:Node")}</td>
                 <td align="left">
-                  <Link
-                    to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
-                  >
-                    {this.state.topic?.nodeName}
-                  </Link>
+                  <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>
                 </td>
               </tr>
               <tr>
@@ -645,31 +534,23 @@ class TopicBox extends React.Component {
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Topic created")}</td>
-                <td align="left">
-                  {Setting.getPrettyDate(this.state.topic?.createdTime)}
-                </td>
+                <td align="left">{Setting.getPrettyDate(this.state.topic?.createdTime)}</td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Sticky state")}</td>
                 <td align="left">否</td>
               </tr>
               <tr>
-                <td align="right">
-                  {i18next.t("topic:Remaining time to top")}
-                </td>
+                <td align="right">{i18next.t("topic:Remaining time to top")}</td>
                 <td align="left">0</td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Movable")}</td>
-                <td align="left">
-                  {Setting.getBoolConvertedText(this.state.topic?.editable)}
-                </td>
+                <td align="left">{Setting.getBoolConvertedText(this.state.topic?.editable)}</td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Editable")}</td>
-                <td align="left">
-                  {Setting.getBoolConvertedText(this.state.topic?.editable)}
-                </td>
+                <td align="left">{Setting.getBoolConvertedText(this.state.topic?.editable)}</td>
               </tr>
               <tr>
                 <td align="right">{i18next.t("topic:Appendable")}</td>
@@ -681,24 +562,14 @@ class TopicBox extends React.Component {
             <h3>{i18next.t("topic:Related resources")}</h3>
             <ul>
               <li>
-                <Link
-                  to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
-                >
-                  {this.state.topic?.nodeName}
-                </Link>
-                <Link to="/help/currency">
-                  {i18next.t("topic:Virtual currency system")}
-                </Link>
+                <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>
+                <Link to="/help/currency">{i18next.t("topic:Virtual currency system")}</Link>
               </li>
               <li>
-                <Link to="/help/node">
-                  {i18next.t("topic:Node usage help")}
-                </Link>
+                <Link to="/help/node">{i18next.t("topic:Node usage help")}</Link>
               </li>
               <li>
-                <Link to="/help/spam">
-                  {i18next.t("topic:Treatment of link handling type spam")}
-                </Link>
+                <Link to="/help/spam">{i18next.t("topic:Treatment of link handling type spam")}</Link>
               </li>
             </ul>
           </div>
@@ -708,26 +579,16 @@ class TopicBox extends React.Component {
 
     return (
       <div>
-        <div
-          className={`box ${this.state.topic.nodeId}`}
-          style={{ borderBottom: "0px" }}
-        >
+        <div className={`box ${this.state.topic.nodeId}`} style={{ borderBottom: "0px" }}>
           <div className={`header ${this.state.topic.nodeId}`}>
             <div className="fr">
-              <Avatar
-                username={this.state.topic?.author}
-                size={pcBrowser ? "large" : "middle"}
-                avatar={this.state.topic?.avatar}
-              />
+              <Avatar username={this.state.topic?.author} size={pcBrowser ? "large" : "middle"} avatar={this.state.topic?.avatar} />
             </div>
             <Link to="/" className={`${this.state.topic?.nodeId}`}>
               {Setting.getForumName()}
             </Link>{" "}
             <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            <Link
-              to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
-              className={`${this.state.topic?.nodeId}`}
-            >
+            <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`} className={`${this.state.topic?.nodeId}`}>
               {this.state.topic?.nodeName}
             </Link>
             <div className="sep10" />
@@ -735,19 +596,11 @@ class TopicBox extends React.Component {
             {Setting.PcBrowser ? (
               <span>
                 <div id="topic_677954_votes" className="votes">
-                  <a
-                    href="#;"
-                    onClick={this.upVoteTopic()}
-                    className={`vote ${this.state.topic.nodeId}`}
-                  >
+                  <a href="#;" onClick={this.upVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
                     <li className="fa fa-chevron-up" />
                   </a>{" "}
                   &nbsp;
-                  <a
-                    href="#;"
-                    onClick={this.downVoteTopic()}
-                    className={`vote ${this.state.topic.nodeId}`}
-                  >
+                  <a href="#;" onClick={this.downVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
                     <li className="fa fa-chevron-down" />
                   </a>
                 </div>
@@ -755,33 +608,20 @@ class TopicBox extends React.Component {
               </span>
             ) : null}
             <small className="gray">
-              <UserLink
-                username={this.state.topic?.author}
-                classNameText={`${this.state.topic.nodeId}`}
-              />{" "}
-              · {Setting.getPrettyDate(this.state.topic?.createdTime)} ·{" "}
-              {this.state.topic?.hitCount} {i18next.t("topic:hits")}
+              <UserLink username={this.state.topic?.author} classNameText={`${this.state.topic.nodeId}`} /> · {Setting.getPrettyDate(this.state.topic?.createdTime)} · {this.state.topic?.hitCount} {i18next.t("topic:hits")}
               &nbsp;{" "}
               {this.props.account?.isAdmin ? (
                 <span>
                   {this.state.topic?.homePageTopTime === "" ? (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.topTopic("homePage")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.topTopic("homePage")} className="op">
                         {i18next.t("topic:HomePageTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.cancelTopTopic("homePage")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.cancelTopTopic("homePage")} className="op">
                         {i18next.t("topic:CancelHomePageTop")}
                       </a>
                       &nbsp;{" "}
@@ -789,22 +629,14 @@ class TopicBox extends React.Component {
                   )}
                   {this.state.topic?.tabTopTime === "" ? (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.topTopic("tab")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.topTopic("tab")} className="op">
                         {i18next.t("topic:TabTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.cancelTopTopic("tab")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.cancelTopTopic("tab")} className="op">
                         {i18next.t("topic:CancelTabTop")}
                       </a>
                       &nbsp;{" "}
@@ -812,22 +644,14 @@ class TopicBox extends React.Component {
                   )}
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.topTopic("node")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.topTopic("node")} className="op">
                         {i18next.t("topic:NodeTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.cancelTopTopic("node")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.cancelTopTopic("node")} className="op">
                         {i18next.t("topic:CancelNodeTop")}
                       </a>
                       &nbsp;{" "}
@@ -838,22 +662,14 @@ class TopicBox extends React.Component {
                 <span>
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.topTopic("node")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.topTopic("node")} className="op">
                         {i18next.t("topic:NodeTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a
-                        href="#;"
-                        onClick={() => this.cancelTopTopic("node")}
-                        className="op"
-                      >
+                      <a href="#;" onClick={() => this.cancelTopTopic("node")} className="op">
                         {i18next.t("topic:CancelNodeTop")}
                       </a>
                       &nbsp;{" "}
@@ -863,27 +679,16 @@ class TopicBox extends React.Component {
               ) : null}
               {this.state.topic?.editable ? (
                 <span>
-                  <Link
-                    to={`/edit/topic/${this.state.topic?.id}`}
-                    className="op"
-                  >
+                  <Link to={`/edit/topic/${this.state.topic?.id}`} className="op">
                     {i18next.t("topic:EDIT")}
                   </Link>
                   &nbsp;{" "}
-                  <Link
-                    to={`/move/topic/${this.state.topic?.id}`}
-                    className="op"
-                  >
+                  <Link to={`/move/topic/${this.state.topic?.id}`} className="op">
                     {i18next.t("topic:MOVE")}
                   </Link>
                   &nbsp;{" "}
-                  {this.props.account?.isAdmin ||
-                  this.state.topic?.nodeModerator ? (
-                    <Link
-                      onClick={() => this.deleteTopic()}
-                      to="#;"
-                      className="op"
-                    >
+                  {this.props.account?.isAdmin || this.state.topic?.nodeModerator ? (
+                    <Link onClick={() => this.deleteTopic()} to="#;" className="op">
                       {i18next.t("topic:DELETE")}
                     </Link>
                   ) : null}
@@ -900,10 +705,7 @@ class TopicBox extends React.Component {
                     image: this.renderImage,
                     link: this.renderLink,
                   }}
-                  source={Setting.getFormattedContent(
-                    this.state.topic?.content,
-                    true
-                  )}
+                  source={Setting.getFormattedContent(this.state.topic?.content, true)}
                   escapeHtml={false}
                 />
                 {this.state.showTranslateBtn ? (
@@ -912,10 +714,7 @@ class TopicBox extends React.Component {
                       {this.state.translation.translated ? (
                         <span>
                           {`Translate from ${this.state.translation.from} by  `}
-                          <img
-                            height={18}
-                            src="https://cdn.casbin.org/img/logo_google.svg"
-                          ></img>
+                          <img height={18} src="https://cdn.casbin.org/img/logo_google.svg"></img>
                         </span>
                       ) : (
                         <span>Translate</span>
@@ -931,10 +730,7 @@ class TopicBox extends React.Component {
                       image: this.renderImage,
                       link: this.renderLink,
                     }}
-                    source={Setting.getFormattedContent(
-                      this.state.translation.content,
-                      true
-                    )}
+                    source={Setting.getFormattedContent(this.state.translation.content, true)}
                     escapeHtml={false}
                   />
                 ) : (
@@ -943,16 +739,10 @@ class TopicBox extends React.Component {
               </div>
             </div>
           </div>
-          {Setting.PcBrowser
-            ? this.renderDesktopButtons()
-            : this.renderMobileButtons()}
+          {Setting.PcBrowser ? this.renderDesktopButtons() : this.renderMobileButtons()}
         </div>
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        <ReplyBox
-          account={this.props.account}
-          topic={this.state.topic}
-          isEmbedded={false}
-        />
+        <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={false} />
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         {this.props.account?.isAdmin ? this.renderTopTopic() : null}
       </div>
