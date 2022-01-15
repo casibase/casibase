@@ -174,7 +174,6 @@ class App extends Component {
     const pcBrowser = Setting.PcBrowser;
     return (
       <Switch>
-        <Route exact path="/callback" component={AuthCallback} />
         <Route exact path="/">
           {pcBrowser ? null : <RightCheckinBonusBox account={this.state.account} />}
           {pcBrowser ? null : <div className="sep5" />}
@@ -611,6 +610,23 @@ class App extends Component {
     return themeMode === "light" ? "" : Setting.getStatic("/css/night.css");
   }
 
+  renderContent() {
+    if (window.location.pathname === "/callback") {
+      return <AuthCallback />;
+    }
+
+    return (
+      <div className="content">
+        <div id="Leftbar" />
+        {Setting.PcBrowser ? <CustomGithubCorner /> : null}
+        {Setting.PcBrowser ? this.renderRightbar() : null}
+        {this.renderMain()}
+        <div className="c" />
+        {Setting.PcBrowser ? <div className="sep20" /> : null}
+      </div>
+    );
+  }
+
   render() {
     if (window.location.pathname.startsWith("/embedded-replies")) {
       return (
@@ -619,6 +635,7 @@ class App extends Component {
         </LazyLoad>
       );
     }
+
     return (
       <div>
         <link type="text/css" rel="stylesheet" media="all" id="dark-mode" href={this.getThemeLink()} />
@@ -634,14 +651,7 @@ class App extends Component {
           className={classNames(this.state.nodeId, localStorage.getItem("themeMode") === "dark" ? "Night" : "")}
           onClick={() => this.changeMenuStatus(false)}
         >
-          <div className="content">
-            <div id="Leftbar" />
-            {Setting.PcBrowser ? <CustomGithubCorner /> : null}
-            {Setting.PcBrowser ? this.renderRightbar() : null}
-            {this.renderMain()}
-            <div className="c" />
-            {Setting.PcBrowser ? <div className="sep20" /> : null}
-          </div>
+          {this.renderContent()}
         </div>
         <Footer />
       </div>
