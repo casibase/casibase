@@ -14,7 +14,7 @@
 
 import React, { Component } from "react";
 import classNames from "classnames";
-import "./App.css";
+import "./App.less";
 import "codemirror/lib/codemirror.css";
 import { BackTop } from "antd";
 import * as Setting from "./Setting";
