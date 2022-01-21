@@ -823,7 +823,7 @@ func (c *ApiController) GetTopicByUrlPathAndTitle() {
 	topic := object.GetTopicByUrlPathAndTitle(urlPath, title, nodeId)
 	if topic == nil {
 		topic = &object.Topic{
-			Author:        "Embed Plugin",
+			Author:        "EmbedBot",
 			NodeId:        nodeId,
 			NodeName:      node.Name,
 			TabId:         node.TabId,
