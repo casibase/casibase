@@ -76,7 +76,18 @@ export function getMyResourcesUrl(account) {
 }
 
 export function signin() {
-  return CasdoorSdk.signin(ServerUrl);
+  return CasdoorSdk.signin(ServerUrl).then((res) => {
+    if (res.status === "ok") {
+      if (window !== window.parent) {
+        const message = { tag: "Casdoor", type: "SilentSignin", data: "success" };
+        window.parent.postMessage(message, "*");
+      }
+      showMessage("success", i18next.t("login:Logged in successfully"));
+    } else {
+    }
+
+    return res;
+  });
 }
 
 export function scrollToTop() {

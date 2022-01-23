@@ -43,6 +43,7 @@ import * as FavoritesBackend from "./backend/FavoritesBackend";
 import * as Conf from "./Conf";
 import AuthCallback from "./AuthCallback";
 import LazyLoad from "./components/LazyLoad";
+import SilentSignin from "./SilentSignin";
 
 // lazy load imports
 const SignoutBox = React.lazy(() => import("./main/SignoutBox"));
@@ -641,6 +642,7 @@ class App extends Component {
         <link type="text/css" rel="stylesheet" media="all" id="dark-mode" href={this.getThemeLink()} />
         <BackTop />
         <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu} />
+        <SilentSignin account={this.state.account} />
         <div
           id="Wrapper"
           style={{
