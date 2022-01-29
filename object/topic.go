@@ -231,10 +231,14 @@ func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 
 	go func() {
 		defer wg.Done()
-		topic.Topic = *GetTopic(id)
-		topic.Avatar = getUserAvatar(topic.Author)
+		topicObj := GetTopic(id)
+		if topicObj != nil {
+			topic.Topic = *topicObj
 
-		topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
+			topic.Avatar = getUserAvatar(topic.Author)
+
+			topic.Editable = GetTopicEditableStatus(user, topic.Author, topic.NodeId, topic.CreatedTime)
+		}
 	}()
 	go func() {
 		defer wg.Done()
@@ -248,6 +252,9 @@ func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
 
 	wg.Wait()
 
+	if topic.Author == "" {
+		return nil
+	}
 	return &topic
 }
 
