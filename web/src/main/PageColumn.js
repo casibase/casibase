@@ -158,8 +158,9 @@ class PageColumn extends React.Component {
       this.props.onChange(page);
       return;
     }
-    // this.props.history.push(`${url}?p=${page}`);
-    Setting.goToLink(`${url}?p=${page}`);
+    this.props.history.push(`${url}?p=${page}`);
+    this.props.history.go(0);//fix :allow click
+    //Setting.goToLink(`${url}?p=${page}`);
   }
 
   render() {
