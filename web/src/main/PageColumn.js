@@ -133,6 +133,7 @@ class PageColumn extends React.Component {
       <span key={i}>
         {page === i ? (
           <Link
+            to={`${url}?p=${i}`}
             onClick={() => this.gotoPage(url, i)}
             className={`page_current ${this.props.nodeId}`}
           >
@@ -142,6 +143,7 @@ class PageColumn extends React.Component {
           <span className="fade"> ... </span>
         ) : (
           <Link
+            to={`${url}?p=${i}`}
             onClick={() => this.gotoPage(url, i)}
             className={`page_normal ${this.props.nodeId}`}
           >
@@ -158,8 +160,7 @@ class PageColumn extends React.Component {
       this.props.onChange(page);
       return;
     }
-    // this.props.history.push(`${url}?p=${page}`);
-    Setting.goToLink(`${url}?p=${page}`);
+    this.props.history.push(`${url}?p=${page}`);
   }
 
   render() {
@@ -174,7 +175,7 @@ class PageColumn extends React.Component {
           <table cellpadding="0" cellspacing="0" border="0" width="100%">
             <tr>
               <td width="120" align="left">
-                <Link>
+                <Link to={`${url}?p=${page-1}`}>
                   <input
                     type="button"
                     onClick={() => {
@@ -192,7 +193,7 @@ class PageColumn extends React.Component {
                 </strong>
               </td>
               <td width="120" align="right">
-                <Link>
+                <Link to={`${url}?p=${page+1}`}>
                   <input
                     type="button"
                     onClick={() => {
@@ -242,6 +243,7 @@ class PageColumn extends React.Component {
                       <td>
                         {page <= 1 ? (
                           <Link
+                            to={`${url}?p=${1}`}
                             width="50%"
                             align="center"
                             className="super normal button disable_now"
@@ -255,6 +257,7 @@ class PageColumn extends React.Component {
                           </Link>
                         ) : (
                           <Link
+                            to={`${url}?p=${page-1}`}
                             width="50%"
                             align="center"
                             className={"super normal button button pageColumn"}
@@ -273,6 +276,7 @@ class PageColumn extends React.Component {
                         )}
                         {page >= this.state.maxPage ? (
                           <Link
+                            to={`${url}?p=${this.state.maxPage}`}
                             width="50%"
                             align="center"
                             className="super normal_page_right button disable_now"
@@ -285,6 +289,7 @@ class PageColumn extends React.Component {
                           </Link>
                         ) : (
                           <Link
+                            to={`${url}?p=${page+1}`}
                             width="50%"
                             align="center"
                             className={
