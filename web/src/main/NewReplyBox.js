@@ -144,6 +144,7 @@ class NewReplyBox extends React.Component {
           form: {},
         });
         Setting.scrollToBottom();
+        this.props.refreshAccount();
       } else {
         this.setState({
           message: res.msg,

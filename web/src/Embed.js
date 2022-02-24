@@ -28,16 +28,8 @@ export default class Embed extends React.Component {
       topic: null,
     };
 
-    if (
-      this.state.nodeId !== null &&
-      this.state.encodedUrlPath !== null &&
-      this.state.title !== null
-    ) {
-      TopicBackend.getTopicByUrlPathAndTitle(
-        this.state.nodeId,
-        this.state.encodedUrlPath,
-        this.state.title
-      ).then((res) => {
+    if (this.state.nodeId !== null && this.state.encodedUrlPath !== null && this.state.title !== null) {
+      TopicBackend.getTopicByUrlPathAndTitle(this.state.nodeId, this.state.encodedUrlPath, this.state.title).then((res) => {
         if (res.status === "ok") {
           this.setState({
             topic: res.data,
@@ -51,12 +43,6 @@ export default class Embed extends React.Component {
     if (this.state.topic === null) {
       return "Loading...";
     }
-    return (
-      <ReplyBox
-        account={this.props.account}
-        topic={this.state.topic}
-        isEmbedded={true}
-      />
-    );
+    return <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={true} refreshAccount={this.props.refreshAccount.bind(this)} />;
   }
 }

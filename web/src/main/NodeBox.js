@@ -596,7 +596,7 @@ class NodeBox extends React.Component {
         {pcBrowser ? <div className="sep20" /> : null}
         {this.renderNode()}
         {pcBrowser ? <div className="sep20" /> : null}
-        {this.props.account !== undefined && this.props.account !== null && pcBrowser ? <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} /> : null}
+        {this.props.account !== undefined && this.props.account !== null && pcBrowser ? <NewNodeTopicBox nodeId={this.state.nodeId} account={this.props.account} size={"small"} refreshAccount={this.props.refreshAccount.bind(this)} /> : null}
       </div>
     );
   }

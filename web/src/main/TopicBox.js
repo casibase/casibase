@@ -742,7 +742,7 @@ class TopicBox extends React.Component {
           {Setting.PcBrowser ? this.renderDesktopButtons() : this.renderMobileButtons()}
         </div>
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={false} />
+        <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={false} refreshAccount={this.props.refreshAccount.bind(this)} />
         {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         {this.props.account?.isAdmin ? this.renderTopTopic() : null}
       </div>
