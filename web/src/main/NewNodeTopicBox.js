@@ -133,6 +133,7 @@ class NewNodeTopicBox extends React.Component {
     TopicBackend.addTopic(this.state.form).then((res) => {
       if (res.status === "ok") {
         this.props.history.push(`/t/${res?.data}/review`);
+        this.props.refreshAccount();
       } else {
         this.setState({
           message: res.msg,

@@ -472,6 +472,7 @@ class ReplyBox extends React.Component {
           topic={this.props.topic}
           parent={this.state.parent}
           cancelReply={this.handleCancelReply.bind(this)}
+          refreshAccount={this.props.refreshAccount.bind(this)}
         />
       </div>
     );
