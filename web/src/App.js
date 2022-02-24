@@ -137,6 +137,7 @@ class App extends Component {
   }
 
   getAccount() {
+    console.log("refresh the account");
     AccountBackend.getAccount().then((res) => {
       let account = res.data;
       if (account !== null) {
@@ -205,7 +206,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
+              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -213,7 +214,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} />
+              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -236,7 +237,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <NewBox account={this.state.account} />
+              <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -250,7 +251,7 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
-              <NewBox account={this.state.account} />
+              <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
             </LazyLoad>
           </div>
         </Route>
@@ -632,7 +633,7 @@ class App extends Component {
     if (window.location.pathname.startsWith("/embedded-replies")) {
       return (
         <LazyLoad>
-          <Embed account={this.state.account} />
+          <Embed account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
         </LazyLoad>
       );
     }
