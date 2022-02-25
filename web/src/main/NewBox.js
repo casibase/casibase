@@ -122,6 +122,7 @@ class NewBox extends React.Component {
     TopicBackend.addTopic(this.state.form).then((res) => {
       if (res.status === "ok") {
         this.props.history.push(`/t/${res?.data}/review`);
+        this.props.refreshAccount();
       } else {
         this.setState({
           message: res.msg,
@@ -227,7 +228,7 @@ class NewBox extends React.Component {
 
   render() {
     if (this.state.nodeId !== undefined && this.props.account !== undefined) {
-      return <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} />;
+      return <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} refreshAccount={this.props.refreshAccount.bind(this)} />;
     }
 
     if (this.props.account === null) {
