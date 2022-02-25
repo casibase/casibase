@@ -57,6 +57,7 @@ class NewBox extends React.Component {
         },
       ],
       placeholder: i18next.t("new:Switch editor"),
+      publishClicked: false,
     };
   }
 
@@ -116,6 +117,12 @@ class NewBox extends React.Component {
     if (!this.isOkToSubmit()) {
       return;
     }
+    if (this.state.publishClicked) {
+      return;
+    }
+    this.setState({
+      publishClicked: true,
+    });
     if (!this.state.form.editorType) {
       this.updateFormField("editorType", "markdown");
     }
@@ -125,6 +132,7 @@ class NewBox extends React.Component {
       } else {
         this.setState({
           message: res.msg,
+          publishClicked: false,
         });
       }
     });
@@ -377,8 +385,8 @@ class NewBox extends React.Component {
           <div className="fr">
             <span id="error_message" /> &nbsp;
             <button type="button" className="super normal button" onClick={this.publishTopic.bind(this)}>
-              <li className="fa fa-paper-plane" />
-              &nbsp;{i18next.t("new:Publish")}
+              <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
+              &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("new:Publish")}
             </button>
           </div>
           <div>

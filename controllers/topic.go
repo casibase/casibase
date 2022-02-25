@@ -249,7 +249,10 @@ func (c *ApiController) AddTopic() {
 	if err != nil {
 		panic(err)
 	}
-
+	topics := object.GetTopicsByTitleAndAuthor(topic.Title, topic.Author)
+	if len(topics) != 0 {
+		c.ResponseError("Duplicate topic")
+	}
 	res, id := object.AddTopic(&topic)
 	if res {
 		object.CreateTopicConsumption(user, id)
