@@ -64,7 +64,7 @@ func GetTopicCount() int {
 }
 
 func GetTopicNum() int {
-	count, err := adapter.Engine.Where("deleted = ?", 0).Count(&Topic{})
+    count, err := adapter.Engine.Where("deleted = ? and is_hidden = ?", 0, 0).Count(&Topic{})
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func GetTopicNum() int {
 
 func GetCreatedTopicsNum(memberId string) int {
 	topic := new(Topic)
-	total, err := adapter.Engine.Where("author = ?", memberId).And("deleted = ?", 0).Count(topic)
+    total, err := adapter.Engine.Where("author = ? and deleted = ? and is_hidden = ?", memberId, 0, 0).Count(topic)
 	if err != nil {
 		panic(err)
 	}
