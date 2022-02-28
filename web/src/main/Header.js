@@ -28,8 +28,7 @@ class Header extends React.Component {
   render() {
     return (
       <div className="header">
-        <Link to="/">{Setting.getForumName()}</Link>{" "}
-        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+        <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>{" "}
         {this.props.item !== "Sign In" ? (
           this.props.item
         ) : (

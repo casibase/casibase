@@ -108,14 +108,10 @@ class MoveTopicNodeBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("loading:Content loading")}
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Content loading")}
           </div>
           <div className="cell">
-            <span className="gray bigger">
-              {i18next.t("loading:Please wait patiently...")}
-            </span>
+            <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
           </div>
         </div>
       );
@@ -125,13 +121,9 @@ class MoveTopicNodeBox extends React.Component {
       return (
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("move:Move topic")}
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("move:Move topic")}
           </div>
-          <div className="inner">
-            {i18next.t("move:You cannot move this topic.")}
-          </div>
+          <div className="inner">{i18next.t("move:You cannot move this topic.")}</div>
         </div>
       );
     }
@@ -139,17 +131,9 @@ class MoveTopicNodeBox extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>
-            {this.state.topic?.nodeName}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          <Link to={`/t/${this.state.topic?.id}`}>
-            {pangu.spacing(this.state.topic?.title)}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("move:Move topic")}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link> <span className="chevron">&nbsp;›&nbsp;</span> <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link>{" "}
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("move:Move topic")}
         </div>
         <div className="inner">
           <table cellPadding="5" cellSpacing="0" border="0" width="100%">
@@ -177,10 +161,7 @@ class MoveTopicNodeBox extends React.Component {
                   {i18next.t("move:Current node")}
                 </td>
                 <td width="auto" align="left">
-                  <Link
-                    to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}
-                    target="_blank"
-                  >
+                  <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`} target="_blank">
                     {this.state.topic?.nodeName}
                   </Link>
                 </td>
@@ -220,12 +201,7 @@ class MoveTopicNodeBox extends React.Component {
               <tr>
                 <td width="120" align="right"></td>
                 <td width="auto" align="left">
-                  <input
-                    type="submit"
-                    className="super normal button"
-                    value={i18next.t("move:Move")}
-                    onClick={() => this.moveTopicNode()}
-                  />
+                  <input type="submit" className="super normal button" value={i18next.t("move:Move")} onClick={() => this.moveTopicNode()} />
                 </td>
               </tr>
             </tbody>

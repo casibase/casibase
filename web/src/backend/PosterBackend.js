@@ -15,16 +15,16 @@
 import * as Setting from "../Setting";
 
 export function updateposter_info(poster) {
-    return fetch(`${Setting.ServerUrl}/api/update-poster`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(poster),
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/update-poster`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(poster),
+  }).then((res) => res.json());
 }
 
 export function readposter(id) {
-    return fetch(`${Setting.ServerUrl}/api/read-poster?id=${id}`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/read-poster?id=${id}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }

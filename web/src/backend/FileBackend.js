@@ -23,13 +23,10 @@ export function addFileRecord(values) {
 }
 
 export function getFiles(limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function deleteFile(id) {

@@ -26,18 +26,11 @@ class UserLink extends React.Component {
 
   render() {
     if (this.props.username === "" || this.props.username === "客人") {
-      return (
-        <span className={`${this.props.classNameText}`}>
-          {i18next.t("general:Anonymous")}
-        </span>
-      );
+      return <span className={`${this.props.classNameText}`}>{i18next.t("general:Anonymous")}</span>;
     }
 
     return (
-      <Link
-        to={`/member/${this.props.username}`}
-        className={`${this.props.classNameText}`}
-      >
+      <Link to={`/member/${this.props.username}`} className={`${this.props.classNameText}`}>
         {this.props.username}
       </Link>
     );

@@ -22,23 +22,17 @@ export function getMember(id) {
 }
 
 export function updateMemberLanguage(language) {
-  return fetch(
-    `${Setting.ServerUrl}/api/update-member-language?language=${language}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/update-member-language?language=${language}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateMemberEditorType(editorType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/update-member-editor-type?editorType=${editorType}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/update-member-editor-type?editorType=${editorType}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getMemberEditorType() {

@@ -50,17 +50,7 @@ class Avatar extends React.Component {
     }
 
     if (this.props.username === "" || this.props.username === "客人") {
-      return (
-        <img
-          src={Conf.AvatarAnonymousUrl}
-          className="avatar"
-          border="0"
-          align="default"
-          style={style}
-          alt={"Anonymous User"}
-          key={this.props.key}
-        />
-      );
+      return <img src={Conf.AvatarAnonymousUrl} className="avatar" border="0" align="default" style={style} alt={"Anonymous User"} key={this.props.key} />;
     }
 
     return (

@@ -54,10 +54,7 @@ class Footer extends React.Component {
   }
 
   render() {
-    const loadingTime = Math.floor(
-      performance.getEntries()[0].responseEnd -
-        performance.getEntries()[0].requestStart
-    );
+    const loadingTime = Math.floor(performance.getEntries()[0].responseEnd - performance.getEntries()[0].requestStart);
     const date = new Date();
 
     if (!Setting.PcBrowser) {
@@ -65,13 +62,8 @@ class Footer extends React.Component {
         <div id="Bottom">
           <div className="content">
             <div className="inner" style={{ textAlign: "center" }}>
-              &copy; {date.getFullYear()} {Setting.getForumName()} ·{" "}
-              {loadingTime}ms ·{" "}
-              <a
-                href={`${Conf.GithubRepo}/commit/${this.state.version}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              &copy; {date.getFullYear()} {Setting.getForumName()} · {loadingTime}ms ·{" "}
+              <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank" rel="noopener noreferrer">
                 {this.state.version.substring(0, 7)}
               </a>
               <div>
@@ -109,11 +101,7 @@ class Footer extends React.Component {
           <div className="inner">
             <div className="sep10" />
             <div className="fr">
-              <a
-                href={Conf.FrontConfig.footerLogoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={Conf.FrontConfig.footerLogoUrl} target="_blank" rel="noopener noreferrer">
                 <div
                   id="logoFooter"
                   style={{
@@ -155,8 +143,7 @@ class Footer extends React.Component {
               <Link to="/tools" className="dark" target="_self">
                 {i18next.t("footer:Tools")}
               </Link>{" "}
-              &nbsp; <span className="snow">·</span> &nbsp; {this.state.online}{" "}
-              {i18next.t("footer:Online")}
+              &nbsp; <span className="snow">·</span> &nbsp; {this.state.online} {i18next.t("footer:Online")}
             </strong>{" "}
             &nbsp;{" "}
             <span className="fade">
@@ -170,23 +157,11 @@ class Footer extends React.Component {
               }}
               className="f11"
             >
-              <img
-                src={Setting.getStatic("/img/language.png")}
-                width="16"
-                align="absmiddle"
-                id="ico-select-language"
-              />{" "}
-              &nbsp; {i18next.t("footer:Select Language")}
+              <img src={Setting.getStatic("/img/language.png")} width="16" align="absmiddle" id="ico-select-language" /> &nbsp; {i18next.t("footer:Select Language")}
             </Link>
             &nbsp; <span className="snow">·</span> &nbsp;{" "}
             <Link to="/select/editorType" className="f11">
-              <img
-                src={Setting.getStatic("/img/editType.png")}
-                width="16"
-                align="absmiddle"
-                id="ico-select-editorType"
-              />{" "}
-              &nbsp; {i18next.t("footer:Select Editor")}
+              <img src={Setting.getStatic("/img/editType.png")} width="16" align="absmiddle" id="ico-select-editorType" /> &nbsp; {i18next.t("footer:Select Editor")}
             </Link>
             <div className="sep20" />
             {i18next.t("footer:Community of Creators")}
@@ -195,15 +170,10 @@ class Footer extends React.Component {
             <div className="sep20" />
             <span className="small fade">
               VERSION:{" "}
-              <a
-                href={`${Conf.GithubRepo}/commit/${this.state.version}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank" rel="noopener noreferrer">
                 {this.state.version.substring(0, 7)}
               </a>{" "}
-              · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime}{" "}
-              · JFK {jfkTime}
+              · {loadingTime}ms · UTC {utcTime} · PVG {pvgTime} · LAX {laxTime} · JFK {jfkTime}
               <br />
               {Conf.FrontConfig.footerAdvise}
             </span>

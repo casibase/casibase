@@ -82,8 +82,7 @@ a.node-casbin:active {
 .node-casbin.mll:focus,
 .node-casbin.sll:focus,
 .node-casbin.mle:focus {
-  box-shadow: 0pt 1px 2px rgba(0, 0, 0, 0.18) inset,
-    0px 0px 5px rgba(210, 216, 186, 0.5);
+  box-shadow: 0pt 1px 2px rgba(0, 0, 0, 0.18) inset, 0px 0px 5px rgba(210, 216, 186, 0.5);
 }
 
 a.node-casbin.vote:link,

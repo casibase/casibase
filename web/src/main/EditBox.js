@@ -296,8 +296,10 @@ class EditBox extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/go/${encodeURIComponent(this.state.editObject?.nodeId)}`}> {this.state.editObject?.nodeName}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/t/${this.state.editObject?.id}`}> {pangu.spacing(this.state.editObject?.title)}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("edit:Edit topic")}
+          <Link to={`/go/${encodeURIComponent(this.state.editObject?.nodeId)}`}> {this.state.editObject?.nodeName}</Link>
+          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/t/${this.state.editObject?.id}`}> {pangu.spacing(this.state.editObject?.title)}</Link>
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("edit:Edit topic")}
           {/* todo */}
         </div>
         <div className="cell">

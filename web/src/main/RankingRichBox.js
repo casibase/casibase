@@ -38,31 +38,13 @@ class RankingRichBox extends React.Component {
   renderRichBox(score) {
     const { goldCount, silverCount, bronzeCount } = scoreConverter(score);
     return (
-      <div
-        className="balance_area bigger"
-        style={{ fontSize: "24px", lineHeight: "24px" }}
-      >
+      <div className="balance_area bigger" style={{ fontSize: "24px", lineHeight: "24px" }}>
         {goldCount}&nbsp;
-        <img
-          src={Setting.getStatic("/img/gold@2x.png")}
-          height="16"
-          alt="G"
-          border="0"
-        />
+        <img src={Setting.getStatic("/img/gold@2x.png")} height="16" alt="G" border="0" />
         &nbsp;{silverCount}&nbsp;
-        <img
-          src={Setting.getStatic("/img/silver@2x.png")}
-          height="16"
-          alt="S"
-          border="0"
-        />
+        <img src={Setting.getStatic("/img/silver@2x.png")} height="16" alt="S" border="0" />
         &nbsp;{bronzeCount}&nbsp;
-        <img
-          src={Setting.getStatic("/img/bronze@2x.png")}
-          height="16"
-          alt="B"
-          border="0"
-        />
+        <img src={Setting.getStatic("/img/bronze@2x.png")} height="16" alt="B" border="0" />
       </div>
     );
   }
@@ -83,9 +65,7 @@ class RankingRichBox extends React.Component {
               {i18next.t("balance:Recharge")}
             </Link>
           </div>
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("balance:Rich ranking")}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("balance:Rich ranking")}
         </div>
         {/* richList */}
         <div className="inner">
@@ -93,22 +73,12 @@ class RankingRichBox extends React.Component {
             {this.state.richList
               ? this.state.richList.map((member, key) => (
                   <tr>
-                    <td
-                      width={Setting.PcBrowser ? "73" : "36"}
-                      valign="top"
-                      align="center"
-                      key={key}
-                    >
-                      <Avatar
-                        username={member.name}
-                        avatar={member.avatar}
-                        key={key}
-                      />
+                    <td width={Setting.PcBrowser ? "73" : "36"} valign="top" align="center" key={key}>
+                      <Avatar username={member.name} avatar={member.avatar} key={key} />
                     </td>
                     <td width="auto" align="left">
                       <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
-                        <span class="gray">{key + 1}.</span>{" "}
-                        <a href={`/member/${member.name}`}>{member.name}</a>
+                        <span class="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
                       <span className="gray f12"> {member.tag} </span>
                       <div className="sep5"></div>

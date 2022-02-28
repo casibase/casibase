@@ -52,11 +52,7 @@ class PlaneBox extends React.Component {
 
   renderNode(node) {
     return (
-      <Link
-        key={node?.id}
-        to={`/go/${encodeURIComponent(node?.id)}`}
-        className="item_node"
-      >
+      <Link key={node?.id} to={`/go/${encodeURIComponent(node?.id)}`} className="item_node">
         {node?.name}
       </Link>
     );
@@ -74,14 +70,9 @@ class PlaneBox extends React.Component {
               color: plane?.color,
             }}
           >
-            <img src={plane?.image} border="0" align="absmiddle" width="24" />{" "}
-            &nbsp; {plane?.name}
-            <span
-              className="fr"
-              style={{ color: plane?.color, lineHeight: "20px" }}
-            >
-              {plane?.id} •{" "}
-              <span className="small">{plane?.nodes.length} nodes</span>
+            <img src={plane?.image} border="0" align="absmiddle" width="24" /> &nbsp; {plane?.name}
+            <span className="fr" style={{ color: plane?.color, lineHeight: "20px" }}>
+              {plane?.id} • <span className="small">{plane?.nodes.length} nodes</span>
             </span>
           </div>
           <div className="inner">
@@ -103,20 +94,14 @@ class PlaneBox extends React.Component {
               <tbody>
                 <tr>
                   <td width="64">
-                    <img
-                      src={Setting.getStatic("/img/network.png")}
-                      width="64"
-                      alt="Nodes"
-                    />
+                    <img src={Setting.getStatic("/img/network.png")} width="64" alt="Nodes" />
                   </td>
                   <td>
                     <span className="item_title">
                       {Setting.getForumName()} {i18next.t("plane:Plane list")}
                     </span>
                     <div className="sep5"></div>
-                    <span className="fade">
-                      {this.state.nodesNum} nodes now and growing.
-                    </span>
+                    <span className="fade">{this.state.nodesNum} nodes now and growing.</span>
                   </td>
                 </tr>
               </tbody>

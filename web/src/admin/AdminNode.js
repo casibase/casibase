@@ -151,11 +151,7 @@ class AdminNode extends React.Component {
 
     let reader = new FileReader();
     reader.onload = (e) => {
-      FileBackend.moderatorUpload(
-        e.target.result,
-        fileName,
-        "sitecontent/nodes/" + this.state.nodeInfo.id
-      ).then((res) => {
+      FileBackend.moderatorUpload(e.target.result, fileName, "sitecontent/nodes/" + this.state.nodeInfo.id).then((res) => {
         if (res?.status === "ok") {
           this.updateFormField(target, res.data);
         } else {
@@ -272,10 +268,7 @@ class AdminNode extends React.Component {
       });
       return;
     }
-    if (
-      this.state.form.planeId === "" ||
-      this.state.form.planeId === undefined
-    ) {
+    if (this.state.form.planeId === "" || this.state.form.planeId === undefined) {
       this.setState({
         errorMessage: "Please select a plane",
       });
@@ -291,13 +284,7 @@ class AdminNode extends React.Component {
             message: i18next.t("node:Creat node success"),
           },
           () => {
-            setTimeout(
-              () =>
-                this.props.history.push(
-                  `/admin/node/edit/${encodeURIComponent(this.state.form.id)}`
-                ),
-              1600
-            );
+            setTimeout(() => this.props.history.push(`/admin/node/edit/${encodeURIComponent(this.state.form.id)}`), 1600);
           }
         );
       } else {
@@ -360,9 +347,7 @@ class AdminNode extends React.Component {
 
     return (
       <div className="problem" onClick={() => this.clearErrorMessage()}>
-        {i18next.t(
-          "error:Please resolve the following issues before submitting"
-        )}
+        {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
           {problems.map((problem, i) => {
             return <li>{problem}</li>;
@@ -374,11 +359,7 @@ class AdminNode extends React.Component {
 
   renderManagementList(item) {
     return (
-      <a
-        href="javascript:void(0);"
-        className={this.state.event === item.value ? "tab_current" : "tab"}
-        onClick={() => this.changeEvent(item.value)}
-      >
+      <a href="javascript:void(0);" className={this.state.event === item.value ? "tab_current" : "tab"} onClick={() => this.changeEvent(item.value)}>
         {i18next.t(`node:${item.label}`)}
       </a>
     );
@@ -388,23 +369,10 @@ class AdminNode extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>
-            {i18next.t("admin:Backstage management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/node`}>
-            {i18next.t("node:Node management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          {this.props.event === "new" ? (
-            <span>{i18next.t("node:New node")}</span>
-          ) : (
-            <Link to={`/go/${encodeURIComponent(this.state.nodeId)}`}>
-              {this.state.nodeInfo?.name}
-            </Link>
-          )}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin/node`}>{i18next.t("node:Node management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          {this.props.event === "new" ? <span>{i18next.t("node:New node")}</span> : <Link to={`/go/${encodeURIComponent(this.state.nodeId)}`}>{this.state.nodeInfo?.name}</Link>}
         </div>
         <div className="cell">
           {this.state.Management_LIST.map((item) => {
@@ -424,25 +392,13 @@ class AdminNode extends React.Component {
           <tbody>
             <tr>
               <td width={pcBrowser ? "200" : "auto"} align="left">
-                <Link to={`/go/${encodeURIComponent(node?.nodeInfo.id)}`}>
-                  {node?.nodeInfo.name}
-                </Link>
+                <Link to={`/go/${encodeURIComponent(node?.nodeInfo.id)}`}>{node?.nodeInfo.name}</Link>
               </td>
               <td width={pcBrowser ? "200" : "auto"} align="center">
-                <Link
-                  to={`/admin/node/edit/${encodeURIComponent(
-                    node?.nodeInfo.id
-                  )}`}
-                >
-                  {i18next.t("node:Manage")}
-                </Link>
+                <Link to={`/admin/node/edit/${encodeURIComponent(node?.nodeInfo.id)}`}>{i18next.t("node:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td
-                width={pcBrowser ? "auto" : "80"}
-                valign="middle"
-                style={{ textAlign: "center" }}
-              >
+              <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{ textAlign: "center" }}>
                 <span style={{ fontSize: "13px" }}>
                   {node?.nodeInfo.hot} {i18next.t("node:hot")}
                 </span>
@@ -460,12 +416,7 @@ class AdminNode extends React.Component {
   renderRadioButton(item) {
     return (
       <span>
-        <input
-          type="radio"
-          onClick={() => this.updateFormField("backgroundRepeat", item.value)}
-          checked={item.value === this.state.form?.backgroundRepeat}
-          name="repeat"
-        />
+        <input type="radio" onClick={() => this.updateFormField("backgroundRepeat", item.value)} checked={item.value === this.state.form?.backgroundRepeat} name="repeat" />
         {i18next.t(`node:${item.label}`)}{" "}
       </span>
     );
@@ -542,11 +493,7 @@ class AdminNode extends React.Component {
   renderNodeModerators(moderators) {
     return (
       <span>
-        <Link
-          to={`/member/${moderators}`}
-          style={{ fontWeight: "bolder" }}
-          target="_blank"
-        >
+        <Link to={`/member/${moderators}`} style={{ fontWeight: "bolder" }} target="_blank">
           {moderators}
         </Link>
         &nbsp; &nbsp;
@@ -568,13 +515,10 @@ class AdminNode extends React.Component {
             <div className="box">
               <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                {i18next.t("loading:Node is loading")}
+                <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Node is loading")}
               </div>
               <div className="cell">
-                <span className="gray bigger">
-                  {i18next.t("loading:Please wait patiently...")}
-                </span>
+                <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
               </div>
             </div>
           );
@@ -585,45 +529,29 @@ class AdminNode extends React.Component {
             <div class="box">
               <div class="header">
                 <Link to="/">{Setting.getForumName()}</Link>
-                <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                {i18next.t("error:Node not found")}
+                <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Node not found")}
               </div>
               <div class="cell">
-                {i18next.t(
-                  "error:The node you are trying to view does not exist, there are several possibilities"
-                )}
+                {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
                 <div class="sep10"></div>
                 <ul>
-                  <li>
-                    {i18next.t(
-                      "error:You entered a node ID that does not exist."
-                    )}
-                  </li>
-                  <li>
-                    {i18next.t(
-                      "error:The node is currently in invisible state."
-                    )}
-                  </li>
+                  <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
+                  <li>{i18next.t("error:The node is currently in invisible state.")}</li>
                 </ul>
               </div>
               <div class="inner">
                 {this.props.account === null ? (
                   <span className="gray">
                     <span className="chevron">‹</span> &nbsp;
-                    {i18next.t("error:Back to")}{" "}
-                    <Link to="/">{i18next.t("error:Home Page")}</Link>
+                    {i18next.t("error:Back to")} <Link to="/">{i18next.t("error:Home Page")}</Link>
                   </span>
                 ) : (
                   <span className="gray">
                     <span className="chevron">‹</span> &nbsp;
-                    {i18next.t("error:Back to")}{" "}
-                    <Link to="/">{i18next.t("error:Home Page")}</Link>
+                    {i18next.t("error:Back to")} <Link to="/">{i18next.t("error:Home Page")}</Link>
                     <br />
                     <span className="chevron">‹</span> &nbsp;
-                    {i18next.t("error:Back to")}{" "}
-                    <Link to={`/member/${this.props.account?.name}`}>
-                      {i18next.t("error:My profile")}
-                    </Link>
+                    {i18next.t("error:Back to")} <Link to={`/member/${this.props.account?.name}`}>{i18next.t("error:My profile")}</Link>
                   </span>
                 )}
               </div>
@@ -665,17 +593,7 @@ class AdminNode extends React.Component {
                           {i18next.t("node:Node ID")}
                         </td>
                         <td width="auto" align="left">
-                          <input
-                            type="text"
-                            className="sl"
-                            name="id"
-                            id="node_id"
-                            value={this.state.form?.id}
-                            onChange={(event) =>
-                              this.updateFormField("id", event.target.value)
-                            }
-                            autoComplete="off"
-                          />
+                          <input type="text" className="sl" name="id" id="node_id" value={this.state.form?.id} onChange={(event) => this.updateFormField("id", event.target.value)} autoComplete="off" />
                         </td>
                       </tr>
                     ) : null}
@@ -685,27 +603,9 @@ class AdminNode extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         {newNode ? (
-                          <input
-                            type="text"
-                            className="sl"
-                            name="name"
-                            id="node_name"
-                            value={
-                              this.state.form?.name === undefined
-                                ? ""
-                                : this.state.form?.name
-                            }
-                            onChange={(event) =>
-                              this.updateFormField("name", event.target.value)
-                            }
-                            autoComplete="off"
-                          />
+                          <input type="text" className="sl" name="name" id="node_name" value={this.state.form?.name === undefined ? "" : this.state.form?.name} onChange={(event) => this.updateFormField("name", event.target.value)} autoComplete="off" />
                         ) : (
-                          <Link
-                            to={`/go/${encodeURIComponent(this.state.nodeId)}`}
-                          >
-                            {node?.name}
-                          </Link>
+                          <Link to={`/go/${encodeURIComponent(this.state.nodeId)}`}>{node?.name}</Link>
                         )}
                       </td>
                     </tr>
@@ -724,38 +624,19 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Image")}
                       </td>
                       <td width="auto" align="left">
-                        {this.state.form?.image === undefined ||
-                        this.state.form?.image === "" ? (
-                          <span className="gray">
-                            {i18next.t("node:Not set")}
-                          </span>
+                        {this.state.form?.image === undefined || this.state.form?.image === "" ? (
+                          <span className="gray">{i18next.t("node:Not set")}</span>
                         ) : (
-                          <Zmage
-                            src={this.state.form?.image}
-                            alt={this.state.form?.id}
-                            style={{ maxWidth: "48px", maxHeight: "48px" }}
-                          />
+                          <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
                         )}
                       </td>
                     </tr>
                     <tr>
                       <td width="120" align="right">
-                        {newNode
-                          ? i18next.t("node:Set image")
-                          : i18next.t("node:Change image")}
+                        {newNode ? i18next.t("node:Set image") : i18next.t("node:Change image")}
                       </td>
                       <td width="auto" align="left">
-                        <input
-                          type="text"
-                          className="sl"
-                          name="image"
-                          id="change_image"
-                          defaultValue={this.state.form?.image}
-                          onChange={(event) =>
-                            this.updateFormField("image", event.target.value)
-                          }
-                          autoComplete="off"
-                        />
+                        <input type="text" className="sl" name="image" id="change_image" defaultValue={this.state.form?.image} onChange={(event) => this.updateFormField("image", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     {!newNode ? (
@@ -774,9 +655,7 @@ class AdminNode extends React.Component {
                           {i18next.t("node:Total favorites")}
                         </td>
                         <td width="auto" align="left">
-                          <span className="gray">
-                            {this.state.favoritesNum}
-                          </span>
+                          <span className="gray">{this.state.favoritesNum}</span>
                         </td>
                       </tr>
                     ) : null}
@@ -795,39 +674,8 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Sorter")}
                       </td>
                       <td width="auto" align="left">
-                        <input
-                          type="range"
-                          min="1"
-                          max="1000"
-                          step="1"
-                          value={
-                            this.state.form?.sorter === undefined
-                              ? 1
-                              : this.state.form?.sorter
-                          }
-                          onChange={(event) =>
-                            this.updateFormField(
-                              "sorter",
-                              parseInt(event.target.value)
-                            )
-                          }
-                        />
-                        &nbsp; &nbsp;{" "}
-                        <input
-                          type="number"
-                          name="sorter"
-                          min="1"
-                          max="1000"
-                          step="1"
-                          value={this.state.form?.sorter}
-                          style={{ width: "50px" }}
-                          onChange={(event) =>
-                            this.updateFormField(
-                              "sorter",
-                              parseInt(event.target.value)
-                            )
-                          }
-                        />
+                        <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                       </td>
                     </tr>
                     <tr>
@@ -859,19 +707,7 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Mailing List")}
                       </td>
                       <td width="auto" align="left">
-                        <input
-                          type="text"
-                          className="sl"
-                          name="mailingList"
-                          defaultValue={this.state.form?.mailingList}
-                          onChange={(event) =>
-                            this.updateFormField(
-                              "mailingList",
-                              event.target.value
-                            )
-                          }
-                          autoComplete="off"
-                        />
+                        <input type="text" className="sl" name="mailingList" defaultValue={this.state.form?.mailingList} onChange={(event) => this.updateFormField("mailingList", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     <tr>
@@ -879,19 +715,7 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Google Group Cookie")}
                       </td>
                       <td width="auto" align="left">
-                        <input
-                          type="text"
-                          className="sl"
-                          name="googleGroupCookie"
-                          defaultValue={this.state.form?.googleGroupCookie}
-                          onChange={(event) =>
-                            this.updateFormField(
-                              "googleGroupCookie",
-                              event.target.value
-                            )
-                          }
-                          autoComplete="off"
-                        />
+                        <input type="text" className="sl" name="googleGroupCookie" defaultValue={this.state.form?.googleGroupCookie} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     <tr>
@@ -899,35 +723,19 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Is hidden")}
                       </td>
                       <td width="auto" align="left">
-                        <input
-                          type="radio"
-                          onClick={() =>
-                            this.updateFormField("isHidden", false)
-                          }
-                          checked={!this.state.form?.isHidden}
-                          name="visible"
-                        />
-                        {i18next.t("plane:Visible")}{" "}
-                        <input
-                          type="radio"
-                          onClick={() => this.updateFormField("isHidden", true)}
-                          checked={this.state.form?.isHidden}
-                          name="invisible"
-                        />
+                        <input type="radio" onClick={() => this.updateFormField("isHidden", false)} checked={!this.state.form?.isHidden} name="visible" />
+                        {i18next.t("plane:Visible")} <input type="radio" onClick={() => this.updateFormField("isHidden", true)} checked={this.state.form?.isHidden} name="invisible" />
                         {i18next.t("plane:Invisible")}
                       </td>
                     </tr>
                     {!newNode ? (
-                      this.state.nodeInfo?.moderators !== null &&
-                      this.state.nodeInfo?.moderators.length !== 0 ? (
+                      this.state.nodeInfo?.moderators !== null && this.state.nodeInfo?.moderators.length !== 0 ? (
                         <tr>
                           <td width="120" align="right">
                             {i18next.t("node:Moderators")}
                           </td>
                           <td width="auto" align="left">
-                            {this.state.nodeInfo?.moderators.map((moderators) =>
-                              this.renderNodeModerators(moderators)
-                            )}
+                            {this.state.nodeInfo?.moderators.map((moderators) => this.renderNodeModerators(moderators))}
                           </td>
                         </tr>
                       ) : (
@@ -936,9 +744,7 @@ class AdminNode extends React.Component {
                             {i18next.t("node:Moderators")}
                           </td>
                           <td width="auto" align="left">
-                            <span class="gray">
-                              {i18next.t("node:No moderators")}
-                            </span>
+                            <span class="gray">{i18next.t("node:No moderators")}</span>
                           </td>
                         </tr>
                       )
@@ -948,13 +754,7 @@ class AdminNode extends React.Component {
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
                           <span className="gray">
-                            <Link
-                              to={`/go/${encodeURIComponent(
-                                this.state.nodeId
-                              )}/moderators`}
-                            >
-                              {i18next.t("node:Manage moderators")}
-                            </Link>
+                            <Link to={`/go/${encodeURIComponent(this.state.nodeId)}/moderators`}>{i18next.t("node:Manage moderators")}</Link>
                           </span>
                         </td>
                       </tr>
@@ -975,9 +775,7 @@ class AdminNode extends React.Component {
                         >
                           <div className={`cm-middle-unresizable-content`}>
                             <CodeMirror
-                              editorDidMount={(editor) =>
-                                Tools.attachEditor(editor)
-                              }
+                              editorDidMount={(editor) => Tools.attachEditor(editor)}
                               onPaste={() => Tools.uploadMdFile()}
                               value={this.state.form.desc}
                               onDrop={() => Tools.uploadMdFile()}
@@ -998,25 +796,14 @@ class AdminNode extends React.Component {
                     <tr>
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
-                        {!newNode ? (
-                          <input
-                            type="submit"
-                            className="super normal button"
-                            value={i18next.t("node:Save")}
-                            onClick={() => this.updateNodeInfo()}
-                          />
-                        ) : null}
+                        {!newNode ? <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()} /> : null}
                       </td>
                     </tr>
                     {newNode ? (
                       <tr>
                         <td width="120" align="right"></td>
                         <td width="auto" align="left">
-                          <span className="gray">
-                            {i18next.t(
-                              "node:Please go to the background page to continue to improve the information and submit"
-                            )}
-                          </span>
+                          <span className="gray">{i18next.t("node:Please go to the background page to continue to improve the information and submit")}</span>
                         </td>
                       </tr>
                     ) : null}
@@ -1048,25 +835,16 @@ class AdminNode extends React.Component {
                       {i18next.t("node:Header image")}
                     </td>
                     <td width="auto" align="left">
-                      {this.state.form?.headerImage === undefined ||
-                      this.state.form?.headerImage === "" ? (
-                        <span className="gray">
-                          {i18next.t("node:Not set")}
-                        </span>
+                      {this.state.form?.headerImage === undefined || this.state.form?.headerImage === "" ? (
+                        <span className="gray">{i18next.t("node:Not set")}</span>
                       ) : (
-                        <Zmage
-                          src={this.state.form?.headerImage}
-                          alt={this.state.form?.id}
-                          style={{ maxWidth: "48px", maxHeight: "48px" }}
-                        />
+                        <Zmage src={this.state.form?.headerImage} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
                       )}
                     </td>
                   </tr>
                   <tr>
                     <td width="120" align="right">
-                      {newNode
-                        ? i18next.t("node:Set header image")
-                        : i18next.t("node:Change header image")}
+                      {newNode ? i18next.t("node:Set header image") : i18next.t("node:Change header image")}
                     </td>
                     <td width="auto" align="left">
                       <input
@@ -1074,29 +852,11 @@ class AdminNode extends React.Component {
                         className="sl"
                         name="image"
                         id="change_header"
-                        value={
-                          this.state.form?.headerImage === undefined
-                            ? ""
-                            : this.state.form?.headerImage
-                        }
-                        onChange={(event) =>
-                          this.updateFormField(
-                            "headerImage",
-                            event.target.value
-                          )
-                        }
+                        value={this.state.form?.headerImage === undefined ? "" : this.state.form?.headerImage}
+                        onChange={(event) => this.updateFormField("headerImage", event.target.value)}
                         autoComplete="off"
                       />{" "}
-                      &nbsp;{" "}
-                      <input
-                        type="file"
-                        accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
-                        onChange={(event) =>
-                          this.handleUploadImage(event, "headerImage")
-                        }
-                        name="headerImage"
-                        style={{ width: "200px" }}
-                      />
+                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "headerImage")} name="headerImage" style={{ width: "200px" }} />
                     </td>
                   </tr>
                   <tr>
@@ -1104,25 +864,16 @@ class AdminNode extends React.Component {
                       {i18next.t("node:Background image")}
                     </td>
                     <td width="auto" align="left">
-                      {this.state.form?.backgroundImage === undefined ||
-                      this.state.form?.backgroundImage === "" ? (
-                        <span className="gray">
-                          {i18next.t("node:Not set")}
-                        </span>
+                      {this.state.form?.backgroundImage === undefined || this.state.form?.backgroundImage === "" ? (
+                        <span className="gray">{i18next.t("node:Not set")}</span>
                       ) : (
-                        <Zmage
-                          src={this.state.form?.backgroundImage}
-                          alt={this.state.form?.id}
-                          style={{ maxWidth: "48px", maxHeight: "48px" }}
-                        />
+                        <Zmage src={this.state.form?.backgroundImage} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
                       )}
                     </td>
                   </tr>
                   <tr>
                     <td width="120" align="right">
-                      {newNode
-                        ? i18next.t("node:Set background image")
-                        : i18next.t("node:Change background image")}
+                      {newNode ? i18next.t("node:Set background image") : i18next.t("node:Change background image")}
                     </td>
                     <td width="auto" align="left">
                       <input
@@ -1130,29 +881,11 @@ class AdminNode extends React.Component {
                         className="sl"
                         name="image"
                         id="change_image"
-                        value={
-                          this.state.form?.backgroundImage === undefined
-                            ? ""
-                            : this.state.form?.backgroundImage
-                        }
-                        onChange={(event) =>
-                          this.updateFormField(
-                            "backgroundImage",
-                            event.target.value
-                          )
-                        }
+                        value={this.state.form?.backgroundImage === undefined ? "" : this.state.form?.backgroundImage}
+                        onChange={(event) => this.updateFormField("backgroundImage", event.target.value)}
                         autoComplete="off"
                       />{" "}
-                      &nbsp;{" "}
-                      <input
-                        type="file"
-                        accept=".jpg,.gif,.png,.JPG,.GIF,.PNG"
-                        onChange={(event) =>
-                          this.handleUploadImage(event, "backgroundImage")
-                        }
-                        name="backgroundImage"
-                        style={{ width: "200px" }}
-                      />
+                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "backgroundImage")} name="backgroundImage" style={{ width: "200px" }} />
                     </td>
                   </tr>
                   <tr>
@@ -1207,10 +940,7 @@ class AdminNode extends React.Component {
                             }}
                             onClick={this.handleColorClose}
                           />
-                          <SketchPicker
-                            color={this.state.form.backgroundColor}
-                            onChange={this.handleColorChange}
-                          />
+                          <SketchPicker color={this.state.form.backgroundColor} onChange={this.handleColorChange} />
                         </div>
                       ) : null}
                     </td>
@@ -1224,11 +954,7 @@ class AdminNode extends React.Component {
                         id="Wrapper"
                         style={{
                           backgroundColor: `${this.state.form?.backgroundColor}`,
-                          backgroundImage: `url(${
-                            this.state.form?.backgroundImage
-                          }), url(${Setting.getStatic(
-                            "/img/shadow_light.png"
-                          )})`,
+                          backgroundImage: `url(${this.state.form?.backgroundImage}), url(${Setting.getStatic("/img/shadow_light.png")})`,
                           backgroundSize: "contain",
                           backgroundRepeat: `${this.state.form?.backgroundRepeat}, repeat-x`,
                           width: Setting.PcBrowser ? "500px" : "200px",
@@ -1242,19 +968,9 @@ class AdminNode extends React.Component {
                     <td width="120" align="right"></td>
                     <td width="auto" align="left">
                       {newNode ? (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("node:Create")}
-                          onClick={() => this.postNewNode()}
-                        />
+                        <input type="submit" className="super normal button" value={i18next.t("node:Create")} onClick={() => this.postNewNode()} />
                       ) : (
-                        <input
-                          type="submit"
-                          className="super normal button"
-                          value={i18next.t("node:Save")}
-                          onClick={() => this.updateNodeInfo()}
-                        />
+                        <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()} />
                       )}
                     </td>
                   </tr>
@@ -1269,16 +985,12 @@ class AdminNode extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("node:Node management")}
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("node:Node management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("node:Total nodes")} &nbsp;</span>
-            <strong className="gray">
-              {this.state.nodes === null ? 0 : this.state.nodes.length}
-            </strong>
+            <strong className="gray">{this.state.nodes === null ? 0 : this.state.nodes.length}</strong>
           </div>
           <div className="fr f12">
             <strong className="gray">
@@ -1298,9 +1010,7 @@ class AdminNode extends React.Component {
                 lineHeight: "100px",
               }}
             >
-              {this.state.nodes === null
-                ? i18next.t("loading:Data is loading...")
-                : i18next.t("node:No node yet")}
+              {this.state.nodes === null ? i18next.t("loading:Data is loading...") : i18next.t("node:No node yet")}
             </div>
           )}
         </div>

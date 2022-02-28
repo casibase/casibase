@@ -64,9 +64,7 @@ class AdminSensitive extends React.Component {
   }
 
   addSensitive() {
-    SensitiveBackend.addSensitive(
-      document.getElementById("newsensitive").value
-    ).then((res) => {
+    SensitiveBackend.addSensitive(document.getElementById("newsensitive").value).then((res) => {
       if (res.status === "ok") {
         SensitiveBackend.getSensitiveList().then((res) => {
           this.setState({
@@ -92,28 +90,14 @@ class AdminSensitive extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>
-            {i18next.t("admin:Backstage management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/sensitive`}>
-            {i18next.t("sensitive:sensitive management")}
-          </Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
-          <span>
-            {this.props.event === "new"
-              ? i18next.t("sensitive:new sensitive")
-              : ""}
-          </span>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={`/admin/sensitive`}>{i18next.t("sensitive:sensitive management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <span>{this.props.event === "new" ? i18next.t("sensitive:new sensitive") : ""}</span>
         </div>
         <div className="cell">
-          {this.state.sensitiveList !== null &&
-          this.state.sensitiveList.length !== 0 ? (
-            this.state.sensitiveList.map((word) =>
-              this.renderSensitiveItem(word)
-            )
+          {this.state.sensitiveList !== null && this.state.sensitiveList.length !== 0 ? (
+            this.state.sensitiveList.map((word) => this.renderSensitiveItem(word))
           ) : (
             <div
               className="cell"

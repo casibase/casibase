@@ -83,11 +83,7 @@ class FavoritesBox extends React.Component {
       default:
         return;
     }
-    FavoritesBackend.getFavorites(
-      favoritesType,
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    FavoritesBackend.getFavorites(favoritesType, this.state.limit, this.state.page).then((res) => {
       if (res.status === "ok") {
         this.setState({
           favorites: res.data,
@@ -113,13 +109,7 @@ class FavoritesBox extends React.Component {
             fontSize: "14px",
           }}
         >
-          <img
-            src={node?.nodeInfo.image}
-            border="0"
-            align="default"
-            width="73"
-            alt={node?.nodeInfo.name}
-          />
+          <img src={node?.nodeInfo.image} border="0" align="default" width="73" alt={node?.nodeInfo.name} />
           <div className="sep10"></div>
           {node?.nodeInfo.name}
           <div className="sep5"></div>
@@ -137,14 +127,7 @@ class FavoritesBox extends React.Component {
       return;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.favoritesNum}
-        url={this.state.url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} defaultPageNum={this.state.limit} />;
   }
 
   render() {
@@ -154,12 +137,9 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("fav:My Favorite Nodes")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:My Favorite Nodes")}
               <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total nodes")} &nbsp;
-                </span>
+                <span className="snow">{i18next.t("fav:Total nodes")} &nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong>
               </div>
             </div>
@@ -175,20 +155,13 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("fav:My favorite topics")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:My favorite topics")}
               <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total topics")} &nbsp;
-                </span>
+                <span className="snow">{i18next.t("fav:Total topics")} &nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong>
               </div>
             </div>
-            <TopicList
-              topics={this.state.favorites}
-              showNodeName={true}
-              showAvatar={true}
-            />
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
           </div>
         );
       case "following":
@@ -196,21 +169,14 @@ class FavoritesBox extends React.Component {
           <div className="box">
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
-              <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-              {i18next.t("fav:Latest topics from people I followed")}
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:Latest topics from people I followed")}
               <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total topics")} &nbsp;
-                </span>
+                <span className="snow">{i18next.t("fav:Total topics")} &nbsp;</span>
                 <strong className="gray">{this.state.favoritesNum}</strong>
               </div>
             </div>
             {Setting.PcBrowser ? this.showPageColumn() : null}
-            <TopicList
-              topics={this.state.favorites}
-              showNodeName={true}
-              showAvatar={true}
-            />
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
             {this.showPageColumn()}
           </div>
         );

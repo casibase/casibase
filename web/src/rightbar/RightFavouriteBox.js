@@ -45,22 +45,11 @@ class RightFavouriteBox extends React.Component {
       <div className="node rightFavorite">
         <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
-            <img
-              src={Setting.getStatic("/img/compose.png")}
-              align="absmiddle"
-              border="0"
-              width="23"
-              height="18"
-              alt="New Topic"
-            />
+            <img src={Setting.getStatic("/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic" />
           </Link>
         </div>
         <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
-          <div
-            id="avatar"
-            style={{ backgroundImage: `url(${node?.image})` }}
-            className="rightFavorite"
-          />
+          <div id="avatar" style={{ backgroundImage: `url(${node?.image})` }} className="rightFavorite" />
         </Link>
         &nbsp;{" "}
         <linkTitle to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">

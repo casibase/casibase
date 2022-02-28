@@ -30,9 +30,7 @@ class SearchResultPage extends React.Component {
   }
 
   componentDidMount() {
-    SearchBackend.search(this.state.keyword).then((res) =>
-      this.updateSearchResult(res)
-    );
+    SearchBackend.search(this.state.keyword).then((res) => this.updateSearchResult(res));
   }
 
   componentWillMount() {
@@ -45,10 +43,7 @@ class SearchResultPage extends React.Component {
           msg: i18next.t("search:loading..."),
           topics: [],
         },
-        () =>
-          SearchBackend.search(this.state.keyword).then((res) =>
-            this.updateSearchResult(res)
-          )
+        () => SearchBackend.search(this.state.keyword).then((res) => this.updateSearchResult(res))
       );
     });
   }
@@ -73,13 +68,7 @@ class SearchResultPage extends React.Component {
 
     if (this.state.topics.length === 0) return null;
 
-    return (
-      <TopicList
-        topics={this.state.topics}
-        showNodeName={true}
-        showAvatar={true}
-      />
-    );
+    return <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />;
   }
 
   render() {

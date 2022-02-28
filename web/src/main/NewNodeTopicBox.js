@@ -28,6 +28,7 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
 import * as Conf from "../Conf";
+
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -459,12 +460,14 @@ class NewNodeTopicBox extends React.Component {
                   <div>
                     <input type="hidden" name="once" />
                     <button type="button" className="super normal button" onClick={this.enablePreview.bind(this)}>
-                      <li className="fa fa-eye"></li> &nbsp;
+                      <li className="fa fa-eye"></li>
+                      &nbsp;
                       {i18next.t("newNodeTopic:Preview")}{" "}
                     </button>{" "}
                     &nbsp;
                     <button type="submit" className="super normal button" onClick={this.publishTopic.bind(this)}>
-                      <li className="fa fa-paper-plane"></li> &nbsp;
+                      <li className="fa fa-paper-plane"></li>
+                      &nbsp;
                       {i18next.t("newNodeTopic:Publish")}{" "}
                     </button>{" "}
                   </div>
