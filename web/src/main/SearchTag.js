@@ -15,84 +15,85 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 import TopicList from "./TopicList";
 
 class SearchTag extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-      tagId: props.match.params.tagId,
-      page: 1,
-      limit: 20,
-      topics: [],
-      topicNum: 1,
-      url: "",
-    };
-    this.state.url = `/tag/${this.state.tagId}`;
-  }
-
-  componentDidMount() {
-    TopicBackend.getTopicsWithTag(this.state.tagId, this.state.limit, this.state.page).then((res) => {
-      this.setState({
-        topics: res,
-        topicNum: res.length,
-      });
-    });
-  }
-
-  showPageColumn() {
-    if (this.state.topicNum < this.state.limit) {
-      return null;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+            tagId: props.match.params.tagId,
+            page: 1,
+            limit: 20,
+            topics: [],
+            topicNum: 1,
+            url: "",
+        };
+        this.state.url = `/tag/${this.state.tagId}`;
     }
 
-    return <PageColumn page={this.state.page} total={this.state.topicNum} url={this.state.url} tagId={this.state.tagId} />;
-  }
+    componentDidMount() {
+        TopicBackend.getTopicsWithTag(this.state.tagId, this.state.limit, this.state.page).then((res) => {
+            this.setState({
+                topics: res,
+                topicNum: res.length,
+            });
+        });
+    }
 
-  renderTag() {
-    return (
-      <div className={`box ${this.state.tagId}`}>
-        <div className="cell" align="center" style={{ border: 0 }}>
-          <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-            <span className="chevron">{this.state.tagId}</span>{" "}
-            <span className="gray" style={{ float: "right" }}>
+    showPageColumn() {
+        if (this.state.topicNum < this.state.limit) {
+            return null;
+        }
+
+        return <PageColumn page={this.state.page} total={this.state.topicNum} url={this.state.url}
+                           tagId={this.state.tagId}/>;
+    }
+
+    renderTag() {
+        return (
+            <div className={`box ${this.state.tagId}`}>
+                <div className="cell" align="center" style={{border: 0}}>
+                    <div className="header">
+                        <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+                        <span className="chevron">{this.state.tagId}</span>{" "}
+                        <span className="gray" style={{float: "right"}}>
               {`${i18next.t("node:all")} ${this.state.topicNum} ${i18next.t("node:topics")}`}
             </span>
-          </div>
-        </div>
-        <TopicList topics={this.state.topics} showNodeName={false} showAvatar={true} />
-        {this.showPageColumn()}
-      </div>
-    );
-  }
-
-  render() {
-    const pcBrowser = Setting.PcBrowser;
-
-    if (this.state.topics.length === 0) {
-      return (
-        <div>
-          <div className="box">
-            <div className="header">
-              <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-              {i18next.t("tag:No related pages with tags")}
+                    </div>
+                </div>
+                <TopicList topics={this.state.topics} showNodeName={false} showAvatar={true}/>
+                {this.showPageColumn()}
             </div>
-          </div>
-        </div>
-      );
+        );
     }
 
-    return (
-      <div>
-        {this.renderTag()}
-        {pcBrowser ? <div className="sep20" /> : null}
-      </div>
-    );
-  }
+    render() {
+        const pcBrowser = Setting.PcBrowser;
+
+        if (this.state.topics.length === 0) {
+            return (
+                <div>
+                    <div className="box">
+                        <div className="header">
+                            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+                            {i18next.t("tag:No related pages with tags")}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <div>
+                {this.renderTag()}
+                {pcBrowser ? <div className="sep20"/> : null}
+            </div>
+        );
+    }
 }
 
 export default withRouter(SearchTag);

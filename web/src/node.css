@@ -12,77 +12,77 @@
 /* limitations under the License.                                           */
 
 .nodejs.node_header {
-  background-color: #aaaaaa;
+    background-color: #aaaaaa;
 }
 
 .node-casbin.Wrapper {
-  background-color: #1d1d1d;
+    background-color: #1d1d1d;
 }
 
 .node-casbin.box {
-  background-color: #303030;
-  color: #d2d8ba;
-  border-bottom: 1px solid #36382e;
+    background-color: #303030;
+    color: #d2d8ba;
+    border-bottom: 1px solid #36382e;
 }
 
 .node-casbin.count_livid:visited {
-  color: #d2d8ba;
-  background-color: #33342d;
+    color: #d2d8ba;
+    background-color: #33342d;
 }
 
 a.node-casbin.topic-link:visited {
-  color: #778087; /*#afb9c1;*/
-  text-decoration: none;
-  word-break: break-word;
+    color: #778087; /*#afb9c1;*/
+    text-decoration: none;
+    word-break: break-word;
 }
 
 a.node-casbin.topic-link:active,
 a.node-casbin.topic-link:link {
-  color: #afb9c1;
-  text-decoration: none;
-  word-break: break-word;
+    color: #afb9c1;
+    text-decoration: none;
+    word-break: break-word;
 }
 
 a.node-casbin.member:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 a.node-casbin.topic-link:hover {
-  color: #4d5256;
-  text-decoration: underline;
+    color: #4d5256;
+    text-decoration: underline;
 }
 
 a.node-casbin:link,
 a.node-casbin:visited,
 a.node-casbin:active {
-  color: #80bd01;
-  text-decoration: none;
-  text-shadow: none;
+    color: #80bd01;
+    text-decoration: none;
+    text-shadow: none;
 }
 
 .node-casbin.cell,
 .node-casbin.head,
 .node-casbin.header {
-  border-bottom: 1px solid #3f4138;
+    border-bottom: 1px solid #3f4138;
 }
 
 .node-casbin.mll,
 .node-casbin.sll,
 .node-casbin.mle {
-  background-color: #46483e;
-  color: #d2d8ba;
-  border: 1px solid #3f4138;
+    background-color: #46483e;
+    color: #d2d8ba;
+    border: 1px solid #3f4138;
 }
 
 .node-casbin.topic_content,
 .node-casbin.reply_content {
-  color: #ffffff;
+    color: #ffffff;
 }
 
 .node-casbin.mll:focus,
 .node-casbin.sll:focus,
 .node-casbin.mle:focus {
-  box-shadow: 0pt 1px 2px rgba(0, 0, 0, 0.18) inset,
+    box-shadow: 0pt 1px 2px rgba(0, 0, 0, 0.18) inset,
     0px 0px 5px rgba(210, 216, 186, 0.5);
 }
 
@@ -95,33 +95,33 @@ a.node-casbin.vote:active,
 .node-casbin.page_current:link,
 .node-casbin.page_current:visited,
 .node-casbin.page_current:active {
-  color: #80bd01;
-  text-decoration: none;
-  text-shadow: none;
-  border-color: #80bd01;
-  background-color: transparent;
+    color: #80bd01;
+    text-decoration: none;
+    text-shadow: none;
+    border-color: #80bd01;
+    background-color: transparent;
 }
 
 a.node-casbin.vote:hover,
 .node-casbin.page_normal:hover,
 .node-casbin.page_current:hover {
-  text-decoration: underline;
-  color: white;
-  border-color: white;
+    text-decoration: underline;
+    color: white;
+    border-color: white;
 }
 
 a.node-casbin:hover {
-  text-decoration: underline;
+    text-decoration: underline;
 }
 
 .node-casbin .no {
-  background-color: #606452;
-  color: #bfd46b;
+    background-color: #606452;
+    color: #bfd46b;
 }
 
 a.node-casbin.tag:link,
 a.node-casbin.tag:visited,
 a.node-casbin.tag:active {
-  background-color: rgba(0, 0, 0, 0.8);
-  border: 1px solid rgba(0, 0, 0, 0.9);
+    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.9);
 }

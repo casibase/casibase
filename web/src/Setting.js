@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { message } from "antd";
+import {Link} from "react-router-dom";
+import {message} from "antd";
 import moment from "moment";
-import { animateScroll as scroll } from "react-scroll";
+import {animateScroll as scroll} from "react-scroll";
 import md5 from "js-md5";
 import * as Conf from "./Conf";
 import * as MemberBackend from "./backend/MemberBackend";
@@ -25,7 +25,7 @@ import Zmage from "react-zmage";
 import Identicon from "identicon.js";
 import Sdk from "casdoor-js-sdk";
 import * as ConfBackend from "./backend/ConfBackend";
-import { FrontConfig } from "./Conf";
+import {FrontConfig} from "./Conf";
 
 const pangu = require("pangu");
 
@@ -36,326 +36,326 @@ export let CasdoorSdk;
 export const StaticBaseUrl = "https://cdn.casbin.org";
 
 export function initServerUrl() {
-  const hostname = window.location.hostname;
-  if (hostname === "localhost") {
-    ServerUrl = `http://${hostname}:7000`;
-  }
+    const hostname = window.location.hostname;
+    if (hostname === "localhost") {
+        ServerUrl = `http://${hostname}:7000`;
+    }
 }
 
 export function initFullClientUrl() {
-  const hostname = window.location.hostname;
-  if (hostname === "localhost") {
-    ClientUrl = `http://${hostname}:3000`;
-  } else {
-    ClientUrl = `https://${hostname}`;
-  }
+    const hostname = window.location.hostname;
+    if (hostname === "localhost") {
+        ClientUrl = `http://${hostname}:3000`;
+    } else {
+        ClientUrl = `https://${hostname}`;
+    }
 }
 
 export function initCasdoorSdk(config) {
-  CasdoorSdk = new Sdk(config);
+    CasdoorSdk = new Sdk(config);
 }
 
 export function getSignupUrl() {
-  return CasdoorSdk.getSignupUrl();
+    return CasdoorSdk.getSignupUrl();
 }
 
 export function getSigninUrl() {
-  return CasdoorSdk.getSigninUrl();
+    return CasdoorSdk.getSigninUrl();
 }
 
 export function getUserProfileUrl(userName, account) {
-  return CasdoorSdk.getUserProfileUrl(userName, account);
+    return CasdoorSdk.getUserProfileUrl(userName, account);
 }
 
 export function getMyProfileUrl(account) {
-  return CasdoorSdk.getMyProfileUrl(account);
+    return CasdoorSdk.getMyProfileUrl(account);
 }
 
 export function getMyResourcesUrl(account) {
-  return CasdoorSdk.getMyProfileUrl(account).replace("/account?", "/resources?");
+    return CasdoorSdk.getMyProfileUrl(account).replace("/account?", "/resources?");
 }
 
 export function signin() {
-  return CasdoorSdk.signin(ServerUrl).then((res) => {
-    if (res.status === "ok") {
-      if (window !== window.parent) {
-        const message = { tag: "Casdoor", type: "SilentSignin", data: "success" };
-        window.parent.postMessage(message, "*");
-      }
-      showMessage("success", i18next.t("login:Logged in successfully"));
-    } else {
-    }
+    return CasdoorSdk.signin(ServerUrl).then((res) => {
+        if (res.status === "ok") {
+            if (window !== window.parent) {
+                const message = {tag: "Casdoor", type: "SilentSignin", data: "success"};
+                window.parent.postMessage(message, "*");
+            }
+            showMessage("success", i18next.t("login:Logged in successfully"));
+        } else {
+        }
 
-    return res;
-  });
+        return res;
+    });
 }
 
 export function scrollToTop() {
-  scroll.scrollToTop();
+    scroll.scrollToTop();
 }
 
 export function scrollToBottom() {
-  scroll.scrollToBottom();
+    scroll.scrollToBottom();
 }
 
 export function refresh() {
-  window.location.reload();
+    window.location.reload();
 }
 
 export function goToLink(link) {
-  window.location.href = link;
+    window.location.href = link;
 }
 
 export function openLink(link) {
-  const w = window.open("about:blank");
-  w.location.href = link;
+    const w = window.open("about:blank");
+    w.location.href = link;
 }
 
 export function getLink(link) {
-  return (
-    <a target="_blank" href={link} rel="noopener noreferrer">
-      {link}
-    </a>
-  );
+    return (
+        <a target="_blank" href={link} rel="noopener noreferrer">
+            {link}
+        </a>
+    );
 }
 
 export function showMessage(type, text) {
-  if (type === "success") {
-    message.success(text);
-  } else if (type === "error") {
-    message.error(text);
-  }
+    if (type === "success") {
+        message.success(text);
+    } else if (type === "error") {
+        message.error(text);
+    }
 }
 
 export function addRow(array, row) {
-  return [...array, row];
+    return [...array, row];
 }
 
 export function deleteRow(array, i) {
-  return [...array.slice(0, i), ...array.slice(i + 1)];
+    return [...array.slice(0, i), ...array.slice(i + 1)];
 }
 
 export function getFormattedDate(date) {
-  date = date?.replace("T", " ");
-  date = date?.replace("+08:00", " +08:00");
-  return date;
+    date = date?.replace("T", " ");
+    date = date?.replace("+08:00", " +08:00");
+    return date;
 }
 
 export function getPrettyDate(date) {
-  date = moment(date).fromNow();
-  return date;
+    date = moment(date).fromNow();
+    return date;
 }
 
 export function getDiffDays(date) {
-  date = moment().diff(moment(date), "days");
-  return date;
+    date = moment().diff(moment(date), "days");
+    return date;
 }
 
 export function getStatic(path) {
-  return `https://cdn.casbin.org${path}`;
+    return `https://cdn.casbin.org${path}`;
 }
 
 export function getUserAvatar(username, isLarge = false) {
-  if (username === undefined) {
-    return null;
-  }
+    if (username === undefined) {
+        return null;
+    }
 
-  let identicon = new Identicon(md5(username), 420);
-  return "data:image/png;base64," + identicon;
+    let identicon = new Identicon(md5(username), 420);
+    return "data:image/png;base64," + identicon;
 }
 
 export function getForumName() {
-  return Conf.FrontConfig.forumName;
+    return Conf.FrontConfig.forumName;
 }
 
 export function getHomeLink(text) {
-  return <Link to={"/"}>{text === undefined ? getForumName() : text}</Link>;
+    return <Link to={"/"}>{text === undefined ? getForumName() : text}</Link>;
 }
 
 export function changeEditorType(editorType) {
-  localStorage.setItem("editorType", editorType);
-  MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
+    localStorage.setItem("editorType", editorType);
+    MemberBackend.updateMemberEditorType(editorType).then(() => goToLink("/"));
 }
 
 export function setLanguage(language) {
-  localStorage.setItem("language", language);
-  changeMomentLanguage(language);
-  i18next.changeLanguage(language);
-}
-
-export function changeLanguage(language, previous) {
-  MemberBackend.updateMemberLanguage(language).then(() => {
     localStorage.setItem("language", language);
     changeMomentLanguage(language);
     i18next.changeLanguage(language);
-    goToLink(previous);
-  });
+}
+
+export function changeLanguage(language, previous) {
+    MemberBackend.updateMemberLanguage(language).then(() => {
+        localStorage.setItem("language", language);
+        changeMomentLanguage(language);
+        i18next.changeLanguage(language);
+        goToLink(previous);
+    });
 }
 
 export function changeMomentLanguage(language) {
-  if (language.startsWith("zh")) {
-    moment.locale("zh", {
-      relativeTime: {
-        future: "%s内",
-        past: "%s前",
-        s: "几秒",
-        ss: "%d秒",
-        m: "1分钟",
-        mm: "%d分钟",
-        h: "1小时",
-        hh: "%d小时",
-        d: "1天",
-        dd: "%d天",
-        M: "1个月",
-        MM: "%d个月",
-        y: "1年",
-        yy: "%d年",
-      },
-    });
-  }
+    if (language.startsWith("zh")) {
+        moment.locale("zh", {
+            relativeTime: {
+                future: "%s内",
+                past: "%s前",
+                s: "几秒",
+                ss: "%d秒",
+                m: "1分钟",
+                mm: "%d分钟",
+                h: "1小时",
+                hh: "%d小时",
+                d: "1天",
+                dd: "%d天",
+                M: "1个月",
+                MM: "%d个月",
+                y: "1年",
+                yy: "%d年",
+            },
+        });
+    }
 }
 
 export function getFormattedContent(content, spacing) {
-  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
-    if (w[w.length - 1] !== " ") {
-      return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1)})`;
+    let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
+        if (w[w.length - 1] !== " ") {
+            return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1)})`;
+        }
+        return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1)}) `;
+    });
+    if (spacing) {
+        return pangu
+            .spacing(formattedContent)
+            .replace(/\[(.*?)]\((.*?)\)/g, function (w) {
+                return w.replace(/ /g, "");
+            })
+            .replace(/% /g, "%")
+            .replace(/< /g, "<")
+            .replace(/ >/g, ">");
     }
-    return `@[${w.substring(1, w.length - 1)}](${ClientUrl}/member/${w.substring(1)}) `;
-  });
-  if (spacing) {
-    return pangu
-      .spacing(formattedContent)
-      .replace(/\[(.*?)]\((.*?)\)/g, function (w) {
-        return w.replace(/ /g, "");
-      })
-      .replace(/% /g, "%")
-      .replace(/< /g, "<")
-      .replace(/ >/g, ">");
-  }
-  return formattedContent;
+    return formattedContent;
 }
 
 export function getBoolConvertedText(status) {
-  if (status) {
-    return i18next.t("general:true");
-  }
-  return i18next.t("general:false");
+    if (status) {
+        return i18next.t("general:true");
+    }
+    return i18next.t("general:false");
 }
 
 const stdImageExt = ["png", "jpg", "gif", "jpeg"];
 
 export function getFileType(fileName) {
-  let fileType = "image";
-  let fileIndex = fileName.lastIndexOf(".");
-  let ext = fileName.substr(fileIndex + 1);
-  let lowerCase = ext.toLowerCase();
-  let index = stdImageExt.indexOf(lowerCase);
-  if (index < 0) {
-    fileType = "file";
-  }
-  return { fileType: fileType, ext: ext };
+    let fileType = "image";
+    let fileIndex = fileName.lastIndexOf(".");
+    let ext = fileName.substr(fileIndex + 1);
+    let lowerCase = ext.toLowerCase();
+    let index = stdImageExt.indexOf(lowerCase);
+    if (index < 0) {
+        fileType = "file";
+    }
+    return {fileType: fileType, ext: ext};
 }
 
 const unitSuffix = ["Bytes", "KB", "MB"];
 
 export function getFormattedSize(fileSize) {
-  if (fileSize === null) {
-    return "0 Bytes";
-  }
-  let index = Math.floor(Math.log(fileSize) / Math.log(1024));
-  let size = (fileSize / Math.pow(1024, index)).toPrecision(3);
+    if (fileSize === null) {
+        return "0 Bytes";
+    }
+    let index = Math.floor(Math.log(fileSize) / Math.log(1024));
+    let size = (fileSize / Math.pow(1024, index)).toPrecision(3);
 
-  return size + " " + unitSuffix[index];
+    return size + " " + unitSuffix[index];
 }
 
 export let PcBrowser = true;
 
 export function initBrowserType() {
-  if (!checkPc()) {
-    PcBrowser = false;
-  }
+    if (!checkPc()) {
+        PcBrowser = false;
+    }
 }
 
 // checkPc return a boolean value means "mobile" or "pc"
 export function checkPc() {
-  return !/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
+    return !/Android|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent);
 }
 
 // check if the link contains this page's anchor.
 export function checkPageLink(url) {
-  if (url.indexOf("#") === 0) {
-    return true;
-  }
-  if (url.search(ClientUrl) === -1) {
-    return false;
-  }
+    if (url.indexOf("#") === 0) {
+        return true;
+    }
+    if (url.search(ClientUrl) === -1) {
+        return false;
+    }
 
-  let current, target;
-  if (window.location.href.indexOf("#") !== -1) {
-    current = window.location.href.slice(0, window.location.href.indexOf("#"));
-  } else {
-    current = window.location.href;
-  }
-  if (url.indexOf("#") !== -1) {
-    target = url.slice(0, url.indexOf("#"));
-  } else {
-    target = url;
-  }
-  return current === target;
+    let current, target;
+    if (window.location.href.indexOf("#") !== -1) {
+        current = window.location.href.slice(0, window.location.href.indexOf("#"));
+    } else {
+        current = window.location.href;
+    }
+    if (url.indexOf("#") !== -1) {
+        target = url.slice(0, url.indexOf("#"));
+    } else {
+        target = url;
+    }
+    return current === target;
 }
 
-export function renderImage({ alt, src }) {
-  return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
+export function renderImage({alt, src}) {
+    return <Zmage src={src} alt={alt} style={{maxWidth: "100%"}}/>;
 }
 
 export function renderLink(props) {
-  return <a {...props} target="_blank" rel="nofollow noopener noreferrer" />;
+    return <a {...props} target="_blank" rel="nofollow noopener noreferrer"/>;
 }
 
 export function getFrontConf(field) {
-  let storage = window.localStorage;
-  for (let conf in FrontConfig) {
-    if (storage[conf] !== undefined) {
-      FrontConfig[conf] = storage[conf];
+    let storage = window.localStorage;
+    for (let conf in FrontConfig) {
+        if (storage[conf] !== undefined) {
+            FrontConfig[conf] = storage[conf];
+        }
     }
-  }
 
-  ConfBackend.getFrontConfByField(field).then((res) => {
-    for (let key in res) {
-      if (res[key].Value !== "") {
-        FrontConfig[res[key].Id] = res[key].Value;
-      }
-      storage[res[key].Id] = FrontConfig[res[key].Id];
-    }
-  });
+    ConfBackend.getFrontConfByField(field).then((res) => {
+        for (let key in res) {
+            if (res[key].Value !== "") {
+                FrontConfig[res[key].Id] = res[key].Value;
+            }
+            storage[res[key].Id] = FrontConfig[res[key].Id];
+        }
+    });
 }
 
 export function getProviderLogoLink(provider) {
-  const idp = provider.type.toLowerCase();
-  return `${StaticBaseUrl}/img/social_${idp}.png`;
+    const idp = provider.type.toLowerCase();
+    return `${StaticBaseUrl}/img/social_${idp}.png`;
 }
 
 export function toggleThemeMode() {
-  let themeMode = localStorage.getItem("themeMode");
-  if (themeMode === null) {
-    themeMode = "light";
-  }
+    let themeMode = localStorage.getItem("themeMode");
+    if (themeMode === null) {
+        themeMode = "light";
+    }
 
-  if (themeMode === "light") {
-    themeMode = "dark";
-  } else {
-    themeMode = "light";
-  }
-  localStorage.setItem("themeMode", themeMode);
+    if (themeMode === "light") {
+        themeMode = "dark";
+    } else {
+        themeMode = "light";
+    }
+    localStorage.setItem("themeMode", themeMode);
 
-  window.location.reload();
+    window.location.reload();
 }
 
 export function getThemeBtnUrl() {
-  let themeMode = localStorage.getItem("themeMode");
-  if (themeMode === null) {
-    themeMode = "light";
-  }
+    let themeMode = localStorage.getItem("themeMode");
+    if (themeMode === null) {
+        themeMode = "light";
+    }
 
-  return getStatic(`/img/toggle-${themeMode}.png`);
+    return getStatic(`/img/toggle-${themeMode}.png`);
 }

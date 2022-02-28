@@ -13,45 +13,46 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
 
 class SilentSignin extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
-
-  componentDidMount() {
-    // https://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-origin-from-accessing-a-cross-origin-frame
-    window.addEventListener("message", (event) => {
-      const message = event.data;
-      if (message.tag !== "Casdoor") {
-        return;
-      }
-
-      if (message.type === "SilentSignin" && message.data === "success") {
-        // Setting.showMessage("success", "hahaha");
-        window.location.reload();
-      }
-    });
-  }
-
-  render() {
-    // don't silent-sign-in recursively in iframe
-    if (window !== window.parent) {
-      return null;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+        };
     }
 
-    // only do silent-sign-in when user is not logged in
-    if (this.props.account !== null) {
-      return null;
+    componentDidMount() {
+        // https://stackoverflow.com/questions/25098021/securityerror-blocked-a-frame-with-origin-from-accessing-a-cross-origin-frame
+        window.addEventListener("message", (event) => {
+            const message = event.data;
+            if (message.tag !== "Casdoor") {
+                return;
+            }
+
+            if (message.type === "SilentSignin" && message.data === "success") {
+                // Setting.showMessage("success", "hahaha");
+                window.location.reload();
+            }
+        });
     }
 
-    return <iframe id="iframeTask" src={`${Setting.getSigninUrl()}&silentSignin=1`} style={{ display: "none" }} width={0} height={0} frameBorder="no" />;
-  }
+    render() {
+        // don't silent-sign-in recursively in iframe
+        if (window !== window.parent) {
+            return null;
+        }
+
+        // only do silent-sign-in when user is not logged in
+        if (this.props.account !== null) {
+            return null;
+        }
+
+        return <iframe id="iframeTask" src={`${Setting.getSigninUrl()}&silentSignin=1`} style={{display: "none"}}
+                       width={0} height={0} frameBorder="no"/>;
+    }
 }
 
 export default withRouter(SilentSignin);

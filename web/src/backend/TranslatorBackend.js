@@ -15,38 +15,38 @@
 import * as Setting from "../Setting";
 
 export function updateTranslator(translator) {
-  return fetch(`${Setting.ServerUrl}/api/update-translator`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(translator),
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/update-translator`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(translator),
+    }).then((res) => res.json());
 }
 
 export function getTranslator() {
-  return fetch(`${Setting.ServerUrl}/api/get-translator`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/get-translator`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }
 
 export function addTranslator(translator) {
-  return fetch(`${Setting.ServerUrl}/api/add-translator`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(translator),
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/add-translator`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(translator),
+    }).then((res) => res.json());
 }
 
 export function delTranslator(id) {
-  return fetch(`${Setting.ServerUrl}/api/del-translator?id=${id}`, {
-    method: "POST",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/del-translator?id=${id}`, {
+        method: "POST",
+        credentials: "include",
+    }).then((res) => res.json());
 }
 
 export function visibleTranslator() {
-  return fetch(`${Setting.ServerUrl}/api/visible-translator`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/visible-translator`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }

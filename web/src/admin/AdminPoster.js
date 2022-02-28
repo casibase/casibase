@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PosterBackend from "../backend/PosterBackend"
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -21,9 +21,9 @@ import i18next from "i18next";
 class AdminPoster extends React.Component {
     constructor(props) {
         super(props);
-        this.adver=React.createRef();
-        this.links=React.createRef();
-        this.p_link=React.createRef();
+        this.adver = React.createRef();
+        this.links = React.createRef();
+        this.p_link = React.createRef();
         this.state = {
             classes: props,
             message: "",
@@ -43,17 +43,17 @@ class AdminPoster extends React.Component {
         this.readposter();
     }
 
-    changeinputval(){
+    changeinputval() {
         let a_val = this.state.form["advertiser"]
         let l_val = this.state.form["link"]
         let p_val = this.state.form["picture_link"]
-        if (a_val !== undefined){
+        if (a_val !== undefined) {
             this.adver.current.value = a_val
         }
-        if (l_val !== undefined){
+        if (l_val !== undefined) {
             this.links.current.value = l_val
         }
-        if (p_val !== undefined){
+        if (p_val !== undefined) {
             this.p_link.current.value = p_val
         }
     }
@@ -62,10 +62,11 @@ class AdminPoster extends React.Component {
         PosterBackend.readposter("r_box_poster").then(
             (res) => {
                 let poster = res
-                if (poster){
+                if (poster) {
                     this.setState({
                         form: poster
-                    },() => {this.changeinputval()
+                    }, () => {
+                        this.changeinputval()
                     })
                 }
                 console.log(poster)
@@ -75,7 +76,7 @@ class AdminPoster extends React.Component {
 
     updateposter() {
         this.changeinputval()
-        PosterBackend.updateposter_info( this.state.form).then(
+        PosterBackend.updateposter_info(this.state.form).then(
             (res) => {
                 if (res.status === "ok") {
                     this.setState({
@@ -91,7 +92,6 @@ class AdminPoster extends React.Component {
     }
 
 
-
     clearMessage() {
         this.setState({
             message: "",
@@ -99,17 +99,17 @@ class AdminPoster extends React.Component {
     }
 
 
-    inputChange(id){
+    inputChange(id) {
         let a_val = this.adver.current.value;
         let l_val = this.links.current.value;
         let p_val = this.p_link.current.value;
         this.setState({
-            form:{
+            form: {
                 advertiser: a_val,
                 link: l_val,
                 picture_link: p_val,
-                id : id,
-                state : "1"
+                id: id,
+                state: "1"
             }
         })
     }
@@ -119,13 +119,13 @@ class AdminPoster extends React.Component {
         return (
             <div>
                 <div className="box">
-                <div className="header">
-                    <Link to="/">{Setting.getForumName()}</Link>{" "}
-                    <span className="chevron">&nbsp;›&nbsp;</span>
-                    <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-                    <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                    {i18next.t("poster:Poster management")}
-                </div>
+                    <div className="header">
+                        <Link to="/">{Setting.getForumName()}</Link>{" "}
+                        <span className="chevron">&nbsp;›&nbsp;</span>
+                        <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
+                        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+                        {i18next.t("poster:Poster management")}
+                    </div>
                 </div>
                 <div className="box">
                     {this.state.message !== "" ? (
@@ -145,7 +145,7 @@ class AdminPoster extends React.Component {
                                     {i18next.t("poster:Advertiser")}
                                 </td>
                                 <td width="auto" align="left">
-                                    <input ref={this.adver} onChange={()=>this.inputChange("r_box_poster")}/>
+                                    <input ref={this.adver} onChange={() => this.inputChange("r_box_poster")}/>
                                 </td>
                             </tr>
                             <tr>
@@ -156,7 +156,7 @@ class AdminPoster extends React.Component {
                                     {i18next.t("poster:Link")}
                                 </td>
                                 <td width="auto" align="left">
-                                    <input ref={this.links} onChange={()=>this.inputChange("r_box_poster")}/>
+                                    <input ref={this.links} onChange={() => this.inputChange("r_box_poster")}/>
                                 </td>
                             </tr>
                             <tr>
@@ -167,7 +167,7 @@ class AdminPoster extends React.Component {
                                     {i18next.t("poster:Picture link")}
                                 </td>
                                 <td width="auto" align="left">
-                                    <input ref={this.p_link} onChange={()=>this.inputChange("r_box_poster")}/>
+                                    <input ref={this.p_link} onChange={() => this.inputChange("r_box_poster")}/>
                                 </td>
                             </tr>
                             <tr>

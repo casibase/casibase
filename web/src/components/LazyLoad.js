@@ -12,31 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { Suspense } from "react";
+import React, {Suspense} from "react";
 import * as Conf from "../Conf";
 
 export default class LazyLoad extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
-
-  // edit this function to modify the loading style
-  renderFallback() {
-    if (!Conf.ShowLoadingIndicator) {
-      return null;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+        };
     }
 
-    return <div>loading...</div>;
-  }
+    // edit this function to modify the loading style
+    renderFallback() {
+        if (!Conf.ShowLoadingIndicator) {
+            return null;
+        }
 
-  render() {
-    return (
-      <Suspense fallback={this.renderFallback()}>
-        {this.props.children}
-      </Suspense>
-    );
-  }
+        return <div>loading...</div>;
+    }
+
+    render() {
+        return (
+            <Suspense fallback={this.renderFallback()}>
+                {this.props.children}
+            </Suspense>
+        );
+    }
 }

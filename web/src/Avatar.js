@@ -13,75 +13,75 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 
 class Avatar extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
-
-  render() {
-    let style;
-    switch (this.props.size) {
-      case "small":
-        style = { width: "24px", height: "24px" };
-        break;
-      case "middle":
-        style = { width: "36px", height: "36px" };
-        break;
-      case "large":
-        style = { width: "73px", height: "73px" };
-        break;
-      default:
-        style = { width: "48px", height: "48px" };
-        break;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+        };
     }
 
-    let src;
-    if (this.props.avatar !== "") {
-      src = this.props.avatar;
-    } else {
-      src = Setting.getUserAvatar(this.props.username);
-    }
+    render() {
+        let style;
+        switch (this.props.size) {
+            case "small":
+                style = {width: "24px", height: "24px"};
+                break;
+            case "middle":
+                style = {width: "36px", height: "36px"};
+                break;
+            case "large":
+                style = {width: "73px", height: "73px"};
+                break;
+            default:
+                style = {width: "48px", height: "48px"};
+                break;
+        }
 
-    if (this.props.username === "" || this.props.username === "客人") {
-      return (
-        <img
-          src={Conf.AvatarAnonymousUrl}
-          className="avatar"
-          border="0"
-          align="default"
-          style={style}
-          alt={"Anonymous User"}
-          key={this.props.key}
-        />
-      );
-    }
+        let src;
+        if (this.props.avatar !== "") {
+            src = this.props.avatar;
+        } else {
+            src = Setting.getUserAvatar(this.props.username);
+        }
 
-    return (
-      <Link to={`/member/${this.props.username}`}>
-        <img
-          src={src}
-          className="avatar"
-          border="0"
-          align="default"
-          style={style}
-          alt={this.props.username}
-          key={this.props.key}
-          onError={(event) => {
-            event.target.onerror = "";
-            event.target.src = Conf.AvatarErrorUrl;
-            return true;
-          }}
-        />
-      </Link>
-    );
-  }
+        if (this.props.username === "" || this.props.username === "客人") {
+            return (
+                <img
+                    src={Conf.AvatarAnonymousUrl}
+                    className="avatar"
+                    border="0"
+                    align="default"
+                    style={style}
+                    alt={"Anonymous User"}
+                    key={this.props.key}
+                />
+            );
+        }
+
+        return (
+            <Link to={`/member/${this.props.username}`}>
+                <img
+                    src={src}
+                    className="avatar"
+                    border="0"
+                    align="default"
+                    style={style}
+                    alt={this.props.username}
+                    key={this.props.key}
+                    onError={(event) => {
+                        event.target.onerror = "";
+                        event.target.src = Conf.AvatarErrorUrl;
+                        return true;
+                    }}
+                />
+            </Link>
+        );
+    }
 }
 
 export default Avatar;

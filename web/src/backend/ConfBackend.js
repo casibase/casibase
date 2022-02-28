@@ -15,26 +15,26 @@
 import * as Setting from "../Setting";
 
 export function getFrontConfByField(field) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-front-conf-by-field?field=${field}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+    return fetch(
+        `${Setting.ServerUrl}/api/get-front-conf-by-field?field=${field}`,
+        {
+            method: "GET",
+            credentials: "include",
+        }
+    ).then((res) => res.json());
 }
 
 export function updateFrontConfs(confs) {
-  return fetch(`${Setting.ServerUrl}/api/update-front-conf`, {
-    method: "POST",
-    credentials: "include",
-    body: JSON.stringify(confs),
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/update-front-conf`, {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(confs),
+    }).then((res) => res.json());
 }
 
 export function updateFrontConfToDefault() {
-  return fetch(`${Setting.ServerUrl}/api/update-to-default-conf`, {
-    method: "POST",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/update-to-default-conf`, {
+        method: "POST",
+        credentials: "include",
+    }).then((res) => res.json());
 }

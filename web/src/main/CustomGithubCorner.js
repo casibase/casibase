@@ -17,20 +17,20 @@ import * as Conf from "../Conf";
 import GithubCorner from "react-github-corner";
 
 class CustomGithubCorner extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
-
-  render() {
-    if (!Conf.ShowGithubCorner) {
-      return null;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+        };
     }
 
-    return <GithubCorner href={Conf.GithubRepo} />;
-  }
+    render() {
+        if (!Conf.ShowGithubCorner) {
+            return null;
+        }
+
+        return <GithubCorner href={Conf.GithubRepo}/>;
+    }
 }
 
 export default CustomGithubCorner;

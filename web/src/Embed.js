@@ -17,32 +17,33 @@ import ReplyBox from "./main/ReplyBox";
 import * as TopicBackend from "./backend/TopicBackend";
 
 export default class Embed extends React.Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    const params = new URLSearchParams(window.location.search);
-    this.state = {
-      nodeId: params.get("nodeId"),
-      encodedUrlPath: params.get("urlPath"),
-      title: params.get("title"),
-      topic: null,
-    };
+        const params = new URLSearchParams(window.location.search);
+        this.state = {
+            nodeId: params.get("nodeId"),
+            encodedUrlPath: params.get("urlPath"),
+            title: params.get("title"),
+            topic: null,
+        };
 
-    if (this.state.nodeId !== null && this.state.encodedUrlPath !== null && this.state.title !== null) {
-      TopicBackend.getTopicByUrlPathAndTitle(this.state.nodeId, this.state.encodedUrlPath, this.state.title).then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            topic: res.data,
-          });
+        if (this.state.nodeId !== null && this.state.encodedUrlPath !== null && this.state.title !== null) {
+            TopicBackend.getTopicByUrlPathAndTitle(this.state.nodeId, this.state.encodedUrlPath, this.state.title).then((res) => {
+                if (res.status === "ok") {
+                    this.setState({
+                        topic: res.data,
+                    });
+                }
+            });
         }
-      });
     }
-  }
 
-  render() {
-    if (this.state.topic === null) {
-      return "Loading...";
+    render() {
+        if (this.state.topic === null) {
+            return "Loading...";
+        }
+        return <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={true}
+                         refreshAccount={this.props.refreshAccount.bind(this)}/>;
     }
-    return <ReplyBox account={this.props.account} topic={this.state.topic} isEmbedded={true} refreshAccount={this.props.refreshAccount.bind(this)} />;
-  }
 }

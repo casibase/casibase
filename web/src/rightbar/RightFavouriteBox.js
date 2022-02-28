@@ -15,75 +15,75 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css";
 import i18next from "i18next";
 
 class RightFavouriteBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-      info: null,
-    };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+            info: null,
+        };
+    }
 
-  componentDidMount() {
-    this.getFavoriteNode();
-  }
+    componentDidMount() {
+        this.getFavoriteNode();
+    }
 
-  getFavoriteNode() {
-    FavoritesBackend.getFavorites(3, 0, 0).then((res) => {
-      this.setState({
-        info: res.data,
-      });
-    });
-  }
+    getFavoriteNode() {
+        FavoritesBackend.getFavorites(3, 0, 0).then((res) => {
+            this.setState({
+                info: res.data,
+            });
+        });
+    }
 
-  renderNodes(node) {
-    return (
-      <div className="node rightFavorite">
-        <div className="node_compose rightFavorite">
-          <Link to={`/new/${node?.id}`} id="linkCompose">
-            <img
-              src={Setting.getStatic("/img/compose.png")}
-              align="absmiddle"
-              border="0"
-              width="23"
-              height="18"
-              alt="New Topic"
-            />
-          </Link>
-        </div>
-        <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
-          <div
-            id="avatar"
-            style={{ backgroundImage: `url(${node?.image})` }}
-            className="rightFavorite"
-          />
-        </Link>
-        &nbsp;{" "}
-        <linkTitle to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
-          {node?.name}
-        </linkTitle>
-      </div>
-    );
-  }
+    renderNodes(node) {
+        return (
+            <div className="node rightFavorite">
+                <div className="node_compose rightFavorite">
+                    <Link to={`/new/${node?.id}`} id="linkCompose">
+                        <img
+                            src={Setting.getStatic("/img/compose.png")}
+                            align="absmiddle"
+                            border="0"
+                            width="23"
+                            height="18"
+                            alt="New Topic"
+                        />
+                    </Link>
+                </div>
+                <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
+                    <div
+                        id="avatar"
+                        style={{backgroundImage: `url(${node?.image})`}}
+                        className="rightFavorite"
+                    />
+                </Link>
+                &nbsp;{" "}
+                <linkTitle to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
+                    {node?.name}
+                </linkTitle>
+            </div>
+        );
+    }
 
-  render() {
-    return (
-      <div className="box">
-        <div className="inner">
-          <span className="f12 gray">{i18next.t("bar:My Favorite Nodes")}</span>
-        </div>
-        <div className="inner" id="nodes-sidebar">
-          {this.state.info?.map((node) => {
-            return this.renderNodes(node?.nodeInfo);
-          })}
-        </div>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <div className="box">
+                <div className="inner">
+                    <span className="f12 gray">{i18next.t("bar:My Favorite Nodes")}</span>
+                </div>
+                <div className="inner" id="nodes-sidebar">
+                    {this.state.info?.map((node) => {
+                        return this.renderNodes(node?.nodeInfo);
+                    })}
+                </div>
+            </div>
+        );
+    }
 }
 
 export default RightFavouriteBox;

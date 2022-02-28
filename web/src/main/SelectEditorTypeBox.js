@@ -14,34 +14,40 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
-class SelectLanguageBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-    };
-  }
 
-  render() {
-    return (
-      <div align="center">
-        <div className="box" style={{ width: Setting.PcBrowser ? "600px" : "auto" }}>
-          <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> Select Default Editor / 选择默认编辑器
-          </div>
-          <div className="cell">{Setting.PcBrowser ? <span>Please select the Default Editor you would like to use on {Setting.getForumName()}</span> : <span>Please select the Default Editor you would like to use:</span>}</div>
-          <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("markdown")} className={"lang-selector"}>
-            {i18next.t("new:Markdown")}
-          </a>
-          <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("richtext")} className={"lang-selector"}>
-            {i18next.t("new:RichText")}
-          </a>
-        </div>
-      </div>
-    );
-  }
+class SelectLanguageBox extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+        };
+    }
+
+    render() {
+        return (
+            <div align="center">
+                <div className="box" style={{width: Setting.PcBrowser ? "600px" : "auto"}}>
+                    <div className="header">
+                        <Link to="/">{Setting.getForumName()}</Link> <span
+                        className="chevron">&nbsp;›&nbsp;</span> Select Default Editor / 选择默认编辑器
+                    </div>
+                    <div className="cell">{Setting.PcBrowser ?
+                        <span>Please select the Default Editor you would like to use on {Setting.getForumName()}</span> :
+                        <span>Please select the Default Editor you would like to use:</span>}</div>
+                    <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("markdown")}
+                       className={"lang-selector"}>
+                        {i18next.t("new:Markdown")}
+                    </a>
+                    <a href="javascript:void(0);" onClick={() => Setting.changeEditorType("richtext")}
+                       className={"lang-selector"}>
+                        {i18next.t("new:RichText")}
+                    </a>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default SelectLanguageBox;

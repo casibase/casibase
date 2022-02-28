@@ -26,65 +26,65 @@ import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 
 const resources = {
-  en: en,
-  zh: zh,
-  "zh-TW": zhTW,
-  fr: fr,
-  de: de,
-  ko: ko,
-  ru: ru,
-  ja: ja,
-  kk: kk,
+    en: en,
+    zh: zh,
+    "zh-TW": zhTW,
+    fr: fr,
+    de: de,
+    ko: ko,
+    ru: ru,
+    ja: ja,
+    kk: kk,
 };
 
 function getBrowserLanguage() {
-  const language = navigator.language;
-  if (language === "zh-HK" || language === "zh-TW" || language === "zh-SG") {
-    return "zh-TW";
-  } else if (language.startsWith("zh")) {
-    return "zh";
-  } else if (language.startsWith("en")) {
-    return "en";
-  } else if (language.startsWith("fr")) {
-    return "fr";
-  } else if (language.startsWith("de")) {
-    return "de";
-  } else if (language.startsWith("ko")) {
-    return "ko";
-  } else if (language.startsWith("ru")) {
-    return "ru";
-  } else if (language.startsWith("ja")) {
-    return "ja";
-  } else if (language.startsWith("kk")) {
-    return "kk";
-  } else {
-    return Conf.DefaultLanguage;
-  }
+    const language = navigator.language;
+    if (language === "zh-HK" || language === "zh-TW" || language === "zh-SG") {
+        return "zh-TW";
+    } else if (language.startsWith("zh")) {
+        return "zh";
+    } else if (language.startsWith("en")) {
+        return "en";
+    } else if (language.startsWith("fr")) {
+        return "fr";
+    } else if (language.startsWith("de")) {
+        return "de";
+    } else if (language.startsWith("ko")) {
+        return "ko";
+    } else if (language.startsWith("ru")) {
+        return "ru";
+    } else if (language.startsWith("ja")) {
+        return "ja";
+    } else if (language.startsWith("kk")) {
+        return "kk";
+    } else {
+        return Conf.DefaultLanguage;
+    }
 }
 
 function initLanguage() {
-  let language = localStorage.getItem("language");
-  if (language === undefined || language == null) {
-    if (Conf.ForceLanguage !== "") {
-      language = Conf.ForceLanguage;
-    } else {
-      language = getBrowserLanguage();
+    let language = localStorage.getItem("language");
+    if (language === undefined || language == null) {
+        if (Conf.ForceLanguage !== "") {
+            language = Conf.ForceLanguage;
+        } else {
+            language = getBrowserLanguage();
+        }
     }
-  }
-  Setting.changeMomentLanguage(language);
+    Setting.changeMomentLanguage(language);
 
-  return language;
+    return language;
 }
 
 i18n.init({
-  resources: resources,
-  lng: initLanguage(),
-  keySeparator: false,
-  interpolation: {
-    escapeValue: false,
-  },
-  //debug: true,
-  saveMissing: true,
+    resources: resources,
+    lng: initLanguage(),
+    keySeparator: false,
+    interpolation: {
+        escapeValue: false,
+    },
+    //debug: true,
+    saveMissing: true,
 });
 
 export default i18n;

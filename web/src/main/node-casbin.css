@@ -12,9 +12,10 @@
 /* limitations under the License.                                           */
 
 .cm-s-node-casbin {
-  background: #46483e;
-  color: #f8f8f2;
+    background: #46483e;
+    color: #f8f8f2;
 }
+
 .cm-s-node-casbin .CodeMirror-activeline-background {
-  background: #3e3d32;
+    background: #3e3d32;
 }

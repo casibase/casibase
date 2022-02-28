@@ -15,8 +15,8 @@
 import * as Setting from "../Setting";
 
 export function search(keyword) {
-  return fetch(`${Setting.ServerUrl}/api/search?keyword=${keyword}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/search?keyword=${keyword}`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }

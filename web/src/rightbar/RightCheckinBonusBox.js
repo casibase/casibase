@@ -15,55 +15,56 @@
 import React from "react";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css";
 import i18next from "i18next";
 
 class RightCheckinBonusBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-      info: null,
-    };
-  }
-
-  componentDidMount() {
-    this.getCheckinBonusStatus();
-  }
-
-  getCheckinBonusStatus() {
-    BalanceBackend.getCheckinBonusStatus().then((res) => {
-      this.setState({
-        info: res.data,
-      });
-    });
-  }
-
-  render() {
-    if (
-      this.state.info === null ||
-      this.state.info ||
-      this.props.account === null ||
-      this.props.account === undefined
-    ) {
-      return null;
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+            info: null,
+        };
     }
 
-    return (
-      <span>
-        {Setting.PcBrowser ? <div className="sep20" /> : null}
-        <div className={`box ${this.props.nodeId}`}>
+    componentDidMount() {
+        this.getCheckinBonusStatus();
+    }
+
+    getCheckinBonusStatus() {
+        BalanceBackend.getCheckinBonusStatus().then((res) => {
+            this.setState({
+                info: res.data,
+            });
+        });
+    }
+
+    render() {
+        if (
+            this.state.info === null ||
+            this.state.info ||
+            this.props.account === null ||
+            this.props.account === undefined
+        ) {
+            return null;
+        }
+
+        return (
+            <span>
+        {Setting.PcBrowser ? <div className="sep20"/> : null}
+                <div className={`box ${this.props.nodeId}`}>
           <div className={`inner ${this.props.nodeId}`}>
-            <li className="fa fa-gift" style={{ color: "#f90" }}></li> &nbsp;
-            <Link to="/mission/daily">
+            <li className="fa fa-gift" style={{color: "#f90"}}></li>
+              &nbsp;
+              <Link to="/mission/daily">
               {i18next.t("bar:Receive today's checkin bonus")}
             </Link>
           </div>
         </div>
       </span>
-    );
-  }
+        );
+    }
 }
 
 export default RightCheckinBonusBox;

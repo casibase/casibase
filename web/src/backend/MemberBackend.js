@@ -15,42 +15,42 @@
 import * as Setting from "../Setting";
 
 export function getMember(id) {
-  return fetch(`${Setting.ServerUrl}/api/get-member?id=${id}`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/get-member?id=${id}`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }
 
 export function updateMemberLanguage(language) {
-  return fetch(
-    `${Setting.ServerUrl}/api/update-member-language?language=${language}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+    return fetch(
+        `${Setting.ServerUrl}/api/update-member-language?language=${language}`,
+        {
+            method: "POST",
+            credentials: "include",
+        }
+    ).then((res) => res.json());
 }
 
 export function updateMemberEditorType(editorType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/update-member-editor-type?editorType=${editorType}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+    return fetch(
+        `${Setting.ServerUrl}/api/update-member-editor-type?editorType=${editorType}`,
+        {
+            method: "POST",
+            credentials: "include",
+        }
+    ).then((res) => res.json());
 }
 
 export function getMemberEditorType() {
-  return fetch(`${Setting.ServerUrl}/api/get-member-editor-type`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/get-member-editor-type`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }
 
 export function getRankingRichList() {
-  return fetch(`${Setting.ServerUrl}/api/get-ranking-rich`, {
-    method: "GET",
-    credentials: "include",
-  }).then((res) => res.json());
+    return fetch(`${Setting.ServerUrl}/api/get-ranking-rich`, {
+        method: "GET",
+        credentials: "include",
+    }).then((res) => res.json());
 }

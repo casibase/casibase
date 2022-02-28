@@ -16,97 +16,97 @@ import React from "react";
 import * as PlaneBackend from "../backend/PlaneBackend";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class PlaneBox extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-      planes: [],
-      nodesNum: 0,
-    };
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+            planes: [],
+            nodesNum: 0,
+        };
+    }
 
-  componentDidMount() {
-    this.getPlaneList();
-    this.getNodesNum();
-  }
+    componentDidMount() {
+        this.getPlaneList();
+        this.getNodesNum();
+    }
 
-  getPlaneList() {
-    PlaneBackend.getPlaneList().then((res) => {
-      this.setState({
-        planes: res?.data,
-      });
-    });
-  }
+    getPlaneList() {
+        PlaneBackend.getPlaneList().then((res) => {
+            this.setState({
+                planes: res?.data,
+            });
+        });
+    }
 
-  getNodesNum() {
-    NodeBackend.getNodesNum().then((res) => {
-      this.setState({
-        nodesNum: res?.data,
-      });
-    });
-  }
+    getNodesNum() {
+        NodeBackend.getNodesNum().then((res) => {
+            this.setState({
+                nodesNum: res?.data,
+            });
+        });
+    }
 
-  renderNode(node) {
-    return (
-      <Link
-        key={node?.id}
-        to={`/go/${encodeURIComponent(node?.id)}`}
-        className="item_node"
-      >
-        {node?.name}
-      </Link>
-    );
-  }
+    renderNode(node) {
+        return (
+            <Link
+                key={node?.id}
+                to={`/go/${encodeURIComponent(node?.id)}`}
+                className="item_node"
+            >
+                {node?.name}
+            </Link>
+        );
+    }
 
-  renderPlane(plane) {
-    return (
-      <span key={plane?.id}>
+    renderPlane(plane) {
+        return (
+            <span key={plane?.id}>
         <div className="sep20"></div>
         <div className="box">
           <div
-            className="header"
-            style={{
-              backgroundColor: plane?.backgroundColor,
-              color: plane?.color,
-            }}
+              className="header"
+              style={{
+                  backgroundColor: plane?.backgroundColor,
+                  color: plane?.color,
+              }}
           >
-            <img src={plane?.image} border="0" align="absmiddle" width="24" />{" "}
-            &nbsp; {plane?.name}
-            <span
-              className="fr"
-              style={{ color: plane?.color, lineHeight: "20px" }}
-            >
+            <img src={plane?.image} border="0" align="absmiddle" width="24"/>{" "}
+              &nbsp; {plane?.name}
+              <span
+                  className="fr"
+                  style={{color: plane?.color, lineHeight: "20px"}}
+              >
               {plane?.id} •{" "}
-              <span className="small">{plane?.nodes.length} nodes</span>
+                  <span className="small">{plane?.nodes.length} nodes</span>
             </span>
           </div>
           <div className="inner">
             {plane?.nodes.map((node) => {
-              return this.renderNode(node);
+                return this.renderNode(node);
             })}
           </div>
         </div>
       </span>
-    );
-  }
+        );
+    }
 
-  render() {
-    return (
-      <span>
+    render() {
+        return (
+            <span>
         <div className="box">
-          <div className="cell" style={{ padding: "0px" }}>
+          <div className="cell" style={{padding: "0px"}}>
             <table cellPadding="10" cellSpacing="0" border="0" width="100%">
               <tbody>
                 <tr>
                   <td width="64">
                     <img
-                      src={Setting.getStatic("/img/network.png")}
-                      width="64"
-                      alt="Nodes"
+                        src={Setting.getStatic("/img/network.png")}
+                        width="64"
+                        alt="Nodes"
                     />
                   </td>
                   <td>
@@ -123,12 +123,12 @@ class PlaneBox extends React.Component {
             </table>
           </div>
         </div>
-        {this.state.planes?.map((plane) => {
-          return this.renderPlane(plane);
-        })}
+                {this.state.planes?.map((plane) => {
+                    return this.renderPlane(plane);
+                })}
       </span>
-    );
-  }
+        );
+    }
 }
 
 export default PlaneBox;

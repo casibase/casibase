@@ -13,237 +13,237 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ConfBackend from "../backend/ConfBackend";
 
 class AdminFrontConf extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      classes: props,
-      Management_LIST: [{ label: "Visual Conf", value: "visualConf" }],
-      field: "visualConf",
-      conf: [
-        { Id: "forumName", Value: "" },
-        { Id: "logoImage", Value: "" },
-        { Id: "signinBoxStrong", Value: "" },
-        { Id: "signinBoxSpan", Value: "" },
-        { Id: "footerAdvise", Value: "" },
-        { Id: "footerDeclaration", Value: "" },
-        { Id: "footerLogoImage", Value: "" },
-        { Id: "footerLogoUrl", Value: "" },
-      ],
-      form: {},
-      changeForm: {},
-      message: "",
-      memberId: props.match.params.memberId,
-    };
-    this.state.url = `/admin/frontconf`;
-  }
+    constructor(props) {
+        super(props);
+        this.state = {
+            classes: props,
+            Management_LIST: [{label: "Visual Conf", value: "visualConf"}],
+            field: "visualConf",
+            conf: [
+                {Id: "forumName", Value: ""},
+                {Id: "logoImage", Value: ""},
+                {Id: "signinBoxStrong", Value: ""},
+                {Id: "signinBoxSpan", Value: ""},
+                {Id: "footerAdvise", Value: ""},
+                {Id: "footerDeclaration", Value: ""},
+                {Id: "footerLogoImage", Value: ""},
+                {Id: "footerLogoUrl", Value: ""},
+            ],
+            form: {},
+            changeForm: {},
+            message: "",
+            memberId: props.match.params.memberId,
+        };
+        this.state.url = `/admin/frontconf`;
+    }
 
-  componentDidMount() {
-    this.getFrontConf(this.state.field);
-  }
-
-  changeField(field) {
-    this.setState(
-      {
-        field: field,
-      },
-      () => {
+    componentDidMount() {
         this.getFrontConf(this.state.field);
-      }
-    );
-  }
-
-  renderManagementList(item) {
-    return (
-      <a
-        href="javascript:void(0);"
-        className={this.state.field === item.value ? "tab_current" : "tab"}
-        onClick={() => this.changeField(item.value)}
-      >
-        {item.label}
-      </a>
-    );
-  }
-
-  getFrontConf(field) {
-    ConfBackend.getFrontConfByField(field).then((res) => {
-      let form = this.state.form;
-      let conf = this.state.conf;
-      for (var k in res) {
-        form[res[k].Id] = res[k].Value;
-      }
-      for (var i in conf) {
-        conf[i].Value = form[conf[i].Id];
-      }
-      this.setState({
-        conf: conf,
-        form: form,
-      });
-    });
-  }
-
-  clearMessage() {
-    this.setState({
-      message: "",
-    });
-  }
-
-  inputChange(event, id) {
-    event.target.style.height = event.target.scrollHeight + "px";
-    let forms = this.state.changeForm;
-    let form = this.state.form;
-    form[id] = event.target.value;
-    forms[id] = event.target.value;
-    this.setState({
-      form: form,
-      changeForm: forms,
-    });
-  }
-
-  updateConf() {
-    let confs = [];
-    for (var k in this.state.changeForm) {
-      confs.push({ Id: k, Value: this.state.changeForm[k] });
     }
-    ConfBackend.updateFrontConfs(confs).then((res) => {
-      if (res.status === "ok") {
-        this.setState({
-          message: i18next.t("poster:Update frontconf information success"),
-        });
-      } else {
-        this.setState({
-          message: res?.msg,
-        });
-      }
-    });
-  }
 
-  updateConfToDefault() {
-    ConfBackend.updateFrontConfToDefault().then((res) => {
-      if (res.status === "ok") {
-        this.setState({
-          message: i18next.t("poster:Update frontconf information success"),
-        });
-      } else {
-        this.setState({
-          message: res?.msg,
-        });
-      }
-      window.location.reload();
-    });
-  }
-
-  convert(s) {
-    let str;
-    switch (s) {
-      case "forumName":
-        str = i18next.t("frontConf:Forum name");
-        break;
-      case "logoImage":
-        str = i18next.t("frontConf:Logo image");
-        break;
-      case "footerLogoImage":
-        str = i18next.t("frontConf:Footer Logo image");
-        break;
-      case "footerLogoUrl":
-        str = i18next.t("frontConf:Footer Logo URL");
-        break;
-      case "signinBoxStrong":
-        str = i18next.t("frontConf:Right title");
-        break;
-      case "signinBoxSpan":
-        str = i18next.t("frontConf:Right subtitle");
-        break;
-      case "footerDeclaration":
-        str = i18next.t("frontConf:Footer title");
-        break;
-      case "footerAdvise":
-        str = i18next.t("frontConf:Footer subtitle");
-        break;
+    changeField(field) {
+        this.setState(
+            {
+                field: field,
+            },
+            () => {
+                this.getFrontConf(this.state.field);
+            }
+        );
     }
-    return str;
-  }
 
-  render() {
-    return (
-      <div>
-        <div className="box">
-          <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
-            <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("admin:FrontConf management")}
-          </div>
-          <div className="cell">
-            {this.state.Management_LIST.map((item) => {
-              return this.renderManagementList(item);
-            })}
-          </div>
-        </div>
-        <div className="box">
-          {this.state.message !== "" ? (
-            <div className="message" onClick={() => this.clearMessage()}>
-              <li className="fa fa-exclamation-triangle"></li>
-              &nbsp; {this.state.message}
-            </div>
-          ) : null}
-          <div className="inner">
-            <table cellPadding="5" cellSpacing="0" border="0" width="100%">
-              <tbody>
-                {this.state.conf.map((item) => {
-                  return (
-                    <tr>
-                      <td
-                        width={Setting.PcBrowser ? "120" : "90"}
-                        align="right"
-                      >
-                        {this.convert(item.Id)}
-                      </td>
-                      <td width="auto" align="left">
+    renderManagementList(item) {
+        return (
+            <a
+                href="javascript:void(0);"
+                className={this.state.field === item.value ? "tab_current" : "tab"}
+                onClick={() => this.changeField(item.value)}
+            >
+                {item.label}
+            </a>
+        );
+    }
+
+    getFrontConf(field) {
+        ConfBackend.getFrontConfByField(field).then((res) => {
+            let form = this.state.form;
+            let conf = this.state.conf;
+            for (var k in res) {
+                form[res[k].Id] = res[k].Value;
+            }
+            for (var i in conf) {
+                conf[i].Value = form[conf[i].Id];
+            }
+            this.setState({
+                conf: conf,
+                form: form,
+            });
+        });
+    }
+
+    clearMessage() {
+        this.setState({
+            message: "",
+        });
+    }
+
+    inputChange(event, id) {
+        event.target.style.height = event.target.scrollHeight + "px";
+        let forms = this.state.changeForm;
+        let form = this.state.form;
+        form[id] = event.target.value;
+        forms[id] = event.target.value;
+        this.setState({
+            form: form,
+            changeForm: forms,
+        });
+    }
+
+    updateConf() {
+        let confs = [];
+        for (var k in this.state.changeForm) {
+            confs.push({Id: k, Value: this.state.changeForm[k]});
+        }
+        ConfBackend.updateFrontConfs(confs).then((res) => {
+            if (res.status === "ok") {
+                this.setState({
+                    message: i18next.t("poster:Update frontconf information success"),
+                });
+            } else {
+                this.setState({
+                    message: res?.msg,
+                });
+            }
+        });
+    }
+
+    updateConfToDefault() {
+        ConfBackend.updateFrontConfToDefault().then((res) => {
+            if (res.status === "ok") {
+                this.setState({
+                    message: i18next.t("poster:Update frontconf information success"),
+                });
+            } else {
+                this.setState({
+                    message: res?.msg,
+                });
+            }
+            window.location.reload();
+        });
+    }
+
+    convert(s) {
+        let str;
+        switch (s) {
+            case "forumName":
+                str = i18next.t("frontConf:Forum name");
+                break;
+            case "logoImage":
+                str = i18next.t("frontConf:Logo image");
+                break;
+            case "footerLogoImage":
+                str = i18next.t("frontConf:Footer Logo image");
+                break;
+            case "footerLogoUrl":
+                str = i18next.t("frontConf:Footer Logo URL");
+                break;
+            case "signinBoxStrong":
+                str = i18next.t("frontConf:Right title");
+                break;
+            case "signinBoxSpan":
+                str = i18next.t("frontConf:Right subtitle");
+                break;
+            case "footerDeclaration":
+                str = i18next.t("frontConf:Footer title");
+                break;
+            case "footerAdvise":
+                str = i18next.t("frontConf:Footer subtitle");
+                break;
+        }
+        return str;
+    }
+
+    render() {
+        return (
+            <div>
+                <div className="box">
+                    <div className="header">
+                        <Link to="/">{Setting.getForumName()}</Link>{" "}
+                        <span className="chevron">&nbsp;›&nbsp;</span>
+                        <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
+                        <span className="chevron">&nbsp;›&nbsp;</span>{" "}
+                        {i18next.t("admin:FrontConf management")}
+                    </div>
+                    <div className="cell">
+                        {this.state.Management_LIST.map((item) => {
+                            return this.renderManagementList(item);
+                        })}
+                    </div>
+                </div>
+                <div className="box">
+                    {this.state.message !== "" ? (
+                        <div className="message" onClick={() => this.clearMessage()}>
+                            <li className="fa fa-exclamation-triangle"></li>
+                            &nbsp; {this.state.message}
+                        </div>
+                    ) : null}
+                    <div className="inner">
+                        <table cellPadding="5" cellSpacing="0" border="0" width="100%">
+                            <tbody>
+                            {this.state.conf.map((item) => {
+                                return (
+                                    <tr>
+                                        <td
+                                            width={Setting.PcBrowser ? "120" : "90"}
+                                            align="right"
+                                        >
+                                            {this.convert(item.Id)}
+                                        </td>
+                                        <td width="auto" align="left">
                         <textarea
-                          rows="1"
-                          style={{ width: "80%" }}
-                          value={this.state.form[item.Id]}
-                          onChange={(event) => this.inputChange(event, item.Id)}
+                            rows="1"
+                            style={{width: "80%"}}
+                            value={this.state.form[item.Id]}
+                            onChange={(event) => this.inputChange(event, item.Id)}
                         />
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <td
-                    width={Setting.PcBrowser ? "120" : "90"}
-                    align="right"
-                  ></td>
-                  <td width="auto" align="left">
-                    <input
-                      type="submit"
-                      className="super normal button"
-                      value={i18next.t("frontConf:Save")}
-                      onClick={() => this.updateConf()}
-                    />
-                    &emsp;&emsp;&emsp;&emsp;
-                    <input
-                      type="button"
-                      className="super normal button"
-                      value={i18next.t("frontConf:Reset")}
-                      onClick={() => this.updateConfToDefault()}
-                    />
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    );
-  }
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                            <tr>
+                                <td
+                                    width={Setting.PcBrowser ? "120" : "90"}
+                                    align="right"
+                                ></td>
+                                <td width="auto" align="left">
+                                    <input
+                                        type="submit"
+                                        className="super normal button"
+                                        value={i18next.t("frontConf:Save")}
+                                        onClick={() => this.updateConf()}
+                                    />
+                                    &emsp;&emsp;&emsp;&emsp;
+                                    <input
+                                        type="button"
+                                        className="super normal button"
+                                        value={i18next.t("frontConf:Reset")}
+                                        onClick={() => this.updateConfToDefault()}
+                                    />
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 }
 
 export default withRouter(AdminFrontConf);
