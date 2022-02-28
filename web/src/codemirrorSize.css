@@ -12,30 +12,30 @@
 /* limitations under the License.                                           */
 
 .CodeMirror {
-    height: auto !important;
-    cursor: text;
+  height: auto !important;
+  cursor: text;
 }
 
 .cm-short-content .CodeMirror-scroll {
-    min-height: 120px !important;
+  min-height: 120px !important;
 }
 
 .cm-middle-content .CodeMirror-scroll {
-    min-height: 220px !important;
+  min-height: 220px !important;
 }
 
 .cm-long-content .CodeMirror-scroll {
-    min-height: 320px !important;
+  min-height: 320px !important;
 }
 
 .cm-short-unresizable-content .CodeMirror-scroll {
-    height: 120px !important;
+  height: 120px !important;
 }
 
 .cm-middle-unresizable-content .CodeMirror-scroll {
-    height: 220px !important;
+  height: 220px !important;
 }
 
 .cm-middle-unresizable-content .CodeMirror-scroll {
-    height: 320px !important;
+  height: 320px !important;
 }

@@ -1,42 +1,42 @@
 .rightFavorite:host {
-    display: block;
-    --box-border-radius: 1px;
+  display: block;
+  --box-border-radius: 1px;
 
-    --link-primary-color: #778087;
-    --link-visited-color: #afb9c1;
-    --link-primary-hover-color: #4d5256;
+  --link-primary-color: #778087;
+  --link-visited-color: #afb9c1;
+  --link-primary-hover-color: #4d5256;
 }
 
 div.rightFavorite.node {
-    background-color: transparent;
-    border-radius: var(--box-border-radius);
-    box-shadow: none;
-    font-size: 14px;
-    margin: 0px -10px 0px -10px;
-    padding: 5px 10px 5px 10px;
+  background-color: transparent;
+  border-radius: var(--box-border-radius);
+  box-shadow: none;
+  font-size: 14px;
+  margin: 0px -10px 0px -10px;
+  padding: 5px 10px 5px 10px;
 }
 
 div.rightFavorite.node .rightFavorite.node_compose {
-    float: right;
-    visibility: hidden;
-    margin: 3px 0px 0px 0px;
+  float: right;
+  visibility: hidden;
+  margin: 3px 0px 0px 0px;
 }
 
 div.rightFavorite.node:hover {
-    background-color: #f5f5f5;
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1) inset;
+  background-color: #f5f5f5;
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.1) inset;
 }
 
 div.rightFavorite.node:hover .rightFavorite.node_compose {
-    float: right;
-    visibility: visible;
+  float: right;
+  visibility: visible;
 }
 
 div.rightFavorite#avatar {
-    width: 24px;
-    height: 24px;
-    background-size: 24px 24px;
-    background-repeat: no-repeat;
-    display: inline-block;
-    vertical-align: middle;
+  width: 24px;
+  height: 24px;
+  background-size: 24px 24px;
+  background-repeat: no-repeat;
+  display: inline-block;
+  vertical-align: middle;
 }

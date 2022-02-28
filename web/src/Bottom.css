@@ -12,12 +12,12 @@
 /* limitations under the License.                                           */
 
 .pageColumn.button:hover {
-    cursor: pointer;
-    color: #333 !important;
-    background-color: #f9f9f9 !important;
-    text-shadow: 0 1px 0 #fff !important;
+  cursor: pointer;
+  color: #333 !important;
+  background-color: #f9f9f9 !important;
+  text-shadow: 0 1px 0 #fff !important;
 }
 
 .pageColumn.button:active {
-    background-color: #e2e2e2 !important;
+  background-color: #e2e2e2 !important;
 }

@@ -12,16 +12,16 @@
 /* limitations under the License.                                           */
 
 .box-transparent {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .cell-translucent {
-    padding: 10px;
-    font-size: 14px;
-    line-height: 150%;
-    text-align: left;
-    border-bottom: 1px solid #e2e2e2;
-    opacity: 0.8;
-    background-color: #ffffff;
-    backdrop-filter: blur(4px);
+  padding: 10px;
+  font-size: 14px;
+  line-height: 150%;
+  text-align: left;
+  border-bottom: 1px solid #e2e2e2;
+  opacity: 0.8;
+  background-color: #ffffff;
+  backdrop-filter: blur(4px);
 }

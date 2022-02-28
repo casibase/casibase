@@ -13,85 +13,74 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import * as SearchBackend from "./backend/SearchBackend";
 import TopicList from "./main/TopicList";
 import i18next from "i18next";
 
 class SearchResultPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-            keyword: new URLSearchParams(this.props.location.search).get("keyword"),
-            topics: [],
-            msg: i18next.t("search:loading..."),
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      keyword: new URLSearchParams(this.props.location.search).get("keyword"),
+      topics: [],
+      msg: i18next.t("search:loading..."),
+    };
+  }
+
+  componentDidMount() {
+    SearchBackend.search(this.state.keyword).then((res) => this.updateSearchResult(res));
+  }
+
+  componentWillMount() {
+    this.props.history.listen((route) => {
+      let params = route.search.split("=");
+      if (params.length < 2) return;
+      this.setState(
+        {
+          keyword: params[1],
+          msg: i18next.t("search:loading..."),
+          topics: [],
+        },
+        () => SearchBackend.search(this.state.keyword).then((res) => this.updateSearchResult(res))
+      );
+    });
+  }
+
+  updateSearchResult(res) {
+    if (res.status === "ok") {
+      this.setState({
+        topics: res.data,
+        msg: i18next.t(`search:Search result of `) + this.state.keyword,
+      });
+    }
+  }
+
+  renderResult() {
+    if (this.state.topics === null) {
+      return (
+        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+          {i18next.t("search:No topics found")}
+        </div>
+      );
     }
 
-    componentDidMount() {
-        SearchBackend.search(this.state.keyword).then((res) =>
-            this.updateSearchResult(res)
-        );
-    }
+    if (this.state.topics.length === 0) return null;
 
-    componentWillMount() {
-        this.props.history.listen((route) => {
-            let params = route.search.split("=");
-            if (params.length < 2) return;
-            this.setState(
-                {
-                    keyword: params[1],
-                    msg: i18next.t("search:loading..."),
-                    topics: [],
-                },
-                () =>
-                    SearchBackend.search(this.state.keyword).then((res) =>
-                        this.updateSearchResult(res)
-                    )
-            );
-        });
-    }
+    return <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />;
+  }
 
-    updateSearchResult(res) {
-        if (res.status === "ok") {
-            this.setState({
-                topics: res.data,
-                msg: i18next.t(`search:Search result of `) + this.state.keyword,
-            });
-        }
-    }
-
-    renderResult() {
-        if (this.state.topics === null) {
-            return (
-                <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
-                    {i18next.t("search:No topics found")}
-                </div>
-            );
-        }
-
-        if (this.state.topics.length === 0) return null;
-
-        return (
-            <TopicList
-                topics={this.state.topics}
-                showNodeName={true}
-                showAvatar={true}
-            />
-        );
-    }
-
-    render() {
-        return (
-            <div>
-                <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
-                    {this.state.msg}
-                </div>
-                {this.renderResult()}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+          {this.state.msg}
+        </div>
+        {this.renderResult()}
+      </div>
+    );
+  }
 }
 
 export default withRouter(SearchResultPage);

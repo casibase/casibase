@@ -14,210 +14,176 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 
 class FavoritesBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-            favoritesType: props.match.params.favorites,
-            favorites: [],
-            p: "",
-            page: 1,
-            limit: 20,
-            minPage: 1,
-            maxPage: -1,
-            favoritesNum: 0,
-            temp: 0,
-            url: "",
-        };
-        const params = new URLSearchParams(this.props.location.search);
-        this.state.p = params.get("p");
-        if (this.state.p === null) {
-            this.state.page = 1;
-        } else {
-            this.state.page = parseInt(this.state.p);
-        }
-
-        this.state.url = `/my/${this.state.favoritesType}`;
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      favoritesType: props.match.params.favorites,
+      favorites: [],
+      p: "",
+      page: 1,
+      limit: 20,
+      minPage: 1,
+      maxPage: -1,
+      favoritesNum: 0,
+      temp: 0,
+      url: "",
+    };
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
+    if (this.state.p === null) {
+      this.state.page = 1;
+    } else {
+      this.state.page = parseInt(this.state.p);
     }
 
-    componentDidMount() {
-        this.getFavoritesInfo();
-    }
+    this.state.url = `/my/${this.state.favoritesType}`;
+  }
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.location !== this.props.location) {
-            let params = new URLSearchParams(newProps.location.search);
-            let page = params.get("p");
-            if (page === null) {
-                page = 1;
-            }
-            this.setState(
-                {
-                    page: parseInt(page),
-                    favoritesType: newProps.match.params.favorites,
-                },
-                () => this.getFavoritesInfo()
-            );
-        }
-    }
+  componentDidMount() {
+    this.getFavoritesInfo();
+  }
 
-    getFavoritesInfo() {
-        let favoritesType;
-        switch (this.state.favoritesType) {
-            case "topics":
-                favoritesType = 1;
-                break;
-            case "following":
-                favoritesType = 2;
-                break;
-            case "nodes":
-                favoritesType = 3;
-                break;
-            default:
-                return;
-        }
-        FavoritesBackend.getFavorites(
-            favoritesType,
-            this.state.limit,
-            this.state.page
-        ).then((res) => {
-            if (res.status === "ok") {
-                this.setState({
-                    favorites: res.data,
-                    favoritesNum: res.data2,
-                });
-            }
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState(
+        {
+          page: parseInt(page),
+          favoritesType: newProps.match.params.favorites,
+        },
+        () => this.getFavoritesInfo()
+      );
+    }
+  }
+
+  getFavoritesInfo() {
+    let favoritesType;
+    switch (this.state.favoritesType) {
+      case "topics":
+        favoritesType = 1;
+        break;
+      case "following":
+        favoritesType = 2;
+        break;
+      case "nodes":
+        favoritesType = 3;
+        break;
+      default:
+        return;
+    }
+    FavoritesBackend.getFavorites(favoritesType, this.state.limit, this.state.page).then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          favorites: res.data,
+          favoritesNum: res.data2,
         });
+      }
+    });
+  }
+
+  renderNodes(node) {
+    if (node.nodeInfo == null) {
+      return;
     }
 
-    renderNodes(node) {
-        if (node.nodeInfo == null) {
-            return;
-        }
-
-        return (
-            <Link className="grid_item" to={`/go/${node?.nodeInfo.id}`}>
-                <div
-                    style={{
-                        display: "table",
-                        padding: "20px 0px 20px 0px",
-                        width: "100%",
-                        textAlign: "center",
-                        fontSize: "14px",
-                    }}
-                >
-                    <img
-                        src={node?.nodeInfo.image}
-                        border="0"
-                        align="default"
-                        width="73"
-                        alt={node?.nodeInfo.name}
-                    />
-                    <div className="sep10"></div>
-                    {node?.nodeInfo.name}
-                    <div className="sep5"></div>
-                    <span className="fade f12">
+    return (
+      <Link className="grid_item" to={`/go/${node?.nodeInfo.id}`}>
+        <div
+          style={{
+            display: "table",
+            padding: "20px 0px 20px 0px",
+            width: "100%",
+            textAlign: "center",
+            fontSize: "14px",
+          }}
+        >
+          <img src={node?.nodeInfo.image} border="0" align="default" width="73" alt={node?.nodeInfo.name} />
+          <div className="sep10"></div>
+          {node?.nodeInfo.name}
+          <div className="sep5"></div>
+          <span className="fade f12">
             <li className="fa fa-comments"></li>
-                        {node?.topicNum}
+            {node?.topicNum}
           </span>
-                </div>
-            </Link>
-        );
+        </div>
+      </Link>
+    );
+  }
+
+  showPageColumn() {
+    if (this.state.favoritesNum < this.state.limit) {
+      return;
     }
 
-    showPageColumn() {
-        if (this.state.favoritesNum < this.state.limit) {
-            return;
-        }
+    return <PageColumn page={this.state.page} total={this.state.favoritesNum} url={this.state.url} defaultPageNum={this.state.limit} />;
+  }
 
+  render() {
+    switch (this.state.favoritesType) {
+      case "nodes":
         return (
-            <PageColumn
-                page={this.state.page}
-                total={this.state.favoritesNum}
-                url={this.state.url}
-                defaultPageNum={this.state.limit}
-            />
+          <div className="box">
+            <div className="header">
+              <Link to="/">{Setting.getForumName()}</Link>
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:My Favorite Nodes")}
+              <div className="fr f12">
+                <span className="snow">{i18next.t("fav:Total nodes")} &nbsp;</span>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
+            </div>
+            <div id="my-nodes">
+              {this.state.favorites.map((node) => {
+                return this.renderNodes(node);
+              })}
+            </div>
+          </div>
         );
+      case "topics":
+        return (
+          <div className="box">
+            <div className="header">
+              <Link to="/">{Setting.getForumName()}</Link>
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:My favorite topics")}
+              <div className="fr f12">
+                <span className="snow">{i18next.t("fav:Total topics")} &nbsp;</span>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
+            </div>
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
+          </div>
+        );
+      case "following":
+        return (
+          <div className="box">
+            <div className="header">
+              <Link to="/">{Setting.getForumName()}</Link>
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:Latest topics from people I followed")}
+              <div className="fr f12">
+                <span className="snow">{i18next.t("fav:Total topics")} &nbsp;</span>
+                <strong className="gray">{this.state.favoritesNum}</strong>
+              </div>
+            </div>
+            {Setting.PcBrowser ? this.showPageColumn() : null}
+            <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
+            {this.showPageColumn()}
+          </div>
+        );
+      default:
+        return <div className="box">{this.state.favoritesType}</div>;
     }
-
-    render() {
-        switch (this.state.favoritesType) {
-            case "nodes":
-                return (
-                    <div className="box">
-                        <div className="header">
-                            <Link to="/">{Setting.getForumName()}</Link>
-                            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                            {i18next.t("fav:My Favorite Nodes")}
-                            <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total nodes")} &nbsp;
-                </span>
-                                <strong className="gray">{this.state.favoritesNum}</strong>
-                            </div>
-                        </div>
-                        <div id="my-nodes">
-                            {this.state.favorites.map((node) => {
-                                return this.renderNodes(node);
-                            })}
-                        </div>
-                    </div>
-                );
-            case "topics":
-                return (
-                    <div className="box">
-                        <div className="header">
-                            <Link to="/">{Setting.getForumName()}</Link>
-                            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                            {i18next.t("fav:My favorite topics")}
-                            <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total topics")} &nbsp;
-                </span>
-                                <strong className="gray">{this.state.favoritesNum}</strong>
-                            </div>
-                        </div>
-                        <TopicList
-                            topics={this.state.favorites}
-                            showNodeName={true}
-                            showAvatar={true}
-                        />
-                    </div>
-                );
-            case "following":
-                return (
-                    <div className="box">
-                        <div className="header">
-                            <Link to="/">{Setting.getForumName()}</Link>
-                            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                            {i18next.t("fav:Latest topics from people I followed")}
-                            <div className="fr f12">
-                <span className="snow">
-                  {i18next.t("fav:Total topics")} &nbsp;
-                </span>
-                                <strong className="gray">{this.state.favoritesNum}</strong>
-                            </div>
-                        </div>
-                        {Setting.PcBrowser ? this.showPageColumn() : null}
-                        <TopicList
-                            topics={this.state.favorites}
-                            showNodeName={true}
-                            showAvatar={true}
-                        />
-                        {this.showPageColumn()}
-                    </div>
-                );
-            default:
-                return <div className="box">{this.state.favoritesType}</div>;
-        }
-    }
+  }
 }
 
 export default withRouter(FavoritesBox);

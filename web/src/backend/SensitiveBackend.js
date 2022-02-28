@@ -15,22 +15,22 @@
 import * as Setting from "../Setting";
 
 export function getSensitiveList() {
-    return fetch(`${Setting.ServerUrl}/api/get-sensitive`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-sensitive`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function delSensitive(word) {
-    return fetch(`${Setting.ServerUrl}/api/del-sensitive?word=${word}`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/del-sensitive?word=${word}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function addSensitive(word) {
-    return fetch(`${Setting.ServerUrl}/api/add-sensitive?word=${word}`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/add-sensitive?word=${word}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }

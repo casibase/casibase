@@ -15,32 +15,29 @@
 import * as Setting from "../Setting";
 
 export function getNotifications(limit, page) {
-    return fetch(
-        `${Setting.ServerUrl}/api/get-notifications?limit=${limit}&page=${page}`,
-        {
-            method: "GET",
-            credentials: "include",
-        }
-    ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-notifications?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function deleteNotifications(id) {
-    return fetch(`${Setting.ServerUrl}/api/delete-notifications?id=${id}`, {
-        method: "POST",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/delete-notifications?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getUnreadNotificationNum() {
-    return fetch(`${Setting.ServerUrl}/api/get-unread-notification-num`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-unread-notification-num`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateReadStatus() {
-    return fetch(`${Setting.ServerUrl}/api/update-read-status`, {
-        method: "POST",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/update-read-status`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }

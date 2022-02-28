@@ -13,24 +13,24 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import * as Setting from "./Setting";
 
 class SigninPage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-    componentWillMount() {
-        Setting.goToLink(Setting.getSigninUrl());
-    }
+  componentWillMount() {
+    Setting.goToLink(Setting.getSigninUrl());
+  }
 
-    render() {
-        return null;
-    }
+  render() {
+    return null;
+  }
 }
 
 export default withRouter(SigninPage);

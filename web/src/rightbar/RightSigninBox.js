@@ -13,42 +13,42 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import * as Conf from "../Conf";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 
 class RightSigninBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-    render() {
-        return (
-            <div className="box">
-                <div className="cell">
-                    <strong>{Conf.FrontConfig.signinBoxStrong}</strong>
-                    <div className="sep5"/>
-                    <span className="fade">{Conf.FrontConfig.signinBoxSpan}</span>
-                </div>
-                <div className="inner">
-                    <div className="sep5"/>
-                    <div align="center">
-                        <a href={Setting.getSignupUrl()} className="super normal button">
-                            {i18next.t("bar:Sign Up Now")}
-                        </a>
-                        <div className="sep5"/>
-                        <div className="sep10"/>
-                        {i18next.t("bar:For Existing Member")} &nbsp;
-                        <a href={Setting.getSigninUrl()}>{i18next.t("bar:Sign In")}</a>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="box">
+        <div className="cell">
+          <strong>{Conf.FrontConfig.signinBoxStrong}</strong>
+          <div className="sep5" />
+          <span className="fade">{Conf.FrontConfig.signinBoxSpan}</span>
+        </div>
+        <div className="inner">
+          <div className="sep5" />
+          <div align="center">
+            <a href={Setting.getSignupUrl()} className="super normal button">
+              {i18next.t("bar:Sign Up Now")}
+            </a>
+            <div className="sep5" />
+            <div className="sep10" />
+            {i18next.t("bar:For Existing Member")} &nbsp;
+            <a href={Setting.getSigninUrl()}>{i18next.t("bar:Sign In")}</a>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withRouter(RightSigninBox);

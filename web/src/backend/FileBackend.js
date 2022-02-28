@@ -15,92 +15,89 @@
 import * as Setting from "../Setting";
 
 export function addFileRecord(values) {
-    return fetch(`${Setting.ServerUrl}/api/add-file-record`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(values),
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/add-file-record`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(values),
+  }).then((res) => res.json());
 }
 
 export function getFiles(limit, page) {
-    return fetch(
-        `${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`,
-        {
-            method: "GET",
-            credentials: "include",
-        }
-    ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-files?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function deleteFile(id) {
-    return fetch(`${Setting.ServerUrl}/api/delete-file?id=${id}`, {
-        method: "POST",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/delete-file?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getFile(id) {
-    return fetch(`${Setting.ServerUrl}/api/get-file?id=${id}`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-file?id=${id}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateFileDesc(id, values) {
-    return fetch(`${Setting.ServerUrl}/api/update-file-desc?id=${id}`, {
-        method: "POST",
-        credentials: "include",
-        body: JSON.stringify(values),
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/update-file-desc?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(values),
+  }).then((res) => res.json());
 }
 
 export function getFileNum() {
-    return fetch(`${Setting.ServerUrl}/api/get-file-num`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-file-num`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function uploadTopicPic(base64) {
-    let formData = new FormData();
-    formData.append("pic", base64);
-    return fetch(`${Setting.ServerUrl}/api/upload-topic-pic`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-    }).then((res) => res.json());
+  let formData = new FormData();
+  formData.append("pic", base64);
+  return fetch(`${Setting.ServerUrl}/api/upload-topic-pic`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
 }
 
 export function uploadFile(base64, filename, filetype) {
-    let formData = new FormData();
-    formData.append("file", base64);
-    formData.append("name", filename);
-    formData.append("type", filetype);
-    return fetch(`${Setting.ServerUrl}/api/upload-file`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-    }).then((res) => res.json());
+  let formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("type", filetype);
+  return fetch(`${Setting.ServerUrl}/api/upload-file`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
 }
 
 export function moderatorUpload(base64, filename, filepath) {
-    let formData = new FormData();
-    formData.append("file", base64);
-    formData.append("name", filename);
-    formData.append("filepath", filepath);
-    return fetch(`${Setting.ServerUrl}/api/upload-moderator`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-    }).then((res) => res.json());
+  let formData = new FormData();
+  formData.append("file", base64);
+  formData.append("name", filename);
+  formData.append("filepath", filepath);
+  return fetch(`${Setting.ServerUrl}/api/upload-moderator`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
 }
 
 export function uploadAvatar(base64) {
-    let formData = new FormData();
-    formData.append("avatar", base64);
-    return fetch(`${Setting.ServerUrl}/api/upload-avatar`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-    }).then((res) => res.json());
+  let formData = new FormData();
+  formData.append("avatar", base64);
+  return fetch(`${Setting.ServerUrl}/api/upload-avatar`, {
+    method: "POST",
+    credentials: "include",
+    body: formData,
+  }).then((res) => res.json());
 }

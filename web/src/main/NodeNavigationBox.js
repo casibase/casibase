@@ -15,89 +15,89 @@
 import React from "react";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as Setting from "../Setting";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import i18next from "i18next";
 
 class NodeNavigationBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-            nodeNavigation: [],
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      nodeNavigation: [],
+    };
+  }
 
-    componentDidMount() {
-        this.getNodeNavigation();
-    }
+  componentDidMount() {
+    this.getNodeNavigation();
+  }
 
-    getNodeNavigation() {
-        BasicBackend.getNodeNavigation().then((res) => {
-            this.setState({
-                nodeNavigation: res.data,
-            });
-        });
-    }
+  getNodeNavigation() {
+    BasicBackend.getNodeNavigation().then((res) => {
+      this.setState({
+        nodeNavigation: res.data,
+      });
+    });
+  }
 
-    renderNode(node) {
-        return (
-            <span key={node?.id}>
-        <Link to={`/go/${encodeURIComponent(node?.id)}`} style={{fontSize: "14px"}}>
+  renderNode(node) {
+    return (
+      <span key={node?.id}>
+        <Link to={`/go/${encodeURIComponent(node?.id)}`} style={{ fontSize: "14px" }}>
           {node?.name}
         </Link>
-                &nbsp; &nbsp;
+        &nbsp; &nbsp;
       </span>
-        );
+    );
+  }
+
+  renderTab(tab) {
+    if (tab?.id === "all") {
+      return null;
     }
 
-    renderTab(tab) {
-        if (tab?.id === "all") {
-            return null;
-        }
+    return (
+      <div key={tab?.id} className="cell">
+        <table cellPadding="0" cellSpacing="0" border="0">
+          <tbody>
+            <tr>
+              <td align="right" width="80">
+                <span className="fade">{tab?.name}</span>
+              </td>
+              <td
+                style={{
+                  lineHeight: "200%",
+                  paddingLeft: "10px",
+                  wordBreak: "keep-all",
+                }}
+              >
+                {tab?.nodes?.map((node) => {
+                  return this.renderNode(node);
+                })}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 
-        return (
-            <div key={tab?.id} className="cell">
-                <table cellPadding="0" cellSpacing="0" border="0">
-                    <tbody>
-                    <tr>
-                        <td align="right" width="80">
-                            <span className="fade">{tab?.name}</span>
-                        </td>
-                        <td
-                            style={{
-                                lineHeight: "200%",
-                                paddingLeft: "10px",
-                                wordBreak: "keep-all",
-                            }}
-                        >
-                            {tab?.nodes?.map((node) => {
-                                return this.renderNode(node);
-                            })}
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        );
-    }
-
-    render() {
-        return (
-            <div className="box">
-                <div className="cell">
-                    <div className="fr">
-                        <Link to="/planes">{i18next.t("node:View all nodes")}</Link>
-                    </div>
-                    <span className="fade">
+  render() {
+    return (
+      <div className="box">
+        <div className="cell">
+          <div className="fr">
+            <Link to="/planes">{i18next.t("node:View all nodes")}</Link>
+          </div>
+          <span className="fade">
             <strong>{Setting.getForumName()}</strong> / {i18next.t("node:Node navigation")}
           </span>
-                </div>
-                {this.state.nodeNavigation?.map((tab) => {
-                    return this.renderTab(tab);
-                })}
-            </div>
-        );
-    }
+        </div>
+        {this.state.nodeNavigation?.map((tab) => {
+          return this.renderTab(tab);
+        })}
+      </div>
+    );
+  }
 }
 
 export default NodeNavigationBox;

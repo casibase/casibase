@@ -14,63 +14,61 @@
 
 import React from "react";
 import Header from "./Header";
-import {withRouter} from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 
 class SignoutBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-    onSigninAgain() {
-        this.props.history.push(Setting.getSigninUrl());
-    }
+  onSigninAgain() {
+    this.props.history.push(Setting.getSigninUrl());
+  }
 
-    onRetrySignout() {
-        AccountBackend.signout().then((res) => {
-            if (res.status === "ok") {
-                this.props.onSignout();
-                this.props.history.push("/signout");
-            } else {
-                this.props.history.push("/signout");
-            }
-        });
-    }
+  onRetrySignout() {
+    AccountBackend.signout().then((res) => {
+      if (res.status === "ok") {
+        this.props.onSignout();
+        this.props.history.push("/signout");
+      } else {
+        this.props.history.push("/signout");
+      }
+    });
+  }
 
-    render() {
-        const isSignedIn = this.props.account !== undefined && this.props.account !== null;
+  render() {
+    const isSignedIn = this.props.account !== undefined && this.props.account !== null;
 
-        if (!isSignedIn) {
-            return (
-                <div className="box">
-                    <Header item={i18next.t("member:Sign Out")}/>
-                    <div className="inner">
-                        {i18next.t("member:You have signed out completely, no personal information is left on this computer.")}
-                        <div className="sep20"/>
-                        <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)}
-                               value={i18next.t("member:Sign In Again")}/>
-                    </div>
-                </div>
-            );
-        } else {
-            return (
-                <div className="box">
-                    <Header item={i18next.t("member:Sign Out")}/>
-                    <div className="inner">
-                        {i18next.t("error:We had a problem when you signed out, please try again.")}
-                        <div className="sep20"/>
-                        <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)}
-                               value={i18next.t("error:Retry Sign Out")}/>
-                    </div>
-                </div>
-            );
-        }
+    if (!isSignedIn) {
+      return (
+        <div className="box">
+          <Header item={i18next.t("member:Sign Out")} />
+          <div className="inner">
+            {i18next.t("member:You have signed out completely, no personal information is left on this computer.")}
+            <div className="sep20" />
+            <input type="button" className="super normal button" onClick={this.onSigninAgain.bind(this)} value={i18next.t("member:Sign In Again")} />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="box">
+          <Header item={i18next.t("member:Sign Out")} />
+          <div className="inner">
+            {i18next.t("error:We had a problem when you signed out, please try again.")}
+            <div className="sep20" />
+            <input type="button" className="super normal button" onClick={this.onRetrySignout.bind(this)} value={i18next.t("error:Retry Sign Out")} />
+          </div>
+        </div>
+      );
     }
+  }
 }
 
 export default withRouter(SignoutBox);

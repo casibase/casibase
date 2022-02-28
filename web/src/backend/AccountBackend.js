@@ -15,22 +15,22 @@
 import * as Setting from "../Setting";
 
 export function getAccount() {
-    const params = new URLSearchParams(window.location.search);
-    const accessToken = params.get("accessToken");
-    let query = "";
-    if (accessToken !== null) {
-        query = `?accessToken=${accessToken}`;
-    }
+  const params = new URLSearchParams(window.location.search);
+  const accessToken = params.get("accessToken");
+  let query = "";
+  if (accessToken !== null) {
+    query = `?accessToken=${accessToken}`;
+  }
 
-    return fetch(`${Setting.ServerUrl}/api/get-account${query}`, {
-        method: "GET",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-account${query}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function signout() {
-    return fetch(`${Setting.ServerUrl}/api/signout`, {
-        method: "POST",
-        credentials: "include",
-    }).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/signout`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }

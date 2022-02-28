@@ -13,35 +13,28 @@
 // limitations under the License.
 
 import React from "react";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import i18next from "i18next";
 
 class UserLink extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-        };
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
+
+  render() {
+    if (this.props.username === "" || this.props.username === "客人") {
+      return <span className={`${this.props.classNameText}`}>{i18next.t("general:Anonymous")}</span>;
     }
 
-    render() {
-        if (this.props.username === "" || this.props.username === "客人") {
-            return (
-                <span className={`${this.props.classNameText}`}>
-          {i18next.t("general:Anonymous")}
-        </span>
-            );
-        }
-
-        return (
-            <Link
-                to={`/member/${this.props.username}`}
-                className={`${this.props.classNameText}`}
-            >
-                {this.props.username}
-            </Link>
-        );
-    }
+    return (
+      <Link to={`/member/${this.props.username}`} className={`${this.props.classNameText}`}>
+        {this.props.username}
+      </Link>
+    );
+  }
 }
 
 export default UserLink;

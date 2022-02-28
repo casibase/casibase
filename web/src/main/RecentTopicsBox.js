@@ -14,112 +14,98 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 
 class RecentTopicsBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            classes: props,
-            topics: [],
-            p: "",
-            page: 1,
-            limit: 25,
-            minPage: 1,
-            maxPage: -1,
-            topicsNum: 0,
-            temp: 0,
-            url: "",
-        };
-        const params = new URLSearchParams(this.props.location.search);
-        this.state.p = params.get("p");
-        if (this.state.p === null) {
-            this.state.page = 1;
-        } else {
-            this.state.page = parseInt(this.state.p);
-        }
-
-        this.state.url = `/recent`;
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      topics: [],
+      p: "",
+      page: 1,
+      limit: 25,
+      minPage: 1,
+      maxPage: -1,
+      topicsNum: 0,
+      temp: 0,
+      url: "",
+    };
+    const params = new URLSearchParams(this.props.location.search);
+    this.state.p = params.get("p");
+    if (this.state.p === null) {
+      this.state.page = 1;
+    } else {
+      this.state.page = parseInt(this.state.p);
     }
 
-    componentDidMount() {
-        this.getTopics();
+    this.state.url = `/recent`;
+  }
+
+  componentDidMount() {
+    this.getTopics();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (newProps.location !== this.props.location) {
+      let params = new URLSearchParams(newProps.location.search);
+      let page = params.get("p");
+      if (page === null) {
+        page = 1;
+      }
+      this.setState(
+        {
+          page: parseInt(page),
+        },
+        () => this.getTopics()
+      );
+    }
+  }
+
+  getTopics() {
+    TopicBackend.getTopics(this.state.limit, this.state.page).then((res) => {
+      this.setState({
+        topics: res,
+      });
+    });
+    if (this.state.topicsNum !== 0) {
+      return;
+    }
+    TopicBackend.getTopicsNum().then((res) => {
+      this.setState({
+        topicsNum: res,
+      });
+    });
+  }
+
+  showPageColumn() {
+    if (this.state.topicsNum < this.state.limit) {
+      return;
     }
 
-    componentWillReceiveProps(newProps) {
-        if (newProps.location !== this.props.location) {
-            let params = new URLSearchParams(newProps.location.search);
-            let page = params.get("p");
-            if (page === null) {
-                page = 1;
-            }
-            this.setState(
-                {
-                    page: parseInt(page),
-                },
-                () => this.getTopics()
-            );
-        }
-    }
+    return <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url} defaultPageNum={this.state.limit} />;
+  }
 
-    getTopics() {
-        TopicBackend.getTopics(this.state.limit, this.state.page).then((res) => {
-            this.setState({
-                topics: res,
-            });
-        });
-        if (this.state.topicsNum !== 0) {
-            return;
-        }
-        TopicBackend.getTopicsNum().then((res) => {
-            this.setState({
-                topicsNum: res,
-            });
-        });
-    }
-
-    showPageColumn() {
-        if (this.state.topicsNum < this.state.limit) {
-            return;
-        }
-
-        return (
-            <PageColumn
-                page={this.state.page}
-                total={this.state.topicsNum}
-                url={this.state.url}
-                defaultPageNum={this.state.limit}
-            />
-        );
-    }
-
-    render() {
-        return (
-            <div className="box">
-                <div className="header">
-                    <div className="fr f12">
-            <span className="fade">{`${i18next.t("topic:Total Topics")} ${
-                this.state.topicsNum
-            }`}</span>
-                    </div>
-                    <Link to="/">{Setting.getForumName()}</Link>
-                    <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-                    {i18next.t("topic:Recent Topics")}
-                </div>
-                {Setting.PcBrowser ? this.showPageColumn() : null}
-                <TopicList
-                    topics={this.state.topics}
-                    showNodeName={true}
-                    showAvatar={true}
-                />
-                {this.showPageColumn()}
-            </div>
-        );
-    }
+  render() {
+    return (
+      <div className="box">
+        <div className="header">
+          <div className="fr f12">
+            <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>
+          </div>
+          <Link to="/">{Setting.getForumName()}</Link>
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("topic:Recent Topics")}
+        </div>
+        {Setting.PcBrowser ? this.showPageColumn() : null}
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
+        {this.showPageColumn()}
+      </div>
+    );
+  }
 }
 
 export default withRouter(RecentTopicsBox);

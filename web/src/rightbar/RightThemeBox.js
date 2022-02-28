@@ -14,49 +14,49 @@
 
 import React from "react";
 import i18next from "i18next";
-import {loadTheme, THEME_OPTIONS} from "../theme";
+import { loadTheme, THEME_OPTIONS } from "../theme";
 import "./rightTheme.css";
 
 class RightThemeBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            theme: localStorage.getItem("CASNODE_THEME") || "default",
-            themeOptions: THEME_OPTIONS,
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      theme: localStorage.getItem("CASNODE_THEME") || "default",
+      themeOptions: THEME_OPTIONS,
+    };
+  }
 
-    handleThemeSelect(item) {
-        this.setState(
-            {
-                theme: item.value,
-            },
-            () => {
-                this.loadThemeFile();
-            }
-        );
-        localStorage.setItem("CASNODE_THEME", item.value);
-    }
+  handleThemeSelect(item) {
+    this.setState(
+      {
+        theme: item.value,
+      },
+      () => {
+        this.loadThemeFile();
+      }
+    );
+    localStorage.setItem("CASNODE_THEME", item.value);
+  }
 
-    loadThemeFile() {
-        let {theme} = this.state;
-        loadTheme(theme);
-    }
+  loadThemeFile() {
+    let { theme } = this.state;
+    loadTheme(theme);
+  }
 
-    render() {
-        return (
-            <div className="box theme-box">
-                <div className="cell">{i18next.t("theme:Choose theme")}</div>
-                {this.state.themeOptions.map((item) => {
-                    return (
-                        <div className="cell rt-line" key={item.value} onClick={() => this.handleThemeSelect(item)}>
-                            {item.label}&nbsp;{item.value === this.state.theme ? "✅" : ""}
-                        </div>
-                    );
-                })}
+  render() {
+    return (
+      <div className="box theme-box">
+        <div className="cell">{i18next.t("theme:Choose theme")}</div>
+        {this.state.themeOptions.map((item) => {
+          return (
+            <div className="cell rt-line" key={item.value} onClick={() => this.handleThemeSelect(item)}>
+              {item.label}&nbsp;{item.value === this.state.theme ? "✅" : ""}
             </div>
-        );
-    }
+          );
+        })}
+      </div>
+    );
+  }
 }
 
 export default RightThemeBox;

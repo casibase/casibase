@@ -1,8 +1,8 @@
 .rt-line {
-    cursor: pointer;
-    user-select: none;
+  cursor: pointer;
+  user-select: none;
 }
 
 .rt-line:hover {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }

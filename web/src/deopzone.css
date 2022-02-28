@@ -12,46 +12,46 @@
 /* limitations under the License.                                           */
 
 .container {
-    display: flex;
-    flex-direction: column;
-    font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
 }
 
 .container > p {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .container > em {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .dropzone {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    border-width: 2px;
-    border-radius: 2px;
-    border-color: #eeeeee;
-    border-style: dashed;
-    background-color: #fafafa;
-    color: #bdbdbd;
-    outline: none;
-    transition: border 0.24s ease-in-out;
-    min-height: 200px;
-    max-height: 490px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  border-width: 2px;
+  border-radius: 2px;
+  border-color: #eeeeee;
+  border-style: dashed;
+  background-color: #fafafa;
+  color: #bdbdbd;
+  outline: none;
+  transition: border 0.24s ease-in-out;
+  min-height: 200px;
+  max-height: 490px;
 }
 
 .dropzone:focus {
-    border-color: #2196f3;
+  border-color: #2196f3;
 }
 
 .dropzone.disabled {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 #upload {
-    background-color: var(--box-background-alt-color);
-    padding: inherit;
+  background-color: var(--box-background-alt-color);
+  padding: inherit;
 }
