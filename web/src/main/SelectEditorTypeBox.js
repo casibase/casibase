@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
+
 class SelectLanguageBox extends React.Component {
   constructor(props) {
     super(props);

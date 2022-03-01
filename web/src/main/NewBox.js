@@ -29,6 +29,7 @@ import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
+
 require("codemirror/mode/markdown/markdown");
 
 const ReactMarkdown = require("react-markdown");
@@ -171,6 +172,7 @@ class NewBox extends React.Component {
 
     return problems.length === 0;
   }
+
   renderEditorSelect() {
     return (
       <div>

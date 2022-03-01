@@ -41,12 +41,7 @@ class RightCheckinBonusBox extends React.Component {
   }
 
   render() {
-    if (
-      this.state.info === null ||
-      this.state.info ||
-      this.props.account === null ||
-      this.props.account === undefined
-    ) {
+    if (this.state.info === null || this.state.info || this.props.account === null || this.props.account === undefined) {
       return null;
     }
 
@@ -55,10 +50,9 @@ class RightCheckinBonusBox extends React.Component {
         {Setting.PcBrowser ? <div className="sep20" /> : null}
         <div className={`box ${this.props.nodeId}`}>
           <div className={`inner ${this.props.nodeId}`}>
-            <li className="fa fa-gift" style={{ color: "#f90" }}></li> &nbsp;
-            <Link to="/mission/daily">
-              {i18next.t("bar:Receive today's checkin bonus")}
-            </Link>
+            <li className="fa fa-gift" style={{ color: "#f90" }}></li>
+            &nbsp;
+            <Link to="/mission/daily">{i18next.t("bar:Receive today's checkin bonus")}</Link>
           </div>
         </div>
       </span>

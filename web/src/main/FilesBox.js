@@ -338,7 +338,8 @@ class FilesBox extends React.Component {
         <div className="sep20"></div>
         <div className="box">
           <div className="header">
-            <li className="fa fa-info-circle"></li> {i18next.t("file:Privacy and content policy")}
+            <li className="fa fa-info-circle"></li>
+            {i18next.t("file:Privacy and content policy")}
           </div>
           <div className="cell">
             <span className="topic_content">
@@ -384,8 +385,8 @@ class FilesBox extends React.Component {
                 {this.state.fileWidth}𝖷{this.state.fileHeight} &nbsp;·&nbsp;
               </span>
             ) : null}
-            {file?.fileExt} {i18next.t("file:file")} &nbsp;·&nbsp; {Setting.getFormattedSize(file?.size)} &nbsp;·&nbsp; {Setting.getPrettyDate(file?.createdTime)} <Link to={`/member/${file?.memberId}`}>{file?.memberId}</Link> {i18next.t("file:upload")}{" "}
-            &nbsp;·&nbsp; {file?.views} {i18next.t("file:views")}
+            {file?.fileExt} {i18next.t("file:file")} &nbsp;·&nbsp; {Setting.getFormattedSize(file?.size)} &nbsp;·&nbsp; {Setting.getPrettyDate(file?.createdTime)}
+            <Link to={`/member/${file?.memberId}`}>{file?.memberId}</Link> {i18next.t("file:upload")} &nbsp;·&nbsp; {file?.views} {i18next.t("file:views")}
           </span>
         </div>
         {file?.desc.length !== 0 ? (
@@ -596,7 +597,8 @@ class FilesBox extends React.Component {
                   </span>
                 </td>
                 <td width="auto" align="center">
-                  <li className="fa fa-cloud-upload"></li> <Link to="/i/upload">{i18next.t("file:Upload new file")}</Link>
+                  <li className="fa fa-cloud-upload"></li>
+                  <Link to="/i/upload">{i18next.t("file:Upload new file")}</Link>
                 </td>
               </tr>
             </tbody>

@@ -15,13 +15,10 @@
 import * as Setting from "../Setting";
 
 export function getTopics(limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topics?limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-topics?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 // un: search with username(author), ti: search with title
@@ -30,27 +27,11 @@ export function getTopics(limit, page) {
 // cs: sort with created time, lrs: sort with last reply time
 // us: sort with username, rcs: sort with reply count
 // hs: sort with hot, fcs: sort with favorite count
-export function getTopicsAdmin(
-  un,
-  ti,
-  cn,
-  sdt,
-  cs,
-  lrs,
-  us,
-  rcs,
-  hs,
-  fcs,
-  limit,
-  page
-) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topics-admin?un=${un}&ti=${ti}&cn=${cn}&sdt=${sdt}&cs=${cs}&lrs=${lrs}&us=${us}&rcs=${rcs}&hs=${hs}&fcs=${fcs}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+export function getTopicsAdmin(un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs, limit, page) {
+  return fetch(`${Setting.ServerUrl}/api/get-topics-admin?un=${un}&ti=${ti}&cn=${cn}&sdt=${sdt}&cs=${cs}&lrs=${lrs}&us=${us}&rcs=${rcs}&hs=${hs}&fcs=${fcs}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTopic(id) {
@@ -98,43 +79,31 @@ export function getTopicsNum() {
 }
 
 export function getAllCreatedTopics(id, tab, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-all-created-topics?id=${id}&tab=${tab}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-all-created-topics?id=${id}&tab=${tab}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTopicsWithNode(nodeId, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topics-by-node?node-id=${nodeId}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-topics-by-node?node-id=${nodeId}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTopicsWithTag(tagId, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topics-by-tag?tag-id=${tagId}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-topics-by-tag?tag-id=${tagId}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTopicsWithTab(nodeId, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topics-by-tab?tab-id=${nodeId}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-topics-by-tab?tab-id=${nodeId}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function addTopicHitCount(topicId) {
@@ -182,41 +151,29 @@ export function editTopicContent(topic) {
 }
 
 export function topTopic(id, time, topType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/top-topic?id=${id}&time=${time}&topType=${topType}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/top-topic?id=${id}&time=${time}&topType=${topType}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function cancelTopTopic(id, topType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/cancel-top-topic?id=${id}&topType=${topType}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/cancel-top-topic?id=${id}&topType=${topType}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function translateTopic(id, target, content) {
-  return fetch(
-    `${Setting.ServerUrl}/api/translate-topic?id=${id}&target=${target}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/translate-topic?id=${id}&target=${target}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getTopicByUrlPathAndTitle(nodeId, url, title) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-topic-by-urlpath-and-title?urlPath=${url}&title=${title}&nodeId=${nodeId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-topic-by-urlpath-and-title?urlPath=${url}&title=${title}&nodeId=${nodeId}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }

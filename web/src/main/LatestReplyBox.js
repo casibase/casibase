@@ -123,7 +123,8 @@ class LatestReplyBox extends React.Component {
                     <span className="fade">{Setting.getPrettyDate(reply.replyTime)}</span>
                   </div>
                   <span className="gray">
-                    {i18next.t("member:replied")} <Link to={`/member/${reply.topicAuthor}`}> {reply.topicAuthor} </Link> {i18next.t("member:'s topic")} <span className="chevron">›</span> <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>
+                    {i18next.t("member:replied")} <Link to={`/member/${reply.topicAuthor}`}> {reply.topicAuthor} </Link> {i18next.t("member:'s topic")}
+                    <span className="chevron">›</span> <Link to={`/go/${reply.nodeId}`}> {reply.nodeName} </Link>
                     <span className="chevron">›</span> <Link to={`/t/${reply.topicId}?from=${encodeURIComponent(window.location.href)}`}> {pangu.spacing(reply.topicTitle)} </Link>
                   </span>
                 </td>

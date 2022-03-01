@@ -31,35 +31,20 @@ class NoMatch extends React.Component {
       <div>
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             404 Object Not Found
           </div>
         </div>
         <div className="box-transparent">
-          <div className="cell-translucent">
-            The object you were looking for is not found on the{" "}
-            {Setting.getForumName()} Space Station.
-          </div>
-          <div className="cell-translucent">
-            你要寻找的物件不存在于 {Setting.getForumName()} 空间站上。
-          </div>
-          <div className="cell-translucent">
-            L'objet que vous cherchiez ne se trouve pas sur la station spatiale{" "}
-            {Setting.getForumName()}.
-          </div>
+          <div className="cell-translucent">The object you were looking for is not found on the {Setting.getForumName()} Space Station.</div>
+          <div className="cell-translucent">你要寻找的物件不存在于 {Setting.getForumName()} 空间站上。</div>
+          <div className="cell-translucent">L'objet que vous cherchiez ne se trouve pas sur la station spatiale {Setting.getForumName()}.</div>
           <div className="cell-translucent">
             Das von Ihnen gesuchte Objekt wird auf der {Setting.getForumName()}
             -Raumstation nicht gefunden.
           </div>
-          <div className="cell-translucent">
-            お探しの物体は {Setting.getForumName()}{" "}
-            宇宙ステーションにはありません。
-          </div>
-          <div className="cell-translucent">
-            Объект, который вы искали, не найден на космической станции{" "}
-            {Setting.getForumName()}.
-          </div>
+          <div className="cell-translucent">お探しの物体は {Setting.getForumName()} 宇宙ステーションにはありません。</div>
+          <div className="cell-translucent">Объект, который вы искали, не найден на космической станции {Setting.getForumName()}.</div>
         </div>
       </div>
     );
@@ -71,8 +56,7 @@ class NoMatch extends React.Component {
         {this.renderBox()}
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             {i18next.t("general:Navigation")}
           </div>
         </div>

@@ -15,23 +15,17 @@
 import * as Setting from "../Setting";
 
 export function addThanks(id, thanksType) {
-  return fetch(
-    `${Setting.ServerUrl}/api/add-thanks?id=${id}&thanksType=${thanksType}`,
-    {
-      method: "POST",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/add-thanks?id=${id}&thanksType=${thanksType}`, {
+    method: "POST",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getConsumptionRecord(limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-consumption-record?limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-consumption-record?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getCheckinBonusStatus() {

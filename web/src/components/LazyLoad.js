@@ -33,10 +33,6 @@ export default class LazyLoad extends React.Component {
   }
 
   render() {
-    return (
-      <Suspense fallback={this.renderFallback()}>
-        {this.props.children}
-      </Suspense>
-    );
+    return <Suspense fallback={this.renderFallback()}>{this.props.children}</Suspense>;
   }
 }

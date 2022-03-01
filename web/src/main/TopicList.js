@@ -20,6 +20,7 @@ import "../node.css";
 import i18next from "i18next";
 import { Link } from "react-router-dom";
 import UserLink from "../UserLink";
+
 const pangu = require("pangu");
 
 class TopicList extends React.Component {

@@ -90,13 +90,7 @@ class AdminHomepage extends React.Component {
           fontSize: "14px",
         }}
       >
-        <img
-          src={item?.image}
-          border="0"
-          align="default"
-          width="73"
-          alt={item?.value}
-        />
+        <img src={item?.image} border="0" align="default" width="73" alt={item?.value} />
         <div className="sep10" />
         {item?.label}
       </div>
@@ -106,11 +100,7 @@ class AdminHomepage extends React.Component {
   renderManageItem(item) {
     if (item.value === "member") {
       return (
-        <a
-          className="grid_item"
-          target="_blank"
-          href={Setting.getMyProfileUrl(this.props.account)}
-        >
+        <a className="grid_item" target="_blank" href={Setting.getMyProfileUrl(this.props.account)}>
           {this.renderManageItemInternal(item)}
         </a>
       );
@@ -133,13 +123,10 @@ class AdminHomepage extends React.Component {
         <div className="box">
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link>
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("loading:Page is loading")}
+            <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("loading:Page is loading")}
           </div>
           <div className="cell">
-            <span className="gray bigger">
-              {i18next.t("loading:Please wait patiently...")}
-            </span>
+            <span className="gray bigger">{i18next.t("loading:Please wait patiently...")}</span>
           </div>
         </div>
       );
@@ -151,8 +138,7 @@ class AdminHomepage extends React.Component {
     return (
       <div className="box">
         <div className="header">
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           {i18next.t("admin:Backstage management")}
         </div>
         <div id="all-items">

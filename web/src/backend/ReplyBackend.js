@@ -15,23 +15,17 @@
 import * as Setting from "../Setting";
 
 export function getReplies(topicId, limit, page, init) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-replies?topicId=${topicId}&limit=${limit}&page=${page}&init=${init}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-replies?topicId=${topicId}&limit=${limit}&page=${page}&init=${init}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getRepliesOfTopic(topicId) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-replies-of-topic?topicId=${topicId}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-replies-of-topic?topicId=${topicId}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getReply(id) {
@@ -72,13 +66,10 @@ export function deleteReply(id) {
 }
 
 export function getLatestReplies(id, limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-latest-replies?id=${id}&limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-latest-replies?id=${id}&limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function getMemberRepliesNum(id) {

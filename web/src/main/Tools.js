@@ -21,7 +21,8 @@ require("inline-attachment/src/inline-attachment");
 require("inline-attachment/src/codemirror-4.inline-attachment");
 
 export function attachEditor(editor) {
-  /* eslint-disable */ inlineAttachment.editors.codemirror4.attach(editor, {
+  /* eslint-disable */
+  inlineAttachment.editors.codemirror4.attach(editor, {
     allowedTypes: ["*"],
   });
 }
@@ -29,10 +30,8 @@ export function attachEditor(editor) {
 // upload file through markdown editor
 export function uploadMdFile(addMsg) {
   const stdImageExt = ["png", "jpg", "gif", "jpeg"];
-  /* eslint-disable */ inlineAttachment.prototype.onFileUploadResponse = function (
-    fileName,
-    fileUrl
-  ) {
+  /* eslint-disable */
+  inlineAttachment.prototype.onFileUploadResponse = function (fileName, fileUrl) {
     let newValue = this.settings.urlText.replace("file", fileName);
     let fileType = Setting.getFileType(fileName); // find the ext of the file, choosing []() or ![]()
     //let fileIndex = fileName.lastIndexOf(".");
@@ -49,7 +48,8 @@ export function uploadMdFile(addMsg) {
 
   let uploadStatus = false;
 
-  /* eslint-disable */ inlineAttachment.prototype.uploadFile = function (file) {
+  /* eslint-disable */
+  inlineAttachment.prototype.uploadFile = function (file) {
     if (file.size > 1024 * 1024 * 6) {
       alert("File size exceeds 6MB");
       return;
@@ -78,19 +78,17 @@ export function uploadFile(file) {
   let fileType = Setting.getFileType(file.name);
   let reader = new FileReader();
   reader.onload = (e) => {
-    FileBackend.uploadFile(e.target.result, file.name, fileType.ext).then(
-      (res) => {
-        if (res.status == "ok") {
-          FileBackend.addFileRecord({
-            fileName: file.name,
-            filePath: "file/" + file.name,
-            fileUrl: res.data,
-            size: file.size,
-          });
-          window.location.href = "/i";
-        } else alert("Uploading failed.");
-      }
-    );
+    FileBackend.uploadFile(e.target.result, file.name, fileType.ext).then((res) => {
+      if (res.status == "ok") {
+        FileBackend.addFileRecord({
+          fileName: file.name,
+          filePath: "file/" + file.name,
+          fileUrl: res.data,
+          size: file.size,
+        });
+        window.location.href = "/i";
+      } else alert("Uploading failed.");
+    });
   };
   reader.readAsDataURL(file);
 }
@@ -127,16 +125,14 @@ export function myUploadFn(param) {
 
   let reader = new FileReader();
   reader.onload = (e) => {
-    FileBackend.uploadFile(e.target.result, timestamp, fileType.ext).then(
-      (res) => {
-        if (res.status == "ok") {
-          this.uploadStatus = true;
-          successFn(res.data);
-        } else {
-          errorFn();
-        }
+    FileBackend.uploadFile(e.target.result, timestamp, fileType.ext).then((res) => {
+      if (res.status == "ok") {
+        this.uploadStatus = true;
+        successFn(res.data);
+      } else {
+        errorFn();
       }
-    );
+    });
   };
   reader.readAsDataURL(param.file);
 }

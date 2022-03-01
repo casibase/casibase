@@ -69,30 +69,13 @@ class RightCommunityHealthBox extends React.Component {
       <React.Fragment>
         <div className="box">
           <div className="inner" align="center">
-            <a
-              href={this.state.poster["link"]}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img
-                src={this.state.poster["picture_link"]}
-                border="0"
-                width="250"
-                alt={this.state.poster["advertiser"]}
-                style={{ vertical: "bottom" }}
-              />
+            <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
+              <img src={this.state.poster["picture_link"]} border="0" width="250" alt={this.state.poster["advertiser"]} style={{ vertical: "bottom" }} />
             </a>
           </div>
-          <div
-            className="sidebar_compliance flex-one-row"
-            style={{ display: "flex", justifyContent: "space-between" }}
-          >
+          <div className="sidebar_compliance flex-one-row" style={{ display: "flex", justifyContent: "space-between" }}>
             <div>
-              <a
-                href={this.state.poster["link"]}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
                 {this.state.poster["advertiser"]}
               </a>
             </div>
@@ -145,11 +128,9 @@ class RightCommunityHealthBox extends React.Component {
             </table>
           </div>
           <div className="inner">
-            <span className="chevron">›</span>{" "}
-            <Link to="/top/rich">{i18next.t("bar:Rich List")}</Link>
+            <span className="chevron">›</span> <Link to="/top/rich">{i18next.t("bar:Rich List")}</Link>
             <div className="sep5" />
-            <span className="chevron">›</span>{" "}
-            <Link to="/top/player">{i18next.t("bar:Consumption list")}</Link>
+            <span className="chevron">›</span> <Link to="/top/player">{i18next.t("bar:Consumption list")}</Link>
           </div>
         </div>
       </div>

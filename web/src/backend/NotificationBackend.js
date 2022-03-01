@@ -15,13 +15,10 @@
 import * as Setting from "../Setting";
 
 export function getNotifications(limit, page) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-notifications?limit=${limit}&page=${page}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-notifications?limit=${limit}&page=${page}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function deleteNotifications(id) {

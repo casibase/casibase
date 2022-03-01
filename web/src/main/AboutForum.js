@@ -45,8 +45,7 @@ class AboutForum extends React.Component {
       <div>
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             {i18next.t("about:About")}
           </div>
         </div>
@@ -69,11 +68,7 @@ class AboutForum extends React.Component {
                     {":"}
                   </td>
                   <td width="auto" align="left">
-                    <a
-                      href={`${Conf.GithubRepo}/commit/${this.state.version}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank" rel="noopener noreferrer">
                       {this.state.version.substring(0, 7)}
                     </a>
                   </td>
@@ -83,11 +78,7 @@ class AboutForum extends React.Component {
                     Github:{"  "}
                   </td>
                   <td width="auto" align="left">
-                    <a
-                      href={`${Conf.GithubRepo}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={`${Conf.GithubRepo}`} target="_blank" rel="noopener noreferrer">
                       Casnode
                     </a>
                   </td>
@@ -98,11 +89,7 @@ class AboutForum extends React.Component {
                     {":"}
                   </td>
                   <td width="auto" align="left">
-                    <a
-                      href={`https://casnode.org/`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
+                    <a href={`https://casnode.org/`} target="_blank" rel="noopener noreferrer">
                       Casnode official website
                     </a>
                   </td>

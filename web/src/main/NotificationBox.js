@@ -72,10 +72,7 @@ class NotificationBox extends React.Component {
   }
 
   getNotifications() {
-    NotificationBackend.getNotifications(
-      this.state.limit,
-      this.state.page
-    ).then((res) => {
+    NotificationBackend.getNotifications(this.state.limit, this.state.page).then((res) => {
       this.setState({
         notifications: res?.data,
         notificationNum: res?.data2,
@@ -98,14 +95,7 @@ class NotificationBox extends React.Component {
       return null;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.notificationNum}
-        url={this.state.url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.notificationNum} url={this.state.url} defaultPageNum={this.state.limit} />;
   }
 
   renderMember(senderId) {
@@ -121,13 +111,8 @@ class NotificationBox extends React.Component {
       <span>
         {" "}
         &nbsp;
-        <span className="snow">{Setting.getPrettyDate(createdTime)}</span>{" "}
-        &nbsp;
-        <a
-          href="#;"
-          onClick={() => this.deleteNotification(objectId)}
-          className="node"
-        >
+        <span className="snow">{Setting.getPrettyDate(createdTime)}</span> &nbsp;
+        <a href="#;" onClick={() => this.deleteNotification(objectId)} className="node">
           {i18next.t("notification:Delete")}
         </a>
       </span>
@@ -166,137 +151,65 @@ class NotificationBox extends React.Component {
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Replied to you in")}{" "}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>{" "}
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Replied to you in")} <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link>{" "}
               {i18next.t("notification:Replied to you in")}
             </span>
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
-            <div className="payload">
-              {this.renderContent(notification?.content)}
-            </div>
+            <div className="payload">{this.renderContent(notification?.content)}</div>
           </td>
         );
       case 2:
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Mentioned you in")}{" "}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>{" "}
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Mentioned you in")} <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link>{" "}
               {i18next.t("notification:Mentioned you in")}
             </span>
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
-            <div className="payload">
-              {this.renderContent(notification?.content)}
-            </div>
+            <div className="payload">{this.renderContent(notification?.content)}</div>
           </td>
         );
       case 3:
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Mentioned you in topic")} ›{" "}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>{" "}
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Mentioned you in topic")} › <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link>{" "}
               {i18next.t("notification:Mentioned you in")}
             </span>
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
         );
       case 4:
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Favorite you topic")} ›{" "}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Favorite you topic")} › <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link>
             </span>
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
         );
       case 5:
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Thanks for you topic")} ›{" "}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Thanks for you topic")} › <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link>
             </span>{" "}
             &nbsp;
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
           </td>
         );
       case 6:
         return (
           <td valign="middle">
             <span className="fade">
-              {this.renderMember(notification?.senderId)}{" "}
-              {i18next.t("notification:Thanks for your reply in topic")} ›{""}
-              <Link
-                to={`/t/${notification?.objectId}?from=${encodeURIComponent(
-                  window.location.href
-                )}`}
-              >
-                {pangu.spacing(notification?.title)}
-              </Link>{" "}
-              {i18next.t("notification:Replies in")}
+              {this.renderMember(notification?.senderId)} {i18next.t("notification:Thanks for your reply in topic")} ›{""}
+              <Link to={`/t/${notification?.objectId}?from=${encodeURIComponent(window.location.href)}`}>{pangu.spacing(notification?.title)}</Link> {i18next.t("notification:Replies in")}
             </span>
-            {this.renderDelete(
-              notification?.createdTime,
-              notification?.objectId
-            )}
+            {this.renderDelete(notification?.createdTime, notification?.objectId)}
             <div className="sep5"></div>
-            <div className="payload">
-              {this.renderContent(notification?.content)}
-            </div>
+            <div className="payload">{this.renderContent(notification?.content)}</div>
           </td>
         );
       default:
@@ -311,11 +224,7 @@ class NotificationBox extends React.Component {
           <tr>
             <td width="32" align="left" valign="top">
               <Link to={`/member/${notification?.senderId}`}>
-                <Avatar
-                  username={notification?.senderId}
-                  avatar={notification?.avatar}
-                  size={"small"}
-                />
+                <Avatar username={notification?.senderId} avatar={notification?.avatar} size={"small"} />
               </Link>
             </td>
             {this.renderNotificationContent(notification)}
@@ -330,14 +239,9 @@ class NotificationBox extends React.Component {
       <div className="box">
         <div className="header">
           <div className="fr f12">
-            <span className="snow">
-              {i18next.t("notification:Total reminders received")}&nbsp;
-            </span>{" "}
-            <strong className="gray">{this.state.notificationNum}</strong>
+            <span className="snow">{i18next.t("notification:Total reminders received")}&nbsp;</span> <strong className="gray">{this.state.notificationNum}</strong>
           </div>
-          <Link to="/">{Setting.getForumName()}</Link>{" "}
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("notification:Reminder system")}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("notification:Reminder system")}
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}
         <div id="notifications">

@@ -60,11 +60,7 @@ class AdminFrontConf extends React.Component {
 
   renderManagementList(item) {
     return (
-      <a
-        href="javascript:void(0);"
-        className={this.state.field === item.value ? "tab_current" : "tab"}
-        onClick={() => this.changeField(item.value)}
-      >
+      <a href="javascript:void(0);" className={this.state.field === item.value ? "tab_current" : "tab"} onClick={() => this.changeField(item.value)}>
         {item.label}
       </a>
     );
@@ -174,11 +170,9 @@ class AdminFrontConf extends React.Component {
       <div>
         <div className="box">
           <div className="header">
-            <Link to="/">{Setting.getForumName()}</Link>{" "}
-            <span className="chevron">&nbsp;›&nbsp;</span>
+            <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             <Link to="/admin">{i18next.t("admin:Backstage management")}</Link>
-            <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-            {i18next.t("admin:FrontConf management")}
+            <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("admin:FrontConf management")}
           </div>
           <div className="cell">
             {this.state.Management_LIST.map((item) => {
@@ -199,42 +193,21 @@ class AdminFrontConf extends React.Component {
                 {this.state.conf.map((item) => {
                   return (
                     <tr>
-                      <td
-                        width={Setting.PcBrowser ? "120" : "90"}
-                        align="right"
-                      >
+                      <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                         {this.convert(item.Id)}
                       </td>
                       <td width="auto" align="left">
-                        <textarea
-                          rows="1"
-                          style={{ width: "80%" }}
-                          value={this.state.form[item.Id]}
-                          onChange={(event) => this.inputChange(event, item.Id)}
-                        />
+                        <textarea rows="1" style={{ width: "80%" }} value={this.state.form[item.Id]} onChange={(event) => this.inputChange(event, item.Id)} />
                       </td>
                     </tr>
                   );
                 })}
                 <tr>
-                  <td
-                    width={Setting.PcBrowser ? "120" : "90"}
-                    align="right"
-                  ></td>
+                  <td width={Setting.PcBrowser ? "120" : "90"} align="right"></td>
                   <td width="auto" align="left">
-                    <input
-                      type="submit"
-                      className="super normal button"
-                      value={i18next.t("frontConf:Save")}
-                      onClick={() => this.updateConf()}
-                    />
+                    <input type="submit" className="super normal button" value={i18next.t("frontConf:Save")} onClick={() => this.updateConf()} />
                     &emsp;&emsp;&emsp;&emsp;
-                    <input
-                      type="button"
-                      className="super normal button"
-                      value={i18next.t("frontConf:Reset")}
-                      onClick={() => this.updateConfToDefault()}
-                    />
+                    <input type="button" className="super normal button" value={i18next.t("frontConf:Reset")} onClick={() => this.updateConfToDefault()} />
                   </td>
                 </tr>
               </tbody>

@@ -2,6 +2,7 @@ import React from "react";
 import BraftEditor from "braft-editor";
 import "braft-editor/dist/index.css";
 import { myUploadFn } from "./Tools";
+
 const _ = require("lodash");
 
 export default class Editor extends React.Component {
@@ -30,9 +31,7 @@ export default class Editor extends React.Component {
     // const htmlContent = await this.fetchEditorContent();
     // Use BraftEditor.createEditorState to convert html strings to editorState data needed by the editor
     const rawDefaultVal = this.props.defaultValue;
-    const defaultVal = rawDefaultVal
-      ? BraftEditor.createEditorState(rawDefaultVal)
-      : "";
+    const defaultVal = rawDefaultVal ? BraftEditor.createEditorState(rawDefaultVal) : "";
     this.setState({
       editorState: defaultVal,
     });

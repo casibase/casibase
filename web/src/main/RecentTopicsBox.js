@@ -87,14 +87,7 @@ class RecentTopicsBox extends React.Component {
       return;
     }
 
-    return (
-      <PageColumn
-        page={this.state.page}
-        total={this.state.topicsNum}
-        url={this.state.url}
-        defaultPageNum={this.state.limit}
-      />
-    );
+    return <PageColumn page={this.state.page} total={this.state.topicsNum} url={this.state.url} defaultPageNum={this.state.limit} />;
   }
 
   render() {
@@ -102,20 +95,13 @@ class RecentTopicsBox extends React.Component {
       <div className="box">
         <div className="header">
           <div className="fr f12">
-            <span className="fade">{`${i18next.t("topic:Total Topics")} ${
-              this.state.topicsNum
-            }`}</span>
+            <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>
           </div>
           <Link to="/">{Setting.getForumName()}</Link>
-          <span className="chevron">&nbsp;›&nbsp;</span>{" "}
-          {i18next.t("topic:Recent Topics")}
+          <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("topic:Recent Topics")}
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}
-        <TopicList
-          topics={this.state.topics}
-          showNodeName={true}
-          showAvatar={true}
-        />
+        <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />
         {this.showPageColumn()}
       </div>
     );

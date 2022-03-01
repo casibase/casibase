@@ -15,13 +15,10 @@
 import * as Setting from "../Setting";
 
 export function getFrontConfByField(field) {
-  return fetch(
-    `${Setting.ServerUrl}/api/get-front-conf-by-field?field=${field}`,
-    {
-      method: "GET",
-      credentials: "include",
-    }
-  ).then((res) => res.json());
+  return fetch(`${Setting.ServerUrl}/api/get-front-conf-by-field?field=${field}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
 }
 
 export function updateFrontConfs(confs) {

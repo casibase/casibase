@@ -478,8 +478,8 @@ class TopicBox extends React.Component {
       return (
         <div class="box">
           <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link> <span class="chevron">&nbsp;›&nbsp;</span>{" "}
-            <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link> <span class="chevron">&nbsp;›&nbsp;</span> Review
+            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>
+            <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link> <span class="chevron">&nbsp;›&nbsp;</span> Review
           </div>
           <div class="cell topic_content markdown_body">
             <p>
@@ -499,7 +499,8 @@ class TopicBox extends React.Component {
                 <Link to={`/move/topic/${this.state.topic?.id}`}>{i18next.t("topic:move freely")}</Link>
               </li>
               <li>
-                {i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")} <Link to={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</Link>
+                {i18next.t("topic:If you are not satisfied with the content, within 10 minutes of creation, you can")}
+                <Link to={`/edit/topic/${this.state.topic?.id}`}>{i18next.t("topic:edit topic")}</Link>
               </li>
             </ul>
           </div>
