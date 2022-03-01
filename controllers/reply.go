@@ -163,7 +163,7 @@ func (c *ApiController) AddReply() {
 		object.CreateReplyConsumption(user, id)
 
 		c.UpdateAccountBalance(-object.CreateReplyCost)
-
+		c.UpdateAccountConsumptionSum(object.CreateReplyCost)
 		object.ChangeTopicReplyCount(reply.TopicId, 1)
 		object.ChangeTopicLastReplyUser(reply.TopicId, GetUserName(user), util.GetCurrentTime())
 		object.AddReplyNotification(reply.Author, reply.Content, id, reply.TopicId)
@@ -235,6 +235,7 @@ func (c *ApiController) GetLatestReplies() {
 	c.Data["json"] = object.GetLatestReplies(id, limit, offset)
 	c.ServeJSON()
 }
+
 // @Title GetMemberRepliesNum
 // @Tag Reply API
 // @router /get-member-replies-num [get]

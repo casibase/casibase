@@ -115,3 +115,9 @@ func (c *ApiController) UpdateAccountBalance(amount int) {
 	user.Score += amount
 	c.SetSessionUser(user)
 }
+
+func (c *ApiController) UpdateAccountConsumptionSum(amount int) {
+	user := c.GetSessionUser()
+	user.Karma += amount
+	c.SetSessionUser(user)
+}
