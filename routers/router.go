@@ -79,6 +79,7 @@ func initAPI() {
 	beego.Router("/api/update-member-editor-type", &controllers.ApiController{}, "POST:UpdateMemberEditorType")
 	beego.Router("/api/get-member-editor-type", &controllers.ApiController{}, "GET:GetMemberEditorType")
 	beego.Router("/api/get-ranking-rich", &controllers.ApiController{}, "GET:GetRankingRich")
+	beego.Router("/api/get-ranking-player", &controllers.ApiController{}, "GET:GetRankingPlayer")
 
 	beego.Router("/api/update-poster", &controllers.ApiController{}, "POST:UpdatePoster") //Update poster api just for admin.
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")

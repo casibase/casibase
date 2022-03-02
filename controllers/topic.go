@@ -255,7 +255,7 @@ func (c *ApiController) AddTopic() {
 		object.CreateTopicConsumption(user, id)
 
 		c.UpdateAccountBalance(-object.CreateTopicCost)
-
+		c.UpdateAccountConsumptionSum(object.CreateTopicCost)
 		object.AddTopicNotification(id, topic.Author, topic.Content)
 		targetNode := object.GetNode(topic.NodeId)
 		targetNode.AddTopicToMailingList(topic.Title, topic.Content, topic.Author)

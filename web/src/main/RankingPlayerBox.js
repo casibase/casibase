@@ -18,34 +18,27 @@ import i18next from "i18next";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as MemberBackend from "../backend/MemberBackend";
-import { scoreConverter } from "./Tools";
 
-class RankingRichBox extends React.Component {
+class RankingPlayerBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      richList: undefined,
+      playerList: undefined,
     };
   }
 
   componentDidMount() {
-    MemberBackend.getRankingRichList().then((res) => {
+    MemberBackend.getRankingPlayerList().then((res) => {
       this.setState({
-        richList: res.data,
+        playerList: res.data,
       });
     });
   }
 
-  renderRichBox(score) {
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(score);
+  renderPlayerBox(karma) {
     return (
-      <div className="balance_area bigger" style={{ fontSize: "24px", lineHeight: "24px", width: "100%" }}>
-        {goldCount}&nbsp;
-        <img src={Setting.getStatic("/img/gold@2x.png")} height="16" alt="G" border="0" />
-        &nbsp;{silverCount}&nbsp;
-        <img src={Setting.getStatic("/img/silver@2x.png")} height="16" alt="S" border="0" />
-        &nbsp;{bronzeCount}&nbsp;
-        <img src={Setting.getStatic("/img/bronze@2x.png")} height="16" alt="B" border="0" />
+      <div className="balance_area" style={{ fontSize: "24px", lineHeight: "24px", width: "70%", background: "#f5f5f5" }}>
+        ${karma}
       </div>
     );
   }
@@ -55,7 +48,7 @@ class RankingRichBox extends React.Component {
       <div className="box">
         {/* header */}
         <div className="cell">
-          <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
+          <div className="fr" style={{ margin: "-1px -8px 0px 0px" }}>
             <Link to="/top/rich" className="tab">
               {i18next.t("balance:Wealth ranking")}
             </Link>
@@ -66,31 +59,40 @@ class RankingRichBox extends React.Component {
               {i18next.t("balance:Recharge")}
             </Link>
           </div>
-          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("balance:Rich ranking")}
+          <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("balance:Consumption ranking")}
         </div>
-        {/* richList */}
+        {/* playerList */}
         <div className="inner">
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
-            {this.state.richList
-              ? this.state.richList.map((member, key) => (
+            {this.state.playerList
+              ? this.state.playerList.map((member, key) => (
                   <tr>
-                    <td width={Setting.PcBrowser ? "73" : "36"} valign="top" align="center" key={key}>
+                    <td width={Setting.PcBrowser ? "65" : "36"} valign="top" align="center" key={key}>
                       <Avatar username={member.name} avatar={member.avatar} key={key} />
                     </td>
                     <td width="auto" align="left">
-                      <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
+                      <h2 style={{ marginBottom: "10px", marginTop: "0px", fontSize: "20px" }}>
                         <span class="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
-                      <span className="gray f12"> {member.tag} </span>
+                      <div className="sep5"></div>
+                      <span className="gray f12">
+                        {" "}
+                        <a>{member.bio}</a>{" "}
+                      </span>
                       <div className="sep5"></div>
                       <span className="gray f12">
                         {" "}
                         <a href={member.homepage}>{member.homepage}</a>{" "}
                       </span>
                       <div className="sep5"></div>
+                      <span style={{ fontSize: "18px", color: "#bbbbbb" }}>
+                        {i18next.t("member:No.")}&nbsp;{member.ranking}&nbsp;{i18next.t("member:member")}
+                      </span>
+                      <div className="sep5"></div>
                     </td>
-                    <td width="200" align="center">
-                      <div>{this.renderRichBox(member.score)}</div>
+                    <td width="200px" align="center">
+                      <div class="sep20"></div>
+                      <div>{this.renderPlayerBox(member.karma)}</div>
                     </td>
                   </tr>
                 ))
@@ -102,4 +104,4 @@ class RankingRichBox extends React.Component {
   }
 }
 
-export default withRouter(RankingRichBox);
+export default withRouter(RankingPlayerBox);

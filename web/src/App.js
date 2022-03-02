@@ -64,6 +64,7 @@ const MoveTopicNodeBox = React.lazy(() => import("./main/MoveTopicNodeBox"));
 const EditBox = React.lazy(() => import("./main/EditBox"));
 const FilesBox = React.lazy(() => import("./main/FilesBox"));
 const RankingRichBox = React.lazy(() => import("./main/RankingRichBox"));
+const RankingPlayerBox = React.lazy(() => import("./main/RankingPlayerBox"));
 const AdminHomepage = React.lazy(() => import("./admin/AdminHomepage"));
 const AdminNode = React.lazy(() => import("./admin/AdminNode"));
 const AdminTab = React.lazy(() => import("./admin/AdminTab"));
@@ -373,6 +374,14 @@ class App extends Component {
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>
               <RankingRichBox />
+            </LazyLoad>
+          </div>
+        </Route>
+        <Route exact path="/top/player">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <LazyLoad>
+              <RankingPlayerBox />
             </LazyLoad>
           </div>
         </Route>

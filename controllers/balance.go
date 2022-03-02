@@ -99,6 +99,13 @@ func (c *ApiController) AddThanks() {
 
 		c.UpdateAccountBalance(consumerRecord.Amount)
 
+		_, err = object.UpdateMemberConsumptionSum(user, -consumerRecord.Amount)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.UpdateAccountConsumptionSum(-consumerRecord.Amount)
+
 		c.ResponseOk()
 	} else {
 		c.ResponseError(fmt.Sprintf("wrong thanksType: %s", thanksType))

@@ -63,6 +63,21 @@ func (c *ApiController) GetRankingRich() {
 	c.ResponseOk(users)
 }
 
+// @Title GetRankingPlayer
+// @Description RankingPlayer
+// @Success 200 {array} auth.User The Response object
+// @router /get-ranking-player [get]
+// @Tag Member API
+func (c *ApiController) GetRankingPlayer() {
+	users, err := object.GetRankingPlayer()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(users)
+}
+
 // @Tag Member API
 // @Title UpdateMemberEditorType
 // @router /update-member-editor-type [post]
@@ -86,7 +101,7 @@ func (c *ApiController) UpdateMemberEditorType() {
 
 // @Tag Member API
 // @Title UpdateMemberLanguage
-// @router /update-member-language [post] 
+// @router /update-member-language [post]
 func (c *ApiController) UpdateMemberLanguage() {
 	language := c.Input().Get("language")
 

@@ -73,6 +73,12 @@ func UpdateMemberBalance(user *auth.User, amount int) (bool, error) {
 	return auth.UpdateUserForColumns(user, []string{"score"})
 }
 
+
+func UpdateMemberConsumptionSum(user *auth.User, amount int) (bool, error) {
+	user.Karma += amount
+	return auth.UpdateUserForColumns(user, []string{"karma"})
+}
+
 func GetMemberConsumptionRecordNum(memberId string) int {
 	var total int64
 	var err error
@@ -187,6 +193,7 @@ func CreateTopicConsumption(user *auth.User, id int) bool {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalance(user, record.Amount)
+	UpdateMemberConsumptionSum(user, -record.Amount)
 
 	return true
 }
@@ -209,6 +216,7 @@ func CreateReplyConsumption(user *auth.User, id int) bool {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalance(user, record.Amount)
+	UpdateMemberConsumptionSum(user, -record.Amount)
 
 	return true
 }
@@ -250,6 +258,7 @@ func TopTopicConsumption(user *auth.User, id int) bool {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalance(user, record.Amount)
+	UpdateMemberConsumptionSum(user, -record.Amount)
 
 	return true
 }

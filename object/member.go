@@ -28,6 +28,10 @@ func GetRankingRich() ([]*auth.User, error) {
 	return casdoor.GetSortedUsers("score", 25), nil
 }
 
+func GetRankingPlayer() ([]*auth.User, error) {
+    return casdoor.GetSortedUsers("karma", 25), nil
+}
+
 func GetUser(id string) *auth.User {
 	user := casdoor.GetUser(id)
 	return user

@@ -48,3 +48,10 @@ export function getRankingRichList() {
     credentials: "include",
   }).then((res) => res.json());
 }
+
+export function getRankingPlayerList() {
+  return fetch(`${Setting.ServerUrl}/api/get-ranking-player`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
+}
