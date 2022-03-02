@@ -377,7 +377,7 @@ class App extends Component {
             </LazyLoad>
           </div>
         </Route>
-        <Route exact_path="/top/player">
+        <Route exact path="/top/player">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <LazyLoad>

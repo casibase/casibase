@@ -193,7 +193,7 @@ func CreateTopicConsumption(user *auth.User, id int) bool {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalance(user, record.Amount)
-    UpdateMemberConsumptionSum(user,-record.Amount)
+	UpdateMemberConsumptionSum(user, -record.Amount)
 
 	return true
 }
@@ -216,7 +216,7 @@ func CreateReplyConsumption(user *auth.User, id int) bool {
 	record.Balance = balance + record.Amount
 	AddBalance(&record)
 	UpdateMemberBalance(user, record.Amount)
-    UpdateMemberConsumptionSum(user, -record.Amount)
+	UpdateMemberConsumptionSum(user, -record.Amount)
 
 	return true
 }

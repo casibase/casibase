@@ -1,4 +1,4 @@
-// Copyright 2020 The casbin Authors. All Rights Reserved.
+// Copyright 2022 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import { withRouter, Link } from "react-router-dom";
 import React from "react";
 import i18next from "i18next";
@@ -87,7 +88,6 @@ class RankingRichBox extends React.Component {
                         <a href={member.homepage}>{member.homepage}</a>{" "}
                       </span>
                       <div className="sep5"></div>
-                      {/* <span className="fade">第 n 名会员</span> */}
                     </td>
                     <td width="200" align="center">
                       <div>{this.renderRichBox(member.score)}</div>
