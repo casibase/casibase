@@ -62,7 +62,7 @@ class NewBox extends React.Component {
   }
 
   componentWillMount() {
-    document.title = i18next.t("new:New Topic");
+    document.title = `${Setting.getForumName()}-${i18next.t("new:New Topic")}`;
     this.getNodes();
     MemberBackend.getMemberEditorType().then((res) => {
       const editorType = res.data ? res.data : Conf.DefaultEditorType;
@@ -230,7 +230,7 @@ class NewBox extends React.Component {
   }
 
   updateTitle(nodeName) {
-    document.title = Setting.getForumName() + " - " + nodeName + " - " + i18next.t("new:Publish");
+    document.title = `${Setting.getForumName()}-${nodeName}-${i18next.t("new:New Topic")}`;
   }
 
   render() {

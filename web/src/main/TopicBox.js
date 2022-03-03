@@ -442,7 +442,7 @@ class TopicBox extends React.Component {
     const pcBrowser = Setting.PcBrowser;
 
     if (this.state.topic.title) {
-      document.title = Setting.getForumName() + " - " + this.state.topic.title;
+      document.title = `${Setting.getForumName()}-${this.state.topic.title}`;
     }
 
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {

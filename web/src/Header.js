@@ -423,7 +423,6 @@ class Header extends React.Component {
                 style={{
                   backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
                 }}
-                onClick={() => (document.title = Setting.getForumName())}
               />
             </Link>
             {this.renderSearch()}
