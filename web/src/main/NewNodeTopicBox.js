@@ -484,7 +484,7 @@ class NewNodeTopicBox extends React.Component {
   }
 
   render() {
-    if (this.state.nodeInfo.name) document.title = `${Setting.getForumName()} - ${this.state.nodeInfo.name}`;
+    if (this.state.nodeInfo.name) document.title = `${this.state.nodeInfo.name} - ${Setting.getForumName()}`;
     if (this.props.size === "small") {
       return this.renderSmallSize();
     } else {
