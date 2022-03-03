@@ -67,7 +67,6 @@ class NewNodeTopicBox extends React.Component {
   }
 
   componentWillMount() {
-    document.title = "new:New Topic";
     MemberBackend.getMemberEditorType().then((res) => {
       const editorType = res.data ? res.data : Conf.DefaultEditorType;
       this.updateFormField("editorType", editorType);
@@ -79,6 +78,7 @@ class NewNodeTopicBox extends React.Component {
 
   componentDidMount() {
     this.getNodeInfo();
+    document.title = Setting.getForumName();
   }
 
   updateFormField(key, value) {
@@ -484,6 +484,7 @@ class NewNodeTopicBox extends React.Component {
   }
 
   render() {
+    if (this.state.nodeInfo.name) document.title = Setting.getForumName() + " - " + this.state.nodeInfo.name;
     if (this.props.size === "small") {
       return this.renderSmallSize();
     } else {

@@ -64,7 +64,7 @@ class TopicBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = "Casnode";
+    document.title = Setting.getForumName();
     this.getTopic();
     this.getFavoriteStatus();
     TopicBackend.addTopicBrowseCount(this.state.topicId);
@@ -440,6 +440,11 @@ class TopicBox extends React.Component {
 
   render() {
     const pcBrowser = Setting.PcBrowser;
+
+    if (this.state.topic.title) {
+      document.title = Setting.getForumName() + " - " + this.state.topic.title;
+    }
+
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       if (!Conf.ShowLoadingIndicator) {
         return null;
@@ -577,7 +582,7 @@ class TopicBox extends React.Component {
         </div>
       );
     }
-    document.title = this.state.topic?.title;
+
     return (
       <div>
         <div className={`box ${this.state.topic.nodeId}`} style={{ borderBottom: "0px" }}>

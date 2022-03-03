@@ -229,6 +229,10 @@ class NewBox extends React.Component {
     );
   }
 
+  updateTitle(nodeName) {
+    document.title = Setting.getForumName() + " - " + nodeName + " - " + i18next.t("new:Publish");
+  }
+
   render() {
     if (this.state.nodeId !== undefined && this.props.account !== undefined) {
       return <NewNodeTopicBox nodeId={this.state.nodeId} size={"large"} account={this.props.account} refreshAccount={this.props.refreshAccount.bind(this)} />;
@@ -353,6 +357,7 @@ class NewBox extends React.Component {
                     onClick={() => {
                       this.updateFormField("nodeId", node.id);
                       this.updateFormField("nodeName", node.name);
+                      this.updateTitle(node.name);
                     }}
                     className="node"
                   >
