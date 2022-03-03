@@ -47,6 +47,7 @@ class RecentTopicsBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = i18next.t("topic:Recent Topics");
     this.getTopics();
   }
 

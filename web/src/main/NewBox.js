@@ -62,6 +62,7 @@ class NewBox extends React.Component {
   }
 
   componentWillMount() {
+    document.title = i18next.t("new:New Topic");
     this.getNodes();
     MemberBackend.getMemberEditorType().then((res) => {
       const editorType = res.data ? res.data : Conf.DefaultEditorType;

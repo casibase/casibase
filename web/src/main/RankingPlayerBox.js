@@ -28,6 +28,7 @@ class RankingPlayerBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = i18next.t("balance:Consumption ranking");
     MemberBackend.getRankingPlayerList().then((res) => {
       this.setState({
         playerList: res.data,
