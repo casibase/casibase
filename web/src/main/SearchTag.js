@@ -36,6 +36,7 @@ class SearchTag extends React.Component {
   }
 
   componentDidMount() {
+    document.title = i18next.t("topic:Search");
     TopicBackend.getTopicsWithTag(this.state.tagId, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res,

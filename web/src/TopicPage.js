@@ -48,6 +48,7 @@ class TopicPage extends React.Component {
     this.getNodeInfo();
     this.getTopics();
     this.getUnreadNotificationNum();
+    if (this.props.title.length) document.title = this.props.title;
   }
 
   getUnreadNotificationNum() {

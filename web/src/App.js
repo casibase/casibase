@@ -181,7 +181,7 @@ class App extends Component {
           {pcBrowser ? null : <div className="sep5" />}
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <TopicPage account={this.state.account} />
+            <TopicPage account={this.state.account} title={Setting.getForumName()} />
             {pcBrowser ? <div className="sep20" /> : <div className="sep5" />}
             <NodeNavigationBox />
           </div>

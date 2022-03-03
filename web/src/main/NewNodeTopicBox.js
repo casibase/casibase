@@ -78,6 +78,7 @@ class NewNodeTopicBox extends React.Component {
 
   componentDidMount() {
     this.getNodeInfo();
+    document.title = Setting.getForumName();
   }
 
   updateFormField(key, value) {
@@ -483,6 +484,7 @@ class NewNodeTopicBox extends React.Component {
   }
 
   render() {
+    if (this.state.nodeInfo.name) document.title = `${Setting.getForumName()} - ${this.state.nodeInfo.name}`;
     if (this.props.size === "small") {
       return this.renderSmallSize();
     } else {

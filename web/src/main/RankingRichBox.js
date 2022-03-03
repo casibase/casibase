@@ -29,6 +29,7 @@ class RankingRichBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = i18next.t("balance:Rich ranking");
     MemberBackend.getRankingRichList().then((res) => {
       this.setState({
         richList: res.data,

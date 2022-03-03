@@ -64,6 +64,7 @@ class TopicBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = Setting.getForumName();
     this.getTopic();
     this.getFavoriteStatus();
     TopicBackend.addTopicBrowseCount(this.state.topicId);
@@ -439,6 +440,10 @@ class TopicBox extends React.Component {
 
   render() {
     const pcBrowser = Setting.PcBrowser;
+
+    if (this.state.topic.title) {
+      document.title = `${Setting.getForumName()}-${this.state.topic.title}`;
+    }
 
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       if (!Conf.ShowLoadingIndicator) {
