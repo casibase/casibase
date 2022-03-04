@@ -52,6 +52,7 @@ class NotificationBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = `${i18next.t("notification:Reminder system")} - ${Setting.getForumName()}`;
     this.getNotifications();
   }
 

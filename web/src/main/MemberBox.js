@@ -334,6 +334,7 @@ class MemberBox extends React.Component {
   }
 
   render() {
+    if (this.state.member.name) document.title = `${this.state.member.name} ${i18next.t("general:Homepage")} - ${Setting.getForumName()}`;
     return (
       <span>
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}

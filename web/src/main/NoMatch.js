@@ -27,6 +27,7 @@ class NoMatch extends React.Component {
   }
 
   renderBox() {
+    document.title = `404 - ${Setting.getForumName()}`;
     return (
       <div>
         <div className="box">
