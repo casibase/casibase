@@ -50,6 +50,7 @@ class BalanceBox extends React.Component {
   }
 
   componentDidMount() {
+    document.title = `${i18next.t("balance:Account balance")} - ${Setting.getForumName()}`;
     this.getRecords();
   }
 

@@ -76,7 +76,7 @@ class AdminHomepage extends React.Component {
   }
 
   componentDidMount() {
-    //
+    document.title = `${i18next.t("general:Admin")} - ${Setting.getForumName()}`;
   }
 
   renderManageItemInternal(item) {
