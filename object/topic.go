@@ -27,11 +27,11 @@ import (
 
 type Topic struct {
 	Id              int      `xorm:"int notnull pk autoincr" json:"id"`
-	Author          string   `xorm:"varchar(100) index" json:"author"`
+	Author          string   `xorm:"varchar(100) index index(IDX_topic_ath_ttl)" json:"author"`
 	NodeId          string   `xorm:"varchar(100) index" json:"nodeId"`
 	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
 	TabId           string   `xorm:"varchar(100) index" json:"tabId"`
-	Title           string   `xorm:"varchar(1000)" json:"title"`
+	Title           string   `xorm:"varchar(1000) index(IDX_topic_ath_ttl)" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
 	Tags            []string `xorm:"varchar(200)" json:"tags"`
 	ReplyCount      int      `json:"replyCount"`
