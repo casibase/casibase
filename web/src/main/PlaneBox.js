@@ -32,6 +32,7 @@ class PlaneBox extends React.Component {
   componentDidMount() {
     this.getPlaneList();
     this.getNodesNum();
+    document.title = `${i18next.t("plane:Plane list")} - ${Setting.getForumName()}`;
   }
 
   getPlaneList() {

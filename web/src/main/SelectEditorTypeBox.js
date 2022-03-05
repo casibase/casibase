@@ -26,6 +26,8 @@ class SelectLanguageBox extends React.Component {
   }
 
   render() {
+    document.title = `${i18next.t("footer:Select Editor")} - ${Setting.getForumName()}`;
+
     return (
       <div align="center">
         <div className="box" style={{ width: Setting.PcBrowser ? "600px" : "auto" }}>

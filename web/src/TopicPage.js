@@ -221,6 +221,8 @@ class TopicPage extends React.Component {
       topType = "tab";
     }
 
+    if (this.state.tabInfo) document.title = `${this.state.tabInfo.name} - ${Setting.getForumName()}`;
+
     return (
       <div className="box">
         {Setting.PcBrowser ? null : this.renderAccountInfo()}

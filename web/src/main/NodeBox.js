@@ -64,6 +64,7 @@ class NodeBox extends React.Component {
     this.getNodeInfo();
     //this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
+    document.title = Setting.getForumName();
   }
 
   componentWillReceiveProps(newProps) {
@@ -447,6 +448,8 @@ class NodeBox extends React.Component {
 
   render() {
     const pcBrowser = Setting.PcBrowser;
+
+    if (this.state.nodeInfo.name) document.title = `${this.state.nodeInfo.name} - ${Setting.getForumName()}`;
 
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       if (!Conf.ShowLoadingIndicator) {
