@@ -32,6 +32,7 @@
     "react-dropzone": "^11.0.2",
     "react-github-corner": "^2.3.0",
     "react-i18next": "^11.7.0",
+    "react-image-zooom": "^1.0.4",
     "react-lazyload": "^3.2.0",
     "react-markdown": "^4.3.1",
     "react-router-dom": "^5.2.0",

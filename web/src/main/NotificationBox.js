@@ -19,7 +19,7 @@ import PageColumn from "./PageColumn";
 import Avatar from "../Avatar";
 import "../Notification.css";
 import { withRouter, Link } from "react-router-dom";
-import Zmage from "react-zmage";
+import ImageZoom from "react-image-zooom";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 
@@ -121,7 +121,7 @@ class NotificationBox extends React.Component {
   }
 
   renderImage = ({ alt, src }) => {
-    return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
+    return <ImageZoom src={src} alt={alt} zoom="250" style={{ maxWidth: "100%" }} />;
   };
 
   renderLink = (props) => {

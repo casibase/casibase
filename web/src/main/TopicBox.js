@@ -23,11 +23,11 @@ import * as FavoritesBackend from "../backend/FavoritesBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import * as TranslatorBackend from "../backend/TranslatorBackend";
 import "../node.css";
-import Zmage from "react-zmage";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
 import UserLink from "../UserLink";
 import * as Conf from "../Conf";
+import ImageZoom from "react-image-zooom";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -305,7 +305,7 @@ class TopicBox extends React.Component {
   }
 
   renderImage = ({ alt, src }) => {
-    return <Zmage src={src} alt={alt} />;
+    return <ImageZoom src={src} alt={alt} zoom="250" />;
   };
 
   renderLink = (props) => {

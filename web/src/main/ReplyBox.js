@@ -22,7 +22,7 @@ import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import PageColumn from "./PageColumn";
 import ReactMarkdown from "react-markdown";
-import Zmage from "react-zmage";
+import ImageZoom from "react-image-zooom";
 import i18next from "i18next";
 import UserLink from "../UserLink";
 
@@ -276,7 +276,7 @@ class ReplyBox extends React.Component {
   }
 
   renderImage = ({ alt, src }) => {
-    return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
+    return <ImageZoom src={src} alt={alt} zoom="250" style={{ maxWidth: "100%" }} />;
   };
 
   renderLink = (props) => {

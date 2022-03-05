@@ -19,7 +19,7 @@ import * as Setting from "../Setting";
 import PageColumn from "../main/PageColumn";
 import Collapse, { Panel } from "rc-collapse";
 import ReactMarkdown from "react-markdown";
-import Zmage from "react-zmage";
+import ImageZoom from "react-image-zooom";
 import i18next from "i18next";
 import * as Conf from "../Conf";
 
@@ -170,7 +170,7 @@ class AdminTopic extends React.Component {
   }
 
   renderImage = ({ alt, src }) => {
-    return <Zmage src={src} alt={alt} />;
+    return <ImageZoom src={src} alt={alt} zoom="250" />;
   };
 
   renderLink = (props) => {
