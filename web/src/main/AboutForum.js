@@ -29,7 +29,7 @@ class AboutForum extends React.Component {
   }
 
   componentDidMount() {
-    document.title = i18next.t("about:Introduction-content");
+    document.title = `${i18next.t("about:About")} - ${Setting.getForumName()}`;
     this.getForumVersion();
   }
 
