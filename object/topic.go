@@ -31,7 +31,7 @@ type Topic struct {
 	NodeId          string   `xorm:"varchar(100) index" json:"nodeId"`
 	NodeName        string   `xorm:"varchar(100)" json:"nodeName"`
 	TabId           string   `xorm:"varchar(100) index" json:"tabId"`
-	Title           string   `xorm:"varchar(1000)" json:"title"`
+	Title           string   `xorm:"varchar(1000) index" json:"title"`
 	CreatedTime     string   `xorm:"varchar(40)" json:"createdTime"`
 	Tags            []string `xorm:"varchar(200)" json:"tags"`
 	ReplyCount      int      `json:"replyCount"`
@@ -64,7 +64,7 @@ func GetTopicCount() int {
 }
 
 func GetTopicNum() int {
-    count, err := adapter.Engine.Where("deleted = ? and is_hidden = ?", 0, 0).Count(&Topic{})
+	count, err := adapter.Engine.Where("deleted = ? and is_hidden = ?", 0, 0).Count(&Topic{})
 	if err != nil {
 		panic(err)
 	}
@@ -74,7 +74,7 @@ func GetTopicNum() int {
 
 func GetCreatedTopicsNum(memberId string) int {
 	topic := new(Topic)
-    total, err := adapter.Engine.Where("author = ? and deleted = ? and is_hidden = ?", memberId, 0, 0).Count(topic)
+	total, err := adapter.Engine.Where("author = ? and deleted = ? and is_hidden = ?", memberId, 0, 0).Count(topic)
 	if err != nil {
 		panic(err)
 	}
