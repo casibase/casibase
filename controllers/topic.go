@@ -252,6 +252,7 @@ func (c *ApiController) AddTopic() {
 	topics := object.GetTopicsByTitleAndAuthor(topic.Title, topic.Author)
 	if len(topics) != 0 {
 		c.ResponseError("Duplicate topic")
+		return;
 	}
 	res, id := object.AddTopic(&topic)
 	if res {
