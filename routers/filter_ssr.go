@@ -72,7 +72,7 @@ func RenderPage(urlString string) string {
 	var res string
 	err := chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
-		chromedp.Sleep(3 * time.Second),
+		chromedp.Sleep(3*time.Second),
 		chromedp.OuterHTML("html", &res),
 	)
 	if err != nil {
@@ -85,7 +85,7 @@ var botRegex *regexp.Regexp
 
 func isBot(userAgent string) bool {
 	if botRegex == nil {
-		botRegex, _ = regexp.Compile("bot|slurp|bing|crawler")
+		botRegex, _ = regexp.Compile("bot|slurp|bing|crawler|spider")
 	}
 	userAgent = strings.ToLower(userAgent)
 	return botRegex.MatchString(userAgent)
