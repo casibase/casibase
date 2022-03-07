@@ -144,7 +144,6 @@ func RenderPage(urlString string) string {
 	if !isChromeInit {
 		InitChromeDp()
 	}
-
 	if !isChromeInstalled {
 		return "Chrome is not installed in your server"
 	}
