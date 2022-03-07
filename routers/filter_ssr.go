@@ -181,13 +181,5 @@ func BotFilter(ctx *context.Context) {
 		if err != nil {
 			panic(err)
 		}
-		KillChrome()
-	}
-}
-
-func KillChrome() {
-	if isChromeInit {
-		chromedp.Cancel(chromeCtx)
-		isChromeInit = false
 	}
 }
