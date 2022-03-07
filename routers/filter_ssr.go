@@ -178,10 +178,10 @@ func BotFilter(ctx *context.Context) {
 		ctx.ResponseWriter.WriteHeader(200)
 		urlStr := fmt.Sprintf("http://%s%s", ctx.Request.Host, ctx.Request.URL.Path)
 		_, err := ctx.ResponseWriter.Write([]byte(RenderPage(urlStr)))
-		KillChrome()
 		if err != nil {
 			panic(err)
 		}
+		KillChrome()
 	}
 }
 
