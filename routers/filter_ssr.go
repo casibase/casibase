@@ -102,7 +102,7 @@ func cacheRestore(md5urlString string) (string, bool) {
 			return string(fileBytes), true
 		}
 	}
-	return md5urlString, false
+	return "", false
 }
 
 func url2md5(urlString string) string {
