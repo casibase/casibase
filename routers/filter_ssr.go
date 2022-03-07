@@ -80,7 +80,7 @@ func cacheSave(md5urlString string, res string) {
 
 func cacheRestore(md5urlString string) (string, bool) {
 	if renderCache[md5urlString] > 0 {
-		// cache is valid in 1 minutes
+		// cache is valid in `cacheExpirationTime` Seconds
 		if time.Now().Unix()-renderCache[md5urlString] < cacheExpirationTime {
 			file, err := os.Open(fmt.Sprint(renderCachePath, md5urlString))
 			if err != nil {
