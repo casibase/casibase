@@ -19,6 +19,7 @@ import (
 var chromeCtx ctx.Context
 var isChromeInstalled bool
 var isChromeInit bool
+var isCacheSettingsInit bool
 var renderCache = make(map[string]int64) //map[string: md5 of url][int64: created time of cache]
 var renderCachePath string               //in App.conf
 var cacheExpirationTime int64
@@ -113,6 +114,7 @@ func url2md5(urlString string) string {
 }
 
 func initCacheSettings() {
+	isCacheSettingsInit = true
 	// get the cache path from beego app.conf
 	renderCachePath = beego.AppConfig.String("cachePath")
 	// if the cache path is not exist, create it
@@ -135,7 +137,9 @@ func initCacheSettings() {
 }
 
 func RenderPage(urlString string) string {
-	initCacheSettings()
+	if !isCacheSettingsInit {
+		initCacheSettings()
+	}
 	md5urlString := url2md5(urlString)
 	res, cacheHit := cacheRestore(md5urlString)
 	if cacheHit {
