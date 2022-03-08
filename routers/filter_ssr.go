@@ -119,9 +119,7 @@ func RenderPage(urlString string) string {
 	}
 	err := chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
-		//chromedp.Sleep(3*time.Second),
-		//chromedp.OuterHTML("html", &res),
-		chromedp.Text("html", &res),
+		chromedp.OuterHTML("html", &res),
 	)
 	if err != nil {
 		panic(err)
