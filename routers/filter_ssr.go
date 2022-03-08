@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/chromedp/chromedp"
 )
@@ -17,6 +18,13 @@ import (
 var chromeCtx ctx.Context
 var isChromeInstalled bool
 var isChromeInit bool
+
+type PageCache struct {
+	time time.Time
+	html string
+}
+
+var renderCache = make(map[string]PageCache)
 
 // modified from https://github.com/chromedp/chromedp/blob/master/allocate.go#L331
 func isChromeFound() bool {
@@ -62,22 +70,42 @@ func InitChromeDp() {
 	}
 }
 
+func cacheSave(urlString string, res string) {
+	renderCache[urlString] = PageCache{time.Now(), res}
+}
+
+func cacheRestore(urlString string, cacheExpireSeconds int64) (string, bool) {
+	if _, ok := renderCache[urlString]; ok {
+		if time.Now().Sub(renderCache[urlString].time) < time.Duration(cacheExpireSeconds)*time.Second {
+			return renderCache[urlString].html, true
+		}
+	}
+	return "", false
+}
+
 func RenderPage(urlString string) string {
+	cacheExpireSeconds, err := beego.AppConfig.Int64("cacheExpireSeconds")
+	if err != nil {
+		panic(err)
+	}
+	res, cacheHit := cacheRestore(urlString, cacheExpireSeconds)
+	if cacheHit {
+		return res //cache of urlString
+	}
 	if !isChromeInit {
 		InitChromeDp()
 	}
 	if !isChromeInstalled {
 		return "Chrome is not installed in your server"
 	}
-	var res string
-	err := chromedp.Run(chromeCtx,
+	err = chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
-		chromedp.Sleep(3*time.Second),
 		chromedp.OuterHTML("html", &res),
 	)
 	if err != nil {
 		panic(err)
 	}
+	cacheSave(urlString, res)
 	return res
 }
 
