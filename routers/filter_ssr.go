@@ -19,10 +19,15 @@ import (
 var chromeCtx ctx.Context
 var isChromeInstalled bool
 var isChromeInit bool
+
+type SSRCache struct {
+	time time.Time
+	html string
+}
+
 var isCacheSettingsInit bool
-var renderCache = make(map[string]int64) //map[string: md5 of url][int64: created time of cache]
-var renderCachePath string               //in App.conf
-var cacheExpirationTime int64
+var renderCache = make(map[string]SSRCache) //map[string: md5 of url][string: html cache] //in App.conf
+var cacheExpirationTime int64               // default is 60 seconds
 
 // modified from https://github.com/chromedp/chromedp/blob/master/allocate.go#L331
 func isChromeFound() bool {
@@ -69,38 +74,14 @@ func InitChromeDp() {
 }
 
 func cacheSave(md5urlString string, res string) {
-	renderCache[md5urlString] = time.Now().Unix()
-	f, err := os.Create(fmt.Sprint(renderCachePath, md5urlString))
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	f.WriteString(res)
-	f.Sync()
+	renderCache[md5urlString] = SSRCache{time.Now(), res}
 }
 
 func cacheRestore(md5urlString string) (string, bool) {
-	if renderCache[md5urlString] > 0 {
-		// cache is valid in `cacheExpirationTime` Seconds
-		if time.Now().Unix()-renderCache[md5urlString] < cacheExpirationTime {
-			file, err := os.Open(fmt.Sprint(renderCachePath, md5urlString))
-			if err != nil {
-				return md5urlString, false
-			}
-			defer file.Close()
-			//read the file
-			fileInfo, err := file.Stat()
-			if err != nil {
-				panic(err)
-			}
-			fileSize := fileInfo.Size()
-			fileBytes := make([]byte, fileSize)
-			_, err = file.Read(fileBytes)
-			if err != nil {
-				panic(err)
-			}
-			//return the fileBytes
-			return string(fileBytes), true
+	if _, ok := renderCache[md5urlString]; ok {
+		fmt.Printf("%d %d\n", time.Now().Sub(renderCache[md5urlString].time), time.Duration(cacheExpirationTime)*time.Second)
+		if time.Now().Sub(renderCache[md5urlString].time) < time.Duration(cacheExpirationTime)*time.Second {
+			return renderCache[md5urlString].html, true
 		}
 	}
 	return "", false
@@ -115,20 +96,6 @@ func url2md5(urlString string) string {
 
 func initCacheSettings() {
 	isCacheSettingsInit = true
-	// get the cache path from beego app.conf
-	renderCachePath = beego.AppConfig.String("cachePath")
-	// if the cache path is not exist, create it
-	if _, err := os.Stat(renderCachePath); os.IsNotExist(err) {
-		err = os.Mkdir(renderCachePath, os.ModePerm)
-		if err != nil {
-			panic(err)
-		}
-	}
-	// if the last char is not '/', add it
-	if renderCachePath[len(renderCachePath)-1] != '/' {
-		renderCachePath = renderCachePath + "/"
-	}
-	//get the cache expiration time from beego app.conf
 	var err error
 	cacheExpirationTime, err = beego.AppConfig.Int64("cacheExpirationTime")
 	if err != nil {
@@ -153,7 +120,7 @@ func RenderPage(urlString string) string {
 	}
 	err := chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
-		chromedp.Sleep(3*time.Second),
+		//chromedp.Sleep(3*time.Second),
 		chromedp.OuterHTML("html", &res),
 	)
 	if err != nil {
