@@ -2,9 +2,7 @@ package routers
 
 import (
 	ctx "context"
-	"crypto/md5"
 	"fmt"
-	"github.com/astaxie/beego"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -12,6 +10,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/chromedp/chromedp"
 )
@@ -20,14 +19,12 @@ var chromeCtx ctx.Context
 var isChromeInstalled bool
 var isChromeInit bool
 
-type SSRCache struct {
+type PageCache struct {
 	time time.Time
 	html string
 }
 
-var isCacheSettingsInit bool
-var renderCache = make(map[string]SSRCache) //map[string: md5 of url][string: html cache] //in App.conf
-var cacheExpirationTime int64               // default is 60 seconds
+var renderCache = make(map[string]PageCache)
 
 // modified from https://github.com/chromedp/chromedp/blob/master/allocate.go#L331
 func isChromeFound() bool {
@@ -73,41 +70,25 @@ func InitChromeDp() {
 	}
 }
 
-func cacheSave(md5urlString string, res string) {
-	renderCache[md5urlString] = SSRCache{time.Now(), res}
+func cacheSave(urlString string, res string) {
+	renderCache[urlString] = PageCache{time.Now(), res}
 }
 
-func cacheRestore(md5urlString string) (string, bool) {
-	if _, ok := renderCache[md5urlString]; ok {
-		if time.Now().Sub(renderCache[md5urlString].time) < time.Duration(cacheExpirationTime)*time.Second {
-			return renderCache[md5urlString].html, true
+func cacheRestore(urlString string, cacheExpireSeconds int64) (string, bool) {
+	if _, ok := renderCache[urlString]; ok {
+		if time.Now().Sub(renderCache[urlString].time) < time.Duration(cacheExpireSeconds)*time.Second {
+			return renderCache[urlString].html, true
 		}
 	}
 	return "", false
 }
 
-func url2md5(urlString string) string {
-	md5url := md5.New()
-	md5url.Write([]byte(urlString))
-	md5urlString := fmt.Sprintf("%x", md5url.Sum(nil))
-	return md5urlString
-}
-
-func initCacheSettings() {
-	isCacheSettingsInit = true
-	var err error
-	cacheExpirationTime, err = beego.AppConfig.Int64("cacheExpirationTime")
+func RenderPage(urlString string) string {
+	cacheExpireSeconds, err := beego.AppConfig.Int64("cacheExpireSeconds")
 	if err != nil {
 		panic(err)
 	}
-}
-
-func RenderPage(urlString string) string {
-	if !isCacheSettingsInit {
-		initCacheSettings()
-	}
-	md5urlString := url2md5(urlString)
-	res, cacheHit := cacheRestore(md5urlString)
+	res, cacheHit := cacheRestore(urlString, cacheExpireSeconds)
 	if cacheHit {
 		return res //cache of urlString
 	}
@@ -117,14 +98,14 @@ func RenderPage(urlString string) string {
 	if !isChromeInstalled {
 		return "Chrome is not installed in your server"
 	}
-	err := chromedp.Run(chromeCtx,
+	err = chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
 		chromedp.OuterHTML("html", &res),
 	)
 	if err != nil {
 		panic(err)
 	}
-	cacheSave(md5urlString, res)
+	cacheSave(urlString, res)
 	return res
 }
 
