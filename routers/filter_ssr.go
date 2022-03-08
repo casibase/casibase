@@ -79,7 +79,6 @@ func cacheSave(md5urlString string, res string) {
 
 func cacheRestore(md5urlString string) (string, bool) {
 	if _, ok := renderCache[md5urlString]; ok {
-		fmt.Printf("%d %d\n", time.Now().Sub(renderCache[md5urlString].time), time.Duration(cacheExpirationTime)*time.Second)
 		if time.Now().Sub(renderCache[md5urlString].time) < time.Duration(cacheExpirationTime)*time.Second {
 			return renderCache[md5urlString].html, true
 		}
