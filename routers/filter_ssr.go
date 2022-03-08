@@ -98,7 +98,7 @@ func initCacheSettings() {
 	var err error
 	cacheExpirationTime, err = beego.AppConfig.Int64("cacheExpirationTime")
 	if err != nil {
-		cacheExpirationTime = 60
+		panic(err)
 	}
 }
 
@@ -120,7 +120,8 @@ func RenderPage(urlString string) string {
 	err := chromedp.Run(chromeCtx,
 		chromedp.Navigate(urlString),
 		//chromedp.Sleep(3*time.Second),
-		chromedp.OuterHTML("html", &res),
+		//chromedp.OuterHTML("html", &res),
+		chromedp.Text("html", &res),
 	)
 	if err != nil {
 		panic(err)
