@@ -15,6 +15,7 @@
 package object
 
 import (
+	"context"
 	"fmt"
 	"runtime"
 
@@ -99,6 +100,11 @@ func (a *Adapter) open() {
 	}
 
 	Engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.dbName)
+	if err != nil {
+		panic(err)
+	}
+
+	err = Engine.PingContext(context.Background())
 	if err != nil {
 		panic(err)
 	}

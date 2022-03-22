@@ -15,6 +15,7 @@
 package casdoor
 
 import (
+	"context"
 	"runtime"
 
 	"github.com/astaxie/beego"
@@ -76,6 +77,11 @@ func NewAdapter(driverName string, dataSourceName string, dbName string) *Adapte
 
 func (a *Adapter) open() {
 	Engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.dbName)
+	if err != nil {
+		panic(err)
+	}
+
+	err = Engine.PingContext(context.Background())
 	if err != nil {
 		panic(err)
 	}
