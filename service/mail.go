@@ -22,17 +22,17 @@ import (
 )
 
 // SendRemindMail sends mail with remind information.
-func SendRemindMail(sender string, title string, content string, topicId string, receiver string, domain string) error {
+func SendRemindMail(fromName string, title string, content string, topicId string, sender string, receiver string, domain string) error {
 	title = fmt.Sprintf("Re: [%s] %s", sender, title)
 
 	content = content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-
 <br>
 You are receiving this because you are subscribed to this thread.
 <br> Reply to this email directly, 
-<a href="https://` + domain + "/t/" + topicId + `">view it on ` + sender + `</a>` + `
+<a href="https://` + domain + "/t/" + topicId + `">view it on ` + fromName + `</a>` + `
 , or <a href="https://` + domain + `/settings/forum">unsubscribe` + `</a>`
 
-	return SendEmail(title, content, sender, receiver)
+	return SendEmail(title, content, fromName, receiver)
 }
 
 func SendEmail(title string, content string, sender string, receivers ...string) error {

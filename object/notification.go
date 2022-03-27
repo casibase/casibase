@@ -210,7 +210,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		reminder, email := GetMemberEmailReminder(receiverId)
 		if email != "" && reminder {
 			topicIdStr := util.IntToString(topicId)
-			err := sendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
+			err := sendRemindMail(topicInfo.Title, content, topicIdStr, senderId, email, Domain)
 			if err != nil {
 				panic(err)
 			}
@@ -236,7 +236,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 			reminder, email := GetMemberEmailReminder(receiverId)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(topicId)
-				err := sendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
+				err := sendRemindMail(topicInfo.Title, content, topicIdStr, senderId, email, Domain)
 				if err != nil {
 					panic(err)
 				}
@@ -285,7 +285,7 @@ func AddTopicNotification(objectId int, author, content string) {
 			reminder, email := GetMemberEmailReminder(k)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(objectId)
-				err := sendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
+				err := sendRemindMail(GetTopicTitle(objectId), content, topicIdStr, author, email, Domain)
 				if err != nil {
 					panic(err)
 				}
@@ -295,15 +295,15 @@ func AddTopicNotification(objectId int, author, content string) {
 	wg.Wait()
 }
 
-func sendRemindMail(title string, content string, topicId string, receiver string, domain string) error {
-	sender := ""
+func sendRemindMail(title string, content string, topicId string, sender string, receiver string, domain string) error {
+	fromName := ""
 	conf := GetFrontConfById("forumName")
 	if conf != nil {
-		sender = conf.Value
+		fromName = conf.Value
 	}
-	if sender == "" {
-		sender = beego.AppConfig.String("appname")
+	if fromName == "" {
+		fromName = beego.AppConfig.String("appname")
 	}
 
-	return service.SendRemindMail(sender, title, content, topicId, receiver, domain)
+	return service.SendRemindMail(fromName, title, content, topicId, sender, receiver, domain)
 }
