@@ -18,7 +18,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
 	"time"
 
@@ -238,29 +237,4 @@ func (c *ApiController) ModeratorUpload() {
 
 	c.ResponseOk(fileUrl + timeStamp)
 	//resp := Response{Status: "ok", Msg: fileName, Data: fileUrl + timeStamp}
-}
-
-// @Title UploadAvatar
-// @Tag File API 
-// @router /upload-avatar [post]
-func (c *ApiController) UploadAvatar() {
-	if c.RequireSignedIn() {
-		return
-	}
-
-	memberId := c.GetSessionUsername()
-	avatarBase64 := c.Ctx.Request.Form.Get("avatar")
-	index := strings.Index(avatarBase64, ",")
-	if index < 0 || (avatarBase64[0:index] != "data:image/png;base64" && avatarBase64[0:index] != "data:image/jpeg;base64") {
-		resp := Response{Status: "error", Msg: "File encoding or type error"}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
-	fileBytes, _ := base64.StdEncoding.DecodeString(avatarBase64[index+1:])
-	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileUrl, _ := service.UploadFileToStorage(memberId, "avatar", "UploadAvatar", fmt.Sprintf("casnode/avatar/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
-	resp := Response{Status: "ok", Data: fileUrl}
-	c.Data["json"] = resp
-	c.ServeJSON()
 }
