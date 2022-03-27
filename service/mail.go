@@ -18,14 +18,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
 // SendRemindMail sends mail with remind information.
-func SendRemindMail(title string, content string, topicId string, receiver string, domain string) error {
-	sender := beego.AppConfig.String("appname")
-
+func SendRemindMail(sender string, title string, content string, topicId string, receiver string, domain string) error {
 	title = fmt.Sprintf("Re: [%s] %s", sender, title)
 
 	content = content + `<p style="font-size:small;-webkit-text-size-adjust:none;color:#666;">-

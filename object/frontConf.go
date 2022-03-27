@@ -57,6 +57,20 @@ func GetFrontConfByField(field string) []*FrontConf {
 	return confs
 }
 
+func GetFrontConfById(id string) *FrontConf {
+	confs := []*FrontConf{}
+	err := adapter.Engine.Where("id = ?", id).Find(&confs)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(confs) == 0 {
+		return nil
+	} else {
+		return confs[0]
+	}
+}
+
 func GetFrontConfs() []*FrontConf {
 	confs := []*FrontConf{}
 	err := adapter.Engine.Find(&confs)

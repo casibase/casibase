@@ -18,6 +18,7 @@ import (
 	"regexp"
 	"sync"
 
+	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 )
@@ -209,7 +210,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		reminder, email := GetMemberEmailReminder(receiverId)
 		if email != "" && reminder {
 			topicIdStr := util.IntToString(topicId)
-			err := service.SendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
+			err := sendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
 			if err != nil {
 				panic(err)
 			}
@@ -235,7 +236,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 			reminder, email := GetMemberEmailReminder(receiverId)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(topicId)
-				err := service.SendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
+				err := sendRemindMail(topicInfo.Title, content, topicIdStr, email, Domain)
 				if err != nil {
 					panic(err)
 				}
@@ -284,7 +285,7 @@ func AddTopicNotification(objectId int, author, content string) {
 			reminder, email := GetMemberEmailReminder(k)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(objectId)
-				err := service.SendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
+				err := sendRemindMail(GetTopicTitle(objectId), content, topicIdStr, email, Domain)
 				if err != nil {
 					panic(err)
 				}
@@ -292,4 +293,17 @@ func AddTopicNotification(objectId int, author, content string) {
 		}()
 	}
 	wg.Wait()
+}
+
+func sendRemindMail(title string, content string, topicId string, receiver string, domain string) error {
+	sender := ""
+	conf := GetFrontConfById("forumName")
+	if conf != nil {
+		sender = conf.Value
+	}
+	if sender == "" {
+		sender = beego.AppConfig.String("appname")
+	}
+
+	return service.SendRemindMail(sender, title, content, topicId, receiver, domain)
 }
