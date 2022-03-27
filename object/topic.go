@@ -494,6 +494,11 @@ func DeleteTopicHard(id int) bool {
 }
 
 func DeleteTopic(id int) bool {
+	t := GetTopic(id)
+	if strings.HasPrefix(t.Content, "URL: ") {
+		return DeleteTopicHard(id)
+	}
+
 	topic := new(Topic)
 	topic.Deleted = true
 	affected, err := adapter.Engine.Id(id).Cols("deleted").Update(topic)
