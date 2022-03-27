@@ -23,13 +23,14 @@ export default class Embed extends React.Component {
     const params = new URLSearchParams(window.location.search);
     this.state = {
       nodeId: params.get("nodeId"),
+      author: params.get("author"),
       encodedUrlPath: params.get("urlPath"),
       title: params.get("title"),
       topic: null,
     };
 
     if (this.state.nodeId !== null && this.state.encodedUrlPath !== null && this.state.title !== null) {
-      TopicBackend.getTopicByUrlPathAndTitle(this.state.nodeId, this.state.encodedUrlPath, this.state.title).then((res) => {
+      TopicBackend.getTopicByUrlPathAndTitle(this.state.nodeId, this.state.encodedUrlPath, this.state.title, this.state.author).then((res) => {
         if (res.status === "ok") {
           this.setState({
             topic: res.data,

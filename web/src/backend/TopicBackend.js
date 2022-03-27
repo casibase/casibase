@@ -171,8 +171,8 @@ export function translateTopic(id, target, content) {
   }).then((res) => res.json());
 }
 
-export function getTopicByUrlPathAndTitle(nodeId, url, title) {
-  return fetch(`${Setting.ServerUrl}/api/get-topic-by-urlpath-and-title?urlPath=${url}&title=${title}&nodeId=${nodeId}`, {
+export function getTopicByUrlPathAndTitle(nodeId, url, title, author) {
+  return fetch(`${Setting.ServerUrl}/api/get-topic-by-urlpath-and-title?urlPath=${url}&title=${title}&author=${author}&nodeId=${nodeId}`, {
     method: "GET",
     credentials: "include",
   }).then((res) => res.json());

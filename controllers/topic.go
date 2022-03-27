@@ -812,22 +812,34 @@ func (c *ApiController) CancelTopTopic() {
 func (c *ApiController) GetTopicByUrlPathAndTitle() {
 	urlPath := c.Input().Get("urlPath")
 	title := c.Input().Get("title")
+	author := c.Input().Get("author")
 	nodeId := c.Input().Get("nodeId")
 
-	if urlPath == "" || title == "" {
-		c.ResponseError("Miss urlPath or title")
+	if urlPath == "" {
+		c.ResponseError(fmt.Sprintf("The urlPath: %s does not exist", urlPath))
 		return
 	}
+
+	if title == "" {
+		c.ResponseError(fmt.Sprintf("The title: %s does not exist", title))
+		return
+	}
+
+	if author == "" {
+		c.ResponseError(fmt.Sprintf("The author: %s does not exist", author))
+		return
+	}
+
 	node := object.GetNode(nodeId)
-	if node == nil {
-		c.ResponseError("Node not exists.")
+	if nodeId == "" || node == nil {
+		c.ResponseError(fmt.Sprintf("The node: %s does not exist", nodeId))
 		return
 	}
 
 	topic := object.GetTopicByUrlPathAndTitle(urlPath, title, nodeId)
 	if topic == nil {
 		topic = &object.Topic{
-			Author:        "EmbedBot",
+			Author:        author,
 			NodeId:        nodeId,
 			NodeName:      node.Name,
 			TabId:         node.TabId,

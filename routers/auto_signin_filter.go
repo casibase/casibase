@@ -39,6 +39,7 @@ func AutoSigninFilter(ctx *context.Context) {
 			return
 		}
 
+		claims.AccessToken = accessToken
 		setSessionClaims(ctx, claims)
 	}
 }
