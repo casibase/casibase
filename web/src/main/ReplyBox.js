@@ -419,7 +419,7 @@ class ReplyBox extends React.Component {
           <span className="gray">
             {this.state.repliesNum} {i18next.t("reply:replies")} &nbsp;
             <strong className="snow">•</strong>
-            &nbsp;{this.state.latestReplyTime}
+            &nbsp;{Setting.getFormattedDate(this.state.latestReplyTime)}
           </span>
         </div>
         {Setting.PcBrowser ? this.showPageColumn() : null}
