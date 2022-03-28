@@ -49,7 +49,7 @@ func (c *ApiController) GetSessionClaims() *auth.Claims {
 
 func (c *ApiController) SetSessionClaims(claims *auth.Claims) {
 	if claims == nil {
-		//c.DelSession("user")
+		c.DelSession("user")
 		return
 	}
 
