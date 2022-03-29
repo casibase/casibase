@@ -218,22 +218,21 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 	}
 
 	delete(memberMap, receiverId)
-	for k, _ := range memberMap {
+	for receiverId2, _ := range memberMap {
 		wg.Add(1)
-		k := k
-		go func() {
+		go func(receiverId2 string) {
 			defer wg.Done()
 			notification := Notification{
 				NotificationType: 2,
 				ObjectId:         objectId,
 				CreatedTime:      util.GetCurrentTime(),
 				SenderId:         senderId,
-				ReceiverId:       k,
+				ReceiverId:       receiverId2,
 				Status:           1,
 			}
 			_ = AddNotification(&notification)
 			// send remind email
-			reminder, email := GetMemberEmailReminder(receiverId)
+			reminder, email := GetMemberEmailReminder(receiverId2)
 			if email != "" && reminder {
 				topicIdStr := util.IntToString(topicId)
 				err := sendRemindMail(topicInfo.Title, content, topicIdStr, senderId, email, Domain)
@@ -241,7 +240,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 					panic(err)
 				}
 			}
-		}()
+		}(receiverId2)
 	}
 	wg.Wait()
 }
