@@ -1,0 +1,32 @@
+{
+  "account": {
+    "My Account": "我的账户",
+    "Sign In": "登录",
+    "Sign Out": "登出",
+    "Sign Up": "注册"
+  },
+  "dataset": {
+    "Address": "Address",
+    "Carousels": "Carousels",
+    "Default item": "Default item",
+    "Edit Dataset": "Edit Dataset",
+    "End date": "End date",
+    "Full name": "Full name",
+    "Introduction text": "Introduction text",
+    "Language": "Language",
+    "Location": "Location",
+    "Organizer": "Organizer",
+    "Start date": "Start date"
+  },
+  "general": {
+    "Action": "操作",
+    "Add": "添加",
+    "Datasets": "数据集",
+    "Delete": "删除",
+    "Edit": "编辑",
+    "Home": "首页",
+    "Name": "名称",
+    "Save": "保存",
+    "Status": "状态"
+  }
+}

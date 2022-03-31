@@ -1,0 +1,32 @@
+{
+  "account": {
+    "My Account": "My Account",
+    "Sign In": "Sign In",
+    "Sign Out": "Sign Out",
+    "Sign Up": "Sign Up"
+  },
+  "dataset": {
+    "Address": "Address",
+    "Carousels": "Carousels",
+    "Default item": "Default item",
+    "Edit Dataset": "Edit Dataset",
+    "End date": "End date",
+    "Full name": "Full name",
+    "Introduction text": "Introduction text",
+    "Language": "Language",
+    "Location": "Location",
+    "Organizer": "Organizer",
+    "Start date": "Start date"
+  },
+  "general": {
+    "Action": "Action",
+    "Add": "Add",
+    "Datasets": "Datasets",
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "Home": "Home",
+    "Name": "Name",
+    "Save": "Save",
+    "Status": "Status"
+  }
+}
