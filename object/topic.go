@@ -40,6 +40,7 @@ type Topic struct {
 	HitCount        int      `json:"hitCount"`
 	Hot             int      `xorm:"index" json:"hot"`
 	FavoriteCount   int      `json:"favoriteCount"`
+	SubscribeCount  int      `json:"subscribeCount"`
 	HomePageTopTime string   `xorm:"varchar(40) index(IDX_topic_htt_lrt)" json:"homePageTopTime"`
 	TabTopTime      string   `xorm:"varchar(40) index(IDX_topic_ttt_lrt)" json:"tabTopTime"`
 	NodeTopTime     string   `xorm:"varchar(40) index(IDX_topic_ntt_lrt)" json:"nodeTopTime"`
@@ -556,6 +557,21 @@ func ChangeTopicFavoriteCount(topicId int, num int) bool {
 
 	topic.FavoriteCount += num
 	affected, err := adapter.Engine.Id(topicId).Cols("favorite_count").Update(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}
+
+func ChangeTopicSubscribeCount(topicId int, num int) bool {
+	topic := GetTopic(topicId)
+	if topic == nil {
+		return false
+	}
+
+	topic.SubscribeCount += num
+	affected, err := adapter.Engine.Id(topicId).Cols("subscribe_count").Update(topic)
 	if err != nil {
 		panic(err)
 	}

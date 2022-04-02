@@ -45,6 +45,7 @@
     "Created a": "创建了长度为",
     "Current account balance": "当前账户余额",
     "Description": "描述",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
     "Pin it to the top": "置顶",
     "Received thanks": "收到谢意",
     "Recharge": "充值",
@@ -133,6 +134,7 @@
     "Latest topics from people I followed": "我关注的人的最新主题",
     "My Favorite Nodes": "我收藏的节点",
     "My favorite topics": "我收藏的主题",
+    "My subscribe topics": "My subscribe topics",
     "Total nodes": "节点总数",
     "Total topics": "主题总数"
   },
@@ -247,8 +249,8 @@
     "Watch": "加入特别关注",
     "You have signed out completely, no personal information is left on this computer.": "你已经完全登出，没有任何个人信息留在这台电脑上。",
     "authorized to manage the community": "具有管理社区的权限",
-    "member, joined on": "号会员，加入于",
     "member": "号会员",
+    "member, joined on": "号会员，加入于",
     "replied": "回复了"
   },
   "mission": {
@@ -279,6 +281,7 @@
     "Please select a node": "请选择一个节点",
     "Preview": "预览主题",
     "Publish": "发布主题",
+    "Publishing...": "Publishing...",
     "RichText": "富文本",
     "Switch editor": "切换编辑器",
     "Topic Title": "主题标题"
@@ -329,6 +332,7 @@
     "Not set": "未设定",
     "Parent node": "父节点",
     "Plane": "位面",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "Preview": "预览",
     "Publish": "创建新主题",
     "Related links": "相关链接",
@@ -493,6 +497,7 @@
     "Are you sure you want to pin this topic for": "你确认要将此主题置顶",
     "Author": "作者",
     "Cancel Favor": "取消收藏",
+    "Cancel Subscribe": "Cancel Subscribe",
     "CancelHomePageTop": "取消首页置顶",
     "CancelNodeTop": "取消节点置顶",
     "CancelTabTop": "取消类别置顶",
@@ -539,6 +544,7 @@
     "Sink": "下沉",
     "Status": "状态",
     "Sticky state": "是否处于置顶状态",
+    "Subscribe": "Subscribe",
     "Tab Topping": "类别置顶",
     "TabTop": "类别置顶",
     "Text syntax format": "正文语法格式",

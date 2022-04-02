@@ -49,8 +49,17 @@ func (c *ApiController) AddFavorites() {
 		}()
 	}
 
+	if favorites.FavoritesType == 4 {
+		wg.Add(1)
+		go func() {
+			topicId := util.ParseInt(favorites.ObjectId)
+			res = object.ChangeTopicSubscribeCount(topicId, 1)
+			wg.Done()
+		}()
+	}
+
 	var resp Response
-	if favoritesType <= 3 && favoritesType >= 1 {
+	if favoritesType <= 5 && favoritesType >= 1 {
 		res := object.AddFavorites(&favorites)
 		if favoritesType == 1 {
 			topicId := util.ParseInt(objectId)
@@ -102,8 +111,17 @@ func (c *ApiController) DeleteFavorites() {
 		}()
 	}
 
+	if favoritesType == 4 {
+		topicId := util.ParseInt(objectId)
+		wg.Add(1)
+		go func() {
+			res = object.ChangeTopicSubscribeCount(topicId, -1)
+			wg.Done()
+		}()
+	}
+
 	var resp Response
-	if favoritesType <= 3 && favoritesType >= 1 {
+	if favoritesType <= 5 && favoritesType >= 1 {
 		res := object.DeleteFavorites(memberId, objectId, favoritesType)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
@@ -130,7 +148,7 @@ func (c *ApiController) GetFavoritesStatus() {
 	favoritesType := util.ParseInt(favoritesTypeStr)
 
 	var resp Response
-	if favoritesType <= 3 && favoritesType >= 1 {
+	if favoritesType <= 5 && favoritesType >= 1 {
 		res := object.GetFavoritesStatus(memberId, objectId, favoritesType)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
@@ -166,7 +184,7 @@ func (c *ApiController) GetFavorites() {
 	var resp Response
 	switch favoritesType {
 	case 1:
-		res := object.GetTopicsFromFavorites(memberId, limit, offset)
+		res := object.GetTopicsFromFavorites(memberId, limit, offset, 1)
 		num := object.GetFavoritesNum(1, memberId)
 		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 		break
@@ -180,6 +198,15 @@ func (c *ApiController) GetFavorites() {
 		num := object.GetFavoritesNum(3, memberId)
 		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 		break
+	case 4:
+		res := object.GetTopicsFromFavorites(memberId, limit, offset, 4)
+		num := object.GetFavoritesNum(4, memberId)
+		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
+		break
+	case 5:
+		res := object.GetTopicsFromFavorites(memberId, limit, offset, 5)
+		num := object.GetFavoritesNum(5, memberId)
+		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 	default:
 		resp = Response{Status: "fail", Msg: "param wrong"}
 	}
@@ -194,10 +221,10 @@ func (c *ApiController) GetFavorites() {
 func (c *ApiController) GetAccountFavoriteNum() {
 	memberId := c.GetSessionUsername()
 
-	var res [4]int
+	var res [6]int
 	var wg sync.WaitGroup
 
-	for i := 1; i <= 3; i++ {
+	for i := 1; i <= 5; i++ {
 		wg.Add(1)
 		i := i
 		go func() {

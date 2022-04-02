@@ -45,6 +45,7 @@
     "Created a": "作成日時",
     "Current account balance": "現在の口座残高",
     "Description": "説明",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
     "Pin it to the top": "上部にピン留めする",
     "Received thanks": "感謝を受け取りました",
     "Recharge": "リチャージ",
@@ -133,6 +134,7 @@
     "Latest topics from people I followed": "フォローした人からの最新のトピック",
     "My Favorite Nodes": "お気に入りのノード",
     "My favorite topics": "お気に入りのトピック",
+    "My subscribe topics": "My subscribe topics",
     "Total nodes": "Total nodes:",
     "Total topics": "Total topics:"
   },
@@ -247,8 +249,8 @@
     "Watch": "見る",
     "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
     "authorized to manage the community": "コミュニティを管理する権限を与えられました",
-    "member, joined on": "メンバーが参加しました",
     "member": "member",
+    "member, joined on": "メンバーが参加しました",
     "replied": "返信しました"
   },
   "mission": {
@@ -279,6 +281,7 @@
     "Please select a node": "ノードを選択してください",
     "Preview": "プレビュー",
     "Publish": "公開",
+    "Publishing...": "Publishing...",
     "RichText": "RichText",
     "Switch editor": "エディターを切り替える",
     "Topic Title": "トピックタイトル"
@@ -329,6 +332,7 @@
     "Not set": "未設定",
     "Parent node": "親ノード",
     "Plane": "面",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "Preview": "プレビュー",
     "Publish": "公開",
     "Related links": "関連リンク",
@@ -493,6 +497,7 @@
     "Are you sure you want to pin this topic for": "このトピックをピン留めしてよろしいですか？",
     "Author": "作成者",
     "Cancel Favor": "お気に入りをキャンセル",
+    "Cancel Subscribe": "Cancel Subscribe",
     "CancelHomePageTop": "CancelHomePageTop",
     "CancelNodeTop": "CancelNodeTop",
     "CancelTabTop": "CancelTabTop",
@@ -539,6 +544,7 @@
     "Sink": "シンク",
     "Status": "ステータス",
     "Sticky state": "Sticky state",
+    "Subscribe": "Subscribe",
     "Tab Topping": "タブを上へ",
     "TabTop": "TabTop",
     "Text syntax format": "テキストのシンタックスフォーマット",

@@ -31,6 +31,8 @@ class RightAccountBox extends React.Component {
       topicFavoriteNum: 0,
       nodeFavoriteNum: 0,
       followingNum: 0,
+      topicSubscribeNum: 0,
+      replySubscribeNum: 0,
       unreadNotificationNum: 0,
       themeMode: undefined,
     };
@@ -71,6 +73,8 @@ class RightAccountBox extends React.Component {
           topicFavoriteNum: res?.data[1],
           followingNum: res?.data[2],
           nodeFavoriteNum: res?.data[3],
+          topicSubscribeNum: res?.data[4],
+          replySubscribeNum: res?.data[5],
         });
       } else {
         Setting.showMessage("error", res.msg);
@@ -130,7 +134,7 @@ class RightAccountBox extends React.Component {
                   align="center"
                 >
                   <Link to="/my/topics" className="dark" style={{ display: "block" }}>
-                    <span className="bigger">{favorites === undefined ? this.state.topicFavoriteNum : favorites[1]}</span>
+                    <span className="bigger">{favorites === undefined ? this.state.topicFavoriteNum + this.state.topicSubscribeNum : favorites[1] + favorites[4]}</span>
                     <div className="sep3" />
                     <span className="fade">{i18next.t("bar:Topics")}</span>
                   </Link>
