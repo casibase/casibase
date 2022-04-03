@@ -147,7 +147,6 @@ class TopicBox extends React.Component {
 
     FavoritesBackend.getFavoritesStatus(this.state.topicId, 4).then((res) => {
       if (res.status === "ok") {
-        console.log(res);
         this.setState({
           subscribeStatus: res.data,
         });
