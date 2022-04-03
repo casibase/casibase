@@ -28,6 +28,15 @@ func (c *ApiController) AddFavorites() {
 	objectId := c.Input().Get("id")
 	favoritesTypeStr := c.Input().Get("type")
 	favoritesType := util.ParseInt(favoritesTypeStr)
+	memberId := c.GetSessionUsername()
+
+	favoriteStatus := object.GetFavoritesStatus(memberId, objectId, favoritesType)
+	if favoriteStatus {
+		resp := Response{Status: "ok", Msg: "success", Data: favoriteStatus}
+		c.Data["json"] = resp
+		c.ServeJSON()
+		return
+	}
 
 	username := c.GetSessionUsername()
 	favorites := object.Favorites{

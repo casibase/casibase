@@ -14,7 +14,10 @@
 
 package object
 
-import "github.com/casbin/casnode/util"
+import (
+	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
+)
 
 // Favorites using figure 1-5 to choose type, 1 means favor topic, 2 means follow people, 3 means favor node, 4 means subscribe topic, 5 means subscribe reply
 type Favorites struct {
@@ -77,6 +80,23 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesTyp
 	}
 
 	return topics
+}
+
+func GetMembersFromFavorites(objectId string, favoritesType int) []*auth.User {
+	favorites := []*Favorites{}
+	err := adapter.Engine.Where("object_id = ?", objectId).And("favorites_type = ?", favoritesType).Find(&favorites)
+	if err != nil {
+		panic(err)
+	}
+
+	members := []*auth.User{}
+	for _, v := range favorites {
+		memberId := v.MemberId
+		temp := GetUser(memberId)
+		members = append(members, temp)
+	}
+
+	return members
 }
 
 func GetRepliesFromFavorites(memberId string, limit int, offset int, favoritesType int) []*ReplyWithAvatar {
