@@ -2,10 +2,11 @@ package routers
 
 import (
 	ctx "context"
+	"sync"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/chromedp/chromedp"
-	"sync"
 )
 
 type RenderTask struct {

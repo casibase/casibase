@@ -2,7 +2,6 @@ package routers
 
 import (
 	"fmt"
-	"github.com/astaxie/beego"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -11,12 +10,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 )
 
 //var chromeCtx ctx.Context
 var chromeCtxPool *SsrPool
-var chromeCtxNum int
 var isChromeInstalled bool
 var isChromeInit bool
 
@@ -67,8 +66,8 @@ func InitChromeDp() {
 	isChromeInit = true
 	isChromeInstalled = isChromeFound()
 	if isChromeInstalled {
-		chromeCtxNum, _ = beego.AppConfig.Int("chromeCtxNum")
-		if chromeCtxNum == 0 {
+		chromeCtxNum, _ := beego.AppConfig.Int("chromeCtxNum")
+		if chromeCtxNum <= 0 {
 			chromeCtxNum = 1 // default
 		}
 		chromeCtxPool = NewSsrPool(chromeCtxNum)
