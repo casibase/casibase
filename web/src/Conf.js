@@ -7,5 +7,8 @@ export const AuthConfig = {
   redirectPath: "/callback",
 };
 
+export const DefaultOwner = "admin";
+export const DefaultDatasetName = "word";
+
 export const ForceLanguage = "";
 export const DefaultLanguage = "en";

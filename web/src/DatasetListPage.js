@@ -33,18 +33,9 @@ class DatasetListPage extends React.Component {
       owner: this.props.account.name,
       name: `dataset_${this.state.datasets.length}`,
       createdTime: moment().format(),
-      startDate: moment().format("YYYY-MM-DD"),
-      endDate: moment().format("YYYY-MM-DD"),
-      fullName: `Dataset ${this.state.datasets.length}`,
-      organizer: "Casbin",
-      location: "Shanghai, China",
-      address: "3663 Zhongshan Road North",
-      status: "Public",
-      language: "zh",
-      carousels: [],
-      introText: "Introduction..",
-      defaultItem: "Home",
-      treeItems: [{key: "Home", title: "首页", titleEn: "Home", content: "内容", contentEn: "Content", children: []}],
+      displayName: `Dataset ${this.state.datasets.length}`,
+      distance: 100,
+      vectors: [],
     }
   }
 
@@ -94,65 +85,46 @@ class DatasetListPage extends React.Component {
         }
       },
       {
-        title: i18next.t("dataset:Start date"),
-        dataIndex: 'startDate',
-        key: 'startDate',
-        width: '70px',
-        sorter: (a, b) => a.startDate.localeCompare(b.startDate),
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        }
-      },
-      {
-        title: i18next.t("dataset:End date"),
-        dataIndex: 'endDate',
-        key: 'endDate',
-        width: '70px',
-        sorter: (a, b) => a.endDate.localeCompare(b.endDate),
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        }
-      },
-      {
-        title: i18next.t("dataset:Full name"),
-        dataIndex: 'fullName',
-        key: 'fullName',
+        title: i18next.t("general:Display name"),
+        dataIndex: 'displayName',
+        key: 'displayName',
         width: '200px',
-        sorter: (a, b) => a.fullName.localeCompare(b.fullName),
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
-        title: i18next.t("dataset:Organizer"),
-        dataIndex: 'organizer',
-        key: 'organizer',
+        title: i18next.t("dataset:Distance"),
+        dataIndex: 'distance',
+        key: 'distance',
         width: '120px',
-        sorter: (a, b) => a.organizer.localeCompare(b.organizer),
+        sorter: (a, b) => a.distance - b.distance,
       },
       {
-        title: i18next.t("dataset:Location"),
-        dataIndex: 'location',
-        key: 'location',
-        width: '120px',
-        sorter: (a, b) => a.location.localeCompare(b.location),
+        title: i18next.t("dataset:Vectors"),
+        dataIndex: 'vectors',
+        key: 'vectors',
+        // width: '120px',
+        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        render: (text, record, index) => {
+          const tags = text.map(vector => vector.name);
+          const tooltips = text.map(vector => JSON.stringify(vector.data));
+          return Setting.getTags(tags, tooltips);
+        }
       },
       {
-        title: i18next.t("dataset:Address"),
-        dataIndex: 'address',
-        key: 'address',
-        width: '120px',
-        sorter: (a, b) => a.address.localeCompare(b.address),
-      },
-      {
-        title: i18next.t("general:Status"),
-        dataIndex: 'status',
-        key: 'status',
-        width: '80px',
-        sorter: (a, b) => a.status.localeCompare(b.status),
+        title: i18next.t("dataset:Vector count"),
+        dataIndex: 'vectorCount',
+        key: 'vectorCount',
+        width: '140px',
+        sorter: (a, b) => a.vectorCount - b.vectorCount,
+        render: (text, record, index) => {
+          return record.vectors.length;
+        }
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: 'action',
         key: 'action',
-        width: '120px',
+        width: '160px',
         render: (text, record, index) => {
           return (
             <div>

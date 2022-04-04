@@ -5,13 +5,9 @@ import (
 	"xorm.io/core"
 )
 
-type TreeItem struct {
-	Key       string      `xorm:"varchar(100)" json:"key"`
-	Title     string      `xorm:"varchar(100)" json:"title"`
-	Content   string      `xorm:"mediumtext" json:"content"`
-	TitleEn   string      `xorm:"varchar(100)" json:"titleEn"`
-	ContentEn string      `xorm:"mediumtext" json:"contentEn"`
-	Children  []*TreeItem `xorm:"varchar(1000)" json:"children"`
+type Vector struct {
+	Name string    `xorm:"varchar(100)" json:"name"`
+	Data []float64 `xorm:"varchar(1000)" json:"data"`
 }
 
 type Dataset struct {
@@ -19,20 +15,10 @@ type Dataset struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	StartDate string `xorm:"varchar(100)" json:"startDate"`
-	EndDate   string `xorm:"varchar(100)" json:"endDate"`
-	FullName  string `xorm:"varchar(100)" json:"fullName"`
-	Organizer string `xorm:"varchar(100)" json:"organizer"`
-	Location  string `xorm:"varchar(100)" json:"location"`
-	Address   string `xorm:"varchar(100)" json:"address"`
-	Status    string `xorm:"varchar(100)" json:"status"`
-	Language  string `xorm:"varchar(100)" json:"language"`
+	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	Distance    int    `json:"distance"`
 
-	Tags        []string    `xorm:"mediumtext" json:"tags"`
-	Carousels   []string    `xorm:"mediumtext" json:"carousels"`
-	IntroText   string      `xorm:"mediumtext" json:"introText"`
-	DefaultItem string      `xorm:"mediumtext" json:"defaultItem"`
-	TreeItems   []*TreeItem `xorm:"mediumtext" json:"treeItems"`
+	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }
 
 func GetGlobalDatasets() []*Dataset {

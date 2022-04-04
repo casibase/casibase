@@ -1,11 +1,10 @@
 import React from "react";
-import {Button, Card, Col, DatePicker, Input, Row, Select} from 'antd';
+import {Button, Card, Col, Input, InputNumber, Row} from 'antd';
 import * as DatasetBackend from "./backend/DatasetBackend";
 import * as Setting from "./Setting";
-import moment from "moment";
 import i18next from "i18next";
-
-const { Option } = Select;
+import VectorTable from "./VectorTable";
+import Dataset from "./Dataset";
 
 class DatasetEditPage extends React.Component {
   constructor(props) {
@@ -56,7 +55,7 @@ class DatasetEditPage extends React.Component {
         </div>
       } style={{marginLeft: '5px'}} type="inner">
         <Row style={{marginTop: '10px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Name")}:
           </Col>
           <Col span={22} >
@@ -66,130 +65,43 @@ class DatasetEditPage extends React.Component {
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Start date")}:
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Display name")}:
           </Col>
-          <Col span={5} >
-            <DatePicker defaultValue={moment(this.state.dataset.startDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
-              this.updateDatasetField('startDate', timeString);
-            }} />
-          </Col>
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:End date")}:
-          </Col>
-          <Col span={10} >
-            <DatePicker defaultValue={moment(this.state.dataset.endDate, "YYYY-MM-DD")} onChange={(time, timeString) => {
-              this.updateDatasetField('endDate', timeString);
+          <Col span={22} >
+            <Input value={this.state.dataset.displayName} onChange={e => {
+              this.updateDatasetField('displayName', e.target.value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Full name")}:
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("dataset:Distance")} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.dataset.fullName} onChange={e => {
-              this.updateDatasetField('fullName', e.target.value);
+            <InputNumber value={this.state.dataset.distance} onChange={value => {
+              this.updateDatasetField('distance', value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Organizer")}:
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("dataset:Vectors")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.dataset.organizer} onChange={e => {
-              this.updateDatasetField('organizer', e.target.value);
-            }} />
+            <VectorTable
+              title={i18next.t("dataset:Vectors")}
+              table={this.state.dataset.vectors}
+              onUpdateTable={(value) => { this.updateDatasetField('vectors', value)}}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Location")}:
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Preview")} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.dataset.location} onChange={e => {
-              this.updateDatasetField('location', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Address")}:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.dataset.address} onChange={e => {
-              this.updateDatasetField('address', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("general:Status")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: '100%'}} value={this.state.dataset.status} onChange={(value => {this.updateDatasetField('status', value);})}>
-              {
-                [
-                  {id: 'Public', name: 'Public (Everyone can see it)'},
-                  {id: 'Hidden', name: 'Hidden (Only yourself can see it)'},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Carousels")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} mode="tags" style={{width: '100%'}} placeholder="Please input"
-                    value={this.state.dataset.carousels}
-                    onChange={value => {
-                      this.updateDatasetField('carousels', value);
-                    }}
-            >
-              {
-                this.state.dataset.carousels.map((carousel, index) => <Option key={carousel}>{carousel}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Introduction text")}:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.dataset.introText} onChange={e => {
-              this.updateDatasetField('introText', e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Default item")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: '100%'}} value={this.state.dataset.defaultItem} onChange={value => {this.updateDatasetField('defaultItem', value);}}>
-              {
-                this.state.dataset.treeItems.filter(treeItem => treeItem.children.length === 0).map((treeItem, index) => <Option key={treeItem.title}>{`${treeItem.title} | ${treeItem.titleEn}`}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={2}>
-            {i18next.t("dataset:Language")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: '100%'}} value={this.state.dataset.language} onChange={(value => {this.updateDatasetField('language', value);})}>
-              {
-                [
-                  {id: 'zh', name: 'zh'},
-                  {id: 'en', name: 'en'},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
+            <Dataset dataset={this.state.dataset} />
           </Col>
         </Row>
       </Card>

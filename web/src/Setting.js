@@ -1,4 +1,4 @@
-import {message} from "antd";
+import {message, Tag, Tooltip} from "antd";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import moment from "moment";
@@ -112,6 +112,23 @@ export function swapRow(array, i, j) {
   return [...array.slice(0, i), array[j], ...array.slice(i + 1, j), array[i], ...array.slice(j + 1)];
 }
 
+export function trim(str, ch) {
+  if (str === undefined) {
+    return undefined;
+  }
+
+  let start = 0;
+  let end = str.length;
+
+  while(start < end && str[start] === ch)
+    ++start;
+
+  while(end > start && str[end - 1] === ch)
+    --end;
+
+  return (start > 0 || end < str.length) ? str.substring(start, end) : str;
+}
+
 export function isMobile() {
   // return getIsMobileView();
   return isMobileDevice;
@@ -204,4 +221,31 @@ export function changeMomentLanguage(lng) {
       },
     });
   }
+}
+
+export function getTagColor(s) {
+  return "processing";
+}
+
+export function getTags(tags, tooltips) {
+  let res = [];
+  if (!tags) return res;
+  tags.forEach((tag, i) => {
+    if (tooltips !== undefined) {
+      res.push(
+        <Tooltip placement="top" title={tooltips[i]}>
+          <Tag color={getTagColor(tag)}>
+            {tag}
+          </Tag>
+        </Tooltip>
+      );
+    } else {
+      res.push(
+        <Tag color={getTagColor(tag)}>
+          {tag}
+        </Tag>
+      );
+    }
+  });
+  return res;
 }
