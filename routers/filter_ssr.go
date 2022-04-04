@@ -1,21 +1,21 @@
 package routers
 
 import (
-	ctx "context"
 	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"github.com/chromedp/chromedp"
 )
 
-var chromeCtx ctx.Context
+//var chromeCtx ctx.Context
+var chromeCtxPool *SsrPool
 var isChromeInstalled bool
 var isChromeInit bool
 
@@ -66,8 +66,13 @@ func InitChromeDp() {
 	isChromeInit = true
 	isChromeInstalled = isChromeFound()
 	if isChromeInstalled {
-		chromeCtx, _ = chromedp.NewContext(ctx.Background())
+		chromeCtxNum, _ := beego.AppConfig.Int("chromeCtxNum")
+		if chromeCtxNum <= 0 {
+			chromeCtxNum = 1 // default
+		}
+		chromeCtxPool = NewSsrPool(chromeCtxNum)
 	}
+	go chromeCtxPool.Run() // start ssr_pool
 }
 
 func cacheSave(urlString string, res string) {
@@ -81,32 +86,6 @@ func cacheRestore(urlString string, cacheExpireSeconds int64) (string, bool) {
 		}
 	}
 	return "", false
-}
-
-func RenderPage(urlString string) string {
-	cacheExpireSeconds, err := beego.AppConfig.Int64("cacheExpireSeconds")
-	if err != nil {
-		panic(err)
-	}
-	res, cacheHit := cacheRestore(urlString, cacheExpireSeconds)
-	if cacheHit {
-		return res //cache of urlString
-	}
-	if !isChromeInit {
-		InitChromeDp()
-	}
-	if !isChromeInstalled {
-		return "Chrome is not installed in your server"
-	}
-	err = chromedp.Run(chromeCtx,
-		chromedp.Navigate(urlString),
-		chromedp.OuterHTML("html", &res),
-	)
-	if err != nil {
-		panic(err)
-	}
-	cacheSave(urlString, res)
-	return res
 }
 
 var botRegex *regexp.Regexp
@@ -126,9 +105,23 @@ func BotFilter(ctx *context.Context) {
 	if isBot(ctx.Request.UserAgent()) {
 		ctx.ResponseWriter.WriteHeader(200)
 		urlStr := fmt.Sprintf("http://%s%s", ctx.Request.Host, ctx.Request.URL.Path)
-		_, err := ctx.ResponseWriter.Write([]byte(RenderPage(urlStr)))
-		if err != nil {
-			panic(err)
+		if !isChromeInit {
+			InitChromeDp()
 		}
+		if !isChromeInstalled {
+			_, err := ctx.ResponseWriter.Write([]byte("Chrome is not installed in your server"))
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		// the context will be canceled when the task send to channel
+		// sync.WaitGroup will wait for the task to be finished, it can avoid this problem
+		var wg sync.WaitGroup
+		wg.Add(1)
+		// create ssr_task and put it into task channel
+		task := NewRenderTask(ctx, urlStr, &wg)
+		chromeCtxPool.TaskChannel <- task
+		wg.Wait()
 	}
 }
