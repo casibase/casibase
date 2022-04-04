@@ -92,6 +92,7 @@ func (c *ApiController) AddFavorites() {
 
 	if !res {
 		c.ResponseError("add favorite wrong")
+		return
 	}
 
 	c.ResponseOk(resp)
