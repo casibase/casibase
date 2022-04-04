@@ -152,6 +152,7 @@ class NewReplyBox extends React.Component {
         });
       }
     });
+
     FavoritesBackend.addFavorites(this.state.topicId, "subscribe_topic").then((res) => {
       if (res.status === "ok") {
         this.getTopic("refresh");

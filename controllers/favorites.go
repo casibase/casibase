@@ -31,17 +31,13 @@ func (c *ApiController) AddFavorites() {
 	var resp Response
 
 	if object.IsFavoritesExist(favoritesType) == false {
-		resp = Response{Status: "fail", Msg: "param wrong"}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseError("Invalid favorites type")
 		return
 	}
 
 	favoriteStatus := object.GetFavoritesStatus(memberId, objectId, favoritesType)
 	if favoriteStatus {
-		resp := Response{Status: "ok", Msg: "success", Data: favoriteStatus}
-		c.Data["json"] = resp
-		c.ServeJSON()
+		c.ResponseOk(resp)
 		return
 	}
 
@@ -95,11 +91,10 @@ func (c *ApiController) AddFavorites() {
 	wg.Wait()
 
 	if !res {
-		resp = Response{Status: "fail", Msg: "add favorite wrong"}
+		c.ResponseError("add favorite wrong")
 	}
 
-	c.Data["json"] = resp
-	c.ServeJSON()
+	c.ResponseOk(resp)
 }
 
 // @router /delete-favorites [post]
