@@ -19,8 +19,6 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/auth"
 )
 
-// Favorites using figure 1-5 to choose type, 1 means favor topic, 2 means follow people,
-//3 means favor node, 4 means subscribe topic, 5 means subscribe reply
 type Favorites struct {
 	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
 	FavoritesType string `xorm:"varchar(100) index" json:"favoritesType"`
