@@ -49,12 +49,6 @@ func render(chromeCtx ctx.Context, url string) string {
 	if cacheHit {
 		return res
 	}
-	if !isChromeInit {
-		InitChromeDp()
-	}
-	if !isChromeInstalled {
-		return "Chrome is not installed in your server"
-	}
 	err = chromedp.Run(chromeCtx,
 		chromedp.Navigate(url),
 		chromedp.OuterHTML("html", &res),
