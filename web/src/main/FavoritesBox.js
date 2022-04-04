@@ -74,13 +74,13 @@ class FavoritesBox extends React.Component {
     let favoritesType;
     switch (this.state.favoritesType) {
       case "topics":
-        favoritesType = 1;
+        favoritesType = "favor_topic";
         break;
       case "following":
-        favoritesType = 2;
+        favoritesType = "follow_user";
         break;
       case "nodes":
-        favoritesType = 3;
+        favoritesType = "favor_node";
         break;
       default:
         return;
@@ -94,8 +94,8 @@ class FavoritesBox extends React.Component {
       }
     });
 
-    if (favoritesType === 1) {
-      FavoritesBackend.getFavorites(4, this.state.limit, this.state.page).then((res) => {
+    if (favoritesType === "favor_topic") {
+      FavoritesBackend.getFavorites("subscribe_topic", this.state.limit, this.state.page).then((res) => {
         if (res.status === "ok") {
           this.setState({
             subscribes: res.data,

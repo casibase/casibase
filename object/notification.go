@@ -194,7 +194,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		}
 	}
 
-	subscribeUsers := GetMembersFromFavorites(strconv.Itoa(topicId), 4)
+	subscribeUsers := GetMembersFromFavorites(strconv.Itoa(topicId), SubscribeTopic)
 	for _, v := range subscribeUsers {
 		if senderId != v.Name && !memberMap[v.Name] {
 			memberMap[v.Name] = true

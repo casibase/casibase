@@ -129,7 +129,7 @@ class TopicBox extends React.Component {
       return;
     }
 
-    FavoritesBackend.getFavoritesStatus(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -145,7 +145,7 @@ class TopicBox extends React.Component {
       return;
     }
 
-    FavoritesBackend.getFavoritesStatus(this.state.topicId, 4).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.topicId, "subscribe_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           subscribeStatus: res.data,
@@ -171,7 +171,7 @@ class TopicBox extends React.Component {
   }
 
   addFavorite() {
-    FavoritesBackend.addFavorites(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.addFavorites(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -185,7 +185,7 @@ class TopicBox extends React.Component {
   }
 
   addSubscribe() {
-    FavoritesBackend.addFavorites(this.state.topicId, 4).then((res) => {
+    FavoritesBackend.addFavorites(this.state.topicId, "subscribe_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           subscribeStatus: res.data,
@@ -199,7 +199,7 @@ class TopicBox extends React.Component {
   }
 
   deleteFavorite() {
-    FavoritesBackend.deleteFavorites(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.deleteFavorites(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: !res.data,
@@ -213,7 +213,7 @@ class TopicBox extends React.Component {
   }
 
   deleteSubscribe() {
-    FavoritesBackend.deleteFavorites(this.state.topicId, 4).then((res) => {
+    FavoritesBackend.deleteFavorites(this.state.topicId, "subscribe_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           subscribeStatus: !res.data,

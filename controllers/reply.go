@@ -121,7 +121,7 @@ func (c *ApiController) UpdateReply() {
 }
 
 // @Title AddReply
-// @Tag Reply API
+//@Tag Reply API
 // @router /add-reply [post]
 func (c *ApiController) AddReply() {
 	if c.RequireSignedIn() {
