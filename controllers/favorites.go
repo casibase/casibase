@@ -37,7 +37,7 @@ func (c *ApiController) AddFavorites() {
 		return
 	}
 
-	favoriteStatus := object.GetFavoritesStatus(memberId, objectId, object.GetFavoritesEnum(favoritesType))
+	favoriteStatus := object.GetFavoritesStatus(memberId, objectId, favoritesType)
 	if favoriteStatus {
 		resp := Response{Status: "ok", Msg: "success", Data: favoriteStatus}
 		c.Data["json"] = resp
@@ -137,7 +137,7 @@ func (c *ApiController) DeleteFavorites() {
 		}()
 	}
 
-	res = object.DeleteFavorites(memberId, objectId, object.GetFavoritesEnum(favoritesType))
+	res = object.DeleteFavorites(memberId, objectId, favoritesType)
 	resp = Response{Status: "ok", Msg: "success", Data: res}
 
 	wg.Wait()
@@ -160,7 +160,7 @@ func (c *ApiController) GetFavoritesStatus() {
 
 	var resp Response
 	if object.IsFavoritesExist(favoritesType) {
-		res := object.GetFavoritesStatus(memberId, objectId, object.GetFavoritesEnum(favoritesType))
+		res := object.GetFavoritesStatus(memberId, objectId, favoritesType)
 		resp = Response{Status: "ok", Msg: "success", Data: res}
 	} else {
 		resp = Response{Status: "fail", Msg: "param wrong"}
@@ -235,7 +235,7 @@ func (c *ApiController) GetAccountFavoriteNum() {
 	var wg sync.WaitGroup
 
 	//favorite type set,5 object.favorTopic...
-	typeSet := []object.FavoritesEnum{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic, object.SubscribeReply}
+	typeSet := []string{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic, object.SubscribeReply}
 
 	for i := 1; i <= 5; i++ {
 		wg.Add(1)

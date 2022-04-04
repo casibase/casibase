@@ -27,8 +27,6 @@ type Favorites struct {
 	MemberId      string `xorm:"varchar(100) index" json:"memberId"`
 }
 
-type FavoritesEnum string
-
 const (
 	FavorTopic     = "favor_topic"
 	FollowUser     = "follow_user"
@@ -45,10 +43,6 @@ func IsFavoritesExist(Type string) bool {
 	return false
 }
 
-func GetFavoritesEnum(Type string) FavoritesEnum {
-	return FavoritesEnum(Type)
-}
-
 func AddFavorites(favorite *Favorites) bool {
 	affected, err := adapter.Engine.Insert(favorite)
 	if err != nil {
@@ -58,7 +52,7 @@ func AddFavorites(favorite *Favorites) bool {
 	return affected != 0
 }
 
-func DeleteFavorites(memberId string, objectId string, favoritesType FavoritesEnum) bool {
+func DeleteFavorites(memberId string, objectId string, favoritesType string) bool {
 	affected, err := adapter.Engine.Where("favorites_type = ?", favoritesType).And("object_id = ?", objectId).And("member_id = ?", memberId).Delete(&Favorites{})
 	if err != nil {
 		panic(err)
@@ -76,7 +70,7 @@ func GetFavoritesCount() int {
 	return int(count)
 }
 
-func GetFavoritesStatus(memberId string, objectId string, favoritesType FavoritesEnum) bool {
+func GetFavoritesStatus(memberId string, objectId string, favoritesType string) bool {
 	node := new(Favorites)
 	total, err := adapter.Engine.Where("favorites_type = ?", favoritesType).And("object_id = ?", objectId).And("member_id = ?", memberId).Count(node)
 	if err != nil {
@@ -86,7 +80,7 @@ func GetFavoritesStatus(memberId string, objectId string, favoritesType Favorite
 	return total != 0
 }
 
-func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesType FavoritesEnum) []*TopicWithAvatar {
+func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesType string) []*TopicWithAvatar {
 	favorites := []*Favorites{}
 	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", favoritesType).Limit(limit, offset).Find(&favorites)
 	if err != nil {
@@ -103,7 +97,7 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesTyp
 	return topics
 }
 
-func GetMembersFromFavorites(objectId string, favoritesType FavoritesEnum) []*auth.User {
+func GetMembersFromFavorites(objectId string, favoritesType string) []*auth.User {
 	favorites := []*Favorites{}
 	err := adapter.Engine.Where("object_id = ?", objectId).And("favorites_type = ?", favoritesType).Find(&favorites)
 	if err != nil {
@@ -120,7 +114,7 @@ func GetMembersFromFavorites(objectId string, favoritesType FavoritesEnum) []*au
 	return members
 }
 
-func GetRepliesFromFavorites(memberId string, limit int, offset int, favoritesType FavoritesEnum) []*ReplyWithAvatar {
+func GetRepliesFromFavorites(memberId string, limit int, offset int, favoritesType string) []*ReplyWithAvatar {
 	favorites := []*Favorites{}
 	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", favoritesType).Limit(limit, offset).Find(&favorites)
 	if err != nil {
@@ -198,7 +192,7 @@ func GetFollowingNum(id string) int {
 	return int(total)
 }
 
-func GetFavoritesNum(favoritesType FavoritesEnum, memberId string) int {
+func GetFavoritesNum(favoritesType string, memberId string) int {
 	var total int64
 	var err error
 
