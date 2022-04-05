@@ -51,16 +51,24 @@ func generateGraph(vectors []*Vector) *Graph {
 
 	g := newGraph()
 
+	nodeColor := "rgb(232,67,62)"
 	for _, vector := range vectors {
-		g.addNode(vector.Name, vector.Name, 10, "red", "")
+		g.addNode(vector.Name, vector.Name, 2, nodeColor, "")
 	}
 
 	for i := 0; i < len(vectors); i++ {
 		for j := i + 1; j < len(vectors); j++ {
 			v1 := vectors[i]
 			v2 := vectors[j]
-			distance := getDistance(v1, v2)
-			g.addLink(fmt.Sprintf("%s_%s", v1.Name, v2.Name), v1.Name, v2.Name, int(distance), "green", "")
+			distance := int(getDistance(v1, v2))
+			if distance >= 16 {
+				continue
+			}
+
+			linkValue := (1*(distance-7) + 10*(15-distance)) / 8
+			color := "rgb(44,160,44,0.6)"
+			fmt.Printf("[%s] - [%s]: distance = %d, linkValue = %d\n", v1.Name, v2.Name, distance, linkValue)
+			g.addLink(fmt.Sprintf("%s_%s", v1.Name, v2.Name), v1.Name, v2.Name, linkValue, color, "")
 		}
 	}
 
