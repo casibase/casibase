@@ -73,3 +73,20 @@ func readVectorData(fileId string) []*Vector {
 	}
 	return vectors
 }
+
+func updateDatasetVectors(owner string, datasetName string, vectors []*Vector) {
+	dataset := getDataset(owner, datasetName)
+
+	vectorMap := map[string]*Vector{}
+	for _, v := range dataset.Vectors {
+		vectorMap[v.Name] = v
+	}
+
+	for _, vector := range vectors {
+		if v, ok := vectorMap[vector.Name]; ok {
+			v.Data = vector.Data
+		}
+	}
+
+	UpdateDataset(dataset.GetId(), dataset)
+}

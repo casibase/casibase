@@ -1,6 +1,8 @@
 package object
 
 import (
+	"fmt"
+
 	"github.com/casbin/casbase/util"
 	"xorm.io/core"
 )
@@ -91,4 +93,8 @@ func DeleteDataset(dataset *Dataset) bool {
 	}
 
 	return affected != 0
+}
+
+func (dataset *Dataset) GetId() string {
+	return fmt.Sprintf("%s/%s", dataset.Owner, dataset.Name)
 }

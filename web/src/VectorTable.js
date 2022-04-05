@@ -73,7 +73,7 @@ class VectorTable extends React.Component {
         title: 'Name',
         dataIndex: 'name',
         key: 'name',
-        width: '180px',
+        width: '200px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -86,7 +86,7 @@ class VectorTable extends React.Component {
         title: 'Data',
         dataIndex: 'data',
         key: 'data',
-        width: '300px',
+        // width: '300px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
