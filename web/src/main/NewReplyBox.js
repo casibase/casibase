@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
+import * as FavoritesBackend from "../backend/FavoritesBackend";
 import { withRouter, Link } from "react-router-dom";
 import "../Reply.css";
 import * as Tools from "./Tools";
@@ -149,6 +150,15 @@ class NewReplyBox extends React.Component {
         this.setState({
           message: res.msg,
         });
+      }
+    });
+
+    FavoritesBackend.addFavorites(this.state.topicId, "subscribe_topic").then((res) => {
+      if (res.status === "ok") {
+        this.getTopic("refresh");
+        this.props.refreshFavorites();
+      } else {
+        Setting.showMessage("error", res.msg);
       }
     });
   }

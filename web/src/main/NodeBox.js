@@ -113,7 +113,7 @@ class NodeBox extends React.Component {
       return;
     }
 
-    FavoritesBackend.getFavoritesStatus(this.state.nodeId, 3).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.nodeId, "favor_node").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -125,7 +125,7 @@ class NodeBox extends React.Component {
   }
 
   getNodeFavoriteStatus() {
-    FavoritesBackend.getFavoritesStatus(this.state.nodeId, 3).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.nodeId, "favor_node").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -149,7 +149,7 @@ class NodeBox extends React.Component {
   }
 
   addFavorite() {
-    FavoritesBackend.addFavorites(this.state.nodeId, 3).then((res) => {
+    FavoritesBackend.addFavorites(this.state.nodeId, "favor_node").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -163,7 +163,7 @@ class NodeBox extends React.Component {
   }
 
   deleteFavorite() {
-    FavoritesBackend.deleteFavorites(this.state.nodeId, 3).then((res) => {
+    FavoritesBackend.deleteFavorites(this.state.nodeId, "favor_node").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: !res.data,

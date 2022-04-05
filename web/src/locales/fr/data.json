@@ -45,6 +45,7 @@
     "Created a": "Créé un",
     "Current account balance": "Solde actuel du compte",
     "Description": "Libellé",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
     "Pin it to the top": "Épingler en haut",
     "Received thanks": "Reçu merci",
     "Recharge": "Recharger",
@@ -133,6 +134,7 @@
     "Latest topics from people I followed": "Derniers sujets des personnes que j'ai suivies",
     "My Favorite Nodes": "Mes nœuds favoris",
     "My favorite topics": "Mes sujets favoris",
+    "My subscribe topics": "My subscribe topics",
     "Total nodes": "Total nodes:",
     "Total topics": "Total topics:"
   },
@@ -247,8 +249,8 @@
     "Watch": "Regarder",
     "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
     "authorized to manage the community": "autorisé à gérer la communauté",
-    "member, joined on": "membre, a rejoint le",
     "member": "member",
+    "member, joined on": "membre, a rejoint le",
     "replied": "a répondu"
   },
   "mission": {
@@ -279,6 +281,7 @@
     "Please select a node": "Veuillez sélectionner un noeud",
     "Preview": "Aperçu",
     "Publish": "Publier",
+    "Publishing...": "Publishing...",
     "RichText": "RichText",
     "Switch editor": "Changer d'éditeur",
     "Topic Title": "Titre du sujet"
@@ -329,6 +332,7 @@
     "Not set": "Non défini",
     "Parent node": "Noeud parent",
     "Plane": "Plan",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "Preview": "Aperçu",
     "Publish": "Publier",
     "Related links": "Liens connexes",
@@ -493,6 +497,7 @@
     "Are you sure you want to pin this topic for": "Êtes-vous sûr de vouloir épingler ce sujet pour",
     "Author": "Auteur",
     "Cancel Favor": "Annuler la faveur",
+    "Cancel Subscribe": "Cancel Subscribe",
     "CancelHomePageTop": "CancelHomePageTop",
     "CancelNodeTop": "Annuler le début du nœud",
     "CancelTabTop": "Annuler la table en haut",
@@ -539,6 +544,7 @@
     "Sink": "Évier",
     "Status": "Statut",
     "Sticky state": "État épinglé",
+    "Subscribe": "Subscribe",
     "Tab Topping": "Tabulation des onglets",
     "TabTop": "TabTop",
     "Text syntax format": "Format de syntaxe du texte",

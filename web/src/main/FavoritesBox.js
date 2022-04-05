@@ -27,12 +27,14 @@ class FavoritesBox extends React.Component {
       classes: props,
       favoritesType: props.match.params.favorites,
       favorites: [],
+      subscribes: [],
       p: "",
       page: 1,
       limit: 20,
       minPage: 1,
       maxPage: -1,
       favoritesNum: 0,
+      subscribesNum: 0,
       temp: 0,
       url: "",
     };
@@ -72,13 +74,13 @@ class FavoritesBox extends React.Component {
     let favoritesType;
     switch (this.state.favoritesType) {
       case "topics":
-        favoritesType = 1;
+        favoritesType = "favor_topic";
         break;
       case "following":
-        favoritesType = 2;
+        favoritesType = "follow_user";
         break;
       case "nodes":
-        favoritesType = 3;
+        favoritesType = "favor_node";
         break;
       default:
         return;
@@ -91,6 +93,17 @@ class FavoritesBox extends React.Component {
         });
       }
     });
+
+    if (favoritesType === "favor_topic") {
+      FavoritesBackend.getFavorites("subscribe_topic", this.state.limit, this.state.page).then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            subscribes: res.data,
+            subscribesNum: res.data2,
+          });
+        }
+      });
+    }
   }
 
   renderNodes(node) {
@@ -162,6 +175,16 @@ class FavoritesBox extends React.Component {
               </div>
             </div>
             <TopicList topics={this.state.favorites} showNodeName={true} showAvatar={true} />
+            <div className="sep20" />
+            <div className="header">
+              <Link to="/">{Setting.getForumName()}</Link>
+              <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("fav:My subscribe topics")}
+              <div className="fr f12">
+                <span className="snow">{i18next.t("fav:Total topics")} &nbsp;</span>
+                <strong className="gray">{this.state.subscribesNum}</strong>
+              </div>
+            </div>
+            <TopicList topics={this.state.subscribes} showNodeName={true} showAvatar={true} />
           </div>
         );
       case "following":

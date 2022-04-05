@@ -45,6 +45,7 @@
     "Created a": "Жасаған",
     "Current account balance": "Ағымдағы шоттың теңгерімі",
     "Description": "Сипаттама",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
     "Pin it to the top": "Жоғарғы жаққа бекіту",
     "Received thanks": "Алғыс алды",
     "Recharge": "Толтыру",
@@ -133,6 +134,7 @@
     "Latest topics from people I followed": "Мен жазылған адамдардың соңғы топиктері",
     "My Favorite Nodes": "Менің Таңдаулы Түйіндерім",
     "My favorite topics": "Менің таңдаулы топиктерім",
+    "My subscribe topics": "My subscribe topics",
     "Total nodes": "Түйіндердің барлығы",
     "Total topics": "Топиктердің барлығы"
   },
@@ -247,8 +249,8 @@
     "Watch": "Қарау",
     "You have signed out completely, no personal information is left on this computer.": "Сіз жүйеден толығымен шықтыңыз, бұл кәмпітірде жеке ақпарат қалмады.",
     "authorized to manage the community": "қауымды басқаруға аутырландырылды",
-    "member, joined on": "мүше, қосылды",
     "member": "member",
+    "member, joined on": "мүше, қосылды",
     "replied": "жауап берді"
   },
   "mission": {
@@ -279,6 +281,7 @@
     "Please select a node": "Түйінді таңдаңыз",
     "Preview": "Алдын ала көру",
     "Publish": "Жариялау",
+    "Publishing...": "Publishing...",
     "RichText": "RichText",
     "Switch editor": "Өңдіргішті ауыстыру",
     "Topic Title": "Топик Атауы"
@@ -329,6 +332,7 @@
     "Not set": "Орнатылмаған",
     "Parent node": "Негізгі түйін",
     "Plane": "Plane",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "Preview": "Алдын ала көру",
     "Publish": "Жариялау",
     "Related links": "Қатысты сілтемелер",
@@ -493,6 +497,7 @@
     "Are you sure you want to pin this topic for": "Осы топикті бекіткіңіз келетініне сенімдісіз бе",
     "Author": "Аутыр",
     "Cancel Favor": "Favor'дан бас тарту",
+    "Cancel Subscribe": "Cancel Subscribe",
     "CancelHomePageTop": "CancelHomePageTop",
     "CancelNodeTop": "CancelNodeTop",
     "CancelTabTop": "CancelTabTop",
@@ -539,6 +544,7 @@
     "Sink": "Sink",
     "Status": "Статус",
     "Sticky state": "Жабысқақ күй",
+    "Subscribe": "Subscribe",
     "Tab Topping": "Tab'ты Көтеру",
     "TabTop": "TabTop",
     "Text syntax format": "Мәтін синтаксі форматы",
