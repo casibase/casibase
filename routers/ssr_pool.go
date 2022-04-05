@@ -2,7 +2,9 @@ package routers
 
 import (
 	ctx "context"
+	"errors"
 	"sync"
+	"syscall"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
@@ -70,7 +72,9 @@ func (pool *SsrPool) worker() {
 		urlStr := task.Render(chromeCtx, task.Url)
 		_, err := task.HttpCtx.ResponseWriter.Write([]byte(urlStr))
 		if err != nil {
-			panic(err)
+			if !errors.Is(err, syscall.EPIPE) {
+				panic(err)
+			}
 		}
 		task.Wg.Done()
 	}
