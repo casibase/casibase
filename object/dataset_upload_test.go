@@ -7,3 +7,10 @@ func TestUploadVectorNames(t *testing.T) {
 
 	uploadVectorNames("admin", "../../tmpFiles/filename")
 }
+
+func TestUploadVectorData(t *testing.T) {
+	InitConfig()
+
+	vectors := readVectorData("../../tmpFiles/wordVector_utf-8")
+	println(vectors)
+}

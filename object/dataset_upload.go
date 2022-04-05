@@ -1,6 +1,9 @@
 package object
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/casbin/casbase/util"
 	"github.com/casbin/casbase/xlsx"
 )
@@ -26,4 +29,47 @@ func uploadVectorNames(owner string, fileId string) bool {
 		Vectors:     vectors,
 	}
 	return AddDataset(dataset)
+}
+
+func parseVectorData(s string) []float64 {
+	s = strings.TrimLeft(s, "[")
+	s = strings.TrimRight(s, "]")
+	s = strings.ReplaceAll(s, "\n", "")
+
+	tokens := strings.Split(s, " ")
+	res := []float64{}
+	for _, token := range tokens {
+		if token == "" {
+			continue
+		}
+
+		f := util.ParseFloat(token)
+		res = append(res, f)
+	}
+	return res
+}
+
+func readVectorData(fileId string) []*Vector {
+	path := util.GetUploadCsvPath(fileId)
+
+	rows := [][]string{}
+	util.LoadCsvFile(path, &rows)
+
+	vectors := []*Vector{}
+	for _, row := range rows {
+		if row[0] == "" {
+			continue
+		}
+
+		vector := &Vector{
+			Name: row[1],
+			Data: parseVectorData(row[2]),
+		}
+		if len(vector.Data) != 128 {
+			panic(fmt.Errorf("invalid vector data length: %d, vector = %v", len(vector.Data), vector))
+		}
+
+		vectors = append(vectors, vector)
+	}
+	return vectors
 }
