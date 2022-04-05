@@ -101,7 +101,7 @@ class DatasetEditPage extends React.Component {
             {i18next.t("general:Preview")} :
           </Col>
           <Col span={22} >
-            <Dataset dataset={this.state.dataset} />
+            <Dataset dataset={this.state.dataset} datasetName={this.state.dataset.name} />
           </Col>
         </Row>
       </Card>

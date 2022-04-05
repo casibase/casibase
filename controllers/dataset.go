@@ -25,6 +25,13 @@ func (c *ApiController) GetDataset() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetDatasetGraph() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetDatasetGraph(id)
+	c.ServeJSON()
+}
+
 func (c *ApiController) UpdateDataset() {
 	id := c.Input().Get("id")
 

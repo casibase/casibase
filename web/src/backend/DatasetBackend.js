@@ -21,6 +21,13 @@ export function getDataset(owner, name) {
   }).then(res => res.json());
 }
 
+export function getDatasetGraph(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-dataset-graph?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function updateDataset(owner, name, dataset) {
   let newDataset = Setting.deepCopy(dataset);
   return fetch(`${Setting.ServerUrl}/api/update-dataset?id=${owner}/${encodeURIComponent(name)}`, {

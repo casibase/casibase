@@ -34,7 +34,11 @@ class HomePage extends React.Component {
           <Col span={!Setting.isMobile() ? 3 : 0}>
           </Col>
           <Col span={!Setting.isMobile() ? 18 : 24}>
-            <Dataset dataset={this.state.dataset} />
+            {
+              (this.state.dataset === undefined || this.state.dataset === null) ? null : (
+                <Dataset dataset={this.state.dataset} datasetName={this.state.dataset.name} />
+              )
+            }
           </Col>
           <Col span={!Setting.isMobile() ? 3 : 0}>
           </Col>

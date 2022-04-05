@@ -25,6 +25,7 @@ func initAPI() {
 	beego.Router("/api/get-global-datasets", &controllers.ApiController{}, "GET:GetGlobalDatasets")
 	beego.Router("/api/get-datasets", &controllers.ApiController{}, "GET:GetDatasets")
 	beego.Router("/api/get-dataset", &controllers.ApiController{}, "GET:GetDataset")
+	beego.Router("/api/get-dataset-graph", &controllers.ApiController{}, "GET:GetDatasetGraph")
 	beego.Router("/api/update-dataset", &controllers.ApiController{}, "POST:UpdateDataset")
 	beego.Router("/api/add-dataset", &controllers.ApiController{}, "POST:AddDataset")
 	beego.Router("/api/delete-dataset", &controllers.ApiController{}, "POST:DeleteDataset")
