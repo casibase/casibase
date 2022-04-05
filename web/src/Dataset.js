@@ -219,6 +219,35 @@ class Dataset extends React.Component {
         // linkDirectionalParticles={link => this.state.particlePercent * link.value / 100}
         linkDirectionalParticleSpeed={link => link.value * 0.001}
         cooldownTicks={this.state.enableStatic ? 0 : Infinity}
+        nodeCanvasObject={(node, ctx, globalScale) => {
+          let label = node.id;
+          // const fontSize = 12 / globalScale;
+          // ctx.font = `${fontSize}px Sans-Serif`;
+          // const textWidth = ctx.measureText(label).width;
+
+          // ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
+
+          // if (this.isNodeSelected(node)) {
+          //   ctx.beginPath();
+          //   ctx.arc(node.x, node.y, node.val * 1.4, 0, 2 * Math.PI, false);
+          //   ctx.fillStyle = 'red';
+          //   ctx.fill();
+          // }
+
+          ctx.beginPath();
+          ctx.fillStyle = node.color;
+          ctx.arc(node.x, node.y, node.val, 0, 2 * Math.PI, false);
+          ctx.fill();
+          ctx.strokeStyle = 'rgb(255,255,255)';
+          ctx.stroke();
+
+          ctx.font = '5px Lucida Console';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillStyle = 'black'; //node.color;
+
+          ctx.fillText(node.name, node.x, node.y + 10);
+        }}
       />
     )
   }

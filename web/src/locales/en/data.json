@@ -6,27 +6,23 @@
     "Sign Up": "Sign Up"
   },
   "dataset": {
-    "Address": "Address",
-    "Carousels": "Carousels",
-    "Default item": "Default item",
+    "All vectors": "All vectors",
+    "Distance": "Distance",
     "Edit Dataset": "Edit Dataset",
-    "End date": "End date",
-    "Full name": "Full name",
-    "Introduction text": "Introduction text",
-    "Language": "Language",
-    "Location": "Location",
-    "Organizer": "Organizer",
-    "Start date": "Start date"
+    "Valid vectors": "Valid vectors",
+    "Vectors": "Vectors"
   },
   "general": {
     "Action": "Action",
     "Add": "Add",
     "Datasets": "Datasets",
     "Delete": "Delete",
+    "Display name": "Display name",
     "Edit": "Edit",
     "Home": "Home",
+    "Loading...": "Loading...",
     "Name": "Name",
-    "Save": "Save",
-    "Status": "Status"
+    "Preview": "Preview",
+    "Save": "Save"
   }
 }

@@ -6,27 +6,23 @@
     "Sign Up": "注册"
   },
   "dataset": {
-    "Address": "Address",
-    "Carousels": "Carousels",
-    "Default item": "Default item",
-    "Edit Dataset": "Edit Dataset",
-    "End date": "End date",
-    "Full name": "Full name",
-    "Introduction text": "Introduction text",
-    "Language": "Language",
-    "Location": "Location",
-    "Organizer": "Organizer",
-    "Start date": "Start date"
+    "All vectors": "所有向量",
+    "Distance": "距离",
+    "Edit Dataset": "编辑数据集",
+    "Valid vectors": "有效向量",
+    "Vectors": "向量"
   },
   "general": {
     "Action": "操作",
     "Add": "添加",
     "Datasets": "数据集",
     "Delete": "删除",
+    "Display name": "显示名称",
     "Edit": "编辑",
     "Home": "首页",
+    "Loading...": "加载中...",
     "Name": "名称",
-    "Save": "保存",
-    "Status": "状态"
+    "Preview": "预览",
+    "Save": "保存"
   }
 }
