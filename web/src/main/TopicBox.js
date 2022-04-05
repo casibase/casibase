@@ -330,16 +330,16 @@ class TopicBox extends React.Component {
         <div className="inner">
           <div className="fr">
             &nbsp;{" "}
-            <a href="#;" onClick={() => {}}>
+            <a href="javascript:void(0)" onClick={() => {}}>
               {i18next.t("topic:Sink")} ↓
             </a>
             &nbsp;{" "}
             {this.props.account?.isAdmin ? (
-              <a href="#;" onClick={() => this.topTopic()}>
+              <a href="javascript:void(0)" onClick={() => this.topTopic()}>
                 {i18next.t("topic:Top this topic")}
               </a>
             ) : (
-              <a href="#;" onClick={() => this.topTopic()}>
+              <a href="javascript:void(0)" onClick={() => this.topTopic()}>
                 {i18next.t("topic:Top")} {this.state.defaultTopTopicTime} {i18next.t("topic:minutes")}
               </a>
             )}
@@ -368,11 +368,11 @@ class TopicBox extends React.Component {
         <div class="fr" align="right">
           {this.props.account !== undefined && this.props.account !== null ? (
             this.state.favoritesStatus ? (
-              <a href="#;" onClick={() => this.deleteFavorite()} className="op">
+              <a href="javascript:void(0)" onClick={() => this.deleteFavorite()} className="op">
                 {i18next.t("topic:Cancel Favor")}
               </a>
             ) : (
-              <a href="#;" onClick={() => this.addFavorite()} className="op">
+              <a href="javascript:void(0)" onClick={() => this.addFavorite()} className="op">
                 {i18next.t("topic:Favor")}
               </a>
             )
@@ -380,36 +380,36 @@ class TopicBox extends React.Component {
           &nbsp;
           {this.props.account !== undefined && this.props.account !== null ? (
             this.state.subscribeStatus ? (
-              <a href="#;" onClick={() => this.deleteSubscribe()} className="op">
+              <a href="javascript:void(0)" onClick={() => this.deleteSubscribe()} className="op">
                 {i18next.t("topic:Cancel Favor")}
               </a>
             ) : (
-              <a href="#;" onClick={() => this.addSubscribe()} className="op">
+              <a href="javascript:void(0)" onClick={() => this.addSubscribe()} className="op">
                 {i18next.t("topic:Favor")}
               </a>
             )
           ) : null}{" "}
           &nbsp;
           <a
-            href="#;"
+            href="javascript:void(0)"
             onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
             className="op"
           >
             Tweet
           </a>{" "}
           &nbsp;
-          <a href="#" onclick="shareTopic(``);" class="op">
+          <a href="javascript:void(0)" onclick="shareTopic(``);" class="op">
             Share
           </a>{" "}
           &nbsp;
-          <a href="#;" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="op">
+          <a href="javascript:void(0)" onClick="if (confirm('Are you sure to ignore this topic?')) { location.href = '/ignore/topic/123456?once=39724'; }" className="op">
             {i18next.t("topic:Ignore")}
           </a>{" "}
           &nbsp;
           {this.props.account !== undefined && this.props.account !== null && this.props.account?.name !== this.state.topic?.author ? (
             this.state.topic?.thanksStatus === false ? (
               <div id="topic_thank">
-                <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="op">
+                <a href="javascript:void(0)" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="op">
                   {i18next.t("topic:Thank")}
                 </a>
               </div>
@@ -447,7 +447,7 @@ class TopicBox extends React.Component {
         {this.props.account !== undefined && this.props.account !== null ? (
           this.state.favoritesStatus ? (
             <a
-              href="#;"
+              href="javascript:void(0)"
               onClick={() => {
                 this.deleteFavorite();
               }}
@@ -457,7 +457,7 @@ class TopicBox extends React.Component {
             </a>
           ) : (
             <a
-              href="#;"
+              href="javascript:void(0)"
               onClick={() => {
                 this.addFavorite();
               }}
@@ -471,7 +471,7 @@ class TopicBox extends React.Component {
         {this.props.account !== undefined && this.props.account !== null ? (
           this.state.subscribeStatus ? (
             <a
-              href="#;"
+              href="javascript:void(0)"
               onClick={() => {
                 this.deleteSubscribe();
               }}
@@ -481,7 +481,7 @@ class TopicBox extends React.Component {
             </a>
           ) : (
             <a
-              href="#;"
+              href="javascript:void(0)"
               onClick={() => {
                 this.addSubscribe();
               }}
@@ -492,22 +492,22 @@ class TopicBox extends React.Component {
           )
         ) : null}
         &nbsp;
-        <a href="#;" onClick={() => this.openShare()} className="tb">
+        <a href="javascript:void(0)" onClick={() => this.openShare()} className="tb">
           Tweet
         </a>
         &nbsp;
-        <a href="#;" onClick={() => this.openShare()} className="tb">
+        <a href="javascript:void(0)" onClick={() => this.openShare()} className="tb">
           Weibo
         </a>
         &nbsp;
-        <a href="#;" onClick={() => this.ignoreTopic()} className="tb">
+        <a href="javascript:void(0)" onClick={() => this.ignoreTopic()} className="tb">
           {i18next.t("topic:Ignore")}
         </a>
         &nbsp;
         {this.props.account !== undefined && this.props.account !== null && this.props.account?.name !== this.state.topic?.author ? (
           this.state.topic?.thanksStatus === false ? (
             <div id="topic_thank">
-              <a href="#;" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="tb">
+              <a href="javascript:void(0)" onClick={() => this.thanksTopic(this.state.topic?.id, this.state.topic?.author)} className="tb">
                 {i18next.t("topic:Thank")}
               </a>
             </div>
@@ -685,11 +685,11 @@ class TopicBox extends React.Component {
             {Setting.PcBrowser ? (
               <span>
                 <div id="topic_677954_votes" className="votes">
-                  <a href="#;" onClick={this.upVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
+                  <a href="javascript:void(0)" onClick={this.upVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
                     <li className="fa fa-chevron-up" />
                   </a>{" "}
                   &nbsp;
-                  <a href="#;" onClick={this.downVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
+                  <a href="javascript:void(0)" onClick={this.downVoteTopic()} className={`vote ${this.state.topic.nodeId}`}>
                     <li className="fa fa-chevron-down" />
                   </a>
                 </div>
@@ -703,14 +703,14 @@ class TopicBox extends React.Component {
                 <span>
                   {this.state.topic?.homePageTopTime === "" ? (
                     <span>
-                      <a href="#;" onClick={() => this.topTopic("homePage")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.topTopic("homePage")} className="op">
                         {i18next.t("topic:HomePageTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a href="#;" onClick={() => this.cancelTopTopic("homePage")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.cancelTopTopic("homePage")} className="op">
                         {i18next.t("topic:CancelHomePageTop")}
                       </a>
                       &nbsp;{" "}
@@ -718,14 +718,14 @@ class TopicBox extends React.Component {
                   )}
                   {this.state.topic?.tabTopTime === "" ? (
                     <span>
-                      <a href="#;" onClick={() => this.topTopic("tab")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.topTopic("tab")} className="op">
                         {i18next.t("topic:TabTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a href="#;" onClick={() => this.cancelTopTopic("tab")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.cancelTopTopic("tab")} className="op">
                         {i18next.t("topic:CancelTabTop")}
                       </a>
                       &nbsp;{" "}
@@ -733,14 +733,14 @@ class TopicBox extends React.Component {
                   )}
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
-                      <a href="#;" onClick={() => this.topTopic("node")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.topTopic("node")} className="op">
                         {i18next.t("topic:NodeTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a href="#;" onClick={() => this.cancelTopTopic("node")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.cancelTopTopic("node")} className="op">
                         {i18next.t("topic:CancelNodeTop")}
                       </a>
                       &nbsp;{" "}
@@ -751,14 +751,14 @@ class TopicBox extends React.Component {
                 <span>
                   {this.state.topic?.nodeTopTime === "" ? (
                     <span>
-                      <a href="#;" onClick={() => this.topTopic("node")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.topTopic("node")} className="op">
                         {i18next.t("topic:NodeTop")}
                       </a>
                       &nbsp;{" "}
                     </span>
                   ) : (
                     <span>
-                      <a href="#;" onClick={() => this.cancelTopTopic("node")} className="op">
+                      <a href="javascript:void(0)" onClick={() => this.cancelTopTopic("node")} className="op">
                         {i18next.t("topic:CancelNodeTop")}
                       </a>
                       &nbsp;{" "}
@@ -777,7 +777,7 @@ class TopicBox extends React.Component {
                   </Link>
                   &nbsp;{" "}
                   {this.props.account?.isAdmin || this.state.topic?.nodeModerator ? (
-                    <Link onClick={() => this.deleteTopic()} to="#;" className="op">
+                    <Link onClick={() => this.deleteTopic()} to="javascript:void(0)" className="op">
                       {i18next.t("topic:DELETE")}
                     </Link>
                   ) : null}
@@ -798,7 +798,7 @@ class TopicBox extends React.Component {
                   escapeHtml={false}
                 />
                 {this.state.showTranslateBtn ? (
-                  <a href="#;" onClick={() => this.translateTopic()}>
+                  <a href="javascript:void(0)" onClick={() => this.translateTopic()}>
                     <p style={{ margin: 15 }}>
                       {this.state.translation.translated ? (
                         <span>
