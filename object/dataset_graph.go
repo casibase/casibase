@@ -5,13 +5,25 @@ import (
 	"math"
 )
 
+var graphCache map[string]*Graph
+
+func init() {
+	graphCache = map[string]*Graph{}
+}
+
 func GetDatasetGraph(id string) *Graph {
+	g, ok := graphCache[id]
+	if ok {
+		return g
+	}
+
 	dataset := GetDataset(id)
 	if dataset == nil {
 		return nil
 	}
 
-	g := generateGraph(dataset.Vectors)
+	g = generateGraph(dataset.Vectors)
+	graphCache[id] = g
 	return g
 }
 
@@ -35,6 +47,7 @@ func refineVectors(vectors []*Vector) []*Vector {
 
 func generateGraph(vectors []*Vector) *Graph {
 	vectors = refineVectors(vectors)
+	vectors = vectors[:100]
 
 	g := newGraph()
 
