@@ -16,6 +16,7 @@ package object
 
 import (
 	"regexp"
+	"strconv"
 	"sync"
 
 	"github.com/astaxie/beego"
@@ -190,6 +191,13 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		v[1] += content[len(content)-1:]
 		if senderId != v[1] && !memberMap[v[1]] {
 			memberMap[v[1]] = true
+		}
+	}
+
+	subscribeUsers := GetMembersFromFavorites(strconv.Itoa(topicId), SubscribeTopic)
+	for _, v := range subscribeUsers {
+		if senderId != v.Name && !memberMap[v.Name] {
+			memberMap[v.Name] = true
 		}
 	}
 

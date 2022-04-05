@@ -33,7 +33,7 @@ class RightFavouriteBox extends React.Component {
   }
 
   getFavoriteNode() {
-    FavoritesBackend.getFavorites(3, 0, 0).then((res) => {
+    FavoritesBackend.getFavorites("favor_node", 0, 0).then((res) => {
       this.setState({
         info: res.data,
       });

@@ -80,7 +80,7 @@ class MemberBox extends React.Component {
   }
 
   getFavoriteStatus() {
-    FavoritesBackend.getFavoritesStatus(this.state.memberId, 2).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.memberId, "follow_user").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -92,7 +92,7 @@ class MemberBox extends React.Component {
   }
 
   addFavorite(memberId) {
-    FavoritesBackend.addFavorites(memberId, 2).then((res) => {
+    FavoritesBackend.addFavorites(memberId, "follow_user").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -108,7 +108,7 @@ class MemberBox extends React.Component {
   block(memberId) {}
 
   deleteFavorite(memberId) {
-    FavoritesBackend.deleteFavorites(memberId, 2).then((res) => {
+    FavoritesBackend.deleteFavorites(memberId, "follow_user").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: !res.data,

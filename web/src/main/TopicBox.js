@@ -44,6 +44,7 @@ class TopicBox extends React.Component {
       topic: [],
       topicThanksCost: 15,
       favoritesStatus: false,
+      subscribeStatus: false,
       defaultTopTopicTime: 10,
       from: "/",
       showTranslateBtn: false,
@@ -67,6 +68,7 @@ class TopicBox extends React.Component {
     document.title = Setting.getForumName();
     this.getTopic();
     this.getFavoriteStatus();
+    this.getSubscribeStatus();
     TopicBackend.addTopicBrowseCount(this.state.topicId);
     this.renderTranslateButton();
   }
@@ -127,10 +129,26 @@ class TopicBox extends React.Component {
       return;
     }
 
-    FavoritesBackend.getFavoritesStatus(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.getFavoritesStatus(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
+        });
+      } else {
+        Setting.showMessage("error", res.msg);
+      }
+    });
+  }
+
+  getSubscribeStatus() {
+    if (this.state.event === "review" || this.props.account === null) {
+      return;
+    }
+
+    FavoritesBackend.getFavoritesStatus(this.state.topicId, "subscribe_topic").then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          subscribeStatus: res.data,
         });
       } else {
         Setting.showMessage("error", res.msg);
@@ -153,7 +171,7 @@ class TopicBox extends React.Component {
   }
 
   addFavorite() {
-    FavoritesBackend.addFavorites(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.addFavorites(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: res.data,
@@ -166,11 +184,39 @@ class TopicBox extends React.Component {
     });
   }
 
+  addSubscribe() {
+    FavoritesBackend.addFavorites(this.state.topicId, "subscribe_topic").then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          subscribeStatus: res.data,
+        });
+        this.getTopic("refresh");
+        this.props.refreshFavorites();
+      } else {
+        Setting.showMessage("error", res.msg);
+      }
+    });
+  }
+
   deleteFavorite() {
-    FavoritesBackend.deleteFavorites(this.state.topicId, 1).then((res) => {
+    FavoritesBackend.deleteFavorites(this.state.topicId, "favor_topic").then((res) => {
       if (res.status === "ok") {
         this.setState({
           favoritesStatus: !res.data,
+        });
+        this.getTopic("refresh");
+        this.props.refreshFavorites();
+      } else {
+        Setting.showMessage("error", res.msg);
+      }
+    });
+  }
+
+  deleteSubscribe() {
+    FavoritesBackend.deleteFavorites(this.state.topicId, "subscribe_topic").then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          subscribeStatus: !res.data,
         });
         this.getTopic("refresh");
         this.props.refreshFavorites();
@@ -332,6 +378,18 @@ class TopicBox extends React.Component {
             )
           ) : null}{" "}
           &nbsp;
+          {this.props.account !== undefined && this.props.account !== null ? (
+            this.state.subscribeStatus ? (
+              <a href="#;" onClick={() => this.deleteSubscribe()} className="op">
+                {i18next.t("topic:Cancel Favor")}
+              </a>
+            ) : (
+              <a href="#;" onClick={() => this.addSubscribe()} className="op">
+                {i18next.t("topic:Favor")}
+              </a>
+            )
+          ) : null}{" "}
+          &nbsp;
           <a
             href="#;"
             onClick="window.open('https://twitter.com/share?url=https://www.example.com/t/123456?r=username&amp;related=casbinforum&amp;hashtags=inc&amp;text=title', '_blank', 'width=550,height=370'); recordOutboundLink(this, 'Share', 'twitter.com');"
@@ -409,6 +467,31 @@ class TopicBox extends React.Component {
             </a>
           )
         ) : null}
+        &nbsp;
+        {this.props.account !== undefined && this.props.account !== null ? (
+          this.state.subscribeStatus ? (
+            <a
+              href="#;"
+              onClick={() => {
+                this.deleteSubscribe();
+              }}
+              className="tb"
+            >
+              {i18next.t("topic:Cancel Subscribe")}
+            </a>
+          ) : (
+            <a
+              href="#;"
+              onClick={() => {
+                this.addSubscribe();
+              }}
+              className="tb"
+            >
+              {i18next.t("topic:Subscribe")}
+            </a>
+          )
+        ) : null}
+        &nbsp;
         <a href="#;" onClick={() => this.openShare()} className="tb">
           Tweet
         </a>

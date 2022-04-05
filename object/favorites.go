@@ -14,15 +14,33 @@
 
 package object
 
-import "github.com/casbin/casnode/util"
+import (
+	"github.com/casbin/casnode/util"
+	"github.com/casdoor/casdoor-go-sdk/auth"
+)
 
-// Favorites using figure 1-3 to choose type, 1 means topic, 2 means people, 3 means node.
 type Favorites struct {
 	Id            int    `xorm:"int notnull pk autoincr" json:"id"`
-	FavoritesType int    `xorm:"int index" json:"favoritesType"`
+	FavoritesType string `xorm:"varchar(100) index" json:"favoritesType"`
 	ObjectId      string `xorm:"varchar(100) index" json:"objectId"`
 	CreatedTime   string `xorm:"varchar(40)" json:"createdTime"`
 	MemberId      string `xorm:"varchar(100) index" json:"memberId"`
+}
+
+const (
+	FavorTopic     = "favor_topic"
+	FollowUser     = "follow_user"
+	FavorNode      = "favor_node"
+	SubscribeTopic = "subscribe_topic"
+	SubscribeReply = "subscribe_reply"
+)
+
+func IsFavoritesExist(Type string) bool {
+	//check the if the string is in the enum
+	if Type == FavorTopic || Type == FollowUser || Type == FavorNode || Type == SubscribeTopic || Type == SubscribeReply {
+		return true
+	}
+	return false
 }
 
 func AddFavorites(favorite *Favorites) bool {
@@ -34,7 +52,7 @@ func AddFavorites(favorite *Favorites) bool {
 	return affected != 0
 }
 
-func DeleteFavorites(memberId string, objectId string, favoritesType int) bool {
+func DeleteFavorites(memberId string, objectId string, favoritesType string) bool {
 	affected, err := adapter.Engine.Where("favorites_type = ?", favoritesType).And("object_id = ?", objectId).And("member_id = ?", memberId).Delete(&Favorites{})
 	if err != nil {
 		panic(err)
@@ -52,7 +70,7 @@ func GetFavoritesCount() int {
 	return int(count)
 }
 
-func GetFavoritesStatus(memberId string, objectId string, favoritesType int) bool {
+func GetFavoritesStatus(memberId string, objectId string, favoritesType string) bool {
 	node := new(Favorites)
 	total, err := adapter.Engine.Where("favorites_type = ?", favoritesType).And("object_id = ?", objectId).And("member_id = ?", memberId).Count(node)
 	if err != nil {
@@ -62,9 +80,9 @@ func GetFavoritesStatus(memberId string, objectId string, favoritesType int) boo
 	return total != 0
 }
 
-func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWithAvatar {
+func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesType string) []*TopicWithAvatar {
 	favorites := []*Favorites{}
-	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", 1).Limit(limit, offset).Find(&favorites)
+	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", favoritesType).Limit(limit, offset).Find(&favorites)
 	if err != nil {
 		panic(err)
 	}
@@ -79,12 +97,48 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int) []*TopicWith
 	return topics
 }
 
+func GetMembersFromFavorites(objectId string, favoritesType string) []*auth.User {
+	favorites := []*Favorites{}
+	err := adapter.Engine.Where("object_id = ?", objectId).And("favorites_type = ?", favoritesType).Find(&favorites)
+	if err != nil {
+		panic(err)
+	}
+
+	members := []*auth.User{}
+	for _, v := range favorites {
+		memberId := v.MemberId
+		temp := GetUser(memberId)
+		members = append(members, temp)
+	}
+
+	return members
+}
+
+func GetRepliesFromFavorites(memberId string, limit int, offset int, favoritesType string) []*ReplyWithAvatar {
+	favorites := []*Favorites{}
+	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", favoritesType).Limit(limit, offset).Find(&favorites)
+	if err != nil {
+		panic(err)
+	}
+
+	replies := []*ReplyWithAvatar{}
+	for _, v := range favorites {
+		topicId := util.ParseInt(v.ObjectId)
+		temp, _ := GetReplies(topicId, nil, limit, offset)
+		for _, v := range temp {
+			replies = append(replies, v)
+		}
+	}
+
+	return replies
+}
+
 func GetFollowingNewAction(memberId string, limit int, offset int) []*TopicWithAvatar {
 	var topics []*TopicWithAvatar
 
 	err := adapter.Engine.Table("topic").
 		Join("INNER", "favorites", "favorites.object_id = topic.author").
-		Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).
+		Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", FollowUser).
 		Desc("topic.id").
 		Cols("topic.id, topic.author, topic.node_id, topic.node_name, topic.title, topic.created_time, topic.last_reply_user, topic.last_Reply_time, topic.reply_count, topic.favorite_count, topic.deleted, topic.home_page_top_time, topic.tab_top_time, topic.node_top_time").
 		Omit("topic.content").
@@ -102,7 +156,7 @@ func GetFollowingNewAction(memberId string, limit int, offset int) []*TopicWithA
 
 func GetNodesFromFavorites(memberId string, limit int, offset int) []*NodeFavoritesRes {
 	favorites := []*Favorites{}
-	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", 3).Limit(limit, offset).Find(&favorites)
+	err := adapter.Engine.Where("member_id = ?", memberId).And("favorites_type = ?", FavorNode).Limit(limit, offset).Find(&favorites)
 	if err != nil {
 		panic(err)
 	}
@@ -120,7 +174,7 @@ func GetNodesFromFavorites(memberId string, limit int, offset int) []*NodeFavori
 
 func GetNodeFavoritesNum(id string) int {
 	node := new(Favorites)
-	total, err := adapter.Engine.Where("favorites_type = ?", 3).And("object_id = ?", id).Count(node)
+	total, err := adapter.Engine.Where("favorites_type = ?", FavorNode).And("object_id = ?", id).Count(node)
 	if err != nil {
 		panic(err)
 	}
@@ -130,7 +184,7 @@ func GetNodeFavoritesNum(id string) int {
 
 func GetFollowingNum(id string) int {
 	member := new(Favorites)
-	total, err := adapter.Engine.Where("favorites_type = ?", 2).And("member_id = ?", id).Count(member)
+	total, err := adapter.Engine.Where("favorites_type = ?", FollowUser).And("member_id = ?", id).Count(member)
 	if err != nil {
 		panic(err)
 	}
@@ -138,28 +192,42 @@ func GetFollowingNum(id string) int {
 	return int(total)
 }
 
-func GetFavoritesNum(favoritesType int, memberId string) int {
+func GetFavoritesNum(favoritesType string, memberId string) int {
 	var total int64
 	var err error
 
 	switch favoritesType {
-	case 1:
+	case FavorTopic:
 		topic := new(Favorites)
-		total, err = adapter.Engine.Where("favorites_type = ?", 1).And("member_id = ?", memberId).Count(topic)
+		total, err = adapter.Engine.Where("favorites_type = ?", FavorTopic).And("member_id = ?", memberId).Count(topic)
 		if err != nil {
 			panic(err)
 		}
 		break
-	case 2:
+	case FollowUser:
 		topic := new(Favorites)
-		total, err = adapter.Engine.Table("topic").Join("INNER", "favorites", "topic.author = favorites.object_id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", 2).Count(topic)
+		total, err = adapter.Engine.Table("topic").Join("INNER", "favorites", "topic.author = favorites.object_id").Where("favorites.member_id = ?", memberId).And("favorites.favorites_type = ?", FollowUser).Count(topic)
 		if err != nil {
 			panic(err)
 		}
 		break
-	case 3:
+	case FavorNode:
 		node := new(Favorites)
-		total, err = adapter.Engine.Where("favorites_type = ?", 3).And("member_id = ?", memberId).Count(node)
+		total, err = adapter.Engine.Where("favorites_type = ?", FavorNode).And("member_id = ?", memberId).Count(node)
+		if err != nil {
+			panic(err)
+		}
+		break
+	case SubscribeTopic:
+		topic := new(Favorites)
+		total, err = adapter.Engine.Where("favorites_type = ?", SubscribeTopic).And("member_id = ?", memberId).Count(topic)
+		if err != nil {
+			panic(err)
+		}
+		break
+	case SubscribeReply:
+		reply := new(Favorites)
+		total, err = adapter.Engine.Where("favorites_type = ?", SubscribeReply).And("member_id = ?", memberId).Count(reply)
 		if err != nil {
 			panic(err)
 		}

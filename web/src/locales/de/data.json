@@ -45,6 +45,7 @@
     "Created a": "Erstellt ein",
     "Current account balance": "Aktueller Kontostand",
     "Description": "Beschreibung",
+    "Documentation on the virtual currency system": "Documentation on the virtual currency system",
     "Pin it to the top": "An die Spitze anheften",
     "Received thanks": "Empfangener Dank",
     "Recharge": "Aufladen",
@@ -133,6 +134,7 @@
     "Latest topics from people I followed": "Neueste Themen von Leuten, denen ich gefolgt bin",
     "My Favorite Nodes": "Meine Lieblingsknoten",
     "My favorite topics": "Meine Lieblingsthemen",
+    "My subscribe topics": "My subscribe topics",
     "Total nodes": "Total nodes:",
     "Total topics": "Total topics:"
   },
@@ -247,8 +249,8 @@
     "Watch": "Beobachten",
     "You have signed out completely, no personal information is left on this computer.": "You have signed out completely, no personal information is left on this computer.",
     "authorized to manage the community": "autorisiert, die Community zu verwalten",
-    "member, joined on": "Mitglied, beigetreten am",
     "member": "member",
+    "member, joined on": "Mitglied, beigetreten am",
     "replied": "antwortet"
   },
   "mission": {
@@ -279,6 +281,7 @@
     "Please select a node": "Bitte wählen Sie einen Knoten",
     "Preview": "Vorschau",
     "Publish": "Veröffentlichen",
+    "Publishing...": "Publishing...",
     "RichText": "RichText",
     "Switch editor": "Editor wechseln",
     "Topic Title": "Thementitel"
@@ -329,6 +332,7 @@
     "Not set": "Nicht gesetzt",
     "Parent node": "Übergeordneter Knoten",
     "Plane": "Ebene",
+    "Please go to the background page to continue to improve the information and submit": "Please go to the background page to continue to improve the information and submit",
     "Preview": "Vorschau",
     "Publish": "Veröffentlichen",
     "Related links": "Verknüpfte Links",
@@ -493,6 +497,7 @@
     "Are you sure you want to pin this topic for": "Sind Sie sicher, dass Sie dieses Thema anpinnen wollen für",
     "Author": "Autor",
     "Cancel Favor": "Favor abbrechen",
+    "Cancel Subscribe": "Cancel Subscribe",
     "CancelHomePageTop": "CancelHomePageTop",
     "CancelNodeTop": "Abbrechen NodeTop",
     "CancelTabTop": "Abbrechen",
@@ -539,6 +544,7 @@
     "Sink": "Sink",
     "Status": "Status",
     "Sticky state": "Fixierter Status",
+    "Subscribe": "Subscribe",
     "Tab Topping": "Tab Stoppen",
     "TabTop": "TabTop",
     "Text syntax format": "Textsyntax-Format",
