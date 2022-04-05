@@ -60,9 +60,11 @@ func getNodeColor(weight int) string {
 	return fmt.Sprintf("rgb(%d,%d,%d)", myColor.R, myColor.G, myColor.B)
 }
 
+var DistanceLimit = 12
+
 func generateGraph(vectors []*Vector) *Graph {
 	vectors = refineVectors(vectors)
-	vectors = vectors[:100]
+	//vectors = vectors[:100]
 
 	g := newGraph()
 
@@ -72,7 +74,7 @@ func generateGraph(vectors []*Vector) *Graph {
 			v1 := vectors[i]
 			v2 := vectors[j]
 			distance := int(getDistance(v1, v2))
-			if distance >= 16 {
+			if distance >= DistanceLimit {
 				continue
 			}
 
@@ -87,10 +89,11 @@ func generateGraph(vectors []*Vector) *Graph {
 				nodeWeightMap[v2.Name] = v + 1
 			}
 
-			linkValue := (1*(distance-7) + 10*(15-distance)) / 8
+			linkValue := (1*(distance-7) + 10*(DistanceLimit-1-distance)) / (DistanceLimit - 8)
 			linkColor := "rgb(44,160,44,0.6)"
-			fmt.Printf("[%s] - [%s]: distance = %d, linkValue = %d\n", v1.Name, v2.Name, distance, linkValue)
-			g.addLink(fmt.Sprintf("%s - %s", v1.Name, v2.Name), v1.Name, v2.Name, linkValue, linkColor, "")
+			linkName := fmt.Sprintf("[%s] - [%s]: distance = %d, linkValue = %d", v1.Name, v2.Name, distance, linkValue)
+			fmt.Println(linkName)
+			g.addLink(linkName, v1.Name, v2.Name, linkValue, linkColor, "")
 		}
 	}
 
