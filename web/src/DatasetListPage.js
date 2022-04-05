@@ -105,19 +105,27 @@ class DatasetListPage extends React.Component {
         // width: '120px',
         sorter: (a, b) => a.vectors.localeCompare(b.vectors),
         render: (text, record, index) => {
-          const tags = text.map(vector => vector.name);
-          const tooltips = text.map(vector => JSON.stringify(vector.data));
-          return Setting.getTags(tags, tooltips);
+          return Setting.getTags(text);
         }
       },
       {
-        title: i18next.t("dataset:Vector count"),
-        dataIndex: 'vectorCount',
-        key: 'vectorCount',
+        title: i18next.t("dataset:All vectors"),
+        dataIndex: 'allVectors',
+        key: 'allVectors',
         width: '140px',
-        sorter: (a, b) => a.vectorCount - b.vectorCount,
+        sorter: (a, b) => a.allVectors - b.allVectors,
         render: (text, record, index) => {
           return record.vectors.length;
+        }
+      },
+      {
+        title: i18next.t("dataset:Valid vectors"),
+        dataIndex: 'validVectors',
+        key: 'validVectors',
+        width: '140px',
+        sorter: (a, b) => a.validVectors - b.validVectors,
+        render: (text, record, index) => {
+          return record.vectors.filter(vector => vector.data.length !== 0).length;
         }
       },
       {

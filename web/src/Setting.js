@@ -227,22 +227,22 @@ export function getTagColor(s) {
   return "processing";
 }
 
-export function getTags(tags, tooltips) {
+export function getTags(vectors) {
   let res = [];
-  if (!tags) return res;
-  tags.forEach((tag, i) => {
-    if (tooltips !== undefined) {
+  if (!vectors) return res;
+  vectors.forEach((vector, i) => {
+    if (vector.data.length !== 0) {
       res.push(
-        <Tooltip placement="top" title={tooltips[i]}>
-          <Tag color={getTagColor(tag)}>
-            {tag}
+        <Tooltip placement="top" title={JSON.stringify(vector.data)}>
+          <Tag color={"success"}>
+            {vector.name}
           </Tag>
         </Tooltip>
       );
     } else {
       res.push(
-        <Tag color={getTagColor(tag)}>
-          {tag}
+        <Tag color={"warning"}>
+          {vector.name}
         </Tag>
       );
     }
