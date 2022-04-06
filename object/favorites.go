@@ -52,6 +52,20 @@ func AddFavorites(favorite *Favorites) bool {
 	return affected != 0
 }
 
+func AddMemberFavorites(memberId string, favoritesType string, objectId string) bool {
+	status := GetFavoritesStatus(memberId, favoritesType, objectId)
+	if status == true {
+		return true
+	}
+	favorite := Favorites{
+		FavoritesType: favoritesType,
+		ObjectId:      objectId,
+		CreatedTime:   util.GetCurrentTime(),
+		MemberId:      memberId,
+	}
+	return AddFavorites(&favorite)
+}
+
 func DeleteFavorites(memberId string, objectId string, favoritesType string) bool {
 	affected, err := adapter.Engine.Where("favorites_type = ?", favoritesType).And("object_id = ?", objectId).And("member_id = ?", memberId).Delete(&Favorites{})
 	if err != nil {
