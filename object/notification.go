@@ -184,6 +184,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 	for _, v := range regResult {
 		if senderId != v[1] && !memberMap[v[1]] {
 			memberMap[v[1]] = true
+			AddMemberFavorites(v[1], "subscribe_topic", strconv.Itoa(topicId))
 		}
 	}
 
@@ -191,6 +192,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 		v[1] += content[len(content)-1:]
 		if senderId != v[1] && !memberMap[v[1]] {
 			memberMap[v[1]] = true
+			AddMemberFavorites(v[1], "subscribe_topic", strconv.Itoa(topicId))
 		}
 	}
 
@@ -264,6 +266,7 @@ func AddTopicNotification(objectId int, author, content string) {
 	for _, v := range regResult {
 		if author != v[1] && !memberMap[v[1]] {
 			memberMap[v[1]] = true
+			AddMemberFavorites(v[1], "subscribe_topic", strconv.Itoa(objectId))
 		}
 	}
 
@@ -271,6 +274,7 @@ func AddTopicNotification(objectId int, author, content string) {
 		v[1] += content[len(content)-1:]
 		if author != v[1] && !memberMap[v[1]] {
 			memberMap[v[1]] = true
+			AddMemberFavorites(v[1], "subscribe_topic", strconv.Itoa(objectId))
 		}
 	}
 
