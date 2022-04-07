@@ -15,8 +15,10 @@ func init() {
 	graphCache = map[string]*Graph{}
 }
 
-func GetDatasetGraph(id string) *Graph {
-	g, ok := graphCache[id]
+func GetDatasetGraph(id string, clusterNumber int) *Graph {
+	cacheId := fmt.Sprintf("%s|%d", id, clusterNumber)
+
+	g, ok := graphCache[cacheId]
 	if ok {
 		return g
 	}
@@ -26,8 +28,10 @@ func GetDatasetGraph(id string) *Graph {
 		return nil
 	}
 
+	runKmeans(dataset.Vectors, clusterNumber)
+
 	g = generateGraph(dataset.Vectors)
-	graphCache[id] = g
+	graphCache[cacheId] = g
 	return g
 }
 
@@ -61,7 +65,7 @@ func getNodeColor(weight int) string {
 	return fmt.Sprintf("rgb(%d,%d,%d)", myColor.R, myColor.G, myColor.B)
 }
 
-var DistanceLimit = 11
+var DistanceLimit = 14
 
 func generateGraph(vectors []*Vector) *Graph {
 	vectors = refineVectors(vectors)

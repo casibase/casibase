@@ -18,7 +18,7 @@ func fa2Str(floatArray []float64) string {
 	return strings.Join(sData, "|")
 }
 
-func runKmeans(vectors []*Vector) {
+func runKmeans(vectors []*Vector, clusterNumber int) {
 	vectorMap := map[string]*Vector{}
 
 	var d clusters.Observations
@@ -34,7 +34,7 @@ func runKmeans(vectors []*Vector) {
 	}
 
 	km := kmeans.New()
-	cs, err := km.Partition(d, 100)
+	cs, err := km.Partition(d, clusterNumber)
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func runKmeans(vectors []*Vector) {
 func updateDatasetVectorCategories(owner string, datasetName string) {
 	dataset := getDataset(owner, datasetName)
 
-	runKmeans(dataset.Vectors)
+	runKmeans(dataset.Vectors, 100)
 
 	UpdateDataset(dataset.GetId(), dataset)
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/casbin/casbase/object"
+	"github.com/casbin/casbase/util"
 )
 
 func (c *ApiController) GetGlobalDatasets() {
@@ -27,8 +28,9 @@ func (c *ApiController) GetDataset() {
 
 func (c *ApiController) GetDatasetGraph() {
 	id := c.Input().Get("id")
+	clusterNumber := util.ParseInt(c.Input().Get("clusterNumber"))
 
-	c.Data["json"] = object.GetDatasetGraph(id)
+	c.Data["json"] = object.GetDatasetGraph(id, clusterNumber)
 	c.ServeJSON()
 }
 

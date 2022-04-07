@@ -1,10 +1,12 @@
 import React from "react";
-import {Card, Col, Empty, List, Row, Slider, Spin, Switch, Tooltip} from "antd";
+import {Button, Card, Col, Empty, InputNumber, List, Row, Select, Slider, Spin, Switch, Tooltip} from "antd";
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
 import * as d3 from "d3-force";
 import * as DatasetBackend from "./backend/DatasetBackend";
 import i18next from "i18next";
+
+const { Option } = Select;
 
 let fg = React.createRef();
 
@@ -43,6 +45,7 @@ class Dataset extends React.Component {
       // particlePercent: 100,
       strength: 20,
       distanceMax: 100,
+      clusterNumber: 100,
       selectedType: null,
       selectedId: null,
       selectedIds: [],
@@ -54,11 +57,11 @@ class Dataset extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    fg.current.d3Force('collision', d3.forceCollide(15));
+    fg.current?.d3Force('collision', d3.forceCollide(15));
   }
 
   getDatasetGraph() {
-    DatasetBackend.getDatasetGraph("admin", this.state.datasetName)
+    DatasetBackend.getDatasetGraph("admin", this.state.datasetName, this.state.clusterNumber)
       .then((graph) => {
         this.setState({
           graph: graph,
@@ -245,6 +248,52 @@ class Dataset extends React.Component {
                   fg.current.d3Force('charge').distanceMax(value);
                 })} />
               </Col>
+            </Row>
+          </Card>
+          <Card style={{marginTop: "20px"}} size="small" title={
+            <div>
+              聚类参数
+            </div>
+          } type="inner">
+            <Row>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={8}>
+                算法：
+              </Col>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={16}>
+                <Select virtual={false} style={{width: '100%'}} value={"K-Means"} onChange={(value => {
+                  this.setState({
+                    algorithm: value,
+                  });
+                })}>
+                  {
+                    [
+                      {id: 'K-Means', name: 'K-Means'},
+                    ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+            <Row>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+                聚类个数：
+              </Col>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+                <InputNumber style={{width: "100%"}} min={2} max={this.state.graph?.nodes.length} step={1} value={this.state.clusterNumber} onChange={value => {
+                  this.setState({
+                    clusterNumber: value,
+                  });
+                }} />
+              </Col>
+            </Row>
+            <Row style={{textAlign: "center", paddingTop: '10px'}}>
+              <Button style={{margin: 'auto'}} type="primary" onClick={() => {
+                this.setState({
+                  graph: null,
+                });
+                this.getDatasetGraph();
+              }}>
+                重新聚类
+              </Button>
             </Row>
           </Card>
         </div>
