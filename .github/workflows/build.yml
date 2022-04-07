@@ -1,0 +1,66 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+
+  frontend:
+    name: Front-end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14.17.0'
+      - run: yarn install && CI=false yarn run build
+        working-directory: ./web
+
+  backend:
+    name: Back-end
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: '^1.16.5'
+      - run: go version
+      - name: Build
+        run: |
+          go build -race -ldflags "-extldflags '-static'"
+        working-directory: ./
+
+  release-and-push:
+    name: Release And Push
+    runs-on: ubuntu-latest
+    if: github.repository == 'casbin/casnode' && github.event_name == 'push'
+    needs: [ frontend, backend ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 12
+
+      - name: Release
+        run: yarn global add semantic-release@17.4.4 && semantic-release
+        env:
+          GH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        if: github.repository == 'casbin/casnode' && github.event_name == 'push' &&steps.should_push.outputs.push=='true'
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        if: github.repository == 'casbin/casnode' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
+        with:
+          push: true
+          tags: casbin/casnode:${{steps.get-current-tag.outputs.tag }},casbin/casnode:latest
