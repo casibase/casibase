@@ -70,6 +70,10 @@ code {
   background: #d9f7be;
 }
 
+.ant-list-item:hover {
+  box-shadow: 0 0 4px #888;
+}
+
 /*https://stackoverflow.com/questions/64961752/how-do-i-change-the-color-of-selected-menu-item-in-ant-design*/
 /*.conferenceMenu > .ant-menu-item-selected {*/
 /*  background-color: rgb(230,247,255) !important;*/

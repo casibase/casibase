@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, Col, Empty, List, Row, Slider, Spin, Switch} from "antd";
+import {Card, Col, Empty, List, Row, Slider, Spin, Switch, Tooltip} from "antd";
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
 import * as d3 from "d3-force";
@@ -66,6 +66,31 @@ class Dataset extends React.Component {
       });
   }
 
+  renderSubMenu(node) {
+    const links = this.state.graph.links.filter(link => (link.source === node.id || link.target === node.id || link.source.id === node.id || link.target.id === node.id)).sort((a, b) => {return a.tag - b.tag;});
+
+    return (
+      <List
+        // style={{height: "200px"}}
+        size="small"
+        header={
+          <div>
+            边数：{links.length}
+          </div>
+        }
+        dataSource={links}
+        renderItem={link => {
+          return (
+            <List.Item>
+              {`${(link.source !== node.id) ? link.source.id : link.target.id} | ${link.tag}`}
+            </List.Item>
+          )
+        }}
+        pagination={{pageSize: 20, size: "small", showLessItems: true, simple: true}}
+      />
+    )
+  }
+
   renderNodeMenu(selectedIds) {
     return (
       <List
@@ -73,15 +98,17 @@ class Dataset extends React.Component {
         size="small"
         header={
           <div>
-            节点个数：{selectedIds.length}
+            节点数：{selectedIds.length}
           </div>
         }
         dataSource={selectedIds}
-        renderItem={item => {
+        renderItem={node => {
           return (
-            <List.Item style={{backgroundColor: (this.state.selectedId === item.id) ? "rgb(249,198,205)" : ""}}>
-              {`${item.id} | ${item.weight}`}
-            </List.Item>
+            <Tooltip placement="right" color={"rgb(255,255,255)"} title={this.renderSubMenu(node)}>
+              <List.Item style={{backgroundColor: (this.state.selectedId === node.id) ? "rgb(249,198,205)" : ""}}>
+                {`${node.id} | ${node.weight}`}
+              </List.Item>
+            </Tooltip>
           )
         }}
         pagination={{pageSize: 20, size: "small", showLessItems: true, simple: true}}

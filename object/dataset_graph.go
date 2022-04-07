@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"image/color"
 	"math"
+	"strconv"
 
 	"github.com/casbin/casbase/util"
 )
@@ -93,7 +94,7 @@ func generateGraph(vectors []*Vector) *Graph {
 			linkColor := "rgb(44,160,44,0.6)"
 			linkName := fmt.Sprintf("Edge [%s] - [%s]: distance = %d, linkValue = %d", v1.Name, v2.Name, distance, linkValue)
 			fmt.Println(linkName)
-			g.addLink(linkName, v1.Name, v2.Name, linkValue, linkColor, "")
+			g.addLink(linkName, v1.Name, v2.Name, linkValue, linkColor, strconv.Itoa(distance))
 		}
 	}
 
