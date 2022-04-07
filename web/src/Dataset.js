@@ -2,6 +2,7 @@ import React from "react";
 import {Card, Col, Empty, Row, Slider, Spin, Switch} from "antd";
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
+import * as d3 from "d3-force";
 import * as DatasetBackend from "./backend/DatasetBackend";
 import i18next from "i18next";
 
@@ -37,7 +38,7 @@ class Dataset extends React.Component {
       graph: null,
       enableStatic: false,
       // enableCurve: true,
-      enableBolderLink: true,
+      enableBolderLink: false,
       enable3D: false,
       // particlePercent: 100,
       strength: 20,
@@ -49,6 +50,10 @@ class Dataset extends React.Component {
 
   componentWillMount() {
     this.getDatasetGraph();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    fg.current.d3Force('collision', d3.forceCollide(15));
   }
 
   getDatasetGraph() {

@@ -60,7 +60,7 @@ func getNodeColor(weight int) string {
 	return fmt.Sprintf("rgb(%d,%d,%d)", myColor.R, myColor.G, myColor.B)
 }
 
-var DistanceLimit = 12
+var DistanceLimit = 11
 
 func generateGraph(vectors []*Vector) *Graph {
 	vectors = refineVectors(vectors)
