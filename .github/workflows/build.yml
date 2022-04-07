@@ -44,10 +44,39 @@ jobs:
         with:
           node-version: 12
 
+      - name: Fetch Previous version
+        id: get-previous-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+
       - name: Release
         run: yarn global add semantic-release@17.4.4 && semantic-release
         env:
           GH_TOKEN: ${{ secrets.GH_BOT_TOKEN }}
+
+      - name: Fetch Current version
+        id: get-current-tag
+        uses: actions-ecosystem/action-get-latest-tag@v1
+
+      - name: Decide Should_Push Or Not
+        id: should_push
+        run: |
+          old_version=${{steps.get-previous-tag.outputs.tag}}
+          new_version=${{steps.get-current-tag.outputs.tag }}
+
+          old_array=(${old_version//\./ })
+          new_array=(${new_version//\./ })
+
+          if [ ${old_array[0]} != ${new_array[0]} ]
+          then 
+              echo ::set-output name=push::'true'
+          elif [ ${old_array[1]} != ${new_array[1]} ]
+          then 
+              echo ::set-output name=push::'true'
+
+          else
+              echo ::set-output name=push::'false'
+
+          fi
 
 
       - name: Log in to Docker Hub
