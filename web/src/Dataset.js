@@ -1,5 +1,5 @@
 import React from "react";
-import {Card, Col, Empty, Row, Slider, Spin, Switch} from "antd";
+import {Card, Col, Empty, List, Row, Slider, Spin, Switch} from "antd";
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
 import * as d3 from "d3-force";
@@ -45,6 +45,7 @@ class Dataset extends React.Component {
       distanceMax: 100,
       selectedType: null,
       selectedId: null,
+      selectedIds: [],
     }
   }
 
@@ -65,8 +66,58 @@ class Dataset extends React.Component {
       });
   }
 
+  renderNodeMenu(selectedIds) {
+    return (
+      <List
+        // style={{height: "200px"}}
+        size="small"
+        header={
+          <div>
+            节点个数：{selectedIds.length}
+          </div>
+        }
+        dataSource={selectedIds}
+        renderItem={item => {
+          return (
+            <List.Item style={{backgroundColor: (this.state.selectedId === item.id) ? "rgb(249,198,205)" : ""}}>
+              {`${item.id} | ${item.weight}`}
+            </List.Item>
+          )
+        }}
+        pagination={{pageSize: 20, size: "small", showLessItems: true, simple: true}}
+      />
+    )
+  }
+
   renderLeftToolbar() {
-    return null;
+    if (this.state.graph === null) {
+      return;
+    }
+
+    let selectedIds = this.state.graph.nodes;
+    let categoryName = "全部";
+    if (this.state.selectedIds.length !== 0) {
+      selectedIds = this.state.selectedIds;
+      categoryName = this.state.selectedIds[0].tag;
+    }
+
+    selectedIds = selectedIds.sort((a, b) => {return b.weight - a.weight;});
+
+    return (
+      <div style={{width: "100%", position: "fixed", zIndex: 2, pointerEvents: "none"}}>
+        <div style={{width: "200px", marginLeft: '20px', marginTop: '20px', pointerEvents: "auto"}}>
+          <Card style={{marginTop: "20px"}} size="small" title={
+            <div>
+              分类：{categoryName}
+            </div>
+          } type="inner">
+            {
+              this.renderNodeMenu(selectedIds)
+            }
+          </Card>
+        </div>
+      </div>
+    )
   }
 
   renderRightToolbar() {
@@ -174,6 +225,10 @@ class Dataset extends React.Component {
     )
   }
 
+  getNodeId(node) {
+    return node.id;
+  }
+
   isLinkSelected(link) {
     return false;
   }
@@ -224,20 +279,39 @@ class Dataset extends React.Component {
         // linkDirectionalParticles={link => this.state.particlePercent * link.value / 100}
         linkDirectionalParticleSpeed={link => link.value * 0.001}
         cooldownTicks={this.state.enableStatic ? 0 : Infinity}
+        onNodeClick={(node, event) => {
+          if (this.state.selectedId !== this.getNodeId(node)) {
+            this.setState({
+              selectedType: "节点",
+              selectedId: this.getNodeId(node),
+              selectedIds: this.state.graph.nodes.filter(n => (n.tag === node.tag)),
+            });
+          } else {
+            this.setState({
+              selectedType: null,
+              selectedId: null,
+              selectedIds: [],
+            });
+          }
+        }}
         nodeCanvasObject={(node, ctx, globalScale) => {
-          let label = node.id;
           // const fontSize = 12 / globalScale;
           // ctx.font = `${fontSize}px Sans-Serif`;
           // const textWidth = ctx.measureText(label).width;
 
           // ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
 
-          // if (this.isNodeSelected(node)) {
-          //   ctx.beginPath();
-          //   ctx.arc(node.x, node.y, node.val * 1.4, 0, 2 * Math.PI, false);
-          //   ctx.fillStyle = 'red';
-          //   ctx.fill();
-          // }
+          if (this.state.selectedId === node.id) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.val * 1.7, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+          } else if (this.state.selectedIds.filter(n => n.id === node.id).length > 0) {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.val * 1.4, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'red';
+            ctx.fill();
+          }
 
           ctx.beginPath();
           ctx.fillStyle = node.color;

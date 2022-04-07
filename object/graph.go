@@ -1,20 +1,22 @@
 package object
 
 type Node struct {
-	Id    string `json:"id"`
-	Name  string `json:"name"`
-	Value int    `json:"val"`
-	Color string `json:"color"`
-	Tag   string `json:"tag"`
+	Id     string `json:"id"`
+	Name   string `json:"name"`
+	Value  int    `json:"val"`
+	Color  string `json:"color"`
+	Tag    string `json:"tag"`
+	Weight int    `json:"weight"`
 }
 
-func newNode(id string, name string, value int, color string, tag string) *Node {
+func newNode(id string, name string, value int, color string, tag string, weight int) *Node {
 	n := Node{}
 	n.Id = id
 	n.Name = name
 	n.Value = value
 	n.Color = color
 	n.Tag = tag
+	n.Weight = weight
 	return &n
 }
 
@@ -48,8 +50,8 @@ func newGraph() *Graph {
 	return &g
 }
 
-func (g *Graph) addNode(id string, name string, value int, color string, tag string) {
-	n := newNode(id, name, value, color, tag)
+func (g *Graph) addNode(id string, name string, value int, color string, tag string, weight int) {
+	n := newNode(id, name, value, color, tag, weight)
 	g.Nodes = append(g.Nodes, n)
 }
 

@@ -100,13 +100,14 @@ func generateGraph(vectors []*Vector) *Graph {
 	for _, vector := range vectors {
 		//value := 5
 		value := int(math.Sqrt(float64(nodeWeightMap[vector.Name]))) + 3
+		weight := nodeWeightMap[vector.Name]
 
 		//nodeColor := "rgb(232,67,62)"
 		//nodeColor := getNodeColor(value)
 		nodeColor := vector.Color
 
 		fmt.Printf("Node [%s]: weight = %d, nodeValue = %d\n", vector.Name, nodeWeightMap[vector.Name], value)
-		g.addNode(vector.Name, vector.Name, value, nodeColor, "")
+		g.addNode(vector.Name, vector.Name, value, nodeColor, vector.Category, weight)
 	}
 
 	return g
