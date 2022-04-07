@@ -301,6 +301,8 @@ class Dataset extends React.Component {
 
           // ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, ...bckgDimensions);
 
+          ctx.save();
+
           if (this.state.selectedId === node.id) {
             ctx.beginPath();
             ctx.arc(node.x, node.y, node.val * 1.7, 0, 2 * Math.PI, false);
@@ -311,6 +313,8 @@ class Dataset extends React.Component {
             ctx.arc(node.x, node.y, node.val * 1.4, 0, 2 * Math.PI, false);
             ctx.fillStyle = 'red';
             ctx.fill();
+          } else if (this.state.selectedId !== null) {
+            ctx.globalAlpha = 0.3;
           }
 
           ctx.beginPath();
@@ -326,6 +330,8 @@ class Dataset extends React.Component {
           ctx.fillStyle = 'black'; //node.color;
 
           ctx.fillText(node.name, node.x, node.y + 10);
+
+          ctx.restore();
         }}
       />
     )
