@@ -7,11 +7,6 @@ import (
 	"xorm.io/core"
 )
 
-type Vector struct {
-	Name string    `xorm:"varchar(100)" json:"name"`
-	Data []float64 `xorm:"varchar(1000)" json:"data"`
-}
-
 type Dataset struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`

@@ -91,7 +91,7 @@ func generateGraph(vectors []*Vector) *Graph {
 
 			linkValue := (1*(distance-7) + 10*(DistanceLimit-1-distance)) / (DistanceLimit - 8)
 			linkColor := "rgb(44,160,44,0.6)"
-			linkName := fmt.Sprintf("[%s] - [%s]: distance = %d, linkValue = %d", v1.Name, v2.Name, distance, linkValue)
+			linkName := fmt.Sprintf("Edge [%s] - [%s]: distance = %d, linkValue = %d", v1.Name, v2.Name, distance, linkValue)
 			fmt.Println(linkName)
 			g.addLink(linkName, v1.Name, v2.Name, linkValue, linkColor, "")
 		}
@@ -102,8 +102,10 @@ func generateGraph(vectors []*Vector) *Graph {
 		value := int(math.Sqrt(float64(nodeWeightMap[vector.Name]))) + 3
 
 		//nodeColor := "rgb(232,67,62)"
-		nodeColor := getNodeColor(value)
+		//nodeColor := getNodeColor(value)
+		nodeColor := vector.Color
 
+		fmt.Printf("Node [%s]: weight = %d, nodeValue = %d\n", vector.Name, nodeWeightMap[vector.Name], value)
 		g.addNode(vector.Name, vector.Name, value, nodeColor, "")
 	}
 
