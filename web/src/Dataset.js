@@ -46,6 +46,7 @@ class Dataset extends React.Component {
       strength: 20,
       distanceMax: 100,
       clusterNumber: 100,
+      distanceLimit: 14,
       selectedType: null,
       selectedId: null,
       selectedIds: [],
@@ -61,7 +62,7 @@ class Dataset extends React.Component {
   }
 
   getDatasetGraph() {
-    DatasetBackend.getDatasetGraph("admin", this.state.datasetName, this.state.clusterNumber)
+    DatasetBackend.getDatasetGraph("admin", this.state.datasetName, this.state.clusterNumber, this.state.distanceLimit)
       .then((graph) => {
         this.setState({
           graph: graph,
@@ -161,7 +162,9 @@ class Dataset extends React.Component {
           } type="inner">
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                保持静止：
+                <span style={{verticalAlign: "middle"}}>
+                  保持静止：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <Switch checked={this.state.enableStatic} onChange={(checked, e) => {
@@ -185,7 +188,9 @@ class Dataset extends React.Component {
             {/*</Row>*/}
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                启用粗线：
+                <span style={{verticalAlign: "middle"}}>
+                  启用粗线：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <Switch checked={this.state.enableBolderLink} onChange={(checked, e) => {
@@ -197,7 +202,9 @@ class Dataset extends React.Component {
             </Row>
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                启用3D：
+                <span style={{verticalAlign: "middle"}}>
+                  启用3D：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <Switch checked={this.state.enable3D} onChange={(checked, e) => {
@@ -221,7 +228,9 @@ class Dataset extends React.Component {
             {/*</Row>*/}
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                扩散度：
+                <span style={{verticalAlign: "middle"}}>
+                  扩散度：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <Slider value={this.state.strength} dots={true} min={0} max={1000} onChange={(value => {
@@ -236,7 +245,9 @@ class Dataset extends React.Component {
             </Row>
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                最大距离：
+                <span style={{verticalAlign: "middle"}}>
+                  最大距离：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <Slider value={this.state.distanceMax} dots={true} min={0} max={1000} onChange={(value => {
@@ -252,12 +263,14 @@ class Dataset extends React.Component {
           </Card>
           <Card style={{marginTop: "20px"}} size="small" title={
             <div>
-              聚类参数
+              聚类选项
             </div>
           } type="inner">
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={8}>
-                算法：
+                <span style={{verticalAlign: "middle"}}>
+                  算法：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={16}>
                 <Select virtual={false} style={{width: '100%'}} value={"K-Means"} onChange={(value => {
@@ -275,12 +288,28 @@ class Dataset extends React.Component {
             </Row>
             <Row>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                聚类个数：
+                <span style={{verticalAlign: "middle"}}>
+                  聚类个数：
+                </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
                 <InputNumber style={{width: "100%"}} min={2} max={this.state.graph?.nodes.length} step={1} value={this.state.clusterNumber} onChange={value => {
                   this.setState({
                     clusterNumber: value,
+                  });
+                }} />
+              </Col>
+            </Row>
+            <Row>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+                <span style={{verticalAlign: "middle"}}>
+                  距离上限：
+                </span>
+              </Col>
+              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+                <InputNumber style={{width: "100%"}} min={5} max={20} step={1} value={this.state.distanceLimit} onChange={value => {
+                  this.setState({
+                    distanceLimit: value,
                   });
                 }} />
               </Col>

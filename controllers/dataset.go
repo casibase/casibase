@@ -29,8 +29,9 @@ func (c *ApiController) GetDataset() {
 func (c *ApiController) GetDatasetGraph() {
 	id := c.Input().Get("id")
 	clusterNumber := util.ParseInt(c.Input().Get("clusterNumber"))
+	distanceLimit := util.ParseInt(c.Input().Get("distanceLimit"))
 
-	c.Data["json"] = object.GetDatasetGraph(id, clusterNumber)
+	c.Data["json"] = object.GetDatasetGraph(id, clusterNumber, distanceLimit)
 	c.ServeJSON()
 }
 

@@ -21,8 +21,8 @@ export function getDataset(owner, name) {
   }).then(res => res.json());
 }
 
-export function getDatasetGraph(owner, name, clusterNumber) {
-  return fetch(`${Setting.ServerUrl}/api/get-dataset-graph?id=${owner}/${encodeURIComponent(name)}&clusterNumber=${clusterNumber}`, {
+export function getDatasetGraph(owner, name, clusterNumber, distanceLimit) {
+  return fetch(`${Setting.ServerUrl}/api/get-dataset-graph?id=${owner}/${encodeURIComponent(name)}&clusterNumber=${clusterNumber}&distanceLimit=${distanceLimit}`, {
     method: "GET",
     credentials: "include"
   }).then(res => res.json());

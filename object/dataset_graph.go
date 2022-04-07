@@ -15,8 +15,8 @@ func init() {
 	graphCache = map[string]*Graph{}
 }
 
-func GetDatasetGraph(id string, clusterNumber int) *Graph {
-	cacheId := fmt.Sprintf("%s|%d", id, clusterNumber)
+func GetDatasetGraph(id string, clusterNumber int, distanceLimit int) *Graph {
+	cacheId := fmt.Sprintf("%s|%d|%d", id, clusterNumber, distanceLimit)
 
 	g, ok := graphCache[cacheId]
 	if ok {
@@ -30,7 +30,7 @@ func GetDatasetGraph(id string, clusterNumber int) *Graph {
 
 	runKmeans(dataset.Vectors, clusterNumber)
 
-	g = generateGraph(dataset.Vectors)
+	g = generateGraph(dataset.Vectors, distanceLimit)
 	graphCache[cacheId] = g
 	return g
 }
@@ -65,9 +65,7 @@ func getNodeColor(weight int) string {
 	return fmt.Sprintf("rgb(%d,%d,%d)", myColor.R, myColor.G, myColor.B)
 }
 
-var DistanceLimit = 14
-
-func generateGraph(vectors []*Vector) *Graph {
+func generateGraph(vectors []*Vector, distanceLimit int) *Graph {
 	vectors = refineVectors(vectors)
 	//vectors = vectors[:100]
 
@@ -79,7 +77,7 @@ func generateGraph(vectors []*Vector) *Graph {
 			v1 := vectors[i]
 			v2 := vectors[j]
 			distance := int(getDistance(v1, v2))
-			if distance >= DistanceLimit {
+			if distance >= distanceLimit {
 				continue
 			}
 
@@ -94,7 +92,7 @@ func generateGraph(vectors []*Vector) *Graph {
 				nodeWeightMap[v2.Name] = v + 1
 			}
 
-			linkValue := (1*(distance-7) + 10*(DistanceLimit-1-distance)) / (DistanceLimit - 8)
+			linkValue := (1*(distance-7) + 10*(distanceLimit-1-distance)) / (distanceLimit - 8)
 			linkColor := "rgb(44,160,44,0.6)"
 			linkName := fmt.Sprintf("Edge [%s] - [%s]: distance = %d, linkValue = %d", v1.Name, v2.Name, distance, linkValue)
 			fmt.Println(linkName)
