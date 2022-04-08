@@ -66,6 +66,9 @@ class Dataset extends React.Component {
       .then((graph) => {
         this.setState({
           graph: graph,
+          selectedType: null,
+          selectedId: null,
+          selectedIds: [],
         });
       });
   }
