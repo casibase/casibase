@@ -28,6 +28,7 @@ import { Link } from "react-router-dom";
 import i18next from "i18next";
 import UserLink from "../UserLink";
 import * as Conf from "../Conf";
+import { Helmet } from "react-helmet";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -65,7 +66,6 @@ class TopicBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = Setting.getForumName();
     this.getTopic();
     this.getFavoriteStatus();
     this.getSubscribeStatus();
@@ -524,10 +524,6 @@ class TopicBox extends React.Component {
   render() {
     const pcBrowser = Setting.PcBrowser;
 
-    if (this.state.topic.title) {
-      document.title = `${this.state.topic.title} - ${Setting.getForumName()}`;
-    }
-
     if (this.props.account === undefined || (this.state.topic !== null && this.state.topic.length === 0)) {
       if (!Conf.ShowLoadingIndicator) {
         return null;
@@ -668,6 +664,11 @@ class TopicBox extends React.Component {
 
     return (
       <div>
+        <Helmet>
+          <title>{`${this.state.topic.title} - ${Setting.getForumName()}`}</title>
+          <meta name="keywords" content={this.state.topic?.tags} />
+          <meta name="description" content={this.state.topic?.content} />
+        </Helmet>
         <div className={`box ${this.state.topic.nodeId}`} style={{ borderBottom: "0px" }}>
           <div className={`header ${this.state.topic.nodeId}`}>
             <div className="fr">
