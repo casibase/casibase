@@ -42,42 +42,39 @@ import "./node.css";
 import * as FavoritesBackend from "./backend/FavoritesBackend";
 import * as Conf from "./Conf";
 import AuthCallback from "./AuthCallback";
-import LazyLoad from "./components/LazyLoad";
 import SilentSignin from "./SilentSignin";
-
-// lazy load imports
-const SignoutBox = React.lazy(() => import("./main/SignoutBox"));
-const TopicBox = React.lazy(() => import("./main/TopicBox"));
-const MemberBox = React.lazy(() => import("./main/MemberBox"));
-const AllCreatedTopicsBox = React.lazy(() => import("./main/AllCreatedTopicsBox"));
-const NewBox = React.lazy(() => import("./main/NewBox"));
-const NodesBox = React.lazy(() => import("./main/NodeBox"));
-const FavoritesBox = React.lazy(() => import("./main/FavoritesBox"));
-const RecentTopicsBox = React.lazy(() => import("./main/RecentTopicsBox"));
-const SelectLanguageBox = React.lazy(() => import("./main/SelectLanguageBox"));
-const SelectEditorTypeBox = React.lazy(() => import("./main/SelectEditorTypeBox"));
-const NotificationBox = React.lazy(() => import("./main/NotificationBox"));
-const PlaneBox = React.lazy(() => import("./main/PlaneBox"));
-const BalanceBox = React.lazy(() => import("./main/BalanceBox"));
-const CheckinBonusBox = React.lazy(() => import("./main/CheckinBonusBox"));
-const MoveTopicNodeBox = React.lazy(() => import("./main/MoveTopicNodeBox"));
-const EditBox = React.lazy(() => import("./main/EditBox"));
-const FilesBox = React.lazy(() => import("./main/FilesBox"));
-const RankingRichBox = React.lazy(() => import("./main/RankingRichBox"));
-const RankingPlayerBox = React.lazy(() => import("./main/RankingPlayerBox"));
-const AdminHomepage = React.lazy(() => import("./admin/AdminHomepage"));
-const AdminNode = React.lazy(() => import("./admin/AdminNode"));
-const AdminTab = React.lazy(() => import("./admin/AdminTab"));
-const AdminPoster = React.lazy(() => import("./admin/AdminPoster"));
-const AdminTranslation = React.lazy(() => import("./admin/AdminTranslation"));
-const AdminPlane = React.lazy(() => import("./admin/AdminPlane"));
-const AdminTopic = React.lazy(() => import("./admin/AdminTopic"));
-const AdminSensitive = React.lazy(() => import("./admin/AdminSensitive"));
-const AdminFrontConf = React.lazy(() => import("./admin/AdminFrontConf"));
-const AboutForum = React.lazy(() => import("./main/AboutForum"));
-const SearchResultPage = React.lazy(() => import("./SearchResultPage"));
-const NoMatch = React.lazy(() => import("./main/NoMatch"));
-const Embed = React.lazy(() => import("./Embed"));
+import SignoutBox from "./main/SignoutBox";
+import TopicBox from "./main/TopicBox";
+import MemberBox from "./main/MemberBox";
+import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
+import NewBox from "./main/NewBox";
+import NodesBox from "./main/NodeBox";
+import FavoritesBox from "./main/FavoritesBox";
+import RecentTopicsBox from "./main/RecentTopicsBox";
+import SelectLanguageBox from "./main/SelectLanguageBox";
+import SelectEditorTypeBox from "./main/SelectEditorTypeBox";
+import NotificationBox from "./main/NotificationBox";
+import PlaneBox from "./main/PlaneBox";
+import BalanceBox from "./main/BalanceBox";
+import CheckinBonusBox from "./main/CheckinBonusBox";
+import MoveTopicNodeBox from "./main/MoveTopicNodeBox";
+import EditBox from "./main/EditBox";
+import FilesBox from "./main/FilesBox";
+import RankingRichBox from "./main/RankingRichBox";
+import RankingPlayerBox from "./main/RankingPlayerBox";
+import AdminHomepage from "./admin/AdminHomepage";
+import AdminNode from "./admin/AdminNode";
+import AdminTab from "./admin/AdminTab";
+import AdminPoster from "./admin/AdminPoster";
+import AdminTranslation from "./admin/AdminTranslation";
+import AdminPlane from "./admin/AdminPlane";
+import AdminTopic from "./admin/AdminTopic";
+import AdminSensitive from "./admin/AdminSensitive";
+import AdminFrontConf from "./admin/AdminFrontConf";
+import AboutForum from "./main/AboutForum";
+import SearchResultPage from "./SearchResultPage";
+import NoMatch from "./main/NoMatch";
+import Embed from "./Embed";
 
 class App extends Component {
   constructor(props) {
@@ -189,56 +186,42 @@ class App extends Component {
         <Route exact path="/signout">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
-            </LazyLoad>
+            <SignoutBox account={this.state.account} onSignout={this.onSignout.bind(this)} />
           </div>
         </Route>
         <Route exact path="/login">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SigninPage />
-            </LazyLoad>
+            <SigninPage />
           </div>
         </Route>
         <Route exact path="/t/:topicId/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
-            </LazyLoad>
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/t/:topicId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
-            </LazyLoad>
+            <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
           <div id={pcBrowser ? "Main" : ""}>
-            <LazyLoad>
-              <MemberBox account={this.state.account} refreshFavorites={this.getFavoriteNum.bind(this)} />
-            </LazyLoad>
+            <MemberBox account={this.state.account} refreshFavorites={this.getFavoriteNum.bind(this)} />
           </div>
         </Route>
         <Route exact path="/member/:memberId/:tab">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AllCreatedTopicsBox />
-            </LazyLoad>
+            <AllCreatedTopicsBox />
           </div>
         </Route>
         <Route exact path="/new">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
-            </LazyLoad>
+            <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/tag/:tagId">
@@ -250,300 +233,224 @@ class App extends Component {
         <Route exact path="/new/:nodeId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
-            </LazyLoad>
+            <NewBox account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
           </div>
         </Route>
         <Route exact path="/go/:nodeId">
-          <LazyLoad>
-            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
-          </LazyLoad>
+          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
         </Route>
         <Route exact path="/go/:nodeId/:event">
-          <LazyLoad>
-            <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
-          </LazyLoad>
+          <NodesBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshAccount={this.getAccount.bind(this)} refreshFavorites={this.getFavoriteNum.bind(this)} />
         </Route>
         <Route exact path="/my/:favorites">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <FavoritesBox />
-            </LazyLoad>
+            <FavoritesBox />
           </div>
         </Route>
         <Route exact path="/recent">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <RecentTopicsBox />
-            </LazyLoad>
+            <RecentTopicsBox />
           </div>
         </Route>
         <Route exact path="/select/language">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SelectLanguageBox />
-            </LazyLoad>
+            <SelectLanguageBox />
           </div>
         </Route>
         <Route exact path="/select/editorType">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SelectEditorTypeBox />
-            </LazyLoad>
+            <SelectEditorTypeBox />
           </div>
         </Route>
         <Route exact path="/notifications">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NotificationBox />
-            </LazyLoad>
+            <NotificationBox />
           </div>
         </Route>
         <Route exact path="/planes">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <PlaneBox />
-            </LazyLoad>
+            <PlaneBox />
           </div>
         </Route>
         <Route exact path="/balance">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <BalanceBox account={this.state.account} />
-            </LazyLoad>
+            <BalanceBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/mission/daily">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <CheckinBonusBox />
-            </LazyLoad>
+            <CheckinBonusBox />
           </div>
         </Route>
         <Route exact path="/move/topic/:id">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <MoveTopicNodeBox />
-            </LazyLoad>
+            <MoveTopicNodeBox />
           </div>
         </Route>
         <Route exact path="/edit/:editType/:id">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <EditBox account={this.state.account} />
-            </LazyLoad>
+            <EditBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <FilesBox account={this.state.account} />
-            </LazyLoad>
+            <FilesBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <FilesBox account={this.state.account} />
-            </LazyLoad>
+            <FilesBox account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/i/edit/:event">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <FilesBox account={this.state.account} edit={true} />
-            </LazyLoad>
+            <FilesBox account={this.state.account} edit={true} />
           </div>
         </Route>
         <Route exact path="/top/rich">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <RankingRichBox />
-            </LazyLoad>
+            <RankingRichBox />
           </div>
         </Route>
         <Route exact path="/top/player">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <RankingPlayerBox />
-            </LazyLoad>
+            <RankingPlayerBox />
           </div>
         </Route>
         {/*BACKSTAGE*/}
         <Route exact path="/admin">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminHomepage account={this.state.account} />
-            </LazyLoad>
+            <AdminHomepage account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/node">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminNode account={this.state.account} />
-            </LazyLoad>
+            <AdminNode account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/node/new">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminNode account={this.state.account} event={"new"} />
-            </LazyLoad>
+            <AdminNode account={this.state.account} event={"new"} />
           </div>
         </Route>
         <Route exact path="/admin/node/edit/:nodeId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminNode account={this.state.account} />
-            </LazyLoad>
+            <AdminNode account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/tab">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTab account={this.state.account} />
-            </LazyLoad>
+            <AdminTab account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/tab/new">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTab account={this.state.account} event={"new"} />
-            </LazyLoad>
+            <AdminTab account={this.state.account} event={"new"} />
           </div>
         </Route>
         <Route exact path="/admin/tab/edit/:tabId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTab account={this.state.account} />
-            </LazyLoad>
+            <AdminTab account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/poster">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminPoster />
-            </LazyLoad>
+            <AdminPoster />
           </div>
         </Route>
         <Route exact path="/admin/translation">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTranslation />
-            </LazyLoad>
+            <AdminTranslation />
           </div>
         </Route>
         <Route exact path="/admin/plane">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminPlane account={this.state.account} />
-            </LazyLoad>
+            <AdminPlane account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/plane/new">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminPlane account={this.state.account} event={"new"} />
-            </LazyLoad>
+            <AdminPlane account={this.state.account} event={"new"} />
           </div>
         </Route>
         <Route exact path="/admin/plane/edit/:planeId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminPlane account={this.state.account} />
-            </LazyLoad>
+            <AdminPlane account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/topic">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTopic account={this.state.account} />
-            </LazyLoad>
+            <AdminTopic account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/topic/edit/:topicId">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminTopic account={this.state.account} />
-            </LazyLoad>
+            <AdminTopic account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/sensitive">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminSensitive account={this.state.account} />
-            </LazyLoad>
+            <AdminSensitive account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/admin/sensitive/new">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminSensitive account={this.state.account} event={"new"} />
-            </LazyLoad>
+            <AdminSensitive account={this.state.account} event={"new"} />
           </div>
         </Route>
         <Route exact path="/admin/frontconf">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AdminFrontConf account={this.state.account} />
-            </LazyLoad>
+            <AdminFrontConf account={this.state.account} />
           </div>
         </Route>
         <Route exact path="/about">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <AboutForum />
-            </LazyLoad>
+            <AboutForum />
           </div>
         </Route>
         <Route exact path="/search">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <SearchResultPage />
-            </LazyLoad>
+            <SearchResultPage />
           </div>
         </Route>
         <Route path="*">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
-            <LazyLoad>
-              <NoMatch />
-            </LazyLoad>
+            <NoMatch />
           </div>
         </Route>
       </Switch>
@@ -639,11 +546,7 @@ class App extends Component {
 
   render() {
     if (window.location.pathname.startsWith("/embedded-replies")) {
-      return (
-        <LazyLoad>
-          <Embed account={this.state.account} refreshAccount={this.getAccount.bind(this)} />
-        </LazyLoad>
-      );
+      return <Embed account={this.state.account} refreshAccount={this.getAccount.bind(this)} />;
     }
 
     return (
