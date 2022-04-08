@@ -89,7 +89,7 @@ class Dataset extends React.Component {
         renderItem={link => {
           return (
             <List.Item>
-              {`${(link.source !== node.id) ? link.source.id : link.target.id} | ${link.tag}`}
+              {`${(link.source !== node.id && link.source.id !== node.id) ? link.source.id : link.target.id} | ${link.tag}`}
             </List.Item>
           )
         }}
