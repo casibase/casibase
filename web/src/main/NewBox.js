@@ -29,6 +29,7 @@ import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
+import { Helmet } from "react-helmet";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -63,7 +64,6 @@ class NewBox extends React.Component {
   }
 
   componentWillMount() {
-    document.title = `${i18next.t("new:New Topic")} - ${Setting.getForumName()}`;
     this.getNodes();
     MemberBackend.getMemberEditorType().then((res) => {
       const editorType = res.data ? res.data : Conf.DefaultEditorType;
@@ -252,7 +252,9 @@ class NewBox extends React.Component {
 
     return (
       <div className="box" id="box">
-        <Header item={i18next.t("new:New Topic")} />
+        <Helmet>
+          <title>{`${i18next.t("new:New Topic")} - ${Setting.getForumName()}`}</title>
+        </Helmet>
         {this.renderProblem()}
         <form method="post" action="/new" id="compose">
           <div className="cell">

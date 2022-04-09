@@ -23,6 +23,7 @@ import { withRouter, Link } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
 import { scoreConverter } from "./main/Tools";
+import { Helmet } from "react-helmet";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -48,7 +49,6 @@ class TopicPage extends React.Component {
     this.getNodeInfo();
     this.getTopics();
     this.getUnreadNotificationNum();
-    if (this.props.title.length) document.title = this.props.title;
   }
 
   getUnreadNotificationNum() {
@@ -221,10 +221,13 @@ class TopicPage extends React.Component {
       topType = "tab";
     }
 
-    if (this.state.tabInfo) document.title = `${this.state.tabInfo.name} - ${Setting.getForumName()}`;
-
     return (
       <div className="box">
+        <Helmet>
+          <title>{`${this.state.tabInfo ? `${this.state.tabInfo.name} -` : ""}${Setting.getForumName()}`}</title>
+          <meta name="keywords" content={Setting.getForumName()} />
+          <meta name="keywords" content={this.state.tabInfo?.name} />
+        </Helmet>
         {Setting.PcBrowser ? null : this.renderAccountInfo()}
         <div className="inner" id="Tabs">
           {this.state.tabs.map((tab) => {

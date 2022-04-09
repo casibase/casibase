@@ -19,6 +19,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
+import { Helmet } from "react-helmet";
 
 class RecentTopicsBox extends React.Component {
   constructor(props) {
@@ -47,7 +48,6 @@ class RecentTopicsBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `${i18next.t("topic:Recent Topics")} - ${Setting.getForumName()}`;
     this.getTopics();
   }
 
@@ -94,6 +94,9 @@ class RecentTopicsBox extends React.Component {
   render() {
     return (
       <div className="box">
+        <Helmet>
+          <title>{`${i18next.t("topic:Recent Topics")} - ${Setting.getForumName()}`}</title>
+        </Helmet>
         <div className="header">
           <div className="fr f12">
             <span className="fade">{`${i18next.t("topic:Total Topics")} ${this.state.topicsNum}`}</span>

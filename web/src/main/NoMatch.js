@@ -17,6 +17,7 @@ import { withRouter, Link } from "react-router-dom";
 import * as Setting from "../Setting";
 import "./NoMatch.css";
 import i18next from "i18next";
+import { Helmet } from "react-helmet";
 
 class NoMatch extends React.Component {
   constructor(props) {
@@ -27,10 +28,12 @@ class NoMatch extends React.Component {
   }
 
   renderBox() {
-    document.title = `404 - ${Setting.getForumName()}`;
     return (
       <div>
         <div className="box">
+          <Helmet>
+            <title>{`404 - ${Setting.getForumName()}`}</title>
+          </Helmet>
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             404 Object Not Found

@@ -25,6 +25,7 @@ import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 import * as Conf from "../Conf";
+import { Helmet } from "react-helmet";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -64,7 +65,6 @@ class NodeBox extends React.Component {
     this.getNodeInfo();
     //this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
-    document.title = Setting.getForumName();
   }
 
   componentWillReceiveProps(newProps) {
@@ -449,8 +449,6 @@ class NodeBox extends React.Component {
   render() {
     const pcBrowser = Setting.PcBrowser;
 
-    if (this.state.nodeInfo.name) document.title = `${this.state.nodeInfo.name} - ${Setting.getForumName()}`;
-
     if (this.state.nodeInfo !== null && this.state.nodeInfo.length === 0) {
       if (!Conf.ShowLoadingIndicator) {
         return null;
@@ -596,6 +594,10 @@ class NodeBox extends React.Component {
 
     return (
       <div id={pcBrowser ? "Main" : ""}>
+        <Helmet>
+          <title>{`${this.state.nodeInfo.name} - ${Setting.getForumName()}`}</title>
+          <meta name="keywords" content={`${this.state.nodeInfo.name}, ${Setting.getForumName()}`} />
+        </Helmet>
         {pcBrowser ? <div className="sep20" /> : null}
         {this.renderNode()}
         {pcBrowser ? <div className="sep20" /> : null}
