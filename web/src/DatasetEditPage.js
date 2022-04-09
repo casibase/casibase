@@ -76,7 +76,7 @@ class DatasetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("dataset:Distance")} :
+            {i18next.t("dataset:Distance")}:
           </Col>
           <Col span={22} >
             <InputNumber value={this.state.dataset.distance} onChange={value => {
@@ -98,7 +98,7 @@ class DatasetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Preview")} :
+            {i18next.t("general:Preview")}:
           </Col>
           <Col span={22} >
             <Dataset dataset={this.state.dataset} datasetName={this.state.dataset.name} />

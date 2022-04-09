@@ -29,4 +29,11 @@ func initAPI() {
 	beego.Router("/api/update-dataset", &controllers.ApiController{}, "POST:UpdateDataset")
 	beego.Router("/api/add-dataset", &controllers.ApiController{}, "POST:AddDataset")
 	beego.Router("/api/delete-dataset", &controllers.ApiController{}, "POST:DeleteDataset")
+
+	beego.Router("/api/get-global-vectorsets", &controllers.ApiController{}, "GET:GetGlobalVectorsets")
+	beego.Router("/api/get-vectorsets", &controllers.ApiController{}, "GET:GetVectorsets")
+	beego.Router("/api/get-vectorset", &controllers.ApiController{}, "GET:GetVectorset")
+	beego.Router("/api/update-vectorset", &controllers.ApiController{}, "POST:UpdateVectorset")
+	beego.Router("/api/add-vectorset", &controllers.ApiController{}, "POST:AddVectorset")
+	beego.Router("/api/delete-vectorset", &controllers.ApiController{}, "POST:DeleteVectorset")
 }

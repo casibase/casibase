@@ -23,6 +23,14 @@
     "Loading...": "Loading...",
     "Name": "Name",
     "Preview": "Preview",
-    "Save": "Save"
+    "Save": "Save",
+    "URL": "URL",
+    "Vectorsets": "Vectorsets"
+  },
+  "vectorset": {
+    "Count": "Count",
+    "Dimension": "Dimension",
+    "Edit Vectorset": "Edit Vectorset",
+    "Vectors": "Vectors"
   }
 }

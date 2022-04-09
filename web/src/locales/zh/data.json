@@ -23,6 +23,14 @@
     "Loading...": "加载中...",
     "Name": "名称",
     "Preview": "预览",
-    "Save": "保存"
+    "Save": "保存",
+    "URL": "URL",
+    "Vectorsets": "向量集"
+  },
+  "vectorset": {
+    "Count": "个数",
+    "Dimension": "维度",
+    "Edit Vectorset": "编辑向量集",
+    "Vectors": "向量"
   }
 }
