@@ -19,6 +19,7 @@ import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as MemberBackend from "../backend/MemberBackend";
 import { scoreConverter } from "./Tools";
+import { Helmet } from "react-helmet";
 
 class RankingRichBox extends React.Component {
   constructor(props) {
@@ -29,7 +30,6 @@ class RankingRichBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = i18next.t("balance:Rich ranking");
     MemberBackend.getRankingRichList().then((res) => {
       this.setState({
         richList: res.data,
@@ -54,7 +54,10 @@ class RankingRichBox extends React.Component {
   render() {
     return (
       <div className="box">
-        {/* header */}
+        <Helmet>
+          <title>{`${i18next.t("balance:Rich ranking")} - ${Setting.getForumName()}`}</title>
+          <meta name="keywords" content={`${i18next.t("balance:Rich ranking")},${Setting.getForumName()}`} />} />
+        </Helmet>
         <div className="cell">
           <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
             <Link to="/top/rich" className="tab">

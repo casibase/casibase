@@ -19,6 +19,7 @@ import PageColumn from "./PageColumn";
 import { withRouter, Link } from "react-router-dom";
 import i18next from "i18next";
 import { scoreConverter } from "./Tools";
+import { Helmet } from "react-helmet";
 
 const pangu = require("pangu");
 
@@ -50,7 +51,6 @@ class BalanceBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `${i18next.t("balance:Account balance")} - ${Setting.getForumName()}`;
     this.getRecords();
   }
 
@@ -341,6 +341,9 @@ class BalanceBox extends React.Component {
 
     return (
       <div className="box">
+        <Helmet>
+          <title>{`${i18next.t("balance:Account balance")} - ${Setting.getForumName()}`}</title>
+        </Helmet>
         <div className="cell">
           <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
             <Link to="/top/rich" className="tab">

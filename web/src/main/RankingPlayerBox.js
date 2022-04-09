@@ -18,6 +18,7 @@ import i18next from "i18next";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as MemberBackend from "../backend/MemberBackend";
+import { Helmet } from "react-helmet";
 
 class RankingPlayerBox extends React.Component {
   constructor(props) {
@@ -28,7 +29,6 @@ class RankingPlayerBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = i18next.t("balance:Consumption ranking");
     MemberBackend.getRankingPlayerList().then((res) => {
       this.setState({
         playerList: res.data,
@@ -47,7 +47,10 @@ class RankingPlayerBox extends React.Component {
   render() {
     return (
       <div className="box">
-        {/* header */}
+        <Helmet>
+          <title>{i18next.t("balance:Consumption ranking")}</title>
+          <meta name="keywords" content={Setting.getForumName()} />
+        </Helmet>
         <div className="cell">
           <div className="fr" style={{ margin: "-1px -8px 0px 0px" }}>
             <Link to="/top/rich" className="tab">

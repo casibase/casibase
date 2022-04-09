@@ -23,6 +23,7 @@ import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
 import { scoreConverter } from "./Tools";
 import * as Conf from "../Conf";
+import { Helmet } from "react-helmet";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -334,9 +335,11 @@ class MemberBox extends React.Component {
   }
 
   render() {
-    if (this.state.member.name) document.title = `${this.state.member.name} ${i18next.t("general:Homepage")} - ${Setting.getForumName()}`;
     return (
       <span>
+        <Helmet>
+          <title>{`${this.state.member?.name} ${i18next.t("general:Homepage")} - ${Setting.getForumName()}`}</title>
+        </Helmet>
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
         {this.renderMember()}
         {!Setting.PcBrowser && this.props.account?.name === this.state.memberId ? <div className="sep5" /> : null}

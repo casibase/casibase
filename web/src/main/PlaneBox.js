@@ -18,6 +18,7 @@ import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
+import { Helmet } from "react-helmet";
 
 class PlaneBox extends React.Component {
   constructor(props) {
@@ -32,7 +33,6 @@ class PlaneBox extends React.Component {
   componentDidMount() {
     this.getPlaneList();
     this.getNodesNum();
-    document.title = `${i18next.t("plane:Plane list")} - ${Setting.getForumName()}`;
   }
 
   getPlaneList() {
@@ -90,6 +90,9 @@ class PlaneBox extends React.Component {
     return (
       <span>
         <div className="box">
+          <Helmet>
+            <title>{`${i18next.t("plane:Plane list")} - ${Setting.getForumName()}`}</title>
+          </Helmet>
           <div className="cell" style={{ padding: "0px" }}>
             <table cellPadding="10" cellSpacing="0" border="0" width="100%">
               <tbody>

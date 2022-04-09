@@ -19,6 +19,7 @@ import { withRouter, Link } from "react-router-dom";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 import TopicList from "./TopicList";
+import { Helmet } from "react-helmet";
 
 class SearchTag extends React.Component {
   constructor(props) {
@@ -36,7 +37,6 @@ class SearchTag extends React.Component {
   }
 
   componentDidMount() {
-    document.title = i18next.t("topic:Search");
     TopicBackend.getTopicsWithTag(this.state.tagId, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res,
@@ -78,6 +78,9 @@ class SearchTag extends React.Component {
       return (
         <div>
           <div className="box">
+            <Helmet>
+              <title>{`${i18next.t("topic:Search")} - ${Setting.getForumName()}`}</title>
+            </Helmet>
             <div className="header">
               <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
               {i18next.t("tag:No related pages with tags")}

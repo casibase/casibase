@@ -22,6 +22,7 @@ import { withRouter, Link } from "react-router-dom";
 import Zmage from "react-zmage";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
+import { Helmet } from "react-helmet";
 
 const pangu = require("pangu");
 
@@ -52,7 +53,6 @@ class NotificationBox extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `${i18next.t("notification:Reminder system")} - ${Setting.getForumName()}`;
     this.getNotifications();
   }
 
@@ -238,6 +238,10 @@ class NotificationBox extends React.Component {
   render() {
     return (
       <div className="box">
+        <Helmet>
+          <title>{`${i18next.t("notification:Reminder system")} - ${Setting.getForumName()}`}</title>
+          <meta name="keywords" content={`${Setting.getForumName()}, ${i18next.t("notification:Reminder system")}`} />
+        </Helmet>
         <div className="header">
           <div className="fr f12">
             <span className="snow">{i18next.t("notification:Total reminders received")}&nbsp;</span> <strong className="gray">{this.state.notificationNum}</strong>

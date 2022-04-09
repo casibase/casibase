@@ -16,6 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import { Link } from "react-router-dom";
 import i18next from "i18next";
+import { Helmet } from "react-helmet";
 
 class SelectLanguageBox extends React.Component {
   constructor(props) {
@@ -26,11 +27,12 @@ class SelectLanguageBox extends React.Component {
   }
 
   render() {
-    document.title = `${i18next.t("footer:Select Editor")} - ${Setting.getForumName()}`;
-
     return (
       <div align="center">
         <div className="box" style={{ width: Setting.PcBrowser ? "600px" : "auto" }}>
+          <Helmet>
+            <title>{`${i18next.t("footer:Select Editor")} - ${Setting.getForumName()}`}</title>
+          </Helmet>
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> Select Default Editor / 选择默认编辑器
           </div>

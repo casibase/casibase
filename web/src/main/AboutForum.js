@@ -18,6 +18,7 @@ import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as Conf from "../Conf";
+import { Helmet } from "react-helmet";
 
 class AboutForum extends React.Component {
   constructor(props) {
@@ -29,7 +30,6 @@ class AboutForum extends React.Component {
   }
 
   componentDidMount() {
-    document.title = `${i18next.t("about:About")} - ${Setting.getForumName()}`;
     this.getForumVersion();
   }
 
@@ -44,6 +44,9 @@ class AboutForum extends React.Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <title>{`${i18next.t("about:About")} - ${Setting.getForumName()}`}</title>
+        </Helmet>
         <div className="box">
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
