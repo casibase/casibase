@@ -31,6 +31,8 @@
     "Count": "个数",
     "Dimension": "维度",
     "Edit Vectorset": "编辑向量集",
-    "Vectors": "向量"
+    "Example vectors": "示例向量",
+    "File name": "文件名",
+    "File size": "文件大小"
   }
 }

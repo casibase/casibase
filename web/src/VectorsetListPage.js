@@ -35,7 +35,10 @@ class VectorsetListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `Vectorset ${this.state.vectorsets.length}`,
       url: "https://github.com/Embedding/Chinese-Word-Vectors",
+      fileName: "sgns.target.word-word.dynwin5.thr10.neg5.dim300.iter5",
+      fileSize: "1.69 GB",
       dimension: 128,
+      count: 10000,
       vectors: [],
     }
   }
@@ -109,6 +112,20 @@ class VectorsetListPage extends React.Component {
         }
       },
       {
+        title: i18next.t("vectorset:File name"),
+        dataIndex: 'fileName',
+        key: 'fileName',
+        width: '200px',
+        sorter: (a, b) => a.fileName.localeCompare(b.fileName),
+      },
+      {
+        title: i18next.t("vectorset:File size"),
+        dataIndex: 'fileSize',
+        key: 'fileSize',
+        width: '120px',
+        sorter: (a, b) => a.fileSize.localeCompare(b.fileSize),
+      },
+      {
         title: i18next.t("vectorset:Dimension"),
         dataIndex: 'dimension',
         key: 'dimension',
@@ -116,7 +133,7 @@ class VectorsetListPage extends React.Component {
         sorter: (a, b) => a.dimension - b.dimension,
       },
       {
-        title: i18next.t("vectorset:Vectors"),
+        title: i18next.t("vectorset:Example vectors"),
         dataIndex: 'vectors',
         key: 'vectors',
         // width: '120px',
@@ -131,9 +148,6 @@ class VectorsetListPage extends React.Component {
         key: 'count',
         width: '120px',
         sorter: (a, b) => a.count - b.count,
-        render: (text, record, index) => {
-          return record.vectors.length;
-        }
       },
       {
         title: i18next.t("general:Action"),

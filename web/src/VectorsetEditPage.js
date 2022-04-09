@@ -86,6 +86,26 @@ class VectorsetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("vectorset:File name")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.vectorset.fileName} onChange={e => {
+              this.updateVectorsetField('fileName', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("vectorset:File size")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.vectorset.fileSize} onChange={e => {
+              this.updateVectorsetField('fileSize', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("vectorset:Dimension")}:
           </Col>
           <Col span={22} >
@@ -99,16 +119,18 @@ class VectorsetEditPage extends React.Component {
             {i18next.t("vectorset:Count")}:
           </Col>
           <Col span={22} >
-            <InputNumber disabled={true} value={this.state.vectorset.vectors.length} />
+            <InputNumber value={this.state.vectorset.count} onChange={value => {
+              this.updateVectorsetField('count', value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vectorset:Vectors")}:
+            {i18next.t("vectorset:Example vectors")}:
           </Col>
           <Col span={22} >
             <VectorTable
-              title={i18next.t("vectorset:Vectors")}
+              title={i18next.t("vectorset:Example vectors")}
               table={this.state.vectorset.vectors}
               onUpdateTable={(value) => { this.updateVectorsetField('vectors', value)}}
             />

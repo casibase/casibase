@@ -14,7 +14,10 @@ type Vectorset struct {
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Url         string `xorm:"varchar(100)" json:"url"`
+	FileName    string `xorm:"varchar(100)" json:"fileName"`
+	FileSize    string `xorm:"varchar(100)" json:"fileSize"`
 	Dimension   int    `json:"dimension"`
+	Count       int    `json:"count"`
 
 	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }
