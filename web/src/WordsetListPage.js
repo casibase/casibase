@@ -35,6 +35,7 @@ class WordsetListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `Wordset ${this.state.wordsets.length}`,
       distance: 100,
+      vectorset: "wordVector_utf-8",
       vectors: [],
     }
   }
@@ -128,6 +129,20 @@ class WordsetListPage extends React.Component {
       //     return record.vectors.filter(vector => vector.data.length !== 0).length;
       //   }
       // },
+      {
+        title: i18next.t("wordset:Vectorset"),
+        dataIndex: 'vectorset',
+        key: 'vectorset',
+        width: '140px',
+        sorter: (a, b) => a.vectorset.localeCompare(b.vectorset),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/vectorsets/${text}`}>
+              {text}
+            </Link>
+          )
+        }
+      },
       {
         title: i18next.t("wordset:Matched"),
         dataIndex: 'matched',

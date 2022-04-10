@@ -78,7 +78,7 @@ class VectorsetListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: 'name',
         key: 'name',
-        width: '120px',
+        width: '140px',
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -99,7 +99,7 @@ class VectorsetListPage extends React.Component {
         title: i18next.t("general:URL"),
         dataIndex: 'url',
         key: 'url',
-        width: '300px',
+        width: '250px',
         sorter: (a, b) => a.url.localeCompare(b.url),
         render: (text, record, index) => {
           return (
@@ -129,7 +129,7 @@ class VectorsetListPage extends React.Component {
         title: i18next.t("vectorset:Dimension"),
         dataIndex: 'dimension',
         key: 'dimension',
-        width: '130px',
+        width: '110px',
         sorter: (a, b) => a.dimension - b.dimension,
       },
       {
@@ -146,7 +146,7 @@ class VectorsetListPage extends React.Component {
         title: i18next.t("vectorset:Count"),
         dataIndex: 'count',
         key: 'count',
-        width: '120px',
+        width: '110px',
         sorter: (a, b) => a.count - b.count,
       },
       {

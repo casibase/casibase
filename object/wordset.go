@@ -14,6 +14,7 @@ type Wordset struct {
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 	Distance    int    `json:"distance"`
+	Vectorset   string `xorm:"varchar(100)" json:"vectorset"`
 
 	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }

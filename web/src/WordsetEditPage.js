@@ -1,10 +1,13 @@
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row} from 'antd';
+import {Button, Card, Col, Input, Row, Select} from 'antd';
 import * as WordsetBackend from "./backend/WordsetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import VectorTable from "./VectorTable";
 import Wordset from "./Wordset";
+import * as VectorsetBackend from "./backend/VectorsetBackend";
+
+const { Option } = Select;
 
 class WordsetEditPage extends React.Component {
   constructor(props) {
@@ -13,11 +16,13 @@ class WordsetEditPage extends React.Component {
       classes: props,
       wordsetName: props.match.params.wordsetName,
       wordset: null,
+      vectorsets: null,
     };
   }
 
   componentWillMount() {
     this.getWordset();
+    this.getVectorsets();
   }
 
   getWordset() {
@@ -25,6 +30,15 @@ class WordsetEditPage extends React.Component {
       .then((wordset) => {
         this.setState({
           wordset: wordset,
+        });
+      });
+  }
+
+  getVectorsets() {
+    VectorsetBackend.getVectorsets(this.props.account.name)
+      .then((res) => {
+        this.setState({
+          vectorsets: res,
         });
       });
   }
@@ -75,6 +89,18 @@ class WordsetEditPage extends React.Component {
             <Input value={this.state.wordset.displayName} onChange={e => {
               this.updateWordsetField('displayName', e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("wordset:Vectorset")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: '100%'}} value={this.state.wordset.vectorset} onChange={(value => {this.updateWordsetField('vectorset', value);})}>
+              {
+                this.state.vectorsets.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: '20px'}} >
