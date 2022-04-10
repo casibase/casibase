@@ -4,7 +4,7 @@ import * as WordsetBackend from "./backend/WordsetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import VectorTable from "./VectorTable";
-import Wordset from "./Wordset";
+import WordsetGraph from "./WordsetGraph";
 import * as VectorsetBackend from "./backend/VectorsetBackend";
 
 const { Option } = Select;
@@ -153,7 +153,7 @@ class WordsetEditPage extends React.Component {
             {i18next.t("general:Preview")}:
           </Col>
           <Col span={22} >
-            <Wordset wordset={this.state.wordset} wordsetName={this.state.wordset.name} />
+            <WordsetGraph wordset={this.state.wordset} wordsetName={this.state.wordset.name} />
           </Col>
         </Row>
       </Card>

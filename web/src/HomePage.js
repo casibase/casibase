@@ -1,7 +1,7 @@
 import React from "react";
 import * as Conf from "./Conf";
 import * as WordsetBackend from "./backend/WordsetBackend";
-import Wordset from "./Wordset";
+import WordsetGraph from "./WordsetGraph";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -27,7 +27,7 @@ class HomePage extends React.Component {
 
   render() {
     return (this.state.wordset === undefined || this.state.wordset === null) ? null : (
-      <Wordset wordset={this.state.wordset} wordsetName={this.state.wordset.name}/>
+      <WordsetGraph wordset={this.state.wordset} wordsetName={this.state.wordset.name}/>
     )
   }
 }

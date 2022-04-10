@@ -31,7 +31,7 @@ class ForceGraph extends React.Component {
   }
 }
 
-class Wordset extends React.Component {
+class WordsetGraph extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -467,4 +467,4 @@ class Wordset extends React.Component {
   }
 }
 
-export default Wordset;
+export default WordsetGraph;
