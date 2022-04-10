@@ -28,6 +28,14 @@ func GetWordsetGraph(id string, clusterNumber int, distanceLimit int) *Graph {
 		return nil
 	}
 
+	if len(wordset.Vectors) == 0 {
+		return nil
+	}
+
+	if len(wordset.Vectors[0].Data) == 0 {
+		return nil
+	}
+
 	runKmeans(wordset.Vectors, clusterNumber)
 
 	g = generateGraph(wordset.Vectors, distanceLimit)

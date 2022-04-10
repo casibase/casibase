@@ -151,7 +151,7 @@ class WordsetListPage extends React.Component {
         render: (text, record, index) => {
           const allWords = record.vectors.length;
           const validWords = record.vectors.filter(vector => vector.data.length !== 0).length;
-          return `${Setting.getPercentage(validWords / allWords)}% (${validWords} / ${allWords})`;
+          return `${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`;
         }
       },
       {

@@ -98,7 +98,7 @@ class WordsetEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: '100%'}} value={this.state.wordset.vectorset} onChange={(value => {this.updateWordsetField('vectorset', value);})}>
               {
-                this.state.vectorsets.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
+                this.state.vectorsets?.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
               }
             </Select>
           </Col>
@@ -123,7 +123,7 @@ class WordsetEditPage extends React.Component {
             {i18next.t("wordset:Matched")}:
           </Col>
           <Col span={22} >
-            <Input value={`${Setting.getPercentage(validWords / allWords)}% (${validWords} / ${allWords})`} />
+            <Input value={`${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`} />
           </Col>
         </Row>
         {/*<Row style={{marginTop: '20px'}} >*/}
