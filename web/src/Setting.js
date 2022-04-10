@@ -249,3 +249,11 @@ export function getTags(vectors) {
   });
   return res;
 }
+
+export function getPercentage(f) {
+  if (f === undefined) {
+    return 0.0;
+  }
+
+  return (100 * f).toFixed(1);
+}

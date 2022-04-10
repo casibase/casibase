@@ -91,13 +91,13 @@ class WordsetListPage extends React.Component {
         width: '200px',
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
-      {
-        title: i18next.t("wordset:Distance"),
-        dataIndex: 'distance',
-        key: 'distance',
-        width: '120px',
-        sorter: (a, b) => a.distance - b.distance,
-      },
+      // {
+      //   title: i18next.t("wordset:Distance"),
+      //   dataIndex: 'distance',
+      //   key: 'distance',
+      //   width: '120px',
+      //   sorter: (a, b) => a.distance - b.distance,
+      // },
       {
         title: i18next.t("wordset:Words"),
         dataIndex: 'vectors',
@@ -108,24 +108,35 @@ class WordsetListPage extends React.Component {
           return Setting.getTags(text);
         }
       },
+      // {
+      //   title: i18next.t("wordset:All words"),
+      //   dataIndex: 'allWords',
+      //   key: 'allWords',
+      //   width: '140px',
+      //   sorter: (a, b) => a.allWords - b.allWords,
+      //   render: (text, record, index) => {
+      //     return record.vectors.length;
+      //   }
+      // },
+      // {
+      //   title: i18next.t("wordset:Valid words"),
+      //   dataIndex: 'validWords',
+      //   key: 'validWords',
+      //   width: '140px',
+      //   sorter: (a, b) => a.validWords - b.validWords,
+      //   render: (text, record, index) => {
+      //     return record.vectors.filter(vector => vector.data.length !== 0).length;
+      //   }
+      // },
       {
-        title: i18next.t("wordset:All words"),
-        dataIndex: 'allWords',
-        key: 'allWords',
+        title: i18next.t("wordset:Matched"),
+        dataIndex: 'matched',
+        key: 'matched',
         width: '140px',
-        sorter: (a, b) => a.allWords - b.allWords,
         render: (text, record, index) => {
-          return record.vectors.length;
-        }
-      },
-      {
-        title: i18next.t("wordset:Valid words"),
-        dataIndex: 'validWords',
-        key: 'validWords',
-        width: '140px',
-        sorter: (a, b) => a.validWords - b.validWords,
-        render: (text, record, index) => {
-          return record.vectors.filter(vector => vector.data.length !== 0).length;
+          const allWords = record.vectors.length;
+          const validWords = record.vectors.filter(vector => vector.data.length !== 0).length;
+          return `${Setting.getPercentage(validWords / allWords)}% (${validWords} / ${allWords})`;
         }
       },
       {

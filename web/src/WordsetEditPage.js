@@ -47,6 +47,9 @@ class WordsetEditPage extends React.Component {
   }
 
   renderWordset() {
+    const allWords = this.state.wordset?.vectors.length;
+    const validWords = this.state.wordset?.vectors.filter(vector => vector.data.length !== 0).length;
+
     return (
       <Card size="small" title={
         <div>
@@ -76,14 +79,22 @@ class WordsetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("wordset:Distance")}:
+            {i18next.t("wordset:Matched")}:
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.wordset.distance} onChange={value => {
-              this.updateWordsetField('distance', value);
-            }} />
+            <Input value={`${Setting.getPercentage(validWords / allWords)}% (${validWords} / ${allWords})`} />
           </Col>
         </Row>
+        {/*<Row style={{marginTop: '20px'}} >*/}
+        {/*  <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>*/}
+        {/*    {i18next.t("wordset:Distance")}:*/}
+        {/*  </Col>*/}
+        {/*  <Col span={22} >*/}
+        {/*    <InputNumber value={this.state.wordset.distance} onChange={value => {*/}
+        {/*      this.updateWordsetField('distance', value);*/}
+        {/*    }} />*/}
+        {/*  </Col>*/}
+        {/*</Row>*/}
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Words")}:
