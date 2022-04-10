@@ -36,6 +36,7 @@ class RightCommunityHealthBox extends React.Component {
   componentDidMount() {
     this.getHealthInfo();
     this.readposter();
+    this._PlaceholderadsInit();
   }
 
   readposter() {
@@ -89,10 +90,50 @@ class RightCommunityHealthBox extends React.Component {
     );
   }
 
+  setWWAds(wwadsDiv) {
+    let adsPlace = document.getElementsByClassName("placeholder");
+    adsPlace[0].innerHTML = wwadsDiv;
+    var _sr = document.createElement("script");
+    _sr.type = "text/javascript";
+    _sr.async = false;
+    _sr.src = "https://cdn.wwads.cn/js/makemoney.js";
+    (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(_sr);
+  }
+
+  setThirdPartyAds(thirdPartyAdsDiv) {
+    let adsPlace = document.getElementsByClassName("placeholder");
+    adsPlace[0].innerHTML = thirdPartyAdsDiv;
+  }
+
+  _PlaceholderadsInit() {
+    let language = i18next.language;
+    // wwads
+    let wwadsDiv = '<div class="wwads-cn wwads-horizontal" data-id="116" style="z-index: 10;position: fixed;top: 130px;right: 10px;max-width: 200px;padding: 10px;border-radius: 5px;"></div>';
+    // google ads
+    let thirdPartyDiv =
+      '<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3509678918753247" crossorigin="anonymous"></script><ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-" data-ad-slot="" data-ad-format="auto" data-full-width-responsive="true"></ins><script>(adsbygoogle = window.adsbygoogle || []).push({});</script>';
+
+    if (wwadsDiv !== null && thirdPartyDiv !== null) {
+      if (language.startsWith("zh")) {
+        this.setWWAds(wwadsDiv);
+      } else {
+        this.setThirdPartyAds(thirdPartyDiv);
+      }
+    } else {
+      if (wwadsDiv !== null) {
+        this.setWWAds(wwadsDiv);
+      }
+      if (thirdPartyDiv !== null) {
+        this.setThirdPartyAds(thirdPartyDiv);
+      }
+    }
+  }
+
   render() {
     return (
       <div>
         {this.renderAd()}
+        <div class="placeholder"></div>
         <div className="box">
           <div className="cell">
             <span className="fade">{i18next.t("bar:Community Stats")}</span>
