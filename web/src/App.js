@@ -8,8 +8,8 @@ import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
 import * as Conf from "./Conf";
 import HomePage from "./HomePage";
-import DatasetListPage from "./DatasetListPage";
-import DatasetEditPage from "./DatasetEditPage";
+import WordsetListPage from "./WordsetListPage";
+import WordsetEditPage from "./WordsetEditPage";
 import VectorsetListPage from "./VectorsetListPage";
 import VectorsetEditPage from "./VectorsetEditPage";
 import SigninPage from "./SigninPage";
@@ -53,8 +53,8 @@ class App extends Component {
     });
     if (uri === '/') {
       this.setState({selectedMenuKey: '/'});
-    } else if (uri.includes('/datasets')) {
-      this.setState({ selectedMenuKey: '/datasets' });
+    } else if (uri.includes('/wordsets')) {
+      this.setState({ selectedMenuKey: '/wordsets' });
     } else if (uri.includes('/vectorsets')) {
       this.setState({ selectedMenuKey: '/vectorsets' });
     } else {
@@ -217,9 +217,9 @@ class App extends Component {
     );
 
     res.push(
-      <Menu.Item key="/datasets">
-        <Link to="/datasets">
-          {i18next.t("general:Datasets")}
+      <Menu.Item key="/wordsets">
+        <Link to="/wordsets">
+          {i18next.t("general:Wordsets")}
         </Link>
       </Menu.Item>
     );
@@ -280,8 +280,8 @@ class App extends Component {
           <Route exact path="/callback" component={AuthCallback}/>
           <Route exact path="/" render={(props) => <HomePage account={this.state.account} {...props} />}/>
           <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)}/>
-          <Route exact path="/datasets" render={(props) => this.renderSigninIfNotSignedIn(<DatasetListPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/datasets/:datasetName" render={(props) => this.renderSigninIfNotSignedIn(<DatasetEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)}/>
           <Route exact path="/vectorsets" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)}/>
         </Switch>

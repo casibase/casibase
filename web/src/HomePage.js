@@ -1,33 +1,33 @@
 import React from "react";
 import * as Conf from "./Conf";
-import * as DatasetBackend from "./backend/DatasetBackend";
-import Dataset from "./Dataset";
+import * as WordsetBackend from "./backend/WordsetBackend";
+import Wordset from "./Wordset";
 
 class HomePage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      dataset: null,
+      wordset: null,
     };
   }
 
   componentWillMount() {
-    this.getDataset();
+    this.getWordset();
   }
 
-  getDataset() {
-    DatasetBackend.getDataset(Conf.DefaultOwner, Conf.DefaultDatasetName)
-      .then((dataset) => {
+  getWordset() {
+    WordsetBackend.getWordset(Conf.DefaultOwner, Conf.DefaultWordsetName)
+      .then((wordset) => {
         this.setState({
-          dataset: dataset,
+          wordset: wordset,
         });
       });
   }
 
   render() {
-    return (this.state.dataset === undefined || this.state.dataset === null) ? null : (
-      <Dataset dataset={this.state.dataset} datasetName={this.state.dataset.name}/>
+    return (this.state.wordset === undefined || this.state.wordset === null) ? null : (
+      <Wordset wordset={this.state.wordset} wordsetName={this.state.wordset.name}/>
     )
   }
 }

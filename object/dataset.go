@@ -7,7 +7,7 @@ import (
 	"xorm.io/core"
 )
 
-type Dataset struct {
+type Wordset struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -18,52 +18,52 @@ type Dataset struct {
 	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }
 
-func GetGlobalDatasets() []*Dataset {
-	datasets := []*Dataset{}
-	err := adapter.engine.Asc("owner").Desc("created_time").Find(&datasets)
+func GetGlobalWordsets() []*Wordset {
+	wordsets := []*Wordset{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&wordsets)
 	if err != nil {
 		panic(err)
 	}
 
-	return datasets
+	return wordsets
 }
 
-func GetDatasets(owner string) []*Dataset {
-	datasets := []*Dataset{}
-	err := adapter.engine.Desc("created_time").Find(&datasets, &Dataset{Owner: owner})
+func GetWordsets(owner string) []*Wordset {
+	wordsets := []*Wordset{}
+	err := adapter.engine.Desc("created_time").Find(&wordsets, &Wordset{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
 
-	return datasets
+	return wordsets
 }
 
-func getDataset(owner string, name string) *Dataset {
-	dataset := Dataset{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&dataset)
+func getWordset(owner string, name string) *Wordset {
+	wordset := Wordset{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&wordset)
 	if err != nil {
 		panic(err)
 	}
 
 	if existed {
-		return &dataset
+		return &wordset
 	} else {
 		return nil
 	}
 }
 
-func GetDataset(id string) *Dataset {
+func GetWordset(id string) *Wordset {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return getDataset(owner, name)
+	return getWordset(owner, name)
 }
 
-func UpdateDataset(id string, dataset *Dataset) bool {
+func UpdateWordset(id string, wordset *Wordset) bool {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if getDataset(owner, name) == nil {
+	if getWordset(owner, name) == nil {
 		return false
 	}
 
-	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(dataset)
+	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(wordset)
 	if err != nil {
 		panic(err)
 	}
@@ -72,8 +72,8 @@ func UpdateDataset(id string, dataset *Dataset) bool {
 	return true
 }
 
-func AddDataset(dataset *Dataset) bool {
-	affected, err := adapter.engine.Insert(dataset)
+func AddWordset(wordset *Wordset) bool {
+	affected, err := adapter.engine.Insert(wordset)
 	if err != nil {
 		panic(err)
 	}
@@ -81,8 +81,8 @@ func AddDataset(dataset *Dataset) bool {
 	return affected != 0
 }
 
-func DeleteDataset(dataset *Dataset) bool {
-	affected, err := adapter.engine.ID(core.PK{dataset.Owner, dataset.Name}).Delete(&Dataset{})
+func DeleteWordset(wordset *Wordset) bool {
+	affected, err := adapter.engine.ID(core.PK{wordset.Owner, wordset.Name}).Delete(&Wordset{})
 	if err != nil {
 		panic(err)
 	}
@@ -90,6 +90,6 @@ func DeleteDataset(dataset *Dataset) bool {
 	return affected != 0
 }
 
-func (dataset *Dataset) GetId() string {
-	return fmt.Sprintf("%s/%s", dataset.Owner, dataset.Name)
+func (wordset *Wordset) GetId() string {
+	return fmt.Sprintf("%s/%s", wordset.Owner, wordset.Name)
 }

@@ -20,7 +20,7 @@ func uploadVectorNames(owner string, fileId string) bool {
 		vectors = append(vectors, vector)
 	}
 
-	dataset := &Dataset{
+	wordset := &Wordset{
 		Owner:       owner,
 		Name:        "word",
 		CreatedTime: util.GetCurrentTime(),
@@ -28,7 +28,7 @@ func uploadVectorNames(owner string, fileId string) bool {
 		Distance:    100,
 		Vectors:     vectors,
 	}
-	return AddDataset(dataset)
+	return AddWordset(wordset)
 }
 
 func parseVectorData(s string) []float64 {
@@ -74,11 +74,11 @@ func readVectorData(fileId string) []*Vector {
 	return vectors
 }
 
-func updateDatasetVectors(owner string, datasetName string, vectors []*Vector) {
-	dataset := getDataset(owner, datasetName)
+func updateWordsetVectors(owner string, wordsetName string, vectors []*Vector) {
+	wordset := getWordset(owner, wordsetName)
 
 	vectorMap := map[string]*Vector{}
-	for _, v := range dataset.Vectors {
+	for _, v := range wordset.Vectors {
 		vectorMap[v.Name] = v
 	}
 
@@ -88,5 +88,5 @@ func updateDatasetVectors(owner string, datasetName string, vectors []*Vector) {
 		}
 	}
 
-	UpdateDataset(dataset.GetId(), dataset)
+	UpdateWordset(wordset.GetId(), wordset)
 }

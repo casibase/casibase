@@ -8,9 +8,9 @@ func TestUploadVectorNames(t *testing.T) {
 	uploadVectorNames("admin", "../../tmpFiles/filename")
 }
 
-func TestUpdateDatasetVectors(t *testing.T) {
+func TestUpdateWordsetVectors(t *testing.T) {
 	InitConfig()
 
 	vectors := readVectorData("../../tmpFiles/wordVector_utf-8")
-	updateDatasetVectors("admin", "word", vectors)
+	updateWordsetVectors("admin", "word", vectors)
 }

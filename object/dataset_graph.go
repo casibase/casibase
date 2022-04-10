@@ -15,7 +15,7 @@ func init() {
 	graphCache = map[string]*Graph{}
 }
 
-func GetDatasetGraph(id string, clusterNumber int, distanceLimit int) *Graph {
+func GetWordsetGraph(id string, clusterNumber int, distanceLimit int) *Graph {
 	cacheId := fmt.Sprintf("%s|%d|%d", id, clusterNumber, distanceLimit)
 
 	g, ok := graphCache[cacheId]
@@ -23,14 +23,14 @@ func GetDatasetGraph(id string, clusterNumber int, distanceLimit int) *Graph {
 		return g
 	}
 
-	dataset := GetDataset(id)
-	if dataset == nil {
+	wordset := GetWordset(id)
+	if wordset == nil {
 		return nil
 	}
 
-	runKmeans(dataset.Vectors, clusterNumber)
+	runKmeans(wordset.Vectors, clusterNumber)
 
-	g = generateGraph(dataset.Vectors, distanceLimit)
+	g = generateGraph(wordset.Vectors, distanceLimit)
 	graphCache[cacheId] = g
 	return g
 }

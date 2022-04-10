@@ -7,65 +7,65 @@ import (
 	"github.com/casbin/casbase/util"
 )
 
-func (c *ApiController) GetGlobalDatasets() {
-	c.Data["json"] = object.GetGlobalDatasets()
+func (c *ApiController) GetGlobalWordsets() {
+	c.Data["json"] = object.GetGlobalWordsets()
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetDatasets() {
+func (c *ApiController) GetWordsets() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = object.GetDatasets(owner)
+	c.Data["json"] = object.GetWordsets(owner)
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetDataset() {
+func (c *ApiController) GetWordset() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetDataset(id)
+	c.Data["json"] = object.GetWordset(id)
 	c.ServeJSON()
 }
 
-func (c *ApiController) GetDatasetGraph() {
+func (c *ApiController) GetWordsetGraph() {
 	id := c.Input().Get("id")
 	clusterNumber := util.ParseInt(c.Input().Get("clusterNumber"))
 	distanceLimit := util.ParseInt(c.Input().Get("distanceLimit"))
 
-	c.Data["json"] = object.GetDatasetGraph(id, clusterNumber, distanceLimit)
+	c.Data["json"] = object.GetWordsetGraph(id, clusterNumber, distanceLimit)
 	c.ServeJSON()
 }
 
-func (c *ApiController) UpdateDataset() {
+func (c *ApiController) UpdateWordset() {
 	id := c.Input().Get("id")
 
-	var dataset object.Dataset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &dataset)
+	var wordset object.Wordset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateDataset(id, &dataset)
+	c.Data["json"] = object.UpdateWordset(id, &wordset)
 	c.ServeJSON()
 }
 
-func (c *ApiController) AddDataset() {
-	var dataset object.Dataset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &dataset)
+func (c *ApiController) AddWordset() {
+	var wordset object.Wordset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.AddDataset(&dataset)
+	c.Data["json"] = object.AddWordset(&wordset)
 	c.ServeJSON()
 }
 
-func (c *ApiController) DeleteDataset() {
-	var dataset object.Dataset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &dataset)
+func (c *ApiController) DeleteWordset() {
+	var wordset object.Wordset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
 		panic(err)
 	}
 
-	c.Data["json"] = object.DeleteDataset(&dataset)
+	c.Data["json"] = object.DeleteWordset(&wordset)
 	c.ServeJSON()
 }

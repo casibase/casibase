@@ -3,7 +3,7 @@ import {Button, Card, Col, Empty, InputNumber, List, Row, Select, Slider, Spin, 
 import ForceGraph2D from 'react-force-graph-2d';
 import ForceGraph3D from 'react-force-graph-3d';
 import * as d3 from "d3-force";
-import * as DatasetBackend from "./backend/DatasetBackend";
+import * as WordsetBackend from "./backend/WordsetBackend";
 import i18next from "i18next";
 
 const { Option } = Select;
@@ -31,12 +31,12 @@ class ForceGraph extends React.Component {
   }
 }
 
-class Dataset extends React.Component {
+class Wordset extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      datasetName: props.datasetName !== undefined ? props.datasetName : props.match.params.datasetName,
+      wordsetName: props.wordsetName !== undefined ? props.wordsetName : props.match.params.wordsetName,
       graph: null,
       enableStatic: false,
       // enableCurve: true,
@@ -54,15 +54,15 @@ class Dataset extends React.Component {
   }
 
   componentWillMount() {
-    this.getDatasetGraph();
+    this.getWordsetGraph();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     fg.current?.d3Force('collision', d3.forceCollide(15));
   }
 
-  getDatasetGraph() {
-    DatasetBackend.getDatasetGraph("admin", this.state.datasetName, this.state.clusterNumber, this.state.distanceLimit)
+  getWordsetGraph() {
+    WordsetBackend.getWordsetGraph("admin", this.state.wordsetName, this.state.clusterNumber, this.state.distanceLimit)
       .then((graph) => {
         this.setState({
           graph: graph,
@@ -322,7 +322,7 @@ class Dataset extends React.Component {
                 this.setState({
                   graph: null,
                 });
-                this.getDatasetGraph();
+                this.getWordsetGraph();
               }}>
                 重新聚类
               </Button>
@@ -462,4 +462,4 @@ class Dataset extends React.Component {
   }
 }
 
-export default Dataset;
+export default Wordset;

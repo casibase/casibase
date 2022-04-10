@@ -5,18 +5,10 @@
     "Sign Out": "登出",
     "Sign Up": "注册"
   },
-  "dataset": {
-    "All vectors": "所有向量",
-    "Distance": "距离",
-    "Edit Dataset": "编辑数据集",
-    "Valid vectors": "有效向量",
-    "Vectors": "向量"
-  },
   "general": {
     "Action": "操作",
     "Add": "添加",
     "Data": "数据",
-    "Datasets": "数据集",
     "Delete": "删除",
     "Display name": "显示名称",
     "Edit": "编辑",
@@ -27,7 +19,8 @@
     "Preview": "预览",
     "Save": "保存",
     "URL": "链接",
-    "Vectorsets": "向量集"
+    "Vectorsets": "向量集",
+    "Wordsets": "词汇集"
   },
   "vectorset": {
     "Count": "个数",
@@ -36,5 +29,12 @@
     "Example vectors": "示例向量",
     "File name": "文件名",
     "File size": "文件大小"
+  },
+  "wordset": {
+    "All vectors": "所有向量",
+    "Distance": "距离",
+    "Edit Wordset": "编辑词汇集",
+    "Valid vectors": "有效向量",
+    "Vectors": "向量"
   }
 }

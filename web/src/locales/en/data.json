@@ -5,18 +5,10 @@
     "Sign Out": "Sign Out",
     "Sign Up": "Sign Up"
   },
-  "dataset": {
-    "All vectors": "All vectors",
-    "Distance": "Distance",
-    "Edit Dataset": "Edit Dataset",
-    "Valid vectors": "Valid vectors",
-    "Vectors": "Vectors"
-  },
   "general": {
     "Action": "Action",
     "Add": "Add",
     "Data": "Data",
-    "Datasets": "Datasets",
     "Delete": "Delete",
     "Display name": "Display name",
     "Edit": "Edit",
@@ -27,7 +19,8 @@
     "Preview": "Preview",
     "Save": "Save",
     "URL": "URL",
-    "Vectorsets": "Vectorsets"
+    "Vectorsets": "Vectorsets",
+    "Wordsets": "Wordsets"
   },
   "vectorset": {
     "Count": "Count",
@@ -36,5 +29,12 @@
     "Example vectors": "Example vectors",
     "File name": "File name",
     "File size": "File size"
+  },
+  "wordset": {
+    "All vectors": "All vectors",
+    "Distance": "Distance",
+    "Edit Wordset": "Edit Wordset",
+    "Valid vectors": "Valid vectors",
+    "Vectors": "Vectors"
   }
 }

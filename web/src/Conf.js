@@ -8,7 +8,7 @@ export const AuthConfig = {
 };
 
 export const DefaultOwner = "admin";
-export const DefaultDatasetName = "word";
+export const DefaultWordsetName = "word";
 
 export const ForceLanguage = "";
 export const DefaultLanguage = "en";
