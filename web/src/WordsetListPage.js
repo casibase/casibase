@@ -99,7 +99,7 @@ class WordsetListPage extends React.Component {
         sorter: (a, b) => a.distance - b.distance,
       },
       {
-        title: i18next.t("wordset:Vectors"),
+        title: i18next.t("wordset:Words"),
         dataIndex: 'vectors',
         key: 'vectors',
         // width: '120px',
@@ -109,21 +109,21 @@ class WordsetListPage extends React.Component {
         }
       },
       {
-        title: i18next.t("wordset:All vectors"),
-        dataIndex: 'allVectors',
-        key: 'allVectors',
+        title: i18next.t("wordset:All words"),
+        dataIndex: 'allWords',
+        key: 'allWords',
         width: '140px',
-        sorter: (a, b) => a.allVectors - b.allVectors,
+        sorter: (a, b) => a.allWords - b.allWords,
         render: (text, record, index) => {
           return record.vectors.length;
         }
       },
       {
-        title: i18next.t("wordset:Valid vectors"),
-        dataIndex: 'validVectors',
-        key: 'validVectors',
+        title: i18next.t("wordset:Valid words"),
+        dataIndex: 'validWords',
+        key: 'validWords',
         width: '140px',
-        sorter: (a, b) => a.validVectors - b.validVectors,
+        sorter: (a, b) => a.validWords - b.validWords,
         render: (text, record, index) => {
           return record.vectors.filter(vector => vector.data.length !== 0).length;
         }

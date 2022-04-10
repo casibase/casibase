@@ -86,11 +86,11 @@ class WordsetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("wordset:Vectors")}:
+            {i18next.t("wordset:Words")}:
           </Col>
           <Col span={22} >
             <VectorTable
-              title={i18next.t("wordset:Vectors")}
+              title={i18next.t("wordset:Words")}
               table={this.state.wordset.vectors}
               onUpdateTable={(value) => { this.updateWordsetField('vectors', value)}}
             />

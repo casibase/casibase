@@ -31,10 +31,10 @@
     "File size": "文件大小"
   },
   "wordset": {
-    "All vectors": "所有向量",
+    "All words": "所有词汇",
     "Distance": "距离",
     "Edit Wordset": "编辑词汇集",
-    "Valid vectors": "有效向量",
-    "Vectors": "向量"
+    "Valid words": "有效词汇",
+    "Words": "词汇表"
   }
 }
