@@ -2,6 +2,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casbin/casbase/util"
 )
@@ -9,7 +10,13 @@ import (
 func (vectorset *Vectorset) LoadVectors(pathPrefix string) {
 	path := util.GetUploadFilePath(fmt.Sprintf("%s%s", pathPrefix, vectorset.FileName))
 
-	nameArray, dataArray := util.LoadVectorFileBySpace(path)
+	var nameArray []string
+	var dataArray [][]float64
+	if strings.HasSuffix(vectorset.FileName, ".csv") {
+		nameArray, dataArray = util.LoadVectorFileByCsv(path)
+	} else {
+		nameArray, dataArray = util.LoadVectorFileBySpace(path)
+	}
 
 	exampleVectors := []*Vector{}
 	for i := 0; i < 100; i++ {
