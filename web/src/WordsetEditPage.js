@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from 'antd';
+import {Button, Card, Col, Input, InputNumber, Row, Select} from 'antd';
 import * as WordsetBackend from "./backend/WordsetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -131,16 +131,16 @@ class WordsetEditPage extends React.Component {
             <Input value={`${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`} />
           </Col>
         </Row>
-        {/*<Row style={{marginTop: '20px'}} >*/}
-        {/*  <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>*/}
-        {/*    {i18next.t("wordset:Distance")}:*/}
-        {/*  </Col>*/}
-        {/*  <Col span={22} >*/}
-        {/*    <InputNumber value={this.state.wordset.distance} onChange={value => {*/}
-        {/*      this.updateWordsetField('distance', value);*/}
-        {/*    }} />*/}
-        {/*  </Col>*/}
-        {/*</Row>*/}
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("wordset:Distance limit")}:
+          </Col>
+          <Col span={22} >
+            <InputNumber value={this.state.wordset.distanceLimit} onChange={value => {
+              this.updateWordsetField('distanceLimit', value);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Words")}:

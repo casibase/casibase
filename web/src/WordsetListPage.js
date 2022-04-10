@@ -34,7 +34,7 @@ class WordsetListPage extends React.Component {
       name: `wordset_${this.state.wordsets.length}`,
       createdTime: moment().format(),
       displayName: `Wordset ${this.state.wordsets.length}`,
-      distance: 100,
+      distanceLimit: 14,
       vectorset: "wordVector_utf-8",
       vectors: [],
     }
@@ -92,13 +92,6 @@ class WordsetListPage extends React.Component {
         width: '200px',
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
-      // {
-      //   title: i18next.t("wordset:Distance"),
-      //   dataIndex: 'distance',
-      //   key: 'distance',
-      //   width: '120px',
-      //   sorter: (a, b) => a.distance - b.distance,
-      // },
       {
         title: i18next.t("wordset:Words"),
         dataIndex: 'vectors',
@@ -153,6 +146,13 @@ class WordsetListPage extends React.Component {
           const validWords = record.vectors.filter(vector => vector.data.length !== 0).length;
           return `${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`;
         }
+      },
+      {
+        title: i18next.t("wordset:Distance limit"),
+        dataIndex: 'distanceLimit',
+        key: 'distanceLimit',
+        width: '120px',
+        sorter: (a, b) => a.distanceLimit - b.distanceLimit,
       },
       {
         title: i18next.t("general:Action"),

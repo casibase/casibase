@@ -12,9 +12,9 @@ type Wordset struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName string `xorm:"varchar(100)" json:"displayName"`
-	Distance    int    `json:"distance"`
-	Vectorset   string `xorm:"varchar(100)" json:"vectorset"`
+	DisplayName   string `xorm:"varchar(100)" json:"displayName"`
+	DistanceLimit int    `json:"distanceLimit"`
+	Vectorset     string `xorm:"varchar(100)" json:"vectorset"`
 
 	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }

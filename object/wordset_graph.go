@@ -78,6 +78,8 @@ func generateGraph(vectors []*Vector, distanceLimit int) *Graph {
 	//vectors = vectors[:100]
 
 	g := newGraph()
+	g.Nodes = []*Node{}
+	g.Links = []*Link{}
 
 	nodeWeightMap := map[string]int{}
 	for i := 0; i < len(vectors); i++ {

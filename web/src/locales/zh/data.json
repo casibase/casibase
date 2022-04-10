@@ -33,7 +33,7 @@
   },
   "wordset": {
     "All words": "所有词汇",
-    "Distance": "距离",
+    "Distance limit": "距离上限",
     "Edit Wordset": "编辑词汇集",
     "Match": "匹配",
     "Matched": "匹配度",

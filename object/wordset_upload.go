@@ -8,8 +8,15 @@ import (
 func uploadVectorNames(owner string, fileId string) bool {
 	table := xlsx.ReadXlsxFile(fileId)
 
+	vectorMap := map[string]int{}
 	vectors := []*Vector{}
 	for _, line := range table {
+		if _, ok := vectorMap[line[0]]; ok {
+			continue
+		} else {
+			vectorMap[line[0]] = 1
+		}
+
 		vector := &Vector{
 			Name: line[0],
 			Data: []float64{},
@@ -18,12 +25,12 @@ func uploadVectorNames(owner string, fileId string) bool {
 	}
 
 	wordset := &Wordset{
-		Owner:       owner,
-		Name:        "word",
-		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "word",
-		Distance:    100,
-		Vectors:     vectors,
+		Owner:         owner,
+		Name:          "word",
+		CreatedTime:   util.GetCurrentTime(),
+		DisplayName:   "word",
+		DistanceLimit: 14,
+		Vectors:       vectors,
 	}
 	return AddWordset(wordset)
 }
