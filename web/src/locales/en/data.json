@@ -15,6 +15,7 @@
   "general": {
     "Action": "Action",
     "Add": "Add",
+    "Data": "Data",
     "Datasets": "Datasets",
     "Delete": "Delete",
     "Display name": "Display name",
@@ -22,6 +23,7 @@
     "Home": "Home",
     "Loading...": "Loading...",
     "Name": "Name",
+    "No.": "No.",
     "Preview": "Preview",
     "Save": "Save",
     "URL": "URL",

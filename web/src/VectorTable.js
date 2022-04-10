@@ -2,6 +2,7 @@ import React from "react";
 import {DownOutlined, DeleteOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Col, Input, Row, Table, Tooltip} from 'antd';
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class VectorTable extends React.Component {
   constructor(props) {
@@ -61,16 +62,16 @@ class VectorTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: 'No.',
+        title: i18next.t("general:No."),
         dataIndex: 'no',
         key: 'no',
-        width: '30px',
+        width: '60px',
         render: (text, record, index) => {
           return (index + 1);
         }
       },
       {
-        title: 'Name',
+        title: i18next.t("general:Name"),
         dataIndex: 'name',
         key: 'name',
         width: '200px',
@@ -83,7 +84,7 @@ class VectorTable extends React.Component {
         }
       },
       {
-        title: 'Data',
+        title: i18next.t("general:Data"),
         dataIndex: 'data',
         key: 'data',
         // width: '300px',
@@ -96,7 +97,7 @@ class VectorTable extends React.Component {
         }
       },
       {
-        title: 'action',
+        title: i18next.t("general:Action"),
         key: 'action',
         width: '100px',
         render: (text, record, index) => {

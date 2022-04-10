@@ -233,7 +233,7 @@ export function getTags(vectors) {
   vectors.forEach((vector, i) => {
     if (vector.data.length !== 0) {
       res.push(
-        <Tooltip placement="top" title={JSON.stringify(vector.data)}>
+        <Tooltip placement="top" title={getShortText(JSON.stringify(vector.data), 500)}>
           <Tag color={"success"}>
             {vector.name}
           </Tag>
