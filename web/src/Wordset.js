@@ -38,6 +38,7 @@ class Wordset extends React.Component {
       classes: props,
       wordsetName: props.wordsetName !== undefined ? props.wordsetName : props.match.params.wordsetName,
       graph: null,
+      loading: false,
       enableStatic: false,
       // enableCurve: true,
       enableBolderLink: false,
@@ -62,10 +63,14 @@ class Wordset extends React.Component {
   }
 
   getWordsetGraph() {
+    this.setState({
+      loading: true,
+    });
     WordsetBackend.getWordsetGraph("admin", this.state.wordsetName, this.state.clusterNumber, this.state.distanceLimit)
       .then((graph) => {
         this.setState({
           graph: graph,
+          loading: false,
           selectedType: null,
           selectedId: null,
           selectedIds: [],
@@ -342,7 +347,7 @@ class Wordset extends React.Component {
   }
 
   renderGraph() {
-    if (this.state.graph === null) {
+    if (this.state.loading) {
       return (
         // https://codesandbox.io/s/antd-reproduction-template-q2dwk
         <div className="App">
@@ -351,7 +356,7 @@ class Wordset extends React.Component {
       )
     }
 
-    if (this.state.graph.nodes === null || this.state.graph.links === null) {
+    if (this.state.graph === null || this.state.graph.nodes === null || this.state.graph.links === null) {
       return (
         <div className="App">
           <Empty style={{paddingTop: "10%"}} image={Empty.PRESENTED_IMAGE_SIMPLE} />
