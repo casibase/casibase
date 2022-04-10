@@ -17,6 +17,7 @@ class WordsetEditPage extends React.Component {
       wordsetName: props.match.params.wordsetName,
       wordset: null,
       vectorsets: null,
+      matchLoading: false,
     };
   }
 
@@ -108,11 +109,15 @@ class WordsetEditPage extends React.Component {
             {i18next.t("wordset:Match")}:
           </Col>
           <Col span={22} >
-            <Button type="primary" onClick={() => {
+            <Button loading={this.state.matchLoading} type="primary" onClick={() => {
+              this.setState({
+                matchLoading: true,
+              });
               WordsetBackend.getWordsetMatch(this.props.account.name, this.state.wordsetName)
                 .then((wordset) => {
                   this.setState({
                     wordset: wordset,
+                    matchLoading: false,
                   });
                 });
             }}>{i18next.t("wordset:Match")}</Button>
