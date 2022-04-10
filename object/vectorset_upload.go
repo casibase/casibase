@@ -9,33 +9,20 @@ import (
 func (vectorset *Vectorset) LoadVectors(pathPrefix string) {
 	path := util.GetUploadFilePath(fmt.Sprintf("%s%s", pathPrefix, vectorset.FileName))
 
-	rows := [][]string{}
-	util.LoadSpaceFile(path, &rows)
+	nameArray, dataArray := util.LoadVectorFileBySpace(path)
 
 	exampleVectors := []*Vector{}
-	for i, row := range rows {
-		if i == 0 {
-			continue
-		}
-
-		vectorData := []float64{}
-		for _, token := range row[1:] {
-			vectorData = append(vectorData, util.ParseFloat(token))
+	for i := 0; i < 100; i++ {
+		if i >= len(nameArray) {
+			break
 		}
 
 		vector := &Vector{
-			Name: row[0],
-			Data: vectorData,
-		}
-		if len(vector.Data) != vectorset.Dimension {
-			panic(fmt.Errorf("invalid vector data length: %d, expected = %d", len(vector.Data), vectorset.Dimension))
+			Name: nameArray[i],
+			Data: dataArray[i],
 		}
 
 		exampleVectors = append(exampleVectors, vector)
-
-		if len(exampleVectors) == 100 {
-			break
-		}
 	}
 
 	vectorset.Vectors = exampleVectors
