@@ -35,6 +35,13 @@ func (c *ApiController) GetWordsetGraph() {
 	c.ServeJSON()
 }
 
+func (c *ApiController) GetWordsetMatch() {
+	id := c.Input().Get("id")
+
+	c.Data["json"] = object.GetWordsetMatch(id)
+	c.ServeJSON()
+}
+
 func (c *ApiController) UpdateWordset() {
 	id := c.Input().Get("id")
 

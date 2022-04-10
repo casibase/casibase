@@ -26,6 +26,7 @@ func initAPI() {
 	beego.Router("/api/get-wordsets", &controllers.ApiController{}, "GET:GetWordsets")
 	beego.Router("/api/get-wordset", &controllers.ApiController{}, "GET:GetWordset")
 	beego.Router("/api/get-wordset-graph", &controllers.ApiController{}, "GET:GetWordsetGraph")
+	beego.Router("/api/get-wordset-match", &controllers.ApiController{}, "GET:GetWordsetMatch")
 	beego.Router("/api/update-wordset", &controllers.ApiController{}, "POST:UpdateWordset")
 	beego.Router("/api/add-wordset", &controllers.ApiController{}, "POST:AddWordset")
 	beego.Router("/api/delete-wordset", &controllers.ApiController{}, "POST:DeleteWordset")

@@ -19,18 +19,19 @@ func (vectorset *Vectorset) LoadVectors(pathPrefix string) {
 	}
 
 	exampleVectors := []*Vector{}
-	for i := 0; i < 100; i++ {
-		if i >= len(nameArray) {
-			break
-		}
-
+	vectorMap := map[string]*Vector{}
+	for i := 0; i < len(nameArray); i++ {
 		vector := &Vector{
 			Name: nameArray[i],
 			Data: dataArray[i],
 		}
 
-		exampleVectors = append(exampleVectors, vector)
+		if i < 100 {
+			exampleVectors = append(exampleVectors, vector)
+		}
+		vectorMap[vector.Name] = vector
 	}
 
 	vectorset.Vectors = exampleVectors
+	vectorset.VectorMap = vectorMap
 }

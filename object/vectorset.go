@@ -19,7 +19,8 @@ type Vectorset struct {
 	Dimension   int    `json:"dimension"`
 	Count       int    `json:"count"`
 
-	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
+	Vectors   []*Vector          `xorm:"mediumtext" json:"vectors"`
+	VectorMap map[string]*Vector `xorm:"-" json:"vectorMap"`
 }
 
 func GetGlobalVectorsets() []*Vectorset {

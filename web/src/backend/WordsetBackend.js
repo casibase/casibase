@@ -28,6 +28,13 @@ export function getWordsetGraph(owner, name, clusterNumber, distanceLimit) {
   }).then(res => res.json());
 }
 
+export function getWordsetMatch(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-wordset-match?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "GET",
+    credentials: "include"
+  }).then(res => res.json());
+}
+
 export function updateWordset(owner, name, wordset) {
   let newWordset = Setting.deepCopy(wordset);
   return fetch(`${Setting.ServerUrl}/api/update-wordset?id=${owner}/${encodeURIComponent(name)}`, {

@@ -105,6 +105,21 @@ class WordsetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("wordset:Match")}:
+          </Col>
+          <Col span={22} >
+            <Button type="primary" onClick={() => {
+              WordsetBackend.getWordsetMatch(this.props.account.name, this.state.wordsetName)
+                .then((wordset) => {
+                  this.setState({
+                    wordset: wordset,
+                  });
+                });
+            }}>{i18next.t("wordset:Match")}</Button>
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Matched")}:
           </Col>
           <Col span={22} >
