@@ -9,3 +9,7 @@ func GetUploadXlsxPath(fileId string) string {
 func GetUploadCsvPath(fileId string) string {
 	return fmt.Sprintf("tmpFiles/%s.csv", fileId)
 }
+
+func GetUploadFilePath(fileId string) string {
+	return fmt.Sprintf("tmpFiles/%s", fileId)
+}
