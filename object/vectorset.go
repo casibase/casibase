@@ -12,7 +12,7 @@ type Vectorset struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 	Url         string `xorm:"varchar(100)" json:"url"`
 	FileName    string `xorm:"varchar(100)" json:"fileName"`
 	FileSize    string `xorm:"varchar(100)" json:"fileSize"`
