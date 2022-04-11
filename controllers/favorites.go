@@ -229,7 +229,7 @@ func (c *ApiController) GetAccountFavoriteNum() {
 	//favorite type set,5 object.favorTopic...
 	typeSet := []string{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic}
 
-	for i := 1; i <= 5; i++ {
+	for i := 1; i <= len(typeSet); i++ {
 		wg.Add(1)
 		i := i
 		go func() {
