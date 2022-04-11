@@ -32,12 +32,11 @@ const (
 	FollowUser     = "follow_user"
 	FavorNode      = "favor_node"
 	SubscribeTopic = "subscribe_topic"
-	SubscribeReply = "subscribe_reply"
 )
 
 func IsFavoritesExist(Type string) bool {
 	//check the if the string is in the enum
-	if Type == FavorTopic || Type == FollowUser || Type == FavorNode || Type == SubscribeTopic || Type == SubscribeReply {
+	if Type == FavorTopic || Type == FollowUser || Type == FavorNode || Type == SubscribeTopic {
 		return true
 	}
 	return false
@@ -235,13 +234,6 @@ func GetFavoritesNum(favoritesType string, memberId string) int {
 	case SubscribeTopic:
 		topic := new(Favorites)
 		total, err = adapter.Engine.Where("favorites_type = ?", SubscribeTopic).And("member_id = ?", memberId).Count(topic)
-		if err != nil {
-			panic(err)
-		}
-		break
-	case SubscribeReply:
-		reply := new(Favorites)
-		total, err = adapter.Engine.Where("favorites_type = ?", SubscribeReply).And("member_id = ?", memberId).Count(reply)
 		if err != nil {
 			panic(err)
 		}

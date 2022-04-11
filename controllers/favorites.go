@@ -209,10 +209,6 @@ func (c *ApiController) GetFavorites() {
 		num := object.GetFavoritesNum(object.SubscribeTopic, memberId)
 		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 		break
-	case object.SubscribeReply:
-		res := object.GetTopicsFromFavorites(memberId, limit, offset, object.SubscribeReply)
-		num := object.GetFavoritesNum(object.SubscribeReply, memberId)
-		resp = Response{Status: "ok", Msg: "success", Data: res, Data2: num}
 	default:
 		resp = Response{Status: "fail", Msg: "param wrong"}
 	}
@@ -231,7 +227,7 @@ func (c *ApiController) GetAccountFavoriteNum() {
 	var wg sync.WaitGroup
 
 	//favorite type set,5 object.favorTopic...
-	typeSet := []string{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic, object.SubscribeReply}
+	typeSet := []string{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic}
 
 	for i := 1; i <= 5; i++ {
 		wg.Add(1)

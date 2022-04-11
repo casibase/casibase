@@ -162,15 +162,6 @@ class NewReplyBox extends React.Component {
           Setting.showMessage("error", res.msg);
         }
       });
-    } else {
-      FavoritesBackend.addFavorites(this.props.parent.id, "subscribe_reply").then((res) => {
-        if (res.status === "ok") {
-          this.getTopic("refresh");
-          this.props.refreshAccount();
-        } else {
-          Setting.showMessage("error", res.msg);
-        }
-      });
     }
   }
 
