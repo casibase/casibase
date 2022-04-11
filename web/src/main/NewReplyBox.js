@@ -153,14 +153,25 @@ class NewReplyBox extends React.Component {
       }
     });
 
-    FavoritesBackend.addFavorites(this.props.topic?.id, "subscribe_topic").then((res) => {
-      if (res.status === "ok") {
-        this.getTopic("refresh");
-        this.props.refreshAccount();
-      } else {
-        Setting.showMessage("error", res.msg);
-      }
-    });
+    if (this.props.topic) {
+      FavoritesBackend.addFavorites(this.props.topic.id, "subscribe_topic").then((res) => {
+        if (res.status === "ok") {
+          this.getTopic("refresh");
+          this.props.refreshAccount();
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+    } else {
+      FavoritesBackend.addFavorites(this.props.parent.id, "subscribe_reply").then((res) => {
+        if (res.status === "ok") {
+          this.getTopic("refresh");
+          this.props.refreshAccount();
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
+      });
+    }
   }
 
   handleChange(editor, value) {
