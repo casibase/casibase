@@ -13,7 +13,11 @@ func (vectorset *Vectorset) LoadVectors(pathPrefix string) {
 	var nameArray []string
 	var dataArray [][]float64
 	if strings.HasSuffix(vectorset.FileName, ".csv") {
-		nameArray, dataArray = util.LoadVectorFileByCsv(path)
+		if strings.Contains(vectorset.FileName, "_Dim_") {
+			nameArray, dataArray = util.LoadVectorFileByCsv2(path)
+		} else {
+			nameArray, dataArray = util.LoadVectorFileByCsv(path)
+		}
 	} else {
 		nameArray, dataArray = util.LoadVectorFileBySpace(path)
 	}
@@ -45,6 +49,7 @@ func (vectorset *Vectorset) WriteVectors(pathPrefix string) {
 	rows := [][]string{}
 	for _, vector := range vectorset.AllVectors {
 		row := util.FloatsToStrings(vector.Data)
+		row = append([]string{vector.Name}, row...)
 		rows = append(rows, row)
 	}
 

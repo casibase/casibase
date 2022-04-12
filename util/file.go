@@ -49,6 +49,27 @@ func LoadVectorFileByCsv(path string) ([]string, [][]float64) {
 	return nameArray, dataArray
 }
 
+func LoadVectorFileByCsv2(path string) ([]string, [][]float64) {
+	nameArray := []string{}
+	dataArray := [][]float64{}
+
+	file, err := os.Open(path)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	rows := [][]string{}
+	LoadCsvFile(path, &rows)
+
+	for _, row := range rows {
+		nameArray = append(nameArray, row[0])
+		dataArray = append(dataArray, StringsToFloats(row[1:]))
+	}
+
+	return nameArray, dataArray
+}
+
 func LoadVectorFileBySpace(path string) ([]string, [][]float64) {
 	nameArray := []string{}
 	dataArray := [][]float64{}
