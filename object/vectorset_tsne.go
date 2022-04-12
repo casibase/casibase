@@ -28,11 +28,11 @@ func testTsne() {
 
 func (vectorset *Vectorset) DoTsne(dimension int) {
 	floatArray := []float64{}
-	for _, vector := range vectorset.Vectors {
+	for _, vector := range vectorset.AllVectors {
 		floatArray = append(floatArray, vector.Data...)
 	}
 
-	X := mat.NewDense(len(vectorset.Vectors), vectorset.Dimension, floatArray)
+	X := mat.NewDense(len(vectorset.AllVectors), vectorset.Dimension, floatArray)
 
 	t := tsne.NewTSNE(dimension, 300, 100, 300, true)
 
@@ -42,14 +42,14 @@ func (vectorset *Vectorset) DoTsne(dimension int) {
 	})
 
 	rowCount, columnCount := Y.Dims()
-	if rowCount != len(vectorset.Vectors) {
-		panic("rowCount != len(vectorset.Vectors)")
+	if rowCount != len(vectorset.AllVectors) {
+		panic("rowCount != len(vectorset.AllVectors)")
 	}
 	if columnCount != dimension {
 		panic("columnCount != dimension")
 	}
 
-	for i, vector := range vectorset.Vectors {
+	for i, vector := range vectorset.AllVectors {
 		arr := []float64{}
 		for j := 0; j < dimension; j++ {
 			arr = append(arr, Y.At(i, j))

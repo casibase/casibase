@@ -315,7 +315,7 @@ class WordsetGraph extends React.Component {
                 </span>
               </Col>
               <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
-                <InputNumber style={{width: "100%"}} min={1} max={20} step={1} value={this.state.distanceLimit} onChange={value => {
+                <InputNumber style={{width: "100%"}} min={1} max={100} step={1} value={this.state.distanceLimit} onChange={value => {
                   this.setState({
                     distanceLimit: value,
                   });
