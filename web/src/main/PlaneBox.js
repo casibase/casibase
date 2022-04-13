@@ -73,7 +73,10 @@ class PlaneBox extends React.Component {
           >
             <img src={plane?.image} border="0" align="absmiddle" width="24" /> &nbsp; {plane?.name}
             <span className="fr" style={{ color: plane?.color, lineHeight: "20px" }}>
-              {plane?.id} • <span className="small">{plane?.nodes.length} nodes</span>
+              {plane?.id} •{" "}
+              <span className="small">
+                {plane?.nodes.length} {i18next.t("plane:nodes")}
+              </span>
             </span>
           </div>
           <div className="inner">
@@ -105,7 +108,9 @@ class PlaneBox extends React.Component {
                       {Setting.getForumName()} {i18next.t("plane:Plane list")}
                     </span>
                     <div className="sep5"></div>
-                    <span className="fade">{this.state.nodesNum} nodes now and growing.</span>
+                    <span className="fade">
+                      {this.state.nodesNum} {i18next.t("plane:nodes now and growing.")}
+                    </span>
                   </td>
                 </tr>
               </tbody>
