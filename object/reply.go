@@ -203,6 +203,16 @@ func GetTopicReplyNum(topicId int) int {
 	return int(total)
 }
 
+// GetReplyByContentAndAuthor returns reply by content and author.
+func GetReplyByContentAndAuthor(content string, author string) []*Reply {
+	var ret []*Reply
+	err := adapter.Engine.Where("content = ?", content).And("author = ?", author).Find(&ret)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
 // GetLatestReplyInfo returns topic's latest reply information.
 func GetLatestReplyInfo(topicId int) *Reply {
 	var reply Reply

@@ -152,6 +152,12 @@ func (c *ApiController) AddReply() {
 		panic(err)
 	}
 
+	previousReply := object.GetReplyByContentAndAuthor(reply.Content, reply.Author)
+	if previousReply != nil {
+		c.ResponseError("You have same reply before.")
+		return
+	}
+
 	if object.ContainsSensitiveWord(reply.Content) {
 		c.ResponseError("Reply contains sensitive word.")
 		return
