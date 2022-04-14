@@ -54,6 +54,7 @@ class NewReplyBox extends React.Component {
         },
       ],
       placeholder: "",
+      publishClicked: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.synonyms = this.synonyms.bind(this);
@@ -133,6 +134,12 @@ class NewReplyBox extends React.Component {
     if (!this.isOkToSubmit()) {
       return;
     }
+    if (this.state.publishClicked) {
+      return;
+    }
+    this.setState({
+      publishClicked: true,
+    });
     this.updateFormField("parentId", this.props.parent.id);
 
     this.updateFormField("topicId", this.props.topic?.id);
@@ -143,12 +150,14 @@ class NewReplyBox extends React.Component {
         this.props.cancelReply();
         this.setState({
           form: {},
+          publishClicked: false,
         });
         Setting.scrollToBottom();
         this.props.refreshAccount();
       } else {
         this.setState({
           message: res.msg,
+          publishClicked: false,
         });
       }
     });
@@ -156,7 +165,6 @@ class NewReplyBox extends React.Component {
     if (this.props.topic) {
       FavoritesBackend.addFavorites(this.props.topic.id, "subscribe_topic").then((res) => {
         if (res.status === "ok") {
-          this.getTopic("refresh");
           this.props.refreshAccount();
         } else {
           Setting.showMessage("error", res.msg);
@@ -414,7 +422,10 @@ class NewReplyBox extends React.Component {
               justifyContent: "space-between",
             }}
           >
-            <input style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" value={i18next.t("reply:Reply")} className="super normal button" />
+            <button type="button" style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" className="super normal button">
+              <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
+              &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("reply:Reply")}
+            </button>
             {this.renderEditorSelect(blurStyle)}
           </div>
 
