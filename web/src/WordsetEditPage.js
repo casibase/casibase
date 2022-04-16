@@ -149,6 +149,7 @@ class WordsetEditPage extends React.Component {
             <VectorTable
               title={i18next.t("wordset:Words")}
               table={this.state.wordset.vectors}
+              wordset={this.state.wordset}
               onUpdateTable={(value) => { this.updateWordsetField('vectors', value)}}
             />
           </Col>

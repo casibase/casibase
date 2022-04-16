@@ -3,6 +3,8 @@ import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import moment from "moment";
 import Sdk from "casdoor-js-sdk";
+import FileSaver from "file-saver";
+import XLSX from "xlsx";
 
 export let ServerUrl = '';
 export let CasdoorSdk;
@@ -256,4 +258,56 @@ export function getPercentage(f) {
   }
 
   return (100 * f).toFixed(1);
+}
+
+function s2ab(s) {
+  const buf = new ArrayBuffer(s.length);
+  const view = new Uint8Array(buf);
+  for (let i = 0; i !== s.length; i ++) {
+    view[i] = s.charCodeAt(i) & 0xFF;
+  }
+  return buf;
+}
+
+export function sheet2blob(sheet, sheetName) {
+  const workbook = {
+    SheetNames: [sheetName],
+    Sheets: {},
+  };
+  workbook.Sheets[sheetName] = sheet;
+  return workbook2blob(workbook);
+}
+
+export function workbook2blob(workbook) {
+  const wopts = {
+    bookType: "xlsx",
+    bookSST: false,
+    type: "binary",
+  };
+  const wbout = XLSX.write(workbook, wopts);
+  return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+}
+
+export function downloadXlsx(wordset) {
+  let data = [];
+  wordset.vectors.forEach((vector, i) => {
+    let row = {};
+
+    row[0] = vector.name;
+    vector.data.forEach((dataItem, i) => {
+      row[i + 1] = dataItem;
+    });
+
+    data.push(row);
+  });
+
+  let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+  // sheet["!cols"] = [
+  //   { wch: 18 },
+  //   { wch: 7 },
+  // ];
+
+  const blob = sheet2blob(sheet, "vectors");
+  const fileName = `vectors-${wordset.name}.xlsx`;
+  FileSaver.saveAs(blob, fileName);
 }

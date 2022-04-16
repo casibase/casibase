@@ -163,6 +163,7 @@ class WordsetListPage extends React.Component {
           return (
             <div>
               <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.openLink(`/wordsets/${record.name}/graph`)}>{i18next.t("general:Result")}</Button>
+              <Button style={{marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
               <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/wordsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete wordset: ${record.name} ?`}
