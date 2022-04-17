@@ -5,6 +5,9 @@ import ForceGraph3D from 'react-force-graph-3d';
 import * as d3 from "d3-force";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import i18next from "i18next";
+import FileSaver from "file-saver";
+import XLSX from "xlsx";
+import * as Setting from "./Setting";
 
 const { Option } = Select;
 
@@ -76,6 +79,24 @@ class WordsetGraph extends React.Component {
           selectedIds: [],
         });
       });
+  }
+
+  downloadClusters() {
+    let data = [];
+    this.state.graph.nodes.forEach((node, i) => {
+      let row = {};
+
+      row[0] = node.id;
+      row[1] = parseInt(node.tag) + 1;
+      data.push(row);
+    });
+
+    data = data.sort((a, b) => {return a[1] - b[1];});
+
+    let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    const blob = Setting.sheet2blob(sheet, "clusters");
+    const fileName = `clusters-${this.state.wordsetName}-${this.state.graph.nodes.length}-${this.state.clusterNumber}.xlsx`;
+    FileSaver.saveAs(blob, fileName);
   }
 
   renderSubMenu(node) {
@@ -330,6 +351,11 @@ class WordsetGraph extends React.Component {
                 this.getWordsetGraph();
               }}>
                 重新聚类
+              </Button>
+              <Button style={{margin: 'auto', marginTop: '10px'}} onClick={() => {
+                this.downloadClusters();
+              }}>
+                下载结果
               </Button>
             </Row>
           </Card>
