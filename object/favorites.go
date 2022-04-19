@@ -195,6 +195,26 @@ func GetNodeFavoritesNum(id string) int {
 	return int(total)
 }
 
+func GetTopicFavoritesNum(id string) int {
+	topic := new(Favorites)
+	total, err := adapter.Engine.Where("favorites_type = ?", FavorTopic).And("object_id = ?", id).Count(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
+func GetTopicSubscribeNum(id string) int {
+	topic := new(Favorites)
+	total, err := adapter.Engine.Where("favorites_type = ?", SubscribeTopic).And("object_id = ?", id).Count(topic)
+	if err != nil {
+		panic(err)
+	}
+
+	return int(total)
+}
+
 func GetFollowingNum(id string) int {
 	member := new(Favorites)
 	total, err := adapter.Engine.Where("favorites_type = ?", FollowUser).And("member_id = ?", id).Count(member)
