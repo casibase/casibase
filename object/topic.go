@@ -535,11 +535,6 @@ func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*To
 }
 
 func AddTopicHitCount(topicId int) bool {
-	topic := GetTopic(topicId)
-	if topic == nil {
-		return false
-	}
-
 	affected, err := adapter.Engine.ID(topicId).Incr("hit_count", 1).Update(Topic{})
 	if err != nil {
 		panic(err)
@@ -549,11 +544,6 @@ func AddTopicHitCount(topicId int) bool {
 }
 
 func ChangeTopicFavoriteCount(topicId int, num int) bool {
-	topic := GetTopic(topicId)
-	if topic == nil {
-		return false
-	}
-
 	affected, err := adapter.Engine.ID(topicId).Incr("favorite_count", num).Update(Topic{})
 	if err != nil {
 		panic(err)
@@ -563,11 +553,6 @@ func ChangeTopicFavoriteCount(topicId int, num int) bool {
 }
 
 func ChangeTopicSubscribeCount(topicId int, num int) bool {
-	topic := GetTopic(topicId)
-	if topic == nil {
-		return false
-	}
-
 	affected, err := adapter.Engine.ID(topicId).Incr("subscribe_count", num).Update(Topic{})
 	if err != nil {
 		panic(err)
@@ -577,11 +562,6 @@ func ChangeTopicSubscribeCount(topicId int, num int) bool {
 }
 
 func ChangeTopicReplyCount(topicId int, num int) bool {
-	topic := GetTopic(topicId)
-	if topic == nil {
-		return false
-	}
-
 	affected, err := adapter.Engine.ID(topicId).Incr("reply_count", num).Update(Topic{})
 	if err != nil {
 		panic(err)
