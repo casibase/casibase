@@ -445,13 +445,7 @@ func GetReplyAuthor(id int) *auth.User {
 
 // AddReplyThanksNum updates reply's thanks num.
 func AddReplyThanksNum(id int) bool {
-	reply := GetReply(id)
-	if reply == nil {
-		return false
-	}
-
-	reply.ThanksNum++
-	affected, err := adapter.Engine.Id(id).Cols("thanks_num").Update(reply)
+	affected, err := adapter.Engine.ID(id).Incr("thanks_num", 1).Update(Reply{})
 	if err != nil {
 		panic(err)
 	}

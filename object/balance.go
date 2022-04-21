@@ -73,7 +73,6 @@ func UpdateMemberBalance(user *auth.User, amount int) (bool, error) {
 	return auth.UpdateUserForColumns(user, []string{"score"})
 }
 
-
 func UpdateMemberConsumptionSum(user *auth.User, amount int) (bool, error) {
 	user.Karma += amount
 	return auth.UpdateUserForColumns(user, []string{"karma"})
