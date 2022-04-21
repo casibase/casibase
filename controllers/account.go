@@ -16,6 +16,7 @@ package controllers
 
 import (
 	_ "embed"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/object"
@@ -31,7 +32,7 @@ func init() {
 }
 
 func InitAuthConfig() {
-	casdoorEndpoint := beego.AppConfig.String("casdoorEndpoint")
+	casdoorEndpoint := strings.TrimRight(beego.AppConfig.String("casdoorEndpoint"), "/")
 	clientId := beego.AppConfig.String("clientId")
 	clientSecret := beego.AppConfig.String("clientSecret")
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
