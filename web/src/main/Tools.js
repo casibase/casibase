@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import * as Setting from "../Setting";
-import * as MemberBackend from "../backend/MemberBackend";
+import * as Conf from "../Conf";
 import * as FileBackend from "../backend/FileBackend";
 import i18next from "i18next";
 
@@ -50,15 +50,15 @@ export function uploadMdFile(addMsg) {
 
   /* eslint-disable */
   inlineAttachment.prototype.uploadFile = function (file) {
-    if (file.size > 1024 * 1024 * 6) {
-      alert("File size exceeds 6MB");
+    if (file.size > 1024 * 1024 * Conf.AttachmentSizeLimitInMb) {
+      alert(`File size cannot exceed ${Conf.AttachmentSizeLimitInMb}MB`);
       return;
     }
 
     let reader = new FileReader();
     reader.onload = (e) => {
       FileBackend.uploadTopicPic(e.target.result).then((res) => {
-        if (res.status == "ok") {
+        if (res.status === "ok") {
           this.uploadStatus = true;
           this.onFileUploadResponse(res.msg, encodeURI(res.data));
         } else alert("oss error, can't upload picture now.");
@@ -70,8 +70,8 @@ export function uploadMdFile(addMsg) {
 
 // upload file through files page
 export function uploadFile(file) {
-  if (file.size > 1024 * 1024 * 6) {
-    alert("File size exceeds 6MB");
+  if (file.size > 1024 * 1024 * Conf.AttachmentSizeLimitInMb) {
+    alert(`File size cannot exceed ${Conf.AttachmentSizeLimitInMb}MB`);
     return;
   }
 
@@ -79,7 +79,7 @@ export function uploadFile(file) {
   let reader = new FileReader();
   reader.onload = (e) => {
     FileBackend.uploadFile(e.target.result, file.name, fileType.ext).then((res) => {
-      if (res.status == "ok") {
+      if (res.status === "ok") {
         FileBackend.addFileRecord({
           fileName: file.name,
           filePath: "file/" + file.name,
@@ -126,7 +126,7 @@ export function myUploadFn(param) {
   let reader = new FileReader();
   reader.onload = (e) => {
     FileBackend.uploadFile(e.target.result, timestamp, fileType.ext).then((res) => {
-      if (res.status == "ok") {
+      if (res.status === "ok") {
         this.uploadStatus = true;
         successFn(res.data);
       } else {
