@@ -48,6 +48,12 @@ func FilterUnsafeHTML(content string) string {
 	}
 	p := bluemonday.UGCPolicy()
 	p.AllowAttrs("style").OnElements("span")
+	p.AllowElements("video")
+	p.AllowAttrs("width").OnElements("video")
+	p.AllowAttrs("controls").OnElements("video")
+	p.AllowAttrs("src").OnElements("source")
+	p.AllowAttrs("type").OnElements("source")
+	p.AllowAttrs("style").OnElements("video")
 	res := p.Sanitize(content)
 	return res
 }
