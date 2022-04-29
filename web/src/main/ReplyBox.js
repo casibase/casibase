@@ -198,8 +198,8 @@ class ReplyBox extends React.Component {
   }
 
   getMemberList() {
-    let list = [];
-    let temp = [];
+    let list = [this.props.topic?.author];
+    let temp = [this.props.topic?.author + " "];
     for (let i = 0; i < this.state.replies.length; ++i) {
       let flag = true;
       for (let j = 0; j < temp.length; ++j) {
