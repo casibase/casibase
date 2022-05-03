@@ -343,3 +343,25 @@ func (n Node) GetAllTopicTitlesOfNode() []string {
 	}
 	return ret
 }
+
+func (n Node) GetAllTopicsByNode() []Topic {
+	var topics []Topic
+	err := adapter.Engine.Where("node_id = ? and deleted = 0", n.Id).Find(&topics)
+	if err != nil {
+		panic(err)
+	}
+	return topics
+}
+
+func (n Node) DeleteAllTopicsHard() bool {
+	var topics []Topic
+	affected, err := adapter.Engine.
+		Join("INNER", "reply", "reply.topic_id = topic.id").
+		Where("node_id = ? and deleted = 0", n.Id).
+		Delete(&topics)
+	if err != nil {
+		panic(err)
+	}
+
+	return affected != 0
+}

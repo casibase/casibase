@@ -19,8 +19,11 @@ require (
 	github.com/mileusna/crontab v1.0.1
 	github.com/mozillazg/go-slugify v0.2.0
 	github.com/mozillazg/go-unidecode v0.1.1 // indirect
+	github.com/mreiferson/go-httpclient v0.0.0-20201222173833-5e475fde3a4d // indirect
+	github.com/mrexodia/wray v0.0.0-20160318003008-78a2c1f284ff // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
+	github.com/sromku/go-gitter v0.0.0-20170828210750-70f7030a94a6 // indirect
 	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
 	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4
