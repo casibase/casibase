@@ -46,6 +46,9 @@ export const DefaultLanguage = "en";
 // Support: richtext | markdown
 export const DefaultEditorType = "markdown";
 
+// attachment file can be no larger than 20MB by default
+export const AttachmentSizeLimitInMb = 20;
+
 //Default search engine
 //Support: baidu(www.baidu.com) | google(www.google.com) | cn-bing(cn.bing.com)
 export const DefaultSearchSite = "google";
