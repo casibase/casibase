@@ -354,11 +354,10 @@ func (n Node) GetAllTopicsByNode() []Topic {
 }
 
 func (n Node) DeleteAllTopicsHard() bool {
-	var topics []Topic
 	affected, err := adapter.Engine.
 		Join("INNER", "reply", "reply.topic_id = topic.id").
-		Where("node_id = ? and deleted = 0", n.Id).
-		Delete(&topics)
+		Where("node_id = ?", n.Id).
+		Delete(Topic{})
 	if err != nil {
 		panic(err)
 	}
