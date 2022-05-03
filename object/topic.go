@@ -526,7 +526,12 @@ func GetTopicId() int {
 
 func GetAllCreatedTopics(author string, tab string, limit int, offset int) []*Topic {
 	topics := []*Topic{}
-	err := adapter.Engine.Desc("created_time").Where("author = ?", author).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	var err error
+	if tab == "all" || tab == "topics" || tab == "undefined" {
+		err = adapter.Engine.Desc("created_time").Where("author = ?", author).And("deleted = ?", 0).Omit("content").Limit(limit, offset).Find(&topics)
+	} else {
+		err = adapter.Engine.Desc("created_time").Where("author = ?", author).And("deleted = ?", 0).And("tab_id = ?", tab).Omit("content").Limit(limit, offset).Find(&topics)
+	}
 	if err != nil {
 		panic(err)
 	}
