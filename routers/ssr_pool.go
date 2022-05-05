@@ -14,7 +14,7 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-var renderTimeOut = 60 * time.Second
+var renderTimeout = 20 * time.Second
 
 type RenderTask struct {
 	HttpCtx *context.Context
@@ -80,7 +80,7 @@ func render(chromeCtx ctx.Context, url string) (string, error) {
 		} else {
 			return "", err
 		}
-	case <-time.After(renderTimeOut):
+	case <-time.After(renderTimeout):
 		err := chromedp.Cancel(chromeCtx)
 		if err != nil {
 			return "", errors.New("context cancel failed")
