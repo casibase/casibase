@@ -298,7 +298,6 @@ class ReplyBox extends React.Component {
           </div>
           <div style={{ marginLeft: isChild ? "48px" : "60px" }}>
             <div className="fr">
-              <Link to={`/r/${reply.id}`} style={{cursor: "default", textDecoration: "none"}} />
               {this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ? (
                 reply?.thanksStatus === false ? (
                   <div id={`thank_area__${reply.id}`} className="thank_area" style={{ marginRight: "10px" }}>
@@ -345,7 +344,11 @@ class ReplyBox extends React.Component {
                   <img src={Setting.getStatic("/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
                 </a>
               ) : null}
-              {isChild ? null : <span className={`no ${this.props.topic.nodeId}`}>{no + 1}</span>}
+              {isChild ? null : (
+                <span className={`no ${this.props.topic.nodeId}`} style={{ cursor: "default", textDecoration: "none" }} onClick={() => this.props.history.push(`/r/${reply.id}`)}>
+                  {no + 1}
+                </span>
+              )}
             </div>
             <strong>
               <UserLink username={reply.author} classNameText={"dark"} />
