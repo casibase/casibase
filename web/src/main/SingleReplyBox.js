@@ -82,7 +82,7 @@ class SingleReplyBox extends React.Component {
       <div>
         <Helmet>
           <title>{`${this.state.reply?.content} - ${this.state.reply?.author}`}</title>
-          <meta name="keywords" content={this.state.reply?.tags.join(",")} />
+          <meta name="keywords" content={this.state.reply?.tags?.join(",")} />
           <meta name="description" content={`${this.state.topic?.title}`} />
         </Helmet>
         <div className={`box ${this.state.topic?.nodeId}`}>
