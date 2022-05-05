@@ -27,8 +27,8 @@ class SingleReplyBox extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      reply: "",
-      topic: "",
+      reply: null,
+      topic: null,
     };
   }
 
@@ -72,18 +72,18 @@ class SingleReplyBox extends React.Component {
   }
 
   render() {
-    if (this.state.reply === "") {
+    if (this.state.reply === null) {
       return null;
     }
-    if (this.state.topic === "") {
+    if (this.state.topic === null) {
       return null;
     }
     return (
       <div>
         <Helmet>
-          <title>{`${this.state.reply?.content} - ${this.state.reply?.author} - ${Setting.getForumName()}`}</title>
-          <meta name="keywords" content={`${this.state.topic?.title},${this.state.reply?.author},${this.state.topic?.nodeName},${this.state.reply?.tags}`} />
-          <meta name="description" content={`${this.state.reply?.content}`} />
+          <title>{`${this.state.reply?.content} - ${this.state.reply?.author}`}</title>
+          <meta name="keywords" content={this.state.reply?.tags.join(",")} />
+          <meta name="description" content={`${this.state.topic?.title}`} />
         </Helmet>
         <div className={`box ${this.state.topic?.nodeId}`}>
           <div id={`r_${this.state.reply?.id}`} className={`cell ${this.state.topic?.nodeId}`}>
