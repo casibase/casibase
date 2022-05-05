@@ -85,7 +85,7 @@ func render(chromeCtx ctx.Context, url string) (string, error) {
 		if err != nil {
 			return "", errors.New("context cancel failed")
 		}
-		return "", errors.New("context canceled")
+		return "", ctx.Canceled
 	}
 }
 
@@ -105,7 +105,7 @@ func (pool *SsrPool) worker() {
 			}()
 			urlStr, err := task.Render(chromeCtx, task.Url)
 			if err != nil {
-				if err.Error() == "context canceled" { // when browser process has terminated
+				if err == ctx.Canceled { // when browser process has terminated
 					handleErr(task.HttpCtx, err)
 					task.Wg.Done()
 					return true
