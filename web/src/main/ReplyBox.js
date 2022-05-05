@@ -298,6 +298,7 @@ class ReplyBox extends React.Component {
           </div>
           <div style={{ marginLeft: isChild ? "48px" : "60px" }}>
             <div className="fr">
+              <Link to={`/r/${reply.id}`} style={{cursor: "default", textDecoration: "none"}} />
               {this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ? (
                 reply?.thanksStatus === false ? (
                   <div id={`thank_area__${reply.id}`} className="thank_area" style={{ marginRight: "10px" }}>

@@ -23,18 +23,19 @@ import (
 )
 
 type Reply struct {
-	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
-	Author      string `xorm:"varchar(100) index" json:"author"`
-	TopicId     int    `xorm:"int index" json:"topicId"`
-	ParentId    int    `xorm:"int" json:"parentId"`
-	CreatedTime string `xorm:"varchar(40)" json:"createdTime"`
-	Deleted     bool   `xorm:"bool" json:"deleted"`
-	IsHidden    bool   `xorm:"bool" json:"isHidden"`
-	ThanksNum   int    `xorm:"int" json:"thanksNum"`
-	EditorType  string `xorm:"varchar(40)" json:"editorType"`
-	Content     string `xorm:"mediumtext" json:"content"`
-	Ip          string `xorm:"varchar(100)" json:"ip"`
-	State       string `xorm:"varchar(100)" json:"state"`
+	Id          int      `xorm:"int notnull pk autoincr" json:"id"`
+	Author      string   `xorm:"varchar(100) index" json:"author"`
+	TopicId     int      `xorm:"int index" json:"topicId"`
+	ParentId    int      `xorm:"int" json:"parentId"`
+	Tags        []string `xorm:"varchar(200)" json:"tags"`
+	CreatedTime string   `xorm:"varchar(40)" json:"createdTime"`
+	Deleted     bool     `xorm:"bool" json:"deleted"`
+	IsHidden    bool     `xorm:"bool" json:"isHidden"`
+	ThanksNum   int      `xorm:"int" json:"thanksNum"`
+	EditorType  string   `xorm:"varchar(40)" json:"editorType"`
+	Content     string   `xorm:"mediumtext" json:"content"`
+	Ip          string   `xorm:"varchar(100)" json:"ip"`
+	State       string   `xorm:"varchar(100)" json:"state"`
 }
 
 var enableNestedReply, _ = beego.AppConfig.Bool("enableNestedReply")
