@@ -19,6 +19,7 @@ import (
 	"strconv"
 
 	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 )
 
@@ -151,6 +152,8 @@ func (c *ApiController) AddReply() {
 	if err != nil {
 		panic(err)
 	}
+
+	reply.Tags = service.Finalword(reply.Content)
 
 	previousReply := object.GetReplyByContentAndAuthor(reply.Content, reply.Author)
 	if previousReply != nil {

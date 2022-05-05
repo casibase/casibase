@@ -45,6 +45,7 @@ import AuthCallback from "./AuthCallback";
 import SilentSignin from "./SilentSignin";
 import SignoutBox from "./main/SignoutBox";
 import TopicBox from "./main/TopicBox";
+import SingleReplyBox from "./main/SingleReplyBox";
 import MemberBox from "./main/MemberBox";
 import AllCreatedTopicsBox from "./main/AllCreatedTopicsBox";
 import NewBox from "./main/NewBox";
@@ -205,6 +206,12 @@ class App extends Component {
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}
             <TopicBox account={this.state.account} getNodeBackground={this.getNodeBackground} refreshFavorites={this.getFavoriteNum.bind(this)} refreshAccount={this.getAccount.bind(this)} />
+          </div>
+        </Route>
+        <Route exact path="/r/:replyId">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <SingleReplyBox />
           </div>
         </Route>
         <Route exact path="/member/:memberId">
