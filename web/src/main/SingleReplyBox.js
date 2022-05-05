@@ -21,6 +21,7 @@ import Avatar from "../Avatar";
 import ReactMarkdown from "react-markdown";
 import UserLink from "../UserLink";
 import { Helmet } from "react-helmet";
+import Zmage from "react-zmage";
 
 class SingleReplyBox extends React.Component {
   constructor(props) {
@@ -52,6 +53,14 @@ class SingleReplyBox extends React.Component {
       });
     });
   }
+
+  renderImage = ({ alt, src }) => {
+    return <Zmage src={src} alt={alt} />;
+  };
+
+  renderLink = (props) => {
+    return <a {...props} target="_blank" rel="nofollow noopener noreferrer" />;
+  };
 
   renderSingleReplyBox(reply) {
     return (
