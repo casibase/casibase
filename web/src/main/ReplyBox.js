@@ -345,9 +345,9 @@ class ReplyBox extends React.Component {
                 </a>
               ) : null}
               {isChild ? null : (
-                <span className={`no ${this.props.topic.nodeId}`} onClick={() => this.props.history.push(`/r/${reply.id}`)}>
+                <Link className={`no ${this.props.topic.nodeId}`} to={`/r/${reply.id}`}>
                   {no + 1}
-                </span>
+                </Link>
               )}
             </div>
             <strong>
