@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter, Link, Route, Switch } from "react-router-dom";
 import Avatar from "../Avatar";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
@@ -34,6 +34,15 @@ class MemberBox extends React.Component {
       member: [],
       favoritesStatus: false,
       getFavoriteStatus: false,
+      tab: "all",
+      TAB_LIST: [
+        { label: "Q&A", value: "qna" },
+        { label: "Tech", value: "tech" },
+        { label: "Play", value: "play" },
+        { label: "Jobs", value: "jobs" },
+        { label: "Deals", value: "deals" },
+        { label: "City", value: "city" },
+      ],
     };
   }
 
@@ -104,6 +113,55 @@ class MemberBox extends React.Component {
         Setting.showMessage("error", res.msg);
       }
     });
+  }
+
+  renderTab(tab) {
+    return {
+      ...(this.state.tab === tab.value ? (
+        <Link key={tab.value} to={{ pathname: `/member/${this.state.memberId}/${tab.value}`, state: { member: this.state.member } }} className="cell_tab_current">
+          {" "}
+          {tab.label}{" "}
+        </Link>
+      ) : (
+        <Link key={tab.value} to={{ pathname: `/member/${this.state.memberId}/${tab.value}`, state: { member: this.state.member } }} className="cell_tab">
+          {" "}
+          {tab.label}{" "}
+        </Link>
+      )),
+    };
+  }
+
+  renderMobileTab() {
+    return (
+      <div className="fr">
+        <label className="f14" htmlFor="switch-topics">
+          {i18next.t("member:Switch topic list")}
+          <select
+            id="switch-topics"
+            defaultValue={this.state.tab === undefined ? "all" : this.state.tab}
+            onChange={(event) => {
+              if (event.target.value === "all") {
+                this.props.history.push(`/member/${this.state.memberId}/`);
+              } else {
+                this.props.history.push(`/member/${this.state.memberId}/${event.target.value}`);
+              }
+            }}
+          >
+            <option value="all">
+              {this.state.memberId}
+              {i18next.t("member:'s all topics")}
+            </option>
+            {this.state.TAB_LIST.map((tab) => {
+              return (
+                <option key={tab.value} value={tab.value}>
+                  {tab.label}
+                </option>
+              );
+            })}
+          </select>
+        </label>
+      </div>
+    );
   }
 
   block(memberId) {}
@@ -334,7 +392,17 @@ class MemberBox extends React.Component {
     );
   }
 
+  changeTab = (val) => {
+    console.log(val);
+    {
+      this.state.tab = val;
+    }
+  };
+
   render() {
+    const pcBrowser = Setting.PcBrowser;
+    let memberAvatar = this.state.member.avatar;
+    let isMemberTab = this.state.tab === undefined || this.state.tab === "all";
     return (
       <span>
         <Helmet>
@@ -345,9 +413,55 @@ class MemberBox extends React.Component {
         {!Setting.PcBrowser && this.props.account?.name === this.state.memberId ? <div className="sep5" /> : null}
         {!Setting.PcBrowser && this.props.account?.name === this.state.memberId ? this.renderMemberFavorites() : null}
         {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        <AllCreatedTopicsBox member={this.state.member} />
-        {Setting.PcBrowser ? <div className="sep20" /> : <div className="sep5" />}
-        <LatestReplyBox member={this.state.member} />
+        <div className="box">
+          <div className="cell_tabs" key={"cell_tabs"}>
+            <div className="fl">
+              <img
+                src={memberAvatar !== "" ? memberAvatar : Setting.getUserAvatar(this.state.memberId)}
+                width={24}
+                border={0}
+                style={{ borderRadius: "24px", marginTop: "-2px" }}
+                alt={this.state.memberId}
+                onError={(event) => {
+                  event.target.onerror = "";
+                  event.target.src = Conf.AvatarErrorUrl;
+                  return true;
+                }}
+              />
+            </div>
+            {!pcBrowser ? this.renderMobileTab() : null}
+            {pcBrowser ? (
+              isMemberTab ? (
+                <Link to={`/member/${this.state.memberId}/all`} className="cell_tab_current">
+                  {" "}
+                  {`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}
+                </Link>
+              ) : (
+                <Link to={`/member/${this.state.memberId}/all`} className="cell_tab">
+                  {" "}
+                  {`${this.state.memberId}${i18next.t("member:'s all created topics")}`}{" "}
+                </Link>
+              )
+            ) : null}
+            {!pcBrowser ? <div className="sep10" style={{ clear: "both" }} /> : null}
+            {pcBrowser
+              ? this.state.TAB_LIST.map((tab) => {
+                  return this.renderTab(tab);
+                })
+              : null}
+          </div>
+        </div>
+        {/* Route to change component */}
+        <Switch>
+          <Route exact path="/member/:memberId/">
+            <AllCreatedTopicsBox member={this.state.member} changeTab={this.changeTab} />
+          </Route>
+          <Route path="/member/:memberId/:tab">
+            <AllCreatedTopicsBox member={this.state.member} changeTab={this.changeTab} />
+          </Route>
+        </Switch>
+        {Setting.PcBrowser && isMemberTab ? <div className="sep20" /> : <div className="sep5" />}
+        {isMemberTab ? <LatestReplyBox member={this.state.member} /> : null}
       </span>
     );
   }
