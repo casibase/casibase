@@ -344,7 +344,11 @@ class ReplyBox extends React.Component {
                   <img src={Setting.getStatic("/img/reply_neue.png")} align="absmiddle" border="0" alt="Reply" width="20" />
                 </a>
               ) : null}
-              {isChild ? null : <span className={`no ${this.props.topic.nodeId}`}>{no + 1}</span>}
+              {isChild ? null : (
+                <Link className={`no ${this.props.topic.nodeId}`} to={`/r/${reply.id}`}>
+                  {no + 1}
+                </Link>
+              )}
             </div>
             <strong>
               <UserLink username={reply.author} classNameText={"dark"} />
