@@ -393,7 +393,6 @@ class MemberBox extends React.Component {
   }
 
   changeTab = (val) => {
-    console.log(val);
     {
       this.state.tab = val;
     }

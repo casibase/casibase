@@ -110,7 +110,6 @@ class AllCreatedTopicsBox extends React.Component {
   }
 
   changeTab = () => {
-    console.log(this);
     this.props.changeTab(this.state.tab);
   };
 
