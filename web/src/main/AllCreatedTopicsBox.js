@@ -81,6 +81,7 @@ class AllCreatedTopicsBox extends React.Component {
     if (selectTab === undefined) {
       selectTab = "all";
     }
+    this.changeTab(selectTab);
     TopicBackend.getAllCreatedTopics(this.state.memberId, selectTab, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res,
@@ -109,13 +110,12 @@ class AllCreatedTopicsBox extends React.Component {
     return <PageColumn page={this.state.page} total={this.state.topicsNum} url={url} defaultPageNum={this.state.limit} />;
   }
 
-  changeTab = () => {
-    this.props.changeTab(this.state.tab);
+  changeTab = (val) => {
+    this.props.changeTab(val);
   };
 
   render() {
     const pcBrowser = Setting.PcBrowser;
-    this.changeTab();
     let isMemberTab = this.state.tab === undefined || this.state.tab === "all";
 
     if (this.props.member === null) {

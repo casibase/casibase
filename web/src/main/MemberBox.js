@@ -452,7 +452,7 @@ class MemberBox extends React.Component {
         </div>
         {/* Route to change component */}
         <Switch>
-          <Route exact path="/member/:memberId/">
+          <Route exact path="/member/:memberId">
             <AllCreatedTopicsBox member={this.state.member} changeTab={this.changeTab} />
           </Route>
           <Route path="/member/:memberId/:tab">
