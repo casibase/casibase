@@ -8,14 +8,20 @@ import (
 	"xorm.io/core"
 )
 
+type Label struct {
+	Timestamp string `xorm:"varchar(100)" json:"timestamp"`
+	Text      string `xorm:"varchar(100)" json:"text"`
+}
+
 type Video struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
-	VideoId  string `xorm:"varchar(100)" json:"videoId"`
-	CoverUrl string `xorm:"varchar(200)" json:"coverUrl"`
+	VideoId  string   `xorm:"varchar(100)" json:"videoId"`
+	CoverUrl string   `xorm:"varchar(200)" json:"coverUrl"`
+	Labels   []*Label `xorm:"mediumtext" json:"labels"`
 
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }

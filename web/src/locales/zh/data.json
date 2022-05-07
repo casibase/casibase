@@ -36,6 +36,9 @@
   "video": {
     "Cover": "封面图片",
     "Edit Video": "编辑视频",
+    "Labels": "标签",
+    "Text": "文本",
+    "Timestamp": "时间戳",
     "Video": "视频",
     "Video ID": "视频ID"
   },

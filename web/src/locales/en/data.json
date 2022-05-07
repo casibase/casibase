@@ -36,6 +36,9 @@
   "video": {
     "Cover": "Cover",
     "Edit Video": "Edit Video",
+    "Labels": "Labels",
+    "Text": "Text",
+    "Timestamp": "Timestamp",
     "Video": "Video",
     "Video ID": "Video ID"
   },

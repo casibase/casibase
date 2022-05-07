@@ -36,6 +36,7 @@ class VideoListPage extends React.Component {
       displayName: `Video ${this.state.videos.length}`,
       videoId: "",
       coverUrl: "",
+      labels: [],
       playAuth: "",
     }
   }

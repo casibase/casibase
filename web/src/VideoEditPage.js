@@ -5,6 +5,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import Video from "./Video";
+import LabelTable from "./LabelTable";
 
 class VideoEditPage extends React.Component {
   constructor(props) {
@@ -152,6 +153,18 @@ class VideoEditPage extends React.Component {
             {
               this.state.video !== null ? this.renderVideoContent() : null
             }
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Labels")}:
+          </Col>
+          <Col span={22} >
+            <LabelTable
+              title={i18next.t("video:Labels")}
+              table={this.state.video.labels}
+              onUpdateTable={(value) => { this.updateVideoField('labels', value)}}
+            />
           </Col>
         </Row>
       </Card>
