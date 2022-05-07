@@ -22,6 +22,7 @@
     "Save": "Save",
     "URL": "URL",
     "Vectorsets": "Vectorsets",
+    "Videos": "Videos",
     "Wordsets": "Wordsets"
   },
   "vectorset": {
@@ -31,6 +32,12 @@
     "Example vectors": "Example vectors",
     "File name": "File name",
     "File size": "File size"
+  },
+  "video": {
+    "Cover": "Cover",
+    "Edit Video": "Edit Video",
+    "Video": "Video",
+    "Video ID": "Video ID"
   },
   "wordset": {
     "All words": "All words",

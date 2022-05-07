@@ -21,8 +21,9 @@
     "Result": "结果",
     "Save": "保存",
     "URL": "链接",
-    "Vectorsets": "向量集",
-    "Wordsets": "词汇集"
+    "Vectorsets": "我的向量集",
+    "Videos": "我的视频",
+    "Wordsets": "我的词汇集"
   },
   "vectorset": {
     "Count": "个数",
@@ -31,6 +32,12 @@
     "Example vectors": "示例向量",
     "File name": "文件名",
     "File size": "文件大小"
+  },
+  "video": {
+    "Cover": "封面图片",
+    "Edit Video": "编辑视频",
+    "Video": "视频",
+    "Video ID": "视频ID"
   },
   "wordset": {
     "All words": "所有词汇",

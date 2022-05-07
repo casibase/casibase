@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/icons": "4.6.2",
     "@craco/craco": "6.1.1",
+    "aliplayer-react": "^0.7.0",
     "antd": "4.15.5",
     "casdoor-js-sdk": "^0.2.7",
     "copy-to-clipboard": "^3.3.1",

@@ -13,6 +13,8 @@ import WordsetEditPage from "./WordsetEditPage";
 import WordsetGraphPage from "./WordsetGraphPage";
 import VectorsetListPage from "./VectorsetListPage";
 import VectorsetEditPage from "./VectorsetEditPage";
+import VideoListPage from "./VideoListPage";
+import VideoEditPage from "./VideoEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import SelectLanguageBox from "./SelectLanguageBox";
@@ -58,6 +60,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: '/wordsets' });
     } else if (uri.includes('/vectorsets')) {
       this.setState({ selectedMenuKey: '/vectorsets' });
+    } else if (uri.includes('/videos')) {
+      this.setState({ selectedMenuKey: '/videos' });
     } else {
       this.setState({selectedMenuKey: 'null'});
     }
@@ -231,6 +235,13 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/videos">
+        <Link to="/videos">
+          {i18next.t("general:Videos")}
+        </Link>
+      </Menu.Item>
+    );
 
     return res;
   }
@@ -286,6 +297,8 @@ class App extends Component {
           <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)}/>
           <Route exact path="/vectorsets" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)}/>
         </Switch>
       </div>
     )

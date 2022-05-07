@@ -2235,6 +2235,13 @@ ajv@^8.0.1:
     require-from-string "^2.0.2"
     uri-js "^4.2.2"
 
+aliplayer-react@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/aliplayer-react/-/aliplayer-react-0.7.0.tgz#5560e992e5d06f43a10065c7316e2f60552af82d"
+  integrity sha512-KjjRrtRy48DOUiR4ZdvfiLgD+u1yaT6ywZsGrynxePuv4dWsGt8u5Zsd3V3dxIgKeeep3RoxV7zofhcER40JKQ==
+  dependencies:
+    fetch-js-from-cdn "^0.2.0"
+
 alphanum-sort@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/alphanum-sort/-/alphanum-sort-1.0.2.tgz#97a1119649b211ad33691d9f9f486a8ec9fbe0a3"
@@ -5158,6 +5165,11 @@ fb-watchman@^2.0.0:
   integrity sha512-DkPJKQeY6kKwmuMretBhr7G6Vodr7bFwDYTXIkfG1gjvNpaxBTQV3PbXg6bR1c1UP4jPOX0jHUbbHANL9vRjVg==
   dependencies:
     bser "2.1.1"
+
+fetch-js-from-cdn@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/fetch-js-from-cdn/-/fetch-js-from-cdn-0.2.0.tgz#0664242d20cae6f69be591bcf2b8dc7c606b7d14"
+  integrity sha512-u+adV8XpElTNrqPF6dcsMkmbP4FFW7W/8XPhU2HgfyXaiGA4NpFp3KXdF1/XMj++vjN65bA17RCxScK7Iw17Yw==
 
 fflate@^0.3.8:
   version "0.3.11"

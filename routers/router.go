@@ -37,4 +37,11 @@ func initAPI() {
 	beego.Router("/api/update-vectorset", &controllers.ApiController{}, "POST:UpdateVectorset")
 	beego.Router("/api/add-vectorset", &controllers.ApiController{}, "POST:AddVectorset")
 	beego.Router("/api/delete-vectorset", &controllers.ApiController{}, "POST:DeleteVectorset")
+
+	beego.Router("/api/get-global-videos", &controllers.ApiController{}, "GET:GetGlobalVideos")
+	beego.Router("/api/get-videos", &controllers.ApiController{}, "GET:GetVideos")
+	beego.Router("/api/get-video", &controllers.ApiController{}, "GET:GetVideo")
+	beego.Router("/api/update-video", &controllers.ApiController{}, "POST:UpdateVideo")
+	beego.Router("/api/add-video", &controllers.ApiController{}, "POST:AddVideo")
+	beego.Router("/api/delete-video", &controllers.ApiController{}, "POST:DeleteVideo")
 }
