@@ -229,8 +229,11 @@ export function getTagColor(s) {
 }
 
 export function getTags(vectors) {
+  if (!vectors) {
+    return [];
+  }
+
   let res = [];
-  if (!vectors) return res;
   vectors.forEach((vector, i) => {
     if (vector.data.length !== 0) {
       res.push(
@@ -247,6 +250,24 @@ export function getTags(vectors) {
         </Tag>
       );
     }
+  });
+  return res;
+}
+
+export function getLabelTags(labels) {
+  if (!labels) {
+    return [];
+  }
+
+  let res = [];
+  labels.forEach((label, i) => {
+    res.push(
+      <Tooltip placement="top" title={getShortText(JSON.stringify(label.text), 500)}>
+        <Tag color={"processing"}>
+          {`${label.timestamp}: ${label.text}`}
+        </Tag>
+      </Tooltip>
+    );
   });
   return res;
 }

@@ -114,6 +114,16 @@ class VideoListPage extends React.Component {
         }
       },
       {
+        title: i18next.t("video:Labels"),
+        dataIndex: 'labels',
+        key: 'labels',
+        // width: '120px',
+        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        render: (text, record, index) => {
+          return Setting.getLabelTags(text);
+        }
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: 'action',
         key: 'action',
