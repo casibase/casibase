@@ -91,6 +91,8 @@ class Video extends React.Component {
       width: myWidth,
       height: myHeight,
     });
+
+    this.props.onCreatePlayer(player);
   }
 
   onTimeUpdate(player) {

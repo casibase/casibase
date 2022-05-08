@@ -69,6 +69,13 @@ class LabelTable extends React.Component {
         key: 'no',
         width: '70px',
         render: (text, record, index) => {
+          return (
+            <Button type={"text"} style={{width: "50px"}} onClick={() => {
+              this.props.player.seek(record.timestamp);
+            }} >
+              {index + 1}
+            </Button>
+          )
           return (index + 1);
         }
       },
