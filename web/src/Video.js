@@ -3,6 +3,9 @@ import Player from 'aliplayer-react';
 import * as Setting from "./Setting";
 import BulletScreen from 'rc-bullets';
 
+let bulletIdTextMap = {};
+let bulletTextMap = {};
+
 class Video extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +39,27 @@ class Video extends React.Component {
     const labels = this.props.labels;
     labels.forEach((label, i) => {
       if (Math.floor(label.timestamp) === Math.floor(time)) {
-        this.state.screen.push({msg: label.text, color: "rgb(92,48,125)", backgroundColor: "rgb(255,255,255)"});
+        if (bulletTextMap[label.text] === 1) {
+          return;
+        }
+
+        this.state.screen.push({
+          msg: label.text,
+          color: "rgb(92,48,125)",
+          backgroundColor: "rgb(255,255,255)",
+        }, {
+          onStart: (bulletId, screen) => {
+            bulletIdTextMap[bulletId] = label.text;
+            bulletTextMap[label.text] = 1;
+            // console.log(`start: ${bulletId}`);
+          },
+          onEnd: (bulletId, screen) => {
+            const text = bulletIdTextMap[bulletId];
+            delete bulletIdTextMap[bulletId];
+            delete bulletTextMap[text];
+            // console.log(`end: ${bulletId}`);
+          },
+        });
       }
     });
 
@@ -72,9 +95,21 @@ class Video extends React.Component {
     this.updateTime(timestamp);
   }
 
+  onPlay() {
+    this.state.screen.resume();
+  }
+
+  onPause() {
+    this.state.screen.pause();
+  }
+
   initPlayer(player) {
+    // https://help.aliyun.com/document_detail/125572.html
+    // https://github.com/zerosoul/rc-bullets
     player.on('ready', () => {this.handleReady(player)});
     player.on('timeupdate', () => {this.onTimeUpdate(player)});
+    player.on('play', () => {this.onPlay()});
+    player.on('pause', () => {this.onPause()});
   }
 
   render() {

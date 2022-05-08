@@ -68,7 +68,7 @@ class VideoEditPage extends React.Component {
 
     return (
       <div style={{marginTop: "10px"}}>
-        <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '840px', height: '472px', backgroundColor: "rgba(255,0,0,0.0)" }}></div>
+        <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
         <Video task={task} labels={this.state.video.labels} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
         <div style={{fontSize: 20, marginTop: "10px"}}>
           {i18next.t("video:Current time (second)")}: {" "}
