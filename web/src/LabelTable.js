@@ -67,7 +67,7 @@ class LabelTable extends React.Component {
         title: i18next.t("general:No."),
         dataIndex: 'no',
         key: 'no',
-        width: '80px',
+        width: '70px',
         render: (text, record, index) => {
           return (index + 1);
         }
@@ -76,7 +76,7 @@ class LabelTable extends React.Component {
         title: i18next.t("video:Timestamp (second)"),
         dataIndex: 'timestamp',
         key: 'timestamp',
-        width: '160px',
+        width: '120px',
         render: (text, record, index) => {
           return (
             <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {

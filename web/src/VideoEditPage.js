@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Input, Row} from 'antd';
+import {Affix, Button, Card, Col, Input, Row} from 'antd';
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -67,16 +67,18 @@ class VideoEditPage extends React.Component {
     };
 
     return (
-      <div style={{marginTop: "10px"}}>
-        <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
-        <Video task={task} labels={this.state.video.labels} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
-        <div style={{fontSize: 20, marginTop: "10px"}}>
-          {i18next.t("video:Current time (second)")}: {" "}
-          {
-            this.state.currentTime
-          }
+      <Affix offsetTop={100}>
+        <div style={{marginTop: "10px"}}>
+          <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
+          <Video task={task} labels={this.state.video.labels} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
+          <div style={{fontSize: 20, marginTop: "10px"}}>
+            {i18next.t("video:Current time (second)")}: {" "}
+            {
+              this.state.currentTime
+            }
+          </div>
         </div>
-      </div>
+      </Affix>
     )
   }
 
