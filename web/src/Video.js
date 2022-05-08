@@ -27,6 +27,8 @@ class Video extends React.Component {
     this.setState({
       screen: screen,
     });
+
+    this.props.onCreateScreen(screen);
   }
 
   updateVideoSize(width, height) {
@@ -116,6 +118,7 @@ class Video extends React.Component {
     player.on('timeupdate', () => {this.onTimeUpdate(player)});
     player.on('play', () => {this.onPlay()});
     player.on('pause', () => {this.onPause()});
+    player.on('completeSeek', () => {this.state.screen.clear()});
   }
 
   render() {

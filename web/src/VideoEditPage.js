@@ -15,6 +15,7 @@ class VideoEditPage extends React.Component {
       videoName: props.match.params.videoName,
       video: null,
       player: null,
+      screen: null,
     };
   }
 
@@ -71,7 +72,11 @@ class VideoEditPage extends React.Component {
       <Affix offsetTop={100}>
         <div style={{marginTop: "10px"}}>
           <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
-          <Video task={task} labels={this.state.video.labels} onUpdateTime={(time) => {this.setState({currentTime: time})}} onCreatePlayer={(player) => {this.setState({player: player})}} />
+          <Video task={task} labels={this.state.video.labels}
+                 onUpdateTime={(time) => {this.setState({currentTime: time})}}
+                 onCreatePlayer={(player) => {this.setState({player: player})}}
+                 onCreateScreen={(screen) => {this.setState({screen: screen})}}
+          />
           <div style={{fontSize: 20, marginTop: "10px"}}>
             {i18next.t("video:Current time (second)")}: {" "}
             {
@@ -165,6 +170,7 @@ class VideoEditPage extends React.Component {
               table={this.state.video.labels}
               currentTime={this.state.currentTime}
               player={this.state.player}
+              screen={this.state.screen}
               onUpdateTable={(value) => {this.updateVideoField('labels', value)}}
             />
           </Col>
