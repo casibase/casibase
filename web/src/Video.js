@@ -1,6 +1,7 @@
 import React from "react";
 import Player from 'aliplayer-react';
 import * as Setting from "./Setting";
+import BulletScreen from 'rc-bullets';
 
 class Video extends React.Component {
   constructor(props) {
@@ -10,7 +11,19 @@ class Video extends React.Component {
       player: null,
       width: !Setting.isMobile() ? this.props.task.video.width : "100%",
       height: "100%",
+      screen: null,
     };
+  }
+
+  componentDidMount() {
+    if (!document.querySelector(".screen")) {
+      return null;
+    }
+
+    const screen = new BulletScreen(".screen", {duration: 5});
+    this.setState({
+      screen: screen,
+    });
   }
 
   updateVideoSize(width, height) {
@@ -20,6 +33,13 @@ class Video extends React.Component {
   }
 
   updateTime(time) {
+    const labels = this.props.labels;
+    labels.forEach((label, i) => {
+      if (Math.floor(label.timestamp) === Math.floor(time)) {
+        this.state.screen.push({msg: label.text, color: "rgb(92,48,125)", backgroundColor: "rgb(255,255,255)"});
+      }
+    });
+
     this.props.onUpdateTime(time);
   }
 
@@ -88,7 +108,7 @@ class Video extends React.Component {
     }
 
     return (
-      <div style={{width: this.state.width, height: this.state.height, margin: "auto"}}>
+      <div style={{width: this.state.width, height: this.state.height}}>
         <Player
           config={config}
           onGetInstance={player => {

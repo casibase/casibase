@@ -67,16 +67,15 @@ class VideoEditPage extends React.Component {
     };
 
     return (
-      <div style={{marginTop: "10px", textAlign: "center"}}>
-        {/*{*/}
-        {/*  JSON.stringify(this.state.video)*/}
-        {/*}*/}
-        <div style={{fontSize: 30, marginBottom: "20px"}}>
+      <div style={{marginTop: "10px"}}>
+        <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '840px', height: '472px', backgroundColor: "rgba(255,0,0,0.0)" }}></div>
+        <Video task={task} labels={this.state.video.labels} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
+        <div style={{fontSize: 20, marginTop: "10px"}}>
+          {i18next.t("video:Current time (second)")}: {" "}
           {
-            this.state.video.name
+            this.state.currentTime
           }
         </div>
-        <Video task={task} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
       </div>
     )
   }
@@ -153,16 +152,6 @@ class VideoEditPage extends React.Component {
           <Col span={22} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
             {
               this.state.video !== null ? this.renderVideoContent() : null
-            }
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Current time (second)")}:
-          </Col>
-          <Col span={22} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
-            {
-              this.state.currentTime
             }
           </Col>
         </Row>
