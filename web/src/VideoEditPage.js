@@ -149,17 +149,14 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Video")}:
           </Col>
-          <Col span={22} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
+          <Col span={10} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
             {
               this.state.video !== null ? this.renderVideoContent() : null
             }
           </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Labels")}:
+          <Col span={2}>
           </Col>
-          <Col span={22} >
+          <Col span={10} >
             <LabelTable
               title={i18next.t("video:Labels")}
               table={this.state.video.labels}

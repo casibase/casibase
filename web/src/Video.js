@@ -39,6 +39,10 @@ class Video extends React.Component {
     const labels = this.props.labels;
     labels.forEach((label, i) => {
       if (Math.floor(label.timestamp) === Math.floor(time)) {
+        if (label.text === "") {
+          return;
+        }
+
         if (bulletTextMap[label.text] === 1) {
           return;
         }

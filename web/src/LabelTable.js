@@ -31,7 +31,14 @@ class LabelTable extends React.Component {
   }
 
   addRow(table) {
-    let row = {timestamp: this.props.currentTime, text: ""};
+    const currentTime = this.props.currentTime;
+
+    if (table.filter(row => row.timestamp === currentTime).length !== 0) {
+      Setting.showMessage("error", `Label with timestamp: ${currentTime} already exists`);
+      return;
+    }
+
+    let row = {timestamp: currentTime, text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -133,7 +140,7 @@ class LabelTable extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{marginTop: '20px'}} >
+        <Row style={{marginTop: '10px'}} >
           <Col span={24}>
             {
               this.renderTable(this.props.table)
