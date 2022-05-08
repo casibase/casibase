@@ -120,6 +120,17 @@ class LabelTable extends React.Component {
       },
     ];
 
+    let highlightIndex = -1;
+    table.forEach((label, i) => {
+      if (highlightIndex === -1) {
+        if (label.timestamp > this.props.currentTime) {
+          if (i > 0) {
+            highlightIndex = i - 1;
+          }
+        }
+      }
+    });
+
     return (
       <Table rowKey="timestamp" columns={columns} dataSource={table} size="middle" bordered pagination={false}
              title={() => (
@@ -133,6 +144,9 @@ class LabelTable extends React.Component {
                  }
                </div>
              )}
+             rowClassName={(record, index) => {
+               return (highlightIndex === index) ? "alert-row" : "";
+             }}
       />
     );
   }
