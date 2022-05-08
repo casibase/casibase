@@ -9,8 +9,8 @@ import (
 )
 
 type Label struct {
-	Timestamp string `xorm:"varchar(100)" json:"timestamp"`
-	Text      string `xorm:"varchar(100)" json:"text"`
+	Timestamp float64 `json:"timestamp"`
+	Text      string  `xorm:"varchar(100)" json:"text"`
 }
 
 type Video struct {

@@ -35,10 +35,11 @@
   },
   "video": {
     "Cover": "Cover",
+    "Current time (second)": "Current time (second)",
     "Edit Video": "Edit Video",
     "Labels": "Labels",
     "Text": "Text",
-    "Timestamp": "Timestamp",
+    "Timestamp (second)": "Timestamp (second)",
     "Video": "Video",
     "Video ID": "Video ID"
   },

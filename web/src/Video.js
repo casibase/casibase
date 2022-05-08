@@ -19,6 +19,10 @@ class Video extends React.Component {
     }
   }
 
+  updateTime(time) {
+    this.props.onUpdateTime(time);
+  }
+
   handleReady(player) {
     let videoWidth = player.tag.videoWidth;
     let videoHeight = player.tag.videoHeight;
@@ -42,8 +46,15 @@ class Video extends React.Component {
     });
   }
 
+  onTimeUpdate(player) {
+    const timestamp = parseFloat(parseFloat(player.getCurrentTime()).toFixed(3));
+
+    this.updateTime(timestamp);
+  }
+
   initPlayer(player) {
     player.on('ready', () => {this.handleReady(player)});
+    player.on('timeupdate', () => {this.onTimeUpdate(player)});
   }
 
   render() {

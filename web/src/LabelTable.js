@@ -1,9 +1,8 @@
 import React from "react";
 import {DownOutlined, DeleteOutlined, UpOutlined} from '@ant-design/icons';
-import {Button, Col, Input, Row, Table, Tooltip} from 'antd';
+import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from 'antd';
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import moment from "moment";
 
 class LabelTable extends React.Component {
   constructor(props) {
@@ -32,7 +31,7 @@ class LabelTable extends React.Component {
   }
 
   addRow(table) {
-    let row = {timestamp: moment().format(), text: ""};
+    let row = {timestamp: this.props.currentTime, text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -61,20 +60,20 @@ class LabelTable extends React.Component {
         title: i18next.t("general:No."),
         dataIndex: 'no',
         key: 'no',
-        width: '60px',
+        width: '80px',
         render: (text, record, index) => {
           return (index + 1);
         }
       },
       {
-        title: i18next.t("video:Timestamp"),
+        title: i18next.t("video:Timestamp (second)"),
         dataIndex: 'timestamp',
         key: 'timestamp',
-        width: '300px',
+        width: '160px',
         render: (text, record, index) => {
           return (
-            <Input value={text} onChange={e => {
-              this.updateField(table, index, 'timestamp', e.target.value);
+            <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
+              this.updateField(table, index, 'timestamp', value);
             }} />
           )
         }

@@ -26,6 +26,7 @@ class VideoEditPage extends React.Component {
       .then((video) => {
         this.setState({
           video: video,
+          currentTime: 0,
         });
       });
   }
@@ -75,7 +76,7 @@ class VideoEditPage extends React.Component {
             this.state.video.name
           }
         </div>
-        <Video task={task} />
+        <Video task={task} onUpdateTime={(time) => {this.setState({currentTime: time})}} />
       </div>
     )
   }
@@ -157,13 +158,24 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Current time (second)")}:
+          </Col>
+          <Col span={22} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
+            {
+              this.state.currentTime
+            }
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Labels")}:
           </Col>
           <Col span={22} >
             <LabelTable
               title={i18next.t("video:Labels")}
               table={this.state.video.labels}
-              onUpdateTable={(value) => { this.updateVideoField('labels', value)}}
+              currentTime={this.state.currentTime}
+              onUpdateTable={(value) => {this.updateVideoField('labels', value)}}
             />
           </Col>
         </Row>
