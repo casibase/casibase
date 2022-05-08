@@ -16,6 +16,7 @@ class VideoEditPage extends React.Component {
       video: null,
       player: null,
       screen: null,
+      videoObj: null,
     };
   }
 
@@ -76,6 +77,7 @@ class VideoEditPage extends React.Component {
                  onUpdateTime={(time) => {this.setState({currentTime: time})}}
                  onCreatePlayer={(player) => {this.setState({player: player})}}
                  onCreateScreen={(screen) => {this.setState({screen: screen})}}
+                 onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
           />
           <div style={{fontSize: 20, marginTop: "10px"}}>
             {i18next.t("video:Current time (second)")}: {" "}
@@ -171,6 +173,7 @@ class VideoEditPage extends React.Component {
               currentTime={this.state.currentTime}
               player={this.state.player}
               screen={this.state.screen}
+              videoObj={this.state.videoObj}
               onUpdateTable={(value) => {this.updateVideoField('labels', value)}}
             />
           </Col>

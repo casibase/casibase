@@ -73,6 +73,7 @@ class LabelTable extends React.Component {
             <Button type={"text"} style={{width: "50px"}} onClick={() => {
               this.props.player.seek(record.timestamp);
               this.props.screen.clear();
+              this.props.videoObj.clearMaps();
             }} >
               {index + 1}
             </Button>

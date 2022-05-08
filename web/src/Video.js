@@ -3,9 +3,6 @@ import Player from 'aliplayer-react';
 import * as Setting from "./Setting";
 import BulletScreen from 'rc-bullets';
 
-let bulletIdTextMap = {};
-let bulletTextMap = {};
-
 class Video extends React.Component {
   constructor(props) {
     super(props);
@@ -15,6 +12,8 @@ class Video extends React.Component {
       width: !Setting.isMobile() ? this.props.task.video.width : "100%",
       height: "100%",
       screen: null,
+      bulletIdTextMap: {},
+      bulletTextMap: {},
     };
   }
 
@@ -29,12 +28,20 @@ class Video extends React.Component {
     });
 
     this.props.onCreateScreen(screen);
+    this.props.onCreateVideo(this);
   }
 
   updateVideoSize(width, height) {
     if (this.props.onUpdateVideoSize !== undefined) {
       this.props.onUpdateVideoSize(width, height);
     }
+  }
+
+  clearMaps() {
+    this.setState({
+      bulletIdTextMap: {},
+      bulletTextMap: {},
+    });
   }
 
   updateTime(time) {
@@ -45,7 +52,7 @@ class Video extends React.Component {
           return;
         }
 
-        if (bulletTextMap[label.text] === 1) {
+        if (this.state.bulletTextMap[label.text] === 1) {
           return;
         }
 
@@ -55,14 +62,32 @@ class Video extends React.Component {
           backgroundColor: "rgb(255,255,255)",
         }, {
           onStart: (bulletId, screen) => {
+            let bulletIdTextMap = this.state.bulletIdTextMap;
+            let bulletTextMap = this.state.bulletTextMap;
+
             bulletIdTextMap[bulletId] = label.text;
             bulletTextMap[label.text] = 1;
+
+            this.setState({
+              bulletIdTextMap: bulletIdTextMap,
+              bulletTextMap: bulletTextMap,
+            });
+
             // console.log(`start: ${bulletId}`);
           },
           onEnd: (bulletId, screen) => {
+            let bulletIdTextMap = this.state.bulletIdTextMap;
+            let bulletTextMap = this.state.bulletTextMap;
+
             const text = bulletIdTextMap[bulletId];
             delete bulletIdTextMap[bulletId];
             delete bulletTextMap[text];
+
+            this.setState({
+              bulletIdTextMap: bulletIdTextMap,
+              bulletTextMap: bulletTextMap,
+            });
+
             // console.log(`end: ${bulletId}`);
           },
         });
