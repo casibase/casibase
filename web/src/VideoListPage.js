@@ -124,6 +124,15 @@ class VideoListPage extends React.Component {
         }
       },
       {
+        title: i18next.t("video:Label count"),
+        dataIndex: 'labelCount',
+        key: 'labelCount',
+        width: '110px',
+        render: (text, record, index) => {
+          return record.labels.length;
+        }
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: 'action',
         key: 'action',

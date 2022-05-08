@@ -264,7 +264,7 @@ export function getLabelTags(labels) {
     res.push(
       <Tooltip placement="top" title={getShortText(JSON.stringify(label.text), 500)}>
         <Tag color={"processing"}>
-          {`${label.timestamp}: ${label.text}`}
+          {`${label.timestamp}: ${label.text !== "" ? label.text : "(Empty)"}`}
         </Tag>
       </Tooltip>
     );

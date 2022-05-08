@@ -3,6 +3,8 @@ import {DownOutlined, DeleteOutlined, UpOutlined} from '@ant-design/icons';
 import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from 'antd';
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import FileSaver from "file-saver";
+import XLSX from "xlsx";
 
 class LabelTable extends React.Component {
   constructor(props) {
@@ -61,6 +63,22 @@ class LabelTable extends React.Component {
     this.updateTable(table);
   }
 
+  downloadLabels() {
+    let data = [];
+    this.props.table.forEach((label, i) => {
+      let row = {};
+
+      row[0] = label.timestamp;
+      row[1] = label.text;
+      data.push(row);
+    });
+
+    let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    const blob = Setting.sheet2blob(sheet, "labels");
+    const fileName = `labels-${this.props.video.name}-${this.props.table.length}.xlsx`;
+    FileSaver.saveAs(blob, fileName);
+  }
+
   renderTable(table) {
     const columns = [
       {
@@ -78,11 +96,10 @@ class LabelTable extends React.Component {
               {index + 1}
             </Button>
           )
-          return (index + 1);
         }
       },
       {
-        title: i18next.t("video:Timestamp (second)"),
+        title: i18next.t("video:Timestamp (s)"),
         dataIndex: 'timestamp',
         key: 'timestamp',
         width: '120px',
@@ -147,8 +164,8 @@ class LabelTable extends React.Component {
                  {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
                  <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
                  {
-                   this.props.wordset === undefined ? null : (
-                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadXlsx(this.props.wordset)}>{i18next.t("general:Download")}</Button>
+                   this.props.table.length === 0 ? null : (
+                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels()}>{i18next.t("general:Download")}</Button>
                    )
                  }
                </div>

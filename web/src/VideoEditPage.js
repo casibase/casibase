@@ -171,6 +171,7 @@ class VideoEditPage extends React.Component {
               title={i18next.t("video:Labels")}
               table={this.state.video.labels}
               currentTime={this.state.currentTime}
+              video={this.state.video}
               player={this.state.player}
               screen={this.state.screen}
               videoObj={this.state.videoObj}

@@ -37,9 +37,10 @@
     "Cover": "封面图片",
     "Current time (second)": "当前时间（秒）",
     "Edit Video": "编辑视频",
+    "Label count": "标签数量",
     "Labels": "标签",
     "Text": "文本",
-    "Timestamp (second)": "时间戳（秒）",
+    "Timestamp (s)": "时间戳（秒）",
     "Video": "视频",
     "Video ID": "视频ID"
   },
