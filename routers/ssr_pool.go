@@ -2,15 +2,19 @@ package routers
 
 import (
 	ctx "context"
+	"errors"
 	"fmt"
 	"runtime"
 	"sync"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
 	"github.com/chromedp/chromedp"
 )
+
+var renderTimeout = 20 * time.Second
 
 type RenderTask struct {
 	HttpCtx *context.Context
@@ -53,15 +57,36 @@ func render(chromeCtx ctx.Context, url string) (string, error) {
 	if cacheHit {
 		return res, nil
 	}
-	err = chromedp.Run(chromeCtx,
-		chromedp.Navigate(url),
-		chromedp.OuterHTML("html", &res),
-	)
-	if err != nil {
-		return "", err
+
+	// set timeout for render page
+	done := make(chan bool, 1)
+	go func() {
+		err = chromedp.Run(chromeCtx,
+			chromedp.Navigate(url),
+			chromedp.OuterHTML("html", &res),
+		)
+		if err != nil {
+			done <- false
+		} else {
+			done <- true
+		}
+	}()
+
+	select {
+	case success := <-done:
+		if success {
+			cacheSave(url, res)
+			return res, nil
+		} else {
+			return "", err
+		}
+	case <-time.After(renderTimeout):
+		err := chromedp.Cancel(chromeCtx)
+		if err != nil {
+			return "", errors.New("context cancel failed")
+		}
+		return "", ctx.Canceled
 	}
-	cacheSave(url, res)
-	return res, nil
 }
 
 func (pool *SsrPool) worker() {
@@ -80,7 +105,7 @@ func (pool *SsrPool) worker() {
 			}()
 			urlStr, err := task.Render(chromeCtx, task.Url)
 			if err != nil {
-				if err.Error() == "context canceled" { // when browser process has terminated
+				if err == ctx.Canceled { // when browser process has terminated
 					handleErr(task.HttpCtx, err)
 					task.Wg.Done()
 					return true

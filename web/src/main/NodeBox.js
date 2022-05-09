@@ -596,7 +596,8 @@ class NodeBox extends React.Component {
       <div id={pcBrowser ? "Main" : ""}>
         <Helmet>
           <title>{`${this.state.nodeInfo.name} - ${Setting.getForumName()}`}</title>
-          <meta name="keywords" content={`${this.state.nodeInfo.name}, ${Setting.getForumName()}`} />
+          <meta name="keywords" content={`${this.state.nodeInfo.id},${this.state.nodeInfo.name}`} />
+          <meta name="description" content={this.state.nodeInfo.desc} />
         </Helmet>
         {pcBrowser ? <div className="sep20" /> : null}
         {this.renderNode()}
