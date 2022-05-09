@@ -187,6 +187,8 @@ class AdminNode extends React.Component {
       form["headerImage"] = this.state.nodeInfo?.headerImage;
       form["mailingList"] = this.state.nodeInfo?.mailingList;
       form["googleGroupCookie"] = this.state.nodeInfo?.googleGroupCookie;
+      form["gitterApiToken"] = this.state.nodeInfo?.gitterApiToken;
+      form["gitterRoomUrl"] = this.state.nodeInfo?.gitterRoomUrl;
       form["isHidden"] = this.state.nodeInfo?.isHidden;
     }
 
@@ -716,6 +718,22 @@ class AdminNode extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <input type="text" className="sl" name="googleGroupCookie" defaultValue={this.state.form?.googleGroupCookie} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("node:Gitter API Token")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input type="text" className="sl" name="gitterApiToken" defaultValue={this.state.form?.gitterApiToken} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="120" align="right">
+                        {i18next.t("node:Gitter Room URL")}
+                      </td>
+                      <td width="auto" align="left">
+                        <input type="text" className="sl" name="gitterRoomUrl" defaultValue={this.state.form?.gitterRoomUrl} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     <tr>

@@ -40,6 +40,8 @@ type Node struct {
 	Moderators        []string `xorm:"varchar(200)" json:"moderators"`
 	MailingList       string   `xorm:"varchar(100)" json:"mailingList"`
 	GoogleGroupCookie string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
+	GitterApiToken    string   `xorm:"varchar(200)" json:"gitterApiToken"`
+	GitterRoomURL     string   `xorm:"varchar(200)" json:"gitterRoomUrl"`
 	IsHidden          bool     `xorm:"bool" json:"isHidden"`
 }
 
