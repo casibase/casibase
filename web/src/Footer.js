@@ -19,6 +19,7 @@ import * as BasicBackend from "./backend/BasicBackend";
 import { Link, withRouter } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
+import { ServerUrl } from "./Setting";
 
 class Footer extends React.Component {
   constructor(props) {
@@ -124,9 +125,9 @@ class Footer extends React.Component {
                 FAQ
               </Link>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}
-              <Link to="/api" className="dark" target="_self">
+              <a href={`${ServerUrl}/swagger`} className="dark" target="_self">
                 API
-              </Link>{" "}
+              </a>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}
               <Link to="/mission" className="dark" target="_self">
                 {i18next.t("footer:Mission")}
@@ -136,7 +137,7 @@ class Footer extends React.Component {
                 {i18next.t("footer:Advertise")}
               </Link>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}
-              <Link to="/advertise/2019.html" className="dark" target="_self">
+              <Link to="/thanks" className="dark" target="_self">
                 {i18next.t("footer:Thanks")}
               </Link>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}

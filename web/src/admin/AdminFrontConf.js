@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ConfBackend from "../backend/ConfBackend";
@@ -26,14 +26,14 @@ class AdminFrontConf extends React.Component {
       Management_LIST: [{ label: "Visual Conf", value: "visualConf" }],
       field: "visualConf",
       conf: [
-        { Id: "forumName", Value: "" },
-        { Id: "logoImage", Value: "" },
-        { Id: "signinBoxStrong", Value: "" },
-        { Id: "signinBoxSpan", Value: "" },
-        { Id: "footerAdvise", Value: "" },
-        { Id: "footerDeclaration", Value: "" },
-        { Id: "footerLogoImage", Value: "" },
-        { Id: "footerLogoUrl", Value: "" },
+        { id: "forumName", value: "" },
+        { id: "logoImage", value: "" },
+        { id: "signinBoxStrong", value: "" },
+        { id: "signinBoxSpan", value: "" },
+        { id: "footerAdvise", value: "" },
+        { id: "footerDeclaration", value: "" },
+        { id: "footerLogoImage", value: "" },
+        { id: "footerLogoUrl", value: "" },
       ],
       form: {},
       changeForm: {},
@@ -67,14 +67,14 @@ class AdminFrontConf extends React.Component {
   }
 
   getFrontConf(field) {
-    ConfBackend.getFrontConfByField(field).then((res) => {
+    ConfBackend.getFrontConfsByField(field).then((res) => {
       let form = this.state.form;
       let conf = this.state.conf;
-      for (var k in res) {
-        form[res[k].Id] = res[k].Value;
+      for (let k in res.data) {
+        form[res.data[k].id] = res.data[k].value;
       }
-      for (var i in conf) {
-        conf[i].Value = form[conf[i].Id];
+      for (let i in conf) {
+        conf[i].value = form[conf[i].id];
       }
       this.setState({
         conf: conf,
@@ -103,10 +103,11 @@ class AdminFrontConf extends React.Component {
 
   updateConf() {
     let confs = [];
-    for (var k in this.state.changeForm) {
-      confs.push({ Id: k, Value: this.state.changeForm[k] });
+    for (const k in this.state.changeForm) {
+      confs.push({ id: k, value: this.state.changeForm[k], field: this.state.field });
     }
-    ConfBackend.updateFrontConfs(confs).then((res) => {
+    alert(this.state.field);
+    ConfBackend.updateFrontConfsByField(this.state.field, confs).then((res) => {
       if (res.status === "ok") {
         this.setState({
           message: i18next.t("poster:Update frontconf information success"),
@@ -120,7 +121,7 @@ class AdminFrontConf extends React.Component {
   }
 
   updateConfToDefault() {
-    ConfBackend.updateFrontConfToDefault().then((res) => {
+    ConfBackend.restoreFrontConfs(this.state.field).then((res) => {
       if (res.status === "ok") {
         this.setState({
           message: i18next.t("poster:Update frontconf information success"),
@@ -194,10 +195,10 @@ class AdminFrontConf extends React.Component {
                   return (
                     <tr>
                       <td width={Setting.PcBrowser ? "120" : "90"} align="right">
-                        {this.convert(item.Id)}
+                        {this.convert(item.id)}
                       </td>
                       <td width="auto" align="left">
-                        <textarea rows="1" style={{ width: "80%" }} value={this.state.form[item.Id]} onChange={(event) => this.inputChange(event, item.Id)} />
+                        <textarea rows="1" style={{ width: "80%" }} value={this.state.form[item.id]} onChange={(event) => this.inputChange(event, item.id)} />
                       </td>
                     </tr>
                   );

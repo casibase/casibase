@@ -7,16 +7,19 @@
     "Version": "Версия"
   },
   "admin": {
+    "Advertise": "Advertise",
     "Asc": "Аск",
     "Backstage management": "Управление бэкстадией",
     "Condition search": "Поиск условий",
     "Desc": "Desc",
+    "Faq": "Faq",
     "FrontConf management": "Управление FrontConf",
     "Get search result success": "Результат поиска выполнен",
     "Hidden": "Hidden",
     "Ignore": "Пропустить",
     "Manage": "Управлять",
     "Member management": "Управление участниками",
+    "Mission": "Mission",
     "No matching data": "Нет подходящих данных",
     "Node management": "Управление узлами",
     "Plane management": "Управление плоскостью",
@@ -25,6 +28,7 @@
     "Show": "Показать",
     "Sorter": "Сортировать",
     "Tab management": "Управление вкладками",
+    "Thanks": "Thanks",
     "Topic management": "Управление темами",
     "Translation management": "Управление переводами"
   },

@@ -7,16 +7,19 @@
     "Version": "Version"
   },
   "admin": {
+    "Advertise": "Advertise",
     "Asc": "Asc",
     "Backstage management": "Backstage management",
     "Condition search": "Condition search",
     "Desc": "Desc",
+    "Faq": "Faq",
     "FrontConf management": "FrontConf management",
     "Get search result success": "Get search result success",
     "Hidden": "Hidden",
     "Ignore": "Ignore",
     "Manage": "Manage",
     "Member management": "Member management",
+    "Mission": "Mission",
     "No matching data": "No matching data",
     "Node management": "Node management",
     "Plane management": "Plane management",
@@ -25,6 +28,7 @@
     "Show": "Show",
     "Sorter": "Sorter",
     "Tab management": "Tab management",
+    "Thanks": "Thanks",
     "Topic management": "Topic management",
     "Translation management": "Translation management"
   },

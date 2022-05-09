@@ -7,16 +7,19 @@
     "Version": "Версе"
   },
   "admin": {
+    "Advertise": "Advertise",
     "Asc": "Көтерілу (Asc)",
     "Backstage management": "Backstage'ді басқару",
     "Condition search": "Шартты іздеу",
     "Desc": "Desc",
+    "Faq": "Faq",
     "FrontConf management": "FrontConf'ті басқару",
     "Get search result success": "Іздеу нәтижесі сәтті алынды",
     "Hidden": "Жасырын",
     "Ignore": "Ескермеу",
     "Manage": "Басқару",
     "Member management": "Мүшелерді басқару",
+    "Mission": "Mission",
     "No matching data": "Сәйкес деректер жоқ",
     "Node management": "Түйіндерді басқару",
     "Plane management": "Plane басқару",
@@ -25,6 +28,7 @@
     "Show": "Көрсету",
     "Sorter": "Сұрыптау",
     "Tab management": "Tab'ты басқару",
+    "Thanks": "Thanks",
     "Topic management": "Топиктерді басқару",
     "Translation management": "Аударманы басқару"
   },

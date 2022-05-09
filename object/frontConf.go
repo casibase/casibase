@@ -15,50 +15,47 @@
 package object
 
 type FrontConf struct {
-	Id    string `xorm:"varchar(100) notnull pk"`
-	Value string `xorm:"mediumtext"`
-	Field string `xorm:"varchar(100)`
+	Id    string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Value string   `xorm:"mediumtext" json:"value"`
+	Field string   `xorm:"varchar(100)" json:"field"`
+	Tags  []string `xorm:"varchar(200)" json:"tags"`
 }
 
 var (
 	Confs = []*FrontConf{
-		{Id: "forumName", Value: "Casnode", Field: "visualConf"},
-		{Id: "logoImage", Value: "https://cdn.casbin.com/forum/static/img/logo.png", Field: "visualConf"},
-		{Id: "footerLogoImage", Value: "https://cdn.casbin.com/forum/static/img/logo-footer.png", Field: "visualConf"},
-		{Id: "footerLogoUrl", Value: "https://www.digitalocean.com/", Field: "visualConf"},
-		{Id: "signinBoxStrong", Value: "Casbin = way to authorization", Field: "visualConf"},
-		{Id: "signinBoxSpan", Value: "A place for Casbin developers and users", Field: "visualConf"},
-		{Id: "footerDeclaration", Value: "World is powered by code", Field: "visualConf"},
-		{Id: "footerAdvise", Value: "♥ Do have faith in what you're doing.", Field: "visualConf"},
+		{Id: "forumName", Value: "Casnode", Field: "visualConf", Tags: nil},
+		{Id: "logoImage", Value: "https://cdn.casbin.com/forum/static/img/logo.png", Field: "visualConf", Tags: nil},
+		{Id: "footerLogoImage", Value: "https://cdn.casbin.com/forum/static/img/logo-footer.png", Field: "visualConf", Tags: nil},
+		{Id: "footerLogoUrl", Value: "https://www.digitalocean.com/", Field: "visualConf", Tags: nil},
+		{Id: "signinBoxStrong", Value: "Casbin = way to authorization", Field: "visualConf", Tags: nil},
+		{Id: "signinBoxSpan", Value: "A place for Casbin developers and users", Field: "visualConf", Tags: nil},
+		{Id: "footerDeclaration", Value: "World is powered by code", Field: "visualConf", Tags: nil},
+		{Id: "footerAdvise", Value: "♥ Do have faith in what you're doing.", Field: "visualConf", Tags: nil},
+		{Id: "faq", Value: "Not yet", Field: "", Tags: nil},
+		{Id: "mission", Value: "Not yet", Field: "", Tags: nil},
+		{Id: "advertise", Value: "Not yet", Field: "", Tags: nil},
+		{Id: "thanks", Value: "Not yet", Field: "", Tags: nil},
 	}
 )
 
 func InitFrontConf() {
-	conf := GetFrontConfs()
-	if len(conf) > 0 {
+	var confs []*FrontConf
+	err := adapter.Engine.Find(&confs)
+	if err != nil {
+		panic(err)
+	}
+	if len(confs) > 0 {
 		return
 	}
-
-	conf = Confs
-
-	_, err := adapter.Engine.Insert(&conf)
+	confs = Confs
+	_, err = adapter.Engine.Insert(&confs)
 	if err != nil {
 		panic(err)
 	}
-}
-
-func GetFrontConfByField(field string) []*FrontConf {
-	confs := []*FrontConf{}
-	err := adapter.Engine.Where("field = ?", field).Find(&confs)
-	if err != nil {
-		panic(err)
-	}
-
-	return confs
 }
 
 func GetFrontConfById(id string) *FrontConf {
-	confs := []*FrontConf{}
+	var confs []*FrontConf
 	err := adapter.Engine.Where("id = ?", id).Find(&confs)
 	if err != nil {
 		panic(err)
@@ -71,9 +68,9 @@ func GetFrontConfById(id string) *FrontConf {
 	}
 }
 
-func GetFrontConfs() []*FrontConf {
-	confs := []*FrontConf{}
-	err := adapter.Engine.Find(&confs)
+func GetFrontConfsByField(field string) []*FrontConf {
+	var confs []*FrontConf
+	err := adapter.Engine.Where("field = ?", field).Find(&confs)
 	if err != nil {
 		panic(err)
 	}
@@ -81,14 +78,30 @@ func GetFrontConfs() []*FrontConf {
 	return confs
 }
 
-func UpdateFrontConf(confs []*FrontConf) bool {
+func UpdateFrontConfs(confs []*FrontConf) bool {
 	var err error
-	for _, v := range confs {
-		_, err = adapter.Engine.Id(v.Id).Cols("value").Update(v)
+	for _, conf := range confs {
+		_, err = adapter.Engine.Where("id = ?", conf.Id).Update(conf)
 		if err != nil {
 			panic(err)
 		}
 	}
 
 	return true
+}
+
+func UpdateFrontConfById(id string, value string, tags []string) (int64, error) {
+	return adapter.Engine.Id(id).Cols("value", "tags").Update(&FrontConf{Value: value, Tags: tags})
+}
+
+func UpdateFrontConfsByField(confs []*FrontConf, field string) error {
+	for _, conf := range confs {
+		if conf.Field == field {
+			_, err := adapter.Engine.Id(conf.Id).Cols("value").Update(conf)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }

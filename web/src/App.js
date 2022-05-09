@@ -72,10 +72,12 @@ import AdminPlane from "./admin/AdminPlane";
 import AdminTopic from "./admin/AdminTopic";
 import AdminSensitive from "./admin/AdminSensitive";
 import AdminFrontConf from "./admin/AdminFrontConf";
+import AdminFooterEdit from "./admin/AdminFooterEdit";
 import AboutForum from "./main/AboutForum";
 import SearchResultPage from "./SearchResultPage";
 import NoMatch from "./main/NoMatch";
 import Embed from "./Embed";
+import FooterRenderBox from "./main/FooterRenderBox";
 
 class App extends Component {
   constructor(props) {
@@ -442,6 +444,57 @@ class App extends Component {
             <AdminFrontConf account={this.state.account} />
           </div>
         </Route>
+
+        <Route exact path="/admin/faq">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminFooterEdit account={this.state.account} id={"faq"} />
+          </div>
+        </Route>
+        <Route exact path="/admin/mission">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminFooterEdit account={this.state.account} id={"mission"} />
+          </div>
+        </Route>
+        <Route exact path="/admin/advertise">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminFooterEdit account={this.state.account} id={"advertise"} />
+          </div>
+        </Route>
+        <Route exact path="/admin/thanks">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <AdminFooterEdit account={this.state.account} id={"thanks"} />
+          </div>
+        </Route>
+
+        <Route exact path="/faq">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <FooterRenderBox id={"faq"} key={"faq"} />
+          </div>
+        </Route>
+        <Route exact path="/mission">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <FooterRenderBox id={"mission"} key={"mission"} />
+          </div>
+        </Route>
+        <Route exact path="/advertise">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <FooterRenderBox id={"advertise"} key={"advertise"} />
+          </div>
+        </Route>
+        <Route exact path="/thanks">
+          <div id={pcBrowser ? "Main" : ""}>
+            {pcBrowser ? <div className="sep20" /> : null}
+            <FooterRenderBox id={"thanks"} key={"thanks"} />
+          </div>
+        </Route>
+
         <Route exact path="/about">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}

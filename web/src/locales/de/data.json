@@ -7,16 +7,19 @@
     "Version": "Version"
   },
   "admin": {
+    "Advertise": "Advertise",
     "Asc": "Aufsteigend",
     "Backstage management": "Backstage Management",
     "Condition search": "Zustandssuche",
     "Desc": "Absteigend",
+    "Faq": "Faq",
     "FrontConf management": "FrontConf Verwaltung",
     "Get search result success": "Suchergebnis erfolgreich abrufen",
     "Hidden": "Hidden",
     "Ignore": "Ignorieren",
     "Manage": "Verwalten",
     "Member management": "Mitglieder verwalten",
+    "Mission": "Mission",
     "No matching data": "Keine übereinstimmenden Daten",
     "Node management": "Verwaltung von Knoten(punkten)",
     "Plane management": "Ebenenmanagement",
@@ -25,6 +28,7 @@
     "Show": "Anzeigen",
     "Sorter": "Sortierer",
     "Tab management": "Tab-Einstellungen",
+    "Thanks": "Thanks",
     "Topic management": "Themen-Verwaltung",
     "Translation management": "Übersetzungsverwaltung"
   },

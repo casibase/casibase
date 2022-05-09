@@ -18,66 +18,84 @@ import (
 	"encoding/json"
 
 	"github.com/casbin/casnode/object"
+	"github.com/casbin/casnode/service"
 )
+
+// @Title GetFrontConfById
+// @Description Get front conf by id
+// @Success 200 {object} object.FrontConf The Response object
+// @router /get-front-conf-by-id [get]
+// @Tag FrontConf API
+func (c *ApiController) GetFrontConfById() {
+	id := c.Input().Get("id")
+
+	conf := object.GetFrontConfById(id)
+	c.ResponseOk(conf)
+}
 
 // @Title GetFrontConfsByField
 // @Description Get front confs by field
 // @Success 200 {array} object.FrontConf The Response object
-// @router /get-front-conf-by-field [get]
+// @router /get-front-confs-by-field [get]
 // @Tag FrontConf API
-func (c *ApiController) GetFrontConfByField() {
+func (c *ApiController) GetFrontConfsByField() {
 	field := c.Input().Get("field")
 
-	c.Data["json"] = object.GetFrontConfByField(field)
-	c.ServeJSON()
+	confs := object.GetFrontConfsByField(field)
+	c.ResponseOk(confs)
 }
 
-// @Title GetFrontConfs
-// @Description Get all front confs
-// @Success 200 {array} array The Response object
-// @router /get-front-confs [get]
+// @router /update-front-conf-by-id [post]
 // @Tag FrontConf API
-func (c *ApiController) GetFrontConfs() {
-	confs := make(map[string]string)
-	conf := object.GetFrontConfs()
-
-	for _, frontconf := range conf {
-		confs[frontconf.Id] = frontconf.Value
+// @Title UpdateFrontConfById
+func (c *ApiController) UpdateFrontConfById() {
+	if c.RequireAdmin() {
+		return
 	}
+	id := c.Input().Get("id")
+	// get from body
+	var value string
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &value)
+	tags := service.Finalword(value)
+	affect, err := object.UpdateFrontConfById(id, value, tags)
 
-	c.Data["json"] = confs
-	c.ServeJSON()
+	if err != nil {
+		c.ResponseError(err.Error())
+	}
+	c.ResponseOk(affect)
 }
 
-// @router /update-front-conf [post] 
+// @router /update-front-confs-by-filed [post]
 // @Tag FrontConf API
-// @Title UpdateFrontConf
-func (c *ApiController) UpdateFrontConf() {
-	var confs []*object.FrontConf
-
+// @Title UpdateFrontConfsByField
+func (c *ApiController) UpdateFrontConfsByField() {
 	if c.RequireAdmin() {
 		return
 	}
 
+	filed := c.Input().Get("field")
+	var confs []*object.FrontConf
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &confs)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
 	}
-	res := object.UpdateFrontConf(confs)
-	c.ResponseOk(res)
 
+	err = object.UpdateFrontConfsByField(confs, filed)
+	if err != nil {
+		c.ResponseError(err.Error())
+	}
+	c.ResponseOk(nil)
 }
 
-// @router /update-to-default-conf [post] 
+// @router /restore-front-confs [post]
 // @Tag FrontConf API
-// @Title UpdateFrontConfToDefault
-func (c *ApiController) UpdateFrontConfToDefault() {
+// @Title RestoreFrontConfs
+func (c *ApiController) RestoreFrontConfs() {
 
 	if c.RequireAdmin() {
 		return
 	}
-
-	res := object.UpdateFrontConf(object.Confs)
+	filed := c.Input().Get("field")
+	res := object.UpdateFrontConfsByField(object.Confs, filed)
 	c.ResponseOk(res)
-
 }
