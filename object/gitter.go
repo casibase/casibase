@@ -28,19 +28,19 @@ import (
 	"github.com/sromku/go-gitter"
 )
 
+var topicDuration = "4" // Hours
+
 type topicGitter struct {
 	Topic        Topic
 	Massages     []gitter.Message
 	MemberMsgMap map[string]int
 }
 
-var roomSyncMsgMap = map[string]string{}
-
-// initialize value
 var (
-	lastMsg      = gitter.Message{}
-	lastTopic    = topicGitter{MemberMsgMap: map[string]int{}}
-	currentTopic = topicGitter{MemberMsgMap: map[string]int{}}
+	roomSyncMsgMap  = map[string]string{}
+	lastMsgMap      = map[string]gitter.Message{}
+	lastTopicMap    = map[string]topicGitter{}
+	currentTopicMap = map[string]topicGitter{}
 )
 
 func AutoSyncGitter() {
@@ -135,6 +135,20 @@ func (n Node) SyncGitter() {
 		return Topic{}
 	}
 
+	// initialize value
+	lastMsg, ok := lastMsgMap[room.ID]
+	if !ok {
+		lastMsg = gitter.Message{}
+	}
+	lastTopic := lastTopicMap[room.ID]
+	if !ok {
+		lastTopic = topicGitter{MemberMsgMap: map[string]int{}}
+	}
+	currentTopic, ok := currentTopicMap[room.ID]
+	if !ok {
+		currentTopic = topicGitter{MemberMsgMap: map[string]int{}}
+	}
+
 	for _, msg := range messages {
 		func() {
 			defer func() {
@@ -175,9 +189,11 @@ func (n Node) SyncGitter() {
 				}
 			}
 
+			// if @user and lastMsg is not @user, then create topic
+			// if duration is more than 4 hour, then create topic
+
 			d := msg.Sent.Sub(lastMsg.Sent)
-			dur, err := strconv.Atoi("4")
-			//dur, err := strconv.Atoi(topicDuration[roomIdx])
+			dur, err := strconv.Atoi(topicDuration)
 			if err != nil {
 				panic(err)
 			}
@@ -212,11 +228,13 @@ func (n Node) SyncGitter() {
 				// deep copy
 				data, _ := json.Marshal(currentTopic)
 				_ = json.Unmarshal(data, &lastTopic)
+				lastTopicMap[room.ID] = lastTopic
 
 				// new currentTopic
 				currentTopic = topicGitter{Topic: topic, MemberMsgMap: map[string]int{}}
 				currentTopic.Massages = append(currentTopic.Massages, msg)
 				currentTopic.MemberMsgMap[author]++
+				currentTopicMap[room.ID] = currentTopic
 			} else {
 				// add reply to lastTopic
 				reply := Reply{
@@ -232,6 +250,7 @@ func (n Node) SyncGitter() {
 
 				currentTopic.Massages = append(currentTopic.Massages, msg)
 				currentTopic.MemberMsgMap[msg.From.Username]++
+				currentTopicMap[room.ID] = currentTopic
 			}
 
 			// deep copy

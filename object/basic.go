@@ -40,11 +40,12 @@ func InitForumBasicInfo() {
 	if AutoSyncPeriodSecond >= 30 {
 		fmt.Println("Auto sync from google group enabled.")
 		go AutoSyncGoogleGroup()
+		fmt.Println("Auto sync from gitter room enabled.")
 		go AutoSyncGitter()
 	} else {
 		fmt.Println("Auto sync from google group disabled.")
+		fmt.Println("Auto sync from gitter room disabled.")
 	}
-	go AutoSyncGitter()
 }
 
 func GetForumVersion() string {

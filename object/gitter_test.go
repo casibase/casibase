@@ -15,9 +15,9 @@
 package object
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/astaxie/beego"
 	"github.com/issue9/assert"
 	"github.com/sromku/go-gitter"
 )
@@ -27,15 +27,23 @@ func TestRemoveSyncGitterData(t *testing.T) {
 	InitAdapter()
 
 	// delete all sync gitter data
-	api := gitter.New(beego.AppConfig.String("gitterApiAccessToken"))
-	rooms, err := api.GetRooms()
-	roomUrls := beego.AppConfig.Strings("gitterRooms")
+	var nodes []Node
+	err := adapter.Engine.Find(&nodes)
+	if err != nil {
+		panic(err)
+	}
+	for _, node := range nodes {
+		if node.GitterRoomURL == "" || node.GitterApiToken == "" {
+			continue
+		}
 
-	for _, url := range roomUrls {
-		room := gitter.Room{}
+		api := gitter.New(node.GitterApiToken)
+		rooms, err := api.GetRooms()
 		if err != nil {
 			panic(err)
 		}
+		url := node.GitterRoomURL
+		room := gitter.Room{}
 		for _, v := range rooms { // find RoomId by url
 			if "https://gitter.im/"+v.URI == url {
 				room = v
@@ -43,11 +51,7 @@ func TestRemoveSyncGitterData(t *testing.T) {
 			}
 		}
 		assert.NotEqual(t, room.Name, "")
-
-		node := GetNode(room.Name)
-		if node == nil {
-			continue
-		}
+		fmt.Printf("INFO: delete sync gitter data of room: %s\n", room.Name)
 		node.DeleteAllTopicsHard()
 	}
 }
