@@ -21,28 +21,29 @@ import (
 )
 
 type Node struct {
-	Id                string   `xorm:"varchar(100) notnull pk" json:"id"`
-	Name              string   `xorm:"varchar(100)" json:"name"`
-	CreatedTime       string   `xorm:"varchar(40)" json:"createdTime"`
-	Desc              string   `xorm:"mediumtext" json:"desc"`
-	Extra             string   `xorm:"mediumtext" json:"extra"`
-	Image             string   `xorm:"varchar(200)" json:"image"`
-	BackgroundImage   string   `xorm:"varchar(200)" json:"backgroundImage"`
-	HeaderImage       string   `xorm:"varchar(200)" json:"headerImage"`
-	BackgroundColor   string   `xorm:"varchar(20)" json:"backgroundColor"`
-	BackgroundRepeat  string   `xorm:"varchar(20)" json:"backgroundRepeat"`
-	TabId             string   `xorm:"varchar(100)" json:"tab"`
-	ParentNode        string   `xorm:"varchar(200)" json:"parentNode"`
-	PlaneId           string   `xorm:"varchar(50)" json:"planeId"`
-	Sorter            int      `json:"sorter"`
-	Ranking           int      `json:"ranking"`
-	Hot               int      `json:"hot"`
-	Moderators        []string `xorm:"varchar(200)" json:"moderators"`
-	MailingList       string   `xorm:"varchar(100)" json:"mailingList"`
-	GoogleGroupCookie string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
-	GitterApiToken    string   `xorm:"varchar(200)" json:"gitterApiToken"`
-	GitterRoomURL     string   `xorm:"varchar(200)" json:"gitterRoomUrl"`
-	IsHidden          bool     `xorm:"bool" json:"isHidden"`
+	Id                 string   `xorm:"varchar(100) notnull pk" json:"id"`
+	Name               string   `xorm:"varchar(100)" json:"name"`
+	CreatedTime        string   `xorm:"varchar(40)" json:"createdTime"`
+	Desc               string   `xorm:"mediumtext" json:"desc"`
+	Extra              string   `xorm:"mediumtext" json:"extra"`
+	Image              string   `xorm:"varchar(200)" json:"image"`
+	BackgroundImage    string   `xorm:"varchar(200)" json:"backgroundImage"`
+	HeaderImage        string   `xorm:"varchar(200)" json:"headerImage"`
+	BackgroundColor    string   `xorm:"varchar(20)" json:"backgroundColor"`
+	BackgroundRepeat   string   `xorm:"varchar(20)" json:"backgroundRepeat"`
+	TabId              string   `xorm:"varchar(100)" json:"tab"`
+	ParentNode         string   `xorm:"varchar(200)" json:"parentNode"`
+	PlaneId            string   `xorm:"varchar(50)" json:"planeId"`
+	Sorter             int      `json:"sorter"`
+	Ranking            int      `json:"ranking"`
+	Hot                int      `json:"hot"`
+	Moderators         []string `xorm:"varchar(200)" json:"moderators"`
+	MailingList        string   `xorm:"varchar(100)" json:"mailingList"`
+	GoogleGroupCookie  string   `xorm:"varchar(1500)" json:"googleGroupCookie"`
+	GitterApiToken     string   `xorm:"varchar(200)" json:"gitterApiToken"`
+	GitterRoomURL      string   `xorm:"varchar(200)" json:"gitterRoomUrl"`
+	GitterSyncFromTime string   `xorm:"varchar(40)" json:"gitterSyncFromTime"`
+	IsHidden           bool     `xorm:"bool" json:"isHidden"`
 }
 
 func GetNodes() []*Node {
@@ -348,7 +349,7 @@ func (n Node) GetAllTopicTitlesOfNode() []string {
 
 func (n Node) GetAllTopicsByNode() []Topic {
 	var topics []Topic
-	err := adapter.Engine.Where("node_id = ? and deleted = 0", n.Id).Find(&topics)
+	err := adapter.Engine.Where("node_id = ? and deleted = 0", n.Id).Desc("created_time").Find(&topics)
 	if err != nil {
 		panic(err)
 	}
