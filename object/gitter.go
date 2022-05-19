@@ -341,14 +341,15 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				if topic.Id == 0 { // not exist
 					// add topic
 					topic = Topic{
-						Author:      msg.From.Username,
-						NodeId:      node.Id,
-						NodeName:    node.Name,
-						TabId:       node.TabId,
-						Title:       title,
-						CreatedTime: msg.Sent.String(),
-						Content:     msg.Text,
-						IsHidden:    false,
+						Author:          msg.From.Username,
+						NodeId:          node.Id,
+						NodeName:        node.Name,
+						TabId:           node.TabId,
+						Title:           title,
+						CreatedTime:     msg.Sent.String(),
+						Content:         msg.Text,
+						IsHidden:        false,
+						GitterMessageID: msg.ID,
 					}
 
 					_, topicID := AddTopic(&topic)
@@ -368,10 +369,11 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 			} else {
 				// add reply to lastTopic
 				reply := Reply{
-					Author:      msg.From.Username,
-					TopicId:     currentTopic.Topic.Id,
-					CreatedTime: msg.Sent.String(),
-					Content:     msg.Text,
+					Author:          msg.From.Username,
+					TopicId:         currentTopic.Topic.Id,
+					CreatedTime:     msg.Sent.String(),
+					Content:         msg.Text,
+					GitterMessageID: msg.ID,
 				}
 				_, _ = AddReply(&reply)
 
