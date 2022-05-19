@@ -18,12 +18,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/astaxie/beego/logs"
 	"runtime"
 	"strconv"
 	"sync"
 	"time"
 
+	"github.com/astaxie/beego/logs"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 	"github.com/sromku/go-gitter"
