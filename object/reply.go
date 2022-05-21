@@ -36,7 +36,7 @@ type Reply struct {
 	Content         string   `xorm:"mediumtext" json:"content"`
 	Ip              string   `xorm:"varchar(100)" json:"ip"`
 	State           string   `xorm:"varchar(100)" json:"state"`
-	GitterMessageID string   `xorm:"varchar(100)" json:"gitterMessageId"`
+	GitterMessageId string   `xorm:"varchar(100)" json:"gitterMessageId"`
 }
 
 var enableNestedReply, _ = beego.AppConfig.Bool("enableNestedReply")

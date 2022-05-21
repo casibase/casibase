@@ -51,7 +51,13 @@ func TestRemoveSyncGitterData(t *testing.T) {
 			}
 		}
 		assert.NotEqual(t, room.Name, "")
+		adapter.Engine.ShowSQL(true)
+		_, err = adapter.Engine.
+			Query("DELETE t.*,r.* FROM topic as t LEFT JOIN reply as r ON t.id = r.topic_id WHERE t.gitter_message_id is not null AND t.node_id = ?", node.Id)
+
+		if err != nil {
+			panic(err)
+		}
 		fmt.Printf("INFO: delete sync gitter data of room: %s\n", room.Name)
-		node.DeleteAllTopicsHard()
 	}
 }

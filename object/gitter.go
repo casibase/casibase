@@ -29,8 +29,10 @@ import (
 	"github.com/sromku/go-gitter"
 )
 
-var topicDuration = "4" // Hours
-var apiLIMIT = 10
+const (
+	topicDuration = "4" // Hours
+	apiLIMIT      = 10  // request frequency
+)
 
 type topicGitter struct {
 	Topic        Topic
@@ -114,20 +116,20 @@ func (n Node) SyncGitter() {
 		headIdx, ok := roomSyncMsgHeadMap[room.ID]
 		if !ok { // get all msg if idx is not exist
 			for _, topic := range topics {
-				if topic.GitterMessageID != "" {
+				if topic.GitterMessageId != "" {
 					// get reply
 					replies := GetRepliesOfTopic(topic.Id)
 					// get sync msg idx
 					num := len(replies)
 					if num == 0 {
-						headIdx = topic.GitterMessageID
+						headIdx = topic.GitterMessageId
 						break
 					}
 
 					flag := false
 					for i := num - 1; i >= 0; i-- {
-						if replies[i].GitterMessageID != "" {
-							headIdx = replies[i].GitterMessageID
+						if replies[i].GitterMessageId != "" {
+							headIdx = replies[i].GitterMessageId
 							flag = true
 							break
 						}
@@ -139,7 +141,7 @@ func (n Node) SyncGitter() {
 			}
 		}
 
-		// the api limits the number of messages to 100
+		// the api limits the number of messages to 50
 		messages, err = api.GetMessages(room.ID, &gitter.Pagination{
 			AfterID: headIdx,
 		})
@@ -165,8 +167,7 @@ func (n Node) SyncGitter() {
 		}
 
 		fmt.Printf("sync msg for room(msgNum:%d): %s\n", len(messages), room.Name)
-		createTopicWithMessages(messages, room, n, topics, roomSyncMsgHeadMap)
-
+		createTopicWithMessages(messages, room, n, topics, true)
 	}()
 
 	// tail
@@ -178,8 +179,8 @@ func (n Node) SyncGitter() {
 		if !ok {
 			for i := topicNum - 1; i >= 0; i-- {
 				topic := topics[i]
-				if topic.GitterMessageID != "" {
-					tailIdx = topic.GitterMessageID
+				if topic.GitterMessageId != "" {
+					tailIdx = topic.GitterMessageId
 					break
 				}
 			}
@@ -206,6 +207,11 @@ func (n Node) SyncGitter() {
 				if tailMsg.Sent.Before(t) { // if msg is before the start time, end sync tail
 					return
 				}
+			}
+		} else {
+			messages, err = api.GetMessages(room.ID, nil)
+			if len(messages) != 0 {
+				tailIdx = messages[0].ID
 			}
 		}
 
@@ -253,14 +259,13 @@ func (n Node) SyncGitter() {
 		}
 
 		fmt.Printf("sync msg for room(msgNum:%d): %s\n", len(messages), room.Name)
-		createTopicWithMessages(messages, room, n, topics, roomSyncMsgTailMap)
-
+		createTopicWithMessages(messages, room, n, topics, false)
 	}()
 	wg.Wait()
 }
 
 // main create topic func
-func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node Node, topics []Topic, syncMap map[string]string) {
+func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node Node, topics []Topic, asc bool) {
 	GetTopicExist := func(topicTitle string) Topic {
 		for _, topic := range topics {
 			if topic.Title == topicTitle {
@@ -348,8 +353,8 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 						Title:           title,
 						CreatedTime:     msg.Sent.String(),
 						Content:         msg.Text,
-						IsHidden:        false,
-						GitterMessageID: msg.ID,
+						IsHidden:        true,
+						GitterMessageId: msg.ID,
 					}
 
 					_, topicID := AddTopic(&topic)
@@ -373,7 +378,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 					TopicId:         currentTopic.Topic.Id,
 					CreatedTime:     msg.Sent.String(),
 					Content:         msg.Text,
-					GitterMessageID: msg.ID,
+					GitterMessageId: msg.ID,
 				}
 				_, _ = AddReply(&reply)
 
@@ -390,7 +395,11 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 			_ = json.Unmarshal(data, &lastMsg)
 
 			// add index to sync message
-			syncMap[room.ID] = msg.ID
+			if asc {
+				roomSyncMsgHeadMap[room.ID] = msg.ID
+			} else {
+				roomSyncMsgTailMap[room.ID] = messages[0].ID
+			}
 		}()
 	}
 }
