@@ -53,11 +53,12 @@ func AutoSyncGitter() {
 	if AutoSyncPeriodSecond < 30 {
 		return
 	}
+
+	SyncAllGitterRooms()
 	for {
 		time.Sleep(time.Duration(AutoSyncPeriodSecond) * time.Second)
 		SyncAllGitterRooms()
 	}
-	//SyncAllGitterRooms()
 }
 
 func SyncAllGitterRooms() {
@@ -352,8 +353,8 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 						NodeName:        node.Name,
 						TabId:           node.TabId,
 						Title:           title,
-						CreatedTime:     msg.Sent.Format(time.RFC3339),
-						LastReplyTime:   msg.Sent.Format(time.RFC3339),
+						CreatedTime:     util.Time2String(msg.Sent),
+						LastReplyTime:   util.Time2String(msg.Sent),
 						Tags:            service.Finalword(msg.Text),
 						EditorType:      "markdown",
 						Content:         msg.Text,
@@ -379,7 +380,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				reply := Reply{
 					Author:          msg.From.Username,
 					TopicId:         currentTopic.Topic.Id,
-					CreatedTime:     msg.Sent.Format(time.RFC3339),
+					CreatedTime:     util.Time2String(msg.Sent),
 					Tags:            service.Finalword(msg.Text),
 					EditorType:      "markdown",
 					Content:         msg.Text,
@@ -388,7 +389,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				_, _ = AddReply(&reply)
 
 				ChangeTopicReplyCount(reply.TopicId, 1)
-				ChangeTopicLastReplyUser(currentTopic.Topic.Id, msg.From.Username, msg.Sent.Format(time.RFC3339))
+				ChangeTopicLastReplyUser(currentTopic.Topic.Id, msg.From.Username, util.Time2String(msg.Sent))
 
 				currentTopic.Massages = append(currentTopic.Massages, msg)
 				currentTopic.MemberMsgMap[msg.From.Username]++
