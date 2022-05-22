@@ -335,3 +335,7 @@ export function downloadXlsx(wordset) {
 export function toFixed(f, n) {
   return parseFloat(f.toFixed(n));
 }
+
+export function getRandomName() {
+  return Math.random().toString(36).slice(-6);
+}

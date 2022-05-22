@@ -9,6 +9,7 @@ import (
 )
 
 type Label struct {
+	Id        string  `xorm:"varchar(100)" json:"id"`
 	StartTime float64 `json:"startTime"`
 	EndTime   float64 `json:"endTime"`
 	Text      string  `xorm:"varchar(100)" json:"text"`

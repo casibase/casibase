@@ -49,7 +49,7 @@ class LabelTable extends React.Component {
       return;
     }
 
-    let row = {startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
+    let row = {id: Setting.getRandomName(), startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -79,7 +79,8 @@ class LabelTable extends React.Component {
       let row = {};
 
       row[0] = label.startTime;
-      row[1] = label.text;
+      row[1] = label.endTime;
+      row[2] = label.text;
       data.push(row);
     });
 
@@ -186,7 +187,7 @@ class LabelTable extends React.Component {
     });
 
     return (
-      <Table rowKey={record => {return JSON.stringify(record)}} columns={columns} dataSource={table} size="middle" bordered pagination={false}
+      <Table rowKey={"id"} columns={columns} dataSource={table} size="middle" bordered pagination={false}
              title={() => (
                <div>
                  {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
