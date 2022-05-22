@@ -74,8 +74,13 @@ class NoMatch extends React.Component {
   }
 
   render() {
-    return <div className="main">{this.renderBox()}</div>;
+    return (
+      <div className="main">
+        {this.renderBox()}
+      </div>
+    )
   }
+  
 }
 
 export default withRouter(NoMatch);
