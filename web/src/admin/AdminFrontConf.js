@@ -106,7 +106,7 @@ class AdminFrontConf extends React.Component {
     for (const k in this.state.changeForm) {
       confs.push({ id: k, value: this.state.changeForm[k], field: this.state.field });
     }
-    alert(this.state.field);
+
     ConfBackend.updateFrontConfsByField(this.state.field, confs).then((res) => {
       if (res.status === "ok") {
         this.setState({
