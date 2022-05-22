@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego/logs"
+	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/auth"
 	"github.com/sromku/go-gitter"
@@ -351,9 +352,11 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 						NodeName:        node.Name,
 						TabId:           node.TabId,
 						Title:           title,
-						CreatedTime:     msg.Sent.String(),
+						CreatedTime:     msg.Sent.Format(time.RFC3339),
+						LastReplyTime:   msg.Sent.Format(time.RFC3339),
+						Tags:            service.Finalword(msg.Text),
+						EditorType:      "markdown",
 						Content:         msg.Text,
-						IsHidden:        true,
 						GitterMessageId: msg.ID,
 					}
 
@@ -376,14 +379,16 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				reply := Reply{
 					Author:          msg.From.Username,
 					TopicId:         currentTopic.Topic.Id,
-					CreatedTime:     msg.Sent.String(),
+					CreatedTime:     msg.Sent.Format(time.RFC3339),
+					Tags:            service.Finalword(msg.Text),
+					EditorType:      "markdown",
 					Content:         msg.Text,
 					GitterMessageId: msg.ID,
 				}
 				_, _ = AddReply(&reply)
 
 				ChangeTopicReplyCount(reply.TopicId, 1)
-				ChangeTopicLastReplyUser(currentTopic.Topic.Id, msg.From.Username, msg.Sent.String())
+				ChangeTopicLastReplyUser(currentTopic.Topic.Id, msg.From.Username, msg.Sent.Format(time.RFC3339))
 
 				currentTopic.Massages = append(currentTopic.Massages, msg)
 				currentTopic.MemberMsgMap[msg.From.Username]++
