@@ -47,7 +47,7 @@ class Video extends React.Component {
   updateTime(time) {
     const labels = this.props.labels;
     labels.forEach((label, i) => {
-      if (Math.floor(label.timestamp) === Math.floor(time)) {
+      if (Math.floor(label.startTime) === Math.floor(time)) {
         if (label.text === "") {
           return;
         }

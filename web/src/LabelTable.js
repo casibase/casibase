@@ -1,5 +1,5 @@
 import React from "react";
-import {DownOutlined, DeleteOutlined, UpOutlined} from '@ant-design/icons';
+import {DeleteOutlined} from '@ant-design/icons';
 import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from 'antd';
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -35,12 +35,12 @@ class LabelTable extends React.Component {
   addRow(table) {
     const currentTime = this.props.currentTime;
 
-    if (table.filter(row => row.timestamp === currentTime).length !== 0) {
-      Setting.showMessage("error", `Label with timestamp: ${currentTime} already exists`);
+    if (table.filter(row => row.startTime === currentTime).length !== 0) {
+      Setting.showMessage("error", `Label with startTime: ${currentTime} already exists`);
       return;
     }
 
-    let row = {timestamp: currentTime, text: ""};
+    let row = {startTime: currentTime, text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -68,7 +68,7 @@ class LabelTable extends React.Component {
     this.props.table.forEach((label, i) => {
       let row = {};
 
-      row[0] = label.timestamp;
+      row[0] = label.startTime;
       row[1] = label.text;
       data.push(row);
     });
@@ -80,6 +80,8 @@ class LabelTable extends React.Component {
   }
 
   renderTable(table) {
+    table = table.sort((a, b) => {return a.startTime - b.startTime;});
+
     const columns = [
       {
         title: i18next.t("general:No."),
@@ -89,7 +91,7 @@ class LabelTable extends React.Component {
         render: (text, record, index) => {
           return (
             <Button type={"text"} style={{width: "50px"}} onClick={() => {
-              this.props.player.seek(record.timestamp);
+              this.props.player.seek(record.startTime);
               this.props.screen.clear();
               this.props.videoObj.clearMaps();
             }} >
@@ -99,14 +101,14 @@ class LabelTable extends React.Component {
         }
       },
       {
-        title: i18next.t("video:Timestamp (s)"),
-        dataIndex: 'timestamp',
-        key: 'timestamp',
+        title: i18next.t("video:Start time (s)"),
+        dataIndex: 'startTime',
+        key: 'startTime',
         width: '120px',
         render: (text, record, index) => {
           return (
             <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
-              this.updateField(table, index, 'timestamp', value);
+              this.updateField(table, index, 'startTime', value);
             }} />
           )
         }
@@ -127,17 +129,17 @@ class LabelTable extends React.Component {
       {
         title: i18next.t("general:Action"),
         key: 'action',
-        width: '100px',
+        width: '50px',
         render: (text, record, index) => {
           return (
             <div>
-              <Tooltip placement="bottomLeft" title={"Up"}>
-                <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
-              </Tooltip>
-              <Tooltip placement="topLeft" title={"Down"}>
-                <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
-              </Tooltip>
-              <Tooltip placement="topLeft" title={"Delete"}>
+              {/*<Tooltip placement="bottomLeft" title={"Up"}>*/}
+              {/*  <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />*/}
+              {/*</Tooltip>*/}
+              {/*<Tooltip placement="topLeft" title={"Down"}>*/}
+              {/*  <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />*/}
+              {/*</Tooltip>*/}
+              <Tooltip placement="right" title={"Delete"}>
                 <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
@@ -149,7 +151,7 @@ class LabelTable extends React.Component {
     let highlightIndex = -1;
     table.forEach((label, i) => {
       if (highlightIndex === -1) {
-        if (label.timestamp > this.props.currentTime) {
+        if (label.startTime > this.props.currentTime) {
           if (i > 0) {
             highlightIndex = i - 1;
           }
@@ -158,7 +160,7 @@ class LabelTable extends React.Component {
     });
 
     return (
-      <Table rowKey="timestamp" columns={columns} dataSource={table} size="middle" bordered pagination={false}
+      <Table rowKey="startTime" columns={columns} dataSource={table} size="middle" bordered pagination={false}
              title={() => (
                <div>
                  {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
