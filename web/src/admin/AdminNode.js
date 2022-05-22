@@ -725,7 +725,7 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Gitter API Token")}
                       </td>
                       <td width="auto" align="left">
-                        <input type="text" className="sl" name="gitterApiToken" defaultValue={this.state.form?.gitterApiToken} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
+                        <input type="text" className="sl" name="gitterApiToken" defaultValue={this.state.form?.gitterApiToken} onChange={(event) => this.updateFormField("gitterApiToken", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     <tr>
@@ -733,7 +733,7 @@ class AdminNode extends React.Component {
                         {i18next.t("node:Gitter Room URL")}
                       </td>
                       <td width="auto" align="left">
-                        <input type="text" className="sl" name="gitterRoomUrl" defaultValue={this.state.form?.gitterRoomUrl} onChange={(event) => this.updateFormField("googleGroupCookie", event.target.value)} autoComplete="off" />
+                        <input type="text" className="sl" name="gitterRoomUrl" defaultValue={this.state.form?.gitterRoomUrl} onChange={(event) => this.updateFormField("gitterRoomUrl", event.target.value)} autoComplete="off" />
                       </td>
                     </tr>
                     <tr>
