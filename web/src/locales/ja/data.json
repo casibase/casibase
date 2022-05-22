@@ -7,16 +7,19 @@
     "Version": "バージョン"
   },
   "admin": {
+    "Advertise": "Advertise",
     "Asc": "Asc",
     "Backstage management": "バックステージ管理",
     "Condition search": "条件検索",
     "Desc": "Desc",
+    "Faq": "Faq",
     "FrontConf management": "FrontConf管理",
     "Get search result success": "検索結果を取得しました",
     "Hidden": "Hidden",
     "Ignore": "無視",
     "Manage": "管理",
     "Member management": "メンバー管理",
+    "Mission": "Mission",
     "No matching data": "一致するデータがありません",
     "Node management": "ノード管理",
     "Plane management": "平面管理",
@@ -25,6 +28,7 @@
     "Show": "表示",
     "Sorter": "ソート",
     "Tab management": "タブ管理",
+    "Thanks": "Thanks",
     "Topic management": "トピック管理",
     "Translation management": "翻訳管理"
   },

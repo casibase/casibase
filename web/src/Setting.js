@@ -320,12 +320,12 @@ export function getFrontConf(field) {
     }
   }
 
-  ConfBackend.getFrontConfByField(field).then((res) => {
-    for (let key in res) {
-      if (res[key].Value !== "") {
-        FrontConfig[res[key].Id] = res[key].Value;
+  ConfBackend.getFrontConfsByField(field).then((res) => {
+    for (let key in res.data) {
+      if (res.data[key].Value !== "") {
+        FrontConfig[res.data[key].id] = res.data[key].value;
       }
-      storage[res[key].Id] = FrontConfig[res[key].Id];
+      storage[res.data[key].id] = FrontConfig[res.data[key].id];
     }
   });
 }

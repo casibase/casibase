@@ -7,16 +7,19 @@
     "Version": "版本"
   },
   "admin": {
+    "Advertise": "廣告",
     "Asc": "升序",
     "Backstage management": "後臺管理",
     "Condition search": "條件搜索",
     "Desc": "降序",
+    "Faq": "常見問題",
     "FrontConf management": "前端配置管理",
     "Get search result success": "獲取搜索結果成功",
     "Hidden": "隱藏",
     "Ignore": "忽略",
     "Manage": "管理",
     "Member management": "用戶管理",
+    "Mission": "願景",
     "No matching data": "沒有匹配信息",
     "Node management": "節點管理",
     "Plane management": "位面管理",
@@ -25,6 +28,7 @@
     "Show": "顯示",
     "Sorter": "排序",
     "Tab management": "類別管理",
+    "Thanks": "致謝",
     "Topic management": "帖子管理",
     "Translation management": "翻譯管理"
   },

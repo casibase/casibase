@@ -14,23 +14,38 @@
 
 import * as Setting from "../Setting";
 
-export function getFrontConfByField(field) {
-  return fetch(`${Setting.ServerUrl}/api/get-front-conf-by-field?field=${field}`, {
+export function getFrontConfById(id) {
+  return fetch(`${Setting.ServerUrl}/api/get-front-conf-by-id?id=${id}`, {
     method: "GET",
     credentials: "include",
   }).then((res) => res.json());
 }
 
-export function updateFrontConfs(confs) {
-  return fetch(`${Setting.ServerUrl}/api/update-front-conf`, {
+export function getFrontConfsByField(field) {
+  return fetch(`${Setting.ServerUrl}/api/get-front-confs-by-field?field=${field}`, {
+    method: "GET",
+    credentials: "include",
+  }).then((res) => res.json());
+}
+
+export function updateFrontConfById(id, value) {
+  return fetch(`${Setting.ServerUrl}/api/update-front-conf-by-id?id=${id}`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(value),
+  }).then((res) => res.json());
+}
+
+export function updateFrontConfsByField(field, confs) {
+  return fetch(`${Setting.ServerUrl}/api/update-front-confs-by-field?field=${field}`, {
     method: "POST",
     credentials: "include",
     body: JSON.stringify(confs),
   }).then((res) => res.json());
 }
 
-export function updateFrontConfToDefault() {
-  return fetch(`${Setting.ServerUrl}/api/update-to-default-conf`, {
+export function restoreFrontConfs(field) {
+  return fetch(`${Setting.ServerUrl}/api/restore-front-confs?field=${field}`, {
     method: "POST",
     credentials: "include",
   }).then((res) => res.json());

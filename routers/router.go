@@ -157,8 +157,9 @@ func initAPI() {
 	beego.Router("/api/node-navigation", &controllers.ApiController{}, "GET:GetNodeNavigation")
 	beego.Router("/api/search", &controllers.ApiController{}, "GET:Search")
 
-	beego.Router("/api/get-front-conf-by-field", &controllers.ApiController{}, "GET:GetFrontConfByField")
-	beego.Router("/api/get-front-confs", &controllers.ApiController{}, "GET:GetFrontConfs")
-	beego.Router("/api/update-front-conf", &controllers.ApiController{}, "POST:UpdateFrontConf")
-	beego.Router("/api/update-to-default-conf", &controllers.ApiController{}, "POST:UpdateFrontConfToDefault")
+	beego.Router("/api/get-front-conf-by-id", &controllers.ApiController{}, "GET:GetFrontConfById")
+	beego.Router("/api/get-front-confs-by-field", &controllers.ApiController{}, "GET:GetFrontConfsByField")
+	beego.Router("/api/update-front-conf-by-id", &controllers.ApiController{}, "POST:UpdateFrontConfById")
+	beego.Router("/api/update-front-confs-by-field", &controllers.ApiController{}, "POST:UpdateFrontConfsByField")
+	beego.Router("/api/restore-front-confs", &controllers.ApiController{}, "POST:RestoreFrontConfs")
 }

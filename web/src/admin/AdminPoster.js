@@ -71,7 +71,6 @@ class AdminPoster extends React.Component {
           }
         );
       }
-      console.log(poster);
     });
   }
 

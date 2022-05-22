@@ -70,6 +70,26 @@ class AdminHomepage extends React.Component {
           value: "frontconf",
           image: Setting.getStatic("/img/settings.png"),
         },
+        {
+          label: i18next.t("admin:Faq"),
+          value: "faq",
+          image: Setting.getStatic("/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Mission"),
+          value: "mission",
+          image: Setting.getStatic("/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Advertise"),
+          value: "advertise",
+          image: Setting.getStatic("/img/settings.png"),
+        },
+        {
+          label: i18next.t("admin:Thanks"),
+          value: "thanks",
+          image: Setting.getStatic("/img/settings.png"),
+        },
       ],
       message: "",
     };
