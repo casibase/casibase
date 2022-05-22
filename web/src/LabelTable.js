@@ -32,6 +32,15 @@ class LabelTable extends React.Component {
     this.updateTable(table);
   }
 
+  getOrderedTable(table) {
+    return table.slice(0).sort((a, b) => {return a.startTime - b.startTime;});
+  }
+
+  reorderTable(table) {
+    table = this.getOrderedTable(table);
+    this.updateTable(table);
+  }
+
   addRow(table) {
     const currentTime = this.props.currentTime;
 
@@ -40,11 +49,12 @@ class LabelTable extends React.Component {
       return;
     }
 
-    let row = {startTime: currentTime, text: ""};
+    let row = {startTime: currentTime, endTime: currentTime + 1, text: ""};
     if (table === undefined) {
       table = [];
     }
     table = Setting.addRow(table, row);
+    table = this.getOrderedTable(table);
     this.updateTable(table);
   }
 
@@ -63,9 +73,9 @@ class LabelTable extends React.Component {
     this.updateTable(table);
   }
 
-  downloadLabels() {
+  downloadLabels(table) {
     let data = [];
-    this.props.table.forEach((label, i) => {
+    table.forEach((label, i) => {
       let row = {};
 
       row[0] = label.startTime;
@@ -75,13 +85,11 @@ class LabelTable extends React.Component {
 
     let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
     const blob = Setting.sheet2blob(sheet, "labels");
-    const fileName = `labels-${this.props.video.name}-${this.props.table.length}.xlsx`;
+    const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
     FileSaver.saveAs(blob, fileName);
   }
 
   renderTable(table) {
-    table = table.sort((a, b) => {return a.startTime - b.startTime;});
-
     const columns = [
       {
         title: i18next.t("general:No."),
@@ -109,6 +117,24 @@ class LabelTable extends React.Component {
           return (
             <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
               this.updateField(table, index, 'startTime', value);
+              if (record.endTime <= value) {
+                this.updateField(table, index, 'endTime', value + 1);
+              }
+              this.reorderTable(table);
+            }} />
+          )
+        }
+      },
+      {
+        title: i18next.t("video:End time (s)"),
+        dataIndex: 'endTime',
+        key: 'endTime',
+        width: '120px',
+        render: (text, record, index) => {
+          return (
+            <InputNumber style={{width: "100%"}} min={record.startTime} value={text} onChange={value => {
+              this.updateField(table, index, 'endTime', value);
+              this.reorderTable(table);
             }} />
           )
         }
@@ -160,14 +186,14 @@ class LabelTable extends React.Component {
     });
 
     return (
-      <Table rowKey="startTime" columns={columns} dataSource={table} size="middle" bordered pagination={false}
+      <Table rowKey={record => {return JSON.stringify(record)}} columns={columns} dataSource={table} size="middle" bordered pagination={false}
              title={() => (
                <div>
                  {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
                  <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
                  {
-                   this.props.table.length === 0 ? null : (
-                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels()}>{i18next.t("general:Download")}</Button>
+                   table.length === 0 ? null : (
+                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
                    )
                  }
                </div>
