@@ -1,5 +1,5 @@
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row} from 'antd';
+import {Affix, Button, Card, Col, Input, Row, Switch} from 'antd';
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -18,6 +18,8 @@ class VideoEditPage extends React.Component {
       screen: null,
       videoObj: null,
     };
+
+    this.labelTable = React.createRef();
   }
 
   componentWillMount() {
@@ -51,6 +53,12 @@ class VideoEditPage extends React.Component {
     });
   }
 
+  onPause() {
+    if (this.state.video.tagOnPause) {
+      this.labelTable.current.addRow(this.state.video.labels);
+    }
+  }
+
   renderVideoContent() {
     let task = {};
     task.video = {
@@ -78,6 +86,7 @@ class VideoEditPage extends React.Component {
                  onCreatePlayer={(player) => {this.setState({player: player})}}
                  onCreateScreen={(screen) => {this.setState({screen: screen})}}
                  onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
+                 onPause={() => {this.onPause()}}
           />
           <div style={{fontSize: 20, marginTop: "10px"}}>
             {i18next.t("video:Current time (second)")}: {" "}
@@ -157,6 +166,16 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Tag on pause")}:
+          </Col>
+          <Col span={22} >
+            <Switch checked={this.state.video.tagOnPause} onChange={checked => {
+              this.updateVideoField('tagOnPause', checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Video")}:
           </Col>
           <Col span={10} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
@@ -168,6 +187,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={10} >
             <LabelTable
+              ref={this.labelTable}
               title={i18next.t("video:Labels")}
               table={this.state.video.labels}
               currentTime={this.state.currentTime}

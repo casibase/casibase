@@ -134,6 +134,7 @@ class Video extends React.Component {
 
   onPause() {
     this.state.screen.pause();
+    this.props.onPause();
   }
 
   initPlayer(player) {
