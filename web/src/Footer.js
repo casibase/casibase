@@ -19,7 +19,6 @@ import * as BasicBackend from "./backend/BasicBackend";
 import { Link, withRouter } from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
-import { ServerUrl } from "./Setting";
 
 class Footer extends React.Component {
   constructor(props) {
@@ -125,7 +124,7 @@ class Footer extends React.Component {
                 FAQ
               </Link>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}
-              <a href={`${ServerUrl}/swagger`} className="dark" target="_self">
+              <a href={`${Setting.ServerUrl}/swagger`} className="dark" target="_self">
                 API
               </a>{" "}
               &nbsp; <span className="snow">·</span> &nbsp;{" "}
