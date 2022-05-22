@@ -158,7 +158,7 @@ func initAPI() {
 	beego.Router("/api/search", &controllers.ApiController{}, "GET:Search")
 
 	beego.Router("/api/get-front-conf-by-id", &controllers.ApiController{}, "GET:GetFrontConfById")
-    beego.Router("/api/get-front-confs-by-field", &controllers.ApiController{}, "GET:GetFrontConfsByField")
+	beego.Router("/api/get-front-confs-by-field", &controllers.ApiController{}, "GET:GetFrontConfsByField")
 	beego.Router("/api/update-front-conf-by-id", &controllers.ApiController{}, "POST:UpdateFrontConfById")
 	beego.Router("/api/update-front-confs-by-field", &controllers.ApiController{}, "POST:UpdateFrontConfsByField")
 	beego.Router("/api/restore-front-confs", &controllers.ApiController{}, "POST:RestoreFrontConfs")
