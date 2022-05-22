@@ -177,7 +177,6 @@ class ReplyBox extends React.Component {
   }
 
   handleReply(content) {
-    alert(content);
     this.setState({
       reply: content,
     });
