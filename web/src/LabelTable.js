@@ -49,7 +49,7 @@ class LabelTable extends React.Component {
       return;
     }
 
-    let row = {startTime: currentTime, endTime: currentTime + 1, text: ""};
+    let row = {startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -118,7 +118,7 @@ class LabelTable extends React.Component {
             <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
               this.updateField(table, index, 'startTime', value);
               if (record.endTime <= value) {
-                this.updateField(table, index, 'endTime', value + 1);
+                this.updateField(table, index, 'endTime', Setting.toFixed(value + 1, 3));
               }
               this.reorderTable(table);
             }} />

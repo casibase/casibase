@@ -331,3 +331,7 @@ export function downloadXlsx(wordset) {
   const fileName = `vectors-${wordset.name}.xlsx`;
   FileSaver.saveAs(blob, fileName);
 }
+
+export function toFixed(f, n) {
+  return parseFloat(f.toFixed(n));
+}
