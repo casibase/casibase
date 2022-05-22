@@ -53,6 +53,7 @@ type Topic struct {
 	IsHidden        bool     `xorm:"bool index" json:"isHidden"`
 	Ip              string   `xorm:"varchar(100)" json:"ip"`
 	State           string   `xorm:"varchar(100)" json:"state"`
+	GitterMessageId string   `xorm:"varchar(100)" json:"gitterMessageId"`
 }
 
 func GetTopicCount() int {
