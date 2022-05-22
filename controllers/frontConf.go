@@ -52,6 +52,7 @@ func (c *ApiController) UpdateFrontConfById() {
 	if c.RequireAdmin() {
 		return
 	}
+
 	id := c.Input().Get("id")
 	// get from body
 	var value string
@@ -91,10 +92,10 @@ func (c *ApiController) UpdateFrontConfsByField() {
 // @Tag FrontConf API
 // @Title RestoreFrontConfs
 func (c *ApiController) RestoreFrontConfs() {
-
 	if c.RequireAdmin() {
 		return
 	}
+
 	filed := c.Input().Get("field")
 	res := object.UpdateFrontConfsByField(object.Confs, filed)
 	c.ResponseOk(res)
