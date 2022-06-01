@@ -18,6 +18,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
 	"runtime"
 	"strconv"
 	"sync"
@@ -306,12 +310,13 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				panic(err)
 			}
 			if user.Id == "" { // add user
+				avatar := getGitterAvatarUrl(msg.From.Username, msg.From.AvatarURLMedium) // if error, avatar will be ""
 				newUser := auth.User{
 					Name:              msg.From.Username,
 					CreatedTime:       util.GetCurrentTime(),
 					UpdatedTime:       util.GetCurrentTime(),
 					DisplayName:       msg.From.DisplayName,
-					Avatar:            msg.From.AvatarURLMedium,
+					Avatar:            avatar,
 					SignupApplication: CasdoorApplication,
 				}
 				fmt.Println("add user: ", newUser.Name)
@@ -421,4 +426,69 @@ func handleErr(err error) {
 		logs.Critical(fmt.Sprintf("%s:%d", file, line))
 		stack = stack + fmt.Sprintln(fmt.Sprintf("%s:%d", file, line))
 	}
+}
+
+func getGitterAvatarUrl(username string, avatar string) string {
+	var fileBytes []byte
+	var fileExt string
+	var err error
+	times := 0
+	for {
+		fileBytes, _, err = downloadFile(avatar)
+
+		if err != nil {
+			times += 1
+			fmt.Printf("[%d]: downloadFile() error: %s, times = %d\n", username, err.Error(), times)
+			if times >= 10 {
+				panic(err)
+			}
+		} else {
+			break
+		}
+	}
+
+	fileExt = ".png"
+
+	avatarUrl, err := uploadGitterAvatar(username, fileBytes, fileExt)
+	if err != nil {
+		avatarUrl = ""
+	}
+
+	return avatarUrl
+}
+
+func uploadGitterAvatar(username string, fileBytes []byte, fileExt string) (string, error) {
+	username = url.QueryEscape(username)
+	memberId := fmt.Sprintf("%s/%s", CasdoorOrganization, username)
+	fileUrl, err := service.UploadFileToStorageSafe(memberId, "avatar", "uploadGitterAvatar", fmt.Sprintf("avatar/%s%s", memberId, fileExt), fileBytes, "", "")
+	return fileUrl, err
+}
+
+func downloadFile(url string) ([]byte, string, error) {
+	client := &http.Client{}
+
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, "", err
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, "", err
+	}
+
+	defer func(Body io.ReadCloser) {
+		err := Body.Close()
+		if err != nil {
+			return
+		}
+	}(resp.Body)
+
+	bs, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, "", err
+	}
+
+	newUrl := resp.Request.URL.String()
+	return bs, newUrl, nil
 }
