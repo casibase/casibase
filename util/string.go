@@ -16,6 +16,7 @@ package util
 
 import (
 	"io/ioutil"
+	"sort"
 	"strconv"
 
 	"github.com/huichen/sego"
@@ -70,4 +71,13 @@ func SplitWords(str string) []string {
 
 func ConvertToPinyin(content string) string {
 	return slugify.Slugify(content)
+}
+
+func Contains(strArray []string, target string) bool {
+	sort.Strings(strArray)
+	index := sort.SearchStrings(strArray, target)
+	if index < len(strArray) && strArray[index] == target {
+		return true
+	}
+	return false
 }
