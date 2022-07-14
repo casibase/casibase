@@ -13,12 +13,12 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as Setting from "../Setting";
 import * as ConfBackend from "../backend/ConfBackend";
 import "./NoMatch.css";
 import i18next from "i18next";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 import ReactMarkdown from "react-markdown";
 
 class NoMatch extends React.Component {

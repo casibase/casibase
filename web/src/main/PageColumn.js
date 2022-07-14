@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "../Bottom.css";
 import "./node-casbin.css";
 import i18next from "i18next";
@@ -161,7 +161,7 @@ class PageColumn extends React.Component {
     if (this.state.maxPage <= 1) {
       return null;
     }
-    const { page, url } = this.props;
+    const {page, url} = this.props;
 
     if (!Setting.PcBrowser) {
       return (
@@ -177,7 +177,7 @@ class PageColumn extends React.Component {
                     }}
                     value={`‹ ${i18next.t("topic:Last")}`}
                     className="super normal button"
-                    style={{ display: page > 1 ? "block" : "none" }}
+                    style={{display: page > 1 ? "block" : "none"}}
                   />
                 </Link>
               </td>

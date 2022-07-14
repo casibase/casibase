@@ -13,10 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { message } from "antd";
+import {Link} from "react-router-dom";
+import {message} from "antd";
 import moment from "moment";
-import { animateScroll as scroll } from "react-scroll";
+import {animateScroll as scroll} from "react-scroll";
 import md5 from "js-md5";
 import * as Conf from "./Conf";
 import * as MemberBackend from "./backend/MemberBackend";
@@ -25,7 +25,7 @@ import Zmage from "react-zmage";
 import Identicon from "identicon.js";
 import Sdk from "casdoor-js-sdk";
 import * as ConfBackend from "./backend/ConfBackend";
-import { FrontConfig } from "./Conf";
+import {FrontConfig} from "./Conf";
 
 const pangu = require("pangu");
 
@@ -79,7 +79,7 @@ export function signin() {
   return CasdoorSdk.signin(ServerUrl).then((res) => {
     if (res.status === "ok") {
       if (window !== window.parent) {
-        const message = { tag: "Casdoor", type: "SilentSignin", data: "success" };
+        const message = {tag: "Casdoor", type: "SilentSignin", data: "success"};
         window.parent.postMessage(message, "*");
       }
       showMessage("success", i18next.t("login:Logged in successfully"));
@@ -215,7 +215,7 @@ export function changeMomentLanguage(language) {
 }
 
 export function getFormattedContent(content, spacing) {
-  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function (w) {
+  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function(w) {
     if (w[w.length - 1] !== " ") {
       return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1)})`;
     }
@@ -224,7 +224,7 @@ export function getFormattedContent(content, spacing) {
   if (spacing) {
     return pangu
       .spacing(formattedContent)
-      .replace(/\[(.*?)]\((.*?)\)/g, function (w) {
+      .replace(/\[(.*?)]\((.*?)\)/g, function(w) {
         return w.replace(/ /g, "");
       })
       .replace(/% /g, "%")
@@ -252,7 +252,7 @@ export function getFileType(fileName) {
   if (index < 0) {
     fileType = "file";
   }
-  return { fileType: fileType, ext: ext };
+  return {fileType: fileType, ext: ext};
 }
 
 const unitSuffix = ["Bytes", "KB", "MB"];
@@ -303,8 +303,8 @@ export function checkPageLink(url) {
   return current === target;
 }
 
-export function renderImage({ alt, src }) {
-  return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
+export function renderImage({alt, src}) {
+  return <Zmage src={src} alt={alt} style={{maxWidth: "100%"}} />;
 }
 
 export function renderLink(props) {

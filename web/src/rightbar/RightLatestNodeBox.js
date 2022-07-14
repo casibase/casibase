@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as NodeBackend from "../backend/NodeBackend";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css";
 import i18next from "i18next";
 

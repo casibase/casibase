@@ -1,7 +1,7 @@
 import React from "react";
 import BraftEditor from "braft-editor";
 import "braft-editor/dist/index.css";
-import { myUploadFn } from "./Tools";
+import {myUploadFn} from "./Tools";
 
 const _ = require("lodash");
 
@@ -56,7 +56,7 @@ export default class Editor extends React.Component {
   };
 
   render() {
-    const { editorState, contentStyle, language } = this.state;
+    const {editorState, contentStyle, language} = this.state;
     const UploadFn = myUploadFn;
     // add debounce function && decrease call fucntion times.
     return (

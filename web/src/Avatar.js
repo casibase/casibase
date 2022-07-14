@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 
@@ -29,16 +29,16 @@ class Avatar extends React.Component {
     let style;
     switch (this.props.size) {
       case "small":
-        style = { width: "24px", height: "24px" };
+        style = {width: "24px", height: "24px"};
         break;
       case "middle":
-        style = { width: "36px", height: "36px" };
+        style = {width: "36px", height: "36px"};
         break;
       case "large":
-        style = { width: "73px", height: "73px" };
+        style = {width: "73px", height: "73px"};
         break;
       default:
-        style = { width: "48px", height: "48px" };
+        style = {width: "48px", height: "48px"};
         break;
     }
 

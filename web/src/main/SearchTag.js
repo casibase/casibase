@@ -15,11 +15,11 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 import TopicList from "./TopicList";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class SearchTag extends React.Component {
   constructor(props) {
@@ -56,11 +56,11 @@ class SearchTag extends React.Component {
   renderTag() {
     return (
       <div className={`box ${this.state.tagId}`}>
-        <div className="cell" align="center" style={{ border: 0 }}>
+        <div className="cell" align="center" style={{border: 0}}>
           <div className="header">
             <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
             <span className="chevron">{this.state.tagId}</span>{" "}
-            <span className="gray" style={{ float: "right" }}>
+            <span className="gray" style={{float: "right"}}>
               {`${i18next.t("node:all")} ${this.state.topicNum} ${i18next.t("node:topics")}`}
             </span>
           </div>

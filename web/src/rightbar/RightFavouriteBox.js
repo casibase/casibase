@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import "./rightFavourite.css";
 import i18next from "i18next";
 
@@ -49,7 +49,7 @@ class RightFavouriteBox extends React.Component {
           </Link>
         </div>
         <Link to={`/go/${encodeURIComponent(node?.id)}`} id="linkAvatar">
-          <div id="avatar" style={{ backgroundImage: `url(${node?.image})` }} className="rightFavorite" />
+          <div id="avatar" style={{backgroundImage: `url(${node?.image})`}} className="rightFavorite" />
         </Link>
         &nbsp;{" "}
         <linkTitle to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">

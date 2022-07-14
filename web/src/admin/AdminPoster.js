@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PosterBackend from "../backend/PosterBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";

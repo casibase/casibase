@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as SearchBackend from "./backend/SearchBackend";
 import TopicList from "./main/TopicList";
 import i18next from "i18next";
@@ -62,7 +62,7 @@ class SearchResultPage extends React.Component {
   renderResult() {
     if (this.state.topics === null) {
       return (
-        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {i18next.t("search:No topics found")}
         </div>
       );
@@ -78,7 +78,7 @@ class SearchResultPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {this.state.msg}
         </div>
         {this.renderResult()}

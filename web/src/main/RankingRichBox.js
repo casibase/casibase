@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import React from "react";
 import i18next from "i18next";
 import * as Setting from "../Setting";
 import Avatar from "../Avatar";
 import * as MemberBackend from "../backend/MemberBackend";
-import { scoreConverter } from "./Tools";
-import { Helmet } from "react-helmet";
+import {scoreConverter} from "./Tools";
+import {Helmet} from "react-helmet";
 
 class RankingRichBox extends React.Component {
   constructor(props) {
@@ -38,9 +38,9 @@ class RankingRichBox extends React.Component {
   }
 
   renderRichBox(score) {
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(score);
+    const {goldCount, silverCount, bronzeCount} = scoreConverter(score);
     return (
-      <div className="balance_area bigger" style={{ fontSize: "24px", lineHeight: "24px", width: "100%" }}>
+      <div className="balance_area bigger" style={{fontSize: "24px", lineHeight: "24px", width: "100%"}}>
         {goldCount}&nbsp;
         <img src={Setting.getStatic("/img/gold@2x.png")} height="16" alt="G" border="0" />
         &nbsp;{silverCount}&nbsp;
@@ -59,7 +59,7 @@ class RankingRichBox extends React.Component {
           <meta name="keywords" content={`${i18next.t("balance:Rich ranking")},${Setting.getForumName()}`} />
         </Helmet>
         <div className="cell">
-          <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
+          <div className="fr" style={{margin: "-3px -8px 0px 0px"}}>
             <Link to="/top/rich" className="tab">
               {i18next.t("balance:Wealth ranking")}
             </Link>
@@ -82,7 +82,7 @@ class RankingRichBox extends React.Component {
                       <Avatar username={member.name} avatar={member.avatar} key={key} />
                     </td>
                     <td width="auto" align="left">
-                      <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
+                      <h2 style={{marginBottom: "10px", marginTop: "0px"}}>
                         <span className="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
                       <span className="gray f12"> {member.tag} </span>

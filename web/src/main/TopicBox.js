@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as NodeBackend from "../backend/NodeBackend";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import ReplyBox from "./ReplyBox";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
@@ -24,11 +24,11 @@ import * as BalanceBackend from "../backend/BalanceBackend";
 import * as TranslatorBackend from "../backend/TranslatorBackend";
 import "../node.css";
 import Zmage from "react-zmage";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 import UserLink from "../UserLink";
 import * as Conf from "../Conf";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -350,7 +350,7 @@ class TopicBox extends React.Component {
     );
   }
 
-  renderImage = ({ alt, src }) => {
+  renderImage = ({alt, src}) => {
     return <Zmage src={src} alt={alt} />;
   };
 
@@ -441,7 +441,7 @@ class TopicBox extends React.Component {
   renderDesktopButtons() {
     return (
       <div className="topic_buttons">
-        <div className="fr topic_stats" style={{ paddingTop: "4px" }}>
+        <div className="fr topic_stats" style={{paddingTop: "4px"}}>
           {this.state.topic?.hitCount} {i18next.t("topic:hits")} &nbsp;∙&nbsp; {this.state.topic?.favoriteCount} {i18next.t("topic:favorites")} &nbsp;
         </div>
         {this.props.account !== undefined && this.props.account !== null ? (
@@ -669,7 +669,7 @@ class TopicBox extends React.Component {
           <meta name="keywords" content={this.state.topic?.tags} />
           <meta name="description" content={this.state.topic?.content} />
         </Helmet>
-        <div className={`box ${this.state.topic.nodeId}`} style={{ borderBottom: "0px" }}>
+        <div className={`box ${this.state.topic.nodeId}`} style={{borderBottom: "0px"}}>
           <div className={`header ${this.state.topic.nodeId}`}>
             <div className="fr">
               <Avatar username={this.state.topic?.author} size={pcBrowser ? "large" : "middle"} avatar={this.state.topic?.avatar} />
@@ -800,7 +800,7 @@ class TopicBox extends React.Component {
                 />
                 {this.state.showTranslateBtn ? (
                   <a href="javascript:void(0)" onClick={() => this.translateTopic()}>
-                    <p style={{ margin: 15 }}>
+                    <p style={{margin: 15}}>
                       {this.state.translation.translated ? (
                         <span>
                           {`Translate from ${this.state.translation.from} by  `}

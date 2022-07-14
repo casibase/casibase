@@ -13,15 +13,15 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
 import * as Tools from "../main/Tools";
 import * as FileBackend from "../backend/FileBackend";
-import { Controlled as CodeMirror } from "react-codemirror2";
-import { SketchPicker } from "react-color";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import {SketchPicker} from "react-color";
 import Zmage from "react-zmage";
 import "../codemirrorSize.css";
 import Select2 from "react-select2-wrapper";
@@ -47,13 +47,13 @@ class AdminNode extends React.Component {
       width: "",
       event: "basic",
       Management_LIST: [
-        { label: "Basic Info", value: "basic" },
-        { label: "Background", value: "background" },
+        {label: "Basic Info", value: "basic"},
+        {label: "Background", value: "background"},
       ],
       Repeat_LIST: [
-        { label: "Repeat", value: "repeat" },
-        { label: "Repeat-x", value: "repeat-x" },
-        { label: "Repeat-y", value: "repeat-y" },
+        {label: "Repeat", value: "repeat"},
+        {label: "Repeat-x", value: "repeat-x"},
+        {label: "Repeat-y", value: "repeat-y"},
       ],
       color: "#386d97",
       displayColorPicker: false,
@@ -404,12 +404,12 @@ class AdminNode extends React.Component {
                 <Link to={`/admin/node/edit/${encodeURIComponent(node?.nodeInfo.id)}`}>{i18next.t("node:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>
+              <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>
                   {node?.nodeInfo.hot} {i18next.t("node:hot")}
                 </span>
               </td>
-              <td width="100" align="left" style={{ textAlign: "center" }}>
+              <td width="100" align="left" style={{textAlign: "center"}}>
                 {node?.topicNum} {i18next.t("node:topics")}
               </td>
             </tr>
@@ -444,19 +444,19 @@ class AdminNode extends React.Component {
       case "node":
         value = this.getIndexFromNodeId(this.state.form.parentNode);
         data = this.state.nodes.map((node, i) => {
-          return { text: `${node.nodeInfo.name} / ${node.nodeInfo.id}`, id: i };
+          return {text: `${node.nodeInfo.name} / ${node.nodeInfo.id}`, id: i};
         });
         break;
       case "tab":
         value = this.getIndexFromTabId(this.state.form.tab);
         data = this.state.tabs.map((tab, i) => {
-          return { text: `${tab.name} / ${tab.id}`, id: i };
+          return {text: `${tab.name} / ${tab.id}`, id: i};
         });
         break;
       case "plane":
         value = this.getIndexFromPlaneId(this.state.form.planeId);
         data = this.state.planes.map((plane, i) => {
-          return { text: `${plane.name} / ${plane.id}`, id: i };
+          return {text: `${plane.name} / ${plane.id}`, id: i};
         });
         break;
       default:
@@ -505,7 +505,7 @@ class AdminNode extends React.Component {
   renderNodeModerators(moderators) {
     return (
       <span>
-        <Link to={`/member/${moderators}`} style={{ fontWeight: "bolder" }} target="_blank">
+        <Link to={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">
           {moderators}
         </Link>
         &nbsp; &nbsp;
@@ -639,7 +639,7 @@ class AdminNode extends React.Component {
                         {this.state.form?.image === undefined || this.state.form?.image === "" ? (
                           <span className="gray">{i18next.t("node:Not set")}</span>
                         ) : (
-                          <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
+                          <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}} />
                         )}
                       </td>
                     </tr>
@@ -687,7 +687,7 @@ class AdminNode extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
-                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                       </td>
                     </tr>
                     <tr>
@@ -866,7 +866,7 @@ class AdminNode extends React.Component {
                       {this.state.form?.headerImage === undefined || this.state.form?.headerImage === "" ? (
                         <span className="gray">{i18next.t("node:Not set")}</span>
                       ) : (
-                        <Zmage src={this.state.form?.headerImage} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
+                        <Zmage src={this.state.form?.headerImage} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}} />
                       )}
                     </td>
                   </tr>
@@ -884,7 +884,7 @@ class AdminNode extends React.Component {
                         onChange={(event) => this.updateFormField("headerImage", event.target.value)}
                         autoComplete="off"
                       />{" "}
-                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "headerImage")} name="headerImage" style={{ width: "200px" }} />
+                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "headerImage")} name="headerImage" style={{width: "200px"}} />
                     </td>
                   </tr>
                   <tr>
@@ -895,7 +895,7 @@ class AdminNode extends React.Component {
                       {this.state.form?.backgroundImage === undefined || this.state.form?.backgroundImage === "" ? (
                         <span className="gray">{i18next.t("node:Not set")}</span>
                       ) : (
-                        <Zmage src={this.state.form?.backgroundImage} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
+                        <Zmage src={this.state.form?.backgroundImage} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}} />
                       )}
                     </td>
                   </tr>
@@ -913,7 +913,7 @@ class AdminNode extends React.Component {
                         onChange={(event) => this.updateFormField("backgroundImage", event.target.value)}
                         autoComplete="off"
                       />{" "}
-                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "backgroundImage")} name="backgroundImage" style={{ width: "200px" }} />
+                      &nbsp; <input type="file" accept=".jpg,.gif,.png,.JPG,.GIF,.PNG" onChange={(event) => this.handleUploadImage(event, "backgroundImage")} name="backgroundImage" style={{width: "200px"}} />
                     </td>
                   </tr>
                   <tr>

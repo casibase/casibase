@@ -16,14 +16,14 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import Avatar from "../Avatar";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";
 import i18next from "i18next";
-import { scoreConverter } from "./Tools";
+import {scoreConverter} from "./Tools";
 import * as Conf from "../Conf";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class MemberBox extends React.Component {
   constructor(props) {
@@ -157,7 +157,7 @@ class MemberBox extends React.Component {
     }
 
     const showWatch = this.props.account !== undefined && this.props.account !== null && this.state.memberId !== this.props.account?.name;
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(this.state.member.score);
+    const {goldCount, silverCount, bronzeCount} = scoreConverter(this.state.member.score);
     return (
       <div className="box">
         <div className="cell">
@@ -171,7 +171,7 @@ class MemberBox extends React.Component {
                 </td>
                 <td width="10" />
                 <td width="auto" valign="top" align="left">
-                  <div className="fr" style={{ display: showWatch ? "" : "none" }}>
+                  <div className="fr" style={{display: showWatch ? "" : "none"}}>
                     {this.state.favoritesStatus ? (
                       <input type="button" value={i18next.t("member:Cancel Following")} onClick={() => this.deleteFavorite(this.state.member?.name)} className="super inverse button" />
                     ) : (
@@ -180,7 +180,7 @@ class MemberBox extends React.Component {
                     <div className="sep10" />
                     <input type="button" value="Block" onClick={this.block(this.state.memberId)} className="super normal button" />
                   </div>
-                  <h1 style={{ marginBottom: "5px" }}>{this.state.member?.name}</h1>
+                  <h1 style={{marginBottom: "5px"}}>{this.state.member?.name}</h1>
                   <span className="bigger">{this.state.member?.tagline}</span>
                   <div className="sep10" />
                   {this.state.member?.affiliation?.length !== 0 || this.state.member?.title?.length !== 0 ? (
@@ -260,7 +260,7 @@ class MemberBox extends React.Component {
       return null;
     }
 
-    const provider = { type: providerType };
+    const provider = {type: providerType};
 
     const linkedValue = user[provider.type.toLowerCase()];
     const id = this.getUserProperty(user, provider.type, "id");
@@ -290,8 +290,8 @@ class MemberBox extends React.Component {
     }
 
     return (
-      <a href={profileUrl} style={profileUrl !== "" ? null : { pointerEvents: "none" }} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
-        <img src={avatarUrl} width="24" style={{ borderRadius: "24px" }} alt={providerType} align="absmiddle" /> &nbsp;{name}
+      <a href={profileUrl} style={profileUrl !== "" ? null : {pointerEvents: "none"}} className="social_label" target="_blank" rel="nofollow noopener noreferrer">
+        <img src={avatarUrl} width="24" style={{borderRadius: "24px"}} alt={providerType} align="absmiddle" /> &nbsp;{name}
       </a>
     );
   }
@@ -306,21 +306,21 @@ class MemberBox extends React.Component {
           <tbody>
             <tr>
               <td width="33%" valign="center" align="center">
-                <Link to="/my/nodes" className="dark" style={{ display: "block" }}>
+                <Link to="/my/nodes" className="dark" style={{display: "block"}}>
                   <span className="bigger">{this.state.nodeFavoriteNum}</span>
                   <div className="sep3" />
                   <span className="fade small">{i18next.t("bar:Nodes")}</span>
                 </Link>
               </td>
-              <td width="33%" valign="center" align="center" style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}>
-                <Link to="/my/topics" className="dark" style={{ display: "block" }}>
+              <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
+                <Link to="/my/topics" className="dark" style={{display: "block"}}>
                   <span className="bigger">{this.state.topicFavoriteNum}</span>
                   <div className="sep3" />
                   <span className="fade small">{i18next.t("bar:Topics")}</span>
                 </Link>
               </td>
-              <td width="33%" valign="center" align="center" style={{ borderLeft: "1px solid rgba(100, 100, 100, 0.25)" }}>
-                <Link to="/my/following" className="dark" style={{ display: "block" }}>
+              <td width="33%" valign="center" align="center" style={{borderLeft: "1px solid rgba(100, 100, 100, 0.25)"}}>
+                <Link to="/my/following" className="dark" style={{display: "block"}}>
                   <span className="bigger">{this.state.followingNum}</span>
                   <div className="sep3" />
                   <span className="fade small">{i18next.t("bar:Watch")}</span>

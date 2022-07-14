@@ -15,7 +15,7 @@
 import React from "react";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class NodeNavigationBox extends React.Component {
@@ -42,7 +42,7 @@ class NodeNavigationBox extends React.Component {
   renderNode(node) {
     return (
       <span key={node?.id}>
-        <Link to={`/go/${encodeURIComponent(node?.id)}`} style={{ fontSize: "14px" }}>
+        <Link to={`/go/${encodeURIComponent(node?.id)}`} style={{fontSize: "14px"}}>
           {node?.name}
         </Link>
         &nbsp; &nbsp;

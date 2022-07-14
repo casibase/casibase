@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { Component } from "react";
+import React, {Component} from "react";
 import classNames from "classnames";
 import "./App.less";
 import "codemirror/lib/codemirror.css";
-import { BackTop } from "antd";
+import {BackTop} from "antd";
 import * as Setting from "./Setting";
-import { Switch, Route } from "react-router-dom";
+import {Switch, Route} from "react-router-dom";
 import TopicPage from "./TopicPage";
 import Header from "./Header";
 import Footer from "./Footer";

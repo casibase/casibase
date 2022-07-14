@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as SensitiveBackend from "../backend/SensitiveBackend.js";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -58,7 +58,7 @@ class AdminSensitive extends React.Component {
         >
           {item}
         </a>
-        <a style={{ float: "right" }} onClick={() => this.delSensitive(item)}>
+        <a style={{float: "right"}} onClick={() => this.delSensitive(item)}>
           delete
         </a>
       </div>
@@ -83,7 +83,7 @@ class AdminSensitive extends React.Component {
     return (
       <div className="cell">
         <input type="text" id="newsensitive" />
-        <a style={{ float: "right" }} onClick={() => this.addSensitive()}>
+        <a style={{float: "right"}} onClick={() => this.addSensitive()}>
           add
         </a>
       </div>

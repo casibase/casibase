@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
 import * as BasicBackend from "./backend/BasicBackend";
-import { Link, withRouter } from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
 
@@ -61,7 +61,7 @@ class Footer extends React.Component {
       return (
         <div id="Bottom">
           <div className="content">
-            <div className="inner" style={{ textAlign: "center" }}>
+            <div className="inner" style={{textAlign: "center"}}>
               &copy; {date.getFullYear()} {Setting.getForumName()} · {loadingTime}ms ·{" "}
               <a href={`${Conf.GithubRepo}/commit/${this.state.version}`} target="_blank" rel="noopener noreferrer">
                 {this.state.version.substring(0, 7)}
@@ -75,7 +75,7 @@ class Footer extends React.Component {
                   <Link
                     to={{
                       pathname: "/select/language",
-                      query: { previous: this.props.location.pathname },
+                      query: {previous: this.props.location.pathname},
                     }}
                     title="Select Language"
                     className="dark"
@@ -153,7 +153,7 @@ class Footer extends React.Component {
             <Link
               to={{
                 pathname: "/select/language",
-                query: { previous: this.props.location.pathname },
+                query: {previous: this.props.location.pathname},
               }}
               className="f11"
             >

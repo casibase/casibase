@@ -18,7 +18,7 @@ import * as TopicBackend from "../backend/TopicBackend";
 import Avatar from "../Avatar";
 import "../node.css";
 import i18next from "i18next";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import UserLink from "../UserLink";
 
 const pangu = require("pangu");
@@ -121,7 +121,7 @@ class TopicList extends React.Component {
                       </strong>{" "}
                       &nbsp;•&nbsp; {topic.lastReplyTime === "" || this.props.timeStandard === "createdTime" ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)}
                       {topic.lastReplyUser === "" ? null : (
-                        <div style={{ display: "inline" }}>
+                        <div style={{display: "inline"}}>
                           {" "}
                           &nbsp;•&nbsp; {i18next.t("topic:last reply from")}{" "}
                           <strong>
@@ -136,7 +136,7 @@ class TopicList extends React.Component {
                         <span>
                           {topic.lastReplyTime === "" || this.props.timeStandard === "createdTime" ? Setting.getPrettyDate(topic.createdTime) : Setting.getPrettyDate(topic.lastReplyTime)}
                           {topic.lastReplyUser === "" ? null : (
-                            <div style={{ display: "inline" }}>
+                            <div style={{display: "inline"}}>
                               {" "}
                               &nbsp;•&nbsp; {i18next.t("topic:last reply from")}{" "}
                               <strong>

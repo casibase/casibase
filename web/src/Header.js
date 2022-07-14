@@ -17,9 +17,9 @@ import * as AccountBackend from "./backend/AccountBackend";
 import * as NodeBackend from "./backend/NodeBackend";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
-import { ServerUrl } from "./Setting";
+import {ServerUrl} from "./Setting";
 
 class Header extends React.Component {
   constructor(props) {
@@ -176,17 +176,17 @@ class Header extends React.Component {
       return (
         <div id="Top">
           <div className="content">
-            <div style={{ paddingTop: "6px" }}>
+            <div style={{paddingTop: "6px"}}>
               <table cellPadding="0" cellSpacing="0" border="0" width="100%">
                 <tbody>
                   <tr>
                     <td width="5" align="left"></td>
-                    <td width="80" align="left" style={{ paddingTop: "4px" }}>
+                    <td width="80" align="left" style={{paddingTop: "4px"}}>
                       <Link to="/" name="top">
                         <div id="logoMobile"></div>
                       </Link>
                     </td>
-                    <td width="auto" align="right" style={{ paddingTop: "2px" }}>
+                    <td width="auto" align="right" style={{paddingTop: "2px"}}>
                       <Link to="/" className="top">
                         {i18next.t("general:Home")}
                       </Link>
@@ -226,7 +226,7 @@ class Header extends React.Component {
                 src={this.props.account?.avatar !== "" ? this.props.account?.avatar : Setting.getUserAvatar(this.props.account?.name)}
                 width={24}
                 border={0}
-                style={{ borderRadius: "32px", verticalAlign: "middle" }}
+                style={{borderRadius: "32px", verticalAlign: "middle"}}
                 height="32"
                 align="absmiddle"
                 alt={this.props.account?.name}
@@ -291,13 +291,13 @@ class Header extends React.Component {
               <div className="menu_sep"></div>
               <div>
                 <div className="top" onClick={Setting.toggleThemeMode}>
-                  <img src={Setting.getThemeBtnUrl()} align="absmiddle" height="10" alt="Light" style={{ verticalAlign: "middle" }} />
+                  <img src={Setting.getThemeBtnUrl()} align="absmiddle" height="10" alt="Light" style={{verticalAlign: "middle"}} />
                 </div>
               </div>
               <div className="menu_sep"></div>
-              <div style={{ padding: "10px" }}>
+              <div style={{padding: "10px"}}>
                 <div className="member-activity-bar">
-                  <div className="member-activity-start" style={{ width: "5%" }}></div>
+                  <div className="member-activity-start" style={{width: "5%"}}></div>
                 </div>
               </div>
               <div className="menu_sep"></div>
@@ -369,7 +369,7 @@ class Header extends React.Component {
               }}
             />
             {this.state.searchResShow && this.state.searchValue ? (
-              <div id="search-result" className="box" style={{ display: "block" }}>
+              <div id="search-result" className="box" style={{display: "block"}}>
                 <div className="cell">{i18next.t("search:Press Enter to search in site.")}</div>
                 {this.state.matchNodes.length !== 0 ? (
                   <div className="cell">
@@ -417,7 +417,7 @@ class Header extends React.Component {
       <div id="Top">
         <div className="content">
           <div className="site-nav">
-            <Link to="/" name="top" style={{ fontSize: 0 }} title={Conf.FrontConfig.signinBoxSpan}>
+            <Link to="/" name="top" style={{fontSize: 0}} title={Conf.FrontConfig.signinBoxSpan}>
               <div
                 id="logo"
                 style={{

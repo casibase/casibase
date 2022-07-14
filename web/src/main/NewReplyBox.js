@@ -17,7 +17,7 @@ import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "../Reply.css";
 import * as Tools from "./Tools";
 import "../codemirrorSize.css";
@@ -26,7 +26,7 @@ import "./node-casbin.css";
 import * as CodeMirror from "codemirror";
 import "codemirror/addon/hint/show-hint";
 import "./show-hint.css";
-import { Controlled as CodeMirrorsEditor } from "react-codemirror2";
+import {Controlled as CodeMirrorsEditor} from "react-codemirror2";
 import i18next from "i18next";
 import Editor from "./richTextEditor";
 import Select2 from "react-select2-wrapper";
@@ -182,7 +182,7 @@ class NewReplyBox extends React.Component {
       });
     }
     if (value.substring(value.length - 1) === "@") {
-      CodeMirror.commands.autocomplete(editor, null, { completeSingle: false });
+      CodeMirror.commands.autocomplete(editor, null, {completeSingle: false});
     }
   }
 
@@ -197,8 +197,8 @@ class NewReplyBox extends React.Component {
   synonyms(cm, option) {
     let comp = this.props.memberList;
     let res = [];
-    return new Promise(function (accept) {
-      setTimeout(function () {
+    return new Promise(function(accept) {
+      setTimeout(function() {
         let cursor = cm.getCursor(),
           line = cm.getLine(cursor.line);
         let start = cursor.ch,
@@ -228,10 +228,10 @@ class NewReplyBox extends React.Component {
     if (needLogin) {
       if (Conf.ShowEmbedButtons) {
         return (
-          <div style={{ width: "100%", textAlign: "center" }}>
-            <div style={{ marginTop: 30, marginBottom: 30 }}>
+          <div style={{width: "100%", textAlign: "center"}}>
+            <div style={{marginTop: 30, marginBottom: 30}}>
               <input
-                style={{ marginRight: 20 }}
+                style={{marginRight: 20}}
                 onClick={() => {
                   let encodedUrl = encodeURIComponent(window.location.href);
                   localStorage.setItem("loginCallbackUrl", encodedUrl);
@@ -256,8 +256,8 @@ class NewReplyBox extends React.Component {
         );
       } else {
         return (
-          <div style={{ width: "100%", textAlign: "center" }}>
-            <div style={{ marginTop: 30, marginBottom: 30 }}>
+          <div style={{width: "100%", textAlign: "center"}}>
+            <div style={{marginTop: 30, marginBottom: 30}}>
               <input
                 onClick={() => {
                   const data = {
@@ -300,7 +300,7 @@ class NewReplyBox extends React.Component {
                 lineNumbers: false,
                 lineWrapping: true,
                 theme: `${this.props.nodeId}`,
-                extraKeys: { "Ctrl-Space": "autocomplete" },
+                extraKeys: {"Ctrl-Space": "autocomplete"},
                 hintOptions: {
                   hint: this.synonyms,
                   alignWithWord: false,
@@ -351,9 +351,9 @@ class NewReplyBox extends React.Component {
         &nbsp;{" "}
         <Select2
           value={this.state.form.editorType}
-          style={{ width: "110px", fontSize: "14px" }}
+          style={{width: "110px", fontSize: "14px"}}
           data={this.state.editor.map((node, i) => {
-            return { text: `${node.text}`, id: i };
+            return {text: `${node.text}`, id: i};
           })}
           onSelect={(event) => {
             const s = event.target.value;
@@ -373,7 +373,7 @@ class NewReplyBox extends React.Component {
               });
             }
           }}
-          options={{ placeholder: this.state.placeholder }}
+          options={{placeholder: this.state.placeholder}}
         />
       </div>
     );
@@ -389,19 +389,19 @@ class NewReplyBox extends React.Component {
       return null;
     }
 
-    let blurStyle = needLogin ? { color: "#ccc", pointerEvents: "none" } : null;
+    let blurStyle = needLogin ? {color: "#ccc", pointerEvents: "none"} : null;
 
     return (
       <div className={["box", this.props.sticky ? "sticky" : "", `${this.props.nodeId}`].join(" ")} id="reply-box">
         <div style={blurStyle} className={`cell ${this.props.nodeId}`}>
           <div className="fr">
             {this.props.parent?.id > 0 ? (
-              <a onClick={this.props.cancelReply.bind(this)} style={{ display: this.props.sticky ? "" : "none" }} id="cancel-button" className={`${this.props.nodeId}`}>
+              <a onClick={this.props.cancelReply.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="cancel-button" className={`${this.props.nodeId}`}>
                 {i18next.t("reply:Cancel reply to {username}").replace("{username}", this.props.parent.username)}
               </a>
             ) : null}{" "}
             &nbsp; &nbsp;{" "}
-            <a onClick={this.undockBox.bind(this)} style={{ display: this.props.sticky ? "" : "none" }} id="undock-button" className={`${this.props.nodeId}`}>
+            <a onClick={this.undockBox.bind(this)} style={{display: this.props.sticky ? "" : "none"}} id="undock-button" className={`${this.props.nodeId}`}>
               {i18next.t("reply:Undock")}
             </a>{" "}
             &nbsp; &nbsp;{" "}

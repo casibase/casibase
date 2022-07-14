@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend.js";
 import * as Setting from "../Setting";
 import PageColumn from "../main/PageColumn";
-import Collapse, { Panel } from "rc-collapse";
+import Collapse, {Panel} from "rc-collapse";
 import ReactMarkdown from "react-markdown";
 import Zmage from "react-zmage";
 import i18next from "i18next";
@@ -57,13 +57,13 @@ class AdminTopic extends React.Component {
       hs: 0, // hot sort, default: None
       fcs: 0, // favorite count sort, default: None
       Status_LIST: [
-        { label: "Normal", value: 1 },
-        { label: "Deleted", value: 2 },
-        { label: "Topping", value: 3 },
+        {label: "Normal", value: 1},
+        {label: "Deleted", value: 2},
+        {label: "Topping", value: 3},
       ],
       Management_LIST: [
-        { label: "Basic Info", value: "basic" },
-        { label: "Content", value: "content" },
+        {label: "Basic Info", value: "basic"},
+        {label: "Content", value: "content"},
       ],
     };
     const params = new URLSearchParams(this.props.location.search);
@@ -169,7 +169,7 @@ class AdminTopic extends React.Component {
     });
   }
 
-  renderImage = ({ alt, src }) => {
+  renderImage = ({alt, src}) => {
     return <Zmage src={src} alt={alt} />;
   };
 
@@ -218,62 +218,62 @@ class AdminTopic extends React.Component {
       case "sdt":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ sdt: 1 })} checked={this.state.sdt === 1} name="sdt" />
-            {i18next.t("admin:Show")} <input type="radio" onClick={() => this.setState({ sdt: 0 })} checked={this.state.sdt === 0} name="sdt" />
+            <input type="radio" onClick={() => this.setState({sdt: 1})} checked={this.state.sdt === 1} name="sdt" />
+            {i18next.t("admin:Show")} <input type="radio" onClick={() => this.setState({sdt: 0})} checked={this.state.sdt === 0} name="sdt" />
             {i18next.t("admin:Hidden")}
           </span>
         );
       case "us":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ us: 1 })} checked={this.state.us === 1} name="us" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ us: 2 })} checked={this.state.us === 2} name="us" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ us: 0 })} checked={this.state.us === 0} name="us" />
+            <input type="radio" onClick={() => this.setState({us: 1})} checked={this.state.us === 1} name="us" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({us: 2})} checked={this.state.us === 2} name="us" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({us: 0})} checked={this.state.us === 0} name="us" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "cs":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ cs: 1 })} checked={this.state.cs === 1} name="cs" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ cs: 2 })} checked={this.state.cs === 2} name="cs" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ cs: 0 })} checked={this.state.cs === 0} name="cs" />
+            <input type="radio" onClick={() => this.setState({cs: 1})} checked={this.state.cs === 1} name="cs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({cs: 2})} checked={this.state.cs === 2} name="cs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({cs: 0})} checked={this.state.cs === 0} name="cs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "lrs":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ lrs: 1 })} checked={this.state.lrs === 1} name="lrs" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ lrs: 2 })} checked={this.state.lrs === 2} name="lrs" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ lrs: 0 })} checked={this.state.lrs === 0} name="lrs" />
+            <input type="radio" onClick={() => this.setState({lrs: 1})} checked={this.state.lrs === 1} name="lrs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({lrs: 2})} checked={this.state.lrs === 2} name="lrs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({lrs: 0})} checked={this.state.lrs === 0} name="lrs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "rcs":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ rcs: 1 })} checked={this.state.rcs === 1} name="rcs" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ rcs: 2 })} checked={this.state.rcs === 2} name="rcs" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ rcs: 0 })} checked={this.state.rcs === 0} name="rcs" />
+            <input type="radio" onClick={() => this.setState({rcs: 1})} checked={this.state.rcs === 1} name="rcs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({rcs: 2})} checked={this.state.rcs === 2} name="rcs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({rcs: 0})} checked={this.state.rcs === 0} name="rcs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "hs":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ hs: 1 })} checked={this.state.hs === 1} name="hs" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ hs: 2 })} checked={this.state.hs === 2} name="hs" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ hs: 0 })} checked={this.state.hs === 0} name="hs" />
+            <input type="radio" onClick={() => this.setState({hs: 1})} checked={this.state.hs === 1} name="hs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({hs: 2})} checked={this.state.hs === 2} name="hs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({hs: 0})} checked={this.state.hs === 0} name="hs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
       case "fcs":
         return (
           <span>
-            <input type="radio" onClick={() => this.setState({ fcs: 1 })} checked={this.state.fcs === 1} name="fcs" />
-            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({ fcs: 2 })} checked={this.state.fcs === 2} name="fcs" />
-            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({ fcs: 0 })} checked={this.state.fcs === 0} name="fcs" />
+            <input type="radio" onClick={() => this.setState({fcs: 1})} checked={this.state.fcs === 1} name="fcs" />
+            {i18next.t("admin:Asc")} <input type="radio" onClick={() => this.setState({fcs: 2})} checked={this.state.fcs === 2} name="fcs" />
+            {i18next.t("admin:Desc")} <input type="radio" onClick={() => this.setState({fcs: 0})} checked={this.state.fcs === 0} name="fcs" />
             {i18next.t("admin:Ignore")}
           </span>
         );
@@ -293,7 +293,7 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Author")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input value={this.state.un} onChange={(event) => this.setState({ un: event.target.value })} />
+              <input value={this.state.un} onChange={(event) => this.setState({un: event.target.value})} />
             </td>
           </tr>
           <tr>
@@ -301,7 +301,7 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Title")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input value={this.state.ti} onChange={(event) => this.setState({ ti: event.target.value })} />
+              <input value={this.state.ti} onChange={(event) => this.setState({ti: event.target.value})} />
             </td>
           </tr>
           <tr>
@@ -309,7 +309,7 @@ class AdminTopic extends React.Component {
               <span className="gray">{i18next.t("topic:Content")}</span>
             </td>
             <td width={pcBrowser ? "100" : "auto"} align="left">
-              <input value={this.state.cn} onChange={(event) => this.setState({ cn: event.target.value })} />
+              <input value={this.state.cn} onChange={(event) => this.setState({cn: event.target.value})} />
             </td>
           </tr>
           <tr>
@@ -459,7 +459,7 @@ class AdminTopic extends React.Component {
                 <Link to={`/admin/topic/edit/${topic?.id}`}>{i18next.t("admin:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width="60" align="left" style={{ textAlign: "right" }}>
+              <td width="60" align="left" style={{textAlign: "right"}}>
                 {this.renderTopicStatus(topic?.deleted, topic?.homePageTopTime, topic?.tabTopTime, topic?.nodeTopTime)}
               </td>
             </tr>
@@ -554,7 +554,7 @@ class AdminTopic extends React.Component {
                           </Link>
                         </span>
                         &nbsp; &nbsp;{" "}
-                        <Link to={`/move/topic/${topic?.id}`} style={{ fontWeight: "bolder" }} target="_blank">
+                        <Link to={`/move/topic/${topic?.id}`} style={{fontWeight: "bolder"}} target="_blank">
                           {i18next.t("topic:Move topic")}
                         </Link>
                       </td>
@@ -725,7 +725,7 @@ class AdminTopic extends React.Component {
               backgroundColor: "#ffffff",
             }}
           >
-            <Panel header={<span style={{ color: "#666" }}>{i18next.t("admin:Condition search")}</span>}>{this.renderSearchList()}</Panel>
+            <Panel header={<span style={{color: "#666"}}>{i18next.t("admin:Condition search")}</span>}>{this.renderSearchList()}</Panel>
           </Collapse>
         </div>
         {this.showPageColumn()}

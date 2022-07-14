@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as Setting from "../Setting";
 import Select2 from "react-select2-wrapper";
@@ -35,7 +35,7 @@ class AdminTab extends React.Component {
       tabId: props.match.params.tabId,
       width: "",
       event: "basic",
-      Management_LIST: [{ label: "Basic Info", value: "basic" }],
+      Management_LIST: [{label: "Basic Info", value: "basic"}],
     };
   }
 
@@ -294,15 +294,15 @@ class AdminTab extends React.Component {
                 <Link to={`/admin/tab/edit/${tab?.id}`}>{i18next.t("tab:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>
+              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>
                   {tab?.topicsNum} {i18next.t("tab:topics")}
                 </span>
               </td>
-              <td width={pcBrowser ? "120" : "80"} align="left" style={{ textAlign: "center" }}>
+              <td width={pcBrowser ? "120" : "80"} align="left" style={{textAlign: "center"}}>
                 {tab?.nodesNum} {i18next.t("tab:nodes")}
               </td>
-              <td width="50" align="left" style={{ textAlign: "right" }}>
+              <td width="50" align="left" style={{textAlign: "right"}}>
                 <a href="#" onClick={() => this.deleteTab(tab?.id, tab?.topicsNum, tab?.nodesNum)}>
                   {i18next.t("tab:Delete")}
                 </a>
@@ -420,7 +420,7 @@ class AdminTab extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
-                      &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                      &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                     </td>
                   </tr>
                   <tr>

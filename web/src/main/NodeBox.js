@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
@@ -25,7 +25,7 @@ import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 import * as Conf from "../Conf";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -275,7 +275,7 @@ class NodeBox extends React.Component {
         <div className="sep5"></div>
         {this.props.account !== null ? (
           <div align="right">
-            <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={() => this.props.history.push(`/new/${this.state.nodeId}`)} style={{ width: "100%", lineHeight: "20px" }} />
+            <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={() => this.props.history.push(`/new/${this.state.nodeId}`)} style={{width: "100%", lineHeight: "20px"}} />
           </div>
         ) : null}
       </div>
@@ -283,7 +283,7 @@ class NodeBox extends React.Component {
   }
 
   renderDesktopHeader() {
-    const { nodeInfo, nodeId } = this.state;
+    const {nodeInfo, nodeId} = this.state;
 
     return (
       <div
@@ -364,7 +364,7 @@ class NodeBox extends React.Component {
           <div className="sep20" />
           <div className="sep5" />
           {this.props.account !== null ? (
-            <div className="fr" style={{ paddingLeft: "10px" }}>
+            <div className="fr" style={{paddingLeft: "10px"}}>
               <input
                 type="button"
                 className="super normal button"
@@ -400,7 +400,7 @@ class NodeBox extends React.Component {
   }
 
   renderNode() {
-    const { page, limit } = this.state;
+    const {page, limit} = this.state;
     let from, end;
     if (this.state.topicNum !== 0) {
       from = (page - 1) * limit + 1;
@@ -428,7 +428,7 @@ class NodeBox extends React.Component {
       <tr>
         <td width="120" align="right"></td>
         <td width="auto" align="left">
-          <Link to={`/member/${moderators}`} style={{ fontWeight: "bolder" }} target="_blank">
+          <Link to={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">
             {moderators}
           </Link>
         </td>
@@ -539,7 +539,7 @@ class NodeBox extends React.Component {
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{ fontWeight: "bolder" }} target="_blank">
+                      <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{fontWeight: "bolder"}} target="_blank">
                         {this.state.nodeInfo?.moderators[0]}
                       </Link>
                     </td>

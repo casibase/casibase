@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TranslatorBackend from "../backend/TranslatorBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -37,9 +37,9 @@ class AdminTranslation extends React.Component {
       },
       event: "config",
       Management_LIST: [
-        { label: "Config Translator", value: "config" },
-        { label: "Create", value: "create" },
-        { label: "Manage", value: "manage" },
+        {label: "Config Translator", value: "config"},
+        {label: "Create", value: "create"},
+        {label: "Manage", value: "manage"},
       ],
       color: "",
       backgroundColor: "",
@@ -123,7 +123,7 @@ class AdminTranslation extends React.Component {
           fontSize: "14px",
         }}
         data={this.state.apis.map((apiItem) => {
-          return { text: apiItem, id: apiItem };
+          return {text: apiItem, id: apiItem};
         })}
         onSelect={(event) => {
           const selected = event.target.value;
@@ -165,7 +165,7 @@ class AdminTranslation extends React.Component {
     }
 
     if (this.state.form.key === "") {
-      this.setState({ errMessage: i18next.t("translator:Please input key") });
+      this.setState({errMessage: i18next.t("translator:Please input key")});
       return;
     }
 
@@ -200,12 +200,12 @@ class AdminTranslation extends React.Component {
     });
 
     if (this.state.form.id === "") {
-      this.setState({ errMessage: i18next.t("translator:Please input id") });
+      this.setState({errMessage: i18next.t("translator:Please input id")});
       return;
     }
 
     if (this.state.form.name === "") {
-      this.setState({ errMessage: i18next.t("translator:Please input name") });
+      this.setState({errMessage: i18next.t("translator:Please input name")});
       return;
     }
 
@@ -217,7 +217,7 @@ class AdminTranslation extends React.Component {
     }
 
     if (this.state.form.key === "") {
-      this.setState({ errMessage: i18next.t("translator:Please input key") });
+      this.setState({errMessage: i18next.t("translator:Please input key")});
       return;
     }
 
@@ -426,7 +426,7 @@ class AdminTranslation extends React.Component {
                           });
                         }}
                         value={this.state.form?.key}
-                        style={{ width: 300 }}
+                        style={{width: 300}}
                       />
                     </td>
                   </tr>
@@ -499,7 +499,7 @@ class AdminTranslation extends React.Component {
                           });
                         }}
                         value={this.state.form.id}
-                        style={{ width: 300 }}
+                        style={{width: 300}}
                       />
                     </td>
                   </tr>
@@ -517,7 +517,7 @@ class AdminTranslation extends React.Component {
                           });
                         }}
                         value={this.state.form.name}
-                        style={{ width: 300 }}
+                        style={{width: 300}}
                       />
                     </td>
                   </tr>
@@ -543,7 +543,7 @@ class AdminTranslation extends React.Component {
                           });
                         }}
                         value={this.state.form.key}
-                        style={{ width: 300 }}
+                        style={{width: 300}}
                       />
                     </td>
                   </tr>

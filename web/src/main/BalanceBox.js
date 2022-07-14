@@ -16,10 +16,10 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import PageColumn from "./PageColumn";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
-import { scoreConverter } from "./Tools";
-import { Helmet } from "react-helmet";
+import {scoreConverter} from "./Tools";
+import {Helmet} from "react-helmet";
 
 const pangu = require("pangu");
 
@@ -96,15 +96,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Checkin bonus")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="positive">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {record?.createdTime.replace(/-/g, "").substring(0, 8)} {i18next.t("balance:'s daily checkin bonus")} {record?.amount} {i18next.t("balance:copper")}
               </span>
@@ -118,15 +118,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Received thanks")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="positive">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:Thanks your topic")} › <Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -140,15 +140,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Received thanks")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="positive">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:Thanks your reply in")} <Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link> {i18next.t("balance:Reply in")}
               </span>
@@ -162,15 +162,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Send thanks")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Thanks")} <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:'s topic")} › <Link to={`/t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -184,15 +184,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Send thanks")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Thanks")} <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:'s reply")} › <Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -206,15 +206,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Create reply")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Created a")} {record?.length} {i18next.t("balance:characters reply")} › <Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -228,15 +228,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Topic response bonus")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="positive">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:receive")} <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:'s reply")} › <Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -250,15 +250,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Create topic")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Created a")} {record?.length} {i18next.t("balance:characters topic")} › <Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link>
               </span>
@@ -272,15 +272,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Top topic")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Topped topic")} <Link to={`t/${record?.objectId}`}>{pangu.spacing(record?.title)}</Link> {i18next.t("balance:Pin it to the top")}
               </span>
@@ -294,15 +294,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Admin revision")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="positive">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Admin")} <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:Add balance")} {Math.abs(record?.amount)} {i18next.t("balance:copper")}
               </span>
@@ -316,15 +316,15 @@ class BalanceBox extends React.Component {
               <small className="gray">{Setting.getFormattedDate(record?.createdTime)}</small>
             </td>
             <td className="d">{i18next.t("balance:Admin revision")}</td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               <span className="negative">
                 <strong>{record?.amount + ".0"}</strong>
               </span>
             </td>
-            <td className="d" style={{ textAlign: "right" }}>
+            <td className="d" style={{textAlign: "right"}}>
               {record?.balance + ".0"}
             </td>
-            <td className="d" style={{ borderRight: "none" }}>
+            <td className="d" style={{borderRight: "none"}}>
               <span className="gray">
                 {i18next.t("balance:Admin")} <Link to={`/member/${record?.consumerId}`}>{record?.consumerId}</Link> {i18next.t("balance:Reduce balance")} {Math.abs(record?.amount)} {i18next.t("balance:copper")}
               </span>
@@ -337,7 +337,7 @@ class BalanceBox extends React.Component {
   }
 
   render() {
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(this.props.account?.score);
+    const {goldCount, silverCount, bronzeCount} = scoreConverter(this.props.account?.score);
 
     return (
       <div className="box">
@@ -345,7 +345,7 @@ class BalanceBox extends React.Component {
           <title>{`${i18next.t("balance:Account balance")} - ${Setting.getForumName()}`}</title>
         </Helmet>
         <div className="cell">
-          <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
+          <div className="fr" style={{margin: "-3px -8px 0px 0px"}}>
             <Link to="/top/rich" className="tab">
               {i18next.t("balance:Wealth ranking")}
             </Link>
@@ -366,7 +366,7 @@ class BalanceBox extends React.Component {
                   <span className="gray">{i18next.t("balance:Current account balance")}</span>
                   <div className="sep10"></div>
                   <div className="sep5"></div>
-                  <div className="balance_area bigger" style={{ fontSize: "24px", lineHeight: "24px" }}>
+                  <div className="balance_area bigger" style={{fontSize: "24px", lineHeight: "24px"}}>
                     {goldCount !== 0 ? (
                       <span>
                         {" "}
@@ -400,7 +400,7 @@ class BalanceBox extends React.Component {
                 <td width="60" className="h">
                   {i18next.t("balance:Balance")}
                 </td>
-                <td width="auto" className="h" style={{ borderRight: "none" }}>
+                <td width="auto" className="h" style={{borderRight: "none"}}>
                   {i18next.t("balance:Description")}
                 </td>
               </tr>

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as Setting from "../Setting";
 import Zmage from "react-zmage";
-import { SketchPicker } from "react-color";
+import {SketchPicker} from "react-color";
 import i18next from "i18next";
 import * as Conf from "../Conf";
 
@@ -37,8 +37,8 @@ class AdminPlane extends React.Component {
       width: "",
       event: "basic",
       Management_LIST: [
-        { label: "Basic Info", value: "basic" },
-        { label: "Display", value: "display" },
+        {label: "Basic Info", value: "basic"},
+        {label: "Display", value: "display"},
       ],
       color: "",
       backgroundColor: "",
@@ -358,15 +358,15 @@ class AdminPlane extends React.Component {
                 <Link to={`/admin/plane/edit/${plane?.id}`}>{i18next.t("plane:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>
+              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>
                   {plane?.nodesNum} {i18next.t("plane:nodes")}
                 </span>
               </td>
-              <td width={pcBrowser ? "120" : "80"} align="left" style={{ textAlign: "center" }}>
+              <td width={pcBrowser ? "120" : "80"} align="left" style={{textAlign: "center"}}>
                 {plane?.visible ? <span className="positive">{i18next.t("plane:Visible")}</span> : <span className="gray">{i18next.t("plane:Invisible")}</span>}
               </td>
-              <td width="50" align="left" style={{ textAlign: "right" }}>
+              <td width="50" align="left" style={{textAlign: "right"}}>
                 <a href="#" onClick={() => this.deletePlane(plane?.name, plane?.id, plane?.nodesNum)}>
                   {i18next.t("plane:Delete")}
                 </a>
@@ -485,7 +485,7 @@ class AdminPlane extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
-                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                       </td>
                     </tr>
                     <tr>
@@ -557,7 +557,7 @@ class AdminPlane extends React.Component {
                       {this.state.form?.image === undefined || this.state.form?.image === "" ? (
                         <span className="gray">{i18next.t("plane:Not set")}</span>
                       ) : (
-                        <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
+                        <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}} />
                       )}
                     </td>
                   </tr>

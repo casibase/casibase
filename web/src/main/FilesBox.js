@@ -17,7 +17,7 @@ import * as FileBackend from "../backend/FileBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import PageColumn from "./PageColumn";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "../deopzone.css";
 import Dropzone from "react-dropzone";
 import i18next from "i18next";
@@ -163,7 +163,7 @@ class FilesBox extends React.Component {
   }
 
   uploadFile(file) {
-    let fileInfo = { name: file[0].path, size: file[0].size, status: false };
+    let fileInfo = {name: file[0].path, size: file[0].size, status: false};
     let files = this.state.files;
     files.push(fileInfo);
     this.setState({
@@ -254,7 +254,7 @@ class FilesBox extends React.Component {
               <td width="auto" valign="middle">
                 <span className="item_hot_topic_title">{Setting.getFormattedSize(file.size)}</span>
               </td>
-              <td width="auto" align="left" style={{ textAlign: "center" }}>
+              <td width="auto" align="left" style={{textAlign: "center"}}>
                 {file.status ? (
                   <a href="javascript:void(0);" onClick={() => this.deleteFile(file)} className="delete">
                     {i18next.t("file:Delete")}
@@ -286,9 +286,9 @@ class FilesBox extends React.Component {
             <div className="sep10"></div>
             <div id="uploader">
               <Dropzone onDrop={(acceptedFiles) => this.uploadFile(acceptedFiles)}>
-                {({ getRootProps, getInputProps }) => (
+                {({getRootProps, getInputProps}) => (
                   <section className="container">
-                    <div {...getRootProps({ className: "dropzone" })}>
+                    <div {...getRootProps({className: "dropzone"})}>
                       <input {...getInputProps()} />
                       <p>{i18next.t("file:Drop files here, or click upload")}</p>
                     </div>
@@ -304,7 +304,7 @@ class FilesBox extends React.Component {
             {this.state.files?.map((file) => this.renderUploadFile(file))}
           </div>
           <div className="cell">
-            <div className="fr" style={{ paddingTop: "2px" }}>
+            <div className="fr" style={{paddingTop: "2px"}}>
               <div
                 style={{
                   width: "400px",
@@ -365,7 +365,7 @@ class FilesBox extends React.Component {
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> <Link to="/i?p=1">Files</Link> <span className="chevron">&nbsp;›&nbsp;</span> {file?.fileName}
         </div>
-        <div className="cell" style={{ textAlign: "center", padding: "12px" }}>
+        <div className="cell" style={{textAlign: "center", padding: "12px"}}>
           {file?.fileType === "image" ? (
             <a href={file?.fileUrl} className="img_view" target="_blank" rel="noreferrer">
               <img src={file?.fileUrl} border="0" className="embedded_image" />
@@ -426,7 +426,7 @@ class FilesBox extends React.Component {
                     </Link>
                   ) : (
                     <Link to={`/i/${file?.id}`} target="_blank">
-                      <div style={{ lineHeight: "100px" }}>{i18next.t("file:No preview for this type of file")}</div>
+                      <div style={{lineHeight: "100px"}}>{i18next.t("file:No preview for this type of file")}</div>
                     </Link>
                   )}
                   <div className="inner">
@@ -449,11 +449,11 @@ class FilesBox extends React.Component {
                       <td>
                         {i18next.t("file:File title")}
                         <div className="sep5"></div>
-                        <input type="text" className="sl" name="title" maxLength="64" style={{ width: "100%" }} value={this.state.form.fileName} onChange={(event) => this.updateFormField("fileName", event.target.value)} />
+                        <input type="text" className="sl" name="title" maxLength="64" style={{width: "100%"}} value={this.state.form.fileName} onChange={(event) => this.updateFormField("fileName", event.target.value)} />
                         <div className="sep10"></div>
                         {i18next.t("file:Description")}
                         <div className="sep5"></div>
-                        <textarea className="ml" style={{ width: "100%" }} name="description" maxLength="1000" onChange={(event) => this.updateFormField("desc", event.target.value)} value={this.state.form.desc} />
+                        <textarea className="ml" style={{width: "100%"}} name="description" maxLength="1000" onChange={(event) => this.updateFormField("desc", event.target.value)} value={this.state.form.desc} />
                         <div className="sep10"></div>
                         <input type="submit" value={i18next.t("file:submit")} className="super normal button" onClick={() => this.editDesc()} />
                       </td>
@@ -488,10 +488,10 @@ class FilesBox extends React.Component {
                 <Link to={`/i/${file.id}`}>{file?.fileName}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>{Setting.getFormattedSize(file?.size)}</span>
+              <td width={pcBrowser ? "auto" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>{Setting.getFormattedSize(file?.size)}</span>
               </td>
-              <td width="100" align="left" style={{ textAlign: "center" }}>
+              <td width="100" align="left" style={{textAlign: "center"}}>
                 {Setting.getPrettyDate(file?.createdTime)}
               </td>
             </tr>
@@ -580,7 +580,7 @@ class FilesBox extends React.Component {
     // url: /i?p=x
     return (
       <div className="box">
-        <div className="cell" style={{ padding: "0px" }}>
+        <div className="cell" style={{padding: "0px"}}>
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
             <tbody>
               <tr>
@@ -604,7 +604,7 @@ class FilesBox extends React.Component {
             </tbody>
           </table>
         </div>
-        <div className="cell" style={{ padding: "0px", textAlign: "center" }}>
+        <div className="cell" style={{padding: "0px", textAlign: "center"}}>
           {Setting.PcBrowser ? this.showPageColumn() : null}
           {this.state.files !== null && this.state.files.length !== 0 ? this.state.files.map((file) => this.renderFiles(file)) : null}
           {this.showPageColumn()}

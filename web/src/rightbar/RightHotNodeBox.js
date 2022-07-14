@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class RightHotNodeBox extends React.Component {
@@ -64,7 +64,7 @@ class RightHotNodeBox extends React.Component {
         </div>
         <div className="inner">
           <a href="/index.xml" target="_blank" rel="noopener noreferrer">
-            <img src={Setting.getStatic("/img/rss.png")} align="absmiddle" border="0" style={{ marginTop: "-3px" }} />
+            <img src={Setting.getStatic("/img/rss.png")} align="absmiddle" border="0" style={{marginTop: "-3px"}} />
           </a>
           &nbsp;
           <a href="/index.xml" target="_blank" rel="noopener noreferrer">

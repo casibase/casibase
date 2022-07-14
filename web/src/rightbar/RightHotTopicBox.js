@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as TopicBackend from "../backend/TopicBackend";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import Avatar from "../Avatar";
 import i18next from "i18next";
 
