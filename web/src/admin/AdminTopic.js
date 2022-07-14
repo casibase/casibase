@@ -31,7 +31,7 @@ class AdminTopic extends React.Component {
       message: "",
       errorMessage: "",
       form: {},
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       width: "",
       p: "",
       topicId: props.match.params.topicId,
@@ -45,7 +45,7 @@ class AdminTopic extends React.Component {
       topicsNum: 0,
       topics: null,
       topic: [],
-      //un, ti, cn, cs, lrs, us, rcs, hs, fcs
+      // un, ti, cn, cs, lrs, us, rcs, hs, fcs
       un: "", // username search
       ti: "", // title search
       cn: "", // content search
@@ -74,7 +74,7 @@ class AdminTopic extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/admin/topic`;
+    this.state.url = "/admin/topic";
   }
 
   componentDidMount() {
@@ -109,7 +109,7 @@ class AdminTopic extends React.Component {
       return;
     }
 
-    //un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs
+    // un, ti, cn, sdt, cs, lrs, us, rcs, hs, fcs
     TopicBackend.getTopicsAdmin(this.state.un, this.state.ti, this.state.cn, this.state.sdt, this.state.cs, this.state.lrs, this.state.us, this.state.rcs, this.state.hs, this.state.fcs, this.state.limit, this.state.page).then((res) => {
       this.setState({
         topics: res?.data,
@@ -154,7 +154,7 @@ class AdminTopic extends React.Component {
   getSearchResult() {
     TopicBackend.getTopicsAdmin(this.state.un, this.state.ti, this.state.cn, this.state.sdt, this.state.cs, this.state.lrs, this.state.us, this.state.rcs, this.state.hs, this.state.fcs, this.state.limit, 1).then((res) => {
       if (res.status === "ok") {
-        window.history.pushState({}, 0, `/admin/topic`);
+        window.history.pushState({}, 0, "/admin/topic");
         this.setState({
           message: i18next.t("admin:Get search result success"),
           topics: res?.data,
@@ -491,7 +491,7 @@ class AdminTopic extends React.Component {
 
       if (this.state.topic === null) {
         return (
-          <div class="box">
+          <div className="box">
             <div className="box">
               <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Topic does not exist")}
@@ -702,7 +702,7 @@ class AdminTopic extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link>
           <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("topic:Topic management")}
           <div className="fr f12">
             <span className="snow">{i18next.t("topic:Total Topics")} &nbsp;</span>

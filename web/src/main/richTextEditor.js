@@ -38,7 +38,7 @@ export default class Editor extends React.Component {
   }
 
   handleEditorValueSend(text) {
-    //call father compoents function
+    // call father compoents function
     this.props.onBeforeChange(text);
   }
 
@@ -51,7 +51,7 @@ export default class Editor extends React.Component {
   };
 
   ValidateFn = (file) => {
-    //file should be less than 6MB
+    // file should be less than 6MB
     return file.size < 1024 * 1024 * 6;
   };
 

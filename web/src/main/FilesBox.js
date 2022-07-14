@@ -55,7 +55,7 @@ class FilesBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/i`;
+    this.state.url = "/i";
   }
 
   componentDidMount() {
@@ -367,11 +367,11 @@ class FilesBox extends React.Component {
         </div>
         <div className="cell" style={{ textAlign: "center", padding: "12px" }}>
           {file?.fileType === "image" ? (
-            <a href={file?.fileUrl} className="img_view" target="_blank">
+            <a href={file?.fileUrl} className="img_view" target="_blank" rel="noreferrer">
               <img src={file?.fileUrl} border="0" className="embedded_image" />
             </a>
           ) : (
-            <a href={file?.fileUrl} className="img_view" target="_blank">
+            <a href={file?.fileUrl} className="img_view" target="_blank" rel="noreferrer">
               <div>{i18next.t("file:There is no preview for this type of file, click to download/view")}</div>
             </a>
           )}

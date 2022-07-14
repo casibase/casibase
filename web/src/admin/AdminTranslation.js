@@ -75,7 +75,9 @@ class AdminTranslation extends React.Component {
   }
 
   renderSelectPlatform() {
-    if (this.state.translators === null) return;
+    if (this.state.translators === null) {
+      return;
+    }
 
     return (
       <Select2
@@ -109,7 +111,9 @@ class AdminTranslation extends React.Component {
   }
 
   renderSelectAPI() {
-    if (this.state.apis === null) return;
+    if (this.state.apis === null) {
+      return;
+    }
 
     return (
       <Select2
@@ -231,7 +235,7 @@ class AdminTranslation extends React.Component {
   }
 
   deleteTranslator(translator) {
-    if (window.confirm(`${i18next.t(`translator:Are you sure to delete translator`)} ${translator.name} ?`)) {
+    if (window.confirm(`${i18next.t("translator:Are you sure to delete translator")} ${translator.name} ?`)) {
       if (translator.enable) {
         alert(i18next.t("translator:Please disable it first"));
         return;

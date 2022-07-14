@@ -40,7 +40,7 @@ class AdminNode extends React.Component {
       errorMessage: "",
       form: {},
       nodeInfo: [],
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       nodeId: props.match.params.nodeId,
       topicNum: 0,
       favoritesNum: 0,
@@ -144,9 +144,13 @@ class AdminNode extends React.Component {
     let fileName,
       fileType = Setting.getFileType(file.name);
 
-    if (target === "headerImage") fileName = "header";
-    else if (target === "backgroundImage") fileName = "background";
-    else fileName = "other";
+    if (target === "headerImage") {
+      fileName = "header";
+    } else if (target === "backgroundImage") {
+      fileName = "background";
+    } else {
+      fileName = "other";
+    }
     fileName += "." + fileType.ext;
 
     let reader = new FileReader();
@@ -311,7 +315,7 @@ class AdminNode extends React.Component {
 
   handleColorChange = (color) => {
     this.updateFormField("backgroundColor", color.hex);
-    //this.setState({ color: color.hex });
+    // this.setState({ color: color.hex });
   };
 
   handleColorClick = () => {
@@ -372,8 +376,8 @@ class AdminNode extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/node`}>{i18next.t("node:Node management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/node"}>{i18next.t("node:Node management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           {this.props.event === "new" ? <span>{i18next.t("node:New node")}</span> : <Link to={`/go/${encodeURIComponent(this.state.nodeId)}`}>{this.state.nodeInfo?.name}</Link>}
         </div>
         <div className="cell">
@@ -425,9 +429,15 @@ class AdminNode extends React.Component {
   }
 
   renderSelect(item) {
-    if (this.state.nodes === null) return;
-    if (this.state.tabs === null) return;
-    if (this.state.planes === null) return;
+    if (this.state.nodes === null) {
+      return;
+    }
+    if (this.state.tabs === null) {
+      return;
+    }
+    if (this.state.planes === null) {
+      return;
+    }
 
     let value, data;
     switch (item) {
@@ -528,20 +538,20 @@ class AdminNode extends React.Component {
 
         if (this.state.nodeInfo === null) {
           return (
-            <div class="box">
-              <div class="header">
+            <div className="box">
+              <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Node not found")}
               </div>
-              <div class="cell">
+              <div className="cell">
                 {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
-                <div class="sep10"></div>
+                <div className="sep10"></div>
                 <ul>
                   <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
                   <li>{i18next.t("error:The node is currently in invisible state.")}</li>
                 </ul>
               </div>
-              <div class="inner">
+              <div className="inner">
                 {this.props.account === null ? (
                   <span className="gray">
                     <span className="chevron">‹</span> &nbsp;
@@ -762,7 +772,7 @@ class AdminNode extends React.Component {
                             {i18next.t("node:Moderators")}
                           </td>
                           <td width="auto" align="left">
-                            <span class="gray">{i18next.t("node:No moderators")}</span>
+                            <span className="gray">{i18next.t("node:No moderators")}</span>
                           </td>
                         </tr>
                       )
@@ -791,7 +801,7 @@ class AdminNode extends React.Component {
                           className="mle"
                           id="node_description"
                         >
-                          <div className={`cm-middle-unresizable-content`}>
+                          <div className={"cm-middle-unresizable-content"}>
                             <CodeMirror
                               editorDidMount={(editor) => Tools.attachEditor(editor)}
                               onPaste={() => Tools.uploadMdFile()}

@@ -203,13 +203,18 @@ class NewReplyBox extends React.Component {
           line = cm.getLine(cursor.line);
         let start = cursor.ch,
           end = cursor.ch;
-        while (start && line.charAt(start - 1) !== "@") --start;
-        while (end < line.length && /\w/.test(line.charAt(end))) ++end;
+        while (start && line.charAt(start - 1) !== "@") {
+          --start;
+        }
+        while (end < line.length && /\w/.test(line.charAt(end))) {
+          ++end;
+        }
         let word = line.slice(start, end).toLowerCase();
-        for (let i = 0; i < comp.length; i++)
+        for (let i = 0; i < comp.length; i++) {
           if (comp[i].includes(word)) {
             res.push(comp[i]);
           }
+        }
         return accept({
           list: res,
           from: CodeMirror.Pos(cursor.line, start + 1),
@@ -283,7 +288,7 @@ class NewReplyBox extends React.Component {
           className={`mll ${this.props.nodeId}`}
           id="reply_content"
         >
-          <div className={`cm-short-content`}>
+          <div className={"cm-short-content"}>
             <CodeMirrorsEditor
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadMdFile()}
@@ -422,7 +427,7 @@ class NewReplyBox extends React.Component {
               justifyContent: "space-between",
             }}
           >
-            <button type="button" style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" className="super normal button">
+            <button style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" className="super normal button">
               <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
               &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("reply:Reply")}
             </button>

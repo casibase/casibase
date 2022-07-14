@@ -111,7 +111,7 @@ class TopicBox extends React.Component {
           }
 
           this.getNodeInfo();
-          //this.props.getNodeId(this.state.topic?.nodeId);
+          // this.props.getNodeId(this.state.topic?.nodeId);
           NodeBackend.addNodeBrowseCount(this.state.topic?.nodeId);
         }
       );
@@ -229,8 +229,8 @@ class TopicBox extends React.Component {
   ignoreTopic() {}
 
   translateTopic() {
-    //https://html.spec.whatwg.org/multipage/system-state.html#language-preferences
-    //Use navigator.languages to get an array of language tags representing the user's preferred languages
+    // https://html.spec.whatwg.org/multipage/system-state.html#language-preferences
+    // Use navigator.languages to get an array of language tags representing the user's preferred languages
 
     if (!this.state.translation.translated) {
       TopicBackend.translateTopic(this.state.topicId, navigator.language).then((res) => {
@@ -251,7 +251,7 @@ class TopicBox extends React.Component {
   }
 
   deleteTopic() {
-    if (window.confirm(`Are you sure to delete this topic?`)) {
+    if (window.confirm("Are you sure to delete this topic?")) {
       TopicBackend.deleteTopic(this.state.topicId).then((res) => {
         if (res) {
           this.props.history.push(this.state.from);
@@ -276,7 +276,7 @@ class TopicBox extends React.Component {
 
   topTopic(topType) {
     if (this.props.account?.isAdmin || this.state.topic?.nodeModerator) {
-      //let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
+      // let time = prompt(i18next.t("topic:How long do you want to top this topic? (minute)"), this.state.defaultTopTopicTime)
       if (window.confirm(`${i18next.t("topic:Are you sure to top this topic?")}`)) {
         TopicBackend.topTopic(this.state.topic?.id, "", topType).then((res) => {
           if (res?.status === "ok") {
@@ -364,8 +364,8 @@ class TopicBox extends React.Component {
 
   renderMobileButtons() {
     return (
-      <div class="inner">
-        <div class="fr" align="right">
+      <div className="inner">
+        <div className="fr" align="right">
           {this.props.account !== undefined && this.props.account !== null ? (
             this.state.favoritesStatus ? (
               <a href="javascript:void(0)" onClick={() => this.deleteFavorite()} className="op">
@@ -398,7 +398,7 @@ class TopicBox extends React.Component {
             Tweet
           </a>{" "}
           &nbsp;
-          <a href="javascript:void(0)" onclick="shareTopic(``);" class="op">
+          <a href="javascript:void(0)" onClick="shareTopic(``);" className="op">
             Share
           </a>{" "}
           &nbsp;
@@ -543,14 +543,14 @@ class TopicBox extends React.Component {
 
     if (this.state.topic === null) {
       return (
-        <div class="box">
-          <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Topic not found")}
+        <div className="box">
+          <div className="header">
+            {Setting.getHomeLink()} <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Topic not found")}
           </div>
-          <div class="cell">
-            <span class="gray bigger">404 Topic Not Found</span>
+          <div className="cell">
+            <span className="gray bigger">404 Topic Not Found</span>
           </div>
-          <div class="inner">← {Setting.getHomeLink(i18next.t("error:Back to Home Page"))}</div>
+          <div className="inner">← {Setting.getHomeLink(i18next.t("error:Back to Home Page"))}</div>
         </div>
       );
     }
@@ -560,12 +560,12 @@ class TopicBox extends React.Component {
         this.props.history.push(`/t/${this.state.topic?.id}`);
       }
       return (
-        <div class="box">
-          <div class="header">
-            {Setting.getHomeLink()} <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>
-            <span class="chevron">&nbsp;›&nbsp;</span> <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link> <span class="chevron">&nbsp;›&nbsp;</span> Review
+        <div className="box">
+          <div className="header">
+            {Setting.getHomeLink()} <span className="chevron">&nbsp;›&nbsp;</span> <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>
+            <span className="chevron">&nbsp;›&nbsp;</span> <Link to={`/t/${this.state.topic?.id}`}>{pangu.spacing(this.state.topic?.title)}</Link> <span className="chevron">&nbsp;›&nbsp;</span> Review
           </div>
-          <div class="cell topic_content markdown_body">
+          <div className="cell topic_content markdown_body">
             <p>
               {i18next.t("topic:The new topic has been successfully created on the")} <Link to={`/go/${encodeURIComponent(this.state.topic?.nodeId)}`}>{this.state.topic?.nodeName}</Link>{" "}
               {i18next.t("topic:node, you can click on the title below to continue to view")}
@@ -588,9 +588,9 @@ class TopicBox extends React.Component {
               </li>
             </ul>
           </div>
-          <div class="cell topic_content markdown_body">
+          <div className="cell topic_content markdown_body">
             <h3>{i18next.t("topic:Topic meta information")}</h3>
-            <table cellpadding="0" cellspacing="0" border="0" width="100%">
+            <table cellPadding="0" cellSpacing="0" border="0" width="100%">
               <tr>
                 <td align="right" width="120">
                   ID
@@ -643,7 +643,7 @@ class TopicBox extends React.Component {
               </tr>
             </table>
           </div>
-          <div class="cell topic_content markdown_body">
+          <div className="cell topic_content markdown_body">
             <h3>{i18next.t("topic:Related resources")}</h3>
             <ul>
               <li>

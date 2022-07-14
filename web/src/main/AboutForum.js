@@ -93,7 +93,7 @@ class AboutForum extends React.Component {
                     {":"}
                   </td>
                   <td width="auto" align="left">
-                    <a href={`https://casnode.org/`} target="_blank" rel="noopener noreferrer">
+                    <a href={"https://casnode.org/"} target="_blank" rel="noopener noreferrer">
                       Casnode official website
                     </a>
                   </td>

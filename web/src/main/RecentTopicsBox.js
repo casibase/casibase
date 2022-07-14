@@ -44,7 +44,7 @@ class RecentTopicsBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/recent`;
+    this.state.url = "/recent";
   }
 
   componentDidMount() {

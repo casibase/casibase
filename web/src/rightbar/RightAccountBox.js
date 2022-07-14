@@ -39,7 +39,7 @@ class RightAccountBox extends React.Component {
   }
 
   componentDidMount() {
-    //this.getFavoriteNum();
+    // this.getFavoriteNum();
     this.getUnreadNotificationNum();
     if (Conf.EnableNotificationAutoUpdate) {
       setInterval(() => {
@@ -166,7 +166,7 @@ class RightAccountBox extends React.Component {
                 </td>
                 <td width="10"></td>
                 <td width="auto" valign="middle" align="left">
-                  <a target="_blank" href={Setting.getMyResourcesUrl(this.props.account)}>
+                  <a target="_blank" href={Setting.getMyResourcesUrl(this.props.account)} rel="noreferrer">
                     {i18next.t("bar:File library")}
                   </a>
                 </td>

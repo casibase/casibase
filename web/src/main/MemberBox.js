@@ -191,13 +191,13 @@ class MemberBox extends React.Component {
                   <div className={Setting.PcBrowser ? "sep10" : "sep5"} />
                   <span className="gray">
                     {Setting.getForumName()} {i18next.t("member:No.")} {this.state.member?.ranking} {i18next.t("member:member, joined on")} {Setting.getFormattedDate(this.state.member?.createdTime)}
-                    {/*{Setting.PcBrowser ? (*/}
+                    {/* {Setting.PcBrowser ? (*/}
                     {/*  <span>*/}
                     {/*    <div className="sep5" />*/}
                     {/*    {i18next.t("member:Today's ranking")}{" "}*/}
                     {/*    <Link to="/top/dau">{this.state.member?.ranking}</Link>*/}
                     {/*  </span>*/}
-                    {/*) : null}*/}
+                    {/* ) : null}*/}
                     <div className="sep5" />
                     {this.state.member?.isModerator ? <img src={Setting.getStatic("/img/mod@2x.png")} height="14px" align="absmiddle" /> : null} {this.state.member?.isModerator ? i18next.t("member:authorized to manage the community") : null}
                   </span>

@@ -36,7 +36,9 @@ class SearchResultPage extends React.Component {
   componentWillMount() {
     this.props.history.listen((route) => {
       let params = route.search.split("=");
-      if (params.length < 2) return;
+      if (params.length < 2) {
+        return;
+      }
       this.setState(
         {
           keyword: params[1],
@@ -52,7 +54,7 @@ class SearchResultPage extends React.Component {
     if (res.status === "ok") {
       this.setState({
         topics: res.data,
-        msg: i18next.t(`search:Search result of `) + this.state.keyword,
+        msg: i18next.t("search:Search result of ") + this.state.keyword,
       });
     }
   }
@@ -66,7 +68,9 @@ class SearchResultPage extends React.Component {
       );
     }
 
-    if (this.state.topics.length === 0) return null;
+    if (this.state.topics.length === 0) {
+      return null;
+    }
 
     return <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />;
   }

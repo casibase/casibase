@@ -190,7 +190,7 @@ class EditBox extends React.Component {
           className="mle tall"
           id="reply_content"
         >
-          <div className={`cm-long-content`}>
+          <div className={"cm-long-content"}>
             <CodeMirror
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadMdFile()}

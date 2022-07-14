@@ -36,7 +36,7 @@ class AdminPoster extends React.Component {
       memberId: props.match.params.memberId,
     };
 
-    this.state.url = `/admin/poster`;
+    this.state.url = "/admin/poster";
   }
 
   componentDidMount() {

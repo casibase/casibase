@@ -42,7 +42,7 @@ class NoMatch extends React.Component {
         <div className="box-transparent">
           <div className="cell-translucent">The object you were looking for is not found on the {Setting.getForumName()} Space Station.</div>
           <div className="cell-translucent">你要寻找的物件不存在于 {Setting.getForumName()} 空间站上。</div>
-          <div className="cell-translucent">L'objet que vous cherchiez ne se trouve pas sur la station spatiale {Setting.getForumName()}.</div>
+          <div className="cell-translucent">L&apos;objet que vous cherchiez ne se trouve pas sur la station spatiale {Setting.getForumName()}.</div>
           <div className="cell-translucent">
             Das von Ihnen gesuchte Objekt wird auf der {Setting.getForumName()}
             -Raumstation nicht gefunden.

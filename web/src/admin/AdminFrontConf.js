@@ -40,7 +40,7 @@ class AdminFrontConf extends React.Component {
       message: "",
       memberId: props.match.params.memberId,
     };
-    this.state.url = `/admin/frontconf`;
+    this.state.url = "/admin/frontconf";
   }
 
   componentDidMount() {

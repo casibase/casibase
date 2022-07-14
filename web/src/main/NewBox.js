@@ -297,7 +297,7 @@ class NewBox extends React.Component {
                 }}
               >
                 <textarea style={{ visibility: "hidden", display: "none" }} maxLength="20000" id="editor" name="content" />
-                <div className={`cm-long-content`}>
+                <div className={"cm-long-content"}>
                   <CodeMirror
                     editorDidMount={(editor) => Tools.attachEditor(editor)}
                     onPaste={() => Tools.uploadMdFile()}

@@ -141,12 +141,12 @@ class Header extends React.Component {
             {i18next.t("general:Timeline")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)}>
+          <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
             {i18next.t("general:Setting")}
           </a>
-          {/*<Link to="/settings" className="top">*/}
+          {/* <Link to="/settings" className="top">*/}
           {/*  {i18next.t("general:Setting")}*/}
-          {/*</Link>*/}
+          {/* </Link>*/}
           &nbsp;&nbsp;&nbsp;
           {this.props.account?.isAdmin ? (
             <span>
@@ -254,12 +254,12 @@ class Header extends React.Component {
                 </Link>
               </div>
               <div>
-                <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)}>
+                <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
                   {i18next.t("general:Setting")}
                 </a>
-                {/*<Link to="/settings" className="top">*/}
+                {/* <Link to="/settings" className="top">*/}
                 {/*  {i18next.t("general:Setting")}*/}
-                {/*</Link>*/}
+                {/* </Link>*/}
               </div>
               <div>
                 <Link to="/admin" className="top">
@@ -268,7 +268,7 @@ class Header extends React.Component {
               </div>
               <div className="menu_sep"></div>
               <div>
-                <a target="_blank" className="top" href={Setting.getMyResourcesUrl(this.props.account)}>
+                <a target="_blank" className="top" href={Setting.getMyResourcesUrl(this.props.account)} rel="noreferrer">
                   <img src={Setting.getStatic("/img/neue_image.png")} height="14" border="0" align="absmiddle" /> &nbsp;{i18next.t("bar:File library")}
                 </a>
               </div>
@@ -375,7 +375,7 @@ class Header extends React.Component {
                   <div className="cell">
                     <span className="fade">节点&nbsp;&nbsp;/&nbsp;&nbsp;Nodes</span>
                     {this.state.matchNodes.map((val) => {
-                      //TODO: maybe weshould add `active` iterm
+                      // TODO: maybe weshould add `active` iterm
                       return (
                         <a className="search-item" href={`/go/${val.id}`}>
                           {val.name}&nbsp;&nbsp;/&nbsp;&nbsp;{val.id}

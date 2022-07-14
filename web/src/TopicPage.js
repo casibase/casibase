@@ -87,7 +87,7 @@ class TopicPage extends React.Component {
     this.state.tab === undefined ? (tab = "") : (tab = this.state.tab);
     TabBackend.getTabWithNode(tab).then((res) => {
       if (res === null) {
-        window.location.href = `/`;
+        window.location.href = "/";
       }
       this.setState({
         tabInfo: res?.data,
@@ -126,7 +126,7 @@ class TopicPage extends React.Component {
     const newTopic = this.newTopic();
     TopicBackend.addTopic(newTopic)
       .then((res) => {
-        Setting.showMessage("success", `Adding topic succeeded`);
+        Setting.showMessage("success", "Adding topic succeeded");
         this.setState({
           topics: Setting.addRow(this.state.topics, newTopic),
         });
@@ -139,7 +139,7 @@ class TopicPage extends React.Component {
   deleteTopic(i) {
     TopicBackend.deleteTopic(this.state.topics[i].id)
       .then((res) => {
-        Setting.showMessage("success", `Deleting topic succeeded`);
+        Setting.showMessage("success", "Deleting topic succeeded");
         this.setState({
           topics: Setting.deleteRow(this.state.topics, i),
         });
@@ -172,8 +172,8 @@ class TopicPage extends React.Component {
     }
     const { goldCount, silverCount, bronzeCount } = scoreConverter(this.props.account.score);
     return (
-      <div class="cell">
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+      <div className="cell">
+        <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
             <tr>
               <td width="auto">

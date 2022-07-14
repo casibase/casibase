@@ -102,7 +102,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    //Setting.SetLanguage();
+    // Setting.SetLanguage();
     this.getAccount();
     this.getFavoriteNum();
   }
@@ -341,7 +341,7 @@ class App extends Component {
             <RankingPlayerBox />
           </div>
         </Route>
-        {/*BACKSTAGE*/}
+        {/* BACKSTAGE*/}
         <Route exact path="/admin">
           <div id={pcBrowser ? "Main" : ""}>
             {pcBrowser ? <div className="sep20" /> : null}

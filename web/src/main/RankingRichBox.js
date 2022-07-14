@@ -56,7 +56,7 @@ class RankingRichBox extends React.Component {
       <div className="box">
         <Helmet>
           <title>{`${i18next.t("balance:Rich ranking")} - ${Setting.getForumName()}`}</title>
-          <meta name="keywords" content={`${i18next.t("balance:Rich ranking")},${Setting.getForumName()}`} />} />
+          <meta name="keywords" content={`${i18next.t("balance:Rich ranking")},${Setting.getForumName()}`} />
         </Helmet>
         <div className="cell">
           <div className="fr" style={{ margin: "-3px -8px 0px 0px" }}>
@@ -83,7 +83,7 @@ class RankingRichBox extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <h2 style={{ marginBottom: "10px", marginTop: "0px" }}>
-                        <span class="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
+                        <span className="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
                       <span className="gray f12"> {member.tag} </span>
                       <div className="sep5"></div>

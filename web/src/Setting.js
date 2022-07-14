@@ -83,7 +83,6 @@ export function signin() {
         window.parent.postMessage(message, "*");
       }
       showMessage("success", i18next.t("login:Logged in successfully"));
-    } else {
     }
 
     return res;

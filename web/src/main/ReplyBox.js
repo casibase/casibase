@@ -68,7 +68,7 @@ class ReplyBox extends React.Component {
   }
 
   componentDidMount() {
-    //this.getTopic();
+    // this.getTopic();
     let lastIndex = window.location.href.lastIndexOf("#");
     if (lastIndex >= 0) {
       let idString = window.location.href.substring(lastIndex + 1);
@@ -213,7 +213,7 @@ class ReplyBox extends React.Component {
         list.push(this.state.replies[i].author + " ");
       }
     }
-    //console.log(list)
+    // console.log(list)
     this.setState({
       memberList: list,
     });
@@ -232,7 +232,7 @@ class ReplyBox extends React.Component {
   }
 
   deleteReply(id) {
-    if (window.confirm(`Are you sure to delete this reply?`)) {
+    if (window.confirm("Are you sure to delete this reply?")) {
       ReplyBackend.deleteReply(id).then((res) => {
         if (res?.status === "ok") {
           this.getReplies(false);
@@ -301,16 +301,16 @@ class ReplyBox extends React.Component {
               {this.props.account !== null && this.props.account !== undefined && this.props.account.id !== reply?.author ? (
                 reply?.thanksStatus === false ? (
                   <div id={`thank_area__${reply.id}`} className="thank_area" style={{ marginRight: "10px" }}>
-                    {/*<a*/}
+                    {/* <a*/}
                     {/*  className="thank"*/}
                     {/*  style={{*/}
                     {/*    color: "#ccc",*/}
                     {/*    display: Setting.PcBrowser ? "" : "none",*/}
                     {/*    marginRight: "10px",*/}
                     {/*  }}*/}
-                    {/*>*/}
+                    {/* >*/}
                     {/*  {i18next.t("reply:ignore")}*/}
-                    {/*</a>*/}
+                    {/* </a>*/}
                     <a onClick={() => this.thanksReply(reply.id, reply.author)} className="thank link-btn">
                       {Setting.PcBrowser ? i18next.t("reply:thank") : <img src={Setting.getStatic("/img/heart_neue.png")} width="16" style={{ verticalAlign: "bottom" }} alt={i18next.t("reply:thank")} />}
                     </a>

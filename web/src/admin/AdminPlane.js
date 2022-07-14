@@ -32,7 +32,7 @@ class AdminPlane extends React.Component {
       errorMessage: "",
       form: {},
       plane: [],
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       planeId: props.match.params.planeId,
       width: "",
       event: "basic",
@@ -123,7 +123,7 @@ class AdminPlane extends React.Component {
   }
 
   deletePlane(plane, planeId, nodesNum) {
-    if (window.confirm(`${i18next.t(`plane:Are you sure to delete plane`)} ${plane} ?`)) {
+    if (window.confirm(`${i18next.t("plane:Are you sure to delete plane")} ${plane} ?`)) {
       if (nodesNum !== 0) {
         alert(`
         ${i18next.t("plane:Please delete all the nodes or move to another plane before deleting the plane")}
@@ -330,8 +330,8 @@ class AdminPlane extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/plane`}>{i18next.t("plane:Plane management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/plane"}>{i18next.t("plane:Plane management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("plane:New plane") : this.state.planeId}</span>
         </div>
         <div className="cell">
@@ -403,12 +403,12 @@ class AdminPlane extends React.Component {
 
         if (this.state.plane === null) {
           return (
-            <div class="box">
-              <div class="header">
+            <div className="box">
+              <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Plane not found")}
               </div>
-              <div class="cell">{i18next.t("error:The plane you are trying to view does not exist")}</div>
+              <div className="cell">{i18next.t("error:The plane you are trying to view does not exist")}</div>
             </div>
           );
         }

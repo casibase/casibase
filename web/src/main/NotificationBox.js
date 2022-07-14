@@ -49,7 +49,7 @@ class NotificationBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/notifications`;
+    this.state.url = "/notifications";
   }
 
   componentDidMount() {

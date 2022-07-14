@@ -189,7 +189,9 @@ class AllCreatedTopicsBox extends React.Component {
         this.props.history.push(`/member/${this.state.memberId}`);
       }
 
-      if (this.state.member.name) document.title = `${this.state.member.name}${i18next.t("member:'s more replies")} - ${Setting.getForumName()}`;
+      if (this.state.member.name) {
+        document.title = `${this.state.member.name}${i18next.t("member:'s more replies")} - ${Setting.getForumName()}`;
+      }
       return <LatestReplyBox size={"large"} />;
     }
 
@@ -198,7 +200,9 @@ class AllCreatedTopicsBox extends React.Component {
         this.props.history.push(`/member/${this.state.memberId}`);
       }
 
-      if (this.state.member.name) document.title = `${this.state.member.name}${i18next.t("member:'s more topics")} - ${Setting.getForumName()}`;
+      if (this.state.member.name) {
+        document.title = `${this.state.member.name}${i18next.t("member:'s more topics")} - ${Setting.getForumName()}`;
+      }
 
       return (
         <div className="box">

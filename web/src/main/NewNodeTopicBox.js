@@ -250,7 +250,7 @@ class NewNodeTopicBox extends React.Component {
               className={`mll ${this.state.nodeInfo.id}`}
               id="topic_content"
             >
-              <div className={`cm-short-content`}>
+              <div className={"cm-short-content"}>
                 <CodeMirror
                   className={`${this.state.nodeInfo.id}`}
                   editorDidMount={(editor) => Tools.attachEditor(editor)}
@@ -394,7 +394,7 @@ class NewNodeTopicBox extends React.Component {
                       className="mle"
                       id="topic_content"
                     >
-                      <div className={`cm-long-content`}>
+                      <div className={"cm-long-content"}>
                         <CodeMirror
                           editorDidMount={(editor) => Tools.attachEditor(editor)}
                           onPaste={() => Tools.uploadMdFile()}

@@ -31,7 +31,7 @@ class AdminTab extends React.Component {
       errorMessage: "",
       form: {},
       tab: [],
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       tabId: props.match.params.tabId,
       width: "",
       event: "basic",
@@ -135,7 +135,7 @@ class AdminTab extends React.Component {
   }
 
   deleteTab(tab, topicsNum, nodesNum) {
-    if (window.confirm(`${i18next.t(`tab:Are you sure to delete tab`)} ${tab} ?`)) {
+    if (window.confirm(`${i18next.t("tab:Are you sure to delete tab")} ${tab} ?`)) {
       if (topicsNum !== 0 || nodesNum !== 0) {
         alert(`
         ${i18next.t("tab:Please delete all the nodes and posts under the tab before deleting the tab")}
@@ -266,8 +266,8 @@ class AdminTab extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/tab`}>{i18next.t("tab:Tab management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/tab"}>{i18next.t("tab:Tab management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("tab:New tab") : this.state.tabId}</span>
         </div>
         <div className="cell">
@@ -339,12 +339,12 @@ class AdminTab extends React.Component {
 
         if (this.state.tab === null) {
           return (
-            <div class="box">
-              <div class="header">
+            <div className="box">
+              <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Tab not found")}
               </div>
-              <div class="cell">{i18next.t("error:The tab you are trying to view does not exist")}</div>
+              <div className="cell">{i18next.t("error:The tab you are trying to view does not exist")}</div>
             </div>
           );
         }

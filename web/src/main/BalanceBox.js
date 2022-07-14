@@ -47,7 +47,7 @@ class BalanceBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/balance`;
+    this.state.url = "/balance";
   }
 
   componentDidMount() {

@@ -76,7 +76,7 @@ class RankingPlayerBox extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <h2 style={{ marginBottom: "10px", marginTop: "0px", fontSize: "20px" }}>
-                        <span class="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
+                        <span className="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
                       </h2>
                       <div className="sep5"></div>
                       <span className="gray f12">
@@ -95,7 +95,7 @@ class RankingPlayerBox extends React.Component {
                       <div className="sep5"></div>
                     </td>
                     <td width="200px" align="center">
-                      <div class="sep20"></div>
+                      <div className="sep20"></div>
                       <div>{this.renderPlayerBox(member.karma)}</div>
                     </td>
                   </tr>

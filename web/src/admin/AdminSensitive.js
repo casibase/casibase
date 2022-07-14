@@ -43,7 +43,9 @@ class AdminSensitive extends React.Component {
             sensitiveList: res,
           });
         });
-      } else alert(res.msg);
+      } else {
+        alert(res.msg);
+      }
     });
   }
 
@@ -71,7 +73,9 @@ class AdminSensitive extends React.Component {
             sensitiveList: res,
           });
         });
-      } else alert(res.msg);
+      } else {
+        alert(res.msg);
+      }
     });
   }
 
@@ -91,8 +95,8 @@ class AdminSensitive extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/sensitive`}>{i18next.t("sensitive:sensitive management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/sensitive"}>{i18next.t("sensitive:sensitive management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("sensitive:new sensitive") : ""}</span>
         </div>
         <div className="cell">

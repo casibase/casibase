@@ -36,7 +36,7 @@ class TopicList extends React.Component {
       if (res?.status === "fail") {
         Setting.showMessage("error", res?.msg);
       }
-      //goToLink(`/t/${topicId}?from=${encodeURIComponent(window.location.href)}`)
+      // goToLink(`/t/${topicId}?from=${encodeURIComponent(window.location.href)}`)
     });
   }
 

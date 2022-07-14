@@ -110,11 +110,11 @@ class Footer extends React.Component {
                 />
               </a>
             </div>
-            {/*<div className="fr">*/}
+            {/* <div className="fr">*/}
             {/*  <a href="https://casbin.org" target="_blank">*/}
             {/*    <div className="footer-logo" />*/}
             {/*  </a>*/}
-            {/*</div>*/}
+            {/* </div>*/}
             <strong>
               <Link to="/about" className="dark" target="_self">
                 {i18next.t("footer:About")}

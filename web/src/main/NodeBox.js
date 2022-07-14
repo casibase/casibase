@@ -63,7 +63,7 @@ class NodeBox extends React.Component {
   componentDidMount() {
     this.getTopics();
     this.getNodeInfo();
-    //this.props.getNodeId(this.state.nodeId);
+    // this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
   }
 
@@ -472,21 +472,21 @@ class NodeBox extends React.Component {
     if (this.state.nodeInfo === null) {
       return (
         <div id={pcBrowser ? "Main" : ""}>
-          <div class="sep20"></div>
-          <div class="box">
-            <div class="header">
+          <div className="sep20"></div>
+          <div className="box">
+            <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Node not found")}
             </div>
-            <div class="cell">
+            <div className="cell">
               {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
-              <div class="sep10"></div>
+              <div className="sep10"></div>
               <ul>
                 <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
                 <li>{i18next.t("error:The node is currently in invisible state.")}</li>
               </ul>
             </div>
-            <div class="inner">
+            <div className="inner">
               {this.props.account === null ? (
                 <span className="gray">
                   <span className="chevron">‹</span> &nbsp;
@@ -560,7 +560,7 @@ class NodeBox extends React.Component {
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <span class="gray">{i18next.t("node:No moderators")}</span>
+                      <span className="gray">{i18next.t("node:No moderators")}</span>
                     </td>
                   </tr>
                 )}
