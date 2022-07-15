@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import Select2 from "react-select2-wrapper";
@@ -178,7 +178,7 @@ class MoveTopicNodeBox extends React.Component {
                       fontSize: "14px",
                     }}
                     data={this.state.nodes.map((node, i) => {
-                      return { text: `${node.name} / ${node.id}`, id: i };
+                      return {text: `${node.name} / ${node.id}`, id: i};
                     })}
                     onSelect={(event) => {
                       const s = event.target.value;

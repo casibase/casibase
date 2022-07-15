@@ -18,13 +18,13 @@ import * as TopicBackend from "../backend/TopicBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "./node-casbin.css";
 import "../codemirrorSize.css";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
 import Editor from "./richTextEditor";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import {Controlled as CodeMirror} from "react-codemirror2";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
 import * as Conf from "../Conf";
@@ -250,7 +250,7 @@ class NewNodeTopicBox extends React.Component {
               className={`mll ${this.state.nodeInfo.id}`}
               id="topic_content"
             >
-              <div className={`cm-short-content`}>
+              <div className={"cm-short-content"}>
                 <CodeMirror
                   className={`${this.state.nodeInfo.id}`}
                   editorDidMount={(editor) => Tools.attachEditor(editor)}
@@ -292,7 +292,7 @@ class NewNodeTopicBox extends React.Component {
             </div>
           )}
           <div className="sep10"></div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
+          <div style={{display: "flex", justifyContent: "space-between"}}>
             <input type="submit" value={i18next.t("node:Publish")} className="super normal button" onClick={this.publishTopic.bind(this)} />
             {this.renderEditorSelect()}
           </div>
@@ -317,9 +317,9 @@ class NewNodeTopicBox extends React.Component {
         &nbsp;{" "}
         <Select2
           value={this.state.form.editorType}
-          style={{ width: "110px", fontSize: "14px" }}
+          style={{width: "110px", fontSize: "14px"}}
           data={this.state.editor.map((node, i) => {
-            return { text: `${node.text}`, id: i };
+            return {text: `${node.text}`, id: i};
           })}
           onSelect={(event) => {
             const s = event.target.value;
@@ -339,7 +339,7 @@ class NewNodeTopicBox extends React.Component {
               });
             }
           }}
-          options={{ placeholder: this.state.placeholder }}
+          options={{placeholder: this.state.placeholder}}
         />
       </div>
     );
@@ -394,7 +394,7 @@ class NewNodeTopicBox extends React.Component {
                       className="mle"
                       id="topic_content"
                     >
-                      <div className={`cm-long-content`}>
+                      <div className={"cm-long-content"}>
                         <CodeMirror
                           editorDidMount={(editor) => Tools.attachEditor(editor)}
                           onPaste={() => Tools.uploadMdFile()}
@@ -456,7 +456,7 @@ class NewNodeTopicBox extends React.Component {
                     ) : null}
                   </div>
                 ) : null}
-                <td style={{ display: "flex", justifyContent: "space-between" }}>
+                <td style={{display: "flex", justifyContent: "space-between"}}>
                   <div>
                     <input type="hidden" name="once" />
                     <button type="button" className="super normal button" onClick={this.enablePreview.bind(this)}>

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
 
 class SigninPage extends React.Component {

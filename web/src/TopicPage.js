@@ -19,11 +19,11 @@ import * as TabBackend from "./backend/TabBackend";
 import * as NotificationBackend from "./backend/NotificationBackend";
 import Avatar from "./Avatar";
 import TopicList from "./main/TopicList";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import moment from "moment";
 import i18next from "i18next";
-import { scoreConverter } from "./main/Tools";
-import { Helmet } from "react-helmet";
+import {scoreConverter} from "./main/Tools";
+import {Helmet} from "react-helmet";
 
 class TopicPage extends React.Component {
   constructor(props) {
@@ -87,7 +87,7 @@ class TopicPage extends React.Component {
     this.state.tab === undefined ? (tab = "") : (tab = this.state.tab);
     TabBackend.getTabWithNode(tab).then((res) => {
       if (res === null) {
-        window.location.href = `/`;
+        window.location.href = "/";
       }
       this.setState({
         tabInfo: res?.data,
@@ -126,7 +126,7 @@ class TopicPage extends React.Component {
     const newTopic = this.newTopic();
     TopicBackend.addTopic(newTopic)
       .then((res) => {
-        Setting.showMessage("success", `Adding topic succeeded`);
+        Setting.showMessage("success", "Adding topic succeeded");
         this.setState({
           topics: Setting.addRow(this.state.topics, newTopic),
         });
@@ -139,7 +139,7 @@ class TopicPage extends React.Component {
   deleteTopic(i) {
     TopicBackend.deleteTopic(this.state.topics[i].id)
       .then((res) => {
-        Setting.showMessage("success", `Deleting topic succeeded`);
+        Setting.showMessage("success", "Deleting topic succeeded");
         this.setState({
           topics: Setting.deleteRow(this.state.topics, i),
         });
@@ -170,10 +170,10 @@ class TopicPage extends React.Component {
     if (this.props.account === undefined || this.props.account === null) {
       return null;
     }
-    const { goldCount, silverCount, bronzeCount } = scoreConverter(this.props.account.score);
+    const {goldCount, silverCount, bronzeCount} = scoreConverter(this.props.account.score);
     return (
-      <div class="cell">
-        <table cellpadding="0" cellspacing="0" border="0" width="100%">
+      <div className="cell">
+        <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
             <tr>
               <td width="auto">
@@ -197,7 +197,7 @@ class TopicPage extends React.Component {
               </td>
               <td width="10"></td>
               <td width="150" align="right">
-                <Link to="/balance" className="balance_area" style={{ margin: "0px" }}>
+                <Link to="/balance" className="balance_area" style={{margin: "0px"}}>
                   {goldCount ? (
                     <span>
                       {" "}
@@ -234,7 +234,7 @@ class TopicPage extends React.Component {
             return this.renderTab(tab);
           })}
         </div>
-        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {this.props.account !== undefined && this.props.account !== null && this.state.tabInfo?.defaultNode !== undefined && this.state.tabInfo?.defaultNode !== null && this.state.tabInfo?.defaultNode !== "" ? (
             <div className="fr">
               <Link to={`/new/${this.state.tabInfo?.defaultNode}`}>{this.state.tab === "all" ? i18next.t("topic:Post a Question") : i18next.t("topic:Create a Post")}</Link>

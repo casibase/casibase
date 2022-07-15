@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PlaneBackend from "../backend/PlaneBackend.js";
 import * as Setting from "../Setting";
 import Zmage from "react-zmage";
-import { SketchPicker } from "react-color";
+import {SketchPicker} from "react-color";
 import i18next from "i18next";
 import * as Conf from "../Conf";
 
@@ -32,13 +32,13 @@ class AdminPlane extends React.Component {
       errorMessage: "",
       form: {},
       plane: [],
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       planeId: props.match.params.planeId,
       width: "",
       event: "basic",
       Management_LIST: [
-        { label: "Basic Info", value: "basic" },
-        { label: "Display", value: "display" },
+        {label: "Basic Info", value: "basic"},
+        {label: "Display", value: "display"},
       ],
       color: "",
       backgroundColor: "",
@@ -123,7 +123,7 @@ class AdminPlane extends React.Component {
   }
 
   deletePlane(plane, planeId, nodesNum) {
-    if (window.confirm(`${i18next.t(`plane:Are you sure to delete plane`)} ${plane} ?`)) {
+    if (window.confirm(`${i18next.t("plane:Are you sure to delete plane")} ${plane} ?`)) {
       if (nodesNum !== 0) {
         alert(`
         ${i18next.t("plane:Please delete all the nodes or move to another plane before deleting the plane")}
@@ -330,8 +330,8 @@ class AdminPlane extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/plane`}>{i18next.t("plane:Plane management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/plane"}>{i18next.t("plane:Plane management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("plane:New plane") : this.state.planeId}</span>
         </div>
         <div className="cell">
@@ -358,15 +358,15 @@ class AdminPlane extends React.Component {
                 <Link to={`/admin/plane/edit/${plane?.id}`}>{i18next.t("plane:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>
+              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>
                   {plane?.nodesNum} {i18next.t("plane:nodes")}
                 </span>
               </td>
-              <td width={pcBrowser ? "120" : "80"} align="left" style={{ textAlign: "center" }}>
+              <td width={pcBrowser ? "120" : "80"} align="left" style={{textAlign: "center"}}>
                 {plane?.visible ? <span className="positive">{i18next.t("plane:Visible")}</span> : <span className="gray">{i18next.t("plane:Invisible")}</span>}
               </td>
-              <td width="50" align="left" style={{ textAlign: "right" }}>
+              <td width="50" align="left" style={{textAlign: "right"}}>
                 <a href="#" onClick={() => this.deletePlane(plane?.name, plane?.id, plane?.nodesNum)}>
                   {i18next.t("plane:Delete")}
                 </a>
@@ -403,12 +403,12 @@ class AdminPlane extends React.Component {
 
         if (this.state.plane === null) {
           return (
-            <div class="box">
-              <div class="header">
+            <div className="box">
+              <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Plane not found")}
               </div>
-              <div class="cell">{i18next.t("error:The plane you are trying to view does not exist")}</div>
+              <div className="cell">{i18next.t("error:The plane you are trying to view does not exist")}</div>
             </div>
           );
         }
@@ -485,7 +485,7 @@ class AdminPlane extends React.Component {
                       </td>
                       <td width="auto" align="left">
                         <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
-                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                        &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                       </td>
                     </tr>
                     <tr>
@@ -557,7 +557,7 @@ class AdminPlane extends React.Component {
                       {this.state.form?.image === undefined || this.state.form?.image === "" ? (
                         <span className="gray">{i18next.t("plane:Not set")}</span>
                       ) : (
-                        <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{ maxWidth: "48px", maxHeight: "48px" }} />
+                        <Zmage src={this.state.form?.image} alt={this.state.form?.id} style={{maxWidth: "48px", maxHeight: "48px"}} />
                       )}
                     </td>
                   </tr>

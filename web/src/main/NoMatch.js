@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as Setting from "../Setting";
 import "./NoMatch.css";
 import i18next from "i18next";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class NoMatch extends React.Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class NoMatch extends React.Component {
         <div className="box-transparent">
           <div className="cell-translucent">The object you were looking for is not found on the {Setting.getForumName()} Space Station.</div>
           <div className="cell-translucent">你要寻找的物件不存在于 {Setting.getForumName()} 空间站上。</div>
-          <div className="cell-translucent">L'objet que vous cherchiez ne se trouve pas sur la station spatiale {Setting.getForumName()}.</div>
+          <div className="cell-translucent">L&apos;objet que vous cherchiez ne se trouve pas sur la station spatiale {Setting.getForumName()}.</div>
           <div className="cell-translucent">
             Das von Ihnen gesuchte Objekt wird auf der {Setting.getForumName()}
             -Raumstation nicht gefunden.

@@ -14,12 +14,12 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class RecentTopicsBox extends React.Component {
   constructor(props) {
@@ -44,7 +44,7 @@ class RecentTopicsBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/recent`;
+    this.state.url = "/recent";
   }
 
   componentDidMount() {

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as PosterBackend from "../backend/PosterBackend";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -36,7 +36,7 @@ class AdminPoster extends React.Component {
       memberId: props.match.params.memberId,
     };
 
-    this.state.url = `/admin/poster`;
+    this.state.url = "/admin/poster";
   }
 
   componentDidMount() {

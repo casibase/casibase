@@ -16,11 +16,11 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as TopicBackend from "../backend/TopicBackend";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import ReactMarkdown from "react-markdown";
 import UserLink from "../UserLink";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 import Zmage from "react-zmage";
 
 class SingleReplyBox extends React.Component {
@@ -54,7 +54,7 @@ class SingleReplyBox extends React.Component {
     });
   }
 
-  renderImage = ({ alt, src }) => {
+  renderImage = ({alt, src}) => {
     return <Zmage src={src} alt={alt} />;
   };
 
@@ -65,15 +65,15 @@ class SingleReplyBox extends React.Component {
   renderSingleReplyBox(reply) {
     return (
       <div id={`r_${reply.id}`}>
-        <div style={{ width: "48px", float: "left" }}>
+        <div style={{width: "48px", float: "left"}}>
           <Avatar username={reply.author} avatar={reply.avatar} />
         </div>
-        <div style={{ marginLeft: "60px" }}>
+        <div style={{marginLeft: "60px"}}>
           <strong>
             <UserLink username={reply.author} classNameText={"dark"} />
           </strong>
           <div className={`reply_content ${this.state.topic?.nodeId}`}>
-            {reply.delete ? "" : <ReactMarkdown escapeHtml={false} renderers={{ image: this.renderImage, link: this.renderLink }} source={Setting.getFormattedContent(reply?.content, true)} />}
+            {reply.delete ? "" : <ReactMarkdown escapeHtml={false} renderers={{image: this.renderImage, link: this.renderLink}} source={Setting.getFormattedContent(reply?.content, true)} />}
           </div>
         </div>
       </div>

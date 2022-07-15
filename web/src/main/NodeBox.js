@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
@@ -25,7 +25,7 @@ import "../node.css";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
 import * as Conf from "../Conf";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class NodeBox extends React.Component {
   constructor(props) {
@@ -63,7 +63,7 @@ class NodeBox extends React.Component {
   componentDidMount() {
     this.getTopics();
     this.getNodeInfo();
-    //this.props.getNodeId(this.state.nodeId);
+    // this.props.getNodeId(this.state.nodeId);
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
   }
 
@@ -275,7 +275,7 @@ class NodeBox extends React.Component {
         <div className="sep5"></div>
         {this.props.account !== null ? (
           <div align="right">
-            <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={() => this.props.history.push(`/new/${this.state.nodeId}`)} style={{ width: "100%", lineHeight: "20px" }} />
+            <input type="button" className="super normal button" value={i18next.t("node:new topic")} onClick={() => this.props.history.push(`/new/${this.state.nodeId}`)} style={{width: "100%", lineHeight: "20px"}} />
           </div>
         ) : null}
       </div>
@@ -283,7 +283,7 @@ class NodeBox extends React.Component {
   }
 
   renderDesktopHeader() {
-    const { nodeInfo, nodeId } = this.state;
+    const {nodeInfo, nodeId} = this.state;
 
     return (
       <div
@@ -364,7 +364,7 @@ class NodeBox extends React.Component {
           <div className="sep20" />
           <div className="sep5" />
           {this.props.account !== null ? (
-            <div className="fr" style={{ paddingLeft: "10px" }}>
+            <div className="fr" style={{paddingLeft: "10px"}}>
               <input
                 type="button"
                 className="super normal button"
@@ -400,7 +400,7 @@ class NodeBox extends React.Component {
   }
 
   renderNode() {
-    const { page, limit } = this.state;
+    const {page, limit} = this.state;
     let from, end;
     if (this.state.topicNum !== 0) {
       from = (page - 1) * limit + 1;
@@ -428,7 +428,7 @@ class NodeBox extends React.Component {
       <tr>
         <td width="120" align="right"></td>
         <td width="auto" align="left">
-          <Link to={`/member/${moderators}`} style={{ fontWeight: "bolder" }} target="_blank">
+          <Link to={`/member/${moderators}`} style={{fontWeight: "bolder"}} target="_blank">
             {moderators}
           </Link>
         </td>
@@ -472,21 +472,21 @@ class NodeBox extends React.Component {
     if (this.state.nodeInfo === null) {
       return (
         <div id={pcBrowser ? "Main" : ""}>
-          <div class="sep20"></div>
-          <div class="box">
-            <div class="header">
+          <div className="sep20"></div>
+          <div className="box">
+            <div className="header">
               <Link to="/">{Setting.getForumName()}</Link>
               <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Node not found")}
             </div>
-            <div class="cell">
+            <div className="cell">
               {i18next.t("error:The node you are trying to view does not exist, there are several possibilities")}
-              <div class="sep10"></div>
+              <div className="sep10"></div>
               <ul>
                 <li>{i18next.t("error:You entered a node ID that does not exist.")}</li>
                 <li>{i18next.t("error:The node is currently in invisible state.")}</li>
               </ul>
             </div>
-            <div class="inner">
+            <div className="inner">
               {this.props.account === null ? (
                 <span className="gray">
                   <span className="chevron">‹</span> &nbsp;
@@ -539,7 +539,7 @@ class NodeBox extends React.Component {
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{ fontWeight: "bolder" }} target="_blank">
+                      <Link to={`/member/${this.state.nodeInfo?.moderators[0]}`} style={{fontWeight: "bolder"}} target="_blank">
                         {this.state.nodeInfo?.moderators[0]}
                       </Link>
                     </td>
@@ -560,7 +560,7 @@ class NodeBox extends React.Component {
                       {i18next.t("node:Moderators")}
                     </td>
                     <td width="auto" align="left">
-                      <span class="gray">{i18next.t("node:No moderators")}</span>
+                      <span className="gray">{i18next.t("node:No moderators")}</span>
                     </td>
                   </tr>
                 )}

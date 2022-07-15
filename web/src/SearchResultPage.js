@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as SearchBackend from "./backend/SearchBackend";
 import TopicList from "./main/TopicList";
 import i18next from "i18next";
@@ -36,7 +36,9 @@ class SearchResultPage extends React.Component {
   componentWillMount() {
     this.props.history.listen((route) => {
       let params = route.search.split("=");
-      if (params.length < 2) return;
+      if (params.length < 2) {
+        return;
+      }
       this.setState(
         {
           keyword: params[1],
@@ -52,7 +54,7 @@ class SearchResultPage extends React.Component {
     if (res.status === "ok") {
       this.setState({
         topics: res.data,
-        msg: i18next.t(`search:Search result of `) + this.state.keyword,
+        msg: i18next.t("search:Search result of ") + this.state.keyword,
       });
     }
   }
@@ -60,13 +62,15 @@ class SearchResultPage extends React.Component {
   renderResult() {
     if (this.state.topics === null) {
       return (
-        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {i18next.t("search:No topics found")}
         </div>
       );
     }
 
-    if (this.state.topics.length === 0) return null;
+    if (this.state.topics.length === 0) {
+      return null;
+    }
 
     return <TopicList topics={this.state.topics} showNodeName={true} showAvatar={true} />;
   }
@@ -74,7 +78,7 @@ class SearchResultPage extends React.Component {
   render() {
     return (
       <div>
-        <div className="cell" id="SecondaryTabs" style={{ padding: "10px" }}>
+        <div className="cell" id="SecondaryTabs" style={{padding: "10px"}}>
           {this.state.msg}
         </div>
         {this.renderResult()}

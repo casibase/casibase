@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
@@ -41,12 +41,12 @@ class AllCreatedTopicsBox extends React.Component {
       member: [],
       url: "",
       TAB_LIST: [
-        { label: "Q&A", value: "qna" },
-        { label: "Tech", value: "tech" },
-        { label: "Play", value: "play" },
-        { label: "Jobs", value: "jobs" },
-        { label: "Deals", value: "deals" },
-        { label: "City", value: "city" },
+        {label: "Q&A", value: "qna"},
+        {label: "Tech", value: "tech"},
+        {label: "Play", value: "play"},
+        {label: "Jobs", value: "jobs"},
+        {label: "Deals", value: "deals"},
+        {label: "City", value: "city"},
       ],
     };
     const params = new URLSearchParams(this.props.location.search);
@@ -189,7 +189,9 @@ class AllCreatedTopicsBox extends React.Component {
         this.props.history.push(`/member/${this.state.memberId}`);
       }
 
-      if (this.state.member.name) document.title = `${this.state.member.name}${i18next.t("member:'s more replies")} - ${Setting.getForumName()}`;
+      if (this.state.member.name) {
+        document.title = `${this.state.member.name}${i18next.t("member:'s more replies")} - ${Setting.getForumName()}`;
+      }
       return <LatestReplyBox size={"large"} />;
     }
 
@@ -198,7 +200,9 @@ class AllCreatedTopicsBox extends React.Component {
         this.props.history.push(`/member/${this.state.memberId}`);
       }
 
-      if (this.state.member.name) document.title = `${this.state.member.name}${i18next.t("member:'s more topics")} - ${Setting.getForumName()}`;
+      if (this.state.member.name) {
+        document.title = `${this.state.member.name}${i18next.t("member:'s more topics")} - ${Setting.getForumName()}`;
+      }
 
       return (
         <div className="box">
@@ -232,7 +236,7 @@ class AllCreatedTopicsBox extends React.Component {
               src={memberAvatar !== "" ? memberAvatar : Setting.getUserAvatar(this.state.memberId)}
               width={24}
               border={0}
-              style={{ borderRadius: "24px", marginTop: "-2px" }}
+              style={{borderRadius: "24px", marginTop: "-2px"}}
               alt={this.state.memberId}
               onError={(event) => {
                 event.target.onerror = "";
@@ -255,7 +259,7 @@ class AllCreatedTopicsBox extends React.Component {
               </Link>
             )
           ) : null}
-          {!pcBrowser ? <div className="sep10" style={{ clear: "both" }} /> : null}
+          {!pcBrowser ? <div className="sep10" style={{clear: "both"}} /> : null}
           {pcBrowser
             ? this.state.TAB_LIST.map((tab) => {
                 return this.renderTab(tab);

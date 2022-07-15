@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
 
 class SilentSignin extends React.Component {
@@ -50,7 +50,7 @@ class SilentSignin extends React.Component {
       return null;
     }
 
-    return <iframe id="iframeTask" src={`${Setting.getSigninUrl()}&silentSignin=1`} style={{ display: "none" }} width={0} height={0} frameBorder="no" />;
+    return <iframe id="iframeTask" src={`${Setting.getSigninUrl()}&silentSignin=1`} style={{display: "none"}} width={0} height={0} frameBorder="no" />;
   }
 }
 

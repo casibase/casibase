@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
 
 class UserLink extends React.Component {

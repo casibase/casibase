@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import { Button, Result, Spin } from "antd";
-import { withRouter } from "react-router-dom";
+import {Button, Result, Spin} from "antd";
+import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -46,11 +46,11 @@ class AuthCallback extends React.Component {
 
   render() {
     return (
-      <div style={{ textAlign: "center" }}>
+      <div style={{textAlign: "center"}}>
         {this.state.msg === null ? (
-          <Spin size="large" tip={i18next.t("login:Signing in...")} style={{ paddingTop: "10%", paddingBottom: "10%" }} />
+          <Spin size="large" tip={i18next.t("login:Signing in...")} style={{paddingTop: "10%", paddingBottom: "10%"}} />
         ) : (
-          <div style={{ display: "inline" }}>
+          <div style={{display: "inline"}}>
             <Result
               status="error"
               title={i18next.t("login:Signing In Error")}

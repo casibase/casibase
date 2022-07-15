@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import * as BasicBackend from "../backend/BasicBackend";
 import * as PosterBackend from "../backend/PosterBackend";
 import i18next from "i18next";
@@ -70,10 +70,10 @@ class RightCommunityHealthBox extends React.Component {
         <div className="box">
           <div className="inner" align="center">
             <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
-              <img src={this.state.poster["picture_link"]} border="0" width="250" alt={this.state.poster["advertiser"]} style={{ vertical: "bottom" }} />
+              <img src={this.state.poster["picture_link"]} border="0" width="250" alt={this.state.poster["advertiser"]} style={{vertical: "bottom"}} />
             </a>
           </div>
-          <div className="sidebar_compliance flex-one-row" style={{ display: "flex", justifyContent: "space-between" }}>
+          <div className="sidebar_compliance flex-one-row" style={{display: "flex", justifyContent: "space-between"}}>
             <div>
               <a href={this.state.poster["link"]} target="_blank" rel="noopener noreferrer">
                 {this.state.poster["advertiser"]}

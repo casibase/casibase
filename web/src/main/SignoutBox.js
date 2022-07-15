@@ -14,7 +14,7 @@
 
 import React from "react";
 import Header from "./Header";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as AccountBackend from "../backend/AccountBackend";
 import i18next from "i18next";
 import * as Setting from "../Setting";

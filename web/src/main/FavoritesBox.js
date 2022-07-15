@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import TopicList from "./TopicList";
 import PageColumn from "./PageColumn";

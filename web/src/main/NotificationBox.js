@@ -18,11 +18,11 @@ import * as NotificationBackend from "../backend/NotificationBackend";
 import PageColumn from "./PageColumn";
 import Avatar from "../Avatar";
 import "../Notification.css";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import Zmage from "react-zmage";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 const pangu = require("pangu");
 
@@ -49,7 +49,7 @@ class NotificationBox extends React.Component {
       this.state.page = parseInt(this.state.p);
     }
 
-    this.state.url = `/notifications`;
+    this.state.url = "/notifications";
   }
 
   componentDidMount() {
@@ -120,8 +120,8 @@ class NotificationBox extends React.Component {
     );
   }
 
-  renderImage = ({ alt, src }) => {
-    return <Zmage src={src} alt={alt} style={{ maxWidth: "100%" }} />;
+  renderImage = ({alt, src}) => {
+    return <Zmage src={src} alt={alt} style={{maxWidth: "100%"}} />;
   };
 
   renderLink = (props) => {

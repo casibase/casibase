@@ -13,12 +13,12 @@
 // limitations under the License.
 
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ConfBackend from "../backend/ConfBackend";
 import * as Tools from "../main/Tools";
-import { Controlled as CodeMirrorsEditor } from "react-codemirror2";
+import {Controlled as CodeMirrorsEditor} from "react-codemirror2";
 
 class AdminFrontConf extends React.Component {
   constructor(props) {
@@ -88,10 +88,10 @@ class AdminFrontConf extends React.Component {
   }
 
   updateConf() {
-    this.setState({ publishClicked: true });
+    this.setState({publishClicked: true});
     let confs = [];
     for (const k in this.state.changeForm) {
-      confs.push({ id: k, value: this.state.changeForm[k], field: this.state.field });
+      confs.push({id: k, value: this.state.changeForm[k], field: this.state.field});
     }
     ConfBackend.updateFrontConfById(this.state.id, this.state.content).then((res) => {
       if (res.status === "ok") {
@@ -116,10 +116,10 @@ class AdminFrontConf extends React.Component {
           resize: "none",
           height: "auto",
         }}
-        className={`mll`}
+        className={"mll"}
         id="reply_content"
       >
-        <div className={`cm-short-content`}>
+        <div className={"cm-short-content"}>
           <CodeMirrorsEditor
             editorDidMount={(editor) => Tools.attachEditor(editor)}
             onPaste={() => Tools.uploadMdFile()}
@@ -129,7 +129,7 @@ class AdminFrontConf extends React.Component {
               mode: "markdown",
               lineNumbers: false,
               lineWrapping: true,
-              extraKeys: { "Ctrl-Space": "autocomplete" },
+              extraKeys: {"Ctrl-Space": "autocomplete"},
               hintOptions: {
                 alignWithWord: false,
                 closeOnUnfocus: false,
@@ -138,7 +138,7 @@ class AdminFrontConf extends React.Component {
               },
             }}
             onBeforeChange={(editor, data, value) => {
-              this.setState({ content: value });
+              this.setState({content: value});
             }}
             onChange={(editor, data, value) => {}}
           />
@@ -148,7 +148,7 @@ class AdminFrontConf extends React.Component {
   }
 
   render() {
-    let blurStyle = { color: "#ccc", pointerEvents: "none" };
+    let blurStyle = {color: "#ccc", pointerEvents: "none"};
 
     return (
       <div>
@@ -182,7 +182,7 @@ class AdminFrontConf extends React.Component {
                   justifyContent: "space-between",
                 }}
               >
-                <button type="button" onClick={this.updateConf.bind(this)} type="submit" className="super normal button">
+                <button onClick={this.updateConf.bind(this)} type="submit" className="super normal button">
                   <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
                   &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("frontConf:Save")}
                 </button>

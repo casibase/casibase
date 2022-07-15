@@ -14,10 +14,10 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import {Controlled as CodeMirror} from "react-codemirror2";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
 import * as Tools from "./Tools";
@@ -147,9 +147,9 @@ class EditBox extends React.Component {
         &nbsp;{" "}
         <Select2
           value={this.state.form.editorType}
-          style={{ width: "110px", fontSize: "14px" }}
+          style={{width: "110px", fontSize: "14px"}}
           data={this.state.editor.map((node, i) => {
-            return { text: `${node.text}`, id: i };
+            return {text: `${node.text}`, id: i};
           })}
           onSelect={(event) => {
             const s = event.target.value;
@@ -169,7 +169,7 @@ class EditBox extends React.Component {
               });
             }
           }}
-          options={{ placeholder: this.state.placeholder }}
+          options={{placeholder: this.state.placeholder}}
         />
       </div>
     );
@@ -190,7 +190,7 @@ class EditBox extends React.Component {
           className="mle tall"
           id="reply_content"
         >
-          <div className={`cm-long-content`}>
+          <div className={"cm-long-content"}>
             <CodeMirror
               editorDidMount={(editor) => Tools.attachEditor(editor)}
               onPaste={() => Tools.uploadMdFile()}
@@ -279,7 +279,7 @@ class EditBox extends React.Component {
                   <td>{this.renderEditor()}</td>
                 </tr>
                 <tr>
-                  <td style={{ display: "flex", justifyContent: "space-between" }}>
+                  <td style={{display: "flex", justifyContent: "space-between"}}>
                     <div>
                       <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                     </div>
@@ -332,7 +332,7 @@ class EditBox extends React.Component {
                   value={this.state.tags}
                   onChange={this.handleChange.bind(this)}
                 />
-                <td style={{ display: "flex", justifyContent: "space-between" }}>
+                <td style={{display: "flex", justifyContent: "space-between"}}>
                   <div>
                     <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                   </div>

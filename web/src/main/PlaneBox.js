@@ -16,9 +16,9 @@ import React from "react";
 import * as PlaneBackend from "../backend/PlaneBackend";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as Setting from "../Setting";
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import i18next from "i18next";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 class PlaneBox extends React.Component {
   constructor(props) {
@@ -72,7 +72,7 @@ class PlaneBox extends React.Component {
             }}
           >
             <img src={plane?.image} border="0" align="absmiddle" width="24" /> &nbsp; {plane?.name}
-            <span className="fr" style={{ color: plane?.color, lineHeight: "20px" }}>
+            <span className="fr" style={{color: plane?.color, lineHeight: "20px"}}>
               {plane?.id} •{" "}
               <span className="small">
                 {plane?.nodes.length} {i18next.t("plane:nodes")}
@@ -96,7 +96,7 @@ class PlaneBox extends React.Component {
           <Helmet>
             <title>{`${i18next.t("plane:Plane list")} - ${Setting.getForumName()}`}</title>
           </Helmet>
-          <div className="cell" style={{ padding: "0px" }}>
+          <div className="cell" style={{padding: "0px"}}>
             <table cellPadding="10" cellSpacing="0" border="0" width="100%">
               <tbody>
                 <tr>

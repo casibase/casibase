@@ -18,8 +18,8 @@ import "./i18n";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import { BrowserRouter } from "react-router-dom";
-import { loadTheme } from "./theme";
+import {BrowserRouter} from "react-router-dom";
+import {loadTheme} from "./theme";
 
 let theme = localStorage.getItem("CASNODE_THEME");
 

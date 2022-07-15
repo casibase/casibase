@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as SensitiveBackend from "../backend/SensitiveBackend.js";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -43,7 +43,9 @@ class AdminSensitive extends React.Component {
             sensitiveList: res,
           });
         });
-      } else alert(res.msg);
+      } else {
+        alert(res.msg);
+      }
     });
   }
 
@@ -56,7 +58,7 @@ class AdminSensitive extends React.Component {
         >
           {item}
         </a>
-        <a style={{ float: "right" }} onClick={() => this.delSensitive(item)}>
+        <a style={{float: "right"}} onClick={() => this.delSensitive(item)}>
           delete
         </a>
       </div>
@@ -71,7 +73,9 @@ class AdminSensitive extends React.Component {
             sensitiveList: res,
           });
         });
-      } else alert(res.msg);
+      } else {
+        alert(res.msg);
+      }
     });
   }
 
@@ -79,7 +83,7 @@ class AdminSensitive extends React.Component {
     return (
       <div className="cell">
         <input type="text" id="newsensitive" />
-        <a style={{ float: "right" }} onClick={() => this.addSensitive()}>
+        <a style={{float: "right"}} onClick={() => this.addSensitive()}>
           add
         </a>
       </div>
@@ -91,8 +95,8 @@ class AdminSensitive extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/sensitive`}>{i18next.t("sensitive:sensitive management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/sensitive"}>{i18next.t("sensitive:sensitive management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("sensitive:new sensitive") : ""}</span>
         </div>
         <div className="cell">

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import * as TabBackend from "../backend/TabBackend.js";
 import * as Setting from "../Setting";
 import Select2 from "react-select2-wrapper";
@@ -31,11 +31,11 @@ class AdminTab extends React.Component {
       errorMessage: "",
       form: {},
       tab: [],
-      //event: props.match.params.event,
+      // event: props.match.params.event,
       tabId: props.match.params.tabId,
       width: "",
       event: "basic",
-      Management_LIST: [{ label: "Basic Info", value: "basic" }],
+      Management_LIST: [{label: "Basic Info", value: "basic"}],
     };
   }
 
@@ -135,7 +135,7 @@ class AdminTab extends React.Component {
   }
 
   deleteTab(tab, topicsNum, nodesNum) {
-    if (window.confirm(`${i18next.t(`tab:Are you sure to delete tab`)} ${tab} ?`)) {
+    if (window.confirm(`${i18next.t("tab:Are you sure to delete tab")} ${tab} ?`)) {
       if (topicsNum !== 0 || nodesNum !== 0) {
         alert(`
         ${i18next.t("tab:Please delete all the nodes and posts under the tab before deleting the tab")}
@@ -266,8 +266,8 @@ class AdminTab extends React.Component {
       <div className="box">
         <div className="header">
           <Link to="/">{Setting.getForumName()}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin`}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
-          <Link to={`/admin/tab`}>{i18next.t("tab:Tab management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin"}>{i18next.t("admin:Backstage management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
+          <Link to={"/admin/tab"}>{i18next.t("tab:Tab management")}</Link> <span className="chevron">&nbsp;›&nbsp;</span>
           <span>{this.props.event === "new" ? i18next.t("tab:New tab") : this.state.tabId}</span>
         </div>
         <div className="cell">
@@ -294,15 +294,15 @@ class AdminTab extends React.Component {
                 <Link to={`/admin/tab/edit/${tab?.id}`}>{i18next.t("tab:Manage")}</Link>
               </td>
               <td width="10"></td>
-              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{ textAlign: "center" }}>
-                <span style={{ fontSize: "13px" }}>
+              <td width={pcBrowser ? "120" : "80"} valign="middle" style={{textAlign: "center"}}>
+                <span style={{fontSize: "13px"}}>
                   {tab?.topicsNum} {i18next.t("tab:topics")}
                 </span>
               </td>
-              <td width={pcBrowser ? "120" : "80"} align="left" style={{ textAlign: "center" }}>
+              <td width={pcBrowser ? "120" : "80"} align="left" style={{textAlign: "center"}}>
                 {tab?.nodesNum} {i18next.t("tab:nodes")}
               </td>
-              <td width="50" align="left" style={{ textAlign: "right" }}>
+              <td width="50" align="left" style={{textAlign: "right"}}>
                 <a href="#" onClick={() => this.deleteTab(tab?.id, tab?.topicsNum, tab?.nodesNum)}>
                   {i18next.t("tab:Delete")}
                 </a>
@@ -339,12 +339,12 @@ class AdminTab extends React.Component {
 
         if (this.state.tab === null) {
           return (
-            <div class="box">
-              <div class="header">
+            <div className="box">
+              <div className="header">
                 <Link to="/">{Setting.getForumName()}</Link>
                 <span className="chevron">&nbsp;›&nbsp;</span> {i18next.t("error:Tab not found")}
               </div>
-              <div class="cell">{i18next.t("error:The tab you are trying to view does not exist")}</div>
+              <div className="cell">{i18next.t("error:The tab you are trying to view does not exist")}</div>
             </div>
           );
         }
@@ -420,7 +420,7 @@ class AdminTab extends React.Component {
                     </td>
                     <td width="auto" align="left">
                       <input type="range" min="1" max="1000" step="1" value={this.state.form?.sorter === undefined ? 1 : this.state.form?.sorter} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
-                      &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{ width: "50px" }} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
+                      &nbsp; &nbsp; <input type="number" name="sorter" min="1" max="1000" step="1" value={this.state.form?.sorter} style={{width: "50px"}} onChange={(event) => this.updateFormField("sorter", parseInt(event.target.value))} />
                     </td>
                   </tr>
                   <tr>

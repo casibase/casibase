@@ -21,15 +21,15 @@ import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import NewNodeTopicBox from "./NewNodeTopicBox";
 import "../codemirrorSize.css";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import i18next from "i18next";
 import Select2 from "react-select2-wrapper";
-import { Controlled as CodeMirror } from "react-codemirror2";
+import {Controlled as CodeMirror} from "react-codemirror2";
 import Editor from "./richTextEditor";
 import * as Conf from "../Conf";
 import TagsInput from "react-tagsinput";
 import "../tagsInput.css";
-import { Helmet } from "react-helmet";
+import {Helmet} from "react-helmet";
 
 require("codemirror/mode/markdown/markdown");
 
@@ -189,9 +189,9 @@ class NewBox extends React.Component {
         &nbsp;{" "}
         <Select2
           value={this.state.form.editorType}
-          style={{ width: "110px", fontSize: "14px" }}
+          style={{width: "110px", fontSize: "14px"}}
           data={this.state.editor.map((node, i) => {
-            return { text: `${node.text}`, id: i };
+            return {text: `${node.text}`, id: i};
           })}
           onSelect={(event) => {
             const s = event.target.value;
@@ -211,7 +211,7 @@ class NewBox extends React.Component {
               });
             }
           }}
-          options={{ placeholder: this.state.placeholder }}
+          options={{placeholder: this.state.placeholder}}
         />
       </div>
     );
@@ -263,7 +263,7 @@ class NewBox extends React.Component {
             </div>
             {i18next.t("new:Topic Title")}
           </div>
-          <div className="cell" style={{ padding: "0px" }}>
+          <div className="cell" style={{padding: "0px"}}>
             <textarea
               onChange={(event) => {
                 this.updateFormField("title", event.target.value);
@@ -296,8 +296,8 @@ class NewBox extends React.Component {
                   lineHeight: "120%",
                 }}
               >
-                <textarea style={{ visibility: "hidden", display: "none" }} maxLength="20000" id="editor" name="content" />
-                <div className={`cm-long-content`}>
+                <textarea style={{visibility: "hidden", display: "none"}} maxLength="20000" id="editor" name="content" />
+                <div className={"cm-long-content"}>
                   <CodeMirror
                     editorDidMount={(editor) => Tools.attachEditor(editor)}
                     onPaste={() => Tools.uploadMdFile()}
@@ -316,7 +316,7 @@ class NewBox extends React.Component {
                 </div>
               </div>
             ) : (
-              <div style={{ display: "block", height: "100%" }}>
+              <div style={{display: "block", height: "100%"}}>
                 <Editor
                   language={i18next.language}
                   height="400px"
@@ -329,7 +329,7 @@ class NewBox extends React.Component {
             )}
           </div>
           {/* select node */}
-          <div className="cell" style={{ display: "flex", justifyContent: "space-between" }}>
+          <div className="cell" style={{display: "flex", justifyContent: "space-between"}}>
             <Select2
               value={this.getIndexFromNodeId(this.state.form.nodeId)}
               style={{
@@ -337,7 +337,7 @@ class NewBox extends React.Component {
                 fontSize: "14px",
               }}
               data={this.state.nodes.map((node, i) => {
-                return { text: `${node.name} / ${node.id}`, id: i };
+                return {text: `${node.name} / ${node.id}`, id: i};
               })}
               onSelect={(event) => {
                 const s = event.target.value;
@@ -357,11 +357,11 @@ class NewBox extends React.Component {
             />
             {this.renderEditorSelect()}
           </div>
-          <div className="cell" style={{ lineHeight: "190%" }}>
+          <div className="cell" style={{lineHeight: "190%"}}>
             {i18next.t("new:Hottest Nodes")} &nbsp;{" "}
             {this.state.nodes.map((node, i) => {
               return (
-                <div key={node.name} style={{ display: "inline" }}>
+                <div key={node.name} style={{display: "inline"}}>
                   <a
                     href="#"
                     onClick={() => {
@@ -380,8 +380,8 @@ class NewBox extends React.Component {
           </div>
         </form>
         <div style={{}}>
-          <div style={{ height: 1, borderTop: "1px solid black" }}></div>
-          <div style={{ height: 3 }}></div>
+          <div style={{height: 1, borderTop: "1px solid black"}}></div>
+          <div style={{height: 3}}></div>
           <TagsInput
             inputProps={{
               maxLength: "8",

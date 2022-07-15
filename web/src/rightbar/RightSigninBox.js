@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { withRouter } from "react-router-dom";
+import {withRouter} from "react-router-dom";
 import * as Conf from "../Conf";
 import i18next from "i18next";
 import * as Setting from "../Setting";

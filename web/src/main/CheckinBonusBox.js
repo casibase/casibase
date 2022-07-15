@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import i18next from "i18next";
 
 class CheckinBonusBox extends React.Component {
@@ -76,7 +76,7 @@ class CheckinBonusBox extends React.Component {
           ) : null}
           <div className="cell">
             <span className="gray">
-              <li className="fa fa-ok-sign" style={{ color: "#0c0" }}></li> &nbsp;
+              <li className="fa fa-ok-sign" style={{color: "#0c0"}}></li> &nbsp;
               {i18next.t("mission:Daily checkin bonus has been received")}
             </span>
             <div className="sep10"></div>

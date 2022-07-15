@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import { withRouter, Link } from "react-router-dom";
+import {withRouter, Link} from "react-router-dom";
 import "../Bottom.css";
 import "./node-casbin.css";
 import i18next from "i18next";
@@ -60,8 +60,12 @@ class PageColumn extends React.Component {
         maxPage: this.handleMaxPage(this.props.total),
       },
       () => {
-        if (this.props.page > this.state.maxPage) this.gotoPage(this.props.url, this.state.maxPage);
-        if (this.props.page < this.state.minPage) this.gotoPage(this.props.url, this.state.minPage);
+        if (this.props.page > this.state.maxPage) {
+          this.gotoPage(this.props.url, this.state.maxPage);
+        }
+        if (this.props.page < this.state.minPage) {
+          this.gotoPage(this.props.url, this.state.minPage);
+        }
         this.getPages();
       }
     );
@@ -82,7 +86,7 @@ class PageColumn extends React.Component {
     return 1;
   }
 
-  //Get an array of page number, and there always should have 10 elements except '...'.
+  // Get an array of page number, and there always should have 10 elements except '...'.
   getShowPages(page, total) {
     let pages = [];
 
@@ -157,12 +161,12 @@ class PageColumn extends React.Component {
     if (this.state.maxPage <= 1) {
       return null;
     }
-    const { page, url } = this.props;
+    const {page, url} = this.props;
 
     if (!Setting.PcBrowser) {
       return (
-        <div class="inner">
-          <table cellpadding="0" cellspacing="0" border="0" width="100%">
+        <div className="inner">
+          <table cellPadding="0" cellSpacing="0" border="0" width="100%">
             <tr>
               <td width="120" align="left">
                 <Link to={`${url}?p=${page - 1}`}>
@@ -173,12 +177,12 @@ class PageColumn extends React.Component {
                     }}
                     value={`‹ ${i18next.t("topic:Last")}`}
                     className="super normal button"
-                    style={{ display: page > 1 ? "block" : "none" }}
+                    style={{display: page > 1 ? "block" : "none"}}
                   />
                 </Link>
               </td>
               <td width="auto" align="center">
-                <strong class="fade">
+                <strong className="fade">
                   {page}/{this.state.maxPage}
                 </strong>
               </td>

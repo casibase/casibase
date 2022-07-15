@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import * as Setting from "../Setting";
 import i18next from "i18next";
 import * as ConfBackend from "../backend/ConfBackend";
@@ -23,24 +23,24 @@ class AdminFrontConf extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      Management_LIST: [{ label: "Visual Conf", value: "visualConf" }],
+      Management_LIST: [{label: "Visual Conf", value: "visualConf"}],
       field: "visualConf",
       conf: [
-        { id: "forumName", value: "" },
-        { id: "logoImage", value: "" },
-        { id: "signinBoxStrong", value: "" },
-        { id: "signinBoxSpan", value: "" },
-        { id: "footerAdvise", value: "" },
-        { id: "footerDeclaration", value: "" },
-        { id: "footerLogoImage", value: "" },
-        { id: "footerLogoUrl", value: "" },
+        {id: "forumName", value: ""},
+        {id: "logoImage", value: ""},
+        {id: "signinBoxStrong", value: ""},
+        {id: "signinBoxSpan", value: ""},
+        {id: "footerAdvise", value: ""},
+        {id: "footerDeclaration", value: ""},
+        {id: "footerLogoImage", value: ""},
+        {id: "footerLogoUrl", value: ""},
       ],
       form: {},
       changeForm: {},
       message: "",
       memberId: props.match.params.memberId,
     };
-    this.state.url = `/admin/frontconf`;
+    this.state.url = "/admin/frontconf";
   }
 
   componentDidMount() {
@@ -104,7 +104,7 @@ class AdminFrontConf extends React.Component {
   updateConf() {
     let confs = [];
     for (const k in this.state.changeForm) {
-      confs.push({ id: k, value: this.state.changeForm[k], field: this.state.field });
+      confs.push({id: k, value: this.state.changeForm[k], field: this.state.field});
     }
 
     ConfBackend.updateFrontConfsByField(this.state.field, confs).then((res) => {
@@ -198,7 +198,7 @@ class AdminFrontConf extends React.Component {
                         {this.convert(item.id)}
                       </td>
                       <td width="auto" align="left">
-                        <textarea rows="1" style={{ width: "80%" }} value={this.state.form[item.id]} onChange={(event) => this.inputChange(event, item.id)} />
+                        <textarea rows="1" style={{width: "80%"}} value={this.state.form[item.id]} onChange={(event) => this.inputChange(event, item.id)} />
                       </td>
                     </tr>
                   );
