@@ -1,0 +1,182 @@
+import React from "react";
+import {Link} from "react-router-dom";
+import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import moment from "moment";
+import * as Setting from "./Setting";
+import * as StoreBackend from "./backend/StoreBackend";
+import i18next from "i18next";
+
+class StoreListPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      stores: null,
+    };
+  }
+
+  componentWillMount() {
+    this.getStores();
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        this.setState({
+          stores: res,
+        });
+      });
+  }
+
+  newStore() {
+    return {
+      owner: this.props.account.name,
+      name: `store_${this.state.stores.length}`,
+      createdTime: moment().format(),
+      displayName: `Store ${this.state.stores.length}`,
+      children: [],
+    }
+  }
+
+  addStore() {
+    const newStore = this.newStore();
+    StoreBackend.addStore(newStore)
+      .then((res) => {
+          Setting.showMessage("success", `Store added successfully`);
+          this.setState({
+            stores: Setting.prependRow(this.state.stores, newStore),
+          });
+        }
+      )
+      .catch(error => {
+        Setting.showMessage("error", `Store failed to add: ${error}`);
+      });
+  }
+
+  deleteStore(i) {
+    StoreBackend.deleteStore(this.state.stores[i])
+      .then((res) => {
+          Setting.showMessage("success", `Store deleted successfully`);
+          this.setState({
+            stores: Setting.deleteRow(this.state.stores, i),
+          });
+        }
+      )
+      .catch(error => {
+        Setting.showMessage("error", `Store failed to delete: ${error}`);
+      });
+  }
+
+  renderTable(stores) {
+    const columns = [
+      {
+        title: i18next.t("general:Name"),
+        dataIndex: 'name',
+        key: 'name',
+        width: '120px',
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/stores/${text}`}>
+              {text}
+            </Link>
+          )
+        }
+      },
+      {
+        title: i18next.t("general:Display name"),
+        dataIndex: 'displayName',
+        key: 'displayName',
+        width: '200px',
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      },
+      {
+        title: i18next.t("store:Words"),
+        dataIndex: 'vectors',
+        key: 'vectors',
+        // width: '120px',
+        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        render: (text, record, index) => {
+          return Setting.getTags(text);
+        }
+      },
+      // {
+      //   title: i18next.t("store:All words"),
+      //   dataIndex: 'allWords',
+      //   key: 'allWords',
+      //   width: '140px',
+      //   sorter: (a, b) => a.allWords - b.allWords,
+      //   render: (text, record, index) => {
+      //     return record.vectors.length;
+      //   }
+      // },
+      // {
+      //   title: i18next.t("store:Valid words"),
+      //   dataIndex: 'validWords',
+      //   key: 'validWords',
+      //   width: '140px',
+      //   sorter: (a, b) => a.validWords - b.validWords,
+      //   render: (text, record, index) => {
+      //     return record.vectors.filter(vector => vector.data.length !== 0).length;
+      //   }
+      // },
+      {
+        title: i18next.t("general:Action"),
+        dataIndex: 'action',
+        key: 'action',
+        width: '80px',
+        render: (text, record, index) => {
+          return (
+            <div>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.openLink(`/stores/${record.name}/graph`)}>{i18next.t("general:Result")}</Button>
+              <Button style={{marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
+              <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/stores/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Popconfirm
+                title={`Sure to delete store: ${record.name} ?`}
+                onConfirm={() => this.deleteStore(index)}
+                okText="OK"
+                cancelText="Cancel"
+              >
+                <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
+              </Popconfirm>
+            </div>
+          )
+        }
+      },
+    ];
+
+    return (
+      <div>
+        <Table columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+               title={() => (
+                 <div>
+                   {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
+                   <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                 </div>
+               )}
+               loading={stores === null}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <Row style={{width: "100%"}}>
+          <Col span={1}>
+          </Col>
+          <Col span={22}>
+            {
+              this.renderTable(this.state.stores)
+            }
+          </Col>
+          <Col span={1}>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
+
+export default StoreListPage;

@@ -15,6 +15,8 @@ import VectorsetListPage from "./VectorsetListPage";
 import VectorsetEditPage from "./VectorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
+import StoreListPage from "./StoreListPage";
+import StoreEditPage from "./StoreEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import SelectLanguageBox from "./SelectLanguageBox";
@@ -62,6 +64,8 @@ class App extends Component {
       this.setState({ selectedMenuKey: '/vectorsets' });
     } else if (uri.includes('/videos')) {
       this.setState({ selectedMenuKey: '/videos' });
+    } else if (uri.includes('/stores')) {
+      this.setState({ selectedMenuKey: '/stores' });
     } else {
       this.setState({selectedMenuKey: 'null'});
     }
@@ -242,6 +246,13 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/stores">
+        <Link to="/stores">
+          {i18next.t("general:Stores")}
+        </Link>
+      </Menu.Item>
+    );
 
     return res;
   }
@@ -299,6 +310,8 @@ class App extends Component {
           <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)}/>
           <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/stores/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)}/>
         </Switch>
       </div>
     )
