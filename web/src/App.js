@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Switch, Redirect, Route, withRouter, Link} from 'react-router-dom';
 import {Avatar, BackTop, Dropdown, Layout, Menu} from 'antd';
-import {DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
+import {createFromIconfontCN, DownOutlined, LogoutOutlined, SettingOutlined} from '@ant-design/icons';
 import './App.less';
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -19,9 +19,12 @@ import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
-import SelectLanguageBox from "./SelectLanguageBox";
 
 const {Header, Footer} = Layout;
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: '//at.alicdn.com/t/font_2680620_ffij16fkwdg.js',
+});
 
 class App extends Component {
   constructor(props) {
@@ -296,7 +299,24 @@ class App extends Component {
             {
               this.renderAccount()
             }
-            <SelectLanguageBox />
+            <Menu.Item key="en" className="rightDropDown" style={{float: 'right', cursor: 'pointer', marginLeft: '-10px', marginRight: '20px'}}>
+              <div className="rightDropDown" style={{float: 'right', cursor: 'pointer'}} onClick={() => {Setting.changeLanguage("en");}}>
+                &nbsp;&nbsp;&nbsp;&nbsp;<IconFont type="icon-en" />
+                &nbsp;
+                English
+                &nbsp;
+                &nbsp;
+              </div>
+            </Menu.Item>
+            <Menu.Item key="zh" className="rightDropDown" style={{float: 'right', cursor: 'pointer'}}>
+              <div className="rightDropDown" style={{float: 'right', cursor: 'pointer'}} onClick={() => {Setting.changeLanguage("zh");}}>
+                &nbsp;&nbsp;&nbsp;&nbsp;<IconFont type="icon-zh" />
+                &nbsp;
+                中文
+                &nbsp;
+                &nbsp;
+              </div>
+            </Menu.Item>
           </Menu>
         </Header>
         <Switch>
