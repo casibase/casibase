@@ -34,7 +34,7 @@ class StoreListPage extends React.Component {
       name: `store_${this.state.stores.length}`,
       createdTime: moment().format(),
       displayName: `Store ${this.state.stores.length}`,
-      children: [],
+      folders: [],
     }
   }
 
@@ -91,36 +91,6 @@ class StoreListPage extends React.Component {
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
-        title: i18next.t("store:Words"),
-        dataIndex: 'vectors',
-        key: 'vectors',
-        // width: '120px',
-        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
-        render: (text, record, index) => {
-          return Setting.getTags(text);
-        }
-      },
-      // {
-      //   title: i18next.t("store:All words"),
-      //   dataIndex: 'allWords',
-      //   key: 'allWords',
-      //   width: '140px',
-      //   sorter: (a, b) => a.allWords - b.allWords,
-      //   render: (text, record, index) => {
-      //     return record.vectors.length;
-      //   }
-      // },
-      // {
-      //   title: i18next.t("store:Valid words"),
-      //   dataIndex: 'validWords',
-      //   key: 'validWords',
-      //   width: '140px',
-      //   sorter: (a, b) => a.validWords - b.validWords,
-      //   render: (text, record, index) => {
-      //     return record.vectors.filter(vector => vector.data.length !== 0).length;
-      //   }
-      // },
-      {
         title: i18next.t("general:Action"),
         dataIndex: 'action',
         key: 'action',
@@ -128,8 +98,7 @@ class StoreListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.openLink(`/stores/${record.name}/graph`)}>{i18next.t("general:Result")}</Button>
-              <Button style={{marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/stores/${record.name}/files`)}>{i18next.t("general:View")}</Button>
               <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/stores/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete store: ${record.name} ?`}

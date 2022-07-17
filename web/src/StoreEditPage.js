@@ -1,11 +1,9 @@
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select} from 'antd';
+import {Button, Card, Col, Input, Row} from 'antd';
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import VectorTable from "./VectorTable";
-
-const { Option } = Select;
+import FolderTree from "./FolderTree";
 
 class StoreEditPage extends React.Component {
   constructor(props) {
@@ -14,14 +12,11 @@ class StoreEditPage extends React.Component {
       classes: props,
       storeName: props.match.params.storeName,
       store: null,
-      vectorsets: null,
-      matchLoading: false,
     };
   }
 
   componentWillMount() {
     this.getStore();
-    this.getVectorsets();
   }
 
   getStore() {
@@ -80,37 +75,10 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Vectorset")}:
+            {i18next.t("store:Folders")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: '100%'}} value={this.state.store.vectorset} onChange={(value => {this.updateStoreField('vectorset', value);})}>
-              {
-                this.state.vectorsets?.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Distance limit")}:
-          </Col>
-          <Col span={22} >
-            <InputNumber value={this.state.store.distanceLimit} onChange={value => {
-              this.updateStoreField('distanceLimit', value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Words")}:
-          </Col>
-          <Col span={22} >
-            <VectorTable
-              title={i18next.t("store:Words")}
-              table={this.state.store.vectors}
-              store={this.state.store}
-              onUpdateTable={(value) => { this.updateStoreField('vectors', value)}}
-            />
+            <FolderTree tree={this.state.store.folders} />
           </Col>
         </Row>
       </Card>
