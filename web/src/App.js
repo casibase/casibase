@@ -8,6 +8,9 @@ import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
 import * as Conf from "./Conf";
 import HomePage from "./HomePage";
+import ClusteringPage from "./ClusteringPage";
+import StoreListPage from "./StoreListPage";
+import StoreEditPage from "./StoreEditPage";
 import WordsetListPage from "./WordsetListPage";
 import WordsetEditPage from "./WordsetEditPage";
 import WordsetGraphPage from "./WordsetGraphPage";
@@ -15,8 +18,6 @@ import VectorsetListPage from "./VectorsetListPage";
 import VectorsetEditPage from "./VectorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
-import StoreListPage from "./StoreListPage";
-import StoreEditPage from "./StoreEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 
@@ -59,16 +60,18 @@ class App extends Component {
     this.setState({
       uri: uri,
     });
-    if (uri === '/') {
-      this.setState({selectedMenuKey: '/'});
+    if (uri === '/home') {
+      this.setState({selectedMenuKey: '/home'});
+    } else if (uri.includes('/stores')) {
+      this.setState({ selectedMenuKey: '/stores' });
+    } else if (uri.includes('/clustering')) {
+      this.setState({ selectedMenuKey: '/clustering' });
     } else if (uri.includes('/wordsets')) {
       this.setState({ selectedMenuKey: '/wordsets' });
     } else if (uri.includes('/vectorsets')) {
       this.setState({ selectedMenuKey: '/vectorsets' });
     } else if (uri.includes('/videos')) {
       this.setState({ selectedMenuKey: '/videos' });
-    } else if (uri.includes('/stores')) {
-      this.setState({ selectedMenuKey: '/stores' });
     } else {
       this.setState({selectedMenuKey: 'null'});
     }
@@ -196,13 +199,6 @@ class App extends Component {
           </a>
         </Menu.Item>
       );
-      res.push(
-        <Menu.Item key="/" style={{float: 'right'}}>
-          <a href="/">
-            {i18next.t("general:Home")}
-          </a>
-        </Menu.Item>
-      );
     } else {
       res.push(this.renderRightDropdown());
     }
@@ -218,16 +214,26 @@ class App extends Component {
     }
 
     res.push(
-      <Menu.Item key="/">
-        <a href="/">
+      <Menu.Item key="/home">
+        <Link to="/home">
           {i18next.t("general:Home")}
-        </a>
-        {/*<Link to="/">*/}
-        {/*  Home*/}
-        {/*</Link>*/}
+        </Link>
       </Menu.Item>
     );
-
+    res.push(
+      <Menu.Item key="/stores">
+        <Link to="/stores">
+          {i18next.t("general:Stores")}
+        </Link>
+      </Menu.Item>
+    );
+    // res.push(
+    //   <Menu.Item key="/clustering">
+    //     <Link to="/clustering">
+    //       {i18next.t("general:Clustering")}
+    //     </Link>
+    //   </Menu.Item>
+    // );
     res.push(
       <Menu.Item key="/wordsets">
         <Link to="/wordsets">
@@ -246,13 +252,6 @@ class App extends Component {
       <Menu.Item key="/videos">
         <Link to="/videos">
           {i18next.t("general:Videos")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/stores">
-        <Link to="/stores">
-          {i18next.t("general:Stores")}
         </Link>
       </Menu.Item>
     );
@@ -321,8 +320,11 @@ class App extends Component {
         </Header>
         <Switch>
           <Route exact path="/callback" component={AuthCallback}/>
-          <Route exact path="/" render={(props) => <HomePage account={this.state.account} {...props} />}/>
           <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)}/>
+          <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)}/>
+          <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/stores/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)}/>
           <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)}/>
           <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)}/>
@@ -330,8 +332,6 @@ class App extends Component {
           <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)}/>
           <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)}/>
-          <Route exact path="/stores/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)}/>
         </Switch>
       </div>
     )

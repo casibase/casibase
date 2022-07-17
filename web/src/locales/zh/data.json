@@ -8,6 +8,7 @@
   "general": {
     "Action": "操作",
     "Add": "添加",
+    "Clustering": "聚类分析",
     "Data": "数据",
     "Delete": "删除",
     "Display name": "显示名称",
@@ -20,10 +21,16 @@
     "Preview": "预览",
     "Result": "结果",
     "Save": "保存",
+    "Stores": "我的数据仓库",
     "URL": "链接",
     "Vectorsets": "我的向量集",
     "Videos": "我的视频",
+    "View": "查看",
     "Wordsets": "我的词汇集"
+  },
+  "store": {
+    "Edit Store": "编辑数据仓库",
+    "Folders": "文件夹"
   },
   "vectorset": {
     "Count": "个数",

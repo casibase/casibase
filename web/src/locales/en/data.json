@@ -8,6 +8,7 @@
   "general": {
     "Action": "Action",
     "Add": "Add",
+    "Clustering": "Clustering",
     "Data": "Data",
     "Delete": "Delete",
     "Display name": "Display name",
@@ -20,10 +21,16 @@
     "Preview": "Preview",
     "Result": "Result",
     "Save": "Save",
+    "Stores": "Stores",
     "URL": "URL",
     "Vectorsets": "Vectorsets",
     "Videos": "Videos",
+    "View": "View",
     "Wordsets": "Wordsets"
+  },
+  "store": {
+    "Edit Store": "Edit Store",
+    "Folders": "Folders"
   },
   "vectorset": {
     "Count": "Count",
