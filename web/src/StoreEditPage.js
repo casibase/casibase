@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, Card, Col, Input, Row} from 'antd';
+import {LinkOutlined} from "@ant-design/icons";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -75,10 +76,30 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Bucket")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.store.bucket} onChange={e => {
+              this.updateStoreField('bucket', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Domain")}:
+          </Col>
+          <Col span={22} >
+            <Input prefix={<LinkOutlined/>} value={this.state.store.domain} onChange={e => {
+              this.updateStoreField('domain', e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: '20px'}} >
+          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:File tree")}:
           </Col>
           <Col span={22} >
-            <FileTree tree={this.state.store.fileTree} />
+            <FileTree domain={this.state.store.domain} tree={this.state.store.fileTree} />
           </Col>
         </Row>
       </Card>
@@ -87,6 +108,7 @@ class StoreEditPage extends React.Component {
 
   submitStoreEdit() {
     let store = Setting.deepCopy(this.state.store);
+    store.fileTree = undefined;
     StoreBackend.updateStore(this.state.store.owner, this.state.storeName, store)
       .then((res) => {
         if (res) {

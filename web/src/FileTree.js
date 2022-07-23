@@ -1,5 +1,7 @@
 import React from "react";
-import {Col, Row, Tree} from 'antd';
+import {Col, Empty, Row, Tree} from 'antd';
+import FileViewer from 'react-file-viewer';
+import * as Setting from "./Setting";
 
 const { DirectoryTree } = Tree;
 
@@ -125,6 +127,10 @@ class FileTree extends React.Component {
     };
 
     const onSelect = (selectedKeys, info) => {
+      if (!info.node.isLeaf) {
+        return;
+      }
+
       this.setState({
         selectedKeys: selectedKeys,
       });
@@ -132,8 +138,9 @@ class FileTree extends React.Component {
 
     return (
       <DirectoryTree
+        height={600}
         className="draggable-tree"
-        multiple={true}
+        multiple={false}
         defaultExpandAll={true}
         defaultExpandedKeys={this.state.expandedKeys}
         draggable
@@ -148,6 +155,36 @@ class FileTree extends React.Component {
     );
   }
 
+  renderFileViewer() {
+    if (this.state.selectedKeys.length === 0) {
+      return null;
+    }
+
+    const path = this.state.selectedKeys[0];
+    const filename = path.split("/").pop();
+    if (!filename.includes(".")) {
+      return (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      );
+    }
+
+    const ext = filename.split('.').pop().toLowerCase();
+    const url = `${this.props.domain}/${path}`;
+    return (
+      <a target="_blank" rel="noreferrer" href={url}>
+        <FileViewer
+          key={path}
+          fileType={ext}
+          filePath={url}
+          errorComponent={<div>error</div>}
+          onError={(error) => {
+            Setting.showMessage("error", error);
+          }}
+        />
+      </a>
+    );
+  }
+
   render() {
     return (
       <div>
@@ -157,9 +194,11 @@ class FileTree extends React.Component {
               this.renderTree(this.props.tree)
             }
           </Col>
-          <Col span={16}>
+          <Col span={2}>
+          </Col>
+          <Col span={14}>
             {
-              this.state.selectedKeys
+              this.renderFileViewer()
             }
           </Col>
         </Row>

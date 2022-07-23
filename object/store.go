@@ -23,6 +23,9 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
+	Bucket string `xorm:"varchar(100)" json:"bucket"`
+	Domain string `xorm:"varchar(100)" json:"domain"`
+
 	FileTree *File `xorm:"mediumtext" json:"fileTree"`
 }
 

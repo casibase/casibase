@@ -6,36 +6,33 @@ import (
 
 	"github.com/casbin/casbase/util"
 	"github.com/casdoor/casdoor/storage"
-	"github.com/casdoor/oss"
 )
-
-var storageProvider oss.StorageInterface
-
-func InitStore() {
-	storageProvider = storage.GetStorageProvider(providerType, clientId, clientSecret, region, bucket, endpoint)
-}
 
 func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime string, lastIsLeaf bool) {
 	currentFile := store.FileTree
 	if currentFile == nil {
 		currentFile = &File{
-			Title:        "root",
+			Key:          "/",
+			Title:        "",
 			ModifiedTime: util.GetCurrentTime(),
 			IsLeaf:       false,
-			Children:     nil,
-			ChildrenMap:  nil,
+			Children:     []*File{},
+			ChildrenMap:  map[string]*File{},
 		}
 		store.FileTree = currentFile
 	}
 
 	for i, token := range tokens {
+		if currentFile.Children == nil {
+			currentFile.Children = []*File{}
+		}
 		if currentFile.ChildrenMap == nil {
 			currentFile.ChildrenMap = map[string]*File{}
 		}
 
-		file, ok := currentFile.ChildrenMap[token]
+		tmpFile, ok := currentFile.ChildrenMap[token]
 		if ok {
-			currentFile = file
+			currentFile = tmpFile
 			continue
 		}
 
@@ -44,8 +41,9 @@ func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime str
 			isLeaf = lastIsLeaf
 		}
 
+		key := strings.Join(tokens[:i+1], "/")
 		newFile := &File{
-			Key:         strings.Join(tokens, "/"),
+			Key:         key,
 			Title:       token,
 			IsLeaf:      isLeaf,
 			Children:    []*File{},
@@ -58,11 +56,12 @@ func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime str
 
 		currentFile.Children = append(currentFile.Children, newFile)
 		currentFile.ChildrenMap[token] = newFile
-		currentFile = file
+		currentFile = newFile
 	}
 }
 
 func (store *Store) Populate() {
+	storageProvider := storage.GetStorageProvider(providerType, clientId, clientSecret, region, store.Bucket, endpoint)
 	objects, _ := storageProvider.List("")
 	for _, object := range objects {
 		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
