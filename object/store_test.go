@@ -4,9 +4,8 @@ import "testing"
 
 func TestUpdateStoreFolders(t *testing.T) {
 	InitConfig()
+	InitStore()
 
-	objects, _ := storageProvider.List("/")
-	for _, object := range objects {
-		println(object.Path)
-	}
+	store := getStore("admin", "default")
+	store.Populate()
 }

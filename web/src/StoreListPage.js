@@ -34,7 +34,13 @@ class StoreListPage extends React.Component {
       name: `store_${this.state.stores.length}`,
       createdTime: moment().format(),
       displayName: `Store ${this.state.stores.length}`,
-      folders: [],
+      fileTree: {
+        key: "/",
+        title: "",
+        modifiedTime: moment().format(),
+        isLeaf: false,
+        children: [],
+      },
     }
   }
 

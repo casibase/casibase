@@ -21,7 +21,10 @@ func (c *ApiController) GetStores() {
 func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetStore(id)
+	store := object.GetStore(id)
+	store.Populate()
+
+	c.Data["json"] = store
 	c.ServeJSON()
 }
 

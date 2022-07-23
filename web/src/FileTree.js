@@ -1,6 +1,8 @@
 import React from "react";
 import {Col, Row, Tree} from 'antd';
 
+const { DirectoryTree } = Tree;
+
 const x = 3;
 const y = 2;
 const z = 1;
@@ -36,7 +38,7 @@ const generateData = (_level, _preKey, _tns) => {
 
 generateData(z);
 
-class FoldTree extends React.Component {
+class FileTree extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,14 +124,17 @@ class FoldTree extends React.Component {
     };
 
     return (
-      <Tree
+      <DirectoryTree
         className="draggable-tree"
+        multiple={true}
+        defaultExpandAll={true}
         defaultExpandedKeys={this.state.expandedKeys}
         draggable
         blockNode
         onDragEnter={onDragEnter}
         onDrop={onDrop}
-        treeData={this.state.gData}
+        // treeData={this.state.gData}
+        treeData={tree.children}
       />
     );
   }
@@ -149,4 +154,4 @@ class FoldTree extends React.Component {
   }
 }
 
-export default FoldTree;
+export default FileTree;

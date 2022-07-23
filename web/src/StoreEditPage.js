@@ -3,7 +3,7 @@ import {Button, Card, Col, Input, Row} from 'antd';
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import FolderTree from "./FolderTree";
+import FileTree from "./FileTree";
 
 class StoreEditPage extends React.Component {
   constructor(props) {
@@ -75,10 +75,10 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: '20px'}} >
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Folders")}:
+            {i18next.t("store:File tree")}:
           </Col>
           <Col span={22} >
-            <FolderTree tree={this.state.store.folders} />
+            <FileTree tree={this.state.store.fileTree} />
           </Col>
         </Row>
       </Card>

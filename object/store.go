@@ -7,10 +7,14 @@ import (
 	"xorm.io/core"
 )
 
-type Folder struct {
-	Name     string    `xorm:"varchar(100)" json:"name"`
-	Desc     string    `xorm:"mediumtext" json:"desc"`
-	Children []*Folder `xorm:"varchar(1000)" json:"children"`
+type File struct {
+	Key          string  `xorm:"varchar(100)" json:"key"`
+	Title        string  `xorm:"varchar(100)" json:"title"`
+	ModifiedTime string  `xorm:"varchar(100)" json:"modifiedTime"`
+	IsLeaf       bool    `json:"isLeaf"`
+	Children     []*File `xorm:"varchar(1000)" json:"children"`
+
+	ChildrenMap map[string]*File `xorm:"-" json:"-"`
 }
 
 type Store struct {
@@ -19,7 +23,7 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Folders []*Folder `xorm:"mediumtext" json:"folders"`
+	FileTree *File `xorm:"mediumtext" json:"fileTree"`
 }
 
 func GetGlobalStores() []*Store {
