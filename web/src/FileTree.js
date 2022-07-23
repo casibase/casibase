@@ -45,6 +45,7 @@ class FileTree extends React.Component {
       classes: props,
       gData: defaultData,
       expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
+      selectedKeys: [],
     };
   }
 
@@ -54,7 +55,7 @@ class FileTree extends React.Component {
 
   renderTree(tree) {
     const onDragEnter = (info) => {
-      console.log(info); // expandedKeys 需要受控时设置
+      // console.log(info); // expandedKeys 需要受控时设置
       // setExpandedKeys(info.expandedKeys)
     };
 
@@ -123,6 +124,12 @@ class FileTree extends React.Component {
       });
     };
 
+    const onSelect = (selectedKeys, info) => {
+      this.setState({
+        selectedKeys: selectedKeys,
+      });
+    };
+
     return (
       <DirectoryTree
         className="draggable-tree"
@@ -133,6 +140,8 @@ class FileTree extends React.Component {
         blockNode
         onDragEnter={onDragEnter}
         onDrop={onDrop}
+        onSelect={onSelect}
+        selectedKeys={this.state.selectedKeys}
         // treeData={this.state.gData}
         treeData={tree.children}
       />
@@ -143,9 +152,14 @@ class FileTree extends React.Component {
     return (
       <div>
         <Row style={{marginTop: '20px'}} >
-          <Col span={24}>
+          <Col span={8}>
             {
               this.renderTree(this.props.tree)
+            }
+          </Col>
+          <Col span={16}>
+            {
+              this.state.selectedKeys
             }
           </Col>
         </Row>
