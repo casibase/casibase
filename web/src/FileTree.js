@@ -138,7 +138,7 @@ class FileTree extends React.Component {
 
     return (
       <DirectoryTree
-        height={600}
+        height={"calc(100vh - 154px)"}
         className="draggable-tree"
         multiple={false}
         defaultExpandAll={true}
@@ -187,16 +187,16 @@ class FileTree extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{backgroundColor: "rgb(240,240,240)"}}>
         <Row style={{marginTop: '20px'}} >
-          <Col span={8}>
+          <Col span={6}>
             {
               this.renderTree(this.props.tree)
             }
           </Col>
           <Col span={2}>
           </Col>
-          <Col span={14}>
+          <Col span={16}>
             {
               this.renderFileViewer()
             }

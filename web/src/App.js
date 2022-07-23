@@ -11,6 +11,7 @@ import HomePage from "./HomePage";
 import ClusteringPage from "./ClusteringPage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
+import FileTreePage from "./FileTreePage";
 import WordsetListPage from "./WordsetListPage";
 import WordsetEditPage from "./WordsetEditPage";
 import WordsetGraphPage from "./WordsetGraphPage";
@@ -324,6 +325,7 @@ class App extends Component {
           <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)}/>
           <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/stores/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)}/>
+          <Route exact path="/stores/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)}/>
           <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)}/>
           <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)}/>
           <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)}/>

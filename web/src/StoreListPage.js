@@ -106,7 +106,7 @@ class StoreListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/stores/${record.name}/files`)}>{i18next.t("general:View")}</Button>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/stores/${record.name}/view`)}>{i18next.t("general:View")}</Button>
               <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/stores/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete store: ${record.name} ?`}
