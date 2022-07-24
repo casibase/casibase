@@ -142,8 +142,8 @@ class FileTree extends React.Component {
         virtual={false}
         className="draggable-tree"
         multiple={false}
-        defaultExpandAll={true}
-        defaultExpandedKeys={this.state.expandedKeys}
+        // defaultExpandAll={true}
+        // defaultExpandedKeys={tree.children.map(file => file.key)}
         draggable
         blockNode
         onDragEnter={onDragEnter}
