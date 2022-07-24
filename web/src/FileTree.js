@@ -200,7 +200,7 @@ class FileTree extends React.Component {
         treeData={tree.children}
         titleRender={(file) => {
           if (file.isLeaf) {
-            return `${file.title} (${Setting.getFriendlyFileSize(file.fileSize)})`;
+            return `${file.title} (${Setting.getFriendlyFileSize(file.size)})`;
           } else {
             return file.title;
           }
