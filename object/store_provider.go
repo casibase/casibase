@@ -4,8 +4,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/casbin/casbase/storage"
 	"github.com/casbin/casbase/util"
-	"github.com/casdoor/casdoor/storage"
 )
 
 func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime string, lastIsLeaf bool) {
@@ -61,19 +61,18 @@ func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime str
 }
 
 func (store *Store) Populate() {
-	storageProvider := storage.GetStorageProvider(providerType, clientId, clientSecret, region, store.Bucket, endpoint)
-	objects, _ := storageProvider.List("")
+	objects := storage.ListObjects(store.Bucket)
 	for _, object := range objects {
 		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
 
 		lastIsLeaf := true
-		if object.Path[len(object.Path)-1] == '/' {
+		if object.Key[len(object.Key)-1] == '/' {
 			lastIsLeaf = false
 		}
 
-		tokens := strings.Split(strings.Trim(object.Path, "/"), "/")
+		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		store.createPathIfNotExisted(tokens, lastModifiedTime, lastIsLeaf)
 
-		//fmt.Printf("%s, %s, %v\n", object.Path, object.Name, object.LastModified)
+		//fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}
 }
