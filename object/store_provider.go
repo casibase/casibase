@@ -1,6 +1,7 @@
 package object
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -8,7 +9,7 @@ import (
 	"github.com/casbin/casbase/util"
 )
 
-func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime string, isLeaf bool) {
+func (store *Store) createPathIfNotExisted(tokens []string, fileSize int64, lastModifiedTime string, isLeaf bool) {
 	currentFile := store.FileTree
 	if currentFile == nil {
 		currentFile = &File{
@@ -51,6 +52,10 @@ func (store *Store) createPathIfNotExisted(tokens []string, lastModifiedTime str
 		}
 
 		if i == len(tokens)-1 {
+			if newFile.IsLeaf {
+				newFile.Title = fmt.Sprintf("%s (%s)", token, util.GetFileSizeString(fileSize))
+			}
+			newFile.FileSize = fileSize
 			newFile.ModifiedTime = lastModifiedTime
 		}
 
@@ -70,8 +75,10 @@ func (store *Store) Populate() {
 			isLeaf = false
 		}
 
+		fileSize := object.Size
+
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
-		store.createPathIfNotExisted(tokens, lastModifiedTime, isLeaf)
+		store.createPathIfNotExisted(tokens, fileSize, lastModifiedTime, isLeaf)
 
 		//fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}

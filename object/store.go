@@ -10,6 +10,7 @@ import (
 type File struct {
 	Key          string  `xorm:"varchar(100)" json:"key"`
 	Title        string  `xorm:"varchar(100)" json:"title"`
+	FileSize     int64   `json:"fileSize"`
 	ModifiedTime string  `xorm:"varchar(100)" json:"modifiedTime"`
 	IsLeaf       bool    `json:"isLeaf"`
 	Children     []*File `xorm:"varchar(1000)" json:"children"`
