@@ -2,6 +2,12 @@ import React from "react";
 import {Col, Empty, Row, Tree} from 'antd';
 import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
+import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/javascript/javascript");
 
 const { DirectoryTree } = Tree;
 
@@ -131,6 +137,10 @@ class FileTree extends React.Component {
         return;
       }
 
+      if (this.state.selectedKeys.length !== 0) {
+
+      }
+
       this.setState({
         selectedKeys: selectedKeys,
       });
@@ -142,7 +152,7 @@ class FileTree extends React.Component {
         virtual={false}
         className="draggable-tree"
         multiple={false}
-        // defaultExpandAll={true}
+        defaultExpandAll={true}
         // defaultExpandedKeys={tree.children.map(file => file.key)}
         draggable
         blockNode
@@ -171,6 +181,44 @@ class FileTree extends React.Component {
 
     const ext = filename.split('.').pop().toLowerCase();
     const url = `${this.props.domain}/${path}`;
+
+    if (["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext)) {
+      // https://github.com/Alcumus/react-doc-viewer
+      return (
+        <DocViewer
+          style={{height: "calc(100vh - 154px)"}}
+          pluginRenderers={DocViewerRenderers}
+          documents={[{uri: url}]}
+          theme={{
+            primary: "rgb(92,48,125)",
+            secondary: "#ffffff",
+            tertiary: "rgba(92,48,125,0.55)",
+            text_primary: "#ffffff",
+            text_secondary: "rgb(92,48,125)",
+            text_tertiary: "#00000099",
+            disableThemeScrollbar: false,
+          }}
+          config={{
+            header: {
+              disableHeader: true,
+              disableFileName: true,
+              retainURLParams: false
+            }
+          }}
+        />
+      );
+    }
+
+    // return (
+    //   <div style={{width: "100%", height: "300px"}} >
+    //     <CodeMirror
+    //       value={url}
+    //       options={{mode: "javascript", theme: "material-darker"}}
+    //       onBeforeChange={(editor, data, value) => {}}
+    //     />
+    //   </div>
+    // );
+
     return (
       <a target="_blank" rel="noreferrer" href={url}>
         <FileViewer
@@ -195,9 +243,7 @@ class FileTree extends React.Component {
               this.renderTree(this.props.tree)
             }
           </Col>
-          <Col span={2}>
-          </Col>
-          <Col span={16}>
+          <Col span={18}>
             {
               this.renderFileViewer()
             }
