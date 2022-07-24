@@ -1,13 +1,14 @@
 import React from "react";
-import {Col, Empty, Row, Tree} from 'antd';
+import {Col, Empty, Row, Spin, Tree} from 'antd';
 import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/javascript/javascript");
+import i18next from "i18next";
+// require("codemirror/theme/material-darker.css");
+// require("codemirror/mode/javascript/javascript");
 
 const { DirectoryTree } = Tree;
 
@@ -54,6 +55,8 @@ class FileTree extends React.Component {
       gData: defaultData,
       expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
       selectedKeys: [],
+      loading: false,
+      text: null,
     };
   }
 
@@ -137,8 +140,28 @@ class FileTree extends React.Component {
         return;
       }
 
-      if (this.state.selectedKeys.length !== 0) {
+      if (selectedKeys.length !== 0) {
+        const path = selectedKeys[0];
+        const filename = path.split("/").pop();
+        if (filename.includes(".")) {
+          const ext = filename.split('.').pop().toLowerCase();
+          const url = `${this.props.domain}/${path}`;
 
+          if (["txt", "html", "js", "css", "md"].includes(ext)) {
+            this.setState({
+              loading: true,
+            });
+
+            fetch(url, {method: 'GET'})
+              .then(res => res.text())
+              .then(res => {
+                this.setState({
+                  text: res,
+                  loading: false,
+                });
+            });
+          }
+        }
       }
 
       this.setState({
@@ -209,15 +232,25 @@ class FileTree extends React.Component {
       );
     }
 
-    // return (
-    //   <div style={{width: "100%", height: "300px"}} >
-    //     <CodeMirror
-    //       value={url}
-    //       options={{mode: "javascript", theme: "material-darker"}}
-    //       onBeforeChange={(editor, data, value) => {}}
-    //     />
-    //   </div>
-    // );
+    if (["txt", "html", "js", "css", "md"].includes(ext)) {
+      if (this.state.loading) {
+        return (
+          <div className="App">
+            <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
+          </div>
+        );
+      }
+
+      return (
+        <div>
+          <CodeMirror
+            value={this.state.text}
+            // options={{mode: "javascript", theme: "material-darker"}}
+            onBeforeChange={(editor, data, value) => {}}
+          />
+        </div>
+      );
+    }
 
     return (
       <a target="_blank" rel="noreferrer" href={url}>

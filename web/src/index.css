@@ -82,3 +82,7 @@ code {
 .conferenceMenu {
   background-color: rgb(242,242,242) !important;
 }
+
+.react-codemirror2 {
+  height: calc(100vh - 154px)
+}
