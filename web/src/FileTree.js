@@ -1,6 +1,6 @@
 import React from "react";
 import {Col, Empty, Row, Spin, Tree} from 'antd';
-import {FileTextOutlined, FolderOpenOutlined} from "@ant-design/icons";
+import {createFromIconfontCN} from "@ant-design/icons";
 import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
@@ -10,6 +10,10 @@ import "codemirror/lib/codemirror.css";
 import i18next from "i18next";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
+
+const IconFont = createFromIconfontCN({
+  scriptUrl: 'https://cdn.open-ct.com/icon/iconfont.js',
+});
 
 const x = 3;
 const y = 2;
@@ -61,6 +65,15 @@ class FileTree extends React.Component {
 
   updateTable(table) {
     this.props.onUpdateTable(table);
+  }
+
+  getExtFromPath(path) {
+    const filename = path.split("/").pop();
+    if (filename.includes(".")) {
+      return filename.split('.').pop().toLowerCase();
+    } else {
+      return "";
+    }
   }
 
   renderTree(tree) {
@@ -141,9 +154,8 @@ class FileTree extends React.Component {
 
       if (selectedKeys.length !== 0) {
         const path = selectedKeys[0];
-        const filename = path.split("/").pop();
-        if (filename.includes(".")) {
-          const ext = filename.split('.').pop().toLowerCase();
+        const ext = this.getExtFromPath(path);
+        if (ext !== "") {
           const url = `${this.props.domain}/${path}`;
 
           if (["txt", "html", "js", "css", "md"].includes(ext)) {
@@ -195,9 +207,30 @@ class FileTree extends React.Component {
         }}
         icon={(file) => {
           if (file.isLeaf) {
-            return <FileTextOutlined />
+            const ext = this.getExtFromPath(file.data.key);
+            if (ext === "pdf") {
+              return <IconFont type='icon-testpdf' />
+            } else if (ext === "doc" || ext === "docx") {
+              return <IconFont type='icon-testdocx' />
+            } else if (ext === "ppt" || ext === "pptx") {
+              return <IconFont type='icon-testpptx' />
+            } else if (ext === "xls" || ext === "xlsx") {
+              return <IconFont type='icon-testxlsx' />
+            } else if (ext === "txt") {
+              return <IconFont type='icon-testdocument' />
+            } else if (ext === "png" || ext === "bmp" || ext === "jpg" || ext === "jpeg" || ext === "svg") {
+              return <IconFont type='icon-testPicture' />
+            } else if (ext === "html") {
+              return <IconFont type='icon-testhtml' />
+            } else if (ext === "js") {
+              return <IconFont type='icon-testjs' />
+            } else if (ext === "css") {
+              return <IconFont type='icon-testcss' />
+            } else {
+              return <IconFont type='icon-testfile-unknown' />
+            }
           } else {
-            return <FolderOpenOutlined />
+            return <IconFont type='icon-testfolder' />
           }
         }}
       />
@@ -217,7 +250,7 @@ class FileTree extends React.Component {
       );
     }
 
-    const ext = filename.split('.').pop().toLowerCase();
+    const ext = this.getExtFromPath(path);
     const url = `${this.props.domain}/${path}`;
 
     if (["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext)) {
