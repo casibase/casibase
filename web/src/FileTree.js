@@ -1,6 +1,6 @@
 import React from "react";
-import {Col, Empty, Row, Spin, Tree} from 'antd';
-import {createFromIconfontCN} from "@ant-design/icons";
+import {Button, Col, Empty, Row, Spin, Tooltip, Tree} from 'antd';
+import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, EditOutlined, FolderAddOutlined, RadiusSettingOutlined} from "@ant-design/icons";
 import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
@@ -200,9 +200,38 @@ class FileTree extends React.Component {
         treeData={tree.children}
         titleRender={(file) => {
           if (file.isLeaf) {
-            return `${file.title} (${Setting.getFriendlyFileSize(file.size)})`;
+            return (
+              <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
+                <div>
+                  <Tooltip title={i18next.t("store:Rename")}>
+                    <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Rename");e.stopPropagation()}} />
+                  </Tooltip>
+                  <Tooltip title={i18next.t("store:Move")}>
+                    <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Move");e.stopPropagation()}} />
+                  </Tooltip>
+                  <Tooltip title={i18next.t("store:Delete")}>
+                    <Button icon={<DeleteOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Delete");e.stopPropagation()}} />
+                  </Tooltip>
+                </div>
+              }>
+                {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+              </Tooltip>
+            )
           } else {
-            return file.title;
+            return (
+              <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
+                <div>
+                  <Tooltip title={i18next.t("store:New folder")}>
+                    <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "New folder");e.stopPropagation()}} />
+                  </Tooltip>
+                  <Tooltip title={i18next.t("store:Upload file")}>
+                    <Button icon={<CloudUploadOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Upload file");e.stopPropagation()}} />
+                  </Tooltip>
+                </div>
+              }>
+                {file.title}
+              </Tooltip>
+            )
           }
         }}
         icon={(file) => {

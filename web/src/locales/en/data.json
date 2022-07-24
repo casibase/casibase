@@ -29,8 +29,15 @@
     "Wordsets": "Wordsets"
   },
   "store": {
+    "Bucket": "Bucket",
+    "Delete": "Delete",
+    "Domain": "Domain",
     "Edit Store": "Edit Store",
-    "File tree": "File tree"
+    "File tree": "File tree",
+    "Move": "Move",
+    "New folder": "New folder",
+    "Rename": "Rename",
+    "Upload file": "Upload file"
   },
   "vectorset": {
     "Count": "Count",

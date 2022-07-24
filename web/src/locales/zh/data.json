@@ -29,8 +29,15 @@
     "Wordsets": "我的词汇集"
   },
   "store": {
+    "Bucket": "Bucket",
+    "Delete": "删除",
+    "Domain": "域名",
     "Edit Store": "编辑数据仓库",
-    "File tree": "文件"
+    "File tree": "文件",
+    "Move": "移动",
+    "New folder": "新建文件夹",
+    "Rename": "重命名",
+    "Upload file": "上传文件"
   },
   "vectorset": {
     "Count": "个数",
