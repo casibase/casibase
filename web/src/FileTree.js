@@ -177,7 +177,7 @@ class FileTree extends React.Component {
         multiple={false}
         defaultExpandAll={true}
         // defaultExpandedKeys={tree.children.map(file => file.key)}
-        draggable
+        draggable={false}
         blockNode
         onDragEnter={onDragEnter}
         onDrop={onDrop}
@@ -185,6 +185,13 @@ class FileTree extends React.Component {
         selectedKeys={this.state.selectedKeys}
         // treeData={this.state.gData}
         treeData={tree.children}
+        titleRender={(file) => {
+          if (file.isLeaf) {
+            return `${file.title} (${Setting.getFriendlyFileSize(file.fileSize)})`;
+          } else {
+            return file.title;
+          }
+        }}
       />
     );
   }

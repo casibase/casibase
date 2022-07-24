@@ -1,7 +1,6 @@
 package object
 
 import (
-	"fmt"
 	"strings"
 	"time"
 
@@ -52,9 +51,6 @@ func (store *Store) createPathIfNotExisted(tokens []string, fileSize int64, last
 		}
 
 		if i == len(tokens)-1 {
-			if newFile.IsLeaf {
-				newFile.Title = fmt.Sprintf("%s (%s)", token, util.GetFileSizeString(fileSize))
-			}
 			newFile.FileSize = fileSize
 			newFile.ModifiedTime = lastModifiedTime
 		}
