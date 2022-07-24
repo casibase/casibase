@@ -1,5 +1,6 @@
 import React from "react";
 import {Col, Empty, Row, Spin, Tree} from 'antd';
+import {FileTextOutlined, FolderOpenOutlined} from "@ant-design/icons";
 import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
@@ -9,8 +10,6 @@ import "codemirror/lib/codemirror.css";
 import i18next from "i18next";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
-
-const { DirectoryTree } = Tree;
 
 const x = 3;
 const y = 2;
@@ -170,7 +169,7 @@ class FileTree extends React.Component {
     };
 
     return (
-      <DirectoryTree
+      <Tree
         height={"calc(100vh - 154px)"}
         virtual={false}
         className="draggable-tree"
@@ -179,6 +178,8 @@ class FileTree extends React.Component {
         // defaultExpandedKeys={tree.children.map(file => file.key)}
         draggable={false}
         blockNode
+        showLine={true}
+        showIcon={true}
         onDragEnter={onDragEnter}
         onDrop={onDrop}
         onSelect={onSelect}
@@ -190,6 +191,13 @@ class FileTree extends React.Component {
             return `${file.title} (${Setting.getFriendlyFileSize(file.fileSize)})`;
           } else {
             return file.title;
+          }
+        }}
+        icon={(file) => {
+          if (file.isLeaf) {
+            return <FileTextOutlined />
+          } else {
+            return <FolderOpenOutlined />
           }
         }}
       />
@@ -278,12 +286,12 @@ class FileTree extends React.Component {
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
         <Row style={{marginTop: '20px'}} >
-          <Col span={6}>
+          <Col span={7}>
             {
               this.renderTree(this.props.tree)
             }
           </Col>
-          <Col span={18}>
+          <Col span={17}>
             {
               this.renderFileViewer()
             }

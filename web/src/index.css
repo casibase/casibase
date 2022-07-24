@@ -86,3 +86,7 @@ code {
 .react-codemirror2 {
   height: calc(100vh - 154px)
 }
+
+.anticon-file {
+  visibility: hidden;
+}
