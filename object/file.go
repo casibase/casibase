@@ -28,10 +28,13 @@ func DeleteFile(storeId string, key string, isLeaf bool) bool {
 	}
 
 	if isLeaf {
-		objectKey := fmt.Sprintf("%s", key)
-		storage.DeleteObject(store.Bucket, objectKey)
+		storage.DeleteObject(store.Bucket, key)
 		return true
 	} else {
-		return false
+		objects := storage.ListObjects(store.Bucket, key)
+		for _, object := range objects {
+			storage.DeleteObject(store.Bucket, object.Key)
+		}
+		return true
 	}
 }

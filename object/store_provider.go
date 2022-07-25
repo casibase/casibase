@@ -66,7 +66,7 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 }
 
 func (store *Store) Populate() {
-	objects := storage.ListObjects(store.Bucket)
+	objects := storage.ListObjects(store.Bucket, "")
 	for _, object := range objects {
 		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
 

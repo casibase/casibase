@@ -20,14 +20,14 @@ func getBucket(bucketName string) *oss.Bucket {
 	return bucket
 }
 
-func ListObjects(bucketName string) []oss.ObjectProperties {
+func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
 	bucket := getBucket(bucketName)
 
 	res := []oss.ObjectProperties{}
 	marker := oss.Marker("")
 	i := 0
 	for {
-		resp, err := bucket.ListObjects(oss.MaxKeys(1000), marker)
+		resp, err := bucket.ListObjects(oss.Prefix(prefix), oss.MaxKeys(1000), marker)
 		if err != nil {
 			panic(err)
 		}
