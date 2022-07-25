@@ -1,9 +1,10 @@
 import React from "react";
 import {Button, Col, Empty, Row, Spin, Tooltip, Tree} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, EditOutlined, FolderAddOutlined, RadiusSettingOutlined} from "@ant-design/icons";
-import FileViewer from 'react-file-viewer';
 import * as Setting from "./Setting";
+import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+import FileViewer from 'react-file-viewer';
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -74,6 +75,18 @@ class FileTree extends React.Component {
     } else {
       return "";
     }
+  }
+
+  deleteFile(file) {
+    FileBackend.deleteFile(`${this.props.store.owner}/${this.props.store.name}`, file)
+      .then((res) => {
+          Setting.showMessage("success", `File deleted successfully`);
+          window.location.reload();
+        }
+      )
+      .catch(error => {
+        Setting.showMessage("error", `File failed to delete: ${error}`);
+      });
   }
 
   renderTree(store) {
@@ -204,13 +217,22 @@ class FileTree extends React.Component {
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
                 <div>
                   <Tooltip title={i18next.t("store:Rename")}>
-                    <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Rename");e.stopPropagation()}} />
+                    <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {
+                      Setting.showMessage("error", "Rename");
+                      e.stopPropagation();
+                    }} />
                   </Tooltip>
                   <Tooltip title={i18next.t("store:Move")}>
-                    <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Move");e.stopPropagation()}} />
+                    <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {
+                      Setting.showMessage("error", "Move");
+                      e.stopPropagation();
+                    }} />
                   </Tooltip>
                   <Tooltip title={i18next.t("store:Delete")}>
-                    <Button icon={<DeleteOutlined />} size="small" onClick={(e) => {Setting.showMessage("error", "Delete");e.stopPropagation()}} />
+                    <Button icon={<DeleteOutlined />} size="small" onClick={(e) => {
+                      this.deleteFile(file);
+                      e.stopPropagation();
+                    }} />
                   </Tooltip>
                 </div>
               }>

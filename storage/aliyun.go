@@ -2,7 +2,7 @@ package storage
 
 import "github.com/aliyun/aliyun-oss-go-sdk/oss"
 
-func ListObjects(bucketName string) []oss.ObjectProperties {
+func getBucket(bucketName string) *oss.Bucket {
 	client, err := oss.New(endpoint, clientId, clientSecret)
 	if err != nil {
 		panic(err)
@@ -12,6 +12,12 @@ func ListObjects(bucketName string) []oss.ObjectProperties {
 	if err != nil {
 		panic(err)
 	}
+
+	return bucket
+}
+
+func ListObjects(bucketName string) []oss.ObjectProperties {
+	bucket := getBucket(bucketName)
 
 	res := []oss.ObjectProperties{}
 	marker := oss.Marker("")
@@ -36,4 +42,13 @@ func ListObjects(bucketName string) []oss.ObjectProperties {
 	}
 
 	return res
+}
+
+func DeleteObject(bucketName string, key string) {
+	bucket := getBucket(bucketName)
+
+	err := bucket.DeleteObject(key)
+	if err != nil {
+		panic(err)
+	}
 }

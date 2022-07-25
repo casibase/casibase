@@ -51,4 +51,8 @@ func initAPI() {
 	beego.Router("/api/update-store", &controllers.ApiController{}, "POST:UpdateStore")
 	beego.Router("/api/add-store", &controllers.ApiController{}, "POST:AddStore")
 	beego.Router("/api/delete-store", &controllers.ApiController{}, "POST:DeleteStore")
+
+	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
+	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
+	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")
 }
