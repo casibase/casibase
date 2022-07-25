@@ -48,10 +48,8 @@ func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
 	return res
 }
 
-func PutObject(bucketName string, key string) {
+func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) {
 	bucket := getBucket(bucketName)
-
-	fileBuffer := bytes.NewBuffer(nil)
 
 	err := bucket.PutObject(key, fileBuffer)
 	if err != nil {

@@ -9,10 +9,13 @@ export function updateFile(storeId, name, file) {
   }).then(res => res.json());
 }
 
-export function addFile(storeId, key, newFolder) {
-  return fetch(`${Setting.ServerUrl}/api/add-file?store=${storeId}&key=${key}&newFolder=${newFolder}`, {
+export function addFile(storeId, key, isLeaf, filename, file) {
+  let formData = new FormData();
+  formData.append("file", file);
+  return fetch(`${Setting.ServerUrl}/api/add-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}&filename=${filename}`, {
     method: 'POST',
     credentials: 'include',
+    body: formData,
   }).then(res => res.json());
 }
 

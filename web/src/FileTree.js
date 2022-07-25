@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree} from 'antd';
+import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, EditOutlined, FolderAddOutlined, RadiusSettingOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
@@ -86,9 +86,24 @@ class FileTree extends React.Component {
     };
   }
 
+  uploadFile(file, info) {
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+
+    // this.setState({uploading: true});
+    const filename = info.fileList[0].name;
+    FileBackend.addFile(storeId, file.key, true, filename, info.file)
+      .then(res => {
+        Setting.showMessage("success", `File uploaded successfully`);
+        window.location.reload();
+      })
+      .catch(error => {
+        Setting.showMessage("error", `File failed to upload: ${error}`);
+      });
+  };
+
   addFile(file, newFolder) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.addFile(storeId, file.key, newFolder)
+    FileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
         Setting.showMessage("success", `File added successfully`);
         window.location.reload();
@@ -303,10 +318,16 @@ class FileTree extends React.Component {
                     }} />
                   </Tooltip>
                   <Tooltip title={i18next.t("store:Upload file")}>
-                    <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {
-                      Setting.showMessage("error", "Upload file");
-                      e.stopPropagation();
-                    }} />
+                    <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
+                      this.uploadFile(file, info);
+                    }}
+                    >
+                      <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                    </Upload>
+                    {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
+                    {/*  Setting.showMessage("error", "Upload file");*/}
+                    {/*  e.stopPropagation();*/}
+                    {/*}} />*/}
                   </Tooltip>
                   <Tooltip title={i18next.t("store:Delete")}>
                     <span onClick={(e) => e.stopPropagation()}>
@@ -404,7 +425,7 @@ class FileTree extends React.Component {
       );
     }
 
-    if (["txt", "html", "js", "css", "md"].includes(ext)) {
+    if (["txt", "htm", "html", "js", "css", "md"].includes(ext)) {
       if (this.state.loading) {
         return (
           <div className="App">

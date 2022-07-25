@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"mime/multipart"
 
 	"github.com/casbin/casbase/object"
 )
@@ -23,9 +24,21 @@ func (c *ApiController) UpdateFile() {
 func (c *ApiController) AddFile() {
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
-	newFolder := c.Input().Get("newFolder")
+	isLeaf := c.Input().Get("isLeaf") == "1"
+	filename := c.Input().Get("filename")
+	var file multipart.File
 
-	c.Data["json"] = object.AddFile(storeId, key, newFolder)
+	if isLeaf {
+		var err error
+		file, _, err = c.GetFile("file")
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		defer file.Close()
+	}
+
+	c.Data["json"] = object.AddFile(storeId, key, isLeaf, filename, file)
 	c.ServeJSON()
 }
 
