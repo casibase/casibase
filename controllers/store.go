@@ -22,6 +22,11 @@ func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
 	store := object.GetStore(id)
+	if store == nil {
+		c.ResponseError("store is empty")
+		return
+	}
+
 	store.Populate()
 
 	c.Data["json"] = store

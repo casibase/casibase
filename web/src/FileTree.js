@@ -1,14 +1,6 @@
 import React from "react";
 import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
-import {
-  CloudUploadOutlined,
-  createFromIconfontCN,
-  DeleteOutlined,
-  DownloadOutlined,
-  EditOutlined,
-  FolderAddOutlined,
-  RadiusSettingOutlined
-} from "@ant-design/icons";
+import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FolderAddOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
@@ -17,7 +9,6 @@ import i18next from "i18next";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
-import {downloadFile, openLink} from "./Setting";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
 
@@ -440,9 +431,23 @@ class FileTree extends React.Component {
           }}
         />
       );
-    }
-
-    if (["txt", "htm", "html", "js", "css", "md"].includes(ext)) {
+    } else if (["png", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext)) {
+      // https://github.com/plangrid/react-file-viewer
+      return (
+        <a target="_blank" rel="noreferrer" href={url}>
+          <FileViewer
+            key={path}
+            fileType={ext}
+            filePath={url}
+            errorComponent={<div>error</div>}
+            onError={(error) => {
+              Setting.showMessage("error", error);
+            }}
+          />
+        </a>
+      );
+    } else {
+      // https://github.com/scniro/react-codemirror2
       if (this.state.loading) {
         return (
           <div className="App">
@@ -461,20 +466,6 @@ class FileTree extends React.Component {
         </div>
       );
     }
-
-    return (
-      <a target="_blank" rel="noreferrer" href={url}>
-        <FileViewer
-          key={path}
-          fileType={ext}
-          filePath={url}
-          errorComponent={<div>error</div>}
-          onError={(error) => {
-            Setting.showMessage("error", error);
-          }}
-        />
-      </a>
-    );
   }
 
   render() {

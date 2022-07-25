@@ -36,13 +36,6 @@ class StoreListPage extends React.Component {
       displayName: `Store ${this.state.stores.length}`,
       bucket: "casbase",
       domain: "https://github.com/casbin/casbase",
-      fileTree: {
-        key: "/",
-        title: "",
-        modifiedTime: moment().format(),
-        isLeaf: false,
-        children: [],
-      },
     }
   }
 
