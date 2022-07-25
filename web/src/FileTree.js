@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Empty, Popconfirm, Row, Spin, Tooltip, Tree} from 'antd';
+import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, EditOutlined, FolderAddOutlined, RadiusSettingOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
@@ -61,6 +61,7 @@ class FileTree extends React.Component {
       selectedKeys: [],
       loading: false,
       text: null,
+      newFolder: null,
     };
   }
 
@@ -85,28 +86,29 @@ class FileTree extends React.Component {
     };
   }
 
-  addFile() {
+  addFile(file, newFolder) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    const file = this.newFile();
-    FileBackend.addFile(storeId, file)
+    FileBackend.addFile(storeId, file.key, newFolder)
       .then((res) => {
-          Setting.showMessage("success", `File added successfully`);
-          window.location.reload();
-        }
-      )
+        Setting.showMessage("success", `File added successfully`);
+        window.location.reload();
+      })
       .catch(error => {
         Setting.showMessage("error", `File failed to add: ${error}`);
       });
   }
 
-  deleteFile(file) {
+  deleteFile(file, isLeaf) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-    FileBackend.deleteFile(storeId, file)
+    FileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
+        if (res === true) {
           Setting.showMessage("success", `File deleted successfully`);
           window.location.reload();
+        } else {
+          Setting.showMessage("error", `File failed to delete: ${res}`);
         }
-      )
+      })
       .catch(error => {
         Setting.showMessage("error", `File failed to delete: ${error}`);
       });
@@ -256,7 +258,7 @@ class FileTree extends React.Component {
                       <Popconfirm
                         title={`Sure to delete file: ${file.title} ?`}
                         onConfirm={(e) => {
-                          this.deleteFile(file);
+                          this.deleteFile(file, true);
                         }}
                         okText="OK"
                         cancelText="Cancel"
@@ -274,7 +276,27 @@ class FileTree extends React.Component {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
                 <div>
-                  <Tooltip title={i18next.t("store:New folder")}>
+                  <Tooltip color={"rgb(255,255,255)"} placement="top" title={
+                    <div>
+                      <div style={{color: "black"}}>
+                        {i18next.t("store:New folder")}:
+                      </div>
+                      <Input.Group style={{marginTop: "5px"}} compact>
+                        <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
+                          this.setState({
+                            newFolder: e.target.value,
+                          });
+                        }} />
+                        <Button type="primary" onClick={(e) => {
+                          this.addFile(file, this.state.newFolder);
+                          e.stopPropagation();
+                        }}
+                        >
+                          OK
+                        </Button>
+                      </Input.Group>
+                    </div>
+                  }>
                     <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
                       this.addFile();
                       e.stopPropagation();
@@ -291,7 +313,7 @@ class FileTree extends React.Component {
                       <Popconfirm
                         title={`Sure to delete folder: ${file.title} ?`}
                         onConfirm={(e) => {
-                          this.deleteFile(file);
+                          this.deleteFile(file, false);
                         }}
                         okText="OK"
                         cancelText="Cancel"

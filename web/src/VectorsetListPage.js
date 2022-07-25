@@ -47,12 +47,11 @@ class VectorsetListPage extends React.Component {
     const newVectorset = this.newVectorset();
     VectorsetBackend.addVectorset(newVectorset)
       .then((res) => {
-          Setting.showMessage("success", `Vectorset added successfully`);
-          this.setState({
-            vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
-          });
-        }
-      )
+        Setting.showMessage("success", `Vectorset added successfully`);
+        this.setState({
+          vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Vectorset failed to add: ${error}`);
       });
@@ -61,12 +60,11 @@ class VectorsetListPage extends React.Component {
   deleteVectorset(i) {
     VectorsetBackend.deleteVectorset(this.state.vectorsets[i])
       .then((res) => {
-          Setting.showMessage("success", `Vectorset deleted successfully`);
-          this.setState({
-            vectorsets: Setting.deleteRow(this.state.vectorsets, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Vectorset deleted successfully`);
+        this.setState({
+          vectorsets: Setting.deleteRow(this.state.vectorsets, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Vectorset failed to delete: ${error}`);
       });

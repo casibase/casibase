@@ -45,12 +45,11 @@ class VideoListPage extends React.Component {
     const newVideo = this.newVideo();
     VideoBackend.addVideo(newVideo)
       .then((res) => {
-          Setting.showMessage("success", `Video added successfully`);
-          this.setState({
-            videos: Setting.prependRow(this.state.videos, newVideo),
-          });
-        }
-      )
+        Setting.showMessage("success", `Video added successfully`);
+        this.setState({
+          videos: Setting.prependRow(this.state.videos, newVideo),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Video failed to add: ${error}`);
       });
@@ -59,12 +58,11 @@ class VideoListPage extends React.Component {
   deleteVideo(i) {
     VideoBackend.deleteVideo(this.state.videos[i])
       .then((res) => {
-          Setting.showMessage("success", `Video deleted successfully`);
-          this.setState({
-            videos: Setting.deleteRow(this.state.videos, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Video deleted successfully`);
+        this.setState({
+          videos: Setting.deleteRow(this.state.videos, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Video failed to delete: ${error}`);
       });

@@ -50,12 +50,11 @@ class StoreListPage extends React.Component {
     const newStore = this.newStore();
     StoreBackend.addStore(newStore)
       .then((res) => {
-          Setting.showMessage("success", `Store added successfully`);
-          this.setState({
-            stores: Setting.prependRow(this.state.stores, newStore),
-          });
-        }
-      )
+        Setting.showMessage("success", `Store added successfully`);
+        this.setState({
+          stores: Setting.prependRow(this.state.stores, newStore),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Store failed to add: ${error}`);
       });
@@ -64,12 +63,11 @@ class StoreListPage extends React.Component {
   deleteStore(i) {
     StoreBackend.deleteStore(this.state.stores[i])
       .then((res) => {
-          Setting.showMessage("success", `Store deleted successfully`);
-          this.setState({
-            stores: Setting.deleteRow(this.state.stores, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Store deleted successfully`);
+        this.setState({
+          stores: Setting.deleteRow(this.state.stores, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Store failed to delete: ${error}`);
       });

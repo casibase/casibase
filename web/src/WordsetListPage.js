@@ -44,12 +44,11 @@ class WordsetListPage extends React.Component {
     const newWordset = this.newWordset();
     WordsetBackend.addWordset(newWordset)
       .then((res) => {
-          Setting.showMessage("success", `Wordset added successfully`);
-          this.setState({
-            wordsets: Setting.prependRow(this.state.wordsets, newWordset),
-          });
-        }
-      )
+        Setting.showMessage("success", `Wordset added successfully`);
+        this.setState({
+          wordsets: Setting.prependRow(this.state.wordsets, newWordset),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Wordset failed to add: ${error}`);
       });
@@ -58,12 +57,11 @@ class WordsetListPage extends React.Component {
   deleteWordset(i) {
     WordsetBackend.deleteWordset(this.state.wordsets[i])
       .then((res) => {
-          Setting.showMessage("success", `Wordset deleted successfully`);
-          this.setState({
-            wordsets: Setting.deleteRow(this.state.wordsets, i),
-          });
-        }
-      )
+        Setting.showMessage("success", `Wordset deleted successfully`);
+        this.setState({
+          wordsets: Setting.deleteRow(this.state.wordsets, i),
+        });
+      })
       .catch(error => {
         Setting.showMessage("error", `Wordset failed to delete: ${error}`);
       });

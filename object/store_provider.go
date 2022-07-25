@@ -53,6 +53,10 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 		if i == len(tokens)-1 {
 			newFile.Size = size
 			newFile.ModifiedTime = lastModifiedTime
+
+			if token == "_hidden.ini" {
+				continue
+			}
 		}
 
 		currentFile.Children = append(currentFile.Children, newFile)
