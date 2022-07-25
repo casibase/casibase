@@ -1,6 +1,10 @@
 package storage
 
-import "github.com/aliyun/aliyun-oss-go-sdk/oss"
+import (
+	"bytes"
+
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+)
 
 func getBucket(bucketName string) *oss.Bucket {
 	client, err := oss.New(endpoint, clientId, clientSecret)
@@ -42,6 +46,17 @@ func ListObjects(bucketName string) []oss.ObjectProperties {
 	}
 
 	return res
+}
+
+func PutObject(bucketName string, key string) {
+	bucket := getBucket(bucketName)
+
+	fileBuffer := bytes.NewBuffer(nil)
+
+	err := bucket.PutObject(key, fileBuffer)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func DeleteObject(bucketName string, key string) {

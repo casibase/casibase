@@ -5,10 +5,10 @@ import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import FileViewer from 'react-file-viewer';
+import i18next from "i18next";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
-import i18next from "i18next";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
 
@@ -77,8 +77,31 @@ class FileTree extends React.Component {
     }
   }
 
+  newFile() {
+    return {
+      key: "docs/newfolder",
+      title: "newfolder",
+      isLeaf: false,
+    };
+  }
+
+  addFile() {
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    const file = this.newFile();
+    FileBackend.addFile(storeId, file)
+      .then((res) => {
+          Setting.showMessage("success", `File added successfully`);
+          window.location.reload();
+        }
+      )
+      .catch(error => {
+        Setting.showMessage("error", `File failed to add: ${error}`);
+      });
+  }
+
   deleteFile(file) {
-    FileBackend.deleteFile(`${this.props.store.owner}/${this.props.store.name}`, file)
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    FileBackend.deleteFile(storeId, file)
       .then((res) => {
           Setting.showMessage("success", `File deleted successfully`);
           window.location.reload();
@@ -253,7 +276,7 @@ class FileTree extends React.Component {
                 <div>
                   <Tooltip title={i18next.t("store:New folder")}>
                     <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                      Setting.showMessage("error", "New folder");
+                      this.addFile();
                       e.stopPropagation();
                     }} />
                   </Tooltip>

@@ -1,18 +1,24 @@
 package object
 
-import "github.com/casbin/casbase/storage"
+import (
+	"fmt"
+
+	"github.com/casbin/casbase/storage"
+)
 
 func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
 func AddFile(storeId string, file *File) bool {
-	affected, err := adapter.engine.Insert(file)
-	if err != nil {
-		panic(err)
+	store := GetStore(storeId)
+	if store == nil {
+		return false
 	}
 
-	return affected != 0
+	objectKey := fmt.Sprintf("%s/_hidden.ini", file.Key)
+	storage.PutObject(store.Bucket, objectKey)
+	return true
 }
 
 func DeleteFile(storeId string, file *File) bool {
@@ -21,6 +27,7 @@ func DeleteFile(storeId string, file *File) bool {
 		return false
 	}
 
-	storage.DeleteObject(store.Bucket, file.Key)
+	objectKey := fmt.Sprintf("%s", file.Key)
+	storage.DeleteObject(store.Bucket, objectKey)
 	return true
 }
