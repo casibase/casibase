@@ -37,7 +37,7 @@ class FileTreePage extends React.Component {
     }
 
     return (
-      <FileTree domain={this.state.store.domain} tree={this.state.store.fileTree} />
+      <FileTree store={this.state.store} />
     );
   }
 }

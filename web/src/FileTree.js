@@ -76,7 +76,7 @@ class FileTree extends React.Component {
     }
   }
 
-  renderTree(tree) {
+  renderTree(store) {
     const onDragEnter = (info) => {
       // console.log(info); // expandedKeys 需要受控时设置
       // setExpandedKeys(info.expandedKeys)
@@ -156,7 +156,7 @@ class FileTree extends React.Component {
         const path = selectedKeys[0];
         const ext = this.getExtFromPath(path);
         if (ext !== "") {
-          const url = `${this.props.domain}/${path}`;
+          const url = `${store.domain}/${path}`;
 
           if (["txt", "html", "js", "css", "md"].includes(ext)) {
             this.setState({
@@ -197,7 +197,7 @@ class FileTree extends React.Component {
         onSelect={onSelect}
         selectedKeys={this.state.selectedKeys}
         // treeData={this.state.gData}
-        treeData={tree.children}
+        treeData={store.fileTree.children}
         titleRender={(file) => {
           if (file.isLeaf) {
             return (
@@ -266,7 +266,7 @@ class FileTree extends React.Component {
     );
   }
 
-  renderFileViewer() {
+  renderFileViewer(store) {
     if (this.state.selectedKeys.length === 0) {
       return null;
     }
@@ -280,7 +280,7 @@ class FileTree extends React.Component {
     }
 
     const ext = this.getExtFromPath(path);
-    const url = `${this.props.domain}/${path}`;
+    const url = `${store.domain}/${path}`;
 
     if (["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
@@ -350,12 +350,12 @@ class FileTree extends React.Component {
         <Row style={{marginTop: '20px'}} >
           <Col span={7}>
             {
-              this.renderTree(this.props.tree)
+              this.renderTree(this.props.store)
             }
           </Col>
           <Col span={17}>
             {
-              this.renderFileViewer()
+              this.renderFileViewer(this.props.store)
             }
           </Col>
         </Row>
