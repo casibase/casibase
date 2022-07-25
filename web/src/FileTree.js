@@ -1,6 +1,14 @@
 import React from "react";
 import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
-import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, EditOutlined, FolderAddOutlined, RadiusSettingOutlined} from "@ant-design/icons";
+import {
+  CloudUploadOutlined,
+  createFromIconfontCN,
+  DeleteOutlined,
+  DownloadOutlined,
+  EditOutlined,
+  FolderAddOutlined,
+  RadiusSettingOutlined
+} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
@@ -9,6 +17,7 @@ import i18next from "i18next";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
+import {downloadFile, openLink} from "./Setting";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
 
@@ -256,15 +265,23 @@ class FileTree extends React.Component {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
                 <div>
-                  <Tooltip title={i18next.t("store:Rename")}>
-                    <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {
-                      Setting.showMessage("error", "Rename");
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                  <Tooltip title={i18next.t("store:Move")}>
-                    <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {
-                      Setting.showMessage("error", "Move");
+                  {/*<Tooltip title={i18next.t("store:Rename")}>*/}
+                  {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
+                  {/*    Setting.showMessage("error", "Rename");*/}
+                  {/*    e.stopPropagation();*/}
+                  {/*  }} />*/}
+                  {/*</Tooltip>*/}
+                  {/*<Tooltip title={i18next.t("store:Move")}>*/}
+                  {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
+                  {/*    Setting.showMessage("error", "Move");*/}
+                  {/*    e.stopPropagation();*/}
+                  {/*  }} />*/}
+                  {/*</Tooltip>*/}
+                  <Tooltip title={i18next.t("store:Download")}>
+                    <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
+                      Setting.showMessage("success", "Successfully downloaded");
+                      const url = `${store.domain}/${file.key}`;
+                      Setting.openLink(url);
                       e.stopPropagation();
                     }} />
                   </Tooltip>
