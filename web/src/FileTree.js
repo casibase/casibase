@@ -337,20 +337,24 @@ class FileTree extends React.Component {
                     {/*  e.stopPropagation();*/}
                     {/*}} />*/}
                   </Tooltip>
-                  <Tooltip title={i18next.t("store:Delete")}>
-                    <span onClick={(e) => e.stopPropagation()}>
-                      <Popconfirm
-                        title={`Sure to delete folder: ${file.title} ?`}
-                        onConfirm={(e) => {
-                          this.deleteFile(file, false);
-                        }}
-                        okText="OK"
-                        cancelText="Cancel"
-                      >
-                        <Button icon={<DeleteOutlined />} size="small" />
-                      </Popconfirm>
-                    </span>
-                  </Tooltip>
+                  {
+                    file.key === "/" ? null : (
+                      <Tooltip title={i18next.t("store:Delete")}>
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Popconfirm
+                            title={`Sure to delete folder: ${file.title} ?`}
+                            onConfirm={(e) => {
+                              this.deleteFile(file, false);
+                            }}
+                            okText="OK"
+                            cancelText="Cancel"
+                          >
+                            <Button icon={<DeleteOutlined />} size="small" />
+                          </Popconfirm>
+                        </span>
+                      </Tooltip>
+                    )
+                  }
                 </div>
               }>
                 {file.title}
