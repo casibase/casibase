@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"strings"
 
 	"github.com/casbin/casbase/storage"
 )
@@ -23,6 +24,7 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 	var fileBuffer *bytes.Buffer
 	if isLeaf {
 		objectKey = fmt.Sprintf("%s/%s", key, filename)
+		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		if _, err := io.Copy(fileBuffer, file); err != nil {
 			panic(err)
@@ -30,6 +32,7 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 
 	} else {
 		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
+		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 	}
 

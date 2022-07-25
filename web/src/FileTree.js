@@ -250,7 +250,7 @@ class FileTree extends React.Component {
         onSelect={onSelect}
         selectedKeys={this.state.selectedKeys}
         // treeData={this.state.gData}
-        treeData={store.fileTree.children}
+        treeData={[store.fileTree]}
         titleRender={(file) => {
           if (file.isLeaf) {
             return (
@@ -479,12 +479,12 @@ class FileTree extends React.Component {
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
         <Row style={{marginTop: '20px'}} >
-          <Col span={7}>
+          <Col span={8}>
             {
               this.renderTree(this.props.store)
             }
           </Col>
-          <Col span={17}>
+          <Col span={16}>
             {
               this.renderFileViewer(this.props.store)
             }

@@ -59,7 +59,7 @@ func (store *Store) Populate() {
 	if store.FileTree == nil {
 		store.FileTree = &File{
 			Key:          "/",
-			Title:        "",
+			Title:        store.DisplayName,
 			ModifiedTime: util.GetCurrentTime(),
 			IsLeaf:       false,
 			Children:     []*File{},

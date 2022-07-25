@@ -72,7 +72,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: 'name',
         key: 'name',
-        width: '120px',
+        width: '300px',
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -86,14 +86,14 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: 'displayName',
         key: 'displayName',
-        width: '200px',
+        // width: '200px',
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: 'action',
         key: 'action',
-        width: '80px',
+        width: '240px',
         render: (text, record, index) => {
           return (
             <div>
