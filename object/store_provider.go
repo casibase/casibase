@@ -10,18 +10,6 @@ import (
 
 func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModifiedTime string, isLeaf bool) {
 	currentFile := store.FileTree
-	if currentFile == nil {
-		currentFile = &File{
-			Key:          "/",
-			Title:        "",
-			ModifiedTime: util.GetCurrentTime(),
-			IsLeaf:       false,
-			Children:     []*File{},
-			ChildrenMap:  map[string]*File{},
-		}
-		store.FileTree = currentFile
-	}
-
 	for i, token := range tokens {
 		if currentFile.Children == nil {
 			currentFile.Children = []*File{}
@@ -67,6 +55,18 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 
 func (store *Store) Populate() {
 	objects := storage.ListObjects(store.Bucket, "")
+
+	if store.FileTree == nil {
+		store.FileTree = &File{
+			Key:          "/",
+			Title:        "",
+			ModifiedTime: util.GetCurrentTime(),
+			IsLeaf:       false,
+			Children:     []*File{},
+			ChildrenMap:  map[string]*File{},
+		}
+	}
+
 	for _, object := range objects {
 		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
 
