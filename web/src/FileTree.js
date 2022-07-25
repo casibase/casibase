@@ -211,7 +211,7 @@ class FileTree extends React.Component {
         if (ext !== "") {
           const url = `${store.domain}/${path}`;
 
-          if (["txt", "html", "js", "css", "md"].includes(ext)) {
+          if (!this.isExtForDocViewer((ext) && !this.isExtForFileViewer(ext))) {
             this.setState({
               loading: true,
             });
@@ -390,6 +390,14 @@ class FileTree extends React.Component {
     );
   }
 
+  isExtForDocViewer(ext) {
+    return ["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext);
+  }
+
+  isExtForFileViewer(ext) {
+    return ["png", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
+  }
+
   renderFileViewer(store) {
     if (this.state.selectedKeys.length === 0) {
       return null;
@@ -406,7 +414,7 @@ class FileTree extends React.Component {
     const ext = this.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
-    if (["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext)) {
+    if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
       return (
         <DocViewer
@@ -431,12 +439,11 @@ class FileTree extends React.Component {
           }}
         />
       );
-    } else if (["png", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext)) {
+    } else if (this.isExtForFileViewer(ext)) {
       // https://github.com/plangrid/react-file-viewer
       return (
         <a target="_blank" rel="noreferrer" href={url}>
           <FileViewer
-            key={path}
             fileType={ext}
             filePath={url}
             errorComponent={<div>error</div>}
