@@ -395,8 +395,7 @@ class NewBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <span id="error_message" /> &nbsp;
-            <button type="button" disabled={Setting.isFileUploading(this.state.form.body)}
-                    className="super normal button" onClick={this.publishTopic.bind(this)}>
+            <button type="button" disabled={Setting.isFileUploading(this.state.form.body)} className="super normal button" onClick={this.publishTopic.bind(this)}>
               <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
               &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("new:Publish")}
             </button>
