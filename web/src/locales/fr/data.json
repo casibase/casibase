@@ -129,7 +129,6 @@
     "Topic does not exist": "Le sujet n'existe pas",
     "Topic not found": "Sujet introuvable",
     "Topic title cannot be empty": "Le titre du sujet ne peut pas être vide",
-    "File has not been uploaded": "Le fichier n'a pas été téléchargé",
     "We had a problem when you signed out, please try again.": "Nous avons eu un problème lorsque vous vous êtes déconnecté, veuillez réessayer.",
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist."
   },

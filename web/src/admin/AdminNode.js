@@ -57,7 +57,6 @@ class AdminNode extends React.Component {
       ],
       color: "#386d97",
       displayColorPicker: false,
-      isFileUploading: false,
     };
   }
 
@@ -338,22 +337,6 @@ class AdminNode extends React.Component {
     });
     if (this.props.event !== "new") {
       this.initForm();
-    }
-  }
-
-  onFileUploading(value) {
-    if ((value === "" || value === undefined || value === null)) {
-      this.setState({isFileUploading: false});
-      return;
-    }
-    // `![Uploading file...]()`
-    // Configure in `inlineAttachment.prototype.progressText`
-    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
-    const str = "![Uploading file...]()";
-    if (value.indexOf(str) !== -1) {
-      this.setState({isFileUploading: true});
-    } else {
-      this.setState({isFileUploading: false});
     }
   }
 
@@ -831,7 +814,6 @@ class AdminNode extends React.Component {
                               }}
                               onBeforeChange={(editor, data, value) => {
                                 this.updateFormField("desc", value);
-                                this.onFileUploading(this.state.form.desc);
                               }}
                               onChange={(editor, data, value) => {}}
                             />
@@ -842,7 +824,7 @@ class AdminNode extends React.Component {
                     <tr>
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
-                        {!newNode ? <input type="submit" disabled={this.state.isFileUploading} className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()} /> : null}
+                        {!newNode ? <input type="submit" className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()} /> : null}
                       </td>
                     </tr>
                     {newNode ? (

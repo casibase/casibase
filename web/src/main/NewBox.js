@@ -42,7 +42,6 @@ class NewBox extends React.Component {
       classes: props,
       form: {},
       isPreviewEnabled: false,
-      isFileUploading: false,
       nodes: [],
       tags: [],
       problems: [],
@@ -116,22 +115,6 @@ class NewBox extends React.Component {
     });
   }
 
-  onFileUploading(value) {
-    if ((value === "" || value === undefined || value === null)) {
-      this.setState({isFileUploading: false});
-      return;
-    }
-    // `![Uploading file...]()`
-    // Configure in `inlineAttachment.prototype.progressText`
-    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
-    const str = "![Uploading file...]()";
-    if (value.indexOf(str) !== -1) {
-      this.setState({isFileUploading: true});
-    } else {
-      this.setState({isFileUploading: false});
-    }
-  }
-
   publishTopic() {
     if (!this.isOkToSubmit()) {
       return;
@@ -190,10 +173,6 @@ class NewBox extends React.Component {
     let problems = [];
     if (this.state.form.title === "" || this.state.form.title === undefined) {
       problems.push(i18next.t("error:Topic title cannot be empty"));
-    }
-
-    if (this.state.isFileUploading) {
-      problems.push(i18next.t("error:File has not been uploaded"));
     }
 
     this.setState({
@@ -331,7 +310,6 @@ class NewBox extends React.Component {
                     }}
                     onBeforeChange={(editor, data, value) => {
                       this.updateFormField("body", value);
-                      this.onFileUploading(this.state.form.body);
                     }}
                     onChange={(editor, data, value) => {}}
                   />
@@ -417,7 +395,7 @@ class NewBox extends React.Component {
         <div className="cell">
           <div className="fr">
             <span id="error_message" /> &nbsp;
-            <button type="button" disabled={this.state.isFileUploading} className="super normal button" onClick={this.publishTopic.bind(this)}>
+            <button type="button" className="super normal button" onClick={this.publishTopic.bind(this)}>
               <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
               &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("new:Publish")}
             </button>

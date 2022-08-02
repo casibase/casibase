@@ -36,7 +36,6 @@ class EditBox extends React.Component {
       objectId: props.match.params.id,
       editType: props.match.params.editType,
       editObject: [],
-      isFileUploading: false,
       nodes: [],
       tags: [],
       form: {},
@@ -141,22 +140,6 @@ class EditBox extends React.Component {
     });
   }
 
-  onFileUploading(value) {
-    if ((value === "" || value === undefined || value === null)) {
-      this.setState({isFileUploading: false});
-      return;
-    }
-    // `![Uploading file...]()`
-    // Configure in `inlineAttachment.prototype.progressText`
-    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
-    const str = "![Uploading file...]()";
-    if (value.indexOf(str) !== -1) {
-      this.setState({isFileUploading: true});
-    } else {
-      this.setState({isFileUploading: false});
-    }
-  }
-
   renderEditorSelect() {
     return (
       <div>
@@ -220,7 +203,6 @@ class EditBox extends React.Component {
               }}
               onBeforeChange={(editor, data, value) => {
                 this.updateFormField("content", value);
-                this.onFileUploading(this.state.form.content);
               }}
               onChange={(editor, data, value) => {}}
             />
@@ -299,7 +281,7 @@ class EditBox extends React.Component {
                 <tr>
                   <td style={{display: "flex", justifyContent: "space-between"}}>
                     <div>
-                      <input type="submit" disabled={this.state.isFileUploading} value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
+                      <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                     </div>
                     {this.renderEditorSelect()}
                   </td>
@@ -352,7 +334,7 @@ class EditBox extends React.Component {
                 />
                 <td style={{display: "flex", justifyContent: "space-between"}}>
                   <div>
-                    <input type="submit" disabled={this.state.isFileUploading} value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
+                    <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
                   </div>
                   {this.renderEditorSelect()}
                 </td>
