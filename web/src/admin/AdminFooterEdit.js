@@ -183,7 +183,7 @@ class AdminFrontConf extends React.Component {
                 }}
               >
                 <button onClick={this.updateConf.bind(this)} type="submit"
-                        disabled={this.state.content !== undefined && this.state.content.indexOf("![Uploading file...]()") !== -1}
+                        disabled={Setting.isFileUploading(this.state.content)}
                         className="super normal button">
                   <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
                   &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("frontConf:Save")}

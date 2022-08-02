@@ -824,8 +824,7 @@ class AdminNode extends React.Component {
                     <tr>
                       <td width="120" align="right"></td>
                       <td width="auto" align="left">
-                        {!newNode ? <input type="submit"
-                                           disabled={this.state.form.desc !== undefined && this.state.form.desc.indexOf("![Uploading file...]()") !== -1}
+                        {!newNode ? <input type="submit" disabled={Setting.isFileUploading(this.state.form.desc)}
                                            className="super normal button" value={i18next.t("node:Save")} onClick={() => this.updateNodeInfo()} /> : null}
                       </td>
                     </tr>

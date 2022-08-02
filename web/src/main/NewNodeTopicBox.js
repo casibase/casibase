@@ -465,8 +465,7 @@ class NewNodeTopicBox extends React.Component {
                       {i18next.t("newNodeTopic:Preview")}{" "}
                     </button>{" "}
                     &nbsp;
-                    <button type="submit"
-                            disabled={this.state.form.body !== undefined && this.state.form.body.indexOf("![Uploading file...]()") !== -1}
+                    <button type="submit" disabled={Setting.isFileUploading(this.state.form.body)}
                             className="super normal button" onClick={this.publishTopic.bind(this)}>
                       <li className="fa fa-paper-plane"></li>
                       &nbsp;

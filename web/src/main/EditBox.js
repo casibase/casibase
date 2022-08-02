@@ -337,7 +337,7 @@ class EditBox extends React.Component {
                 <td style={{display: "flex", justifyContent: "space-between"}}>
                   <div>
                     <input type="submit" value={i18next.t("edit:Save")}
-                           disabled={this.state.form.content !== undefined && this.state.form.content.indexOf("![Uploading file...]()") !== -1}
+                           disabled={Setting.isFileUploading(this.state.form.content)}
                            className="super normal button" onClick={() => this.editContent()} />
                   </div>
                   {this.renderEditorSelect()}
