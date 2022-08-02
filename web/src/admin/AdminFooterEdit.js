@@ -182,7 +182,9 @@ class AdminFrontConf extends React.Component {
                   justifyContent: "space-between",
                 }}
               >
-                <button onClick={this.updateConf.bind(this)} type="submit" className="super normal button">
+                <button onClick={this.updateConf.bind(this)} type="submit"
+                        disabled={this.state.content !== undefined && this.state.content.indexOf("![Uploading file...]()") !== -1}
+                        className="super normal button">
                   <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
                   &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("frontConf:Save")}
                 </button>
