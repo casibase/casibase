@@ -358,3 +358,7 @@ export function getThemeBtnUrl() {
 
   return getStatic(`/img/toggle-${themeMode}.png`);
 }
+
+export function isFileUploading(value) {
+  return value !== undefined && value.includes("![Uploading file...]()");
+}

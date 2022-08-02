@@ -281,7 +281,7 @@ class EditBox extends React.Component {
                 <tr>
                   <td style={{display: "flex", justifyContent: "space-between"}}>
                     <div>
-                      <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
+                      <input type="submit" value={i18next.t("edit:Save")} disabled={Setting.isFileUploading(this.state.form.content)} className="super normal button" onClick={() => this.editContent()} />
                     </div>
                     {this.renderEditorSelect()}
                   </td>
@@ -334,7 +334,7 @@ class EditBox extends React.Component {
                 />
                 <td style={{display: "flex", justifyContent: "space-between"}}>
                   <div>
-                    <input type="submit" value={i18next.t("edit:Save")} className="super normal button" onClick={() => this.editContent()} />
+                    <input type="submit" value={i18next.t("edit:Save")} disabled={Setting.isFileUploading(this.state.form.content)} className="super normal button" onClick={() => this.editContent()} />
                   </div>
                   {this.renderEditorSelect()}
                 </td>
