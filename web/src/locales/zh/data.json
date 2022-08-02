@@ -129,6 +129,7 @@
     "Topic does not exist": "主题不存在",
     "Topic not found": "主题未找到",
     "Topic title cannot be empty": "主题标题不能为空",
+    "File has not been uploaded": "文件没有上传完毕",
     "We had a problem when you signed out, please try again.": "登出有点问题，请重试一次",
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist."
   },

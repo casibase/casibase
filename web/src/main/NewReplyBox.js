@@ -41,7 +41,8 @@ class NewReplyBox extends React.Component {
       topic: null,
       form: {},
       isTypingStarted: false,
-      problem: [],
+      isFileUploading: false,
+      problems: [],
       message: null,
       editor: [
         {
@@ -83,6 +84,22 @@ class NewReplyBox extends React.Component {
     });
   }
 
+  onFileUploading(value) {
+    if ((value === "" || value === undefined || value === null)) {
+      this.setState({isFileUploading: false});
+      return;
+    }
+    // `![Uploading file...]()`
+    // Configure in `inlineAttachment.prototype.progressText`
+    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
+    const str = "![Uploading file...]()";
+    if (value.indexOf(str) !== -1) {
+      this.setState({isFileUploading: true});
+    } else {
+      this.setState({isFileUploading: false});
+    }
+  }
+
   isOkToSubmit() {
     if (!this.state.isTypingStarted) {
       return false;
@@ -92,6 +109,14 @@ class NewReplyBox extends React.Component {
     if (this.state.form.content === "") {
       problems.push(i18next.t("error:Reply content cannot be empty"));
     }
+
+    if (this.state.isFileUploading) {
+      problems.push(i18next.t("error:File has not been uploaded"));
+    }
+
+    this.setState({
+      problems: problems,
+    });
 
     return problems.length === 0;
   }
@@ -311,6 +336,7 @@ class NewReplyBox extends React.Component {
               }}
               onBeforeChange={(editor, data, value) => {
                 this.handleChange(editor, value);
+                this.onFileUploading(this.state.form.content);
               }}
               onChange={(editor, data, value) => {}}
             />
@@ -427,7 +453,7 @@ class NewReplyBox extends React.Component {
               justifyContent: "space-between",
             }}
           >
-            <button style={blurStyle} onClick={this.publishReply.bind(this)} type="submit" className="super normal button">
+            <button style={blurStyle} disabled={this.state.isFileUploading} onClick={this.publishReply.bind(this)} type="submit" className="super normal button">
               <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
               &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("reply:Reply")}
             </button>

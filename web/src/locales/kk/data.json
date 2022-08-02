@@ -129,6 +129,7 @@
     "Topic does not exist": "Топик жоқ",
     "Topic not found": "Топик табылмады",
     "Topic title cannot be empty": "Топиктің атауы бос болмауы керек",
+    "File has not been uploaded": "Файл жүктелмеді",
     "We had a problem when you signed out, please try again.": "Жүйеден шыққан кезде қиындық туындады, әрекетті қайталаңыз.",
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist."
   },

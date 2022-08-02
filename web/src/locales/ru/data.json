@@ -129,6 +129,7 @@
     "Topic does not exist": "Тема не существует",
     "Topic not found": "Тема не найдена",
     "Topic title cannot be empty": "Название темы не может быть пустым",
+    "File has not been uploaded": "Файл не загружен",
     "We had a problem when you signed out, please try again.": "Мы столкнулись с проблемой при выходе из системы, пожалуйста, попробуйте еще раз.",
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist."
   },

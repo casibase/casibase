@@ -129,6 +129,7 @@
     "Topic does not exist": "トピックが存在しません",
     "Topic not found": "トピックが見つかりません",
     "Topic title cannot be empty": "トピックのタイトルは空にできません",
+    "File has not been uploaded": "ファイルがアップロードされていません",
     "We had a problem when you signed out, please try again.": "サインアウト時に問題が発生しました。もう一度やり直してください。",
     "You entered a node ID that does not exist.": "You entered a node ID that does not exist."
   },

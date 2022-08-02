@@ -26,6 +26,7 @@ class AdminFrontConf extends React.Component {
     this.state = {
       classes: props,
       content: "",
+      isFileUploading: false,
       publishClicked: false,
       id: this.props.id,
       message: "",
@@ -107,6 +108,22 @@ class AdminFrontConf extends React.Component {
     });
   }
 
+  onFileUploading(value) {
+    if ((value === "" || value === undefined || value === null)) {
+      this.setState({isFileUploading: false});
+      return;
+    }
+    // `![Uploading file...]()`
+    // Configure in `inlineAttachment.prototype.progressText`
+    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
+    const str = "![Uploading file...]()";
+    if (value.indexOf(str) !== -1) {
+      this.setState({isFileUploading: true});
+    } else {
+      this.setState({isFileUploading: false});
+    }
+  }
+
   renderEditor() {
     return (
       <div
@@ -139,6 +156,7 @@ class AdminFrontConf extends React.Component {
             }}
             onBeforeChange={(editor, data, value) => {
               this.setState({content: value});
+              this.onFileUploading(this.state.content);
             }}
             onChange={(editor, data, value) => {}}
           />
@@ -182,7 +200,7 @@ class AdminFrontConf extends React.Component {
                   justifyContent: "space-between",
                 }}
               >
-                <button onClick={this.updateConf.bind(this)} type="submit" className="super normal button">
+                <button onClick={this.updateConf.bind(this)} type="submit" disabled={this.state.isFileUploading} className="super normal button">
                   <li className={this.state.publishClicked ? "fa fa-circle-o-notch fa-spin" : "fa fa-paper-plane"} />
                   &nbsp;{this.state.publishClicked ? i18next.t("new:Publishing...") : i18next.t("frontConf:Save")}
                 </button>

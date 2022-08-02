@@ -43,6 +43,7 @@ class NewNodeTopicBox extends React.Component {
       form: {},
       isPreviewEnabled: false,
       isTypingStarted: false,
+      isFileUploading: false,
       nodeId: "",
       nodeInfo: {},
       problems: [],
@@ -95,6 +96,22 @@ class NewNodeTopicBox extends React.Component {
     });
   }
 
+  onFileUploading(value) {
+    if ((value === "" || value === undefined || value === null)) {
+      this.setState({isFileUploading: false});
+      return;
+    }
+    // `![Uploading file...]()`
+    // Configure in `inlineAttachment.prototype.progressText`
+    // see https://inlineattachment.readthedocs.io/en/latest/pages/configuration.html
+    const str = "![Uploading file...]()";
+    if (value.indexOf(str) !== -1) {
+      this.setState({isFileUploading: true});
+    } else {
+      this.setState({isFileUploading: false});
+    }
+  }
+
   isOkToSubmit() {
     if (!this.state.isTypingStarted) {
       return false;
@@ -103,6 +120,10 @@ class NewNodeTopicBox extends React.Component {
     let problems = [];
     if (this.state.form.title === "" || this.state.form.title === undefined) {
       problems.push(i18next.t("error:Topic title cannot be empty"));
+    }
+
+    if (this.state.isFileUploading) {
+      problems.push(i18next.t("error:File has not been uploaded"));
     }
 
     this.setState({
@@ -265,6 +286,7 @@ class NewNodeTopicBox extends React.Component {
                   }}
                   onBeforeChange={(editor, data, value) => {
                     this.updateFormField("body", value);
+                    this.onFileUploading(this.state.form.body);
                   }}
                   onChange={(editor, data, value) => {}}
                 />
@@ -407,6 +429,7 @@ class NewNodeTopicBox extends React.Component {
                           }}
                           onBeforeChange={(editor, data, value) => {
                             this.updateFormField("body", value);
+                            this.onFileUploading(this.state.form.body);
                           }}
                           onChange={(editor, data, value) => {}}
                         />
@@ -465,7 +488,7 @@ class NewNodeTopicBox extends React.Component {
                       {i18next.t("newNodeTopic:Preview")}{" "}
                     </button>{" "}
                     &nbsp;
-                    <button type="submit" className="super normal button" onClick={this.publishTopic.bind(this)}>
+                    <button type="submit" disabled={this.state.isFileUploading} className="super normal button" onClick={this.publishTopic.bind(this)}>
                       <li className="fa fa-paper-plane"></li>
                       &nbsp;
                       {i18next.t("newNodeTopic:Publish")}{" "}
