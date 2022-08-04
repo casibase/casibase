@@ -274,6 +274,7 @@ func (c *ApiController) AddTopic() {
 // @Title UploadTopicPic
 // @Description upload topic picture
 // @Param   pic     formData    string  true        "the picture base64 code"
+// @Param	type 	formData	string 	true		"the picture type"
 // @Success 200 {object} _controllers.Response The Response object
 // @router /upload-topic-pic [post]
 // @Tag Topic API
@@ -284,18 +285,13 @@ func (c *ApiController) UploadTopicPic() {
 
 	memberId := c.GetSessionUsername()
 	fileBase64 := c.Ctx.Request.Form.Get("pic")
+	fileType := c.Ctx.Request.Form.Get("type")
 	index := strings.Index(fileBase64, ",")
-	if index < 0 || fileBase64[0:index] != "data:image/png;base64" {
-		resp := Response{Status: "error", Msg: "File encoding error"}
-		c.Data["json"] = resp
-		c.ServeJSON()
-		return
-	}
 	fileBytes, _ := base64.StdEncoding.DecodeString(fileBase64[index+1:])
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
-	fileUrl, _ := service.UploadFileToStorage(memberId, "topicPic", "UploadTopicPic", fmt.Sprintf("casnode/topicPic/%s/%s.%s", memberId, timestamp, "png"), fileBytes)
+	fileUrl, _ := service.UploadFileToStorage(memberId, "topicPic", "UploadTopicPic", fmt.Sprintf("casnode/topicPic/%s/%s.%s", memberId, timestamp, fileType), fileBytes)
 
-	resp := Response{Status: "ok", Msg: timestamp + ".png", Data: fileUrl}
+	resp := Response{Status: "ok", Msg: timestamp + "." + fileType, Data: fileUrl}
 	c.Data["json"] = resp
 	c.ServeJSON()
 }
