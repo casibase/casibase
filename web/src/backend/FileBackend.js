@@ -58,9 +58,10 @@ export function getFileNum() {
   }).then((res) => res.json());
 }
 
-export function uploadTopicPic(base64) {
+export function uploadTopicPic(base64, filetype) {
   let formData = new FormData();
   formData.append("pic", base64);
+  formData.append("type", filetype);
   return fetch(`${Setting.ServerUrl}/api/upload-topic-pic`, {
     method: "POST",
     credentials: "include",

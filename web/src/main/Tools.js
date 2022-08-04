@@ -55,9 +55,11 @@ export function uploadMdFile(addMsg) {
       return;
     }
 
+    let fileType = Setting.getFileType(file.name);
+
     let reader = new FileReader();
     reader.onload = (e) => {
-      FileBackend.uploadTopicPic(e.target.result).then((res) => {
+      FileBackend.uploadTopicPic(e.target.result, fileType.ext).then((res) => {
         if (res.status === "ok") {
           this.uploadStatus = true;
           this.onFileUploadResponse(res.msg, encodeURI(res.data));
