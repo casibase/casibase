@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import LatestReplyBox from "./LatestReplyBox";
 import PageColumn from "./PageColumn";
 import TopicList from "./TopicList";
@@ -262,8 +262,8 @@ class AllCreatedTopicsBox extends React.Component {
           {!pcBrowser ? <div className="sep10" style={{clear: "both"}} /> : null}
           {pcBrowser
             ? this.state.TAB_LIST.map((tab) => {
-                return this.renderTab(tab);
-              })
+              return this.renderTab(tab);
+            })
             : null}
         </div>
         <TopicList topics={this.state.topics} showNodeName={true} showAvatar={false} timeStandard={"createdTime"} />

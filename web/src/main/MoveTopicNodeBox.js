@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as TopicBackend from "../backend/TopicBackend";
 import Select2 from "react-select2-wrapper";

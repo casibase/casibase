@@ -17,7 +17,7 @@ import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import "../Reply.css";
 import * as Tools from "./Tools";
 import "../codemirrorSize.css";

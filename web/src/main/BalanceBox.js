@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as BalanceBackend from "../backend/BalanceBackend";
 import PageColumn from "./PageColumn";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import i18next from "i18next";
 import {scoreConverter} from "./Tools";
 import {Helmet} from "react-helmet";

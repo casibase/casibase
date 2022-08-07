@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import React from "react";
-import Header from "./Header";
 import * as NodeBackend from "../backend/NodeBackend";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as TopicBackend from "../backend/TopicBackend";

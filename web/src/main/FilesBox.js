@@ -17,7 +17,7 @@ import * as FileBackend from "../backend/FileBackend";
 import * as Setting from "../Setting";
 import * as Tools from "./Tools";
 import PageColumn from "./PageColumn";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import "../deopzone.css";
 import Dropzone from "react-dropzone";
 import i18next from "i18next";

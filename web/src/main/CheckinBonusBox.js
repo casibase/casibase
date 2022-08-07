@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import i18next from "i18next";
 
 class CheckinBonusBox extends React.Component {

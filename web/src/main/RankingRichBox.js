@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import React from "react";
 import i18next from "i18next";
 import * as Setting from "../Setting";
@@ -77,27 +77,27 @@ class RankingRichBox extends React.Component {
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
             {this.state.richList
               ? this.state.richList.map((member, key) => (
-                  <tr>
-                    <td width={Setting.PcBrowser ? "73" : "36"} valign="top" align="center" key={key}>
-                      <Avatar username={member.name} avatar={member.avatar} key={key} />
-                    </td>
-                    <td width="auto" align="left">
-                      <h2 style={{marginBottom: "10px", marginTop: "0px"}}>
-                        <span className="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
-                      </h2>
-                      <span className="gray f12"> {member.tag} </span>
-                      <div className="sep5"></div>
-                      <span className="gray f12">
-                        {" "}
-                        <a href={member.homepage}>{member.homepage}</a>{" "}
-                      </span>
-                      <div className="sep5"></div>
-                    </td>
-                    <td width="200" align="center">
-                      <div>{this.renderRichBox(member.score)}</div>
-                    </td>
-                  </tr>
-                ))
+                <tr>
+                  <td width={Setting.PcBrowser ? "73" : "36"} valign="top" align="center" key={key}>
+                    <Avatar username={member.name} avatar={member.avatar} key={key} />
+                  </td>
+                  <td width="auto" align="left">
+                    <h2 style={{marginBottom: "10px", marginTop: "0px"}}>
+                      <span className="gray">{key + 1}.</span> <a href={`/member/${member.name}`}>{member.name}</a>
+                    </h2>
+                    <span className="gray f12"> {member.tag} </span>
+                    <div className="sep5"></div>
+                    <span className="gray f12">
+                      {" "}
+                      <a href={member.homepage}>{member.homepage}</a>{" "}
+                    </span>
+                    <div className="sep5"></div>
+                  </td>
+                  <td width="200" align="center">
+                    <div>{this.renderRichBox(member.score)}</div>
+                  </td>
+                </tr>
+              ))
               : null}
           </table>
         </div>

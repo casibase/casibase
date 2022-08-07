@@ -14,7 +14,7 @@
 
 import React from "react";
 import i18next from "i18next";
-import {loadTheme, THEME_OPTIONS} from "../theme";
+import {THEME_OPTIONS, loadTheme} from "../theme";
 import "./rightTheme.css";
 
 class RightThemeBox extends React.Component {

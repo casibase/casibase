@@ -16,7 +16,7 @@ import React from "react";
 import * as Setting from "../Setting";
 import * as MemberBackend from "../backend/MemberBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import AllCreatedTopicsBox from "./AllCreatedTopicsBox";
 import LatestReplyBox from "./LatestReplyBox";

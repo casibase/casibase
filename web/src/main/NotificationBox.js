@@ -18,7 +18,7 @@ import * as NotificationBackend from "../backend/NotificationBackend";
 import PageColumn from "./PageColumn";
 import Avatar from "../Avatar";
 import "../Notification.css";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import Zmage from "react-zmage";
 import ReactMarkdown from "react-markdown";
 import i18next from "i18next";

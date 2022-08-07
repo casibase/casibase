@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import * as TopicBackend from "../backend/TopicBackend";
 import * as FavoritesBackend from "../backend/FavoritesBackend";
 import PageColumn from "./PageColumn";
