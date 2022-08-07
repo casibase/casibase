@@ -18,7 +18,7 @@ import "./App.less";
 import "codemirror/lib/codemirror.css";
 import {BackTop} from "antd";
 import * as Setting from "./Setting";
-import {Switch, Route} from "react-router-dom";
+import {Route, Switch} from "react-router-dom";
 import TopicPage from "./TopicPage";
 import Header from "./Header";
 import Footer from "./Footer";

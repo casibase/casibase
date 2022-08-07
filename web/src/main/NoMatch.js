@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import * as Setting from "../Setting";
 import "./NoMatch.css";
 import i18next from "i18next";

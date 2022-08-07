@@ -17,7 +17,7 @@ import * as Setting from "../Setting";
 import * as Conf from "../Conf";
 import * as ReplyBackend from "../backend/ReplyBackend";
 import * as BalanceBackend from "../backend/BalanceBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import Avatar from "../Avatar";
 import NewReplyBox from "./NewReplyBox";
 import PageColumn from "./PageColumn";

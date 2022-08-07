@@ -14,7 +14,7 @@
 
 import React from "react";
 import * as Setting from "../Setting";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import "../Bottom.css";
 import "./node-casbin.css";
 import i18next from "i18next";

@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as TopicBackend from "../backend/TopicBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import PageColumn from "./PageColumn";
 import i18next from "i18next";
 import TopicList from "./TopicList";

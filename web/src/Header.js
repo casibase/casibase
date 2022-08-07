@@ -17,7 +17,7 @@ import * as AccountBackend from "./backend/AccountBackend";
 import * as NodeBackend from "./backend/NodeBackend";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import i18next from "i18next";
 import {ServerUrl} from "./Setting";
 
@@ -168,8 +168,8 @@ class Header extends React.Component {
     const isSignedIn = this.props.account !== undefined && this.props.account !== null;
     const menuStyle = this.props.showMenu
       ? {
-          "--show-dropdown": "block",
-        }
+        "--show-dropdown": "block",
+      }
       : null;
 
     if (!isSignedIn) {

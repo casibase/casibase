@@ -15,7 +15,7 @@
 import React from "react";
 import * as Setting from "../Setting";
 import * as NodeBackend from "../backend/NodeBackend";
-import {withRouter, Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
 import "../node.css";
 import "./rightNodeRelation.css";
 import Collapse, {Panel} from "rc-collapse";
