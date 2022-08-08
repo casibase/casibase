@@ -95,7 +95,7 @@ class AdminPlane extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     if (this.props.event === "new") {
       form["sorter"] = 1;
       form["visible"] = true;
@@ -115,7 +115,7 @@ class AdminPlane extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -295,7 +295,7 @@ class AdminPlane extends React.Component {
   }
 
   renderProblem() {
-    let problems = [];
+    const problems = [];
 
     if (this.state.errorMessage !== "") {
       problems.push(i18next.t(`error:${this.state.errorMessage}`));

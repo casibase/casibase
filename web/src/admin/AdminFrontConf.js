@@ -68,12 +68,12 @@ class AdminFrontConf extends React.Component {
 
   getFrontConf(field) {
     ConfBackend.getFrontConfsByField(field).then((res) => {
-      let form = this.state.form;
-      let conf = this.state.conf;
-      for (let k in res.data) {
+      const form = this.state.form;
+      const conf = this.state.conf;
+      for (const k in res.data) {
         form[res.data[k].id] = res.data[k].value;
       }
-      for (let i in conf) {
+      for (const i in conf) {
         conf[i].value = form[conf[i].id];
       }
       this.setState({
@@ -91,8 +91,8 @@ class AdminFrontConf extends React.Component {
 
   inputChange(event, id) {
     event.target.style.height = event.target.scrollHeight + "px";
-    let forms = this.state.changeForm;
-    let form = this.state.form;
+    const forms = this.state.changeForm;
+    const form = this.state.form;
     form[id] = event.target.value;
     forms[id] = event.target.value;
     this.setState({
@@ -102,7 +102,7 @@ class AdminFrontConf extends React.Component {
   }
 
   updateConf() {
-    let confs = [];
+    const confs = [];
     for (const k in this.state.changeForm) {
       confs.push({id: k, value: this.state.changeForm[k], field: this.state.field});
     }

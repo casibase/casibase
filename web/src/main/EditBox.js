@@ -58,7 +58,7 @@ class EditBox extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     form["id"] = this.state.editObject?.id;
     if (this.state.editType === "topic") {
       form["title"] = this.state.editObject?.title;
@@ -133,7 +133,7 @@ class EditBox extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,

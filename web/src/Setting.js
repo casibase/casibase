@@ -159,7 +159,7 @@ export function getUserAvatar(username, isLarge = false) {
     return null;
   }
 
-  let identicon = new Identicon(md5(username), 420);
+  const identicon = new Identicon(md5(username), 420);
   return "data:image/png;base64," + identicon;
 }
 
@@ -215,7 +215,7 @@ export function changeMomentLanguage(language) {
 }
 
 export function getFormattedContent(content, spacing) {
-  let formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function(w) {
+  const formattedContent = content.replace(/@(.*?)[ \n\t]|@([^ \n\t]*?)[^ \n\t]$/g, function(w) {
     if (w[w.length - 1] !== " ") {
       return `@[${w.substring(1, w.length)}](${ClientUrl}/member/${w.substring(1)})`;
     }
@@ -245,10 +245,10 @@ const stdImageExt = ["png", "jpg", "gif", "jpeg"];
 
 export function getFileType(fileName) {
   let fileType = "image";
-  let fileIndex = fileName.lastIndexOf(".");
-  let ext = fileName.substr(fileIndex + 1);
-  let lowerCase = ext.toLowerCase();
-  let index = stdImageExt.indexOf(lowerCase);
+  const fileIndex = fileName.lastIndexOf(".");
+  const ext = fileName.substr(fileIndex + 1);
+  const lowerCase = ext.toLowerCase();
+  const index = stdImageExt.indexOf(lowerCase);
   if (index < 0) {
     fileType = "file";
   }
@@ -261,8 +261,8 @@ export function getFormattedSize(fileSize) {
   if (fileSize === null) {
     return "0 Bytes";
   }
-  let index = Math.floor(Math.log(fileSize) / Math.log(1024));
-  let size = (fileSize / Math.pow(1024, index)).toPrecision(3);
+  const index = Math.floor(Math.log(fileSize) / Math.log(1024));
+  const size = (fileSize / Math.pow(1024, index)).toPrecision(3);
 
   return size + " " + unitSuffix[index];
 }
@@ -312,15 +312,15 @@ export function renderLink(props) {
 }
 
 export function getFrontConf(field) {
-  let storage = window.localStorage;
-  for (let conf in FrontConfig) {
+  const storage = window.localStorage;
+  for (const conf in FrontConfig) {
     if (storage[conf] !== undefined) {
       FrontConfig[conf] = storage[conf];
     }
   }
 
   ConfBackend.getFrontConfsByField(field).then((res) => {
-    for (let key in res.data) {
+    for (const key in res.data) {
       if (res.data[key].Value !== "") {
         FrontConfig[res.data[key].id] = res.data[key].value;
       }

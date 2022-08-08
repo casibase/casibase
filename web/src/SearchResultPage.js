@@ -35,7 +35,7 @@ class SearchResultPage extends React.Component {
 
   componentWillMount() {
     this.props.history.listen((route) => {
-      let params = route.search.split("=");
+      const params = route.search.split("=");
       if (params.length < 2) {
         return;
       }

@@ -58,7 +58,7 @@ class NotificationBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      let params = new URLSearchParams(newProps.location.search);
+      const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
       if (page === null) {
         page = 1;
@@ -125,7 +125,7 @@ class NotificationBox extends React.Component {
   };
 
   renderLink = (props) => {
-    let check = Setting.checkPageLink(props.href);
+    const check = Setting.checkPageLink(props.href);
     if (check) {
       return <a {...props} />;
     }

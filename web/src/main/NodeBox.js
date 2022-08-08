@@ -69,7 +69,7 @@ class NodeBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      let params = new URLSearchParams(newProps.location.search);
+      const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
       if (page === null) {
         page = 1;
@@ -401,13 +401,13 @@ class NodeBox extends React.Component {
 
   renderNode() {
     const {page, limit} = this.state;
-    let from, end;
+    let from;
     if (this.state.topicNum !== 0) {
       from = (page - 1) * limit + 1;
     } else {
       from = 0;
     }
-    end = (page - 1) * limit + this.state.topics.length;
+    const end = (page - 1) * limit + this.state.topics.length;
 
     return (
       <div className={`box ${this.state.nodeId}`}>

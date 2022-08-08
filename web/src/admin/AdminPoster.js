@@ -44,9 +44,9 @@ class AdminPoster extends React.Component {
   }
 
   changeinputval() {
-    let a_val = this.state.form["advertiser"];
-    let l_val = this.state.form["link"];
-    let p_val = this.state.form["picture_link"];
+    const a_val = this.state.form["advertiser"];
+    const l_val = this.state.form["link"];
+    const p_val = this.state.form["picture_link"];
     if (a_val !== undefined) {
       this.adver.current.value = a_val;
     }
@@ -60,7 +60,7 @@ class AdminPoster extends React.Component {
 
   readposter() {
     PosterBackend.readposter("r_box_poster").then((res) => {
-      let poster = res;
+      const poster = res;
       if (poster) {
         this.setState(
           {
@@ -96,9 +96,9 @@ class AdminPoster extends React.Component {
   }
 
   inputChange(id) {
-    let a_val = this.adver.current.value;
-    let l_val = this.links.current.value;
-    let p_val = this.p_link.current.value;
+    const a_val = this.adver.current.value;
+    const l_val = this.links.current.value;
+    const p_val = this.p_link.current.value;
     this.setState({
       form: {
         advertiser: a_val,

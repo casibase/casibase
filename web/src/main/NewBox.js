@@ -88,7 +88,7 @@ class NewBox extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -169,7 +169,7 @@ class NewBox extends React.Component {
       return false;
     }
 
-    let problems = [];
+    const problems = [];
     if (this.state.form.title === "" || this.state.form.title === undefined) {
       problems.push(i18next.t("error:Topic title cannot be empty"));
     }
@@ -217,7 +217,7 @@ class NewBox extends React.Component {
   }
 
   renderProblem() {
-    let problems = this.state.problems;
+    const problems = this.state.problems;
 
     if (problems.length === 0 && this.state.message === "") {
       return null;

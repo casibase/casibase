@@ -41,7 +41,7 @@ class MoveTopicNodeBox extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     form["id"] = this.state.topic?.id;
     form["nodeId"] = this.state.topic?.nodeId;
     form["nodeName"] = this.state.topic?.nodeName;
@@ -82,7 +82,7 @@ class MoveTopicNodeBox extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,

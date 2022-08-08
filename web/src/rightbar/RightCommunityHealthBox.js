@@ -40,7 +40,7 @@ class RightCommunityHealthBox extends React.Component {
 
   readposter() {
     PosterBackend.readposter("r_box_poster").then((res) => {
-      let poster = res;
+      const poster = res;
       if (poster) {
         this.setState({
           poster: poster,

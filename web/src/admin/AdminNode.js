@@ -140,9 +140,9 @@ class AdminNode extends React.Component {
   handleUploadImage(event, target) {
     this.updateFormField(target, i18next.t("file:Uploading..."));
 
-    let file = event.target.files[0];
-    let fileName,
-      fileType = Setting.getFileType(file.name);
+    const file = event.target.files[0];
+    let fileName;
+    const fileType = Setting.getFileType(file.name);
 
     if (target === "headerImage") {
       fileName = "header";
@@ -153,7 +153,7 @@ class AdminNode extends React.Component {
     }
     fileName += "." + fileType.ext;
 
-    let reader = new FileReader();
+    const reader = new FileReader();
     reader.onload = (e) => {
       FileBackend.moderatorUpload(e.target.result, fileName, "sitecontent/nodes/" + this.state.nodeInfo.id).then((res) => {
         if (res?.status === "ok") {
@@ -169,7 +169,7 @@ class AdminNode extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     if (this.props.event === "new") {
       form["sorter"] = 1;
     } else {
@@ -202,7 +202,7 @@ class AdminNode extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -341,7 +341,7 @@ class AdminNode extends React.Component {
   }
 
   renderProblem() {
-    let problems = [];
+    const problems = [];
 
     if (this.state.errorMessage !== "") {
       problems.push(i18next.t(`error:${this.state.errorMessage}`));
@@ -574,7 +574,7 @@ class AdminNode extends React.Component {
 
       const image = document.getElementById("change_image");
       if (image !== null) {
-        let contentWidth = image.clientWidth;
+        const contentWidth = image.clientWidth;
         if (this.state.width === "") {
           this.setState({
             width: contentWidth,

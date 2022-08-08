@@ -67,7 +67,7 @@ class AdminFrontConf extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -89,7 +89,7 @@ class AdminFrontConf extends React.Component {
 
   updateConf() {
     this.setState({publishClicked: true});
-    let confs = [];
+    const confs = [];
     for (const k in this.state.changeForm) {
       confs.push({id: k, value: this.state.changeForm[k], field: this.state.field});
     }
@@ -148,7 +148,7 @@ class AdminFrontConf extends React.Component {
   }
 
   render() {
-    let blurStyle = {color: "#ccc", pointerEvents: "none"};
+    const blurStyle = {color: "#ccc", pointerEvents: "none"};
 
     return (
       <div>

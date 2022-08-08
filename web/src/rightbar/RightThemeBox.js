@@ -39,7 +39,7 @@ class RightThemeBox extends React.Component {
   }
 
   loadThemeFile() {
-    let {theme} = this.state;
+    const {theme} = this.state;
     loadTheme(theme);
   }
 

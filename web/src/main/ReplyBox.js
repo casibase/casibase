@@ -69,11 +69,11 @@ class ReplyBox extends React.Component {
 
   componentDidMount() {
     // this.getTopic();
-    let lastIndex = window.location.href.lastIndexOf("#");
+    const lastIndex = window.location.href.lastIndexOf("#");
     if (lastIndex >= 0) {
-      let idString = window.location.href.substring(lastIndex + 1);
+      const idString = window.location.href.substring(lastIndex + 1);
       if (document.getElementById(idString) === null) {
-        let targetReply = parseInt(idString.substring(2));
+        const targetReply = parseInt(idString.substring(2));
         if (!isNaN(targetReply)) {
           this.jumpToTargetPage(targetReply);
         }
@@ -86,11 +86,11 @@ class ReplyBox extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevState.fullUrl !== window.location.href) {
       this.setState({fullUrl: window.location.href});
-      let lastIndex = window.location.href.lastIndexOf("#");
+      const lastIndex = window.location.href.lastIndexOf("#");
       if (lastIndex >= 0) {
-        let idString = window.location.href.substring(lastIndex + 1);
+        const idString = window.location.href.substring(lastIndex + 1);
         if (document.getElementById(idString) === null) {
-          let targetReply = parseInt(idString.substring(2));
+          const targetReply = parseInt(idString.substring(2));
           if (!isNaN(targetReply)) {
             this.jumpToTargetPage(targetReply);
           }
@@ -101,8 +101,8 @@ class ReplyBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      let params = new URLSearchParams(newProps.location.search);
-      let page = params.get("p");
+      const params = new URLSearchParams(newProps.location.search);
+      const page = params.get("p");
       if (page !== null) {
         this.setState(
           {
@@ -120,7 +120,7 @@ class ReplyBox extends React.Component {
       res.data.map((reply, i) => {
         if (reply.id === targetReply) {
           found = true;
-          let targetPage = Math.ceil((i + 1) / this.state.limit);
+          const targetPage = Math.ceil((i + 1) / this.state.limit);
           ReplyBackend.getReplies(this.state.topicId, this.state.limit, targetPage, false).then((res) => {
             this.setState(
               {
@@ -198,8 +198,8 @@ class ReplyBox extends React.Component {
   }
 
   getMemberList() {
-    let list = [this.props.topic?.author];
-    let temp = [this.props.topic?.author + " "];
+    const list = [this.props.topic?.author];
+    const temp = [this.props.topic?.author + " "];
     for (let i = 0; i < this.state.replies.length; ++i) {
       let flag = true;
       for (let j = 0; j < temp.length; ++j) {
@@ -245,7 +245,7 @@ class ReplyBox extends React.Component {
 
   scrollToAnchor = (anchorName) => {
     if (anchorName) {
-      let anchorElement = document.getElementById(anchorName);
+      const anchorElement = document.getElementById(anchorName);
       if (anchorElement) {
         anchorElement.scrollIntoView();
       }
@@ -280,7 +280,7 @@ class ReplyBox extends React.Component {
   };
 
   renderLink = (props) => {
-    let check = Setting.checkPageLink(props.href);
+    const check = Setting.checkPageLink(props.href);
     if (check) {
       return <a {...props} />;
     }
@@ -288,7 +288,7 @@ class ReplyBox extends React.Component {
   };
 
   renderReplyBox(reply, no = -1) {
-    let isChild = no < 0;
+    const isChild = no < 0;
 
     return (
       <div id={`r_${reply.id}`}>
@@ -384,14 +384,14 @@ class ReplyBox extends React.Component {
 
   renderNestedReply(reply, no, depth) {
     depth++;
-    let result = [];
+    const result = [];
     if (no >= 0) {
       result.push(this.renderReplyBox(reply, no));
     }
     result.push(
       <div style={{paddingLeft: depth < maxReplyDepth ? "40px" : "", marginTop: 16}}>
         {reply.child?.map((childItem) => {
-          let childResult = [];
+          const childResult = [];
           if (!(childItem.deleted && childItem.child === null)) {
             childResult.push(this.renderReplyBox(childItem, -1));
           }
