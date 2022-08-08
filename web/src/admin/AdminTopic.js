@@ -84,7 +84,7 @@ class AdminTopic extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      let params = new URLSearchParams(newProps.location.search);
+      const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
       if (page === null) {
         page = 1;
@@ -136,7 +136,7 @@ class AdminTopic extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     form["deleted"] = this.state.topic?.deleted;
     this.setState({
       form: form,
@@ -144,7 +144,7 @@ class AdminTopic extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,

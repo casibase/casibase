@@ -67,7 +67,7 @@ class FilesBox extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
-      let params = new URLSearchParams(newProps.location.search);
+      const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
       if (page === null) {
         page = 1;
@@ -163,8 +163,8 @@ class FilesBox extends React.Component {
   }
 
   uploadFile(file) {
-    let fileInfo = {name: file[0].path, size: file[0].size, status: false};
-    let files = this.state.files;
+    const fileInfo = {name: file[0].path, size: file[0].size, status: false};
+    const files = this.state.files;
     files.push(fileInfo);
     this.setState({
       files: files,
@@ -188,8 +188,8 @@ class FilesBox extends React.Component {
         if (this.state.event !== "upload") {
           this.props.history.push("/i?p=1");
         }
-        let index = this.getIndex(file);
-        let files = this.state.files;
+        const index = this.getIndex(file);
+        const files = this.state.files;
         files.splice(index, 1);
         this.setState({
           files: files,
@@ -206,7 +206,7 @@ class FilesBox extends React.Component {
   }
 
   initForm() {
-    let form = this.state.form;
+    const form = this.state.form;
     form["fileName"] = this.state.file?.fileName;
     form["desc"] = this.state.file?.desc;
     this.setState({
@@ -215,7 +215,7 @@ class FilesBox extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -272,7 +272,7 @@ class FilesBox extends React.Component {
 
   // url: /i/upload
   renderUpload() {
-    let progressWidth = (400 / this.state.maxFileNum) * this.state.filesNum;
+    const progressWidth = (400 / this.state.maxFileNum) * this.state.filesNum;
 
     return (
       <span>
@@ -502,7 +502,7 @@ class FilesBox extends React.Component {
   }
 
   renderProblem() {
-    let problems = [];
+    const problems = [];
 
     if (this.state.message !== "") {
       problems.push(i18next.t(`error:${this.state.message}`));

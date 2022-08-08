@@ -77,8 +77,8 @@ class RightNodeBox extends React.Component {
   }
 
   render() {
-    let relatedNum = this.state.info?.relatedNode?.length;
-    let childNum = this.state.info?.childNode?.length;
+    const relatedNum = this.state.info?.relatedNode?.length;
+    const childNum = this.state.info?.childNode?.length;
 
     return (
       <div className={`box ${this.state.nodeId}`}>

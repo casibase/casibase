@@ -305,7 +305,7 @@ class AdminTranslation extends React.Component {
   }
 
   renderProblem() {
-    let problems = [];
+    const problems = [];
 
     if (this.state.errMessage !== "") {
       problems.push(this.state.errMessage);
@@ -419,7 +419,7 @@ class AdminTranslation extends React.Component {
                     <td width="auto" align="left">
                       <input
                         onChange={(event) => {
-                          let targetVal = event.target.value;
+                          const targetVal = event.target.value;
                           this.setState((prevState) => {
                             prevState.form.key = targetVal;
                             return prevState;
@@ -492,7 +492,7 @@ class AdminTranslation extends React.Component {
                     <td width="auto" align="left">
                       <input
                         onChange={(event) => {
-                          let targetVal = event.target.value;
+                          const targetVal = event.target.value;
                           this.setState((prevState) => {
                             prevState.form.id = targetVal;
                             return prevState;
@@ -510,7 +510,7 @@ class AdminTranslation extends React.Component {
                     <td width="auto" align="left">
                       <input
                         onChange={(event) => {
-                          let targetVal = event.target.value;
+                          const targetVal = event.target.value;
                           this.setState((prevState) => {
                             prevState.form.name = targetVal;
                             return prevState;
@@ -536,7 +536,7 @@ class AdminTranslation extends React.Component {
                     <td width="auto" align="left">
                       <input
                         onChange={(event) => {
-                          let targetVal = event.target.value;
+                          const targetVal = event.target.value;
                           this.setState((prevState) => {
                             prevState.form.key = targetVal;
                             return prevState;

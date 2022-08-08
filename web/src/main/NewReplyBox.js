@@ -75,7 +75,7 @@ class NewReplyBox extends React.Component {
   }
 
   updateFormField(key, value) {
-    let form = this.state.form;
+    const form = this.state.form;
     form[key] = value;
     this.setState({
       form: form,
@@ -88,7 +88,7 @@ class NewReplyBox extends React.Component {
       return false;
     }
 
-    let problems = [];
+    const problems = [];
     if (this.state.form.content === "") {
       problems.push(i18next.t("error:Reply content cannot be empty"));
     }
@@ -101,7 +101,7 @@ class NewReplyBox extends React.Component {
       return null;
     }
 
-    let problems = [];
+    const problems = [];
     if (this.state.form.content === "") {
       problems.push(i18next.t("error:Reply content cannot be empty"));
     }
@@ -195,11 +195,11 @@ class NewReplyBox extends React.Component {
   }
 
   synonyms(cm, option) {
-    let comp = this.props.memberList;
-    let res = [];
+    const comp = this.props.memberList;
+    const res = [];
     return new Promise(function(accept) {
       setTimeout(function() {
-        let cursor = cm.getCursor(),
+        const cursor = cm.getCursor(),
           line = cm.getLine(cursor.line);
         let start = cursor.ch,
           end = cursor.ch;
@@ -209,7 +209,7 @@ class NewReplyBox extends React.Component {
         while (end < line.length && /\w/.test(line.charAt(end))) {
           ++end;
         }
-        let word = line.slice(start, end).toLowerCase();
+        const word = line.slice(start, end).toLowerCase();
         for (let i = 0; i < comp.length; i++) {
           if (comp[i].includes(word)) {
             res.push(comp[i]);
@@ -233,7 +233,7 @@ class NewReplyBox extends React.Component {
               <input
                 style={{marginRight: 20}}
                 onClick={() => {
-                  let encodedUrl = encodeURIComponent(window.location.href);
+                  const encodedUrl = encodeURIComponent(window.location.href);
                   localStorage.setItem("loginCallbackUrl", encodedUrl);
                   window.location.href = Setting.getSigninUrl();
                 }}
@@ -243,7 +243,7 @@ class NewReplyBox extends React.Component {
               />
               <input
                 onClick={() => {
-                  let encodedUrl = encodeURIComponent(window.location.href);
+                  const encodedUrl = encodeURIComponent(window.location.href);
                   localStorage.setItem("loginCallbackUrl", encodedUrl);
                   window.location.href = Setting.getSignupUrl();
                 }}
@@ -389,7 +389,7 @@ class NewReplyBox extends React.Component {
       return null;
     }
 
-    let blurStyle = needLogin ? {color: "#ccc", pointerEvents: "none"} : null;
+    const blurStyle = needLogin ? {color: "#ccc", pointerEvents: "none"} : null;
 
     return (
       <div className={["box", this.props.sticky ? "sticky" : "", `${this.props.nodeId}`].join(" ")} id="reply-box">

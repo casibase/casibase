@@ -21,7 +21,7 @@ import * as serviceWorker from "./serviceWorker";
 import {BrowserRouter} from "react-router-dom";
 import {loadTheme} from "./theme";
 
-let theme = localStorage.getItem("CASNODE_THEME");
+const theme = localStorage.getItem("CASNODE_THEME");
 
 loadTheme(theme);
 

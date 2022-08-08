@@ -22,15 +22,15 @@ export const loadTheme = (theme) => {
     return;
   }
 
-  let currTheme = THEME_OPTIONS.find((item) => item.value === theme);
+  const currTheme = THEME_OPTIONS.find((item) => item.value === theme);
 
-  let before = document.querySelector("#casnodeTheme");
+  const before = document.querySelector("#casnodeTheme");
   if (before) {
     before.parentNode.removeChild(before);
   }
 
   if (currTheme.link) {
-    let after = document.createElement("link");
+    const after = document.createElement("link");
     after.rel = "stylesheet";
     after.type = "text/css";
     after.id = "casnodeTheme";

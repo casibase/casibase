@@ -78,8 +78,7 @@ class PageColumn extends React.Component {
   }
 
   handleMaxPage(total) {
-    let res;
-    res = Math.ceil(total / this.state.defaultPageNum);
+    const res = Math.ceil(total / this.state.defaultPageNum);
     if (res !== 0) {
       return res;
     }
@@ -88,7 +87,7 @@ class PageColumn extends React.Component {
 
   // Get an array of page number, and there always should have 10 elements except '...'.
   getShowPages(page, total) {
-    let pages = [];
+    const pages = [];
 
     if (total <= 10) {
       for (let i = 1; i <= total; i++) {

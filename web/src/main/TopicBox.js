@@ -93,9 +93,9 @@ class TopicBox extends React.Component {
   }
 
   judgeAnchorElement() {
-    let url = window.location.href;
-    let id = url.substring(url.lastIndexOf("#") + 1);
-    let anchorElement = document.getElementById(id);
+    const url = window.location.href;
+    const id = url.substring(url.lastIndexOf("#") + 1);
+    const anchorElement = document.getElementById(id);
     return !!anchorElement;
   }
 
@@ -355,7 +355,7 @@ class TopicBox extends React.Component {
   };
 
   renderLink = (props) => {
-    let check = Setting.checkPageLink(props.href);
+    const check = Setting.checkPageLink(props.href);
     if (check) {
       return <a {...props} />;
     }

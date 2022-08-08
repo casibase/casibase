@@ -59,7 +59,7 @@ export function getFileNum() {
 }
 
 export function uploadTopicPic(base64, filetype) {
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append("pic", base64);
   formData.append("type", filetype);
   return fetch(`${Setting.ServerUrl}/api/upload-topic-pic`, {
@@ -70,7 +70,7 @@ export function uploadTopicPic(base64, filetype) {
 }
 
 export function uploadFile(base64, filename, filetype) {
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append("file", base64);
   formData.append("name", filename);
   formData.append("type", filetype);
@@ -82,7 +82,7 @@ export function uploadFile(base64, filename, filetype) {
 }
 
 export function moderatorUpload(base64, filename, filepath) {
-  let formData = new FormData();
+  const formData = new FormData();
   formData.append("file", base64);
   formData.append("name", filename);
   formData.append("filepath", filepath);

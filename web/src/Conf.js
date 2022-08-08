@@ -21,7 +21,7 @@ export const AuthConfig = {
   redirectPath: "/callback",
 };
 
-export let FrontConfig = {
+export const FrontConfig = {
   forumName: "",
   logoImage: "",
   footerLogoImage: "",
