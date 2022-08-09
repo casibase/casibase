@@ -1,0 +1,15 @@
+linters:
+  disable-all: true
+  enable:
+    - gofumpt
+
+linters-settings:
+  gofumpt:
+    extra-rules: true
+
+run:
+  timeout: "5m"
+  issue-exit-code: 1
+  tests: true
+  skip-dirs-use-default: false
+  allow-parallel-runners: false
