@@ -29,31 +29,6 @@ jobs:
           go build -race -ldflags "-extldflags '-static'"
         working-directory: ./
 
-  format-go-code:
-    name: Format go code
-    runs-on: ubuntu-latest
-    if: github.repository == 'casbin/casnode' && github.event_name == 'pull_request'
-    needs: [ frontend, backend ]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-      
-      - uses: actions/setup-go@v2
-        with:
-          go-version: '1.18'
-
-      - name: Install gofumpt
-        run: go install mvdan.cc/gofumpt@latest
-
-      - name: Format
-        run: gofumpt -l -w .
-
-      - name: Auto commit
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: 'chore(style): format code'        
-
   release-and-push:
     name: Release And Push
     runs-on: ubuntu-latest
