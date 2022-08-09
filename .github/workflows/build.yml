@@ -1,7 +1,10 @@
 name: Build
 
 on: [push, pull_request]
-
+permissions:
+  contents: read
+  pull-requests: read
+    
 jobs:
 
   frontend:
@@ -19,19 +22,16 @@ jobs:
     name: Back-end
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
           go-version: '^1.16.5'
       
-      - run: go install mvdan.cc/gofumpt@latest
-
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          version: latest
-          args: --disable-all -E gofumpt 
-
+          version: v1.29
+          args: --disable-all -E gofumpt --max-same-issues=0 --max-issues-per-linter=0 --timeout 5m ./...
 
       - name: Build
         run: |
