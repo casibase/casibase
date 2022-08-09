@@ -34,11 +34,11 @@ func TestGetThreads(t *testing.T) {
 		if thread, ok := threadMap[post.Tid]; ok {
 			thread.Posts = append(thread.Posts, post)
 		} else {
-			//fmt.Printf("Failed to find thread: %d for post: %s\n", post.Tid, post.Message)
+			// fmt.Printf("Failed to find thread: %d for post: %s\n", post.Tid, post.Message)
 		}
 	}
 
-	//thread := threadMap[126152]
+	// thread := threadMap[126152]
 	thread := threadMap[126239]
 	println(thread)
 

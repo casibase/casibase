@@ -33,7 +33,7 @@ type Post struct {
 func getPosts() []*Post {
 	posts := []*Post{}
 	err := adapter.Engine.Table("pre_forum_post").Find(&posts)
-	//err := adapter.Engine.Table("pre_forum_post").Where("tid = ?", threadId).Find(&posts)
+	// err := adapter.Engine.Table("pre_forum_post").Where("tid = ?", threadId).Find(&posts)
 	if err != nil {
 		panic(err)
 	}

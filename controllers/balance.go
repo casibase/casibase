@@ -35,7 +35,7 @@ func (c *ApiController) AddThanks() {
 	user := c.GetSessionUser()
 
 	id := util.ParseInt(c.Input().Get("id"))
-	thanksType := c.Input().Get("thanksType") //1 means topic, 2 means reply
+	thanksType := c.Input().Get("thanksType") // 1 means topic, 2 means reply
 
 	var author *auth.User
 	if thanksType == "2" {
@@ -160,7 +160,7 @@ func (c *ApiController) GetCheckinBonus() {
 	bonus := rand.Intn(maxBonus)
 
 	record := object.ConsumptionRecord{
-		//Id:              util.IntToString(object.GetConsumptionRecordId() + 1),
+		// Id:              util.IntToString(object.GetConsumptionRecordId() + 1),
 		Amount:          bonus,
 		Balance:         object.GetMemberBalance(user) + bonus,
 		ReceiverId:      GetUserName(user),

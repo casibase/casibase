@@ -59,7 +59,6 @@ func (c *ApiController) UpdateFrontConfById() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &value)
 	tags := service.Finalword(value)
 	affect, err := object.UpdateFrontConfById(id, value, tags)
-
 	if err != nil {
 		c.ResponseError(err.Error())
 	}

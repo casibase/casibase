@@ -35,7 +35,7 @@ const (
 )
 
 func IsFavoritesExist(Type string) bool {
-	//check the if the string is in the enum
+	// check the if the string is in the enum
 	if Type == FavorTopic || Type == FollowUser || Type == FavorNode || Type == SubscribeTopic {
 		return true
 	}

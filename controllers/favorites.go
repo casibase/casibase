@@ -43,7 +43,7 @@ func (c *ApiController) AddFavorites() {
 
 	username := c.GetSessionUsername()
 	favorites := object.Favorites{
-		//Id:            util.IntToString(object.GetFavoritesCount()) + username,
+		// Id:            util.IntToString(object.GetFavoritesCount()) + username,
 		FavoritesType: favoritesType,
 		ObjectId:      objectId,
 		CreatedTime:   util.GetCurrentTime(),
@@ -74,7 +74,7 @@ func (c *ApiController) AddFavorites() {
 	if favoritesType == object.FavorTopic {
 		topicId := util.ParseInt(objectId)
 		notification := object.Notification{
-			//Id:               util.IntToString(object.GetNotificationId()),
+			// Id:               util.IntToString(object.GetNotificationId()),
 			NotificationType: 4,
 			ObjectId:         topicId,
 			CreatedTime:      util.GetCurrentTime(),
@@ -226,7 +226,7 @@ func (c *ApiController) GetAccountFavoriteNum() {
 	var res [6]int
 	var wg sync.WaitGroup
 
-	//favorite type set,5 object.favorTopic...
+	// favorite type set,5 object.favorTopic...
 	typeSet := []string{object.FavorTopic, object.FollowUser, object.FavorNode, object.SubscribeTopic}
 
 	for i := 1; i <= len(typeSet); i++ {

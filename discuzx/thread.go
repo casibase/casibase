@@ -80,7 +80,7 @@ func addThread(thread *Thread, threadPostsMap map[int][]*Post, attachments []*At
 
 	thread.Posts = posts
 
-	//deleteWholeTopic(thread)
+	// deleteWholeTopic(thread)
 
 	mutex := sync.RWMutex{}
 

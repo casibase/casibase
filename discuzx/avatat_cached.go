@@ -21,8 +21,10 @@ import (
 
 var randomAvatarCount = 244
 
-var randomAvatarMap map[string][]byte
-var randomAvatarMapMutex sync.RWMutex
+var (
+	randomAvatarMap      map[string][]byte
+	randomAvatarMapMutex sync.RWMutex
+)
 
 func initRandomAvatars() {
 	randomAvatarMap = map[string][]byte{}

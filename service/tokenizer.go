@@ -57,7 +57,7 @@ func Keyword(word []string) []string {
 		for _, v := range word {
 			wordnum[v] = wordnum[v] + 1
 		}
-		for s, _ := range wordnum {
+		for s := range wordnum {
 			words = append(words, s)
 		}
 		if len(wordnum) < 5 {

@@ -58,7 +58,6 @@ func (c *ApiController) GetNode() {
 	c.ServeJSON()
 }
 
-
 // @Title UpdateNode
 // @router /update-node [post]
 // @Tag Node API

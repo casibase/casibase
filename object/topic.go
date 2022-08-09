@@ -414,7 +414,7 @@ func UpdateTopic(id int, topic *Topic) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 
@@ -437,7 +437,7 @@ func UpdateTopicWithLimitCols(id int, topic *Topic) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 
@@ -639,7 +639,7 @@ func GetHotTopic(limit int) []*TopicWithAvatar {
 func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort string, limit int, offset int) []*TopicWithAvatar {
 	var topics []*Topic
 	db := adapter.Engine.Table("topic")
-	//last reply time sort
+	// last reply time sort
 	switch lastReplySort {
 	case "1":
 		db = db.Asc("last_reply_time")

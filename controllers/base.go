@@ -67,7 +67,7 @@ func (c *ApiController) GetSessionUser() *auth.User {
 
 func (c *ApiController) SetSessionUser(user *auth.User) {
 	if user == nil {
-		//c.DelSession("user")
+		// c.DelSession("user")
 		return
 	}
 

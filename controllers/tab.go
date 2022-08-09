@@ -115,7 +115,7 @@ func (c *ApiController) UpdateTab() {
 	}
 
 	tab := object.Tab{
-		//Id:          tabInfo.Id,
+		// Id:          tabInfo.Id,
 		Name:        tabInfo.Name,
 		Sorter:      tabInfo.Sorter,
 		CreatedTime: tabInfo.CreatedTime,
