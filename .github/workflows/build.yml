@@ -26,6 +26,20 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: '^1.16.5'
+
+      - name: Build
+        run: |
+          go build -race -ldflags "-extldflags '-static'"
+        working-directory: ./
+  
+  linter:
+    name: Go-Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '^1.16.5'
       
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
@@ -33,16 +47,11 @@ jobs:
           version: v1.29
           args: --disable-all -E gofumpt --max-same-issues=0 --max-issues-per-linter=0 --timeout 5m ./...
 
-      - name: Build
-        run: |
-          go build -race -ldflags "-extldflags '-static'"
-        working-directory: ./
-
   release-and-push:
     name: Release And Push
     runs-on: ubuntu-latest
     if: github.repository == 'casbin/casnode' && github.event_name == 'push'
-    needs: [ frontend, backend ]
+    needs: [ frontend, backend, linter ]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
