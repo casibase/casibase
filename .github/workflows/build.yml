@@ -36,6 +36,8 @@ jobs:
     needs: [ frontend, backend ]
     steps:
       - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
       
       - uses: actions/setup-go@v2
         with:
@@ -50,7 +52,7 @@ jobs:
       - name: Auto commit
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          commit_message: 'chore(style): format code'
+          commit_message: 'chore(style): format code'        
 
   release-and-push:
     name: Release And Push
