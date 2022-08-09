@@ -30,8 +30,10 @@ type BasicInfo struct {
 	Value string `xorm:"mediumtext"`
 }
 
-var fileDate, version string
-var onlineMemberNum, highestOnlineNum int
+var (
+	fileDate, version                 string
+	onlineMemberNum, highestOnlineNum int
+)
 
 func InitForumBasicInfo() {
 	GetForumVersion()
@@ -68,7 +70,7 @@ func GetForumVersion() string {
 		return ""
 	}
 
-	//Convert to full length
+	// Convert to full length
 	temp := string(content)
 	version = strings.ReplaceAll(temp, "\n", "")
 

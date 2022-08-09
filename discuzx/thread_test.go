@@ -23,8 +23,10 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-var AddThreadsConcurrency = 100
-var AddThreadsBatchSize = 10000
+var (
+	AddThreadsConcurrency = 100
+	AddThreadsBatchSize   = 10000
+)
 
 func addThreads(threads []*Thread, threadPostsMap map[int][]*Post, attachmentMap map[int][]*Attachment, forumMap map[int]*Forum, classMap map[int]*Class) {
 	arrayMutex := sync.RWMutex{}

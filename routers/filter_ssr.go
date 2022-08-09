@@ -14,10 +14,13 @@ import (
 	"github.com/astaxie/beego/context"
 )
 
-//var chromeCtx ctx.Context
+// var chromeCtx ctx.Context
 var chromeCtxPool *SsrPool
-var isChromeInstalled bool
-var isChromeInit bool
+
+var (
+	isChromeInstalled bool
+	isChromeInit      bool
+)
 
 type PageCache struct {
 	time time.Time

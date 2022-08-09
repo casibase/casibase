@@ -176,7 +176,7 @@ func GetThanksStatus(memberId string, id, recordType int) bool {
 
 func CreateTopicConsumption(user *auth.User, id int) bool {
 	record := ConsumptionRecord{
-		//Id:              util.IntToString(GetConsumptionRecordId()),
+		// Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      GetUserName(user),
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
@@ -199,7 +199,7 @@ func CreateTopicConsumption(user *auth.User, id int) bool {
 
 func CreateReplyConsumption(user *auth.User, id int) bool {
 	record := ConsumptionRecord{
-		//Id:              util.IntToString(GetConsumptionRecordId()),
+		// Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      GetUserName(user),
 		ObjectId:        id,
 		CreatedTime:     util.GetCurrentTime(),
@@ -226,7 +226,7 @@ func GetReplyBonus(author *auth.User, consumer *auth.User, id int) {
 	}
 
 	record := ConsumptionRecord{
-		//Id:              util.IntToString(GetConsumptionRecordId()),
+		// Id:              util.IntToString(GetConsumptionRecordId()),
 		ConsumerId:      consumer.Name,
 		ReceiverId:      author.Name,
 		ObjectId:        id,

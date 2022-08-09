@@ -24,12 +24,11 @@ func init() {
 }
 
 func initAPI() {
-	ns :=
-		beego.NewNamespace("/api",
-			beego.NSInclude(
-				&controllers.ApiController{},
-			),
-		)
+	ns := beego.NewNamespace("/api",
+		beego.NSInclude(
+			&controllers.ApiController{},
+		),
+	)
 	beego.AddNamespace(ns)
 
 	beego.Router("/api/get-topics", &controllers.ApiController{}, "GET:GetTopics")
@@ -37,7 +36,7 @@ func initAPI() {
 	beego.Router("/api/get-topic", &controllers.ApiController{}, "GET:GetTopic")
 	beego.Router("/api/get-topic-admin", &controllers.ApiController{}, "GET:GetTopicAdmin")
 	beego.Router("/api/get-topic-by-urlpath-and-title", &controllers.ApiController{}, "GET:GetTopicByUrlPathAndTitle")
-	//beego.Router("/api/update-topic", &controllers.ApiController{}, "POST:UpdateTopic") // no necessary to explore this api.
+	// beego.Router("/api/update-topic", &controllers.ApiController{}, "POST:UpdateTopic") // no necessary to explore this api.
 	beego.Router("/api/add-topic", &controllers.ApiController{}, "POST:AddTopic")
 	beego.Router("/api/delete-topic", &controllers.ApiController{}, "POST:DeleteTopic")
 	beego.Router("/api/translate-topic", &controllers.ApiController{}, "POST:TranslateTopic")
@@ -80,12 +79,12 @@ func initAPI() {
 	beego.Router("/api/get-ranking-rich", &controllers.ApiController{}, "GET:GetRankingRich")
 	beego.Router("/api/get-ranking-player", &controllers.ApiController{}, "GET:GetRankingPlayer")
 
-	beego.Router("/api/update-poster", &controllers.ApiController{}, "POST:UpdatePoster") //Update poster api just for admin.
+	beego.Router("/api/update-poster", &controllers.ApiController{}, "POST:UpdatePoster") // Update poster api just for admin.
 	beego.Router("/api/read-poster", &controllers.ApiController{}, "GET:ReadPoster")
 
-	beego.Router("/api/update-translator", &controllers.ApiController{}, "POST:UpdateTranslator") //Update translator api just for admin.
-	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator")       //Add translator api just for admin.
-	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator")       //Delete translator api just for admin.
+	beego.Router("/api/update-translator", &controllers.ApiController{}, "POST:UpdateTranslator") // Update translator api just for admin.
+	beego.Router("/api/add-translator", &controllers.ApiController{}, "POST:AddTranslator")       // Add translator api just for admin.
+	beego.Router("/api/del-translator", &controllers.ApiController{}, "POST:DelTranslator")       // Delete translator api just for admin.
 	beego.Router("/api/get-translator", &controllers.ApiController{}, "GET:GetTranslator")
 	beego.Router("/api/visible-translator", &controllers.ApiController{}, "GET:VisibleTranslator")
 
@@ -130,7 +129,7 @@ func initAPI() {
 
 	beego.Router("/api/get-plane", &controllers.ApiController{}, "GET:GetPlane")
 	beego.Router("/api/get-plane-admin", &controllers.ApiController{}, "GET:GetPlaneAdmin")
-	//beego.Router("/api/get-planes", &controllers.ApiController{}, "GET:GetPlanes")
+	// beego.Router("/api/get-planes", &controllers.ApiController{}, "GET:GetPlanes")
 	beego.Router("/api/add-plane", &controllers.ApiController{}, "POST:AddPlane") // Add plane api just for admin.
 	beego.Router("/api/get-plane-list", &controllers.ApiController{}, "GET:GetPlaneList")
 	beego.Router("/api/update-plane", &controllers.ApiController{}, "POST:UpdatePlane") // Update plane api just for admin.

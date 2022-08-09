@@ -117,7 +117,7 @@ func refreshCronTasks() bool {
 			}
 
 			schedule := fmt.Sprintf("%s %s * * *", minutes, hours)
-			//schedule := "* * * * *"
+			// schedule := "* * * * *"
 			err := ctab.AddJob(schedule, schedulePost, post.Id)
 			if err != nil {
 				panic(err)

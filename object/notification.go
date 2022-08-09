@@ -34,7 +34,7 @@ type Notification struct {
 	SenderId         string `xorm:"varchar(100)" json:"senderId"`
 	ReceiverId       string `xorm:"varchar(100) index" json:"receiverId"`
 	Status           int    `xorm:"tinyint" json:"-"`
-	//Deleted        bool   `xorm:"bool" json:"-"`
+	// Deleted        bool   `xorm:"bool" json:"-"`
 }
 
 func AddNotification(notification *Notification) bool {
@@ -207,7 +207,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 
 	if senderId != receiverId {
 		notification := Notification{
-			//Id:               memberMap[receiverId],
+			// Id:               memberMap[receiverId],
 			NotificationType: 1,
 			ObjectId:         objectId,
 			CreatedTime:      util.GetCurrentTime(),
@@ -228,7 +228,7 @@ func AddReplyNotification(senderId, content string, objectId, topicId int) {
 	}
 
 	delete(memberMap, receiverId)
-	for receiverId2, _ := range memberMap {
+	for receiverId2 := range memberMap {
 		wg.Add(1)
 		go func(receiverId2 string) {
 			defer wg.Done()
@@ -278,7 +278,7 @@ func AddTopicNotification(objectId int, author, content string) {
 		}
 	}
 
-	for k, _ := range memberMap {
+	for k := range memberMap {
 		wg.Add(1)
 		k := k
 		go func() {

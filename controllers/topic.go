@@ -143,7 +143,7 @@ func (c *ApiController) GetTopic() {
 
 // @Title GetTopicAdmin
 // @Description get topic for admin by id
-//@Param   id     query    string  true        "id"
+// @Param   id     query    string  true        "id"
 // @Success 200 {object} object.AdminTopicInfo The Response object
 // @router /get-topic-admin [get]
 // @Tag Topic API
@@ -216,7 +216,7 @@ func (c *ApiController) AddTopic() {
 	}
 
 	topic := object.Topic{
-		//Id:            util.IntToString(object.GetTopicId()),
+		// Id:            util.IntToString(object.GetTopicId()),
 		Author:         GetUserName(user),
 		NodeId:         node.Id,
 		NodeName:       node.Name,
@@ -242,9 +242,9 @@ func (c *ApiController) AddTopic() {
 		c.ResponseError("You don't have enough balance.")
 		return
 	}
-	//payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
+	// payRes := object.CreateTopicConsumption(c.GetSessionUser(), topic.Id)
 
-	//object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)
+	// object.AddTopicNotification(topic.Id, c.GetSessionUser(), body)
 
 	err = json.Unmarshal(c.Ctx.Input.RequestBody, &topic)
 	if err != nil {
@@ -545,7 +545,6 @@ func (c *ApiController) GetHotTopic() {
 
 	res := object.GetHotTopic(limit)
 	c.ResponseOk(res)
-
 }
 
 // @Title GetSortedTopics
@@ -618,7 +617,7 @@ func (c *ApiController) UpdateTopicNode() {
 	}
 
 	topic := object.Topic{
-		//Id:       id,
+		// Id:       id,
 		NodeId:   node.Id,
 		NodeName: node.Name,
 		TabId:    node.TabId,
@@ -702,7 +701,7 @@ func (c *ApiController) TranslateTopic() {
 	topicIdStr := c.Input().Get("id")
 	targetLang := c.Input().Get("target")
 
-	//ISO/IEC 15897 to ISO 639-1
+	// ISO/IEC 15897 to ISO 639-1
 	targetLang = targetLang[0:2]
 
 	topicId := util.ParseInt(topicIdStr)
@@ -741,10 +740,10 @@ func (c *ApiController) TopTopic() {
 	var res bool
 	nodeId := object.GetTopicNodeId(id)
 	if object.CheckIsAdmin(user) || object.CheckNodeModerator(user, nodeId) {
-		//timeStr := c.Input().Get("time")
-		//time := util.ParseInt(timeStr)
-		//date := util.GetTimeMinute(time)
-		//res = object.ChangeTopicTopExpiredTime(id, date)
+		// timeStr := c.Input().Get("time")
+		// time := util.ParseInt(timeStr)
+		// date := util.GetTimeMinute(time)
+		// res = object.ChangeTopicTopExpiredTime(id, date)
 		topType := c.Input().Get("topType")
 		date := util.GetTimeYear(100)
 		res = object.ChangeTopicTopExpiredTime(id, date, topType)

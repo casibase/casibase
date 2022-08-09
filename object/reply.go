@@ -83,34 +83,34 @@ func GetReplies(topicId int, user *auth.User, limit int, page int) ([]*ReplyWith
 
 	if enableNestedReply {
 		replies = bulidReplies(replies)
-		//Use limit to calculate offset
-		//If limit is 2, but the first reply have 2 child replies(3 replies)
-		//We need put these replies to offset, so cannot use (page * limit) to calculate offset
+		// Use limit to calculate offset
+		// If limit is 2, but the first reply have 2 child replies(3 replies)
+		// We need put these replies to offset, so cannot use (page * limit) to calculate offset
 		pageLimit := limit
 		for index, reply := range replies {
 			replyLen := getReplyLen(reply)
-			//Ignore replies until page == 1
+			// Ignore replies until page == 1
 			if page > 1 {
-				//Calculate limit in every ignore page
+				// Calculate limit in every ignore page
 				pageLimit -= replyLen
-				//Get replices for init == true(get the latest replies)
+				// Get replices for init == true(get the latest replies)
 				resultReplies = append(resultReplies, reply)
 				if pageLimit <= 0 {
 					page--
 					pageLimit = limit
 					if index+1 < len(replies) {
-						//If the page is a usable value when we get the latest replies, clear the result
+						// If the page is a usable value when we get the latest replies, clear the result
 						resultReplies = nil
 					}
 				}
 			} else if limit > 0 {
-				//if page == 1, prove that we are processing current page now
-				//So we can only calculate the limit and put replies to result slice
+				// if page == 1, prove that we are processing current page now
+				// So we can only calculate the limit and put replies to result slice
 				limit -= replyLen
 				resultReplies = append(resultReplies, reply)
 				page--
 			} else {
-				//if page == 1, and limit < 0, prove that we get all replies in this page now
+				// if page == 1, and limit < 0, prove that we get all replies in this page now
 				break
 			}
 		}
@@ -290,7 +290,7 @@ func UpdateReply(id int, reply *Reply) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 
@@ -305,13 +305,13 @@ func UpdateReplyWithLimitCols(id int, reply *Reply) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 
 // AddReply returns add reply result and reply id.
 func AddReply(reply *Reply) (bool, int) {
-	//reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
+	// reply.Content = strings.ReplaceAll(reply.Content, "\n", "<br/>")
 	reply.Content = FilterUnsafeHTML(reply.Content)
 	affected, err := adapter.Engine.Insert(reply)
 	if err != nil {

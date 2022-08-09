@@ -14,7 +14,7 @@
 
 package object
 
-//RecordType: 1 means node hit record
+// RecordType: 1 means node hit record
 type BrowseRecord struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
 	MemberId    string `xorm:"varchar(100)" json:"memberId"`

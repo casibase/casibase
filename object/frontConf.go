@@ -21,22 +21,20 @@ type FrontConf struct {
 	Tags  []string `xorm:"varchar(200)" json:"tags"`
 }
 
-var (
-	Confs = []*FrontConf{
-		{Id: "forumName", Value: "Casnode", Field: "visualConf", Tags: nil},
-		{Id: "logoImage", Value: "https://cdn.casbin.com/forum/static/img/logo.png", Field: "visualConf", Tags: nil},
-		{Id: "footerLogoImage", Value: "https://cdn.casbin.com/forum/static/img/logo-footer.png", Field: "visualConf", Tags: nil},
-		{Id: "footerLogoUrl", Value: "https://www.digitalocean.com/", Field: "visualConf", Tags: nil},
-		{Id: "signinBoxStrong", Value: "Casbin = way to authorization", Field: "visualConf", Tags: nil},
-		{Id: "signinBoxSpan", Value: "A place for Casbin developers and users", Field: "visualConf", Tags: nil},
-		{Id: "footerDeclaration", Value: "World is powered by code", Field: "visualConf", Tags: nil},
-		{Id: "footerAdvise", Value: "♥ Do have faith in what you're doing.", Field: "visualConf", Tags: nil},
-		{Id: "faq", Value: "Not yet", Field: "", Tags: nil},
-		{Id: "mission", Value: "Not yet", Field: "", Tags: nil},
-		{Id: "advertise", Value: "Not yet", Field: "", Tags: nil},
-		{Id: "thanks", Value: "Not yet", Field: "", Tags: nil},
-	}
-)
+var Confs = []*FrontConf{
+	{Id: "forumName", Value: "Casnode", Field: "visualConf", Tags: nil},
+	{Id: "logoImage", Value: "https://cdn.casbin.com/forum/static/img/logo.png", Field: "visualConf", Tags: nil},
+	{Id: "footerLogoImage", Value: "https://cdn.casbin.com/forum/static/img/logo-footer.png", Field: "visualConf", Tags: nil},
+	{Id: "footerLogoUrl", Value: "https://www.digitalocean.com/", Field: "visualConf", Tags: nil},
+	{Id: "signinBoxStrong", Value: "Casbin = way to authorization", Field: "visualConf", Tags: nil},
+	{Id: "signinBoxSpan", Value: "A place for Casbin developers and users", Field: "visualConf", Tags: nil},
+	{Id: "footerDeclaration", Value: "World is powered by code", Field: "visualConf", Tags: nil},
+	{Id: "footerAdvise", Value: "♥ Do have faith in what you're doing.", Field: "visualConf", Tags: nil},
+	{Id: "faq", Value: "Not yet", Field: "", Tags: nil},
+	{Id: "mission", Value: "Not yet", Field: "", Tags: nil},
+	{Id: "advertise", Value: "Not yet", Field: "", Tags: nil},
+	{Id: "thanks", Value: "Not yet", Field: "", Tags: nil},
+}
 
 func InitFrontConf() {
 	var confs []*FrontConf

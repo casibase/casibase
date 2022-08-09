@@ -191,7 +191,7 @@ func (c *ApiController) UpdateFileDescribe() {
 }
 
 // @Title UploadFile
-// @Tag File API 
+// @Tag File API
 // @router /upload-file [post]
 func (c *ApiController) UploadFile() {
 	if c.RequireSignedIn() {
@@ -213,7 +213,7 @@ func (c *ApiController) UploadFile() {
 }
 
 // @Title ModeratorUpload
-// @Tag File API 
+// @Tag File API
 // @router /upload-moderator [post]
 func (c *ApiController) ModeratorUpload() {
 	if c.RequireSignedIn() {
@@ -236,5 +236,5 @@ func (c *ApiController) ModeratorUpload() {
 	timeStamp := fmt.Sprintf("?time=%d", time.Now().UnixNano())
 
 	c.ResponseOk(fileUrl + timeStamp)
-	//resp := Response{Status: "ok", Msg: fileName, Data: fileUrl + timeStamp}
+	// resp := Response{Status: "ok", Msg: fileName, Data: fileUrl + timeStamp}
 }

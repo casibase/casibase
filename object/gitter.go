@@ -305,7 +305,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 
 			// create if user is not exist
 			user, err := auth.GetUser(msg.From.Username)
-			//fmt.Println("user:", user)
+			// fmt.Println("user:", user)
 			if err != nil {
 				panic(err)
 			}
@@ -326,7 +326,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 				}
 			}
 
-			var mentioned = false // if @user
+			mentioned := false // if @user
 			for _, mention := range msg.Mentions {
 				if mention.ScreenName == lastMsg.From.Username {
 					mentioned = true

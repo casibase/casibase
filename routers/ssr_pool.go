@@ -90,10 +90,10 @@ func render(chromeCtx ctx.Context, url string) (string, error) {
 }
 
 func (pool *SsrPool) worker() {
-	//chromeCtx, _ := chromedp.NewExecAllocator(ctx.Background(), append(
+	// chromeCtx, _ := chromedp.NewExecAllocator(ctx.Background(), append(
 	//	chromedp.DefaultExecAllocatorOptions[:],
 	//	chromedp.Flag("headless", false))...)
-	//chromeCtx, _ = chromedp.NewContext(chromeCtx)
+	// chromeCtx, _ = chromedp.NewContext(chromeCtx)
 	chromeCtx, _ := chromedp.NewContext(ctx.Background()) // set default context with headless mode
 	for task := range pool.JobsChannel {
 		cancel := func() bool {

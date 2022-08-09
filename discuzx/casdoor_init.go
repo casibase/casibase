@@ -19,8 +19,10 @@ import (
 	"github.com/casbin/casnode/object"
 )
 
-var CasdoorOrganization = ""
-var CasdoorApplication = ""
+var (
+	CasdoorOrganization = ""
+	CasdoorApplication  = ""
+)
 
 func init() {
 	object.InitConfig()

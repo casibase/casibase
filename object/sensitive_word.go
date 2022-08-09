@@ -18,7 +18,7 @@ import "strings"
 
 type SensitiveWord struct {
 	Word string `xorm:"varchar(64) notnull"`
-	Id int64
+	Id   int64
 }
 
 var sensitiveWords []SensitiveWord

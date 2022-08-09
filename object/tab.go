@@ -69,7 +69,7 @@ func UpdateTab(id string, tab *Tab) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 

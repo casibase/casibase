@@ -14,8 +14,10 @@
 
 package discuzx
 
-var dbName = "ultrax"
-var discuzxDomain = "https://www.discuz.net/"
-var discuzxAttachmentBaseUrl = "https://attachment.discuz.net/forum/"
+var (
+	dbName                   = "ultrax"
+	discuzxDomain            = "https://www.discuz.net/"
+	discuzxAttachmentBaseUrl = "https://attachment.discuz.net/forum/"
+)
 
 var avatarPoolBaseUrl = "https://cdn.casbin.com/avatar-pool/"

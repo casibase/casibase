@@ -23,9 +23,11 @@ import (
 	"xorm.io/xorm"
 )
 
-var adapter *Adapter
-var CasdoorOrganization string
-var CasdoorApplication string
+var (
+	adapter             *Adapter
+	CasdoorOrganization string
+	CasdoorApplication  string
+)
 
 type Session struct {
 	SessionKey    string  `xorm:"char(64) notnull pk"`

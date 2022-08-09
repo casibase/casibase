@@ -93,7 +93,7 @@ func UpdateNode(id string, node *Node) bool {
 		panic(err)
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true
 }
 

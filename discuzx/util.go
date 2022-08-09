@@ -25,14 +25,16 @@ import (
 	"time"
 )
 
-var reBold *regexp.Regexp
-var reAlign *regexp.Regexp
-var reFont *regexp.Regexp
-var reUrl *regexp.Regexp
-var reSize *regexp.Regexp
-var reSize2 *regexp.Regexp
-var reSize3 *regexp.Regexp
-var reVideo *regexp.Regexp
+var (
+	reBold  *regexp.Regexp
+	reAlign *regexp.Regexp
+	reFont  *regexp.Regexp
+	reUrl   *regexp.Regexp
+	reSize  *regexp.Regexp
+	reSize2 *regexp.Regexp
+	reSize3 *regexp.Regexp
+	reVideo *regexp.Regexp
+)
 
 func init() {
 	reBold, _ = regexp.Compile("\\[b](.*?)\\[/b]")
@@ -42,7 +44,7 @@ func init() {
 	reSize, _ = regexp.Compile("\\[[a-z]+(=[^]]+)?]")
 	reSize2, _ = regexp.Compile("\\[/align]")
 	reSize3, _ = regexp.Compile("\\[/[a-z]+]")
-	//reSize, _ = regexp.Compile("\\[size=\\d+\\].*\\[/size\\]")
+	// reSize, _ = regexp.Compile("\\[size=\\d+\\].*\\[/size\\]")
 	reVideo, _ = regexp.Compile("\\[media=x,(\\d+),(\\d+)\\].*/id_(.*)\\.html\\[/media\\]")
 }
 
