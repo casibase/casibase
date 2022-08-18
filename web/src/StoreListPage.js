@@ -20,7 +20,7 @@ class StoreListPage extends React.Component {
   }
 
   getStores() {
-    StoreBackend.getStores(this.props.account.name)
+    StoreBackend.getGlobalStores()
       .then((res) => {
         this.setState({
           stores: res,
@@ -76,7 +76,7 @@ class StoreListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <Link to={`/stores/${text}`}>
+            <Link to={`/stores/${record.owner}/${text}/view`}>
               {text}
             </Link>
           )
@@ -97,16 +97,22 @@ class StoreListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/stores/${record.name}/view`)}>{i18next.t("general:View")}</Button>
-              <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/stores/${record.name}`)}>{i18next.t("general:Edit")}</Button>
-              <Popconfirm
-                title={`Sure to delete store: ${record.name} ?`}
-                onConfirm={() => this.deleteStore(index)}
-                okText="OK"
-                cancelText="Cancel"
-              >
-                <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
-              </Popconfirm>
+              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
+              {
+                !Setting.isLocalAdminUser(this.props.account) ? null : (
+                  <React.Fragment>
+                    <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+                    <Popconfirm
+                      title={`Sure to delete store: ${record.name} ?`}
+                      onConfirm={() => this.deleteStore(index)}
+                      okText="OK"
+                      cancelText="Cancel"
+                    >
+                      <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
+                    </Popconfirm>
+                  </React.Fragment>
+                )
+              }
             </div>
           )
         }

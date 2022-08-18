@@ -11,6 +11,7 @@ class StoreEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      owner: props.match.params.owner,
       storeName: props.match.params.storeName,
       store: null,
     };
@@ -21,7 +22,7 @@ class StoreEditPage extends React.Component {
   }
 
   getStore() {
-    StoreBackend.getStore(this.props.account.name, this.state.storeName)
+    StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((store) => {
         this.setState({
           store: store,
