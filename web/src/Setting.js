@@ -224,8 +224,34 @@ export function changeMomentLanguage(lng) {
   // }
 }
 
-export function getTagColor(s) {
-  return "processing";
+export function getTag(text, type) {
+  if (type === "Read") {
+    return (
+      <Tooltip placement="top" title={"Read"}>
+        <Tag color={"success"}>
+          {text}
+        </Tag>
+      </Tooltip>
+    )
+  } else if (type === "Write") {
+    return (
+      <Tooltip placement="top" title={"Write"}>
+        <Tag color={"processing"}>
+          {text}
+        </Tag>
+      </Tooltip>
+    )
+  } else if (type === "Admin") {
+    return (
+      <Tooltip placement="top" title={"Admin"}>
+        <Tag color={"error"}>
+          {text}
+        </Tag>
+      </Tooltip>
+    )
+  } else {
+    return null;
+  }
 }
 
 export function getTags(vectors) {

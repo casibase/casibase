@@ -6,7 +6,9 @@ import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import FileViewer from 'react-file-viewer';
 import i18next from "i18next";
+import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
+import * as Conf from "./Conf";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -63,7 +65,23 @@ class FileTree extends React.Component {
       loading: false,
       text: null,
       newFolder: null,
+      permissions: null,
+      permissionMap: null,
     };
+  }
+
+  componentWillMount() {
+    this.getPermissions();
+  }
+
+  getPermissions() {
+    PermissionBackend.getPermissions(Conf.AuthConfig.organizationName)
+      .then((res) => {
+        this.setState({
+          permissions: res,
+          permissionMap: res.reduce((obj, cur) => ({...obj, [cur.resources[0]]: cur}), {}),
+        });
+      });
   }
 
   updateTable(table) {
@@ -128,6 +146,27 @@ class FileTree extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `File failed to delete: ${error}`);
       });
+  }
+
+  renderPermission(permission) {
+    if (permission === undefined) {
+      return null;
+    }
+
+    return (
+      <span onClick={(e) => {
+        Setting.openLink(Setting.getMyProfileUrl(this.props.account).replace("/account", `/permissions/${permission.owner}/${permission.name}`));
+        e.stopPropagation();
+      }}
+      >
+        {
+          permission.users.map(user => {
+            const username = user.split("/")[1];
+            return Setting.getTag(username, permission.actions[0]);
+          })
+        }
+      </span>
+    )
   }
 
   renderTree(store) {
@@ -300,6 +339,11 @@ class FileTree extends React.Component {
                 </div>
               }>
                 {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+                &nbsp;
+                &nbsp;
+                {
+                  this.state.permissionMap === null ? null : this.renderPermission(this.state.permissionMap[file.key])
+                }
               </Tooltip>
             )
           } else {
