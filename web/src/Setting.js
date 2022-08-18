@@ -85,7 +85,17 @@ export function showMessage(type, text) {
 }
 
 export function isAdminUser(account) {
-  return account?.isAdmin;
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.owner === "built-in" || account.isGlobalAdmin === true;
+}
+
+export function isLocalAdminUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.isAdmin === true || isAdminUser(account);
 }
 
 export function deepCopy(obj) {
@@ -224,11 +234,16 @@ export function changeMomentLanguage(lng) {
   // }
 }
 
-export function getTag(text, type) {
+export function getTag(text, type, state) {
+  let style = {};
+  if (state === "Pending") {
+    style = {borderStyle: "dashed", backgroundColor: "white"};
+  }
+
   if (type === "Read") {
     return (
       <Tooltip placement="top" title={"Read"}>
-        <Tag color={"success"}>
+        <Tag style={style} color={"success"}>
           {text}
         </Tag>
       </Tooltip>
@@ -236,7 +251,7 @@ export function getTag(text, type) {
   } else if (type === "Write") {
     return (
       <Tooltip placement="top" title={"Write"}>
-        <Tag color={"processing"}>
+        <Tag style={style} color={"processing"}>
           {text}
         </Tag>
       </Tooltip>
@@ -244,7 +259,7 @@ export function getTag(text, type) {
   } else if (type === "Admin") {
     return (
       <Tooltip placement="top" title={"Admin"}>
-        <Tag color={"error"}>
+        <Tag style={style} color={"error"}>
           {text}
         </Tag>
       </Tooltip>

@@ -23,6 +23,13 @@ export function addPermission(account, store, file) {
     approveTime: "",
     state: "Pending",
   };
+
+  if (Setting.isLocalAdminUser(account)) {
+    newPermission.approver = account.name;
+    newPermission.approveTime = moment().format();
+    newPermission.state = "Approved";
+  }
+
   PermissionBackend.addPermission(newPermission)
     .then((res) => {
         Setting.openLink(Setting.getMyProfileUrl(account).replace("/account", `/permissions/${newPermission.owner}/${newPermission.name}`));

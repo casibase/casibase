@@ -18,7 +18,7 @@ class HomePage extends React.Component {
   }
 
   getStore() {
-    StoreBackend.getStore(this.props.account.name, "openbrain")
+    StoreBackend.getStore(this.props.account.name, "default")
       .then((store) => {
         this.setState({
           store: store,

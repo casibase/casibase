@@ -76,10 +76,11 @@ class FileTree extends React.Component {
 
   getPermissions() {
     PermissionBackend.getPermissions(Conf.AuthConfig.organizationName)
-      .then((res) => {
+      .then((permissions) => {
+        permissions = permissions.filter(permission => (permission.domains[0] === this.props.store.name));
         this.setState({
-          permissions: res,
-          permissionMap: res.reduce((obj, cur) => ({...obj, [cur.resources[0]]: cur}), {}),
+          permissions: permissions,
+          permissionMap: permissions.reduce((obj, cur) => ({...obj, [cur.resources[0]]: cur}), {}),
         });
       });
   }
@@ -162,7 +163,7 @@ class FileTree extends React.Component {
         {
           permission.users.map(user => {
             const username = user.split("/")[1];
-            return Setting.getTag(username, permission.actions[0]);
+            return Setting.getTag(username, permission.actions[0], permission.state);
           })
         }
       </span>
@@ -400,15 +401,26 @@ class FileTree extends React.Component {
                             okText="OK"
                             cancelText="Cancel"
                           >
-                            <Button icon={<DeleteOutlined />} size="small" />
+                            <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
                           </Popconfirm>
                         </span>
                       </Tooltip>
                     )
                   }
+                  <Tooltip title={i18next.t("store:Add Permission")}>
+                    <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
+                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                      e.stopPropagation();
+                    }} />
+                  </Tooltip>
                 </div>
               }>
                 {file.title}
+                &nbsp;
+                &nbsp;
+                {
+                  this.state.permissionMap === null ? null : this.renderPermission(this.state.permissionMap[file.key])
+                }
               </Tooltip>
             )
           }
