@@ -228,6 +228,13 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/resources">
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+          {i18next.t("general:Permissions")}
+        </a>
+      </Menu.Item>
+    );
     // res.push(
     //   <Menu.Item key="/clustering">
     //     <Link to="/clustering">

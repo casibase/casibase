@@ -21,7 +21,7 @@ func InitConfig() {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter("mysql", beego.AppConfig.String("dataSourceName"))
+	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"))
 }
 
 // Adapter represents the MySQL adapter for policy storage.

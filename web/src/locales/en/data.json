@@ -18,6 +18,7 @@
     "Loading...": "Loading...",
     "Name": "Name",
     "No.": "No.",
+    "Permissions": "Permissions",
     "Preview": "Preview",
     "Result": "Result",
     "Save": "Save",
@@ -29,6 +30,7 @@
     "Wordsets": "Wordsets"
   },
   "store": {
+    "Add Permission": "Add Permission",
     "Bucket": "Bucket",
     "Delete": "Delete",
     "Domain": "Domain",

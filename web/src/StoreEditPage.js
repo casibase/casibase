@@ -99,7 +99,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:File tree")}:
           </Col>
           <Col span={22} >
-            <FileTree store={this.state.store} />
+            <FileTree account={this.props.account} store={this.state.store} />
           </Col>
         </Row>
       </Card>

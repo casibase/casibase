@@ -1,11 +1,12 @@
 import React from "react";
 import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
-import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FolderAddOutlined} from "@ant-design/icons";
+import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
 import FileViewer from 'react-file-viewer';
 import i18next from "i18next";
+import * as PermissionUtil from "./PermissionUtil";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -286,9 +287,15 @@ class FileTree extends React.Component {
                         okText="OK"
                         cancelText="Cancel"
                       >
-                        <Button icon={<DeleteOutlined />} size="small" />
+                        <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
                       </Popconfirm>
                     </span>
+                  </Tooltip>
+                  <Tooltip title={i18next.t("store:Add Permission")}>
+                    <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
+                      PermissionUtil.addPermission(this.props.account, this.props.store, file);
+                      e.stopPropagation();
+                    }} />
                   </Tooltip>
                 </div>
               }>
