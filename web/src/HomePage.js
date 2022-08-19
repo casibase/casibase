@@ -18,7 +18,7 @@ class HomePage extends React.Component {
   }
 
   getStore() {
-    StoreBackend.getStore(this.props.account.name, "default")
+    StoreBackend.getStore("admin", "default")
       .then((store) => {
         this.setState({
           store: store,
