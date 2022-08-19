@@ -291,6 +291,7 @@ class FileTree extends React.Component {
       }
 
       if (!this.isFileReadable(info.node)) {
+        Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to access this file"));
         return;
       }
 
@@ -413,7 +414,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  this.state.permissionMap === null ? null : this.renderPermission(this.state.permissionMap[file.key])
+                  (this.state.permissionMap === null || !isReadable) ? null : this.renderPermission(this.state.permissionMap[file.key])
                 }
               </Tooltip>
             )
@@ -497,7 +498,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  this.state.permissionMap === null ? null : this.renderPermission(this.state.permissionMap[file.key])
+                  (this.state.permissionMap === null || !isReadable) ? null : this.renderPermission(this.state.permissionMap[file.key])
                 }
               </Tooltip>
             )
