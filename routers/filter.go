@@ -18,7 +18,7 @@ func TransparentStatic(ctx *context.Context) {
 
 	landingFolder := beego.AppConfig.String("landingFolder")
 	if landingFolder != "" {
-		if urlPath == "" || urlPath == "/" {
+		if urlPath == "" || urlPath == "/" || urlPath == "/about" {
 			http.ServeFile(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("../%s/web/build/index.html", landingFolder))
 			return
 		}
