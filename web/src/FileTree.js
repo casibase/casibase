@@ -77,7 +77,8 @@ class FileTree extends React.Component {
   getPermissions() {
     PermissionBackend.getPermissions(Conf.AuthConfig.organizationName)
       .then((permissions) => {
-        permissions = permissions.filter(permission => (permission.domains[0] === this.props.store.name));
+        permissions = permissions.filter(permission => (permission.domains[0] === this.props.store.name) && permission.users.length !== 0);
+        // console.log(permissions);
         this.setState({
           permissions: permissions,
           permissionMap: permissions.reduce((obj, cur) => ({...obj, [cur.resources[0]]: cur}), {}),
@@ -170,6 +171,49 @@ class FileTree extends React.Component {
     )
   }
 
+  isActionIncluded(action1, action2) {
+    if (action1 === "Read") {
+      return true;
+    } else if (action1 === "Write" && action2 !== "Read") {
+      return true;
+    } else if (action1 === "Admin" && action2 !== "Admin") {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isFileOk(file, action) {
+    if (this.state.permissionMap === null) {
+      return false;
+    }
+
+    const permission = this.state.permissionMap[file.key];
+    if (permission !== undefined) {
+      const userId = `${this.props.account.owner}/${this.props.account.name}`;
+      if (permission.state === "Approved" && permission.isEnabled === true && permission.resources[0] === file.key && permission.users.includes(userId) && this.isActionIncluded(action, permission.actions[0])) {
+        return true;
+      }
+    }
+
+    if (file.parent !== undefined) {
+      return this.isFileOk(file.parent, action);
+    }
+    return false;
+  }
+
+  isFileReadable(file) {
+    return this.isFileOk(file, "Read")
+  }
+
+  isFileWritable(file) {
+    return this.isFileOk(file, "Write")
+  }
+
+  isFileAdmin(file) {
+    return this.isFileOk(file, "Admin")
+  }
+
   renderTree(store) {
     const onDragEnter = (info) => {
       // console.log(info); // expandedKeys 需要受控时设置
@@ -246,6 +290,10 @@ class FileTree extends React.Component {
         return;
       }
 
+      if (!this.isFileReadable(info.node)) {
+        return;
+      }
+
       if (selectedKeys.length !== 0) {
         const path = selectedKeys[0];
         const ext = this.getExtFromPath(path);
@@ -274,6 +322,8 @@ class FileTree extends React.Component {
       });
     };
 
+    const fileTree = Setting.getTreeWithParents(store.fileTree);
+
     return (
       <Tree
         height={"calc(100vh - 154px)"}
@@ -290,47 +340,65 @@ class FileTree extends React.Component {
         onDrop={onDrop}
         onSelect={onSelect}
         selectedKeys={this.state.selectedKeys}
-        // treeData={this.state.gData}
-        treeData={[store.fileTree]}
+        treeData={[fileTree]}
         titleRender={(file) => {
+          const isReadable = this.isFileReadable(file);
+          const isWritable = this.isFileWritable(file);
+          const isAdmin = this.isFileAdmin(file);
+
+          let tagStyle = {};
+          if (!isReadable && !isWritable && !isAdmin) {
+            tagStyle = {color: "rgba(100,100,100,0.6)", backgroundColor: "rgba(225,225,225,0.4)"};
+          }
+
           if (file.isLeaf) {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
                 <div>
-                  {/*<Tooltip title={i18next.t("store:Rename")}>*/}
-                  {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
-                  {/*    Setting.showMessage("error", "Rename");*/}
-                  {/*    e.stopPropagation();*/}
-                  {/*  }} />*/}
-                  {/*</Tooltip>*/}
-                  {/*<Tooltip title={i18next.t("store:Move")}>*/}
-                  {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
-                  {/*    Setting.showMessage("error", "Move");*/}
-                  {/*    e.stopPropagation();*/}
-                  {/*  }} />*/}
-                  {/*</Tooltip>*/}
-                  <Tooltip title={i18next.t("store:Download")}>
-                    <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
-                      Setting.showMessage("success", "Successfully downloaded");
-                      const url = `${store.domain}/${file.key}`;
-                      Setting.openLink(url);
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                  <Tooltip title={i18next.t("store:Delete")}>
-                    <span onClick={(e) => e.stopPropagation()}>
-                      <Popconfirm
-                        title={`Sure to delete file: ${file.title} ?`}
-                        onConfirm={(e) => {
-                          this.deleteFile(file, true);
-                        }}
-                        okText="OK"
-                        cancelText="Cancel"
-                      >
-                        <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                      </Popconfirm>
-                    </span>
-                  </Tooltip>
+                  {
+                    !isReadable ? null : (
+                      <Tooltip title={i18next.t("store:Download")}>
+                        <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
+                          Setting.showMessage("success", "Successfully downloaded");
+                          const url = `${store.domain}/${file.key}`;
+                          Setting.openLink(url);
+                          e.stopPropagation();
+                        }} />
+                      </Tooltip>
+                    )
+                  }
+                  {
+                    !isWritable ? null : (
+                      <React.Fragment>
+                        {/*<Tooltip title={i18next.t("store:Rename")}>*/}
+                        {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
+                        {/*    Setting.showMessage("error", "Rename");*/}
+                        {/*    e.stopPropagation();*/}
+                        {/*  }} />*/}
+                        {/*</Tooltip>*/}
+                        {/*<Tooltip title={i18next.t("store:Move")}>*/}
+                        {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
+                        {/*    Setting.showMessage("error", "Move");*/}
+                        {/*    e.stopPropagation();*/}
+                        {/*  }} />*/}
+                        {/*</Tooltip>*/}
+                        <Tooltip title={i18next.t("store:Delete")}>
+                        <span onClick={(e) => e.stopPropagation()}>
+                          <Popconfirm
+                            title={`Sure to delete file: ${file.title} ?`}
+                            onConfirm={(e) => {
+                              this.deleteFile(file, true);
+                            }}
+                            okText="OK"
+                            cancelText="Cancel"
+                          >
+                            <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                          </Popconfirm>
+                        </span>
+                        </Tooltip>
+                      </React.Fragment>
+                    )
+                  }
                   <Tooltip title={i18next.t("store:Add Permission")}>
                     <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
                       PermissionUtil.addPermission(this.props.account, this.props.store, file);
@@ -339,7 +407,9 @@ class FileTree extends React.Component {
                   </Tooltip>
                 </div>
               }>
-                {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+                <span style={tagStyle}>
+                  {`${file.title} (${Setting.getFriendlyFileSize(file.size)})`}
+                </span>
                 &nbsp;
                 &nbsp;
                 {
@@ -351,47 +421,50 @@ class FileTree extends React.Component {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
                 <div>
-                  <Tooltip color={"rgb(255,255,255)"} placement="top" title={
-                    <div>
-                      <div style={{color: "black"}}>
-                        {i18next.t("store:New folder")}:
-                      </div>
-                      <Input.Group style={{marginTop: "5px"}} compact>
-                        <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
-                          this.setState({
-                            newFolder: e.target.value,
-                          });
-                        }} />
-                        <Button type="primary" onClick={(e) => {
-                          this.addFile(file, this.state.newFolder);
-                          e.stopPropagation();
-                        }}
-                        >
-                          OK
-                        </Button>
-                      </Input.Group>
-                    </div>
-                  }>
-                    <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                      this.addFile();
-                      e.stopPropagation();
-                    }} />
-                  </Tooltip>
-                  <Tooltip title={i18next.t("store:Upload file")}>
-                    <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
-                      this.uploadFile(file, info);
-                    }}
-                    >
-                      <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
-                    </Upload>
-                    {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
-                    {/*  Setting.showMessage("error", "Upload file");*/}
-                    {/*  e.stopPropagation();*/}
-                    {/*}} />*/}
-                  </Tooltip>
                   {
-                    file.key === "/" ? null : (
-                      <Tooltip title={i18next.t("store:Delete")}>
+                    !isWritable ? null : (
+                      <React.Fragment>
+                        <Tooltip color={"rgb(255,255,255)"} placement="top" title={
+                          <div>
+                            <div style={{color: "black"}}>
+                              {i18next.t("store:New folder")}:
+                            </div>
+                            <Input.Group style={{marginTop: "5px"}} compact>
+                              <Input style={{width: "100px"}} value={this.state.newFolder} onChange={e => {
+                                this.setState({
+                                  newFolder: e.target.value,
+                                });
+                              }} />
+                              <Button type="primary" onClick={(e) => {
+                                this.addFile(file, this.state.newFolder);
+                                e.stopPropagation();
+                              }}
+                              >
+                                OK
+                              </Button>
+                            </Input.Group>
+                          </div>
+                        }>
+                          <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
+                            this.addFile();
+                            e.stopPropagation();
+                          }} />
+                        </Tooltip>
+                        <Tooltip title={i18next.t("store:Upload file")}>
+                          <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
+                            this.uploadFile(file, info);
+                          }}
+                          >
+                            <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                          </Upload>
+                          {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
+                          {/*  Setting.showMessage("error", "Upload file");*/}
+                          {/*  e.stopPropagation();*/}
+                          {/*}} />*/}
+                        </Tooltip>
+                        {
+                          file.key === "/" ? null : (
+                            <Tooltip title={i18next.t("store:Delete")}>
                         <span onClick={(e) => e.stopPropagation()}>
                           <Popconfirm
                             title={`Sure to delete folder: ${file.title} ?`}
@@ -404,7 +477,10 @@ class FileTree extends React.Component {
                             <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
                           </Popconfirm>
                         </span>
-                      </Tooltip>
+                            </Tooltip>
+                          )
+                        }
+                      </React.Fragment>
                     )
                   }
                   <Tooltip title={i18next.t("store:Add Permission")}>
@@ -415,7 +491,9 @@ class FileTree extends React.Component {
                   </Tooltip>
                 </div>
               }>
-                {file.title}
+                <span style={tagStyle}>
+                  {file.title}
+                </span>
                 &nbsp;
                 &nbsp;
                 {

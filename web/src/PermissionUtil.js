@@ -28,6 +28,9 @@ export function addPermission(account, store, file) {
     newPermission.approver = account.name;
     newPermission.approveTime = moment().format();
     newPermission.state = "Approved";
+  } else {
+    const userId = `${account.owner}/${account.name}`;
+    newPermission.users = [userId];
   }
 
   PermissionBackend.addPermission(newPermission)

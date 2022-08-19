@@ -392,3 +392,11 @@ export function getFriendlyFileSize(size) {
   num = round < 10 ? num.toFixed(2) : round < 100 ? num.toFixed(1) : round;
   return `${num} ${"KMGTPEZY"[i-1]}B`;
 }
+
+export function getTreeWithParents(tree) {
+  tree.children = tree.children.map((file, index) => {
+    file.parent = tree;
+    return getTreeWithParents(file);
+  });
+  return tree;
+}
