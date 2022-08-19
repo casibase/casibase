@@ -125,7 +125,11 @@ class StoreListPage extends React.Component {
                title={() => (
                  <div>
                    {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                   {
+                     !Setting.isLocalAdminUser(this.props.account) ? null : (
+                       <Button type="primary" size="small" onClick={this.addStore.bind(this)}>{i18next.t("general:Add")}</Button>
+                     )
+                   }
                  </div>
                )}
                loading={stores === null}

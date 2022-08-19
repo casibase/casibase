@@ -21,9 +21,14 @@ func getBucket(bucketName string) *oss.Bucket {
 }
 
 func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
+	res := []oss.ObjectProperties{}
+
+	if bucketName == "" {
+		return res
+	}
+
 	bucket := getBucket(bucketName)
 
-	res := []oss.ObjectProperties{}
 	marker := oss.Marker("")
 	i := 0
 	for {
