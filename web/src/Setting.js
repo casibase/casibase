@@ -1,4 +1,5 @@
 import {message, Tag, Tooltip} from "antd";
+import {SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
@@ -235,15 +236,17 @@ export function changeMomentLanguage(lng) {
 }
 
 export function getTag(text, type, state) {
+  let icon = null;
   let style = {};
   if (state === "Pending") {
+    icon = <SyncOutlined spin />
     style = {borderStyle: "dashed", backgroundColor: "white"};
   }
 
   if (type === "Read") {
     return (
       <Tooltip placement="top" title={"Read"}>
-        <Tag style={style} color={"success"}>
+        <Tag icon={icon} style={style} color={"success"}>
           {text}
         </Tag>
       </Tooltip>
@@ -251,7 +254,7 @@ export function getTag(text, type, state) {
   } else if (type === "Write") {
     return (
       <Tooltip placement="top" title={"Write"}>
-        <Tag style={style} color={"processing"}>
+        <Tag icon={icon} style={style} color={"processing"}>
           {text}
         </Tag>
       </Tooltip>
@@ -259,7 +262,7 @@ export function getTag(text, type, state) {
   } else if (type === "Admin") {
     return (
       <Tooltip placement="top" title={"Admin"}>
-        <Tag style={style} color={"error"}>
+        <Tag icon={icon} style={style} color={"error"}>
           {text}
         </Tag>
       </Tooltip>

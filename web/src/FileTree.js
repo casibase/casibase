@@ -150,9 +150,16 @@ class FileTree extends React.Component {
       });
   }
 
-  renderPermission(permission) {
+  renderPermission(permission, isReadable) {
     if (permission === undefined) {
       return null;
+    }
+
+    if (!isReadable) {
+      const userId = `${this.props.account.owner}/${this.props.account.name}`;
+      if (!permission.users.includes(userId)) {
+        return null;
+      }
     }
 
     return (
@@ -419,7 +426,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  (this.state.permissionMap === null || !isReadable) ? null : this.renderPermission(this.state.permissionMap[file.key])
+                  (this.state.permissionMap === null) ? null : this.renderPermission(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
             )
@@ -504,7 +511,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  (this.state.permissionMap === null || !isReadable) ? null : this.renderPermission(this.state.permissionMap[file.key])
+                  (this.state.permissionMap === null) ? null : this.renderPermission(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
             )
