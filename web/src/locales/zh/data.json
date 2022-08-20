@@ -31,6 +31,7 @@
   },
   "store": {
     "Add Permission": "添加权限",
+    "Apply for Permission": "申请权限",
     "Bucket": "Bucket",
     "Delete": "删除",
     "Domain": "域名",

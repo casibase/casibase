@@ -176,7 +176,7 @@ class FileTree extends React.Component {
       return true;
     } else if (action1 === "Write" && action2 !== "Read") {
       return true;
-    } else if (action1 === "Admin" && action2 !== "Admin") {
+    } else if (action1 === "Admin" && action2 === "Admin") {
       return true;
     } else {
       return false;
@@ -211,6 +211,10 @@ class FileTree extends React.Component {
   }
 
   isFileAdmin(file) {
+    if (Setting.isLocalAdminUser(this.props.account)) {
+      return true;
+    }
+
     return this.isFileOk(file, "Admin")
   }
 
@@ -400,7 +404,8 @@ class FileTree extends React.Component {
                       </React.Fragment>
                     )
                   }
-                  <Tooltip title={i18next.t("store:Add Permission")}>
+                  <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
+                    i18next.t("store:Apply for Permission")}>
                     <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
                       PermissionUtil.addPermission(this.props.account, this.props.store, file);
                       e.stopPropagation();
@@ -484,7 +489,8 @@ class FileTree extends React.Component {
                       </React.Fragment>
                     )
                   }
-                  <Tooltip title={i18next.t("store:Add Permission")}>
+                  <Tooltip title={isAdmin ? i18next.t("store:Add Permission") :
+                    i18next.t("store:Apply for Permission")}>
                     <Button icon={<FileDoneOutlined />} size="small" onClick={(e) => {
                       PermissionUtil.addPermission(this.props.account, this.props.store, file);
                       e.stopPropagation();
