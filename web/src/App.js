@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import classNames from "classnames";
 import "./App.less";
 import "codemirror/lib/codemirror.css";
-import {BackTop} from "antd";
+import {BackTop, Spin} from "antd";
 import * as Setting from "./Setting";
 import {Route, Switch} from "react-router-dom";
 import TopicPage from "./TopicPage";
@@ -82,6 +82,8 @@ import FooterRenderBox from "./main/FooterRenderBox";
 class App extends Component {
   constructor(props) {
     super(props);
+
+    const params = new URLSearchParams(window.location.search);
     this.state = {
       classes: props,
       account: undefined,
@@ -90,6 +92,7 @@ class App extends Component {
       nodeBackgroundImage: "",
       nodeBackgroundColor: "",
       nodeBackgroundRepeat: "",
+      silentSignin: params.get("silentSignin") === "1",
     };
 
     Setting.initServerUrl();
@@ -588,10 +591,6 @@ class App extends Component {
   }
 
   renderContent() {
-    if (window.location.pathname === "/callback") {
-      return <AuthCallback />;
-    }
-
     return (
       <div className="content">
         <div id="Leftbar" />
@@ -609,12 +608,30 @@ class App extends Component {
       return <Embed account={this.state.account} refreshAccount={this.getAccount.bind(this)} />;
     }
 
+    if (window.location.pathname.startsWith("/callback")) {
+      return <AuthCallback />;
+    }
+
+    if (this.state.silentSignin) {
+      if (this.state.account) {
+        Setting.goToLink("/");
+        return null;
+      } else {
+        return (
+          <div style={{textAlign: "center"}}>
+            <Spin size="large" tip={i18next.t("login:Signing in automatically...")} style={{paddingTop: "10%", paddingBottom: "10%"}}>
+              <SilentSignin account={this.state.account} />
+            </Spin>
+          </div>
+        );
+      }
+    }
+
     return (
       <div>
         <link type="text/css" rel="stylesheet" media="all" id="dark-mode" href={this.getThemeLink()} />
         <BackTop />
         <Header account={this.state.account} onSignout={this.onSignout.bind(this)} changeMenuStatus={this.changeMenuStatus.bind(this)} showMenu={this.state.showMenu} />
-        <SilentSignin account={this.state.account} />
         <div
           id="Wrapper"
           style={{

@@ -230,7 +230,9 @@
     "Help": "Help",
     "Logged in successfully": "Logged in successfully",
     "Signing In Error": "Signing In Error",
-    "Signing in...": "Signing in..."
+    "Signing in...": "Signing in...",
+    "Failed to log in": "Failed to log in",
+    "Signing in automatically...": "Signing in automatically..."
   },
   "member": {
     "'s all created topics": "'s all created topics",
