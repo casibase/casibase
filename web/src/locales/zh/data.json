@@ -230,7 +230,9 @@
     "Help": "帮助",
     "Logged in successfully": "登录成功",
     "Signing In Error": "登录时遇到错误",
-    "Signing in...": "正在登录..."
+    "Signing in...": "正在登录...",
+    "Failed to log in": "登录失败",
+    "Signing in automatically...": "正在自动登录..."
   },
   "member": {
     "'s all created topics": " 创建的主题",

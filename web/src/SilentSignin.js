@@ -15,6 +15,7 @@
 import React from "react";
 import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class SilentSignin extends React.Component {
   constructor(props) {
@@ -33,8 +34,9 @@ class SilentSignin extends React.Component {
       }
 
       if (message.type === "SilentSignin" && message.data === "success") {
-        // Setting.showMessage("success", "hahaha");
-        window.location.reload();
+        Setting.showMessageEx("success", i18next.t("login:Logged in successfully"), 1, () => Setting.goToLink("/"));
+      } else if (message.type === "SilentSignin" && message.data === "user-not-logged-in") {
+        Setting.showMessageEx("error", i18next.t("login:Failed to log in"), 1, () => Setting.goToLink("/"));
       }
     });
   }

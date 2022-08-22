@@ -126,6 +126,14 @@ export function showMessage(type, text) {
   }
 }
 
+export function showMessageEx(type, text, duration, onClose) {
+  if (type === "success") {
+    message.success(text, duration, onClose);
+  } else if (type === "error") {
+    message.error(text, duration, onClose);
+  }
+}
+
 export function addRow(array, row) {
   return [...array, row];
 }
