@@ -3,7 +3,7 @@ import {Button, Col, Descriptions, Empty, Input, Popconfirm, Row, Spin, Tooltip,
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
-import DocViewer, { DocViewerRenderers } from "react-doc-viewer";
+import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
 import FileViewer from 'react-file-viewer';
 import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
