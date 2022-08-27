@@ -46,7 +46,7 @@
     "New folder": "新建文件夹",
     "Path": "路径",
     "Rename": "重命名",
-    "Sorry, you are unauthorized to access this file": "抱歉，您无权访问该文件",
+    "Sorry, you are unauthorized to access this file or folder": "抱歉，您无权访问该文件或文件夹",
     "True": "是",
     "Upload file": "上传文件"
   },

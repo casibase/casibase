@@ -9,6 +9,7 @@ import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
+import FileTable from "./FileTable";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -97,27 +98,6 @@ class FileTree extends React.Component {
           permissionMap: this.getPermissionMap(permissions),
         });
       });
-  }
-
-  updateTable(table) {
-    this.props.onUpdateTable(table);
-  }
-
-  getExtFromPath(path) {
-    const filename = path.split("/").pop();
-    if (filename.includes(".")) {
-      return filename.split('.').pop().toLowerCase();
-    } else {
-      return "";
-    }
-  }
-
-  newFile() {
-    return {
-      key: "docs/newfolder",
-      title: "newfolder",
-      isLeaf: false,
-    };
   }
 
   uploadFile(file, info) {
@@ -317,18 +297,14 @@ class FileTree extends React.Component {
     };
 
     const onSelect = (selectedKeys, info) => {
-      if (!info.node.isLeaf) {
-        return;
-      }
-
       if (!this.isFileReadable(info.node)) {
-        Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to access this file"));
+        Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to access this file or folder"));
         return;
       }
 
       if (selectedKeys.length !== 0) {
         const path = selectedKeys[0];
-        const ext = this.getExtFromPath(path);
+        const ext = Setting.getExtFromPath(path);
         if (ext !== "") {
           const url = `${store.domain}/${path}`;
 
@@ -540,7 +516,7 @@ class FileTree extends React.Component {
         }}
         icon={(file) => {
           if (file.isLeaf) {
-            const ext = this.getExtFromPath(file.data.key);
+            const ext = Setting.getExtFromPath(file.data.key);
             if (ext === "pdf") {
               return <IconFont type='icon-testpdf' />
             } else if (ext === "doc" || ext === "docx") {
@@ -583,15 +559,29 @@ class FileTree extends React.Component {
       return null;
     }
 
+    const file = this.state.selectedFile;
+    if (file === null) {
+      return null;
+    }
+
     const path = this.state.selectedKeys[0];
     const filename = path.split("/").pop();
+
+    if (!file.isLeaf) {
+      return (
+        <FileTable file={file} />
+      )
+    }
+
     if (!filename.includes(".")) {
       return (
-        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        <div style={{height: this.getEditorHeightCss()}}>
+          <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        </div>
       );
     }
 
-    const ext = this.getExtFromPath(path);
+    const ext = Setting.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
     if (this.isExtForDocViewer(ext)) {

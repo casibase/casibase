@@ -403,3 +403,12 @@ export function getTreeWithParents(tree) {
   });
   return tree;
 }
+
+export function getExtFromPath(path) {
+  const filename = path.split("/").pop();
+  if (filename.includes(".")) {
+    return filename.split('.').pop().toLowerCase();
+  } else {
+    return "";
+  }
+}
