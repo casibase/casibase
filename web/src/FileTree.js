@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
+import {Button, Col, Descriptions, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
@@ -62,6 +62,7 @@ class FileTree extends React.Component {
       gData: defaultData,
       expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
       selectedKeys: [],
+      selectedFile: null,
       loading: false,
       text: null,
       newFolder: null,
@@ -331,6 +332,7 @@ class FileTree extends React.Component {
 
       this.setState({
         selectedKeys: selectedKeys,
+        selectedFile: info.node,
       });
     };
 
@@ -577,7 +579,8 @@ class FileTree extends React.Component {
       // https://github.com/Alcumus/react-doc-viewer
       return (
         <DocViewer
-          style={{height: "calc(100vh - 154px)"}}
+          key={path}
+          style={{height: "calc(100vh - 233px)"}}
           pluginRenderers={DocViewerRenderers}
           documents={[{uri: url}]}
           theme={{
@@ -603,6 +606,7 @@ class FileTree extends React.Component {
       return (
         <a target="_blank" rel="noreferrer" href={url}>
           <FileViewer
+            key={path}
             fileType={ext}
             filePath={url}
             errorComponent={<div>error</div>}
@@ -625,6 +629,7 @@ class FileTree extends React.Component {
       return (
         <div>
           <CodeMirror
+            key={path}
             value={this.state.text}
             // options={{mode: "javascript", theme: "material-darker"}}
             onBeforeChange={(editor, data, value) => {}}
@@ -632,6 +637,32 @@ class FileTree extends React.Component {
         </div>
       );
     }
+  }
+
+  renderProperties() {
+    const file = this.state.selectedFile;
+    if (file === null) {
+      return null;
+    }
+
+    return (
+      <Descriptions
+        bordered
+        // title="Custom Size"
+        size="small"
+        // extra={<Button type="primary">Edit</Button>}
+      >
+        <Descriptions.Item label={i18next.t("vectorset:File name")}>{file.title}</Descriptions.Item>
+        <Descriptions.Item label={i18next.t("vectorset:File size")}>{Setting.getFriendlyFileSize(file.size)}</Descriptions.Item>
+        <Descriptions.Item label={i18next.t("store:Modified time")}>{Setting.getFormattedDate(file.modifiedTime)}</Descriptions.Item>
+        <Descriptions.Item label={i18next.t("store:File type")}>{file.title.split('.')[1]}</Descriptions.Item>
+        <Descriptions.Item label={i18next.t("store:Path")}>{file.key}</Descriptions.Item>
+        <Descriptions.Item label={i18next.t("store:Is leaf")}>{
+          file.isLeaf ? i18next.t("store:True") :
+            i18next.t("store:False")
+        }</Descriptions.Item>
+      </Descriptions>
+    )
   }
 
   render() {
@@ -644,8 +675,13 @@ class FileTree extends React.Component {
             }
           </Col>
           <Col span={16}>
+            <div style={{height: "calc(100vh - 233px)"}}>
+              {
+                this.renderFileViewer(this.props.store)
+              }
+            </div>
             {
-              this.renderFileViewer(this.props.store)
+              this.renderProperties()
             }
           </Col>
         </Row>

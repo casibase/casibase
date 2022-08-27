@@ -37,11 +37,17 @@
     "Domain": "域名",
     "Download": "下载",
     "Edit Store": "编辑数据仓库",
+    "False": "否",
     "File tree": "文件",
+    "File type": "文件类型",
+    "Is leaf": "是否是文件",
+    "Modified time": "修改时间",
     "Move": "移动",
     "New folder": "新建文件夹",
+    "Path": "路径",
     "Rename": "重命名",
     "Sorry, you are unauthorized to access this file": "抱歉，您无权访问该文件",
+    "True": "是",
     "Upload file": "上传文件"
   },
   "vectorset": {

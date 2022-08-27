@@ -37,11 +37,17 @@
     "Domain": "Domain",
     "Download": "Download",
     "Edit Store": "Edit Store",
+    "False": "False",
     "File tree": "File tree",
+    "File type": "File type",
+    "Is leaf": "Is leaf",
+    "Modified time": "Modified time",
     "Move": "Move",
     "New folder": "New folder",
+    "Path": "Path",
     "Rename": "Rename",
     "Sorry, you are unauthorized to access this file": "Sorry, you are unauthorized to access this file",
+    "True": "True",
     "Upload file": "Upload file"
   },
   "vectorset": {
