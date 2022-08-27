@@ -84,7 +84,9 @@ code {
 }
 
 .react-codemirror2 {
-  height: calc(100vh - 233px)
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 .anticon-file {

@@ -558,7 +558,7 @@ class FileTree extends React.Component {
   }
 
   isExtForFileViewer(ext) {
-    return ["png", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
+    return ["png", "jpg", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
   }
 
   renderFileViewer(store) {
@@ -577,12 +577,15 @@ class FileTree extends React.Component {
     const ext = this.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
+    const filePaneHeight = this.filePane.current?.offsetHeight;
+    const heightCss = `calc(100vh - ${filePaneHeight + 154}px)`;
+
     if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
       return (
         <DocViewer
           key={path}
-          style={{height: "calc(100vh - 233px)"}}
+          style={{height: heightCss}}
           pluginRenderers={DocViewerRenderers}
           documents={[{uri: url}]}
           theme={{
@@ -629,7 +632,7 @@ class FileTree extends React.Component {
       }
 
       return (
-        <div>
+        <div style={{height: heightCss}}>
           <CodeMirror
             key={path}
             value={this.state.text}
@@ -671,7 +674,8 @@ class FileTree extends React.Component {
 
   render() {
     // 79, 123
-    const height = this.filePane.current?.offsetHeight;
+    const filePaneHeight = this.filePane.current?.offsetHeight;
+    const heightCss = `calc(100vh - ${filePaneHeight + 154}px)`;
 
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
@@ -685,8 +689,8 @@ class FileTree extends React.Component {
             }
           </Col>
           <Col span={16}>
-            <div style={{height: `300px`}}>
-              <div style={{height: `calc(100vh - ${height + 154}px)`}}>
+            <div>
+              <div style={{height: heightCss}}>
                 {
                   this.renderFileViewer(this.props.store)
                 }
