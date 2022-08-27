@@ -359,7 +359,7 @@ class FileTree extends React.Component {
 
     return (
       <Tree
-        height={"calc(100vh - 154px)"}
+        height={"calc(100vh - 138px)"}
         virtual={false}
         className="draggable-tree"
         multiple={false}
@@ -693,15 +693,13 @@ class FileTree extends React.Component {
   getEditorHeightCss() {
     // 79, 123
     const filePaneHeight = this.filePane.current?.offsetHeight;
-    return `calc(100vh - ${filePaneHeight + 154}px)`;
+    return `calc(100vh - ${filePaneHeight + 138}px)`;
   }
 
   render() {
-    console.log(this.state.selectedFile)
-
     return (
-      <div style={{backgroundColor: "rgb(232,232,232)"}}>
-        <Row style={{marginTop: '20px'}} >
+      <div style={{backgroundColor: "rgb(232,232,232)", borderTop: "1px solid rgb(232,232,232)"}}>
+        <Row>
           <Col span={8}>
             {
               this.renderTree(this.props.store)
