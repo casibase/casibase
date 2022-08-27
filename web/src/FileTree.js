@@ -69,6 +69,8 @@ class FileTree extends React.Component {
       permissions: null,
       permissionMap: null,
     };
+
+    this.filePane = React.createRef();
   }
 
   componentWillMount() {
@@ -646,43 +648,53 @@ class FileTree extends React.Component {
     }
 
     return (
-      <Descriptions
-        bordered
-        // title="Custom Size"
-        size="small"
-        // extra={<Button type="primary">Edit</Button>}
-      >
-        <Descriptions.Item label={i18next.t("vectorset:File name")}>{file.title}</Descriptions.Item>
-        <Descriptions.Item label={i18next.t("vectorset:File size")}>{Setting.getFriendlyFileSize(file.size)}</Descriptions.Item>
-        <Descriptions.Item label={i18next.t("store:Modified time")}>{Setting.getFormattedDate(file.modifiedTime)}</Descriptions.Item>
-        <Descriptions.Item label={i18next.t("store:File type")}>{file.title.split('.')[1]}</Descriptions.Item>
-        <Descriptions.Item label={i18next.t("store:Path")}>{file.key}</Descriptions.Item>
-        <Descriptions.Item label={i18next.t("store:Is leaf")}>{
-          file.isLeaf ? i18next.t("store:True") :
-            i18next.t("store:False")
-        }</Descriptions.Item>
-      </Descriptions>
+      <div ref={this.filePane}>
+        <Descriptions
+          bordered
+          // title="Custom Size"
+          size="small"
+          // extra={<Button type="primary">Edit</Button>}
+        >
+          <Descriptions.Item label={i18next.t("vectorset:File name")}>{file.title}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("vectorset:File size")}>{Setting.getFriendlyFileSize(file.size)}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:Modified time")}>{Setting.getFormattedDate(file.modifiedTime)}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:File type")}>{file.title.split('.')[1]}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:Path")}>{file.key}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:Is leaf")}>{
+            file.isLeaf ? i18next.t("store:True") :
+              i18next.t("store:False")
+          }</Descriptions.Item>
+        </Descriptions>
+      </div>
     )
   }
 
   render() {
+    // 79, 123
+    const height = this.filePane.current?.offsetHeight;
+
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
         <Row style={{marginTop: '20px'}} >
           <Col span={8}>
+            {/*{*/}
+            {/*  height*/}
+            {/*}*/}
             {
               this.renderTree(this.props.store)
             }
           </Col>
           <Col span={16}>
-            <div style={{height: "calc(100vh - 233px)"}}>
+            <div style={{height: `300px`}}>
+              <div style={{height: `calc(100vh - ${height + 154}px)`}}>
+                {
+                  this.renderFileViewer(this.props.store)
+                }
+              </div>
               {
-                this.renderFileViewer(this.props.store)
+                this.renderProperties()
               }
             </div>
-            {
-              this.renderProperties()
-            }
           </Col>
         </Row>
       </div>
