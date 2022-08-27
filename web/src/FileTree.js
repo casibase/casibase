@@ -659,6 +659,10 @@ class FileTree extends React.Component {
   }
 
   renderProperties() {
+    if (this.state.selectedKeys.length === 0) {
+      return null;
+    }
+
     const file = this.state.selectedFile;
     if (file === null) {
       return null;
