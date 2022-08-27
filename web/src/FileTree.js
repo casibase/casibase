@@ -577,15 +577,12 @@ class FileTree extends React.Component {
     const ext = this.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
-    const filePaneHeight = this.filePane.current?.offsetHeight;
-    const heightCss = `calc(100vh - ${filePaneHeight + 154}px)`;
-
     if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
       return (
         <DocViewer
           key={path}
-          style={{height: heightCss}}
+          style={{height: this.getEditorHeightCss()}}
           pluginRenderers={DocViewerRenderers}
           documents={[{uri: url}]}
           theme={{
@@ -632,7 +629,7 @@ class FileTree extends React.Component {
       }
 
       return (
-        <div style={{height: heightCss}}>
+        <div style={{height: this.getEditorHeightCss()}}>
           <CodeMirror
             key={path}
             value={this.state.text}
@@ -672,11 +669,13 @@ class FileTree extends React.Component {
     )
   }
 
-  render() {
+  getEditorHeightCss() {
     // 79, 123
     const filePaneHeight = this.filePane.current?.offsetHeight;
-    const heightCss = `calc(100vh - ${filePaneHeight + 154}px)`;
+    return `calc(100vh - ${filePaneHeight + 154}px)`;
+  }
 
+  render() {
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
         <Row style={{marginTop: '20px'}} >
@@ -690,7 +689,7 @@ class FileTree extends React.Component {
           </Col>
           <Col span={16}>
             <div>
-              <div style={{height: heightCss}}>
+              <div style={{height: this.getEditorHeightCss()}}>
                 {
                   this.renderFileViewer(this.props.store)
                 }
