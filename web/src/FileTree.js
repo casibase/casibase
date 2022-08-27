@@ -77,14 +77,24 @@ class FileTree extends React.Component {
     this.getPermissions();
   }
 
+  getPermissionMap(permissions) {
+    let permissionMap = {};
+    permissions.forEach((permission, index) => {
+      if (permissionMap[permission.resources[0]] === undefined) {
+        permissionMap[permission.resources[0]] = [];
+      }
+      permissionMap[permission.resources[0]].push(permission);
+    });
+    return permissionMap;
+  }
+
   getPermissions() {
     PermissionBackend.getPermissions(Conf.AuthConfig.organizationName)
       .then((permissions) => {
         permissions = permissions.filter(permission => (permission.domains[0] === this.props.store.name) && permission.users.length !== 0);
-        // console.log(permissions);
         this.setState({
           permissions: permissions,
-          permissionMap: permissions.reduce((obj, cur) => ({...obj, [cur.resources[0]]: cur}), {}),
+          permissionMap: this.getPermissionMap(permissions),
         });
       });
   }
@@ -154,10 +164,6 @@ class FileTree extends React.Component {
   }
 
   renderPermission(permission, isReadable) {
-    if (permission === undefined) {
-      return null;
-    }
-
     if (!isReadable) {
       const userId = `${this.props.account.owner}/${this.props.account.name}`;
       if (!permission.users.includes(userId)) {
@@ -181,6 +187,14 @@ class FileTree extends React.Component {
     )
   }
 
+  renderPermissions(permissions, isReadable) {
+    if (permissions === undefined) {
+      return null;
+    }
+
+    return permissions.map(permission => this.renderPermission(permission, isReadable));
+  }
+
   isActionIncluded(action1, action2) {
     if (action1 === "Read") {
       return true;
@@ -198,11 +212,15 @@ class FileTree extends React.Component {
       return false;
     }
 
-    const permission = this.state.permissionMap[file.key];
-    if (permission !== undefined) {
-      const userId = `${this.props.account.owner}/${this.props.account.name}`;
-      if (permission.state === "Approved" && permission.isEnabled === true && permission.resources[0] === file.key && permission.users.includes(userId) && this.isActionIncluded(action, permission.actions[0])) {
-        return true;
+    const permissions = this.state.permissionMap[file.key];
+    if (permissions !== undefined) {
+      for (let i = 0; i < permissions.length; i++) {
+        const permission = permissions[i];
+
+        const userId = `${this.props.account.owner}/${this.props.account.name}`;
+        if (permission.state === "Approved" && permission.isEnabled === true && permission.resources[0] === file.key && permission.users.includes(userId) && this.isActionIncluded(action, permission.actions[0])) {
+          return true;
+        }
       }
     }
 
@@ -235,7 +253,6 @@ class FileTree extends React.Component {
     };
 
     const onDrop = (info) => {
-      console.log(info);
       const dropKey = info.node.key;
       const dragKey = info.dragNode.key;
       const dropPos = info.node.pos.split('-');
@@ -430,7 +447,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  (this.state.permissionMap === null) ? null : this.renderPermission(this.state.permissionMap[file.key], isReadable)
+                  (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
             )
@@ -515,7 +532,7 @@ class FileTree extends React.Component {
                 &nbsp;
                 &nbsp;
                 {
-                  (this.state.permissionMap === null) ? null : this.renderPermission(this.state.permissionMap[file.key], isReadable)
+                  (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
             )
@@ -676,13 +693,12 @@ class FileTree extends React.Component {
   }
 
   render() {
+    console.log(this.state.selectedFile)
+
     return (
       <div style={{backgroundColor: "rgb(232,232,232)"}}>
         <Row style={{marginTop: '20px'}} >
           <Col span={8}>
-            {/*{*/}
-            {/*  height*/}
-            {/*}*/}
             {
               this.renderTree(this.props.store)
             }
