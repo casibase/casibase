@@ -35,6 +35,8 @@
     "Apply for Permission": "申请权限",
     "Bucket": "存储桶",
     "Category": "种类",
+    "Chinese": "语文",
+    "Collected time": "采集时间",
     "Delete": "删除",
     "Domain": "域名",
     "Download": "下载",
@@ -43,11 +45,13 @@
     "File tree": "文件",
     "File type": "文件类型",
     "Folder": "文件夹",
+    "Math": "数学",
     "Move": "移动",
     "New folder": "新建文件夹",
     "Path": "路径",
     "Rename": "重命名",
     "Sorry, you are unauthorized to access this file or folder": "抱歉，您无权访问该文件或文件夹",
+    "Subject": "学科",
     "Upload file": "上传文件"
   },
   "vectorset": {

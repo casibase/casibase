@@ -5,6 +5,7 @@ import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
+import moment from "moment/moment";
 
 export let ServerUrl = '';
 export let CasdoorSdk;
@@ -410,5 +411,36 @@ export function getExtFromPath(path) {
     return filename.split('.').pop().toLowerCase();
   } else {
     return "";
+  }
+}
+
+export function getCollectedTime(filename) {
+  // 20220827_210300_CH~Logo.png
+  const tokens = filename.split("~");
+  if (tokens.length < 2) {
+    return null;
+  }
+
+  const time = tokens[0].slice(0, -3);
+  const m = new moment(time, 'YYYYMMDD_HH:mm:ss');
+  return m.format();
+}
+
+export function getSubject(filename) {
+  // 20220827_210300_CH~Logo.png
+  const tokens = filename.split("~");
+  if (tokens.length < 2) {
+    return null;
+  }
+
+  const subject = tokens[0].slice(tokens[0].length - 2);
+  if (subject === "MA") {
+    return i18next.t("store:Math");
+  } else if (subject === "CH") {
+    return i18next.t("store:Chinese");
+  } else if (subject === "NU") {
+    return null;
+  } else {
+    return subject;
   }
 }

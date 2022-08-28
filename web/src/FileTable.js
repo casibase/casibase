@@ -112,10 +112,31 @@ class FileTable extends React.Component {
         title: i18next.t("general:Created time"),
         dataIndex: 'createdTime',
         key: 'createdTime',
-        width: '150px',
+        width: '160px',
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
+        }
+      },
+      {
+        title: i18next.t("store:Collected time"),
+        dataIndex: 'collectedTime',
+        key: 'collectedTime',
+        width: '160px',
+        sorter: (a, b) => a.collectedTime.localeCompare(b.collectedTime),
+        render: (text, record, index) => {
+          const collectedTime = Setting.getCollectedTime(record.title);
+          return Setting.getFormattedDate(collectedTime);
+        }
+      },
+      {
+        title: i18next.t("store:Subject"),
+        dataIndex: 'subject',
+        key: 'subject',
+        width: '90px',
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
+        render: (text, record, index) => {
+          return Setting.getSubject(record.title);
         }
       },
       // {

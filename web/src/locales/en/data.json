@@ -35,6 +35,8 @@
     "Apply for Permission": "Apply for Permission",
     "Bucket": "Bucket",
     "Category": "Category",
+    "Chinese": "Chinese",
+    "Collected time": "Collected time",
     "Delete": "Delete",
     "Domain": "Domain",
     "Download": "Download",
@@ -43,11 +45,13 @@
     "File tree": "File tree",
     "File type": "File type",
     "Folder": "Folder",
+    "Math": "Math",
     "Move": "Move",
     "New folder": "New folder",
     "Path": "Path",
     "Rename": "Rename",
     "Sorry, you are unauthorized to access this file or folder": "Sorry, you are unauthorized to access this file or folder",
+    "Subject": "Subject",
     "Upload file": "Upload file"
   },
   "vectorset": {
