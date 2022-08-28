@@ -667,14 +667,9 @@ class FileTree extends React.Component {
           // extra={<Button type="primary">Edit</Button>}
         >
           <Descriptions.Item label={i18next.t("vectorset:File name")}>{file.title}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:File type")}>{file.title.split('.')[1]}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("vectorset:File size")}>{Setting.getFriendlyFileSize(file.size)}</Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Created time")}>{Setting.getFormattedDate(file.createdTime)}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:File type")}>{file.title.split('.')[1]}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Path")}>{file.key}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Is leaf")}>{
-            file.isLeaf ? i18next.t("store:True") :
-              i18next.t("store:False")
-          }</Descriptions.Item>
         </Descriptions>
       </div>
     )

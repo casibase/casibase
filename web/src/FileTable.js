@@ -64,19 +64,47 @@ class FileTable extends React.Component {
         title: i18next.t("vectorset:File name"),
         dataIndex: 'title',
         key: 'title',
-        width: '200px',
+        // width: '200px',
         sorter: (a, b) => a.title.localeCompare(b.title),
         render: (text, record, index) => {
           return text;
         }
       },
       {
+        title: i18next.t("store:Category"),
+        dataIndex: 'isLeaf',
+        key: 'isLeaf',
+        width: '90px',
+        sorter: (a, b) => a.isLeaf - b.isLeaf,
+        render: (text, record, index) => {
+          if (text) {
+            return i18next.t("store:File");
+          } else {
+            return i18next.t("store:Folder");
+          }
+        }
+      },
+      {
+        title: i18next.t("store:File type"),
+        dataIndex: 'fileType',
+        key: 'fileType',
+        width: '120px',
+        sorter: (a, b) => Setting.getExtFromPath(a.title).localeCompare(Setting.getExtFromPath(b.title)),
+        render: (text, record, index) => {
+          return record.title.split('.')[1];
+        }
+      },
+      {
         title: i18next.t("vectorset:File size"),
         dataIndex: 'size',
         key: 'size',
-        width: '80px',
+        width: '120px',
         sorter: (a, b) => a.size - b.size,
         render: (text, record, index) => {
+          if (!record.isLeaf) {
+            return null;
+          }
+
           return Setting.getFriendlyFileSize(text);
         }
       },
@@ -90,34 +118,13 @@ class FileTable extends React.Component {
           return Setting.getFormattedDate(text);
         }
       },
-      {
-        title: i18next.t("store:File type"),
-        dataIndex: 'fileType',
-        key: 'fileType',
-        width: '80px',
-        sorter: (a, b) => Setting.getExtFromPath(a.title).localeCompare(Setting.getExtFromPath(b.title)),
-        render: (text, record, index) => {
-          return record.title.split('.')[1];
-        }
-      },
-      {
-        title: i18next.t("store:Path"),
-        dataIndex: 'key',
-        key: 'key',
-        width: '100px',
-        sorter: (a, b) => a.key.localeCompare(b.key),
-      },
-      {
-        title: i18next.t("store:Is leaf"),
-        dataIndex: 'isLeaf',
-        key: 'isLeaf',
-        width: '90px',
-        sorter: (a, b) => a.isLeaf - b.isLeaf,
-        render: (text, record, index) => {
-          return text ? i18next.t("store:True") :
-            i18next.t("store:False");
-        }
-      },
+      // {
+      //   title: i18next.t("store:Path"),
+      //   dataIndex: 'key',
+      //   key: 'key',
+      //   width: '100px',
+      //   sorter: (a, b) => a.key.localeCompare(b.key),
+      // },
     ];
 
     return (
