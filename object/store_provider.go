@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/casbin/casbase/storage"
 	"github.com/casbin/casbase/util"
 )
@@ -53,6 +54,14 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 	}
 }
 
+func isObjectLeaf(object *oss.ObjectProperties) bool {
+	isLeaf := true
+	if object.Key[len(object.Key)-1] == '/' {
+		isLeaf = false
+	}
+	return isLeaf
+}
+
 func (store *Store) Populate() {
 	objects := storage.ListObjects(store.Bucket, "")
 
@@ -67,14 +76,21 @@ func (store *Store) Populate() {
 		}
 	}
 
+	sortedObjects := []oss.ObjectProperties{}
 	for _, object := range objects {
-		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
-
-		isLeaf := true
-		if object.Key[len(object.Key)-1] == '/' {
-			isLeaf = false
+		if strings.HasSuffix(object.Key, "/_hidden.ini") {
+			sortedObjects = append(sortedObjects, object)
 		}
+	}
+	for _, object := range objects {
+		if !strings.HasSuffix(object.Key, "/_hidden.ini") {
+			sortedObjects = append(sortedObjects, object)
+		}
+	}
 
+	for _, object := range sortedObjects {
+		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
+		isLeaf := isObjectLeaf(&object)
 		size := object.Size
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
