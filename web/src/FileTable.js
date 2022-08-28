@@ -81,11 +81,11 @@ class FileTable extends React.Component {
         }
       },
       {
-        title: i18next.t("store:Modified time"),
-        dataIndex: 'modifiedTime',
-        key: 'modifiedTime',
+        title: i18next.t("general:Created time"),
+        dataIndex: 'createdTime',
+        key: 'createdTime',
         width: '150px',
-        sorter: (a, b) => a.modifiedTime.localeCompare(b.modifiedTime),
+        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         }

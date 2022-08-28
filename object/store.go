@@ -8,12 +8,12 @@ import (
 )
 
 type File struct {
-	Key          string  `xorm:"varchar(100)" json:"key"`
-	Title        string  `xorm:"varchar(100)" json:"title"`
-	Size         int64   `json:"size"`
-	ModifiedTime string  `xorm:"varchar(100)" json:"modifiedTime"`
-	IsLeaf       bool    `json:"isLeaf"`
-	Children     []*File `xorm:"varchar(1000)" json:"children"`
+	Key         string  `xorm:"varchar(100)" json:"key"`
+	Title       string  `xorm:"varchar(100)" json:"title"`
+	Size        int64   `json:"size"`
+	CreatedTime string  `xorm:"varchar(100)" json:"createdTime"`
+	IsLeaf      bool    `json:"isLeaf"`
+	Children    []*File `xorm:"varchar(1000)" json:"children"`
 
 	ChildrenMap map[string]*File `xorm:"-" json:"-"`
 }

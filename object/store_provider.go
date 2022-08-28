@@ -6,7 +6,6 @@ import (
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/casbin/casbase/storage"
-	"github.com/casbin/casbase/util"
 )
 
 func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModifiedTime string, isLeaf bool) {
@@ -41,7 +40,7 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 
 		if i == len(tokens)-1 {
 			newFile.Size = size
-			newFile.ModifiedTime = lastModifiedTime
+			newFile.CreatedTime = lastModifiedTime
 
 			if token == "_hidden.ini" {
 				continue
@@ -67,12 +66,12 @@ func (store *Store) Populate() {
 
 	if store.FileTree == nil {
 		store.FileTree = &File{
-			Key:          "/",
-			Title:        store.DisplayName,
-			ModifiedTime: util.GetCurrentTime(),
-			IsLeaf:       false,
-			Children:     []*File{},
-			ChildrenMap:  map[string]*File{},
+			Key:         "/",
+			Title:       store.DisplayName,
+			CreatedTime: store.CreatedTime,
+			IsLeaf:      false,
+			Children:    []*File{},
+			ChildrenMap: map[string]*File{},
 		}
 	}
 
