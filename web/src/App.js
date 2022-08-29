@@ -292,7 +292,11 @@ class App extends Component {
       <div>
         <Header style={{padding: '0', marginBottom: '3px'}}>
           {
-            Setting.isMobile() ? null : <a className="logo" href={"/"}/>
+            Setting.isMobile() ? null : (
+              <Link to={"/"}>
+                <div className="logo" />
+              </Link>
+            )
           }
           <Menu
             // theme="dark"
@@ -358,7 +362,7 @@ class App extends Component {
           textAlign: 'center',
         }
       }>
-        Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" href="https://github.com/casbin/casbase">Casbase</a>, { Setting.isMobile() ? "Mobile" : "Desktop" } View
+        Made with <span style={{color: 'rgb(255, 255, 255)'}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casbase">Casbase</a>, { Setting.isMobile() ? "Mobile" : "Desktop" } View
       </Footer>
     )
   }
