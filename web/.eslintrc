@@ -94,6 +94,8 @@
         "argsIgnorePattern": "^_"
       }
     ],
+    "keyword-spacing": "error",
+    
 
     "react/prop-types": "off",
     "react/display-name": "off",
