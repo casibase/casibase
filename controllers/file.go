@@ -24,7 +24,7 @@ func (c *ApiController) UpdateFile() {
 
 	res := object.UpdateFile(storeId, key, &file)
 	if res {
-		addRecord(c, userName)
+		addRecordForFile(c, userName, "Update", storeId, key, "", true)
 	}
 
 	c.Data["json"] = res
@@ -55,7 +55,7 @@ func (c *ApiController) AddFile() {
 
 	res := object.AddFile(storeId, key, isLeaf, filename, file)
 	if res {
-		addRecord(c, userName)
+		addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf)
 	}
 
 	c.Data["json"] = res
@@ -74,7 +74,7 @@ func (c *ApiController) DeleteFile() {
 
 	res := object.DeleteFile(storeId, key, isLeaf)
 	if res {
-		addRecord(c, userName)
+		addRecordForFile(c, userName, "Delete", storeId, key, "", isLeaf)
 	}
 
 	c.Data["json"] = res
