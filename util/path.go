@@ -1,8 +1,9 @@
 package util
 
 import (
-	"io/ioutil"
+	"net/url"
 	"os"
+	"strings"
 )
 
 func FileExist(path string) bool {
@@ -12,19 +13,30 @@ func FileExist(path string) bool {
 	return true
 }
 
-func ListFiles(path string) []string {
-	res := []string{}
-
-	files, err := ioutil.ReadDir(path)
+func FilterQuery(urlString string, blackList []string) string {
+	urlData, err := url.Parse(urlString)
 	if err != nil {
-		panic(err)
+		return urlString
 	}
 
-	for _, f := range files {
-		if !f.IsDir() {
-			res = append(res, f.Name())
+	queries := urlData.Query()
+	retQuery := make(url.Values)
+	inBlackList := false
+	for key, value := range queries {
+		inBlackList = false
+		for _, blackListItem := range blackList {
+			if blackListItem == key {
+				inBlackList = true
+				break
+			}
+		}
+		if !inBlackList {
+			retQuery[key] = value
 		}
 	}
-
-	return res
+	if len(retQuery) > 0 {
+		return urlData.Path + "?" + strings.ReplaceAll(retQuery.Encode(), "%2F", "/")
+	} else {
+		return urlData.Path
+	}
 }

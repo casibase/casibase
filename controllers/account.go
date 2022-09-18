@@ -51,7 +51,8 @@ func (c *ApiController) Signout() {
 }
 
 func (c *ApiController) GetAccount() {
-	if c.RequireSignedIn() {
+	_, ok := c.RequireSignedIn()
+	if !ok {
 		return
 	}
 

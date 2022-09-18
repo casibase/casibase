@@ -8,6 +8,11 @@ import (
 )
 
 func (c *ApiController) UpdateFile() {
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
 
@@ -17,11 +22,21 @@ func (c *ApiController) UpdateFile() {
 		panic(err)
 	}
 
-	c.Data["json"] = object.UpdateFile(storeId, key, &file)
+	res := object.UpdateFile(storeId, key, &file)
+	if res {
+		addRecord(c, userName)
+	}
+
+	c.Data["json"] = res
 	c.ServeJSON()
 }
 
 func (c *ApiController) AddFile() {
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
 	isLeaf := c.Input().Get("isLeaf") == "1"
@@ -38,15 +53,30 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	c.Data["json"] = object.AddFile(storeId, key, isLeaf, filename, file)
+	res := object.AddFile(storeId, key, isLeaf, filename, file)
+	if res {
+		addRecord(c, userName)
+	}
+
+	c.Data["json"] = res
 	c.ServeJSON()
 }
 
 func (c *ApiController) DeleteFile() {
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
 	storeId := c.Input().Get("store")
 	key := c.Input().Get("key")
 	isLeaf := c.Input().Get("isLeaf") == "1"
 
-	c.Data["json"] = object.DeleteFile(storeId, key, isLeaf)
+	res := object.DeleteFile(storeId, key, isLeaf)
+	if res {
+		addRecord(c, userName)
+	}
+
+	c.Data["json"] = res
 	c.ServeJSON()
 }

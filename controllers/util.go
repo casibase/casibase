@@ -33,13 +33,13 @@ func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	c.ServeJSON()
 }
 
-func (c *ApiController) RequireSignedIn() bool {
-	if c.GetSessionUser() == nil {
-		c.ResponseError("please sign in first")
-		return true
+func (c *ApiController) RequireSignedIn() (string, bool) {
+	userId := c.GetSessionUsername()
+	if userId == "" {
+		c.ResponseError("Please sign in first")
+		return "", false
 	}
-
-	return false
+	return userId, true
 }
 
 func (c *ApiController) RequireAdmin() bool {

@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/google/uuid"
 )
 
 func IndexAt(s, sep string, n int) int {
@@ -76,6 +78,10 @@ func GetOwnerAndNameFromId3New(id string) (string, string, string) {
 
 func GetIdFromOwnerAndName(owner string, name string) string {
 	return fmt.Sprintf("%s/%s", owner, name)
+}
+
+func GenerateId() string {
+	return uuid.NewString()
 }
 
 func ReadStringFromPath(path string) string {
