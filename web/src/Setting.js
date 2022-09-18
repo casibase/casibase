@@ -398,11 +398,39 @@ export function getFriendlyFileSize(size) {
 }
 
 export function getTreeWithParents(tree) {
-  tree.children = tree.children.map((file, index) => {
+  const res = deepCopy(tree);
+  res.children = tree.children.map((file, index) => {
     file.parent = tree;
     return getTreeWithParents(file);
   });
-  return tree;
+  return res;
+}
+
+export function getTreeWithSearch(tree, s) {
+  const res = deepCopy(tree);
+  res.children = tree.children.map((file, index) => {
+    if (file.children.length === 0) {
+      if (file.title.includes(s)) {
+        return file;
+      } else {
+        return null;
+      }
+    } else {
+      const tmpTree = getTreeWithSearch(file, s);
+      if (tmpTree.children.length !== 0) {
+        return tmpTree;
+      } else {
+        if (file.title.includes(s)) {
+          return file;
+        } else {
+          return null;
+        }
+      }
+    }
+  }).filter((file, index) => {
+    return file !== null;
+  });
+  return res;
 }
 
 export function getExtFromPath(path) {

@@ -16,51 +16,17 @@ import "codemirror/lib/codemirror.css";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
 
+const { Search } = Input;
+
 const IconFont = createFromIconfontCN({
   scriptUrl: 'https://cdn.open-ct.com/icon/iconfont.js',
 });
-
-const x = 3;
-const y = 2;
-const z = 1;
-const defaultData = [];
-
-const generateData = (_level, _preKey, _tns) => {
-  const preKey = _preKey || '0';
-  const tns = _tns || defaultData;
-  const children = [];
-
-  for (let i = 0; i < x; i++) {
-    const key = `${preKey}-${i}`;
-    tns.push({
-      title: key,
-      key,
-    });
-
-    if (i < y) {
-      children.push(key);
-    }
-  }
-
-  if (_level < 0) {
-    return tns;
-  }
-
-  const level = _level - 1;
-  children.forEach((key, index) => {
-    tns[index].children = [];
-    return generateData(level, key, tns[index].children);
-  });
-};
-
-generateData(z);
 
 class FileTree extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      gData: defaultData,
       expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
       selectedKeys: [],
       selectedFile: null,
@@ -69,6 +35,7 @@ class FileTree extends React.Component {
       newFolder: null,
       permissions: null,
       permissionMap: null,
+      searchValue: "",
     };
 
     this.filePane = React.createRef();
@@ -233,76 +200,17 @@ class FileTree extends React.Component {
     return this.isFileOk(file, "Admin")
   }
 
+  renderSearch() {
+    return (
+      <Search placeholder={i18next.t("store:Please input your search term")} onChange={(e) => {
+        this.setState({
+          searchValue: e.target.value,
+        });
+      }} />
+    )
+  }
+
   renderTree(store) {
-    const onDragEnter = (info) => {
-      // console.log(info); // expandedKeys 需要受控时设置
-      // setExpandedKeys(info.expandedKeys)
-    };
-
-    const onDrop = (info) => {
-      const dropKey = info.node.key;
-      const dragKey = info.dragNode.key;
-      const dropPos = info.node.pos.split('-');
-      const dropPosition = info.dropPosition - Number(dropPos[dropPos.length - 1]);
-
-      const loop = (data, key, callback) => {
-        for (let i = 0; i < data.length; i++) {
-          if (data[i].key === key) {
-            return callback(data[i], i, data);
-          }
-
-          if (data[i].children) {
-            loop(data[i].children, key, callback);
-          }
-        }
-      };
-
-      const data = [...this.state.gData]; // Find dragObject
-
-      let dragObj;
-      loop(data, dragKey, (item, index, arr) => {
-        arr.splice(index, 1);
-        dragObj = item;
-      });
-
-      if (!info.dropToGap) {
-        // Drop on the content
-        loop(data, dropKey, (item) => {
-          item.children = item.children || []; // where to insert 示例添加到头部，可以是随意位置
-
-          item.children.unshift(dragObj);
-        });
-      } else if (
-        (info.node.props.children || []).length > 0 && // Has children
-        info.node.props.expanded && // Is expanded
-        dropPosition === 1 // On the bottom gap
-      ) {
-        loop(data, dropKey, (item) => {
-          item.children = item.children || []; // where to insert 示例添加到头部，可以是随意位置
-
-          item.children.unshift(dragObj); // in previous version, we use item.children.push(dragObj) to insert the
-          // item to the tail of the children
-        });
-      } else {
-        let ar = [];
-        let i;
-        loop(data, dropKey, (_item, index, arr) => {
-          ar = arr;
-          i = index;
-        });
-
-        if (dropPosition === -1) {
-          ar.splice(i, 0, dragObj);
-        } else {
-          ar.splice(i + 1, 0, dragObj);
-        }
-      }
-
-      this.setState({
-        gData: data,
-      });
-    };
-
     const onSelect = (selectedKeys, info) => {
       if (!this.isFileReadable(info.node)) {
         Setting.showMessage("error", i18next.t("store:Sorry, you are unauthorized to access this file or folder"));
@@ -338,7 +246,10 @@ class FileTree extends React.Component {
       });
     };
 
-    const fileTree = Setting.getTreeWithParents(store.fileTree);
+    let fileTree = Setting.getTreeWithParents(store.fileTree);
+    if (this.state.searchValue !== "") {
+      fileTree = Setting.getTreeWithSearch(fileTree, this.state.searchValue);
+    }
 
     return (
       <Tree
@@ -352,8 +263,6 @@ class FileTree extends React.Component {
         blockNode
         showLine={true}
         showIcon={true}
-        onDragEnter={onDragEnter}
-        onDrop={onDrop}
         onSelect={onSelect}
         selectedKeys={this.state.selectedKeys}
         treeData={[fileTree]}
@@ -695,6 +604,9 @@ class FileTree extends React.Component {
       <div style={{backgroundColor: "rgb(232,232,232)", borderTop: "1px solid rgb(232,232,232)"}}>
         <Row>
           <Col span={8}>
+            {
+              this.renderSearch(this.props.store)
+            }
             {
               this.renderTree(this.props.store)
             }
