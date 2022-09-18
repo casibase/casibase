@@ -152,7 +152,8 @@ class FileTree extends React.Component {
     }
 
     return (
-      <span onClick={(e) => {
+      <span key={permission.name}
+        onClick={(e) => {
         Setting.openLink(Setting.getMyProfileUrl(this.props.account).replace("/account", `/permissions/${permission.owner}/${permission.name}`));
         e.stopPropagation();
       }}
@@ -160,7 +161,13 @@ class FileTree extends React.Component {
         {
           permission.users.map(user => {
             const username = user.split("/")[1];
-            return Setting.getTag(username, permission.actions[0], permission.state);
+            return (
+              <span key={username}>
+                {
+                  Setting.getTag(username, permission.actions[0], permission.state)
+                }
+              </span>
+            )
           })
         }
       </span>
@@ -172,7 +179,7 @@ class FileTree extends React.Component {
       return null;
     }
 
-    return permissions.map(permission => this.renderPermission(permission, isReadable));
+    return permissions.map(permission => this.renderPermission(permission, isReadable)).filter(permission => permission !== null);
   }
 
   isActionIncluded(action1, action2) {
