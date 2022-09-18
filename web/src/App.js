@@ -264,6 +264,16 @@ class App extends Component {
       </Menu.Item>
     );
 
+    if (Setting.isLocalAdminUser(this.state.account)) {
+      res.push(
+        <Menu.Item key="/records">
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+            {i18next.t("general:Records")}
+          </a>
+        </Menu.Item>
+      );
+    }
+
     return res;
   }
 
