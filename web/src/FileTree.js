@@ -205,6 +205,8 @@ class FileTree extends React.Component {
       <Search placeholder={i18next.t("store:Please input your search term")} onChange={(e) => {
         this.setState({
           searchValue: e.target.value,
+          selectedKeys: [],
+          selectedFile: null,
         });
       }} />
     )
