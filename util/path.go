@@ -1,6 +1,7 @@
 package util
 
 import (
+	"io/ioutil"
 	"net/url"
 	"os"
 	"strings"
@@ -11,6 +12,23 @@ func FileExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func ListFiles(path string) []string {
+	res := []string{}
+
+	files, err := ioutil.ReadDir(path)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, f := range files {
+		if !f.IsDir() {
+			res = append(res, f.Name())
+		}
+	}
+
+	return res
 }
 
 func FilterQuery(urlString string, blackList []string) string {
