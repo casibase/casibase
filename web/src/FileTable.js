@@ -1,7 +1,8 @@
 import React from "react";
-import {Table} from 'antd';
+import {Button, Table} from 'antd';
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
 
 class FileTable extends React.Component {
   constructor(props) {
@@ -149,7 +150,25 @@ class FileTable extends React.Component {
     ];
 
     return (
-      <Table rowKey="title" columns={columns} dataSource={table} size="middle" bordered pagination={false} />
+      <Table rowKey="title" columns={columns} dataSource={table} size="middle" bordered pagination={false} title={() => {
+        if (!this.props.isCheckMode) {
+          return null;
+        } else {
+          const files = this.props.file.children;
+          const fileCount = files.filter(file => file.isLeaf).length;
+          const folderCount = files.filter(file => !file.isLeaf).length;
+          const text = `${fileCount} ` + i18next.t("store:files and") +
+            ` ${folderCount} ` + i18next.t("store:folders are checked");
+          return (
+            <div>
+              {text}
+              <Button icon={<DownloadOutlined />} style={{marginLeft: "20px", marginRight: "10px"}} type="primary" size="small" onClick={() => {}}>{i18next.t("store:Download")}</Button>
+              <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small" onClick={() => {}}>{i18next.t("store:Delete")}</Button>
+              <Button icon={<FileDoneOutlined />} size="small" onClick={() => {}}>{i18next.t("store:Add Permission")}</Button>
+            </div>
+          )
+        }
+      }} />
     );
   }
 

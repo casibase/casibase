@@ -28,6 +28,8 @@ class FileTree extends React.Component {
     this.state = {
       classes: props,
       expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
+      checkedKeys: [],
+      checkedFiles: [],
       selectedKeys: [],
       selectedFile: null,
       loading: false,
@@ -243,8 +245,19 @@ class FileTree extends React.Component {
       }
 
       this.setState({
+        checkedKeys: [],
+        checkedFiles: [],
         selectedKeys: selectedKeys,
         selectedFile: info.node,
+      });
+    };
+
+    const onCheck = (checkedKeys, info) => {
+      this.setState({
+        checkedKeys: checkedKeys,
+        checkedFiles: info.checkedNodes,
+        selectedKeys: [],
+        selectedFile: null,
       });
     };
 
@@ -259,12 +272,15 @@ class FileTree extends React.Component {
         virtual={false}
         className="draggable-tree"
         multiple={false}
+        checkable
         defaultExpandAll={true}
         // defaultExpandedKeys={tree.children.map(file => file.key)}
         draggable={false}
         blockNode
         showLine={true}
         showIcon={true}
+        onCheck={onCheck}
+        checkedKeys={this.state.checkedKeys}
         onSelect={onSelect}
         selectedKeys={this.state.selectedKeys}
         treeData={[fileTree]}
@@ -473,6 +489,13 @@ class FileTree extends React.Component {
   }
 
   renderFileViewer(store) {
+    if (this.state.checkedFiles.length !== 0) {
+      const outerFile = {children: this.state.checkedFiles};
+      return (
+        <FileTable file={outerFile} isCheckMode={true} />
+      )
+    }
+
     if (this.state.selectedKeys.length === 0) {
       return null;
     }
@@ -487,7 +510,7 @@ class FileTree extends React.Component {
 
     if (!file.isLeaf) {
       return (
-        <FileTable file={file} />
+        <FileTable file={file} isCheckMode={false} />
       )
     }
 

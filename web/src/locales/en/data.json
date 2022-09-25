@@ -54,7 +54,9 @@
     "Rename": "Rename",
     "Sorry, you are unauthorized to access this file or folder": "Sorry, you are unauthorized to access this file or folder",
     "Subject": "Subject",
-    "Upload file": "Upload file"
+    "Upload file": "Upload file",
+    "files and": "files and",
+    "folders are checked": "folders are checked"
   },
   "vectorset": {
     "Count": "Count",

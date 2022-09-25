@@ -54,7 +54,9 @@
     "Rename": "重命名",
     "Sorry, you are unauthorized to access this file or folder": "抱歉，您无权访问该文件或文件夹",
     "Subject": "学科",
-    "Upload file": "上传文件"
+    "Upload file": "上传文件",
+    "files and": "个文件和",
+    "folders are checked": "文件夹已被选择"
   },
   "vectorset": {
     "Count": "个数",
