@@ -162,7 +162,12 @@ class FileTable extends React.Component {
           return (
             <div>
               {text}
-              <Button icon={<DownloadOutlined />} style={{marginLeft: "20px", marginRight: "10px"}} type="primary" size="small" onClick={() => {}}>{i18next.t("store:Download")}</Button>
+              <Button icon={<DownloadOutlined />} style={{marginLeft: "20px", marginRight: "10px"}} type="primary" size="small" onClick={() => {
+                files.filter(file => file.isLeaf).forEach((file, index) => {
+                  const url = `${this.props.store.domain}/${file.key}`;
+                  Setting.openLink(url);
+                });
+              }}>{i18next.t("store:Download")}</Button>
               <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small" onClick={() => {}}>{i18next.t("store:Delete")}</Button>
               <Button icon={<FileDoneOutlined />} size="small" onClick={() => {}}>{i18next.t("store:Add Permission")}</Button>
             </div>
