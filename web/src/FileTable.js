@@ -1,9 +1,10 @@
 import React from "react";
-import {Button, Table} from 'antd';
+import {Button, Popconfirm, Table} from 'antd';
 import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as PermissionUtil from "./PermissionUtil";
+import * as FileBackend from "./backend/FileBackend";
 
 class FileTable extends React.Component {
   constructor(props) {
@@ -58,6 +59,22 @@ class FileTable extends React.Component {
   downRow(table, i) {
     table = Setting.swapRow(table, i, i + 1);
     this.updateTable(table);
+  }
+
+  deleteFile(file, isLeaf) {
+    const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    FileBackend.deleteFile(storeId, file.key, isLeaf)
+      .then((res) => {
+        if (res === true) {
+          Setting.showMessage("success", `File deleted successfully`);
+          window.location.reload();
+        } else {
+          Setting.showMessage("error", `File failed to delete: ${res}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `File failed to delete: ${error}`);
+      });
   }
 
   renderTable(table) {
@@ -169,7 +186,18 @@ class FileTable extends React.Component {
                   Setting.openLink(url);
                 });
               }}>{i18next.t("store:Download")}</Button>
-              <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small" onClick={() => {}}>{i18next.t("store:Delete")}</Button>
+              <Popconfirm
+                title={`Sure to delete all ${fileCount} files and ${folderCount} folders ?`}
+                onConfirm={(e) => {
+                  files.forEach((file, index) => {
+                    this.deleteFile(file, file.isLeaf);
+                  });
+                }}
+                okText="OK"
+                cancelText="Cancel"
+              >
+                <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small">{i18next.t("store:Delete")}</Button>
+              </Popconfirm>
               <Button icon={<FileDoneOutlined />} size="small" onClick={() => {
                 let fileKeys = [];
                 files.forEach((file, index) => {
