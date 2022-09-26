@@ -492,7 +492,7 @@ class FileTree extends React.Component {
     if (this.state.checkedFiles.length !== 0) {
       const outerFile = {children: this.state.checkedFiles};
       return (
-        <FileTable store={this.props.store} file={outerFile} isCheckMode={true} />
+        <FileTable account={this.props.account} store={this.props.store} file={outerFile} isCheckMode={true} />
       )
     }
 
@@ -510,7 +510,7 @@ class FileTree extends React.Component {
 
     if (!file.isLeaf) {
       return (
-        <FileTable store={this.props.store} file={file} isCheckMode={false} />
+        <FileTable account={this.props.account} store={this.props.store} file={file} isCheckMode={false} />
       )
     }
 

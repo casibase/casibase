@@ -1,8 +1,9 @@
 import React from "react";
 import {Button, Table} from 'antd';
+import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
+import * as PermissionUtil from "./PermissionUtil";
 
 class FileTable extends React.Component {
   constructor(props) {
@@ -169,7 +170,13 @@ class FileTable extends React.Component {
                 });
               }}>{i18next.t("store:Download")}</Button>
               <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small" onClick={() => {}}>{i18next.t("store:Delete")}</Button>
-              <Button icon={<FileDoneOutlined />} size="small" onClick={() => {}}>{i18next.t("store:Add Permission")}</Button>
+              <Button icon={<FileDoneOutlined />} size="small" onClick={() => {
+                let fileKeys = [];
+                files.forEach((file, index) => {
+                  fileKeys.push(file.key);
+                });
+                PermissionUtil.addPermission(this.props.account, this.props.store, null, fileKeys);
+              }}>{i18next.t("store:Add Permission")}</Button>
             </div>
           )
         }

@@ -2,7 +2,7 @@ import * as PermissionBackend from "./backend/PermissionBackend";
 import * as Setting from "./Setting";
 import moment from "moment";
 
-export function addPermission(account, store, file) {
+export function addPermission(account, store, file = null, fileKeys = null) {
   const randomName = Setting.getRandomName();
   const newPermission = {
     owner: account.owner,
@@ -14,7 +14,7 @@ export function addPermission(account, store, file) {
     domains: [store.name],
     model: "Default",
     resourceType: "TreeNode",
-    resources: [file.key],
+    resources: (file !== null) ? [file.key] : fileKeys,
     actions: ["Read"],
     effect: "Allow",
     isEnabled: true,
