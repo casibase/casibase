@@ -93,24 +93,31 @@ class FileTable extends React.Component {
         title: i18next.t("store:Category"),
         dataIndex: 'isLeaf',
         key: 'isLeaf',
-        width: '90px',
+        width: '110px',
         sorter: (a, b) => a.isLeaf - b.isLeaf,
+        filters: Setting.getDistinctArray(table.map(record => Setting.getFileCategory(record)))
+          .map(fileType => {
+            return {text: fileType, value: fileType};
+          }),
+        onFilter: (value, record) => Setting.getFileCategory(record) === value,
         render: (text, record, index) => {
-          if (text) {
-            return i18next.t("store:File");
-          } else {
-            return i18next.t("store:Folder");
-          }
+          return Setting.getFileCategory(record);
         }
       },
       {
         title: i18next.t("store:File type"),
         dataIndex: 'fileType',
         key: 'fileType',
-        width: '120px',
+        width: '140px',
         sorter: (a, b) => Setting.getExtFromPath(a.title).localeCompare(Setting.getExtFromPath(b.title)),
+        filters: Setting.getDistinctArray(table.map(record => Setting.getExtFromFile(record)))
+          .filter(fileType => fileType !== "")
+          .map(fileType => {
+            return {text: fileType, value: fileType};
+          }),
+        onFilter: (value, record) => Setting.getExtFromFile(record) === value,
         render: (text, record, index) => {
-          return record.title.split('.')[1];
+          return Setting.getExtFromFile(record);
         }
       },
       {

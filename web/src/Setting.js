@@ -442,6 +442,27 @@ export function getExtFromPath(path) {
   }
 }
 
+export function getExtFromFile(file) {
+  const res = file.title.split('.')[1];
+  if (res === undefined) {
+    return "";
+  } else {
+    return res;
+  }
+}
+
+export function getFileCategory(file) {
+  if (file.isLeaf) {
+    return i18next.t("store:File");
+  } else {
+    return i18next.t("store:Folder");
+  }
+}
+
+export function getDistinctArray(arr) {
+  return [...new Set(arr)];
+}
+
 export function getCollectedTime(filename) {
   // 20220827_210300_CH~Logo.png
   const tokens = filename.split("~");
