@@ -3,6 +3,7 @@ import {Spin} from "antd";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import * as StoreBackend from "./backend/StoreBackend";
+import * as Setting from "./Setting";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -36,7 +37,12 @@ class HomePage extends React.Component {
     }
 
     return (
-      <FileTree account={this.props.account} store={this.state.store} />
+      <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
+        this.setState({
+          store: store,
+        });
+        Setting.submitStoreEdit(store);
+      }} />
     );
   }
 }

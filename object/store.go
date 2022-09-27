@@ -18,6 +18,11 @@ type File struct {
 	ChildrenMap map[string]*File `xorm:"-" json:"-"`
 }
 
+type Properties struct {
+	CollectedTime string `xorm:"varchar(100)" json:"collectedTime"`
+	Subject       string `xorm:"varchar(100)" json:"subject"`
+}
+
 type Store struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -27,7 +32,8 @@ type Store struct {
 	Bucket string `xorm:"varchar(100)" json:"bucket"`
 	Domain string `xorm:"varchar(100)" json:"domain"`
 
-	FileTree *File `xorm:"mediumtext" json:"fileTree"`
+	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
+	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
 }
 
 func GetGlobalStores() []*Store {

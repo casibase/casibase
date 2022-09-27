@@ -1,6 +1,7 @@
 import React from "react";
-import {Button, Col, Descriptions, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
+import {Button, Col, DatePicker, Descriptions, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
+import moment from "moment";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
@@ -67,6 +68,10 @@ class FileTree extends React.Component {
           permissionMap: this.getPermissionMap(permissions),
         });
       });
+  }
+
+  updateStore(store) {
+    this.props.onUpdateStore(store);
   }
 
   uploadFile(file, info) {
@@ -602,17 +607,39 @@ class FileTree extends React.Component {
     return (
       <div ref={this.filePane}>
         <Descriptions
+          style={{backgroundColor: "white"}}
+          labelStyle={{backgroundColor: "rgb(245,245,245)"}}
           bordered
           // title="Custom Size"
           size="small"
           // extra={<Button type="primary">Edit</Button>}
         >
-          <Descriptions.Item label={i18next.t("vectorset:File name")}>{file.title}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:File type")}>{Setting.getExtFromFile(file)}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("vectorset:File size")}>{Setting.getFriendlyFileSize(file.size)}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("general:Created time")}>{Setting.getFormattedDate(file.createdTime)}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Collected time")}>{Setting.getFormattedDate(Setting.getCollectedTime(file.title))}</Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Subject")}>{Setting.getSubject(file.title)}</Descriptions.Item>
+          <Descriptions.Item label={i18next.t("vectorset:File name")}>
+            {file.title}
+          </Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:File type")}>
+            {Setting.getExtFromFile(file)}
+          </Descriptions.Item>
+          <Descriptions.Item label={i18next.t("vectorset:File size")}>
+            {Setting.getFriendlyFileSize(file.size)}
+          </Descriptions.Item>
+          <Descriptions.Item label={i18next.t("general:Created time")}>
+            {Setting.getFormattedDate(file.createdTime)}
+          </Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:Collected time")}>
+            {Setting.getFormattedDate(Setting.getCollectedTime(file.title))}
+            <DatePicker key={file.key} showTime defaultValue={(this.props.store.propertiesMap[file.key] === undefined) ? undefined : new moment(this.props.store.propertiesMap[file.key].collectedTime)} onChange={(value, dateString) => {
+              let store = this.props.store;
+              if (store.propertiesMap[file.key] === undefined) {
+                store.propertiesMap[file.key] = {};
+              }
+              store.propertiesMap[file.key].collectedTime = value.format();
+              this.updateStore(store);
+            }} onOk={(value) => {}} />
+          </Descriptions.Item>
+          <Descriptions.Item label={i18next.t("store:Subject")}>
+            {Setting.getSubject(file.title)}
+          </Descriptions.Item>
         </Descriptions>
       </div>
     )

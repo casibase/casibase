@@ -100,7 +100,12 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:File tree")}:
           </Col>
           <Col span={22} >
-            <FileTree account={this.props.account} store={this.state.store} />
+            <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
+              this.setState({
+                store: store,
+              });
+              this.submitStoreEdit(store);
+            }} />
           </Col>
         </Row>
       </Card>

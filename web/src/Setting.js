@@ -6,6 +6,7 @@ import Sdk from "casdoor-js-sdk";
 import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import moment from "moment/moment";
+import * as StoreBackend from "./backend/StoreBackend";
 
 export let ServerUrl = '';
 export let CasdoorSdk;
@@ -492,4 +493,20 @@ export function getSubject(filename) {
   } else {
     return subject;
   }
+}
+
+export function submitStoreEdit(storeObj) {
+  let store = deepCopy(storeObj);
+  store.fileTree = undefined;
+  StoreBackend.updateStore(storeObj.owner, storeObj.name, store)
+    .then((res) => {
+      if (res) {
+        showMessage("success", `Successfully saved`);
+      } else {
+        showMessage("error", `failed to save: server side failure`);
+      }
+    })
+    .catch(error => {
+      showMessage("error", `failed to save: ${error}`);
+    });
 }
