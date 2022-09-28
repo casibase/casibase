@@ -375,7 +375,7 @@ class FileTree extends React.Component {
                     !isWritable ? null : (
                       <React.Fragment>
                         <Tooltip color={"rgb(255,255,255)"} placement="top" title={
-                          <div>
+                          <span onClick={(e) => e.stopPropagation()}>
                             <div style={{color: "black"}}>
                               {i18next.t("store:New folder")}:
                             </div>
@@ -393,40 +393,44 @@ class FileTree extends React.Component {
                                 OK
                               </Button>
                             </Input.Group>
-                          </div>
+                          </span>
                         }>
-                          <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                            this.addFile();
-                            e.stopPropagation();
-                          }} />
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
+                              this.addFile();
+                              e.stopPropagation();
+                            }} />
+                          </span>
                         </Tooltip>
                         <Tooltip title={i18next.t("store:Upload file")}>
-                          <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
-                            this.uploadFile(file, info);
-                          }}
-                          >
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
+                              this.uploadFile(file, info);
+                            }}
+                            >
                             <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
                           </Upload>
-                          {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
-                          {/*  Setting.showMessage("error", "Upload file");*/}
-                          {/*  e.stopPropagation();*/}
-                          {/*}} />*/}
+                            {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
+                            {/*  Setting.showMessage("error", "Upload file");*/}
+                            {/*  e.stopPropagation();*/}
+                            {/*}} />*/}
+                          </span>
                         </Tooltip>
                         {
                           file.key === "/" ? null : (
                             <Tooltip title={i18next.t("store:Delete")}>
-                        <span onClick={(e) => e.stopPropagation()}>
-                          <Popconfirm
-                            title={`Sure to delete folder: ${file.title} ?`}
-                            onConfirm={(e) => {
-                              this.deleteFile(file, false);
-                            }}
-                            okText="OK"
-                            cancelText="Cancel"
-                          >
-                            <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                          </Popconfirm>
-                        </span>
+                              <span onClick={(e) => e.stopPropagation()}>
+                                <Popconfirm
+                                  title={`Sure to delete folder: ${file.title} ?`}
+                                  onConfirm={(e) => {
+                                    this.deleteFile(file, false);
+                                  }}
+                                  okText="OK"
+                                  cancelText="Cancel"
+                                >
+                                  <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                                </Popconfirm>
+                              </span>
                             </Tooltip>
                           )
                         }
