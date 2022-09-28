@@ -634,6 +634,12 @@ class FileTree extends React.Component {
     const subjectOptions = [
       {id: "Math", name: i18next.t("store:Math")},
       {id: "Chinese", name: i18next.t("store:Chinese")},
+      {id: "English", name: i18next.t("store:English")},
+      {id: "Science", name: i18next.t("store:Science")},
+      {id: "Physics", name: i18next.t("store:Physics")},
+      {id: "Chemistry", name: i18next.t("store:Chemistry")},
+      {id: "Biology", name: i18next.t("store:Biology")},
+      {id: "History", name: i18next.t("store:History")},
     ];
 
     const getSubjectDisplayName = (id) => {
