@@ -78,6 +78,8 @@ class FileTree extends React.Component {
 
   uploadFile(file, info) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+
+    const promises = [];
     info.fileList.forEach((uploadedFile, index) => {
       if (this.uploadedFileIdMap[uploadedFile.originFileObj.uid] === 1) {
         return;
@@ -85,15 +87,17 @@ class FileTree extends React.Component {
         this.uploadedFileIdMap[uploadedFile.originFileObj.uid] = 1;
       }
 
-      FileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj)
-        .then(res => {
-          Setting.showMessage("success", `File uploaded successfully`);
-          // window.location.reload();
-        })
-        .catch(error => {
-          Setting.showMessage("error", `File failed to upload: ${error}`);
-        });
+      promises.push(FileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj));
     });
+
+    Promise.all(promises)
+      .then((values) => {
+        Setting.showMessage("success", `File uploaded successfully`);
+        window.location.reload();
+      })
+      .catch(error => {
+        Setting.showMessage("error", `File failed to upload: ${error}`);
+      });
   };
 
   addFile(file, newFolder) {
