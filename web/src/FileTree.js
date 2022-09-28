@@ -43,6 +43,7 @@ class FileTree extends React.Component {
     };
 
     this.filePane = React.createRef();
+    this.uploadedFileIdMap = {};
   }
 
   componentWillMount() {
@@ -77,17 +78,22 @@ class FileTree extends React.Component {
 
   uploadFile(file, info) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
+    info.fileList.forEach((uploadedFile, index) => {
+      if (this.uploadedFileIdMap[uploadedFile.originFileObj.uid] === 1) {
+        return;
+      } else {
+        this.uploadedFileIdMap[uploadedFile.originFileObj.uid] = 1;
+      }
 
-    // this.setState({uploading: true});
-    const filename = info.fileList[0].name;
-    FileBackend.addFile(storeId, file.key, true, filename, info.file)
-      .then(res => {
-        Setting.showMessage("success", `File uploaded successfully`);
-        window.location.reload();
-      })
-      .catch(error => {
-        Setting.showMessage("error", `File failed to upload: ${error}`);
-      });
+      FileBackend.addFile(storeId, file.key, true, uploadedFile.name, uploadedFile.originFileObj)
+        .then(res => {
+          Setting.showMessage("success", `File uploaded successfully`);
+          // window.location.reload();
+        })
+        .catch(error => {
+          Setting.showMessage("error", `File failed to upload: ${error}`);
+        });
+    });
   };
 
   addFile(file, newFolder) {
@@ -404,16 +410,12 @@ class FileTree extends React.Component {
                         </Tooltip>
                         <Tooltip title={i18next.t("store:Upload file")}>
                           <span onClick={(e) => e.stopPropagation()}>
-                            <Upload maxCount={1} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={info => {
+                            <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
                               this.uploadFile(file, info);
                             }}
                             >
                             <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
                           </Upload>
-                            {/*<Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" onClick={(e) => {*/}
-                            {/*  Setting.showMessage("error", "Upload file");*/}
-                            {/*  e.stopPropagation();*/}
-                            {/*}} />*/}
                           </span>
                         </Tooltip>
                         {
