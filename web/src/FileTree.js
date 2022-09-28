@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Col, DatePicker, Descriptions, Empty, Input, Popconfirm, Row, Spin, Tooltip, Tree, Upload} from 'antd';
+import {Button, Col, DatePicker, Descriptions, Empty, Input, Popconfirm, Row, Select, Spin, Tooltip, Tree, Upload} from 'antd';
 import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -18,6 +18,7 @@ import "codemirror/lib/codemirror.css";
 // require("codemirror/mode/javascript/javascript");
 
 const { Search } = Input;
+const { Option } = Select;
 
 const IconFont = createFromIconfontCN({
   scriptUrl: 'https://cdn.open-ct.com/icon/iconfont.js',
@@ -594,6 +595,32 @@ class FileTree extends React.Component {
     }
   }
 
+  getPropertyValue(file, propertyName) {
+    const properties = this.props.store.propertiesMap[file.key];
+    if (properties === undefined) {
+      return "";
+    } else {
+      return properties[propertyName];
+    }
+  }
+
+  setPropertyValue(file, propertyName, value) {
+    let store = this.props.store;
+    if (store.propertiesMap[file.key] === undefined) {
+      store.propertiesMap[file.key] = {};
+    }
+    store.propertiesMap[file.key][propertyName] = value;
+    this.updateStore(store);
+  }
+
+  getMomentTime(t) {
+    if (t === "") {
+      return ""
+    } else {
+      return new moment(t);
+    }
+  }
+
   renderProperties() {
     if (this.state.selectedKeys.length === 0) {
       return null;
@@ -603,6 +630,20 @@ class FileTree extends React.Component {
     if (file === null) {
       return null;
     }
+
+    const subjectOptions = [
+      {id: "Math", name: i18next.t("store:Math")},
+      {id: "Chinese", name: i18next.t("store:Chinese")},
+    ];
+
+    const getSubjectDisplayName = (id) => {
+      const options = subjectOptions.filter(option => option.id === id);
+      if (options.length === 0) {
+        return "";
+      } else {
+        return options[0].name;
+      }
+    };
 
     return (
       <div ref={this.filePane}>
@@ -628,17 +669,18 @@ class FileTree extends React.Component {
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("store:Collected time")}>
             {Setting.getFormattedDate(Setting.getCollectedTime(file.title))}
-            <DatePicker key={file.key} showTime defaultValue={(this.props.store.propertiesMap[file.key] === undefined) ? undefined : new moment(this.props.store.propertiesMap[file.key].collectedTime)} onChange={(value, dateString) => {
-              let store = this.props.store;
-              if (store.propertiesMap[file.key] === undefined) {
-                store.propertiesMap[file.key] = {};
-              }
-              store.propertiesMap[file.key].collectedTime = value.format();
-              this.updateStore(store);
+            <DatePicker key={file.key} showTime defaultValue={this.getMomentTime(this.getPropertyValue(file, "collectedTime"))} onChange={(value, dateString) => {
+              this.setPropertyValue(file, "collectedTime", value.format());
             }} onOk={(value) => {}} />
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("store:Subject")}>
-            {Setting.getSubject(file.title)}
+            <Select virtual={false} style={{width: "120px"}} value={getSubjectDisplayName(this.getPropertyValue(file, "subject"))} onChange={(value => {
+              this.setPropertyValue(file, "subject", value);
+            })}>
+              {
+                subjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
           </Descriptions.Item>
         </Descriptions>
       </div>
