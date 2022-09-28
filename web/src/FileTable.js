@@ -67,7 +67,7 @@ class FileTable extends React.Component {
       .then((res) => {
         if (res === true) {
           Setting.showMessage("success", `File deleted successfully`);
-          window.location.reload();
+          this.props.onRefresh();
         } else {
           Setting.showMessage("error", `File failed to delete: ${res}`);
         }

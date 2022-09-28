@@ -42,7 +42,7 @@ class HomePage extends React.Component {
           store: store,
         });
         Setting.submitStoreEdit(store);
-      }} />
+      }} onRefresh={() => this.getStore()} />
     );
   }
 }

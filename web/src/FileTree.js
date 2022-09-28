@@ -93,7 +93,7 @@ class FileTree extends React.Component {
     Promise.all(promises)
       .then((values) => {
         Setting.showMessage("success", `File uploaded successfully`);
-        window.location.reload();
+        this.props.onRefresh();
       })
       .catch(error => {
         Setting.showMessage("error", `File failed to upload: ${error}`);
@@ -105,7 +105,7 @@ class FileTree extends React.Component {
     FileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
         Setting.showMessage("success", `File added successfully`);
-        window.location.reload();
+        this.props.onRefresh();
       })
       .catch(error => {
         Setting.showMessage("error", `File failed to add: ${error}`);
@@ -118,7 +118,7 @@ class FileTree extends React.Component {
       .then((res) => {
         if (res === true) {
           Setting.showMessage("success", `File deleted successfully`);
-          window.location.reload();
+          this.props.onRefresh();
         } else {
           Setting.showMessage("error", `File failed to delete: ${res}`);
         }
@@ -508,7 +508,7 @@ class FileTree extends React.Component {
     if (this.state.checkedFiles.length !== 0) {
       const outerFile = {children: this.state.checkedFiles};
       return (
-        <FileTable account={this.props.account} store={this.props.store} file={outerFile} isCheckMode={true} />
+        <FileTable account={this.props.account} store={this.props.store} onRefresh={() => this.props.onRefresh()} file={outerFile} isCheckMode={true} />
       )
     }
 
@@ -526,7 +526,7 @@ class FileTree extends React.Component {
 
     if (!file.isLeaf) {
       return (
-        <FileTable account={this.props.account} store={this.props.store} file={file} isCheckMode={false} />
+        <FileTable account={this.props.account} store={this.props.store} onRefresh={() => this.props.onRefresh()} file={file} isCheckMode={false} />
       )
     }
 

@@ -105,7 +105,7 @@ class StoreEditPage extends React.Component {
                 store: store,
               });
               this.submitStoreEdit(store);
-            }} />
+            }} onRefresh={() => this.getStore()} />
           </Col>
         </Row>
       </Card>
