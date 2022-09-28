@@ -274,7 +274,7 @@ class FileTree extends React.Component {
 
     return (
       <Tree
-        height={"calc(100vh - 138px)"}
+        height={"calc(100vh - 170px)"}
         virtual={false}
         className="draggable-tree"
         multiple={false}
