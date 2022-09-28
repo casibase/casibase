@@ -17,7 +17,7 @@ package object
 import (
 	"sync"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 type Node struct {
@@ -279,7 +279,7 @@ func GetNodeModerators(id string) []string {
 	}
 }
 
-func CheckNodeModerator(user *auth.User, nodeId string) bool {
+func CheckNodeModerator(user *casdoorsdk.User, nodeId string) bool {
 	node := Node{Id: nodeId}
 	existed, err := adapter.Engine.Cols("moderators").Get(&node)
 	if err != nil {

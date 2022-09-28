@@ -16,7 +16,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 func AutoSigninFilter(ctx *context.Context) {
@@ -33,7 +33,7 @@ func AutoSigninFilter(ctx *context.Context) {
 	}
 
 	if accessToken != "" {
-		claims, err := auth.ParseJwtToken(accessToken)
+		claims, err := casdoorsdk.ParseJwtToken(accessToken)
 		if err != nil {
 			responseError(ctx, "invalid JWT token")
 			return

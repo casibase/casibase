@@ -18,7 +18,7 @@ import (
 	"sync"
 
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 // ConsumptionType 1-9 means:
@@ -64,18 +64,18 @@ func AddBalance(balance *ConsumptionRecord) bool {
 	return affected != 0
 }
 
-func GetMemberBalance(user *auth.User) int {
+func GetMemberBalance(user *casdoorsdk.User) int {
 	return user.Score
 }
 
-func UpdateMemberBalance(user *auth.User, amount int) (bool, error) {
+func UpdateMemberBalance(user *casdoorsdk.User, amount int) (bool, error) {
 	user.Score += amount
-	return auth.UpdateUserForColumns(user, []string{"score"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"score"})
 }
 
-func UpdateMemberConsumptionSum(user *auth.User, amount int) (bool, error) {
+func UpdateMemberConsumptionSum(user *casdoorsdk.User, amount int) (bool, error) {
 	user.Karma += amount
-	return auth.UpdateUserForColumns(user, []string{"karma"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"karma"})
 }
 
 func GetMemberConsumptionRecordNum(memberId string) int {
@@ -174,7 +174,7 @@ func GetThanksStatus(memberId string, id, recordType int) bool {
 	return total != 0
 }
 
-func CreateTopicConsumption(user *auth.User, id int) bool {
+func CreateTopicConsumption(user *casdoorsdk.User, id int) bool {
 	record := ConsumptionRecord{
 		// Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      GetUserName(user),
@@ -197,7 +197,7 @@ func CreateTopicConsumption(user *auth.User, id int) bool {
 	return true
 }
 
-func CreateReplyConsumption(user *auth.User, id int) bool {
+func CreateReplyConsumption(user *casdoorsdk.User, id int) bool {
 	record := ConsumptionRecord{
 		// Id:              util.IntToString(GetConsumptionRecordId()),
 		ReceiverId:      GetUserName(user),
@@ -220,7 +220,7 @@ func CreateReplyConsumption(user *auth.User, id int) bool {
 	return true
 }
 
-func GetReplyBonus(author *auth.User, consumer *auth.User, id int) {
+func GetReplyBonus(author *casdoorsdk.User, consumer *casdoorsdk.User, id int) {
 	if author.Name == consumer.Name {
 		return
 	}
@@ -240,7 +240,7 @@ func GetReplyBonus(author *auth.User, consumer *auth.User, id int) {
 	UpdateMemberBalance(author, record.Amount)
 }
 
-func TopTopicConsumption(user *auth.User, id int) bool {
+func TopTopicConsumption(user *casdoorsdk.User, id int) bool {
 	record := ConsumptionRecord{
 		ReceiverId:      GetUserName(user),
 		ObjectId:        id,

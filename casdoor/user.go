@@ -14,13 +14,13 @@
 
 package casdoor
 
-import "github.com/casdoor/casdoor-go-sdk/auth"
+import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
-func GetUsers() []*auth.User {
+func GetUsers() []*casdoorsdk.User {
 	if adapter != nil {
 		return getUsers()
 	} else {
-		users, err := auth.GetUsers()
+		users, err := casdoorsdk.GetUsers()
 		if err != nil {
 			panic(err)
 		}
@@ -29,11 +29,11 @@ func GetUsers() []*auth.User {
 	}
 }
 
-func GetSortedUsers(sorter string, limit int) []*auth.User {
+func GetSortedUsers(sorter string, limit int) []*casdoorsdk.User {
 	if adapter != nil {
 		return getSortedUsers(sorter, limit)
 	} else {
-		users, err := auth.GetSortedUsers(sorter, limit)
+		users, err := casdoorsdk.GetSortedUsers(sorter, limit)
 		if err != nil {
 			panic(err)
 		}
@@ -46,7 +46,7 @@ func GetUserCount() int {
 	if adapter != nil {
 		return getUserCount()
 	} else {
-		count, err := auth.GetUserCount("")
+		count, err := casdoorsdk.GetUserCount("")
 		if err != nil {
 			panic(err)
 		}
@@ -59,7 +59,7 @@ func GetOnlineUserCount() int {
 	if adapter != nil {
 		return getOnlineUserCount()
 	} else {
-		count, err := auth.GetUserCount("1")
+		count, err := casdoorsdk.GetUserCount("1")
 		if err != nil {
 			panic(err)
 		}
@@ -68,11 +68,11 @@ func GetOnlineUserCount() int {
 	}
 }
 
-func GetUserByEmail(email string) *auth.User {
+func GetUserByEmail(email string) *casdoorsdk.User {
 	if adapter != nil {
 		return getUserByEmail(email)
 	} else {
-		user, err := auth.GetUserByEmail(email)
+		user, err := casdoorsdk.GetUserByEmail(email)
 		if err != nil {
 			panic(err)
 		}

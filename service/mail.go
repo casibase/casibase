@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 // SendRemindMail sends mail with remind information.
@@ -36,7 +36,7 @@ You are receiving this because you are subscribed to this thread.
 }
 
 func SendEmail(title string, content string, sender string, receivers ...string) error {
-	err := auth.SendEmail(title, content, sender, receivers...)
+	err := casdoorsdk.SendEmail(title, content, sender, receivers...)
 	if err != nil && strings.HasPrefix(err.Error(), "No provider for category: \"Email\" is found") {
 		return nil
 	}

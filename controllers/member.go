@@ -23,7 +23,7 @@ import (
 // @Title GetMember
 // @Description get member by id
 // @Param   id     query    string  true        "id"
-// @Success 200 {object} auth.User The Response object
+// @Success 200 {object} casdoorsdk.User The Response object
 // @router /get-member [get]
 // @Tag Member API
 func (c *ApiController) GetMember() {
@@ -50,7 +50,7 @@ func (c *ApiController) GetMemberEditorType() {
 
 // @Title GetRankingRich
 // @Description RankingRich
-// @Success 200 {array} auth.User The Response object
+// @Success 200 {array} casdoorsdk.User The Response object
 // @router /get-ranking-rich [get]
 // @Tag Member API
 func (c *ApiController) GetRankingRich() {
@@ -65,7 +65,7 @@ func (c *ApiController) GetRankingRich() {
 
 // @Title GetRankingPlayer
 // @Description RankingPlayer
-// @Success 200 {array} auth.User The Response object
+// @Success 200 {array} casdoorsdk.User The Response object
 // @router /get-ranking-player [get]
 // @Tag Member API
 func (c *ApiController) GetRankingPlayer() {

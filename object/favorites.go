@@ -16,7 +16,7 @@ package object
 
 import (
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 type Favorites struct {
@@ -110,14 +110,14 @@ func GetTopicsFromFavorites(memberId string, limit int, offset int, favoritesTyp
 	return topics
 }
 
-func GetMembersFromFavorites(objectId string, favoritesType string) []*auth.User {
+func GetMembersFromFavorites(objectId string, favoritesType string) []*casdoorsdk.User {
 	favorites := []*Favorites{}
 	err := adapter.Engine.Where("object_id = ?", objectId).And("favorites_type = ?", favoritesType).Find(&favorites)
 	if err != nil {
 		panic(err)
 	}
 
-	members := []*auth.User{}
+	members := []*casdoorsdk.User{}
 	for _, v := range favorites {
 		memberId := v.MemberId
 		temp := GetUser(memberId)

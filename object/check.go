@@ -15,7 +15,7 @@
 package object
 
 import (
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/microcosm-cc/bluemonday"
 )
 
@@ -38,7 +38,7 @@ func HasPlane(id string) bool {
 }
 
 // IsForbidden check member whether is forbidden.
-func IsForbidden(user *auth.User) bool {
+func IsForbidden(user *casdoorsdk.User) bool {
 	return user.IsForbidden
 }
 

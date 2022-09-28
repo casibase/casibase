@@ -30,7 +30,7 @@ import (
 	"github.com/astaxie/beego/logs"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/sromku/go-gitter"
 )
 
@@ -304,14 +304,14 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 			}()
 
 			// create if user is not exist
-			user, err := auth.GetUser(msg.From.Username)
+			user, err := casdoorsdk.GetUser(msg.From.Username)
 			// fmt.Println("user:", user)
 			if err != nil {
 				panic(err)
 			}
 			if user.Id == "" { // add user
 				avatar := getGitterAvatarUrl(msg.From.Username, msg.From.AvatarURLMedium) // if error, avatar will be ""
-				newUser := auth.User{
+				newUser := casdoorsdk.User{
 					Name:              msg.From.Username,
 					CreatedTime:       util.GetCurrentTime(),
 					UpdatedTime:       util.GetCurrentTime(),
@@ -320,7 +320,7 @@ func createTopicWithMessages(messages []gitter.Message, room gitter.Room, node N
 					SignupApplication: CasdoorApplication,
 				}
 				fmt.Println("add user: ", newUser.Name)
-				_, err := auth.AddUser(&newUser)
+				_, err := casdoorsdk.AddUser(&newUser)
 				if err != nil {
 					panic(err)
 				}

@@ -18,11 +18,11 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
-func getUserFromMember(memberEx *MemberEx) *auth.User {
-	user := &auth.User{
+func getUserFromMember(memberEx *MemberEx) *casdoorsdk.User {
+	user := &casdoorsdk.User{
 		Owner:       CasdoorOrganization,
 		Name:        memberEx.Member.Username,
 		CreatedTime: getTimeFromUnixSeconds(memberEx.Member.Regdate),

@@ -21,7 +21,7 @@ import (
 	"time"
 
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/gomarkdown/markdown"
 )
 
@@ -225,7 +225,7 @@ func GetTopicsAdmin(usernameSearchKw, titleSearchKw, contentSearchKw, showDelete
 	return res, int(num)
 }
 
-func GetTopicWithAvatar(id int, user *auth.User) *TopicWithAvatar {
+func GetTopicWithAvatar(id int, user *casdoorsdk.User) *TopicWithAvatar {
 	topic := TopicWithAvatar{}
 
 	var wg sync.WaitGroup
@@ -333,7 +333,7 @@ func GetTopicTitle(id int) string {
 	}
 }
 
-func GetTopicAuthor(id int) *auth.User {
+func GetTopicAuthor(id int) *casdoorsdk.User {
 	topic := Topic{Id: id}
 	existed, err := adapter.Engine.Cols("author").Get(&topic)
 	if err != nil {
@@ -681,7 +681,7 @@ func GetSortedTopics(lastReplySort, hotSort, favCountSort, createdTimeSort strin
 	return getAvataredTopics(topics)
 }
 
-func GetTopicEditableStatus(user *auth.User, author, nodeId, createdTime string) bool {
+func GetTopicEditableStatus(user *casdoorsdk.User, author, nodeId, createdTime string) bool {
 	if CheckIsAdmin(user) || CheckNodeModerator(user, nodeId) {
 		return true
 	}

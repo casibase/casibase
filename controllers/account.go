@@ -21,7 +21,7 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 //go:embed token_jwt_key.pem
@@ -38,7 +38,7 @@ func InitAuthConfig() {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 
-	auth.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
+	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
 }
 
 // @Title Signin
@@ -52,13 +52,13 @@ func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
 
-	token, err := auth.GetOAuthToken(code, state)
+	token, err := casdoorsdk.GetOAuthToken(code, state)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	claims, err := auth.ParseJwtToken(token.AccessToken)
+	claims, err := casdoorsdk.ParseJwtToken(token.AccessToken)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

@@ -18,19 +18,19 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"xorm.io/core"
 )
 
-func getUsers() []*auth.User {
+func getUsers() []*casdoorsdk.User {
 	owner := CasdoorOrganization
 
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}
 
-	users := []*auth.User{}
-	err := adapter.Engine.Desc("created_time").Find(&users, &auth.User{Owner: owner})
+	users := []*casdoorsdk.User{}
+	err := adapter.Engine.Desc("created_time").Find(&users, &casdoorsdk.User{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -38,15 +38,15 @@ func getUsers() []*auth.User {
 	return users
 }
 
-func getSortedUsers(sorter string, limit int) []*auth.User {
+func getSortedUsers(sorter string, limit int) []*casdoorsdk.User {
 	owner := CasdoorOrganization
 
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}
 
-	users := []*auth.User{}
-	err := adapter.Engine.Desc(sorter).Limit(limit, 0).Find(&users, &auth.User{Owner: owner})
+	users := []*casdoorsdk.User{}
+	err := adapter.Engine.Desc(sorter).Limit(limit, 0).Find(&users, &casdoorsdk.User{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func getUserCount() int {
 		panic("casdoor adapter is nil")
 	}
 
-	count, err := adapter.Engine.Count(&auth.User{Owner: owner})
+	count, err := adapter.Engine.Count(&casdoorsdk.User{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -76,7 +76,7 @@ func getOnlineUserCount() int {
 		panic("casdoor adapter is nil")
 	}
 
-	count, err := adapter.Engine.Where("is_online = ?", 1).Count(&auth.User{Owner: owner})
+	count, err := adapter.Engine.Where("is_online = ?", 1).Count(&casdoorsdk.User{Owner: owner})
 	if err != nil {
 		panic(err)
 	}
@@ -84,7 +84,7 @@ func getOnlineUserCount() int {
 	return int(count)
 }
 
-func GetUser(name string) *auth.User {
+func GetUser(name string) *casdoorsdk.User {
 	owner := CasdoorOrganization
 
 	if adapter == nil {
@@ -95,7 +95,7 @@ func GetUser(name string) *auth.User {
 		return nil
 	}
 
-	user := auth.User{Owner: owner, Name: name}
+	user := casdoorsdk.User{Owner: owner, Name: name}
 	existed, err := adapter.Engine.Get(&user)
 	if err != nil {
 		panic(err)
@@ -108,7 +108,7 @@ func GetUser(name string) *auth.User {
 	}
 }
 
-func getUserByEmail(email string) *auth.User {
+func getUserByEmail(email string) *casdoorsdk.User {
 	owner := CasdoorOrganization
 
 	if adapter == nil {
@@ -119,7 +119,7 @@ func getUserByEmail(email string) *auth.User {
 		return nil
 	}
 
-	user := auth.User{Owner: owner, Email: email}
+	user := casdoorsdk.User{Owner: owner, Email: email}
 	existed, err := adapter.Engine.Get(&user)
 	if err != nil {
 		panic(err)
@@ -132,7 +132,7 @@ func getUserByEmail(email string) *auth.User {
 	}
 }
 
-func AddUser(user *auth.User) bool {
+func AddUser(user *casdoorsdk.User) bool {
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}
@@ -145,7 +145,7 @@ func AddUser(user *auth.User) bool {
 	return affected != 0
 }
 
-func AddUsers(users []*auth.User) bool {
+func AddUsers(users []*casdoorsdk.User) bool {
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}
@@ -162,7 +162,7 @@ func AddUsers(users []*auth.User) bool {
 	return affected != 0
 }
 
-func AddUsersInBatch(users []*auth.User) bool {
+func AddUsersInBatch(users []*casdoorsdk.User) bool {
 	batchSize := 1000
 
 	if len(users) == 0 {
@@ -187,7 +187,7 @@ func AddUsersInBatch(users []*auth.User) bool {
 	return affected
 }
 
-func updateUser(owner string, name string, user *auth.User) (bool, error) {
+func updateUser(owner string, name string, user *casdoorsdk.User) (bool, error) {
 	affected, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(user)
 	if err != nil {
 		return false, err
@@ -196,7 +196,7 @@ func updateUser(owner string, name string, user *auth.User) (bool, error) {
 	return affected != 0, nil
 }
 
-func UpdateUser(owner string, name string, user *auth.User) bool {
+func UpdateUser(owner string, name string, user *casdoorsdk.User) bool {
 	if adapter == nil {
 		panic("casdoor adapter is nil")
 	}

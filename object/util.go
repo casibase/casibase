@@ -18,14 +18,14 @@ import (
 	"strconv"
 
 	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
-func GetUserField(user *auth.User, field string) string {
+func GetUserField(user *casdoorsdk.User, field string) string {
 	return user.Properties[field]
 }
 
-func GetUserFieldInt(user *auth.User, field string) int {
+func GetUserFieldInt(user *casdoorsdk.User, field string) int {
 	res, err := strconv.Atoi(user.Properties[field])
 	if err != nil {
 		panic(err)
@@ -34,11 +34,11 @@ func GetUserFieldInt(user *auth.User, field string) int {
 	return res
 }
 
-func SetUserField(user *auth.User, field string, value string) {
+func SetUserField(user *casdoorsdk.User, field string, value string) {
 	user.Properties[field] = value
 }
 
-func SetUserFieldInt(user *auth.User, field string, value int) {
+func SetUserFieldInt(user *casdoorsdk.User, field string, value int) {
 	user.Properties[field] = strconv.Itoa(value)
 }
 

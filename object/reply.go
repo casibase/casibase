@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 type Reply struct {
@@ -55,7 +55,7 @@ func GetReplyCount() int {
 // @router /get-replies [get]
 // @Description GetReplies returns more information about reply of a topic.
 // @Tag Reply API
-func GetReplies(topicId int, user *auth.User, limit int, page int) ([]*ReplyWithAvatar, int) {
+func GetReplies(topicId int, user *casdoorsdk.User, limit int, page int) ([]*ReplyWithAvatar, int) {
 	replies := []*ReplyWithAvatar{}
 	realPage := page
 	err := adapter.Engine.Table("reply").
@@ -244,7 +244,7 @@ func GetReply(id int) *Reply {
 }
 
 // GetReplyWithDetails returns more information about reply, including avatar, thanks status, deletable and editable.
-func GetReplyWithDetails(user *auth.User, id int) *ReplyWithAvatar {
+func GetReplyWithDetails(user *casdoorsdk.User, id int) *ReplyWithAvatar {
 	reply := ReplyWithAvatar{}
 	existed, err := adapter.Engine.Table("reply").
 		Join("LEFT OUTER", "consumption_record", "consumption_record.object_id = reply.id and consumption_record.consumption_type = ?", 5).
@@ -431,7 +431,7 @@ func GetReplyTopicTitle(id int) string {
 }
 
 // GetReplyAuthor only returns reply's topic author.
-func GetReplyAuthor(id int) *auth.User {
+func GetReplyAuthor(id int) *casdoorsdk.User {
 	reply := Reply{Id: id}
 	existed, err := adapter.Engine.Cols("author").Get(&reply)
 	if err != nil {

@@ -21,7 +21,7 @@ import (
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 func TestAvatar(t *testing.T) {
@@ -46,7 +46,7 @@ func TestUpdateDefaultAvatars(t *testing.T) {
 	sem := make(chan int, SyncAvatarsConcurrency)
 	for i, user := range users {
 		sem <- 1
-		go func(i int, user *auth.User) {
+		go func(i int, user *casdoorsdk.User) {
 			if user.IsDefaultAvatar {
 				avatarUrl := updateDefaultAvatarForUser(user)
 				fmt.Printf("[%d/%d]: Updated default avatar for user: [%d, %s] as URL: %s\n", i+1, len(users), user.Ranking, user.Name, avatarUrl)

@@ -21,7 +21,7 @@ import (
 	"path"
 
 	"github.com/casbin/casnode/casdoor"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 var discuzxDefaultAvatarUrl string
@@ -30,7 +30,7 @@ func init() {
 	discuzxDefaultAvatarUrl = fmt.Sprintf("%suc_server/images/noavatar_middle.gif", discuzxDomain)
 }
 
-func syncAvatarForUser(user *auth.User) string {
+func syncAvatarForUser(user *casdoorsdk.User) string {
 	uid := user.Ranking
 	username := user.Name
 
@@ -103,7 +103,7 @@ func syncAvatarForUser(user *auth.User) string {
 	return avatarUrl
 }
 
-func updateDefaultAvatarForUser(user *auth.User) string {
+func updateDefaultAvatarForUser(user *casdoorsdk.User) string {
 	uid := user.Ranking
 	username := user.Name
 

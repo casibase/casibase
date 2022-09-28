@@ -16,7 +16,7 @@ package routers
 
 import (
 	"github.com/astaxie/beego/context"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 type Response struct {
@@ -42,17 +42,17 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 	}
 }
 
-func getSessionClaims(ctx *context.Context) *auth.Claims {
+func getSessionClaims(ctx *context.Context) *casdoorsdk.Claims {
 	s := ctx.Input.CruSession.Get("user")
 	if s == nil {
 		return nil
 	}
 
-	claims := s.(auth.Claims)
+	claims := s.(casdoorsdk.Claims)
 	return &claims
 }
 
-func setSessionClaims(ctx *context.Context, claims *auth.Claims) {
+func setSessionClaims(ctx *context.Context, claims *casdoorsdk.Claims) {
 	if claims == nil {
 		err := ctx.Input.CruSession.Delete("user")
 		if err != nil {

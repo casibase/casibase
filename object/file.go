@@ -14,7 +14,7 @@
 
 package object
 
-import "github.com/casdoor/casdoor-go-sdk/auth"
+import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 
 type UploadFileRecord struct {
 	Id          int    `xorm:"int notnull pk autoincr" json:"id"`
@@ -107,7 +107,7 @@ func DeleteFileRecord(id int) bool {
 	return affected != 0
 }
 
-func FileEditable(user *auth.User, author string) bool {
+func FileEditable(user *casdoorsdk.User, author string) bool {
 	if CheckIsAdmin(user) {
 		return true
 	}

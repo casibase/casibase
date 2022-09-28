@@ -22,7 +22,7 @@ import (
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/controllers"
 	"github.com/casbin/casnode/object"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 var AddUsersConcurrency = 20
@@ -40,7 +40,7 @@ func TestAddUsers(t *testing.T) {
 	wg.Add(len(membersEx))
 
 	sem := make(chan int, AddUsersConcurrency)
-	users := []*auth.User{}
+	users := []*casdoorsdk.User{}
 	for i, memberEx := range membersEx {
 		sem <- 1
 		go func(i int, memberEx *MemberEx) {

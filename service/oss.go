@@ -17,12 +17,12 @@ package service
 import (
 	"time"
 
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 // UploadFileToStorage uploads a file to the path, returns public URL
 func UploadFileToStorage(user string, tag string, parent string, fullFilePath string, fileBytes []byte) (string, error) {
-	fileUrl, _, err := auth.UploadResource(user, tag, parent, fullFilePath, fileBytes)
+	fileUrl, _, err := casdoorsdk.UploadResource(user, tag, parent, fullFilePath, fileBytes)
 	return fileUrl, err
 }
 
@@ -31,7 +31,7 @@ func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePat
 	var err error
 	times := 0
 	for {
-		fileUrl, _, err = auth.UploadResourceEx(user, tag, parent, fullFilePath, fileBytes, createdTime, description)
+		fileUrl, _, err = casdoorsdk.UploadResourceEx(user, tag, parent, fullFilePath, fileBytes, createdTime, description)
 		if err != nil {
 			times += 1
 			time.Sleep(3 * time.Second)
@@ -47,7 +47,7 @@ func UploadFileToStorageSafe(user string, tag string, parent string, fullFilePat
 
 // DeleteFileFromStorage deletes file according to the file path.
 func DeleteFileFromStorage(filePath string) bool {
-	affected, err := auth.DeleteResource(filePath)
+	affected, err := casdoorsdk.DeleteResource(filePath)
 	if err != nil {
 		panic(err)
 	}

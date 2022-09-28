@@ -21,7 +21,7 @@ import (
 
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 // @Tag Balance API
@@ -37,7 +37,7 @@ func (c *ApiController) AddThanks() {
 	id := util.ParseInt(c.Input().Get("id"))
 	thanksType := c.Input().Get("thanksType") // 1 means topic, 2 means reply
 
-	var author *auth.User
+	var author *casdoorsdk.User
 	if thanksType == "2" {
 		author = object.GetReplyAuthor(id)
 	} else {

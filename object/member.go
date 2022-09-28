@@ -21,23 +21,23 @@ import (
 
 	"github.com/casbin/casnode/casdoor"
 	"github.com/casbin/casnode/util"
-	"github.com/casdoor/casdoor-go-sdk/auth"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
-func GetRankingRich() ([]*auth.User, error) {
+func GetRankingRich() ([]*casdoorsdk.User, error) {
 	return casdoor.GetSortedUsers("score", 25), nil
 }
 
-func GetRankingPlayer() ([]*auth.User, error) {
+func GetRankingPlayer() ([]*casdoorsdk.User, error) {
 	return casdoor.GetSortedUsers("karma", 25), nil
 }
 
-func GetUser(id string) *auth.User {
+func GetUser(id string) *casdoorsdk.User {
 	user := casdoor.GetUser(id)
 	return user
 }
 
-func GetUsers() []*auth.User {
+func GetUsers() []*casdoorsdk.User {
 	users := casdoor.GetUsers()
 	return users
 }
@@ -46,25 +46,25 @@ func GetMemberNum() int {
 	return casdoor.GetUserCount()
 }
 
-func UpdateMemberEditorType(user *auth.User, editorType string) (bool, error) {
+func UpdateMemberEditorType(user *casdoorsdk.User, editorType string) (bool, error) {
 	if user == nil {
 		return false, fmt.Errorf("user is nil")
 	}
 
 	SetUserField(user, "editorType", editorType)
-	return auth.UpdateUserForColumns(user, []string{"properties"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"properties"})
 }
 
-func GetMemberEditorType(user *auth.User) string {
+func GetMemberEditorType(user *casdoorsdk.User) string {
 	return GetUserField(user, "editorType")
 }
 
-func UpdateMemberLanguage(user *auth.User, language string) (bool, error) {
+func UpdateMemberLanguage(user *casdoorsdk.User, language string) (bool, error) {
 	SetUserField(user, "language", language)
-	return auth.UpdateUserForColumns(user, []string{"properties"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"properties"})
 }
 
-func GetMemberLanguage(user *auth.User) string {
+func GetMemberLanguage(user *casdoorsdk.User) string {
 	return GetUserField(user, "language")
 }
 
@@ -78,20 +78,20 @@ func GetMemberEmailReminder(id string) (bool, string) {
 	return true, user.Email
 }
 
-func GetUserByEmail(email string) *auth.User {
+func GetUserByEmail(email string) *casdoorsdk.User {
 	return casdoor.GetUserByEmail(email)
 }
 
-func GetMemberCheckinDate(user *auth.User) string {
+func GetMemberCheckinDate(user *casdoorsdk.User) string {
 	return GetUserField(user, "checkinDate")
 }
 
-func UpdateMemberCheckinDate(user *auth.User, checkinDate string) (bool, error) {
+func UpdateMemberCheckinDate(user *casdoorsdk.User, checkinDate string) (bool, error) {
 	SetUserField(user, "checkinDate", checkinDate)
-	return auth.UpdateUserForColumns(user, []string{"properties"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"properties"})
 }
 
-func GetUserName(user *auth.User) string {
+func GetUserName(user *casdoorsdk.User) string {
 	if user == nil {
 		return ""
 	}
@@ -99,7 +99,7 @@ func GetUserName(user *auth.User) string {
 	return user.Name
 }
 
-func CheckIsAdmin(user *auth.User) bool {
+func CheckIsAdmin(user *casdoorsdk.User) bool {
 	if user == nil {
 		return false
 	}
@@ -107,7 +107,7 @@ func CheckIsAdmin(user *auth.User) bool {
 	return user.IsAdmin
 }
 
-func GetMemberFileQuota(user *auth.User) int {
+func GetMemberFileQuota(user *casdoorsdk.User) int {
 	if user == nil {
 		return 0
 	}
@@ -116,14 +116,14 @@ func GetMemberFileQuota(user *auth.User) int {
 }
 
 // UpdateMemberOnlineStatus updates member's online information.
-func UpdateMemberOnlineStatus(user *auth.User, isOnline bool, lastActionDate string) (bool, error) {
+func UpdateMemberOnlineStatus(user *casdoorsdk.User, isOnline bool, lastActionDate string) (bool, error) {
 	if user == nil {
 		return false, fmt.Errorf("user is nil")
 	}
 
 	user.IsOnline = isOnline
 	SetUserField(user, "lastActionDate", lastActionDate)
-	return auth.UpdateUserForColumns(user, []string{"isOnline", "properties"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"isOnline", "properties"})
 }
 
 func GetOnlineUserCount() int {
@@ -135,7 +135,7 @@ type UpdateListItem struct {
 	Attribute string
 }
 
-func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, error) {
+func AddMemberByNameAndEmailIfNotExist(username, email string) (*casdoorsdk.User, error) {
 	username = strings.ReplaceAll(username, " ", "")
 	if username == "" {
 		return nil, fmt.Errorf("username is empty")
@@ -146,7 +146,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 		return nil, fmt.Errorf("email is empty")
 	}
 
-	user, err := auth.GetUser(username)
+	user, err := casdoorsdk.GetUser(username)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +155,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 	}
 
 	username = strings.Split(email, "@")[0]
-	user, err = auth.GetUser(username)
+	user, err = casdoorsdk.GetUser(username)
 	if err != nil {
 		return nil, err
 	}
@@ -170,7 +170,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 		properties["fileQuota"] = strconv.Itoa(DefaultUploadFileQuota)
 		properties["renameQuota"] = strconv.Itoa(DefaultRenameQuota)
 
-		newUser = &auth.User{
+		newUser = &casdoorsdk.User{
 			Name:              username,
 			CreatedTime:       util.GetCurrentTime(),
 			UpdatedTime:       util.GetCurrentTime(),
@@ -197,7 +197,7 @@ func AddMemberByNameAndEmailIfNotExist(username, email string) (*auth.User, erro
 			Properties:        properties,
 		}
 
-		_, err = auth.AddUser(newUser)
+		_, err = casdoorsdk.AddUser(newUser)
 		if err != nil {
 			return newUser, err
 		}
