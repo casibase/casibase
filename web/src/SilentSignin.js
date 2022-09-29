@@ -33,17 +33,19 @@ class SilentSignin extends React.Component {
         return;
       }
 
-      if (message.type === "SilentSignin" && message.data === "success") {
-        Setting.showMessageEx("success", i18next.t("login:Logged in successfully"), 1, () => Setting.goToLink("/"));
-      } else if (message.type === "SilentSignin" && message.data === "user-not-logged-in") {
-        Setting.showMessageEx("error", i18next.t("login:Failed to log in"), 1, () => Setting.goToLink("/"));
+      if (message.type === "SilentSignin") {
+        if (message.data === "success") {
+          Setting.showMessageEx("success", i18next.t("login:Logged in successfully"), 1, () => Setting.goToLink("/"));
+        } else if (message.data === "user-not-logged-in") {
+          // Setting.showMessageEx("error", i18next.t("login:Failed to log in"), 1, () => Setting.goToLink("/"));
+        }
       }
     });
   }
 
   render() {
     // don't silent-sign-in recursively in iframe
-    if (window !== window.parent) {
+    if (Setting.inIframe()) {
       return null;
     }
 

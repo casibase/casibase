@@ -78,7 +78,7 @@ export function getMyResourcesUrl(account) {
 export function signin() {
   return CasdoorSdk.signin(ServerUrl).then((res) => {
     if (res.status === "ok") {
-      if (window !== window.parent) {
+      if (inIframe()) {
         const message = {tag: "Casdoor", type: "SilentSignin", data: "success"};
         window.parent.postMessage(message, "*");
       }
@@ -87,6 +87,14 @@ export function signin() {
 
     return res;
   });
+}
+
+export function inIframe() {
+  try {
+    return window !== window.parent;
+  } catch (e) {
+    return true;
+  }
 }
 
 export function scrollToTop() {
