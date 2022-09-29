@@ -24,7 +24,7 @@ class SigninPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     Setting.goToLink(Setting.getSigninUrl());
   }
 

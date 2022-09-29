@@ -33,7 +33,7 @@ class SearchResultPage extends React.Component {
     SearchBackend.search(this.state.keyword).then((res) => this.updateSearchResult(res));
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.history.listen((route) => {
       const params = route.search.split("=");
       if (params.length < 2) {

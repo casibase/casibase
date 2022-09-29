@@ -150,7 +150,7 @@ class TopicPage extends React.Component {
 
   renderTab(tab) {
     return (
-      <a href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>
+      <a key={tab?.id} href="javascript:void(0)" onClick={() => this.changeTab(tab?.id)} className={this.state.tab === tab?.id ? "tab_current" : "tab"}>
         {tab?.name}
       </a>
     );

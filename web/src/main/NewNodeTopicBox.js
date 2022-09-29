@@ -66,7 +66,7 @@ class NewNodeTopicBox extends React.Component {
     this.publishTopic = this.publishTopic.bind(this);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     MemberBackend.getMemberEditorType().then((res) => {
       const editorType = res.data ? res.data : Conf.DefaultEditorType;
       this.updateFormField("editorType", editorType);

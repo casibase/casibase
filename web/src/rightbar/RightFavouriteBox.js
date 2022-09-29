@@ -42,7 +42,7 @@ class RightFavouriteBox extends React.Component {
 
   renderNodes(node) {
     return (
-      <div className="node rightFavorite">
+      <div key={node?.id} className="node rightFavorite">
         <div className="node_compose rightFavorite">
           <Link to={`/new/${node?.id}`} id="linkCompose">
             <img src={Setting.getStatic("/img/compose.png")} align="absmiddle" border="0" width="23" height="18" alt="New Topic" />
@@ -52,9 +52,9 @@ class RightFavouriteBox extends React.Component {
           <div id="avatar" style={{backgroundImage: `url(${node?.image})`}} className="rightFavorite" />
         </Link>
         &nbsp;{" "}
-        <linkTitle to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
+        <span to={`/go/${encodeURIComponent(node?.id)}`} id="linkTitle">
           {node?.name}
-        </linkTitle>
+        </span>
       </div>
     );
   }
