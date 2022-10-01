@@ -123,7 +123,7 @@ class AdminTranslation extends React.Component {
           fontSize: "14px",
         }}
         data={this.state.apis.map((apiItem) => {
-          return {text: apiItem, id: apiItem};
+          return {text: apiItem, id: apiItem, key: apiItem};
         })}
         onSelect={(event) => {
           const selected = event.target.value;
@@ -319,8 +319,8 @@ class AdminTranslation extends React.Component {
       <div className="problem" onClick={() => this.clearErrorMessage()}>
         {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
-          {problems.map((problem) => {
-            return <li>{problem}</li>;
+          {problems.map((problem, index) => {
+            return <li key={index}>{problem}</li>;
           })}
         </ul>
       </div>
