@@ -77,7 +77,7 @@ class RankingRichBox extends React.Component {
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
             {this.state.richList
               ? this.state.richList.map((member, key) => (
-                <tr>
+                <tr key={key}>
                   <td width={Setting.PcBrowser ? "73" : "36"} valign="top" align="center" key={key}>
                     <Avatar username={member.name} avatar={member.avatar} key={key} />
                   </td>

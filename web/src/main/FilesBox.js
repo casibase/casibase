@@ -65,7 +65,7 @@ class FilesBox extends React.Component {
     this.getFileNum();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
@@ -241,9 +241,9 @@ class FilesBox extends React.Component {
     });
   }
 
-  renderUploadFile(file) {
+  renderUploadFile(file, index) {
     return (
-      <div className="cell">
+      <div className="cell" key={index}>
         <table cellPadding="0" cellSpacing="0" border="0" width="100%">
           <tbody>
             <tr>
@@ -301,7 +301,7 @@ class FilesBox extends React.Component {
             <div className="cell">
               <span className="gray">{i18next.t("file:Uploaded file")}</span>
             </div>
-            {this.state.files?.map((file) => this.renderUploadFile(file))}
+            {this.state.files?.map((file, index) => this.renderUploadFile(file, index))}
           </div>
           <div className="cell">
             <div className="fr" style={{paddingTop: "2px"}}>
@@ -515,7 +515,7 @@ class FilesBox extends React.Component {
     return (
       <div className="problem" onClick={() => this.clearMessage()}>
         {problems.map((problem, i) => {
-          return <li>{problem}</li>;
+          return <li key={i}>{problem}</li>;
         })}
       </div>
     );

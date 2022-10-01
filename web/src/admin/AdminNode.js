@@ -67,7 +67,7 @@ class AdminNode extends React.Component {
     this.getPlanes();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       this.setState(
         {
@@ -356,7 +356,7 @@ class AdminNode extends React.Component {
         {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
           {problems.map((problem, i) => {
-            return <li>{problem}</li>;
+            return <li key={i}>{problem}</li>;
           })}
         </ul>
       </div>

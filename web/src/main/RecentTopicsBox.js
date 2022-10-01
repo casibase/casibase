@@ -51,7 +51,7 @@ class RecentTopicsBox extends React.Component {
     this.getTopics();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");
