@@ -42,7 +42,7 @@ class PageColumn extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.page !== this.props.page) {
       this.getMaxPage();
     }

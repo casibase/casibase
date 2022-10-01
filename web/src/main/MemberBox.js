@@ -42,7 +42,7 @@ class MemberBox extends React.Component {
     this.getFavoriteStatus();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       this.setState(
         {

@@ -70,7 +70,7 @@ class RankingPlayerBox extends React.Component {
           <table cellPadding="10" cellSpacing="0" border="0" width="100%">
             {this.state.playerList
               ? this.state.playerList.map((member, key) => (
-                <tr>
+                <tr key={key}>
                   <td width={Setting.PcBrowser ? "65" : "36"} valign="top" align="center" key={key}>
                     <Avatar username={member.name} avatar={member.avatar} key={key} />
                   </td>

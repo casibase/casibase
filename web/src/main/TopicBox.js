@@ -77,7 +77,7 @@ class TopicBox extends React.Component {
     this.props.getNodeBackground("", "", "", "");
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       if (this.judgeAnchorElement()) {
         return;
