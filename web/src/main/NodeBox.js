@@ -67,7 +67,7 @@ class NodeBox extends React.Component {
     NodeBackend.addNodeBrowseCount(this.state.nodeId);
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");

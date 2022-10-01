@@ -377,7 +377,7 @@ class Header extends React.Component {
                     {this.state.matchNodes.map((val) => {
                       // TODO: maybe weshould add `active` iterm
                       return (
-                        <a className="search-item" href={`/go/${val.id}`}>
+                        <a className="search-item" href={`/go/${val.id}`} key={val.id}>
                           {val.name}&nbsp;&nbsp;/&nbsp;&nbsp;{val.id}
                         </a>
                       );

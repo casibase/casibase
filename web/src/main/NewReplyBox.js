@@ -119,7 +119,7 @@ class NewReplyBox extends React.Component {
         {i18next.t("reply:Please resolve the following issues before submitting")}
         <ul>
           {problems.map((problem, i) => {
-            return <li>{problem}</li>;
+            return <li key={i}>{problem}</li>;
           })}
         </ul>
       </div>
