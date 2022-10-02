@@ -228,7 +228,7 @@ class NewBox extends React.Component {
         {i18next.t("error:Please resolve the following issues before creating a new topic")}
         <ul>
           {problems.map((problem, i) => {
-            return <li>{problem}</li>;
+            return <li key={i}>{problem}</li>;
           })}
           {this.state.message !== "" ? <li>{i18next.t(`error:${this.state.message}`)}</li> : null}
         </ul>

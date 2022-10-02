@@ -193,7 +193,7 @@ class AdminFrontConf extends React.Component {
               <tbody>
                 {this.state.conf.map((item) => {
                   return (
-                    <tr>
+                    <tr key={item.id}>
                       <td width={Setting.PcBrowser ? "120" : "90"} align="right">
                         {this.convert(item.id)}
                       </td>

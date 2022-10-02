@@ -56,7 +56,7 @@ class NotificationBox extends React.Component {
     this.getNotifications();
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       const params = new URLSearchParams(newProps.location.search);
       let page = params.get("p");

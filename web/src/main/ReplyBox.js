@@ -99,7 +99,7 @@ class ReplyBox extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
+  UNSAFE_componentWillReceiveProps(newProps) {
     if (newProps.location !== this.props.location) {
       const params = new URLSearchParams(newProps.location.search);
       const page = params.get("p");
