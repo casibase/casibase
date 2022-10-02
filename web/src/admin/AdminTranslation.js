@@ -319,8 +319,8 @@ class AdminTranslation extends React.Component {
       <div className="problem" onClick={() => this.clearErrorMessage()}>
         {i18next.t("error:Please resolve the following issues before submitting")}
         <ul>
-          {problems.map((problem) => {
-            return <li>{problem}</li>;
+          {problems.map((problem, i) => {
+            return <li key={i}>{problem}</li>;
           })}
         </ul>
       </div>
