@@ -119,9 +119,10 @@ func GetMembersFromFavorites(objectId string, favoritesType string) []*casdoorsd
 
 	members := []*casdoorsdk.User{}
 	for _, v := range favorites {
-		memberId := v.MemberId
-		temp := GetUser(memberId)
-		members = append(members, temp)
+		user := GetUser(v.MemberId)
+		if user != nil {
+			members = append(members, user)
+		}
 	}
 
 	return members
