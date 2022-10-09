@@ -22,7 +22,7 @@ class VideoEditPage extends React.Component {
     this.labelTable = React.createRef();
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getVideo();
   }
 

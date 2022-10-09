@@ -12,7 +12,7 @@ class ClusteringPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getWordset();
   }
 

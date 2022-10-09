@@ -15,7 +15,7 @@ class WordsetListPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getWordsets();
   }
 

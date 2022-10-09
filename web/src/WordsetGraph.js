@@ -57,7 +57,7 @@ class WordsetGraph extends React.Component {
     }
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getWordsetGraph();
   }
 

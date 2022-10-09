@@ -12,7 +12,7 @@ class WordsetGraphPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getWordset();
   }
 

@@ -46,7 +46,7 @@ class FileTree extends React.Component {
     this.uploadedFileIdMap = {};
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getPermissions();
   }
 

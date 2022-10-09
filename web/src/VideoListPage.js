@@ -15,7 +15,7 @@ class VideoListPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getVideos();
   }
 

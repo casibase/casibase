@@ -15,7 +15,7 @@ class StoreListPage extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.getStores();
   }
 

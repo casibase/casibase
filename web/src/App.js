@@ -42,7 +42,7 @@ class App extends Component {
     Setting.initCasdoorSdk(Conf.AuthConfig);
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.updateMenuKey();
     this.getAccount();
   }
