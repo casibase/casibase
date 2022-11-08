@@ -71,7 +71,7 @@ class VideoEditPage extends React.Component {
       cover: this.state.video.coverUrl,
       videoWidth: 1920,
       videoHeight: 1080,
-      width: "840px",
+      width: "100%",
       autoplay: false,
       isLive: false,
       rePlay: false,
@@ -182,12 +182,12 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Video")}:
           </Col>
-          <Col span={10} style={(Setting.isMobile()) ? {maxWidth:'100%'} :{}}>
+          <Col span={11} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
             {
               this.state.video !== null ? this.renderVideoContent() : null
             }
           </Col>
-          <Col span={2}>
+          <Col span={1}>
           </Col>
           <Col span={10} >
             <LabelTable

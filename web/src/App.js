@@ -221,6 +221,18 @@ class App extends Component {
       return [];
     }
 
+    if (this.state.account.tag === "Video") {
+      res.push(
+        <Menu.Item key="/videos">
+          <Link to="/videos">
+            {i18next.t("general:Videos")}
+          </Link>
+        </Menu.Item>
+      );
+
+      return res;
+    }
+
     res.push(
       <Menu.Item key="/home">
         <Link to="/home">
