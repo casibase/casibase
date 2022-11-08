@@ -10,8 +10,8 @@ class FileTreePage extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      owner: props.match.params.owner,
-      storeName: props.match.params.storeName,
+      owner: props.match?.params?.owner !== undefined ? props.match.params.owner : "admin",
+      storeName: props.match?.params?.storeName !== undefined ? props.match.params.storeName : "openbrain",
       store: null,
     };
   }
