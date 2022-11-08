@@ -1,6 +1,10 @@
 package video
 
-import "github.com/aliyun/alibaba-cloud-sdk-go/services/vod"
+import (
+	"fmt"
+
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/vod"
+)
 
 func GetVideoPlayAuth(videoId string) string {
 	r := vod.CreateGetVideoPlayAuthRequest()
@@ -9,7 +13,8 @@ func GetVideoPlayAuth(videoId string) string {
 
 	resp, err := vodClient.GetVideoPlayAuth(r)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
+		return err.Error()
 	}
 
 	playAuth := resp.PlayAuth

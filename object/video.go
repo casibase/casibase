@@ -57,7 +57,9 @@ func getVideo(owner string, name string) *Video {
 	}
 
 	if existed {
-		v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
+		if v.VideoId != "" {
+			v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
+		}
 		return &v
 	} else {
 		return nil

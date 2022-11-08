@@ -60,6 +60,10 @@ class VideoEditPage extends React.Component {
   }
 
   renderVideoContent() {
+    if (this.state.video.videoId === "") {
+      return null;
+    }
+
     let task = {};
     task.video = {
       vid: this.state.video.videoId,
