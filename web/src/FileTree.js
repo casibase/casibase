@@ -11,6 +11,7 @@ import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
 import FileTable from "./FileTable";
+import DataChart from "./DataChart";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -496,6 +497,10 @@ class FileTree extends React.Component {
     );
   }
 
+  isDataFile(filename) {
+    return filename.startsWith("Impedance_");
+  }
+
   isExtForDocViewer(ext) {
     return ["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext);
   }
@@ -541,7 +546,11 @@ class FileTree extends React.Component {
     const ext = Setting.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
-    if (this.isExtForDocViewer(ext)) {
+    if (this.isDataFile(filename)) {
+      return (
+        <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
+      )
+    } else if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
       return (
         <DocViewer
