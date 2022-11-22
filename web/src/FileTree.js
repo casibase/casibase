@@ -547,8 +547,10 @@ class FileTree extends React.Component {
     const url = `${store.domain}/${path}`;
 
     if (this.isDataFile(filename)) {
+      const appName = "ecg_1";
       return (
-        <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
+        <iframe src={`${Conf.AppUrl}${appName}`} width={"100%"} height={"600px"} />
+        // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
       )
     } else if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer

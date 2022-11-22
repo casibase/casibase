@@ -12,3 +12,5 @@ export const DefaultWordsetName = "word";
 
 export const ForceLanguage = "";
 export const DefaultLanguage = "en";
+
+export const AppUrl = ""
