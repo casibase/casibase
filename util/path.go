@@ -73,3 +73,15 @@ func FilterQuery(urlString string, blackList []string) string {
 		return urlData.Path
 	}
 }
+
+func CopyFile(dest string, src string) {
+	bs, err := os.ReadFile(src)
+	if err != nil {
+		panic(err)
+	}
+
+	err = os.WriteFile(dest, bs, 0644)
+	if err != nil {
+		panic(err)
+	}
+}

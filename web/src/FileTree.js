@@ -230,14 +230,12 @@ class FileTree extends React.Component {
     )
   }
 
-  getCachePrefix(filename) {
+  getCacheApp(filename) {
     if (!filename.startsWith("ECG_") && !filename.startsWith("EEG_") && !filename.startsWith("Impedance_")) {
       return "";
     }
 
-    const tokens = filename.split("_");
-    const res = tokens[0];
-    return res;
+    return filename;
   }
 
   renderTree(store) {
@@ -273,7 +271,7 @@ class FileTree extends React.Component {
 
         const key = info.node.key;
         const filename = info.node.title;
-        if (this.getCachePrefix(filename) !== "") {
+        if (this.getCacheApp(filename) !== "") {
           FileBackend.activateFile(key, filename)
             .then((res) => {
               if (res === true) {
@@ -576,10 +574,10 @@ class FileTree extends React.Component {
     const ext = Setting.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
-    const prefix = this.getCachePrefix(filename);
-    if (prefix !== "") {
+    const app = this.getCacheApp(filename);
+    if (app !== "") {
       return (
-        <iframe key={path} src={`${Conf.AppUrl}${prefix}`} width={"100%"} height={"100%"} />
+        <iframe key={path} src={`${Conf.AppUrl}${app}`} width={"100%"} height={"100%"} />
         // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
       )
     } else if (this.isExtForDocViewer(ext)) {
