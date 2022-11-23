@@ -25,3 +25,10 @@ export function deleteFile(storeId, key, isLeaf) {
     credentials: 'include',
   }).then(res => res.json());
 }
+
+export function activateFile(key, filename) {
+  return fetch(`${Setting.ServerUrl}/api/activate-file?key=${key}&filename=${filename}`, {
+    method: 'POST',
+    credentials: 'include',
+  }).then(res => res.json());
+}

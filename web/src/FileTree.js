@@ -11,7 +11,6 @@ import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
 import * as Conf from "./Conf";
 import FileTable from "./FileTable";
-import DataChart from "./DataChart";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -231,6 +230,16 @@ class FileTree extends React.Component {
     )
   }
 
+  getCachePrefix(filename) {
+    if (!filename.startsWith("ECG_") && !filename.startsWith("EEG_") && !filename.startsWith("Impedance_")) {
+      return "";
+    }
+
+    const tokens = filename.split("_");
+    const res = tokens[0];
+    return res;
+  }
+
   renderTree(store) {
     const onSelect = (selectedKeys, info) => {
       if (!this.isFileReadable(info.node)) {
@@ -239,25 +248,46 @@ class FileTree extends React.Component {
       }
 
       if (selectedKeys.length !== 0) {
-        const path = selectedKeys[0];
-        const ext = Setting.getExtFromPath(path);
-        if (ext !== "") {
-          const url = `${store.domain}/${path}`;
+        const fetchFile = () => {
+          const path = selectedKeys[0];
+          const ext = Setting.getExtFromPath(path);
+          if (ext !== "") {
+            const url = `${store.domain}/${path}`;
 
-          if (!this.isExtForDocViewer((ext) && !this.isExtForFileViewer(ext))) {
-            this.setState({
-              loading: true,
-            });
+            if (!this.isExtForDocViewer((ext) && !this.isExtForFileViewer(ext))) {
+              this.setState({
+                loading: true,
+              });
 
-            fetch(url, {method: 'GET'})
-              .then(res => res.text())
-              .then(res => {
-                this.setState({
-                  text: res,
-                  loading: false,
+              fetch(url, {method: 'GET'})
+                .then(res => res.text())
+                .then(res => {
+                  this.setState({
+                    text: res,
+                    loading: false,
+                  });
                 });
-            });
+            }
           }
+        }
+
+        const key = info.node.key;
+        const filename = info.node.title;
+        if (this.getCachePrefix(filename) !== "") {
+          FileBackend.activateFile(key, filename)
+            .then((res) => {
+              if (res === true) {
+                // Setting.showMessage("success", `File activated successfully`);
+                fetchFile();
+              } else {
+                Setting.showMessage("error", `File failed to activate: ${res}`);
+              }
+            })
+            .catch(error => {
+              Setting.showMessage("error", `File failed to activate: ${error}`);
+            });
+        } else {
+          fetchFile();
         }
       }
 
@@ -546,10 +576,10 @@ class FileTree extends React.Component {
     const ext = Setting.getExtFromPath(path);
     const url = `${store.domain}/${path}`;
 
-    if (this.isDataFile(filename)) {
-      const appName = "ecg_1";
+    const prefix = this.getCachePrefix(filename);
+    if (prefix !== "") {
       return (
-        <iframe src={`${Conf.AppUrl}${appName}`} width={"100%"} height={"600px"} />
+        <iframe src={`${Conf.AppUrl}${prefix}`} width={"100%"} height={"600px"} />
         // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
       )
     } else if (this.isExtForDocViewer(ext)) {
