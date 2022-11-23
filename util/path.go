@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"net/url"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -12,6 +13,20 @@ func FileExist(path string) bool {
 		return false
 	}
 	return true
+}
+
+func GetPath(path string) string {
+	return filepath.Dir(path)
+}
+
+func EnsureFileFolderExists(path string) {
+	p := GetPath(path)
+	if !FileExist(p) {
+		err := os.MkdirAll(p, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 func ListFiles(path string) []string {

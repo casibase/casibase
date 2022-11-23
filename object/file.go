@@ -14,10 +14,10 @@ func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
-func AddFile(storeId string, key string, isLeaf bool, filename string, file multipart.File) bool {
+func AddFile(storeId string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte) {
 	store := GetStore(storeId)
 	if store == nil {
-		return false
+		return false, nil
 	}
 
 	var objectKey string
@@ -29,15 +29,15 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 		if _, err := io.Copy(fileBuffer, file); err != nil {
 			panic(err)
 		}
-
 	} else {
 		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 	}
 
+	bs := fileBuffer.Bytes()
 	storage.PutObject(store.Bucket, objectKey, fileBuffer)
-	return true
+	return true, bs
 }
 
 func DeleteFile(storeId string, key string, isLeaf bool) bool {

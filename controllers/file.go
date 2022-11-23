@@ -53,8 +53,9 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	res := object.AddFile(storeId, key, isLeaf, filename, file)
+	res, bs := object.AddFile(storeId, key, isLeaf, filename, file)
 	if res {
+		addFileToCache(key, filename, bs)
 		addRecordForFile(c, userName, "Add", storeId, key, filename, isLeaf)
 	}
 
