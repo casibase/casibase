@@ -579,7 +579,7 @@ class FileTree extends React.Component {
     const prefix = this.getCachePrefix(filename);
     if (prefix !== "") {
       return (
-        <iframe src={`${Conf.AppUrl}${prefix}`} width={"100%"} height={"600px"} />
+        <iframe key={path} src={`${Conf.AppUrl}${prefix}`} width={"100%"} height={"100%"} />
         // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
       )
     } else if (this.isExtForDocViewer(ext)) {
