@@ -141,7 +141,7 @@ class Header extends React.Component {
             {i18next.t("general:Timeline")}
           </Link>
           &nbsp;&nbsp;&nbsp;
-          <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
+          <a className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
             {i18next.t("general:Setting")}
           </a>
           {/* <Link to="/settings" className="top">*/}
@@ -254,7 +254,7 @@ class Header extends React.Component {
                 </Link>
               </div>
               <div>
-                <a target="_blank" className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
+                <a className="top" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
                   {i18next.t("general:Setting")}
                 </a>
                 {/* <Link to="/settings" className="top">*/}

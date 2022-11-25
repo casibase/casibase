@@ -3394,10 +3394,10 @@ capture-exit@^2.0.0:
   dependencies:
     rsvp "^4.8.4"
 
-casdoor-js-sdk@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/casdoor-js-sdk/-/casdoor-js-sdk-0.4.0.tgz#31df8ccace5e3be9892cf0899854306597c8b3ce"
-  integrity sha512-QOHR5k64wG+b4jvbiBKZ7U5tqlz8ygxSiINTSzWWrMkJ1ISXDp9f+U23XkMV+y3yFN99/ij5zjQGhmNFD+ebvg==
+casdoor-js-sdk@^0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/casdoor-js-sdk/-/casdoor-js-sdk-0.5.1.tgz#2d151e29a46811ba8041b7c0330b853e072a2010"
+  integrity sha512-SGGYpq/aoAnNcBeJhCSXolYFbggn/4jq0zLtOpsH5MNDk36moep9O82ZUN4RcG5puxDiAAx0ZnVeR0HYMZl88g==
 
 case-sensitive-paths-webpack-plugin@2.3.0:
   version "2.3.0"

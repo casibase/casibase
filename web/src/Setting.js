@@ -68,7 +68,7 @@ export function getUserProfileUrl(userName, account) {
 }
 
 export function getMyProfileUrl(account) {
-  return CasdoorSdk.getMyProfileUrl(account);
+  return CasdoorSdk.getMyProfileUrl(account, window.location.href);
 }
 
 export function getMyResourcesUrl(account) {
