@@ -1,6 +1,6 @@
 import React from "react";
-import {Button, Col, DatePicker, Descriptions, Empty, Input, Popconfirm, Row, Select, Spin, Tooltip, Tree, Upload} from 'antd';
-import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined} from "@ant-design/icons";
+import {Button, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from 'antd';
+import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
@@ -40,6 +40,10 @@ class FileTree extends React.Component {
       permissions: null,
       permissionMap: null,
       searchValue: "",
+      isUploadFileModalVisible: false,
+      uploadFileType: null,
+      file: null,
+      info: null,
     };
 
     this.filePane = React.createRef();
@@ -74,6 +78,62 @@ class FileTree extends React.Component {
 
   updateStore(store) {
     this.props.onUpdateStore(store);
+  }
+
+  checkUploadFile(info) {
+    for (let i = 0; i < info.fileList.length; i++) {
+      const filename = info.fileList[i].name;
+      if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  renderUploadFileModal() {
+    return (
+      <Modal title={
+        <div>
+          <InfoCircleTwoTone twoToneColor="rgb(45,120,213)" />
+          {" " + i18next.t("store:Please choose the type of your data")}
+        </div>
+      }
+             visible={this.state.isUploadFileModalVisible}
+             onCancel={() => {
+               this.setState({
+                 isUploadFileModalVisible: false,
+               });
+             }}
+             width={"360px"}
+             footer={null} >
+        <Radio.Group buttonStyle="solid" onChange={e => {
+          this.setState({
+            uploadFileType: e.target.value,
+            isUploadFileModalVisible: false,
+          });
+
+          const uploadFileType = e.target.value;
+          console.log(this.state.file);
+          console.log(this.state.info);
+
+          let newInfo = Setting.deepCopy(this.state.info);
+          if (uploadFileType !== "Other") {
+            for (let i = 0; i < newInfo.fileList.length; i++) {
+              const filename = newInfo.fileList[i].name;
+              if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
+                newInfo.fileList[i].name = `${uploadFileType}_${newInfo.fileList[i].name}`;
+              }
+            }
+          }
+          this.uploadFile(this.state.file, newInfo);
+        }} value={this.state.uploadFileType}>
+          <Radio.Button value={"ECG"}>ECG</Radio.Button>
+          <Radio.Button value={"Impedance"}>Impedance</Radio.Button>
+          {/*<Radio.Button value={"EEG"}>EEG</Radio.Button>*/}
+          <Radio.Button value={"Other"}>{i18next.t("store:Other")}</Radio.Button>
+        </Radio.Group>
+      </Modal>
+    )
   }
 
   uploadFile(file, info) {
@@ -444,7 +504,15 @@ class FileTree extends React.Component {
                         <Tooltip title={i18next.t("store:Upload file")}>
                           <span onClick={(e) => e.stopPropagation()}>
                             <Upload multiple={true} accept="*" showUploadList={false} beforeUpload={file => {return false;}} onChange={(info) => {
-                              this.uploadFile(file, info);
+                              if (this.checkUploadFile(info)) {
+                                this.setState({
+                                  isUploadFileModalVisible: true,
+                                  file: file,
+                                  info: info,
+                                });
+                              } else {
+                                this.uploadFile(file, info);
+                              }
                             }}
                             >
                             <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
@@ -525,10 +593,6 @@ class FileTree extends React.Component {
     );
   }
 
-  isDataFile(filename) {
-    return filename.startsWith("Impedance_");
-  }
-
   isExtForDocViewer(ext) {
     return ["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext);
   }
@@ -577,7 +641,7 @@ class FileTree extends React.Component {
     const app = this.getCacheApp(filename);
     if (app !== "") {
       return (
-        <iframe key={path} src={`${Conf.AppUrl}${app}`} width={"100%"} height={"100%"} />
+        <iframe key={path} title={app} src={`${Conf.AppUrl}${app}`} width={"100%"} height={"100%"} />
         // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
       )
     } else if (this.isExtForDocViewer(ext)) {
@@ -773,6 +837,9 @@ class FileTree extends React.Component {
             </div>
           </Col>
         </Row>
+        {
+          this.renderUploadFileModal()
+        }
       </div>
     )
   }
