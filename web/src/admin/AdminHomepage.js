@@ -120,7 +120,7 @@ class AdminHomepage extends React.Component {
   renderManageItem(item) {
     if (item.value === "member") {
       return (
-        <a className="grid_item" target="_blank" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
+        <a className="grid_item" href={Setting.getMyProfileUrl(this.props.account)} rel="noreferrer">
           {this.renderManageItemInternal(item)}
         </a>
       );
