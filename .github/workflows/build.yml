@@ -86,14 +86,12 @@ jobs:
 
           if [ ${old_array[0]} != ${new_array[0]} ]
           then 
-              echo ::set-output name=push::'true'
+              echo "push='true'" >> GITHUB_OUTPUT
           elif [ ${old_array[1]} != ${new_array[1]} ]
           then 
-              echo ::set-output name=push::'true'
-
+              echo "push='true'" >> GITHUB_OUTPUT
           else
-              echo ::set-output name=push::'false'
-
+              echo "push='false'" >> GITHUB_OUTPUT
           fi
 
       - name: Log in to Docker Hub
