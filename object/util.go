@@ -35,11 +35,10 @@ func GetUserFieldInt(user *casdoorsdk.User, field string) int {
 }
 
 func SetUserField(user *casdoorsdk.User, field string, value string) {
+	if user.Properties == nil {
+		user.Properties = map[string]string{}
+	}
 	user.Properties[field] = value
-}
-
-func SetUserFieldInt(user *casdoorsdk.User, field string, value int) {
-	user.Properties[field] = strconv.Itoa(value)
 }
 
 func getInitScore() int {
