@@ -21,7 +21,7 @@ require (
 	github.com/mozillazg/go-unidecode v0.1.1 // indirect
 	github.com/mreiferson/go-httpclient v0.0.0-20201222173833-5e475fde3a4d // indirect
 	github.com/mrexodia/wray v0.0.0-20160318003008-78a2c1f284ff // indirect
-	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/client_golang v1.11.1 // indirect
 	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/smartystreets/goconvey v1.7.2 // indirect
 	github.com/sromku/go-gitter v0.0.0-20170828210750-70f7030a94a6
