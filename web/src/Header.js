@@ -183,7 +183,12 @@ class Header extends React.Component {
                     <td width="5" align="left"></td>
                     <td width="80" align="left" style={{paddingTop: "4px"}}>
                       <Link to="/" name="top">
-                        <div id="logoMobile"></div>
+                        <div
+                          id="logoMobile"
+                          style={{
+                            backgroundImage: `url(${Conf.FrontConfig.logoImage})`,
+                          }}
+                        />
                       </Link>
                     </td>
                     <td width="auto" align="right" style={{paddingTop: "2px"}}>
