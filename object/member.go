@@ -123,7 +123,7 @@ func UpdateMemberOnlineStatus(user *casdoorsdk.User, isOnline bool, lastActionDa
 
 	user.IsOnline = isOnline
 	SetUserField(user, "lastActionDate", lastActionDate)
-	return casdoorsdk.UpdateUserForColumns(user, []string{"isOnline", "properties"})
+	return casdoorsdk.UpdateUserForColumns(user, []string{"is_online", "properties"})
 }
 
 func GetOnlineUserCount() int {
