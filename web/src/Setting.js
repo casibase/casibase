@@ -82,7 +82,6 @@ export function signin() {
         const message = {tag: "Casdoor", type: "SilentSignin", data: "success"};
         window.parent.postMessage(message, "*");
       }
-      showMessage("success", i18next.t("login:Logged in successfully"));
     }
 
     return res;
