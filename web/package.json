@@ -13,7 +13,7 @@
     "copy-to-clipboard": "^3.3.1",
     "craco-less": "2.0.0",
     "d3-force": "^3.0.0",
-    "echarts": "^5.4.0",
+    "echarts": "^5.4.2",
     "echarts-for-react": "^3.0.2",
     "file-saver": "^2.0.2",
     "i18next": "^19.8.9",

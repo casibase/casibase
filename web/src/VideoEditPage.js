@@ -7,6 +7,7 @@ import {LinkOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
+import VideoDataChart from "./VideoDataChart";
 
 const { Option } = Select;
 
@@ -20,6 +21,7 @@ class VideoEditPage extends React.Component {
       player: null,
       screen: null,
       videoObj: null,
+      videoData: null,
     };
 
     this.labelTable = React.createRef();
@@ -38,7 +40,7 @@ class VideoEditPage extends React.Component {
         });
 
         if (video.dataUrl !== "") {
-          this.parseCsv(video.dataUrl);
+          this.getDataAndParse(video.dataUrl);
         }
       });
   }
@@ -89,34 +91,34 @@ class VideoEditPage extends React.Component {
     };
 
     return (
-      <Affix offsetTop={100}>
-        <div style={{marginTop: "10px"}}>
-          <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
-          <Video task={task} labels={this.state.video.labels}
-                 onUpdateTime={(time) => {this.setState({currentTime: time})}}
-                 onCreatePlayer={(player) => {this.setState({player: player})}}
-                 onCreateScreen={(screen) => {this.setState({screen: screen})}}
-                 onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
-                 onPause={() => {this.onPause()}}
-          />
-          <div style={{fontSize: 16, marginTop: "10px"}}>
-            {i18next.t("video:Current time (second)")}: {" "}
-            {
-              this.state.currentTime
-            }
-          </div>
+      <div style={{marginTop: "10px"}}>
+        <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
+        <Video task={task} labels={this.state.video.labels}
+               onUpdateTime={(time) => {this.setState({currentTime: time})}}
+               onCreatePlayer={(player) => {this.setState({player: player})}}
+               onCreateScreen={(screen) => {this.setState({screen: screen})}}
+               onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
+               onPause={() => {this.onPause()}}
+        />
+        <div style={{fontSize: 16, marginTop: "10px"}}>
+          {i18next.t("video:Current time (second)")}: {" "}
+          {
+            this.state.currentTime
+          }
         </div>
-      </Affix>
+      </div>
     )
   }
 
-  parseCsv(dataUrl) {
+  getDataAndParse(dataUrl) {
     fetch(dataUrl, {
       method: "GET",
     }).then(res => res.text())
       .then(res => {
-      const results = Papa.parse(res, { header: true });
-      console.log(results);
+      const result = Papa.parse(res, { header: true });
+        this.setState({
+          videoData: result.data,
+        });
     });
   }
 
@@ -200,24 +202,33 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Video")}:
           </Col>
           <Col span={11} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
-            {
-              this.state.video !== null ? this.renderVideoContent() : null
-            }
-            <Row style={{marginTop: '20px'}} >
-              <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Data")}:
-              </Col>
-              <Col span={22} >
-                <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {
-                  this.parseCsv(value);
-                  this.updateVideoField('dataUrl', value);
-                })}>
-                  {
-                    this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
-                  }
-                </Select>
-              </Col>
-            </Row>
+            <React.Fragment>
+              <Affix offsetTop={50}>
+                {
+                  this.state.video !== null ? this.renderVideoContent() : null
+                }
+                <Row style={{marginTop: '20px'}} >
+                  <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+                    {i18next.t("general:Data")}:
+                  </Col>
+                  <Col span={22} >
+                    <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {
+                      this.getDataAndParse(value);
+                      this.updateVideoField('dataUrl', value);
+                    })}>
+                      {
+                        this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
+                      }
+                    </Select>
+                  </Col>
+                </Row>
+                {
+                  this.state.videoData === null ? null : (
+                    <VideoDataChart data={this.state.videoData} />
+                  )
+                }
+              </Affix>
+            </React.Fragment>
           </Col>
           <Col span={1}>
           </Col>
