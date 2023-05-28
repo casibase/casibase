@@ -6,5 +6,6 @@ func TestUpdateStoreFolders(t *testing.T) {
 	InitConfig()
 
 	store := getStore("admin", "default")
-	store.Populate()
+	//store.Populate()
+	store.GetVideoData()
 }

@@ -1,11 +1,13 @@
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Switch} from 'antd';
+import {Affix, Button, Card, Col, Input, Row, Select, Switch} from 'antd';
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
+
+const { Option } = Select;
 
 class VideoEditPage extends React.Component {
   constructor(props) {
@@ -92,7 +94,7 @@ class VideoEditPage extends React.Component {
                  onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
                  onPause={() => {this.onPause()}}
           />
-          <div style={{fontSize: 20, marginTop: "10px"}}>
+          <div style={{fontSize: 16, marginTop: "10px"}}>
             {i18next.t("video:Current time (second)")}: {" "}
             {
               this.state.currentTime
@@ -186,6 +188,18 @@ class VideoEditPage extends React.Component {
             {
               this.state.video !== null ? this.renderVideoContent() : null
             }
+            <Row style={{marginTop: '20px'}} >
+              <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("general:Data")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {this.updateVideoField('dataUrl', value);})}>
+                  {
+                    this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
           </Col>
           <Col span={1}>
           </Col>

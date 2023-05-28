@@ -38,6 +38,8 @@ class VideoListPage extends React.Component {
       videoId: "",
       coverUrl: "",
       labels: [],
+      dataUrls: [],
+      dataUrl: "",
       playAuth: "",
     }
   }

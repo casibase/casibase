@@ -1,6 +1,7 @@
 package object
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -101,4 +102,20 @@ func (store *Store) Populate() {
 
 		//fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}
+}
+
+func (store *Store) GetVideoData() []string {
+	objects := storage.ListObjects(store.Bucket, "2023/视频附件")
+
+	res := []string{}
+	for _, object := range objects {
+		if strings.HasSuffix(object.Key, "/_hidden.ini") {
+			continue
+		}
+
+		url := fmt.Sprintf("%s/%s", store.Domain, object.Key)
+		res = append(res, url)
+	}
+
+	return res
 }

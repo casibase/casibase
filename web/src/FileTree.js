@@ -594,11 +594,11 @@ class FileTree extends React.Component {
   }
 
   isExtForDocViewer(ext) {
-    return ["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf"].includes(ext);
+    return ["bmp", "jpg", "jpeg", "png", "tiff", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "pdf", "csv"].includes(ext);
   }
 
   isExtForFileViewer(ext) {
-    return ["png", "jpg", "jpeg", "gif", "bmp", "pdf", "csv", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
+    return ["png", "jpg", "jpeg", "gif", "bmp", "pdf", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
   }
 
   renderFileViewer(store) {

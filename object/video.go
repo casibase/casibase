@@ -24,6 +24,8 @@ type Video struct {
 	VideoId    string   `xorm:"varchar(100)" json:"videoId"`
 	CoverUrl   string   `xorm:"varchar(200)" json:"coverUrl"`
 	Labels     []*Label `xorm:"mediumtext" json:"labels"`
+	DataUrls   []string `xorm:"mediumtext" json:"dataUrls"`
+	DataUrl    string   `xorm:"varchar(200)" json:"dataUrl"`
 	TagOnPause bool     `json:"tagOnPause"`
 
 	PlayAuth string `xorm:"-" json:"playAuth"`
@@ -106,4 +108,9 @@ func DeleteVideo(video *Video) bool {
 
 func (video *Video) GetId() string {
 	return fmt.Sprintf("%s/%s", video.Owner, video.Name)
+}
+
+func (video *Video) Populate() {
+	store := getStore("admin", "default")
+	video.DataUrls = store.GetVideoData()
 }

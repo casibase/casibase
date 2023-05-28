@@ -27,7 +27,10 @@ func (c *ApiController) GetVideos() {
 func (c *ApiController) GetVideo() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetVideo(id)
+	video := object.GetVideo(id)
+	video.Populate()
+
+	c.Data["json"] = video
 	c.ServeJSON()
 }
 
@@ -124,6 +127,7 @@ func (c *ApiController) UploadVideo() {
 			DisplayName: fileId,
 			VideoId:     videoId,
 			Labels:      []*object.Label{},
+			DataUrls:    []string{},
 		}
 		object.AddVideo(video)
 		c.ResponseOk(fileId)
