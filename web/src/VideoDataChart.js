@@ -2,11 +2,11 @@ import React, { Component } from "react";
 import ReactEcharts from 'echarts-for-react';
 
 class VideoDataChart extends Component {
-  drawPic(data, currentTime) {
-    const xAxisData = data.map(item => Number(item.time));
+  drawPic(data, currentTime, height) {
+    const xAxisData = data.map(item => item.time);
     const seriesData = data.map(item => ({
-      value: Number(item.data),
-      error: Number(item.confidence)
+      value: item.data,
+      error: item.confidence,
     }));
 
     let dataMax = -Infinity;
@@ -67,8 +67,6 @@ class VideoDataChart extends Component {
                   //   position: 'start',
                   //   formatter: 'Max'
                   // },
-                  // type: 'max',
-                  // name: 'Max Point',
                 }
               ],
             ]
@@ -80,17 +78,28 @@ class VideoDataChart extends Component {
     return (
       <ReactEcharts
         option={option}
-        style={{ height: '200px' }}
+        style={{height: height}}
       />
     );
   }
 
   render() {
+    let data = this.props.data;
     const currentTime = this.props.currentTime;
+    const interval = this.props.interval;
+    let height = this.props.height;
+
+    if (interval !== undefined && interval !== null) {
+      data = data.filter(item => currentTime - interval < item.time && item.time < currentTime + interval);
+    }
+
+    if (height === undefined || height === null) {
+      height = "200px";
+    }
 
     return (
       <div>
-        {this.drawPic(this.props.data.filter(item => item.time !== ""), currentTime)}
+        {this.drawPic(data, currentTime, height)}
       </div>
     );
   }

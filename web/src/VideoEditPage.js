@@ -92,6 +92,12 @@ class VideoEditPage extends React.Component {
 
     return (
       <div style={{marginTop: "10px"}}>
+        <div style={{fontSize: 16, marginTop: "10px"}}>
+          {i18next.t("video:Current time (second)")}: {" "}
+          {
+            this.state.currentTime
+          }
+        </div>
         <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: '440px', height: '472px', marginLeft: '200px', marginRight: '200px', backgroundColor: "rgba(255,0,0,0)" }}></div>
         <Video task={task} labels={this.state.video.labels}
                onUpdateTime={(time) => {this.setState({currentTime: time})}}
@@ -100,12 +106,6 @@ class VideoEditPage extends React.Component {
                onCreateVideo={(videoObj) => {this.setState({videoObj: videoObj})}}
                onPause={() => {this.onPause()}}
         />
-        <div style={{fontSize: 16, marginTop: "10px"}}>
-          {i18next.t("video:Current time (second)")}: {" "}
-          {
-            this.state.currentTime
-          }
-        </div>
       </div>
     )
   }
@@ -115,9 +115,17 @@ class VideoEditPage extends React.Component {
       method: "GET",
     }).then(res => res.text())
       .then(res => {
-      const result = Papa.parse(res, { header: true });
+        const result = Papa.parse(res, { header: true });
+        let data = result.data;
+        data = data.filter(item => item.time !== "");
+        data = data.map(item => {
+          let res = {};
+          res.time = Number(item.time);
+          res.data = Number(item.data);
+          return res;
+        });
         this.setState({
-          videoData: result.data,
+          videoData: data,
         });
     });
   }
@@ -203,7 +211,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={11} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
             <React.Fragment>
-              <Affix offsetTop={50}>
+              <Affix offsetTop={-100}>
                 {
                   this.state.video !== null ? this.renderVideoContent() : null
                 }
@@ -212,7 +220,7 @@ class VideoEditPage extends React.Component {
                     {i18next.t("general:Data")}:
                   </Col>
                   <Col span={22} >
-                    <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {
+                    <Select virtual={false} style={{width: '100%', marginBottom: "10px"}} value={this.state.video.dataUrl} onChange={(value => {
                       this.getDataAndParse(value);
                       this.updateVideoField('dataUrl', value);
                     })}>
@@ -224,7 +232,10 @@ class VideoEditPage extends React.Component {
                 </Row>
                 {
                   this.state.videoData === null ? null : (
-                    <VideoDataChart data={this.state.videoData} currentTime={this.state.currentTime} />
+                    <React.Fragment>
+                      <VideoDataChart key={"VideoDataChart1"} data={this.state.videoData} currentTime={this.state.currentTime} height={"100px"} />
+                      <VideoDataChart key={"VideoDataChart2"} data={this.state.videoData} currentTime={this.state.currentTime} interval={25} />
+                    </React.Fragment>
                   )
                 }
               </Affix>
