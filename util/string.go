@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -114,4 +115,13 @@ func WriteBytesToPath(b []byte, path string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func DecodeBase64(s string) string {
+	res, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(res)
 }

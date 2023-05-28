@@ -136,7 +136,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Video ID")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.video.videoId} onChange={e => {
+            <Input disabled={true} value={this.state.video.videoId} onChange={e => {
               this.updateVideoField('videoId', e.target.value);
             }} />
           </Col>

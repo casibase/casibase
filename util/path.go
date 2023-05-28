@@ -29,6 +29,10 @@ func EnsureFileFolderExists(path string) {
 	}
 }
 
+func RemoveExt(filename string) string {
+	return filename[:len(filename)-len(filepath.Ext(filename))]
+}
+
 func ListFiles(path string) []string {
 	res := []string{}
 

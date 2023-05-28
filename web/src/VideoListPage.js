@@ -1,6 +1,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import {Button, Col, Popconfirm, Row, Table, Upload} from 'antd';
+import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as VideoBackend from "./backend/VideoBackend";
@@ -66,6 +67,45 @@ class VideoListPage extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `Video failed to delete: ${error}`);
       });
+  }
+
+  uploadFile(info) {
+    const { status, response: res } = info.file;
+    if (status !== 'uploading') {
+      console.log(info.file, info.fileList);
+    }
+    if (status === 'done') {
+      if (res.status === 'ok') {
+        Setting.showMessage("success", `上传视频成功`);
+        const videoName = res.data;
+        this.props.history.push(`/videos/${videoName}`);
+      } else {
+        Setting.showMessage("error", `上传视频失败：${res.msg}`);
+      }
+    } else if (status === 'error') {
+      Setting.showMessage("success", `上传视频失败`);
+    }
+  }
+
+  renderUpload() {
+    const props = {
+      name: 'file',
+      accept: '.mp4',
+      method: 'post',
+      action: `${Setting.ServerUrl}/api/upload-video`,
+      withCredentials: true,
+      onChange: (info) => {
+        this.uploadFile(info);
+      },
+    };
+
+    return (
+      <Upload {...props}>
+        <Button type="primary" size="small">
+          <UploadOutlined /> 上传视频（.mp4）
+        </Button>
+      </Upload>
+    )
   }
 
   renderTable(videos) {
@@ -158,8 +198,13 @@ class VideoListPage extends React.Component {
         <Table columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
                title={() => (
                  <div>
-                   {i18next.t("general:Videos")}&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addVideo.bind(this)}>{i18next.t("general:Add")}</Button>
+                   {i18next.t("general:Videos")}
+                   {/*&nbsp;&nbsp;&nbsp;&nbsp;*/}
+                   {/*<Button type="primary" size="small" onClick={this.addVideo.bind(this)}>{i18next.t("general:Add")}</Button>*/}
+                   &nbsp;&nbsp;&nbsp;&nbsp;
+                   {
+                     this.renderUpload()
+                   }
                  </div>
                )}
                loading={videos === null}

@@ -1,9 +1,14 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
+	"fmt"
+	"io"
 
 	"github.com/casbin/casbase/object"
+	"github.com/casbin/casbase/util"
+	"github.com/casbin/casbase/video"
 )
 
 func (c *ApiController) GetGlobalVideos() {
@@ -58,4 +63,48 @@ func (c *ApiController) DeleteVideo() {
 
 	c.Data["json"] = object.DeleteVideo(&video)
 	c.ServeJSON()
+}
+
+func (c *ApiController) UploadVideo() {
+	owner := c.GetSessionUsername()
+
+	file, header, err := c.GetFile("file")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	filename := header.Filename
+	fileId := util.RemoveExt(filename)
+
+	fileBuffer := bytes.NewBuffer(nil)
+	if _, err = io.Copy(fileBuffer, file); err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	fileType := "unknown"
+	contentType := header.Header.Get("Content-Type")
+	fileType, _ = util.GetOwnerAndNameFromId(contentType)
+
+	if fileType != "video" {
+		c.ResponseError(fmt.Sprintf("contentType: %s is not video", contentType))
+		return
+	}
+
+	videoId := video.UploadVideo(fileId, filename, fileBuffer)
+	if videoId != "" {
+		video := &object.Video{
+			Owner:       owner,
+			Name:        fileId,
+			CreatedTime: util.GetCurrentTime(),
+			DisplayName: fileId,
+			VideoId:     videoId,
+			Labels:      []*object.Label{},
+		}
+		object.AddVideo(video)
+		c.ResponseOk(fileId)
+	} else {
+		c.ResponseError("videoId is empty")
+	}
 }

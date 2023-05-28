@@ -44,6 +44,7 @@ func initAPI() {
 	beego.Router("/api/update-video", &controllers.ApiController{}, "POST:UpdateVideo")
 	beego.Router("/api/add-video", &controllers.ApiController{}, "POST:AddVideo")
 	beego.Router("/api/delete-video", &controllers.ApiController{}, "POST:DeleteVideo")
+	beego.Router("/api/upload-video", &controllers.ApiController{}, "POST:UploadVideo")
 
 	beego.Router("/api/get-global-stores", &controllers.ApiController{}, "GET:GetGlobalStores")
 	beego.Router("/api/get-stores", &controllers.ApiController{}, "GET:GetStores")
