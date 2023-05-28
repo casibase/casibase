@@ -224,7 +224,7 @@ class VideoEditPage extends React.Component {
                 </Row>
                 {
                   this.state.videoData === null ? null : (
-                    <VideoDataChart data={this.state.videoData} />
+                    <VideoDataChart data={this.state.videoData} currentTime={this.state.currentTime} />
                   )
                 }
               </Affix>

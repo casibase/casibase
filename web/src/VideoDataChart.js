@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import ReactEcharts from 'echarts-for-react';
 
 class VideoDataChart extends Component {
-  drawPic(data, nowTime) {
+  drawPic(data, currentTime) {
     const xAxisData = data.map(item => Number(item.time));
     const seriesData = data.map(item => ({
       value: Number(item.data),
@@ -43,33 +43,38 @@ class VideoDataChart extends Component {
         {
           name: 'Data',
           type: 'line',
-          data: seriesData
-        }
-      ],
-      markLine: {
-        symbol: 'none',
-        lineStyle: {
-          color: 'red'
-        },
-        data: [
-          {
-            xAxis: nowTime,
-            yAxis: dataMin,
-            symbol: 'none',
-            lineStyle: {
-              color: 'red'
-            }
-          },
-          {
-            xAxis: nowTime,
-            yAxis: dataMax,
-            symbol: 'none',
-            lineStyle: {
-              color: 'red'
-            }
+          data: seriesData,
+          markLine: {
+            data: [
+              [
+                {
+                  symbol: 'none',
+                  x: `${currentTime / 0.65 + 40}`,
+                  y: '80%',
+                  lineStyle: {
+                    color: 'red'
+                  },
+                  // label: {
+                  //   position: 'start',
+                  //   formatter: 'Max'
+                  // },
+                },
+                {
+                  symbol: 'none',
+                  x: `${currentTime / 0.65 + 40}`,
+                  y: '0%',
+                  // label: {
+                  //   position: 'start',
+                  //   formatter: 'Max'
+                  // },
+                  // type: 'max',
+                  // name: 'Max Point',
+                }
+              ],
+            ]
           }
-        ]
-      }
+        }
+      ]
     };
 
     return (
@@ -81,11 +86,11 @@ class VideoDataChart extends Component {
   }
 
   render() {
-    const nowTime = 285;
+    const currentTime = this.props.currentTime;
 
     return (
       <div>
-        {this.drawPic(this.props.data, nowTime)}
+        {this.drawPic(this.props.data.filter(item => item.time !== ""), currentTime)}
       </div>
     );
   }
