@@ -18,6 +18,7 @@
     "file-saver": "^2.0.2",
     "i18next": "^19.8.9",
     "moment": "^2.29.1",
+    "papaparse": "^5.4.1",
     "rc-bullets": "^1.5.16",
     "react": "17.0.2",
     "react-codemirror2": "^7.2.1",

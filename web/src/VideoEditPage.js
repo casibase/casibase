@@ -6,6 +6,7 @@ import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
+import * as Papa from "papaparse";
 
 const { Option } = Select;
 
@@ -35,6 +36,10 @@ class VideoEditPage extends React.Component {
           video: video,
           currentTime: 0,
         });
+
+        if (video.dataUrl !== "") {
+          this.parseCsv(video.dataUrl);
+        }
       });
   }
 
@@ -103,6 +108,16 @@ class VideoEditPage extends React.Component {
         </div>
       </Affix>
     )
+  }
+
+  parseCsv(dataUrl) {
+    fetch(dataUrl, {
+      method: "GET",
+    }).then(res => res.text())
+      .then(res => {
+      const results = Papa.parse(res, { header: true });
+      console.log(results);
+    });
   }
 
   renderVideo() {
@@ -193,7 +208,10 @@ class VideoEditPage extends React.Component {
                 {i18next.t("general:Data")}:
               </Col>
               <Col span={22} >
-                <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {this.updateVideoField('dataUrl', value);})}>
+                <Select virtual={false} style={{width: '100%'}} value={this.state.video.dataUrl} onChange={(value => {
+                  this.parseCsv(value);
+                  this.updateVideoField('dataUrl', value);
+                })}>
                   {
                     this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
                   }
