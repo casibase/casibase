@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/casbin/casbase/object"
 	"github.com/casbin/casbase/util"
@@ -65,6 +66,26 @@ func (c *ApiController) DeleteVideo() {
 	c.ServeJSON()
 }
 
+func startCoverUrlJob(owner string, name string, videoId string) {
+	go func(owner string, name string, videoId string) {
+		for i := 0; i < 20; i++ {
+			coverUrl := video.GetVideoCoverUrl(videoId)
+			if coverUrl != "" {
+				video := object.GetVideo(util.GetIdFromOwnerAndName(owner, name))
+				if video.CoverUrl != "" {
+					break
+				}
+
+				video.CoverUrl = coverUrl
+				object.UpdateVideo(util.GetIdFromOwnerAndName(owner, name), video)
+				break
+			}
+
+			time.Sleep(time.Second * 5)
+		}
+	}(owner, name, videoId)
+}
+
 func (c *ApiController) UploadVideo() {
 	owner := c.GetSessionUsername()
 
@@ -94,6 +115,8 @@ func (c *ApiController) UploadVideo() {
 
 	videoId := video.UploadVideo(fileId, filename, fileBuffer)
 	if videoId != "" {
+		startCoverUrlJob(owner, fileId, videoId)
+
 		video := &object.Video{
 			Owner:       owner,
 			Name:        fileId,

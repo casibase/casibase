@@ -77,3 +77,17 @@ func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) strin
 
 	return videoId
 }
+
+func GetVideoCoverUrl(videoId string) string {
+	r := vod.CreateGetVideoInfoRequest()
+	r.VideoId = videoId
+	r.AcceptFormat = "JSON"
+
+	resp, err := vodClient.GetVideoInfo(r)
+	if err != nil {
+		fmt.Println(err)
+		return err.Error()
+	}
+
+	return resp.Video.CoverURL
+}

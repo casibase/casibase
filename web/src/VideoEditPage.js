@@ -151,7 +151,7 @@ class VideoEditPage extends React.Component {
                 {i18next.t("general:URL")} :
               </Col>
               <Col span={23} >
-                <Input prefix={<LinkOutlined/>} value={this.state.video.coverUrl} onChange={e => {
+                <Input disabled={true} prefix={<LinkOutlined/>} value={this.state.video.coverUrl} onChange={e => {
                   this.updateVideoField('coverUrl', e.target.value);
                 }} />
               </Col>
