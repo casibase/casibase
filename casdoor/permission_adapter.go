@@ -1,7 +1,7 @@
 package casdoor
 
 import (
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
 

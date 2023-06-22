@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 type I18nData map[string]map[string]string

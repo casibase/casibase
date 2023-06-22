@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casbase/object"
+	"github.com/casbin/casibase/object"
 )
 
 func (c *ApiController) GetGlobalVectorsets() {

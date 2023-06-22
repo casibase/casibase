@@ -3,8 +3,8 @@ package object
 import (
 	"fmt"
 
-	"github.com/casbin/casbase/util"
-	"github.com/casbin/casbase/video"
+	"github.com/casbin/casibase/util"
+	"github.com/casbin/casibase/video"
 	"xorm.io/core"
 )
 

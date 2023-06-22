@@ -7,7 +7,7 @@ import (
 	"mime/multipart"
 	"strings"
 
-	"github.com/casbin/casbase/storage"
+	"github.com/casbin/casibase/storage"
 )
 
 func UpdateFile(storeId string, key string, file *File) bool {

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 

@@ -3,7 +3,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casbase/casdoor"
+	"github.com/casbin/casibase/casdoor"
 )
 
 func (c *ApiController) GetPermissions() {

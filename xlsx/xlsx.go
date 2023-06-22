@@ -1,7 +1,7 @@
 package xlsx
 
 import (
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 	"github.com/tealeg/xlsx"
 )
 

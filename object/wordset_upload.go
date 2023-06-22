@@ -1,8 +1,8 @@
 package object
 
 import (
-	"github.com/casbin/casbase/util"
-	"github.com/casbin/casbase/xlsx"
+	"github.com/casbin/casibase/util"
+	"github.com/casbin/casibase/xlsx"
 )
 
 func uploadVectorNames(owner string, fileId string) bool {

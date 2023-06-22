@@ -3,7 +3,7 @@ package i18n
 import (
 	"fmt"
 
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 func getI18nFilePath(language string) string {

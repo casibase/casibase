@@ -3,8 +3,8 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casbase/object"
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/object"
+	"github.com/casbin/casibase/util"
 )
 
 func (c *ApiController) GetGlobalWordsets() {

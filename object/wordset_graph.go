@@ -6,7 +6,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 var graphCache map[string]*Graph

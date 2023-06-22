@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"mime/multipart"
 
-	"github.com/casbin/casbase/object"
+	"github.com/casbin/casibase/object"
 )
 
 func (c *ApiController) UpdateFile() {

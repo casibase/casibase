@@ -7,7 +7,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 func TransparentStatic(ctx *context.Context) {

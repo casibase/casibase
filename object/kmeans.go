@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 	"github.com/muesli/clusters"
 	"github.com/muesli/kmeans"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 func (vectorset *Vectorset) LoadVectors(pathPrefix string) {

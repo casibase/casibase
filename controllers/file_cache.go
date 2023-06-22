@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
-	"github.com/casbin/casbase/util"
+	"github.com/casbin/casibase/util"
 )
 
 var cacheDir string

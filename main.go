@@ -4,9 +4,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
-	"github.com/casbin/casbase/casdoor"
-	"github.com/casbin/casbase/object"
-	"github.com/casbin/casbase/routers"
+	"github.com/casbin/casibase/casdoor"
+	"github.com/casbin/casibase/object"
+	"github.com/casbin/casibase/routers"
 )
 
 func main() {
