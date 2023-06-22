@@ -22,10 +22,14 @@ class FileTreePage extends React.Component {
 
   getStore() {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
-      .then((store) => {
-        this.setState({
-          store: store,
-        });
+      .then((res) => {
+        if (res?.status !== "error") {
+          this.setState({
+            store: res,
+          });
+        } else {
+          Setting.showMessage("error", res.msg);
+        }
       });
   }
 

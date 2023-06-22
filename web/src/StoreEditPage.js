@@ -122,7 +122,7 @@ class StoreEditPage extends React.Component {
           this.setState({
             storeName: this.state.store.name,
           });
-          this.props.history.push(`/stores/${this.state.store.name}`);
+          this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
         } else {
           Setting.showMessage("error", `failed to save: server side failure`);
           this.updateStoreField('name', this.state.storeName);
