@@ -34,8 +34,8 @@ class StoreListPage extends React.Component {
       name: `store_${this.state.stores.length}`,
       createdTime: moment().format(),
       displayName: `Store ${this.state.stores.length}`,
-      bucket: "casibase",
-      domain: "https://github.com/casbin/casibase",
+      bucket: "bucket_name",
+      domain: "https://cdn.example.com",
       propertiesMap: {},
     }
   }
