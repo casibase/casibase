@@ -2,6 +2,7 @@ package storage
 
 import (
 	"bytes"
+	"fmt"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
@@ -34,7 +35,8 @@ func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
 	for {
 		resp, err := bucket.ListObjects(oss.Prefix(prefix), oss.MaxKeys(1000), marker)
 		if err != nil {
-			panic(err)
+			fmt.Println(err.Error())
+			return res
 		}
 
 		marker = oss.Marker(resp.NextMarker)
