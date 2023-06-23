@@ -113,13 +113,25 @@ Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be use
 
 #### Custom config
 
-```ini
-clientId = <Your_clientId_in_Casdoor_configuration>
-clientSecret = <Your_clientSecret_in_Casdoor_configuration>
-casdoorDbName = casdoor
-casdoorOrganization = "casibase"
-casdoorApplication = "app-casibase"
-```
+- #### Backend (`casibase\conf\app.conf`)
+
+  ```ini
+  clientId = <Your_clientId_in_Casdoor_configuration>
+  clientSecret = <Your_clientSecret_in_Casdoor_configuration>
+  casdoorDbName = casdoor
+  casdoorOrganization = "casibase"
+  casdoorApplication = "app-casibase"
+  ```
+
+- #### Frontend (`casibase\web\src\Conf.js`)
+
+  ```ini
+  export const AuthConfig = {
+    ......
+    clientId: <Your_clientId_in_Casdoor_configuration>,
+    ......
+  };
+  ```
 
 #### Run casnode
 
