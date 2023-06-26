@@ -15,6 +15,7 @@
     "d3-force": "^3.0.0",
     "echarts": "^5.4.2",
     "echarts-for-react": "^3.0.2",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "file-saver": "^2.0.2",
     "i18next": "^19.8.9",
     "moment": "^2.29.1",
