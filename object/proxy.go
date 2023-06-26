@@ -20,7 +20,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	"golang.org/x/net/proxy"
 )
 
@@ -48,7 +48,7 @@ func isAddressOpen(address string) bool {
 }
 
 func getProxyHttpClient() *http.Client {
-	httpProxy := beego.AppConfig.String("httpProxy")
+	httpProxy := conf.GetConfigString("httpProxy")
 	if httpProxy == "" {
 		return &http.Client{}
 	}

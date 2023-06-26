@@ -15,7 +15,6 @@
 package discuzx
 
 import (
-	"github.com/astaxie/beego"
 	"github.com/casbin/casnode/object"
 )
 
@@ -27,6 +26,6 @@ var (
 func init() {
 	object.InitConfig()
 
-	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
+	CasdoorOrganization = conf.GetConfigString("casdoorOrganization")
+	CasdoorApplication = conf.GetConfigString("casdoorApplication")
 }

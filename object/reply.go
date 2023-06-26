@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
@@ -39,7 +39,7 @@ type Reply struct {
 	GitterMessageId string   `xorm:"varchar(100)" json:"gitterMessageId"`
 }
 
-var enableNestedReply, _ = beego.AppConfig.Bool("enableNestedReply")
+var enableNestedReply, _ = conf.GetConfigBool("enableNestedReply")
 
 // GetReplyCount returns all replies num so far, both deleted and not deleted.
 func GetReplyCount() int {

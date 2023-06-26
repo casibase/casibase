@@ -17,7 +17,7 @@ package casdoor
 import (
 	"runtime"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -34,14 +34,14 @@ type Session struct {
 }
 
 func InitCasdoorAdapter() {
-	casdoorDbName := beego.AppConfig.String("casdoorDbName")
+	casdoorDbName := conf.GetConfigString("casdoorDbName")
 	if casdoorDbName == "" {
 		return
 	}
 
-	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("casdoorDbName"))
+	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), conf.GetConfigString("casdoorDbName"))
 
-	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
+	CasdoorOrganization = conf.GetConfigString("casdoorOrganization")
 }
 
 // Adapter represents the MySQL adapter for policy storage.

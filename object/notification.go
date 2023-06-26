@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	"github.com/casbin/casnode/service"
 	"github.com/casbin/casnode/util"
 )
@@ -308,12 +308,12 @@ func AddTopicNotification(objectId int, author, content string) {
 
 func sendRemindMail(title string, content string, topicId string, sender string, receiver string, domain string) error {
 	fromName := ""
-	conf := GetFrontConfById("forumName")
-	if conf != nil {
-		fromName = conf.Value
+	frontConfig := GetFrontConfById("forumName")
+	if frontConfig != nil {
+		fromName = frontConfig.Value
 	}
 	if fromName == "" {
-		fromName = beego.AppConfig.String("appname")
+		fromName = conf.GetConfigString("appname")
 	}
 
 	return service.SendRemindMail(fromName, title, content, topicId, sender, receiver, domain)

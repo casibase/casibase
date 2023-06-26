@@ -10,8 +10,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/casbin/casnode/conf"
 )
 
 // var chromeCtx ctx.Context
@@ -69,11 +69,11 @@ func InitChromeDp() {
 	isChromeInit = true
 	isChromeInstalled = isChromeFound()
 	if isChromeInstalled {
-		chromeCtxNum, _ := beego.AppConfig.Int("chromeCtxNum")
+		chromeCtxNum, _ := conf.GetConfigInt64("chromeCtxNum")
 		if chromeCtxNum <= 0 {
 			chromeCtxNum = 1 // default
 		}
-		chromeCtxPool = NewSsrPool(chromeCtxNum)
+		chromeCtxPool = NewSsrPool(int(chromeCtxNum))
 	}
 	go chromeCtxPool.Run() // start ssr_pool
 }
