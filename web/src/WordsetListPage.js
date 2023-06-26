@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import {Button, Col, Popconfirm, Row, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as WordsetBackend from "./backend/WordsetBackend";
@@ -37,14 +37,14 @@ class WordsetListPage extends React.Component {
       distanceLimit: 14,
       vectorset: "wordVector_utf-8",
       vectors: [],
-    }
+    };
   }
 
   addWordset() {
     const newWordset = this.newWordset();
     WordsetBackend.addWordset(newWordset)
       .then((res) => {
-        Setting.showMessage("success", `Wordset added successfully`);
+        Setting.showMessage("success", "Wordset added successfully");
         this.setState({
           wordsets: Setting.prependRow(this.state.wordsets, newWordset),
         });
@@ -57,7 +57,7 @@ class WordsetListPage extends React.Component {
   deleteWordset(i) {
     WordsetBackend.deleteWordset(this.state.wordsets[i])
       .then((res) => {
-        Setting.showMessage("success", `Wordset deleted successfully`);
+        Setting.showMessage("success", "Wordset deleted successfully");
         this.setState({
           wordsets: Setting.deleteRow(this.state.wordsets, i),
         });
@@ -71,34 +71,34 @@ class WordsetListPage extends React.Component {
     const columns = [
       {
         title: i18next.t("general:Name"),
-        dataIndex: 'name',
-        key: 'name',
-        width: '120px',
+        dataIndex: "name",
+        key: "name",
+        width: "120px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
             <Link to={`/wordsets/${text}`}>
               {text}
             </Link>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Display name"),
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: '200px',
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("wordset:Words"),
-        dataIndex: 'vectors',
-        key: 'vectors',
+        dataIndex: "vectors",
+        key: "vectors",
         // width: '120px',
         sorter: (a, b) => a.vectors.localeCompare(b.vectors),
         render: (text, record, index) => {
           return Setting.getTags(text);
-        }
+        },
       },
       // {
       //   title: i18next.t("wordset:All words"),
@@ -122,71 +122,71 @@ class WordsetListPage extends React.Component {
       // },
       {
         title: i18next.t("wordset:Vectorset"),
-        dataIndex: 'vectorset',
-        key: 'vectorset',
-        width: '140px',
+        dataIndex: "vectorset",
+        key: "vectorset",
+        width: "140px",
         sorter: (a, b) => a.vectorset.localeCompare(b.vectorset),
         render: (text, record, index) => {
           return (
             <Link to={`/vectorsets/${text}`}>
               {text}
             </Link>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("wordset:Matched"),
-        dataIndex: 'matched',
-        key: 'matched',
-        width: '140px',
+        dataIndex: "matched",
+        key: "matched",
+        width: "140px",
         render: (text, record, index) => {
           const allWords = record.vectors.length;
           const validWords = record.vectors.filter(vector => vector.data.length !== 0).length;
           return `${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`;
-        }
+        },
       },
       {
         title: i18next.t("wordset:Distance limit"),
-        dataIndex: 'distanceLimit',
-        key: 'distanceLimit',
-        width: '120px',
+        dataIndex: "distanceLimit",
+        key: "distanceLimit",
+        width: "120px",
         sorter: (a, b) => a.distanceLimit - b.distanceLimit,
       },
       {
         title: i18next.t("general:Action"),
-        dataIndex: 'action',
-        key: 'action',
-        width: '80px',
+        dataIndex: "action",
+        key: "action",
+        width: "80px",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.openLink(`/wordsets/${record.name}/graph`)}>{i18next.t("general:Result")}</Button>
-              <Button style={{marginBottom: '10px', marginRight: '10px'}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
-              <Button style={{marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/wordsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/wordsets/${record.name}/graph`)}>{i18next.t("general:Result")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/wordsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete wordset: ${record.name} ?`}
                 onConfirm={() => this.deleteWordset(index)}
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
-          )
-        }
+          );
+        },
       },
     ];
 
     return (
       <div>
         <Table columns={columns} dataSource={wordsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
-               title={() => (
-                 <div>
-                   {i18next.t("general:Wordsets")}&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addWordset.bind(this)}>{i18next.t("general:Add")}</Button>
-                 </div>
-               )}
-               loading={wordsets === null}
+          title={() => (
+            <div>
+              {i18next.t("general:Wordsets")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addWordset.bind(this)}>{i18next.t("general:Add")}</Button>
+            </div>
+          )}
+          loading={wordsets === null}
         />
       </div>
     );

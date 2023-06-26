@@ -12,9 +12,9 @@ class HomePage extends React.Component {
 
   render() {
     if (this.props.account.tag === "Video") {
-      return <Redirect to="/videos" />
+      return <Redirect to="/videos" />;
     } else {
-      return <FileTreePage account={this.props.account} />
+      return <FileTreePage account={this.props.account} />;
     }
   }
 }

@@ -1,7 +1,7 @@
 import React from "react";
-import Player from 'aliplayer-react';
+import Player from "aliplayer-react";
 import * as Setting from "./Setting";
-import BulletScreen from 'rc-bullets';
+import BulletScreen from "rc-bullets";
 
 class Video extends React.Component {
   constructor(props) {
@@ -62,8 +62,8 @@ class Video extends React.Component {
           backgroundColor: "rgb(255,255,255)",
         }, {
           onStart: (bulletId, screen) => {
-            let bulletIdTextMap = this.state.bulletIdTextMap;
-            let bulletTextMap = this.state.bulletTextMap;
+            const bulletIdTextMap = this.state.bulletIdTextMap;
+            const bulletTextMap = this.state.bulletTextMap;
 
             bulletIdTextMap[bulletId] = label.text;
             bulletTextMap[label.text] = 1;
@@ -76,8 +76,8 @@ class Video extends React.Component {
             // console.log(`start: ${bulletId}`);
           },
           onEnd: (bulletId, screen) => {
-            let bulletIdTextMap = this.state.bulletIdTextMap;
-            let bulletTextMap = this.state.bulletTextMap;
+            const bulletIdTextMap = this.state.bulletIdTextMap;
+            const bulletTextMap = this.state.bulletTextMap;
 
             const text = bulletIdTextMap[bulletId];
             delete bulletIdTextMap[bulletId];
@@ -140,11 +140,11 @@ class Video extends React.Component {
   initPlayer(player) {
     // https://help.aliyun.com/document_detail/125572.html
     // https://github.com/zerosoul/rc-bullets
-    player.on('ready', () => {this.handleReady(player)});
-    player.on('timeupdate', () => {this.onTimeUpdate(player)});
-    player.on('play', () => {this.onPlay()});
-    player.on('pause', () => {this.onPause()});
-    player.on('completeSeek', () => {this.state.screen.clear()});
+    player.on("ready", () => {this.handleReady(player);});
+    player.on("timeupdate", () => {this.onTimeUpdate(player);});
+    player.on("play", () => {this.onPlay();});
+    player.on("pause", () => {this.onPause();});
+    player.on("completeSeek", () => {this.state.screen.clear();});
   }
 
   render() {
@@ -186,7 +186,7 @@ class Video extends React.Component {
           }}
         />
       </div>
-    )
+    );
   }
 }
 

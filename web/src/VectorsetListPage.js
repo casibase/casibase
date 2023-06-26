@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from 'antd';
+import {Button, Col, Popconfirm, Row, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as VectorsetBackend from "./backend/VectorsetBackend";
@@ -40,14 +40,14 @@ class VectorsetListPage extends React.Component {
       dimension: 128,
       count: 10000,
       vectors: [],
-    }
+    };
   }
 
   addVectorset() {
     const newVectorset = this.newVectorset();
     VectorsetBackend.addVectorset(newVectorset)
       .then((res) => {
-        Setting.showMessage("success", `Vectorset added successfully`);
+        Setting.showMessage("success", "Vectorset added successfully");
         this.setState({
           vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
         });
@@ -60,7 +60,7 @@ class VectorsetListPage extends React.Component {
   deleteVectorset(i) {
     VectorsetBackend.deleteVectorset(this.state.vectorsets[i])
       .then((res) => {
-        Setting.showMessage("success", `Vectorset deleted successfully`);
+        Setting.showMessage("success", "Vectorset deleted successfully");
         this.setState({
           vectorsets: Setting.deleteRow(this.state.vectorsets, i),
         });
@@ -74,30 +74,30 @@ class VectorsetListPage extends React.Component {
     const columns = [
       {
         title: i18next.t("general:Name"),
-        dataIndex: 'name',
-        key: 'name',
-        width: '140px',
+        dataIndex: "name",
+        key: "name",
+        width: "140px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
             <Link to={`/vectorsets/${text}`}>
               {text}
             </Link>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Display name"),
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: '200px',
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("general:URL"),
-        dataIndex: 'url',
-        key: 'url',
-        width: '250px',
+        dataIndex: "url",
+        key: "url",
+        width: "250px",
         sorter: (a, b) => a.url.localeCompare(b.url),
         render: (text, record, index) => {
           return (
@@ -106,80 +106,80 @@ class VectorsetListPage extends React.Component {
                 Setting.getShortText(text)
               }
             </a>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("vectorset:File name"),
-        dataIndex: 'fileName',
-        key: 'fileName',
-        width: '200px',
+        dataIndex: "fileName",
+        key: "fileName",
+        width: "200px",
         sorter: (a, b) => a.fileName.localeCompare(b.fileName),
       },
       {
         title: i18next.t("vectorset:File size"),
-        dataIndex: 'fileSize',
-        key: 'fileSize',
-        width: '120px',
+        dataIndex: "fileSize",
+        key: "fileSize",
+        width: "120px",
         sorter: (a, b) => a.fileSize.localeCompare(b.fileSize),
       },
       {
         title: i18next.t("vectorset:Dimension"),
-        dataIndex: 'dimension',
-        key: 'dimension',
-        width: '110px',
+        dataIndex: "dimension",
+        key: "dimension",
+        width: "110px",
         sorter: (a, b) => a.dimension - b.dimension,
       },
       {
         title: i18next.t("vectorset:Example vectors"),
-        dataIndex: 'vectors',
-        key: 'vectors',
+        dataIndex: "vectors",
+        key: "vectors",
         // width: '120px',
         sorter: (a, b) => a.vectors.localeCompare(b.vectors),
         render: (text, record, index) => {
           return Setting.getTags(text);
-        }
+        },
       },
       {
         title: i18next.t("vectorset:Count"),
-        dataIndex: 'count',
-        key: 'count',
-        width: '110px',
+        dataIndex: "count",
+        key: "count",
+        width: "110px",
         sorter: (a, b) => a.count - b.count,
       },
       {
         title: i18next.t("general:Action"),
-        dataIndex: 'action',
-        key: 'action',
-        width: '80px',
+        dataIndex: "action",
+        key: "action",
+        width: "80px",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/vectorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/vectorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete vectorset: ${record.name} ?`}
                 onConfirm={() => this.deleteVectorset(index)}
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
-          )
-        }
+          );
+        },
       },
     ];
 
     return (
       <div>
         <Table columns={columns} dataSource={vectorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
-               title={() => (
-                 <div>
-                   {i18next.t("general:Vectorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
-                   <Button type="primary" size="small" onClick={this.addVectorset.bind(this)}>{i18next.t("general:Add")}</Button>
-                 </div>
-               )}
-               loading={vectorsets === null}
+          title={() => (
+            <div>
+              {i18next.t("general:Vectorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addVectorset.bind(this)}>{i18next.t("general:Add")}</Button>
+            </div>
+          )}
+          loading={vectorsets === null}
         />
       </div>
     );

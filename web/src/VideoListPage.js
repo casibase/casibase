@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table, Upload} from 'antd';
+import {Button, Col, Popconfirm, Row, Table, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -41,14 +41,14 @@ class VideoListPage extends React.Component {
       dataUrls: [],
       dataUrl: "",
       playAuth: "",
-    }
+    };
   }
 
   addVideo() {
     const newVideo = this.newVideo();
     VideoBackend.addVideo(newVideo)
       .then((res) => {
-        Setting.showMessage("success", `Video added successfully`);
+        Setting.showMessage("success", "Video added successfully");
         this.setState({
           videos: Setting.prependRow(this.state.videos, newVideo),
         });
@@ -61,7 +61,7 @@ class VideoListPage extends React.Component {
   deleteVideo(i) {
     VideoBackend.deleteVideo(this.state.videos[i])
       .then((res) => {
-        Setting.showMessage("success", `Video deleted successfully`);
+        Setting.showMessage("success", "Video deleted successfully");
         this.setState({
           videos: Setting.deleteRow(this.state.videos, i),
         });
@@ -72,28 +72,28 @@ class VideoListPage extends React.Component {
   }
 
   uploadFile(info) {
-    const { status, response: res } = info.file;
-    if (status !== 'uploading') {
+    const {status, response: res} = info.file;
+    if (status !== "uploading") {
       console.log(info.file, info.fileList);
     }
-    if (status === 'done') {
-      if (res.status === 'ok') {
-        Setting.showMessage("success", `上传视频成功`);
+    if (status === "done") {
+      if (res.status === "ok") {
+        Setting.showMessage("success", "上传视频成功");
         const videoName = res.data;
         this.props.history.push(`/videos/${videoName}`);
       } else {
         Setting.showMessage("error", `上传视频失败：${res.msg}`);
       }
-    } else if (status === 'error') {
-      Setting.showMessage("success", `上传视频失败`);
+    } else if (status === "error") {
+      Setting.showMessage("success", "上传视频失败");
     }
   }
 
   renderUpload() {
     const props = {
-      name: 'file',
-      accept: '.mp4',
-      method: 'post',
+      name: "file",
+      accept: ".mp4",
+      method: "post",
       action: `${Setting.ServerUrl}/api/upload-video`,
       withCredentials: true,
       onChange: (info) => {
@@ -107,109 +107,109 @@ class VideoListPage extends React.Component {
           <UploadOutlined /> 上传视频（.mp4）
         </Button>
       </Upload>
-    )
+    );
   }
 
   renderTable(videos) {
     const columns = [
       {
         title: i18next.t("general:Name"),
-        dataIndex: 'name',
-        key: 'name',
-        width: '140px',
+        dataIndex: "name",
+        key: "name",
+        width: "140px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
             <Link to={`/videos/${text}`}>
               {text}
             </Link>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Display name"),
-        dataIndex: 'displayName',
-        key: 'displayName',
-        width: '200px',
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "200px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("video:Video ID"),
-        dataIndex: 'videoId',
-        key: 'videoId',
-        width: '250px',
+        dataIndex: "videoId",
+        key: "videoId",
+        width: "250px",
         sorter: (a, b) => a.videoId.localeCompare(b.videoId),
       },
       {
         title: i18next.t("video:Cover"),
-        dataIndex: 'coverUrl',
-        key: 'coverUrl',
-        width: '200px',
+        dataIndex: "coverUrl",
+        key: "coverUrl",
+        width: "200px",
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
               <img src={text} alt={text} width={150} />
             </a>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("video:Labels"),
-        dataIndex: 'labels',
-        key: 'labels',
+        dataIndex: "labels",
+        key: "labels",
         // width: '120px',
         sorter: (a, b) => a.vectors.localeCompare(b.vectors),
         render: (text, record, index) => {
           return Setting.getLabelTags(text);
-        }
+        },
       },
       {
         title: i18next.t("video:Label count"),
-        dataIndex: 'labelCount',
-        key: 'labelCount',
-        width: '110px',
+        dataIndex: "labelCount",
+        key: "labelCount",
+        width: "110px",
         render: (text, record, index) => {
           return record.labels.length;
-        }
+        },
       },
       {
         title: i18next.t("general:Action"),
-        dataIndex: 'action',
-        key: 'action',
-        width: '80px',
+        dataIndex: "action",
+        key: "action",
+        width: "80px",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: '10px', marginBottom: '10px', marginRight: '10px'}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`Sure to delete video: ${record.name} ?`}
                 onConfirm={() => this.deleteVideo(index)}
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: '10px'}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
-          )
-        }
+          );
+        },
       },
     ];
 
     return (
       <div>
         <Table columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
-               title={() => (
-                 <div>
-                   {i18next.t("general:Videos")}
-                   {/*&nbsp;&nbsp;&nbsp;&nbsp;*/}
-                   {/*<Button type="primary" size="small" onClick={this.addVideo.bind(this)}>{i18next.t("general:Add")}</Button>*/}
+          title={() => (
+            <div>
+              {i18next.t("general:Videos")}
+              {/* &nbsp;&nbsp;&nbsp;&nbsp;*/}
+              {/* <Button type="primary" size="small" onClick={this.addVideo.bind(this)}>{i18next.t("general:Add")}</Button>*/}
                    &nbsp;&nbsp;&nbsp;&nbsp;
-                   {
-                     this.renderUpload()
-                   }
-                 </div>
-               )}
-               loading={videos === null}
+              {
+                this.renderUpload()
+              }
+            </div>
+          )}
+          loading={videos === null}
         />
       </div>
     );

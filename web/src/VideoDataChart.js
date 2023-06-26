@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import ReactEcharts from 'echarts-for-react';
+import React, {Component} from "react";
+import ReactEcharts from "echarts-for-react";
 
 class VideoDataChart extends Component {
   drawPic(data, currentTime, height) {
@@ -24,35 +24,35 @@ class VideoDataChart extends Component {
 
     const option = {
       grid: {
-        top: '5%',
-        left: '3%',
-        right: '4%',
-        bottom: '8%',
-        containLabel: true
+        top: "5%",
+        left: "3%",
+        right: "4%",
+        bottom: "8%",
+        containLabel: true,
       },
       xAxis: {
-        type: 'category',
-        data: xAxisData
+        type: "category",
+        data: xAxisData,
       },
       yAxis: {
-        type: 'value',
+        type: "value",
         min: dataMin,
-        max: dataMax
+        max: dataMax,
       },
       series: [
         {
-          name: 'Data',
-          type: 'line',
+          name: "Data",
+          type: "line",
           data: seriesData,
           markLine: {
             data: [
               [
                 {
-                  symbol: 'none',
+                  symbol: "none",
                   x: `${currentTime / 0.65 + 40}`,
-                  y: '80%',
+                  y: "80%",
                   lineStyle: {
-                    color: 'red'
+                    color: "red",
                   },
                   // label: {
                   //   position: 'start',
@@ -60,19 +60,19 @@ class VideoDataChart extends Component {
                   // },
                 },
                 {
-                  symbol: 'none',
+                  symbol: "none",
                   x: `${currentTime / 0.65 + 40}`,
-                  y: '0%',
+                  y: "0%",
                   // label: {
                   //   position: 'start',
                   //   formatter: 'Max'
                   // },
-                }
+                },
               ],
-            ]
-          }
-        }
-      ]
+            ],
+          },
+        },
+      ],
     };
 
     return (

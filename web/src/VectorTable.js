@@ -1,6 +1,6 @@
 import React from "react";
-import {DownOutlined, DeleteOutlined, UpOutlined} from '@ant-design/icons';
-import {Button, Col, Input, Row, Table, Tooltip} from 'antd';
+import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
+import {Button, Col, Input, Row, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -36,7 +36,7 @@ class VectorTable extends React.Component {
   }
 
   addRow(table) {
-    let row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
+    const row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
     if (table === undefined) {
       table = [];
     }
@@ -63,43 +63,43 @@ class VectorTable extends React.Component {
     const columns = [
       {
         title: i18next.t("general:No."),
-        dataIndex: 'no',
-        key: 'no',
-        width: '60px',
+        dataIndex: "no",
+        key: "no",
+        width: "60px",
         render: (text, record, index) => {
           return (index + 1);
-        }
+        },
       },
       {
         title: i18next.t("general:Name"),
-        dataIndex: 'name',
-        key: 'name',
-        width: '200px',
+        dataIndex: "name",
+        key: "name",
+        width: "200px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
-              this.updateField(table, index, 'name', e.target.value);
+              this.updateField(table, index, "name", e.target.value);
             }} />
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Data"),
-        dataIndex: 'data',
-        key: 'data',
+        dataIndex: "data",
+        key: "data",
         // width: '300px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
-              this.updateField(table, index, 'data', e.target.value);
+              this.updateField(table, index, "data", e.target.value);
             }} />
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
-        key: 'action',
-        width: '100px',
+        key: "action",
+        width: "100px",
         render: (text, record, index) => {
           return (
             <div>
@@ -114,23 +114,23 @@ class VectorTable extends React.Component {
               </Tooltip>
             </div>
           );
-        }
+        },
       },
     ];
 
     return (
       <Table rowKey="index" columns={columns} dataSource={table} size="middle" bordered pagination={false}
-             title={() => (
-               <div>
-                 {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-                 <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
-                 {
-                   this.props.wordset === undefined ? null : (
-                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadXlsx(this.props.wordset)}>{i18next.t("general:Download")}</Button>
-                   )
-                 }
-               </div>
-             )}
+        title={() => (
+          <div>
+            {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
+            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            {
+              this.props.wordset === undefined ? null : (
+                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadXlsx(this.props.wordset)}>{i18next.t("general:Download")}</Button>
+              )
+            }
+          </div>
+        )}
       />
     );
   }
@@ -138,7 +138,7 @@ class VectorTable extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{marginTop: '20px'}} >
+        <Row style={{marginTop: "20px"}} >
           <Col span={24}>
             {
               this.renderTable(this.props.table)
@@ -146,7 +146,7 @@ class VectorTable extends React.Component {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 

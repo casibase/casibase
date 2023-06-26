@@ -1,4 +1,4 @@
-import {message, Tag, Tooltip} from "antd";
+import {Tag, Tooltip, message} from "antd";
 import {SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
@@ -8,12 +8,12 @@ import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 
-export let ServerUrl = '';
+export let ServerUrl = "";
 export let CasdoorSdk;
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
-  if (hostname === 'localhost') {
+  if (hostname === "localhost") {
     ServerUrl = `http://${hostname}:14000`;
   }
 }
@@ -65,7 +65,7 @@ export function myParseInt(i) {
 
 export function openLink(link) {
   // this.props.history.push(link);
-  const w = window.open('about:blank');
+  const w = window.open("about:blank");
   w.location.href = link;
 }
 
@@ -134,11 +134,9 @@ export function trim(str, ch) {
   let start = 0;
   let end = str.length;
 
-  while(start < end && str[start] === ch)
-    ++start;
+  while (start < end && str[start] === ch) {++start;}
 
-  while(end > start && str[end - 1] === ch)
-    --end;
+  while (end > start && str[end - 1] === ch) {--end;}
 
   return (start > 0 || end < str.length) ? str.substring(start, end) : str;
 }
@@ -153,8 +151,8 @@ export function getFormattedDate(date) {
     return null;
   }
 
-  date = date.replace('T', ' ');
-  date = date.replace('+08:00', ' ');
+  date = date.replace("T", " ");
+  date = date.replace("+08:00", " ");
   return date;
 }
 
@@ -163,10 +161,10 @@ export function getFormattedDateShort(date) {
 }
 
 export function getShortName(s) {
-  return s.split('/').slice(-1)[0];
+  return s.split("/").slice(-1)[0];
 }
 
-export function getShortText(s, maxLength=35) {
+export function getShortText(s, maxLength = 35) {
   if (s.length > maxLength) {
     return `${s.slice(0, maxLength)}...`;
   } else {
@@ -178,7 +176,7 @@ function getRandomInt(s) {
   let hash = 0;
   if (s.length !== 0) {
     for (let i = 0; i < s.length; i++) {
-      let char = s.charCodeAt(i);
+      const char = s.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash;
     }
@@ -188,7 +186,7 @@ function getRandomInt(s) {
 }
 
 export function getAvatarColor(s) {
-  const colorList = ['#f56a00', '#7265e6', '#ffbf00', '#00a2ae'];
+  const colorList = ["#f56a00", "#7265e6", "#ffbf00", "#00a2ae"];
   let random = getRandomInt(s);
   if (random < 0) {
     random = -random;
@@ -241,7 +239,7 @@ export function getTag(text, type, state) {
   let icon = null;
   let style = {};
   if (state === "Pending") {
-    icon = <SyncOutlined spin />
+    icon = <SyncOutlined spin />;
     style = {borderStyle: "dashed", backgroundColor: "white"};
   }
 
@@ -252,7 +250,7 @@ export function getTag(text, type, state) {
           {text}
         </Tag>
       </Tooltip>
-    )
+    );
   } else if (type === "Write") {
     return (
       <Tooltip placement="top" title={"Write"}>
@@ -260,7 +258,7 @@ export function getTag(text, type, state) {
           {text}
         </Tag>
       </Tooltip>
-    )
+    );
   } else if (type === "Admin") {
     return (
       <Tooltip placement="top" title={"Admin"}>
@@ -268,7 +266,7 @@ export function getTag(text, type, state) {
           {text}
         </Tag>
       </Tooltip>
-    )
+    );
   } else {
     return null;
   }
@@ -279,7 +277,7 @@ export function getTags(vectors) {
     return [];
   }
 
-  let res = [];
+  const res = [];
   vectors.forEach((vector, i) => {
     if (vector.data.length !== 0) {
       res.push(
@@ -305,7 +303,7 @@ export function getLabelTags(labels) {
     return [];
   }
 
-  let res = [];
+  const res = [];
   labels.forEach((label, i) => {
     res.push(
       <Tooltip placement="top" title={getShortText(JSON.stringify(label.text), 500)}>
@@ -329,7 +327,7 @@ export function getPercentage(f) {
 function s2ab(s) {
   const buf = new ArrayBuffer(s.length);
   const view = new Uint8Array(buf);
-  for (let i = 0; i !== s.length; i ++) {
+  for (let i = 0; i !== s.length; i++) {
     view[i] = s.charCodeAt(i) & 0xFF;
   }
   return buf;
@@ -355,9 +353,9 @@ export function workbook2blob(workbook) {
 }
 
 export function downloadXlsx(wordset) {
-  let data = [];
+  const data = [];
   wordset.vectors.forEach((vector, i) => {
-    let row = {};
+    const row = {};
 
     row[0] = vector.name;
     vector.data.forEach((dataItem, i) => {
@@ -367,7 +365,7 @@ export function downloadXlsx(wordset) {
     data.push(row);
   });
 
-  let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+  const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
   // sheet["!cols"] = [
   //   { wch: 18 },
   //   { wch: 7 },
@@ -391,11 +389,11 @@ export function getFriendlyFileSize(size) {
     return size + " B";
   }
 
-  let i = Math.floor(Math.log(size) / Math.log(1024));
+  const i = Math.floor(Math.log(size) / Math.log(1024));
   let num = (size / Math.pow(1024, i));
-  let round = Math.round(num);
+  const round = Math.round(num);
   num = round < 10 ? num.toFixed(2) : round < 100 ? num.toFixed(1) : round;
-  return `${num} ${"KMGTPEZY"[i-1]}B`;
+  return `${num} ${"KMGTPEZY"[i - 1]}B`;
 }
 
 export function getTreeWithParents(tree) {
@@ -437,14 +435,14 @@ export function getTreeWithSearch(tree, s) {
 export function getExtFromPath(path) {
   const filename = path.split("/").pop();
   if (filename.includes(".")) {
-    return filename.split('.').pop().toLowerCase();
+    return filename.split(".").pop().toLowerCase();
   } else {
     return "";
   }
 }
 
 export function getExtFromFile(file) {
-  const res = file.title.split('.')[1];
+  const res = file.title.split(".")[1];
   if (res === undefined) {
     return "";
   } else {
@@ -472,7 +470,7 @@ export function getCollectedTime(filename) {
   }
 
   const time = tokens[0].slice(0, -3);
-  const m = new moment(time, 'YYYYMMDD_HH:mm:ss');
+  const m = new moment(time, "YYYYMMDD_HH:mm:ss");
   return m.format();
 }
 
@@ -496,14 +494,14 @@ export function getSubject(filename) {
 }
 
 export function submitStoreEdit(storeObj) {
-  let store = deepCopy(storeObj);
+  const store = deepCopy(storeObj);
   store.fileTree = undefined;
   StoreBackend.updateStore(storeObj.owner, storeObj.name, store)
     .then((res) => {
       if (res) {
-        showMessage("success", `Successfully saved`);
+        showMessage("success", "Successfully saved");
       } else {
-        showMessage("error", `failed to save: server side failure`);
+        showMessage("error", "failed to save: server side failure");
       }
     })
     .catch(error => {

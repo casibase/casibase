@@ -27,8 +27,8 @@ class ClusteringPage extends React.Component {
 
   render() {
     return (this.state.wordset === undefined || this.state.wordset === null) ? null : (
-      <WordsetGraph wordset={this.state.wordset} wordsetName={this.state.wordset.name}/>
-    )
+      <WordsetGraph wordset={this.state.wordset} wordsetName={this.state.wordset.name} />
+    );
   }
 }
 

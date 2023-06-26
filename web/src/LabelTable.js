@@ -1,6 +1,6 @@
 import React from "react";
-import {DeleteOutlined} from '@ant-design/icons';
-import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from 'antd';
+import {DeleteOutlined} from "@ant-design/icons";
+import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileSaver from "file-saver";
@@ -49,7 +49,7 @@ class LabelTable extends React.Component {
       return;
     }
 
-    let row = {id: Setting.getRandomName(), startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
+    const row = {id: Setting.getRandomName(), startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -74,9 +74,9 @@ class LabelTable extends React.Component {
   }
 
   downloadLabels(table) {
-    let data = [];
+    const data = [];
     table.forEach((label, i) => {
-      let row = {};
+      const row = {};
 
       row[0] = label.startTime;
       row[1] = label.endTime;
@@ -84,7 +84,7 @@ class LabelTable extends React.Component {
       data.push(row);
     });
 
-    let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
     const blob = Setting.sheet2blob(sheet, "labels");
     const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
     FileSaver.saveAs(blob, fileName);
@@ -94,9 +94,9 @@ class LabelTable extends React.Component {
     const columns = [
       {
         title: i18next.t("general:No."),
-        dataIndex: 'no',
-        key: 'no',
-        width: '70px',
+        dataIndex: "no",
+        key: "no",
+        width: "70px",
         render: (text, record, index) => {
           return (
             <Button type={"text"} style={{width: "50px"}} onClick={() => {
@@ -106,72 +106,72 @@ class LabelTable extends React.Component {
             }} >
               {index + 1}
             </Button>
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("video:Start time (s)"),
-        dataIndex: 'startTime',
-        key: 'startTime',
-        width: '120px',
+        dataIndex: "startTime",
+        key: "startTime",
+        width: "120px",
         render: (text, record, index) => {
           return (
             <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
-              this.updateField(table, index, 'startTime', value);
+              this.updateField(table, index, "startTime", value);
               if (record.endTime <= value) {
-                this.updateField(table, index, 'endTime', Setting.toFixed(value + 1, 3));
+                this.updateField(table, index, "endTime", Setting.toFixed(value + 1, 3));
               }
               this.reorderTable(table);
             }} />
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("video:End time (s)"),
-        dataIndex: 'endTime',
-        key: 'endTime',
-        width: '120px',
+        dataIndex: "endTime",
+        key: "endTime",
+        width: "120px",
         render: (text, record, index) => {
           return (
             <InputNumber style={{width: "100%"}} min={record.startTime} value={text} onChange={value => {
-              this.updateField(table, index, 'endTime', value);
+              this.updateField(table, index, "endTime", value);
               this.reorderTable(table);
             }} />
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("video:Text"),
-        dataIndex: 'text',
-        key: 'text',
+        dataIndex: "text",
+        key: "text",
         // width: '200px',
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
-              this.updateField(table, index, 'text', e.target.value);
+              this.updateField(table, index, "text", e.target.value);
             }} />
-          )
-        }
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
-        key: 'action',
-        width: '50px',
+        key: "action",
+        width: "50px",
         render: (text, record, index) => {
           return (
             <div>
-              {/*<Tooltip placement="bottomLeft" title={"Up"}>*/}
+              {/* <Tooltip placement="bottomLeft" title={"Up"}>*/}
               {/*  <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />*/}
-              {/*</Tooltip>*/}
-              {/*<Tooltip placement="topLeft" title={"Down"}>*/}
+              {/* </Tooltip>*/}
+              {/* <Tooltip placement="topLeft" title={"Down"}>*/}
               {/*  <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />*/}
-              {/*</Tooltip>*/}
+              {/* </Tooltip>*/}
               <Tooltip placement="right" title={"Delete"}>
                 <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
           );
-        }
+        },
       },
     ];
 
@@ -188,20 +188,20 @@ class LabelTable extends React.Component {
 
     return (
       <Table rowKey={"id"} columns={columns} dataSource={table} size="middle" bordered pagination={false}
-             title={() => (
-               <div>
-                 {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-                 <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
-                 {
-                   table.length === 0 ? null : (
-                     <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
-                   )
-                 }
-               </div>
-             )}
-             rowClassName={(record, index) => {
-               return (highlightIndex === index) ? "alert-row" : "";
-             }}
+        title={() => (
+          <div>
+            {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
+            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            {
+              table.length === 0 ? null : (
+                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
+              )
+            }
+          </div>
+        )}
+        rowClassName={(record, index) => {
+          return (highlightIndex === index) ? "alert-row" : "";
+        }}
       />
     );
   }
@@ -209,7 +209,7 @@ class LabelTable extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{marginTop: '10px'}} >
+        <Row style={{marginTop: "10px"}} >
           <Col span={24}>
             {
               this.renderTable(this.props.table)
@@ -217,7 +217,7 @@ class LabelTable extends React.Component {
           </Col>
         </Row>
       </div>
-    )
+    );
   }
 }
 

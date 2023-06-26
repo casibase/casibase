@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, Card, Col, Empty, InputNumber, List, Row, Select, Slider, Spin, Switch, Tooltip} from "antd";
-import ForceGraph2D from 'react-force-graph-2d';
-import ForceGraph3D from 'react-force-graph-3d';
+import ForceGraph2D from "react-force-graph-2d";
+import ForceGraph3D from "react-force-graph-3d";
 import * as d3 from "d3-force";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import i18next from "i18next";
@@ -9,9 +9,9 @@ import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import * as Setting from "./Setting";
 
-const { Option } = Select;
+const {Option} = Select;
 
-let fg = React.createRef();
+const fg = React.createRef();
 
 class ForceGraph extends React.Component {
   constructor(props) {
@@ -25,11 +25,11 @@ class ForceGraph extends React.Component {
     if (!this.props.enable3D) {
       return (
         <ForceGraph2D ref={fg} {...this.props} />
-      )
+      );
     } else {
       return (
         <ForceGraph3D ref={fg} {...this.props} />
-      )
+      );
     }
   }
 }
@@ -54,7 +54,7 @@ class WordsetGraph extends React.Component {
       selectedType: null,
       selectedId: null,
       selectedIds: [],
-    }
+    };
   }
 
   UNSAFE_componentWillMount() {
@@ -62,7 +62,7 @@ class WordsetGraph extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    fg.current?.d3Force('collision', d3.forceCollide(15));
+    fg.current?.d3Force("collision", d3.forceCollide(15));
   }
 
   getWordsetGraph() {
@@ -84,7 +84,7 @@ class WordsetGraph extends React.Component {
   downloadClusters() {
     let data = [];
     this.state.graph.nodes.forEach((node, i) => {
-      let row = {};
+      const row = {};
 
       row[0] = node.id;
       row[1] = parseInt(node.tag) + 1;
@@ -93,7 +93,7 @@ class WordsetGraph extends React.Component {
 
     data = data.sort((a, b) => {return a[1] - b[1];});
 
-    let sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
     const blob = Setting.sheet2blob(sheet, "clusters");
     const fileName = `clusters-${this.state.wordsetName}-${this.state.graph.nodes.length}-${this.state.clusterNumber}.xlsx`;
     FileSaver.saveAs(blob, fileName);
@@ -117,11 +117,11 @@ class WordsetGraph extends React.Component {
             <List.Item>
               {`${(link.source !== node.id && link.source.id !== node.id) ? link.source.id : link.target.id} | ${link.tag}`}
             </List.Item>
-          )
+          );
         }}
         pagination={{pageSize: 20, size: "small", showLessItems: true, simple: true}}
       />
-    )
+    );
   }
 
   renderNodeMenu(selectedIds) {
@@ -142,11 +142,11 @@ class WordsetGraph extends React.Component {
                 {`${node.id} | ${node.weight}`}
               </List.Item>
             </Tooltip>
-          )
+          );
         }}
         pagination={{pageSize: 20, size: "small", showLessItems: true, simple: true}}
       />
-    )
+    );
   }
 
   renderLeftToolbar() {
@@ -165,7 +165,7 @@ class WordsetGraph extends React.Component {
 
     return (
       <div style={{width: "100%", position: "fixed", zIndex: 2, pointerEvents: "none"}}>
-        <div style={{width: "200px", marginLeft: '20px', marginTop: '20px', pointerEvents: "auto"}}>
+        <div style={{width: "200px", marginLeft: "20px", marginTop: "20px", pointerEvents: "auto"}}>
           <Card style={{marginTop: "20px"}} size="small" title={
             <div>
               分类：{categoryName}
@@ -177,25 +177,25 @@ class WordsetGraph extends React.Component {
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   renderRightToolbar() {
     return (
       <div style={{width: "100%", position: "fixed", zIndex: 2, pointerEvents: "none"}}>
-        <div style={{width: "200px", float: "right", marginRight: '20px', marginTop: '20px', pointerEvents: "auto"}}>
+        <div style={{width: "200px", float: "right", marginRight: "20px", marginTop: "20px", pointerEvents: "auto"}}>
           <Card size="small" title={
             <div>
               图形选项
             </div>
           } type="inner">
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   保持静止：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <Switch checked={this.state.enableStatic} onChange={(checked, e) => {
                   this.setState({
                     enableStatic: checked,
@@ -203,7 +203,7 @@ class WordsetGraph extends React.Component {
                 }} />
               </Col>
             </Row>
-            {/*<Row>*/}
+            {/* <Row>*/}
             {/*  <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>*/}
             {/*    显示曲线：*/}
             {/*  </Col>*/}
@@ -214,14 +214,14 @@ class WordsetGraph extends React.Component {
             {/*      });*/}
             {/*    }} />*/}
             {/*  </Col>*/}
-            {/*</Row>*/}
+            {/* </Row>*/}
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   启用粗线：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <Switch checked={this.state.enableBolderLink} onChange={(checked, e) => {
                   this.setState({
                     enableBolderLink: checked,
@@ -230,12 +230,12 @@ class WordsetGraph extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   启用3D：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <Switch checked={this.state.enable3D} onChange={(checked, e) => {
                   this.setState({
                     enable3D: checked,
@@ -243,7 +243,7 @@ class WordsetGraph extends React.Component {
                 }} />
               </Col>
             </Row>
-            {/*<Row>*/}
+            {/* <Row>*/}
             {/*  <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>*/}
             {/*    粒子数量：*/}
             {/*  </Col>*/}
@@ -254,38 +254,38 @@ class WordsetGraph extends React.Component {
             {/*      });*/}
             {/*    })} />*/}
             {/*  </Col>*/}
-            {/*</Row>*/}
+            {/* </Row>*/}
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   扩散度：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <Slider value={this.state.strength} dots={true} min={0} max={1000} onChange={(value => {
                   this.setState({
                     strength: value,
                   });
 
                   // https://github.com/vasturiano/react-force-graph/issues/25
-                  fg.current.d3Force('charge').strength(-value);
+                  fg.current.d3Force("charge").strength(-value);
                 })} />
               </Col>
             </Row>
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   最大距离：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <Slider value={this.state.distanceMax} dots={true} min={0} max={1000} onChange={(value => {
                   this.setState({
                     distanceMax: value,
                   });
 
                   // https://github.com/vasturiano/react-force-graph/issues/25
-                  fg.current.d3Force('charge').distanceMax(value);
+                  fg.current.d3Force("charge").distanceMax(value);
                 })} />
               </Col>
             </Row>
@@ -296,32 +296,32 @@ class WordsetGraph extends React.Component {
             </div>
           } type="inner">
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={8}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={8}>
                 <span style={{verticalAlign: "middle"}}>
                   算法：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={16}>
-                <Select virtual={false} style={{width: '100%'}} value={"K-Means"} onChange={(value => {
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={16}>
+                <Select virtual={false} style={{width: "100%"}} value={"K-Means"} onChange={(value => {
                   this.setState({
                     algorithm: value,
                   });
                 })}>
                   {
                     [
-                      {id: 'K-Means', name: 'K-Means'},
+                      {id: "K-Means", name: "K-Means"},
                     ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                   }
                 </Select>
               </Col>
             </Row>
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   聚类个数：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <InputNumber style={{width: "100%"}} min={2} max={this.state.graph?.nodes.length} step={1} value={this.state.clusterNumber} onChange={value => {
                   this.setState({
                     clusterNumber: value,
@@ -330,12 +330,12 @@ class WordsetGraph extends React.Component {
               </Col>
             </Row>
             <Row>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <span style={{verticalAlign: "middle"}}>
                   距离上限：
                 </span>
               </Col>
-              <Col style={{marginTop: '5px', textAlign: 'center'}} span={12}>
+              <Col style={{marginTop: "5px", textAlign: "center"}} span={12}>
                 <InputNumber style={{width: "100%"}} min={1} max={100} step={1} value={this.state.distanceLimit} onChange={value => {
                   this.setState({
                     distanceLimit: value,
@@ -343,8 +343,8 @@ class WordsetGraph extends React.Component {
                 }} />
               </Col>
             </Row>
-            <Row style={{textAlign: "center", paddingTop: '10px'}}>
-              <Button style={{margin: 'auto'}} type="primary" onClick={() => {
+            <Row style={{textAlign: "center", paddingTop: "10px"}}>
+              <Button style={{margin: "auto"}} type="primary" onClick={() => {
                 this.setState({
                   graph: null,
                 });
@@ -352,7 +352,7 @@ class WordsetGraph extends React.Component {
               }}>
                 重新聚类
               </Button>
-              <Button style={{margin: 'auto', marginTop: '10px'}} onClick={() => {
+              <Button style={{margin: "auto", marginTop: "10px"}} onClick={() => {
                 this.downloadClusters();
               }}>
                 下载结果
@@ -361,7 +361,7 @@ class WordsetGraph extends React.Component {
           </Card>
         </div>
       </div>
-    )
+    );
   }
 
   getNodeId(node) {
@@ -379,7 +379,7 @@ class WordsetGraph extends React.Component {
         <div className="App">
           <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
         </div>
-      )
+      );
     }
 
     if (this.state.graph === null || this.state.graph.nodes === null || this.state.graph.links === null) {
@@ -387,7 +387,7 @@ class WordsetGraph extends React.Component {
         <div className="App">
           <Empty style={{paddingTop: "10%"}} image={Empty.PRESENTED_IMAGE_SIMPLE} />
         </div>
-      )
+      );
     }
 
     // highlight example
@@ -445,12 +445,12 @@ class WordsetGraph extends React.Component {
           if (this.state.selectedId === node.id) {
             ctx.beginPath();
             ctx.arc(node.x, node.y, node.val * 1.7, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = "red";
             ctx.fill();
           } else if (this.state.selectedIds.filter(n => n.id === node.id).length > 0) {
             ctx.beginPath();
             ctx.arc(node.x, node.y, node.val * 1.4, 0, 2 * Math.PI, false);
-            ctx.fillStyle = 'red';
+            ctx.fillStyle = "red";
             ctx.fill();
           } else if (this.state.selectedId !== null) {
             ctx.globalAlpha = 0.3;
@@ -460,20 +460,20 @@ class WordsetGraph extends React.Component {
           ctx.fillStyle = node.color;
           ctx.arc(node.x, node.y, node.val, 0, 2 * Math.PI, false);
           ctx.fill();
-          ctx.strokeStyle = 'rgb(255,255,255)';
+          ctx.strokeStyle = "rgb(255,255,255)";
           ctx.stroke();
 
-          ctx.font = '5px Lucida Console';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillStyle = 'black'; //node.color;
+          ctx.font = "5px Lucida Console";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "black"; // node.color;
 
           ctx.fillText(node.name, node.x, node.y + 10);
 
           ctx.restore();
         }}
       />
-    )
+    );
   }
 
   render() {

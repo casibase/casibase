@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select} from 'antd';
+import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -7,7 +7,7 @@ import VectorTable from "./VectorTable";
 import WordsetGraph from "./WordsetGraph";
 import * as VectorsetBackend from "./backend/VectorsetBackend";
 
-const { Option } = Select;
+const {Option} = Select;
 
 class WordsetEditPage extends React.Component {
   constructor(props) {
@@ -54,7 +54,7 @@ class WordsetEditPage extends React.Component {
   updateWordsetField(key, value) {
     value = this.parseWordsetField(key, value);
 
-    let wordset = this.state.wordset;
+    const wordset = this.state.wordset;
     wordset[key] = value;
     this.setState({
       wordset: wordset,
@@ -71,41 +71,41 @@ class WordsetEditPage extends React.Component {
           {i18next.t("wordset:Edit Wordset")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button type="primary" onClick={this.submitWordsetEdit.bind(this)}>{i18next.t("general:Save")}</Button>
         </div>
-      } style={{marginLeft: '5px'}} type="inner">
-        <Row style={{marginTop: '10px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+      } style={{marginLeft: "5px"}} type="inner">
+        <Row style={{marginTop: "10px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Name")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.wordset.name} onChange={e => {
-              this.updateWordsetField('name', e.target.value);
+              this.updateWordsetField("name", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.wordset.displayName} onChange={e => {
-              this.updateWordsetField('displayName', e.target.value);
+              this.updateWordsetField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Vectorset")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: '100%'}} value={this.state.wordset.vectorset} onChange={(value => {this.updateWordsetField('vectorset', value);})}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.wordset.vectorset} onChange={(value => {this.updateWordsetField("vectorset", value);})}>
               {
                 this.state.vectorsets?.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
               }
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Match")}:
           </Col>
           <Col span={22} >
@@ -123,26 +123,26 @@ class WordsetEditPage extends React.Component {
             }}>{i18next.t("wordset:Match")}</Button>
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Matched")}:
           </Col>
           <Col span={22} >
             <Input value={`${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Distance limit")}:
           </Col>
           <Col span={22} >
             <InputNumber value={this.state.wordset.distanceLimit} onChange={value => {
-              this.updateWordsetField('distanceLimit', value);
+              this.updateWordsetField("distanceLimit", value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("wordset:Words")}:
           </Col>
           <Col span={22} >
@@ -150,12 +150,12 @@ class WordsetEditPage extends React.Component {
               title={i18next.t("wordset:Words")}
               table={this.state.wordset.vectors}
               wordset={this.state.wordset}
-              onUpdateTable={(value) => { this.updateWordsetField('vectors', value)}}
+              onUpdateTable={(value) => {this.updateWordsetField("vectors", value);}}
             />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Preview")}:
           </Col>
           <Col span={22} >
@@ -163,22 +163,22 @@ class WordsetEditPage extends React.Component {
           </Col>
         </Row>
       </Card>
-    )
+    );
   }
 
   submitWordsetEdit() {
-    let wordset = Setting.deepCopy(this.state.wordset);
+    const wordset = Setting.deepCopy(this.state.wordset);
     WordsetBackend.updateWordset(this.state.wordset.owner, this.state.wordsetName, wordset)
       .then((res) => {
         if (res) {
-          Setting.showMessage("success", `Successfully saved`);
+          Setting.showMessage("success", "Successfully saved");
           this.setState({
             wordsetName: this.state.wordset.name,
           });
           this.props.history.push(`/wordsets/${this.state.wordset.name}`);
         } else {
-          Setting.showMessage("error", `failed to save: server side failure`);
-          this.updateWordsetField('name', this.state.wordsetName);
+          Setting.showMessage("error", "failed to save: server side failure");
+          this.updateWordsetField("name", this.state.wordsetName);
         }
       })
       .catch(error => {

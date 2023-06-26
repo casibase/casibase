@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Popconfirm, Table} from 'antd';
+import {Button, Popconfirm, Table} from "antd";
 import {DeleteOutlined, DownloadOutlined, FileDoneOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -38,7 +38,7 @@ class FileTable extends React.Component {
   }
 
   addRow(table) {
-    let row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
+    const row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
     if (table === undefined) {
       table = [];
     }
@@ -66,7 +66,7 @@ class FileTable extends React.Component {
     FileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
         if (res === true) {
-          Setting.showMessage("success", `File deleted successfully`);
+          Setting.showMessage("success", "File deleted successfully");
           this.props.onRefresh();
         } else {
           Setting.showMessage("error", `File failed to delete: ${res}`);
@@ -81,19 +81,19 @@ class FileTable extends React.Component {
     const columns = [
       {
         title: i18next.t("vectorset:File name"),
-        dataIndex: 'title',
-        key: 'title',
+        dataIndex: "title",
+        key: "title",
         // width: '200px',
         sorter: (a, b) => a.title.localeCompare(b.title),
         render: (text, record, index) => {
           return text;
-        }
+        },
       },
       {
         title: i18next.t("store:Category"),
-        dataIndex: 'isLeaf',
-        key: 'isLeaf',
-        width: '110px',
+        dataIndex: "isLeaf",
+        key: "isLeaf",
+        width: "110px",
         sorter: (a, b) => a.isLeaf - b.isLeaf,
         filters: Setting.getDistinctArray(table.map(record => Setting.getFileCategory(record)))
           .map(fileType => {
@@ -102,13 +102,13 @@ class FileTable extends React.Component {
         onFilter: (value, record) => Setting.getFileCategory(record) === value,
         render: (text, record, index) => {
           return Setting.getFileCategory(record);
-        }
+        },
       },
       {
         title: i18next.t("store:File type"),
-        dataIndex: 'fileType',
-        key: 'fileType',
-        width: '140px',
+        dataIndex: "fileType",
+        key: "fileType",
+        width: "140px",
         sorter: (a, b) => Setting.getExtFromPath(a.title).localeCompare(Setting.getExtFromPath(b.title)),
         filters: Setting.getDistinctArray(table.map(record => Setting.getExtFromFile(record)))
           .filter(fileType => fileType !== "")
@@ -118,13 +118,13 @@ class FileTable extends React.Component {
         onFilter: (value, record) => Setting.getExtFromFile(record) === value,
         render: (text, record, index) => {
           return Setting.getExtFromFile(record);
-        }
+        },
       },
       {
         title: i18next.t("vectorset:File size"),
-        dataIndex: 'size',
-        key: 'size',
-        width: '120px',
+        dataIndex: "size",
+        key: "size",
+        width: "120px",
         sorter: (a, b) => a.size - b.size,
         render: (text, record, index) => {
           if (!record.isLeaf) {
@@ -132,38 +132,38 @@ class FileTable extends React.Component {
           }
 
           return Setting.getFriendlyFileSize(text);
-        }
+        },
       },
       {
         title: i18next.t("general:Created time"),
-        dataIndex: 'createdTime',
-        key: 'createdTime',
-        width: '160px',
+        dataIndex: "createdTime",
+        key: "createdTime",
+        width: "160px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
-        }
+        },
       },
       {
         title: i18next.t("store:Collected time"),
-        dataIndex: 'collectedTime',
-        key: 'collectedTime',
-        width: '160px',
+        dataIndex: "collectedTime",
+        key: "collectedTime",
+        width: "160px",
         sorter: (a, b) => a.collectedTime.localeCompare(b.collectedTime),
         render: (text, record, index) => {
           const collectedTime = Setting.getCollectedTime(record.title);
           return Setting.getFormattedDate(collectedTime);
-        }
+        },
       },
       {
         title: i18next.t("store:Subject"),
-        dataIndex: 'subject',
-        key: 'subject',
-        width: '90px',
+        dataIndex: "subject",
+        key: "subject",
+        width: "90px",
         sorter: (a, b) => a.subject.localeCompare(b.subject),
         render: (text, record, index) => {
           return Setting.getSubject(record.title);
-        }
+        },
       },
       // {
       //   title: i18next.t("store:Path"),
@@ -206,14 +206,14 @@ class FileTable extends React.Component {
                 <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small">{i18next.t("store:Delete")}</Button>
               </Popconfirm>
               <Button icon={<FileDoneOutlined />} size="small" onClick={() => {
-                let fileKeys = [];
+                const fileKeys = [];
                 files.forEach((file, index) => {
                   fileKeys.push(file.key);
                 });
                 PermissionUtil.addPermission(this.props.account, this.props.store, null, fileKeys);
               }}>{i18next.t("store:Add Permission")}</Button>
             </div>
-          )
+          );
         }
       }} />
     );
@@ -226,7 +226,7 @@ class FileTable extends React.Component {
           this.renderTable(this.props.file.children)
         }
       </div>
-    )
+    );
   }
 }
 

@@ -1,6 +1,6 @@
 import React from "react";
-import { Button, Result, Spin } from "antd";
-import { withRouter } from "react-router-dom";
+import {Button, Result, Spin} from "antd";
+import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
 
 class AuthCallback extends React.Component {
@@ -27,7 +27,7 @@ class AuthCallback extends React.Component {
   login() {
     Setting.signin().then((res) => {
       if (res.status === "ok") {
-        Setting.showMessage("success", `Logged in successfully`)
+        Setting.showMessage("success", "Logged in successfully");
 
         const link = this.getFromLink();
         Setting.goToLink(link);
@@ -41,15 +41,15 @@ class AuthCallback extends React.Component {
 
   render() {
     return (
-      <div style={{ textAlign: "center" }}>
+      <div style={{textAlign: "center"}}>
         {this.state.msg === null ? (
           <Spin
             size="large"
             tip="Signing in..."
-            style={{ paddingTop: "10%" }}
+            style={{paddingTop: "10%"}}
           />
         ) : (
-          <div style={{ display: "inline" }}>
+          <div style={{display: "inline"}}>
             <Result
               status="error"
               title="Login Error"

@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Card, Col, Input, Row} from 'antd';
+import {Button, Card, Col, Input, Row} from "antd";
 import {LinkOutlined} from "@ant-design/icons";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
@@ -40,7 +40,7 @@ class StoreEditPage extends React.Component {
   updateStoreField(key, value) {
     value = this.parseStoreField(key, value);
 
-    let store = this.state.store;
+    const store = this.state.store;
     store[key] = value;
     this.setState({
       store: store,
@@ -54,49 +54,49 @@ class StoreEditPage extends React.Component {
           {i18next.t("store:Edit Store")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button type="primary" onClick={this.submitStoreEdit.bind(this)}>{i18next.t("general:Save")}</Button>
         </div>
-      } style={{marginLeft: '5px'}} type="inner">
-        <Row style={{marginTop: '10px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+      } style={{marginLeft: "5px"}} type="inner">
+        <Row style={{marginTop: "10px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Name")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.store.name} onChange={e => {
-              this.updateStoreField('name', e.target.value);
+              this.updateStoreField("name", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.store.displayName} onChange={e => {
-              this.updateStoreField('displayName', e.target.value);
+              this.updateStoreField("displayName", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Bucket")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.store.bucket} onChange={e => {
-              this.updateStoreField('bucket', e.target.value);
+              this.updateStoreField("bucket", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Domain")}:
           </Col>
           <Col span={22} >
-            <Input prefix={<LinkOutlined/>} value={this.state.store.domain} onChange={e => {
-              this.updateStoreField('domain', e.target.value);
+            <Input prefix={<LinkOutlined />} value={this.state.store.domain} onChange={e => {
+              this.updateStoreField("domain", e.target.value);
             }} />
           </Col>
         </Row>
-        <Row style={{marginTop: '20px'}} >
-          <Col style={{marginTop: '5px'}} span={(Setting.isMobile()) ? 22 : 2}>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:File tree")}:
           </Col>
           <Col span={22} >
@@ -109,23 +109,23 @@ class StoreEditPage extends React.Component {
           </Col>
         </Row>
       </Card>
-    )
+    );
   }
 
   submitStoreEdit() {
-    let store = Setting.deepCopy(this.state.store);
+    const store = Setting.deepCopy(this.state.store);
     store.fileTree = undefined;
     StoreBackend.updateStore(this.state.store.owner, this.state.storeName, store)
       .then((res) => {
         if (res) {
-          Setting.showMessage("success", `Successfully saved`);
+          Setting.showMessage("success", "Successfully saved");
           this.setState({
             storeName: this.state.store.name,
           });
           this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
         } else {
-          Setting.showMessage("error", `failed to save: server side failure`);
-          this.updateStoreField('name', this.state.storeName);
+          Setting.showMessage("error", "failed to save: server side failure");
+          this.updateStoreField("name", this.state.storeName);
         }
       })
       .catch(error => {

@@ -12,13 +12,13 @@ class DataChart extends React.Component {
 
   componentWillMount() {
     fetch(this.props.url, {
-      method: 'GET',
+      method: "GET",
     }).then(res => res.text())
       .then((text) => {
-      if (this.props.filename.startsWith("Impedance_")) {
-        this.processImpedanceFile(text);
-      }
-    });
+        if (this.props.filename.startsWith("Impedance_")) {
+          this.processImpedanceFile(text);
+        }
+      });
   }
 
   getY(y) {
@@ -34,7 +34,7 @@ class DataChart extends React.Component {
     lines = lines.filter((line, index) => index % 20 === 0);
 
     let data = lines.map(line => {
-      let res = [];
+      const res = [];
       const tokens = line.split("  ");
       tokens.forEach((token, index) => {
         if (index !== 0) {
@@ -48,7 +48,7 @@ class DataChart extends React.Component {
     data = data.map(element => {
       element[0] = (new Date("0000-01-01 " + element[0]).getTime() - startTime) / 1000 / 60;
       return element;
-    })
+    });
 
     this.setState({
       data: data,
@@ -62,11 +62,11 @@ class DataChart extends React.Component {
 
     const option = {
       title: {
-        text: 'Impedance'
+        text: "Impedance",
       },
       tooltip: {
-        trigger: 'axis',
-        formatter: function (params) {
+        trigger: "axis",
+        formatter: function(params) {
           return JSON.stringify(params.value);
         },
         axisPointer: {
@@ -74,31 +74,31 @@ class DataChart extends React.Component {
         },
       },
       xAxis: {
-        type: 'value',
+        type: "value",
         splitLine: {
           show: false,
         },
       },
       yAxis: {
-        type: 'value',
-        boundaryGap: [0, '100%'],
+        type: "value",
+        boundaryGap: [0, "100%"],
         splitLine: {
           show: false,
         },
       },
       series: [
         {
-          name: 'Fake Data',
-          type: 'line',
+          name: "Fake Data",
+          type: "line",
           showSymbol: false,
           data: this.state.data,
         },
-      ]
+      ],
     };
 
     return (
-      <ReactEcharts style={{width: "100%", height: this.props.height, backgroundColor: "white"}} option={option} notMerge={true}/>
-    )
+      <ReactEcharts style={{width: "100%", height: this.props.height, backgroundColor: "white"}} option={option} notMerge={true} />
+    );
   }
 }
 

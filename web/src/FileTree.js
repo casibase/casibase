@@ -1,11 +1,11 @@
 import React from "react";
-import {Button, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from 'antd';
-import {CloudUploadOutlined, createFromIconfontCN, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone} from "@ant-design/icons";
+import {Button, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
+import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
-import DocViewer, { DocViewerRenderers } from "@cyntler/react-doc-viewer";
-import FileViewer from 'react-file-viewer';
+import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
+import FileViewer from "react-file-viewer";
 import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
@@ -17,11 +17,11 @@ import "codemirror/lib/codemirror.css";
 // require("codemirror/theme/material-darker.css");
 // require("codemirror/mode/javascript/javascript");
 
-const { Search } = Input;
-const { Option } = Select;
+const {Search} = Input;
+const {Option} = Select;
 
 const IconFont = createFromIconfontCN({
-  scriptUrl: 'https://cdn.open-ct.com/icon/iconfont.js',
+  scriptUrl: "https://cdn.open-ct.com/icon/iconfont.js",
 });
 
 class FileTree extends React.Component {
@@ -29,7 +29,7 @@ class FileTree extends React.Component {
     super(props);
     this.state = {
       classes: props,
-      expandedKeys: ['0-0', '0-0-0', '0-0-0-0'],
+      expandedKeys: ["0-0", "0-0-0", "0-0-0-0"],
       checkedKeys: [],
       checkedFiles: [],
       selectedKeys: [],
@@ -55,7 +55,7 @@ class FileTree extends React.Component {
   }
 
   getPermissionMap(permissions) {
-    let permissionMap = {};
+    const permissionMap = {};
     permissions.forEach((permission, index) => {
       if (permissionMap[permission.resources[0]] === undefined) {
         permissionMap[permission.resources[0]] = [];
@@ -98,14 +98,14 @@ class FileTree extends React.Component {
           {" " + i18next.t("store:Please choose the type of your data")}
         </div>
       }
-             visible={this.state.isUploadFileModalVisible}
-             onCancel={() => {
-               this.setState({
-                 isUploadFileModalVisible: false,
-               });
-             }}
-             width={"360px"}
-             footer={null} >
+      visible={this.state.isUploadFileModalVisible}
+      onCancel={() => {
+        this.setState({
+          isUploadFileModalVisible: false,
+        });
+      }}
+      width={"360px"}
+      footer={null} >
         <Radio.Group buttonStyle="solid" onChange={e => {
           this.setState({
             uploadFileType: e.target.value,
@@ -116,7 +116,7 @@ class FileTree extends React.Component {
           console.log(this.state.file);
           console.log(this.state.info);
 
-          let newInfo = Setting.deepCopy(this.state.info);
+          const newInfo = Setting.deepCopy(this.state.info);
           if (uploadFileType !== "Other") {
             for (let i = 0; i < newInfo.fileList.length; i++) {
               const filename = newInfo.fileList[i].name;
@@ -129,11 +129,11 @@ class FileTree extends React.Component {
         }} value={this.state.uploadFileType}>
           <Radio.Button value={"ECG"}>ECG</Radio.Button>
           <Radio.Button value={"Impedance"}>Impedance</Radio.Button>
-          {/*<Radio.Button value={"EEG"}>EEG</Radio.Button>*/}
+          {/* <Radio.Button value={"EEG"}>EEG</Radio.Button>*/}
           <Radio.Button value={"Other"}>{i18next.t("store:Other")}</Radio.Button>
         </Radio.Group>
       </Modal>
-    )
+    );
   }
 
   uploadFile(file, info) {
@@ -152,19 +152,19 @@ class FileTree extends React.Component {
 
     Promise.all(promises)
       .then((values) => {
-        Setting.showMessage("success", `File uploaded successfully`);
+        Setting.showMessage("success", "File uploaded successfully");
         this.props.onRefresh();
       })
       .catch(error => {
         Setting.showMessage("error", `File failed to upload: ${error}`);
       });
-  };
+  }
 
   addFile(file, newFolder) {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
     FileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
-        Setting.showMessage("success", `File added successfully`);
+        Setting.showMessage("success", "File added successfully");
         this.props.onRefresh();
       })
       .catch(error => {
@@ -177,7 +177,7 @@ class FileTree extends React.Component {
     FileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
         if (res === true) {
-          Setting.showMessage("success", `File deleted successfully`);
+          Setting.showMessage("success", "File deleted successfully");
           this.props.onRefresh();
         } else {
           Setting.showMessage("error", `File failed to delete: ${res}`);
@@ -199,9 +199,9 @@ class FileTree extends React.Component {
     return (
       <span key={permission.name}
         onClick={(e) => {
-        Setting.openLink(Setting.getMyProfileUrl(this.props.account).replace("/account", `/permissions/${permission.owner}/${permission.name}`));
-        e.stopPropagation();
-      }}
+          Setting.openLink(Setting.getMyProfileUrl(this.props.account).replace("/account", `/permissions/${permission.owner}/${permission.name}`));
+          e.stopPropagation();
+        }}
       >
         {
           permission.users.map(user => {
@@ -212,11 +212,11 @@ class FileTree extends React.Component {
                   Setting.getTag(username, permission.actions[0], permission.state)
                 }
               </span>
-            )
+            );
           })
         }
       </span>
-    )
+    );
   }
 
   renderPermissions(permissions, isReadable) {
@@ -263,11 +263,11 @@ class FileTree extends React.Component {
   }
 
   isFileReadable(file) {
-    return this.isFileOk(file, "Read")
+    return this.isFileOk(file, "Read");
   }
 
   isFileWritable(file) {
-    return this.isFileOk(file, "Write")
+    return this.isFileOk(file, "Write");
   }
 
   isFileAdmin(file) {
@@ -275,7 +275,7 @@ class FileTree extends React.Component {
       return true;
     }
 
-    return this.isFileOk(file, "Admin")
+    return this.isFileOk(file, "Admin");
   }
 
   renderSearch() {
@@ -287,7 +287,7 @@ class FileTree extends React.Component {
           selectedFile: null,
         });
       }} />
-    )
+    );
   }
 
   getCacheApp(filename) {
@@ -317,7 +317,7 @@ class FileTree extends React.Component {
                 loading: true,
               });
 
-              fetch(url, {method: 'GET'})
+              fetch(url, {method: "GET"})
                 .then(res => res.text())
                 .then(res => {
                   this.setState({
@@ -327,7 +327,7 @@ class FileTree extends React.Component {
                 });
             }
           }
-        }
+        };
 
         const key = info.node.key;
         const filename = info.node.title;
@@ -418,31 +418,31 @@ class FileTree extends React.Component {
                   {
                     !isWritable ? null : (
                       <React.Fragment>
-                        {/*<Tooltip title={i18next.t("store:Rename")}>*/}
+                        {/* <Tooltip title={i18next.t("store:Rename")}>*/}
                         {/*  <Button style={{marginRight: "5px"}} icon={<EditOutlined />} size="small" onClick={(e) => {*/}
                         {/*    Setting.showMessage("error", "Rename");*/}
                         {/*    e.stopPropagation();*/}
                         {/*  }} />*/}
-                        {/*</Tooltip>*/}
-                        {/*<Tooltip title={i18next.t("store:Move")}>*/}
+                        {/* </Tooltip>*/}
+                        {/* <Tooltip title={i18next.t("store:Move")}>*/}
                         {/*  <Button style={{marginRight: "5px"}} icon={<RadiusSettingOutlined />} size="small" onClick={(e) => {*/}
                         {/*    Setting.showMessage("error", "Move");*/}
                         {/*    e.stopPropagation();*/}
                         {/*  }} />*/}
-                        {/*</Tooltip>*/}
+                        {/* </Tooltip>*/}
                         <Tooltip title={i18next.t("store:Delete")}>
-                        <span onClick={(e) => e.stopPropagation()}>
-                          <Popconfirm
-                            title={`Sure to delete file: ${file.title} ?`}
-                            onConfirm={(e) => {
-                              this.deleteFile(file, true);
-                            }}
-                            okText="OK"
-                            cancelText="Cancel"
-                          >
-                            <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
-                          </Popconfirm>
-                        </span>
+                          <span onClick={(e) => e.stopPropagation()}>
+                            <Popconfirm
+                              title={`Sure to delete file: ${file.title} ?`}
+                              onConfirm={(e) => {
+                                this.deleteFile(file, true);
+                              }}
+                              okText="OK"
+                              cancelText="Cancel"
+                            >
+                              <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
+                            </Popconfirm>
+                          </span>
                         </Tooltip>
                       </React.Fragment>
                     )
@@ -465,7 +465,7 @@ class FileTree extends React.Component {
                   (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
-            )
+            );
           } else {
             return (
               <Tooltip color={"rgb(255,255,255,0.8)"} placement="right" title={
@@ -515,8 +515,8 @@ class FileTree extends React.Component {
                               }
                             }}
                             >
-                            <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
-                          </Upload>
+                              <Button style={{marginRight: "5px"}} icon={<CloudUploadOutlined />} size="small" />
+                            </Upload>
                           </span>
                         </Tooltip>
                         {
@@ -558,35 +558,35 @@ class FileTree extends React.Component {
                   (this.state.permissionMap === null) ? null : this.renderPermissions(this.state.permissionMap[file.key], isReadable)
                 }
               </Tooltip>
-            )
+            );
           }
         }}
         icon={(file) => {
           if (file.isLeaf) {
             const ext = Setting.getExtFromPath(file.data.key);
             if (ext === "pdf") {
-              return <IconFont type='icon-testpdf' />
+              return <IconFont type="icon-testpdf" />;
             } else if (ext === "doc" || ext === "docx") {
-              return <IconFont type='icon-testdocx' />
+              return <IconFont type="icon-testdocx" />;
             } else if (ext === "ppt" || ext === "pptx") {
-              return <IconFont type='icon-testpptx' />
+              return <IconFont type="icon-testpptx" />;
             } else if (ext === "xls" || ext === "xlsx") {
-              return <IconFont type='icon-testxlsx' />
+              return <IconFont type="icon-testxlsx" />;
             } else if (ext === "txt") {
-              return <IconFont type='icon-testdocument' />
+              return <IconFont type="icon-testdocument" />;
             } else if (ext === "png" || ext === "bmp" || ext === "jpg" || ext === "jpeg" || ext === "svg") {
-              return <IconFont type='icon-testPicture' />
+              return <IconFont type="icon-testPicture" />;
             } else if (ext === "html") {
-              return <IconFont type='icon-testhtml' />
+              return <IconFont type="icon-testhtml" />;
             } else if (ext === "js") {
-              return <IconFont type='icon-testjs' />
+              return <IconFont type="icon-testjs" />;
             } else if (ext === "css") {
-              return <IconFont type='icon-testcss' />
+              return <IconFont type="icon-testcss" />;
             } else {
-              return <IconFont type='icon-testfile-unknown' />
+              return <IconFont type="icon-testfile-unknown" />;
             }
           } else {
-            return <IconFont type='icon-testfolder' />
+            return <IconFont type="icon-testfolder" />;
           }
         }}
       />
@@ -606,7 +606,7 @@ class FileTree extends React.Component {
       const outerFile = {children: this.state.checkedFiles};
       return (
         <FileTable account={this.props.account} store={this.props.store} onRefresh={() => this.props.onRefresh()} file={outerFile} isCheckMode={true} />
-      )
+      );
     }
 
     if (this.state.selectedKeys.length === 0) {
@@ -624,7 +624,7 @@ class FileTree extends React.Component {
     if (!file.isLeaf) {
       return (
         <FileTable account={this.props.account} store={this.props.store} onRefresh={() => this.props.onRefresh()} file={file} isCheckMode={false} />
-      )
+      );
     }
 
     if (!filename.includes(".")) {
@@ -643,7 +643,7 @@ class FileTree extends React.Component {
       return (
         <iframe key={path} title={app} src={`${Conf.AppUrl}${app}`} width={"100%"} height={"100%"} />
         // <DataChart filename={filename} url={url} height={this.getEditorHeightCss()} />
-      )
+      );
     } else if (this.isExtForDocViewer(ext)) {
       // https://github.com/Alcumus/react-doc-viewer
       return (
@@ -665,8 +665,8 @@ class FileTree extends React.Component {
             header: {
               disableHeader: true,
               disableFileName: true,
-              retainURLParams: false
-            }
+              retainURLParams: false,
+            },
           }}
         />
       );
@@ -718,7 +718,7 @@ class FileTree extends React.Component {
   }
 
   setPropertyValue(file, propertyName, value) {
-    let store = this.props.store;
+    const store = this.props.store;
     if (store.propertiesMap[file.key] === undefined) {
       store.propertiesMap[file.key] = {};
     }
@@ -728,7 +728,7 @@ class FileTree extends React.Component {
 
   getMomentTime(t) {
     if (t === "") {
-      return ""
+      return "";
     } else {
       return new moment(t);
     }
@@ -803,7 +803,7 @@ class FileTree extends React.Component {
           </Descriptions.Item>
         </Descriptions>
       </div>
-    )
+    );
   }
 
   getEditorHeightCss() {
@@ -841,7 +841,7 @@ class FileTree extends React.Component {
           this.renderUploadFileModal()
         }
       </div>
-    )
+    );
   }
 }
 
