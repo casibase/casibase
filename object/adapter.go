@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 
 	"github.com/astaxie/beego"
@@ -43,6 +44,18 @@ func InitConfig() {
 }
 
 func InitAdapter() {
+	configList := []string{"driverName", "dataSourceName", "dbName"}
+
+	for _, config := range configList {
+		environmentValue := os.Getenv(config)
+		if environmentValue != "" {
+			err := beego.AppConfig.Set(config, environmentValue)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
+
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
 	adapter.createTable()
 
