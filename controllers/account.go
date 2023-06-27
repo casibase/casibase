@@ -18,7 +18,7 @@ import (
 	_ "embed"
 	"strings"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -32,11 +32,11 @@ func init() {
 }
 
 func InitAuthConfig() {
-	casdoorEndpoint := strings.TrimRight(beego.AppConfig.String("casdoorEndpoint"), "/")
-	clientId := beego.AppConfig.String("clientId")
-	clientSecret := beego.AppConfig.String("clientSecret")
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
-	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	casdoorEndpoint := strings.TrimRight(conf.GetConfigString("casdoorEndpoint"), "/")
+	clientId := conf.GetConfigString("clientId")
+	clientSecret := conf.GetConfigString("clientSecret")
+	casdoorOrganization := conf.GetConfigString("casdoorOrganization")
+	casdoorApplication := conf.GetConfigString("casdoorApplication")
 
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
 }

@@ -19,6 +19,7 @@ import (
 	"runtime"
 
 	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -43,11 +44,11 @@ func InitConfig() {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
+	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), conf.GetConfigString("dbName"))
 	adapter.createTable()
 
-	CasdoorOrganization = beego.AppConfig.String("casdoorOrganization")
-	CasdoorApplication = beego.AppConfig.String("casdoorApplication")
+	CasdoorOrganization = conf.GetConfigString("casdoorOrganization")
+	CasdoorApplication = conf.GetConfigString("casdoorApplication")
 }
 
 // Adapter represents the MySQL adapter for policy storage.

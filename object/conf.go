@@ -14,7 +14,7 @@
 
 package object
 
-import "github.com/astaxie/beego"
+import "github.com/casbin/casnode/conf"
 
 var (
 	DefaultPageNum             = 20
@@ -45,8 +45,8 @@ var (
 	DefaultTopTopicTime        = 10   // minutes
 	OnlineMemberExpiedTime     = 10   // minutes
 	DefaultUploadFileQuota     = 50
-	Domain                     = beego.AppConfig.String("domain") // domain
-	AutoSyncPeriodSecond       = -1                               // auto sync is disabled if < 30
+	Domain                     = conf.GetConfigString("domain") // domain
+	AutoSyncPeriodSecond       = -1                             // auto sync is disabled if < 30
 
 	DefaultCronJobs = []*CronJob{
 		{

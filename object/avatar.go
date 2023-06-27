@@ -17,10 +17,10 @@ package object
 import (
 	"fmt"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 )
 
-var CasdoorStorageEndpoint = beego.AppConfig.String("casdoorStorageEndpoint")
+var CasdoorStorageEndpoint = conf.GetConfigString("casdoorStorageEndpoint")
 
 func getUserAvatar(username string) string {
 	return fmt.Sprintf("%scasdoor/avatar/%s/%s.png", CasdoorStorageEndpoint, CasdoorOrganization, username)

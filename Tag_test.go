@@ -17,7 +17,7 @@ package main
 import (
 	"testing"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	"github.com/casbin/casnode/object"
 	"github.com/casbin/casnode/service"
 )
@@ -26,7 +26,7 @@ var adapter *object.Adapter
 
 func TestTopicTag(t *testing.T) {
 	topics := []*object.Topic{}
-	adapter = object.NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("dbName"))
+	adapter = object.NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigString("dataSourceName"), conf.GetConfigString("dbName"))
 	err := adapter.Engine.Table("topic").Find(&topics)
 	if err != nil {
 		panic(err)

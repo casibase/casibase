@@ -8,9 +8,9 @@ import (
 	"sync"
 	"time"
 
-	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/logs"
+	"github.com/casbin/casnode/conf"
 	"github.com/chromedp/chromedp"
 )
 
@@ -49,7 +49,7 @@ func NewSsrPool(cap int) *SsrPool {
 }
 
 func render(chromeCtx ctx.Context, url string) (string, error) {
-	cacheExpireSeconds, err := beego.AppConfig.Int64("cacheExpireSeconds")
+	cacheExpireSeconds, err := conf.GetConfigInt64("cacheExpireSeconds")
 	if err != nil {
 		return "", err
 	}

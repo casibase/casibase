@@ -17,7 +17,7 @@ package discuzx
 import (
 	"runtime"
 
-	"github.com/astaxie/beego"
+	"github.com/casbin/casnode/conf"
 	_ "github.com/go-sql-driver/mysql"
 	"xorm.io/xorm"
 )
@@ -25,7 +25,7 @@ import (
 var adapter *Adapter
 
 func InitAdapter() {
-	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), dbName)
+	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigString("dataSourceName"), dbName)
 }
 
 // Adapter represents the MySQL adapter for policy storage.
