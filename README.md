@@ -62,7 +62,7 @@ https://casnode.org
 
 ## Contribute
 
-For casnode, if you have any questions, you can give Issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
+Refer to Casdoor's contributor guidance: https://casdoor.org/docs/contributing
 
 ## License
 
