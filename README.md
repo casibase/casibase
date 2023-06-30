@@ -41,11 +41,15 @@
 
 ## Online demo
 
-Deployed site: https://forum.casbin.com/
+https://forum.casbin.com
 
 ## Documentation
 
-https://casnode.org/
+https://casnode.org
+
+## Community Support
+
+- Discord: https://discord.gg/d8dsAWgn43
 
 ## Install
 
@@ -54,14 +58,7 @@ https://casnode.org/
 
 ## Casnode Public API
 
-- Swagger: https://forum.casbin.com/swagger/
-
-## How to contact?
-
-- Gitter: https://gitter.im/casbin/casnode
-- Forum: https://forum.casbin.com
-- Discord: https://discord.gg/4eZa7dMurk
-- Contact: https://tawk.to/chat/623352fea34c2456412b8c51/1fuc7od6e
+- Swagger: https://forum.casbin.com/swagger
 
 ## Contribute
 
@@ -70,4 +67,3 @@ For casnode, if you have any questions, you can give Issues, or you can also dir
 ## License
 
 [Apache-2.0](https://github.com/casbin/casnode/blob/master/LICENSE)
-
