@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">📦⚡️ Casnode</h1>
-<h3 align="center">An open-source forum (BBS) software developed by Go and React.</h3>
+<h3 align="center">Open-Source Forum and Social Platform Powered by ChatGPT, Alternative to StackOverflow & Flarum</h3>
 <p align="center">
   <a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
@@ -39,72 +39,31 @@
   </a>
 </p>
 
-## Online demo
+## Online Demo
 
-Deployed site: https://forum.casbin.com/
+https://forum.casbin.com
 
-## Architecture
+## Documentation
 
-Casnode contains 2 parts:
+https://casnode.org
 
-Name | Description | Language | Source code
-----|------|----|----
-Frontend | Web frontend UI for Casnode | Javascript + React | https://github.com/casbin/casnode/tree/master/web 
-Backend | RESTful API backend for Casnode | Golang + Beego + MySQL | https://github.com/casbin/casnode 
+## Community Support
 
-## Installation
-Casnode uses Casdoor to manage members. So you need to create an organization and an application for Casnode in a Casdoor instance.
-### Necessary configuration 
+- Discord: https://discord.gg/d8dsAWgn43
 
-#### Get the code
+## Install
 
-```shell
-go get github.com/casbin/casnode
-go get github.com/casdoor/casdoor
-```
-or
-```shell
-git clone https://github.com/casbin/casnode
-git clone https://github.com/casdoor/casdoor
-```
+- By source code: https://casnode.org/docs/installation
+- By Docker: https://casnode.org/docs/docker
 
-#### Setup database
+## Casnode Public API
 
-Casnode will store its users, nodes and topics informations in a MySQL database named: `casnode`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casnode/blob/master/conf/app.conf
+- Swagger: https://forum.casbin.com/swagger
 
-```ini
-dataSourceName = root:123@tcp(localhost:3306)/
-```
+## How to Contribute?
 
-Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be used.
+Refer to Casdoor's contributing guide: https://casdoor.org/docs/contributing
 
-#### Run casnode
-  - Configure and run casnode by yourself. If you want to learn more about casnode, you see [casnode installation](https://casnode.org/docs/installation).
-  - Install casnode using docker. you see [installation by docker](https://casnode.org/docs/Docker).
-  - Install casnode using BTpanel. you see [installation by BTpanel](https://casnode.org/docs/BTpanel).
-  - Open browser:
+## License
 
-    http://localhost:3000/
-
-### Optional configuration 
-
-#### Setup your forum to enable some third-party login platform
-
-  Casnode uses Casdoor to manage members. If you want to log in with oauth, you should see [casdoor oauth configuration](https://casdoor.org/docs/provider/OAuth).
-
-#### OSS, Mail, and SMS services
-
-  Casnode uses Casdoor to upload files to cloud storage, send Emails and send SMSs. See Casdoor for more details.
-
-#### Github corner
-
-We added a Github icon in the upper right corner, linking to your Github repository address.
-You could set `ShowGithubCorner` to hidden it.
-
-Configuration:
-
-```javascript
-export const ShowGithubCorner = true
-
-export const GithubRepo = "https://github.com/casbin/casnode" //your github repository
-```
+[Apache-2.0](https://github.com/casbin/casnode/blob/master/LICENSE)
