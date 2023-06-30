@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">📦⚡️ Casnode</h1>
-<h3 align="center"Open-Source Forum and Social Platform Powered by ChatGPT, Alternative to StackOverflow & Flarum</h3>
+<h3 align="center">Open-Source Forum and Social Platform Powered by ChatGPT, Alternative to StackOverflow & Flarum</h3>
 <p align="center">
   <a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
