@@ -6,7 +6,7 @@ require (
 	github.com/adamzy/cedar-go v0.0.0-20170805034717-80a9c64b256d // indirect
 	github.com/astaxie/beego v1.12.3
 	github.com/casbin/google-groups-crawler v0.1.3
-	github.com/casdoor/casdoor-go-sdk v0.10.0
+	github.com/casdoor/casdoor-go-sdk v0.24.0
 	github.com/chromedp/chromedp v0.8.4
 	github.com/elazarl/go-bindata-assetfs v1.0.1 // indirect
 	github.com/go-sql-driver/mysql v1.5.0
