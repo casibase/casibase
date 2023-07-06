@@ -34,6 +34,9 @@
   <a href="https://github.com/casbin/casnode/network">
     <img alt="GitHub forks" src="https://img.shields.io/github/forks/casbin/casnode?style=flat-square">
   </a>
+  <a href="https://discord.gg/d8dsAWgn43">
+    <img alt="Discord" src="https://img.shields.io/discord/1022748306096537660?style=flat-square&logo=discord&label=discord&color=5865F2">
+  </a>
   <a href="https://crowdin.com/project/casnode">
     <img alt="Crowdin" src="https://badges.crowdin.net/casnode/localized.svg">
   </a>
