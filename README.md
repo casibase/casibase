@@ -43,13 +43,12 @@
   <a href="https://crowdin.com/project/casibase-site">
     <img alt="Crowdin" src="https://badges.crowdin.net/casdoor-site/localized.svg">
   </a>
-  <a href="https://gitter.im/casbin/casibase">
-    <img alt="Gitter" src="https://badges.gitter.im/casbin/casdoor.svg">
+  <a href="https://discord.gg/devUNrWXrh">
+    <img alt="Discord" src="https://img.shields.io/discord/1022748306096537660?logo=discord&label=discord&color=5865F2">
   </a>
 <!-- waiting for changing -->
 <!-- <a href="https://goreportcard.com/report/github.com/casbin/casibase"> -->
 <!-- <a href="https://crowdin.com/project/casibase-site"> -->
-<!-- <a href="https://gitter.im/casbin/casibase"> -->
 </p>
 
 ## Architecture
