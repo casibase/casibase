@@ -73,9 +73,9 @@ class VideoListPage extends React.Component {
 
   uploadFile(info) {
     const {status, response: res} = info.file;
-    if (status !== "uploading") {
-      console.log(info.file, info.fileList);
-    }
+    // if (status !== "uploading") {
+    //   console.log(info.file, info.fileList);
+    // }
     if (status === "done") {
       if (res.status === "ok") {
         Setting.showMessage("success", "上传视频成功");

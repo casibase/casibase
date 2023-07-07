@@ -113,8 +113,8 @@ class FileTree extends React.Component {
           });
 
           const uploadFileType = e.target.value;
-          console.log(this.state.file);
-          console.log(this.state.info);
+          // console.log(this.state.file);
+          // console.log(this.state.info);
 
           const newInfo = Setting.deepCopy(this.state.info);
           if (uploadFileType !== "Other") {

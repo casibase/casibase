@@ -10,7 +10,7 @@ class DataChart extends React.Component {
     };
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     fetch(this.props.url, {
       method: "GET",
     }).then(res => res.text())
