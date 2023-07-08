@@ -114,7 +114,13 @@ func (video *Video) GetId() string {
 	return fmt.Sprintf("%s/%s", video.Owner, video.Name)
 }
 
-func (video *Video) Populate() {
+func (video *Video) Populate() error {
 	store, _ := getStore("admin", "default")
-	video.DataUrls = store.GetVideoData()
+	dataUrls, err := store.GetVideoData()
+	if err != nil {
+		return err
+	}
+
+	video.DataUrls = dataUrls
+	return nil
 }

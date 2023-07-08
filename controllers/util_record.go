@@ -37,7 +37,12 @@ func addRecord(c *ApiController, userName string, requestUri string) {
 		record.RequestUri = requestUri
 	}
 
-	util.SafeGoroutine(func() { casdoorsdk.AddRecord(record) })
+	util.SafeGoroutine(func() {
+		_, err := casdoorsdk.AddRecord(record)
+		if err != nil {
+			panic(err)
+		}
+	})
 }
 
 func addRecordForFile(c *ApiController, userName string, action string, storeId string, key string, filename string, isLeaf bool) {

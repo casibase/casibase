@@ -66,8 +66,11 @@ func isObjectLeaf(object *oss.ObjectProperties) bool {
 	return isLeaf
 }
 
-func (store *Store) Populate() {
-	objects := storage.ListObjects(store.Bucket, "")
+func (store *Store) Populate() error {
+	objects, err := storage.ListObjects(store.Bucket, "")
+	if err != nil {
+		return err
+	}
 
 	if store.FileTree == nil {
 		store.FileTree = &File{
@@ -102,10 +105,15 @@ func (store *Store) Populate() {
 
 		//fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}
+
+	return nil
 }
 
-func (store *Store) GetVideoData() []string {
-	objects := storage.ListObjects(store.Bucket, "2023/视频附件")
+func (store *Store) GetVideoData() ([]string, error) {
+	objects, err := storage.ListObjects(store.Bucket, "2023/视频附件")
+	if err != nil {
+		return nil, err
+	}
 
 	res := []string{}
 	for _, object := range objects {
@@ -117,5 +125,5 @@ func (store *Store) GetVideoData() []string {
 		res = append(res, url)
 	}
 
-	return res
+	return res, nil
 }

@@ -38,7 +38,12 @@ func (c *ApiController) GetVideo() {
 	id := c.Input().Get("id")
 
 	video, err := object.GetVideo(id)
-	video.Populate()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	err = video.Populate()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -161,7 +166,12 @@ func (c *ApiController) UploadVideo() {
 			Labels:      []*object.Label{},
 			DataUrls:    []string{},
 		}
-		object.AddVideo(video)
+		_, err = object.AddVideo(video)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
 		c.ResponseOk(fileId)
 	} else {
 		c.ResponseError("videoId is empty")

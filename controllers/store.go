@@ -41,7 +41,12 @@ func (c *ApiController) GetStore() {
 		return
 	}
 
-	store.Populate()
+	err = store.Populate()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	c.ResponseOk(store)
 }
 

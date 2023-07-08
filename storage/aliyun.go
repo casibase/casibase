@@ -7,7 +7,7 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func getBucket(bucketName string) *oss.Bucket {
+func getBucket(bucketName string) (*oss.Bucket, error) {
 	client, err := oss.New(endpoint, clientId, clientSecret)
 	if err != nil {
 		panic(err)
@@ -15,28 +15,29 @@ func getBucket(bucketName string) *oss.Bucket {
 
 	bucket, err := client.Bucket(bucketName)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return bucket
+	return bucket, nil
 }
 
-func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
-	res := []oss.ObjectProperties{}
-
+func ListObjects(bucketName string, prefix string) ([]oss.ObjectProperties, error) {
 	if bucketName == "" {
-		return res
+		return nil, fmt.Errorf("bucket name is empty")
 	}
 
-	bucket := getBucket(bucketName)
+	bucket, err := getBucket(bucketName)
+	if err != nil {
+		return nil, err
+	}
 
+	res := []oss.ObjectProperties{}
 	marker := oss.Marker("")
 	i := 0
 	for {
 		resp, err := bucket.ListObjects(oss.Prefix(prefix), oss.MaxKeys(1000), marker)
 		if err != nil {
-			fmt.Println(err.Error())
-			return res
+			return nil, err
 		}
 
 		marker = oss.Marker(resp.NextMarker)
@@ -52,23 +53,25 @@ func ListObjects(bucketName string, prefix string) []oss.ObjectProperties {
 		}
 	}
 
-	return res
+	return res, nil
 }
 
-func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) {
-	bucket := getBucket(bucketName)
-
-	err := bucket.PutObject(key, fileBuffer)
+func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
+	bucket, err := getBucket(bucketName)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	err = bucket.PutObject(key, fileBuffer)
+	return err
 }
 
-func DeleteObject(bucketName string, key string) {
-	bucket := getBucket(bucketName)
-
-	err := bucket.DeleteObject(key)
+func DeleteObject(bucketName string, key string) error {
+	bucket, err := getBucket(bucketName)
 	if err != nil {
-		panic(err)
+		return err
 	}
+
+	err = bucket.DeleteObject(key)
+	return err
 }

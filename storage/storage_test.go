@@ -3,5 +3,8 @@ package storage
 import "testing"
 
 func TestStorage(t *testing.T) {
-	ListObjects("casibase", "")
+	_, err := ListObjects("casibase", "")
+	if err != nil {
+		panic(err)
+	}
 }

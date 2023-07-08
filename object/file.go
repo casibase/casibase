@@ -33,15 +33,24 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 		if err != nil {
 			return false, nil, err
 		}
+
 		bs := fileBuffer.Bytes()
-		storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		err = storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		if err != nil {
+			return false, nil, err
+		}
+
 		return true, bs, nil
 	} else {
 		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		err = storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		if err != nil {
+			return false, nil, err
+		}
+
 		return true, bs, nil
 	}
 }
@@ -56,11 +65,21 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 	}
 
 	if isLeaf {
-		storage.DeleteObject(store.Bucket, key)
+		err = storage.DeleteObject(store.Bucket, key)
+		if err != nil {
+			return false, err
+		}
 	} else {
-		objects := storage.ListObjects(store.Bucket, key)
+		objects, err := storage.ListObjects(store.Bucket, key)
+		if err != nil {
+			return false, err
+		}
+
 		for _, object := range objects {
-			storage.DeleteObject(store.Bucket, object.Key)
+			err = storage.DeleteObject(store.Bucket, object.Key)
+			if err != nil {
+				return false, err
+			}
 		}
 	}
 	return true, nil
