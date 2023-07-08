@@ -2,6 +2,7 @@ import React from "react";
 import * as Conf from "./Conf";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import WordsetGraph from "./WordsetGraph";
+import * as Setting from "./Setting";
 
 class ClusteringPage extends React.Component {
   constructor(props) {
@@ -19,9 +20,11 @@ class ClusteringPage extends React.Component {
   getWordset() {
     WordsetBackend.getWordset(Conf.DefaultOwner, Conf.DefaultWordsetName)
       .then((wordset) => {
-        this.setState({
-          wordset: wordset,
-        });
+        if (wordset.status === "ok") {
+          this.setState({wordset: wordset.data});
+        } else {
+          Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+        }
       });
   }
 

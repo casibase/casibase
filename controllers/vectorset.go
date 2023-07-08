@@ -7,22 +7,37 @@ import (
 )
 
 func (c *ApiController) GetGlobalVectorsets() {
-	c.Data["json"] = object.GetGlobalVectorsets()
-	c.ServeJSON()
+	vectorsets, err := object.GetGlobalVectorsets()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(vectorsets)
 }
 
 func (c *ApiController) GetVectorsets() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = object.GetVectorsets(owner)
-	c.ServeJSON()
+	vectorsets, err := object.GetVectorsets(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(vectorsets)
 }
 
 func (c *ApiController) GetVectorset() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetVectorset(id)
-	c.ServeJSON()
+	vectorset, err := object.GetVectorset(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(vectorset)
 }
 
 func (c *ApiController) UpdateVectorset() {
@@ -31,31 +46,49 @@ func (c *ApiController) UpdateVectorset() {
 	var vectorset object.Vectorset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.UpdateVectorset(id, &vectorset)
-	c.ServeJSON()
+	success, err := object.UpdateVectorset(id, &vectorset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) AddVectorset() {
 	var vectorset object.Vectorset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.AddVectorset(&vectorset)
-	c.ServeJSON()
+	success, err := object.AddVectorset(&vectorset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) DeleteVectorset() {
 	var vectorset object.Vectorset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.DeleteVectorset(&vectorset)
-	c.ServeJSON()
+	success, err := object.DeleteVectorset(&vectorset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }

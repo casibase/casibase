@@ -53,8 +53,7 @@ func (c *ApiController) ActivateFile() {
 
 	prefix := getCachePrefix(filename)
 	if prefix == "" {
-		c.Data["json"] = false
-		c.ServeJSON()
+		c.ResponseOk(false)
 		return
 	}
 
@@ -66,8 +65,7 @@ func (c *ApiController) ActivateFile() {
 		util.CopyFile(getAppPath(filename), getAppPath(prefix))
 	}
 
-	c.Data["json"] = true
-	c.ServeJSON()
+	c.ResponseOk(true)
 }
 
 func (c *ApiController) GetActiveFile() {
@@ -78,6 +76,5 @@ func (c *ApiController) GetActiveFile() {
 		res = v
 	}
 
-	c.Data["json"] = res
-	c.ServeJSON()
+	c.ResponseOk(res)
 }

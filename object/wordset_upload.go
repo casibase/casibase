@@ -5,7 +5,7 @@ import (
 	"github.com/casbin/casibase/xlsx"
 )
 
-func uploadVectorNames(owner string, fileId string) bool {
+func uploadVectorNames(owner string, fileId string) (bool, error) {
 	table := xlsx.ReadXlsxFile(fileId)
 
 	vectorMap := map[string]int{}

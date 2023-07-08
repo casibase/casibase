@@ -59,7 +59,7 @@ func runKmeans(vectors []*Vector, clusterNumber int) {
 }
 
 func updateWordsetVectorCategories(owner string, wordsetName string) {
-	wordset := getWordset(owner, wordsetName)
+	wordset, _ := getWordset(owner, wordsetName)
 
 	runKmeans(wordset.Vectors, 100)
 

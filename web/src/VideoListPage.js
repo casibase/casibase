@@ -23,9 +23,13 @@ class VideoListPage extends React.Component {
   getVideos() {
     VideoBackend.getVideos(this.props.account.name)
       .then((res) => {
-        this.setState({
-          videos: res,
-        });
+        if (res.status === "ok") {
+          this.setState({
+            videos: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get videos: ${res.msg}`);
+        }
       });
   }
 
@@ -48,10 +52,14 @@ class VideoListPage extends React.Component {
     const newVideo = this.newVideo();
     VideoBackend.addVideo(newVideo)
       .then((res) => {
-        Setting.showMessage("success", "Video added successfully");
-        this.setState({
-          videos: Setting.prependRow(this.state.videos, newVideo),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Video added successfully");
+          this.setState({
+            videos: Setting.prependRow(this.state.videos, newVideo),
+          });
+        } else {
+          Setting.showMessage("error", `Video failed to add: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Video failed to add: ${error}`);
@@ -61,10 +69,14 @@ class VideoListPage extends React.Component {
   deleteVideo(i) {
     VideoBackend.deleteVideo(this.state.videos[i])
       .then((res) => {
-        Setting.showMessage("success", "Video deleted successfully");
-        this.setState({
-          videos: Setting.deleteRow(this.state.videos, i),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Video deleted successfully");
+          this.setState({
+            videos: Setting.deleteRow(this.state.videos, i),
+          });
+        } else {
+          Setting.showMessage("error", `Video failed to delete: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Video failed to delete: ${error}`);

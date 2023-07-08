@@ -34,13 +34,17 @@ class VideoEditPage extends React.Component {
   getVideo() {
     VideoBackend.getVideo(this.props.account.name, this.state.videoName)
       .then((video) => {
-        this.setState({
-          video: video,
-          currentTime: 0,
-        });
+        if (video.status === "ok") {
+          this.setState({
+            video: video.data,
+            currentTime: 0,
+          });
 
-        if (video.dataUrl !== "") {
-          this.getDataAndParse(video.dataUrl);
+          if (video.dataUrl !== "") {
+            this.getDataAndParse(video.dataUrl);
+          }
+        } else {
+          Setting.showMessage("error", `Failed to get video: ${video.msg}`);
         }
       });
   }
@@ -265,15 +269,19 @@ class VideoEditPage extends React.Component {
     const video = Setting.deepCopy(this.state.video);
     VideoBackend.updateVideo(this.state.video.owner, this.state.videoName, video)
       .then((res) => {
-        if (res) {
-          Setting.showMessage("success", "Successfully saved");
-          this.setState({
-            videoName: this.state.video.name,
-          });
-          this.props.history.push(`/videos/${this.state.video.name}`);
+        if (res.status === "ok") {
+          if (res.data) {
+            Setting.showMessage("success", "Successfully saved");
+            this.setState({
+              videoName: this.state.video.name,
+            });
+            this.props.history.push(`/videos/${this.state.video.name}`);
+          } else {
+            Setting.showMessage("error", "failed to save: server side failure");
+            this.updateVideoField("name", this.state.videoName);
+          }
         } else {
-          Setting.showMessage("error", "failed to save: server side failure");
-          this.updateVideoField("name", this.state.videoName);
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
         }
       })
       .catch(error => {

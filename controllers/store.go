@@ -7,30 +7,42 @@ import (
 )
 
 func (c *ApiController) GetGlobalStores() {
-	c.Data["json"] = object.GetGlobalStores()
-	c.ServeJSON()
+	stores, err := object.GetGlobalStores()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(stores)
 }
 
 func (c *ApiController) GetStores() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = object.GetStores(owner)
-	c.ServeJSON()
+	stores, err := object.GetStores(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(stores)
 }
 
 func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
-	store := object.GetStore(id)
+	store, err := object.GetStore(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 	if store == nil {
 		c.ResponseError("store is empty")
 		return
 	}
 
 	store.Populate()
-
-	c.Data["json"] = store
-	c.ServeJSON()
+	c.ResponseOk(store)
 }
 
 func (c *ApiController) UpdateStore() {
@@ -39,31 +51,49 @@ func (c *ApiController) UpdateStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.UpdateStore(id, &store)
-	c.ServeJSON()
+	success, err := object.UpdateStore(id, &store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) AddStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.AddStore(&store)
-	c.ServeJSON()
+	sucess, err := object.AddStore(&store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(sucess)
 }
 
 func (c *ApiController) DeleteStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.DeleteStore(&store)
-	c.ServeJSON()
+	sucess, err := object.DeleteStore(&store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(sucess)
 }

@@ -8,22 +8,34 @@ import (
 )
 
 func (c *ApiController) GetGlobalWordsets() {
-	c.Data["json"] = object.GetGlobalWordsets()
-	c.ServeJSON()
+	wordsets, err := object.GetGlobalWordsets()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(wordsets)
 }
 
 func (c *ApiController) GetWordsets() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = object.GetWordsets(owner)
-	c.ServeJSON()
+	wordsets, err := object.GetWordsets(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(wordsets)
 }
 
 func (c *ApiController) GetWordset() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetWordset(id)
-	c.ServeJSON()
+	wordset, err := object.GetWordset(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(wordset)
 }
 
 func (c *ApiController) GetWordsetGraph() {
@@ -31,15 +43,23 @@ func (c *ApiController) GetWordsetGraph() {
 	clusterNumber := util.ParseInt(c.Input().Get("clusterNumber"))
 	distanceLimit := util.ParseInt(c.Input().Get("distanceLimit"))
 
-	c.Data["json"] = object.GetWordsetGraph(id, clusterNumber, distanceLimit)
-	c.ServeJSON()
+	g, err := object.GetWordsetGraph(id, clusterNumber, distanceLimit)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(g)
 }
 
 func (c *ApiController) GetWordsetMatch() {
 	id := c.Input().Get("id")
 
-	c.Data["json"] = object.GetWordsetMatch(id)
-	c.ServeJSON()
+	wordset, err := object.GetWordsetMatch(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(wordset)
 }
 
 func (c *ApiController) UpdateWordset() {
@@ -48,31 +68,46 @@ func (c *ApiController) UpdateWordset() {
 	var wordset object.Wordset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.UpdateWordset(id, &wordset)
-	c.ServeJSON()
+	success, err := object.UpdateWordset(id, &wordset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) AddWordset() {
 	var wordset object.Wordset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.AddWordset(&wordset)
-	c.ServeJSON()
+	success, err := object.AddWordset(&wordset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) DeleteWordset() {
 	var wordset object.Wordset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.DeleteWordset(&wordset)
-	c.ServeJSON()
+	success, err := object.DeleteWordset(&wordset)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(success)
 }

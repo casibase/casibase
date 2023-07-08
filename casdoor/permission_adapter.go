@@ -28,68 +28,71 @@ type Permission struct {
 	State       string `xorm:"varchar(100)" json:"state"`
 }
 
-func GetPermissions(owner string) []*Permission {
+func GetPermissions(owner string) ([]*Permission, error) {
 	permissions := []*Permission{}
 	err := adapter.Engine.Desc("created_time").Find(&permissions, &Permission{Owner: owner})
 	if err != nil {
-		panic(err)
+		return permissions, err
 	}
 
-	return permissions
+	return permissions, nil
 }
 
-func getPermission(owner string, name string) *Permission {
+func getPermission(owner string, name string) (*Permission, error) {
 	if owner == "" || name == "" {
-		return nil
+		return nil, nil
 	}
 
 	permission := Permission{Owner: owner, Name: name}
 	existed, err := adapter.Engine.Get(&permission)
 	if err != nil {
-		panic(err)
+		return &permission, err
 	}
 
 	if existed {
-		return &permission
+		return &permission, nil
 	} else {
-		return nil
+		return nil, nil
 	}
 }
 
-func GetPermission(id string) *Permission {
+func GetPermission(id string) (*Permission, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getPermission(owner, name)
 }
 
-func UpdatePermission(id string, permission *Permission) bool {
+func UpdatePermission(id string, permission *Permission) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	oldPermission := getPermission(owner, name)
+	oldPermission, err := getPermission(owner, name)
+	if err != nil {
+		return false, err
+	}
 	if oldPermission == nil {
-		return false
+		return false, nil
 	}
 
 	affected, err := adapter.Engine.ID(core.PK{owner, name}).AllCols().Update(permission)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func AddPermission(permission *Permission) bool {
+func AddPermission(permission *Permission) (bool, error) {
 	affected, err := adapter.Engine.Insert(permission)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func DeletePermission(permission *Permission) bool {
+func DeletePermission(permission *Permission) (bool, error) {
 	affected, err := adapter.Engine.ID(core.PK{permission.Owner, permission.Name}).Delete(&Permission{})
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }

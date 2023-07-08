@@ -29,18 +29,26 @@ class WordsetEditPage extends React.Component {
   getWordset() {
     WordsetBackend.getWordset(this.props.account.name, this.state.wordsetName)
       .then((wordset) => {
-        this.setState({
-          wordset: wordset,
-        });
+        if (wordset.status === "ok") {
+          this.setState({
+            wordset: wordset.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+        }
       });
   }
 
   getVectorsets() {
     VectorsetBackend.getVectorsets(this.props.account.name)
       .then((res) => {
-        this.setState({
-          vectorsets: res,
-        });
+        if (res.status === "ok") {
+          this.setState({
+            vectorsets: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get vectorsets: ${res.msg}`);
+        }
       });
   }
 
@@ -115,10 +123,14 @@ class WordsetEditPage extends React.Component {
               });
               WordsetBackend.getWordsetMatch(this.props.account.name, this.state.wordsetName)
                 .then((wordset) => {
-                  this.setState({
-                    wordset: wordset,
-                    matchLoading: false,
-                  });
+                  if (wordset.status === "ok") {
+                    this.setState({
+                      wordset: wordset.data,
+                      matchLoading: false,
+                    });
+                  } else {
+                    Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+                  }
                 });
             }}>{i18next.t("wordset:Match")}</Button>
           </Col>
@@ -170,15 +182,19 @@ class WordsetEditPage extends React.Component {
     const wordset = Setting.deepCopy(this.state.wordset);
     WordsetBackend.updateWordset(this.state.wordset.owner, this.state.wordsetName, wordset)
       .then((res) => {
-        if (res) {
-          Setting.showMessage("success", "Successfully saved");
-          this.setState({
-            wordsetName: this.state.wordset.name,
-          });
-          this.props.history.push(`/wordsets/${this.state.wordset.name}`);
+        if (res.status === "ok") {
+          if (res.data) {
+            Setting.showMessage("success", "Successfully saved");
+            this.setState({
+              wordsetName: this.state.wordset.name,
+            });
+            this.props.history.push(`/wordsets/${this.state.wordset.name}`);
+          } else {
+            Setting.showMessage("error", "failed to save: server side failure");
+            this.updateWordsetField("name", this.state.wordsetName);
+          }
         } else {
-          Setting.showMessage("error", "failed to save: server side failure");
-          this.updateWordsetField("name", this.state.wordsetName);
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
         }
       })
       .catch(error => {

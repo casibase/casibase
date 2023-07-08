@@ -22,9 +22,13 @@ class WordsetListPage extends React.Component {
   getWordsets() {
     WordsetBackend.getWordsets(this.props.account.name)
       .then((res) => {
-        this.setState({
-          wordsets: res,
-        });
+        if (res.status === "ok") {
+          this.setState({
+            wordsets: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get wordsets: ${res.msg}`);
+        }
       });
   }
 
@@ -44,10 +48,14 @@ class WordsetListPage extends React.Component {
     const newWordset = this.newWordset();
     WordsetBackend.addWordset(newWordset)
       .then((res) => {
-        Setting.showMessage("success", "Wordset added successfully");
-        this.setState({
-          wordsets: Setting.prependRow(this.state.wordsets, newWordset),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Wordset added successfully");
+          this.setState({
+            wordsets: Setting.prependRow(this.state.wordsets, newWordset),
+          });
+        } else {
+          Setting.showMessage("error", `Failed to add wordset: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Wordset failed to add: ${error}`);
@@ -57,10 +65,14 @@ class WordsetListPage extends React.Component {
   deleteWordset(i) {
     WordsetBackend.deleteWordset(this.state.wordsets[i])
       .then((res) => {
-        Setting.showMessage("success", "Wordset deleted successfully");
-        this.setState({
-          wordsets: Setting.deleteRow(this.state.wordsets, i),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Wordset deleted successfully");
+          this.setState({
+            wordsets: Setting.deleteRow(this.state.wordsets, i),
+          });
+        } else {
+          Setting.showMessage("error", `Failed to delete wordset: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Wordset failed to delete: ${error}`);

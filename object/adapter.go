@@ -62,7 +62,11 @@ func (a *Adapter) createDatabase() error {
 	defer engine.Close()
 
 	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8 COLLATE utf8_general_ci", beego.AppConfig.String("dbName")))
-	return err
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (a *Adapter) open() {

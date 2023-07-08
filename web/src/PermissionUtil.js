@@ -35,9 +35,12 @@ export function addPermission(account, store, file = null, fileKeys = null) {
 
   PermissionBackend.addPermission(newPermission)
     .then((res) => {
-      Setting.openLink(Setting.getMyProfileUrl(account).replace("/account", `/permissions/${newPermission.owner}/${newPermission.name}`));
-    }
-    )
+      if (res.status === "ok") {
+        Setting.openLink(Setting.getMyProfileUrl(account).replace("/account", `/permissions/${newPermission.owner}/${newPermission.name}`));
+      } else {
+        Setting.showMessage("error", `Permission failed to add: ${res.msg}`);
+      }
+    })
     .catch(error => {
       Setting.showMessage("error", `Permission failed to add: ${error}`);
     });

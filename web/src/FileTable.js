@@ -65,11 +65,15 @@ class FileTable extends React.Component {
     const storeId = `${this.props.store.owner}/${this.props.store.name}`;
     FileBackend.deleteFile(storeId, file.key, isLeaf)
       .then((res) => {
-        if (res === true) {
-          Setting.showMessage("success", "File deleted successfully");
-          this.props.onRefresh();
+        if (res.status === "ok") {
+          if (res.data === true) {
+            Setting.showMessage("success", "File deleted successfully");
+            this.props.onRefresh();
+          } else {
+            Setting.showMessage("error", `File failed to delete: ${res.msg}`);
+          }
         } else {
-          Setting.showMessage("error", `File failed to delete: ${res}`);
+          Setting.showMessage("error", `File failed to delete: ${res.msg}`);
         }
       })
       .catch(error => {

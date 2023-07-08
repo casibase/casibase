@@ -31,79 +31,83 @@ type Video struct {
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }
 
-func GetGlobalVideos() []*Video {
+func GetGlobalVideos() ([]*Video, error) {
 	videos := []*Video{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&videos)
 	if err != nil {
-		panic(err)
+		return videos, err
 	}
 
-	return videos
+	return videos, nil
 }
 
-func GetVideos(owner string) []*Video {
+func GetVideos(owner string) ([]*Video, error) {
 	videos := []*Video{}
 	err := adapter.engine.Desc("created_time").Find(&videos, &Video{Owner: owner})
 	if err != nil {
-		panic(err)
+		return videos, err
 	}
 
-	return videos
+	return videos, nil
 }
 
-func getVideo(owner string, name string) *Video {
+func getVideo(owner string, name string) (*Video, error) {
 	v := Video{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&v)
 	if err != nil {
-		panic(err)
+		return &v, err
 	}
 
 	if existed {
 		if v.VideoId != "" {
 			v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
 		}
-		return &v
+		return &v, nil
 	} else {
-		return nil
+		return nil, nil
 	}
 }
 
-func GetVideo(id string) *Video {
+func GetVideo(id string) (*Video, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getVideo(owner, name)
 }
 
-func UpdateVideo(id string, video *Video) bool {
+func UpdateVideo(id string, video *Video) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if getVideo(owner, name) == nil {
-		return false
+	_, err := getVideo(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if video == nil {
+		return false, nil
 	}
 
-	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(video)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(video)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
 	//return affected != 0
-	return true
+	return true, nil
 }
 
-func AddVideo(video *Video) bool {
+func AddVideo(video *Video) (bool, error) {
 	affected, err := adapter.engine.Insert(video)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func DeleteVideo(video *Video) bool {
+func DeleteVideo(video *Video) (bool, error) {
 	affected, err := adapter.engine.ID(core.PK{video.Owner, video.Name}).Delete(&Video{})
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
 func (video *Video) GetId() string {
@@ -111,6 +115,6 @@ func (video *Video) GetId() string {
 }
 
 func (video *Video) Populate() {
-	store := getStore("admin", "default")
+	store, _ := getStore("admin", "default")
 	video.DataUrls = store.GetVideoData()
 }

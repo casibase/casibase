@@ -11,7 +11,7 @@ func TestDoVectorsetTsne(t *testing.T) {
 	dimension := 50
 
 	//vectorset := getVectorset("admin", "wikipedia")
-	vectorset := getVectorset("admin", "wordVector_utf-8")
+	vectorset, _ := getVectorset("admin", "wordVector_utf-8")
 	vectorset.LoadVectors("../../tmpFiles/")
 	vectorset.DoTsne(dimension)
 

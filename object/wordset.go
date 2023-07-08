@@ -19,76 +19,80 @@ type Wordset struct {
 	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
 }
 
-func GetGlobalWordsets() []*Wordset {
+func GetGlobalWordsets() ([]*Wordset, error) {
 	wordsets := []*Wordset{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&wordsets)
 	if err != nil {
-		panic(err)
+		return wordsets, err
 	}
 
-	return wordsets
+	return wordsets, nil
 }
 
-func GetWordsets(owner string) []*Wordset {
+func GetWordsets(owner string) ([]*Wordset, error) {
 	wordsets := []*Wordset{}
 	err := adapter.engine.Desc("created_time").Find(&wordsets, &Wordset{Owner: owner})
 	if err != nil {
-		panic(err)
+		return wordsets, err
 	}
 
-	return wordsets
+	return wordsets, nil
 }
 
-func getWordset(owner string, name string) *Wordset {
+func getWordset(owner string, name string) (*Wordset, error) {
 	wordset := Wordset{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&wordset)
 	if err != nil {
-		panic(err)
+		return &wordset, err
 	}
 
 	if existed {
-		return &wordset
+		return &wordset, nil
 	} else {
-		return nil
+		return nil, nil
 	}
 }
 
-func GetWordset(id string) *Wordset {
+func GetWordset(id string) (*Wordset, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getWordset(owner, name)
 }
 
-func UpdateWordset(id string, wordset *Wordset) bool {
+func UpdateWordset(id string, wordset *Wordset) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if getWordset(owner, name) == nil {
-		return false
+	_, err := getWordset(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if wordset == nil {
+		return false, nil
 	}
 
-	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(wordset)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(wordset)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
 	//return affected != 0
-	return true
+	return true, nil
 }
 
-func AddWordset(wordset *Wordset) bool {
+func AddWordset(wordset *Wordset) (bool, error) {
 	affected, err := adapter.engine.Insert(wordset)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func DeleteWordset(wordset *Wordset) bool {
+func DeleteWordset(wordset *Wordset) (bool, error) {
 	affected, err := adapter.engine.ID(core.PK{wordset.Owner, wordset.Name}).Delete(&Wordset{})
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
 func (wordset *Wordset) GetId() string {

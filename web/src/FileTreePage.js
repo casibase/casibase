@@ -25,7 +25,7 @@ class FileTreePage extends React.Component {
       .then((res) => {
         if (res?.status !== "error") {
           this.setState({
-            store: res,
+            store: res.data,
           });
         } else {
           Setting.showMessage("error", res.msg);

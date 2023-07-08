@@ -13,25 +13,38 @@ import (
 )
 
 func (c *ApiController) GetGlobalVideos() {
-	c.Data["json"] = object.GetGlobalVideos()
-	c.ServeJSON()
+	videos, err := object.GetGlobalVideos()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(videos)
 }
 
 func (c *ApiController) GetVideos() {
 	owner := c.Input().Get("owner")
 
-	c.Data["json"] = object.GetVideos(owner)
-	c.ServeJSON()
+	videos, err := object.GetVideos(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(videos)
 }
 
 func (c *ApiController) GetVideo() {
 	id := c.Input().Get("id")
 
-	video := object.GetVideo(id)
+	video, err := object.GetVideo(id)
 	video.Populate()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
-	c.Data["json"] = video
-	c.ServeJSON()
+	c.ResponseOk(video)
 }
 
 func (c *ApiController) UpdateVideo() {
@@ -40,33 +53,51 @@ func (c *ApiController) UpdateVideo() {
 	var video object.Video
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &video)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.UpdateVideo(id, &video)
-	c.ServeJSON()
+	success, err := object.UpdateVideo(id, &video)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) AddVideo() {
 	var video object.Video
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &video)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.AddVideo(&video)
-	c.ServeJSON()
+	success, err := object.AddVideo(&video)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) DeleteVideo() {
 	var video object.Video
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &video)
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 
-	c.Data["json"] = object.DeleteVideo(&video)
-	c.ServeJSON()
+	success, err := object.DeleteVideo(&video)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
 }
 
 func startCoverUrlJob(owner string, name string, videoId string) {
@@ -74,7 +105,7 @@ func startCoverUrlJob(owner string, name string, videoId string) {
 		for i := 0; i < 20; i++ {
 			coverUrl := video.GetVideoCoverUrl(videoId)
 			if coverUrl != "" {
-				video := object.GetVideo(util.GetIdFromOwnerAndName(owner, name))
+				video, _ := object.GetVideo(util.GetIdFromOwnerAndName(owner, name))
 				if video.CoverUrl != "" {
 					break
 				}
@@ -94,7 +125,8 @@ func (c *ApiController) UploadVideo() {
 
 	file, header, err := c.GetFile("file")
 	if err != nil {
-		panic(err)
+		c.ResponseError(err.Error())
+		return
 	}
 	defer file.Close()
 

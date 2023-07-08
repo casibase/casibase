@@ -14,10 +14,13 @@ func UpdateFile(storeId string, key string, file *File) bool {
 	return true
 }
 
-func AddFile(storeId string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte) {
-	store := GetStore(storeId)
+func AddFile(storeId string, key string, isLeaf bool, filename string, file multipart.File) (bool, []byte, error) {
+	store, err := GetStore(storeId)
+	if err != nil {
+		return false, nil, err
+	}
 	if store == nil {
-		return false, nil
+		return false, nil, nil
 	}
 
 	var objectKey string
@@ -26,24 +29,30 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 		objectKey = fmt.Sprintf("%s/%s", key, filename)
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
-		if _, err := io.Copy(fileBuffer, file); err != nil {
-			panic(err)
+		_, err = io.Copy(fileBuffer, file)
+		if err != nil {
+			return false, nil, err
 		}
+		bs := fileBuffer.Bytes()
+		storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		return true, bs, nil
 	} else {
 		objectKey = fmt.Sprintf("%s/%s/_hidden.ini", key, filename)
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
+		bs := fileBuffer.Bytes()
+		storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		return true, bs, nil
 	}
-
-	bs := fileBuffer.Bytes()
-	storage.PutObject(store.Bucket, objectKey, fileBuffer)
-	return true, bs
 }
 
-func DeleteFile(storeId string, key string, isLeaf bool) bool {
-	store := GetStore(storeId)
+func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
+	store, err := GetStore(storeId)
+	if err != nil {
+		return false, err
+	}
 	if store == nil {
-		return false
+		return false, nil
 	}
 
 	if isLeaf {
@@ -54,5 +63,5 @@ func DeleteFile(storeId string, key string, isLeaf bool) bool {
 			storage.DeleteObject(store.Bucket, object.Key)
 		}
 	}
-	return true
+	return true, nil
 }

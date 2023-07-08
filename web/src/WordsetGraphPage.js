@@ -1,6 +1,7 @@
 import React from "react";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import WordsetGraph from "./WordsetGraph";
+import * as Setting from "./Setting";
 
 class WordsetGraphPage extends React.Component {
   constructor(props) {
@@ -19,9 +20,13 @@ class WordsetGraphPage extends React.Component {
   getWordset() {
     WordsetBackend.getWordset(this.props.account.name, this.state.wordsetName)
       .then((wordset) => {
-        this.setState({
-          wordset: wordset,
-        });
+        if (wordset.status === "ok") {
+          this.setState({
+            wordset: wordset.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+        }
       });
   }
 

@@ -22,9 +22,13 @@ class VectorsetListPage extends React.Component {
   getVectorsets() {
     VectorsetBackend.getVectorsets(this.props.account.name)
       .then((res) => {
-        this.setState({
-          vectorsets: res,
-        });
+        if (res.status === "ok") {
+          this.setState({
+            vectorsets: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get vectorsets: ${res.msg}`);
+        }
       });
   }
 
@@ -47,10 +51,14 @@ class VectorsetListPage extends React.Component {
     const newVectorset = this.newVectorset();
     VectorsetBackend.addVectorset(newVectorset)
       .then((res) => {
-        Setting.showMessage("success", "Vectorset added successfully");
-        this.setState({
-          vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Vectorset added successfully");
+          this.setState({
+            vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
+          });
+        } else {
+          Setting.showMessage("error", `Failed to add vectorset: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Vectorset failed to add: ${error}`);
@@ -60,10 +68,14 @@ class VectorsetListPage extends React.Component {
   deleteVectorset(i) {
     VectorsetBackend.deleteVectorset(this.state.vectorsets[i])
       .then((res) => {
-        Setting.showMessage("success", "Vectorset deleted successfully");
-        this.setState({
-          vectorsets: Setting.deleteRow(this.state.vectorsets, i),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Vectorset deleted successfully");
+          this.setState({
+            vectorsets: Setting.deleteRow(this.state.vectorsets, i),
+          });
+        } else {
+          Setting.showMessage("error", `Vectorset failed to delete: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Vectorset failed to delete: ${error}`);

@@ -22,9 +22,13 @@ class StoreListPage extends React.Component {
   getStores() {
     StoreBackend.getGlobalStores()
       .then((res) => {
-        this.setState({
-          stores: res,
-        });
+        if (res.status === "ok") {
+          this.setState({
+            stores: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
+        }
       });
   }
 
@@ -44,10 +48,14 @@ class StoreListPage extends React.Component {
     const newStore = this.newStore();
     StoreBackend.addStore(newStore)
       .then((res) => {
-        Setting.showMessage("success", "Store added successfully");
-        this.setState({
-          stores: Setting.prependRow(this.state.stores, newStore),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Store added successfully");
+          this.setState({
+            stores: Setting.prependRow(this.state.stores, newStore),
+          });
+        } else {
+          Setting.showMessage("error", `Store failed to add: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Store failed to add: ${error}`);
@@ -57,10 +65,14 @@ class StoreListPage extends React.Component {
   deleteStore(i) {
     StoreBackend.deleteStore(this.state.stores[i])
       .then((res) => {
-        Setting.showMessage("success", "Store deleted successfully");
-        this.setState({
-          stores: Setting.deleteRow(this.state.stores, i),
-        });
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Store deleted successfully");
+          this.setState({
+            stores: Setting.deleteRow(this.state.stores, i),
+          });
+        } else {
+          Setting.showMessage("error", `Store failed to delete: ${res.msg}`);
+        }
       })
       .catch(error => {
         Setting.showMessage("error", `Store failed to delete: ${error}`);
@@ -98,12 +110,19 @@ class StoreListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                onClick={() => Setting.redirectCatchJsonError(`/stores/${record.owner}/${record.name}/view`)}
+              >
+                {i18next.t("general:View")}
+              </Button>
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
-                    <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
-                    <Popconfirm
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={
+                      () => Setting.redirectCatchJsonError(`/stores/${record.owner}/${record.name}`)}
+                    >{i18next.t("general:Edit")}
+                    </Button>                    <Popconfirm
                       title={`Sure to delete store: ${record.name} ?`}
                       onConfirm={() => this.deleteStore(index)}
                       okText="OK"

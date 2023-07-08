@@ -36,76 +36,80 @@ type Store struct {
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
 }
 
-func GetGlobalStores() []*Store {
+func GetGlobalStores() ([]*Store, error) {
 	stores := []*Store{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&stores)
 	if err != nil {
-		panic(err)
+		return stores, err
 	}
 
-	return stores
+	return stores, nil
 }
 
-func GetStores(owner string) []*Store {
+func GetStores(owner string) ([]*Store, error) {
 	stores := []*Store{}
 	err := adapter.engine.Desc("created_time").Find(&stores, &Store{Owner: owner})
 	if err != nil {
-		panic(err)
+		return stores, err
 	}
 
-	return stores
+	return stores, nil
 }
 
-func getStore(owner string, name string) *Store {
+func getStore(owner string, name string) (*Store, error) {
 	store := Store{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&store)
 	if err != nil {
-		panic(err)
+		return &store, err
 	}
 
 	if existed {
-		return &store
+		return &store, nil
 	} else {
-		return nil
+		return nil, nil
 	}
 }
 
-func GetStore(id string) *Store {
+func GetStore(id string) (*Store, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getStore(owner, name)
 }
 
-func UpdateStore(id string, store *Store) bool {
+func UpdateStore(id string, store *Store) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if getStore(owner, name) == nil {
-		return false
+	_, err := getStore(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if store == nil {
+		return false, nil
 	}
 
-	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
 	//return affected != 0
-	return true
+	return true, nil
 }
 
-func AddStore(store *Store) bool {
+func AddStore(store *Store) (bool, error) {
 	affected, err := adapter.engine.Insert(store)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func DeleteStore(store *Store) bool {
+func DeleteStore(store *Store) (bool, error) {
 	affected, err := adapter.engine.ID(core.PK{store.Owner, store.Name}).Delete(&Store{})
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
 func (store *Store) GetId() string {

@@ -6,7 +6,7 @@ func TestUpdateVectorsetVectors(t *testing.T) {
 	InitConfig()
 
 	//vectorset := getVectorset("admin", "wikipedia")
-	vectorset := getVectorset("admin", "wordVector_utf-8")
+	vectorset, _ := getVectorset("admin", "wordVector_utf-8")
 	vectorset.LoadVectors("../../tmpFiles/")
 	UpdateVectorset(vectorset.GetId(), vectorset)
 }

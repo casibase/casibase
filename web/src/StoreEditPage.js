@@ -24,9 +24,13 @@ class StoreEditPage extends React.Component {
   getStore() {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((store) => {
-        this.setState({
-          store: store,
-        });
+        if (store.status === "ok") {
+          this.setState({
+            store: store.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get store: ${store.msg}`);
+        }
       });
   }
 
@@ -117,15 +121,19 @@ class StoreEditPage extends React.Component {
     store.fileTree = undefined;
     StoreBackend.updateStore(this.state.store.owner, this.state.storeName, store)
       .then((res) => {
-        if (res) {
-          Setting.showMessage("success", "Successfully saved");
-          this.setState({
-            storeName: this.state.store.name,
-          });
-          this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
+        if (res.status === "ok") {
+          if (res.data) {
+            Setting.showMessage("success", "Successfully saved");
+            this.setState({
+              storeName: this.state.store.name,
+            });
+            this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
+          } else {
+            Setting.showMessage("error", "failed to save: server side failure");
+            this.updateStoreField("name", this.state.storeName);
+          }
         } else {
-          Setting.showMessage("error", "failed to save: server side failure");
-          this.updateStoreField("name", this.state.storeName);
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
         }
       })
       .catch(error => {

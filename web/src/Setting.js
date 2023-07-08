@@ -102,6 +102,9 @@ export function isLocalAdminUser(account) {
 }
 
 export function deepCopy(obj) {
+  if (obj === null) {
+    showMessage("error", "deepCopy obj is null.");
+  }
   return Object.assign({}, obj);
 }
 
@@ -371,10 +374,49 @@ export function downloadXlsx(wordset) {
   //   { wch: 7 },
   // ];
 
-  const blob = sheet2blob(sheet, "vectors");
-  const fileName = `vectors-${wordset.name}.xlsx`;
-  FileSaver.saveAs(blob, fileName);
+  try {
+    const blob = sheet2blob(sheet, "vectors");
+    const fileName = `vectors-${wordset.name}.xlsx`;
+    FileSaver.saveAs(blob, fileName);
+  } catch (error) {
+    showMessage("error", `failed to download: ${error.message}`);
+  }
 }
+
+export function downloadLabels(table) {
+  const data = [];
+  table.forEach((label, i) => {
+    const row = {};
+
+    row[0] = label.startTime;
+    row[1] = label.endTime;
+    row[2] = label.text;
+    data.push(row);
+  });
+
+  const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+  try {
+    const blob = sheet2blob(sheet, "labels");
+    const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
+    FileSaver.saveAs(blob, fileName);
+  } catch (error) {
+    showMessage("error", `failed to download: ${error.message}`);
+  }
+}
+
+export const redirectCatchJsonError = async(url) => {
+  try {
+    const response = await fetch(url);
+    const msg = await response.json();
+    if (response.ok) {
+      this.props.history.push(url);
+    } else {
+      showMessage("error", `error in redirect: ${msg}`);
+    }
+  } catch (error) {
+    showMessage("error", `failed to redirect: ${error.message}`);
+  }
+};
 
 export function toFixed(f, n) {
   return parseFloat(f.toFixed(n));
@@ -498,10 +540,14 @@ export function submitStoreEdit(storeObj) {
   store.fileTree = undefined;
   StoreBackend.updateStore(storeObj.owner, storeObj.name, store)
     .then((res) => {
-      if (res) {
-        showMessage("success", "Successfully saved");
+      if (res.status === "ok") {
+        if (res.data) {
+          showMessage("success", "Successfully saved");
+        } else {
+          showMessage("error", "failed to save: server side failure");
+        }
       } else {
-        showMessage("error", "failed to save: server side failure");
+        showMessage("error", `failed to save: ${res.msg}`);
       }
     })
     .catch(error => {

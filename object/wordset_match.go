@@ -1,14 +1,20 @@
 package object
 
-func GetWordsetMatch(id string) *Wordset {
-	wordset := GetWordset(id)
+func GetWordsetMatch(id string) (*Wordset, error) {
+	wordset, err := GetWordset(id)
+	if err != nil {
+		return nil, err
+	}
 	if wordset == nil {
-		return nil
+		return nil, nil
 	}
 
-	vectorset := getVectorset(wordset.Owner, wordset.Vectorset)
+	vectorset, err := getVectorset(wordset.Owner, wordset.Vectorset)
+	if err != nil {
+		return nil, err
+	}
 	if vectorset == nil {
-		return nil
+		return nil, nil
 	}
 
 	vectorset.LoadVectors("")
@@ -22,5 +28,5 @@ func GetWordsetMatch(id string) *Wordset {
 	}
 
 	UpdateWordset(wordset.GetId(), wordset)
-	return wordset
+	return wordset, nil
 }

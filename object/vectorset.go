@@ -24,76 +24,80 @@ type Vectorset struct {
 	VectorMap  map[string]*Vector `xorm:"-" json:"vectorMap"`
 }
 
-func GetGlobalVectorsets() []*Vectorset {
+func GetGlobalVectorsets() ([]*Vectorset, error) {
 	vectorsets := []*Vectorset{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&vectorsets)
 	if err != nil {
-		panic(err)
+		return vectorsets, err
 	}
 
-	return vectorsets
+	return vectorsets, nil
 }
 
-func GetVectorsets(owner string) []*Vectorset {
+func GetVectorsets(owner string) ([]*Vectorset, error) {
 	vectorsets := []*Vectorset{}
 	err := adapter.engine.Desc("created_time").Find(&vectorsets, &Vectorset{Owner: owner})
 	if err != nil {
-		panic(err)
+		return vectorsets, err
 	}
 
-	return vectorsets
+	return vectorsets, nil
 }
 
-func getVectorset(owner string, name string) *Vectorset {
+func getVectorset(owner string, name string) (*Vectorset, error) {
 	vectorset := Vectorset{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&vectorset)
 	if err != nil {
-		panic(err)
+		return &vectorset, err
 	}
 
 	if existed {
-		return &vectorset
+		return &vectorset, nil
 	} else {
-		return nil
+		return nil, nil
 	}
 }
 
-func GetVectorset(id string) *Vectorset {
+func GetVectorset(id string) (*Vectorset, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getVectorset(owner, name)
 }
 
-func UpdateVectorset(id string, vectorset *Vectorset) bool {
+func UpdateVectorset(id string, vectorset *Vectorset) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	if getVectorset(owner, name) == nil {
-		return false
+	_, err := getVectorset(owner, name)
+	if err != nil {
+		return false, err
+	}
+	if vectorset == nil {
+		return false, nil
 	}
 
-	_, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(vectorset)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(vectorset)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
 	//return affected != 0
-	return true
+	return true, nil
 }
 
-func AddVectorset(vectorset *Vectorset) bool {
+func AddVectorset(vectorset *Vectorset) (bool, error) {
 	affected, err := adapter.engine.Insert(vectorset)
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
-func DeleteVectorset(vectorset *Vectorset) bool {
+func DeleteVectorset(vectorset *Vectorset) (bool, error) {
 	affected, err := adapter.engine.ID(core.PK{vectorset.Owner, vectorset.Name}).Delete(&Vectorset{})
 	if err != nil {
-		panic(err)
+		return false, err
 	}
 
-	return affected != 0
+	return affected != 0, nil
 }
 
 func (vectorset *Vectorset) GetId() string {

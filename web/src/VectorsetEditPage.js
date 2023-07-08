@@ -23,9 +23,13 @@ class VectorsetEditPage extends React.Component {
   getVectorset() {
     VectorsetBackend.getVectorset(this.props.account.name, this.state.vectorsetName)
       .then((vectorset) => {
-        this.setState({
-          vectorset: vectorset,
-        });
+        if (vectorset.status === "ok") {
+          this.setState({
+            vectorset: vectorset.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get vectorset: ${vectorset.msg}`);
+        }
       });
   }
 
@@ -144,15 +148,19 @@ class VectorsetEditPage extends React.Component {
     const vectorset = Setting.deepCopy(this.state.vectorset);
     VectorsetBackend.updateVectorset(this.state.vectorset.owner, this.state.vectorsetName, vectorset)
       .then((res) => {
-        if (res) {
-          Setting.showMessage("success", "Successfully saved");
-          this.setState({
-            vectorsetName: this.state.vectorset.name,
-          });
-          this.props.history.push(`/vectorsets/${this.state.vectorset.name}`);
+        if (res.status === "ok") {
+          if (res.data) {
+            Setting.showMessage("success", "Successfully saved");
+            this.setState({
+              vectorsetName: this.state.vectorset.name,
+            });
+            this.props.history.push(`/vectorsets/${this.state.vectorset.name}`);
+          } else {
+            Setting.showMessage("error", "failed to save: server side failure");
+            this.updateVectorsetField("name", this.state.vectorsetName);
+          }
         } else {
-          Setting.showMessage("error", "failed to save: server side failure");
-          this.updateVectorsetField("name", this.state.vectorsetName);
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
         }
       })
       .catch(error => {
