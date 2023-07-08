@@ -38,7 +38,7 @@ class StoreListPage extends React.Component {
       name: `store_${this.state.stores.length}`,
       createdTime: moment().format(),
       displayName: `Store ${this.state.stores.length}`,
-      bucket: "bucket_name",
+      bucket: `bucket-${this.state.stores.length}`,
       domain: "https://cdn.example.com",
       propertiesMap: {},
     };
@@ -110,19 +110,12 @@ class StoreListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => Setting.redirectCatchJsonError(`/stores/${record.owner}/${record.name}/view`)}
-              >
-                {i18next.t("general:View")}
-              </Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}/view`)}>{i18next.t("general:View")}</Button>
               {
                 !Setting.isLocalAdminUser(this.props.account) ? null : (
                   <React.Fragment>
-                    <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={
-                      () => Setting.redirectCatchJsonError(`/stores/${record.owner}/${record.name}`)}
-                    >{i18next.t("general:Edit")}
-                    </Button>                    <Popconfirm
+                    <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+                    <Popconfirm
                       title={`Sure to delete store: ${record.name} ?`}
                       onConfirm={() => this.deleteStore(index)}
                       okText="OK"
