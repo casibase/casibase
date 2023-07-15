@@ -1,0 +1,202 @@
+import React from "react";
+import {Link} from "react-router-dom";
+import {Button, Col, Popconfirm, Row, Table} from "antd";
+import moment from "moment";
+import * as Setting from "./Setting";
+import * as ProviderBackend from "./backend/ProviderBackend";
+import i18next from "i18next";
+
+class ProviderListPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      providers: null,
+    };
+  }
+
+  UNSAFE_componentWillMount() {
+    this.getProviders();
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            providers: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+        }
+      });
+  }
+
+  newProvider() {
+    const randomName = Setting.getRandomName();
+    return {
+      owner: this.props.account.name,
+      name: `provider_${randomName}`,
+      createdTime: moment().format(),
+      displayName: `New Provider - ${randomName}`,
+      category: "AI",
+      type: "OpenAI API - GPT 3.5",
+      clientId: "",
+      clientSecret: "",
+      providerUrl: "https://platform.openai.com/account/api-keys",
+    };
+  }
+
+  addProvider() {
+    const newProvider = this.newProvider();
+    ProviderBackend.addProvider(newProvider)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Provider added successfully");
+          this.setState({
+            providers: Setting.prependRow(this.state.providers, newProvider),
+          });
+        } else {
+          Setting.showMessage("error", `Failed to add provider: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Provider failed to add: ${error}`);
+      });
+  }
+
+  deleteProvider(i) {
+    ProviderBackend.deleteProvider(this.state.providers[i])
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", "Provider deleted successfully");
+          this.setState({
+            providers: Setting.deleteRow(this.state.providers, i),
+          });
+        } else {
+          Setting.showMessage("error", `Provider failed to delete: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Provider failed to delete: ${error}`);
+      });
+  }
+
+  renderTable(providers) {
+    const columns = [
+      {
+        title: i18next.t("general:Name"),
+        dataIndex: "name",
+        key: "name",
+        width: "140px",
+        sorter: (a, b) => a.name.localeCompare(b.name),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Display name"),
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "200px",
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      },
+      {
+        title: i18next.t("provider:Category"),
+        dataIndex: "category",
+        key: "category",
+        width: "200px",
+        sorter: (a, b) => a.category.localeCompare(b.category),
+      },
+      {
+        title: i18next.t("provider:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "200px",
+        sorter: (a, b) => a.type.localeCompare(b.type),
+      },
+      {
+        title: i18next.t("provider:Secret key"),
+        dataIndex: "clientSecret",
+        key: "clientSecret",
+        width: "200px",
+        sorter: (a, b) => a.clientSecret.localeCompare(b.clientSecret),
+      },
+      {
+        title: i18next.t("provider:Provider URL"),
+        dataIndex: "providerUrl",
+        key: "providerUrl",
+        width: "250px",
+        sorter: (a, b) => a.providerUrl.localeCompare(b.providerUrl),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={text}>
+              {
+                Setting.getShortText(text)
+              }
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Action"),
+        dataIndex: "action",
+        key: "action",
+        width: "180px",
+        render: (text, record, index) => {
+          return (
+            <div>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/providers/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Popconfirm
+                title={`Sure to delete provider: ${record.name} ?`}
+                onConfirm={() => this.deleteProvider(index)}
+                okText="OK"
+                cancelText="Cancel"
+              >
+                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+              </Popconfirm>
+            </div>
+          );
+        },
+      },
+    ];
+
+    return (
+      <div>
+        <Table columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+          title={() => (
+            <div>
+              {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addProvider.bind(this)}>{i18next.t("general:Add")}</Button>
+            </div>
+          )}
+          loading={providers === null}
+        />
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <Row style={{width: "100%"}}>
+          <Col span={1}>
+          </Col>
+          <Col span={22}>
+            {
+              this.renderTable(this.state.providers)
+            }
+          </Col>
+          <Col span={1}>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
+
+export default ProviderListPage;

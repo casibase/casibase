@@ -19,6 +19,8 @@ import VectorsetListPage from "./VectorsetListPage";
 import VectorsetEditPage from "./VectorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
+import ProviderListPage from "./ProviderListPage";
+import ProviderEditPage from "./ProviderEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import LanguageSelect from "./LanguageSelect";
@@ -70,6 +72,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/vectorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
+    } else if (uri.includes("/providers")) {
+      this.setState({selectedMenuKey: "/providers"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -289,6 +293,13 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/providers">
+        <Link to="/providers">
+          {i18next.t("general:Providers")}
+        </Link>
+      </Menu.Item>
+    );
 
     if (Setting.isLocalAdminUser(this.state.account)) {
       res.push(
@@ -363,6 +374,8 @@ class App extends Component {
           <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
+          <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
+          <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
         </Switch>
       </div>
     );
