@@ -33,11 +33,12 @@ class StoreListPage extends React.Component {
   }
 
   newStore() {
+    const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
-      name: `store_${this.state.stores.length}`,
+      name: `store_${randomName}`,
       createdTime: moment().format(),
-      displayName: `Store ${this.state.stores.length}`,
+      displayName: `New Store - ${randomName}`,
       bucket: `bucket-${this.state.stores.length}`,
       domain: "https://cdn.example.com",
       propertiesMap: {},

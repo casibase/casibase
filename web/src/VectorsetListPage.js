@@ -33,11 +33,12 @@ class VectorsetListPage extends React.Component {
   }
 
   newVectorset() {
+    const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
-      name: `vectorset_${this.state.vectorsets.length}`,
+      name: `vectorset_${randomName}`,
       createdTime: moment().format(),
-      displayName: `Vectorset ${this.state.vectorsets.length}`,
+      displayName: `New Vectorset - ${randomName}`,
       url: "https://github.com/Embedding/Chinese-Word-Vectors",
       fileName: "sgns.target.word-word.dynwin5.thr10.neg5.dim300.iter5",
       fileSize: "1.69 GB",

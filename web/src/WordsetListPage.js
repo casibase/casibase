@@ -33,11 +33,12 @@ class WordsetListPage extends React.Component {
   }
 
   newWordset() {
+    const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
-      name: `wordset_${this.state.wordsets.length}`,
+      name: `wordset_${randomName}`,
       createdTime: moment().format(),
-      displayName: `Wordset ${this.state.wordsets.length}`,
+      displayName: `New Wordset - ${randomName}`,
       distanceLimit: 14,
       vectorset: "wordVector_utf-8",
       vectors: [],

@@ -34,11 +34,12 @@ class VideoListPage extends React.Component {
   }
 
   newVideo() {
+    const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
-      name: `video_${this.state.videos.length}`,
+      name: `video_${randomName}`,
       createdTime: moment().format(),
-      displayName: `Video ${this.state.videos.length}`,
+      displayName: `New Video - ${randomName}`,
       videoId: "",
       coverUrl: "",
       labels: [],
