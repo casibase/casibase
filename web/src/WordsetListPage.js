@@ -168,7 +168,7 @@ class WordsetListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "80px",
+        width: "220px",
         render: (text, record, index) => {
           return (
             <div>

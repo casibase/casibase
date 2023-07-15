@@ -163,7 +163,7 @@ class VectorsetListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "80px",
+        width: "180px",
         render: (text, record, index) => {
           return (
             <div>
