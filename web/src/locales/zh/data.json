@@ -26,7 +26,7 @@
     "Save": "保存",
     "Stores": "我的数据仓库",
     "URL": "链接",
-    "Vectorsets": "我的向量集",
+    "Factorsets": "我的向量集",
     "Videos": "我的视频",
     "View": "查看",
     "Wordsets": "我的词汇集"
@@ -66,11 +66,11 @@
     "files and": "个文件和",
     "folders are checked": "文件夹已被选择"
   },
-  "vectorset": {
+  "factorset": {
     "Count": "个数",
     "Dimension": "维度",
-    "Edit Vectorset": "编辑向量集",
-    "Example vectors": "示例向量",
+    "Edit Factorset": "编辑向量集",
+    "Example factors": "示例向量",
     "File name": "文件名",
     "File size": "文件大小"
   },
@@ -94,7 +94,7 @@
     "Match": "匹配",
     "Matched": "匹配度",
     "Valid words": "有效词汇",
-    "Vectorset": "向量集",
+    "Factorset": "向量集",
     "Words": "词汇表"
   }
 }

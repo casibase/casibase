@@ -289,33 +289,33 @@ export function getTag(text, type, state) {
   }
 }
 
-export function getTags(vectors, type) {
-  if (!vectors) {
+export function getTags(factors, type) {
+  if (!factors) {
     return [];
   }
 
-  if (type === "vectors") {
-    return getVectorTag(vectors);
+  if (type === "factors") {
+    return getFactorTag(factors);
   } else if (type === "users") {
-    return getUserTag(vectors);
+    return getUserTag(factors);
   }
 }
 
-function getVectorTag(vectors) {
+function getFactorTag(factors) {
   const res = [];
-  vectors.forEach((vector, i) => {
-    if (vector.data.length !== 0) {
+  factors.forEach((factor, i) => {
+    if (factor.data.length !== 0) {
       res.push(
-        <Tooltip placement="top" title={getShortText(JSON.stringify(vector.data), 500)}>
+        <Tooltip placement="top" title={getShortText(JSON.stringify(factor.data), 500)}>
           <Tag color={"success"}>
-            {vector.name}
+            {factor.name}
           </Tag>
         </Tooltip>
       );
     } else {
       res.push(
         <Tag color={"warning"}>
-          {vector.name}
+          {factor.name}
         </Tag>
       );
     }
@@ -401,11 +401,11 @@ export function workbook2blob(workbook) {
 
 export function downloadXlsx(wordset) {
   const data = [];
-  wordset.vectors.forEach((vector, i) => {
+  wordset.factors.forEach((factor, i) => {
     const row = {};
 
-    row[0] = vector.name;
-    vector.data.forEach((dataItem, i) => {
+    row[0] = factor.name;
+    factor.data.forEach((dataItem, i) => {
       row[i + 1] = dataItem;
     });
 
@@ -419,8 +419,8 @@ export function downloadXlsx(wordset) {
   // ];
 
   try {
-    const blob = sheet2blob(sheet, "vectors");
-    const fileName = `vectors-${wordset.name}.xlsx`;
+    const blob = sheet2blob(sheet, "factors");
+    const fileName = `factors-${wordset.name}.xlsx`;
     FileSaver.saveAs(blob, fileName);
   } catch (error) {
     showMessage("error", `failed to download: ${error.message}`);

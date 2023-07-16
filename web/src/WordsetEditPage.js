@@ -17,9 +17,9 @@ import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import VectorTable from "./VectorTable";
+import FactorTable from "./FactorTable";
 import WordsetGraph from "./WordsetGraph";
-import * as VectorsetBackend from "./backend/VectorsetBackend";
+import * as FactorsetBackend from "./backend/FactorsetBackend";
 
 const {Option} = Select;
 
@@ -30,14 +30,14 @@ class WordsetEditPage extends React.Component {
       classes: props,
       wordsetName: props.match.params.wordsetName,
       wordset: null,
-      vectorsets: null,
+      factorsets: null,
       matchLoading: false,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getWordset();
-    this.getVectorsets();
+    this.getFactorsets();
   }
 
   getWordset() {
@@ -53,15 +53,15 @@ class WordsetEditPage extends React.Component {
       });
   }
 
-  getVectorsets() {
-    VectorsetBackend.getVectorsets(this.props.account.name)
+  getFactorsets() {
+    FactorsetBackend.getFactorsets(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            vectorsets: res.data,
+            factorsets: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get vectorsets: ${res.msg}`);
+          Setting.showMessage("error", `Failed to get factorsets: ${res.msg}`);
         }
       });
   }
@@ -84,8 +84,8 @@ class WordsetEditPage extends React.Component {
   }
 
   renderWordset() {
-    const allWords = this.state.wordset?.vectors.length;
-    const validWords = this.state.wordset?.vectors.filter(vector => vector.data.length !== 0).length;
+    const allWords = this.state.wordset?.factors.length;
+    const validWords = this.state.wordset?.factors.filter(factor => factor.data.length !== 0).length;
 
     return (
       <Card size="small" title={
@@ -116,12 +116,12 @@ class WordsetEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("wordset:Vectorset")}:
+            {i18next.t("wordset:Factorset")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.wordset.vectorset} onChange={(value => {this.updateWordsetField("vectorset", value);})}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.wordset.factorset} onChange={(value => {this.updateWordsetField("factorset", value);})}>
               {
-                this.state.vectorsets?.map((vectorset, index) => <Option key={index} value={vectorset.name}>{vectorset.name}</Option>)
+                this.state.factorsets?.map((factorset, index) => <Option key={index} value={factorset.name}>{factorset.name}</Option>)
               }
             </Select>
           </Col>
@@ -172,11 +172,11 @@ class WordsetEditPage extends React.Component {
             {i18next.t("wordset:Words")}:
           </Col>
           <Col span={22} >
-            <VectorTable
+            <FactorTable
               title={i18next.t("wordset:Words")}
-              table={this.state.wordset.vectors}
+              table={this.state.wordset.factors}
               wordset={this.state.wordset}
-              onUpdateTable={(value) => {this.updateWordsetField("vectors", value);}}
+              onUpdateTable={(value) => {this.updateWordsetField("factors", value);}}
             />
           </Col>
         </Row>

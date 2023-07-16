@@ -19,23 +19,23 @@ import (
 	"github.com/casbin/casibase/xlsx"
 )
 
-func uploadVectorNames(owner string, fileId string) (bool, error) {
+func uploadFactorNames(owner string, fileId string) (bool, error) {
 	table := xlsx.ReadXlsxFile(fileId)
 
-	vectorMap := map[string]int{}
-	vectors := []*Vector{}
+	factorMap := map[string]int{}
+	factors := []*Factor{}
 	for _, line := range table {
-		if _, ok := vectorMap[line[0]]; ok {
+		if _, ok := factorMap[line[0]]; ok {
 			continue
 		} else {
-			vectorMap[line[0]] = 1
+			factorMap[line[0]] = 1
 		}
 
-		vector := &Vector{
+		factor := &Factor{
 			Name: line[0],
 			Data: []float64{},
 		}
-		vectors = append(vectors, vector)
+		factors = append(factors, factor)
 	}
 
 	wordset := &Wordset{
@@ -44,7 +44,7 @@ func uploadVectorNames(owner string, fileId string) (bool, error) {
 		CreatedTime:   util.GetCurrentTime(),
 		DisplayName:   "word",
 		DistanceLimit: 14,
-		Vectors:       vectors,
+		Factors:       factors,
 	}
 	return AddWordset(wordset)
 }

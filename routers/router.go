@@ -45,12 +45,12 @@ func initAPI() {
 	beego.Router("/api/add-wordset", &controllers.ApiController{}, "POST:AddWordset")
 	beego.Router("/api/delete-wordset", &controllers.ApiController{}, "POST:DeleteWordset")
 
-	beego.Router("/api/get-global-vectorsets", &controllers.ApiController{}, "GET:GetGlobalVectorsets")
-	beego.Router("/api/get-vectorsets", &controllers.ApiController{}, "GET:GetVectorsets")
-	beego.Router("/api/get-vectorset", &controllers.ApiController{}, "GET:GetVectorset")
-	beego.Router("/api/update-vectorset", &controllers.ApiController{}, "POST:UpdateVectorset")
-	beego.Router("/api/add-vectorset", &controllers.ApiController{}, "POST:AddVectorset")
-	beego.Router("/api/delete-vectorset", &controllers.ApiController{}, "POST:DeleteVectorset")
+	beego.Router("/api/get-global-factorsets", &controllers.ApiController{}, "GET:GetGlobalFactorsets")
+	beego.Router("/api/get-factorsets", &controllers.ApiController{}, "GET:GetFactorsets")
+	beego.Router("/api/get-factorset", &controllers.ApiController{}, "GET:GetFactorset")
+	beego.Router("/api/update-factorset", &controllers.ApiController{}, "POST:UpdateFactorset")
+	beego.Router("/api/add-factorset", &controllers.ApiController{}, "POST:AddFactorset")
+	beego.Router("/api/delete-factorset", &controllers.ApiController{}, "POST:DeleteFactorset")
 
 	beego.Router("/api/get-global-videos", &controllers.ApiController{}, "GET:GetGlobalVideos")
 	beego.Router("/api/get-videos", &controllers.ApiController{}, "GET:GetVideos")

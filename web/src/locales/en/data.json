@@ -26,7 +26,7 @@
     "Save": "Save",
     "Stores": "Stores",
     "URL": "URL",
-    "Vectorsets": "Vectorsets",
+    "Factorsets": "Factorsets",
     "Videos": "Videos",
     "View": "View",
     "Wordsets": "Wordsets"
@@ -66,11 +66,11 @@
     "files and": "files and",
     "folders are checked": "folders are checked"
   },
-  "vectorset": {
+  "factorset": {
     "Count": "Count",
     "Dimension": "Dimension",
-    "Edit Vectorset": "Edit Vectorset",
-    "Example vectors": "Example vectors",
+    "Edit Factorset": "Edit Factorset",
+    "Example factors": "Example factors",
     "File name": "File name",
     "File size": "File size"
   },
@@ -94,7 +94,7 @@
     "Match": "Match",
     "Matched": "Matched",
     "Valid words": "Valid words",
-    "Vectorset": "Vectorset",
+    "Factorset": "Factorset",
     "Words": "Words"
   }
 }

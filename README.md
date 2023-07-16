@@ -159,4 +159,4 @@ http://localhost:13001
 
 ![9-Preview-casibase-stores](assets/9-Preview-casibase-stores.png)
 
-The **casibase** demo is shown above, and in the future users can upload various **knowledge** files, **wordsets**, and **vectorsets** to achieve a **customized domain knowledge base**.
+The **casibase** demo is shown above, and in the future users can upload various **knowledge** files, **wordsets**, and **factorsets** to achieve a **customized domain knowledge base**.

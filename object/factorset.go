@@ -21,7 +21,7 @@ import (
 	"xorm.io/core"
 )
 
-type Vectorset struct {
+type Factorset struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -33,61 +33,61 @@ type Vectorset struct {
 	Dimension   int    `json:"dimension"`
 	Count       int    `json:"count"`
 
-	Vectors    []*Vector          `xorm:"mediumtext" json:"vectors"`
-	AllVectors []*Vector          `xorm:"-" json:"allVectors"`
-	VectorMap  map[string]*Vector `xorm:"-" json:"vectorMap"`
+	Factors    []*Factor          `xorm:"mediumtext" json:"factors"`
+	AllFactors []*Factor          `xorm:"-" json:"allFactors"`
+	FactorMap  map[string]*Factor `xorm:"-" json:"factorMap"`
 }
 
-func GetGlobalVectorsets() ([]*Vectorset, error) {
-	vectorsets := []*Vectorset{}
-	err := adapter.engine.Asc("owner").Desc("created_time").Find(&vectorsets)
+func GetGlobalFactorsets() ([]*Factorset, error) {
+	factorsets := []*Factorset{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&factorsets)
 	if err != nil {
-		return vectorsets, err
+		return factorsets, err
 	}
 
-	return vectorsets, nil
+	return factorsets, nil
 }
 
-func GetVectorsets(owner string) ([]*Vectorset, error) {
-	vectorsets := []*Vectorset{}
-	err := adapter.engine.Desc("created_time").Find(&vectorsets, &Vectorset{Owner: owner})
+func GetFactorsets(owner string) ([]*Factorset, error) {
+	factorsets := []*Factorset{}
+	err := adapter.engine.Desc("created_time").Find(&factorsets, &Factorset{Owner: owner})
 	if err != nil {
-		return vectorsets, err
+		return factorsets, err
 	}
 
-	return vectorsets, nil
+	return factorsets, nil
 }
 
-func getVectorset(owner string, name string) (*Vectorset, error) {
-	vectorset := Vectorset{Owner: owner, Name: name}
-	existed, err := adapter.engine.Get(&vectorset)
+func getFactorset(owner string, name string) (*Factorset, error) {
+	factorset := Factorset{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&factorset)
 	if err != nil {
-		return &vectorset, err
+		return &factorset, err
 	}
 
 	if existed {
-		return &vectorset, nil
+		return &factorset, nil
 	} else {
 		return nil, nil
 	}
 }
 
-func GetVectorset(id string) (*Vectorset, error) {
+func GetFactorset(id string) (*Factorset, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return getVectorset(owner, name)
+	return getFactorset(owner, name)
 }
 
-func UpdateVectorset(id string, vectorset *Vectorset) (bool, error) {
+func UpdateFactorset(id string, factorset *Factorset) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getVectorset(owner, name)
+	_, err := getFactorset(owner, name)
 	if err != nil {
 		return false, err
 	}
-	if vectorset == nil {
+	if factorset == nil {
 		return false, nil
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(vectorset)
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(factorset)
 	if err != nil {
 		return false, err
 	}
@@ -96,8 +96,8 @@ func UpdateVectorset(id string, vectorset *Vectorset) (bool, error) {
 	return true, nil
 }
 
-func AddVectorset(vectorset *Vectorset) (bool, error) {
-	affected, err := adapter.engine.Insert(vectorset)
+func AddFactorset(factorset *Factorset) (bool, error) {
+	affected, err := adapter.engine.Insert(factorset)
 	if err != nil {
 		return false, err
 	}
@@ -105,8 +105,8 @@ func AddVectorset(vectorset *Vectorset) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteVectorset(vectorset *Vectorset) (bool, error) {
-	affected, err := adapter.engine.ID(core.PK{vectorset.Owner, vectorset.Name}).Delete(&Vectorset{})
+func DeleteFactorset(factorset *Factorset) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{factorset.Owner, factorset.Name}).Delete(&Factorset{})
 	if err != nil {
 		return false, err
 	}
@@ -114,6 +114,6 @@ func DeleteVectorset(vectorset *Vectorset) (bool, error) {
 	return affected != 0, nil
 }
 
-func (vectorset *Vectorset) GetId() string {
-	return fmt.Sprintf("%s/%s", vectorset.Owner, vectorset.Name)
+func (factorset *Factorset) GetId() string {
+	return fmt.Sprintf("%s/%s", factorset.Owner, factorset.Name)
 }

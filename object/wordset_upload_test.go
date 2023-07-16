@@ -16,8 +16,8 @@ package object
 
 import "testing"
 
-func TestUploadVectorNames(t *testing.T) {
+func TestUploadFactorNames(t *testing.T) {
 	InitConfig()
 
-	uploadVectorNames("admin", "../../tmpFiles/filename")
+	uploadFactorNames("admin", "../../tmpFiles/filename")
 }

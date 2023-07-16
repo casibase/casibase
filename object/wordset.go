@@ -28,9 +28,9 @@ type Wordset struct {
 
 	DisplayName   string `xorm:"varchar(100)" json:"displayName"`
 	DistanceLimit int    `json:"distanceLimit"`
-	Vectorset     string `xorm:"varchar(100)" json:"vectorset"`
+	Factorset     string `xorm:"varchar(100)" json:"factorset"`
 
-	Vectors []*Vector `xorm:"mediumtext" json:"vectors"`
+	Factors []*Factor `xorm:"mediumtext" json:"factors"`
 }
 
 func GetGlobalWordsets() ([]*Wordset, error) {

@@ -29,8 +29,8 @@ import FileTreePage from "./FileTreePage";
 import WordsetListPage from "./WordsetListPage";
 import WordsetEditPage from "./WordsetEditPage";
 import WordsetGraphPage from "./WordsetGraphPage";
-import VectorsetListPage from "./VectorsetListPage";
-import VectorsetEditPage from "./VectorsetEditPage";
+import FactorsetListPage from "./FactorsetListPage";
+import FactorsetEditPage from "./FactorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
 import ProviderListPage from "./ProviderListPage";
@@ -84,8 +84,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/clustering"});
     } else if (uri.includes("/wordsets")) {
       this.setState({selectedMenuKey: "/wordsets"});
-    } else if (uri.includes("/vectorsets")) {
-      this.setState({selectedMenuKey: "/vectorsets"});
+    } else if (uri.includes("/factorsets")) {
+      this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/providers")) {
@@ -298,9 +298,9 @@ class App extends Component {
       </Menu.Item>
     );
     res.push(
-      <Menu.Item key="/vectorsets">
-        <Link to="/vectorsets">
-          {i18next.t("general:Vectorsets")}
+      <Menu.Item key="/factorsets">
+        <Link to="/factorsets">
+          {i18next.t("general:Factorsets")}
         </Link>
       </Menu.Item>
     );
@@ -395,8 +395,8 @@ class App extends Component {
           <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
           <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectorsets" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectorsets/:vectorsetName" render={(props) => this.renderSigninIfNotSignedIn(<VectorsetEditPage account={this.state.account} {...props} />)} />
+          <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
+          <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />

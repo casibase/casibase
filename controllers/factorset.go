@@ -20,51 +20,51 @@ import (
 	"github.com/casbin/casibase/object"
 )
 
-func (c *ApiController) GetGlobalVectorsets() {
-	vectorsets, err := object.GetGlobalVectorsets()
+func (c *ApiController) GetGlobalFactorsets() {
+	factorsets, err := object.GetGlobalFactorsets()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(vectorsets)
+	c.ResponseOk(factorsets)
 }
 
-func (c *ApiController) GetVectorsets() {
+func (c *ApiController) GetFactorsets() {
 	owner := c.Input().Get("owner")
 
-	vectorsets, err := object.GetVectorsets(owner)
+	factorsets, err := object.GetFactorsets(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(vectorsets)
+	c.ResponseOk(factorsets)
 }
 
-func (c *ApiController) GetVectorset() {
+func (c *ApiController) GetFactorset() {
 	id := c.Input().Get("id")
 
-	vectorset, err := object.GetVectorset(id)
+	factorset, err := object.GetFactorset(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(vectorset)
+	c.ResponseOk(factorset)
 }
 
-func (c *ApiController) UpdateVectorset() {
+func (c *ApiController) UpdateFactorset() {
 	id := c.Input().Get("id")
 
-	var vectorset object.Vectorset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
+	var factorset object.Factorset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.UpdateVectorset(id, &vectorset)
+	success, err := object.UpdateFactorset(id, &factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -73,15 +73,15 @@ func (c *ApiController) UpdateVectorset() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) AddVectorset() {
-	var vectorset object.Vectorset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
+func (c *ApiController) AddFactorset() {
+	var factorset object.Factorset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.AddVectorset(&vectorset)
+	success, err := object.AddFactorset(&factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -90,15 +90,15 @@ func (c *ApiController) AddVectorset() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) DeleteVectorset() {
-	var vectorset object.Vectorset
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &vectorset)
+func (c *ApiController) DeleteFactorset() {
+	var factorset object.Factorset
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := object.DeleteVectorset(&vectorset)
+	success, err := object.DeleteFactorset(&factorset)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

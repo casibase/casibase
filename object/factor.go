@@ -14,13 +14,22 @@
 
 package object
 
-import "testing"
+import (
+	"fmt"
+	"strings"
+)
 
-func TestUpdateVectorsetVectors(t *testing.T) {
-	InitConfig()
+type Factor struct {
+	Name     string    `xorm:"varchar(100)" json:"name"`
+	Category string    `xorm:"varchar(100)" json:"category"`
+	Color    string    `xorm:"varchar(100)" json:"color"`
+	Data     []float64 `xorm:"varchar(1000)" json:"data"`
+}
 
-	//vectorset := getVectorset("admin", "wikipedia")
-	vectorset, _ := getVectorset("admin", "wordVector_utf-8")
-	vectorset.LoadVectors("../../tmpFiles/")
-	UpdateVectorset(vectorset.GetId(), vectorset)
+func (factor *Factor) GetDataKey() string {
+	sData := []string{}
+	for _, f := range factor.Data {
+		sData = append(sData, fmt.Sprintf("%f", f))
+	}
+	return strings.Join(sData, "|")
 }

@@ -19,20 +19,20 @@ import (
 	"testing"
 )
 
-func TestDoVectorsetTsne(t *testing.T) {
+func TestDoFactorsetTsne(t *testing.T) {
 	InitConfig()
 
 	dimension := 50
 
-	//vectorset := getVectorset("admin", "wikipedia")
-	vectorset, _ := getVectorset("admin", "wordVector_utf-8")
-	vectorset.LoadVectors("../../tmpFiles/")
-	vectorset.DoTsne(dimension)
+	//factorset := getFactorset("admin", "wikipedia")
+	factorset, _ := getFactorset("admin", "wordFactor_utf-8")
+	factorset.LoadFactors("../../tmpFiles/")
+	factorset.DoTsne(dimension)
 
-	vectorset.Name = fmt.Sprintf("%s_Dim_%d", vectorset.Name, dimension)
-	vectorset.FileName = fmt.Sprintf("%s_Dim_%d.csv", vectorset.FileName, dimension)
-	vectorset.FileSize = ""
-	vectorset.Dimension = dimension
-	vectorset.WriteVectors("../../tmpFiles/")
-	AddVectorset(vectorset)
+	factorset.Name = fmt.Sprintf("%s_Dim_%d", factorset.Name, dimension)
+	factorset.FileName = fmt.Sprintf("%s_Dim_%d.csv", factorset.FileName, dimension)
+	factorset.FileSize = ""
+	factorset.Dimension = dimension
+	factorset.WriteFactors("../../tmpFiles/")
+	AddFactorset(factorset)
 }

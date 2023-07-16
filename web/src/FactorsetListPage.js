@@ -17,87 +17,87 @@ import {Link} from "react-router-dom";
 import {Button, Col, Popconfirm, Row, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
-import * as VectorsetBackend from "./backend/VectorsetBackend";
+import * as FactorsetBackend from "./backend/FactorsetBackend";
 import i18next from "i18next";
 
-class VectorsetListPage extends React.Component {
+class FactorsetListPage extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       classes: props,
-      vectorsets: null,
+      factorsets: null,
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getVectorsets();
+    this.getFactorsets();
   }
 
-  getVectorsets() {
-    VectorsetBackend.getVectorsets(this.props.account.name)
+  getFactorsets() {
+    FactorsetBackend.getFactorsets(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            vectorsets: res.data,
+            factorsets: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get vectorsets: ${res.msg}`);
+          Setting.showMessage("error", `Failed to get factorsets: ${res.msg}`);
         }
       });
   }
 
-  newVectorset() {
+  newFactorset() {
     const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
-      name: `vectorset_${randomName}`,
+      name: `factorset_${randomName}`,
       createdTime: moment().format(),
-      displayName: `New Vectorset - ${randomName}`,
-      url: "https://github.com/Embedding/Chinese-Word-Vectors",
+      displayName: `New Factorset - ${randomName}`,
+      url: "https://github.com/Embedding/Chinese-Word-Factors",
       fileName: "sgns.target.word-word.dynwin5.thr10.neg5.dim300.iter5",
       fileSize: "1.69 GB",
       dimension: 128,
       count: 10000,
-      vectors: [],
+      factors: [],
     };
   }
 
-  addVectorset() {
-    const newVectorset = this.newVectorset();
-    VectorsetBackend.addVectorset(newVectorset)
+  addFactorset() {
+    const newFactorset = this.newFactorset();
+    FactorsetBackend.addFactorset(newFactorset)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Vectorset added successfully");
+          Setting.showMessage("success", "Factorset added successfully");
           this.setState({
-            vectorsets: Setting.prependRow(this.state.vectorsets, newVectorset),
+            factorsets: Setting.prependRow(this.state.factorsets, newFactorset),
           });
         } else {
-          Setting.showMessage("error", `Failed to add vectorset: ${res.msg}`);
+          Setting.showMessage("error", `Failed to add factorset: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Vectorset failed to add: ${error}`);
+        Setting.showMessage("error", `Factorset failed to add: ${error}`);
       });
   }
 
-  deleteVectorset(i) {
-    VectorsetBackend.deleteVectorset(this.state.vectorsets[i])
+  deleteFactorset(i) {
+    FactorsetBackend.deleteFactorset(this.state.factorsets[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Vectorset deleted successfully");
+          Setting.showMessage("success", "Factorset deleted successfully");
           this.setState({
-            vectorsets: Setting.deleteRow(this.state.vectorsets, i),
+            factorsets: Setting.deleteRow(this.state.factorsets, i),
           });
         } else {
-          Setting.showMessage("error", `Vectorset failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `Factorset failed to delete: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Vectorset failed to delete: ${error}`);
+        Setting.showMessage("error", `Factorset failed to delete: ${error}`);
       });
   }
 
-  renderTable(vectorsets) {
+  renderTable(factorsets) {
     const columns = [
       {
         title: i18next.t("general:Name"),
@@ -107,7 +107,7 @@ class VectorsetListPage extends React.Component {
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <Link to={`/vectorsets/${text}`}>
+            <Link to={`/factorsets/${text}`}>
               {text}
             </Link>
           );
@@ -137,38 +137,38 @@ class VectorsetListPage extends React.Component {
         },
       },
       {
-        title: i18next.t("vectorset:File name"),
+        title: i18next.t("factorset:File name"),
         dataIndex: "fileName",
         key: "fileName",
         width: "200px",
         sorter: (a, b) => a.fileName.localeCompare(b.fileName),
       },
       {
-        title: i18next.t("vectorset:File size"),
+        title: i18next.t("factorset:File size"),
         dataIndex: "fileSize",
         key: "fileSize",
         width: "120px",
         sorter: (a, b) => a.fileSize.localeCompare(b.fileSize),
       },
       {
-        title: i18next.t("vectorset:Dimension"),
+        title: i18next.t("factorset:Dimension"),
         dataIndex: "dimension",
         key: "dimension",
         width: "110px",
         sorter: (a, b) => a.dimension - b.dimension,
       },
       {
-        title: i18next.t("vectorset:Example vectors"),
-        dataIndex: "vectors",
-        key: "vectors",
+        title: i18next.t("factorset:Example factors"),
+        dataIndex: "factors",
+        key: "factors",
         // width: '120px',
-        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
-          return Setting.getTags(text, "vectors");
+          return Setting.getTags(text, "factors");
         },
       },
       {
-        title: i18next.t("vectorset:Count"),
+        title: i18next.t("factorset:Count"),
         dataIndex: "count",
         key: "count",
         width: "110px",
@@ -182,10 +182,10 @@ class VectorsetListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/vectorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/factorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
-                title={`Sure to delete vectorset: ${record.name} ?`}
-                onConfirm={() => this.deleteVectorset(index)}
+                title={`Sure to delete factorset: ${record.name} ?`}
+                onConfirm={() => this.deleteFactorset(index)}
                 okText="OK"
                 cancelText="Cancel"
               >
@@ -199,14 +199,14 @@ class VectorsetListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={vectorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table columns={columns} dataSource={factorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
-              {i18next.t("general:Vectorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addVectorset.bind(this)}>{i18next.t("general:Add")}</Button>
+              {i18next.t("general:Factorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addFactorset.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={vectorsets === null}
+          loading={factorsets === null}
         />
       </div>
     );
@@ -220,7 +220,7 @@ class VectorsetListPage extends React.Component {
           </Col>
           <Col span={22}>
             {
-              this.renderTable(this.state.vectorsets)
+              this.renderTable(this.state.factorsets)
             }
           </Col>
           <Col span={1}>
@@ -231,4 +231,4 @@ class VectorsetListPage extends React.Component {
   }
 }
 
-export default VectorsetListPage;
+export default FactorsetListPage;

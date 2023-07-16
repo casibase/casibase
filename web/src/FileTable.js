@@ -52,7 +52,7 @@ class FileTable extends React.Component {
   }
 
   addRow(table) {
-    const row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
+    const row = {no: table.length, name: `New Factor - ${table.length}`, data: []};
     if (table === undefined) {
       table = [];
     }
@@ -98,7 +98,7 @@ class FileTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: i18next.t("vectorset:File name"),
+        title: i18next.t("factorset:File name"),
         dataIndex: "title",
         key: "title",
         // width: '200px',
@@ -139,7 +139,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("vectorset:File size"),
+        title: i18next.t("factorset:File size"),
         dataIndex: "size",
         key: "size",
         width: "120px",

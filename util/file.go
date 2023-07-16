@@ -38,7 +38,7 @@ func parseJsonToFloats(s string) []float64 {
 	return res
 }
 
-func LoadVectorFileByCsv(path string) ([]string, [][]float64) {
+func LoadFactorFileByCsv(path string) ([]string, [][]float64) {
 	nameArray := []string{}
 	dataArray := [][]float64{}
 
@@ -63,7 +63,7 @@ func LoadVectorFileByCsv(path string) ([]string, [][]float64) {
 	return nameArray, dataArray
 }
 
-func LoadVectorFileByCsv2(path string) ([]string, [][]float64) {
+func LoadFactorFileByCsv2(path string) ([]string, [][]float64) {
 	nameArray := []string{}
 	dataArray := [][]float64{}
 
@@ -84,7 +84,7 @@ func LoadVectorFileByCsv2(path string) ([]string, [][]float64) {
 	return nameArray, dataArray
 }
 
-func LoadVectorFileBySpace(path string) ([]string, [][]float64) {
+func LoadFactorFileBySpace(path string) ([]string, [][]float64) {
 	nameArray := []string{}
 	dataArray := [][]float64{}
 

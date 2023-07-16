@@ -108,7 +108,7 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Vectorset))
+	err = a.engine.Sync2(new(Factorset))
 	if err != nil {
 		panic(err)
 	}

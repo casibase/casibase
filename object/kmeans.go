@@ -32,19 +32,19 @@ func fa2Str(floatArray []float64) string {
 	return strings.Join(sData, "|")
 }
 
-func runKmeans(vectors []*Vector, clusterNumber int) {
-	vectorMap := map[string]*Vector{}
+func runKmeans(factors []*Factor, clusterNumber int) {
+	factorMap := map[string]*Factor{}
 
 	var d clusters.Observations
-	for _, vector := range vectors {
-		if len(vector.Data) == 0 {
+	for _, factor := range factors {
+		if len(factor.Data) == 0 {
 			continue
 		}
 
-		dataKey := vector.GetDataKey()
-		vectorMap[dataKey] = vector
+		dataKey := factor.GetDataKey()
+		factorMap[dataKey] = factor
 
-		d = append(d, clusters.Coordinates(vector.Data))
+		d = append(d, clusters.Coordinates(factor.Data))
 	}
 
 	km := kmeans.New()
@@ -62,20 +62,20 @@ func runKmeans(vectors []*Vector, clusterNumber int) {
 			floatArray := observation.Coordinates()
 			dataKey := fa2Str(floatArray)
 
-			vector, ok := vectorMap[dataKey]
+			factor, ok := factorMap[dataKey]
 			if !ok {
-				panic(fmt.Errorf("vectorMap vector not found, dataKey = %s", dataKey))
+				panic(fmt.Errorf("factorMap factor not found, dataKey = %s", dataKey))
 			}
-			vector.Category = strconv.Itoa(i)
-			vector.Color = color
+			factor.Category = strconv.Itoa(i)
+			factor.Color = color
 		}
 	}
 }
 
-func updateWordsetVectorCategories(owner string, wordsetName string) {
+func updateWordsetFactorCategories(owner string, wordsetName string) {
 	wordset, _ := getWordset(owner, wordsetName)
 
-	runKmeans(wordset.Vectors, 100)
+	runKmeans(wordset.Factors, 100)
 
 	UpdateWordset(wordset.GetId(), wordset)
 }

@@ -54,8 +54,8 @@ class WordsetListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Wordset - ${randomName}`,
       distanceLimit: 14,
-      vectorset: "wordVector_utf-8",
-      vectors: [],
+      factorset: "wordFactor_utf-8",
+      factors: [],
     };
   }
 
@@ -119,43 +119,23 @@ class WordsetListPage extends React.Component {
       },
       {
         title: i18next.t("wordset:Words"),
-        dataIndex: "vectors",
-        key: "vectors",
+        dataIndex: "factors",
+        key: "factors",
         // width: '120px',
-        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
-          return Setting.getTags(text, "vectors");
+          return Setting.getTags(text, "factors");
         },
       },
-      // {
-      //   title: i18next.t("wordset:All words"),
-      //   dataIndex: 'allWords',
-      //   key: 'allWords',
-      //   width: '140px',
-      //   sorter: (a, b) => a.allWords - b.allWords,
-      //   render: (text, record, index) => {
-      //     return record.vectors.length;
-      //   }
-      // },
-      // {
-      //   title: i18next.t("wordset:Valid words"),
-      //   dataIndex: 'validWords',
-      //   key: 'validWords',
-      //   width: '140px',
-      //   sorter: (a, b) => a.validWords - b.validWords,
-      //   render: (text, record, index) => {
-      //     return record.vectors.filter(vector => vector.data.length !== 0).length;
-      //   }
-      // },
       {
-        title: i18next.t("wordset:Vectorset"),
-        dataIndex: "vectorset",
-        key: "vectorset",
+        title: i18next.t("wordset:Factorset"),
+        dataIndex: "factorset",
+        key: "factorset",
         width: "140px",
-        sorter: (a, b) => a.vectorset.localeCompare(b.vectorset),
+        sorter: (a, b) => a.factorset.localeCompare(b.factorset),
         render: (text, record, index) => {
           return (
-            <Link to={`/vectorsets/${text}`}>
+            <Link to={`/factorsets/${text}`}>
               {text}
             </Link>
           );
@@ -167,8 +147,8 @@ class WordsetListPage extends React.Component {
         key: "matched",
         width: "140px",
         render: (text, record, index) => {
-          const allWords = record.vectors.length;
-          const validWords = record.vectors.filter(vector => vector.data.length !== 0).length;
+          const allWords = record.factors.length;
+          const validWords = record.factors.filter(factor => factor.data.length !== 0).length;
           return `${Setting.getPercentage(allWords === 0 ? 0 : validWords / allWords)}% (${validWords} / ${allWords})`;
         },
       },

@@ -45,13 +45,13 @@ func GetWordsetGraph(id string, clusterNumber int, distanceLimit int) (*Graph, e
 		return nil, nil
 	}
 
-	if len(wordset.Vectors) == 0 {
+	if len(wordset.Factors) == 0 {
 		return nil, nil
 	}
 
 	allZero := true
-	for _, vector := range wordset.Vectors {
-		if len(vector.Data) != 0 {
+	for _, factor := range wordset.Factors {
+		if len(factor.Data) != 0 {
 			allZero = false
 			break
 		}
@@ -60,14 +60,14 @@ func GetWordsetGraph(id string, clusterNumber int, distanceLimit int) (*Graph, e
 		return nil, nil
 	}
 
-	runKmeans(wordset.Vectors, clusterNumber)
+	runKmeans(wordset.Factors, clusterNumber)
 
-	g = generateGraph(wordset.Vectors, distanceLimit)
+	g = generateGraph(wordset.Factors, distanceLimit)
 	//graphCache[cacheId] = g
 	return g, nil
 }
 
-func getDistance(v1 *Vector, v2 *Vector) float64 {
+func getDistance(v1 *Factor, v2 *Factor) float64 {
 	res := 0.0
 	for i := range v1.Data {
 		res += (v1.Data[i] - v2.Data[i]) * (v1.Data[i] - v2.Data[i])
@@ -75,11 +75,11 @@ func getDistance(v1 *Vector, v2 *Vector) float64 {
 	return math.Sqrt(res)
 }
 
-func refineVectors(vectors []*Vector) []*Vector {
-	res := []*Vector{}
-	for _, vector := range vectors {
-		if len(vector.Data) > 0 {
-			res = append(res, vector)
+func refineFactors(factors []*Factor) []*Factor {
+	res := []*Factor{}
+	for _, factor := range factors {
+		if len(factor.Data) > 0 {
+			res = append(res, factor)
 		}
 	}
 	return res
@@ -97,19 +97,19 @@ func getNodeColor(weight int) string {
 	return fmt.Sprintf("rgb(%d,%d,%d)", myColor.R, myColor.G, myColor.B)
 }
 
-func generateGraph(vectors []*Vector, distanceLimit int) *Graph {
-	vectors = refineVectors(vectors)
-	//vectors = vectors[:100]
+func generateGraph(factors []*Factor, distanceLimit int) *Graph {
+	factors = refineFactors(factors)
+	//factors = factors[:100]
 
 	g := newGraph()
 	g.Nodes = []*Node{}
 	g.Links = []*Link{}
 
 	nodeWeightMap := map[string]int{}
-	for i := 0; i < len(vectors); i++ {
-		for j := i + 1; j < len(vectors); j++ {
-			v1 := vectors[i]
-			v2 := vectors[j]
+	for i := 0; i < len(factors); i++ {
+		for j := i + 1; j < len(factors); j++ {
+			v1 := factors[i]
+			v2 := factors[j]
 			distance := int(getDistance(v1, v2))
 			if distance >= distanceLimit {
 				continue
@@ -134,17 +134,17 @@ func generateGraph(vectors []*Vector, distanceLimit int) *Graph {
 		}
 	}
 
-	for _, vector := range vectors {
+	for _, factor := range factors {
 		//value := 5
-		value := int(math.Sqrt(float64(nodeWeightMap[vector.Name]))) + 3
-		weight := nodeWeightMap[vector.Name]
+		value := int(math.Sqrt(float64(nodeWeightMap[factor.Name]))) + 3
+		weight := nodeWeightMap[factor.Name]
 
 		//nodeColor := "rgb(232,67,62)"
 		//nodeColor := getNodeColor(value)
-		nodeColor := vector.Color
+		nodeColor := factor.Color
 
-		fmt.Printf("Node [%s]: weight = %d, nodeValue = %d\n", vector.Name, nodeWeightMap[vector.Name], value)
-		g.addNode(vector.Name, vector.Name, value, nodeColor, vector.Category, weight)
+		fmt.Printf("Node [%s]: weight = %d, nodeValue = %d\n", factor.Name, nodeWeightMap[factor.Name], value)
+		g.addNode(factor.Name, factor.Name, value, nodeColor, factor.Category, weight)
 	}
 
 	return g

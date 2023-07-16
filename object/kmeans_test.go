@@ -16,8 +16,8 @@ package object
 
 import "testing"
 
-func TestUpdateWordsetVectorCategories(t *testing.T) {
+func TestUpdateWordsetFactorCategories(t *testing.T) {
 	InitConfig()
 
-	updateWordsetVectorCategories("admin", "word")
+	updateWordsetFactorCategories("admin", "word")
 }

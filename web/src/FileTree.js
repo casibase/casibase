@@ -808,13 +808,13 @@ class FileTree extends React.Component {
           size="small"
           // extra={<Button type="primary">Edit</Button>}
         >
-          <Descriptions.Item label={i18next.t("vectorset:File name")}>
+          <Descriptions.Item label={i18next.t("factorset:File name")}>
             {file.title}
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("store:File type")}>
             {Setting.getExtFromFile(file)}
           </Descriptions.Item>
-          <Descriptions.Item label={i18next.t("vectorset:File size")}>
+          <Descriptions.Item label={i18next.t("factorset:File size")}>
             {Setting.getFriendlyFileSize(file.size)}
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Created time")}>

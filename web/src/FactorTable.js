@@ -18,7 +18,7 @@ import {Button, Col, Input, Row, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
-class VectorTable extends React.Component {
+class FactorTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -50,7 +50,7 @@ class VectorTable extends React.Component {
   }
 
   addRow(table) {
-    const row = {no: table.length, name: `New Vector - ${table.length}`, data: []};
+    const row = {no: table.length, name: `New Factor - ${table.length}`, data: []};
     if (table === undefined) {
       table = [];
     }
@@ -164,4 +164,4 @@ class VectorTable extends React.Component {
   }
 }
 
-export default VectorTable;
+export default FactorTable;

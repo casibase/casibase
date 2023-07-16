@@ -185,7 +185,7 @@ class VideoListPage extends React.Component {
         dataIndex: "labels",
         key: "labels",
         // width: '120px',
-        sorter: (a, b) => a.vectors.localeCompare(b.vectors),
+        sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
           return Setting.getLabelTags(text);
         },

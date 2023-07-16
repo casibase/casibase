@@ -23,21 +23,21 @@ func GetWordsetMatch(id string) (*Wordset, error) {
 		return nil, nil
 	}
 
-	vectorset, err := getVectorset(wordset.Owner, wordset.Vectorset)
+	factorset, err := getFactorset(wordset.Owner, wordset.Factorset)
 	if err != nil {
 		return nil, err
 	}
-	if vectorset == nil {
+	if factorset == nil {
 		return nil, nil
 	}
 
-	vectorset.LoadVectors("")
+	factorset.LoadFactors("")
 
-	for _, vector := range wordset.Vectors {
-		if trueVector, ok := vectorset.VectorMap[vector.Name]; ok {
-			vector.Data = trueVector.Data
+	for _, factor := range wordset.Factors {
+		if trueFactor, ok := factorset.FactorMap[factor.Name]; ok {
+			factor.Data = trueFactor.Data
 		} else {
-			vector.Data = []float64{}
+			factor.Data = []float64{}
 		}
 	}
 
