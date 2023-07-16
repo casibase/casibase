@@ -129,7 +129,14 @@ func (video *Video) GetId() string {
 }
 
 func (video *Video) Populate() error {
-	store, _ := getStore("admin", "default")
+	store, err := getCurrentStore("admin")
+	if err != nil {
+		return err
+	}
+	if store == nil {
+		return nil
+	}
+
 	dataUrls, err := store.GetVideoData()
 	if err != nil {
 		return err

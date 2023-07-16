@@ -70,6 +70,20 @@ func GetStores(owner string) ([]*Store, error) {
 	return stores, nil
 }
 
+func getCurrentStore(owner string) (*Store, error) {
+	stores, err := GetStores(owner)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, store := range stores {
+		if store.Domain != "https://cdn.example.com" {
+			return store, nil
+		}
+	}
+	return nil, nil
+}
+
 func getStore(owner string, name string) (*Store, error) {
 	store := Store{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&store)
