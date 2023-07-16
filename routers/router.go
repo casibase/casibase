@@ -81,6 +81,13 @@ func initAPI() {
 	beego.Router("/api/add-chat", &controllers.ApiController{}, "POST:AddChat")
 	beego.Router("/api/delete-chat", &controllers.ApiController{}, "POST:DeleteChat")
 
+	beego.Router("/api/get-global-messages", &controllers.ApiController{}, "GET:GetGlobalMessages")
+	beego.Router("/api/get-messages", &controllers.ApiController{}, "GET:GetMessages")
+	beego.Router("/api/get-message", &controllers.ApiController{}, "GET:GetMessage")
+	beego.Router("/api/update-message", &controllers.ApiController{}, "POST:UpdateMessage")
+	beego.Router("/api/add-message", &controllers.ApiController{}, "POST:AddMessage")
+	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
+
 	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
 	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
 	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")

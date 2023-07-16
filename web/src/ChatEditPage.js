@@ -27,11 +27,13 @@ class ChatEditPage extends React.Component {
       classes: props,
       chatName: props.match.params.chatName,
       chat: null,
+      // users: [],
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getChat();
+    // this.getUser();
   }
 
   getChat() {

@@ -40,6 +40,8 @@ import i18next from "i18next";
 import LanguageSelect from "./LanguageSelect";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
+import MessageListPage from "./MessageListPage";
+import MessageEditPage from "./MessageEditPage";
 
 const {Header, Footer} = Layout;
 
@@ -92,6 +94,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/providers"});
     } else if (uri.includes("/chats")) {
       this.setState({selectedMenuKey: "/chats"});
+    } else if (uri.includes("/messages")) {
+      this.setState({selectedMenuKey: "/messages"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -332,6 +336,13 @@ class App extends Component {
       </Menu.Item>
     );
     res.push(
+      <Menu.Item key="/messages">
+        <Link to="/messages">
+          {i18next.t("general:Messages")}
+        </Link>
+      </Menu.Item>
+    );
+    res.push(
       <Menu.Item key="/permissions">
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
           {i18next.t("general:Permissions")}
@@ -418,6 +429,8 @@ class App extends Component {
           <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
           <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
+          <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+          <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         </Switch>
       </div>
     );

@@ -1,0 +1,277 @@
+// Copyright 2023 The casbin Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import React from "react";
+import {Button, Card, Col, Input, Row, Select} from "antd";
+import * as Setting from "./Setting";
+import i18next from "i18next";
+import * as MessageBackend from "./backend/MessageBackend";
+import TextArea from "antd/es/input/TextArea";
+import * as ChatBackend from "./backend/ChatBackend";
+
+class MessageEditPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+      messageName: props.match.params.messageName,
+      messages: [],
+      message: null,
+      chats: [],
+      // users: [],
+      chat: null,
+    };
+  }
+
+  UNSAFE_componentWillMount() {
+    this.getMessage();
+    this.getMessages();
+    this.getChats();
+  }
+
+  getChats() {
+    ChatBackend.getChats(this.props.account.name)
+      .then((chats) => {
+        if (chats.status === "ok") {
+          this.setState({
+            chats: chats.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get chat: ${chats.msg}`);
+        }
+      });
+  }
+
+  getChat(chatName) {
+    ChatBackend.getChat(this.props.account.name, chatName)
+      .then((chat) => {
+        if (chat.status === "ok") {
+          this.setState({
+            chat: chat.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get chat: ${chat.msg}`);
+        }
+      });
+  }
+
+  getMessage() {
+    MessageBackend.getMessage(this.props.account.name, this.state.messageName)
+      .then((message) => {
+        if (message.status === "ok") {
+          this.setState({
+            message: message.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get message: ${message.msg}`);
+        }
+      });
+  }
+
+  getMessages() {
+    MessageBackend.getMessages(this.props.account.name)
+      .then((messages) => {
+        if (messages.status === "ok") {
+          this.setState({
+            messages: messages.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get messages: ${messages.msg}`);
+        }
+      });
+  }
+
+  parseMessageField(key, value) {
+    if ([""].includes(key)) {
+      value = Setting.myParseInt(value);
+    }
+    return value;
+  }
+
+  updateMessageField(key, value) {
+    value = this.parseMessageField(key, value);
+
+    const message = this.state.message;
+    message[key] = value;
+    this.setState({
+      message: message,
+    });
+  }
+
+  renderMessage() {
+    return (
+      <Card size="small" title={
+        <div>
+          {i18next.t("message:Edit Chat")}&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button type="primary" onClick={this.submitMessageEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+        </div>
+      } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
+        {/* <Row style={{marginTop: "10px"}} >*/}
+        {/*  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
+        {/*    {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :*/}
+        {/*  </Col>*/}
+        {/*  <Col span={22} >*/}
+        {/*    <Select virtual={false} disabled={!Setting.isAdminUser(this.props.account)} style={{width: "100%"}} value={this.state.chat.organization} onChange={(value => {this.updateChatField("organization", value);})}*/}
+        {/*      options={this.state.organizations.map((organization) => Setting.getOption(organization.name, organization.name))*/}
+        {/*      } />*/}
+        {/*  </Col>*/}
+        {/* </Row>*/}
+        <Row style={{marginTop: "10px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("general:Name")}:
+          </Col>
+          <Col span={22}>
+            <Input
+              value={this.state.message.name}
+              onChange={(e) => {
+                this.updateMessageField("name", e.target.value);
+              }}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Chat")}:
+          </Col>
+          <Col span={22}>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.message.chat}
+              onChange={(value) => {
+                this.updateMessageField("chat", value);
+                this.getChat(value);
+              }}
+              options={this.state.chats.map((chat) =>
+                Setting.getOption(chat.name, chat.name)
+              )}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Author")}:
+          </Col>
+          <Col span={22}>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.message.author}
+              onChange={(value) => {
+                this.updateMessageField("author", value);
+              }}
+              options={
+                this.state.chat !== null
+                  ? this.state.chat.users.map((user) =>
+                    Setting.getOption(`${user}`, `${user}`)
+                  )
+                  : []
+              }
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:replyTo")}:
+          </Col>
+          <Col span={22}>
+            <Select
+              virtual={false}
+              style={{width: "100%"}}
+              value={this.state.message.replyTo}
+              onChange={(value) => {
+                this.updateMessageField("replyTo", value);
+              }}
+              options={
+                this.state.messages !== null
+                  ? this.state.messages.map((message) =>
+                    Setting.getOption(`${message.name}`, `${message.name}`)
+                  )
+                  : []
+              }
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Text")}:
+          </Col>
+          <Col span={22}>
+            <TextArea
+              rows={10}
+              value={this.state.message.text}
+              onChange={(e) => {
+                this.updateMessageField("text", e.target.value);
+              }}
+            />
+          </Col>
+        </Row>
+      </Card>
+    );
+  }
+
+  submitMessageEdit(exitAfterSave) {
+    const message = Setting.deepCopy(this.state.message);
+    MessageBackend.updateMessage(this.state.message.owner, this.state.messageName, message)
+      .then((res) => {
+        if (res.status === "ok") {
+          if (res.data) {
+            Setting.showMessage("success", "Successfully saved");
+            this.setState({
+              messageName: this.state.message.name,
+            });
+            if (exitAfterSave) {
+              this.props.history.push(`/messages/${this.state.message.name}`);
+            }
+          } else {
+            Setting.showMessage("error", "failed to save: server side failure");
+            this.updateMessageField("name", this.state.messageName);
+          }
+        } else {
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
+        }
+      })
+      .catch((error) => {
+        Setting.showMessage("error", `failed to save: ${error}`);
+      });
+  }
+
+  render() {
+    return (
+      <div>
+        <Row style={{width: "100%"}}>
+          <Col span={1}></Col>
+          <Col span={22}>
+            {this.state.message !== null ? this.renderMessage() : null}
+          </Col>
+          <Col span={1}></Col>
+        </Row>
+        <Row style={{margin: 10}}>
+          <Col span={2}></Col>
+          <Col span={18}>
+            <Button
+              type="primary"
+              size="large"
+              onClick={this.submitMessageEdit.bind(this)}
+            >
+              {i18next.t("general:Save")}
+            </Button>
+          </Col>
+        </Row>
+      </div>
+    );
+  }
+}
+
+export default MessageEditPage;
