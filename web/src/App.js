@@ -393,7 +393,7 @@ class App extends Component {
           textAlign: "center",
         }
       }>
-        Made with <span style={{color: "rgb(255, 255, 255)"}}>❤️</span> by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>, {Setting.isMobile() ? "Mobile" : "Desktop"} View
+        Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>
       </Footer>
     );
   }

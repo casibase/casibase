@@ -252,6 +252,10 @@ class FileTree extends React.Component {
   }
 
   isFileOk(file, action) {
+    if (this.props.account.isAdmin) {
+      return true;
+    }
+
     if (this.state.permissionMap === null) {
       return false;
     }
