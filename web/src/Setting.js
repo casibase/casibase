@@ -289,11 +289,19 @@ export function getTag(text, type, state) {
   }
 }
 
-export function getTags(vectors) {
+export function getTags(vectors, type) {
   if (!vectors) {
     return [];
   }
 
+  if (type === "vectors") {
+    return getVectorTag(vectors);
+  } else if (type === "users") {
+    return getUserTag(vectors);
+  }
+}
+
+function getVectorTag(vectors) {
   const res = [];
   vectors.forEach((vector, i) => {
     if (vector.data.length !== 0) {
@@ -308,6 +316,28 @@ export function getTags(vectors) {
       res.push(
         <Tag color={"warning"}>
           {vector.name}
+        </Tag>
+      );
+    }
+  });
+  return res;
+}
+
+function getUserTag(users) {
+  const res = [];
+  users.forEach((user, i) => {
+    if (user.length !== 0) {
+      res.push(
+        <Tooltip placement="top" title={getShortText(JSON.stringify(user), 500)}>
+          <Tag color={"success"}>
+            {user}
+          </Tag>
+        </Tooltip>
+      );
+    } else {
+      res.push(
+        <Tag color={"warning"}>
+          {user}
         </Tag>
       );
     }
@@ -591,5 +621,12 @@ export function getItem(label, key, icon, children, type) {
     children,
     label,
     type,
+  };
+}
+
+export function getOption(label, value) {
+  return {
+    label,
+    value,
   };
 }

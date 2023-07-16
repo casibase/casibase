@@ -38,6 +38,8 @@ import ProviderEditPage from "./ProviderEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import LanguageSelect from "./LanguageSelect";
+import ChatEditPage from "./ChatEditPage";
+import ChatListPage from "./ChatListPage";
 
 const {Header, Footer} = Layout;
 
@@ -88,6 +90,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/providers")) {
       this.setState({selectedMenuKey: "/providers"});
+    } else if (uri.includes("/chats")) {
+      this.setState({selectedMenuKey: "/chats"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -314,6 +318,13 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/chats">
+        <Link to="/chats">
+          {i18next.t("general:Chats")}
+        </Link>
+      </Menu.Item>
+    );
 
     if (Setting.isLocalAdminUser(this.state.account)) {
       res.push(
@@ -390,6 +401,8 @@ class App extends Component {
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
           <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
+          <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
+          <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
         </Switch>
       </div>
     );

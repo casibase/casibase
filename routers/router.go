@@ -74,6 +74,13 @@ func initAPI() {
 	beego.Router("/api/add-provider", &controllers.ApiController{}, "POST:AddProvider")
 	beego.Router("/api/delete-provider", &controllers.ApiController{}, "POST:DeleteProvider")
 
+	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")
+	beego.Router("/api/get-chats", &controllers.ApiController{}, "GET:GetChats")
+	beego.Router("/api/get-chat", &controllers.ApiController{}, "GET:GetChat")
+	beego.Router("/api/update-chat", &controllers.ApiController{}, "POST:UpdateChat")
+	beego.Router("/api/add-chat", &controllers.ApiController{}, "POST:AddChat")
+	beego.Router("/api/delete-chat", &controllers.ApiController{}, "POST:DeleteChat")
+
 	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
 	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
 	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")

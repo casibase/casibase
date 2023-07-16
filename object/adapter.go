@@ -127,4 +127,9 @@ func (a *Adapter) createTable() {
 	if err != nil {
 		panic(err)
 	}
+
+	err = a.engine.Sync2(new(Chat))
+	if err != nil {
+		panic(err)
+	}
 }

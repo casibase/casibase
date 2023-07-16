@@ -124,7 +124,7 @@ class WordsetListPage extends React.Component {
         // width: '120px',
         sorter: (a, b) => a.vectors.localeCompare(b.vectors),
         render: (text, record, index) => {
-          return Setting.getTags(text);
+          return Setting.getTags(text, "vectors");
         },
       },
       // {
