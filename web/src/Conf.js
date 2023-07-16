@@ -24,6 +24,8 @@ export const AuthConfig = {
 export const DefaultOwner = "admin";
 export const DefaultWordsetName = "word";
 
+export const EnableExtraPages = false;
+
 export const ForceLanguage = "";
 export const DefaultLanguage = "en";
 

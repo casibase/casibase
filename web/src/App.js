@@ -276,41 +276,38 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
-    res.push(
-      <Menu.Item key="/resources">
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
-          {i18next.t("general:Permissions")}
-        </a>
-      </Menu.Item>
-    );
-    // res.push(
-    //   <Menu.Item key="/clustering">
-    //     <Link to="/clustering">
-    //       {i18next.t("general:Clustering")}
-    //     </Link>
-    //   </Menu.Item>
-    // );
-    res.push(
-      <Menu.Item key="/wordsets">
-        <Link to="/wordsets">
-          {i18next.t("general:Wordsets")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/factorsets">
-        <Link to="/factorsets">
-          {i18next.t("general:Factorsets")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/videos">
-        <Link to="/videos">
-          {i18next.t("general:Videos")}
-        </Link>
-      </Menu.Item>
-    );
+
+    if (Conf.EnableExtraPages) {
+      res.push(
+        <Menu.Item key="/clustering">
+          <Link to="/clustering">
+            {i18next.t("general:Clustering")}
+          </Link>
+        </Menu.Item>
+      );
+      res.push(
+        <Menu.Item key="/wordsets">
+          <Link to="/wordsets">
+            {i18next.t("general:Wordsets")}
+          </Link>
+        </Menu.Item>
+      );
+      res.push(
+        <Menu.Item key="/factorsets">
+          <Link to="/factorsets">
+            {i18next.t("general:Factorsets")}
+          </Link>
+        </Menu.Item>
+      );
+      res.push(
+        <Menu.Item key="/videos">
+          <Link to="/videos">
+            {i18next.t("general:Videos")}
+          </Link>
+        </Menu.Item>
+      );
+    }
+
     res.push(
       <Menu.Item key="/providers">
         <Link to="/providers">
@@ -325,12 +322,19 @@ class App extends Component {
         </Link>
       </Menu.Item>
     );
+    res.push(
+      <Menu.Item key="/permissions">
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+          {i18next.t("general:Permissions")}
+        </a>
+      </Menu.Item>
+    );
 
     if (Setting.isLocalAdminUser(this.state.account)) {
       res.push(
-        <Menu.Item key="/records">
+        <Menu.Item key="/logs">
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-            {i18next.t("general:Records")}
+            {i18next.t("general:Logs")}
           </a>
         </Menu.Item>
       );
