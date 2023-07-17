@@ -74,6 +74,13 @@ func initAPI() {
 	beego.Router("/api/add-provider", &controllers.ApiController{}, "POST:AddProvider")
 	beego.Router("/api/delete-provider", &controllers.ApiController{}, "POST:DeleteProvider")
 
+	beego.Router("/api/get-global-vectors", &controllers.ApiController{}, "GET:GetGlobalVectors")
+	beego.Router("/api/get-vectors", &controllers.ApiController{}, "GET:GetVectors")
+	beego.Router("/api/get-vector", &controllers.ApiController{}, "GET:GetVector")
+	beego.Router("/api/update-vector", &controllers.ApiController{}, "POST:UpdateVector")
+	beego.Router("/api/add-vector", &controllers.ApiController{}, "POST:AddVector")
+	beego.Router("/api/delete-vector", &controllers.ApiController{}, "POST:DeleteVector")
+
 	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")
 	beego.Router("/api/get-chats", &controllers.ApiController{}, "GET:GetChats")
 	beego.Router("/api/get-chat", &controllers.ApiController{}, "GET:GetChat")

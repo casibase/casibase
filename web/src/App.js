@@ -35,6 +35,8 @@ import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
 import ProviderListPage from "./ProviderListPage";
 import ProviderEditPage from "./ProviderEditPage";
+import VectorListPage from "./VectorListPage";
+import VectorEditPage from "./VectorEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
 import LanguageSelect from "./LanguageSelect";
@@ -92,6 +94,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/providers")) {
       this.setState({selectedMenuKey: "/providers"});
+    } else if (uri.includes("/vectors")) {
+      this.setState({selectedMenuKey: "/vectors"});
     } else if (uri.includes("/chats")) {
       this.setState({selectedMenuKey: "/chats"});
     } else if (uri.includes("/messages")) {
@@ -329,6 +333,13 @@ class App extends Component {
       </Menu.Item>
     );
     res.push(
+      <Menu.Item key="/vectors">
+        <Link to="/vectors">
+          {i18next.t("general:Vectors")}
+        </Link>
+      </Menu.Item>
+    );
+    res.push(
       <Menu.Item key="/chats">
         <Link to="/chats">
           {i18next.t("general:Chats")}
@@ -427,6 +438,8 @@ class App extends Component {
           <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
           <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
+          <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
+          <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
           <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
           <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
