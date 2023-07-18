@@ -7,7 +7,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/astaxie/beego v1.12.3
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
-	github.com/casdoor/casdoor-go-sdk v0.9.1
+	github.com/casdoor/casdoor-go-sdk v0.25.0
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0

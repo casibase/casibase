@@ -93,6 +93,12 @@ func GetOwnerAndNameFromId3New(id string) (string, string, string) {
 	return tokens[0], tokens[1], tokens[2]
 }
 
+func GetNameFromIdNoCheck(id string) string {
+	tokens := strings.Split(id, "/")
+
+	return tokens[len(tokens)-1]
+}
+
 func GetIdFromOwnerAndName(owner string, name string) string {
 	return fmt.Sprintf("%s/%s", owner, name)
 }
