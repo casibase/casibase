@@ -191,7 +191,7 @@ class MessageListPage extends React.Component {
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button style={{marginBottom: "10px"}} type="danger">
+                <Button style={{marginBottom: "10px"}} type="primary" danger>
                   {i18next.t("general:Delete")}
                 </Button>
               </Popconfirm>

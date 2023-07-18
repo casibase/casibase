@@ -14,7 +14,8 @@
 
 import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
-import {Avatar, BackTop, Dropdown, Layout, Menu} from "antd";
+import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
+import {Avatar, BackTop, Card, ConfigProvider, Dropdown, Layout, Menu} from "antd";
 import {DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
@@ -44,6 +45,7 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
+import {Content} from "antd/es/layout/layout";
 
 const {Header, Footer} = Layout;
 
@@ -55,6 +57,7 @@ class App extends Component {
       selectedMenuKey: 0,
       account: undefined,
       uri: null,
+      themeData: Conf.ThemeDefault,
     };
 
     Setting.initServerUrl();
@@ -182,18 +185,22 @@ class App extends Component {
     const menu = (
       <Menu onClick={this.handleRightDropdownClick.bind(this)}>
         <Menu.Item key="/account">
-          <SettingOutlined />
-          {i18next.t("account:My Account")}
+          <div className="rightdropdown-icon-label">
+            <SettingOutlined className="rightdropdown-icon" />
+            {i18next.t("account:My Account")}
+          </div>
         </Menu.Item>
         <Menu.Item key="/logout">
-          <LogoutOutlined />
-          {i18next.t("account:Sign Out")}
+          <div className="rightdropdown-icon-label">
+            <LogoutOutlined className="rightdropdown-icon" />
+            {i18next.t("account:Sign Out")}
+          </div>
         </Menu.Item>
       </Menu>
     );
 
     return (
-      <Dropdown key="/rightDropDown" overlay={menu} className="rightDropDown">
+      <Dropdown key="/rightDropDown" overlay={menu} className="right-drop-down">
         <div className="ant-dropdown-link" style={{float: "right", cursor: "pointer"}}>
           &nbsp;
           &nbsp;
@@ -231,24 +238,23 @@ class App extends Component {
           </a>
         </Menu.Item>
       );
-      res.push(
-        <LanguageSelect />
-      );
     } else {
-      res.push(this.renderRightDropdown());
       res.push(
-        <LanguageSelect />
-      );
-      return (
-        <div style={{float: "right", margin: "0px", padding: "0px"}}>
-          {
-            res
-          }
-        </div>
+        <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+          {this.renderRightDropdown()}
+        </Menu.Item>
       );
     }
 
-    return res;
+    res.push(
+      <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+        <LanguageSelect />
+      </Menu.Item>
+    );
+
+    return (
+      res
+    );
   }
 
   renderMenu() {
@@ -398,7 +404,7 @@ class App extends Component {
   renderContent() {
     return (
       <div>
-        <Header style={{padding: "0", marginBottom: "3px"}}>
+        <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
           {
             Setting.isMobile() ? null : (
               <Link to={"/"}>
@@ -415,36 +421,42 @@ class App extends Component {
             {
               this.renderMenu()
             }
-            {
-              this.renderAccount()
-            }
+            <div style={{position: "absolute", right: "0px", justifyContent: "flex-end"}}>
+              {
+                this.renderAccount()
+              }
+            </div>
           </Menu>
         </Header>
-        <Switch>
-          <Route exact path="/callback" component={AuthCallback} />
-          <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
-          <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-          <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
-          <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
-          <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
-        </Switch>
+        <Content style={{backgroundColor: "#f5f5f5", alignItems: "stretch", display: "flex", flexDirection: "column"}}>
+          <Card className="content-warp-card">
+            <Switch>
+              <Route exact path="/callback" component={AuthCallback} />
+              <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
+              <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+              <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+              <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
+              <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)} />
+              <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
+              <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
+              <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+              <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
+            </Switch>
+          </Card>
+        </Content>
       </div>
     );
   }
@@ -466,9 +478,9 @@ class App extends Component {
     );
   }
 
-  render() {
+  renderPage() {
     return (
-      <div id="parent-area">
+      <Layout id="parent-area">
         <BackTop />
         <div id="content-wrap">
           {
@@ -478,7 +490,28 @@ class App extends Component {
         {
           this.renderFooter()
         }
-      </div>
+      </Layout>
+    );
+  }
+
+  render() {
+    return (
+      <React.Fragment>
+        <ConfigProvider theme={{
+          token: {
+            colorPrimary: this.state.themeData.colorPrimary,
+            colorInfo: this.state.themeData.colorPrimary,
+            borderRadius: this.state.themeData.borderRadius,
+          },
+          // algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+        }}>
+          <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
+            {
+              this.renderPage()
+            }
+          </StyleProvider>
+        </ConfigProvider>
+      </React.Fragment>
     );
   }
 }

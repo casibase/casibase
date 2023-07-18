@@ -18,7 +18,7 @@ import {Dropdown, Menu} from "antd";
 
 function flagIcon(country, alt) {
   return (
-    <img width={24} alt={alt} src={`${Setting.StaticBaseUrl}/flag-icons/${country}.svg`} />
+    <img className="language-icon" width={24} alt={alt} src={`${Setting.StaticBaseUrl}/flag-icons/${country}.svg`} />
   );
 }
 
@@ -45,7 +45,9 @@ class LanguageSelect extends React.Component {
         if (item.key === language) {
           select.push(
             <Menu.Item key={item.key} onClick={this.handleLanguageSelect}>
-              {item.icon} {item.label}
+              <div className="language-icons-labels">
+                {item.icon} {item.label}
+              </div>
             </Menu.Item>
           );
         }
@@ -69,8 +71,8 @@ class LanguageSelect extends React.Component {
     );
 
     return (
-      <Dropdown overlay={languageMenu} className="rightDropDown">
-        <div className="language_box">
+      <Dropdown overlay={languageMenu} className="rightdropdown">
+        <div className="language-box">
         </div>
       </Dropdown>
     );

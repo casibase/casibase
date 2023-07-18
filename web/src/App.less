@@ -1,14 +1,12 @@
-@import '~antd/dist/antd.less';
-
-.App {
+.app {
   text-align: center;
 }
 
-.App-logo {
+.app-logo {
   height: 40vmin;
 }
 
-.App-header {
+.app-header {
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -19,17 +17,36 @@
   color: white;
 }
 
-.App-link {
+.app-link {
   color: #09d3ac;
 }
 
 #parent-area {
   position: relative;
   min-height: 100vh;
+  background-color: #f5f5f5;
 }
 
 #content-wrap {
   padding-bottom: 70px; /* Footer height */
+}
+
+.content-warp-card {
+  box-shadow: 0 1px 5px 0 rgb(51 51 51 / 14%);
+  flex: 1;
+  align-items: stretch;
+}
+
+.content-warp-card-filetreeright {
+  box-shadow: 0 1px 5px 0 rgb(51 51 51 / 14%);
+  flex: 1;
+  align-items: stretch;
+}
+
+.content-warp-card-filetreeleft {
+  box-shadow: 0 1px 5px 0 rgb(51 51 51 / 14%);
+  flex: 1;
+  align-items: stretch;
 }
 
 #footer {
@@ -40,10 +57,10 @@
 }
 
 .ant-table-body {
-  overflow-y: hidden !important
+  overflow-y: hidden !important;
 }
 
-.language_box {
+.language-box {
   background: url("https://cdn.casbin.org/img/muti_language.svg");
   background-size: 25px, 25px;
   background-position: center;
@@ -54,11 +71,28 @@
   cursor: pointer;
 }
 
-.language_box:hover {
+.language-box:hover {
   background-color: #f5f5f5;
 }
 
-
-.rightDropDown:hover {
+.rightdropdown:hover {
   background-color: #f5f5f5;
+}
+
+.language-icons-labels {
+  display: flex;
+  align-items: center;
+}
+
+.rightdropdown-icon-label {
+  display: flex;
+  align-items: center;
+}
+
+.language-icon {
+  margin-right: 8px;
+}
+
+.rightdropdown-icon {
+  margin-right: 8px;
 }
