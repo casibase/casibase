@@ -200,7 +200,7 @@ class App extends Component {
     );
 
     return (
-      <Dropdown key="/rightDropDown" overlay={menu} className="right-drop-down">
+      <Dropdown key="/rightDropDown" overlay={menu} className="rightdropdown">
         <div className="ant-dropdown-link" style={{float: "right", cursor: "pointer"}}>
           &nbsp;
           &nbsp;
