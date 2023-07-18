@@ -31,7 +31,7 @@
     "react-i18next": "^11.8.7",
     "react-router-dom": "^5.3.3",
     "react-scripts": "5.0.1",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "cross-env PORT=13001 craco start",
