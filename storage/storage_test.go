@@ -14,11 +14,69 @@
 
 package storage
 
-import "testing"
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"os"
+	"testing"
+)
 
+var conConfig = ConnectConfig{
+	Name:            "",
+	TypeName:        "onedrive",
+	AccessKeyId:     "",
+	SecretAccessKey: "",
+	Token:           "",
+}
+
+func TestCreateConnection(t *testing.T) {
+	CreateConnection(conConfig)
+}
 func TestStorage(t *testing.T) {
 	_, err := ListObjects("casibase", "")
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestFs(t *testing.T) {
+	b, err := getFs(conConfig)
+	fmt.Println(b)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestListObjects2(t *testing.T) {
+	b, err := ListObjects2(conConfig, "/")
+	fmt.Println(b)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestConfigLoad(t *testing.T) {
+	ConfigLoad()
+}
+
+func TestDeleteObject2(t *testing.T) {
+	fmt.Println(DeleteObject2(conConfig, "/test.txt"))
+}
+
+func TestPutObject2(t *testing.T) {
+	localFile, err := os.Open("D:\\1.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer localFile.Close()
+
+	buffer := new(bytes.Buffer)
+
+	_, err = io.Copy(buffer, localFile)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(PutObject2(conConfig, "/test6666.txt", buffer))
 }
