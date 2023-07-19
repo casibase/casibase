@@ -15,15 +15,27 @@
 package storage
 
 import (
+	"bytes"
 	"context"
 	"fmt"
-	"io"
-
 	_ "github.com/rclone/rclone/backend/all"
 	"github.com/rclone/rclone/fs"
+	"github.com/rclone/rclone/fs/config"
+	"github.com/rclone/rclone/fs/config/configfile"
+	"github.com/rclone/rclone/fs/object"
+	"time"
 )
 
+func ConfigLoad() []string {
+	config.GetConfigPath()
+
+	configfile.Install()
+	sections := config.Data().GetSectionList()
+	return sections
+}
+
 func getFs(bucketName string) (fs.Fs, error) {
+	ConfigLoad()
 	f, err := fs.NewFs(context.Background(), bucketName)
 	if err != nil {
 		return nil, err
@@ -50,29 +62,34 @@ func ListObjects2(bucketName string, prefix string) ([]fs.DirEntry, error) {
 	return entries, nil
 }
 
-func PutObject2(bucketName string, key string, in io.Reader) error {
+func PutObject2(bucketName string, addPath string, in *bytes.Buffer) error {
 	f, err := getFs(bucketName)
 	if err != nil {
 		return err
 	}
 
-	// Use Rcat to put an object to the remote
-	//_, err = operations.Rcat(context.Background(), f, key, nil, nil, nil)
-	print(f)
+	dstObj := object.NewStaticObjectInfo(addPath, time.Now(), int64(in.Len()), true, nil, nil)
+	if err != nil {
+		return err
+	}
+
+	_, err = f.Put(context.Background(), in, dstObj)
 
 	return err
 }
 
-func DeleteObject2(bucketName string, key string) error {
+// DeleteObject2 support delete file or dir
+func DeleteObject2(bucketName string, delPath string) error {
 	f, err := getFs(bucketName)
 	if err != nil {
 		return err
 	}
 
-	remoteObj, err := f.NewObject(context.Background(), key)
+	remoteObj, err := f.NewObject(context.Background(), delPath)
 	if err != nil {
-		return err
+		//	dir: only can delete empty dir
+		return f.Rmdir(context.Background(), delPath)
 	}
-
+	//object
 	return remoteObj.Remove(context.Background())
 }

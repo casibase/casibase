@@ -14,11 +14,58 @@
 
 package storage
 
-import "testing"
+import (
+	"bytes"
+	"fmt"
+	"io"
+	"os"
+	"testing"
+)
 
 func TestStorage(t *testing.T) {
 	_, err := ListObjects("casibase", "")
 	if err != nil {
 		panic(err)
 	}
+}
+
+func TestFs(t *testing.T) {
+	b, err := getFs("new_one_drive:")
+	fmt.Println(b)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestListObjects2(t *testing.T) {
+	b, err := ListObjects2("my_onr_drive:", "/123")
+	fmt.Println(b)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func TestConfigLoad(t *testing.T) {
+	ConfigLoad()
+}
+
+func TestDeleteObject2(t *testing.T) {
+	fmt.Println(DeleteObject2("my_onr_drive:", "/test.txt"))
+}
+
+func TestPutObject2(t *testing.T) {
+	localFile, err := os.Open("D:\\1.txt")
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer localFile.Close()
+
+	buffer := new(bytes.Buffer)
+
+	_, err = io.Copy(buffer, localFile)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(PutObject2("my_onr_drive:", "/1234/test.txt", buffer))
 }
