@@ -161,7 +161,7 @@ class FactorsetListPage extends React.Component {
         title: i18next.t("factorset:Example factors"),
         dataIndex: "factors",
         key: "factors",
-        // width: '120px',
+        width: "120px",
         sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
           return Setting.getTags(text, "factors");

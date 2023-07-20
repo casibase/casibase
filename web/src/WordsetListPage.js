@@ -114,14 +114,14 @@ class WordsetListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        width: "200px",
+        width: "150px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("wordset:Words"),
         dataIndex: "factors",
         key: "factors",
-        // width: '120px',
+        width: "120px",
         sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
           return Setting.getTags(text, "factors");

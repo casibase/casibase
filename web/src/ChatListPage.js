@@ -15,9 +15,9 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
+import moment from "moment";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
-import moment from "moment";
 import i18next from "i18next";
 
 class ChatListPage extends React.Component {
@@ -119,7 +119,7 @@ class ChatListPage extends React.Component {
         dataIndex: "createdTime",
         key: "createdTime",
         width: "150px",
-        sorter: true,
+        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         },
@@ -128,8 +128,8 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Updated time"),
         dataIndex: "updatedTime",
         key: "updatedTime",
-        width: "15  0px",
-        sorter: true,
+        width: "150px",
+        sorter: (a, b) => a.updatedTime.localeCompare(b.updatedTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         },
@@ -138,8 +138,8 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        // width: '100px',
-        sorter: true,
+        width: "100px",
+        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
         // ...this.getColumnSearchProps("displayName"),
       },
       {
@@ -147,7 +147,7 @@ class ChatListPage extends React.Component {
         dataIndex: "type",
         key: "type",
         width: "110px",
-        sorter: true,
+        sorter: (a, b) => a.type.localeCompare(b.type),
         filterMultiple: false,
         filters: [
           {text: "Single", value: "Single"},
@@ -162,8 +162,8 @@ class ChatListPage extends React.Component {
         title: i18next.t("chat:Category"),
         dataIndex: "category",
         key: "category",
-        // width: '100px',
-        sorter: true,
+        width: "100px",
+        sorter: (a, b) => a.category.localeCompare(b.category),
         // ...this.getColumnSearchProps("category"),
       },
       {
@@ -171,7 +171,7 @@ class ChatListPage extends React.Component {
         dataIndex: "user1",
         key: "user1",
         width: "120px",
-        sorter: true,
+        sorter: (a, b) => a.user1.localeCompare(b.user1),
         // ...this.getColumnSearchProps("user1"),
         render: (text, record, index) => {
           return (
@@ -186,7 +186,7 @@ class ChatListPage extends React.Component {
         dataIndex: "user2",
         key: "user2",
         width: "120px",
-        sorter: true,
+        sorter: (a, b) => a.user2.localeCompare(b.user2),
         // ...this.getColumnSearchProps("user2"),
         render: (text, record, index) => {
           return (
@@ -200,8 +200,8 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Users"),
         dataIndex: "users",
         key: "users",
-        // width: '100px',
-        sorter: true,
+        width: "100px",
+        sorter: (a, b) => a.users.localeCompare(b.users),
         // ...this.getColumnSearchProps("users"),
         render: (text, record, index) => {
           return Setting.getTags(text, "users");
@@ -211,8 +211,8 @@ class ChatListPage extends React.Component {
         title: i18next.t("chat:Message count"),
         dataIndex: "messageCount",
         key: "messageCount",
-        // width: '100px',
-        sorter: true,
+        width: "100px",
+        sorter: (a, b) => a.messageCount - b.messageCount,
         // ...this.getColumnSearchProps("messageCount"),
       },
       {

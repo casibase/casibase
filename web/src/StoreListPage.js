@@ -114,7 +114,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        // width: '200px',
+        width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
