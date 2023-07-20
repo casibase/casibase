@@ -27,7 +27,7 @@ type Chat struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 
-	//Organization string   `xorm:"varchar(100)" json:"organization"`
+	// Organization string   `xorm:"varchar(100)" json:"organization"`
 	DisplayName  string   `xorm:"varchar(100)" json:"displayName"`
 	Category     string   `xorm:"varchar(100)" json:"category"`
 	Type         string   `xorm:"varchar(100)" json:"type"`
@@ -91,7 +91,7 @@ func UpdateChat(id string, chat *Chat) (bool, error) {
 		return false, err
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true, nil
 }
 

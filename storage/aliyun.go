@@ -58,7 +58,7 @@ func ListObjects(bucketName string, prefix string) ([]oss.ObjectProperties, erro
 
 		for _, object := range resp.Objects {
 			res = append(res, object)
-			//fmt.Printf("[%d] %s\n", i, object.Key)
+			// fmt.Printf("[%d] %s\n", i, object.Key)
 			i += 1
 		}
 

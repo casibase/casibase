@@ -19,7 +19,7 @@ import "testing"
 func TestUpdateFactorsetFactors(t *testing.T) {
 	InitConfig()
 
-	//factorset := getFactorset("admin", "wikipedia")
+	// factorset := getFactorset("admin", "wikipedia")
 	factorset, _ := getFactorset("admin", "wordFactor_utf-8")
 	factorset.LoadFactors("../../tmpFiles/")
 	UpdateFactorset(factorset.GetId(), factorset)

@@ -24,12 +24,11 @@ func init() {
 }
 
 func initAPI() {
-	ns :=
-		beego.NewNamespace("/api",
-			beego.NSInclude(
-				&controllers.ApiController{},
-			),
-		)
+	ns := beego.NewNamespace("/api",
+		beego.NSInclude(
+			&controllers.ApiController{},
+		),
+	)
 	beego.AddNamespace(ns)
 
 	beego.Router("/api/signin", &controllers.ApiController{}, "POST:Signin")

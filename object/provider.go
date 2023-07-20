@@ -88,7 +88,7 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		return false, err
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true, nil
 }
 

@@ -109,7 +109,7 @@ func ReadStringFromPath(path string) string {
 }
 
 func WriteStringToPath(s string, path string) {
-	err := ioutil.WriteFile(path, []byte(s), 0644)
+	err := ioutil.WriteFile(path, []byte(s), 0o644)
 	if err != nil {
 		panic(err)
 	}
@@ -125,7 +125,7 @@ func ReadBytesFromPath(path string) []byte {
 }
 
 func WriteBytesToPath(b []byte, path string) {
-	err := ioutil.WriteFile(path, b, 0644)
+	err := ioutil.WriteFile(path, b, 0o644)
 	if err != nil {
 		panic(err)
 	}

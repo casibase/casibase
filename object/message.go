@@ -26,7 +26,7 @@ type Message struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	//Organization string `xorm:"varchar(100)" json:"organization"`
+	// Organization string `xorm:"varchar(100)" json:"organization"`
 	Chat    string `xorm:"varchar(100) index" json:"chat"`
 	ReplyTo string `xorm:"varchar(100) index" json:"replyTo"`
 	Author  string `xorm:"varchar(100)" json:"author"`

@@ -117,7 +117,7 @@ func (store *Store) Populate() error {
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		store.createPathIfNotExisted(tokens, size, lastModifiedTime, isLeaf)
 
-		//fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
+		// fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}
 
 	return nil

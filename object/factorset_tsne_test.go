@@ -24,7 +24,7 @@ func TestDoFactorsetTsne(t *testing.T) {
 
 	dimension := 50
 
-	//factorset := getFactorset("admin", "wikipedia")
+	// factorset := getFactorset("admin", "wikipedia")
 	factorset, _ := getFactorset("admin", "wordFactor_utf-8")
 	factorset.LoadFactors("../../tmpFiles/")
 	factorset.DoTsne(dimension)

@@ -98,7 +98,7 @@ func CopyFile(dest string, src string) {
 		panic(err)
 	}
 
-	err = os.WriteFile(dest, bs, 0644)
+	err = os.WriteFile(dest, bs, 0o644)
 	if err != nil {
 		panic(err)
 	}

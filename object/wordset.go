@@ -87,7 +87,7 @@ func UpdateWordset(id string, wordset *Wordset) (bool, error) {
 		return false, err
 	}
 
-	//return affected != 0
+	// return affected != 0
 	return true, nil
 }
 
