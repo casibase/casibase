@@ -15,8 +15,8 @@
 import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
-import {Avatar, Card, ConfigProvider, Dropdown, FloatButton, Layout, Menu} from "antd";
-import {DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
+import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu} from "antd";
+import {BarsOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -45,9 +45,8 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
-import {Content} from "antd/es/layout/layout";
 
-const {Header, Footer} = Layout;
+const {Header, Footer, Content} = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -58,6 +57,7 @@ class App extends Component {
       account: undefined,
       uri: null,
       themeData: Conf.ThemeDefault,
+      menuVisible: false,
     };
 
     Setting.initServerUrl();
@@ -165,6 +165,18 @@ class App extends Component {
     }
   }
 
+  onClose = () => {
+    this.setState({
+      menuVisible: false,
+    });
+  };
+
+  showMenu = () => {
+    this.setState({
+      menuVisible: true,
+    });
+  };
+
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
@@ -182,28 +194,24 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    const menu = (
-      <Menu onClick={this.handleRightDropdownClick.bind(this)}>
-        <Menu.Item key="/account">
-          <div className="rightdropdown-icon-label">
-            <SettingOutlined className="rightdropdown-icon" />
-            {i18next.t("account:My Account")}
-          </div>
-        </Menu.Item>
-        <Menu.Item key="/logout">
-          <div className="rightdropdown-icon-label">
-            <LogoutOutlined className="rightdropdown-icon" />
-            {i18next.t("account:Sign Out")}
-          </div>
-        </Menu.Item>
-      </Menu>
-    );
+    const items = [];
+    items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
+      "/account"
+    ));
+    items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
+      "/logout"
+    ));
+    const onClick = ({e}) => {
+      if (e.key === "/account") {
+        Setting.openLink(Setting.getMyProfileUrl(this.state.account));
+      } else if (e.key === "/logout") {
+        this.signout();
+      }
+    };
 
     return (
-      <Dropdown key="/rightDropDown" overlay={menu} className="rightdropdown">
-        <div className="ant-dropdown-link" style={{float: "right", cursor: "pointer"}}>
-          &nbsp;
-          &nbsp;
+      <Dropdown key="/rightDropDown" menu={{items, onClick}} >
+        <div className="rightDropDown">
           {
             this.renderAvatar()
           }
@@ -218,165 +226,104 @@ class App extends Component {
     );
   }
 
-  renderAccount() {
-    const res = [];
-
+  renderAccountMenu() {
     if (this.state.account === undefined) {
       return null;
     } else if (this.state.account === null) {
-      res.push(
-        <Menu.Item key="/signup" style={{float: "right", marginRight: "20px"}}>
-          <a href={Setting.getSignupUrl()}>
-            {i18next.t("account:Sign Up")}
-          </a>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/signin" style={{float: "right"}}>
-          <a href={Setting.getSigninUrl()}>
-            {i18next.t("account:Sign In")}
-          </a>
-        </Menu.Item>
+      return (
+        <React.Fragment>
+          <Menu.Item key="/signup" style={{float: "right", marginRight: "20px"}}>
+            <a href={Setting.getSignupUrl()}>
+              {i18next.t("account:Sign Up")}
+            </a>
+          </Menu.Item>
+          <Menu.Item key="/signin" style={{float: "right"}}>
+            <a href={Setting.getSigninUrl()}>
+              {i18next.t("account:Sign In")}
+            </a>
+          </Menu.Item>
+          <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+            <LanguageSelect />
+          </Menu.Item>
+        </React.Fragment>
       );
     } else {
-      res.push(
-        <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+      return (
+        <React.Fragment>
           {this.renderRightDropdown()}
-        </Menu.Item>
+          <LanguageSelect />
+        </React.Fragment>
       );
     }
-
-    res.push(
-      <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
-        <LanguageSelect />
-      </Menu.Item>
-    );
-
-    return (
-      res
-    );
   }
 
-  renderMenu() {
+  getMenuItems() {
     const res = [];
 
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
 
-    if (this.state.account.tag === "Video") {
-      res.push(
-        <Menu.Item key="/videos">
-          <Link to="/videos">
-            {i18next.t("general:Videos")}
-          </Link>
-        </Menu.Item>
-      );
+    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
 
+    if (this.state.account.tag === "Video") {
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>,
+        "/videos"));
       return res;
     }
 
-    res.push(
-      <Menu.Item key="/home">
-        <Link to="/home">
-          {i18next.t("general:Home")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/stores">
-        <Link to="/stores">
-          {i18next.t("general:Stores")}
-        </Link>
-      </Menu.Item>
-    );
+    res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>,
+      "/stores"));
 
     if (Conf.EnableExtraPages) {
-      res.push(
-        <Menu.Item key="/clustering">
-          <Link to="/clustering">
-            {i18next.t("general:Clustering")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/wordsets">
-          <Link to="/wordsets">
-            {i18next.t("general:Wordsets")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/factorsets">
-          <Link to="/factorsets">
-            {i18next.t("general:Factorsets")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/videos">
-          <Link to="/videos">
-            {i18next.t("general:Videos")}
-          </Link>
-        </Menu.Item>
-      );
+      res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>,
+        "/clustering"));
+
+      res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>,
+        "/wordsets"));
+
+      res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>,
+        "/factorsets"));
+
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>,
+        "/videos"));
     }
 
-    const renderExternalLink = () => {
-      return (
-        <svg style={{marginLeft: "5px"}} width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" className="iconExternalLink_nPIU">
-          <path fill="currentColor"
-            d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
-        </svg>
-      );
-    };
+    res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>,
+      "/providers"));
 
-    res.push(
-      <Menu.Item key="/providers">
-        <Link to="/providers">
-          {i18next.t("general:Providers")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/vectors">
-        <Link to="/vectors">
-          {i18next.t("general:Vectors")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/chats">
-        <Link to="/chats">
-          {i18next.t("general:Chats")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/messages">
-        <Link to="/messages">
-          {i18next.t("general:Messages")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/permissions">
+    res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>,
+      "/vectors"));
+
+    res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>,
+      "/chats"));
+
+    res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>,
+      "/messages"));
+
+    if (Setting.isLocalAdminUser(this.state.account)) {
+      const renderExternalLink = () => {
+        return (
+          <svg style={{marginLeft: "5px"}} width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" className="iconExternalLink_nPIU">
+            <path fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
+          </svg>
+        );
+      };
+
+      res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
           {i18next.t("general:Permissions")}
           {renderExternalLink()}
-        </a>
-      </Menu.Item>
-    );
+        </a>,
+        "/permissions"));
 
-    if (Setting.isLocalAdminUser(this.state.account)) {
-      res.push(
-        <Menu.Item key="/logs">
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-            {i18next.t("general:Logs")}
-            {renderExternalLink()}
-          </a>
-        </Menu.Item>
-      );
+      res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+          {i18next.t("general:Logs")}
+          {renderExternalLink()}
+        </a>,
+        "/logs"));
     }
 
     return res;
@@ -431,6 +378,57 @@ class App extends Component {
     );
   }
 
+  renderContent() {
+    const onClick = ({key}) => {
+      this.props.history.push(key);
+    };
+    const menuStyleRight = Setting.isAdminUser(this.state.account) && !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
+    return (
+      <Layout id="parent-area">
+        <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
+          {Setting.isMobile() ? null : (
+            <Link to={"/"}>
+              <div className="logo" />
+            </Link>
+          )}
+          {(Setting.isMobile() ?
+            <React.Fragment>
+              <Drawer title={i18next.t("general:Close")} placement="left" visible={this.state.menuVisible} onClose={this.onClose}>
+                <Menu
+                  items={this.getMenuItems()}
+                  mode={"inline"}
+                  selectedKeys={[this.state.selectedMenuKey]}
+                  style={{lineHeight: "64px"}}
+                  onClick={this.onClose}
+                >
+                </Menu>
+              </Drawer>
+              <Button icon={<BarsOutlined />} onClick={this.showMenu} type="text">
+                {i18next.t("general:Menu")}
+              </Button>
+            </React.Fragment> :
+            <Menu
+              onClick={onClick}
+              items={this.getMenuItems()}
+              mode={"horizontal"}
+              selectedKeys={[this.state.selectedMenuKey]}
+              style={{position: "absolute", left: "145px", right: menuStyleRight}}
+            />
+          )}
+          {
+            this.renderAccountMenu()
+          }
+        </Header>
+        <Content style={{display: "flex", flexDirection: "column"}}>
+          <Card className="content-warp-card">
+            {this.renderRouter()}
+          </Card>
+        </Content>
+        {this.renderFooter()}
+      </Layout>
+    );
+  }
+
   renderFooter() {
     // How to keep your footer where it belongs ?
     // https://www.freecodecamp.org/neyarnws/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/
@@ -447,43 +445,6 @@ class App extends Component {
           Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>
         </Footer>
       </React.Fragment>
-    );
-  }
-
-  renderContent() {
-    return (
-      <Layout id="parent-area">
-        <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
-          {
-            Setting.isMobile() ? null : (
-              <Link to={"/"}>
-                <div className="logo" />
-              </Link>
-            )
-          }
-          <Menu
-            // theme="dark"
-            mode={"horizontal"}
-            selectedKeys={[`${this.state.selectedMenuKey}`]}
-            style={{lineHeight: "64px"}}
-          >
-            {
-              this.renderMenu()
-            }
-            <div style={{position: "absolute", right: "0px", justifyContent: "flex-end"}}>
-              {
-                this.renderAccount()
-              }
-            </div>
-          </Menu>
-        </Header>
-        <Content style={{display: "flex", flexDirection: "column"}}>
-          <Card className="content-warp-card">
-            {this.renderRouter()}
-          </Card>
-        </Content>
-        {this.renderFooter()}
-      </Layout>
     );
   }
 
