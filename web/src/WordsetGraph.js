@@ -394,7 +394,7 @@ class WordsetGraph extends React.Component {
     if (this.state.loading) {
       return (
         // https://codesandbox.io/s/antd-reproduction-template-q2dwk
-        <div className="app">
+        <div className="App">
           <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
         </div>
       );
@@ -402,7 +402,7 @@ class WordsetGraph extends React.Component {
 
     if (this.state.graph === null || this.state.graph.nodes === null || this.state.graph.links === null) {
       return (
-        <div className="app">
+        <div className="App">
           <Empty style={{paddingTop: "10%"}} image={Empty.PRESENTED_IMAGE_SIMPLE} />
         </div>
       );

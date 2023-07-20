@@ -50,7 +50,7 @@ class FileTreePage extends React.Component {
   render() {
     if (this.state.store === null) {
       return (
-        <div className="app">
+        <div className="App">
           <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
         </div>
       );

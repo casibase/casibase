@@ -13,24 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {
-  Button,
-  Card,
-  Col,
-  DatePicker,
-  Descriptions,
-  Empty,
-  Input,
-  Modal,
-  Popconfirm,
-  Radio,
-  Row,
-  Select,
-  Spin,
-  Tooltip,
-  Tree,
-  Upload
-} from "antd";
+import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
 import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -740,7 +723,7 @@ class FileTree extends React.Component {
       // https://github.com/scniro/react-codemirror2
       if (this.state.loading) {
         return (
-          <div className="app">
+          <div className="App">
             <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
           </div>
         );
