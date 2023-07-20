@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import moment from "moment";
@@ -240,7 +240,7 @@ class ChatListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -256,17 +256,9 @@ class ChatListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.chats)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.chats)
+        }
       </div>
     );
   }

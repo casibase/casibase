@@ -740,7 +740,7 @@ class FileTree extends React.Component {
       // https://github.com/scniro/react-codemirror2
       if (this.state.loading) {
         return (
-          <div className="App">
+          <div className="app">
             <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
           </div>
         );
@@ -860,7 +860,7 @@ class FileTree extends React.Component {
   getEditorHeightCss() {
     // 79, 123
     const filePaneHeight = this.filePane.current?.offsetHeight;
-    return `calc(100vh - ${filePaneHeight + 138}px)`;
+    return `calc(100vh - ${filePaneHeight + 234}px)`;
   }
 
   render() {

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as FactorsetBackend from "./backend/FactorsetBackend";
@@ -199,7 +199,7 @@ class FactorsetListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={factorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={factorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Factorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -215,17 +215,9 @@ class FactorsetListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.factorsets)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.factorsets)
+        }
       </div>
     );
   }

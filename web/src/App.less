@@ -22,13 +22,10 @@
 }
 
 #parent-area {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   min-height: 100vh;
-  background-color: #f5f5f5;
-}
-
-#content-wrap {
-  padding-bottom: 70px; /* Footer height */
 }
 
 .content-warp-card {
@@ -38,22 +35,14 @@
 }
 
 .content-warp-card-filetreeright {
-  box-shadow: 0 1px 5px 0 rgb(51 51 51 / 14%);
   flex: 1;
   align-items: stretch;
 }
 
 .content-warp-card-filetreeleft {
-  box-shadow: 0 1px 5px 0 rgb(51 51 51 / 14%);
+  box-shadow: 0 1px 3px 0 rgb(51 51 51 / 14%);
   flex: 1;
   align-items: stretch;
-}
-
-#footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  height: 70px; /* Footer height */
 }
 
 .ant-table-body {

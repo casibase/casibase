@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
@@ -204,6 +204,7 @@ class MessageListPage extends React.Component {
     return (
       <div>
         <Table
+          scroll={{x: "max-content"}}
           columns={columns}
           dataSource={messages}
           rowKey="name"
@@ -227,17 +228,9 @@ class MessageListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.messages)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.messages)
+        }
       </div>
     );
   }
