@@ -12,26 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+//go:build !skipCi
+// +build !skipCi
 
-import "time"
+package ai
 
-func GetCurrentTime() string {
-	timestamp := time.Now().Unix()
-	tm := time.Unix(timestamp, 0)
-	return tm.Format(time.RFC3339)
-}
+import (
+	"github.com/sashabaranov/go-openai"
+	"testing"
 
-func GetCurrentTimeEx(timestamp string) string {
-	tm := time.Now()
-	inputTime, err := time.Parse(time.RFC3339, timestamp)
+	"github.com/casbin/casibase/object"
+	"github.com/casbin/casibase/proxy"
+)
+
+func TestRun(t *testing.T) {
+	object.InitConfig()
+	proxy.InitHttpClient()
+
+	text, err := queryAnswer("", "hi", 5)
 	if err != nil {
 		panic(err)
 	}
 
-	if !tm.After(inputTime) {
-		tm = inputTime.Add(1 * time.Millisecond)
-	}
+	println(text)
+}
 
-	return tm.Format("2006-01-02T15:04:05.999Z07:00")
+func TestToken(t *testing.T) {
+	println(getTokenSize(openai.GPT3TextDavinci003, ""))
 }

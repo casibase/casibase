@@ -13,8 +13,11 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
+	github.com/pkoukk/tiktoken-go v0.1.1
 	github.com/rclone/rclone v1.63.0
+	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
+	golang.org/x/net v0.8.0
 	gonum.org/v1/gonum v0.11.0
 	xorm.io/core v0.7.3
 	xorm.io/xorm v1.2.5

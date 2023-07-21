@@ -43,6 +43,16 @@ func GetGlobalMessages() ([]*Message, error) {
 	return messages, nil
 }
 
+func GetChatMessages(chat string) ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Asc("created_time").Find(&messages, &Message{Chat: chat})
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
 func GetMessages(owner string) ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Desc("created_time").Find(&messages, &Message{Owner: owner})

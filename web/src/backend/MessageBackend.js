@@ -28,6 +28,30 @@ export function getMessages(owner) {
   }).then(res => res.json());
 }
 
+export function getChatMessages(chat) {
+  return fetch(`${Setting.ServerUrl}/api/get-messages?chat=${chat}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function getMessageAnswer(owner, name, onMessage, onError) {
+  const eventSource = new EventSource(`${Setting.ServerUrl}/api/get-message-answer?id=${owner}/${encodeURIComponent(name)}`);
+
+  eventSource.addEventListener("message", (e) => {
+    onMessage(e.data);
+  });
+
+  eventSource.addEventListener("myerror", (e) => {
+    onError(e.data);
+    eventSource.close();
+  });
+
+  eventSource.addEventListener("end", (e) => {
+    eventSource.close();
+  });
+}
+
 export function getMessage(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-message?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

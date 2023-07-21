@@ -630,3 +630,12 @@ export function getOption(label, value) {
     value,
   };
 }
+
+export function scrollToDiv(divId) {
+  if (divId) {
+    const ele = document.getElementById(divId);
+    if (ele) {
+      ele.scrollIntoView({behavior: "smooth"});
+    }
+  }
+}
