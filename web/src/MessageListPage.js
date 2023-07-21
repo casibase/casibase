@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
@@ -101,7 +101,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "140px",
+        width: "100px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -115,8 +115,8 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "150px",
-        sorter: true,
+        width: "130px",
+        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         },
@@ -125,7 +125,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Chat"),
         dataIndex: "chat",
         key: "chat",
-        width: "150px",
+        width: "100px",
         sorter: (a, b) => a.chat.localeCompare(b.chat),
         render: (text, record, index) => {
           return (
@@ -139,7 +139,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Reply to"),
         dataIndex: "replyTo",
         key: "replyTo",
-        width: "150px",
+        width: "130px",
         sorter: (a, b) => a.replyTo.localeCompare(b.replyTo),
         render: (text, record, index) => {
           return (
@@ -153,7 +153,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Author"),
         dataIndex: "author",
         key: "author",
-        width: "150px",
+        width: "120px",
         sorter: (a, b) => a.author.localeCompare(b.author),
         render: (text, record, index) => {
           return (
@@ -167,7 +167,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Text"),
         dataIndex: "text",
         key: "text",
-        width: "200px",
+        width: "150px",
         sorter: (a, b) => a.text.localeCompare(b.text),
       },
       {
@@ -191,7 +191,7 @@ class MessageListPage extends React.Component {
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button style={{marginBottom: "10px"}} type="danger">
+                <Button style={{marginBottom: "10px"}} type="primary" danger>
                   {i18next.t("general:Delete")}
                 </Button>
               </Popconfirm>
@@ -204,6 +204,7 @@ class MessageListPage extends React.Component {
     return (
       <div>
         <Table
+          scroll={{x: "max-content"}}
           columns={columns}
           dataSource={messages}
           rowKey="name"
@@ -227,17 +228,9 @@ class MessageListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.messages)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.messages)
+        }
       </div>
     );
   }
