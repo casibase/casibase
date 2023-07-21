@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
+import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
 import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -843,23 +843,25 @@ class FileTree extends React.Component {
   getEditorHeightCss() {
     // 79, 123
     const filePaneHeight = this.filePane.current?.offsetHeight;
-    return `calc(100vh - ${filePaneHeight + 138}px)`;
+    return `calc(100vh - ${filePaneHeight + 234}px)`;
   }
 
   render() {
     return (
-      <div style={{backgroundColor: "rgb(232,232,232)", borderTop: "1px solid rgb(232,232,232)"}}>
+      <div style={{backgroundColor: "white", borderTop: "1px solid rgb(232,232,232)", borderLeft: "1px solid rgb(232,232,232)"}}>
         <Row>
           <Col span={8}>
-            {
-              this.renderSearch(this.props.store)
-            }
-            {
-              this.renderTree(this.props.store)
-            }
+            <Card className="content-warp-card-filetreeleft">
+              {
+                this.renderSearch(this.props.store)
+              }
+              {
+                this.renderTree(this.props.store)
+              }
+            </Card>
           </Col>
           <Col span={16}>
-            <div>
+            <Card className="content-warp-card-filetreeright">
               <div style={{height: this.getEditorHeightCss()}}>
                 {
                   this.renderFileViewer(this.props.store)
@@ -868,7 +870,7 @@ class FileTree extends React.Component {
               {
                 this.renderProperties()
               }
-            </div>
+            </Card>
           </Col>
         </Row>
         {

@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@ant-design/cssinjs": "^1.12.0",
     "@ant-design/icons": "4.6.2",
     "@craco/craco": "6.4.5",
     "@cyntler/react-doc-viewer": "^1.5.2",
     "aliplayer-react": "^0.7.0",
-    "antd": "4.15.5",
+    "antd": "5.2.3",
     "casdoor-js-sdk": "^0.2.7",
     "codemirror": "^5.61.1",
     "copy-to-clipboard": "^3.3.1",

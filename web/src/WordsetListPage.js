@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as WordsetBackend from "./backend/WordsetBackend";
@@ -114,14 +114,14 @@ class WordsetListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        width: "200px",
+        width: "150px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
         title: i18next.t("wordset:Words"),
         dataIndex: "factors",
         key: "factors",
-        // width: '120px',
+        width: "120px",
         sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
           return Setting.getTags(text, "factors");
@@ -176,7 +176,7 @@ class WordsetListPage extends React.Component {
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -186,7 +186,7 @@ class WordsetListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={wordsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={wordsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Wordsets")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -202,17 +202,9 @@ class WordsetListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.wordsets)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.wordsets)
+        }
       </div>
     );
   }

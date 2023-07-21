@@ -14,11 +14,12 @@
 
 import React from "react";
 import * as Setting from "./Setting";
-import {Dropdown, Menu} from "antd";
+import {Dropdown} from "antd";
+import {GlobalOutlined} from "@ant-design/icons";
 
 function flagIcon(country, alt) {
   return (
-    <img width={24} alt={alt} src={`${Setting.StaticBaseUrl}/flag-icons/${country}.svg`} />
+    <img className="language-icon" width={24} alt={alt} src={`${Setting.StaticBaseUrl}/flag-icons/${country}.svg`} />
   );
 }
 
@@ -39,38 +40,22 @@ class LanguageSelect extends React.Component {
 
   getOrganizationLanguages(languages) {
     const select = [];
-
     for (const language of languages) {
-      this.items.map((item, index) => {
-        if (item.key === language) {
-          select.push(
-            <Menu.Item key={item.key} onClick={this.handleLanguageSelect}>
-              {item.icon} {item.label}
-            </Menu.Item>
-          );
-        }
-      });
+      this.items.map((item, index) => item.key === language ? select.push(item) : null);
     }
-
     return select;
   }
 
-  handleLanguageSelect = (e) => {
-    Setting.changeLanguage(e.key);
-  };
-
   render() {
     const languageItems = this.getOrganizationLanguages(this.state.languages);
-
-    const languageMenu = (
-      <Menu onClick={this.handleLanguageSelect.bind(this)}>
-        {languageItems}
-      </Menu>
-    );
+    const onClick = (e) => {
+      Setting.setLanguage(e.key);
+    };
 
     return (
-      <Dropdown overlay={languageMenu} className="rightDropDown">
-        <div className="language_box">
+      <Dropdown menu={{items: languageItems, onClick}} >
+        <div className="select-box" style={{display: languageItems.length === 0 ? "none" : null, ...this.props.style}} >
+          <GlobalOutlined style={{fontSize: "24px", color: "#4d4d4d"}} />
         </div>
       </Dropdown>
     );

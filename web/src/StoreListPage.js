@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
@@ -114,7 +114,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        // width: '200px',
+        width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
@@ -136,7 +136,7 @@ class StoreListPage extends React.Component {
                       okText="OK"
                       cancelText="Cancel"
                     >
-                      <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+                      <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
                     </Popconfirm>
                   </React.Fragment>
                 )
@@ -149,7 +149,7 @@ class StoreListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -169,17 +169,9 @@ class StoreListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.stores)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.stores)
+        }
       </div>
     );
   }

@@ -30,3 +30,10 @@ export const ForceLanguage = "";
 export const DefaultLanguage = "en";
 
 export const AppUrl = "";
+
+export const ThemeDefault = {
+  themeType: "default",
+  colorPrimary: "#5734d3",
+  borderRadius: 6,
+  isCompact: false,
+};
