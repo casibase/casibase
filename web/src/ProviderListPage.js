@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -123,21 +123,21 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
-        width: "200px",
+        width: "160px",
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
         title: i18next.t("provider:Type"),
         dataIndex: "type",
         key: "type",
-        width: "200px",
+        width: "160px",
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
         title: i18next.t("provider:Secret key"),
         dataIndex: "clientSecret",
         key: "clientSecret",
-        width: "200px",
+        width: "160px",
         sorter: (a, b) => a.clientSecret.localeCompare(b.clientSecret),
       },
       {
@@ -171,7 +171,7 @@ class ProviderListPage extends React.Component {
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -181,7 +181,7 @@ class ProviderListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -197,17 +197,9 @@ class ProviderListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.providers)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.providers)
+        }
       </div>
     );
   }

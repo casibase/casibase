@@ -14,8 +14,9 @@
 
 import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
-import {Avatar, BackTop, Dropdown, Layout, Menu} from "antd";
-import {DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
+import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
+import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu} from "antd";
+import {BarsOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -45,7 +46,7 @@ import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
 
-const {Header, Footer} = Layout;
+const {Header, Footer, Content} = Layout;
 
 class App extends Component {
   constructor(props) {
@@ -55,6 +56,8 @@ class App extends Component {
       selectedMenuKey: 0,
       account: undefined,
       uri: null,
+      themeData: Conf.ThemeDefault,
+      menuVisible: false,
     };
 
     Setting.initServerUrl();
@@ -162,6 +165,18 @@ class App extends Component {
     }
   }
 
+  onClose = () => {
+    this.setState({
+      menuVisible: false,
+    });
+  };
+
+  showMenu = () => {
+    this.setState({
+      menuVisible: true,
+    });
+  };
+
   renderAvatar() {
     if (this.state.account.avatar === "") {
       return (
@@ -179,24 +194,24 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    const menu = (
-      <Menu onClick={this.handleRightDropdownClick.bind(this)}>
-        <Menu.Item key="/account">
-          <SettingOutlined />
-          {i18next.t("account:My Account")}
-        </Menu.Item>
-        <Menu.Item key="/logout">
-          <LogoutOutlined />
-          {i18next.t("account:Sign Out")}
-        </Menu.Item>
-      </Menu>
-    );
+    const items = [];
+    items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
+      "/account"
+    ));
+    items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
+      "/logout"
+    ));
+    const onClick = ({e}) => {
+      if (e.key === "/account") {
+        Setting.openLink(Setting.getMyProfileUrl(this.state.account));
+      } else if (e.key === "/logout") {
+        this.signout();
+      }
+    };
 
     return (
-      <Dropdown key="/rightDropDown" overlay={menu} className="rightDropDown">
-        <div className="ant-dropdown-link" style={{float: "right", cursor: "pointer"}}>
-          &nbsp;
-          &nbsp;
+      <Dropdown key="/rightDropDown" menu={{items, onClick}} >
+        <div className="rightDropDown">
           {
             this.renderAvatar()
           }
@@ -211,166 +226,104 @@ class App extends Component {
     );
   }
 
-  renderAccount() {
-    const res = [];
-
+  renderAccountMenu() {
     if (this.state.account === undefined) {
       return null;
     } else if (this.state.account === null) {
-      res.push(
-        <Menu.Item key="/signup" style={{float: "right", marginRight: "20px"}}>
-          <a href={Setting.getSignupUrl()}>
-            {i18next.t("account:Sign Up")}
-          </a>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/signin" style={{float: "right"}}>
-          <a href={Setting.getSigninUrl()}>
-            {i18next.t("account:Sign In")}
-          </a>
-        </Menu.Item>
-      );
-      res.push(
-        <LanguageSelect />
+      return (
+        <React.Fragment>
+          <Menu.Item key="/signup" style={{float: "right", marginRight: "20px"}}>
+            <a href={Setting.getSignupUrl()}>
+              {i18next.t("account:Sign Up")}
+            </a>
+          </Menu.Item>
+          <Menu.Item key="/signin" style={{float: "right"}}>
+            <a href={Setting.getSigninUrl()}>
+              {i18next.t("account:Sign In")}
+            </a>
+          </Menu.Item>
+          <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+            <LanguageSelect />
+          </Menu.Item>
+        </React.Fragment>
       );
     } else {
-      res.push(this.renderRightDropdown());
-      res.push(
-        <LanguageSelect />
-      );
       return (
-        <div style={{float: "right", margin: "0px", padding: "0px"}}>
-          {
-            res
-          }
-        </div>
+        <React.Fragment>
+          {this.renderRightDropdown()}
+          <LanguageSelect />
+        </React.Fragment>
       );
     }
-
-    return res;
   }
 
-  renderMenu() {
+  getMenuItems() {
     const res = [];
 
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
 
-    if (this.state.account.tag === "Video") {
-      res.push(
-        <Menu.Item key="/videos">
-          <Link to="/videos">
-            {i18next.t("general:Videos")}
-          </Link>
-        </Menu.Item>
-      );
+    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
 
+    if (this.state.account.tag === "Video") {
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>,
+        "/videos"));
       return res;
     }
 
-    res.push(
-      <Menu.Item key="/home">
-        <Link to="/home">
-          {i18next.t("general:Home")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/stores">
-        <Link to="/stores">
-          {i18next.t("general:Stores")}
-        </Link>
-      </Menu.Item>
-    );
+    res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>,
+      "/stores"));
 
     if (Conf.EnableExtraPages) {
-      res.push(
-        <Menu.Item key="/clustering">
-          <Link to="/clustering">
-            {i18next.t("general:Clustering")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/wordsets">
-          <Link to="/wordsets">
-            {i18next.t("general:Wordsets")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/factorsets">
-          <Link to="/factorsets">
-            {i18next.t("general:Factorsets")}
-          </Link>
-        </Menu.Item>
-      );
-      res.push(
-        <Menu.Item key="/videos">
-          <Link to="/videos">
-            {i18next.t("general:Videos")}
-          </Link>
-        </Menu.Item>
-      );
+      res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>,
+        "/clustering"));
+
+      res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>,
+        "/wordsets"));
+
+      res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>,
+        "/factorsets"));
+
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>,
+        "/videos"));
     }
 
-    const renderExternalLink = () => {
-      return (
-        <svg style={{marginLeft: "5px"}} width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" className="iconExternalLink_nPIU">
-          <path fill="currentColor"
-            d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
-        </svg>
-      );
-    };
+    res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>,
+      "/providers"));
 
-    res.push(
-      <Menu.Item key="/providers">
-        <Link to="/providers">
-          {i18next.t("general:Providers")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/vectors">
-        <Link to="/vectors">
-          {i18next.t("general:Vectors")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/chats">
-        <Link to="/chats">
-          {i18next.t("general:Chats")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/messages">
-        <Link to="/messages">
-          {i18next.t("general:Messages")}
-        </Link>
-      </Menu.Item>
-    );
-    res.push(
-      <Menu.Item key="/permissions">
+    res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>,
+      "/vectors"));
+
+    res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>,
+      "/chats"));
+
+    res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>,
+      "/messages"));
+
+    if (Setting.isLocalAdminUser(this.state.account)) {
+      const renderExternalLink = () => {
+        return (
+          <svg style={{marginLeft: "5px"}} width="13.5" height="13.5" aria-hidden="true" viewBox="0 0 24 24" className="iconExternalLink_nPIU">
+            <path fill="currentColor"
+              d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"></path>
+          </svg>
+        );
+      };
+
+      res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
           {i18next.t("general:Permissions")}
           {renderExternalLink()}
-        </a>
-      </Menu.Item>
-    );
+        </a>,
+        "/permissions"));
 
-    if (Setting.isLocalAdminUser(this.state.account)) {
-      res.push(
-        <Menu.Item key="/logs">
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-            {i18next.t("general:Logs")}
-            {renderExternalLink()}
-          </a>
-        </Menu.Item>
-      );
+      res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+          {i18next.t("general:Logs")}
+          {renderExternalLink()}
+        </a>,
+        "/logs"));
     }
 
     return res;
@@ -395,57 +348,84 @@ class App extends Component {
     }
   }
 
-  renderContent() {
+  renderRouter() {
     return (
-      <div>
-        <Header style={{padding: "0", marginBottom: "3px"}}>
+      <Switch>
+        <Route exact path="/callback" component={AuthCallback} />
+        <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
+        <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
+        <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)} />
+        <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
+        <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
+      </Switch>
+    );
+  }
+
+  renderContent() {
+    const onClick = ({key}) => {
+      this.props.history.push(key);
+    };
+    const menuStyleRight = Setting.isAdminUser(this.state.account) && !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
+    return (
+      <Layout id="parent-area">
+        <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
+          {Setting.isMobile() ? null : (
+            <Link to={"/"}>
+              <div className="logo" />
+            </Link>
+          )}
+          {(Setting.isMobile() ?
+            <React.Fragment>
+              <Drawer title={i18next.t("general:Close")} placement="left" visible={this.state.menuVisible} onClose={this.onClose}>
+                <Menu
+                  items={this.getMenuItems()}
+                  mode={"inline"}
+                  selectedKeys={[this.state.selectedMenuKey]}
+                  style={{lineHeight: "64px"}}
+                  onClick={this.onClose}
+                >
+                </Menu>
+              </Drawer>
+              <Button icon={<BarsOutlined />} onClick={this.showMenu} type="text">
+                {i18next.t("general:Menu")}
+              </Button>
+            </React.Fragment> :
+            <Menu
+              onClick={onClick}
+              items={this.getMenuItems()}
+              mode={"horizontal"}
+              selectedKeys={[this.state.selectedMenuKey]}
+              style={{position: "absolute", left: "145px", right: menuStyleRight}}
+            />
+          )}
           {
-            Setting.isMobile() ? null : (
-              <Link to={"/"}>
-                <div className="logo" />
-              </Link>
-            )
+            this.renderAccountMenu()
           }
-          <Menu
-            // theme="dark"
-            mode={"horizontal"}
-            selectedKeys={[`${this.state.selectedMenuKey}`]}
-            style={{lineHeight: "64px"}}
-          >
-            {
-              this.renderMenu()
-            }
-            {
-              this.renderAccount()
-            }
-          </Menu>
         </Header>
-        <Switch>
-          <Route exact path="/callback" component={AuthCallback} />
-          <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
-          <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-          <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
-          <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
-          <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
-          <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
-          <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
-        </Switch>
-      </div>
+        <Content style={{display: "flex", flexDirection: "column"}}>
+          <Card className="content-warp-card">
+            {this.renderRouter()}
+          </Card>
+        </Content>
+        {this.renderFooter()}
+      </Layout>
     );
   }
 
@@ -454,31 +434,53 @@ class App extends Component {
     // https://www.freecodecamp.org/neyarnws/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/
 
     return (
-      <Footer id="footer" style={
+      <React.Fragment>
+        <Footer id="footer" style={
+          {
+            borderTop: "1px solid #e8e8e8",
+            backgroundColor: "#f5f5f5",
+            textAlign: "center",
+          }
+        }>
+          Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>
+        </Footer>
+      </React.Fragment>
+    );
+  }
+
+  renderPage() {
+    return (
+      <React.Fragment>
+        {/* { */}
+        {/*   this.renderBanner() */}
+        {/* } */}
+        <FloatButton.BackTop />
+        {/* <CustomGithubCorner />*/}
         {
-          borderTop: "1px solid #e8e8e8",
-          backgroundColor: "white",
-          textAlign: "center",
+          this.renderContent()
         }
-      }>
-        Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>
-      </Footer>
+      </React.Fragment>
     );
   }
 
   render() {
     return (
-      <div id="parent-area">
-        <BackTop />
-        <div id="content-wrap">
-          {
-            this.renderContent()
-          }
-        </div>
-        {
-          this.renderFooter()
-        }
-      </div>
+      <React.Fragment>
+        <ConfigProvider theme={{
+          token: {
+            colorPrimary: this.state.themeData.colorPrimary,
+            colorInfo: this.state.themeData.colorPrimary,
+            borderRadius: this.state.themeData.borderRadius,
+          },
+          // algorithm: Setting.getAlgorithm(this.state.themeAlgorithm),
+        }}>
+          <StyleProvider hashPriority="high" transformers={[legacyLogicalPropertiesTransformer]}>
+            {
+              this.renderPage()
+            }
+          </StyleProvider>
+        </ConfigProvider>
+      </React.Fragment>
     );
   }
 }

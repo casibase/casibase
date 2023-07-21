@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
@@ -171,7 +171,7 @@ class VectorListPage extends React.Component {
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -181,7 +181,7 @@ class VectorListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -197,17 +197,9 @@ class VectorListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.vectors)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.vectors)
+        }
       </div>
     );
   }

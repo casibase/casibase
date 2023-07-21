@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Col, Popconfirm, Row, Table, Upload} from "antd";
+import {Button, Popconfirm, Table, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -184,7 +184,7 @@ class VideoListPage extends React.Component {
         title: i18next.t("video:Labels"),
         dataIndex: "labels",
         key: "labels",
-        // width: '120px',
+        width: "120px",
         sorter: (a, b) => a.factors.localeCompare(b.factors),
         render: (text, record, index) => {
           return Setting.getLabelTags(text);
@@ -214,7 +214,7 @@ class VideoListPage extends React.Component {
                 okText="OK"
                 cancelText="Cancel"
               >
-                <Button style={{marginBottom: "10px"}} type="danger">{i18next.t("general:Delete")}</Button>
+                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -224,7 +224,7 @@ class VideoListPage extends React.Component {
 
     return (
       <div>
-        <Table columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("general:Videos")}
@@ -245,17 +245,9 @@ class VideoListPage extends React.Component {
   render() {
     return (
       <div>
-        <Row style={{width: "100%"}}>
-          <Col span={1}>
-          </Col>
-          <Col span={22}>
-            {
-              this.renderTable(this.state.videos)
-            }
-          </Col>
-          <Col span={1}>
-          </Col>
-        </Row>
+        {
+          this.renderTable(this.state.videos)
+        }
       </div>
     );
   }
