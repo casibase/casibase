@@ -115,7 +115,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "130px",
+        width: "120px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
@@ -129,7 +129,7 @@ class MessageListPage extends React.Component {
         sorter: (a, b) => a.chat.localeCompare(b.chat),
         render: (text, record, index) => {
           return (
-            <Link to={`/chat/${text}`}>
+            <Link to={`/chats/${text}`}>
               {text}
             </Link>
           );
@@ -139,12 +139,13 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Reply to"),
         dataIndex: "replyTo",
         key: "replyTo",
-        width: "130px",
+        width: "100px",
         sorter: (a, b) => a.replyTo.localeCompare(b.replyTo),
         render: (text, record, index) => {
+          const textTemp = text.split("/")[1];
           return (
-            <Link to={`/message/${text}`}>
-              {text}
+            <Link to={`/messages/${textTemp}`}>
+              {textTemp}
             </Link>
           );
         },
@@ -153,7 +154,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Author"),
         dataIndex: "author",
         key: "author",
-        width: "120px",
+        width: "100px",
         sorter: (a, b) => a.author.localeCompare(b.author),
         render: (text, record, index) => {
           return (

@@ -59,7 +59,7 @@ class ChatPage extends BaseListPage {
   newMessage(text) {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.owner, // this.props.account.messagename,
+      owner: "admin", // this.props.account.messagename,
       name: `message_${randomName}`,
       createdTime: moment().format(),
       // organization: this.props.account.owner,
