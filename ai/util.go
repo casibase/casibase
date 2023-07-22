@@ -12,26 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package util
+package ai
 
-import "time"
+import "github.com/pkoukk/tiktoken-go"
 
-func GetCurrentTime() string {
-	timestamp := time.Now().Unix()
-	tm := time.Unix(timestamp, 0)
-	return tm.Format(time.RFC3339)
-}
-
-func GetCurrentTimeEx(timestamp string) string {
-	tm := time.Now()
-	inputTime, err := time.Parse(time.RFC3339, timestamp)
+func getTokenSize(model string, prompt string) (int, error) {
+	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 
-	if !tm.After(inputTime) {
-		tm = inputTime.Add(1 * time.Millisecond)
-	}
-
-	return tm.Format("2006-01-02T15:04:05.999Z07:00")
+	token := tkm.Encode(prompt, nil, nil)
+	res := len(token)
+	return res, nil
 }

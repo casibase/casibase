@@ -19,8 +19,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -138,4 +140,18 @@ func DecodeBase64(s string) string {
 	}
 
 	return string(res)
+}
+
+func GetRandomName() string {
+	rand.Seed(time.Now().UnixNano())
+	const charset = "0123456789abcdefghijklmnopqrstuvwxyz"
+	result := make([]byte, 6)
+	for i := range result {
+		result[i] = charset[rand.Intn(len(charset))]
+	}
+	return string(result)
+}
+
+func GetId(owner, name string) string {
+	return fmt.Sprintf("%s/%s", owner, name)
 }

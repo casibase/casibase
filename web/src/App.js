@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu} from "antd";
-import {BarsOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
+import {BarsOutlined, CommentOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -45,6 +45,7 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
+import ChatPage from "./ChatPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -198,14 +199,19 @@ class App extends Component {
     items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
       "/account"
     ));
+    items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("account:Chats & Messages")}</>,
+      "/chat"
+    ));
     items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
       "/logout"
     ));
-    const onClick = ({e}) => {
+    const onClick = (e) => {
       if (e.key === "/account") {
         Setting.openLink(Setting.getMyProfileUrl(this.state.account));
       } else if (e.key === "/logout") {
         this.signout();
+      } else if (e.key === "/chat") {
+        this.props.history.push("/chat");
       }
     };
 
@@ -374,8 +380,13 @@ class App extends Component {
         <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
       </Switch>
     );
+  }
+
+  isWithoutCard() {
+    return Setting.isMobile() || window.location.pathname === "/chat";
   }
 
   renderContent() {
@@ -420,9 +431,12 @@ class App extends Component {
           }
         </Header>
         <Content style={{display: "flex", flexDirection: "column"}}>
-          <Card className="content-warp-card">
-            {this.renderRouter()}
-          </Card>
+          {this.isWithoutCard() ?
+            this.renderRouter() :
+            <Card className="content-warp-card">
+              {this.renderRouter()}
+            </Card>
+          }
         </Content>
         {this.renderFooter()}
       </Layout>
