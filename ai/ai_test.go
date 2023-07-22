@@ -18,11 +18,11 @@
 package ai
 
 import (
-	"github.com/sashabaranov/go-openai"
 	"testing"
 
 	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/proxy"
+	"github.com/sashabaranov/go-openai"
 )
 
 func TestRun(t *testing.T) {
