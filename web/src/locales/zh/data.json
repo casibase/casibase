@@ -1,13 +1,39 @@
 {
   "account": {
+    "Chats \u0026 Messages": "Chats \u0026 Messages",
     "My Account": "我的账户",
     "Sign In": "登录",
     "Sign Out": "登出",
     "Sign Up": "注册"
   },
+  "chat": {
+    "AI": "AI",
+    "Category": "Category",
+    "Chats": "Chats",
+    "Edit Chat": "Edit Chat",
+    "Group": "Group",
+    "Message count": "Message count",
+    "Single": "Single",
+    "Type": "Type",
+    "User1": "User1",
+    "User2": "User2",
+    "Users": "Users"
+  },
+  "factorset": {
+    "Count": "个数",
+    "Dimension": "维度",
+    "Edit Factorset": "编辑向量集",
+    "Example factors": "示例向量",
+    "File name": "文件名",
+    "File size": "文件大小"
+  },
   "general": {
     "Action": "操作",
     "Add": "添加",
+    "Back Home": "Back Home",
+    "Cancel": "Cancel",
+    "Chats": "Chats",
+    "Close": "Close",
     "Clustering": "聚类分析",
     "Created time": "上传时间",
     "Data": "数据",
@@ -15,21 +41,56 @@
     "Display name": "显示名称",
     "Download": "下载",
     "Edit": "编辑",
-    "Home": "首页",
+    "Factorsets": "我的向量集",
+    "Failed to add": "Failed to add",
+    "Failed to connect to server": "Failed to connect to server",
+    "Failed to delete": "Failed to delete",
+    "Failed to get answer": "Failed to get answer",
+    "Home\")}\u003c/Link\u003e, \"/": "Home\")}\u003c/Link\u003e, \"/",
     "Loading...": "加载中...",
+    "Logs": "我的日志",
+    "Menu": "Menu",
+    "Messages": "Messages",
     "Name": "名称",
     "No.": "序号",
+    "OK": "OK",
+    "Organization\"), i18next.t(\"general": "Organization\"), i18next.t(\"general",
     "Permissions": "我的权限",
     "Preview": "预览",
-    "Logs": "我的日志",
+    "Provider URL": "Provider URL",
+    "Providers": "Providers",
     "Result": "结果",
     "Save": "保存",
+    "Sorry, you do not have permission to access this page or logged in status invalid.": "Sorry, you do not have permission to access this page or logged in status invalid.",
     "Stores": "我的数据仓库",
+    "Successfully added": "Successfully added",
+    "Successfully deleted": "Successfully deleted",
     "URL": "链接",
-    "Factorsets": "我的向量集",
+    "Updated time": "Updated time",
+    "Users": "Users",
+    "Vectors": "Vectors",
     "Videos": "我的视频",
     "View": "查看",
     "Wordsets": "我的词汇集"
+  },
+  "login": {
+    "Loading": "Loading"
+  },
+  "message": {
+    "Author": "Author",
+    "Chat": "Chat",
+    "Edit Chat": "Edit Chat",
+    "Messages": "Messages",
+    "Reply to": "Reply to",
+    "Text": "Text",
+    "replyTo": "replyTo"
+  },
+  "provider": {
+    "Category": "Category",
+    "Edit Provider": "Edit Provider",
+    "Provider URL": "Provider URL",
+    "Secret key": "Secret key",
+    "Type": "Type"
   },
   "store": {
     "Add Permission": "添加权限",
@@ -66,13 +127,12 @@
     "files and": "个文件和",
     "folders are checked": "文件夹已被选择"
   },
-  "factorset": {
-    "Count": "个数",
-    "Dimension": "维度",
-    "Edit Factorset": "编辑向量集",
-    "Example factors": "示例向量",
-    "File name": "文件名",
-    "File size": "文件大小"
+  "vector": {
+    "Data": "Data",
+    "Edit Vector": "Edit Vector",
+    "File": "File",
+    "Store": "Store",
+    "Text": "Text"
   },
   "video": {
     "Cover": "封面图片",
@@ -88,13 +148,11 @@
     "Video ID": "视频ID"
   },
   "wordset": {
-    "All words": "所有词汇",
     "Distance limit": "距离上限",
     "Edit Wordset": "编辑词汇集",
+    "Factorset": "向量集",
     "Match": "匹配",
     "Matched": "匹配度",
-    "Valid words": "有效词汇",
-    "Factorset": "向量集",
     "Words": "词汇表"
   }
 }
