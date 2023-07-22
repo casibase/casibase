@@ -45,7 +45,13 @@ func (c *ApiController) GetStores() {
 func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
-	store, err := object.GetStore(id)
+	var store *object.Store
+	var err error
+	if id == "admin/_casibase_default_store_" {
+		store, err = object.GetDefaultStore("admin")
+	} else {
+		store, err = object.GetStore(id)
+	}
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -57,7 +63,8 @@ func (c *ApiController) GetStore() {
 
 	err = store.Populate()
 	if err != nil {
-		c.ResponseError(err.Error())
+		// gentle error
+		c.ResponseOk(store, err.Error())
 		return
 	}
 

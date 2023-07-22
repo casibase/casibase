@@ -84,8 +84,8 @@ class App extends Component {
     this.setState({
       uri: uri,
     });
-    if (uri === "/home") {
-      this.setState({selectedMenuKey: "/home"});
+    if (uri === "/" || uri === "/home") {
+      this.setState({selectedMenuKey: "/"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/clustering")) {

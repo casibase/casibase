@@ -70,7 +70,7 @@ func GetStores(owner string) ([]*Store, error) {
 	return stores, nil
 }
 
-func getCurrentStore(owner string) (*Store, error) {
+func GetDefaultStore(owner string) (*Store, error) {
 	stores, err := GetStores(owner)
 	if err != nil {
 		return nil, err
@@ -81,6 +81,11 @@ func getCurrentStore(owner string) (*Store, error) {
 			return store, nil
 		}
 	}
+
+	if len(stores) > 0 {
+		return stores[0], nil
+	}
+
 	return nil, nil
 }
 

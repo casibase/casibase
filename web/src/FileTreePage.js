@@ -36,13 +36,17 @@ class FileTreePage extends React.Component {
 
   getStore() {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
-      .then((res) => {
-        if (res?.status !== "error") {
+      .then((store) => {
+        if (store.status === "ok") {
+          if (store.data2 !== null && store.data?.includes("error")) {
+            store.data.error = store.data2;
+          }
+
           this.setState({
-            store: res.data,
+            store: store.data,
           });
         } else {
-          Setting.showMessage("error", res.msg);
+          Setting.showMessage("error", `Failed to get store: ${store.msg}`);
         }
       });
   }

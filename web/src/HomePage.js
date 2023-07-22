@@ -28,22 +28,22 @@ class HomePage extends React.Component {
   }
 
   UNSAFE_componentWillMount() {
-    this.getStores();
+    this.getStore();
   }
 
-  getStores() {
-    StoreBackend.getGlobalStores()
-      .then((res) => {
-        if (res.status === "ok") {
-          const stores = res.data;
-          const store = stores.filter(store => store.domain !== "https://cdn.example.com")[0];
-          if (store !== undefined) {
-            this.setState({
-              store: store,
-            });
+  getStore() {
+    StoreBackend.getStore("admin", "_casibase_default_store_")
+      .then((store) => {
+        if (store.status === "ok") {
+          if (store.data2 !== null && store.data2.includes("error")) {
+            store.data.error = store.data2;
           }
+
+          this.setState({
+            store: store.data,
+          });
         } else {
-          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
+          Setting.showMessage("error", `Failed to get store: ${store.msg}`);
         }
       });
   }

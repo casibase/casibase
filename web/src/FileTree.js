@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
+import {withRouter} from "react-router-dom";
+import {Button, Card, Col, DatePicker, Descriptions, Empty, Input, Modal, Popconfirm, Radio, Result, Row, Select, Spin, Tooltip, Tree, Upload} from "antd";
 import {CloudUploadOutlined, DeleteOutlined, DownloadOutlined, FileDoneOutlined, FolderAddOutlined, InfoCircleTwoTone, createFromIconfontCN} from "@ant-design/icons";
 import moment from "moment";
 import * as Setting from "./Setting";
@@ -847,29 +848,49 @@ class FileTree extends React.Component {
   }
 
   render() {
+    if (this.props.store.fileTree === null) {
+      return (
+        <div className="App">
+          <Result
+            status="error"
+            title={`${this.props.store.error}`}
+            extra={
+              <Button type="primary" onClick={() => this.props.history.push(`/stores/${this.props.store.owner}/${this.props.store.name}`)}>
+                Go to Store
+              </Button>
+            }
+          />
+        </div>
+      );
+    }
+
     return (
-      <div style={{backgroundColor: "white", borderTop: "1px solid rgb(232,232,232)", borderLeft: "1px solid rgb(232,232,232)"}}>
+      <div>
         <Row>
           <Col span={8}>
-            <Card className="content-warp-card-filetreeleft">
-              {
-                this.renderSearch(this.props.store)
-              }
-              {
-                this.renderTree(this.props.store)
-              }
+            <Card className="content-warp-card-filetreeleft" style={{marginRight: "10px"}}>
+              <div style={{margin: "-25px"}}>
+                {
+                  this.renderSearch(this.props.store)
+                }
+                {
+                  this.renderTree(this.props.store)
+                }
+              </div>
             </Card>
           </Col>
           <Col span={16}>
             <Card className="content-warp-card-filetreeright">
-              <div style={{height: this.getEditorHeightCss()}}>
+              <div style={{margin: "-25px"}}>
+                <div style={{height: this.getEditorHeightCss()}}>
+                  {
+                    this.renderFileViewer(this.props.store)
+                  }
+                </div>
                 {
-                  this.renderFileViewer(this.props.store)
+                  this.renderProperties()
                 }
               </div>
-              {
-                this.renderProperties()
-              }
             </Card>
           </Col>
         </Row>
@@ -881,4 +902,4 @@ class FileTree extends React.Component {
   }
 }
 
-export default FileTree;
+export default withRouter(FileTree);

@@ -39,6 +39,10 @@ class StoreEditPage extends React.Component {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((store) => {
         if (store.status === "ok") {
+          if (store.data2 !== null && store.data2.includes("error")) {
+            store.data.error = store.data2;
+          }
+
           this.setState({
             store: store.data,
           });
