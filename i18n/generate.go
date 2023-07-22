@@ -29,7 +29,7 @@ type I18nData map[string]map[string]string
 var reI18n *regexp.Regexp
 
 func init() {
-	reI18n, _ = regexp.Compile("i18next.t\\(\"(.*)\"\\)")
+	reI18n, _ = regexp.Compile("i18next.t\\(\"(.*?)\"\\)")
 }
 
 func getAllI18nStrings(fileContent string) []string {
