@@ -12,11 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+//go:build !skipCi
+// +build !skipCi
+
 package storage
 
-//func TestStorage(t *testing.T) {
-//	_, err := ListObjects("casibase", "")
-//	if err != nil {
-//		panic(err)
-//	}
-//}
+import "testing"
+
+func TestStorage(t *testing.T) {
+	_, err := ListObjects("casibase", "")
+	if err != nil {
+		panic(err)
+	}
+}
