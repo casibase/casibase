@@ -14,8 +14,6 @@
 
 package video
 
-var (
-	regionId        = ""
-	accessKeyId     = ""
-	accessKeySecret = ""
-)
+var regionId = ""
+var accessKeyId = ""
+var accessKeySecret = ""
