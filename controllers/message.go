@@ -232,7 +232,7 @@ func (c *ApiController) AddMessage() {
 				Owner:       message.Owner,
 				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
 				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
-				//Organization: message.Organization,
+				// Organization: message.Organization,
 				Chat:    message.Chat,
 				ReplyTo: message.GetId(),
 				Author:  "AI",
