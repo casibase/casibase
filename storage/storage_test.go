@@ -18,11 +18,12 @@
 package storage_test
 
 import (
+	"io"
+	"testing"
+
 	"github.com/casbin/casibase/casdoor"
 	"github.com/casbin/casibase/controllers"
 	"github.com/casbin/casibase/storage"
-	"io"
-	"testing"
 )
 
 func TestStorage(t *testing.T) {

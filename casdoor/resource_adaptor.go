@@ -2,6 +2,7 @@ package casdoor
 
 import (
 	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"

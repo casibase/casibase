@@ -2,13 +2,14 @@ package storage
 
 import (
 	"fmt"
+	"io"
+	"net/http"
+	"time"
+
 	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/casdoor"
 	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
-	"io"
-	"net/http"
-	"time"
 )
 
 type casdoorClient struct {
@@ -32,6 +33,7 @@ func (s *casdoorClient) Get(key string) (io.ReadCloser, error) {
 
 	return response.Body, nil
 }
+
 func (s *casdoorClient) Put(user, key string, bytes []byte) error {
 	_, _, err := casdoorsdk.UploadResource(user, "Casibase", "Casibase",
 		util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
@@ -42,6 +44,7 @@ func (s *casdoorClient) Put(user, key string, bytes []byte) error {
 	}
 	return nil
 }
+
 func (s *casdoorClient) Delete(key string) error {
 	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
 		beego.AppConfig.String("casdoorOrganization"),
@@ -51,6 +54,7 @@ func (s *casdoorClient) Delete(key string) error {
 	}
 	return nil
 }
+
 func (s *casdoorClient) List(prefix string) ([]*Object, error) {
 	res, err := casdoor.ListResources(prefix)
 	if err != nil {
