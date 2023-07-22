@@ -116,6 +116,7 @@ func PutObject2(con ConnectConfig, addPath string, in *bytes.Buffer) error {
 // DeleteObject2 support delete file or dir
 func DeleteObject2(con ConnectConfig, delPath string) error {
 	f, err := getFs(con)
+
 	if err != nil {
 		return err
 	}
