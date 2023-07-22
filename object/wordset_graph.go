@@ -63,7 +63,7 @@ func GetWordsetGraph(id string, clusterNumber int, distanceLimit int) (*Graph, e
 	runKmeans(wordset.Factors, clusterNumber)
 
 	g = generateGraph(wordset.Factors, distanceLimit)
-	//graphCache[cacheId] = g
+	// graphCache[cacheId] = g
 	return g, nil
 }
 
@@ -99,7 +99,7 @@ func getNodeColor(weight int) string {
 
 func generateGraph(factors []*Factor, distanceLimit int) *Graph {
 	factors = refineFactors(factors)
-	//factors = factors[:100]
+	// factors = factors[:100]
 
 	g := newGraph()
 	g.Nodes = []*Node{}
@@ -135,12 +135,12 @@ func generateGraph(factors []*Factor, distanceLimit int) *Graph {
 	}
 
 	for _, factor := range factors {
-		//value := 5
+		// value := 5
 		value := int(math.Sqrt(float64(nodeWeightMap[factor.Name]))) + 3
 		weight := nodeWeightMap[factor.Name]
 
-		//nodeColor := "rgb(232,67,62)"
-		//nodeColor := getNodeColor(value)
+		// nodeColor := "rgb(232,67,62)"
+		// nodeColor := getNodeColor(value)
 		nodeColor := factor.Color
 
 		fmt.Printf("Node [%s]: weight = %d, nodeValue = %d\n", factor.Name, nodeWeightMap[factor.Name], value)
