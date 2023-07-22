@@ -36,9 +36,9 @@ func (s *casdoorClient) Get(key string) (io.ReadCloser, error) {
 
 func (s *casdoorClient) Put(user, key string, bytes []byte) error {
 	_, _, err := casdoorsdk.UploadResource(user, "Casibase", "Casibase",
-		util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
-			beego.AppConfig.String("casdoorOrganization"),
-			beego.AppConfig.String("casdoorApplication")), key), bytes)
+		fmt.Sprintf("/resource/%s/%s/%s",
+			casdoor.Organization, casdoor.Application, key),
+		bytes)
 	if err != nil {
 		return err
 	}

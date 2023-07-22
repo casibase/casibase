@@ -23,10 +23,8 @@ func ListResources(prefix string) ([]*casdoorsdk.Resource, error) {
 }
 
 func GetResource(key string) (*casdoorsdk.Resource, error) {
-	id := util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
-		beego.AppConfig.String("casdoorOrganization"),
-		beego.AppConfig.String("casdoorApplication")), key)
-	resource := casdoorsdk.Resource{Owner: CasdoorOrganization, Name: id}
+	id := fmt.Sprintf("/resource/%s/%s/casibase/%s", Organization, Application, key)
+	resource := casdoorsdk.Resource{Owner: Organization, Name: id}
 	existed, err := adapter.Engine.Get(&resource)
 	if err != nil {
 		return nil, err
