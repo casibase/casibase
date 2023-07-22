@@ -27,7 +27,7 @@ func (c *ApiController) GetGlobalProviders() {
 		return
 	}
 
-	c.ResponseOk(providers)
+	c.ResponseOk(object.GetMaskedProviders(providers, true))
 }
 
 func (c *ApiController) GetProviders() {
@@ -39,7 +39,7 @@ func (c *ApiController) GetProviders() {
 		return
 	}
 
-	c.ResponseOk(providers)
+	c.ResponseOk(object.GetMaskedProviders(providers, true))
 }
 
 func (c *ApiController) GetProvider() {
@@ -51,7 +51,7 @@ func (c *ApiController) GetProvider() {
 		return
 	}
 
-	c.ResponseOk(provider)
+	c.ResponseOk(object.GetMaskedProvider(provider, true))
 }
 
 func (c *ApiController) UpdateProvider() {

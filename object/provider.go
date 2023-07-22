@@ -34,6 +34,33 @@ type Provider struct {
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
 }
 
+func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
+	if !isMaskEnabled {
+		return provider
+	}
+
+	if provider == nil {
+		return nil
+	}
+
+	if provider.ClientSecret != "" {
+		provider.ClientSecret = "***"
+	}
+
+	return provider
+}
+
+func GetMaskedProviders(providers []*Provider, isMaskEnabled bool) []*Provider {
+	if !isMaskEnabled {
+		return providers
+	}
+
+	for _, provider := range providers {
+		provider = GetMaskedProvider(provider, isMaskEnabled)
+	}
+	return providers
+}
+
 func GetGlobalProviders() ([]*Provider, error) {
 	providers := []*Provider{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&providers)
