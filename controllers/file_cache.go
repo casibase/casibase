@@ -22,11 +22,9 @@ import (
 	"github.com/casbin/casibase/util"
 )
 
-var (
-	cacheDir string
-	appDir   string
-	cacheMap = map[string]string{}
-)
+var cacheDir string
+var appDir string
+var cacheMap = map[string]string{}
 
 func init() {
 	cacheDir = beego.AppConfig.String("cacheDir")
