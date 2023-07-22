@@ -14,8 +14,6 @@
 
 package storage
 
-var (
-	endpoint     = ""
-	clientId     = ""
-	clientSecret = ""
-)
+var endpoint = ""
+var clientId = ""
+var clientSecret = ""
