@@ -22,10 +22,8 @@ import (
 	"xorm.io/xorm"
 )
 
-var (
-	adapter             *Adapter = nil
-	CasdoorOrganization string
-)
+var adapter *Adapter = nil
+var CasdoorOrganization string
 
 type Session struct {
 	SessionKey    string  `xorm:"char(64) notnull pk"`
