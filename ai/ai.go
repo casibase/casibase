@@ -17,11 +17,12 @@ package ai
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"io"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/sashabaranov/go-openai"
 )
 
 func queryAnswer(authToken string, question string, timeout int) (string, error) {
