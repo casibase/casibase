@@ -26,7 +26,7 @@
 
 <p align="center">
   <a href="https://goreportcard.com/report/github.com/casbin/casibase">
-    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casdoor/casdoor?style=flat-square">
+    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casbin/casibase?style=flat-square">
   </a>
   <a href="https://github.com/casbin/casibase/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/casbin/casibase?style=flat-square" alt="license">
@@ -40,15 +40,12 @@
   <a href="https://github.com/casbin/casibase/network">
     <img alt="GitHub forks" src="https://img.shields.io/github/forks/casbin/casibase?style=flat-square">
   </a>
-  <a href="https://crowdin.com/project/casibase-site">
-    <img alt="Crowdin" src="https://badges.crowdin.net/casdoor-site/localized.svg">
+  <a href="https://crowdin.com/project/casibase">
+    <img alt="Crowdin" src="https://badges.crowdin.net/casibase/localized.svg">
   </a>
   <a href="https://discord.gg/devUNrWXrh">
     <img alt="Discord" src="https://img.shields.io/discord/1022748306096537660?logo=discord&label=discord&color=5865F2">
   </a>
-<!-- waiting for changing -->
-<!-- <a href="https://goreportcard.com/report/github.com/casbin/casibase"> -->
-<!-- <a href="https://crowdin.com/project/casibase-site"> -->
 </p>
 
 ## Architecture
