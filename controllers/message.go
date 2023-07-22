@@ -137,7 +137,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	if provider.Category != "AI" || provider.ClientSecret == "" {
+	if provider.Category != "Model" || provider.ClientSecret == "" {
 		c.ResponseErrorStream(fmt.Sprintf("The provider: %s is invalid", providerId))
 		return
 	}

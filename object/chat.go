@@ -96,6 +96,17 @@ func UpdateChat(id string, chat *Chat) (bool, error) {
 }
 
 func AddChat(chat *Chat) (bool, error) {
+	if chat.Type == "AI" && chat.User2 == "" {
+		provider, err := getDefaultModelProvider()
+		if err != nil {
+			return false, err
+		}
+
+		if provider != nil {
+			chat.User2 = provider.Name
+		}
+	}
+
 	affected, err := adapter.engine.Insert(chat)
 	if err != nil {
 		return false, err
