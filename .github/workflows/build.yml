@@ -152,13 +152,3 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: casbin/casibase:${{steps.get-current-tag.outputs.tag }},casbin/casibase:latest
-
-      - name: Push All In One Version to Docker Hub
-        uses: docker/build-push-action@v3
-        if: github.repository == 'casbin/casibase' && github.event_name == 'push' && steps.should_push.outputs.push=='true'
-        with:
-          context: .
-          target: ALLINONE
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: casbin/casibase-all-in-one:${{steps.get-current-tag.outputs.tag }},casbin/casibase-all-in-one:latest
