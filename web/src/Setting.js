@@ -27,7 +27,7 @@ export let CasdoorSdk;
 
 export function initServerUrl() {
   const hostname = window.location.hostname;
-  if (hostname === "localhost") {
+  if (hostname === "localhost" || hostname === "127.0.0.1") {
     ServerUrl = `http://${hostname}:14000`;
   }
 }
