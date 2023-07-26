@@ -87,7 +87,7 @@ Follow these steps to setup Casdoor for casibase:
 
 - Create a new **Application**![6-Add-application](assets/6-Add-application.png)
 
-- Configuring **Application** Information (Remember **Name, ClientID** and **ClientSecret**. Change **RedirectURLs** to http://localhost:14000/callback)![7-Configure-new-application](assets/7-Configure-new-application.png)
+- Configuring **Application** Information (Remember **Name, ClientID** and **ClientSecret**. Change **RedirectURLs** to http://localhost:14000/callback) ![7-Configure-new-application](assets/7-Configure-new-application.png)
 
 ### casibase configuration 
 
