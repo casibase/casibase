@@ -24,7 +24,7 @@ import (
 func ListResources(provider string, prefix string) ([]*casdoorsdk.Resource, error) {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
-	res, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", provider, "Casibase", "")
+	res, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", provider, "Direct", prefix)
 	return res, err
 }
 

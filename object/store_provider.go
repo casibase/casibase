@@ -17,7 +17,6 @@ package object
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/casbin/casibase/storage"
 )
@@ -109,7 +108,7 @@ func (store *Store) Populate() error {
 	}
 
 	for _, object := range sortedObjects {
-		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
+		lastModifiedTime := object.LastModified
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
 

@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/casdoor"
@@ -29,8 +28,9 @@ import (
 
 type Object struct {
 	Key          string
-	LastModified *time.Time
+	LastModified string
 	Size         int64
+	Url          string
 }
 
 func ListObjects(provider string, prefix string) ([]*Object, error) {
@@ -41,11 +41,11 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 
 	res := []*Object{}
 	for _, resource := range resources {
-		created, _ := time.Parse(time.RFC3339, resource.CreatedTime)
 		res = append(res, &Object{
-			Key:          util.GetNameFromIdNoCheck(resource.Name),
-			LastModified: &created,
+			Key:          resource.Name,
+			LastModified: resource.CreatedTime,
 			Size:         int64(resource.FileSize),
+			Url:          resource.Url,
 		})
 	}
 	return res, nil
