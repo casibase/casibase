@@ -43,8 +43,7 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Bucket string `xorm:"varchar(100)" json:"bucket"`
-	Domain string `xorm:"varchar(100)" json:"domain"`
+	StorageProvider string `xorm:"varchar(100)" json:"storageProvider"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
@@ -77,7 +76,7 @@ func GetDefaultStore(owner string) (*Store, error) {
 	}
 
 	for _, store := range stores {
-		if store.Domain != "https://cdn.example.com" {
+		if store.StorageProvider != "" {
 			return store, nil
 		}
 	}

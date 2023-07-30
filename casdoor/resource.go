@@ -15,15 +15,26 @@
 package casdoor
 
 import (
+	"fmt"
+
+	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
-func ListResources(prefix string) ([]*casdoorsdk.Resource, error) {
-	res, err := casdoorsdk.GetResources("built-in", "admin", "", "", "", "")
+func ListResources(provider string, prefix string) ([]*casdoorsdk.Resource, error) {
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	res, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", provider, "Casibase", "")
 	return res, err
 }
 
-func GetResource(key string) (*casdoorsdk.Resource, error) {
-	res, err := casdoorsdk.GetResourceEx("built-in", key)
+func GetResource(provider string, key string) (*casdoorsdk.Resource, error) {
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	res, err := casdoorsdk.GetResourceEx(casdoorOrganization, key)
+
+	if provider != res.Provider {
+		panic(fmt.Errorf("the resource's provider expected to be: %s, but got: %s", provider, res.Provider))
+	}
+
 	return res, err
 }

@@ -49,7 +49,7 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 		}
 
 		bs := fileBuffer.Bytes()
-		err = storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		err = storage.PutObject(store.StorageProvider, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
@@ -60,7 +60,7 @@ func AddFile(storeId string, key string, isLeaf bool, filename string, file mult
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		err = storage.PutObject(store.Bucket, objectKey, fileBuffer)
+		err = storage.PutObject(store.StorageProvider, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
@@ -79,18 +79,18 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 	}
 
 	if isLeaf {
-		err = storage.DeleteObject(store.Bucket, key)
+		err = storage.DeleteObject(store.StorageProvider, key)
 		if err != nil {
 			return false, err
 		}
 	} else {
-		objects, err := storage.ListObjects(store.Bucket, key)
+		objects, err := storage.ListObjects(store.StorageProvider, key)
 		if err != nil {
 			return false, err
 		}
 
 		for _, object := range objects {
-			err = storage.DeleteObject(store.Bucket, object.Key)
+			err = storage.DeleteObject(store.StorageProvider, object.Key)
 			if err != nil {
 				return false, err
 			}

@@ -80,7 +80,7 @@ func isObjectLeaf(object *storage.Object) bool {
 }
 
 func (store *Store) Populate() error {
-	objects, err := storage.ListObjects(store.Bucket, "")
+	objects, err := storage.ListObjects(store.StorageProvider, "")
 	if err != nil {
 		return err
 	}
@@ -123,7 +123,7 @@ func (store *Store) Populate() error {
 }
 
 func (store *Store) GetVideoData() ([]string, error) {
-	objects, err := storage.ListObjects(store.Bucket, "2023/视频附件")
+	objects, err := storage.ListObjects(store.StorageProvider, "2023/视频附件")
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (store *Store) GetVideoData() ([]string, error) {
 			continue
 		}
 
-		url := fmt.Sprintf("%s/%s", store.Domain, object.Key)
+		url := fmt.Sprintf("%s/%s", store.StorageProvider, object.Key)
 		res = append(res, url)
 	}
 

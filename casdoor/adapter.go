@@ -22,11 +22,7 @@ import (
 	"xorm.io/xorm"
 )
 
-var (
-	adapter      *Adapter = nil
-	Organization string
-	Application  string
-)
+var adapter *Adapter
 
 type Session struct {
 	SessionKey    string  `xorm:"char(64) notnull pk"`
@@ -41,9 +37,6 @@ func InitCasdoorAdapter() {
 	}
 
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"), beego.AppConfig.String("casdoorDbName"))
-
-	Organization = beego.AppConfig.String("casdoorOrganization")
-	Application = beego.AppConfig.String("casdoorApplication")
 }
 
 // Adapter represents the MySQL adapter for policy storage.

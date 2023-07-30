@@ -53,8 +53,7 @@ class StoreListPage extends React.Component {
       name: `store_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,
-      bucket: `bucket-${this.state.stores.length}`,
-      domain: "https://cdn.example.com",
+      storageProvider: "",
       propertiesMap: {},
     };
   }
@@ -116,6 +115,13 @@ class StoreListPage extends React.Component {
         key: "displayName",
         // width: "600px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      },
+      {
+        title: i18next.t("store:Storage provider"),
+        dataIndex: "storageProvider",
+        key: "storageProvider",
+        width: "250px",
+        sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
       },
       {
         title: i18next.t("general:Action"),

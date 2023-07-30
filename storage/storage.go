@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/casdoor"
 	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -32,8 +33,8 @@ type Object struct {
 	Size         int64
 }
 
-func ListObjects(bucketName string, prefix string) ([]*Object, error) {
-	resources, err := casdoor.ListResources(prefix)
+func ListObjects(provider string, prefix string) ([]*Object, error) {
+	resources, err := casdoor.ListResources(provider, prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +51,8 @@ func ListObjects(bucketName string, prefix string) ([]*Object, error) {
 	return res, nil
 }
 
-func GetObject(bucketName string, key string) (io.ReadCloser, error) {
-	res, err := casdoor.GetResource(key)
+func GetObject(provider string, key string) (io.ReadCloser, error) {
+	res, err := casdoor.GetResource(provider, key)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +65,7 @@ func GetObject(bucketName string, key string) (io.ReadCloser, error) {
 	return response.Body, nil
 }
 
-func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
+func PutObject(provider string, key string, fileBuffer *bytes.Buffer) error {
 	_, _, err := casdoorsdk.UploadResource("Casibase", "Casibase", "Casibase",
 		fmt.Sprintf("/casibase/%s", key), fileBuffer.Bytes())
 	if err != nil {
@@ -73,8 +74,9 @@ func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
 	return nil
 }
 
-func DeleteObject(bucketName string, key string) error {
-	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName("built-in", fmt.Sprintf("/casibase/%s", key)))
+func DeleteObject(provider string, key string) error {
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName(casdoorOrganization, fmt.Sprintf("/casibase/%s", key)))
 	if err != nil {
 		return err
 	}
