@@ -42,52 +42,52 @@ class MessageEditPage extends React.Component {
 
   getChats() {
     ChatBackend.getChats(this.props.account.name)
-      .then((chats) => {
-        if (chats.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            chats: chats.data,
+            chats: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${chats.msg}`);
+          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
         }
       });
   }
 
   getChat(chatName) {
     ChatBackend.getChat(this.props.account.name, chatName)
-      .then((chat) => {
-        if (chat.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            chat: chat.data,
+            chat: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${chat.msg}`);
+          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
         }
       });
   }
 
   getMessage() {
     MessageBackend.getMessage(this.props.account.name, this.state.messageName)
-      .then((message) => {
-        if (message.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            message: message.data,
+            message: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get message: ${message.msg}`);
+          Setting.showMessage("error", `Failed to get message: ${res.msg}`);
         }
       });
   }
 
   getMessages() {
     MessageBackend.getMessages(this.props.account.name)
-      .then((messages) => {
-        if (messages.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            messages: messages.data,
+            messages: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get messages: ${messages.msg}`);
+          Setting.showMessage("error", `Failed to get messages: ${res.msg}`);
         }
       });
   }

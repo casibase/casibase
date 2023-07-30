@@ -33,11 +33,11 @@ class ClusteringPage extends React.Component {
 
   getWordset() {
     WordsetBackend.getWordset(Conf.DefaultOwner, Conf.DefaultWordsetName)
-      .then((wordset) => {
-        if (wordset.status === "ok") {
-          this.setState({wordset: wordset.data});
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({wordset: res.data});
         } else {
-          Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+          Setting.showMessage("error", `Failed to get wordset: ${res.msg}`);
         }
       });
   }

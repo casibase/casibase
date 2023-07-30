@@ -36,17 +36,17 @@ class StoreEditPage extends React.Component {
 
   getStore() {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
-      .then((store) => {
-        if (store.status === "ok") {
-          if (store.data2 !== null && store.data2.includes("error")) {
-            store.data.error = store.data2;
+      .then((res) => {
+        if (res.status === "ok") {
+          if (res.data2 !== null && res.data2.includes("error")) {
+            res.data.error = res.data2;
           }
 
           this.setState({
-            store: store.data,
+            store: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get store: ${store.msg}`);
+          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
         }
       });
   }

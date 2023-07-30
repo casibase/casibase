@@ -47,18 +47,18 @@ class VideoEditPage extends React.Component {
 
   getVideo() {
     VideoBackend.getVideo(this.props.account.name, this.state.videoName)
-      .then((video) => {
-        if (video.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            video: video.data,
+            video: res.data,
             currentTime: 0,
           });
 
-          if (video.dataUrl !== "") {
-            this.getDataAndParse(video.dataUrl);
+          if (res.dataUrl !== "") {
+            this.getDataAndParse(res.dataUrl);
           }
         } else {
-          Setting.showMessage("error", `Failed to get video: ${video.msg}`);
+          Setting.showMessage("error", `Failed to get video: ${res.msg}`);
         }
       });
   }

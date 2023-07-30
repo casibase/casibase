@@ -84,17 +84,17 @@ class WordsetGraph extends React.Component {
       loading: true,
     });
     WordsetBackend.getWordsetGraph("admin", this.state.wordsetName, this.state.clusterNumber, this.state.distanceLimit)
-      .then((graph) => {
-        if (graph.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            graph: graph.data,
+            graph: res.data,
             loading: false,
             selectedType: null,
             selectedId: null,
             selectedIds: [],
           });
         } else {
-          Setting.showMessage("error", `Failed to get wordset graph: ${graph.msg}`);
+          Setting.showMessage("error", `Failed to get wordset graph: ${res.msg}`);
         }
       });
   }

@@ -37,13 +37,13 @@ class ProviderEditPage extends React.Component {
 
   getProvider() {
     ProviderBackend.getProvider(this.props.account.name, this.state.providerName)
-      .then((provider) => {
-        if (provider.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            provider: provider.data,
+            provider: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get provider: ${provider.msg}`);
+          Setting.showMessage("error", `Failed to get provider: ${res.msg}`);
         }
       });
   }

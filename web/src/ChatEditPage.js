@@ -38,13 +38,13 @@ class ChatEditPage extends React.Component {
 
   getChat() {
     ChatBackend.getChat(this.props.account.name, this.state.chatName)
-      .then((chat) => {
-        if (chat.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            chat: chat.data,
+            chat: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${chat.msg}`);
+          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
         }
       });
   }

@@ -34,13 +34,13 @@ class VectorEditPage extends React.Component {
 
   getVector() {
     VectorBackend.getVector(this.props.account.name, this.state.vectorName)
-      .then((vector) => {
-        if (vector.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            vector: vector.data,
+            vector: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get vector: ${vector.msg}`);
+          Setting.showMessage("error", `Failed to get vector: ${res.msg}`);
         }
       });
   }

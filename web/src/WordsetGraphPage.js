@@ -33,13 +33,13 @@ class WordsetGraphPage extends React.Component {
 
   getWordset() {
     WordsetBackend.getWordset(this.props.account.name, this.state.wordsetName)
-      .then((wordset) => {
-        if (wordset.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            wordset: wordset.data,
+            wordset: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get wordset: ${wordset.msg}`);
+          Setting.showMessage("error", `Failed to get wordset: ${res.msg}`);
         }
       });
   }

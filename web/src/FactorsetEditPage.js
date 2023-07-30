@@ -36,13 +36,13 @@ class FactorsetEditPage extends React.Component {
 
   getFactorset() {
     FactorsetBackend.getFactorset(this.props.account.name, this.state.factorsetName)
-      .then((factorset) => {
-        if (factorset.status === "ok") {
+      .then((res) => {
+        if (res.status === "ok") {
           this.setState({
-            factorset: factorset.data,
+            factorset: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get factorset: ${factorset.msg}`);
+          Setting.showMessage("error", `Failed to get factorset: ${res.msg}`);
         }
       });
   }
