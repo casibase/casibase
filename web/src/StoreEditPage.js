@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
+import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
@@ -26,12 +27,14 @@ class StoreEditPage extends React.Component {
       classes: props,
       owner: props.match.params.owner,
       storeName: props.match.params.storeName,
+      storageProviders: [],
       store: null,
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getStore();
+    this.getStorageProviders();
   }
 
   getStore() {
@@ -47,6 +50,19 @@ class StoreEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+        }
+      });
+  }
+
+  getStorageProviders() {
+    StorageProviderBackend.getStorageProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            storageProviders: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
         }
       });
   }
@@ -101,9 +117,9 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Storage provider")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.storageProvider} onChange={e => {
-              this.updateStoreField("storageProvider", e.target.value);
-            }} />
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.storageProvider} onChange={(value => {this.updateStoreField("storageProvider", value);})}
+              options={this.state.storageProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+              } />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

@@ -66,6 +66,8 @@ func initAPI() {
 	beego.Router("/api/add-store", &controllers.ApiController{}, "POST:AddStore")
 	beego.Router("/api/delete-store", &controllers.ApiController{}, "POST:DeleteStore")
 
+	beego.Router("/api/get-storage-providers", &controllers.ApiController{}, "GET:GetStorageProviders")
+
 	beego.Router("/api/get-global-providers", &controllers.ApiController{}, "GET:GetGlobalProviders")
 	beego.Router("/api/get-providers", &controllers.ApiController{}, "GET:GetProviders")
 	beego.Router("/api/get-provider", &controllers.ApiController{}, "GET:GetProvider")
