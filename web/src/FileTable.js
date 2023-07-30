@@ -207,8 +207,7 @@ class FileTable extends React.Component {
               {text}
               <Button icon={<DownloadOutlined />} style={{marginLeft: "20px", marginRight: "10px"}} type="primary" size="small" onClick={() => {
                 files.filter(file => file.isLeaf).forEach((file, index) => {
-                  const url = `${this.props.store.domain}/${file.key}`;
-                  Setting.openLink(url);
+                  Setting.openLink(file.url);
                 });
               }}>{i18next.t("store:Download")}</Button>
               <Popconfirm

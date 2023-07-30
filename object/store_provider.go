@@ -21,7 +21,7 @@ import (
 	"github.com/casbin/casibase/storage"
 )
 
-func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModifiedTime string, isLeaf bool) {
+func (store *Store) createPathIfNotExisted(tokens []string, size int64, url string, lastModifiedTime string, isLeaf bool) {
 	currentFile := store.FileTree
 	for i, token := range tokens {
 		if currentFile.Children == nil {
@@ -47,6 +47,7 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 			Key:         key,
 			Title:       token,
 			IsLeaf:      isLeafTmp,
+			Url:         url,
 			Children:    []*File{},
 			ChildrenMap: map[string]*File{},
 		}
@@ -90,6 +91,7 @@ func (store *Store) Populate() error {
 			Title:       store.DisplayName,
 			CreatedTime: store.CreatedTime,
 			IsLeaf:      false,
+			Url:         "",
 			Children:    []*File{},
 			ChildrenMap: map[string]*File{},
 		}
@@ -111,9 +113,10 @@ func (store *Store) Populate() error {
 		lastModifiedTime := object.LastModified
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
+		url := object.Url
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
-		store.createPathIfNotExisted(tokens, size, lastModifiedTime, isLeaf)
+		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)
 
 		// fmt.Printf("%s, %d, %v\n", object.Key, object.Size, object.LastModified)
 	}

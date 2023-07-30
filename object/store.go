@@ -27,6 +27,7 @@ type File struct {
 	Size        int64   `json:"size"`
 	CreatedTime string  `xorm:"varchar(100)" json:"createdTime"`
 	IsLeaf      bool    `json:"isLeaf"`
+	Url         string  `xorm:"varchar(255)" json:"url"`
 	Children    []*File `xorm:"varchar(1000)" json:"children"`
 
 	ChildrenMap map[string]*File `xorm:"-" json:"-"`

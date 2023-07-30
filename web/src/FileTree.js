@@ -341,7 +341,7 @@ class FileTree extends React.Component {
           const path = selectedKeys[0];
           const ext = Setting.getExtFromPath(path);
           if (ext !== "") {
-            const url = `${store.domain}/${path}`;
+            const url = info.node.url;
 
             if (!this.isExtForDocViewer((ext) && !this.isExtForFileViewer(ext))) {
               this.setState({
@@ -443,8 +443,7 @@ class FileTree extends React.Component {
                       <Tooltip title={i18next.t("store:Download")}>
                         <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
                           Setting.showMessage("success", "Successfully downloaded");
-                          const url = `${store.domain}/${file.key}`;
-                          Setting.openLink(url);
+                          Setting.openLink(file.url);
                           e.stopPropagation();
                         }} />
                       </Tooltip>
@@ -671,7 +670,7 @@ class FileTree extends React.Component {
     }
 
     const ext = Setting.getExtFromPath(path);
-    const url = `${store.domain}/${path}`;
+    const url = this.state.selectedFile.url;
 
     const app = this.getCacheApp(filename);
     if (app !== "") {

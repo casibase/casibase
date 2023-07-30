@@ -20,9 +20,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/casdoor"
-	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
@@ -66,8 +64,7 @@ func GetObject(provider string, key string) (io.ReadCloser, error) {
 }
 
 func PutObject(provider string, key string, fileBuffer *bytes.Buffer) error {
-	_, _, err := casdoorsdk.UploadResource("Casibase", "Casibase", "Casibase",
-		fmt.Sprintf("/casibase/%s", key), fileBuffer.Bytes())
+	_, _, err := casdoorsdk.UploadResource("Casibase", "", "", fmt.Sprintf("Direct/%s/%s", provider, key), fileBuffer.Bytes())
 	if err != nil {
 		return err
 	}
@@ -75,8 +72,7 @@ func PutObject(provider string, key string, fileBuffer *bytes.Buffer) error {
 }
 
 func DeleteObject(provider string, key string) error {
-	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
-	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName(casdoorOrganization, fmt.Sprintf("/casibase/%s", key)))
+	_, err := casdoorsdk.DeleteResource(fmt.Sprintf("Direct/%s/%s", provider, key))
 	if err != nil {
 		return err
 	}
