@@ -18,21 +18,24 @@
 package storage_test
 
 import (
+	"fmt"
 	"testing"
 
-	"github.com/casbin/casibase/casdoor"
+	"github.com/casbin/casibase/controllers"
 	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/storage"
 )
 
 func TestStorage(t *testing.T) {
 	object.InitConfig()
-	casdoor.InitCasdoorAdapter()
+	controllers.InitAuthConfig()
 
 	objects, err := storage.ListObjects("casibase", "")
 	if err != nil {
 		panic(err)
 	}
 
-	println(objects)
+	for i, obj := range objects {
+		fmt.Printf("[%d] %v\n", i, obj)
+	}
 }

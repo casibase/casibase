@@ -21,7 +21,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/astaxie/beego"
 	"github.com/casbin/casibase/casdoor"
 	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -45,6 +44,7 @@ func ListObjects(bucketName string, prefix string) ([]*Object, error) {
 		res = append(res, &Object{
 			Key:          util.GetNameFromIdNoCheck(resource.Name),
 			LastModified: &created,
+			Size:         int64(resource.FileSize),
 		})
 	}
 	return res, nil
@@ -66,7 +66,7 @@ func GetObject(bucketName string, key string) (io.ReadCloser, error) {
 
 func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
 	_, _, err := casdoorsdk.UploadResource("Casibase", "Casibase", "Casibase",
-		fmt.Sprintf("/resource/%s/%s/%s", casdoor.Organization, casdoor.Application, key), fileBuffer.Bytes())
+		fmt.Sprintf("/casibase/%s", key), fileBuffer.Bytes())
 	if err != nil {
 		return err
 	}
@@ -74,9 +74,7 @@ func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
 }
 
 func DeleteObject(bucketName string, key string) error {
-	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
-		beego.AppConfig.String("casdoorOrganization"),
-		beego.AppConfig.String("casdoorApplication")), key))
+	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName("built-in", fmt.Sprintf("/casibase/%s", key)))
 	if err != nil {
 		return err
 	}

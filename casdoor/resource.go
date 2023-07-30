@@ -15,38 +15,15 @@
 package casdoor
 
 import (
-	"fmt"
-
-	"github.com/astaxie/beego"
-	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 func ListResources(prefix string) ([]*casdoorsdk.Resource, error) {
-	prefix = util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
-		beego.AppConfig.String("casdoorOrganization"),
-		beego.AppConfig.String("casdoorApplication")), prefix)
-
-	result := make([]*casdoorsdk.Resource, 0)
-	err := adapter.Engine.Where("name like ?", prefix+"%").Find(&result)
-	if err != nil {
-		return nil, err
-	}
-
-	return result, nil
+	res, err := casdoorsdk.GetResources("built-in", "admin", "", "", "", "")
+	return res, err
 }
 
 func GetResource(key string) (*casdoorsdk.Resource, error) {
-	id := fmt.Sprintf("/resource/%s/%s/casibase/%s", Organization, Application, key)
-	resource := casdoorsdk.Resource{Owner: Organization, Name: id}
-	existed, err := adapter.Engine.Get(&resource)
-	if err != nil {
-		return nil, err
-	}
-
-	if existed {
-		return &resource, nil
-	} else {
-		return nil, fmt.Errorf("resource %s not found", key)
-	}
+	res, err := casdoorsdk.GetResourceEx("built-in", key)
+	return res, err
 }
