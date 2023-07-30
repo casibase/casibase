@@ -35,7 +35,7 @@ class HomePage extends React.Component {
     StoreBackend.getStore("admin", "_casibase_default_store_")
       .then((res) => {
         if (res.status === "ok") {
-          if (res.data2 !== null && res.data2.includes("error")) {
+          if (typeof res.data2 === "string" && res.data2 !== "") {
             res.data.error = res.data2;
           }
 

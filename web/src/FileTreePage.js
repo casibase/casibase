@@ -38,7 +38,7 @@ class FileTreePage extends React.Component {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((res) => {
         if (res.status === "ok") {
-          if (res.data2 !== null && res.data?.includes("error")) {
+          if (typeof res.data2 === "string" && res.data2 !== "") {
             res.data.error = res.data2;
           }
 

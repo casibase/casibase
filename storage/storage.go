@@ -32,6 +32,10 @@ type Object struct {
 }
 
 func ListObjects(provider string, prefix string) ([]*Object, error) {
+	if provider == "" {
+		return nil, fmt.Errorf("storage provider is empty")
+	}
+
 	resources, err := casdoor.ListResources(provider, prefix)
 	if err != nil {
 		return nil, err
@@ -50,6 +54,10 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 }
 
 func GetObject(provider string, key string) (io.ReadCloser, error) {
+	if provider == "" {
+		return nil, fmt.Errorf("storage provider is empty")
+	}
+
 	res, err := casdoor.GetResource(provider, key)
 	if err != nil {
 		return nil, err
@@ -64,6 +72,10 @@ func GetObject(provider string, key string) (io.ReadCloser, error) {
 }
 
 func PutObject(provider string, user string, parent string, key string, fileBuffer *bytes.Buffer) error {
+	if provider == "" {
+		return fmt.Errorf("storage provider is empty")
+	}
+
 	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", provider, key), fileBuffer.Bytes())
 	if err != nil {
 		return err
@@ -72,6 +84,10 @@ func PutObject(provider string, user string, parent string, key string, fileBuff
 }
 
 func DeleteObject(provider string, key string) error {
+	if provider == "" {
+		return fmt.Errorf("storage provider is empty")
+	}
+
 	_, err := casdoorsdk.DeleteResource(fmt.Sprintf("Direct/%s/%s", provider, key))
 	if err != nil {
 		return err
