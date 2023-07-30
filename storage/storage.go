@@ -17,10 +17,8 @@ package storage
 import (
 	"bytes"
 	"fmt"
-	"io"
-	"net/http"
 
-	"github.com/casbin/casibase/casdoor"
+	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
@@ -36,7 +34,9 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 		return nil, fmt.Errorf("storage provider is empty")
 	}
 
-	resources, err := casdoor.ListResources(provider, prefix)
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	resources, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", provider, "Direct", prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -51,24 +51,6 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 		})
 	}
 	return res, nil
-}
-
-func GetObject(provider string, key string) (io.ReadCloser, error) {
-	if provider == "" {
-		return nil, fmt.Errorf("storage provider is empty")
-	}
-
-	res, err := casdoor.GetResource(provider, key)
-	if err != nil {
-		return nil, err
-	}
-
-	response, err := http.Get(res.Url)
-	if err != nil {
-		return nil, err
-	}
-
-	return response.Body, nil
 }
 
 func PutObject(provider string, user string, parent string, key string, fileBuffer *bytes.Buffer) error {
