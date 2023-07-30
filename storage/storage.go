@@ -15,28 +15,70 @@
 package storage
 
 import (
+	"bytes"
+	"fmt"
 	"io"
+	"net/http"
 	"time"
-)
 
-type Storage interface {
-	Get(key string) (io.ReadCloser, error)
-	Put(user, key string, bytes []byte) error
-	Delete(key string) error
-	List(prefix string) ([]*Object, error)
-}
+	"github.com/astaxie/beego"
+	"github.com/casbin/casibase/casdoor"
+	"github.com/casbin/casibase/util"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+)
 
 type Object struct {
 	Key          string
 	LastModified *time.Time
-	Storage      Storage
+	Size         int64
 }
 
-func NewStorageProvider(provider string) Storage {
-	switch provider {
-	case "casdoor":
-		return NewCasdoorStorage()
-	default:
-		return nil
+func ListObjects(bucketName string, prefix string) ([]*Object, error) {
+	resources, err := casdoor.ListResources(prefix)
+	if err != nil {
+		return nil, err
 	}
+
+	res := []*Object{}
+	for _, resource := range resources {
+		created, _ := time.Parse(time.RFC3339, resource.CreatedTime)
+		res = append(res, &Object{
+			Key:          util.GetNameFromIdNoCheck(resource.Name),
+			LastModified: &created,
+		})
+	}
+	return res, nil
+}
+
+func GetObject(bucketName string, key string) (io.ReadCloser, error) {
+	res, err := casdoor.GetResource(key)
+	if err != nil {
+		return nil, err
+	}
+
+	response, err := http.Get(res.Url)
+	if err != nil {
+		return nil, err
+	}
+
+	return response.Body, nil
+}
+
+func PutObject(bucketName string, key string, fileBuffer *bytes.Buffer) error {
+	_, _, err := casdoorsdk.UploadResource("Casibase", "Casibase", "Casibase",
+		fmt.Sprintf("/resource/%s/%s/%s", casdoor.Organization, casdoor.Application, key), fileBuffer.Bytes())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func DeleteObject(bucketName string, key string) error {
+	_, err := casdoorsdk.DeleteResource(util.GetIdFromOwnerAndName(fmt.Sprintf("/resource/%s/%s/casibase",
+		beego.AppConfig.String("casdoorOrganization"),
+		beego.AppConfig.String("casdoorApplication")), key))
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -19,7 +19,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"github.com/casbin/casibase/storage"
 )
 
@@ -72,7 +71,7 @@ func (store *Store) createPathIfNotExisted(tokens []string, size int64, lastModi
 	}
 }
 
-func isObjectLeaf(object *oss.ObjectProperties) bool {
+func isObjectLeaf(object *storage.Object) bool {
 	isLeaf := true
 	if object.Key[len(object.Key)-1] == '/' {
 		isLeaf = false
@@ -97,7 +96,7 @@ func (store *Store) Populate() error {
 		}
 	}
 
-	sortedObjects := []oss.ObjectProperties{}
+	sortedObjects := []*storage.Object{}
 	for _, object := range objects {
 		if strings.HasSuffix(object.Key, "/_hidden.ini") {
 			sortedObjects = append(sortedObjects, object)
@@ -111,7 +110,7 @@ func (store *Store) Populate() error {
 
 	for _, object := range sortedObjects {
 		lastModifiedTime := object.LastModified.Local().Format(time.RFC3339)
-		isLeaf := isObjectLeaf(&object)
+		isLeaf := isObjectLeaf(object)
 		size := object.Size
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")

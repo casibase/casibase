@@ -18,67 +18,21 @@
 package storage_test
 
 import (
-	"io"
 	"testing"
 
 	"github.com/casbin/casibase/casdoor"
-	"github.com/casbin/casibase/controllers"
+	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/storage"
 )
 
 func TestStorage(t *testing.T) {
-	_, err := storage.ListObjects("casibase", "")
+	object.InitConfig()
+	casdoor.InitCasdoorAdapter()
+
+	objects, err := storage.ListObjects("casibase", "")
 	if err != nil {
 		panic(err)
 	}
-}
 
-func TestCasdoor(t *testing.T) {
-	controllers.InitAuthConfig()
-	casdoor.InitCasdoorAdapter()
-	s := storage.NewCasdoorStorage()
-
-	// Test Put
-	err := s.Put("admin", "test", []byte("test"))
-	if err != nil {
-		t.Error(err)
-	}
-
-	// Test List
-	objs, err := s.List("admin")
-	if err != nil {
-		t.Error(err)
-	}
-
-	for _, obj := range objs {
-		t.Log(obj)
-	}
-
-	// Test Get
-	in, err := s.Get("test")
-	if err != nil {
-		t.Error(err)
-	}
-
-	bytes, err := io.ReadAll(in)
-	if err != nil {
-		t.Error(err)
-	}
-
-	t.Log(string(bytes))
-
-	// Test Delete
-	err = s.Delete("test")
-	if err != nil {
-		t.Error(err)
-	}
-
-	objs, err = s.List("test")
-	if err != nil {
-		t.Error(err)
-	}
-
-	for _, obj := range objs {
-		t.Log(obj)
-	}
+	println(objects)
 }
