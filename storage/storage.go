@@ -63,8 +63,8 @@ func GetObject(provider string, key string) (io.ReadCloser, error) {
 	return response.Body, nil
 }
 
-func PutObject(provider string, key string, fileBuffer *bytes.Buffer) error {
-	_, _, err := casdoorsdk.UploadResource("Casibase", "", "", fmt.Sprintf("Direct/%s/%s", provider, key), fileBuffer.Bytes())
+func PutObject(provider string, user string, parent string, key string, fileBuffer *bytes.Buffer) error {
+	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", provider, key), fileBuffer.Bytes())
 	if err != nil {
 		return err
 	}

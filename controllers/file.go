@@ -67,7 +67,7 @@ func (c *ApiController) AddFile() {
 		defer file.Close()
 	}
 
-	res, bs, err := object.AddFile(storeId, key, isLeaf, filename, file)
+	res, bs, err := object.AddFile(storeId, userName, key, isLeaf, filename, file)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

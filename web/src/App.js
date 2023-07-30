@@ -318,18 +318,25 @@ class App extends Component {
       };
 
       res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+          {i18next.t("general:Resources")}
+          {renderExternalLink()}
+        </a>,
+        "#"));
+
+      res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
           {i18next.t("general:Permissions")}
           {renderExternalLink()}
         </a>,
-        "/permissions"));
+        "##"));
 
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
           {i18next.t("general:Logs")}
           {renderExternalLink()}
         </a>,
-        "/logs"));
+        "###"));
     }
 
     return res;
