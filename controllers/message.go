@@ -35,27 +35,26 @@ func (c *ApiController) GetGlobalMessages() {
 }
 
 func (c *ApiController) GetMessages() {
-	owner := c.Input().Get("owner")
+	owner := "admin"
 	chat := c.Input().Get("chat")
 
-	if owner != "" && chat == "" {
+	if chat == "" {
 		messages, err := object.GetMessages(owner)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
 		}
 		c.ResponseOk(messages)
-	} else if chat != "" && owner == "" {
-		messages, err := object.GetChatMessages(chat)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		c.ResponseOk(messages)
-	} else {
-		c.ResponseError("Invalid get messages request")
 		return
 	}
+
+	messages, err := object.GetChatMessages(chat)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(messages)
 }
 
 func (c *ApiController) GetMessage() {

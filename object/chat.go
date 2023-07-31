@@ -58,7 +58,7 @@ func GetChats(owner string) ([]*Chat, error) {
 }
 
 func getChat(owner, name string) (*Chat, error) {
-	chat := Chat{Owner: owner, Name: name}
+	chat := Chat{Owner: "admin", Name: name}
 	existed, err := adapter.engine.Get(&chat)
 	if err != nil {
 		return nil, err
