@@ -5,6 +5,8 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.12.0",
     "@ant-design/icons": "4.6.2",
+    "@chatscope/chat-ui-kit-react": "^1.10.1",
+    "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@craco/craco": "6.4.5",
     "@cyntler/react-doc-viewer": "^1.5.2",
     "aliplayer-react": "^0.7.0",
@@ -19,6 +21,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "file-saver": "^2.0.2",
     "i18next": "^19.8.9",
+    "markdown-it": "^13.0.1",
     "moment": "^2.29.1",
     "papaparse": "^5.4.1",
     "rc-bullets": "^1.5.16",

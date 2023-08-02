@@ -31,7 +31,7 @@ func (c *ApiController) GetGlobalProviders() {
 }
 
 func (c *ApiController) GetProviders() {
-	owner := c.Input().Get("owner")
+	owner := "admin"
 
 	providers, err := object.GetProviders(owner)
 	if err != nil {
@@ -81,6 +81,7 @@ func (c *ApiController) AddProvider() {
 		return
 	}
 
+	provider.Owner = "admin"
 	success, err := object.AddProvider(&provider)
 	if err != nil {
 		c.ResponseError(err.Error())
