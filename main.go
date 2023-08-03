@@ -18,7 +18,6 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
-	"github.com/casbin/casibase/casdoor"
 	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/proxy"
 	"github.com/casbin/casibase/routers"
@@ -26,8 +25,6 @@ import (
 
 func main() {
 	object.InitAdapter()
-	casdoor.InitCasdoorAdapter()
-
 	proxy.InitHttpClient()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{

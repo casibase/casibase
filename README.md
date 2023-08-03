@@ -53,7 +53,7 @@
 casibase contains 4 parts:
 
 | **Name**       | **Description**                                   | **Language**                            |
-| -------------- | ------------------------------------------------- | --------------------------------------- |
+|----------------|---------------------------------------------------|-----------------------------------------|
 | Frontend       | User interface for the casibase application       | JavaScript + React                      |
 | Backend        | Server-side logic and API for casibase            | Golang + Beego + Python + Flask + MySQL |
 | AI Model       | Artificial intelligence model                     | Python + OpenAI                         |
@@ -112,9 +112,9 @@ Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be use
 - #### Backend (`casibase\conf\app.conf`)
 
   ```ini
+  casdoorEndpoint =  <Your_Casdoor_endpoint>
   clientId = <Your_clientId_in_Casdoor_configuration>
   clientSecret = <Your_clientSecret_in_Casdoor_configuration>
-  casdoorDbName = casdoor
   casdoorOrganization = "casibase"
   casdoorApplication = "app-casibase"
   ```

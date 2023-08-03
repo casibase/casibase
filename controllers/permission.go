@@ -17,13 +17,12 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casibase/casdoor"
+	"github.com/casbin/casibase/util"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
 func (c *ApiController) GetPermissions() {
-	owner := c.Input().Get("owner")
-
-	permissions, err := casdoor.GetPermissions(owner)
+	permissions, err := casdoorsdk.GetPermissions()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -34,8 +33,9 @@ func (c *ApiController) GetPermissions() {
 
 func (c *ApiController) GetPermission() {
 	id := c.Input().Get("id")
+	_, name := util.GetOwnerAndNameFromId(id)
 
-	permission, err := casdoor.GetPermission(id)
+	permission, err := casdoorsdk.GetPermission(name)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -45,15 +45,13 @@ func (c *ApiController) GetPermission() {
 }
 
 func (c *ApiController) UpdatePermission() {
-	id := c.Input().Get("id")
-
-	var permission casdoor.Permission
+	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		panic(err)
 	}
 
-	success, err := casdoor.UpdatePermission(id, &permission)
+	success, err := casdoorsdk.UpdatePermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -63,14 +61,14 @@ func (c *ApiController) UpdatePermission() {
 }
 
 func (c *ApiController) AddPermission() {
-	var permission casdoor.Permission
+	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := casdoor.AddPermission(&permission)
+	success, err := casdoorsdk.AddPermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -80,14 +78,14 @@ func (c *ApiController) AddPermission() {
 }
 
 func (c *ApiController) DeletePermission() {
-	var permission casdoor.Permission
+	var permission casdoorsdk.Permission
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	success, err := casdoor.DeletePermission(&permission)
+	success, err := casdoorsdk.DeletePermission(&permission)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

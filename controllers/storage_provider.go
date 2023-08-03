@@ -14,12 +14,27 @@
 
 package controllers
 
-import "github.com/casbin/casibase/casdoor"
+import "github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+
+func getStorageProviders() ([]*casdoorsdk.Provider, error) {
+	providers, err := casdoorsdk.GetProviders()
+	if err != nil {
+		return providers, err
+	}
+
+	res := []*casdoorsdk.Provider{}
+	for _, provider := range providers {
+		if provider.Category == "Storage" {
+			res = append(res, provider)
+		}
+	}
+	return res, nil
+}
 
 func (c *ApiController) GetStorageProviders() {
-	owner := c.Input().Get("owner")
+	// owner := c.Input().Get("owner")
 
-	providers, err := casdoor.GetStorageProviders(owner)
+	providers, err := getStorageProviders()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
