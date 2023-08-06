@@ -17,10 +17,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"strings"
+	"time"
 
 	"github.com/casbin/casibase/ai"
 	"github.com/casbin/casibase/object"
+	"github.com/casbin/casibase/service"
 	"github.com/casbin/casibase/util"
 )
 
@@ -237,48 +240,13 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
-	var chat *object.Chat
-	if message.Chat != "" {
-		chatId := util.GetId("admin", message.Chat)
-		chat, err = object.GetChat(chatId)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		if chat == nil {
-			c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
-			return
-		}
-	}
-
-	success, err := object.AddMessage(&message)
+	_, err = object.AddMessage(&message)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	if success {
-		if chat != nil && chat.Type == "AI" {
-			answerMessage := &object.Message{
-				Owner:       message.Owner,
-				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
-				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
-				// Organization: message.Organization,
-				Chat:    message.Chat,
-				ReplyTo: message.GetId(),
-				Author:  "AI",
-				Text:    "",
-			}
-			_, err = object.AddMessage(answerMessage)
-			if err != nil {
-				c.ResponseError(err.Error())
-				return
-			}
-		}
-	}
-
-	c.ResponseOk(success)
+	c.ResponseOk()
 }
 
 func (c *ApiController) DeleteMessage() {
@@ -296,4 +264,47 @@ func (c *ApiController) DeleteMessage() {
 	}
 
 	c.ResponseOk(success)
+}
+
+func (c *ApiController) SendMessage() {
+	user := c.GetSessionUser()
+	text := c.Input().Get("text")
+	chat := c.Input().Get("chatName")
+	err := service.NewMessageService().Send(user.Name, chat, text)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk()
+}
+
+func (c *ApiController) SubscribeMessage() {
+	userName := c.Input().Get("userName")
+	msgService := service.NewMessageService()
+	conn, err := msgService.Subscribe(userName)
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+	}
+
+	// Stream message to client
+	c.Stream(func(w io.Writer) bool {
+		select {
+		case message := <-conn:
+			wpMessage, err := service.WrapMessage(message)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			msg, err := json.Marshal(wpMessage)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+
+			c.SSEvent("message", string(msg))
+			return true
+		case <-time.Tick(time.Second):
+			return true
+		}
+	})
 }

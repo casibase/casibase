@@ -34,6 +34,7 @@ func initAPI() {
 	beego.Router("/api/signin", &controllers.ApiController{}, "POST:Signin")
 	beego.Router("/api/signout", &controllers.ApiController{}, "POST:Signout")
 	beego.Router("/api/get-account", &controllers.ApiController{}, "GET:GetAccount")
+	beego.Router("/api/get-user", &controllers.ApiController{}, "GET:GetUser")
 
 	beego.Router("/api/get-global-wordsets", &controllers.ApiController{}, "GET:GetGlobalWordsets")
 	beego.Router("/api/get-wordsets", &controllers.ApiController{}, "GET:GetWordsets")
@@ -97,6 +98,8 @@ func initAPI() {
 	beego.Router("/api/update-message", &controllers.ApiController{}, "POST:UpdateMessage")
 	beego.Router("/api/add-message", &controllers.ApiController{}, "POST:AddMessage")
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
+	beego.Router("/api/send-message", &controllers.ApiController{}, "POST:SendMessage")
+	beego.Router("/api/subscribe-message", &controllers.ApiController{}, "GET:SubscribeMessage")
 
 	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
 	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
@@ -109,4 +112,9 @@ func initAPI() {
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
+
+	beego.Router("/api/add-chat-member", &controllers.ApiController{}, "POST:AddChatMember")
+	beego.Router("/api/get-chat-member", &controllers.ApiController{}, "GET:GetChatMembersByChatName")
+	beego.Router("/api/get-user-chats", &controllers.ApiController{}, "GET:GetChatByUserName")
+	beego.Router("/api/chat/add-chat", &controllers.ApiController{}, "POST:UserAddChat")
 }

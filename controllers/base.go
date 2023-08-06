@@ -16,6 +16,8 @@ package controllers
 
 import (
 	"encoding/gob"
+	"fmt"
+	"io"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -85,4 +87,29 @@ func (c *ApiController) GetSessionUsername() string {
 	}
 
 	return GetUserName(user)
+}
+
+// SSEvent writes a Server-Sent Event into the body stream.
+func (c *ApiController) SSEvent(name string, message interface{}) {
+	c.Ctx.WriteString(fmt.Sprintf("event: %v\ndata: %v\n\n", name, message))
+}
+
+func (c *ApiController) Stream(step func(w io.Writer) bool) bool {
+	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
+	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
+	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
+	w := c.Ctx.ResponseWriter
+	clientGone := w.CloseNotify()
+	for {
+		select {
+		case <-clientGone:
+			return true
+		default:
+			keepOpen := step(w)
+			w.Flush()
+			if !keepOpen {
+				return false
+			}
+		}
+	}
 }

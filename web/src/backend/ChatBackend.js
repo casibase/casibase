@@ -61,3 +61,31 @@ export function deleteChat(chat) {
     body: JSON.stringify(newChat),
   }).then(res => res.json());
 }
+
+export function getChatsByUser(userName) {
+  return fetch(`${Setting.ServerUrl}/api/get-user-chats?userName=${userName}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function getChatMembers(chatName) {
+  return fetch(`${Setting.ServerUrl}/api/get-chat-member?chatName=${chatName}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function userAddChat(chatType, name) {
+  return fetch(`${Setting.ServerUrl}/api/chat/add-chat?chatType=${chatType}&name=${name}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
+export function addChatMember(chatName, userName) {
+  return fetch(`${Setting.ServerUrl}/api/add-chat-member?chatName=${chatName}&userName=${userName}`, {
+    method: "POST",
+    credentials: "include",
+  }).then(res => res.json());
+}

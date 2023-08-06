@@ -18,6 +18,7 @@ require (
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
 	golang.org/x/net v0.8.0
+	golang.org/x/sync v0.1.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
 	modernc.org/sqlite v1.18.1

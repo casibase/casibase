@@ -96,17 +96,6 @@ func UpdateChat(id string, chat *Chat) (bool, error) {
 }
 
 func AddChat(chat *Chat) (bool, error) {
-	if chat.Type == "AI" && chat.User2 == "" {
-		provider, err := GetDefaultModelProvider()
-		if err != nil {
-			return false, err
-		}
-
-		if provider != nil {
-			chat.User2 = provider.Name
-		}
-	}
-
 	affected, err := adapter.engine.Insert(chat)
 	if err != nil {
 		return false, err
@@ -126,4 +115,18 @@ func DeleteChat(chat *Chat) (bool, error) {
 
 func (chat *Chat) GetId() string {
 	return fmt.Sprintf("%s/%s", chat.Owner, chat.Name)
+}
+
+func GetChatByChatName(chatName string) (*Chat, error) {
+	c := Chat{Name: chatName}
+	existed, err := adapter.engine.Get(&c)
+	if err != nil {
+		return nil, err
+	}
+
+	if existed {
+		return &c, nil
+	} else {
+		return nil, nil
+	}
 }

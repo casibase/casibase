@@ -46,7 +46,7 @@ class ChatListPage extends React.Component {
       });
   }
 
-  newChat() {
+  newChat(name, type) {
     const randomName = Setting.getRandomName();
     return {
       owner: this.props.account.name,
@@ -55,16 +55,16 @@ class ChatListPage extends React.Component {
       updatedTime: moment().format(),
       displayName: `New Chat - ${randomName}`,
       category: "Chat Category - 1",
-      type: "AI",
-      user1: `${this.props.account.owner}/${this.props.account.name}`,
-      user2: "",
-      users: [`${this.props.account.owner}/${this.props.account.name}`],
+      type: `${type}`,
+      user1: `${this.props.account.name}`,
+      user2: `${name}`,
+      users: "",
       messageCount: 0,
     };
   }
 
-  addChat() {
-    const newChat = this.newChat();
+  addChat(name, type) {
+    const newChat = this.newChat(name, type);
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {

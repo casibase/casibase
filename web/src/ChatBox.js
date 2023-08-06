@@ -16,11 +16,11 @@ import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
-const robot = "https://cdn.casbin.com/casdoor/resource/built-in/admin/gpt.png";
-
 class ChatBox extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+    };
   }
 
   handleSend = (innerHtml, textContent) => {
@@ -28,26 +28,20 @@ class ChatBox extends React.Component {
   };
 
   render() {
-    let messages = this.props.messages;
-    if (messages === null) {
-      messages = [];
-    }
     return (
       <MainContainer style={{display: "flex", width: "100%", height: "100%"}} >
         <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
           <ConversationHeader>
-            <Avatar src={robot} name="AI" />
-            <ConversationHeader.Content userName="AI" />
+            <ConversationHeader.Content userName={this.props.displayName} />
           </ConversationHeader>
           <MessageList>
-            {messages.map((message, index) => (
+            {this.props.messages.map((message, index) => (
               <Message key={index} model={{
                 message: message.text,
-                sentTime: "just now",
                 sender: message.name,
-                direction: message.author === "AI" ? "incoming" : "outgoing",
-              }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                <Avatar src={message.author === "AI" ? robot : this.props.account.avatar} name="GPT" />
+                direction: message.direction,
+              }} avatarPosition={message.position}>
+                <Avatar src={message.avatar} />
               </Message>
             ))}
           </MessageList>

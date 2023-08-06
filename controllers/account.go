@@ -16,6 +16,7 @@ package controllers
 
 import (
 	_ "embed"
+	"fmt"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -75,4 +76,20 @@ func (c *ApiController) GetAccount() {
 	claims := c.GetSessionClaims()
 
 	c.ResponseOk(claims)
+}
+
+func (c *ApiController) GetUser() {
+	_, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
+	name := c.Input().Get("name")
+	user, err := casdoorsdk.GetUser(name)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	fmt.Println(name, user)
+	c.ResponseOk(user)
 }
