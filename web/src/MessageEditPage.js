@@ -14,11 +14,12 @@
 
 import React from "react";
 import {Button, Card, Col, Input, Row, Select} from "antd";
-import * as Setting from "./Setting";
 import i18next from "i18next";
+import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
-import TextArea from "antd/es/input/TextArea";
 import * as ChatBackend from "./backend/ChatBackend";
+
+const {TextArea} = Input;
 
 class MessageEditPage extends React.Component {
   constructor(props) {
@@ -208,13 +209,9 @@ class MessageEditPage extends React.Component {
             {i18next.t("message:Text")}:
           </Col>
           <Col span={22}>
-            <TextArea
-              rows={10}
-              value={this.state.message.text}
-              onChange={(e) => {
-                this.updateMessageField("text", e.target.value);
-              }}
-            />
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.text} onChange={(e) => {
+              this.updateMessageField("text", e.target.value);
+            }} />
           </Col>
         </Row>
       </Card>

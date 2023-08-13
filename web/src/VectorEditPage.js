@@ -14,9 +14,11 @@
 
 import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
-import * as VectorBackend from "./backend/VectorBackend";
-import * as Setting from "./Setting";
 import i18next from "i18next";
+import * as Setting from "./Setting";
+import * as VectorBackend from "./backend/VectorBackend";
+
+const {TextArea} = Input;
 
 class VectorEditPage extends React.Component {
   constructor(props) {
@@ -115,7 +117,7 @@ class VectorEditPage extends React.Component {
             {i18next.t("vector:Text")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.text} onChange={e => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.text} onChange={(e) => {
               this.updateVectorField("text", e.target.value);
             }} />
           </Col>
@@ -125,7 +127,7 @@ class VectorEditPage extends React.Component {
             {i18next.t("vector:Data")}:
           </Col>
           <Col span={22} >
-            <Input value={JSON.stringify(this.state.vector.data)} onChange={e => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.data} onChange={(e) => {
               this.updateVectorField("data", e.target.value);
             }} />
           </Col>
