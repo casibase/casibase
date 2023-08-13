@@ -145,7 +145,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "300px",
+        width: "400px",
         render: (text, record, index) => {
           return (
             <div>

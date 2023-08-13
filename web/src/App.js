@@ -126,18 +126,14 @@ class App extends Component {
   getAccount() {
     AccountBackend.getAccount()
       .then((res) => {
-        if (res.status === "ok") {
-          const account = res.data;
-          if (account !== null) {
-            this.setLanguage(account);
-          }
-          this.setState({
-            account: account,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get account: ${res.msg}`);
-          Setting.goToLink("/signin");
+        const account = res.data;
+        if (account !== null) {
+          this.setLanguage(account);
         }
+
+        this.setState({
+          account: account,
+        });
       });
   }
 
