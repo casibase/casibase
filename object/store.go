@@ -16,7 +16,6 @@ package object
 
 import (
 	"fmt"
-
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
@@ -147,4 +146,22 @@ func DeleteStore(store *Store) (bool, error) {
 
 func (store *Store) GetId() string {
 	return fmt.Sprintf("%s/%s", store.Owner, store.Name)
+}
+
+func RefreshStoreVectors(store *Store) (bool, error) {
+	provider, err := getDefaultModelProvider()
+	if err != nil {
+		return false, err
+	}
+	authToken := provider.ClientSecret
+
+	success, err := setTxtObjectVector(authToken, store.StorageProvider, "", store.Name)
+	if err != nil {
+		return false, err
+	}
+	if !success {
+		return false, nil
+	}
+
+	return true, nil
 }

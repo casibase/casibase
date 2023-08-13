@@ -17,9 +17,10 @@ package storage
 import (
 	"bytes"
 	"fmt"
-
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"io"
+	"net/http"
 )
 
 type Object struct {
@@ -75,4 +76,18 @@ func DeleteObject(provider string, key string) error {
 		return err
 	}
 	return nil
+}
+
+func GetObjectReadCloser(object *Object) (io.ReadCloser, error) {
+	resp, err := http.Get(object.Url)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		resp.Body.Close()
+		return nil, fmt.Errorf("HTTP request failed with status code: %d", resp.StatusCode)
+	}
+
+	return resp.Body, nil
 }

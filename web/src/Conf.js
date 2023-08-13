@@ -15,7 +15,7 @@
 export const AuthConfig = {
   // serverUrl: "https://door.casdoor.com",
   serverUrl: "http://localhost:7001",
-  clientId: "af6b5aa958822fb9dc33",
+  clientId: "b6e1d65a00f3cbbf91c9",
   appName: "app-casibase",
   organizationName: "casbin",
   redirectPath: "/callback",

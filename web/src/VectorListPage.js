@@ -145,6 +145,13 @@ class VectorListPage extends React.Component {
         key: "text",
         width: "200px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+        render: (text, record, index) => {
+          return (
+            <div style={{maxWidth: "200px"}}>
+              {Setting.getShortText(text)}
+            </div>
+          );
+        },
       },
       {
         title: i18next.t("vector:Data"),
@@ -153,7 +160,11 @@ class VectorListPage extends React.Component {
         width: "200px",
         sorter: (a, b) => a.data.localeCompare(b.data),
         render: (text, record, index) => {
-          return JSON.stringify(text);
+          return (
+            <div style={{maxWidth: "200px"}}>
+              {Setting.getShortText(JSON.stringify(text))}
+            </div>
+          );
         },
       },
       {

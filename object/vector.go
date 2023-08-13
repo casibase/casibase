@@ -112,3 +112,11 @@ func DeleteVector(vector *Vector) (bool, error) {
 func (vector *Vector) GetId() string {
 	return fmt.Sprintf("%s/%s", vector.Owner, vector.Name)
 }
+
+func VectorFloat32ToFloat64(vector []float32) []float64 {
+	vectorFloat64 := make([]float64, len(vector))
+	for i, v := range vector {
+		vectorFloat64[i] = float64(v)
+	}
+	return vectorFloat64
+}
