@@ -30,7 +30,7 @@ type Vector struct {
 	Store       string    `xorm:"varchar(100)" json:"store"`
 	File        string    `xorm:"varchar(100)" json:"file"`
 	Text        string    `xorm:"mediumtext" json:"text"`
-	Data        []float64 `xorm:"mediumtext" json:"data"`
+	Data        []float32 `xorm:"mediumtext" json:"data"`
 }
 
 func GetGlobalVectors() ([]*Vector, error) {
