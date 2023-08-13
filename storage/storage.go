@@ -21,6 +21,7 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"io"
 	"net/http"
+	"strings"
 )
 
 type Object struct {
@@ -44,11 +45,13 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 
 	res := []*Object{}
 	for _, resource := range resources {
+		fixed_url := strings.TrimSpace(resource.Url)
+
 		res = append(res, &Object{
 			Key:          resource.Name,
 			LastModified: resource.CreatedTime,
 			Size:         int64(resource.FileSize),
-			Url:          resource.Url,
+			Url:          fixed_url,
 		})
 	}
 	return res, nil
