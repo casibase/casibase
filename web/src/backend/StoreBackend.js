@@ -61,3 +61,12 @@ export function deleteStore(store) {
     body: JSON.stringify(newStore),
   }).then(res => res.json());
 }
+
+export function refreshStoreVectors(store) {
+  const newStore = Setting.deepCopy(store);
+  return fetch(`${Setting.ServerUrl}/api/refresh-store-vectors`, {
+    method: "POST",
+    credentials: "include",
+    body: JSON.stringify(newStore),
+  }).then(res => res.json());
+}

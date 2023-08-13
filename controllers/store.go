@@ -123,3 +123,20 @@ func (c *ApiController) DeleteStore() {
 
 	c.ResponseOk(sucess)
 }
+
+func (c *ApiController) RefreshStoreVectors() {
+	var store object.Store
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	success, err := object.RefreshStoreVectors(&store)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
+}
