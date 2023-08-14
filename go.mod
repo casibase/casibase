@@ -29,12 +29,11 @@ require (
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
 	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 // indirect
 	golang.org/x/net v0.8.0
 	golang.org/x/oauth2 v0.6.0 // indirect
 	golang.org/x/sys v0.7.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
-	gonum.org/v1/gonum v0.11.0
+	gonum.org/v1/gonum v0.13.0
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect

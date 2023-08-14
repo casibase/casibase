@@ -22,10 +22,12 @@ import (
 	"time"
 
 	"github.com/sashabaranov/go-openai"
+	"gonum.org/v1/gonum/floats"
+	"gonum.org/v1/gonum/mat"
 )
 
 func splitTxt(f io.ReadCloser) []string {
-	const maxLength = 512 * 3
+	const maxLength = 210 * 3
 	scanner := bufio.NewScanner(f)
 	var res []string
 	var temp string
@@ -87,4 +89,41 @@ func GetEmbeddingSafe(authToken string, input []string) ([]float32, error) {
 	} else {
 		return embedding, nil
 	}
+}
+
+func getMostSimilarVector(target []float64, candidates [][]float64) (int, float64) {
+	return getMostSimilarVectorInternal(target, candidates)
+}
+
+func GetMostSimilarVectorFromFloat32(target []float32, candidates [][]float64) (int, float64) {
+	return getMostSimilarVectorInternal(Float32To64(target), candidates)
+}
+
+func getMostSimilarVectorInternal(target []float64, candidates [][]float64) (int, float64) {
+	targetVec := mat.NewVecDense(len(target), target)
+	var mostSimilarIndex int
+	var maxSimilarity float64 = -1
+
+	for i, candidate := range candidates {
+		candidateVec := mat.NewVecDense(len(candidate), candidate)
+		similarity := cosineSimilarity(targetVec, candidateVec)
+		if similarity > maxSimilarity {
+			maxSimilarity = similarity
+			mostSimilarIndex = i
+		}
+	}
+
+	return mostSimilarIndex, maxSimilarity
+}
+
+func cosineSimilarity(vec1, vec2 *mat.VecDense) float64 {
+	dotProduct := floats.Dot(vec1.RawVector().Data, vec2.RawVector().Data)
+	normVec1 := floats.Norm(vec1.RawVector().Data, 2)
+	normVec2 := floats.Norm(vec2.RawVector().Data, 2)
+
+	if normVec1 == 0 || normVec2 == 0 {
+		return 0.0
+	}
+
+	return dotProduct / (normVec1 * normVec2)
 }

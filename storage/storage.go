@@ -17,6 +17,7 @@ package storage
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -47,7 +48,7 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 			Key:          resource.Name,
 			LastModified: resource.CreatedTime,
 			Size:         int64(resource.FileSize),
-			Url:          resource.Url,
+			Url:          strings.TrimSpace(resource.Url),
 		})
 	}
 	return res, nil

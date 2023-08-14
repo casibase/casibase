@@ -26,3 +26,11 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	res := len(token)
 	return res, nil
 }
+
+func Float32To64(f []float32) []float64 {
+	res := make([]float64, len(f))
+	for i, v := range f {
+		res[i] = float64(v)
+	}
+	return res
+}

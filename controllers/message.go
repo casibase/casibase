@@ -149,10 +149,18 @@ func (c *ApiController) GetMessageAnswer() {
 	question := questionMessage.Text
 	var stringBuilder strings.Builder
 
+	knowledge, err := object.GetMostSimilarKnowledge(authToken, chat.Owner, []string{question})
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+	templateQuery := ai.GetTemplateQuery(knowledge, question)
+
 	fmt.Printf("Question: [%s]\n", questionMessage.Text)
+	fmt.Printf("TemplateQuery: [%s]\n", templateQuery)
 	fmt.Printf("Answer: [")
 
-	err = ai.QueryAnswerStream(authToken, question, c.Ctx.ResponseWriter, &stringBuilder)
+	err = ai.QueryAnswerStream(authToken, templateQuery, c.Ctx.ResponseWriter, &stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

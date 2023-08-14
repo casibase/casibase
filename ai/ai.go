@@ -139,3 +139,13 @@ func QueryAnswerStream(authToken string, question string, writer io.Writer, buil
 
 	return nil
 }
+
+func getTemplateQuery(knowledge string, question string) string {
+	template := "请根据以上内容回答以下问题: "
+
+	return knowledge + " " + template + question
+}
+
+func GetTemplateQuery(knowledge string, question string) string {
+	return getTemplateQuery(knowledge, question)
+}

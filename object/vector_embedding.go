@@ -131,3 +131,64 @@ func setTxtObjectVector(authToken string, provider string, key string, storeName
 
 	return true, nil
 }
+
+type EmbeddingsWithText struct {
+	Data []float32
+	Text string
+}
+
+func GetEmbeddingsAndText(owner string) ([]*EmbeddingsWithText, error) {
+	vectors, err := GetVectors(owner)
+	if err != nil {
+		return nil, err
+	}
+	if len(vectors) == 0 {
+		return nil, nil
+	}
+
+	embeddingsWithText := make([]*EmbeddingsWithText, len(vectors))
+	for i, vector := range vectors {
+		embeddingsWithText[i] = &EmbeddingsWithText{
+			Data: vector.Data,
+			Text: vector.Text,
+		}
+	}
+
+	return embeddingsWithText, nil
+}
+
+func getKnowledgeCandidates(owner string) ([]*EmbeddingsWithText, error) {
+	candidates, err := GetEmbeddingsAndText(owner)
+	if err != nil {
+		return nil, err
+	}
+	if len(candidates) == 0 {
+		return nil, fmt.Errorf("no knowledge candidates found")
+	}
+	return candidates, nil
+}
+
+func GetMostSimilarKnowledge(authToken string, owner string, input []string) (string, error) {
+	embedding, err := ai.GetEmbeddingSafe(authToken, input)
+	if err != nil {
+		return "", err
+	}
+	if embedding == nil {
+		return "", fmt.Errorf("no embedding found")
+	}
+
+	candidates, err := getKnowledgeCandidates(owner)
+
+	var candidateEmbeddings [][]float64
+	for _, candidate := range candidates {
+		candidateInterface := make([]float64, len(candidate.Data))
+		for i, val := range candidate.Data {
+			candidateInterface[i] = float64(val)
+		}
+		candidateEmbeddings = append(candidateEmbeddings, candidateInterface)
+	}
+
+	mostSimilarIndex, _ := ai.GetMostSimilarVectorFromFloat32(embedding, candidateEmbeddings)
+
+	return candidates[mostSimilarIndex].Text, nil
+}
