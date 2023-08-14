@@ -15,11 +15,12 @@
 //go:build !skipCi
 // +build !skipCi
 
-package ai
+package ai_test
 
 import (
 	"testing"
 
+	"github.com/casbin/casibase/ai"
 	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/proxy"
 	"github.com/sashabaranov/go-openai"
@@ -29,14 +30,10 @@ func TestRun(t *testing.T) {
 	object.InitConfig()
 	proxy.InitHttpClient()
 
-	text, err := queryAnswer("", "hi", 5)
-	if err != nil {
-		panic(err)
-	}
-
+	text := ai.QueryAnswerSafe("", "hi")
 	println(text)
 }
 
 func TestToken(t *testing.T) {
-	println(getTokenSize(openai.GPT3TextDavinci003, ""))
+	println(ai.GetTokenSize(openai.GPT3TextDavinci003, ""))
 }

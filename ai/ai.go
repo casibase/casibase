@@ -85,7 +85,7 @@ func QueryAnswerStream(authToken string, question string, writer io.Writer, buil
 	}
 	// https://platform.openai.com/tokenizer
 	// https://github.com/pkoukk/tiktoken-go#available-encodings
-	promptTokens, err := getTokenSize(openai.GPT3TextDavinci003, question)
+	promptTokens, err := GetTokenSize(openai.GPT3TextDavinci003, question)
 	if err != nil {
 		return err
 	}

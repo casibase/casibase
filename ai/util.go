@@ -16,7 +16,7 @@ package ai
 
 import "github.com/pkoukk/tiktoken-go"
 
-func getTokenSize(model string, prompt string) (int, error) {
+func GetTokenSize(model string, prompt string) (int, error) {
 	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {
 		return 0, err
