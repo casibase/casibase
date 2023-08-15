@@ -141,7 +141,9 @@ func QueryAnswerStream(authToken string, question string, writer io.Writer, buil
 }
 
 func getTemplateQuery(knowledge string, question string) string {
-	template := "请根据以上内容回答以下问题: "
+	knowledge = "paragraph: " + knowledge + "/n"
+	template := "You are a reading comprehension expert. Please answer the following questions based on the provided content. The content may be in a different language from the questions, so you need to understand the content according to the language of the questions and ensure that your answers are translated into the same language as the questions:/n"
+	question = "Q1: " + question
 
 	return knowledge + " " + template + question
 }

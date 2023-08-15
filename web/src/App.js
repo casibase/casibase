@@ -349,9 +349,7 @@ class App extends Component {
   renderSigninIfNotSignedIn(component) {
     if (this.state.account === null) {
       sessionStorage.setItem("from", window.location.pathname);
-      this.props.history.push("/signin");
-      window.location.reload();
-      return null;
+      return <Redirect to="/signin" />;
     } else if (this.state.account === undefined) {
       return null;
     } else {

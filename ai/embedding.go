@@ -19,11 +19,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math"
 	"time"
 
 	"github.com/sashabaranov/go-openai"
-	"gonum.org/v1/gonum/floats"
-	"gonum.org/v1/gonum/mat"
 )
 
 func splitTxt(f io.ReadCloser) []string {
@@ -100,13 +99,13 @@ func GetMostSimilarVectorFromFloat32(target []float32, candidates [][]float64) (
 }
 
 func getMostSimilarVectorInternal(target []float64, candidates [][]float64) (int, float64) {
-	targetVec := mat.NewVecDense(len(target), target)
 	var mostSimilarIndex int
-	var maxSimilarity float64 = -1
+	maxSimilarity := -1.0
+
+	targetNorm := norm(target)
 
 	for i, candidate := range candidates {
-		candidateVec := mat.NewVecDense(len(candidate), candidate)
-		similarity := cosineSimilarity(targetVec, candidateVec)
+		similarity := cosineSimilarity(target, candidate, targetNorm)
 		if similarity > maxSimilarity {
 			maxSimilarity = similarity
 			mostSimilarIndex = i
@@ -116,14 +115,34 @@ func getMostSimilarVectorInternal(target []float64, candidates [][]float64) (int
 	return mostSimilarIndex, maxSimilarity
 }
 
-func cosineSimilarity(vec1, vec2 *mat.VecDense) float64 {
-	dotProduct := floats.Dot(vec1.RawVector().Data, vec2.RawVector().Data)
-	normVec1 := floats.Norm(vec1.RawVector().Data, 2)
-	normVec2 := floats.Norm(vec2.RawVector().Data, 2)
+func cosineSimilarity(vec1, vec2 []float64, vec1Norm float64) float64 {
+	dotProduct := dot(vec1, vec2)
+	vec2Norm := norm(vec2)
 
-	if normVec1 == 0 || normVec2 == 0 {
+	if vec2Norm == 0 {
 		return 0.0
 	}
 
-	return dotProduct / (normVec1 * normVec2)
+	return dotProduct / (vec1Norm * vec2Norm)
+}
+
+func dot(vec1, vec2 []float64) float64 {
+	if len(vec1) != len(vec2) {
+		panic("Vector lengths do not match")
+	}
+
+	dotProduct := 0.0
+	for i := range vec1 {
+		dotProduct += vec1[i] * vec2[i]
+	}
+
+	return dotProduct
+}
+
+func norm(vec []float64) float64 {
+	normSquared := 0.0
+	for _, val := range vec {
+		normSquared += val * val
+	}
+	return math.Sqrt(normSquared)
 }
