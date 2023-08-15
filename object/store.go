@@ -151,7 +151,7 @@ func (store *Store) GetId() string {
 }
 
 func RefreshStoreVectors(store *Store) (bool, error) {
-	provider, err := getDefaultModelProvider()
+	provider, err := GetDefaultModelProvider()
 	if err != nil {
 		return false, err
 	}

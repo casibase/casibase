@@ -78,6 +78,37 @@ func (c *ApiController) ResponseErrorStream(errorText string) {
 	}
 }
 
+func getModelProviderFromContext(owner string, name string) (*object.Provider, error) {
+	var providerName string
+	if name != "" {
+		providerName = name
+	} else {
+		store, err := object.GetDefaultStore(owner)
+		if err != nil {
+			return nil, err
+		}
+
+		if store.ModelProvider != "" {
+			providerName = store.ModelProvider
+		}
+	}
+
+	var provider *object.Provider
+	var err error
+	if providerName != "" {
+		providerId := util.GetIdFromOwnerAndName(owner, providerName)
+		provider, err = object.GetProvider(providerId)
+	} else {
+		provider, err = object.GetDefaultModelProvider()
+	}
+
+	if provider == nil && err == nil {
+		return nil, fmt.Errorf("The provider: %s is not found", providerName)
+	} else {
+		return provider, err
+	}
+}
+
 func (c *ApiController) GetMessageAnswer() {
 	id := c.Input().Get("id")
 
@@ -124,20 +155,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	providerId := util.GetIdFromOwnerAndName(chat.Owner, chat.User2)
-	provider, err := object.GetProvider(providerId)
+	provider, err := getModelProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-
-	if provider == nil {
-		c.ResponseErrorStream(fmt.Sprintf("The provider: %s is not found", providerId))
-		return
-	}
-
 	if provider.Category != "Model" || provider.ClientSecret == "" {
-		c.ResponseErrorStream(fmt.Sprintf("The provider: %s is invalid", providerId))
+		c.ResponseErrorStream(fmt.Sprintf("The provider: %s is invalid", provider.GetId()))
 		return
 	}
 

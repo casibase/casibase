@@ -100,7 +100,7 @@ func GetProvider(id string) (*Provider, error) {
 	return getProvider(owner, name)
 }
 
-func getDefaultModelProvider() (*Provider, error) {
+func GetDefaultModelProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Model"}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
