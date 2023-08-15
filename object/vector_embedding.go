@@ -62,7 +62,7 @@ func getObjectReadCloser(object *storage.Object) (io.ReadCloser, error) {
 }
 
 func addEmbeddedVector(authToken string, text string, storeName string, fileName string) (bool, error) {
-	embedding, err := ai.GetEmbeddingSafe(authToken, []string{text})
+	embedding, err := ai.GetEmbeddingSafe(authToken, text)
 	if err != nil {
 		return false, err
 	}
@@ -130,4 +130,39 @@ func setTxtObjectVector(authToken string, provider string, key string, storeName
 	}
 
 	return true, nil
+}
+
+func getRelatedVectors(owner string) ([]*Vector, error) {
+	vectors, err := GetVectors(owner)
+	if err != nil {
+		return nil, err
+	}
+	if len(vectors) == 0 {
+		return nil, fmt.Errorf("no knowledge vectors found")
+	}
+
+	return vectors, nil
+}
+
+func GetNearestVectorText(authToken string, owner string, question string) (string, error) {
+	qVector, err := ai.GetEmbeddingSafe(authToken, question)
+	if err != nil {
+		return "", err
+	}
+	if qVector == nil {
+		return "", fmt.Errorf("no qVector found")
+	}
+
+	vectors, err := getRelatedVectors(owner)
+	if err != nil {
+		return "", err
+	}
+
+	var nVectors [][]float32
+	for _, candidate := range vectors {
+		nVectors = append(nVectors, candidate.Data)
+	}
+
+	i := ai.GetNearestVectorIndex(qVector, nVectors)
+	return vectors[i].Text, nil
 }

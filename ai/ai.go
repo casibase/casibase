@@ -139,3 +139,10 @@ func QueryAnswerStream(authToken string, question string, writer io.Writer, buil
 
 	return nil
 }
+
+func GetQuestionWithKnowledge(knowledge string, question string) string {
+	return fmt.Sprintf(`paragraph: %s
+
+You are a reading comprehension expert. Please answer the following questions based on the provided content. The content may be in a different language from the questions, so you need to understand the content according to the language of the questions and ensure that your answers are translated into the same language as the questions:
+Q1: %s`, knowledge, question)
+}

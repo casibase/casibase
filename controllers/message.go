@@ -149,10 +149,19 @@ func (c *ApiController) GetMessageAnswer() {
 	question := questionMessage.Text
 	var stringBuilder strings.Builder
 
-	fmt.Printf("Question: [%s]\n", questionMessage.Text)
+	nearestText, err := object.GetNearestVectorText(authToken, chat.Owner, question)
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+
+	realQuestion := ai.GetQuestionWithKnowledge(nearestText, question)
+
+	fmt.Printf("Question: [%s]\n", question)
+	fmt.Printf("Context: [%s]\n", nearestText)
 	fmt.Printf("Answer: [")
 
-	err = ai.QueryAnswerStream(authToken, question, c.Ctx.ResponseWriter, &stringBuilder)
+	err = ai.QueryAnswerStream(authToken, realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

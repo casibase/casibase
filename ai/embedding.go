@@ -25,7 +25,7 @@ import (
 )
 
 func splitTxt(f io.ReadCloser) []string {
-	const maxLength = 512 * 3
+	const maxLength = 210 * 3
 	scanner := bufio.NewScanner(f)
 	var res []string
 	var temp string
@@ -51,14 +51,14 @@ func GetSplitTxt(f io.ReadCloser) []string {
 	return splitTxt(f)
 }
 
-func getEmbedding(authToken string, input []string, timeout int) ([]float32, error) {
+func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {
 	client := getProxyClientFromToken(authToken)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
 	defer cancel()
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
-		Input: input,
+		Input: []string{text},
 		Model: openai.AdaEmbeddingV2,
 	})
 	if err != nil {
@@ -68,11 +68,11 @@ func getEmbedding(authToken string, input []string, timeout int) ([]float32, err
 	return resp.Data[0].Embedding, nil
 }
 
-func GetEmbeddingSafe(authToken string, input []string) ([]float32, error) {
+func GetEmbeddingSafe(authToken string, text string) ([]float32, error) {
 	var embedding []float32
 	var err error
 	for i := 0; i < 10; i++ {
-		embedding, err = getEmbedding(authToken, input, i)
+		embedding, err = getEmbedding(authToken, text, i)
 		if err != nil {
 			if i > 0 {
 				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
@@ -87,4 +87,19 @@ func GetEmbeddingSafe(authToken string, input []string) ([]float32, error) {
 	} else {
 		return embedding, nil
 	}
+}
+
+func GetNearestVectorIndex(target []float32, vectors [][]float32) int {
+	targetNorm := norm(target)
+
+	var res int
+	max := float32(-1.0)
+	for i, vector := range vectors {
+		similarity := cosineSimilarity(target, vector, targetNorm)
+		if similarity > max {
+			max = similarity
+			res = i
+		}
+	}
+	return res
 }
