@@ -45,6 +45,7 @@ type Store struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
 	StorageProvider string `xorm:"varchar(100)" json:"storageProvider"`
+	ModelProvider   string `xorm:"varchar(100)" json:"modelProvider"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`

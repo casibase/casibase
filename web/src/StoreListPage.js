@@ -55,6 +55,7 @@ class StoreListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,
       storageProvider: "",
+      modelProvider: "",
       propertiesMap: {},
     };
   }
@@ -140,6 +141,28 @@ class StoreListPage extends React.Component {
         key: "storageProvider",
         width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", `/providers/admin/${text}`)}>
+              {text}
+              {Setting.renderExternalLink()}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Model provider"),
+        dataIndex: "modelProvider",
+        key: "modelProvider",
+        width: "250px",
+        sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
