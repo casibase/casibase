@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+casibase
 
 # Test binary, built with `go test -c`
 *.test
