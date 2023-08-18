@@ -19,7 +19,10 @@ import (
 	"runtime"
 
 	"github.com/astaxie/beego"
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/denisenkom/go-mssqldb" // mssql
+	_ "github.com/go-sql-driver/mysql"   // mysql
+	_ "github.com/lib/pq"                // postgres
+	_ "modernc.org/sqlite"               // sqlite
 	"xorm.io/xorm"
 )
 
@@ -84,10 +87,6 @@ func (a *Adapter) createDatabase() error {
 }
 
 func (a *Adapter) open() {
-	if err := a.createDatabase(); err != nil {
-		panic(err)
-	}
-
 	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+beego.AppConfig.String("dbName"))
 	if err != nil {
 		panic(err)
