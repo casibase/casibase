@@ -15,23 +15,35 @@
 package ai
 
 import (
-	"bufio"
 	"context"
 	"fmt"
+	"github.com/sashabaranov/go-openai"
 	"io"
+	"strings"
 	"time"
 
-	"github.com/sashabaranov/go-openai"
+	"code.sajari.com/docconv"
 )
 
-func splitTxt(f io.ReadCloser) []string {
+func readCloserToString(f io.ReadCloser, fileName string) (string, error) {
+	fileType := docconv.MimeTypeByExtension(fileName)
+	res, err := docconv.Convert(f, fileType, true)
+	if err != nil {
+		return "", err
+	}
+	if res == nil {
+		return "", nil
+	}
+
+	return res.Body, nil
+}
+
+func splitText(text string) []string {
 	const maxLength = 210 * 3
-	scanner := bufio.NewScanner(f)
 	var res []string
 	var temp string
 
-	for scanner.Scan() {
-		line := scanner.Text()
+	for _, line := range strings.Split(text, "\n") {
 		if len(temp)+len(line) <= maxLength {
 			temp += line
 		} else {
@@ -47,8 +59,13 @@ func splitTxt(f io.ReadCloser) []string {
 	return res
 }
 
-func GetSplitTxt(f io.ReadCloser) []string {
-	return splitTxt(f)
+func GetSplitTxt(f io.ReadCloser, fileName string) []string {
+	text, err := readCloserToString(f, fileName)
+	if err != nil {
+		return nil
+	}
+
+	return splitText(text)
 }
 
 func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {

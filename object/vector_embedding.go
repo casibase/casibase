@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
+	"path/filepath"
 	"time"
 
 	"github.com/casbin/casibase/ai"
@@ -29,9 +29,18 @@ import (
 )
 
 func filterTextFiles(files []*storage.Object) []*storage.Object {
+	extSet := map[string]bool{
+		".txt":  true,
+		".md":   true,
+		".docx": true,
+		".doc":  false,
+		".pdf":  true,
+	}
+
 	var res []*storage.Object
 	for _, file := range files {
-		if strings.HasSuffix(file.Key, ".txt") || strings.HasSuffix(file.Key, ".md") {
+		ext := filepath.Ext(file.Key)
+		if extSet[ext] {
 			res = append(res, file)
 		}
 	}
@@ -85,28 +94,28 @@ func addEmbeddedVector(authToken string, text string, storeName string, fileName
 	return AddVector(vector)
 }
 
-func setTxtObjectVector(authToken string, provider string, key string, storeName string) (bool, error) {
+func setTextObjectVector(authToken string, provider string, key string, storeName string) (bool, error) {
 	lb := rate.NewLimiter(rate.Every(time.Minute), 3)
 
-	txtObjects, err := getTextFiles(provider, key)
+	textObjects, err := getTextFiles(provider, key)
 	if err != nil {
 		return false, err
 	}
-	if len(txtObjects) == 0 {
+	if len(textObjects) == 0 {
 		return false, nil
 	}
 
-	for _, txtObject := range txtObjects {
-		readCloser, err := getObjectReadCloser(txtObject)
+	for _, textObject := range textObjects {
+		readCloser, err := getObjectReadCloser(textObject)
 		if err != nil {
 			return false, err
 		}
 		defer readCloser.Close()
 
-		splitTxts := ai.GetSplitTxt(readCloser)
+		splitTxts := ai.GetSplitTxt(readCloser, textObject.Key)
 		for _, splitTxt := range splitTxts {
 			if lb.Allow() {
-				success, err := addEmbeddedVector(authToken, splitTxt, storeName, txtObject.Key)
+				success, err := addEmbeddedVector(authToken, splitTxt, storeName, textObject.Key)
 				if err != nil {
 					return false, err
 				}
@@ -118,7 +127,7 @@ func setTxtObjectVector(authToken string, provider string, key string, storeName
 				if err != nil {
 					return false, err
 				}
-				success, err := addEmbeddedVector(authToken, splitTxt, storeName, txtObject.Key)
+				success, err := addEmbeddedVector(authToken, splitTxt, storeName, textObject.Key)
 				if err != nil {
 					return false, err
 				}
