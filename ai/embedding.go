@@ -17,12 +17,12 @@ package ai
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"io"
 	"strings"
 	"time"
 
 	"code.sajari.com/docconv"
+	"github.com/sashabaranov/go-openai"
 )
 
 func readCloserToString(f io.ReadCloser, fileName string) (string, error) {
