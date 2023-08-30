@@ -28,6 +28,7 @@ import * as serviceWorker from "./serviceWorker";
 // import 'antd/dist/antd.min.css';
 import {BrowserRouter} from "react-router-dom";
 import "./i18n";
+import "./backend/FetchFilter";
 
 const container = document.getElementById("root");
 

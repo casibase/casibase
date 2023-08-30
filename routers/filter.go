@@ -19,6 +19,9 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casbin/casibase/conf"
+	"github.com/casbin/casibase/controllers"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/casbin/casibase/util"
@@ -56,4 +59,39 @@ func TransparentStatic(ctx *context.Context) {
 	} else {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	}
+}
+
+func ApiFilter(ctx *context.Context) {
+	method := ctx.Request.Method
+	urlPath := getUrlPath(ctx.Request.URL.Path)
+
+	if conf.IsDemoMode() {
+		if !isAllowedInDemoMode(method, urlPath) {
+			controllers.DenyRequest(ctx)
+		}
+	}
+}
+
+func getUrlPath(urlPath string) string {
+	if strings.HasPrefix(urlPath, "/cas") && (strings.HasSuffix(urlPath, "/serviceValidate") || strings.HasSuffix(urlPath, "/proxy") || strings.HasSuffix(urlPath, "/proxyValidate") || strings.HasSuffix(urlPath, "/validate") || strings.HasSuffix(urlPath, "/p3/serviceValidate") || strings.HasSuffix(urlPath, "/p3/proxyValidate") || strings.HasSuffix(urlPath, "/samlValidate")) {
+		return "/cas"
+	}
+
+	if strings.HasPrefix(urlPath, "/api/login/oauth") {
+		return "/api/login/oauth"
+	}
+
+	if strings.HasPrefix(urlPath, "/api/webauthn") {
+		return "/api/webauthn"
+	}
+
+	return urlPath
+}
+
+func isAllowedInDemoMode(method string, urlPath string) bool {
+	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout") {
+		return false
+	}
+
+	return true
 }

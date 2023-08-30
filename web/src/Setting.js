@@ -648,3 +648,7 @@ export function renderExternalLink() {
     </svg>
   );
 }
+
+export function isResponseDenied(data) {
+  return data.msg === "Unauthorized operation";
+}
