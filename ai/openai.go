@@ -20,63 +20,23 @@ import (
 	"io"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/sashabaranov/go-openai"
 )
 
-func queryAnswer(authToken string, question string, timeout int) (string, error) {
-	// fmt.Printf("Question: %s\n", question)
-
-	client := getProxyClientFromToken(authToken)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(2+timeout*2)*time.Second)
-	defer cancel()
-
-	resp, err := client.CreateChatCompletion(
-		ctx,
-		openai.ChatCompletionRequest{
-			Model: openai.GPT3Dot5Turbo,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: question,
-				},
-			},
-		},
-	)
-	if err != nil {
-		return "", err
-	}
-
-	res := resp.Choices[0].Message.Content
-	res = strings.Trim(res, "\n")
-	// fmt.Printf("Answer: %s\n\n", res)
-	return res, nil
+type OpenaiGpt3p5ModelProvider struct {
+	SecretKey string
 }
 
-func QueryAnswerSafe(authToken string, question string) string {
-	var res string
-	var err error
-	for i := 0; i < 10; i++ {
-		res, err = queryAnswer(authToken, question, i)
-		if err != nil {
-			if i > 0 {
-				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
-			}
-		} else {
-			break
-		}
+func NewOpenaiGpt3p5ModelProvider(secretKey string) (*OpenaiGpt3p5ModelProvider, error) {
+	p := &OpenaiGpt3p5ModelProvider{
+		SecretKey: secretKey,
 	}
-	if err != nil {
-		panic(err)
-	}
-
-	return res
+	return p, nil
 }
 
-func QueryAnswerStream(authToken string, question string, writer io.Writer, builder *strings.Builder) error {
-	client := getProxyClientFromToken(authToken)
+func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+	client := getProxyClientFromToken(p.SecretKey)
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -138,11 +98,4 @@ func QueryAnswerStream(authToken string, question string, writer io.Writer, buil
 	}
 
 	return nil
-}
-
-func GetQuestionWithKnowledge(knowledge string, question string) string {
-	return fmt.Sprintf(`paragraph: %s
-
-You are a reading comprehension expert. Please answer the following questions based on the provided content. The content may be in a different language from the questions, so you need to understand the content according to the language of the questions and ensure that your answers are translated into the same language as the questions:
-Q1: %s`, knowledge, question)
 }

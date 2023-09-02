@@ -3,6 +3,7 @@ module github.com/casbin/casibase
 go 1.18
 
 require (
+	code.sajari.com/docconv v1.3.5
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/astaxie/beego v1.12.3
@@ -26,7 +27,6 @@ require (
 )
 
 require (
-	code.sajari.com/docconv v1.3.5 // indirect
 	github.com/JalfResi/justext v0.0.0-20170829062021-c0282dea7198 // indirect
 	github.com/PuerkitoBio/goquery v1.5.1 // indirect
 	github.com/advancedlogic/GoOse v0.0.0-20191112112754-e742535969c1 // indirect

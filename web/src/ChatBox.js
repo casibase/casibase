@@ -16,7 +16,7 @@ import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
-const robot = "https://cdn.casbin.com/casdoor/resource/built-in/admin/gpt.png";
+const robot = "https://cdn.casbin.org/img/social_openai.svg";
 
 class ChatBox extends React.Component {
   constructor(props) {

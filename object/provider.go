@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casbin/casibase/ai"
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
@@ -153,4 +154,17 @@ func DeleteProvider(provider *Provider) (bool, error) {
 
 func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
+}
+
+func (p *Provider) GetModelProvider() (ai.ModelProvider, error) {
+	pProvider, err := ai.GetModelProvider(p.Type, p.ClientSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the model provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
 }

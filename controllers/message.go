@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casbin/casibase/ai"
 	"github.com/casbin/casibase/object"
 	"github.com/casbin/casibase/util"
 )
@@ -179,13 +178,19 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	realQuestion := ai.GetQuestionWithKnowledge(nearestText, question)
+	realQuestion := object.GetRefinedQuestion(nearestText, question)
 
 	fmt.Printf("Question: [%s]\n", question)
 	fmt.Printf("Context: [%s]\n", nearestText)
 	fmt.Printf("Answer: [")
 
-	err = ai.QueryAnswerStream(authToken, realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
+	modelProvider, err := provider.GetModelProvider()
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+
+	err = modelProvider.QueryText(realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
