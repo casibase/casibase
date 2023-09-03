@@ -17,7 +17,7 @@ code {
   background-size: 108px, 33px;
   width: 108px;
   height: 27px;
-  /*background: rgba(0, 0, 0, 0.2);*/
+  /* background: rgba(0, 0, 0, 0.2); */
   margin: 17px 10px 16px 20px;
   float: left;
 }
@@ -38,12 +38,13 @@ code {
   background: rgba(92,48,125,0.55);
 }
 
-/*http://react-china.org/t/topic/33846/3*/
+/* http://react-china.org/t/topic/33846/3 */
 .ant-table-header {
-  scrollbar-color:transparent transparent
+  scrollbar-color: transparent transparent;
 }
+
 .ant-table-header::-webkit-scrollbar {
-  background-color:transparent
+  background-color: transparent;
 }
 
 .import-output {
@@ -74,10 +75,11 @@ code {
   box-shadow: 0 0 4px #888;
 }
 
-/*https://stackoverflow.com/questions/64961752/how-do-i-change-the-color-of-selected-menu-item-in-ant-design*/
-/*.conferenceMenu > .ant-menu-item-selected {*/
-/*  background-color: rgb(230,247,255) !important;*/
-/*}*/
+/* https://stackoverflow.com/questions/64961752/how-do-i-change-the-color-of-selected-menu-item-in-ant-design */
+
+/* .conferenceMenu > .ant-menu-item-selected {
+ background-color: rgb(230,247,255) !important;
+} */
 
 .conferenceMenu {
   background-color: rgb(242,242,242) !important;

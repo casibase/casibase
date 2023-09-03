@@ -393,7 +393,6 @@ class WordsetGraph extends React.Component {
   renderGraph() {
     if (this.state.loading) {
       return (
-        // https://codesandbox.io/s/antd-reproduction-template-q2dwk
         <div className="App">
           <Spin size="large" tip={i18next.t("general:Loading...")} style={{paddingTop: "10%"}} />
         </div>

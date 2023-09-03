@@ -13,7 +13,7 @@
 // limitations under the License.
 
 // create-react-app + IE9
-// https://www.cnblogs.com/xuexia/p/12092768.html
+// https://www.cnblogs.com/yeduweichengzhaoyu/p/12092768.html
 // react-app-polyfill
 // https://www.npmjs.com/package/react-app-polyfill
 import "react-app-polyfill/ie9";
