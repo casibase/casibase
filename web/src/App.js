@@ -439,7 +439,7 @@ class App extends Component {
 
   renderFooter() {
     // How to keep your footer where it belongs ?
-    // https://www.freecodecamp.org/neyarnws/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c/
+    // https://www.freecodecamp.org/news/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c
 
     return (
       <React.Fragment>

@@ -53,7 +53,7 @@ class FactorsetListPage extends React.Component {
       name: `factorset_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Factorset - ${randomName}`,
-      url: "https://github.com/Embedding/Chinese-Word-Factors",
+      url: "https://github.com/Embedding/Chinese-Word-Vectors",
       fileName: "sgns.target.word-word.dynwin5.thr10.neg5.dim300.iter5",
       fileSize: "1.69 GB",
       dimension: 128,
