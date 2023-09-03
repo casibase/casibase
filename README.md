@@ -9,7 +9,7 @@
     <img alt="docker pull casbin/casibase" src="https://img.shields.io/docker/pulls/casbin/casibase.svg">
   </a>
   <a href="https://github.com/casbin/casibase/actions/workflows/build.yml">
-    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casdoor/casdoor/workflows/Build/badge.svg?style=flat-square">
+    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casbin/casibase/workflows/Build/badge.svg?style=flat-square">
   </a>
   <a href="https://github.com/casbin/casibase/releases/latest">
     <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casbin/casibase.svg">
