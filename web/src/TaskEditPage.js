@@ -19,6 +19,11 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
 
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/javascript/javascript");
+
 const {Option} = Select;
 
 class TaskEditPage extends React.Component {
@@ -142,8 +147,27 @@ class TaskEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("task:Log")}:
+          </Col>
+          <Col span={22} >
+            <Button style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
+            <div style={{height: "600px"}}>
+              <CodeMirror
+                value={this.state.task.log}
+                options={{mode: "javascript", theme: "material-darker"}}
+                onBeforeChange={(editor, data, value) => {}}
+              />
+            </div>
+          </Col>
+        </Row>
       </Card>
     );
+  }
+
+  runTask() {
+    alert("runTask");
   }
 
   submitTaskEdit() {
