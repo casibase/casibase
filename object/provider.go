@@ -118,12 +118,16 @@ func GetDefaultModelProvider() (*Provider, error) {
 
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getProvider(owner, name)
+	p, err := getProvider(owner, name)
 	if err != nil {
 		return false, err
 	}
 	if provider == nil {
 		return false, nil
+	}
+
+	if provider.ClientSecret == "***" {
+		provider.ClientSecret = p.ClientSecret
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)

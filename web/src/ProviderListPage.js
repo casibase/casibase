@@ -55,7 +55,7 @@ class ProviderListPage extends React.Component {
       displayName: `New Provider - ${randomName}`,
       category: "Model",
       type: "OpenAI",
-      subType: "gpt-3.5-turbo",
+      subType: "text-davinci-003",
       clientId: "",
       clientSecret: "",
       providerUrl: "https://platform.openai.com/account/api-keys",
