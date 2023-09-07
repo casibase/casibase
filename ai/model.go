@@ -23,14 +23,19 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, secretKey string) (ModelProvider, error) {
-	if typ == "OpenAI API - GPT 3.5" {
-		p, err := NewOpenaiGpt3p5ModelProvider(secretKey)
-		if err != nil {
-			return nil, err
-		}
-		return p, nil
+func GetModelProvider(typ string, clientId string, secretKey string) (p ModelProvider, err error) {
+	switch typ {
+	case "OpenAI API - GPT 3.5":
+		p, err = NewOpenaiGpt3p5ModelProvider(secretKey)
+	case "Baidu":
+		p, err = NewBaiduModelProvider(clientId, secretKey)
+	default:
+		return nil, nil
 	}
 
-	return nil, nil
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
 }

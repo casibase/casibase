@@ -157,7 +157,7 @@ func (provider *Provider) GetId() string {
 }
 
 func (p *Provider) GetModelProvider() (ai.ModelProvider, error) {
-	pProvider, err := ai.GetModelProvider(p.Type, p.ClientSecret)
+	pProvider, err := ai.GetModelProvider(p.Type, p.ClientId, p.ClientSecret)
 	if err != nil {
 		return nil, err
 	}

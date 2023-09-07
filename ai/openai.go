@@ -86,8 +86,6 @@ func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer,
 			}
 		}
 
-		fmt.Printf("%s", data)
-
 		// Write the streamed data as Server-Sent Events
 		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
