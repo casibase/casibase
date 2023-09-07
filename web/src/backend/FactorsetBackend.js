@@ -35,13 +35,6 @@ export function getFactorset(owner, name) {
   }).then(res => res.json());
 }
 
-export function getFactorsetGraph(owner, name, clusterNumber, distanceLimit) {
-  return fetch(`${Setting.ServerUrl}/api/get-factorset-graph?id=${owner}/${encodeURIComponent(name)}&clusterNumber=${clusterNumber}&distanceLimit=${distanceLimit}`, {
-    method: "GET",
-    credentials: "include",
-  }).then(res => res.json());
-}
-
 export function updateFactorset(owner, name, factorset) {
   const newFactorset = Setting.deepCopy(factorset);
   return fetch(`${Setting.ServerUrl}/api/update-factorset?id=${owner}/${encodeURIComponent(name)}`, {

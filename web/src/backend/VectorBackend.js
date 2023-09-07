@@ -35,13 +35,6 @@ export function getVector(owner, name) {
   }).then(res => res.json());
 }
 
-export function getVectorGraph(owner, name, clusterNumber, distanceLimit) {
-  return fetch(`${Setting.ServerUrl}/api/get-vector-graph?id=${owner}/${encodeURIComponent(name)}&clusterNumber=${clusterNumber}&distanceLimit=${distanceLimit}`, {
-    method: "GET",
-    credentials: "include",
-  }).then(res => res.json());
-}
-
 export function updateVector(owner, name, vector) {
   const newVector = Setting.deepCopy(vector);
   return fetch(`${Setting.ServerUrl}/api/update-vector?id=${owner}/${encodeURIComponent(name)}`, {

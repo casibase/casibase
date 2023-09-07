@@ -35,13 +35,6 @@ export function getVideo(owner, name) {
   }).then(res => res.json());
 }
 
-export function getVideoGraph(owner, name, clusterNumber, distanceLimit) {
-  return fetch(`${Setting.ServerUrl}/api/get-video-graph?id=${owner}/${encodeURIComponent(name)}&clusterNumber=${clusterNumber}&distanceLimit=${distanceLimit}`, {
-    method: "GET",
-    credentials: "include",
-  }).then(res => res.json());
-}
-
 export function updateVideo(owner, name, video) {
   const newVideo = Setting.deepCopy(video);
   return fetch(`${Setting.ServerUrl}/api/update-video?id=${owner}/${encodeURIComponent(name)}`, {
