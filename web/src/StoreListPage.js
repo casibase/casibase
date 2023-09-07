@@ -147,7 +147,7 @@ class StoreListPage extends React.Component {
           }
 
           return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", `/providers/admin/${text}`)}>
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
               {text}
               {Setting.renderExternalLink()}
             </a>
