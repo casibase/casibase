@@ -142,6 +142,10 @@ class StoreListPage extends React.Component {
         width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         render: (text, record, index) => {
+          if (text === "") {
+            return null;
+          }
+
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", `/providers/admin/${text}`)}>
               {text}
