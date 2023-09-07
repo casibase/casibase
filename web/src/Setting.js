@@ -652,3 +652,37 @@ export function renderExternalLink() {
 export function isResponseDenied(data) {
   return data.msg === "Unauthorized operation";
 }
+
+export function getProviderSubTypeOptions(type) {
+  if (type === "OpenAI API") {
+    return (
+      [
+        {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+        {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
+        {id: "gpt-4-32k", name: "gpt-4-32k"},
+        {id: "gpt-4-0613", name: "gpt-4-0613"},
+        {id: "gpt-4-0314", name: "gpt-4-0314"},
+        {id: "gpt-4", name: "gpt-4"},
+        {id: "gpt-3.5-turbo-0613", name: "gpt-3.5-turbo-0613"},
+        {id: "gpt-3.5-turbo-0301", name: "gpt-3.5-turbo-0301"},
+        {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
+        {id: "gpt-3.5-turbo-16k-0613", name: "gpt-3.5-turbo-16k-0613"},
+        {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
+        {id: "text-davinci-003", name: "text-davinci-003"},
+        {id: "text-davinci-002", name: "text-davinci-002"},
+        {id: "text-curie-001", name: "text-curie-001"},
+        {id: "text-babbage-001", name: "text-babbage-001"},
+        {id: "text-ada-001", name: "text-ada-001"},
+        {id: "text-davinci-001", name: "text-davinci-001"},
+        {id: "davinci-instruct-beta", name: "davinci-instruct-beta"},
+        {id: "davinci", name: "davinci"},
+        {id: "curie-instruct-beta", name: "curie-instruct-beta"},
+        {id: "curie", name: "curie"},
+        {id: "ada", name: "ada"},
+        {id: "babbage", name: "babbage"},
+      ]
+    );
+  } else {
+    return [];
+  }
+}

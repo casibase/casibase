@@ -54,7 +54,8 @@ class ProviderListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
       category: "Model",
-      type: "OpenAI API - GPT 3.5",
+      type: "OpenAI API",
+      subType: "gpt-3.5-turbo",
       clientId: "",
       clientSecret: "",
       providerUrl: "https://platform.openai.com/account/api-keys",
@@ -102,7 +103,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "140px",
+        width: "160px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -134,6 +135,13 @@ class ProviderListPage extends React.Component {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
+        title: i18next.t("provider:Sub type"),
+        dataIndex: "subType",
+        key: "subType",
+        width: "160px",
+        sorter: (a, b) => a.subType.localeCompare(b.subType),
+      },
+      {
         title: i18next.t("provider:Secret key"),
         dataIndex: "clientSecret",
         key: "clientSecret",
@@ -144,13 +152,13 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:Provider URL"),
         dataIndex: "providerUrl",
         key: "providerUrl",
-        width: "250px",
+        // width: "250px",
         sorter: (a, b) => a.providerUrl.localeCompare(b.providerUrl),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
               {
-                Setting.getShortText(text)
+                Setting.getShortText(text, 80)
               }
             </a>
           );

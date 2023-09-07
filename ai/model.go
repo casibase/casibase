@@ -23,9 +23,9 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, secretKey string) (ModelProvider, error) {
-	if typ == "OpenAI API - GPT 3.5" {
-		p, err := NewOpenaiGpt3p5ModelProvider(secretKey)
+func GetModelProvider(typ string, subType string, secretKey string) (ModelProvider, error) {
+	if typ == "OpenAI API" {
+		p, err := NewOpenaiGpt3p5ModelProvider(subType, secretKey)
 		if err != nil {
 			return nil, err
 		}

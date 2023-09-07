@@ -117,9 +117,22 @@ class ProviderEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {this.updateProviderField("type", value);})}>
               {
                 [
-                  {id: "OpenAI API - GPT 3.5", name: "OpenAI API - GPT 3.5"},
-                  {id: "OpenAI API - GPT 4", name: "OpenAI API - GPT 4"},
+                  {id: "OpenAI API", name: "OpenAI API"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("provider:Sub type")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
+              {
+                Setting.getProviderSubTypeOptions(this.state.provider.type)
+                  .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
           </Col>
