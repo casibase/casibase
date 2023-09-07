@@ -45,6 +45,8 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
+import TaskListPage from "./TaskListPage";
+import TaskEditPage from "./TaskEditPage";
 import ChatPage from "./ChatPage";
 
 const {Header, Footer, Content} = Layout;
@@ -104,6 +106,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/chats"});
     } else if (uri.includes("/messages")) {
       this.setState({selectedMenuKey: "/messages"});
+    } else if (uri.includes("/tasks")) {
+      this.setState({selectedMenuKey: "/tasks"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -303,6 +307,9 @@ class App extends Component {
     res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>,
       "/messages"));
 
+    res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>,
+      "/tasks"));
+
     if (Setting.isLocalAdminUser(this.state.account)) {
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
@@ -374,6 +381,8 @@ class App extends Component {
         <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
       </Switch>
     );
