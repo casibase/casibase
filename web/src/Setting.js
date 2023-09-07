@@ -682,6 +682,17 @@ export function getProviderSubTypeOptions(type) {
         {id: "babbage", name: "babbage"},
       ]
     );
+  } else if (type === "Hugging Face") {
+    return (
+      [
+        {id: "meta-llama/Llama-2-7b", name: "meta-llama/Llama-2-7b"},
+        {id: "tiiuae/falcon-180B", name: "tiiuae/falcon-180B"},
+        {id: "bigscience/bloom", name: "bigscience/bloom"},
+        {id: "gpt2", name: "gpt2"},
+        {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
+        {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
+      ]
+    );
   } else {
     return [];
   }

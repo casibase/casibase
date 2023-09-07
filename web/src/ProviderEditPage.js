@@ -118,6 +118,7 @@ class ProviderEditPage extends React.Component {
               {
                 [
                   {id: "OpenAI API", name: "OpenAI API"},
+                  {id: "Hugging Face", name: "Hugging Face"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>

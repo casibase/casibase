@@ -1,3 +1,17 @@
+// Copyright 2023 The casbin Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package ai
 
 import (
@@ -11,45 +25,29 @@ import (
 )
 
 type HuggingFaceModelProvider struct {
+	SubType   string
 	SecretKey string
 }
 
-func NewHuggingFaceModelProvider(secretKey string) (*HuggingFaceModelProvider, error) {
+func NewHuggingFaceModelProvider(subType string, secretKey string) (*HuggingFaceModelProvider, error) {
 	p := &HuggingFaceModelProvider{
+		SubType:   subType,
 		SecretKey: secretKey,
 	}
 	return p, nil
 }
 
 func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	resp, err := getHuggingFaceResp(question, p.SecretKey)
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(resp)
-
-	return nil
-}
-
-func getHuggingFaceResp(question string, secretKey string) (string, error) {
-	client := huggingface.New("gpt2", 1, false).WithToken(secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
+	client := huggingface.New(p.SubType, 1, false).WithToken(p.SecretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
 
 	ctx := context.Background()
 
 	resp, err := client.Completion(ctx, question)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	return fixHuggingFaceResp(resp), nil
-}
-
-func GetHuggingFaceResp(question string, secretKey string) (string, error) {
-	return getHuggingFaceResp(question, secretKey)
-}
-
-func fixHuggingFaceResp(resp string) string {
 	resp = strings.Split(resp, "\n")[0]
-	return resp
+	fmt.Println(resp)
+	return nil
 }

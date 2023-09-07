@@ -124,7 +124,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
-        width: "160px",
+        width: "140px",
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
@@ -138,7 +138,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:Sub type"),
         dataIndex: "subType",
         key: "subType",
-        width: "160px",
+        width: "200px",
         sorter: (a, b) => a.subType.localeCompare(b.subType),
       },
       {

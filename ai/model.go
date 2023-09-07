@@ -30,6 +30,12 @@ func GetModelProvider(typ string, subType string, secretKey string) (ModelProvid
 			return nil, err
 		}
 		return p, nil
+	} else if typ == "Hugging Face" {
+		p, err := NewHuggingFaceModelProvider(subType, secretKey)
+		if err != nil {
+			return nil, err
+		}
+		return p, nil
 	}
 
 	return nil, nil
