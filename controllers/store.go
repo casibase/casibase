@@ -132,11 +132,11 @@ func (c *ApiController) RefreshStoreVectors() {
 		return
 	}
 
-	success, err := object.RefreshStoreVectors(&store)
+	ok, err := object.RefreshStoreVectors(&store)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(success)
+	c.ResponseOk(ok)
 }

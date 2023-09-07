@@ -48,7 +48,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func getTextFiles(provider string, prefix string) ([]*storage.Object, error) {
+func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, error) {
 	files, err := storage.ListObjects(provider, prefix)
 	if err != nil {
 		return nil, err
@@ -57,7 +57,7 @@ func getTextFiles(provider string, prefix string) ([]*storage.Object, error) {
 	return filterTextFiles(files), nil
 }
 
-func getObjectReadCloser(object *storage.Object) (io.ReadCloser, error) {
+func getObjectFile(object *storage.Object) (io.ReadCloser, error) {
 	resp, err := http.Get(object.Url)
 	if err != nil {
 		return nil, err
@@ -94,44 +94,51 @@ func addEmbeddedVector(authToken string, text string, storeName string, fileName
 	return AddVector(vector)
 }
 
-func setTextObjectVector(authToken string, provider string, key string, storeName string) (bool, error) {
-	lb := rate.NewLimiter(rate.Every(time.Minute), 3)
+func addVectorsForStore(authToken string, provider string, key string, storeName string) (bool, error) {
+	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), 3)
 
-	textObjects, err := getTextFiles(provider, key)
+	objs, err := getFilteredFileObjects(provider, key)
 	if err != nil {
 		return false, err
 	}
-	if len(textObjects) == 0 {
+	if len(objs) == 0 {
 		return false, nil
 	}
 
-	for _, textObject := range textObjects {
-		readCloser, err := getObjectReadCloser(textObject)
+	for _, obj := range objs {
+		f, err := getObjectFile(obj)
 		if err != nil {
 			return false, err
 		}
-		defer readCloser.Close()
+		defer f.Close()
 
-		splitTxts := ai.GetSplitTxt(readCloser, textObject.Key)
-		for _, splitTxt := range splitTxts {
-			if lb.Allow() {
-				success, err := addEmbeddedVector(authToken, splitTxt, storeName, textObject.Key)
+		filename := obj.Key
+		text, err := ai.ReadFileToString(f, filename)
+		if err != nil {
+			return false, err
+		}
+
+		textSections := ai.SplitText(text)
+		for _, textSection := range textSections {
+			if timeLimiter.Allow() {
+				ok, err := addEmbeddedVector(authToken, textSection, storeName, obj.Key)
 				if err != nil {
 					return false, err
 				}
-				if !success {
+				if !ok {
 					return false, nil
 				}
 			} else {
-				err := lb.Wait(context.Background())
+				err := timeLimiter.Wait(context.Background())
 				if err != nil {
 					return false, err
 				}
-				success, err := addEmbeddedVector(authToken, splitTxt, storeName, textObject.Key)
+
+				ok, err := addEmbeddedVector(authToken, textSection, storeName, obj.Key)
 				if err != nil {
 					return false, err
 				}
-				if !success {
+				if !ok {
 					return false, nil
 				}
 			}
