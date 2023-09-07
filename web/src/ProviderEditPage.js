@@ -117,7 +117,7 @@ class ProviderEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {this.updateProviderField("type", value);})}>
               {
                 [
-                  {id: "OpenAI API", name: "OpenAI API"},
+                  {id: "OpenAI", name: "OpenAI"},
                   {id: "Hugging Face", name: "Hugging Face"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }

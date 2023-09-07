@@ -54,7 +54,7 @@ class ProviderListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
       category: "Model",
-      type: "OpenAI API",
+      type: "OpenAI",
       subType: "gpt-3.5-turbo",
       clientId: "",
       clientSecret: "",

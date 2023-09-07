@@ -24,8 +24,8 @@ type ModelProvider interface {
 }
 
 func GetModelProvider(typ string, subType string, secretKey string) (ModelProvider, error) {
-	if typ == "OpenAI API" {
-		p, err := NewOpenaiGpt3p5ModelProvider(subType, secretKey)
+	if typ == "OpenAI" {
+		p, err := NewOpenAiModelProvider(subType, secretKey)
 		if err != nil {
 			return nil, err
 		}

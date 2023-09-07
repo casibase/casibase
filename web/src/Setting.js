@@ -654,7 +654,7 @@ export function isResponseDenied(data) {
 }
 
 export function getProviderSubTypeOptions(type) {
-  if (type === "OpenAI API") {
+  if (type === "OpenAI") {
     return (
       [
         {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},

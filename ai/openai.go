@@ -24,20 +24,20 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type OpenaiGpt3p5ModelProvider struct {
+type OpenAiModelProvider struct {
 	SubType   string
 	SecretKey string
 }
 
-func NewOpenaiGpt3p5ModelProvider(subType string, secretKey string) (*OpenaiGpt3p5ModelProvider, error) {
-	p := &OpenaiGpt3p5ModelProvider{
+func NewOpenAiModelProvider(subType string, secretKey string) (*OpenAiModelProvider, error) {
+	p := &OpenAiModelProvider{
 		SubType:   subType,
 		SecretKey: secretKey,
 	}
 	return p, nil
 }
 
-func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	client := getProxyClientFromToken(p.SecretKey)
 
 	ctx := context.Background()
