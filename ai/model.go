@@ -23,20 +23,19 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, subType string, secretKey string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string) (ModelProvider, error) {
+	var p ModelProvider
+	var err error
 	if typ == "OpenAI" {
-		p, err := NewOpenAiModelProvider(subType, secretKey)
-		if err != nil {
-			return nil, err
-		}
-		return p, nil
+		p, err = NewOpenAiModelProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
-		p, err := NewHuggingFaceModelProvider(subType, secretKey)
-		if err != nil {
-			return nil, err
-		}
-		return p, nil
+		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
+	} else if typ == "Hugging Face" {
+		p, err = NewErnieModelProvider(clientId, clientSecret)
 	}
 
-	return nil, nil
+	if err != nil {
+		return nil, err
+	}
+	return p, nil
 }

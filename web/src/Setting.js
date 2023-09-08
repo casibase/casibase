@@ -693,6 +693,12 @@ export function getProviderSubTypeOptions(type) {
         {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
       ]
     );
+  } else if (type === "Ernie") {
+    return (
+      [
+        {id: "Default", name: "Default"},
+      ]
+    );
   } else {
     return [];
   }

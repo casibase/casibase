@@ -25,20 +25,16 @@ import (
 )
 
 type OpenAiModelProvider struct {
-	SubType   string
-	SecretKey string
+	subType   string
+	secretKey string
 }
 
 func NewOpenAiModelProvider(subType string, secretKey string) (*OpenAiModelProvider, error) {
-	p := &OpenAiModelProvider{
-		SubType:   subType,
-		SecretKey: secretKey,
-	}
-	return p, nil
+	return &OpenAiModelProvider{subType: subType, secretKey: secretKey}, nil
 }
 
 func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	client := getProxyClientFromToken(p.SecretKey)
+	client := getProxyClientFromToken(p.secretKey)
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -46,7 +42,7 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, build
 		return fmt.Errorf("writer does not implement http.Flusher")
 	}
 
-	model := p.SubType
+	model := p.subType
 	if model == "" {
 		model = openai.GPT3TextDavinci003
 	}
@@ -93,8 +89,6 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, build
 				isLeadingReturn = false
 			}
 		}
-
-		fmt.Printf("%s", data)
 
 		// Write the streamed data as Server-Sent Events
 		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {

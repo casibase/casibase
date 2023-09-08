@@ -119,25 +119,44 @@ class ProviderEditPage extends React.Component {
                 [
                   {id: "OpenAI", name: "OpenAI"},
                   {id: "Hugging Face", name: "Hugging Face"},
+                  {id: "Ernie", name: "Ernie"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Sub type")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
-              {
-                Setting.getProviderSubTypeOptions(this.state.provider.type)
-                  .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
+        {
+          this.state.provider.type === "Ernie" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Sub type")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
+                  {
+                    Setting.getProviderSubTypeOptions(this.state.provider.type)
+                      .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.state.provider.type !== "Ernie" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:API key")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.clientId} onChange={e => {
+                  this.updateProviderField("clientId", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("provider:Secret key")}:

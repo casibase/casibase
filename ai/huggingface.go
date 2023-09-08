@@ -25,20 +25,16 @@ import (
 )
 
 type HuggingFaceModelProvider struct {
-	SubType   string
-	SecretKey string
+	subType   string
+	secretKey string
 }
 
 func NewHuggingFaceModelProvider(subType string, secretKey string) (*HuggingFaceModelProvider, error) {
-	p := &HuggingFaceModelProvider{
-		SubType:   subType,
-		SecretKey: secretKey,
-	}
-	return p, nil
+	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey}, nil
 }
 
 func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	client := huggingface.New(p.SubType, 1, false).WithToken(p.SecretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
+	client := huggingface.New(p.subType, 1, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
 
 	ctx := context.Background()
 

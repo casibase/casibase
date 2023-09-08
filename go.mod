@@ -6,6 +6,7 @@ require (
 	code.sajari.com/docconv v1.3.5
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
+	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.28.1
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
