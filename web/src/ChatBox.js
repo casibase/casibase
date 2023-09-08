@@ -16,7 +16,7 @@ import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 
-const robot = "https://cdn.casbin.org/img/social_openai.svg";
+const aiAvatar = "https://cdn.casbin.com/casdoor/static/gpt.png";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class ChatBox extends React.Component {
       <MainContainer style={{display: "flex", width: "100%", height: "100%"}} >
         <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
           <ConversationHeader>
-            <Avatar src={robot} name="AI" />
+            <Avatar src={aiAvatar} name="AI" />
             <ConversationHeader.Content userName="AI" />
           </ConversationHeader>
           <MessageList>
@@ -47,7 +47,7 @@ class ChatBox extends React.Component {
                 sender: message.name,
                 direction: message.author === "AI" ? "incoming" : "outgoing",
               }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                <Avatar src={message.author === "AI" ? robot : this.props.account.avatar} name="GPT" />
+                <Avatar src={message.author === "AI" ? aiAvatar : this.props.account.avatar} name="GPT" />
               </Message>
             ))}
           </MessageList>
