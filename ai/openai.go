@@ -24,18 +24,20 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type OpenaiGpt3p5ModelProvider struct {
+type OpenAiModelProvider struct {
+	SubType   string
 	SecretKey string
 }
 
-func NewOpenaiGpt3p5ModelProvider(secretKey string) (*OpenaiGpt3p5ModelProvider, error) {
-	p := &OpenaiGpt3p5ModelProvider{
+func NewOpenAiModelProvider(subType string, secretKey string) (*OpenAiModelProvider, error) {
+	p := &OpenAiModelProvider{
+		SubType:   subType,
 		SecretKey: secretKey,
 	}
 	return p, nil
 }
 
-func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	client := getProxyClientFromToken(p.SecretKey)
 
 	ctx := context.Background()
@@ -43,9 +45,15 @@ func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer,
 	if !ok {
 		return fmt.Errorf("writer does not implement http.Flusher")
 	}
+
+	model := p.SubType
+	if model == "" {
+		model = openai.GPT3TextDavinci003
+	}
+
 	// https://platform.openai.com/tokenizer
 	// https://github.com/pkoukk/tiktoken-go#available-encodings
-	promptTokens, err := GetTokenSize(openai.GPT3TextDavinci003, question)
+	promptTokens, err := GetTokenSize(model, question)
 	if err != nil {
 		return err
 	}
@@ -56,7 +64,7 @@ func (p *OpenaiGpt3p5ModelProvider) QueryText(question string, writer io.Writer,
 	respStream, err := client.CreateCompletionStream(
 		ctx,
 		openai.CompletionRequest{
-			Model:     openai.GPT3TextDavinci003,
+			Model:     model,
 			Prompt:    question,
 			MaxTokens: maxTokens,
 			Stream:    true,

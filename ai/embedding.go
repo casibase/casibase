@@ -25,7 +25,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func readCloserToString(f io.ReadCloser, fileName string) (string, error) {
+func ReadFileToString(f io.ReadCloser, fileName string) (string, error) {
 	fileType := docconv.MimeTypeByExtension(fileName)
 	res, err := docconv.Convert(f, fileType, true)
 	if err != nil {
@@ -38,7 +38,7 @@ func readCloserToString(f io.ReadCloser, fileName string) (string, error) {
 	return res.Body, nil
 }
 
-func splitText(text string) []string {
+func SplitText(text string) []string {
 	const maxLength = 210 * 3
 	var res []string
 	var temp string
@@ -57,15 +57,6 @@ func splitText(text string) []string {
 	}
 
 	return res
-}
-
-func GetSplitTxt(f io.ReadCloser, fileName string) []string {
-	text, err := readCloserToString(f, fileName)
-	if err != nil {
-		return nil
-	}
-
-	return splitText(text)
 }
 
 func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {

@@ -157,12 +157,6 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 	}
 
 	authToken := provider.ClientSecret
-	success, err := setTextObjectVector(authToken, store.StorageProvider, "", store.Name)
-	if err != nil {
-		return false, err
-	}
-	if !success {
-		return false, nil
-	}
-	return true, nil
+	ok, err := addVectorsForStore(authToken, store.StorageProvider, "", store.Name)
+	return ok, err
 }

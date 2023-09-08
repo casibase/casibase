@@ -173,7 +173,7 @@ func (c *ApiController) GetMessageAnswer() {
 	var stringBuilder strings.Builder
 
 	nearestText, err := object.GetNearestVectorText(authToken, chat.Owner, question)
-	if err != nil {
+	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
 	}

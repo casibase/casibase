@@ -14,50 +14,50 @@
 
 import * as Setting from "../Setting";
 
-export function getGlobalVideos() {
-  return fetch(`${Setting.ServerUrl}/api/get-global-videos`, {
+export function getGlobalTasks() {
+  return fetch(`${Setting.ServerUrl}/api/get-global-tasks`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function getVideos(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-videos?owner=${owner}`, {
+export function getTasks(owner) {
+  return fetch(`${Setting.ServerUrl}/api/get-tasks?owner=${owner}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function getVideo(owner, name) {
-  return fetch(`${Setting.ServerUrl}/api/get-video?id=${owner}/${encodeURIComponent(name)}`, {
+export function getTask(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-task?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());
 }
 
-export function updateVideo(owner, name, video) {
-  const newVideo = Setting.deepCopy(video);
-  return fetch(`${Setting.ServerUrl}/api/update-video?id=${owner}/${encodeURIComponent(name)}`, {
+export function updateTask(owner, name, task) {
+  const newTask = Setting.deepCopy(task);
+  return fetch(`${Setting.ServerUrl}/api/update-task?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newVideo),
+    body: JSON.stringify(newTask),
   }).then(res => res.json());
 }
 
-export function addVideo(video) {
-  const newVideo = Setting.deepCopy(video);
-  return fetch(`${Setting.ServerUrl}/api/add-video`, {
+export function addTask(task) {
+  const newTask = Setting.deepCopy(task);
+  return fetch(`${Setting.ServerUrl}/api/add-task`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newVideo),
+    body: JSON.stringify(newTask),
   }).then(res => res.json());
 }
 
-export function deleteVideo(video) {
-  const newVideo = Setting.deepCopy(video);
-  return fetch(`${Setting.ServerUrl}/api/delete-video`, {
+export function deleteTask(task) {
+  const newTask = Setting.deepCopy(task);
+  return fetch(`${Setting.ServerUrl}/api/delete-task`, {
     method: "POST",
     credentials: "include",
-    body: JSON.stringify(newVideo),
+    body: JSON.stringify(newTask),
   }).then(res => res.json());
 }

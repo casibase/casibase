@@ -30,6 +30,7 @@ type Provider struct {
 	DisplayName  string `xorm:"varchar(100)" json:"displayName"`
 	Category     string `xorm:"varchar(100)" json:"category"`
 	Type         string `xorm:"varchar(100)" json:"type"`
+	SubType      string `xorm:"varchar(100)" json:"subType"`
 	ClientId     string `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
@@ -117,12 +118,16 @@ func GetDefaultModelProvider() (*Provider, error) {
 
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getProvider(owner, name)
+	p, err := getProvider(owner, name)
 	if err != nil {
 		return false, err
 	}
 	if provider == nil {
 		return false, nil
+	}
+
+	if provider.ClientSecret == "***" {
+		provider.ClientSecret = p.ClientSecret
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
@@ -157,7 +162,7 @@ func (provider *Provider) GetId() string {
 }
 
 func (p *Provider) GetModelProvider() (ai.ModelProvider, error) {
-	pProvider, err := ai.GetModelProvider(p.Type, p.ClientId, p.ClientSecret)
+	pProvider, err := ai.GetModelProvider(p.Type, p.SubType, p.ClientSecret)
 	if err != nil {
 		return nil, err
 	}

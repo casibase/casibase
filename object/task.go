@@ -27,9 +27,10 @@ type Task struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
-	Application string `xorm:"varchar(100)" json:"application"`
 	Provider    string `xorm:"varchar(100)" json:"provider"`
+	Application string `xorm:"varchar(100)" json:"application"`
 	Path        string `xorm:"varchar(100)" json:"path"`
+	Log         string `xorm:"mediumtext" json:"log"`
 }
 
 func GetMaskedTask(task *Task, isMaskEnabled bool) *Task {
