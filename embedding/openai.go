@@ -12,50 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package model
+package embedding
 
 import (
 	"context"
-	"fmt"
 	"time"
 
+	"github.com/casbin/casibase/proxy"
+	"github.com/casbin/casibase/util"
 	"github.com/sashabaranov/go-openai"
 )
 
-func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {
-	client := getProxyClientFromToken(authToken)
+type OpenAiEmbeddingProvider struct {
+	subType   string
+	secretKey string
+}
+
+func NewOpenAiEmbeddingProvider(subType string, secretKey string) (*OpenAiEmbeddingProvider, error) {
+	return &OpenAiEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
+}
+
+func getProxyClientFromToken(authToken string) *openai.Client {
+	config := openai.DefaultConfig(authToken)
+	config.HTTPClient = proxy.ProxyHttpClient
+
+	c := openai.NewClientWithConfig(config)
+	return c
+}
+
+func (p *OpenAiEmbeddingProvider) QueryVector(text string, timeout int) ([]float32, error) {
+	client := getProxyClientFromToken(p.secretKey)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
 	defer cancel()
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
-		Model: openai.AdaEmbeddingV2,
+		Model: openai.EmbeddingModel(util.ParseInt(p.subType)),
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	return resp.Data[0].Embedding, nil
-}
-
-func GetEmbeddingSafe(authToken string, text string) ([]float32, error) {
-	var embedding []float32
-	var err error
-	for i := 0; i < 10; i++ {
-		embedding, err = getEmbedding(authToken, text, i)
-		if err != nil {
-			if i > 0 {
-				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
-			}
-		} else {
-			break
-		}
-	}
-
-	if err != nil {
-		return nil, err
-	} else {
-		return embedding, nil
-	}
 }

@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/casbin/casibase/model"
+	"github.com/casbin/casibase/embedding"
 	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/txt"
 	"github.com/casbin/casibase/util"
@@ -53,8 +53,9 @@ func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, 
 	return filterTextFiles(files), nil
 }
 
-func addEmbeddedVector(authToken string, text string, storeName string, fileName string) (bool, error) {
-	embedding, err := model.GetEmbeddingSafe(authToken, text)
+func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string) (bool, error) {
+	data, err := embeddingProviderObj.QueryVector(text, 5)
+	// data, err := model.GetEmbeddingSafe(authToken, text)
 	if err != nil {
 		return false, err
 	}
@@ -72,16 +73,16 @@ func addEmbeddedVector(authToken string, text string, storeName string, fileName
 		Store:       storeName,
 		File:        fileName,
 		Text:        text,
-		Data:        embedding,
+		Data:        data,
 	}
 	return AddVector(vector)
 }
 
-func addVectorsForStore(authToken string, provider string, key string, storeName string) (bool, error) {
+func addVectorsForStore(embeddingProviderObj embedding.EmbeddingProvider, storageProviderName string, key string, storeName string) (bool, error) {
 	var affected bool
 	var err error
 
-	objs, err := getFilteredFileObjects(provider, key)
+	objs, err := getFilteredFileObjects(storageProviderName, key)
 	if err != nil {
 		return false, err
 	}
@@ -99,7 +100,7 @@ func addVectorsForStore(authToken string, provider string, key string, storeName
 		for i, textSection := range textSections {
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(authToken, textSection, storeName, obj.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, obj.Key)
 			} else {
 				err = timeLimiter.Wait(context.Background())
 				if err != nil {
@@ -107,7 +108,7 @@ func addVectorsForStore(authToken string, provider string, key string, storeName
 				}
 
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(authToken, textSection, storeName, obj.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, obj.Key)
 			}
 		}
 	}
@@ -127,8 +128,9 @@ func getRelatedVectors(owner string) ([]*Vector, error) {
 	return vectors, nil
 }
 
-func GetNearestVectorText(authToken string, owner string, question string) (string, error) {
-	qVector, err := model.GetEmbeddingSafe(authToken, question)
+func GetNearestVectorText(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, error) {
+	qVector, err := embeddingProvider.QueryVector(text, 5)
+	// qVector, err := embedding.GetEmbeddingSafe(authToken, question)
 	if err != nil {
 		return "", err
 	}

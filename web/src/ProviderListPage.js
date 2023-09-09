@@ -117,7 +117,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("general:Display name"),
         dataIndex: "displayName",
         key: "displayName",
-        width: "170px",
+        width: "220px",
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {

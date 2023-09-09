@@ -21,6 +21,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/casbin/casibase/proxy"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -31,6 +32,14 @@ type OpenAiModelProvider struct {
 
 func NewOpenAiModelProvider(subType string, secretKey string) (*OpenAiModelProvider, error) {
 	return &OpenAiModelProvider{subType: subType, secretKey: secretKey}, nil
+}
+
+func getProxyClientFromToken(authToken string) *openai.Client {
+	config := openai.DefaultConfig(authToken)
+	config.HTTPClient = proxy.ProxyHttpClient
+
+	c := openai.NewClientWithConfig(config)
+	return c
 }
 
 func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {

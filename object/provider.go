@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casbin/casibase/embedding"
 	"github.com/casbin/casibase/model"
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
@@ -116,6 +117,20 @@ func GetDefaultModelProvider() (*Provider, error) {
 	return &provider, nil
 }
 
+func GetDefaultEmbeddingProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Embedding"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func UpdateProvider(id string, provider *Provider) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	p, err := getProvider(owner, name)
@@ -169,6 +184,19 @@ func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
 
 	if pProvider == nil {
 		return nil, fmt.Errorf("the model provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
+	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientSecret)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the embedding provider type: %s is not supported", p.Type)
 	}
 
 	return pProvider, nil

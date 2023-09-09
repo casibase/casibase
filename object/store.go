@@ -44,8 +44,9 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider string `xorm:"varchar(100)" json:"storageProvider"`
-	ModelProvider   string `xorm:"varchar(100)" json:"modelProvider"`
+	StorageProvider   string `xorm:"varchar(100)" json:"storageProvider"`
+	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
@@ -150,22 +151,26 @@ func (store *Store) GetId() string {
 	return fmt.Sprintf("%s/%s", store.Owner, store.Name)
 }
 
-func (store *Store) GetModelProvider() (*Provider, error) {
-	if store.ModelProvider == "" {
-		return GetDefaultModelProvider()
+func (store *Store) GetEmbeddingProvider() (*Provider, error) {
+	if store.EmbeddingProvider == "" {
+		return GetDefaultEmbeddingProvider()
 	}
 
-	providerId := util.GetIdFromOwnerAndName(store.Owner, store.ModelProvider)
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.EmbeddingProvider)
 	return GetProvider(providerId)
 }
 
 func RefreshStoreVectors(store *Store) (bool, error) {
-	provider, err := store.GetModelProvider()
+	embeddingProvider, err := store.GetEmbeddingProvider()
 	if err != nil {
 		return false, err
 	}
 
-	authToken := provider.ClientSecret
-	ok, err := addVectorsForStore(authToken, store.StorageProvider, "", store.Name)
+	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider()
+	if err != nil {
+		return false, err
+	}
+
+	ok, err := addVectorsForStore(embeddingProviderObj, store.StorageProvider, "", store.Name)
 	return ok, err
 }

@@ -68,46 +68,6 @@ func (c *ApiController) GetMessage() {
 	c.ResponseOk(message)
 }
 
-func (c *ApiController) ResponseErrorStream(errorText string) {
-	event := fmt.Sprintf("event: myerror\ndata: %s\n\n", errorText)
-	_, err := c.Ctx.ResponseWriter.Write([]byte(event))
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-}
-
-func getModelProviderFromContext(owner string, name string) (*object.Provider, error) {
-	var providerName string
-	if name != "" {
-		providerName = name
-	} else {
-		store, err := object.GetDefaultStore(owner)
-		if err != nil {
-			return nil, err
-		}
-
-		if store != nil && store.ModelProvider != "" {
-			providerName = store.ModelProvider
-		}
-	}
-
-	var provider *object.Provider
-	var err error
-	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = object.GetProvider(providerId)
-	} else {
-		provider, err = object.GetDefaultModelProvider()
-	}
-
-	if provider == nil && err == nil {
-		return nil, fmt.Errorf("The provider: %s is not found", providerName)
-	} else {
-		return provider, err
-	}
-}
-
 func (c *ApiController) GetMessageAnswer() {
 	id := c.Input().Get("id")
 
@@ -154,13 +114,15 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	provider, err := getModelProviderFromContext(chat.Owner, chat.User2)
+	modelProviderObj, err := getModelProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-	if provider.Category != "Model" || provider.ClientSecret == "" {
-		c.ResponseErrorStream(fmt.Sprintf("The provider: %s is invalid", provider.GetId()))
+
+	embeddingProviderObj, err := getEmbeddingProviderFromContext(chat.Owner, chat.User2)
+	if err != nil {
+		c.ResponseError(err.Error())
 		return
 	}
 
@@ -168,11 +130,10 @@ func (c *ApiController) GetMessageAnswer() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	authToken := provider.ClientSecret
 	question := questionMessage.Text
 	var stringBuilder strings.Builder
 
-	nearestText, err := object.GetNearestVectorText(authToken, chat.Owner, question)
+	nearestText, err := object.GetNearestVectorText(embeddingProviderObj, chat.Owner, question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -184,13 +145,7 @@ func (c *ApiController) GetMessageAnswer() {
 	fmt.Printf("Context: [%s]\n", nearestText)
 	fmt.Printf("Answer: [")
 
-	modelProvider, err := provider.GetModelProvider()
-	if err != nil {
-		c.ResponseErrorStream(err.Error())
-		return
-	}
-
-	err = modelProvider.QueryText(realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
+	err = modelProviderObj.QueryText(realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

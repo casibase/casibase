@@ -30,6 +30,7 @@ class StoreEditPage extends React.Component {
       storeName: props.match.params.storeName,
       storageProviders: [],
       modelProviders: [],
+      embeddingProviders: [],
       store: null,
     };
   }
@@ -37,7 +38,7 @@ class StoreEditPage extends React.Component {
   UNSAFE_componentWillMount() {
     this.getStore();
     this.getStorageProviders();
-    this.getModelProviders();
+    this.getProviders();
   }
 
   getStore() {
@@ -70,12 +71,13 @@ class StoreEditPage extends React.Component {
       });
   }
 
-  getModelProviders() {
+  getProviders() {
     ProviderBackend.getProviders(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
             modelProviders: res.data.filter(provider => provider.category === "Model"),
+            embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
@@ -145,6 +147,16 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
               options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+              } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Embedding provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
+              options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
               } />
           </Col>
         </Row>

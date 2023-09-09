@@ -102,8 +102,7 @@ class ProviderEditPage extends React.Component {
               {
                 [
                   {id: "Model", name: "Model"},
-                  {id: "Vector Database", name: "Vector Database"},
-                  {id: "Storage", name: "Storage"},
+                  {id: "Embedding", name: "Embedding"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -116,11 +115,9 @@ class ProviderEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {this.updateProviderField("type", value);})}>
               {
-                [
-                  {id: "OpenAI", name: "OpenAI"},
-                  {id: "Hugging Face", name: "Hugging Face"},
-                  {id: "Ernie", name: "Ernie"},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                Setting.getProviderTypeOptions(this.state.provider.category)
+                  // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
           </Col>
@@ -132,8 +129,8 @@ class ProviderEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
               {
-                Setting.getProviderSubTypeOptions(this.state.provider.type)
-                  .sort((a, b) => a.name.localeCompare(b.name))
+                Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
+                  // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>

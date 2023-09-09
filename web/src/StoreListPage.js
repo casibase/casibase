@@ -56,6 +56,7 @@ class StoreListPage extends React.Component {
       displayName: `New Store - ${randomName}`,
       storageProvider: "",
       modelProvider: "",
+      embeddingProvider: "",
       propertiesMap: {},
     };
   }
@@ -160,6 +161,20 @@ class StoreListPage extends React.Component {
         key: "modelProvider",
         width: "250px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Embedding provider"),
+        dataIndex: "embeddingProvider",
+        key: "embeddingProvider",
+        width: "250px",
+        sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
