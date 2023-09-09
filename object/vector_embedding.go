@@ -54,8 +54,7 @@ func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, 
 }
 
 func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string) (bool, error) {
-	data, err := embeddingProviderObj.QueryVector(text, 5)
-	// data, err := model.GetEmbeddingSafe(authToken, text)
+	data, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return false, err
 	}
@@ -128,9 +127,35 @@ func getRelatedVectors(owner string) ([]*Vector, error) {
 	return vectors, nil
 }
 
+func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int) ([]float32, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
+	defer cancel()
+	return embeddingProvider.QueryVector(text, ctx)
+}
+
+func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string) ([]float32, error) {
+	var res []float32
+	var err error
+	for i := 0; i < 10; i++ {
+		res, err = queryVectorWithContext(embeddingProvider, text, i)
+		if err != nil {
+			if i > 0 {
+				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
+			}
+		} else {
+			break
+		}
+	}
+
+	if err != nil {
+		return nil, err
+	} else {
+		return res, nil
+	}
+}
+
 func GetNearestVectorText(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, error) {
-	qVector, err := embeddingProvider.QueryVector(text, 5)
-	// qVector, err := embedding.GetEmbeddingSafe(authToken, question)
+	qVector, err := queryVectorSafe(embeddingProvider, text)
 	if err != nil {
 		return "", err
 	}

@@ -16,7 +16,6 @@ package embedding
 
 import (
 	"context"
-	"time"
 
 	"github.com/casbin/casibase/proxy"
 	"github.com/casbin/casibase/util"
@@ -40,11 +39,8 @@ func getProxyClientFromToken(authToken string) *openai.Client {
 	return c
 }
 
-func (p *OpenAiEmbeddingProvider) QueryVector(text string, timeout int) ([]float32, error) {
+func (p *OpenAiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
 	client := getProxyClientFromToken(p.secretKey)
-
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
-	defer cancel()
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
