@@ -105,16 +105,8 @@ func addVectorsForStore(authToken string, provider string, key string, storeName
 
 	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), 3)
 	for _, obj := range objs {
-		var f io.ReadCloser
-		f, err = getObjectFile(obj)
-		if err != nil {
-			return false, err
-		}
-		defer f.Close()
-
-		filename := obj.Key
 		var text string
-		text, err = ai.ReadFileToString(f, filename)
+		text, err = ai.ReadFileToString(obj.Url, obj.Key)
 		if err != nil {
 			return false, err
 		}

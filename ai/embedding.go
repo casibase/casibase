@@ -17,25 +17,38 @@ package ai
 import (
 	"context"
 	"fmt"
-	"io"
 	"strings"
 	"time"
 
-	"code.sajari.com/docconv"
+	"github.com/casbin/casibase/extractors"
+
 	"github.com/sashabaranov/go-openai"
 )
 
-func ReadFileToString(f io.ReadCloser, fileName string) (string, error) {
-	fileType := docconv.MimeTypeByExtension(fileName)
-	res, err := docconv.Convert(f, fileType, true)
-	if err != nil {
-		return "", err
-	}
-	if res == nil {
-		return "", nil
+func ReadFileToString(fileUrl, fileName string) (string, error) {
+	suffix := strings.ToLower(fileName[strings.LastIndex(fileName, "."):])
+
+	var res string
+	var err error
+
+	switch suffix {
+	case ".pdf":
+		res, err = extractor.GetPdfTextFromUrl(fileUrl)
+	case ".docx":
+		res, err = extractor.GetDocxTextFromUrl(fileUrl)
+	case ".md":
+		res, err = extractor.GetMdTextFromUrl(fileUrl)
+	case ".txt":
+		res, err = extractor.GetMdTextFromUrl(fileUrl)
+	default:
+		return "", fmt.Errorf("unsupported file type: %s", suffix)
 	}
 
-	return res.Body, nil
+	if err != nil {
+		return "", fmt.Errorf("failed to extract text from %s: %v", suffix, err)
+	}
+
+	return res, nil
 }
 
 func SplitText(text string) []string {
