@@ -30,6 +30,12 @@ require (
 )
 
 require (
+	github.com/JalfResi/justext v0.0.0-20170829062021-c0282dea7198 // indirect
+	github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3 // indirect
+	github.com/PuerkitoBio/goquery v1.5.1 // indirect
+	github.com/advancedlogic/GoOse v0.0.0-20191112112754-e742535969c1 // indirect
+	github.com/andybalholm/cascadia v1.2.0 // indirect
+	github.com/araddon/dateparse v0.0.0-20200409225146-d820a6159ab1 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
