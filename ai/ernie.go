@@ -26,12 +26,13 @@ import (
 )
 
 type ErnieModelProvider struct {
+	subType   string
 	apiKey    string
 	secretKey string
 }
 
-func NewErnieModelProvider(apiKey string, secretKey string) (*ErnieModelProvider, error) {
-	return &ErnieModelProvider{apiKey: apiKey, secretKey: secretKey}, nil
+func NewErnieModelProvider(subType string, apiKey string, secretKey string) (*ErnieModelProvider, error) {
+	return &ErnieModelProvider{subType: subType, apiKey: apiKey, secretKey: secretKey}, nil
 }
 
 func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
@@ -42,35 +43,111 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 		return fmt.Errorf("writer does not implement http.Flusher")
 	}
 
-	request := ernie.ErnieBotRequest{
-		Messages: []ernie.ChatCompletionMessage{
-			{
-				Role:    "user",
-				Content: question,
-			},
+	messages := []ernie.ChatCompletionMessage{
+		{
+			Role:    "user",
+			Content: question,
 		},
-		Stream: true,
-	}
-	stream, err := client.CreateErnieBotChatCompletionStream(ctx, request)
-	if err != nil {
-		return err
 	}
 
-	defer stream.Close()
-	for {
-		response, err := stream.Recv()
-		if errors.Is(err, io.EOF) {
-			return nil
+	flushData := func(data string) error {
+		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+			return err
 		}
+		flusher.Flush()
+		builder.WriteString(data)
+		return nil
+	}
 
+	if p.subType == "ERNIE-Bot" {
+		stream, err := client.CreateErnieBotChatCompletionStream(ctx, ernie.ErnieBotRequest{Messages: messages})
 		if err != nil {
 			return err
 		}
 
-		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", response.Result); err != nil {
+		defer stream.Close()
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+
+			if err != nil {
+				return err
+			}
+
+			err = flushData(response.Result)
+			if err != nil {
+				return err
+			}
+		}
+	} else if p.subType == "ERNIE-Bot-turbo" {
+		stream, err := client.CreateErnieBotTurboChatCompletionStream(ctx, ernie.ErnieBotTurboRequest{Messages: messages})
+		if err != nil {
 			return err
 		}
-		flusher.Flush()
-		builder.WriteString(response.Result)
+
+		defer stream.Close()
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+
+			if err != nil {
+				return err
+			}
+
+			err = flushData(response.Result)
+			if err != nil {
+				return err
+			}
+		}
+	} else if p.subType == "BLOOMZ-7B" {
+		stream, err := client.CreateBloomz7b1ChatCompletionStream(ctx, ernie.Bloomz7b1Request{Messages: messages})
+		if err != nil {
+			return err
+		}
+
+		defer stream.Close()
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+
+			if err != nil {
+				return err
+			}
+
+			err = flushData(response.Result)
+			if err != nil {
+				return err
+			}
+		}
+	} else if p.subType == "Llama-2" {
+		stream, err := client.CreateLlamaChatCompletionStream(ctx, ernie.LlamaChatRequest{Messages: messages})
+		if err != nil {
+			return err
+		}
+
+		defer stream.Close()
+		for {
+			response, err := stream.Recv()
+			if errors.Is(err, io.EOF) {
+				return nil
+			}
+
+			if err != nil {
+				return err
+			}
+
+			err = flushData(response.Result)
+			if err != nil {
+				return err
+			}
+		}
 	}
+
+	return nil
 }
