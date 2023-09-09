@@ -77,7 +77,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message, err := object.GetMessage(id)
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 
@@ -94,7 +94,7 @@ func (c *ApiController) GetMessageAnswer() {
 	chatId := util.GetIdFromOwnerAndName("admin", message.Chat)
 	chat, err := object.GetChat(chatId)
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 
@@ -116,13 +116,13 @@ func (c *ApiController) GetMessageAnswer() {
 
 	modelProviderObj, err := getModelProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 
 	embeddingProviderObj, err := getEmbeddingProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 
@@ -156,7 +156,7 @@ func (c *ApiController) GetMessageAnswer() {
 	event := fmt.Sprintf("event: end\ndata: %s\n\n", "end")
 	_, err = c.Ctx.ResponseWriter.Write([]byte(event))
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 
@@ -165,7 +165,7 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Text = answer
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {
-		c.ResponseError(err.Error())
+		c.ResponseErrorStream(err.Error())
 		return
 	}
 }
