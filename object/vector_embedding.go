@@ -146,6 +146,6 @@ func GetNearestVectorText(authToken string, owner string, question string) (stri
 		nVectors = append(nVectors, candidate.Data)
 	}
 
-	i := model.GetNearestVectorIndex(qVector, nVectors)
+	i := getNearestVectorIndex(qVector, nVectors)
 	return vectors[i].Text, nil
 }
