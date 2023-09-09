@@ -24,6 +24,7 @@ import (
 
 	"github.com/casbin/casibase/ai"
 	"github.com/casbin/casibase/storage"
+	"github.com/casbin/casibase/txt"
 	"github.com/casbin/casibase/util"
 	"golang.org/x/time/rate"
 )
@@ -105,23 +106,17 @@ func addVectorsForStore(authToken string, provider string, key string, storeName
 
 	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), 3)
 	for _, obj := range objs {
-		var f io.ReadCloser
-		f, err = getObjectFile(obj)
-		if err != nil {
-			return false, err
-		}
-		defer f.Close()
-
-		filename := obj.Key
 		var text string
-		text, err = ai.ReadFileToString(f, filename)
+		fileExt := filepath.Ext(obj.Key)
+		text, err = txt.GetParsedTextFromUrl(obj.Url, fileExt)
 		if err != nil {
 			return false, err
 		}
 
-		textSections := ai.SplitText(text)
-		for _, textSection := range textSections {
+		textSections := txt.GetTextSections(text)
+		for i, textSection := range textSections {
 			if timeLimiter.Allow() {
+				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
 				affected, err = addEmbeddedVector(authToken, textSection, storeName, obj.Key)
 			} else {
 				err = timeLimiter.Wait(context.Background())
@@ -129,6 +124,7 @@ func addVectorsForStore(authToken string, provider string, key string, storeName
 					return false, err
 				}
 
+				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
 				affected, err = addEmbeddedVector(authToken, textSection, storeName, obj.Key)
 			}
 		}

@@ -17,47 +17,10 @@ package ai
 import (
 	"context"
 	"fmt"
-	"io"
-	"strings"
 	"time"
 
-	"code.sajari.com/docconv"
 	"github.com/sashabaranov/go-openai"
 )
-
-func ReadFileToString(f io.ReadCloser, fileName string) (string, error) {
-	fileType := docconv.MimeTypeByExtension(fileName)
-	res, err := docconv.Convert(f, fileType, true)
-	if err != nil {
-		return "", err
-	}
-	if res == nil {
-		return "", nil
-	}
-
-	return res.Body, nil
-}
-
-func SplitText(text string) []string {
-	const maxLength = 210 * 3
-	var res []string
-	var temp string
-
-	for _, line := range strings.Split(text, "\n") {
-		if len(temp)+len(line) <= maxLength {
-			temp += line
-		} else {
-			res = append(res, temp)
-			temp = line
-		}
-	}
-
-	if len(temp) > 0 {
-		res = append(res, temp)
-	}
-
-	return res
-}
 
 func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {
 	client := getProxyClientFromToken(authToken)

@@ -3,7 +3,6 @@ module github.com/casbin/casibase
 go 1.18
 
 require (
-	code.sajari.com/docconv v1.3.5
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/anhao/go-ernie v1.0.4
@@ -14,12 +13,14 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.3.0
 	github.com/henomis/lingoose v0.0.11-alpha1
+	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/lib/pq v1.10.2
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.1
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
+	github.com/unidoc/unioffice v1.4.0
 	golang.org/x/net v0.8.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
@@ -29,19 +30,11 @@ require (
 )
 
 require (
-	github.com/JalfResi/justext v0.0.0-20170829062021-c0282dea7198 // indirect
-	github.com/PuerkitoBio/goquery v1.5.1 // indirect
-	github.com/advancedlogic/GoOse v0.0.0-20191112112754-e742535969c1 // indirect
-	github.com/andybalholm/cascadia v1.2.0 // indirect
-	github.com/araddon/dateparse v0.0.0-20200409225146-d820a6159ab1 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
-	github.com/fatih/set v0.2.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/gigawattio/window v0.0.0-20180317192513-0f5467e35573 // indirect
-	github.com/go-resty/resty/v2 v2.3.0 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
@@ -50,32 +43,23 @@ require (
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/jaytaylor/html2text v0.0.0-20200412013138-3577fbdbcff7 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
-	github.com/levigross/exp-html v0.0.0-20120902181939-8df60c69a8f5 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/olekukonko/tablewriter v0.0.4 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/gomega v1.27.1 // indirect
-	github.com/otiai10/gosseract/v2 v2.2.4 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
-	github.com/richardlehane/mscfb v1.0.3 // indirect
-	github.com/richardlehane/msoleps v1.0.3 // indirect
 	github.com/rogpeppe/go-internal v1.9.0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
-	github.com/ssor/bom v0.0.0-20170718123548-6386211fdfcf // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 // indirect

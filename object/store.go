@@ -150,8 +150,17 @@ func (store *Store) GetId() string {
 	return fmt.Sprintf("%s/%s", store.Owner, store.Name)
 }
 
+func (store *Store) GetModelProvider() (*Provider, error) {
+	if store.ModelProvider == "" {
+		return GetDefaultModelProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.ModelProvider)
+	return GetProvider(providerId)
+}
+
 func RefreshStoreVectors(store *Store) (bool, error) {
-	provider, err := GetDefaultModelProvider()
+	provider, err := store.GetModelProvider()
 	if err != nil {
 		return false, err
 	}
