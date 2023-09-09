@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/casbin/casibase/ai"
+	"github.com/casbin/casibase/retrievers"
 	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/util"
 	"golang.org/x/time/rate"
@@ -168,6 +169,6 @@ func GetNearestVectorText(authToken string, owner string, question string) (stri
 		nVectors = append(nVectors, candidate.Data)
 	}
 
-	i := ai.GetNearestVectorIndex(qVector, nVectors)
+	i := retrievers.GetNearestVectorIndex(qVector, nVectors)
 	return vectors[i].Text, nil
 }

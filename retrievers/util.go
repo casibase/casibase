@@ -2,6 +2,21 @@ package retrievers
 
 import "math"
 
+func GetNearestVectorIndex(target []float32, vectors [][]float32) int {
+	targetNorm := norm(target)
+
+	var res int
+	max := float32(-1.0)
+	for i, vector := range vectors {
+		similarity := cosineSimilarity(target, vector, targetNorm)
+		if similarity > max {
+			max = similarity
+			res = i
+		}
+	}
+	return res
+}
+
 func cosineSimilarity(vec1, vec2 []float32, vec1Norm float32) float32 {
 	dotProduct := dot(vec1, vec2)
 	vec2Norm := norm(vec2)

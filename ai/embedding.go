@@ -96,18 +96,3 @@ func GetEmbeddingSafe(authToken string, text string) ([]float32, error) {
 		return embedding, nil
 	}
 }
-
-func GetNearestVectorIndex(target []float32, vectors [][]float32) int {
-	targetNorm := norm(target)
-
-	var res int
-	max := float32(-1.0)
-	for i, vector := range vectors {
-		similarity := cosineSimilarity(target, vector, targetNorm)
-		if similarity > max {
-			max = similarity
-			res = i
-		}
-	}
-	return res
-}
