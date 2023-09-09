@@ -87,7 +87,7 @@ func getModelProviderFromContext(owner string, name string) (*object.Provider, e
 			return nil, err
 		}
 
-		if store.ModelProvider != "" {
+		if store != nil && store.ModelProvider != "" {
 			providerName = store.ModelProvider
 		}
 	}

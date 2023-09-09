@@ -30,8 +30,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewOpenAiModelProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
-	} else if typ == "Hugging Face" {
-		p, err = NewErnieModelProvider(clientId, clientSecret)
+	} else if typ == "Ernie" {
+		p, err = NewErnieModelProvider(subType, clientId, clientSecret)
 	}
 
 	if err != nil {

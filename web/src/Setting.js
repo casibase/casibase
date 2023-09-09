@@ -696,7 +696,10 @@ export function getProviderSubTypeOptions(type) {
   } else if (type === "Ernie") {
     return (
       [
-        {id: "Default", name: "Default"},
+        {id: "ERNIE-Bot", name: "ERNIE-Bot"},
+        {id: "ERNIE-Bot-turbo", name: "ERNIE-Bot-turbo"},
+        {id: "BLOOMZ-7B", name: "BLOOMZ-7B"},
+        {id: "Llama-2", name: "Llama-2"},
       ]
     );
   } else {
