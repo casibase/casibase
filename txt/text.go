@@ -41,6 +41,10 @@ func GetTextSections(text string) []string {
 	return res
 }
 
+func GetSupportedFileTypes() []string {
+	return []string{".txt", ".md", ".docx", ".pdf"}
+}
+
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	path, err := getTempFilePathFromUrl(url)
 	if err != nil {
@@ -54,12 +58,12 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	}()
 
 	var res string
-	if ext == ".pdf" {
-		res, err = getTextFromPdf(path)
+	if ext == ".txt" || ext == ".md" {
+		res, err = getTextFromPlain(path)
 	} else if ext == ".docx" {
 		res, err = getTextFromDocx(path)
-	} else if ext == ".md" || ext == ".txt" {
-		res, err = getTextFromPlain(path)
+	} else if ext == ".pdf" {
+		res, err = getTextFromPdf(path)
 	} else {
 		return "", fmt.Errorf("unsupported file type: %s", ext)
 	}

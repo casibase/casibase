@@ -17,8 +17,6 @@ package object
 import (
 	"context"
 	"fmt"
-	"io"
-	"net/http"
 	"path/filepath"
 	"time"
 
@@ -30,22 +28,19 @@ import (
 )
 
 func filterTextFiles(files []*storage.Object) []*storage.Object {
-	extSet := map[string]bool{
-		".txt":  true,
-		".md":   true,
-		".docx": true,
-		".doc":  false,
-		".pdf":  true,
+	fileTypes := txt.GetSupportedFileTypes()
+	fileTypeMap := map[string]bool{}
+	for _, fileType := range fileTypes {
+		fileTypeMap[fileType] = true
 	}
 
-	var res []*storage.Object
+	res := []*storage.Object{}
 	for _, file := range files {
 		ext := filepath.Ext(file.Key)
-		if extSet[ext] {
+		if fileTypeMap[ext] {
 			res = append(res, file)
 		}
 	}
-
 	return res
 }
 
@@ -56,19 +51,6 @@ func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, 
 	}
 
 	return filterTextFiles(files), nil
-}
-
-func getObjectFile(object *storage.Object) (io.ReadCloser, error) {
-	resp, err := http.Get(object.Url)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		resp.Body.Close()
-		return nil, fmt.Errorf("HTTP request failed with status code: %d", resp.StatusCode)
-	}
-	return resp.Body, nil
 }
 
 func addEmbeddedVector(authToken string, text string, storeName string, fileName string) (bool, error) {
