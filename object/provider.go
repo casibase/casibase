@@ -17,7 +17,7 @@ package object
 import (
 	"fmt"
 
-	"github.com/casbin/casibase/ai"
+	"github.com/casbin/casibase/model"
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
@@ -161,8 +161,8 @@ func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
 }
 
-func (p *Provider) GetModelProvider() (ai.ModelProvider, error) {
-	pProvider, err := ai.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret)
+func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret)
 	if err != nil {
 		return nil, err
 	}

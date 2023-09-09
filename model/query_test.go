@@ -12,30 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ai
+//go:build !skipCi
+// +build !skipCi
+
+package model_test
 
 import (
-	"io"
-	"strings"
+	"testing"
+
+	"github.com/casbin/casibase/object"
+	"github.com/casbin/casibase/proxy"
+	"github.com/sashabaranov/go-openai"
 )
 
-type ModelProvider interface {
-	QueryText(question string, writer io.Writer, builder *strings.Builder) error
+func TestRun(t *testing.T) {
+	object.InitConfig()
+	proxy.InitHttpClient()
+
+	text := model.QueryAnswerSafe("", "hi")
+	println(text)
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string) (ModelProvider, error) {
-	var p ModelProvider
-	var err error
-	if typ == "OpenAI" {
-		p, err = NewOpenAiModelProvider(subType, clientSecret)
-	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
-	} else if typ == "Ernie" {
-		p, err = NewErnieModelProvider(subType, clientId, clientSecret)
-	}
-
-	if err != nil {
-		return nil, err
-	}
-	return p, nil
+func TestToken(t *testing.T) {
+	println(model.GetTokenSize(openai.GPT3TextDavinci003, ""))
 }

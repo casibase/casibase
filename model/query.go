@@ -12,38 +12,52 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package ai
+package model
 
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/sashabaranov/go-openai"
 )
 
-func getEmbedding(authToken string, text string, timeout int) ([]float32, error) {
+func queryAnswer(authToken string, question string, timeout int) (string, error) {
+	// fmt.Printf("Question: %s\n", question)
+
 	client := getProxyClientFromToken(authToken)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(2+timeout*2)*time.Second)
 	defer cancel()
 
-	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
-		Input: []string{text},
-		Model: openai.AdaEmbeddingV2,
-	})
+	resp, err := client.CreateChatCompletion(
+		ctx,
+		openai.ChatCompletionRequest{
+			Model: openai.GPT3Dot5Turbo,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: question,
+				},
+			},
+		},
+	)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return resp.Data[0].Embedding, nil
+	res := resp.Choices[0].Message.Content
+	res = strings.Trim(res, "\n")
+	// fmt.Printf("Answer: %s\n\n", res)
+	return res, nil
 }
 
-func GetEmbeddingSafe(authToken string, text string) ([]float32, error) {
-	var embedding []float32
+func QueryAnswerSafe(authToken string, question string) string {
+	var res string
 	var err error
 	for i := 0; i < 10; i++ {
-		embedding, err = getEmbedding(authToken, text, i)
+		res, err = queryAnswer(authToken, question, i)
 		if err != nil {
 			if i > 0 {
 				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
@@ -52,25 +66,9 @@ func GetEmbeddingSafe(authToken string, text string) ([]float32, error) {
 			break
 		}
 	}
-
 	if err != nil {
-		return nil, err
-	} else {
-		return embedding, nil
+		panic(err)
 	}
-}
 
-func GetNearestVectorIndex(target []float32, vectors [][]float32) int {
-	targetNorm := norm(target)
-
-	var res int
-	max := float32(-1.0)
-	for i, vector := range vectors {
-		similarity := cosineSimilarity(target, vector, targetNorm)
-		if similarity > max {
-			max = similarity
-			res = i
-		}
-	}
 	return res
 }

@@ -20,7 +20,7 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/casbin/casibase/ai"
+	"github.com/casbin/casibase/model"
 	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/txt"
 	"github.com/casbin/casibase/util"
@@ -54,7 +54,7 @@ func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, 
 }
 
 func addEmbeddedVector(authToken string, text string, storeName string, fileName string) (bool, error) {
-	embedding, err := ai.GetEmbeddingSafe(authToken, text)
+	embedding, err := model.GetEmbeddingSafe(authToken, text)
 	if err != nil {
 		return false, err
 	}
@@ -128,7 +128,7 @@ func getRelatedVectors(owner string) ([]*Vector, error) {
 }
 
 func GetNearestVectorText(authToken string, owner string, question string) (string, error) {
-	qVector, err := ai.GetEmbeddingSafe(authToken, question)
+	qVector, err := model.GetEmbeddingSafe(authToken, question)
 	if err != nil {
 		return "", err
 	}
@@ -146,6 +146,6 @@ func GetNearestVectorText(authToken string, owner string, question string) (stri
 		nVectors = append(nVectors, candidate.Data)
 	}
 
-	i := ai.GetNearestVectorIndex(qVector, nVectors)
+	i := model.GetNearestVectorIndex(qVector, nVectors)
 	return vectors[i].Text, nil
 }
