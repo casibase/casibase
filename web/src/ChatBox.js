@@ -33,9 +33,9 @@ class ChatBox extends React.Component {
       messages = [];
     }
     return (
-      <MainContainer style={{display: "flex", width: "100%", height: "100%"}} >
+      <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
         <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
-          <ConversationHeader>
+          <ConversationHeader style={{backgroundColor: "rgb(246,240,255)"}}>
             <Avatar src={aiAvatar} name="AI" />
             <ConversationHeader.Content userName="AI" />
           </ConversationHeader>
