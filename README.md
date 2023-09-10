@@ -50,20 +50,18 @@
 
 ## Architecture
 
-casibase contains 4 parts:
+Casibase contains 2 parts:
 
 | **Name**       | **Description**                                   | **Language**                            |
 |----------------|---------------------------------------------------|-----------------------------------------|
-| Frontend       | User interface for the casibase application       | JavaScript + React                      |
-| Backend        | Server-side logic and API for casibase            | Golang + Beego + Python + Flask + MySQL |
-| AI Model       | Artificial intelligence model                     | Python + OpenAI                         |
-| Knowledge Base | Storage for casibase application domain knowledge | pgvector                                |
+| Frontend       | User interface for Casibase                       | JavaScript + React                      |
+| Backend        | Server-side logic and API for Casibase            | Golang + Beego + Python + Flask + MySQL |
 
 ![0-Architecture-casibase](assets/0-Architecture-casibase.png)
 
 ## Online Demo
 
-<https://casibase.casbin.com>
+<https://ai.casbin.com>
 
 ## Documentation
 
@@ -82,7 +80,7 @@ Forum: <https://forum.casbin.com>
 Contact: <https://tawk.to/chat/623352fea34c2456412b8c51/1fuc7od6e>
 
 ## Contribute
-For casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
+For Casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
 
 
 ## License
