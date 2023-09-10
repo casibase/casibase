@@ -811,30 +811,40 @@ class FileTree extends React.Component {
           <Descriptions.Item label={i18next.t("factorset:File name")}>
             {file.title}
           </Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:File type")}>
-            {Setting.getExtFromFile(file)}
-          </Descriptions.Item>
+          {
+            !Conf.EnableExtraPages ? null : (
+              <Descriptions.Item label={i18next.t("store:File type")}>
+                {Setting.getExtFromFile(file)}
+              </Descriptions.Item>
+            )
+          }
           <Descriptions.Item label={i18next.t("factorset:File size")}>
             {Setting.getFriendlyFileSize(file.size)}
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Created time")}>
             {Setting.getFormattedDate(file.createdTime)}
           </Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Collected time")}>
-            {Setting.getFormattedDate(Setting.getCollectedTime(file.title))}
-            <DatePicker key={file.key} showTime defaultValue={this.getMomentTime(this.getPropertyValue(file, "collectedTime"))} onChange={(value, dateString) => {
-              this.setPropertyValue(file, "collectedTime", value.format());
-            }} onOk={(value) => {}} />
-          </Descriptions.Item>
-          <Descriptions.Item label={i18next.t("store:Subject")}>
-            <Select virtual={false} style={{width: "120px"}} value={getSubjectDisplayName(this.getPropertyValue(file, "subject"))} onChange={(value => {
-              this.setPropertyValue(file, "subject", value);
-            })}>
-              {
-                subjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Descriptions.Item>
+          {
+            !Conf.EnableExtraPages ? null : (
+              <React.Fragment>
+                <Descriptions.Item label={i18next.t("store:Collected time")}>
+                  {Setting.getFormattedDate(Setting.getCollectedTime(file.title))}
+                  <DatePicker key={file.key} showTime defaultValue={this.getMomentTime(this.getPropertyValue(file, "collectedTime"))} onChange={(value, dateString) => {
+                    this.setPropertyValue(file, "collectedTime", value.format());
+                  }} onOk={(value) => {}} />
+                </Descriptions.Item>
+                <Descriptions.Item label={i18next.t("store:Subject")}>
+                  <Select virtual={false} style={{width: "120px"}} value={getSubjectDisplayName(this.getPropertyValue(file, "subject"))} onChange={(value => {
+                    this.setPropertyValue(file, "subject", value);
+                  })}>
+                    {
+                      subjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Descriptions.Item>
+              </React.Fragment>
+            )
+          }
         </Descriptions>
       </div>
     );
@@ -847,7 +857,7 @@ class FileTree extends React.Component {
       filePaneHeight = 0;
     }
 
-    return `calc(100vh - ${filePaneHeight + 186}px)`;
+    return `calc(100vh - ${filePaneHeight + 186 - (Conf.EnableExtraPages ? 0 : 50)}px)`;
   }
 
   render() {
