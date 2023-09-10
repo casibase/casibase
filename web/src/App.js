@@ -40,6 +40,7 @@ import VectorListPage from "./VectorListPage";
 import VectorEditPage from "./VectorEditPage";
 import SigninPage from "./SigninPage";
 import i18next from "i18next";
+import {withTranslation} from "react-i18next";
 import LanguageSelect from "./LanguageSelect";
 import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
@@ -487,4 +488,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(withTranslation()(App));
