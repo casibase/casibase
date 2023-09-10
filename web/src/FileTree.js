@@ -23,6 +23,7 @@ import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 import FileViewer from "react-file-viewer";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkFrontmatter from "remark-frontmatter";
 import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
@@ -728,10 +729,10 @@ class FileTree extends React.Component {
     } else if (this.isExtForMarkdownViewer(ext)) {
       // https://github.com/remarkjs/react-markdown
       return (
-        <div style={{height: this.getEditorHeightCss()}}>
+        <div className="markdownContainer" style={{height: this.getEditorHeightCss(), overflow: "auto"}}>
           <ReactMarkdown
             key={path}
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, remarkFrontmatter]}
           >
             {this.state.text}
           </ReactMarkdown>

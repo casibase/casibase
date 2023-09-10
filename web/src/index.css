@@ -94,3 +94,13 @@ code {
 .anticon-file {
   visibility: hidden;
 }
+
+.markdownContainer {
+  width: 100%;
+  overflow: hidden;
+}
+
+.markdownContainer img {
+  max-width: 100%;
+  height: auto;
+}

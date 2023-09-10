@@ -36,6 +36,7 @@
     "react-markdown": "^8.0.7",
     "react-router-dom": "^5.3.3",
     "react-scripts": "5.0.1",
+    "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "xlsx": "^0.16.9"
   },
