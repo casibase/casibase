@@ -117,7 +117,7 @@ class FileTree extends React.Component {
           {" " + i18next.t("store:Please choose the type of your data")}
         </div>
       }
-      visible={this.state.isUploadFileModalVisible}
+      open={this.state.isUploadFileModalVisible}
       onCancel={() => {
         this.setState({
           isUploadFileModalVisible: false,
@@ -842,7 +842,11 @@ class FileTree extends React.Component {
 
   getEditorHeightCss() {
     // 79, 123
-    const filePaneHeight = this.filePane.current?.offsetHeight;
+    let filePaneHeight = this.filePane.current?.offsetHeight;
+    if (!filePaneHeight) {
+      filePaneHeight = 0;
+    }
+
     return `calc(100vh - ${filePaneHeight + 186}px)`;
   }
 

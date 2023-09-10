@@ -48,12 +48,15 @@ if (Conf.IsDemoMode) {
 
 window.fetch = async(url, option = {}) => {
   requestFilters.forEach(filter => filter(url, option));
+
   return new Promise((resolve, reject) => {
-    originalFetch(url, option).then(res => {
-      // eslint-disable-next-line no-console
-      console.log(res.clone());
-      responseFilters.forEach(filter => filter(res.clone()));
-      resolve(res);
-    });
+    originalFetch(url, option)
+      .then(res => {
+        responseFilters.forEach(filter => filter(res.clone()));
+        resolve(res);
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 };
