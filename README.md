@@ -61,99 +61,29 @@ casibase contains 4 parts:
 
 ![0-Architecture-casibase](assets/0-Architecture-casibase.png)
 
-## Demo Installation
+## Online Demo
 
-casibase uses Casdoor to manage members. So you need to create an organization and an application for casibase in a Casdoor instance.
+<https://casibase.casbin.com>
 
-### Casdoor configuration 
+## Documentation
 
-```shell
-git clone https://github.com/casdoor/casdoor.git
-```
+<https://casibase.org>
 
-refer to: https://casdoor.org/docs/basic/server-installation
+## Install
 
-Follow these steps to setup Casdoor for casibase:
+<https://casibase.org/docs/basic/server-installation>
 
-- Create an **Organization**![1-Add-organization](assets/1-Add-organization.png)
+## How to contact?
 
-- Configure information about the **Organization**![2-Configure-information-organization](assets/2-Configure-information-organization.png)
+Discord: <https://discord.gg/5rPsrAzK7S>
 
-- Add a member to a newly created organization![3-Check-user](assets/3-Check-user.png)![4-Add-member-to-organization](assets/4-Add-member-to-organization.png)
+Forum: <https://forum.casbin.com>
 
-- Configure member information (remember its **Name** as well as **Password**)![5-Configure-new-user](assets/5-Configure-new-user.png)
+Contact: <https://tawk.to/chat/623352fea34c2456412b8c51/1fuc7od6e>
+
+## Contribute
+For casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
 
 
-
-- Create a new **Application**![6-Add-application](assets/6-Add-application.png)
-
-- Configuring **Application** Information (Remember **Name, ClientID** and **ClientSecret**. Change **RedirectURLs** to http://localhost:14000/callback) ![7-Configure-new-application](assets/7-Configure-new-application.png)
-
-### casibase configuration 
-
-#### Get the code
-
-```shell
-git clone https://github.com/casbin/casibase.git
-```
-
-#### Setup database
-
-casibase will store its users, nodes and topics informations in a MySQL database named: `casibase`, will create it if not existed. The DB connection string can be specified at: https://github.com/casbin/casibase/blob/master/conf/app.conf
-
-```ini
-dataSourceName = root:123@tcp(localhost:3306)/
-```
-
-Casnode uses XORM to connect to DB, so all DBs supported by XORM can also be used.
-
-#### Custom config
-
-- #### Backend (`casibase\conf\app.conf`)
-
-  ```ini
-  casdoorEndpoint =  <Your_Casdoor_endpoint>
-  clientId = <Your_clientId_in_Casdoor_configuration>
-  clientSecret = <Your_clientSecret_in_Casdoor_configuration>
-  casdoorOrganization = "casibase"
-  casdoorApplication = "app-casibase"
-  ```
-
-- #### Frontend (`casibase\web\src\Conf.js`)
-
-  ```ini
-  export const AuthConfig = {
-    ......
-    clientId: <Your_clientId_in_Casdoor_configuration>,
-    ......
-  };
-  ```
-
-#### Run casnode
-
-  - #### Backend (`casibase`)
-
-    ```shell
-    go run main.go
-    ```
-
-  - #### Frontend (`casibase\web`)
-
-    ```shell
-    yarn install
-    yarn start
-    ```
-
-#### Preview
-
-Access the login view via the following link:
-
-```shell
-http://localhost:13001
-```
-
-![8-Preview-base-wordsets](assets/8-Preview-base-wordsets.png)
-
-![9-Preview-casibase-stores](assets/9-Preview-casibase-stores.png)
-
-The **casibase** demo is shown above, and in the future users can upload various **knowledge** files, **wordsets**, and **factorsets** to achieve a **customized domain knowledge base**.
+## License
+[Apache-2.0](https://github.com/casbin/casibase/blob/master/LICENSE)
