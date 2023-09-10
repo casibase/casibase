@@ -870,7 +870,7 @@ class FileTree extends React.Component {
     return (
       <div>
         <Row>
-          <Col span={8}>
+          <Col span={6}>
             <Card className="content-warp-card-filetreeleft" style={{marginRight: "10px"}}>
               <div style={{margin: "-25px"}}>
                 {
@@ -882,7 +882,7 @@ class FileTree extends React.Component {
               </div>
             </Card>
           </Col>
-          <Col span={16}>
+          <Col span={18}>
             <Card className="content-warp-card-filetreeright">
               <div style={{margin: "-25px"}}>
                 <div style={{height: this.getEditorHeightCss()}}>
