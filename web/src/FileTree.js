@@ -21,6 +21,8 @@ import * as Setting from "./Setting";
 import * as FileBackend from "./backend/FileBackend";
 import DocViewer, {DocViewerRenderers} from "@cyntler/react-doc-viewer";
 import FileViewer from "react-file-viewer";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import i18next from "i18next";
 import * as PermissionBackend from "./backend/PermissionBackend";
 import * as PermissionUtil from "./PermissionUtil";
@@ -635,6 +637,10 @@ class FileTree extends React.Component {
     return ["png", "jpg", "jpeg", "gif", "bmp", "pdf", "xlsx", "docx", "mp4", "webm", "mp3"].includes(ext);
   }
 
+  isExtForMarkdownViewer(ext) {
+    return ["md"].includes(ext);
+  }
+
   renderFileViewer(store) {
     if (this.state.checkedFiles.length !== 0) {
       const outerFile = {children: this.state.checkedFiles};
@@ -718,6 +724,18 @@ class FileTree extends React.Component {
             }}
           />
         </a>
+      );
+    } else if (this.isExtForMarkdownViewer(ext)) {
+      // https://github.com/remarkjs/react-markdown
+      return (
+        <div style={{height: this.getEditorHeightCss()}}>
+          <ReactMarkdown
+            key={path}
+            remarkPlugins={[remarkGfm]}
+          >
+            {this.state.text}
+          </ReactMarkdown>
+        </div>
       );
     } else {
       // https://github.com/scniro/react-codemirror2
