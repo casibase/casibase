@@ -3,6 +3,7 @@ module github.com/casbin/casibase
 go 1.18
 
 require (
+	github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/anhao/go-ernie v1.0.4

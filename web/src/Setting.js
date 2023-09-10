@@ -659,6 +659,7 @@ export function getProviderTypeOptions(category) {
       [
         {id: "OpenAI", name: "OpenAI"},
         {id: "Hugging Face", name: "Hugging Face"},
+        {id: "OpenRouter", name: "OpenRouter"},
         {id: "Ernie", name: "Ernie"},
       ]
     );
@@ -737,6 +738,31 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "gpt2", name: "gpt2"},
         {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
         {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
+      ]
+    );
+  } else if (type === "OpenRouter") {
+    return (
+      [
+        {id: "google/palm-2-codechat-bison", name: "google/palm-2-codechat-bison"},
+        {id: "google/palm-2-chat-bison", name: "google/palm-2-chat-bison"},
+        {id: "openai/gpt-3.5-turbo", name: "openai/gpt-3.5-turbo"},
+        {id: "openai/gpt-3.5-turbo-16k", name: "openai/gpt-3.5-turbo-16k"},
+        {id: "openai/gpt-4", name: "openai/gpt-4"},
+        {id: "openai/gpt-4-32k", name: "openai/gpt-4-32k"},
+        {id: "anthropic/claude-2", name: "anthropic/claude-2"},
+        {id: "anthropic/claude-instant-v1", name: "anthropic/claude-instant-v1"},
+        {id: "meta-llama/llama-2-13b-chat", name: "meta-llama/llama-2-13b-chat"},
+        {id: "meta-llama/llama-2-70b-chat", name: "meta-llama/llama-2-70b-chat"},
+        {id: "palm-2-codechat-bison", name: "palm-2-codechat-bison"},
+        {id: "palm-2-chat-bison", name: "palm-2-chat-bison"},
+        {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
+        {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
+        {id: "gpt-4", name: "gpt-4"},
+        {id: "gpt-4-32k", name: "gpt-4-32k"},
+        {id: "claude-2", name: "claude-2"},
+        {id: "claude-instant-v1", name: "claude-instant-v1"},
+        {id: "llama-2-13b-chat", name: "llama-2-13b-chat"},
+        {id: "llama-2-70b-chat", name: "llama-2-70b-chat"},
       ]
     );
   } else if (type === "Ernie") {
