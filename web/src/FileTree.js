@@ -690,7 +690,7 @@ class FileTree extends React.Component {
       return (
         <DocViewer
           key={path}
-          style={{height: this.getEditorHeightCss()}}
+          style={{height: this.getEditorHeightCss(), border: "1px solid rgb(242,242,242)", borderRadius: "6px"}}
           pluginRenderers={DocViewerRenderers}
           documents={[{uri: url}]}
           theme={{
@@ -729,7 +729,7 @@ class FileTree extends React.Component {
     } else if (this.isExtForMarkdownViewer(ext)) {
       // https://github.com/remarkjs/react-markdown
       return (
-        <div className="markdownContainer" style={{height: this.getEditorHeightCss(), overflow: "auto"}}>
+        <div className="markdownContainer" style={{height: this.getEditorHeightCss(), overflow: "auto", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}}>
           <ReactMarkdown
             key={path}
             remarkPlugins={[remarkGfm, remarkFrontmatter]}
@@ -914,7 +914,7 @@ class FileTree extends React.Component {
           <Col span={16}>
             <Card className="content-warp-card-filetreeright">
               <div style={{margin: "-25px"}}>
-                <div style={{height: this.getEditorHeightCss()}}>
+                <div style={{height: this.getEditorHeightCss(), border: "1px solid rgb(242,242,242)", borderRadius: "6px"}}>
                   {
                     this.renderFileViewer(this.props.store)
                   }

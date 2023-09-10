@@ -98,6 +98,8 @@ code {
 .markdownContainer {
   width: 100%;
   overflow: hidden;
+  background-color: rgb(251,240,217);
+  padding: 10px;
 }
 
 .markdownContainer img {
