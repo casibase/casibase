@@ -217,39 +217,12 @@ export function getLanguage() {
 
 export function setLanguage(language) {
   localStorage.setItem("language", language);
-  changeMomentLanguage(language);
   i18next.changeLanguage(language);
 }
 
 export function changeLanguage(language) {
-  localStorage.setItem("language", language);
-  changeMomentLanguage(language);
-  i18next.changeLanguage(language);
+  setLanguage(language);
   window.location.reload(true);
-}
-
-export function changeMomentLanguage(lng) {
-  return;
-  // if (lng === "zh") {
-  //   moment.locale("zh", {
-  //     relativeTime: {
-  //       future: "%s内",
-  //       past: "%s前",
-  //       s: "几秒",
-  //       ss: "%d秒",
-  //       m: "1分钟",
-  //       mm: "%d分钟",
-  //       h: "1小时",
-  //       hh: "%d小时",
-  //       d: "1天",
-  //       dd: "%d天",
-  //       M: "1个月",
-  //       MM: "%d个月",
-  //       y: "1年",
-  //       yy: "%d年",
-  //     },
-  //   });
-  // }
 }
 
 export function getTag(text, type, state) {
@@ -610,8 +583,6 @@ export const Countries = [{label: "English", key: "en", country: "US", alt: "Eng
   {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
   {label: "한국어", key: "ko", country: "KR", alt: "한국어"},
   {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
-  {label: "TiếngViệt", key: "vi", country: "VN", alt: "TiếngViệt"},
-  {label: "Português", key: "pt", country: "BR", alt: "Português"},
 ];
 
 export function getItem(label, key, icon, children, type) {

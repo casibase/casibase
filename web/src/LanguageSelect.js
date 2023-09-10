@@ -27,7 +27,6 @@ class LanguageSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      classes: props,
       languages: props.languages ?? Setting.Countries.map(item => item.key),
     };
 
