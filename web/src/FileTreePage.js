@@ -13,11 +13,12 @@
 // limitations under the License.
 
 import React from "react";
-import {Spin} from "antd";
+import {Col, Row, Spin} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import FileTree from "./FileTree";
 import i18next from "i18next";
 import * as Setting from "./Setting";
+import ChatPage from "./ChatPage";
 
 class FileTreePage extends React.Component {
   constructor(props) {
@@ -61,12 +62,21 @@ class FileTreePage extends React.Component {
     }
 
     return (
-      <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
-        this.setState({
-          store: store,
-        });
-        Setting.submitStoreEdit(store);
-      }} onRefresh={() => this.getStore()} />
+      <div>
+        <Row>
+          <Col span={14}>
+            <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
+              this.setState({
+                store: store,
+              });
+              Setting.submitStoreEdit(store);
+            }} onRefresh={() => this.getStore()} />
+          </Col>
+          <Col span={10}>
+            <ChatPage account={this.props.account} />
+          </Col>
+        </Row>
+      </div>
     );
   }
 }
