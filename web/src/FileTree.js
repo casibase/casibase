@@ -533,7 +533,6 @@ class FileTree extends React.Component {
                         }>
                           <span onClick={(e) => e.stopPropagation()}>
                             <Button style={{marginRight: "5px"}} icon={<FolderAddOutlined />} size="small" onClick={(e) => {
-                              this.addFile();
                               e.stopPropagation();
                             }} />
                           </span>
