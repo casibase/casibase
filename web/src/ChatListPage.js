@@ -49,7 +49,7 @@ class ChatListPage extends React.Component {
   newChat() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `chat_${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),

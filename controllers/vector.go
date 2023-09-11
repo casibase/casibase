@@ -31,7 +31,7 @@ func (c *ApiController) GetGlobalVectors() {
 }
 
 func (c *ApiController) GetVectors() {
-	owner := c.Input().Get("owner")
+	owner := "admin"
 
 	vectors, err := object.GetVectors(owner)
 	if err != nil {

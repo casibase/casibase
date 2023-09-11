@@ -49,7 +49,7 @@ class VectorListPage extends React.Component {
   newVector() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `vector_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Vector - ${randomName}`,

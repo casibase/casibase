@@ -49,7 +49,7 @@ class WordsetListPage extends React.Component {
   newWordset() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `wordset_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Wordset - ${randomName}`,

@@ -50,7 +50,7 @@ class StoreListPage extends React.Component {
   newStore() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `store_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,

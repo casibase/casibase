@@ -49,7 +49,7 @@ class FactorsetListPage extends React.Component {
   newFactorset() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `factorset_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Factorset - ${randomName}`,

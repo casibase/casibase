@@ -49,7 +49,7 @@ class MessageListPage extends React.Component {
   newMessage() {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
       // organization: "Message Organization - 1",
