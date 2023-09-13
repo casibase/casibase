@@ -16,27 +16,25 @@ package embedding
 
 import (
 	"context"
+
+	cohereembedder "github.com/henomis/lingoose/embedder/cohere"
 )
 
-type EmbeddingProvider interface {
-	QueryVector(text string, ctx context.Context) ([]float32, error)
+type CohereEmbeddingProvider struct {
+	subType   string
+	secretKey string
 }
 
-func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string) (EmbeddingProvider, error) {
-	var p EmbeddingProvider
-	var err error
-	if typ == "OpenAI" {
-		p, err = NewOpenAiEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Cohere" {
-		p, err = NewCohereEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Ernie" {
-		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
-	}
+func NewCohereEmbeddingProvider(subType string, secretKey string) (*CohereEmbeddingProvider, error) {
+	return &CohereEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
+}
 
+func (c *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
+	client := cohereembedder.New().WithModel(cohereembedder.EmbedderModel(c.subType)).WithAPIKey(c.secretKey)
+	embed, err := client.Embed(ctx, []string{text})
 	if err != nil {
 		return nil, err
 	}
-	return p, nil
+
+	return float64ToFloat32(embed[0]), nil
 }
