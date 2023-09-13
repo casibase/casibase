@@ -638,6 +638,9 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
+        {id: "Hugging Face", name: "Hugging Face"},
+        {id: "Cohere", name: "Cohere"},
+        {id: "Ernie", name: "Ernie"},
       ]
     );
   } else {
@@ -701,16 +704,26 @@ export function getProviderSubTypeOptions(category, type) {
       return [];
     }
   } else if (type === "Hugging Face") {
-    return (
-      [
-        {id: "meta-llama/Llama-2-7b", name: "meta-llama/Llama-2-7b"},
-        {id: "tiiuae/falcon-180B", name: "tiiuae/falcon-180B"},
-        {id: "bigscience/bloom", name: "bigscience/bloom"},
-        {id: "gpt2", name: "gpt2"},
-        {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
-        {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
-      ]
-    );
+    if (category === "Model") {
+      return (
+        [
+          {id: "meta-llama/Llama-2-7b", name: "meta-llama/Llama-2-7b"},
+          {id: "tiiuae/falcon-180B", name: "tiiuae/falcon-180B"},
+          {id: "bigscience/bloom", name: "bigscience/bloom"},
+          {id: "gpt2", name: "gpt2"},
+          {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
+          {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "sentence-transformers/all-MiniLM-L6-v2", name: "sentence-transformers/all-MiniLM-L6-v2"},
+        ]
+      );
+    } else {
+      return [];
+    }
   } else if (type === "OpenRouter") {
     return (
       [
@@ -737,12 +750,30 @@ export function getProviderSubTypeOptions(category, type) {
       ]
     );
   } else if (type === "Ernie") {
+    if (category === "Model") {
+      return (
+        [
+          {id: "ERNIE-Bot", name: "ERNIE-Bot"},
+          {id: "ERNIE-Bot-turbo", name: "ERNIE-Bot-turbo"},
+          {id: "BLOOMZ-7B", name: "BLOOMZ-7B"},
+          {id: "Llama-2", name: "Llama-2"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "default", name: "default"},
+        ]
+      );
+    } else {
+      return [];
+    }
+  } else if (type === "Cohere") {
     return (
       [
-        {id: "ERNIE-Bot", name: "ERNIE-Bot"},
-        {id: "ERNIE-Bot-turbo", name: "ERNIE-Bot-turbo"},
-        {id: "BLOOMZ-7B", name: "BLOOMZ-7B"},
-        {id: "Llama-2", name: "Llama-2"},
+        {id: "embed-english-v2.0", name: "embed-english-v2.0"},
+        {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
+        {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
       ]
     );
   } else {

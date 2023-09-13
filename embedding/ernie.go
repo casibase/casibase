@@ -16,27 +16,27 @@ package embedding
 
 import (
 	"context"
+
+	ernie "github.com/anhao/go-ernie"
 )
 
-type EmbeddingProvider interface {
-	QueryVector(text string, ctx context.Context) ([]float32, error)
+type ErnieEmbeddingProvider struct {
+	subType   string
+	apiKey    string
+	secretKey string
 }
 
-func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string) (EmbeddingProvider, error) {
-	var p EmbeddingProvider
-	var err error
-	if typ == "OpenAI" {
-		p, err = NewOpenAiEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Cohere" {
-		p, err = NewCohereEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Ernie" {
-		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
-	}
+func NewErnieEmbeddingProvider(subType string, apiKey string, secretKey string) (*ErnieEmbeddingProvider, error) {
+	return &ErnieEmbeddingProvider{subType: subType, apiKey: apiKey, secretKey: secretKey}, nil
+}
 
+func (e *ErnieEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
+	client := ernie.NewDefaultClient(e.apiKey, e.secretKey)
+	request := ernie.EmbeddingRequest{Input: []string{text}}
+	embeddings, err := client.CreateEmbeddings(ctx, request)
 	if err != nil {
 		return nil, err
 	}
-	return p, nil
+
+	return float64ToFloat32(embeddings.Data[0].Embedding), nil
 }
