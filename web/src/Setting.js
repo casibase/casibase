@@ -632,6 +632,7 @@ export function getProviderTypeOptions(category) {
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "OpenRouter", name: "OpenRouter"},
         {id: "Ernie", name: "Ernie"},
+        {id: "iFlytek", name: "iFlytek"},
       ]
     );
   } else if (category === "Embedding") {
@@ -774,6 +775,13 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "embed-english-v2.0", name: "embed-english-v2.0"},
         {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
         {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
+      ]
+    );
+  } else if (type === "iFlytek") {
+    return (
+      [
+        {id: "spark-v1.5", name: "spark-v1.5"},
+        {id: "spark-v2.0", name: "spark-v2.0"},
       ]
     );
   } else {
