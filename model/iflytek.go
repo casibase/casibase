@@ -70,9 +70,8 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, buil
 	}
 
 	err = flushData(response)
-
-	if builder != nil {
-		builder.WriteString(response)
+	if err != nil {
+		return err
 	}
 
 	return nil
