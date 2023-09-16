@@ -47,8 +47,10 @@
     "eject": "craco eject",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "preinstall": "node -e \"if (process.env.npm_execpath.indexOf('yarn') === -1) throw new Error('Use yarn for installing: https://yarnpkg.com/en/docs/install')\"",
-    "fix": "eslint --fix src/**/*.{js,jsx,ts,tsx}",
-    "lint:css": "stylelint src/**/*.{css,less} --fix"
+    "fix": "eslint --fix src/ --ext .js",
+    "lint:js": "eslint --fix src/ --ext .js",
+    "lint:css": "stylelint src/**/*.{css,less} --fix",
+    "lint": "yarn lint:js && yarn lint:css"
   },
   "eslintConfig": {
     "extends": "react-app"
