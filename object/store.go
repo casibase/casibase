@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
@@ -151,6 +152,26 @@ func (store *Store) GetId() string {
 	return fmt.Sprintf("%s/%s", store.Owner, store.Name)
 }
 
+func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
+	var provider *Provider
+	var err error
+	if store.StorageProvider == "" {
+		provider, err = GetDefaultStorageProvider()
+	} else {
+		providerId := util.GetIdFromOwnerAndName(store.Owner, store.StorageProvider)
+		provider, err = GetProvider(providerId)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	if provider != nil {
+		return provider.GetStorageProviderObj()
+	} else {
+		return storage.NewCasdoorProvider(store.StorageProvider)
+	}
+}
+
 func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 	if store.EmbeddingProvider == "" {
 		return GetDefaultEmbeddingProvider()
@@ -161,6 +182,11 @@ func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 }
 
 func RefreshStoreVectors(store *Store) (bool, error) {
+	storageProviderObj, err := store.GetStorageProviderObj()
+	if err != nil {
+		return false, err
+	}
+
 	embeddingProvider, err := store.GetEmbeddingProvider()
 	if err != nil {
 		return false, err
@@ -171,6 +197,6 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
-	ok, err := addVectorsForStore(embeddingProviderObj, store.StorageProvider, "", store.Name)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name)
 	return ok, err
 }

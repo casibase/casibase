@@ -20,8 +20,6 @@ import (
 	"io"
 	"mime/multipart"
 	"strings"
-
-	"github.com/casbin/casibase/storage"
 )
 
 func UpdateFile(storeId string, key string, file *File) bool {
@@ -37,6 +35,11 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		return false, nil, nil
 	}
 
+	storageProviderObj, err := store.GetStorageProviderObj()
+	if err != nil {
+		return false, nil, err
+	}
+
 	var objectKey string
 	var fileBuffer *bytes.Buffer
 	if isLeaf {
@@ -49,7 +52,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		}
 
 		bs := fileBuffer.Bytes()
-		err = storage.PutObject(store.StorageProvider, userName, store.Name, objectKey, fileBuffer)
+		err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
@@ -60,7 +63,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		err = storage.PutObject(store.StorageProvider, userName, store.Name, objectKey, fileBuffer)
+		err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
@@ -78,19 +81,24 @@ func DeleteFile(storeId string, key string, isLeaf bool) (bool, error) {
 		return false, nil
 	}
 
+	storageProviderObj, err := store.GetStorageProviderObj()
+	if err != nil {
+		return false, err
+	}
+
 	if isLeaf {
-		err = storage.DeleteObject(store.StorageProvider, key)
+		err = storageProviderObj.DeleteObject(key)
 		if err != nil {
 			return false, err
 		}
 	} else {
-		objects, err := storage.ListObjects(store.StorageProvider, key)
+		objects, err := storageProviderObj.ListObjects(key)
 		if err != nil {
 			return false, err
 		}
 
 		for _, object := range objects {
-			err = storage.DeleteObject(store.StorageProvider, object.Key)
+			err = storageProviderObj.DeleteObject(object.Key)
 			if err != nil {
 				return false, err
 			}

@@ -22,21 +22,22 @@ import (
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 
-type Object struct {
-	Key          string
-	LastModified string
-	Size         int64
-	Url          string
+type CasdoorProvider struct {
+	providerName string
 }
 
-func ListObjects(provider string, prefix string) ([]*Object, error) {
-	if provider == "" {
-		return nil, fmt.Errorf("storage provider is empty")
+func NewCasdoorProvider(providerName string) (*CasdoorProvider, error) {
+	if providerName == "" {
+		return nil, fmt.Errorf("storage provider name: [%s] doesn't exist", providerName)
 	}
 
+	return &CasdoorProvider{providerName: providerName}, nil
+}
+
+func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
-	resources, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", provider, "Direct", prefix)
+	resources, err := casdoorsdk.GetResources(casdoorOrganization, casdoorApplication, "provider", p.providerName, "Direct", prefix)
 	if err != nil {
 		return nil, err
 	}
@@ -53,24 +54,16 @@ func ListObjects(provider string, prefix string) ([]*Object, error) {
 	return res, nil
 }
 
-func PutObject(provider string, user string, parent string, key string, fileBuffer *bytes.Buffer) error {
-	if provider == "" {
-		return fmt.Errorf("storage provider is empty")
-	}
-
-	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", provider, key), fileBuffer.Bytes())
+func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
+	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", &p.providerName, key), fileBuffer.Bytes())
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteObject(provider string, key string) error {
-	if provider == "" {
-		return fmt.Errorf("storage provider is empty")
-	}
-
-	_, err := casdoorsdk.DeleteResource(fmt.Sprintf("Direct/%s/%s", provider, key))
+func (p *CasdoorProvider) DeleteObject(key string) error {
+	_, err := casdoorsdk.DeleteResource(fmt.Sprintf("Direct/%s/%s", p.providerName, key))
 	if err != nil {
 		return err
 	}

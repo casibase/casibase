@@ -101,6 +101,7 @@ class ProviderEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.category} onChange={(value => {this.updateProviderField("category", value);})}>
               {
                 [
+                  {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
@@ -122,25 +123,31 @@ class ProviderEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Sub type")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
-              {
-                Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
-                  // .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
         {
-          this.state.provider.type !== "Ernie" ? null : (
+          this.state.provider.category === "Storage" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:API key")}:
+                {i18next.t("provider:Sub type")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
+                  {
+                    Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
+                      // .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+          )
+        }
+        {
+          (this.state.provider.type !== "Ernie" && this.state.provider.category !== "Storage") ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {
+                  (this.state.provider.category !== "Storage") ? i18next.t("provider:API key") :
+                    i18next.t("provider:Path")}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientId} onChange={e => {
@@ -150,16 +157,20 @@ class ProviderEditPage extends React.Component {
             </Row>
           )
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Secret key")}:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.provider.clientSecret} onChange={e => {
-              this.updateProviderField("clientSecret", e.target.value);
-            }} />
-          </Col>
-        </Row>
+        {
+          this.state.provider.category === "Storage" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Secret key")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.clientSecret} onChange={e => {
+                  this.updateProviderField("clientSecret", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Provider URL")}:
