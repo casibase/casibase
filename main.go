@@ -25,6 +25,7 @@ import (
 
 func main() {
 	object.InitAdapter()
+	object.InitDb()
 	proxy.InitHttpClient()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
