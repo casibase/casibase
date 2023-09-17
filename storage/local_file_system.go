@@ -70,7 +70,7 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 }
 
 func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
-	fullPath := p.path
+	fullPath := filepath.Join(p.path, key)
 
 	err := os.MkdirAll(filepath.Dir(fullPath), os.ModePerm)
 	if err != nil {

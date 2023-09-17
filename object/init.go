@@ -67,7 +67,7 @@ func initBuiltInProvider() {
 		DisplayName: "Built-in Storage Provider",
 		Category:    "Storage",
 		Type:        "Local File System",
-		ClientId:    "F:/github_repos/casdoor-website",
+		ClientId:    "C:/casibase_storage",
 	}
 	_, err = AddProvider(provider)
 	if err != nil {
