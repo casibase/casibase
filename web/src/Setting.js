@@ -788,10 +788,17 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "Claude") {
     return (
       [
-        {id: "claude-2", name: "claude-2"},
-        {id: "claude-2.0", name: "claude-2.0"},
+        {id: "claude-1", name: "claude-1"},
+        {id: "claude-1-100k", name: "claude-1-100k"},
         {id: "claude-instant-1", name: "claude-instant-1"},
-        {id: "claude-instant-1.2", name: "claude-instant-1.2"},
+        {id: "claude-instant-1-100k", name: "claude-instant-1-100k"},
+        {id: "claude-1.3", name: "claude-1.3"},
+        {id: "claude-1.3-100k", name: "claude-1.3-100k"},
+        {id: "claude-1.2", name: "claude-1.2"},
+        {id: "claude-1.0", name: "claude-1.0"},
+        {id: "claude-instant-1.1", name: "claude-instant-1.1"},
+        {id: "claude-instant-1.1-100k", name: "claude-instant-1.1-100k"},
+        {id: "claude-instant-1.0", name: "claude-instant-1.0"},
       ]
     );
   } else {

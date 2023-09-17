@@ -15,13 +15,14 @@
 package model
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"strings"
 
-	"github.com/3JoB/anthropic-sdk-go"
-	"github.com/3JoB/anthropic-sdk-go/data"
+	"github.com/ConnectAI-E/go-claude/claude"
+	textv1 "github.com/ConnectAI-E/go-claude/gen/go/claude/text/v1"
 )
 
 type ClaudeModelProvider struct {
@@ -34,23 +35,26 @@ func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvi
 }
 
 func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	c, err := anthropic.New(p.secretKey, p.subType)
-	if err != nil {
-		return err
-	}
+	ctx := context.Background()
+	client, _ := claude.New(
+		claude.WithApiToken(p.secretKey),
+	)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return fmt.Errorf("writer does not implement http.Flusher")
 	}
-	d, err := c.Send(&anthropic.Opts{
-		Message: data.MessageModule{
-			Human: question,
+	req := &textv1.ChatCompletionsRequest{
+		Messages: []*textv1.Message{
+			{
+				Role:    "Human",
+				Content: question,
+			},
 		},
-		Sender: anthropic.Sender{MaxToken: 1200},
-	})
-	if err != nil {
-		panic(err)
+		Model:             p.subType,
+		Temperature:       0.7,
+		MaxTokensToSample: 1200,
 	}
+	res, _ := client.ChatCompletions(ctx, req)
 	flushData := func(data string) error {
 		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
@@ -59,7 +63,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, build
 		builder.WriteString(data)
 		return nil
 	}
-	err = flushData(d.Response.String())
+	err := flushData(res.Completion)
 	if err != nil {
 		return err
 	}
