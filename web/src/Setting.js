@@ -77,6 +77,11 @@ export function myParseInt(i) {
   return isNaN(res) ? 0 : res;
 }
 
+export function myParseFloat(f) {
+  const res = parseFloat(f);
+  return isNaN(res) ? 0.0 : res;
+}
+
 export function openLink(link) {
   // this.props.history.push(link);
   const w = window.open("about:blank");

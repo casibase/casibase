@@ -58,6 +58,10 @@ class ProviderListPage extends React.Component {
       subType: "text-davinci-003",
       clientId: "",
       clientSecret: "",
+      temperature: 1,
+      topP: 1,
+      frequencyPenalty: 0,
+      presencePenalty: 0,
       providerUrl: "https://platform.openai.com/account/api-keys",
     };
   }

@@ -35,6 +35,11 @@ type Provider struct {
 	ClientId     string `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
+
+	Temperature      float32 `xorm:"float" json:"temperature"`
+	TopP             float32 `xorm:"float" json:"topP"`
+	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
+	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
@@ -177,7 +182,7 @@ func (provider *Provider) GetId() string {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.FrequencyPenalty, p.PresencePenalty)
 	if err != nil {
 		return nil, err
 	}
