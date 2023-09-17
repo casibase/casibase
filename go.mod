@@ -8,7 +8,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
-	github.com/casdoor/casdoor-go-sdk v0.28.1
+	github.com/casdoor/casdoor-go-sdk v0.30.0
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0
@@ -16,12 +16,14 @@ require (
 	github.com/henomis/lingoose v0.0.11-alpha1
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/lib/pq v1.10.2
+	github.com/madebywelch/anthropic-go v1.0.1
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.1
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
 	github.com/unidoc/unioffice v1.4.0
+	github.com/vogo/xfspark v0.1.2
 	golang.org/x/net v0.8.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
@@ -51,7 +53,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
-	github.com/madebywelch/anthropic-go v1.0.1 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -68,7 +69,6 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect
-	github.com/vogo/xfspark v0.1.2 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91 // indirect
 	golang.org/x/mod v0.8.0 // indirect
