@@ -51,12 +51,24 @@ var __maxTokens = map[string]int{
 }
 
 type OpenAiModelProvider struct {
-	subType   string
-	secretKey string
+	subType          string
+	secretKey        string
+	temperature      float32
+	topP             float32
+	frequencyPenalty float32
+	presencePenalty  float32
 }
 
-func NewOpenAiModelProvider(subType string, secretKey string) (*OpenAiModelProvider, error) {
-	return &OpenAiModelProvider{subType: subType, secretKey: secretKey}, nil
+func NewOpenAiModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (*OpenAiModelProvider, error) {
+	p := &OpenAiModelProvider{
+		subType:          subType,
+		secretKey:        secretKey,
+		temperature:      temperature,
+		topP:             topP,
+		frequencyPenalty: frequencyPenalty,
+		presencePenalty:  presencePenalty,
+	}
+	return p, nil
 }
 
 func getProxyClientFromToken(authToken string) *openai.Client {
@@ -98,14 +110,22 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, build
 	}
 
 	maxTokens := p.GetMaxTokens() - promptTokens
+	temperature := p.temperature
+	topP := p.topP
+	frequencyPenalty := p.frequencyPenalty
+	presencePenalty := p.presencePenalty
 
 	respStream, err := client.CreateCompletionStream(
 		ctx,
 		openai.CompletionRequest{
-			Model:     model,
-			Prompt:    question,
-			MaxTokens: maxTokens,
-			Stream:    true,
+			Model:            model,
+			Prompt:           question,
+			MaxTokens:        maxTokens,
+			Stream:           true,
+			Temperature:      temperature,
+			TopP:             topP,
+			FrequencyPenalty: frequencyPenalty,
+			PresencePenalty:  presencePenalty,
 		},
 	)
 	if err != nil {
