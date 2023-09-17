@@ -3,7 +3,6 @@ module github.com/casbin/casibase
 go 1.18
 
 require (
-	github.com/3JoB/anthropic-sdk-go v1.6.0
 	github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
@@ -23,7 +22,6 @@ require (
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
 	github.com/unidoc/unioffice v1.4.0
-	github.com/vogo/xfspark v0.1.2
 	golang.org/x/net v0.9.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
@@ -33,6 +31,7 @@ require (
 )
 
 require (
+	github.com/3JoB/anthropic-sdk-go v1.6.0 // indirect
 	github.com/3JoB/go-json v0.10.4 // indirect
 	github.com/3JoB/go-reflect v1.0.1 // indirect
 	github.com/3JoB/nhtp v0.0.3 // indirect
@@ -56,6 +55,7 @@ require (
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
+	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/pprof v0.0.0-20230323073829-e72429f035bd // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grafana/regexp v0.0.0-20221122212121-6b5c0a4cb7fd // indirect
@@ -87,6 +87,7 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect
+	github.com/vogo/xfspark v0.1.2 // indirect
 	golang.org/x/crypto v0.8.0 // indirect
 	golang.org/x/exp v0.0.0-20230321023759-10a507213a29 // indirect
 	golang.org/x/mod v0.8.0 // indirect
