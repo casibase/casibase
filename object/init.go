@@ -24,7 +24,7 @@ func InitDb() {
 }
 
 func initBuiltInStore() bool {
-	store, err := getStore("admin", "built-in")
+	store, err := getStore("admin", "store-built-in")
 	if err != nil {
 		panic(err)
 	}
@@ -35,10 +35,10 @@ func initBuiltInStore() bool {
 
 	store = &Store{
 		Owner:             "admin",
-		Name:              "store-default",
+		Name:              "store-built-in",
 		CreatedTime:       util.GetCurrentTime(),
-		DisplayName:       "Data Store - Default",
-		StorageProvider:   "",
+		DisplayName:       "Built-in Store",
+		StorageProvider:   "provider-storage-built-in",
 		ModelProvider:     "",
 		EmbeddingProvider: "",
 	}
@@ -51,7 +51,7 @@ func initBuiltInStore() bool {
 }
 
 func initBuiltInProvider() {
-	provider, err := GetProvider(util.GetId("admin", "provider_captcha_default"))
+	provider, err := GetProvider(util.GetId("admin", "provider-storage-local-built-in"))
 	if err != nil {
 		panic(err)
 	}
@@ -62,11 +62,12 @@ func initBuiltInProvider() {
 
 	provider = &Provider{
 		Owner:       "admin",
-		Name:        "provider_captcha_default",
+		Name:        "provider-storage-built-in",
 		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "Captcha Default",
-		Category:    "Captcha",
-		Type:        "Default",
+		DisplayName: "Built-in Storage Provider",
+		Category:    "Storage",
+		Type:        "Local File System",
+		ClientId:    "F:/github_repos/casdoor-website",
 	}
 	_, err = AddProvider(provider)
 	if err != nil {

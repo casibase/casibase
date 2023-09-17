@@ -44,15 +44,6 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func getFilteredFileObjects(provider string, prefix string) ([]*storage.Object, error) {
-	files, err := storage.ListObjects(provider, prefix)
-	if err != nil {
-		return nil, err
-	}
-
-	return filterTextFiles(files), nil
-}
-
 func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string) (bool, error) {
 	data, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
@@ -77,20 +68,21 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
-func addVectorsForStore(embeddingProviderObj embedding.EmbeddingProvider, storageProviderName string, key string, storeName string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string) (bool, error) {
 	var affected bool
-	var err error
 
-	objs, err := getFilteredFileObjects(storageProviderName, key)
+	files, err := storageProviderObj.ListObjects(prefix)
 	if err != nil {
 		return false, err
 	}
 
+	files = filterTextFiles(files)
+
 	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), 3)
-	for _, obj := range objs {
+	for _, file := range files {
 		var text string
-		fileExt := filepath.Ext(obj.Key)
-		text, err = txt.GetParsedTextFromUrl(obj.Url, fileExt)
+		fileExt := filepath.Ext(file.Key)
+		text, err = txt.GetParsedTextFromUrl(file.Url, fileExt)
 		if err != nil {
 			return false, err
 		}
@@ -99,7 +91,7 @@ func addVectorsForStore(embeddingProviderObj embedding.EmbeddingProvider, storag
 		for i, textSection := range textSections {
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, obj.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
 			} else {
 				err = timeLimiter.Wait(context.Background())
 				if err != nil {
@@ -107,7 +99,7 @@ func addVectorsForStore(embeddingProviderObj embedding.EmbeddingProvider, storag
 				}
 
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, obj.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
 			}
 		}
 	}

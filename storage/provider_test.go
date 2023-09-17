@@ -31,7 +31,8 @@ func TestStorage(t *testing.T) {
 	controllers.InitAuthConfig()
 
 	provider := "provider_storage_casibase"
-	objects, err := storage.ListObjects(provider, "")
+	providerObj, err := storage.NewCasdoorProvider(provider)
+	objects, err := providerObj.ListObjects("")
 	if err != nil {
 		panic(err)
 	}

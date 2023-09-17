@@ -625,7 +625,13 @@ export function isResponseDenied(data) {
 }
 
 export function getProviderTypeOptions(category) {
-  if (category === "Model") {
+  if (category === "Storage") {
+    return (
+      [
+        {id: "Local File System", name: "Local File System"},
+      ]
+    );
+  } else if (category === "Model") {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
