@@ -67,9 +67,8 @@ class ProviderEditPage extends React.Component {
     });
   }
 
-  InputSliderRow(props) {
+  InputSlider(props) {
     const {
-      label,
       min,
       max,
       step,
@@ -78,10 +77,7 @@ class ProviderEditPage extends React.Component {
     } = props;
 
     return (
-      <Row style={{marginTop: "20px"}}>
-        <Col style={{marginTop: "5px"}} span={props.isMobile ? 22 : 2}>
-          {label}:
-        </Col>
+      <>
         <Col span={2}>
           <InputNumber
             min={min}
@@ -105,7 +101,7 @@ class ProviderEditPage extends React.Component {
             onChange={onChange}
           />
         </Col>
-      </Row>
+      </>
     );
   }
 
@@ -218,50 +214,68 @@ class ProviderEditPage extends React.Component {
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI") ? (
             <>
-              <this.InputSliderRow
-                label={i18next.t("provider:Temperature")}
-                min={0}
-                max={2}
-                step={0.01}
-                value={this.state.provider.temperature}
-                onChange={(value) => {
-                  this.updateProviderField("temperature", value);
-                }}
-                isMobile={Setting.isMobile()}
-              />
-              <this.InputSliderRow
-                label={i18next.t("provider:Top P")}
-                min={0}
-                max={1}
-                step={0.01}
-                value={this.state.provider.topP}
-                onChange={(value) => {
-                  this.updateProviderField("topP", value);
-                }}
-                isMobile={Setting.isMobile()}
-              />
-              <this.InputSliderRow
-                label={i18next.t("provider:Frequency penalty")}
-                min={-2}
-                max={2}
-                step={0.01}
-                value={this.state.provider.frequencyPenalty}
-                onChange={(value) => {
-                  this.updateProviderField("frequencyPenalty", value);
-                }}
-                isMobile={Setting.isMobile()}
-              />
-              <this.InputSliderRow
-                label={i18next.t("provider:Presence penalty")}
-                min={-2}
-                max={2}
-                step={0.01}
-                value={this.state.provider.presencePenalty}
-                onChange={(value) => {
-                  this.updateProviderField("presencePenalty", value);
-                }}
-                isMobile={Setting.isMobile()}
-              />
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Frequency penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Frequency penalty")}
+                  min={-2}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.frequencyPenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("frequencyPenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Presence penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Presence penalty")}
+                  min={-2}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.presencePenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("presencePenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
             </>
           ) : null
         }
