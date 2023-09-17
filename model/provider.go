@@ -30,6 +30,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewOpenAiModelProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
+	} else if typ == "Claude" {
+		p, err = NewClaudeModelProvider(subType, clientSecret)
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret)
 	} else if typ == "Ernie" {
