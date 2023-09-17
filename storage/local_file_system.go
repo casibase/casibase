@@ -52,11 +52,15 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 			path = strings.ReplaceAll(path, "\\", "/")
 			relativePath := strings.TrimPrefix(path, fullPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
+
+			url := strings.Replace(path, ":", "|", 1)
+			url = fmt.Sprintf("storage/%s", url)
+
 			objects = append(objects, &Object{
 				Key:          relativePath,
 				LastModified: modTime.Format(time.RFC3339),
 				Size:         info.Size(),
-				Url:          "",
+				Url:          url,
 			})
 		}
 		return nil
@@ -66,7 +70,7 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 }
 
 func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
-	fullPath := p.path
+	fullPath := filepath.Join(p.path, key)
 
 	err := os.MkdirAll(filepath.Dir(fullPath), os.ModePerm)
 	if err != nil {

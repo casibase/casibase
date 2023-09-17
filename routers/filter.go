@@ -19,12 +19,17 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/casbin/casibase/conf"
-	"github.com/casbin/casibase/controllers"
-
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
+	"github.com/casbin/casibase/conf"
+	"github.com/casbin/casibase/controllers"
 	"github.com/casbin/casibase/util"
+)
+
+const (
+	headerAllowOrigin  = "Access-Control-Allow-Origin"
+	headerAllowMethods = "Access-Control-Allow-Methods"
+	headerAllowHeaders = "Access-Control-Allow-Headers"
 )
 
 func TransparentStatic(ctx *context.Context) {
@@ -45,6 +50,17 @@ func TransparentStatic(ctx *context.Context) {
 			http.ServeFile(ctx.ResponseWriter, ctx.Request, landingPath)
 			return
 		}
+	}
+
+	if strings.HasPrefix(urlPath, "/storage") {
+		ctx.Output.Header(headerAllowOrigin, "*")
+		ctx.Output.Header(headerAllowMethods, "POST, GET, OPTIONS, DELETE")
+		ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
+
+		urlPath = strings.TrimPrefix(urlPath, "/storage/")
+		urlPath = strings.Replace(urlPath, "|", ":", 1)
+		http.ServeFile(ctx.ResponseWriter, ctx.Request, urlPath)
+		return
 	}
 
 	path := "web/build"

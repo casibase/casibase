@@ -147,6 +147,14 @@ class StoreListPage extends React.Component {
             return null;
           }
 
+          if (text.includes("local") || text.includes("built-in")) {
+            return (
+              <Link to={`/providers/${text}`}>
+                {text}
+              </Link>
+            );
+          }
+
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
               {text}
