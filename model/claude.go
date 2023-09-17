@@ -20,9 +20,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/3JoB/anthropic-sdk-go/v2"
-	"github.com/3JoB/anthropic-sdk-go/v2/data"
-	"github.com/3JoB/anthropic-sdk-go/v2/resp"
+	"github.com/3JoB/anthropic-sdk-go"
+	"github.com/3JoB/anthropic-sdk-go/data"
 )
 
 type ClaudeModelProvider struct {
@@ -35,10 +34,7 @@ func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvi
 }
 
 func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	c, err := anthropic.New(&anthropic.Config{
-		Key:          p.secretKey,
-		DefaultModel: p.subType,
-	})
+	c, err := anthropic.New(p.secretKey, p.subType)
 	if err != nil {
 		return err
 	}
@@ -50,7 +46,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, build
 		Message: data.MessageModule{
 			Human: question,
 		},
-		Sender: resp.Sender{MaxToken: 1200},
+		Sender: anthropic.Sender{MaxToken: 1200},
 	})
 	if err != nil {
 		panic(err)
