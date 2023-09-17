@@ -52,11 +52,15 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 			path = strings.ReplaceAll(path, "\\", "/")
 			relativePath := strings.TrimPrefix(path, fullPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
+
+			url := strings.Replace(path, ":", "|", 1)
+			url = fmt.Sprintf("storage/%s", url)
+
 			objects = append(objects, &Object{
 				Key:          relativePath,
 				LastModified: modTime.Format(time.RFC3339),
 				Size:         info.Size(),
-				Url:          "",
+				Url:          url,
 			})
 		}
 		return nil

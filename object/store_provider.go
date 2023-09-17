@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	urllib "net/url"
 	"strings"
 
 	"github.com/casbin/casibase/storage"
@@ -79,7 +80,7 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
-func (store *Store) Populate() error {
+func (store *Store) Populate(origin string) error {
 	storageProviderObj, err := store.GetStorageProviderObj()
 	if err != nil {
 		return err
@@ -118,7 +119,7 @@ func (store *Store) Populate() error {
 		lastModifiedTime := object.LastModified
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
-		url := object.Url
+		url, _ := urllib.JoinPath(origin, object.Url)
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)
