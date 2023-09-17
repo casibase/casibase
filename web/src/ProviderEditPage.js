@@ -67,6 +67,48 @@ class ProviderEditPage extends React.Component {
     });
   }
 
+  InputSliderRow(props) {
+    const {
+      label,
+      min,
+      max,
+      step,
+      value,
+      onChange,
+    } = props;
+
+    return (
+      <Row style={{marginTop: "20px"}}>
+        <Col style={{marginTop: "5px"}} span={props.isMobile ? 22 : 2}>
+          {label}:
+        </Col>
+        <Col span={2}>
+          <InputNumber
+            min={min}
+            max={max}
+            step={step}
+            style={{width: "100%"}}
+            value={value}
+            onChange={onChange}
+          />
+        </Col>
+        <Col span={20}>
+          <Slider
+            min={min}
+            max={max}
+            step={step}
+            style={{
+              marginLeft: "1%",
+              marginRight: "1%",
+            }}
+            value={value}
+            onChange={onChange}
+          />
+        </Col>
+      </Row>
+    );
+  }
+
   renderProvider() {
     return (
       <Card size="small" title={
@@ -103,6 +145,7 @@ class ProviderEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.category} onChange={(value => {this.updateProviderField("category", value);})}>
               {
                 [
+                  {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
@@ -124,25 +167,31 @@ class ProviderEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Sub type")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
-              {
-                Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
-                  // .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
         {
-          this.state.provider.type !== "Ernie" ? null : (
+          this.state.provider.category === "Storage" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:API key")}:
+                {i18next.t("provider:Sub type")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
+                  {
+                    Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
+                      // .sort((a, b) => a.name.localeCompare(b.name))
+                      .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+          )
+        }
+        {
+          (this.state.provider.type !== "Ernie" && this.state.provider.category !== "Storage") ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {
+                  (this.state.provider.category !== "Storage") ? i18next.t("provider:API key") :
+                    i18next.t("provider:Path")}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientId} onChange={e => {
@@ -152,155 +201,67 @@ class ProviderEditPage extends React.Component {
             </Row>
           )
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Secret key")}:
-          </Col>
-          <Col span={22} >
-            <Input value={this.state.provider.clientSecret} onChange={e => {
-              this.updateProviderField("clientSecret", e.target.value);
-            }} />
-          </Col>
-        </Row>
+        {
+          this.state.provider.category === "Storage" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Secret key")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.clientSecret} onChange={e => {
+                  this.updateProviderField("clientSecret", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI") ? (
             <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-                  {i18next.t("provider:Temperature")}:
-                </Col>
-                <Col span={2}>
-                  <InputNumber
-                    min={0}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      width: "100%",
-                    }}
-                    value={this.state.provider.temperature}
-                    onChange={(value) => {
-                      this.updateProviderField("temperature", value);
-                    }}
-                  />
-                </Col>
-                <Col span={20}>
-                  <Slider
-                    min={0}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      marginLeft: "1%",
-                      marginRight: "1%",
-                    }}
-                    value={this.state.provider.temperature}
-                    onChange={(value) => {
-                      this.updateProviderField("temperature", value);
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Top P")}:
-                </Col>
-                <Col span={2}>
-                  <InputNumber
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    style={{
-                      width: "100%",
-                    }}
-                    value={this.state.provider.topP}
-                    onChange={(value) => {
-                      this.updateProviderField("topP", value);
-                    }}
-                  />
-                </Col>
-                <Col span={20}>
-                  <Slider
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    style={{
-                      marginLeft: "1%",
-                      marginRight: "1%",
-                    }}
-                    value={this.state.provider.topP}
-                    onChange={(value) => {
-                      this.updateProviderField("topP", value);
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Frequency penalty")}:
-                </Col>
-                <Col span={2}>
-                  <InputNumber
-                    min={-2}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      width: "100%",
-                    }}
-                    value={this.state.provider.frequencyPenalty}
-                    onChange={(value) => {
-                      this.updateProviderField("frequencyPenalty", value);
-                    }}
-                  />
-                </Col>
-                <Col span={20}>
-                  <Slider
-                    min={-2}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      marginLeft: "1%",
-                      marginRight: "1%",
-                    }}
-                    value={this.state.provider.frequencyPenalty}
-                    onChange={(value) => {
-                      this.updateProviderField("frequencyPenalty", value);
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Presence penalty")}:
-                </Col>
-                <Col span={2}>
-                  <InputNumber
-                    min={-2}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      width: "100%",
-                    }}
-                    value={this.state.provider.presencePenalty}
-                    onChange={(value) => {
-                      this.updateProviderField("presencePenalty", value);
-                    }}
-                  />
-                </Col>
-                <Col span={20}>
-                  <Slider
-                    min={-2}
-                    max={2}
-                    step={0.01}
-                    style={{
-                      marginLeft: "1%",
-                      marginRight: "1%",
-                    }}
-                    value={this.state.provider.presencePenalty}
-                    onChange={(value) => {
-                      this.updateProviderField("presencePenalty", value);
-                    }}
-                  />
-                </Col>
-              </Row>
+              <this.InputSliderRow
+                label={i18next.t("provider:Temperature")}
+                min={0}
+                max={2}
+                step={0.01}
+                value={this.state.provider.temperature}
+                onChange={(value) => {
+                  this.updateProviderField("temperature", value);
+                }}
+                isMobile={Setting.isMobile()}
+              />
+              <this.InputSliderRow
+                label={i18next.t("provider:Top P")}
+                min={0}
+                max={1}
+                step={0.01}
+                value={this.state.provider.topP}
+                onChange={(value) => {
+                  this.updateProviderField("topP", value);
+                }}
+                isMobile={Setting.isMobile()}
+              />
+              <this.InputSliderRow
+                label={i18next.t("provider:Frequency penalty")}
+                min={-2}
+                max={2}
+                step={0.01}
+                value={this.state.provider.frequencyPenalty}
+                onChange={(value) => {
+                  this.updateProviderField("frequencyPenalty", value);
+                }}
+                isMobile={Setting.isMobile()}
+              />
+              <this.InputSliderRow
+                label={i18next.t("provider:Presence penalty")}
+                min={-2}
+                max={2}
+                step={0.01}
+                value={this.state.provider.presencePenalty}
+                onChange={(value) => {
+                  this.updateProviderField("presencePenalty", value);
+                }}
+                isMobile={Setting.isMobile()}
+              />
             </>
           ) : null
         }
