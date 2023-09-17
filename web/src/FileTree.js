@@ -103,10 +103,12 @@ class FileTree extends React.Component {
   }
 
   checkUploadFile(info) {
-    for (let i = 0; i < info.fileList.length; i++) {
-      const filename = info.fileList[i].name;
-      if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
-        return true;
+    if (Conf.EnableExtraPages) {
+      for (let i = 0; i < info.fileList.length; i++) {
+        const filename = info.fileList[i].name;
+        if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
+          return true;
+        }
       }
     }
     return false;
@@ -174,11 +176,16 @@ class FileTree extends React.Component {
 
     Promise.all(promises)
       .then((values) => {
-        Setting.showMessage("success", "File uploaded successfully");
-        this.props.onRefresh();
+        const res = values[0];
+        if (res.status === "ok") {
+          Setting.showMessage("success", "File added successfully");
+          this.props.onRefresh();
+        } else {
+          Setting.showMessage("error", `File failed to add: ${res.msg}`);
+        }
       })
       .catch(error => {
-        Setting.showMessage("error", `File failed to upload: ${error}`);
+        Setting.showMessage("error", `File failed to add: ${error}`);
       });
   }
 

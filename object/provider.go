@@ -19,6 +19,7 @@ import (
 
 	"github.com/casbin/casibase/embedding"
 	"github.com/casbin/casibase/model"
+	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/util"
 	"xorm.io/core"
 )
@@ -108,6 +109,20 @@ func GetProvider(id string) (*Provider, error) {
 	return getProvider(owner, name)
 }
 
+func GetDefaultStorageProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Storage"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func GetDefaultModelProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Model"}
 	existed, err := adapter.engine.Get(&provider)
@@ -179,6 +194,19 @@ func DeleteProvider(provider *Provider) (bool, error) {
 
 func (provider *Provider) GetId() string {
 	return fmt.Sprintf("%s/%s", provider.Owner, provider.Name)
+}
+
+func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
+	pProvider, err := storage.GetStorageProvider(p.Type, p.ClientId, p.Name)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the storage provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {

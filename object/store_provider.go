@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	urllib "net/url"
 	"strings"
 
 	"github.com/casbin/casibase/storage"
@@ -79,8 +80,13 @@ func isObjectLeaf(object *storage.Object) bool {
 	return isLeaf
 }
 
-func (store *Store) Populate() error {
-	objects, err := storage.ListObjects(store.StorageProvider, "")
+func (store *Store) Populate(origin string) error {
+	storageProviderObj, err := store.GetStorageProviderObj()
+	if err != nil {
+		return err
+	}
+
+	objects, err := storageProviderObj.ListObjects("")
 	if err != nil {
 		return err
 	}
@@ -113,7 +119,7 @@ func (store *Store) Populate() error {
 		lastModifiedTime := object.LastModified
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
-		url := object.Url
+		url, _ := urllib.JoinPath(origin, object.Url)
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)
@@ -125,7 +131,12 @@ func (store *Store) Populate() error {
 }
 
 func (store *Store) GetVideoData() ([]string, error) {
-	objects, err := storage.ListObjects(store.StorageProvider, "2023/视频附件")
+	storageProviderObj, err := store.GetStorageProviderObj()
+	if err != nil {
+		return nil, err
+	}
+
+	objects, err := storageProviderObj.ListObjects("2023/视频附件")
 	if err != nil {
 		return nil, err
 	}

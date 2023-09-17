@@ -107,7 +107,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "160px",
+        width: "180px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -135,7 +135,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:Type"),
         dataIndex: "type",
         key: "type",
-        width: "120px",
+        width: "150px",
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
@@ -149,7 +149,7 @@ class ProviderListPage extends React.Component {
         title: i18next.t("provider:API key"),
         dataIndex: "clientId",
         key: "clientId",
-        width: "160px",
+        width: "240px",
         sorter: (a, b) => a.clientId.localeCompare(b.clientId),
       },
       {
