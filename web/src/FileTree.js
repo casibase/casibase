@@ -103,10 +103,12 @@ class FileTree extends React.Component {
   }
 
   checkUploadFile(info) {
-    for (let i = 0; i < info.fileList.length; i++) {
-      const filename = info.fileList[i].name;
-      if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
-        return true;
+    if (Conf.EnableExtraPages) {
+      for (let i = 0; i < info.fileList.length; i++) {
+        const filename = info.fileList[i].name;
+        if (this.getCacheApp(filename) === "" && filename.endsWith(".txt")) {
+          return true;
+        }
       }
     }
     return false;
