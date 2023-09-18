@@ -55,7 +55,7 @@ func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 }
 
 func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
-	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", &p.providerName, key), fileBuffer.Bytes())
+	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
 	if err != nil {
 		return err
 	}

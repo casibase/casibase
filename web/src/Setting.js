@@ -77,6 +77,11 @@ export function myParseInt(i) {
   return isNaN(res) ? 0 : res;
 }
 
+export function myParseFloat(f) {
+  const res = parseFloat(f);
+  return isNaN(res) ? 0.0 : res;
+}
+
 export function openLink(link) {
   // this.props.history.push(link);
   const w = window.open("about:blank");
@@ -636,6 +641,7 @@ export function getProviderTypeOptions(category) {
       [
         {id: "OpenAI", name: "OpenAI"},
         {id: "Hugging Face", name: "Hugging Face"},
+        {id: "Claude", name: "Claude"},
         {id: "OpenRouter", name: "OpenRouter"},
         {id: "Ernie", name: "Ernie"},
         {id: "iFlytek", name: "iFlytek"},
@@ -732,6 +738,23 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (type === "Claude") {
+    return (
+      [
+        {id: "claude-2", name: "claude-2"},
+        {id: "claude-v1", name: "claude-v1"},
+        {id: "claude-v1-100k", name: "claude-v1-100k"},
+        {id: "claude-instant-v1", name: "claude-instant-v1"},
+        {id: "claude-instant-v1-100k", name: "claude-instant-v1-100k"},
+        {id: "claude-v1.3", name: "claude-v1.3"},
+        {id: "claude-v1.3-100k", name: "claude-v1.3-100k"},
+        {id: "claude-v1.2", name: "claude-v1.2"},
+        {id: "claude-v1.0", name: "claude-v1.0"},
+        {id: "claude-instant-v1.1", name: "claude-instant-v1.1"},
+        {id: "claude-instant-v1.1-100k", name: "claude-instant-v1.1-100k"},
+        {id: "claude-instant-v1.0", name: "claude-instant-v1.0"},
+      ]
+    );
   } else if (type === "OpenRouter") {
     return (
       [

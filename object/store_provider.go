@@ -119,7 +119,11 @@ func (store *Store) Populate(origin string) error {
 		lastModifiedTime := object.LastModified
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
-		url, _ := urllib.JoinPath(origin, object.Url)
+
+		url := object.Url
+		if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
+			url, _ = urllib.JoinPath(origin, object.Url)
+		}
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")
 		store.createPathIfNotExisted(tokens, size, url, lastModifiedTime, isLeaf)

@@ -23,13 +23,15 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "OpenAI" {
-		p, err = NewOpenAiModelProvider(subType, clientSecret)
+		p, err = NewOpenAiModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
+	} else if typ == "Claude" {
+		p, err = NewClaudeModelProvider(subType, clientSecret)
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret)
 	} else if typ == "Ernie" {
