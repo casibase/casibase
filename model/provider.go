@@ -38,8 +38,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewErnieModelProvider(subType, clientId, clientSecret)
 	} else if typ == "iFlytek" {
 		p, err = NewiFlytekModelProvider(subType, clientSecret)
-	} else if typ == "Claude" {
-		p, err = NewClaudeModelProvider(subType, clientSecret)
+	} else if typ == "ChatGLM" {
+		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	}
 
 	if err != nil {

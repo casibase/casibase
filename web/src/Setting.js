@@ -645,7 +645,7 @@ export function getProviderTypeOptions(category) {
         {id: "OpenRouter", name: "OpenRouter"},
         {id: "Ernie", name: "Ernie"},
         {id: "iFlytek", name: "iFlytek"},
-        {id: "Claude", name: "Claude"},
+        {id: "ChatGLM", name: "ChatGLM"},
       ]
     );
   } else if (category === "Embedding") {
@@ -814,21 +814,10 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "spark-v2.0", name: "spark-v2.0"},
       ]
     );
-  } else if (type === "Claude") {
+  } else if (type === "ChatGLM") {
     return (
       [
-        {id: "claude-2", name: "claude-2"},
-        {id: "claude-v1", name: "claude-v1"},
-        {id: "claude-v1-100k", name: "claude-v1-100k"},
-        {id: "claude-instant-v1", name: "claude-instant-v1"},
-        {id: "claude-instant-v1-100k", name: "claude-instant-v1-100k"},
-        {id: "claude-v1.3", name: "claude-v1.3"},
-        {id: "claude-v1.3-100k", name: "claude-v1.3-100k"},
-        {id: "claude-v1.2", name: "claude-v1.2"},
-        {id: "claude-v1.0", name: "claude-v1.0"},
-        {id: "claude-instant-v1.1", name: "claude-instant-v1.1"},
-        {id: "claude-instant-v1.1-100k", name: "claude-instant-v1.1-100k"},
-        {id: "claude-instant-v1.0", name: "claude-instant-v1.0"},
+        {id: "chatglm2-6b", name: "chatglm2-6b"},
       ]
     );
   } else {

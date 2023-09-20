@@ -15,6 +15,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/henomis/lingoose v0.0.11-alpha1
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
+	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
 	github.com/madebywelch/anthropic-go v1.0.1
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
@@ -36,6 +37,7 @@ require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
@@ -53,7 +55,6 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/kr/pretty v0.3.0 // indirect
-	github.com/madebywelch/anthropic-go v1.0.1 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
