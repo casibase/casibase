@@ -155,16 +155,10 @@ func GetNearestVectorText(embeddingProvider embedding.EmbeddingProvider, owner s
 		return "", fmt.Errorf("no qVector found")
 	}
 
-	vectors, err := getRelatedVectors(owner)
+	search, err := Index.Search(qVector)
 	if err != nil {
 		return "", err
 	}
 
-	var nVectors [][]float32
-	for _, candidate := range vectors {
-		nVectors = append(nVectors, candidate.Data)
-	}
-
-	i := getNearestVectorIndex(qVector, nVectors)
-	return vectors[i].Text, nil
+	return search.Text, nil
 }

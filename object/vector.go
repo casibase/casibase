@@ -92,6 +92,11 @@ func UpdateVector(id string, vector *Vector) (bool, error) {
 }
 
 func AddVector(vector *Vector) (bool, error) {
+	err := Index.Add(util.GetId(vector.Owner, vector.Name), vector.Data)
+	if err != nil {
+		return false, err
+	}
+
 	affected, err := adapter.engine.Insert(vector)
 	if err != nil {
 		return false, err
