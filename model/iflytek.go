@@ -24,18 +24,22 @@ import (
 )
 
 type iFlytekModelProvider struct {
-	subType   string
-	appID     string
-	apiKey    string
-	secretKey string
+	subType     string
+	appID       string
+	apiKey      string
+	secretKey   string
+	temperature string
+	topK        int
 }
 
-func NewiFlytekModelProvider(subType string, secretKey string) (*iFlytekModelProvider, error) {
+func NewiFlytekModelProvider(subType string, secretKey string, temperature float32, topK int) (*iFlytekModelProvider, error) {
 	p := &iFlytekModelProvider{
-		subType:   subType,
-		appID:     "",
-		apiKey:    "",
-		secretKey: secretKey,
+		subType:     subType,
+		appID:       "",
+		apiKey:      "",
+		secretKey:   secretKey,
+		temperature: fmt.Sprintf("%f", temperature),
+		topK:        topK,
 	}
 	return p, nil
 }
@@ -54,6 +58,9 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, buil
 	if session == nil {
 		return fmt.Errorf("iflytek get session error: session is nil")
 	}
+
+	session.Req.Parameter.Chat.Temperature = p.temperature
+	session.Req.Parameter.Chat.TopK = p.topK
 
 	response, err := session.Send(question)
 	if err != nil {
