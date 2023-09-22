@@ -39,6 +39,7 @@ type Provider struct {
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
+	TopK             int     `xorm:"int" json:"topK"`
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
 }
@@ -210,7 +211,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.FrequencyPenalty, p.PresencePenalty)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty)
 	if err != nil {
 		return nil, err
 	}
