@@ -14,9 +14,7 @@
 
 package embedding
 
-import (
-	"context"
-)
+import "context"
 
 type EmbeddingProvider interface {
 	QueryVector(text string, ctx context.Context) ([]float32, error)
