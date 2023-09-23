@@ -26,18 +26,22 @@ import (
 )
 
 type OpenRouterModelProvider struct {
-	subType   string
-	secretKey string
-	siteName  string
-	siteUrl   string
+	subType     string
+	secretKey   string
+	siteName    string
+	siteUrl     string
+	temperature *float32
+	topP        *float32
 }
 
-func NewOpenRouterModelProvider(subType string, secretKey string) (*OpenRouterModelProvider, error) {
+func NewOpenRouterModelProvider(subType string, secretKey string, temperature float32, topP float32) (*OpenRouterModelProvider, error) {
 	p := &OpenRouterModelProvider{
-		subType:   subType,
-		secretKey: secretKey,
-		siteName:  "Casibase",
-		siteUrl:   "https://casibase.org",
+		subType:     subType,
+		secretKey:   secretKey,
+		siteName:    "Casibase",
+		siteUrl:     "https://casibase.org",
+		temperature: &temperature,
+		topP:        &topP,
 	}
 	return p, nil
 }
@@ -74,6 +78,8 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, b
 	}
 
 	maxTokens := 4097 - promptTokens
+	temperature := p.temperature
+	topP := p.topP
 
 	respStream, err := client.CreateChatCompletionStream(
 		ctx,
@@ -90,8 +96,8 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, b
 				},
 			},
 			Stream:      false,
-			Temperature: nil,
-			TopP:        nil,
+			Temperature: temperature,
+			TopP:        topP,
 			MaxTokens:   maxTokens,
 		},
 	)
