@@ -35,7 +35,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret)
 	} else if typ == "Ernie" {
-		p, err = NewErnieModelProvider(subType, clientId, clientSecret)
+		p, err = NewErnieModelProvider(subType, clientId, clientSecret, temperature, topP, presencePenalty)
 	} else if typ == "iFlytek" {
 		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
 	} else if typ == "ChatGLM" {
