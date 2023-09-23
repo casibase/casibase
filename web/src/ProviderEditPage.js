@@ -315,6 +315,58 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
+        {
+          (this.state.provider.category === "Model" && this.state.provider.type === "Ernie") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0.01}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Presence penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Presence penalty")}
+                  min={1}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.presencePenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("presencePenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Provider URL")}:

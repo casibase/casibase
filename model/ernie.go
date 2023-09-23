@@ -26,13 +26,23 @@ import (
 )
 
 type ErnieModelProvider struct {
-	subType   string
-	apiKey    string
-	secretKey string
+	subType         string
+	apiKey          string
+	secretKey       string
+	temperature     float32
+	topP            float32
+	presencePenalty float32
 }
 
-func NewErnieModelProvider(subType string, apiKey string, secretKey string) (*ErnieModelProvider, error) {
-	return &ErnieModelProvider{subType: subType, apiKey: apiKey, secretKey: secretKey}, nil
+func NewErnieModelProvider(subType string, apiKey string, secretKey string, temperature float32, topP float32, presencePenalty float32) (*ErnieModelProvider, error) {
+	return &ErnieModelProvider{
+		subType:         subType,
+		apiKey:          apiKey,
+		secretKey:       secretKey,
+		temperature:     temperature,
+		topP:            topP,
+		presencePenalty: presencePenalty,
+	}, nil
 }
 
 func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
@@ -59,8 +69,18 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 		return nil
 	}
 
+	temperature := p.temperature
+	topP := p.topP
+	presencePenalty := p.presencePenalty
+
 	if p.subType == "ERNIE-Bot" {
-		stream, err := client.CreateErnieBotChatCompletionStream(ctx, ernie.ErnieBotRequest{Messages: messages})
+		stream, err := client.CreateErnieBotChatCompletionStream(ctx,
+			ernie.ErnieBotRequest{
+				Messages:        messages,
+				Temperature:     temperature,
+				TopP:            topP,
+				PresencePenalty: presencePenalty,
+			})
 		if err != nil {
 			return err
 		}
@@ -82,7 +102,13 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 			}
 		}
 	} else if p.subType == "ERNIE-Bot-turbo" {
-		stream, err := client.CreateErnieBotTurboChatCompletionStream(ctx, ernie.ErnieBotTurboRequest{Messages: messages})
+		stream, err := client.CreateErnieBotTurboChatCompletionStream(ctx,
+			ernie.ErnieBotTurboRequest{
+				Messages:        messages,
+				Temperature:     temperature,
+				TopP:            topP,
+				PresencePenalty: presencePenalty,
+			})
 		if err != nil {
 			return err
 		}
