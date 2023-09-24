@@ -41,7 +41,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "Private" {
-		p, err = NewPrivateModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
+		p, err = NewLocalModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
 	}
 
 	if err != nil {

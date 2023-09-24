@@ -646,7 +646,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
-        {id: "Private", name: "Private"},
+        {id: "Local", name: "Local"},
       ]
     );
   } else if (category === "Embedding") {
@@ -821,7 +821,7 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "chatglm2-6b", name: "chatglm2-6b"},
       ]
     );
-  } else if (type === "Private") {
+  } else if (type === "Local") {
     if (category === "Model") {
       return (
         [

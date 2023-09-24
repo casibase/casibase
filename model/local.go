@@ -24,7 +24,7 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type PrivateModelProvider struct {
+type LocalModelProvider struct {
 	subType          string
 	secretKey        string
 	temperature      float32
@@ -34,8 +34,8 @@ type PrivateModelProvider struct {
 	providerUrl      string
 }
 
-func NewPrivateModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*PrivateModelProvider, error) {
-	p := &PrivateModelProvider{
+func NewLocalModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
+	p := &LocalModelProvider{
 		subType:          subType,
 		secretKey:        secretKey,
 		temperature:      temperature,
@@ -47,7 +47,7 @@ func NewPrivateModelProvider(subType string, secretKey string, temperature float
 	return p, nil
 }
 
-func getPrivateClientFromUrl(authToken string, url string) *openai.Client {
+func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	config := openai.DefaultConfig(authToken)
 	config.BaseURL = url
 
@@ -55,8 +55,8 @@ func getPrivateClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *PrivateModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	client := getPrivateClientFromUrl(p.secretKey, p.providerUrl)
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+	client := getLocalClientFromUrl(p.secretKey, p.providerUrl)
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
