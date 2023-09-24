@@ -12,25 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package embedding
+package object
 
-import "context"
-
-type EmbeddingProvider interface {
-	QueryVector(text string, ctx context.Context) ([]float32, error)
+type SearchProvider interface {
+	Search(qVector []float32) (string, error)
 }
 
-func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string) (EmbeddingProvider, error) {
-	var p EmbeddingProvider
+func GetSearchProvider(typ string, owner string) (SearchProvider, error) {
+	var p SearchProvider
 	var err error
-	if typ == "OpenAI" {
-		p, err = NewOpenAiEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Cohere" {
-		p, err = NewCohereEmbeddingProvider(subType, clientSecret)
-	} else if typ == "Ernie" {
-		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
+	if typ == "Default" {
+		p, err = NewDefaultSearchProvider(owner)
+	} else if typ == "HNSW" {
+		p, err = NewHnswSearchProvider()
 	}
 
 	if err != nil {

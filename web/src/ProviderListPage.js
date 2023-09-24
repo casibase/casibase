@@ -60,6 +60,7 @@ class ProviderListPage extends React.Component {
       clientSecret: "",
       temperature: 1,
       topP: 1,
+      topK: 4,
       frequencyPenalty: 0,
       presencePenalty: 0,
       providerUrl: "https://platform.openai.com/account/api-keys",

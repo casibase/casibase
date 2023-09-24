@@ -140,7 +140,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
-        width: "250px",
+        width: "290px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         render: (text, record, index) => {
           if (text === "") {
@@ -195,7 +195,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "400px",
+        width: "380px",
         render: (text, record, index) => {
           return (
             <div>

@@ -9,6 +9,7 @@ require (
 	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.30.0
+	github.com/casibase/go-hnsw v1.0.0
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0
@@ -36,6 +37,7 @@ require (
 require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/bits-and-blooms/bitset v1.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
