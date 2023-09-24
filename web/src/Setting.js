@@ -646,6 +646,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
+        {id: "Private", name: "Private"},
       ]
     );
   } else if (category === "Embedding") {
@@ -820,6 +821,22 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "chatglm2-6b", name: "chatglm2-6b"},
       ]
     );
+  } else if (type === "Private") {
+    if (category === "Model") {
+      return (
+        [
+          {id: "custom-model", name: "custom-model"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "custom-embedding", name: "custom-embedding"},
+        ]
+      );
+    } else {
+      return [];
+    }
   } else {
     return [];
   }
