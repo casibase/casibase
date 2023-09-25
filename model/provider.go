@@ -23,7 +23,7 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "OpenAI" {
@@ -40,6 +40,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
+	} else if typ == "Local" {
+		p, err = NewLocalModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
 	}
 
 	if err != nil {
