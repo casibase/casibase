@@ -211,7 +211,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl)
 	if err != nil {
 		return nil, err
 	}
