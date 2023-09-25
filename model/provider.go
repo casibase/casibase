@@ -40,6 +40,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
+	} else if typ == "MiniMax" {
+		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret)
 	} else if typ == "Local" {
 		p, err = NewLocalModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
 	}
