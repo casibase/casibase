@@ -3,21 +3,28 @@ package model
 import (
 	"context"
 	"fmt"
-	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
-	"github.com/ConnectAI-E/go-minimax/minimax"
 	"io"
 	"net/http"
 	"strings"
+
+	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
+	"github.com/ConnectAI-E/go-minimax/minimax"
 )
 
 type MiniMaxModelProvider struct {
-	subType string
-	groupID string
-	apiKey  string
+	subType     string
+	groupID     string
+	apiKey      string
+	temperature float32
 }
 
-func NewMiniMaxModelProvider(subType string, groupID string, apiKey string) (*MiniMaxModelProvider, error) {
-	return &MiniMaxModelProvider{subType: subType, groupID: groupID, apiKey: apiKey}, nil
+func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temperature float32) (*MiniMaxModelProvider, error) {
+	return &MiniMaxModelProvider{
+		subType:     subType,
+		groupID:     groupID,
+		apiKey:      apiKey,
+		temperature: temperature,
+	}, nil
 }
 
 func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
@@ -26,7 +33,6 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, buil
 		minimax.WithApiToken(p.apiKey),
 		minimax.WithGroupId(p.groupID),
 	)
-
 	req := &textv1.ChatCompletionsRequest{
 		Messages: []*textv1.Message{
 			{
@@ -35,7 +41,7 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, buil
 			},
 		},
 		Model:       p.subType,
-		Temperature: 0.7,
+		Temperature: p.temperature,
 	}
 	res, _ := client.ChatCompletions(ctx, req)
 	flusher, ok := writer.(http.Flusher)

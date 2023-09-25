@@ -41,7 +41,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "ChatGLM" {
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {
-		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret)
+		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
 	} else if typ == "Local" {
 		p, err = NewLocalModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
 	}
