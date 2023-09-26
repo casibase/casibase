@@ -131,7 +131,6 @@ func (c *ApiController) GetMessageAnswer() {
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
 	question := questionMessage.Text
-	var stringBuilder strings.Builder
 
 	nearestText, err := object.GetNearestVectorText(embeddingProviderObj, chat.Owner, question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
@@ -145,7 +144,9 @@ func (c *ApiController) GetMessageAnswer() {
 	fmt.Printf("Context: [%s]\n", nearestText)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
+	ourWriter := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6)}
+	ourBuilder := &RefinedBuilder{strings.Builder{}, *NewCleaner(6)}
+	err = modelProviderObj.QueryText(realQuestion, ourWriter, &ourBuilder.Builder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -160,7 +161,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	answer := stringBuilder.String()
+	answer := ourBuilder.String()
 
 	message.Text = answer
 	_, err = object.UpdateMessage(message.GetId(), message)
