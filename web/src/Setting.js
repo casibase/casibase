@@ -646,6 +646,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
+        {id: "MiniMax", name: "MiniMax"},
         {id: "Local", name: "Local"},
       ]
     );
@@ -819,6 +820,12 @@ export function getProviderSubTypeOptions(category, type) {
     return (
       [
         {id: "chatglm2-6b", name: "chatglm2-6b"},
+      ]
+    );
+  } else if (type === "MiniMax") {
+    return (
+      [
+        {id: "abab5-chat", name: "abab5-chat"},
       ]
     );
   } else if (type === "Local") {
