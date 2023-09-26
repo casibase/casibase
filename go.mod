@@ -1,8 +1,6 @@
 module github.com/casbin/casibase
 
-go 1.18
-
-replace github.com/quic-go/quic-go v0.35.0 => github.com/quic-go/quic-go v0.32.0
+go 1.19
 
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
@@ -77,7 +75,6 @@ require (
 	github.com/prometheus/common v0.37.0 // indirect
 	github.com/prometheus/procfs v0.8.0 // indirect
 	github.com/quic-go/qpack v0.4.0 // indirect
-	github.com/quic-go/qtls-go1-18 v0.2.0 // indirect
 	github.com/quic-go/qtls-go1-19 v0.3.2 // indirect
 	github.com/quic-go/qtls-go1-20 v0.2.2 // indirect
 	github.com/quic-go/quic-go v0.35.0 // indirect
