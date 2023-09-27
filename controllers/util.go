@@ -96,42 +96,27 @@ func responseError(ctx *context.Context, error string, data ...interface{}) {
 type RefinedWriter struct {
 	context.Response
 	writerCleaner Cleaner
+	buf           []byte
 }
 
 func (w *RefinedWriter) Write(p []byte) (n int, err error) {
+	data := strings.TrimRight(strings.TrimLeft(string(p), "event: message\ndata: "), "\n\n")
 	if w.writerCleaner.cleaned == false && w.writerCleaner.dataTimes < w.writerCleaner.bufferSize {
-		data := strings.TrimRight(strings.TrimLeft(string(p), "event: message\ndata: "), "\n\n")
 		w.writerCleaner.AddData(data)
 		if w.writerCleaner.dataTimes == w.writerCleaner.bufferSize {
 			cleanedData := w.writerCleaner.GetCleanedData()
+			w.buf = append(w.buf, []byte(cleanedData)...)
 			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", cleanedData)))
 		}
 		return 0, nil
 	}
 
+	w.buf = append(w.buf, []byte(data)...)
 	return w.ResponseWriter.Write(p)
 }
 
-type RefinedBuilder struct {
-	strings.Builder
-	builderCleaner Cleaner
-}
-
-func (b *RefinedBuilder) WriteString(s string) (n int, err error) {
-	if b.builderCleaner.cleaned == false && b.builderCleaner.dataTimes < b.builderCleaner.bufferSize {
-		b.builderCleaner.AddData(s)
-		if b.builderCleaner.dataTimes == b.builderCleaner.bufferSize {
-			cleanedData := b.builderCleaner.GetCleanedData()
-			return b.Builder.WriteString(cleanedData)
-		}
-		return 0, nil
-	}
-
-	return b.Builder.WriteString(s)
-}
-
-func (b *RefinedBuilder) String() string {
-	return b.Builder.String()
+func (w *RefinedWriter) String() string {
+	return string(w.buf)
 }
 
 type Cleaner struct {
@@ -182,6 +167,8 @@ func cleanString(data string) string {
 		"答:",
 		"?",
 		"？",
+		"-",
+		"——",
 	}
 
 	for _, keyword := range keywords {

@@ -21,8 +21,13 @@ func GetRefinedQuestion(knowledge string, question string) string {
 		return question
 	}
 
-	return fmt.Sprintf(`paragraph: %s
+	return fmt.Sprintf(`You have some background knowledge: 
 
-You are a reading comprehension expert. Please answer the following questions based on the provided content. The content may be in a different language from the questions, so you need to understand the content according to the language of the questions and ensure that your answers are translated into the same language as the questions:
-Question: %s (Give your answer directly, don't say "question is xxx" or "answer is xxx")`, knowledge, question)
+%s
+
+Now, please answer the following question based on the provided information:
+
+Question: %s (Please answer directly, without using phrases like "the answer is" or "the question is")
+
+Important Note: The content may be in a different language from the question, so make sure to understand the context and provide your response in the language of the question.`, knowledge, question)
 }
