@@ -138,7 +138,18 @@ class ProviderEditPage extends React.Component {
             {i18next.t("provider:Category")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.category} onChange={(value => {this.updateProviderField("category", value);})}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.category} onChange={(value => {
+              this.updateProviderField("category", value);
+              if (value === "Storage") {
+                this.updateProviderField("type", "Local File System");
+              } else if (value === "Model") {
+                this.updateProviderField("type", "OpenAI");
+                this.updateProviderField("subType", "gpt-4");
+              } else if (value === "Embedding") {
+                this.updateProviderField("type", "OpenAI");
+                this.updateProviderField("subType", "AdaSimilarity");
+              }
+            })}>
               {
                 [
                   {id: "Storage", name: "Storage"},
@@ -154,7 +165,40 @@ class ProviderEditPage extends React.Component {
             {i18next.t("provider:Type")}:
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {this.updateProviderField("type", value);})}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
+              this.updateProviderField("type", value);
+              if (this.state.provider.category === "Model") {
+                if (value === "OpenAI") {
+                  this.updateProviderField("subType", "gpt-4");
+                } else if (value === "OpenRouter") {
+                  this.updateProviderField("subType", "openai/gpt-4");
+                } else if (value === "iFlytek") {
+                  this.updateProviderField("subType", "spark-v2.0");
+                } else if (value === "Ernie") {
+                  this.updateProviderField("subType", "ERNIE-Bot");
+                } else if (value === "MiniMax") {
+                  this.updateProviderField("subType", "abab5-chat");
+                } else if (value === "Claude") {
+                  this.updateProviderField("subType", "claude-2");
+                } else if (value === "Hugging Face") {
+                  this.updateProviderField("subType", "gpt2");
+                } else if (value === "ChatGLM") {
+                  this.updateProviderField("subType", "chatglm2-6b");
+                } else if (value === "Local") {
+                  this.updateProviderField("subType", "custom-model");
+                }
+              } else if (this.state.provider.category === "Embedding") {
+                if (value === "OpenAI") {
+                  this.updateProviderField("subType", "AdaSimilarity");
+                } else if (value === "Hugging Face") {
+                  this.updateProviderField("subType", "sentence-transformers/all-MiniLM-L6-v2");
+                } else if (value === "Cohere") {
+                  this.updateProviderField("subType", "embed-english-v2.0");
+                } else if (value === "Ernie") {
+                  this.updateProviderField("subType", "default");
+                }
+              }
+            })}>
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
                   // .sort((a, b) => a.name.localeCompare(b.name))
