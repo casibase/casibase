@@ -27,7 +27,7 @@ func GetRefinedQuestion(knowledge string, question string) string {
 
 Now, please answer the following question based on the provided information:
 
-Question: %s (Please answer directly, without using phrases like "the answer is" or "the question is")
+%s
 
-Important Note: The content may be in a different language from the question, so make sure to understand the context and provide your response in the language of the question.`, knowledge, question)
+(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is."")`, knowledge, question)
 }
