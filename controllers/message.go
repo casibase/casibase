@@ -142,7 +142,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	fmt.Printf("Question: [%s]\n", question)
 	fmt.Printf("Context: [%s]\n", nearestText)
-	fmt.Printf("Refined Question: [%s]\n", realQuestion)
+	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
