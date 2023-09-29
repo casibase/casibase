@@ -16,17 +16,18 @@ package controllers
 
 import (
 	"fmt"
-	"net/http"
 	"strings"
+
+	"github.com/astaxie/beego/context"
 )
 
 type RefinedWriter struct {
-	http.ResponseWriter
+	context.Response
 	writerCleaner Cleaner
 	buf           []byte
 }
 
-func newRefinedWriter(w http.ResponseWriter) *RefinedWriter {
+func newRefinedWriter(w context.Response) *RefinedWriter {
 	return &RefinedWriter{w, *NewCleaner(6), []byte{}}
 }
 
