@@ -657,6 +657,7 @@ export function getProviderTypeOptions(category) {
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Cohere", name: "Cohere"},
         {id: "Ernie", name: "Ernie"},
+        {id: "Local", name: "Local"},
       ]
     );
   } else {
