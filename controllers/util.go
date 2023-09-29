@@ -146,34 +146,21 @@ func (c *Cleaner) GetCleanedData() string {
 }
 
 func cleanString(data string) string {
-	keywords := []string{
-		"Answer:",
-		"answer:",
-		"A:",
-		"Question:",
-		"question:",
-		"Q:",
-		"?\n",
-		"？\n",
-		"\n?",
-		"\n？",
-		"? ",
-		"\n",
-		"回答：",
-		"答案：",
-		"答：",
-		"回答:",
-		"答案:",
-		"答:",
-		"?",
-		"？",
-		"-",
-		"——",
+	data = strings.Replace(data, "?", "", -1)
+	data = strings.Replace(data, "？", "", -1)
+
+	data = strings.Replace(data, "-", "", -1)
+	data = strings.Replace(data, "——", "", -1)
+
+	if strings.Contains(data, ":") {
+		parts := strings.Split(data, ":")
+		data = parts[len(parts)-1]
+	} else if strings.Contains(data, "：") {
+		parts := strings.Split(data, "：")
+		data = parts[len(parts)-1]
 	}
 
-	for _, keyword := range keywords {
-		data = strings.ReplaceAll(data, keyword, "")
-	}
+	data = strings.TrimSpace(data)
 
 	return data
 }
