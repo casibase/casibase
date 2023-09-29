@@ -145,9 +145,9 @@ func (c *ApiController) GetMessageAnswer() {
 	fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	ourWriter := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	writer := &RefinedWriter{c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 	stringBuilder := &strings.Builder{}
-	err = modelProviderObj.QueryText(realQuestion, ourWriter, stringBuilder)
+	err = modelProviderObj.QueryText(realQuestion, writer, stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -162,7 +162,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	answer := ourWriter.String()
+	answer := writer.String()
 
 	message.Text = answer
 	_, err = object.UpdateMessage(message.GetId(), message)
