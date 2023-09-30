@@ -93,6 +93,17 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 		textSections := txt.GetTextSections(text)
 		for i, textSection := range textSections {
+			var vector *Vector
+			vector, err = getVectorByIndex("admin", storeName, file.Key, i)
+			if err != nil {
+				return false, err
+			}
+
+			if vector != nil {
+				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, "Skipped due to already exists")
+				continue
+			}
+
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName)
