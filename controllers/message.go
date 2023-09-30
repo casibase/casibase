@@ -132,16 +132,16 @@ func (c *ApiController) GetMessageAnswer() {
 
 	question := questionMessage.Text
 
-	nearestText, err := object.GetNearestVectorText(embeddingProviderObj, chat.Owner, question)
+	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProviderObj, chat.Owner, question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
 
-	realQuestion := object.GetRefinedQuestion(nearestText, question)
+	realQuestion := object.GetRefinedQuestion(knowledge, question)
 
 	fmt.Printf("Question: [%s]\n", question)
-	fmt.Printf("Context: [%s]\n", nearestText)
+	fmt.Printf("Knowledge: [%s]\n", knowledge)
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
@@ -165,6 +165,7 @@ func (c *ApiController) GetMessageAnswer() {
 	answer := writer.String()
 
 	message.Text = answer
+	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
@@ -227,10 +228,11 @@ func (c *ApiController) AddMessage() {
 				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
 				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
 				// Organization: message.Organization,
-				Chat:    message.Chat,
-				ReplyTo: message.GetId(),
-				Author:  "AI",
-				Text:    "",
+				Chat:         message.Chat,
+				ReplyTo:      message.GetId(),
+				Author:       "AI",
+				Text:         "",
+				VectorScores: []object.VectorScore{},
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {

@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/casbin/casibase/embedding"
@@ -149,19 +150,35 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestVectorText(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, error) {
+func GetNearestKnowledge(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, []VectorScore, error) {
 	qVector, err := queryVectorSafe(embeddingProvider, text)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 	if qVector == nil {
-		return "", fmt.Errorf("no qVector found")
+		return "", nil, fmt.Errorf("no qVector found")
 	}
 
 	searchProvider, err := GetSearchProvider("Default", owner)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
-	return searchProvider.Search(qVector)
+	vectors, err := searchProvider.Search(qVector)
+	if err != nil {
+		return "", nil, err
+	}
+
+	vectorScores := []VectorScore{}
+	texts := []string{}
+	for _, vector := range vectors {
+		vectorScores = append(vectorScores, VectorScore{
+			Vector: vector.Name,
+			Score:  vector.Score,
+		})
+		texts = append(texts, vector.Text)
+	}
+
+	res := strings.Join(texts, "\n\n")
+	return res, vectorScores, nil
 }

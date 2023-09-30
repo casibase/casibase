@@ -29,13 +29,8 @@ func NewHnswSearchProvider() (*HnswSearchProvider, error) {
 	return &HnswSearchProvider{}, nil
 }
 
-func (p *HnswSearchProvider) Search(qVector []float32) (string, error) {
-	search, err := Index.Search(qVector)
-	if err != nil {
-		return "", err
-	}
-
-	return search.Text, nil
+func (p *HnswSearchProvider) Search(qVector []float32) ([]Vector, error) {
+	return Index.Search(qVector)
 }
 
 var Index *HNSWIndex
@@ -75,11 +70,16 @@ func (h *HNSWIndex) Add(name string, vector []float32) error {
 	return h.save()
 }
 
-func (h *HNSWIndex) Search(vector []float32) (*Vector, error) {
+func (h *HNSWIndex) Search(vector []float32) ([]Vector, error) {
 	result := h.Hnsw.Search(vector, 100, 4)
 	item := result.Pop()
+
 	owner, name := util.GetOwnerAndNameFromId(h.IdToStr[item.ID])
-	return getVector(owner, name)
+	v, err := getVector(owner, name)
+	if err != nil {
+		return nil, err
+	}
+	return []Vector{*v}, nil
 }
 
 func (h *HNSWIndex) save() error {

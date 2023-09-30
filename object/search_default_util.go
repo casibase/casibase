@@ -14,7 +14,10 @@
 
 package object
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 func dot(vec1, vec2 []float32) float32 {
 	if len(vec1) != len(vec2) {
@@ -45,17 +48,27 @@ func cosineSimilarity(vec1, vec2 []float32, vec1Norm float32) float32 {
 	return dotProduct / (vec1Norm * vec2Norm)
 }
 
-func getNearestVectorIndex(target []float32, vectors [][]float32) int {
+type SimilarityIndex struct {
+	Similarity float32
+	Index      int
+}
+
+func getNearestVectors(target []float32, vectors [][]float32, n int) []SimilarityIndex {
 	targetNorm := norm(target)
 
-	var res int
-	max := float32(-1.0)
+	similarities := []SimilarityIndex{}
 	for i, vector := range vectors {
 		similarity := cosineSimilarity(target, vector, targetNorm)
-		if similarity > max {
-			max = similarity
-			res = i
-		}
+		similarities = append(similarities, SimilarityIndex{similarity, i})
 	}
-	return res
+
+	sort.Slice(similarities, func(i, j int) bool {
+		return similarities[i].Similarity > similarities[j].Similarity
+	})
+
+	if len(vectors) < n {
+		n = len(vectors)
+	}
+
+	return similarities
 }
