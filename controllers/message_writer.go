@@ -38,12 +38,14 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 		if w.writerCleaner.dataTimes == w.writerCleaner.bufferSize {
 			cleanedData := w.writerCleaner.GetCleanedData()
 			w.buf = append(w.buf, []byte(cleanedData)...)
+			fmt.Print(cleanedData)
 			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", cleanedData)))
 		}
 		return 0, nil
 	}
 
 	w.buf = append(w.buf, []byte(data)...)
+	fmt.Print(data)
 	return w.ResponseWriter.Write(p)
 }
 
