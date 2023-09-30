@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
@@ -97,8 +97,18 @@ class VectorEditPage extends React.Component {
             {i18next.t("vector:Store")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.vector.store} onChange={e => {
+            <Input disabled={true} value={this.state.vector.store} onChange={e => {
               this.updateVectorField("store", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("vector:Provider")}:
+          </Col>
+          <Col span={22} >
+            <Input disabled={true} value={this.state.vector.provider} onChange={e => {
+              this.updateVectorField("provider", e.target.value);
             }} />
           </Col>
         </Row>
@@ -119,6 +129,16 @@ class VectorEditPage extends React.Component {
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.text} onChange={(e) => {
               this.updateVectorField("text", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("vector:Dimension")}:
+          </Col>
+          <Col span={22} >
+            <InputNumber disabled={true} value={this.state.vector.dimension} onChange={value => {
+              this.updateVectorField("dimension", value);
             }} />
           </Col>
         </Row>

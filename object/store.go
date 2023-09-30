@@ -197,6 +197,6 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, embeddingProvider.Name)
 	return ok, err
 }

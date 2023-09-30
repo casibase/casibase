@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
@@ -111,22 +111,36 @@ class VectorListPage extends React.Component {
           );
         },
       },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "200px",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
-      },
+      // {
+      //   title: i18next.t("general:Display name"),
+      //   dataIndex: "displayName",
+      //   key: "displayName",
+      //   width: "200px",
+      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      // },
       {
         title: i18next.t("vector:Store"),
         dataIndex: "store",
         key: "store",
-        width: "200px",
+        width: "130px",
         sorter: (a, b) => a.store.localeCompare(b.store),
         render: (text, record, index) => {
           return (
             <Link to={`/stores/${record.owner}/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("vector:Provider"),
+        dataIndex: "provider",
+        key: "provider",
+        width: "200px",
+        sorter: (a, b) => a.provider.localeCompare(b.provider),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
               {text}
             </Link>
           );
@@ -140,6 +154,13 @@ class VectorListPage extends React.Component {
         sorter: (a, b) => a.file.localeCompare(b.file),
       },
       {
+        title: i18next.t("vector:Index"),
+        dataIndex: "index",
+        key: "index",
+        width: "80px",
+        sorter: (a, b) => a.index - b.index,
+      },
+      {
         title: i18next.t("vector:Text"),
         dataIndex: "text",
         key: "text",
@@ -147,9 +168,11 @@ class VectorListPage extends React.Component {
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
-            <div style={{maxWidth: "200px"}}>
-              {Setting.getShortText(text)}
-            </div>
+            <Tooltip placement="left" title={text}>
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(text)}
+              </div>
+            </Tooltip>
           );
         },
       },
@@ -161,17 +184,26 @@ class VectorListPage extends React.Component {
         sorter: (a, b) => a.data.localeCompare(b.data),
         render: (text, record, index) => {
           return (
-            <div style={{maxWidth: "200px"}}>
-              {Setting.getShortText(JSON.stringify(text))}
-            </div>
+            <Tooltip placement="left" title={Setting.getShortText(JSON.stringify(text), 1000)}>
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(JSON.stringify(text))}
+              </div>
+            </Tooltip>
           );
         },
+      },
+      {
+        title: i18next.t("vector:Dimension"),
+        dataIndex: "dimension",
+        key: "dimension",
+        width: "80px",
+        sorter: (a, b) => a.dimension - b.dimension,
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "150px",
         render: (text, record, index) => {
           return (
             <div>

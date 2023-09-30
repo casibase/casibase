@@ -44,7 +44,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string) (bool, error) {
+func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string) (bool, error) {
 	data, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return false, err
@@ -61,14 +61,17 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 		CreatedTime: util.GetCurrentTime(),
 		DisplayName: displayName,
 		Store:       storeName,
+		Provider:    embeddingProviderName,
 		File:        fileName,
+		Index:       index,
 		Text:        text,
 		Data:        data,
+		Dimension:   len(data),
 	}
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -91,7 +94,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 		for i, textSection := range textSections {
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName)
 			} else {
 				err = timeLimiter.Wait(context.Background())
 				if err != nil {
@@ -99,7 +102,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				}
 
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName)
 			}
 		}
 	}
