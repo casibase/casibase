@@ -161,8 +161,8 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestKnowledge(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, []VectorScore, error) {
-	qVector, err := queryVectorSafe(embeddingProvider, text)
+func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) (string, []VectorScore, error) {
+	qVector, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return "", nil, err
 	}
@@ -183,6 +183,10 @@ func GetNearestKnowledge(embeddingProvider embedding.EmbeddingProvider, owner st
 	vectorScores := []VectorScore{}
 	texts := []string{}
 	for _, vector := range vectors {
+		if embeddingProvider.Name != vector.Provider {
+			return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
+		}
+
 		vectorScores = append(vectorScores, VectorScore{
 			Vector: vector.Name,
 			Score:  vector.Score,
