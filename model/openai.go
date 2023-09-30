@@ -104,12 +104,16 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, build
 
 	// https://platform.openai.com/tokenizer
 	// https://github.com/pkoukk/tiktoken-go#available-encodings
-	promptTokens, err := GetTokenSize(model, question)
+	tokenCount, err := GetTokenSize(model, question)
 	if err != nil {
 		return err
 	}
 
-	maxTokens := p.GetMaxTokens() - promptTokens
+	maxTokens := p.GetMaxTokens() - tokenCount
+	if maxTokens < 0 {
+		return fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, p.GetMaxTokens())
+	}
+
 	temperature := p.temperature
 	topP := p.topP
 	frequencyPenalty := p.frequencyPenalty

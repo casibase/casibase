@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Table, Tag} from "antd";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
@@ -174,6 +174,24 @@ class MessageListPage extends React.Component {
         key: "text",
         width: "400px",
         sorter: (a, b) => a.text.localeCompare(b.text),
+      },
+      {
+        title: i18next.t("message:Knowledge"),
+        dataIndex: "knowledge",
+        key: "knowledge",
+        width: "200px",
+        sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
+        render: (text, record, index) => {
+          return record.vectorScores?.map(vectorScore => {
+            return (
+              <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
+                <Tag color={"processing"}>
+                  {vectorScore.score}
+                </Tag>
+              </Link>
+            );
+          });
+        },
       },
       {
         title: i18next.t("general:Action"),

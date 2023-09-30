@@ -72,12 +72,16 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, b
 		model = openrouter.Gpt35Turbo
 	}
 
-	promptTokens, err := GetTokenSize(model, question)
+	tokenCount, err := GetTokenSize(model, question)
 	if err != nil {
 		return err
 	}
 
-	maxTokens := 4097 - promptTokens
+	maxTokens := 4097 - tokenCount
+	if maxTokens < 0 {
+		return fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, 4097)
+	}
+
 	temperature := p.temperature
 	topP := p.topP
 

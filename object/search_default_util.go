@@ -70,5 +70,6 @@ func getNearestVectors(target []float32, vectors [][]float32, n int) []Similarit
 		n = len(vectors)
 	}
 
-	return similarities
+	res := similarities[:n]
+	return res
 }
