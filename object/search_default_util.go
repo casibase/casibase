@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"math"
 	"sort"
 )
@@ -53,11 +54,15 @@ type SimilarityIndex struct {
 	Index      int
 }
 
-func getNearestVectors(target []float32, vectors [][]float32, n int) []SimilarityIndex {
+func getNearestVectors(target []float32, vectors [][]float32, n int) ([]SimilarityIndex, error) {
 	targetNorm := norm(target)
 
 	similarities := []SimilarityIndex{}
 	for i, vector := range vectors {
+		if len(target) != len(vector) {
+			return nil, fmt.Errorf("The target vector's length: [%d] should equal to knowledge vector's length: [%d], target vector = %v, knowledge vector = %v", len(target), len(vector), target, vector)
+		}
+
 		similarity := cosineSimilarity(target, vector, targetNorm)
 		similarities = append(similarities, SimilarityIndex{similarity, i})
 	}
@@ -66,10 +71,9 @@ func getNearestVectors(target []float32, vectors [][]float32, n int) []Similarit
 		return similarities[i].Similarity > similarities[j].Similarity
 	})
 
-	if len(vectors) < n {
-		n = len(vectors)
+	if n > len(similarities) {
+		n = len(similarities)
 	}
-
 	res := similarities[:n]
-	return res
+	return res, nil
 }

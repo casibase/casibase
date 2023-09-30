@@ -33,8 +33,12 @@ func (p *DefaultSearchProvider) Search(qVector []float32) ([]Vector, error) {
 		vectorData = append(vectorData, candidate.Data)
 	}
 
+	similarities, err := getNearestVectors(qVector, vectorData, 5)
+	if err != nil {
+		return nil, err
+	}
+
 	res := []Vector{}
-	similarities := getNearestVectors(qVector, vectorData, 5)
 	for _, similarity := range similarities {
 		vector := vectors[similarity.Index]
 		vector.Score = similarity.Similarity

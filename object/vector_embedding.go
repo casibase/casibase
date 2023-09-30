@@ -166,7 +166,7 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 	if err != nil {
 		return "", nil, err
 	}
-	if qVector == nil {
+	if qVector == nil || len(qVector) == 0 {
 		return "", nil, fmt.Errorf("no qVector found")
 	}
 
