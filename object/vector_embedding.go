@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/casbin/casibase/embedding"
+	"github.com/casbin/casibase/model"
 	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/txt"
 	"github.com/casbin/casibase/util"
@@ -45,7 +46,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string) (bool, error) {
+func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string) (bool, error) {
 	data, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return false, err
@@ -54,6 +55,11 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	displayName := text
 	if len(text) > 25 {
 		displayName = text[:25]
+	}
+
+	size, err := model.GetTokenSize(modelSubType, text)
+	if err != nil {
+		return false, err
 	}
 
 	vector := &Vector{
@@ -66,13 +72,14 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 		File:        fileName,
 		Index:       index,
 		Text:        text,
+		Size:        size,
 		Data:        data,
 		Dimension:   len(data),
 	}
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string, modelSubType string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -106,7 +113,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			} else {
 				err = timeLimiter.Wait(context.Background())
 				if err != nil {
@@ -114,7 +121,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				}
 
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			}
 		}
 	}

@@ -172,6 +172,15 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 	}
 }
 
+func (store *Store) GetModelProvider() (*Provider, error) {
+	if store.ModelProvider == "" {
+		return GetDefaultModelProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.ModelProvider)
+	return GetProvider(providerId)
+}
+
 func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 	if store.EmbeddingProvider == "" {
 		return GetDefaultEmbeddingProvider()
@@ -187,6 +196,11 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
+	modelProvider, err := store.GetModelProvider()
+	if err != nil {
+		return false, err
+	}
+
 	embeddingProvider, err := store.GetEmbeddingProvider()
 	if err != nil {
 		return false, err
@@ -197,6 +211,6 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, embeddingProvider.Name)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, embeddingProvider.Name, modelProvider.SubType)
 	return ok, err
 }

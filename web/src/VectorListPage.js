@@ -177,6 +177,13 @@ class VectorListPage extends React.Component {
         },
       },
       {
+        title: i18next.t("vector:Size"),
+        dataIndex: "size",
+        key: "size",
+        width: "80px",
+        sorter: (a, b) => a.size - b.size,
+      },
+      {
         title: i18next.t("vector:Data"),
         dataIndex: "data",
         key: "data",

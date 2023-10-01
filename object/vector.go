@@ -32,6 +32,7 @@ type Vector struct {
 	File        string  `xorm:"varchar(100)" json:"file"`
 	Index       int     `json:"index"`
 	Text        string  `xorm:"mediumtext" json:"text"`
+	Size        int     `json:"size"`
 	Score       float32 `json:"score"`
 
 	Data      []float32 `xorm:"mediumtext" json:"data"`
