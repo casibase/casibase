@@ -196,6 +196,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "embed-english-v2.0");
                 } else if (value === "Ernie") {
                   this.updateProviderField("subType", "default");
+                } else if (value === "Local") {
+                  this.updateProviderField("subType", "custom-embedding");
                 }
               }
             })}>

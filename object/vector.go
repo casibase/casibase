@@ -26,11 +26,17 @@ type Vector struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName string    `xorm:"varchar(100)" json:"displayName"`
-	Store       string    `xorm:"varchar(100)" json:"store"`
-	File        string    `xorm:"varchar(100)" json:"file"`
-	Text        string    `xorm:"mediumtext" json:"text"`
-	Data        []float32 `xorm:"mediumtext" json:"data"`
+	DisplayName string  `xorm:"varchar(100)" json:"displayName"`
+	Store       string  `xorm:"varchar(100)" json:"store"`
+	Provider    string  `xorm:"varchar(100)" json:"provider"`
+	File        string  `xorm:"varchar(100)" json:"file"`
+	Index       int     `json:"index"`
+	Text        string  `xorm:"mediumtext" json:"text"`
+	Size        int     `json:"size"`
+	Score       float32 `json:"score"`
+
+	Data      []float32 `xorm:"mediumtext" json:"data"`
+	Dimension int       `json:"dimension"`
 }
 
 func GetGlobalVectors() ([]*Vector, error) {
@@ -55,6 +61,20 @@ func GetVectors(owner string) ([]*Vector, error) {
 
 func getVector(owner string, name string) (*Vector, error) {
 	vector := Vector{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&vector)
+	if err != nil {
+		return &vector, err
+	}
+
+	if existed {
+		return &vector, nil
+	} else {
+		return nil, nil
+	}
+}
+
+func getVectorByIndex(owner string, store string, file string, index int) (*Vector, error) {
+	vector := Vector{Owner: owner, Store: store, File: file, Index: index}
 	existed, err := adapter.engine.Get(&vector)
 	if err != nil {
 		return &vector, err

@@ -114,13 +114,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	modelProviderObj, err := getModelProviderFromContext(chat.Owner, chat.User2)
+	_, modelProviderObj, err := getModelProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
 
-	embeddingProviderObj, err := getEmbeddingProviderFromContext(chat.Owner, chat.User2)
+	embeddingProvider, embeddingProviderObj, err := getEmbeddingProviderFromContext(chat.Owner, chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -131,21 +131,23 @@ func (c *ApiController) GetMessageAnswer() {
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
 	question := questionMessage.Text
-	var stringBuilder strings.Builder
 
-	nearestText, err := object.GetNearestVectorText(embeddingProviderObj, chat.Owner, question)
+	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, chat.Owner, question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
 
-	realQuestion := object.GetRefinedQuestion(nearestText, question)
+	realQuestion := object.GetRefinedQuestion(knowledge, question)
 
 	fmt.Printf("Question: [%s]\n", question)
-	fmt.Printf("Context: [%s]\n", nearestText)
+	fmt.Printf("Knowledge: [%s]\n", knowledge)
+	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(realQuestion, c.Ctx.ResponseWriter, &stringBuilder)
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	stringBuilder := &strings.Builder{}
+	err = modelProviderObj.QueryText(realQuestion, writer, stringBuilder)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -160,9 +162,10 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	answer := stringBuilder.String()
+	answer := writer.String()
 
 	message.Text = answer
+	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
@@ -225,10 +228,11 @@ func (c *ApiController) AddMessage() {
 				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
 				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
 				// Organization: message.Organization,
-				Chat:    message.Chat,
-				ReplyTo: message.GetId(),
-				Author:  "AI",
-				Text:    "",
+				Chat:         message.Chat,
+				ReplyTo:      message.GetId(),
+				Author:       "AI",
+				Text:         "",
+				VectorScores: []object.VectorScore{},
 			}
 			_, err = object.AddMessage(answerMessage)
 			if err != nil {

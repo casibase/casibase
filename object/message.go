@@ -21,16 +21,22 @@ import (
 	"xorm.io/core"
 )
 
+type VectorScore struct {
+	Vector string  `xorm:"varchar(100)" json:"vector"`
+	Score  float32 `json:"score"`
+}
+
 type Message struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	// Organization string `xorm:"varchar(100)" json:"organization"`
-	Chat    string `xorm:"varchar(100) index" json:"chat"`
-	ReplyTo string `xorm:"varchar(100) index" json:"replyTo"`
-	Author  string `xorm:"varchar(100)" json:"author"`
-	Text    string `xorm:"mediumtext" json:"text"`
+	Chat         string        `xorm:"varchar(100) index" json:"chat"`
+	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
+	Author       string        `xorm:"varchar(100)" json:"author"`
+	Text         string        `xorm:"mediumtext" json:"text"`
+	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

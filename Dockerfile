@@ -1,4 +1,4 @@
-FROM golang:1.19 AS BACK
+FROM golang:1.20 AS BACK
 WORKDIR /go/src/casibase
 COPY . .
 RUN go build -o server ./main.go

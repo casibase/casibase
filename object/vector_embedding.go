@@ -18,9 +18,11 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/casbin/casibase/embedding"
+	"github.com/casbin/casibase/model"
 	"github.com/casbin/casibase/storage"
 	"github.com/casbin/casibase/txt"
 	"github.com/casbin/casibase/util"
@@ -44,7 +46,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 	return res
 }
 
-func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string) (bool, error) {
+func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string) (bool, error) {
 	data, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return false, err
@@ -55,20 +57,29 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 		displayName = text[:25]
 	}
 
+	size, err := model.GetTokenSize(modelSubType, text)
+	if err != nil {
+		return false, err
+	}
+
 	vector := &Vector{
 		Owner:       "admin",
 		Name:        fmt.Sprintf("vector_%s", util.GetRandomName()),
 		CreatedTime: util.GetCurrentTime(),
 		DisplayName: displayName,
 		Store:       storeName,
+		Provider:    embeddingProviderName,
 		File:        fileName,
+		Index:       index,
 		Text:        text,
+		Size:        size,
 		Data:        data,
+		Dimension:   len(data),
 	}
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string, modelSubType string) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -89,9 +100,20 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 		textSections := txt.GetTextSections(text)
 		for i, textSection := range textSections {
+			var vector *Vector
+			vector, err = getVectorByIndex("admin", storeName, file.Key, i)
+			if err != nil {
+				return false, err
+			}
+
+			if vector != nil {
+				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, "Skipped due to already exists")
+				continue
+			}
+
 			if timeLimiter.Allow() {
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			} else {
 				err = timeLimiter.Wait(context.Background())
 				if err != nil {
@@ -99,7 +121,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				}
 
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s]'s text section: %s\n", i+1, len(textSections), storeName, textSection)
-				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key)
+				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			}
 		}
 	}
@@ -146,19 +168,39 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestVectorText(embeddingProvider embedding.EmbeddingProvider, owner string, text string) (string, error) {
-	qVector, err := queryVectorSafe(embeddingProvider, text)
+func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) (string, []VectorScore, error) {
+	qVector, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
-	if qVector == nil {
-		return "", fmt.Errorf("no qVector found")
+	if qVector == nil || len(qVector) == 0 {
+		return "", nil, fmt.Errorf("no qVector found")
 	}
 
 	searchProvider, err := GetSearchProvider("Default", owner)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
-	return searchProvider.Search(qVector)
+	vectors, err := searchProvider.Search(qVector)
+	if err != nil {
+		return "", nil, err
+	}
+
+	vectorScores := []VectorScore{}
+	texts := []string{}
+	for _, vector := range vectors {
+		if embeddingProvider.Name != vector.Provider {
+			return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
+		}
+
+		vectorScores = append(vectorScores, VectorScore{
+			Vector: vector.Name,
+			Score:  vector.Score,
+		})
+		texts = append(texts, vector.Text)
+	}
+
+	res := strings.Join(texts, "\n\n")
+	return res, vectorScores, nil
 }

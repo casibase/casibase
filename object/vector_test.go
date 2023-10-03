@@ -14,20 +14,31 @@
 
 package object
 
-import "fmt"
+import (
+	"testing"
 
-func GetRefinedQuestion(knowledge string, question string) string {
-	if knowledge == "" {
-		return question
+	"github.com/casbin/casibase/model"
+)
+
+func TestUpdateVectors(t *testing.T) {
+	InitConfig()
+
+	vectors, err := GetGlobalVectors()
+	if err != nil {
+		panic(err)
 	}
 
-	return fmt.Sprintf(`You have some background knowledge: 
+	for _, vector := range vectors {
+		if vector.Text != "" && vector.Size == 0 {
+			vector.Size, err = model.GetTokenSize("text-davinci-003", vector.Text)
+			if err != nil {
+				panic(err)
+			}
 
-%s
-
-Now, please answer the following question based on the provided information:
-
-%s
-
-(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is."")`, knowledge, question)
+			_, err = UpdateVector(vector.GetId(), vector)
+			if err != nil {
+				panic(err)
+			}
+		}
+	}
 }

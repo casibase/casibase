@@ -22,17 +22,28 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 	return &DefaultSearchProvider{owner: owner}, nil
 }
 
-func (p *DefaultSearchProvider) Search(qVector []float32) (string, error) {
+func (p *DefaultSearchProvider) Search(qVector []float32) ([]Vector, error) {
 	vectors, err := getRelatedVectors(p.owner)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	var nVectors [][]float32
+	var vectorData [][]float32
 	for _, candidate := range vectors {
-		nVectors = append(nVectors, candidate.Data)
+		vectorData = append(vectorData, candidate.Data)
 	}
 
-	i := getNearestVectorIndex(qVector, nVectors)
-	return vectors[i].Text, nil
+	similarities, err := getNearestVectors(qVector, vectorData, 5)
+	if err != nil {
+		return nil, err
+	}
+
+	res := []Vector{}
+	for _, similarity := range similarities {
+		vector := vectors[similarity.Index]
+		vector.Score = similarity.Similarity
+		res = append(res, *vector)
+	}
+
+	return res, nil
 }
