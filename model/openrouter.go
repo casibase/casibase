@@ -22,7 +22,7 @@ import (
 	"strings"
 
 	"github.com/Lok-Lu/go-openrouter"
-	"github.com/casbin/casibase/proxy"
+	"github.com/casibase/casibase/proxy"
 )
 
 type OpenRouterModelProvider struct {

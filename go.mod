@@ -1,4 +1,4 @@
-module github.com/casbin/casibase
+module github.com/casibase/casibase
 
 go 1.20
 

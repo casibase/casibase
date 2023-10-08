@@ -18,9 +18,9 @@ import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
-	"github.com/casbin/casibase/object"
-	"github.com/casbin/casibase/proxy"
-	"github.com/casbin/casibase/routers"
+	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/proxy"
+	"github.com/casibase/casibase/routers"
 )
 
 func main() {

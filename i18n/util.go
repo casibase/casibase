@@ -17,7 +17,7 @@ package i18n
 import (
 	"fmt"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 )
 
 func getI18nFilePath(language string) string {

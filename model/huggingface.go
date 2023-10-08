@@ -20,7 +20,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/casbin/casibase/proxy"
+	"github.com/casibase/casibase/proxy"
 	"github.com/henomis/lingoose/llm/huggingface"
 )
 

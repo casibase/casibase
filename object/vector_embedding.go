@@ -21,11 +21,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casbin/casibase/embedding"
-	"github.com/casbin/casibase/model"
-	"github.com/casbin/casibase/storage"
-	"github.com/casbin/casibase/txt"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/storage"
+	"github.com/casibase/casibase/txt"
+	"github.com/casibase/casibase/util"
 	"golang.org/x/time/rate"
 )
 

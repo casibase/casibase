@@ -21,9 +21,9 @@ import (
 	"io"
 	"time"
 
-	"github.com/casbin/casibase/object"
-	"github.com/casbin/casibase/util"
-	"github.com/casbin/casibase/video"
+	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
+	"github.com/casibase/casibase/video"
 )
 
 func (c *ApiController) GetGlobalVideos() {

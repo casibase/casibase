@@ -7,37 +7,37 @@
   <a href="https://hub.docker.com/r/casbin/casibase">
     <img alt="docker pull casbin/casibase" src="https://img.shields.io/docker/pulls/casbin/casibase.svg">
   </a>
-  <a href="https://github.com/casbin/casibase/actions/workflows/build.yml">
-    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casbin/casibase/workflows/Build/badge.svg?style=flat-square">
+  <a href="https://github.com/casibase/casibase/actions/workflows/build.yml">
+    <img alt="GitHub Workflow Status (branch)" src="https://github.com/casibase/casibase/workflows/Build/badge.svg?style=flat-square">
   </a>
-  <a href="https://github.com/casbin/casibase/releases/latest">
-    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casbin/casibase.svg">
+  <a href="https://github.com/casibase/casibase/releases/latest">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casibase/casibase.svg">
   </a>
   <a href="https://hub.docker.com/repository/docker/casbin/casibase">
     <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
   </a>
 <!-- waiting for changing -->
 <!-- <a href="https://hub.docker.com/r/casbin/casibase"> -->
-<!-- <a href="https://github.com/casbin/casibase/actions/workflows/build.yml"> -->
-<!-- <a href="https://github.com/casbin/casibase/releases/latest"> -->
+<!-- <a href="https://github.com/casibase/casibase/actions/workflows/build.yml"> -->
+<!-- <a href="https://github.com/casibase/casibase/releases/latest"> -->
 <!-- <a href="https://hub.docker.com/repository/docker/casbin/casibase"> -->
 </p>
 
 <p align="center">
-  <a href="https://goreportcard.com/report/github.com/casbin/casibase">
-    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casbin/casibase?style=flat-square">
+  <a href="https://goreportcard.com/report/github.com/casibase/casibase">
+    <img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/casibase/casibase?style=flat-square">
   </a>
-  <a href="https://github.com/casbin/casibase/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/casbin/casibase?style=flat-square" alt="license">
+  <a href="https://github.com/casibase/casibase/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/casibase/casibase?style=flat-square" alt="license">
   </a>
-  <a href="https://github.com/casbin/casibase/issues">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/casbin/casibase?style=flat-square">
+  <a href="https://github.com/casibase/casibase/issues">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues/casibase/casibase?style=flat-square">
   </a>
   <a href="#">
-    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casbin/casibase?style=flat-square">
+    <img alt="GitHub stars" src="https://img.shields.io/github/stars/casibase/casibase?style=flat-square">
   </a>
-  <a href="https://github.com/casbin/casibase/network">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/casbin/casibase?style=flat-square">
+  <a href="https://github.com/casibase/casibase/network">
+    <img alt="GitHub forks" src="https://img.shields.io/github/forks/casibase/casibase?style=flat-square">
   </a>
   <a href="https://crowdin.com/project/casibase">
     <img alt="Crowdin" src="https://badges.crowdin.net/casibase/localized.svg">
@@ -49,7 +49,7 @@
 
 ## Online Demo
 
-<https://ai.casbin.com>
+<https://ai.v2tl.com>
 
 ## Architecture
 
@@ -100,13 +100,11 @@ Casibase contains 2 parts:
 
 Discord: <https://discord.gg/5rPsrAzK7S>
 
-Forum: <https://forum.casbin.com>
-
-Contact: <https://tawk.to/chat/623352fea34c2456412b8c51/1fuc7od6e>
-
 ## Contribute
+
 For Casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
 
 
 ## License
-[Apache-2.0](https://github.com/casbin/casibase/blob/master/LICENSE)
+
+[Apache-2.0](https://github.com/casibase/casibase/blob/master/LICENSE)

@@ -20,7 +20,7 @@ import (
 	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/vod"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 )
 
 func GetVideoPlayAuth(videoId string) string {

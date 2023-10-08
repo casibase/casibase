@@ -20,7 +20,7 @@ import (
 	"net"
 	"strings"
 
-	"github.com/casbin/casibase/object"
+	"github.com/casibase/casibase/object"
 )
 
 func (c *ApiController) GetGlobalStores() {

@@ -19,8 +19,8 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
-	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/util"
 )
 
 func NewRecord(ctx *context.Context) *casdoorsdk.Record {

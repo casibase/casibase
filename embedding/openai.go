@@ -17,8 +17,8 @@ package embedding
 import (
 	"context"
 
-	"github.com/casbin/casibase/proxy"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/proxy"
+	"github.com/casibase/casibase/util"
 	"github.com/sashabaranov/go-openai"
 )
 

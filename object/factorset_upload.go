@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 )
 
 func (factorset *Factorset) LoadFactors(pathPrefix string) {
