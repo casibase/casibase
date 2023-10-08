@@ -47,6 +47,10 @@
   </a>
 </p>
 
+## Online Demo
+
+<https://ai.casbin.com>
+
 ## Architecture
 
 Casibase contains 2 parts:
@@ -83,10 +87,6 @@ Casibase contains 2 parts:
 | Cohere       | embed-english-v2.0, embed-english-light-v2.0, embed-multilingual-v2.0                                                                                                                                                                                                                                                                    | [Cohere](https://cohere.com/)           |
 | Ernie        | default                                                                                                                                                                                                                                                                                                                                  | [Ernie](https://yiyan.baidu.com/)       |
 | Local        | custom-embedding                                                                                                                                                                                                                                                                                                                         | [Local Computer](#)                     |
-
-## Online Demo
-
-<https://ai.casbin.com>
 
 ## Documentation
 
