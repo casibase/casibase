@@ -47,6 +47,10 @@
   </a>
 </p>
 
+## Online Demo
+
+<https://ai.casbin.com>
+
 ## Architecture
 
 Casibase contains 2 parts:
@@ -58,9 +62,31 @@ Casibase contains 2 parts:
 
 ![0-Architecture-casibase](assets/0-Architecture-casibase.png)
 
-## Online Demo
+## Supported Models
 
-<https://ai.casbin.com>
+**Language Model**
+
+| Model        | Sub Type                                                                                                                                                                                                                                                                                                                                                                                                         | Link                                    |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| OpenAI       | gpt-4-32k-0613，gpt-4-32k-0314，gpt-4-32k，gpt-4-0613，gpt-4-0314，gpt-4，gpt-3.5-turbo-0613，gpt-3.5-turbo-0301，gpt-3.5-turbo-16k，gpt-3.5-turbo-16k-0613，gpt-3.5-turbo，text-davinci-003，text-davinci-002，text-curie-001，text-babbage-001，text-ada-001，text-davinci-001，davinci-instruct-beta，davinci，curie-instruct-beta，curie，ada，babbage                                                                             | [OpenAI](https://chat.openai.com/)      |
+| Hugging Face | meta-llama/Llama-2-7b, tiiuae/falcon-180B, bigscience/bloom, gpt2, baichuan-inc/Baichuan2-13B-Chat, THUDM/chatglm2-6b                                                                                                                                                                                                                                                                                            | [Hugging Face](https://huggingface.co/) |
+| Claude       | claude-2, claude-v1, claude-v1-100k, claude-instant-v1, claude-instant-v1-100k, claude-v1.3, claude-v1.3-100k, claude-v1.2, claude-v1.0, claude-instant-v1.1, claude-instant-v1.1-100k, claude-instant-v1.0                                                                                                                                                                                                      | [Claude](https://claude.ai/chats)       |
+| OpenRouter   | google/palm-2-codechat-bison, google/palm-2-chat-bison, openai/gpt-3.5-turbo, openai/gpt-3.5-turbo-16k, openai/gpt-4, openai/gpt-4-32k, anthropic/claude-2, anthropic/claude-instant-v1, meta-llama/llama-2-13b-chat, meta-llama/llama-2-70b-chat, palm-2-codechat-bison, palm-2-chat-bison, gpt-3.5-turbo, gpt-3.5-turbo-16k, gpt-4, gpt-4-32k, claude-2, claude-instant-v1, llama-2-13b-chat, llama-2-70b-chat | [OpenRouter](https://openrouter.ai/)    |
+| Ernie        | ERNIE-Bot, ERNIE-Bot-turbo, BLOOMZ-7B, Llama-2                                                                                                                                                                                                                                                                                                                                                                   | [Ernie](https://yiyan.baidu.com/)       |
+| iFlytek      | spark-v1.5, spark-v2.0                                                                                                                                                                                                                                                                                                                                                                                           | [iFlytek](https://xinghuo.xfyun.cn/)    |
+| ChatGLM      | chatglm2-6b                                                                                                                                                                                                                                                                                                                                                                                                      | [ChatGLM](https://chatglm.cn/)          |
+| MiniMax      | abab5-chat                                                                                                                                                                                                                                                                                                                                                                                                       | [MiniMax](https://api.minimax.chat/)    |
+| Local        | custom-model                                                                                                                                                                                                                                                                                                                                                                                                     | [Local Computer](#)                     |
+
+**Embedding Model**
+
+| Model        | Sub Type                                                                                                                                                                                                                                                                                                                                 | Link                                    |
+|--------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------|
+| OpenAI       | AdaSimilarity, BabbageSimilarity, CurieSimilarity, DavinciSimilarity, AdaSearchDocument, AdaSearchQuery, BabbageSearchDocument, BabbageSearchQuery, CurieSearchDocument, CurieSearchQuery, DavinciSearchDocument, DavinciSearchQuery, AdaCodeSearchCode, AdaCodeSearchText, BabbageCodeSearchCode, BabbageCodeSearchText, AdaEmbeddingV2 | [OpenAI](https://chat.openai.com/)      |
+| Hugging Face | sentence-transformers/all-MiniLM-L6-v2                                                                                                                                                                                                                                                                                                   | [Hugging Face](https://huggingface.co/) |
+| Cohere       | embed-english-v2.0, embed-english-light-v2.0, embed-multilingual-v2.0                                                                                                                                                                                                                                                                    | [Cohere](https://cohere.com/)           |
+| Ernie        | default                                                                                                                                                                                                                                                                                                                                  | [Ernie](https://yiyan.baidu.com/)       |
+| Local        | custom-embedding                                                                                                                                                                                                                                                                                                                         | [Local Computer](#)                     |
 
 ## Documentation
 
