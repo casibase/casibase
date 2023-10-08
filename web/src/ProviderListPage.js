@@ -64,6 +64,7 @@ class ProviderListPage extends React.Component {
       frequencyPenalty: 0,
       presencePenalty: 0,
       providerUrl: "https://platform.openai.com/account/api-keys",
+      apiVersion: "",
     };
   }
 

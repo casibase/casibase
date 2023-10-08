@@ -648,6 +648,7 @@ export function getProviderTypeOptions(category) {
         {id: "ChatGLM", name: "ChatGLM"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Local", name: "Local"},
+        {id: "Azure", name: "Azure"},
       ]
     );
   } else if (category === "Embedding") {
@@ -665,57 +666,61 @@ export function getProviderTypeOptions(category) {
   }
 }
 
+const openaiModels = [
+  {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+  {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
+  {id: "gpt-4-32k", name: "gpt-4-32k"},
+  {id: "gpt-4-0613", name: "gpt-4-0613"},
+  {id: "gpt-4-0314", name: "gpt-4-0314"},
+  {id: "gpt-4", name: "gpt-4"},
+  {id: "gpt-3.5-turbo-0613", name: "gpt-3.5-turbo-0613"},
+  {id: "gpt-3.5-turbo-0301", name: "gpt-3.5-turbo-0301"},
+  {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
+  {id: "gpt-3.5-turbo-16k-0613", name: "gpt-3.5-turbo-16k-0613"},
+  {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
+  {id: "text-davinci-003", name: "text-davinci-003"},
+  {id: "text-davinci-002", name: "text-davinci-002"},
+  {id: "text-curie-001", name: "text-curie-001"},
+  {id: "text-babbage-001", name: "text-babbage-001"},
+  {id: "text-ada-001", name: "text-ada-001"},
+  {id: "text-davinci-001", name: "text-davinci-001"},
+  {id: "davinci-instruct-beta", name: "davinci-instruct-beta"},
+  {id: "davinci", name: "davinci"},
+  {id: "curie-instruct-beta", name: "curie-instruct-beta"},
+  {id: "curie", name: "curie"},
+  {id: "ada", name: "ada"},
+  {id: "babbage", name: "babbage"},
+];
+
+const openaiEmbeddings = [
+  {id: "1", name: "AdaSimilarity"},
+  {id: "2", name: "BabbageSimilarity"},
+  {id: "3", name: "CurieSimilarity"},
+  {id: "4", name: "DavinciSimilarity"},
+  {id: "5", name: "AdaSearchDocument"},
+  {id: "6", name: "AdaSearchQuery"},
+  {id: "7", name: "BabbageSearchDocument"},
+  {id: "8", name: "BabbageSearchQuery"},
+  {id: "9", name: "CurieSearchDocument"},
+  {id: "10", name: "CurieSearchQuery"},
+  {id: "11", name: "DavinciSearchDocument"},
+  {id: "12", name: "DavinciSearchQuery"},
+  {id: "13", name: "AdaCodeSearchCode"},
+  {id: "14", name: "AdaCodeSearchText"},
+  {id: "15", name: "BabbageCodeSearchCode"},
+  {id: "16", name: "BabbageCodeSearchText"},
+  {id: "17", name: "AdaEmbeddingV2"},
+];
+
 export function getProviderSubTypeOptions(category, type) {
   if (type === "OpenAI") {
     if (category === "Model") {
       return (
-        [
-          {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
-          {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
-          {id: "gpt-4-32k", name: "gpt-4-32k"},
-          {id: "gpt-4-0613", name: "gpt-4-0613"},
-          {id: "gpt-4-0314", name: "gpt-4-0314"},
-          {id: "gpt-4", name: "gpt-4"},
-          {id: "gpt-3.5-turbo-0613", name: "gpt-3.5-turbo-0613"},
-          {id: "gpt-3.5-turbo-0301", name: "gpt-3.5-turbo-0301"},
-          {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
-          {id: "gpt-3.5-turbo-16k-0613", name: "gpt-3.5-turbo-16k-0613"},
-          {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
-          {id: "text-davinci-003", name: "text-davinci-003"},
-          {id: "text-davinci-002", name: "text-davinci-002"},
-          {id: "text-curie-001", name: "text-curie-001"},
-          {id: "text-babbage-001", name: "text-babbage-001"},
-          {id: "text-ada-001", name: "text-ada-001"},
-          {id: "text-davinci-001", name: "text-davinci-001"},
-          {id: "davinci-instruct-beta", name: "davinci-instruct-beta"},
-          {id: "davinci", name: "davinci"},
-          {id: "curie-instruct-beta", name: "curie-instruct-beta"},
-          {id: "curie", name: "curie"},
-          {id: "ada", name: "ada"},
-          {id: "babbage", name: "babbage"},
-        ]
+        openaiModels
       );
     } else if (category === "Embedding") {
       return (
-        [
-          {id: "1", name: "AdaSimilarity"},
-          {id: "2", name: "BabbageSimilarity"},
-          {id: "3", name: "CurieSimilarity"},
-          {id: "4", name: "DavinciSimilarity"},
-          {id: "5", name: "AdaSearchDocument"},
-          {id: "6", name: "AdaSearchQuery"},
-          {id: "7", name: "BabbageSearchDocument"},
-          {id: "8", name: "BabbageSearchQuery"},
-          {id: "9", name: "CurieSearchDocument"},
-          {id: "10", name: "CurieSearchQuery"},
-          {id: "11", name: "DavinciSearchDocument"},
-          {id: "12", name: "DavinciSearchQuery"},
-          {id: "13", name: "AdaCodeSearchCode"},
-          {id: "14", name: "AdaCodeSearchText"},
-          {id: "15", name: "BabbageCodeSearchCode"},
-          {id: "16", name: "BabbageCodeSearchText"},
-          {id: "17", name: "AdaEmbeddingV2"},
-        ]
+        openaiEmbeddings
       );
     } else {
       return [];
@@ -845,7 +850,24 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (type === "Azure") {
+    if (category === "Model") {
+      return (
+        openaiModels
+      );
+    }
   } else {
     return [];
   }
+}
+
+export function getProviderAzureApiVersionOptions() {
+  return ([
+    {id: "", name: ""},
+    {id: "2023-03-15-preview", name: "2023-03-15-preview"},
+    {id: "2023-05-15", name: "2023-05-15"},
+    {id: "2023-06-01-preview", name: "2023-06-01-preview"},
+    {id: "2023-07-01-preview", name: "2023-07-01-preview"},
+    {id: "2023-08-01-preview", name: "2023-08-01-preview"},
+  ]);
 }

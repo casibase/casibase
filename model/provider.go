@@ -23,7 +23,7 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, builder *strings.Builder) error
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "OpenAI" {
@@ -43,7 +43,9 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "MiniMax" {
 		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
 	} else if typ == "Local" {
-		p, err = NewLocalModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
+		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
+	} else if typ == "Azure" {
+		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	}
 
 	if err != nil {
