@@ -186,6 +186,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "chatglm2-6b");
                 } else if (value === "Local") {
                   this.updateProviderField("subType", "custom-model");
+                } else if (value === "Azure") {
+                  this.updateProviderField("subType", "gpt-4");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -476,6 +478,34 @@ class ProviderEditPage extends React.Component {
                   }}
                   isMobile={Setting.isMobile()}
                 />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          ((this.state.provider.category === "Model") && this.state.provider.type === "Azure") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Deployment Name")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:API Version")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.provider.apiVersion} onChange={(value => {
+                    this.updateProviderField("apiVersion", value);
+                  })}
+                  options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))
+                  } />
+                </Col>
               </Row>
             </>
           ) : null
