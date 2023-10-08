@@ -105,6 +105,14 @@ class ProviderEditPage extends React.Component {
     );
   }
 
+  handleTagChange = (key, value) => {
+    if (Array.isArray(value) && value.length > 0) {
+      this.updateProviderField(key, value[value.length - 1]);
+    } else {
+      this.updateProviderField(key, value);
+    }
+  };
+
   renderProvider() {
     return (
       <Card size="small" title={
@@ -500,11 +508,12 @@ class ProviderEditPage extends React.Component {
                   {i18next.t("provider:API Version")}:
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.provider.apiVersion} onChange={(value => {
-                    this.updateProviderField("apiVersion", value);
-                  })}
-                  options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))
-                  } />
+                  <Select virtual={false} mode="tags" style={{width: "100%"}}
+                    value={this.state.provider.apiVersion}
+                    onSelect={(value) => {this.handleTagChange("apiVersion", value);}}
+                    onChange={(value) => {this.handleTagChange("apiVersion", value);}}
+                    options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))}
+                  />
                 </Col>
               </Row>
             </>

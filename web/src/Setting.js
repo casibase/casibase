@@ -863,6 +863,7 @@ export function getProviderSubTypeOptions(category, type) {
 
 export function getProviderAzureApiVersionOptions() {
   return ([
+    {id: "", name: ""},
     {id: "2023-03-15-preview", name: "2023-03-15-preview"},
     {id: "2023-05-15", name: "2023-05-15"},
     {id: "2023-06-01-preview", name: "2023-06-01-preview"},
