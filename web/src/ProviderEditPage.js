@@ -208,6 +208,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "default");
                 } else if (value === "Local") {
                   this.updateProviderField("subType", "custom-embedding");
+                } else if (value === "Azure") {
+                  this.updateProviderField("subType", "AdaSimilarity");
                 }
               }
             })}>
@@ -491,7 +493,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          ((this.state.provider.category === "Model") && this.state.provider.type === "Azure") ? (
+          ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

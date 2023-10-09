@@ -225,7 +225,7 @@ func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
 }
 
 func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
-	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl)
+	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion)
 	if err != nil {
 		return nil, err
 	}

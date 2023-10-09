@@ -20,7 +20,7 @@ type EmbeddingProvider interface {
 	QueryVector(text string, ctx context.Context) ([]float32, error)
 }
 
-func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string) (EmbeddingProvider, error) {
+func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string) (EmbeddingProvider, error) {
 	var p EmbeddingProvider
 	var err error
 	if typ == "OpenAI" {
@@ -32,7 +32,9 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	} else if typ == "Ernie" {
 		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Local" {
-		p, err = NewLocalEmbeddingProvider(subType, clientSecret, providerUrl)
+		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl)
+	} else if typ == "Azure" {
+		p, err = NewAzureEmbeddingProvider(typ, subType, clientId, clientSecret, providerUrl, apiVersion)
 	}
 
 	if err != nil {

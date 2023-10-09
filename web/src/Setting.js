@@ -659,6 +659,7 @@ export function getProviderTypeOptions(category) {
         {id: "Cohere", name: "Cohere"},
         {id: "Ernie", name: "Ernie"},
         {id: "Local", name: "Local"},
+        {id: "Azure", name: "Azure"},
       ]
     );
   } else {
@@ -854,6 +855,10 @@ export function getProviderSubTypeOptions(category, type) {
     if (category === "Model") {
       return (
         openaiModels
+      );
+    } else if (category === "Embedding") {
+      return (
+        openaiEmbeddings
       );
     }
   } else {
