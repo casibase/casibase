@@ -21,13 +21,17 @@ import (
 )
 
 type LocalEmbeddingProvider struct {
-	subType     string
-	secretKey   string
-	providerUrl string
+	typ            string
+	subType        string
+	deploymentName string
+	secretKey      string
+	providerUrl    string
+	apiVersion     string
 }
 
-func NewLocalEmbeddingProvider(subType string, secretKey string, providerUrl string) (*LocalEmbeddingProvider, error) {
+func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string) (*LocalEmbeddingProvider, error) {
 	p := &LocalEmbeddingProvider{
+		typ:         typ,
 		subType:     subType,
 		secretKey:   secretKey,
 		providerUrl: providerUrl,
@@ -44,7 +48,12 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 }
 
 func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
-	client := getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	var client *openai.Client
+	if p.typ == "Local" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	} else if p.typ == "Azure" {
+		client = getAzureClientFromToken(p.subType, p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
+	}
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
