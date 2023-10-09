@@ -83,6 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
     if: github.repository == 'casibase/casibase' && github.event_name == 'push'
     needs: [ frontend, backend, linter]
     steps:
