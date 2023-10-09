@@ -81,6 +81,8 @@ jobs:
   release-and-push:
     name: Release And Push
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     if: github.repository == 'casibase/casibase' && github.event_name == 'push'
     needs: [ frontend, backend, linter]
     steps:
