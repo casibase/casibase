@@ -111,6 +111,10 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 			return streamErr
 		}
 
+		if len(completion.Choices) == 0 {
+			continue
+		}
+
 		data := completion.Choices[0].Delta.Content
 		if isLeadingReturn && len(data) != 0 {
 			if strings.Count(data, "\n") == len(data) {
