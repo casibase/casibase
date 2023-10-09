@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/casbin/casibase/controllers"
-	"github.com/casbin/casibase/object"
-	"github.com/casbin/casibase/storage"
+	"github.com/casibase/casibase/controllers"
+	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/storage"
 )
 
 func TestStorage(t *testing.T) {

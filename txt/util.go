@@ -20,7 +20,7 @@ import (
 	"io/ioutil"
 	"path/filepath"
 
-	"github.com/casbin/casibase/proxy"
+	"github.com/casibase/casibase/proxy"
 )
 
 func downloadFile(url string) (*bytes.Buffer, error) {

@@ -19,7 +19,7 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 	"github.com/casibase/go-hnsw"
 )
 

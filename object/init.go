@@ -14,7 +14,7 @@
 
 package object
 
-import "github.com/casbin/casibase/util"
+import "github.com/casibase/casibase/util"
 
 func InitDb() {
 	existed := initBuiltInStore()

@@ -20,7 +20,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 )
 
 var graphCache map[string]*Graph

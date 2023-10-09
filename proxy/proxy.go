@@ -22,7 +22,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/casbin/casibase/conf"
+	"github.com/casibase/casibase/conf"
 	"golang.org/x/net/proxy"
 )
 

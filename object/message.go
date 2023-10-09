@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 	"github.com/google/uuid"
 	"xorm.io/core"
 )

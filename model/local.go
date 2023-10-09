@@ -25,17 +25,21 @@ import (
 )
 
 type LocalModelProvider struct {
+	typ              string
 	subType          string
+	deploymentName   string
 	secretKey        string
 	temperature      float32
 	topP             float32
 	frequencyPenalty float32
 	presencePenalty  float32
 	providerUrl      string
+	apiVersion       string
 }
 
-func NewLocalModelProvider(subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
+		typ:              typ,
 		subType:          subType,
 		secretKey:        secretKey,
 		temperature:      temperature,
@@ -56,7 +60,12 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 }
 
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
-	client := getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	var client *openai.Client
+	if p.typ == "Local" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	} else if p.typ == "Azure" {
+		client = getAzureClientFromToken(p.subType, p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
+	}
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -70,11 +79,16 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
 
-	respStream, err := client.CreateCompletionStream(
+	respStream, err := client.CreateChatCompletionStream(
 		ctx,
-		openai.CompletionRequest{
-			Model:            model,
-			Prompt:           question,
+		openai.ChatCompletionRequest{
+			Model: model,
+			Messages: []openai.ChatCompletionMessage{
+				{
+					Role:    openai.ChatMessageRoleUser,
+					Content: question,
+				},
+			},
 			Stream:           true,
 			Temperature:      temperature,
 			TopP:             topP,
@@ -97,7 +111,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 			return streamErr
 		}
 
-		data := completion.Choices[0].Text
+		data := completion.Choices[0].Delta.Content
 		if isLeadingReturn && len(data) != 0 {
 			if strings.Count(data, "\n") == len(data) {
 				continue

@@ -15,8 +15,8 @@
 package object
 
 import (
-	"github.com/casbin/casibase/util"
-	"github.com/casbin/casibase/xlsx"
+	"github.com/casibase/casibase/util"
+	"github.com/casibase/casibase/xlsx"
 )
 
 func uploadFactorNames(owner string, fileId string) (bool, error) {

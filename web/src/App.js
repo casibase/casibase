@@ -445,7 +445,7 @@ class App extends Component {
             textAlign: "center",
           }
         }>
-          Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casbin/casibase">Casibase</a>
+          Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casibase/casibase">Casibase</a>
         </Footer>
       </React.Fragment>
     );

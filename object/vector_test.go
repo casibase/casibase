@@ -17,7 +17,7 @@ package object
 import (
 	"testing"
 
-	"github.com/casbin/casibase/model"
+	"github.com/casibase/casibase/model"
 )
 
 func TestUpdateVectors(t *testing.T) {

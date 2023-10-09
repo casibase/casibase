@@ -17,7 +17,7 @@ package object
 import (
 	"fmt"
 
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
 

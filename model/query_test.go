@@ -20,9 +20,9 @@ package model_test
 import (
 	"testing"
 
-	"github.com/casbin/casibase/model"
-	"github.com/casbin/casibase/object"
-	"github.com/casbin/casibase/proxy"
+	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/proxy"
 	"github.com/sashabaranov/go-openai"
 )
 

@@ -17,10 +17,10 @@ package object
 import (
 	"fmt"
 
-	"github.com/casbin/casibase/embedding"
-	"github.com/casbin/casibase/model"
-	"github.com/casbin/casibase/storage"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/embedding"
+	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/storage"
+	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
 
@@ -36,6 +36,7 @@ type Provider struct {
 	ClientId     string `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
+	ApiVersion   string `xorm:"varchar(100)" json:"apiVersion"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -211,7 +212,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion)
 	if err != nil {
 		return nil, err
 	}

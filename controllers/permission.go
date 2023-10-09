@@ -17,8 +17,8 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casibase/util"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/util"
 )
 
 func (c *ApiController) GetPermissions() {

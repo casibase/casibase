@@ -19,7 +19,7 @@ import (
 	urllib "net/url"
 	"strings"
 
-	"github.com/casbin/casibase/storage"
+	"github.com/casibase/casibase/storage"
 )
 
 func (store *Store) createPathIfNotExisted(tokens []string, size int64, url string, lastModifiedTime string, isLeaf bool) {

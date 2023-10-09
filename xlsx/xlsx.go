@@ -15,7 +15,7 @@
 package xlsx
 
 import (
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 	"github.com/tealeg/xlsx"
 )
 

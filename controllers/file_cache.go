@@ -19,7 +19,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/util"
 )
 
 var (

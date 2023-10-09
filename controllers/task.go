@@ -17,7 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
-	"github.com/casbin/casibase/object"
+	"github.com/casibase/casibase/object"
 )
 
 func (c *ApiController) GetGlobalTasks() {

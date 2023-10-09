@@ -21,9 +21,9 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"github.com/casbin/casibase/conf"
-	"github.com/casbin/casibase/controllers"
-	"github.com/casbin/casibase/util"
+	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/controllers"
+	"github.com/casibase/casibase/util"
 )
 
 const (
