@@ -7,6 +7,9 @@ on:
 jobs:
   synchronize-with-crowdin:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     if: github.repository == 'casibase/casibase' && github.event_name == 'push'
     steps:
 
