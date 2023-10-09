@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/casibase/casibase/object"
@@ -192,6 +193,11 @@ func (c *ApiController) UpdateMessage() {
 	c.ResponseOk(success)
 }
 
+func removeHtmlTags(s string) string {
+	re := regexp.MustCompile(`<[^>]+>`)
+	return re.ReplaceAllString(s, "")
+}
+
 func (c *ApiController) AddMessage() {
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
@@ -199,6 +205,8 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	message.Text = removeHtmlTags(message.Text)
 
 	var chat *object.Chat
 	if message.Chat != "" {
