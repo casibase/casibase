@@ -15,6 +15,7 @@
 import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import * as Conf from "./Conf";
 
 const aiAvatar = "https://cdn.casbin.com/casdoor/static/gpt.png";
 
@@ -35,9 +36,9 @@ class ChatBox extends React.Component {
     return (
       <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
         <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
-          <ConversationHeader style={{backgroundColor: "rgb(246,240,255)"}}>
-            <Avatar src={aiAvatar} name="AI" />
-            <ConversationHeader.Content userName="AI" />
+          <ConversationHeader style={{backgroundColor: "rgb(246,240,255)", height: "42px"}}>
+            {/* <Avatar style={{height: "0px"}} src={aiAvatar} name="AI" />*/}
+            <ConversationHeader.Content userName={Conf.AiName} />
           </ConversationHeader>
           <MessageList>
             {messages.map((message, index) => (
