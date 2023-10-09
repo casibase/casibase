@@ -64,7 +64,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	} else if p.typ == "Azure" {
-		client = getAzureClientFromToken(p.subType, p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
+		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 	}
 
 	ctx := context.Background()

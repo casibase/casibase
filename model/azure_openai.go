@@ -35,7 +35,7 @@ func NewAzureModelProvider(typ string, subType string, deploymentName string, se
 	return p, nil
 }
 
-func getAzureClientFromToken(subtype string, deploymentName string, authToken string, url string, apiVersion string) *openai.Client {
+func getAzureClientFromToken(deploymentName string, authToken string, url string, apiVersion string) *openai.Client {
 	config := openai.DefaultAzureConfig(authToken, url)
 	config.HTTPClient = proxy.ProxyHttpClient
 	if apiVersion != "" {
@@ -44,7 +44,7 @@ func getAzureClientFromToken(subtype string, deploymentName string, authToken st
 	if deploymentName != "" {
 		config.AzureModelMapperFunc = func(model string) string {
 			azureModelMapping := map[string]string{
-				subtype: deploymentName,
+				model: deploymentName,
 			}
 			return azureModelMapping[model]
 		}
