@@ -75,7 +75,7 @@ class ChatBox extends React.Component {
               </Message>
             ))}
           </MessageList>
-          <MessageInput placeholder={Conf.AiPlaceholder} onSend={this.handleSend} />
+          <MessageInput disabled={this.props.disableInput} placeholder={Conf.AiPlaceholder} onSend={this.handleSend} />
         </ChatContainer>
       </MainContainer>
     );

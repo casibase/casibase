@@ -33,6 +33,7 @@ class ChatPage extends BaseListPage {
   UNSAFE_componentWillMount() {
     this.setState({
       loading: true,
+      disableInput: false,
     });
 
     this.fetch();
@@ -98,6 +99,9 @@ class ChatPage extends BaseListPage {
           const lastMessage = res.data[res.data.length - 1];
           if (lastMessage.author === "AI" && lastMessage.replyTo !== "" && lastMessage.text === "") {
             let text = "";
+            this.setState({
+              disableInput: true,
+            });
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
               if (data === "") {
                 data = "\n";
@@ -109,15 +113,17 @@ class ChatPage extends BaseListPage {
               res.data[res.data.length - 1] = lastMessage2;
               this.setState({
                 messages: res.data,
+                disableInput: false,
               });
             }, (error) => {
               Setting.showMessage("error", `${i18next.t("general:Failed to get answer")}: ${error}`);
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
-              lastMessage2.text = `#ERROR#: ${error}`;
+              lastMessage2.text = error;
               res.data[res.data.length - 1] = lastMessage2;
               this.setState({
                 messages: res.data,
+                disableInput: true,
               });
             });
           }
@@ -239,7 +245,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox messages={this.state.messages} sendMessage={(text) => {this.sendMessage(text);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text) => {this.sendMessage(text);}} account={this.props.account} />
         </div>
       </div>
     );
