@@ -107,7 +107,8 @@ class StoreEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("store:Edit Store")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={() => this.submitStoreEdit()}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -169,7 +170,7 @@ class StoreEditPage extends React.Component {
               this.setState({
                 store: store,
               });
-              this.submitStoreEdit(store);
+              this.submitStoreEdit(undefined, store);
             }} onRefresh={() => this.getStore()} />
           </Col>
         </Row>
@@ -177,7 +178,7 @@ class StoreEditPage extends React.Component {
     );
   }
 
-  submitStoreEdit(storeParam) {
+  submitStoreEdit(exitAfterSave, storeParam) {
     let store = Setting.deepCopy(this.state.store);
     if (storeParam) {
       store = storeParam;
@@ -192,7 +193,11 @@ class StoreEditPage extends React.Component {
             this.setState({
               storeName: this.state.store.name,
             });
-            this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
+            if (exitAfterSave) {
+              this.props.history.push("/stores");
+            } else {
+              this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateStoreField("name", this.state.storeName);
@@ -213,7 +218,8 @@ class StoreEditPage extends React.Component {
           this.state.store !== null ? this.renderStore() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={() => this.submitStoreEdit()}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitStoreEdit(false, undefined)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitStoreEdit(true, undefined)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

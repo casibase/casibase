@@ -115,7 +115,8 @@ class MessageEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("message:Edit Chat")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitMessageEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
         {/* <Row style={{marginTop: "10px"}} >*/}
@@ -229,6 +230,8 @@ class MessageEditPage extends React.Component {
               messageName: this.state.message.name,
             });
             if (exitAfterSave) {
+              this.props.history.push("/messages");
+            } else {
               this.props.history.push(`/messages/${this.state.message.name}`);
             }
           } else {
@@ -249,13 +252,8 @@ class MessageEditPage extends React.Component {
       <div>
         {this.state.message !== null ? this.renderMessage() : null}
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button
-            type="primary"
-            size="large"
-            onClick={this.submitMessageEdit.bind(this)}
-          >
-            {i18next.t("general:Save")}
-          </Button>
+          <Button size="large" onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

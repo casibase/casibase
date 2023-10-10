@@ -118,7 +118,8 @@ class ProviderEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("provider:Edit Provider")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitProviderEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -535,7 +536,7 @@ class ProviderEditPage extends React.Component {
     );
   }
 
-  submitProviderEdit() {
+  submitProviderEdit(exitAfterSave) {
     const provider = Setting.deepCopy(this.state.provider);
     ProviderBackend.updateProvider(this.state.provider.owner, this.state.providerName, provider)
       .then((res) => {
@@ -545,7 +546,12 @@ class ProviderEditPage extends React.Component {
             this.setState({
               providerName: this.state.provider.name,
             });
-            this.props.history.push(`/providers/${this.state.provider.name}`);
+
+            if (exitAfterSave) {
+              this.props.history.push("/providers");
+            } else {
+              this.props.history.push(`/providers/${this.state.provider.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateProviderField("name", this.state.providerName);
@@ -566,7 +572,8 @@ class ProviderEditPage extends React.Component {
           this.state.provider !== null ? this.renderProvider() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitProviderEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitProviderEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitProviderEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

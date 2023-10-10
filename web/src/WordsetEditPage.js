@@ -91,7 +91,8 @@ class WordsetEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("wordset:Edit Wordset")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitWordsetEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitWordsetEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitWordsetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -192,7 +193,7 @@ class WordsetEditPage extends React.Component {
     );
   }
 
-  submitWordsetEdit() {
+  submitWordsetEdit(exitAfterSave) {
     const wordset = Setting.deepCopy(this.state.wordset);
     WordsetBackend.updateWordset(this.state.wordset.owner, this.state.wordsetName, wordset)
       .then((res) => {
@@ -202,7 +203,11 @@ class WordsetEditPage extends React.Component {
             this.setState({
               wordsetName: this.state.wordset.name,
             });
-            this.props.history.push(`/wordsets/${this.state.wordset.name}`);
+            if (exitAfterSave) {
+              this.props.history.push("/wordsets");
+            } else {
+              this.props.history.push(`/wordsets/${this.state.wordset.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateWordsetField("name", this.state.wordsetName);
@@ -223,7 +228,8 @@ class WordsetEditPage extends React.Component {
           this.state.wordset !== null ? this.renderWordset() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitWordsetEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitWordsetEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitWordsetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

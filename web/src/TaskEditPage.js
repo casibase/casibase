@@ -90,7 +90,8 @@ class TaskEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("task:Edit Task")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitTaskEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitTaskEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTaskEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -170,7 +171,7 @@ class TaskEditPage extends React.Component {
     alert("runTask");
   }
 
-  submitTaskEdit() {
+  submitTaskEdit(exitAfterSave) {
     const task = Setting.deepCopy(this.state.task);
     TaskBackend.updateTask(this.state.task.owner, this.state.taskName, task)
       .then((res) => {
@@ -180,7 +181,11 @@ class TaskEditPage extends React.Component {
             this.setState({
               taskName: this.state.task.name,
             });
-            this.props.history.push(`/tasks/${this.state.task.name}`);
+            if (exitAfterSave) {
+              this.props.history.push("/tasks");
+            } else {
+              this.props.history.push(`/tasks/${this.state.task.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateTaskField("name", this.state.taskName);
@@ -201,7 +206,8 @@ class TaskEditPage extends React.Component {
           this.state.task !== null ? this.renderTask() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitTaskEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitTaskEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitTaskEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

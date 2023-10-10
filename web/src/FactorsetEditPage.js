@@ -69,7 +69,8 @@ class FactorsetEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("factorset:Edit Factorset")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitFactorsetEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitFactorsetEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitFactorsetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -158,7 +159,7 @@ class FactorsetEditPage extends React.Component {
     );
   }
 
-  submitFactorsetEdit() {
+  submitFactorsetEdit(exitAfterSave) {
     const factorset = Setting.deepCopy(this.state.factorset);
     FactorsetBackend.updateFactorset(this.state.factorset.owner, this.state.factorsetName, factorset)
       .then((res) => {
@@ -168,7 +169,11 @@ class FactorsetEditPage extends React.Component {
             this.setState({
               factorsetName: this.state.factorset.name,
             });
-            this.props.history.push(`/factorsets/${this.state.factorset.name}`);
+            if (exitAfterSave) {
+              this.props.history.push("/factorsets");
+            } else {
+              this.props.history.push(`/factorsets/${this.state.factorset.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateFactorsetField("name", this.state.factorsetName);
@@ -189,7 +194,8 @@ class FactorsetEditPage extends React.Component {
           this.state.factorset !== null ? this.renderFactorset() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitFactorsetEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitFactorsetEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitFactorsetEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );
