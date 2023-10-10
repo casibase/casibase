@@ -107,7 +107,7 @@ class StoreEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("store:Edit Store")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitStoreEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button type="primary" onClick={() => this.submitStoreEdit()}>{i18next.t("general:Save")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -177,8 +177,12 @@ class StoreEditPage extends React.Component {
     );
   }
 
-  submitStoreEdit() {
-    const store = Setting.deepCopy(this.state.store);
+  submitStoreEdit(storeParam) {
+    let store = Setting.deepCopy(this.state.store);
+    if (storeParam) {
+      store = storeParam;
+    }
+
     store.fileTree = undefined;
     StoreBackend.updateStore(this.state.store.owner, this.state.storeName, store)
       .then((res) => {
@@ -209,7 +213,7 @@ class StoreEditPage extends React.Component {
           this.state.store !== null ? this.renderStore() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitStoreEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button type="primary" size="large" onClick={() => this.submitStoreEdit()}>{i18next.t("general:Save")}</Button>
         </div>
       </div>
     );
