@@ -273,6 +273,11 @@ class App extends Component {
       return [];
     }
 
+    if (!this.state.account.isAdmin) {
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      return res;
+    }
+
     res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
 
     if (this.state.account.tag === "Video") {

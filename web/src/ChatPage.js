@@ -145,6 +145,7 @@ class ChatPage extends BaseListPage {
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
+    return newChat;
   }
 
   deleteChat(chats, i, chat) {
@@ -267,8 +268,15 @@ class ChatPage extends BaseListPage {
           });
 
           const chats = res.data;
-          if (this.state.chatName === undefined && chats.length > 0) {
-            const chat = chats[0];
+          if (this.state.chatName === undefined) {
+            let chat;
+            if (chats.length > 0) {
+              chat = chats[0];
+            } else {
+              chat = this.getCurrentChat();
+              chat = this.addChat(chat);
+            }
+
             this.getMessages(chat.name);
             this.setState({
               chatName: chat.name,
