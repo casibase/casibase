@@ -143,5 +143,7 @@ func getContentHashBase64(content string) string {
 	hasher.Write([]byte(content))
 
 	res := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
-	return res[:8]
+	res = res[:8]
+	res = strings.ReplaceAll(res, "/", "0")
+	return res
 }
