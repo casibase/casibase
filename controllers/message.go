@@ -128,6 +128,20 @@ func (c *ApiController) GetMessageAnswer() {
 		question = questionMessage.Text
 	}
 
+	_, ok := c.CheckSignedIn()
+	if !ok {
+		var count int
+		count, err = object.GetAiMessageCount(message.Owner)
+		if err != nil {
+			c.ResponseErrorStream(err.Error())
+			return
+		}
+		if count > 10 {
+			c.ResponseErrorStream(fmt.Sprintf("You cannot query more than 10 times for answers within 10 minutes, please wait for a while"))
+			return
+		}
+	}
+
 	_, modelProviderObj, err := getModelProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
