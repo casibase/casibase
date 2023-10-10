@@ -198,6 +198,22 @@ class App extends Component {
   }
 
   renderRightDropdown() {
+    if (Setting.isAnonymousUser(this.state.account)) {
+      return (
+        <div className="rightDropDown">
+          {
+            this.renderAvatar()
+          }
+          &nbsp;
+          &nbsp;
+          {Setting.isMobile() ? null : Setting.getShortName(this.state.account.displayName)} &nbsp; <DownOutlined />
+          &nbsp;
+          &nbsp;
+          &nbsp;
+        </div>
+      );
+    }
+
     const items = [];
     items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
       "/account"
@@ -274,7 +290,6 @@ class App extends Component {
     }
 
     if (!this.state.account.isAdmin) {
-      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       return res;
     }
 

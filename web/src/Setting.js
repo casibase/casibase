@@ -120,6 +120,13 @@ export function isLocalAdminUser(account) {
   return account.isAdmin === true || isAdminUser(account);
 }
 
+export function isAnonymousUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.type === "anonymous-user";
+}
+
 export function deepCopy(obj) {
   if (obj === null) {
     showMessage("error", "deepCopy obj is null.");

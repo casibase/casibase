@@ -17,8 +17,6 @@ import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, Messa
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
 
-const aiAvatar = "https://cdn.casbin.com/casdoor/static/gpt.png";
-
 class ChatBox extends React.Component {
   constructor(props) {
     super(props);
@@ -37,7 +35,7 @@ class ChatBox extends React.Component {
       <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
         <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
           <ConversationHeader style={{backgroundColor: "rgb(246,240,255)", height: "42px"}}>
-            {/* <Avatar style={{height: "0px"}} src={aiAvatar} name="AI" />*/}
+            {/* <Avatar style={{height: "0px"}} src={Conf.AiAvatar} name="AI" />*/}
             <ConversationHeader.Content userName={Conf.AiName} />
           </ConversationHeader>
           <MessageList>
@@ -48,7 +46,7 @@ class ChatBox extends React.Component {
                 sender: message.name,
                 direction: message.author === "AI" ? "incoming" : "outgoing",
               }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                <Avatar src={message.author === "AI" ? aiAvatar : this.props.account.avatar} name="GPT" />
+                <Avatar src={message.author === "AI" ? Conf.AiAvatar : this.props.account.avatar} name="GPT" />
               </Message>
             ))}
           </MessageList>

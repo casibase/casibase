@@ -27,6 +27,7 @@ export const DefaultWordsetName = "word";
 export const EnableExtraPages = false;
 
 export const AiName = "AI";
+export const AiAvatar = "https://cdn.casbin.com/casdoor/static/gpt.png";
 export const AiPlaceholder = "Type message here";
 
 export const ForceLanguage = "";
