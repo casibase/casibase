@@ -21,6 +21,7 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
 
@@ -69,6 +70,39 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
+func addInitialChat(user *casdoorsdk.User) {
+	chats, err := object.GetChats(user.Name)
+	if err != nil {
+		panic(err)
+	}
+
+	if len(chats) != 0 {
+		return
+	}
+
+	randomName := util.GetRandomName()
+	chat := object.Chat{
+		Owner:        user.Name,
+		Name:         fmt.Sprintf("chat_%s", randomName),
+		CreatedTime:  util.GetCurrentTime(),
+		UpdatedTime:  util.GetCurrentTime(),
+		DisplayName:  fmt.Sprintf("New Chat - %s", randomName),
+		Type:         "AI",
+		Category:     "Chat Category - 1",
+		User1:        fmt.Sprintf("%s/%s", user.Owner, user.Name),
+		User2:        "",
+		Users:        []string{fmt.Sprintf("%s/%s", user.Owner, user.Name)},
+		ClientIp:     user.CreatedIp,
+		UserAgent:    user.Education,
+		MessageCount: 0,
+	}
+
+	_, err = object.AddChat(&chat)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (c *ApiController) anonymousSignin() {
 	clientIp := strings.Replace(util.GetIPFromRequest(c.Ctx.Request), ": ", "", -1)
 	userAgent := c.Ctx.Request.UserAgent()
@@ -95,6 +129,8 @@ func (c *ApiController) anonymousSignin() {
 		IsAdmin:         false,
 		CreatedIp:       clientIp,
 	}
+
+	addInitialChat(&user)
 
 	c.ResponseOk(user)
 }

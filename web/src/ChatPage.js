@@ -132,7 +132,7 @@ class ChatPage extends BaseListPage {
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully added"));
+          // Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
             chatName: newChat.name,
             messages: null,
@@ -270,15 +270,8 @@ class ChatPage extends BaseListPage {
           });
 
           const chats = res.data;
-          if (this.state.chatName === undefined) {
-            let chat;
-            if (chats.length > 0) {
-              chat = chats[0];
-            } else {
-              chat = this.getCurrentChat();
-              chat = this.addChat(chat);
-            }
-
+          if (this.state.chatName === undefined && chats.length > 0) {
+            const chat = chats[0];
             this.getMessages(chat.name);
             this.setState({
               chatName: chat.name,
