@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -112,10 +113,19 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	questionMessage, err := object.GetMessage(message.ReplyTo)
-	if questionMessage == nil {
-		c.ResponseErrorStream(fmt.Sprintf("The message: %s is not found", id))
-		return
+	question := beego.AppConfig.String("welcomeMessage")
+	if message.ReplyTo != "Welcome" {
+		questionMessage, err := object.GetMessage(message.ReplyTo)
+		if err != nil {
+			c.ResponseErrorStream(err.Error())
+			return
+		}
+		if questionMessage == nil {
+			c.ResponseErrorStream(fmt.Sprintf("The message: %s is not found", id))
+			return
+		}
+
+		question = questionMessage.Text
 	}
 
 	_, modelProviderObj, err := getModelProviderFromContext("admin", chat.User2)
@@ -133,8 +143,6 @@ func (c *ApiController) GetMessageAnswer() {
 	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
-
-	question := questionMessage.Text
 
 	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {

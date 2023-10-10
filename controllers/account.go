@@ -101,6 +101,23 @@ func addInitialChat(user *casdoorsdk.User) {
 	if err != nil {
 		panic(err)
 	}
+
+	randomName = util.GetRandomName()
+	answerMessage := &object.Message{
+		Owner:       user.Name,
+		Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime: util.GetCurrentTimeEx(chat.CreatedTime),
+		// Organization: message.Organization,
+		Chat:         chat.Name,
+		ReplyTo:      "Welcome",
+		Author:       "AI",
+		Text:         "",
+		VectorScores: []object.VectorScore{},
+	}
+	_, err = object.AddMessage(answerMessage)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func (c *ApiController) anonymousSignin() {

@@ -20,6 +20,31 @@ import * as Conf from "./Conf";
 class ChatBox extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      dots: ".",
+    };
+    this.timer = null;
+  }
+
+  componentDidMount() {
+    this.timer = setInterval(() => {
+      this.setState(prevState => {
+        switch (prevState.dots) {
+        case ".":
+          return {dots: ".."};
+        case "..":
+          return {dots: "..."};
+        case "...":
+          return {dots: "."};
+        default:
+          return {dots: "."};
+        }
+      });
+    }, 500);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   handleSend = (innerHtml, textContent) => {
@@ -41,7 +66,7 @@ class ChatBox extends React.Component {
           <MessageList>
             {messages.map((message, index) => (
               <Message key={index} model={{
-                message: message.text,
+                message: message.text !== "" ? message.text : this.state.dots,
                 sentTime: "just now",
                 sender: message.name,
                 direction: message.author === "AI" ? "incoming" : "outgoing",
