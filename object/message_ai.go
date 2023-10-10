@@ -29,5 +29,5 @@ Now, please answer the following question based on the provided information:
 
 %s
 
-(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is."")`, knowledge, question)
+(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is.". Empty answer is not allowed. If the text is not question, you should ask for a question politely.)`, knowledge, question)
 }
