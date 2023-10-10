@@ -71,7 +71,8 @@ class ChatEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("chat:Edit Chat")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitChatEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitChatEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitChatEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={(Setting.isMobile()) ? {margin: "5px"} : {}} type="inner">
         {/* <Row style={{marginTop: "10px"}} >*/}
@@ -167,7 +168,7 @@ class ChatEditPage extends React.Component {
     );
   }
 
-  submitChatEdit() {
+  submitChatEdit(exitAfterSave) {
     const chat = Setting.deepCopy(this.state.chat);
     ChatBackend.updateChat(this.state.chat.owner, this.state.chatName, chat)
       .then((res) => {
@@ -177,7 +178,12 @@ class ChatEditPage extends React.Component {
             this.setState({
               chatName: this.state.chat.name,
             });
-            this.props.history.push(`/chats/${this.state.chat.name}`);
+
+            if (exitAfterSave) {
+              this.props.history.push("/chats");
+            } else {
+              this.props.history.push(`/chats/${this.state.chat.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateChatField("name", this.state.chatName);
@@ -198,7 +204,8 @@ class ChatEditPage extends React.Component {
           this.state.chat !== null ? this.renderChat() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" onClick={this.submitChatEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitChatEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitChatEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

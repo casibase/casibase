@@ -153,7 +153,8 @@ class VideoEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("video:Edit Video")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitVideoEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -279,7 +280,7 @@ class VideoEditPage extends React.Component {
     );
   }
 
-  submitVideoEdit() {
+  submitVideoEdit(exitAfterSave) {
     const video = Setting.deepCopy(this.state.video);
     VideoBackend.updateVideo(this.state.video.owner, this.state.videoName, video)
       .then((res) => {
@@ -289,7 +290,11 @@ class VideoEditPage extends React.Component {
             this.setState({
               videoName: this.state.video.name,
             });
-            this.props.history.push(`/videos/${this.state.video.name}`);
+            if (exitAfterSave) {
+              this.props.history.push("/videos");
+            } else {
+              this.props.history.push(`/videos/${this.state.video.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateVideoField("name", this.state.videoName);
@@ -310,7 +315,8 @@ class VideoEditPage extends React.Component {
           this.state.video !== null ? this.renderVideo() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitVideoEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );

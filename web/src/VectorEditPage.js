@@ -69,7 +69,8 @@ class VectorEditPage extends React.Component {
       <Card size="small" title={
         <div>
           {i18next.t("vector:Edit Vector")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button type="primary" onClick={this.submitVectorEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -166,7 +167,7 @@ class VectorEditPage extends React.Component {
     );
   }
 
-  submitVectorEdit() {
+  submitVectorEdit(exitAfterSave) {
     const vector = Setting.deepCopy(this.state.vector);
     VectorBackend.updateVector(this.state.vector.owner, this.state.vectorName, vector)
       .then((res) => {
@@ -176,7 +177,12 @@ class VectorEditPage extends React.Component {
             this.setState({
               vectorName: this.state.vector.name,
             });
-            this.props.history.push(`/vectors/${this.state.vector.name}`);
+
+            if (exitAfterSave) {
+              this.props.history.push("/vectors");
+            } else {
+              this.props.history.push(`/vectors/${this.state.vector.name}`);
+            }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
             this.updateVectorField("name", this.state.vectorName);
@@ -197,7 +203,8 @@ class VectorEditPage extends React.Component {
           this.state.vector !== null ? this.renderVector() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button type="primary" size="large" onClick={this.submitVectorEdit.bind(this)}>{i18next.t("general:Save")}</Button>
+          <Button size="large" onClick={() => this.submitVectorEdit(false)}>{i18next.t("general:Save")}</Button>
+          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVectorEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       </div>
     );
