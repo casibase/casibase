@@ -16,7 +16,7 @@ package controllers
 
 import (
 	"crypto/sha256"
-	"encoding/base64"
+	"encoding/hex"
 	"fmt"
 	"net"
 	"regexp"
@@ -138,12 +138,11 @@ func removeHtmlTags(s string) string {
 	return re.ReplaceAllString(s, "")
 }
 
-func getContentHashBase64(content string) string {
+func getContentHash(content string) string {
 	hasher := sha256.New()
 	hasher.Write([]byte(content))
 
-	res := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
+	res := hex.EncodeToString(hasher.Sum(nil))
 	res = res[:8]
-	res = strings.ReplaceAll(res, "/", "0")
 	return res
 }

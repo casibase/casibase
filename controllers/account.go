@@ -123,7 +123,7 @@ func addInitialChat(user *casdoorsdk.User) {
 func (c *ApiController) anonymousSignin() {
 	clientIp := strings.Replace(util.GetIPFromRequest(c.Ctx.Request), ": ", "", -1)
 	userAgent := c.Ctx.Request.UserAgent()
-	username := getContentHashBase64(fmt.Sprintf("%s|%s", clientIp, userAgent))
+	username := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
 
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	user := casdoorsdk.User{
