@@ -31,7 +31,8 @@ func (c *ApiController) GetGlobalChats() {
 }
 
 func (c *ApiController) GetChats() {
-	owner := "admin"
+	owner := c.Input().Get("owner")
+
 	chats, err := object.GetChats(owner)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -80,7 +81,6 @@ func (c *ApiController) AddChat() {
 		return
 	}
 
-	chat.Owner = "admin"
 	success, err := object.AddChat(&chat)
 	if err != nil {
 		c.ResponseError(err.Error())

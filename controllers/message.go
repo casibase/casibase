@@ -91,7 +91,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	chatId := util.GetIdFromOwnerAndName("admin", message.Chat)
+	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
 	chat, err := object.GetChat(chatId)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
@@ -114,13 +114,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	_, modelProviderObj, err := getModelProviderFromContext(chat.Owner, chat.User2)
+	_, modelProviderObj, err := getModelProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
 
-	embeddingProvider, embeddingProviderObj, err := getEmbeddingProviderFromContext(chat.Owner, chat.User2)
+	embeddingProvider, embeddingProviderObj, err := getEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -132,7 +132,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	question := questionMessage.Text
 
-	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, chat.Owner, question)
+	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -204,7 +204,7 @@ func (c *ApiController) AddMessage() {
 
 	var chat *object.Chat
 	if message.Chat != "" {
-		chatId := util.GetId("admin", message.Chat)
+		chatId := util.GetId(message.Owner, message.Chat)
 		chat, err = object.GetChat(chatId)
 		if err != nil {
 			c.ResponseError(err.Error())

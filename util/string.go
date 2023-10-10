@@ -72,7 +72,7 @@ func GetOwnerAndNameFromId(id string) (string, string) {
 		panic(errors.New("GetOwnerAndNameFromId() error, wrong token count for ID: " + id))
 	}
 
-	return "admin", tokens[1]
+	return tokens[0], tokens[1]
 }
 
 func GetOwnerAndNameFromId3(id string) (string, string, string) {

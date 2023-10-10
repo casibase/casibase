@@ -112,19 +112,23 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 func AddMessage(message *Message) (bool, error) {
 	re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
 	matches := re.FindAll([]byte(message.Text), -1)
-	store, err := GetDefaultStore(message.Owner)
-	if err != nil {
-		return false, err
-	}
-	obj, err := store.GetStorageProviderObj()
-	if err != nil {
-		return false, err
-	}
-	for _, m := range matches {
-		key := uuid.New().String()
-		err = obj.PutObject(message.Author, message.Author, key, bytes.NewBuffer(m))
+	if matches != nil {
+		store, err := GetDefaultStore("admin")
 		if err != nil {
 			return false, err
+		}
+
+		obj, err := store.GetStorageProviderObj()
+		if err != nil {
+			return false, err
+		}
+
+		for _, m := range matches {
+			key := uuid.New().String()
+			err = obj.PutObject(message.Author, message.Author, key, bytes.NewBuffer(m))
+			if err != nil {
+				return false, err
+			}
 		}
 	}
 
