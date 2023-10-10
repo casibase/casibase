@@ -79,7 +79,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string, modelSubType string) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string, modelSubType string, limit int) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -89,7 +89,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 	files = filterTextFiles(files)
 
-	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), 3)
+	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), limit)
 	for _, file := range files {
 		var text string
 		fileExt := filepath.Ext(file.Key)
