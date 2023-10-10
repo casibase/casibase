@@ -16,9 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
-	"net"
-	"strings"
 
 	"github.com/casibase/casibase/object"
 )
@@ -43,34 +40,6 @@ func (c *ApiController) GetStores() {
 	}
 
 	c.ResponseOk(stores)
-}
-
-func isIpAddress(host string) bool {
-	// Attempt to split the host and port, ignoring the error
-	hostWithoutPort, _, err := net.SplitHostPort(host)
-	if err != nil {
-		// If an error occurs, it might be because there's no port
-		// In that case, use the original host string
-		hostWithoutPort = host
-	}
-
-	// Attempt to parse the host as an IP address (both IPv4 and IPv6)
-	ip := net.ParseIP(hostWithoutPort)
-	// if host is not nil is an IP address else is not an IP address
-	return ip != nil
-}
-
-func getOriginFromHost(host string) string {
-	protocol := "https://"
-	if !strings.Contains(host, ".") {
-		// "localhost:14000"
-		protocol = "http://"
-	} else if isIpAddress(host) {
-		// "192.168.0.10"
-		protocol = "http://"
-	}
-
-	return fmt.Sprintf("%s%s", protocol, host)
 }
 
 func (c *ApiController) GetStore() {

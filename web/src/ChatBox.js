@@ -52,7 +52,7 @@ class ChatBox extends React.Component {
               </Message>
             ))}
           </MessageList>
-          <MessageInput placeholder="Type message here" onSend={this.handleSend} />
+          <MessageInput placeholder={Conf.AiPlaceholder} onSend={this.handleSend} />
         </ChatContainer>
       </MainContainer>
     );

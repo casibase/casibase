@@ -27,6 +27,7 @@ export const DefaultWordsetName = "word";
 export const EnableExtraPages = false;
 
 export const AiName = "AI";
+export const AiPlaceholder = "Type message here";
 
 export const ForceLanguage = "";
 export const DefaultLanguage = "en";
