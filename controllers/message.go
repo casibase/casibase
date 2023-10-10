@@ -34,7 +34,11 @@ func (c *ApiController) GetGlobalMessages() {
 }
 
 func (c *ApiController) GetMessages() {
-	owner := "admin"
+	owner := c.Input().Get("owner")
+	if owner == "admin" {
+		owner = ""
+	}
+
 	chat := c.Input().Get("chat")
 
 	if chat == "" {

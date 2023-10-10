@@ -101,6 +101,13 @@ class ChatListPage extends React.Component {
   renderTable(chats) {
     const columns = [
       {
+        title: i18next.t("general:Owner"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "90px",
+        sorter: (a, b) => a.owner.localeCompare(b.owner),
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -175,37 +182,60 @@ class ChatListPage extends React.Component {
         // ...this.getColumnSearchProps("user1"),
         render: (text, record, index) => {
           return (
-            <Link to={`/users/${text}`}>
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${text}`)}>
               {text}
-            </Link>
+            </a>
           );
         },
       },
+      // {
+      //   title: i18next.t("chat:User2"),
+      //   dataIndex: "user2",
+      //   key: "user2",
+      //   width: "120px",
+      //   sorter: (a, b) => a.user2.localeCompare(b.user2),
+      //   // ...this.getColumnSearchProps("user2"),
+      //   render: (text, record, index) => {
+      //     return (
+      //       <Link to={`/users/${text}`}>
+      //         {text}
+      //       </Link>
+      //     );
+      //   },
+      // },
+      // {
+      //   title: i18next.t("general:Users"),
+      //   dataIndex: "users",
+      //   key: "users",
+      //   width: "100px",
+      //   sorter: (a, b) => a.users.localeCompare(b.users),
+      //   // ...this.getColumnSearchProps("users"),
+      //   render: (text, record, index) => {
+      //     return Setting.getTags(text, "users");
+      //   },
+      // },
       {
-        title: i18next.t("chat:User2"),
-        dataIndex: "user2",
-        key: "user2",
-        width: "120px",
-        sorter: (a, b) => a.user2.localeCompare(b.user2),
-        // ...this.getColumnSearchProps("user2"),
+        title: i18next.t("general:Client IP"),
+        dataIndex: "clientIp",
+        key: "clientIp",
+        width: "150px",
+        sorter: (a, b) => a.clientIp.localeCompare(b.clientIp),
         render: (text, record, index) => {
           return (
-            <Link to={`/users/${text}`}>
-              {text}
-            </Link>
+            <a target="_blank" rel="noreferrer" href={`https://db-ip.com/${text}`}>
+              {
+                text
+              }
+            </a>
           );
         },
       },
       {
-        title: i18next.t("general:Users"),
-        dataIndex: "users",
-        key: "users",
-        width: "100px",
-        sorter: (a, b) => a.users.localeCompare(b.users),
-        // ...this.getColumnSearchProps("users"),
-        render: (text, record, index) => {
-          return Setting.getTags(text, "users");
-        },
+        title: i18next.t("general:User agent"),
+        dataIndex: "userAgent",
+        key: "userAgent",
+        width: "150px",
+        sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
       },
       {
         title: i18next.t("chat:Message count"),

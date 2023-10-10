@@ -52,6 +52,8 @@ class ChatPage extends BaseListPage {
       user1: `${this.props.account.owner}/${this.props.account.name}`,
       user2: "",
       users: [`${this.props.account.owner}/${this.props.account.name}`],
+      clientIp: this.props.account.createdIp,
+      userAgent: this.props.account.education,
       messageCount: 0,
     };
   }

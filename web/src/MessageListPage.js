@@ -98,6 +98,13 @@ class MessageListPage extends React.Component {
   renderTable(messages) {
     const columns = [
       {
+        title: i18next.t("general:Owner"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "90px",
+        sorter: (a, b) => a.owner.localeCompare(b.owner),
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",

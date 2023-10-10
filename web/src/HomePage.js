@@ -17,6 +17,7 @@ import FileTreePage from "./FileTreePage";
 import {Redirect} from "react-router-dom";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
+import ChatPage from "./ChatPage";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -49,7 +50,13 @@ class HomePage extends React.Component {
   }
 
   render() {
-    if (this.props.account.tag === "Video") {
+    if (this.props.account?.type === "anonymous-user") {
+      return (
+        <ChatPage account={this.props.account} />
+      );
+    }
+
+    if (this.props.account?.tag === "Video") {
       return <Redirect to="/videos" />;
     } else {
       if (this.state.store === null) {

@@ -15,6 +15,8 @@
 package controllers
 
 import (
+	"crypto/sha256"
+	"encoding/base64"
 	"fmt"
 	"net"
 	"regexp"
@@ -60,6 +62,14 @@ func (c *ApiController) RequireSignedIn() (string, bool) {
 	userId := c.GetSessionUsername()
 	if userId == "" {
 		c.ResponseError("Please sign in first")
+		return "", false
+	}
+	return userId, true
+}
+
+func (c *ApiController) CheckSignedIn() (string, bool) {
+	userId := c.GetSessionUsername()
+	if userId == "" {
 		return "", false
 	}
 	return userId, true
@@ -126,4 +136,12 @@ func getOriginFromHost(host string) string {
 func removeHtmlTags(s string) string {
 	re := regexp.MustCompile(`<[^>]+>`)
 	return re.ReplaceAllString(s, "")
+}
+
+func getContentHashBase64(content string) string {
+	hasher := sha256.New()
+	hasher.Write([]byte(content))
+
+	res := base64.StdEncoding.EncodeToString(hasher.Sum(nil))
+	return res[:8]
 }

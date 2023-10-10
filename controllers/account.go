@@ -16,9 +16,12 @@ package controllers
 
 import (
 	_ "embed"
+	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/util"
 )
 
 //go:embed token_jwt_key.pem
@@ -66,10 +69,49 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
+func (c *ApiController) anonymousSignin() {
+	clientIp := strings.Replace(util.GetIPFromRequest(c.Ctx.Request), ": ", "", -1)
+	userAgent := c.Ctx.Request.UserAgent()
+	username := getContentHashBase64(fmt.Sprintf("%s|%s", clientIp, userAgent))
+
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	user := casdoorsdk.User{
+		Owner:           casdoorOrganization,
+		Name:            username,
+		CreatedTime:     util.GetCurrentTime(),
+		Id:              username,
+		Type:            "anonymous-user",
+		DisplayName:     "User",
+		Avatar:          "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png",
+		AvatarType:      "",
+		PermanentAvatar: "",
+		Email:           "",
+		EmailVerified:   false,
+		Phone:           "",
+		CountryCode:     "",
+		Region:          "",
+		Location:        "",
+		Education:       userAgent,
+		IsAdmin:         false,
+		CreatedIp:       clientIp,
+	}
+
+	c.ResponseOk(user)
+}
+
 func (c *ApiController) GetAccount() {
-	_, ok := c.RequireSignedIn()
-	if !ok {
-		return
+	configPublicDomain := beego.AppConfig.String("publicDomain")
+	if configPublicDomain == "" || c.Ctx.Request.Host != configPublicDomain {
+		_, ok := c.RequireSignedIn()
+		if !ok {
+			return
+		}
+	} else {
+		_, ok := c.CheckSignedIn()
+		if !ok {
+			c.anonymousSignin()
+			return
+		}
 	}
 
 	claims := c.GetSessionClaims()
