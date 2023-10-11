@@ -49,7 +49,12 @@
 
 ## Online Demo
 
-<https://ai.v2tl.com>
+- Read-only site: https://ai.v2tl.com (any modification operation will fail)
+- Writable site: https://demo-ai.v2tl.com (original data will be restored for every 5 minutes)
+
+## Documentation
+
+https://casibase.org
 
 ## Architecture
 
@@ -103,7 +108,6 @@ Discord: <https://discord.gg/5rPsrAzK7S>
 ## Contribute
 
 For Casibase, if you have any questions, you can give issues, or you can also directly start Pull Requests(but we recommend giving issues first to communicate with the community).
-
 
 ## License
 

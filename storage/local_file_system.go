@@ -71,16 +71,18 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 
 func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
 	fullPath := filepath.Join(p.path, key)
-
 	err := os.MkdirAll(filepath.Dir(fullPath), os.ModePerm)
 	if err != nil {
-		return fmt.Errorf("Casdoor fails to create folder: \"%s\" for local file system storage provider: %s. Make sure Casdoor process has correct permission to create/access it, or you can create it manually in advance", filepath.Dir(fullPath), err.Error())
+		return err
 	}
 
 	dst, err := os.Create(filepath.Clean(fullPath))
-	if err == nil {
-		_, err = io.Copy(dst, fileBuffer)
+	if err != nil {
+		return err
 	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, fileBuffer)
 	return err
 }
 
