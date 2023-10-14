@@ -226,8 +226,6 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
-	message.Text = removeHtmlTags(message.Text)
-
 	var chat *object.Chat
 	if message.Chat != "" {
 		chatId := util.GetId(message.Owner, message.Chat)
