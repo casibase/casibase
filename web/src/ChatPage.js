@@ -187,6 +187,22 @@ class ChatPage extends BaseListPage {
       });
   }
 
+  updateChatName(chats, i, chat, newName) {
+    const name = chat.name;
+    chat.displayName = newName;
+    ChatBackend.updateChat(this.props.account.name, name, chat)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully update"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  }
+
   getCurrentChat() {
     return this.state.data.filter(chat => chat.name === this.state.chatName)[0];
   }
@@ -211,6 +227,11 @@ class ChatPage extends BaseListPage {
       this.deleteChat(chats, i, chat);
     };
 
+    const onUpdateChatName = (i, newName) => {
+      const chat = chats[i];
+      this.updateChatName(chats, i, chat, newName);
+    };
+
     if (this.state.loading) {
       return (
         <div style={{display: "flex", justifyContent: "center", alignItems: "center"}}>
@@ -222,7 +243,7 @@ class ChatPage extends BaseListPage {
     return (
       <div style={{display: "flex", height: "calc(100vh - 136px)"}}>
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account)) ? "0px" : "250px", height: "100%", backgroundColor: "white", borderRight: "1px solid rgb(245,245,245)", borderBottom: "1px solid rgb(245,245,245)"}}>
-          <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} />
+          <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {

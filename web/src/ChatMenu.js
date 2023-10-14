@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Menu} from "antd";
-import {DeleteOutlined, LayoutOutlined, PlusOutlined} from "@ant-design/icons";
+import {Button, Input, Menu} from "antd";
+import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 
 class ChatMenu extends React.Component {
   constructor(props) {
@@ -26,6 +26,8 @@ class ChatMenu extends React.Component {
     this.state = {
       openKeys: openKeys,
       selectedKeys: ["0-0"],
+      editChat: false,
+      editChatName: "",
     };
   }
 
@@ -47,48 +49,76 @@ class ChatMenu extends React.Component {
         children: categories[category].map((chat, chatIndex) => {
           const globalChatIndex = chats.indexOf(chat);
           const isSelected = selectedKeys.includes(`${index}-${chatIndex}`);
+          const handleIconMouseEnter = (e) => {
+            e.currentTarget.style.color = "rgba(89,54,213,0.6)";
+          };
+
+          const handleIconMouseLeave = (e) => {
+            e.currentTarget.style.color = "inherit";
+          };
+
+          const handleIconMouseDown = (e) => {
+            e.currentTarget.style.color = "rgba(89,54,213,0.4)";
+          };
+
+          const handleIconMouseUp = (e) => {
+            e.currentTarget.style.color = "rgba(89,54,213,0.6)";
+          };
+
+          const onSave = (e) => {
+            e.stopPropagation();
+            this.props.onUpdateChatName(globalChatIndex, this.state.editChatName);
+            this.setState({editChat: false});
+          };
+
           return {
             key: `${index}-${chatIndex}`,
             index: globalChatIndex,
             label: (
-              <div
-                className="menu-item-container"
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                {chat.displayName}
-                {isSelected && (
-                  <DeleteOutlined
-                    className="menu-item-delete-icon"
-                    style={{
-                      visibility: "visible",
-                      color: "inherit",
-                      transition: "color 0.3s",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.color = "rgba(89,54,213,0.6)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.color = "inherit";
-                    }}
-                    onMouseDown={(e) => {
-                      e.currentTarget.style.color = "rgba(89,54,213,0.4)";
-                    }}
-                    onMouseUp={(e) => {
-                      e.currentTarget.style.color = "rgba(89,54,213,0.6)";
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      if (this.props.onDeleteChat) {
-                        this.props.onDeleteChat(globalChatIndex);
-                      }
-                    }}
+              isSelected && this.state.editChat ? (
+                <div className="menu-item-container">
+                  <Input style={{width: "70%"}} value={this.state.editChatName}
+                    onChange={(event) => {this.setState({editChatName: event.target.value});}}
+                    onBlur={onSave}
+                    onPressEnter={onSave} />
+                  <SaveOutlined className="menu-item-icon"
+                    onMouseEnter={handleIconMouseEnter}
+                    onMouseLeave={handleIconMouseLeave}
+                    onMouseDown={handleIconMouseDown}
+                    onMouseUp={handleIconMouseUp}
+                    onClick={onSave}
                   />
-                )}
-              </div>
+                </div>) : (
+                <div className="menu-item-container">
+                  <div>{chat.displayName}</div>
+                  {isSelected && (
+                    <div>
+                      <EditOutlined className="menu-item-icon"
+                        onMouseEnter={handleIconMouseEnter}
+                        onMouseLeave={handleIconMouseLeave}
+                        onMouseDown={handleIconMouseDown}
+                        onMouseUp={handleIconMouseUp}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          this.setState({
+                            editChatName: this.props.chats[globalChatIndex].displayName,
+                            editChat: true,
+                          });
+                        }} />
+                      <DeleteOutlined className="menu-item-icon"
+                        onMouseEnter={handleIconMouseEnter}
+                        onMouseLeave={handleIconMouseLeave}
+                        onMouseDown={handleIconMouseDown}
+                        onMouseUp={handleIconMouseUp}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (this.props.onDeleteChat) {
+                            this.props.onDeleteChat(globalChatIndex);
+                          }
+                        }} />
+                    </div>
+                  )}
+                </div>)
             ),
           };
         }),
@@ -101,6 +131,8 @@ class ChatMenu extends React.Component {
     const selectedItem = this.chatsToItems(this.props.chats)[categoryIndex].children[chatIndex];
     this.setState({
       selectedKeys: [`${categoryIndex}-${chatIndex}`],
+      editChat: false,
+      editChatName: this.props.chats[chatIndex].displayName,
     });
 
     if (this.props.onSelectChat) {
