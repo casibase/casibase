@@ -179,6 +179,8 @@ func (c *ApiController) UploadVideo() {
 			VideoId:     videoId,
 			Labels:      []*object.Label{},
 			DataUrls:    []string{},
+			DataUrl:     "",
+			TagOnPause:  true,
 		}
 		_, err = object.AddVideo(video)
 		if err != nil {

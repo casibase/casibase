@@ -148,6 +148,36 @@ class VideoEditPage extends React.Component {
       });
   }
 
+  renderDataContent() {
+    return (
+      <React.Fragment>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Data")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%", marginBottom: "10px"}} value={this.state.video.dataUrl} onChange={(value => {
+              this.getDataAndParse(value);
+              this.updateVideoField("dataUrl", value);
+            })}>
+              {
+                this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        {
+          this.state.videoData === null ? null : (
+            <React.Fragment>
+              <VideoDataChart key={"VideoDataChart1"} data={this.state.videoData} currentTime={this.state.currentTime} height={"100px"} />
+              <VideoDataChart key={"VideoDataChart2"} data={this.state.videoData} currentTime={this.state.currentTime} interval={25} />
+            </React.Fragment>
+          )
+        }
+      </React.Fragment>
+    );
+  }
+
   renderVideo() {
     return (
       <Card size="small" title={
@@ -234,28 +264,8 @@ class VideoEditPage extends React.Component {
                 {
                   this.state.video !== null ? this.renderVideoContent() : null
                 }
-                <Row style={{marginTop: "20px"}} >
-                  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                    {i18next.t("general:Data")}:
-                  </Col>
-                  <Col span={22} >
-                    <Select virtual={false} style={{width: "100%", marginBottom: "10px"}} value={this.state.video.dataUrl} onChange={(value => {
-                      this.getDataAndParse(value);
-                      this.updateVideoField("dataUrl", value);
-                    })}>
-                      {
-                        this.state.video.dataUrls?.map((dataUrl, index) => <Option key={index} value={dataUrl}>{dataUrl.split("/").pop()}</Option>)
-                      }
-                    </Select>
-                  </Col>
-                </Row>
                 {
-                  this.state.videoData === null ? null : (
-                    <React.Fragment>
-                      <VideoDataChart key={"VideoDataChart1"} data={this.state.videoData} currentTime={this.state.currentTime} height={"100px"} />
-                      <VideoDataChart key={"VideoDataChart2"} data={this.state.videoData} currentTime={this.state.currentTime} interval={25} />
-                    </React.Fragment>
-                  )
+                  this.state.video.dataUrl !== "" ? this.renderDataContent() : null
                 }
               </Affix>
             </React.Fragment>

@@ -303,18 +303,18 @@ class App extends Component {
     res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
     res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
 
+    res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+    res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
+    res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
+    res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
+    res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+
     if (Conf.EnableExtraPages) {
       res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
       res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
       res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
     }
-
-    res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-    res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-    res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
-    res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-    res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
 
     if (Setting.isLocalAdminUser(this.state.account)) {
       res.push(Setting.getItem(
