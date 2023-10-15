@@ -62,6 +62,13 @@ func GetVideos(owner string) ([]*Video, error) {
 		return videos, err
 	}
 
+	for _, v := range videos {
+		err = v.UpdateCoverUrl()
+		if err != nil {
+			return videos, err
+		}
+	}
+
 	return videos, nil
 }
 
@@ -143,5 +150,21 @@ func (video *Video) Populate() error {
 	}
 
 	video.DataUrls = dataUrls
+	return nil
+}
+
+func (v *Video) UpdateCoverUrl() error {
+	if v.VideoId == "" || v.CoverUrl != "" {
+		return nil
+	}
+
+	coverUrl := video.GetVideoCoverUrl(v.VideoId)
+	v.CoverUrl = coverUrl
+
+	_, err := UpdateVideo(v.GetId(), v)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
