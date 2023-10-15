@@ -36,6 +36,8 @@ class Video extends React.Component {
       return null;
     }
 
+    document.addEventListener("keydown", this.handleKeyDown);
+
     const screen = new BulletScreen(".screen", {duration: 5});
     this.setState({
       screen: screen,
@@ -44,6 +46,21 @@ class Video extends React.Component {
     this.props.onCreateScreen(screen);
     this.props.onCreateVideo(this);
   }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (event) => {
+    if (event.key === " " && this.state.player) {
+      if (this.state.player.paused()) {
+        this.state.player.play();
+      } else {
+        this.state.player.pause();
+      }
+      event.preventDefault();
+    }
+  };
 
   updateVideoSize(width, height) {
     if (this.props.onUpdateVideoSize !== undefined) {
@@ -152,6 +169,10 @@ class Video extends React.Component {
   }
 
   initPlayer(player) {
+    this.setState({
+      player: player,
+    });
+
     // https://help.aliyun.com/document_detail/125572.html
     // https://github.com/zerosoul/rc-bullets
     player.on("ready", () => {this.handleReady(player);});

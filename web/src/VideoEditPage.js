@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Select, Switch} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Select, Switch, Tag} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -110,11 +110,11 @@ class VideoEditPage extends React.Component {
 
     return (
       <div style={{marginTop: "10px"}}>
-        <div style={{fontSize: 16, marginTop: "10px"}}>
+        <div style={{fontSize: 16, marginTop: "10px", marginBottom: "10px"}}>
           {i18next.t("video:Current time (second)")}: {" "}
-          {
-            this.state.currentTime
-          }
+          <Tag color={"processing"}>
+            {this.state.currentTime}
+          </Tag>
         </div>
         <div className="screen" style={{position: "absolute", zIndex: 100, pointerEvents: "none", width: "440px", height: "472px", marginLeft: "200px", marginRight: "200px", backgroundColor: "rgba(255,0,0,0)"}}></div>
         <Video task={task} labels={this.state.video.labels}
