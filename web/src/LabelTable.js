@@ -24,6 +24,14 @@ class LabelTable extends React.Component {
     this.state = {
       classes: props,
     };
+
+    this.newInputRef = React.createRef();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.table.length > prevProps.table.length) {
+      this.newInputRef.current && this.newInputRef.current.focus();
+    }
   }
 
   updateTable(table) {
@@ -141,10 +149,15 @@ class LabelTable extends React.Component {
         key: "text",
         // width: '200px',
         render: (text, record, index) => {
+          const isNewRow = index === table.length - 1;
           return (
-            <Input value={text} onChange={e => {
-              this.updateField(table, index, "text", e.target.value);
-            }} />
+            <Input
+              value={text}
+              ref={isNewRow ? this.newInputRef : null}
+              onChange={e => {
+                this.updateField(table, index, "text", e.target.value);
+              }}
+            />
           );
         },
       },
