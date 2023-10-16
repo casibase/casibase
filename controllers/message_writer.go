@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"bytes"
 	"fmt"
 	"strings"
 
@@ -32,7 +33,9 @@ func newRefinedWriter(w context.Response) *RefinedWriter {
 }
 
 func (w *RefinedWriter) Write(p []byte) (n int, err error) {
-	data := strings.TrimRight(strings.TrimLeft(string(p), "event: message\ndata: "), "\n\n")
+	prefix := []byte("event: message\ndata: ")
+	suffix := []byte("\n\n")
+	data := string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
 	if w.writerCleaner.cleaned == false && w.writerCleaner.dataTimes < w.writerCleaner.bufferSize {
 		w.writerCleaner.AddData(data)
 		if w.writerCleaner.dataTimes == w.writerCleaner.bufferSize {
@@ -93,8 +96,6 @@ func cleanString(data string) string {
 		parts := strings.Split(data, "：")
 		data = parts[len(parts)-1]
 	}
-
-	data = strings.TrimSpace(data)
 
 	return data
 }
