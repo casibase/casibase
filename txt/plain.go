@@ -14,9 +14,7 @@
 
 package txt
 
-import (
-	"os"
-)
+import "os"
 
 func getTextFromPlain(path string) (string, error) {
 	bs, err := os.ReadFile(path)

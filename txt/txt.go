@@ -18,8 +18,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/casibase/casibase/util"
 )
 
 func GetTextSections(text string) []string {
@@ -27,11 +25,14 @@ func GetTextSections(text string) []string {
 	var res []string
 	var temp string
 
-	for _, line := range strings.Split(text, "\n") {
+	lines := strings.Split(text, "\n")
+	for _, line := range lines {
 		if len(temp)+len(line) <= maxLength {
 			temp += line
 		} else {
-			res = append(res, temp)
+			if temp != "" {
+				res = append(res, temp)
+			}
 			temp = line
 		}
 	}
@@ -48,25 +49,28 @@ func GetSupportedFileTypes() []string {
 }
 
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
+	var path string
+	var err error
 	if strings.Contains(url, ":/") {
-		res := util.ReadStringFromPath(url)
-		return res, nil
-	}
-
-	path, err := getTempFilePathFromUrl(url)
-	if err != nil {
-		return "", err
-	}
-	defer func() {
-		err = os.Remove(path)
+		path = url
+	} else {
+		path, err = getTempFilePathFromUrl(url)
 		if err != nil {
-			fmt.Printf("%v\n", err.Error())
+			return "", err
 		}
-	}()
+		defer func() {
+			err = os.Remove(path)
+			if err != nil {
+				fmt.Printf("%v\n", err.Error())
+			}
+		}()
+	}
 
 	var res string
-	if ext == ".txt" || ext == ".md" || ext == ".csv" || ext == ".yaml" {
+	if ext == ".txt" || ext == ".md" || ext == ".yaml" {
 		res, err = getTextFromPlain(path)
+	} else if ext == ".csv" {
+		res, err = getTextFromCsv(path)
 	} else if ext == ".docx" {
 		res, err = getTextFromDocx(path)
 	} else if ext == ".pdf" {
