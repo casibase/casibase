@@ -42,7 +42,7 @@ func GetTextSections(text string) []string {
 }
 
 func GetSupportedFileTypes() []string {
-	return []string{".txt", ".md", ".docx", ".pdf"}
+	return []string{".txt", ".md", ".csv", ".yaml", ".docx", ".pdf"}
 }
 
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
@@ -58,7 +58,7 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	}()
 
 	var res string
-	if ext == ".txt" || ext == ".md" {
+	if ext == ".txt" || ext == ".md" || ext == ".csv" || ext == ".yaml" {
 		res, err = getTextFromPlain(path)
 	} else if ext == ".docx" {
 		res, err = getTextFromDocx(path)

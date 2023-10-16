@@ -768,6 +768,10 @@ class FileTree extends React.Component {
   }
 
   getPropertyValue(file, propertyName) {
+    if (!this.props.store.propertiesMap) {
+      return "";
+    }
+
     const properties = this.props.store.propertiesMap[file.key];
     if (properties === undefined) {
       return "";
