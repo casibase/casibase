@@ -16,7 +16,6 @@ package object
 
 import (
 	"fmt"
-	urllib "net/url"
 	"strings"
 
 	"github.com/casibase/casibase/storage"
@@ -120,9 +119,10 @@ func (store *Store) Populate(origin string) error {
 		isLeaf := isObjectLeaf(object)
 		size := object.Size
 
-		url := object.Url
-		if !strings.HasPrefix(url, "http://") && !strings.HasPrefix(url, "https://") {
-			url, _ = urllib.JoinPath(origin, object.Url)
+		var url string
+		url, err = getUrlFromPath(object.Url, origin)
+		if err != nil {
+			return err
 		}
 
 		tokens := strings.Split(strings.Trim(object.Key, "/"), "/")

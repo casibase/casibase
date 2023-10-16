@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/casibase/casibase/util"
 )
 
 func GetTextSections(text string) []string {
@@ -46,6 +48,11 @@ func GetSupportedFileTypes() []string {
 }
 
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
+	if strings.Contains(url, ":/") {
+		res := util.ReadStringFromPath(url)
+		return res, nil
+	}
+
 	path, err := getTempFilePathFromUrl(url)
 	if err != nil {
 		return "", err

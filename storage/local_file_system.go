@@ -16,7 +16,6 @@ package storage
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -53,14 +52,11 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 			relativePath := strings.TrimPrefix(path, fullPath)
 			relativePath = strings.TrimPrefix(relativePath, "/")
 
-			url := strings.Replace(path, ":", "|", 1)
-			url = fmt.Sprintf("storage/%s", url)
-
 			objects = append(objects, &Object{
 				Key:          relativePath,
 				LastModified: modTime.Format(time.RFC3339),
 				Size:         info.Size(),
-				Url:          url,
+				Url:          path,
 			})
 		}
 		return nil
