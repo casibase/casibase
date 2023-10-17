@@ -412,27 +412,6 @@ export function downloadXlsx(wordset) {
   }
 }
 
-export function downloadLabels(table) {
-  const data = [];
-  table.forEach((label, i) => {
-    const row = {};
-
-    row[0] = label.startTime;
-    row[1] = label.endTime;
-    row[2] = label.text;
-    data.push(row);
-  });
-
-  const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
-  try {
-    const blob = sheet2blob(sheet, "labels");
-    const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
-    FileSaver.saveAs(blob, fileName);
-  } catch (error) {
-    showMessage("error", `failed to download: ${error.message}`);
-  }
-}
-
 export const redirectCatchJsonError = async(url) => {
   try {
     const response = await fetch(url);

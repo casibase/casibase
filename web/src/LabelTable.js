@@ -17,6 +17,9 @@ import {DeleteOutlined} from "@ant-design/icons";
 import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import XLSX from "xlsx";
+import {sheet2blob, showMessage} from "./Setting";
+import FileSaver from "file-saver";
 
 class LabelTable extends React.Component {
   constructor(props) {
@@ -91,6 +94,27 @@ class LabelTable extends React.Component {
   downRow(table, i) {
     table = Setting.swapRow(table, i, i + 1);
     this.updateTable(table);
+  }
+
+  downloadLabels(table) {
+    const data = [];
+    table.forEach((label, i) => {
+      const row = {};
+
+      row[0] = label.startTime;
+      row[1] = label.endTime;
+      row[2] = label.text;
+      data.push(row);
+    });
+
+    const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    try {
+      const blob = sheet2blob(sheet, "labels");
+      const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
+      FileSaver.saveAs(blob, fileName);
+    } catch (error) {
+      showMessage("error", `failed to download: ${error.message}`);
+    }
   }
 
   renderTable(table) {
@@ -202,7 +226,7 @@ class LabelTable extends React.Component {
             <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
             {
               table.length === 0 ? null : (
-                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
+                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
               )
             }
           </div>
