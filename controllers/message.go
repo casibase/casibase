@@ -178,6 +178,14 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
+	if writer.writerCleaner.cleaned == false {
+		_, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", writer.writerCleaner.GetCleanedData())
+		if err != nil {
+			c.ResponseErrorStream(err.Error())
+			return
+		}
+		writer.Flush()
+	}
 
 	fmt.Printf("]\n")
 

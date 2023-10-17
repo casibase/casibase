@@ -80,6 +80,7 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 				Temperature:     temperature,
 				TopP:            topP,
 				PresencePenalty: presencePenalty,
+				Stream:          true,
 			})
 		if err != nil {
 			return err
