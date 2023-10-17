@@ -72,7 +72,13 @@ class LabelTable extends React.Component {
       return;
     }
 
-    const row = {id: Setting.getRandomName(), startTime: currentTime, endTime: Setting.toFixed(currentTime + 1, 3), text: ""};
+    let lastEndTime = 0;
+    if (table.length > 0) {
+      const lastRow = table[table.length - 1];
+      lastEndTime = lastRow.endTime;
+    }
+
+    const row = {id: Setting.getRandomName(), startTime: lastEndTime, endTime: currentTime, text: ""};
     if (table === undefined) {
       table = [];
     }
