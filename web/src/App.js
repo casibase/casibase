@@ -399,6 +399,13 @@ class App extends Component {
   }
 
   renderContent() {
+    const params = new URLSearchParams(location.search);
+    if (params.get("isRaw") !== null) {
+      return (
+        <HomePage account={this.state.account} />
+      );
+    }
+
     const onClick = ({key}) => {
       this.props.history.push(key);
     };
