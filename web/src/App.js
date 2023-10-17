@@ -198,7 +198,7 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    if (Setting.isAnonymousUser(this.state.account)) {
+    if (Setting.isAnonymousUser(this.state.account) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown">
           {
@@ -399,8 +399,7 @@ class App extends Component {
   }
 
   renderContent() {
-    const params = new URLSearchParams(location.search);
-    if (params.get("isRaw") !== null) {
+    if (Setting.getUrlParam("isRaw") !== null) {
       return (
         <HomePage account={this.state.account} />
       );

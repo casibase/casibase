@@ -50,7 +50,11 @@ class HomePage extends React.Component {
   }
 
   render() {
-    if (Setting.isAnonymousUser(this.props.account)) {
+    if (Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) {
+      if (!this.props.account) {
+        return null;
+      }
+
       return (
         <ChatPage account={this.props.account} />
       );

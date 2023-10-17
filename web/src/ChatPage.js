@@ -241,8 +241,8 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", height: "calc(100vh - 136px)"}}>
-        <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account)) ? "0px" : "250px", height: "100%", backgroundColor: "white", borderRight: "1px solid rgb(245,245,245)", borderBottom: "1px solid rgb(245,245,245)"}}>
+      <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : "calc(100vh - 136px)"}}>
+        <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", borderRight: "1px solid rgb(245,245,245)", borderBottom: "1px solid rgb(245,245,245)"}}>
           <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
