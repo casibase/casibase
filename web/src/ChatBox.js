@@ -16,6 +16,7 @@ import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
+import * as Setting from "./Setting";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -84,6 +85,11 @@ class ChatBox extends React.Component {
   };
 
   render() {
+    let title = Setting.getUrlParam("title");
+    if (title === null) {
+      title = Conf.AiName;
+    }
+
     let messages = this.props.messages;
     if (messages === null) {
       messages = [];
@@ -92,10 +98,14 @@ class ChatBox extends React.Component {
       <React.Fragment>
         <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
           <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
-            <ConversationHeader style={{backgroundColor: "rgb(246,240,255)", height: "42px"}}>
-              <ConversationHeader.Content userName={Conf.AiName} />
-            </ConversationHeader>
-            <MessageList>
+            {
+              (title === "") ? null : (
+                <ConversationHeader style={{backgroundColor: "rgb(246,240,255)", height: "42px"}}>
+                  <ConversationHeader.Content userName={title} />
+                </ConversationHeader>
+              )
+            }
+            <MessageList style={{marginTop: "10px"}}>
               {messages.map((message, index) => (
                 <Message key={index} model={{
                   message: message.text !== "" ? message.text : this.state.dots,
@@ -106,8 +116,8 @@ class ChatBox extends React.Component {
                 </Message>
               ))}
             </MessageList>
-            <MessageInput disabled={this.props.disableInput}
-              sendDisabled={this.state.sendDisabled}
+            <MessageInput disabled={false}
+              sendDisabled={this.state.value === "" || this.props.disableInput || this.state.sendDisabled}
               placeholder={Conf.AiPlaceholder}
               onSend={this.handleSend}
               onChange={(val) => {
