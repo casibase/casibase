@@ -81,7 +81,8 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 				TopP:            topP,
 				PresencePenalty: presencePenalty,
 				Stream:          true,
-			})
+			},
+		)
 		if err != nil {
 			return err
 		}
@@ -109,7 +110,9 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 				Temperature:     temperature,
 				TopP:            topP,
 				PresencePenalty: presencePenalty,
-			})
+				Stream:          true,
+			},
+		)
 		if err != nil {
 			return err
 		}
@@ -131,7 +134,13 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 			}
 		}
 	} else if p.subType == "BLOOMZ-7B" {
-		stream, err := client.CreateBloomz7b1ChatCompletionStream(ctx, ernie.Bloomz7b1Request{Messages: messages})
+		stream, err := client.CreateBloomz7b1ChatCompletionStream(
+			ctx,
+			ernie.Bloomz7b1Request{
+				Messages: messages,
+				Stream:   true,
+			},
+		)
 		if err != nil {
 			return err
 		}
