@@ -80,6 +80,7 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 				Temperature:     temperature,
 				TopP:            topP,
 				PresencePenalty: presencePenalty,
+				Stream:          true,
 			})
 		if err != nil {
 			return err
@@ -152,7 +153,14 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builde
 			}
 		}
 	} else if p.subType == "Llama-2" {
-		stream, err := client.CreateLlamaChatCompletionStream(ctx, ernie.LlamaChatRequest{Messages: messages})
+		stream, err := client.CreateLlamaChatCompletionStream(
+			ctx,
+			ernie.LlamaChatRequest{
+				Messages: messages,
+				Stream:   true,
+				Model:    "llama_2_7b",
+			},
+		)
 		if err != nil {
 			return err
 		}
