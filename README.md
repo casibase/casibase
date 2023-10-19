@@ -49,8 +49,8 @@
 
 ## Online Demo
 
-- Read-only site: https://ai.v2tl.com (any modification operation will fail)
-- Writable site: https://demo-ai.v2tl.com (original data will be restored for every 5 minutes)
+- Read-only site: https://ai.casibase.com (any modification operation will fail)
+- Writable site: https://demo.casibase.com (original data will be restored for every 5 minutes)
 
 ## Documentation
 
