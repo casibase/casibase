@@ -51,7 +51,7 @@ func GetSupportedFileTypes() []string {
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	var path string
 	var err error
-	if strings.Contains(url, ":/") {
+	if !strings.HasPrefix(url, "http") {
 		path = url
 	} else {
 		path, err = getTempFilePathFromUrl(url)

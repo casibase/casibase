@@ -21,20 +21,12 @@ import (
 )
 
 func getUrlFromPath(path string, origin string) (string, error) {
-	res := path
-
-	if strings.Contains(res, ":/") {
-		res = strings.Replace(path, ":", "|", 1)
-		res = fmt.Sprintf("storage/%s", res)
+	if strings.HasPrefix(path, "http") {
+		return path, nil
 	}
 
-	if !strings.HasPrefix(res, "http://") && !strings.HasPrefix(res, "https://") {
-		var err error
-		res, err = url.JoinPath(origin, res)
-		if err != nil {
-			return "", err
-		}
-	}
-
-	return res, nil
+	res := strings.Replace(path, ":", "|", 1)
+	res = fmt.Sprintf("storage/%s", res)
+	res, err := url.JoinPath(origin, res)
+	return res, err
 }
