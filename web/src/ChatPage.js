@@ -120,7 +120,7 @@ class ChatPage extends BaseListPage {
                 disableInput: false,
               });
             }, (error) => {
-              Setting.showMessage("error", `${i18next.t("general:Failed to get answer")}: ${error}`);
+              Setting.showMessage("error", error);
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = error;

@@ -74,14 +74,24 @@ func GetMessages(owner string) ([]*Message, error) {
 	return messages, nil
 }
 
+func GetMessagesByUser(owner string, user string) ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Desc("created_time").Find(&messages, &Message{Owner: owner, User: user})
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
 func isWithinTime(createdTime string, minutes int) bool {
 	createdTimeObj, _ := time.Parse(time.RFC3339, createdTime)
 	t := createdTimeObj.Add(time.Duration(minutes) * time.Minute)
 	return time.Now().Before(t)
 }
 
-func GetAiMessageCount(owner string) (int, error) {
-	messages, err := GetMessages(owner)
+func GetNearMessageCount(user string) (int, error) {
+	messages, err := GetMessagesByUser("admin", user)
 	if err != nil {
 		return -1, err
 	}

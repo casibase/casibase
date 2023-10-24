@@ -136,7 +136,7 @@ func (c *ApiController) GetMessageAnswer() {
 	_, ok := c.CheckSignedIn()
 	if !ok {
 		var count int
-		count, err = object.GetAiMessageCount(message.Owner)
+		count, err = object.GetNearMessageCount(message.User)
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
