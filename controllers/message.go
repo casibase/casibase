@@ -181,7 +181,12 @@ func (c *ApiController) GetMessageAnswer() {
 	if writer.writerCleaner.cleaned == false {
 		cleanedData := writer.writerCleaner.GetCleanedData()
 		writer.buf = append(writer.buf, []byte(cleanedData)...)
-		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", cleanedData)))
+		jsonData, err := ConvertMessageDataToJSON(cleanedData)
+		if err != nil {
+			c.ResponseErrorStream(err.Error())
+			return
+		}
+		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return

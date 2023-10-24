@@ -42,14 +42,22 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 			cleanedData := w.writerCleaner.GetCleanedData()
 			w.buf = append(w.buf, []byte(cleanedData)...)
 			fmt.Print(cleanedData)
-			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", cleanedData)))
+			jsonData, err := ConvertMessageDataToJSON(cleanedData)
+			if err != nil {
+				return 0, err
+			}
+			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
 		}
 		return 0, nil
 	}
 
 	w.buf = append(w.buf, []byte(data)...)
 	fmt.Print(data)
-	return w.ResponseWriter.Write(p)
+	jsonData, err := ConvertMessageDataToJSON(data)
+	if err != nil {
+		return 0, err
+	}
+	return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
 }
 
 func (w *RefinedWriter) String() string {
@@ -85,17 +93,27 @@ func (c *Cleaner) GetCleanedData() string {
 func cleanString(data string) string {
 	data = strings.Replace(data, "?", "", -1)
 	data = strings.Replace(data, "？", "", -1)
-
 	data = strings.Replace(data, "-", "", -1)
 	data = strings.Replace(data, "——", "", -1)
 
+	keywords := []string{"问", "用户", "q", "user", "question"}
+
 	if strings.Contains(data, ":") {
 		parts := strings.Split(data, ":")
-		data = parts[len(parts)-1]
+		data = checkFirstPart(parts[0], parts[len(parts)-1], keywords)
 	} else if strings.Contains(data, "：") {
 		parts := strings.Split(data, "：")
-		data = parts[len(parts)-1]
+		data = checkFirstPart(parts[0], parts[len(parts)-1], keywords)
 	}
 
 	return data
+}
+
+func checkFirstPart(firstPart, secondPart string, keywords []string) string {
+	for _, keyword := range keywords {
+		if strings.Contains(firstPart, keyword) {
+			return secondPart
+		}
+	}
+	return firstPart
 }
