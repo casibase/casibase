@@ -159,6 +159,22 @@ func AddMessage(message *Message) (bool, error) {
 		return false, err
 	}
 
+	if affected != 0 {
+		var chat *Chat
+		chat, err = getChat(message.Owner, message.Chat)
+		if err != nil {
+			return false, err
+		}
+
+		if chat != nil {
+			chat.MessageCount += 1
+			_, err = UpdateChat(chat.GetId(), chat)
+			if err != nil {
+				return false, err
+			}
+		}
+	}
+
 	return affected != 0, nil
 }
 

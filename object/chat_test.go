@@ -19,21 +19,40 @@ package object
 
 import "testing"
 
-func TestUpdateStoreFolders(t *testing.T) {
+func TestUpdateMessageCounts(t *testing.T) {
 	InitConfig()
 
-	store, err := getStore("admin", "default")
+	chats, err := GetGlobalChats()
 	if err != nil {
 		panic(err)
 	}
 
-	//err = store.Populate()
-	//if err != nil {
-	//	panic(err)
-	//}
+	chatMap := map[string]*Chat{}
+	for _, chat := range chats {
+		chat.MessageCount = 0
+		chatMap[chat.Name] = chat
+	}
 
-	_, err = store.GetVideoData()
+	messages, err := GetGlobalMessages()
 	if err != nil {
 		panic(err)
+	}
+
+	for _, message := range messages {
+		chat, ok := chatMap[message.Chat]
+		if ok {
+			chat.MessageCount += 1
+		}
+	}
+
+	for _, chat := range chats {
+		if chat.MessageCount == 0 {
+			continue
+		}
+
+		_, err = UpdateChat(chat.GetId(), chat)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
