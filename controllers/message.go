@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -109,7 +108,17 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	question := beego.AppConfig.String("welcomeMessage")
+	store, err := object.GetDefaultStore("admin")
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+	if store == nil {
+		c.ResponseErrorStream(fmt.Sprintf("The default store is not found"))
+		return
+	}
+
+	question := store.Welcome
 	if message.ReplyTo != "Welcome" {
 		questionMessage, err := object.GetMessage(message.ReplyTo)
 		if err != nil {
@@ -160,7 +169,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	realQuestion := object.GetRefinedQuestion(knowledge, question)
+	realQuestion := object.GetRefinedQuestion(store.Prompt, knowledge, question)
 
 	fmt.Printf("Question: [%s]\n", question)
 	fmt.Printf("Knowledge: [%s]\n", knowledge)

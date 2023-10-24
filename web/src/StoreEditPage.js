@@ -21,6 +21,8 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 
+const {TextArea} = Input;
+
 class StoreEditPage extends React.Component {
   constructor(props) {
     super(props);
@@ -159,6 +161,26 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
               options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
               } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Welcome")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.store.welcome} onChange={e => {
+              this.updateStoreField("welcome", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Prompt")}:
+          </Col>
+          <Col span={22} >
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
+              this.updateStoreField("prompt", e.target.value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

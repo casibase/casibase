@@ -16,12 +16,13 @@ package object
 
 import "fmt"
 
-func GetRefinedQuestion(knowledge string, question string) string {
+func GetRefinedQuestion(prompt string, knowledge string, question string) string {
 	if knowledge == "" {
 		return question
 	}
 
-	return fmt.Sprintf(`You have some background knowledge: 
+	if prompt == "" {
+		prompt = `You have some background knowledge: 
 
 %s
 
@@ -29,5 +30,8 @@ Now, please answer the following question based on the provided information:
 
 %s
 
-(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is.". Empty answer is not allowed. If the text is not question, you should ask for a question politely.)`, knowledge, question)
+(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is.". Empty answer is not allowed. If the text is not question, you should ask for a question politely.)`
+	}
+
+	return fmt.Sprintf(prompt, knowledge, question)
 }
