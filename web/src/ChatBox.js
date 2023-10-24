@@ -112,27 +112,31 @@ class ChatBox extends React.Component {
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : this.props.account.avatar} name="GPT" />
+                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
                 </Message>
               ))}
             </MessageList>
-            <MessageInput disabled={false}
-              sendDisabled={this.state.value === "" || this.props.disableInput || this.state.sendDisabled}
-              placeholder={Conf.AiPlaceholder}
-              onSend={this.handleSend}
-              onChange={(val) => {
-                this.setState({value: val});
-              }}
-              value={this.state.value}
-              onPaste={(evt) => {
-                evt.preventDefault();
-                this.setState({value: this.state.value + evt.clipboardData.getData("text")});
-                this.setState({sendDisabled: false});
-              }}
-              onAttachClick={() => {
-                this.handleImageClick();
-              }}
-            />
+            {
+              this.props.hideInput === true ? null : (
+                <MessageInput disabled={false}
+                  sendDisabled={this.state.value === "" || this.props.disableInput || this.state.sendDisabled}
+                  placeholder={Conf.AiPlaceholder}
+                  onSend={this.handleSend}
+                  onChange={(val) => {
+                    this.setState({value: val});
+                  }}
+                  value={this.state.value}
+                  onPaste={(evt) => {
+                    evt.preventDefault();
+                    this.setState({value: this.state.value + evt.clipboardData.getData("text")});
+                    this.setState({sendDisabled: false});
+                  }}
+                  onAttachClick={() => {
+                    this.handleImageClick();
+                  }}
+                />
+              )
+            }
           </ChatContainer>
         </MainContainer>
         <input

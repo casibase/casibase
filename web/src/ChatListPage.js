@@ -20,6 +20,8 @@ import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
 import * as Conf from "./Conf";
+import * as MessageBackend from "./backend/MessageBackend";
+import ChatBox from "./ChatBox";
 
 class ChatListPage extends React.Component {
   constructor(props) {
@@ -27,6 +29,7 @@ class ChatListPage extends React.Component {
     this.state = {
       classes: props,
       chats: null,
+      messagesMap: {},
     };
   }
 
@@ -41,9 +44,26 @@ class ChatListPage extends React.Component {
           this.setState({
             chats: res.data,
           });
+
+          res.data.forEach((chat) => {
+            if (chat.messageCount > 1) {
+              this.getMessages(chat.name);
+            }
+          });
         } else {
           Setting.showMessage("error", `Failed to get chats: ${res.msg}`);
         }
+      });
+  }
+
+  getMessages(chatName) {
+    MessageBackend.getChatMessages("admin", chatName)
+      .then((res) => {
+        const messagesMap = this.state.messagesMap;
+        messagesMap[chatName] = res.data;
+        this.setState({
+          messagesMap: messagesMap,
+        });
       });
   }
 
@@ -102,13 +122,13 @@ class ChatListPage extends React.Component {
 
   renderTable(chats) {
     const columns = [
-      {
-        title: i18next.t("general:Owner"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "90px",
-        sorter: (a, b) => a.owner.localeCompare(b.owner),
-      },
+      // {
+      //   title: i18next.t("general:Owner"),
+      //   dataIndex: "owner",
+      //   key: "owner",
+      //   width: "90px",
+      //   sorter: (a, b) => a.owner.localeCompare(b.owner),
+      // },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
@@ -143,38 +163,38 @@ class ChatListPage extends React.Component {
           return Setting.getFormattedDate(text);
         },
       },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "100px",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
-        // ...this.getColumnSearchProps("displayName"),
-      },
-      {
-        title: i18next.t("chat:Type"),
-        dataIndex: "type",
-        key: "type",
-        width: "110px",
-        sorter: (a, b) => a.type.localeCompare(b.type),
-        filterMultiple: false,
-        filters: [
-          {text: "Single", value: "Single"},
-          {text: "Group", value: "Group"},
-          {text: "AI", value: "AI"},
-        ],
-        render: (text, record, index) => {
-          return i18next.t(`chat:${text}`);
-        },
-      },
-      {
-        title: i18next.t("chat:Category"),
-        dataIndex: "category",
-        key: "category",
-        width: "100px",
-        sorter: (a, b) => a.category.localeCompare(b.category),
-        // ...this.getColumnSearchProps("category"),
-      },
+      // {
+      //   title: i18next.t("general:Display name"),
+      //   dataIndex: "displayName",
+      //   key: "displayName",
+      //   width: "100px",
+      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      //   // ...this.getColumnSearchProps("displayName"),
+      // },
+      // {
+      //   title: i18next.t("chat:Type"),
+      //   dataIndex: "type",
+      //   key: "type",
+      //   width: "110px",
+      //   sorter: (a, b) => a.type.localeCompare(b.type),
+      //   filterMultiple: false,
+      //   filters: [
+      //     {text: "Single", value: "Single"},
+      //     {text: "Group", value: "Group"},
+      //     {text: "AI", value: "AI"},
+      //   ],
+      //   render: (text, record, index) => {
+      //     return i18next.t(`chat:${text}`);
+      //   },
+      // },
+      // {
+      //   title: i18next.t("chat:Category"),
+      //   dataIndex: "category",
+      //   key: "category",
+      //   width: "100px",
+      //   sorter: (a, b) => a.category.localeCompare(b.category),
+      //   // ...this.getColumnSearchProps("category"),
+      // },
       {
         title: i18next.t("general:User"),
         dataIndex: "user",
@@ -194,25 +214,25 @@ class ChatListPage extends React.Component {
           );
         },
       },
-      {
-        title: i18next.t("chat:User1"),
-        dataIndex: "user1",
-        key: "user1",
-        width: "120px",
-        sorter: (a, b) => a.user1.localeCompare(b.user1),
-        // ...this.getColumnSearchProps("user1"),
-        render: (text, record, index) => {
-          if (text.includes("/u-")) {
-            return text;
-          }
-
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${text}`)}>
-              {text}
-            </a>
-          );
-        },
-      },
+      // {
+      //   title: i18next.t("chat:User1"),
+      //   dataIndex: "user1",
+      //   key: "user1",
+      //   width: "120px",
+      //   sorter: (a, b) => a.user1.localeCompare(b.user1),
+      //   // ...this.getColumnSearchProps("user1"),
+      //   render: (text, record, index) => {
+      //     if (text.includes("/u-")) {
+      //       return text;
+      //     }
+      //
+      //     return (
+      //       <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${text}`)}>
+      //         {text}
+      //       </a>
+      //     );
+      //   },
+      // },
       // {
       //   title: i18next.t("chat:User2"),
       //   dataIndex: "user2",
@@ -269,6 +289,22 @@ class ChatListPage extends React.Component {
         width: "100px",
         sorter: (a, b) => a.messageCount - b.messageCount,
         // ...this.getColumnSearchProps("messageCount"),
+      },
+      {
+        title: i18next.t("general:Messages"),
+        dataIndex: "messages",
+        key: "messages",
+        width: "500px",
+        render: (text, record, index) => {
+          const messages = this.state.messagesMap[record.name];
+          if (messages === undefined) {
+            return null;
+          }
+
+          return (
+            <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} />
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),

@@ -17,6 +17,8 @@ import {Button, Card, Col, Input, Row, Select} from "antd";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import ChatBox from "./ChatBox";
+import * as MessageBackend from "./backend/MessageBackend";
 
 const {Option} = Select;
 
@@ -27,12 +29,14 @@ class ChatEditPage extends React.Component {
       classes: props,
       chatName: props.match.params.chatName,
       chat: null,
+      messages: null,
       // users: [],
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getChat();
+    this.getMessages(this.state.chatName);
     // this.getUser();
   }
 
@@ -46,6 +50,15 @@ class ChatEditPage extends React.Component {
         } else {
           Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
         }
+      });
+  }
+
+  getMessages(chatName) {
+    MessageBackend.getChatMessages("admin", chatName)
+      .then((res) => {
+        this.setState({
+          messages: res.data,
+        });
       });
   }
 
@@ -172,6 +185,16 @@ class ChatEditPage extends React.Component {
               onChange={(value => {this.updateChatField("users", value);})}
               options={this.state.chat.users.map((user) => Setting.getOption(`${user}`, `${user}`))}
             />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Messages")}:
+          </Col>
+          <Col span={22} >
+            <div style={{width: "50%"}}>
+              <ChatBox disableInput={true} hideInput={true} messages={this.state.messages} sendMessage={null} account={this.props.account} />
+            </div>
           </Col>
         </Row>
       </Card>
