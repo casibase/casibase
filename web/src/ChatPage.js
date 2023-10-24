@@ -103,12 +103,14 @@ class ChatPage extends BaseListPage {
               disableInput: true,
             });
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
-              if (data === "") {
-                data = "\n";
+              const jsonData = JSON.parse(data);
+
+              if (jsonData.text === "") {
+                jsonData.text = "\n";
               }
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
-              text += data;
+              text += jsonData.text;
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
               this.setState({

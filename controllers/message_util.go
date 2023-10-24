@@ -15,6 +15,7 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/casibase/casibase/embedding"
@@ -108,4 +109,13 @@ func getEmbeddingProviderFromContext(owner string, name string) (*object.Provide
 	}
 
 	return provider, providerObj, err
+}
+
+func ConvertMessageDataToJSON(data string) ([]byte, error) {
+	jsonData := map[string]string{"text": data}
+	jsonBytes, err := json.Marshal(jsonData)
+	if err != nil {
+		return nil, err
+	}
+	return jsonBytes, nil
 }
