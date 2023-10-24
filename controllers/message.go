@@ -36,10 +36,6 @@ func (c *ApiController) GetGlobalMessages() {
 
 func (c *ApiController) GetMessages() {
 	owner := c.Input().Get("owner")
-	if owner == "admin" {
-		owner = ""
-	}
-
 	chat := c.Input().Get("chat")
 
 	if chat == "" {
@@ -270,6 +266,7 @@ func (c *ApiController) AddMessage() {
 				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
 				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
 				// Organization: message.Organization,
+				User:         message.User,
 				Chat:         message.Chat,
 				ReplyTo:      message.GetId(),
 				Author:       "AI",

@@ -36,6 +36,7 @@ type Message struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	// Organization string `xorm:"varchar(100)" json:"organization"`
+	User         string        `xorm:"varchar(100) index" json:"user"`
 	Chat         string        `xorm:"varchar(100) index" json:"chat"`
 	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
 	Author       string        `xorm:"varchar(100)" json:"author"`

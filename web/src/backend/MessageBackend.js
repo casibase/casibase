@@ -28,8 +28,8 @@ export function getMessages(owner) {
   }).then(res => res.json());
 }
 
-export function getChatMessages(chat) {
-  return fetch(`${Setting.ServerUrl}/api/get-messages?chat=${chat}`, {
+export function getChatMessages(owner, chat) {
+  return fetch(`${Setting.ServerUrl}/api/get-messages?owner=${owner}&chat=${chat}`, {
     method: "GET",
     credentials: "include",
   }).then(res => res.json());

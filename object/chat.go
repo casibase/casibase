@@ -31,6 +31,7 @@ type Chat struct {
 	DisplayName  string   `xorm:"varchar(100)" json:"displayName"`
 	Category     string   `xorm:"varchar(100)" json:"category"`
 	Type         string   `xorm:"varchar(100)" json:"type"`
+	User         string   `xorm:"varchar(100) index" json:"user"`
 	User1        string   `xorm:"varchar(100)" json:"user1"`
 	User2        string   `xorm:"varchar(100)" json:"user2"`
 	Users        []string `xorm:"varchar(100)" json:"users"`
@@ -52,6 +53,16 @@ func GetGlobalChats() ([]*Chat, error) {
 func GetChats(owner string) ([]*Chat, error) {
 	chats := []*Chat{}
 	err := adapter.engine.Desc("created_time").Find(&chats, &Chat{Owner: owner})
+	if err != nil {
+		return chats, err
+	}
+
+	return chats, nil
+}
+
+func GetChatsByUser(owner string, user string) ([]*Chat, error) {
+	chats := []*Chat{}
+	err := adapter.engine.Desc("created_time").Find(&chats, &Chat{Owner: owner, User: user})
 	if err != nil {
 		return chats, err
 	}

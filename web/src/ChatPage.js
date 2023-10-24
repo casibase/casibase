@@ -63,10 +63,11 @@ class ChatPage extends BaseListPage {
   newMessage(text) {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
       // organization: this.props.account.owner,
+      user: this.props.account.name,
       chat: this.state.chatName,
       replyTo: "",
       author: `${this.props.account.owner}/${this.props.account.name}`,
@@ -90,7 +91,7 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chatName) {
-    MessageBackend.getChatMessages(chatName)
+    MessageBackend.getChatMessages("admin", chatName)
       .then((res) => {
         this.setState({
           messages: res.data,
@@ -311,10 +312,14 @@ class ChatPage extends BaseListPage {
       field = "type";
       value = params.type;
     }
+
+    field = "user";
+    value = this.props.account.name;
+
     if (setLoading) {
       this.setState({loading: true});
     }
-    ChatBackend.getChats(this.props.account.name, -1, field, value, sortField, sortOrder)
+    ChatBackend.getChats("admin", -1, -1, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({

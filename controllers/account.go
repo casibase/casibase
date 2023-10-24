@@ -71,7 +71,7 @@ func (c *ApiController) Signout() {
 }
 
 func addInitialChat(user *casdoorsdk.User) {
-	chats, err := object.GetChats(user.Name)
+	chats, err := object.GetChatsByUser("admin", user.Name)
 	if err != nil {
 		panic(err)
 	}
@@ -82,13 +82,14 @@ func addInitialChat(user *casdoorsdk.User) {
 
 	randomName := util.GetRandomName()
 	chat := object.Chat{
-		Owner:        user.Name,
+		Owner:        "admin",
 		Name:         fmt.Sprintf("chat_%s", randomName),
 		CreatedTime:  util.GetCurrentTime(),
 		UpdatedTime:  util.GetCurrentTime(),
 		DisplayName:  fmt.Sprintf("New Chat - %s", randomName),
+		Category:     "Default",
 		Type:         "AI",
-		Category:     "Chat Category - 1",
+		User:         user.Name,
 		User1:        fmt.Sprintf("%s/%s", user.Owner, user.Name),
 		User2:        "",
 		Users:        []string{fmt.Sprintf("%s/%s", user.Owner, user.Name)},
@@ -104,10 +105,11 @@ func addInitialChat(user *casdoorsdk.User) {
 
 	randomName = util.GetRandomName()
 	answerMessage := &object.Message{
-		Owner:       user.Name,
+		Owner:       "admin",
 		Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
 		CreatedTime: util.GetCurrentTimeEx(chat.CreatedTime),
 		// Organization: message.Organization,
+		User:         user.Name,
 		Chat:         chat.Name,
 		ReplyTo:      "Welcome",
 		Author:       "AI",
