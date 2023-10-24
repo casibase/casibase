@@ -46,10 +46,6 @@ func TestUpdateMessageCounts(t *testing.T) {
 	}
 
 	for _, chat := range chats {
-		if chat.MessageCount == 0 {
-			continue
-		}
-
 		_, err = UpdateChat(chat.GetId(), chat)
 		if err != nil {
 			panic(err)

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Spin} from "antd";
+import {Modal, Spin} from "antd";
 import moment from "moment";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
@@ -34,6 +34,7 @@ class ChatPage extends BaseListPage {
     this.setState({
       loading: true,
       disableInput: false,
+      isModalOpen: false,
     });
 
     this.fetch();
@@ -209,6 +210,29 @@ class ChatPage extends BaseListPage {
     return this.state.data.filter(chat => chat.name === this.state.chatName)[0];
   }
 
+  renderModal() {
+    return (
+      <Modal
+        width={850}
+        height={550}
+        bodyStyle={{width: "800px", height: "500px"}}
+        title={""}
+        closable={true}
+        open={this.state.isModalOpen}
+        okButtonProps={{style: {display: "none"}}}
+        cancelButtonProps={{style: {display: "none"}}}
+        onOk={null}
+        onCancel={() => {
+          this.setState({
+            isModalOpen: false,
+          });
+        }}
+      >
+        <iframe key={"provider"} title={"provider"} src={"http://provider"} width={"100%"} height={"100%"} frameBorder={0} seamless="seamless" scrolling="no" />
+      </Modal>
+    );
+  }
+
   renderTable(chats) {
     const onSelectChat = (i) => {
       const chat = chats[i];
@@ -244,6 +268,9 @@ class ChatPage extends BaseListPage {
 
     return (
       <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : "calc(100vh - 136px)"}}>
+        {
+          this.renderModal()
+        }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", borderRight: "1px solid rgb(245,245,245)", borderBottom: "1px solid rgb(245,245,245)"}}>
           <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
         </div>
