@@ -19,6 +19,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
+import * as Conf from "./Conf";
 
 class ChatListPage extends React.Component {
   constructor(props) {
@@ -56,6 +57,7 @@ class ChatListPage extends React.Component {
       displayName: `New Chat - ${randomName}`,
       category: "Chat Category - 1",
       type: "AI",
+      user: this.props.account.name,
       user1: `${this.props.account.owner}/${this.props.account.name}`,
       user2: "",
       users: [`${this.props.account.owner}/${this.props.account.name}`],
@@ -174,6 +176,25 @@ class ChatListPage extends React.Component {
         // ...this.getColumnSearchProps("category"),
       },
       {
+        title: i18next.t("general:User"),
+        dataIndex: "user",
+        key: "user",
+        width: "120px",
+        sorter: (a, b) => a.user.localeCompare(b.user),
+        // ...this.getColumnSearchProps("user"),
+        render: (text, record, index) => {
+          if (text.startsWith("u-")) {
+            return text;
+          }
+
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
         title: i18next.t("chat:User1"),
         dataIndex: "user1",
         key: "user1",
@@ -181,6 +202,10 @@ class ChatListPage extends React.Component {
         sorter: (a, b) => a.user1.localeCompare(b.user1),
         // ...this.getColumnSearchProps("user1"),
         render: (text, record, index) => {
+          if (text.includes("/u-")) {
+            return text;
+          }
+
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${text}`)}>
               {text}

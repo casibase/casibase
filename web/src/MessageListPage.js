@@ -19,6 +19,7 @@ import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
 import i18next from "i18next";
+import * as Conf from "./Conf";
 
 class MessageListPage extends React.Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class MessageListPage extends React.Component {
       name: `message_${randomName}`,
       createdTime: moment().format(),
       // organization: "Message Organization - 1",
+      user: this.props.account.name,
       chat: "",
       replyTo: "",
       author: `${this.props.account.owner}/${this.props.account.name}`,
@@ -126,6 +128,24 @@ class MessageListPage extends React.Component {
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
+        },
+      },
+      {
+        title: i18next.t("general:User"),
+        dataIndex: "user",
+        key: "user",
+        width: "120px",
+        sorter: (a, b) => a.user.localeCompare(b.user),
+        render: (text, record, index) => {
+          if (text.startsWith("u-")) {
+            return text;
+          }
+
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
         },
       },
       {

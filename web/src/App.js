@@ -89,8 +89,6 @@ class App extends Component {
     });
     if (uri === "/" || uri === "/home") {
       this.setState({selectedMenuKey: "/"});
-    } else if (uri.includes("/chat")) {
-      this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/providers")) {
@@ -111,6 +109,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
+    } else if (uri.includes("/chat")) {
+      this.setState({selectedMenuKey: "/chat"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
