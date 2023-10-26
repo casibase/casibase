@@ -202,15 +202,17 @@ class ChatMenu extends React.Component {
         >
           {i18next.t("chat:New Chat")}
         </Button>
-        <Menu
-          style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
-          mode="inline"
-          openKeys={this.state.openKeys}
-          selectedKeys={this.state.selectedKeys}
-          onOpenChange={this.onOpenChange}
-          onSelect={this.onSelect}
-          items={items}
-        />
+        <div style={{marginRight: "4px"}}>
+          <Menu
+            style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
+            mode="inline"
+            openKeys={this.state.openKeys}
+            selectedKeys={this.state.selectedKeys}
+            onOpenChange={this.onOpenChange}
+            onSelect={this.onSelect}
+            items={items}
+          />
+        </div>
       </div>
     );
   }
