@@ -127,6 +127,13 @@ export function isAnonymousUser(account) {
   return account.type === "anonymous-user";
 }
 
+export function isChatUser(account) {
+  if (account === undefined || account === null) {
+    return false;
+  }
+  return account.type === "chat-user";
+}
+
 export function deepCopy(obj) {
   if (obj === null) {
     showMessage("error", "deepCopy obj is null.");

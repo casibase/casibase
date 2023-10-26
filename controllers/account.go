@@ -58,6 +58,12 @@ func (c *ApiController) Signin() {
 		return
 	}
 
+	if !claims.IsAdmin {
+		claims.Type = "chat-user"
+	}
+
+	addInitialChat(&claims.User)
+
 	claims.AccessToken = token.AccessToken
 	c.SetSessionClaims(claims)
 
