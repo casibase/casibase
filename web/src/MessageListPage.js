@@ -236,7 +236,7 @@ class MessageListPage extends React.Component {
                 {i18next.t("general:Edit")}
               </Button>
               <Popconfirm
-                title={`Sure to delete message: ${record.name} ?`}
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteMessage(index)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}

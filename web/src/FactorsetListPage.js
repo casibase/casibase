@@ -184,10 +184,10 @@ class FactorsetListPage extends React.Component {
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/factorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
-                title={`Sure to delete factorset: ${record.name} ?`}
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteFactorset(index)}
-                okText="OK"
-                cancelText="Cancel"
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
               >
                 <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>

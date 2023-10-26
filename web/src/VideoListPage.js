@@ -209,10 +209,10 @@ class VideoListPage extends React.Component {
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
-                title={`Sure to delete video: ${record.name} ?`}
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteVideo(index)}
-                okText="OK"
-                cancelText="Cancel"
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
               >
                 <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>

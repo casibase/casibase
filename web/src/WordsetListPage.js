@@ -171,10 +171,10 @@ class WordsetListPage extends React.Component {
               <Button style={{marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.downloadXlsx(record)}>{i18next.t("general:Download")}</Button>
               <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/wordsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
-                title={`Sure to delete wordset: ${record.name} ?`}
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteWordset(index)}
-                okText="OK"
-                cancelText="Cancel"
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
               >
                 <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>

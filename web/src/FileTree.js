@@ -477,12 +477,12 @@ class FileTree extends React.Component {
                         <Tooltip title={i18next.t("store:Delete")}>
                           <span onClick={(e) => e.stopPropagation()}>
                             <Popconfirm
-                              title={`Sure to delete file: ${file.title} ?`}
+                              title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
                               onConfirm={(e) => {
                                 this.deleteFile(file, true);
                               }}
-                              okText="OK"
-                              cancelText="Cancel"
+                              okText={i18next.t("general:OK")}
+                              cancelText={i18next.t("general:Cancel")}
                             >
                               <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
                             </Popconfirm>
@@ -567,12 +567,12 @@ class FileTree extends React.Component {
                             <Tooltip title={i18next.t("store:Delete")}>
                               <span onClick={(e) => e.stopPropagation()}>
                                 <Popconfirm
-                                  title={`Sure to delete folder: ${file.title} ?`}
+                                  title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
                                   onConfirm={(e) => {
                                     this.deleteFile(file, false);
                                   }}
-                                  okText="OK"
-                                  cancelText="Cancel"
+                                  okText={i18next.t("general:OK")}
+                                  cancelText={i18next.t("general:Cancel")}
                                 >
                                   <Button style={{marginRight: "5px"}} icon={<DeleteOutlined />} size="small" />
                                 </Popconfirm>

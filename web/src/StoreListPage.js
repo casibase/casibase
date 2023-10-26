@@ -218,10 +218,10 @@ class StoreListPage extends React.Component {
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} disabled={this.state.generating} onClick={() => this.refreshStoreVectors(index)}>{i18next.t("store:Refresh Vectors")}</Button>
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
                     <Popconfirm
-                      title={`Sure to delete store: ${record.name} ?`}
+                      title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                       onConfirm={() => this.deleteStore(index)}
-                      okText="OK"
-                      cancelText="Cancel"
+                      okText={i18next.t("general:OK")}
+                      cancelText={i18next.t("general:Cancel")}
                     >
                       <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
                     </Popconfirm>

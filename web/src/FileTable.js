@@ -211,14 +211,14 @@ class FileTable extends React.Component {
                 });
               }}>{i18next.t("store:Download")}</Button>
               <Popconfirm
-                title={`Sure to delete all ${fileCount} files and ${folderCount} folders ?`}
+                title={`${i18next.t("general:Sure to delete")} all ${fileCount} files and ${folderCount} folders ?`}
                 onConfirm={(e) => {
                   files.forEach((file, index) => {
                     this.deleteFile(file, file.isLeaf);
                   });
                 }}
-                okText="OK"
-                cancelText="Cancel"
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
               >
                 <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small">{i18next.t("store:Delete")}</Button>
               </Popconfirm>

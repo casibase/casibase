@@ -107,14 +107,14 @@ class ChatMenu extends React.Component {
                           });
                         }} />
                       <Popconfirm
-                        title={`Sure to delete chat: ${chat.displayName} ?`}
+                        title={`${i18next.t("general:Sure to delete")}: ${chat.displayName} ?`}
                         onConfirm={() => {
                           if (this.props.onDeleteChat) {
                             this.props.onDeleteChat(globalChatIndex);
                           }
                         }}
-                        okText="OK"
-                        cancelText="Cancel"
+                        okText={i18next.t("general:OK")}
+                        cancelText={i18next.t("general:Cancel")}
                       >
                         <DeleteOutlined className="menu-item-icon"
                           onMouseEnter={handleIconMouseEnter}
