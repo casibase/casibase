@@ -24,7 +24,6 @@ class ChatBox extends React.Component {
     super(props);
     this.state = {
       dots: ".",
-      sendDisabled: false,
       value: "",
     };
     this.timer = null;
@@ -52,6 +51,10 @@ class ChatBox extends React.Component {
   }
 
   handleSend = (innerHtml) => {
+    if (this.state.value === "" || this.props.disableInput) {
+      return;
+    }
+
     this.props.sendMessage(this.state.value);
     this.setState({value: ""});
   };
@@ -120,7 +123,7 @@ class ChatBox extends React.Component {
             {
               this.props.hideInput === true ? null : (
                 <MessageInput disabled={false}
-                  sendDisabled={this.state.value === "" || this.props.disableInput || this.state.sendDisabled}
+                  sendDisabled={this.state.value === "" || this.props.disableInput}
                   placeholder={i18next.t("chat:Type message here")}
                   onSend={this.handleSend}
                   onChange={(val) => {
@@ -130,7 +133,6 @@ class ChatBox extends React.Component {
                   onPaste={(evt) => {
                     evt.preventDefault();
                     this.setState({value: this.state.value + evt.clipboardData.getData("text")});
-                    this.setState({sendDisabled: false});
                   }}
                   onAttachClick={() => {
                     this.handleImageClick();
