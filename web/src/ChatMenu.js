@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Input, Menu} from "antd";
+import {Button, Input, Menu, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
+import i18next from "i18next";
 
 class ChatMenu extends React.Component {
   constructor(props) {
@@ -105,17 +106,23 @@ class ChatMenu extends React.Component {
                             editChat: true,
                           });
                         }} />
-                      <DeleteOutlined className="menu-item-icon"
-                        onMouseEnter={handleIconMouseEnter}
-                        onMouseLeave={handleIconMouseLeave}
-                        onMouseDown={handleIconMouseDown}
-                        onMouseUp={handleIconMouseUp}
-                        onClick={(e) => {
-                          e.stopPropagation();
+                      <Popconfirm
+                        title={`Sure to delete chat: ${chat.displayName} ?`}
+                        onConfirm={() => {
                           if (this.props.onDeleteChat) {
                             this.props.onDeleteChat(globalChatIndex);
                           }
-                        }} />
+                        }}
+                        okText="OK"
+                        cancelText="Cancel"
+                      >
+                        <DeleteOutlined className="menu-item-icon"
+                          onMouseEnter={handleIconMouseEnter}
+                          onMouseLeave={handleIconMouseLeave}
+                          onMouseDown={handleIconMouseDown}
+                          onMouseUp={handleIconMouseUp}
+                        />
+                      </Popconfirm>
                     </div>
                   )}
                 </div>)
@@ -193,7 +200,7 @@ class ChatMenu extends React.Component {
           }}
           onClick={this.props.onAddChat}
         >
-          New Chat
+          {i18next.t("chat:New Chat")}
         </Button>
         <Menu
           style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}

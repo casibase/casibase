@@ -93,7 +93,7 @@ func addInitialChat(user *casdoorsdk.User) {
 		CreatedTime:  util.GetCurrentTime(),
 		UpdatedTime:  util.GetCurrentTime(),
 		DisplayName:  fmt.Sprintf("New Chat - %s", randomName),
-		Category:     "Default",
+		Category:     "Default Category",
 		Type:         "AI",
 		User:         user.Name,
 		User1:        fmt.Sprintf("%s/%s", user.Owner, user.Name),

@@ -40,17 +40,32 @@ class ChatPage extends BaseListPage {
     this.fetch();
   }
 
+  getNextChatIndex(name) {
+    if (!name) {
+      return 1;
+    }
+    const prefix = `${i18next.t("chat:New Chat")} - `;
+    if (name.startsWith(prefix)) {
+      const numberPart = name.slice(prefix.length);
+      if (!isNaN(numberPart)) {
+        return parseInt(numberPart) + 1;
+      }
+    }
+    return 1;
+  }
+
   newChat(chat) {
     const randomName = Setting.getRandomName();
     return {
-      owner: this.props.account.name,
+      owner: "admin",
       name: `chat_${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
       // organization: this.props.account.owner,
-      displayName: `New Chat - ${randomName}`,
+      displayName: `${i18next.t("chat:New Chat")} - ${this.getNextChatIndex(chat?.displayName) ?? randomName}`,
       type: "AI",
-      category: chat !== undefined ? chat.category : "Chat Category - 1",
+      user: this.props.account.name,
+      category: chat !== undefined ? chat.category : i18next.t("chat:Default Category"),
       user1: `${this.props.account.owner}/${this.props.account.name}`,
       user2: "",
       users: [`${this.props.account.owner}/${this.props.account.name}`],
@@ -194,7 +209,7 @@ class ChatPage extends BaseListPage {
   updateChatName(chats, i, chat, newName) {
     const name = chat.name;
     chat.displayName = newName;
-    ChatBackend.updateChat(this.props.account.name, name, chat)
+    ChatBackend.updateChat("admin", name, chat)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully update"));
@@ -268,7 +283,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : "calc(100vh - 136px)"}}>
         {
           this.renderModal()
         }

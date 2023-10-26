@@ -17,6 +17,7 @@ import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, Messa
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -120,7 +121,7 @@ class ChatBox extends React.Component {
               this.props.hideInput === true ? null : (
                 <MessageInput disabled={false}
                   sendDisabled={this.state.value === "" || this.props.disableInput || this.state.sendDisabled}
-                  placeholder={Conf.AiPlaceholder}
+                  placeholder={i18next.t("chat:Type message here")}
                   onSend={this.handleSend}
                   onChange={(val) => {
                     this.setState({value: val});
