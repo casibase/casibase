@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
+	"github.com/casibase/casibase/util"
 )
 
 type Response struct {
@@ -144,5 +145,15 @@ func getContentHash(content string) string {
 
 	res := hex.EncodeToString(hasher.Sum(nil))
 	res = res[:8]
+	return res
+}
+
+func (c *ApiController) getClientIp() string {
+	res := strings.Replace(util.GetIPFromRequest(c.Ctx.Request), ": ", "", -1)
+	return res
+}
+
+func (c *ApiController) getUserAgent() string {
+	res := c.Ctx.Request.UserAgent()
 	return res
 }

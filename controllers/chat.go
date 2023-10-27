@@ -89,6 +89,8 @@ func (c *ApiController) AddChat() {
 		return
 	}
 
+	chat.ClientIp = c.getClientIp()
+	chat.UserAgent = c.getUserAgent()
 	success, err := object.AddChat(&chat)
 	if err != nil {
 		c.ResponseError(err.Error())

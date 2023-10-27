@@ -17,7 +17,6 @@ package controllers
 import (
 	_ "embed"
 	"fmt"
-	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -62,7 +61,7 @@ func (c *ApiController) Signin() {
 		claims.Type = "chat-user"
 	}
 
-	addInitialChat(&claims.User)
+	c.addInitialChat(&claims.User)
 
 	claims.AccessToken = token.AccessToken
 	c.SetSessionClaims(claims)
@@ -76,7 +75,7 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
-func addInitialChat(user *casdoorsdk.User) {
+func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
 	chats, err := object.GetChatsByUser("admin", user.Name)
 	if err != nil {
 		panic(err)
@@ -99,8 +98,8 @@ func addInitialChat(user *casdoorsdk.User) {
 		User1:        fmt.Sprintf("%s/%s", user.Owner, user.Name),
 		User2:        "",
 		Users:        []string{fmt.Sprintf("%s/%s", user.Owner, user.Name)},
-		ClientIp:     user.CreatedIp,
-		UserAgent:    user.Education,
+		ClientIp:     c.getClientIp(),
+		UserAgent:    c.getUserAgent(),
 		MessageCount: 0,
 	}
 
@@ -129,8 +128,8 @@ func addInitialChat(user *casdoorsdk.User) {
 }
 
 func (c *ApiController) anonymousSignin() {
-	clientIp := strings.Replace(util.GetIPFromRequest(c.Ctx.Request), ": ", "", -1)
-	userAgent := c.Ctx.Request.UserAgent()
+	clientIp := c.getClientIp()
+	userAgent := c.getUserAgent()
 	hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
 	username := fmt.Sprintf("u-%s", hash)
 
@@ -151,12 +150,12 @@ func (c *ApiController) anonymousSignin() {
 		CountryCode:     "",
 		Region:          "",
 		Location:        "",
-		Education:       userAgent,
+		Education:       "",
 		IsAdmin:         false,
-		CreatedIp:       clientIp,
+		CreatedIp:       "",
 	}
 
-	addInitialChat(&user)
+	c.addInitialChat(&user)
 
 	c.ResponseOk(user)
 }
