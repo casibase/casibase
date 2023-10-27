@@ -18,7 +18,6 @@ import (
 	"context"
 
 	"github.com/casibase/casibase/proxy"
-	"github.com/casibase/casibase/util"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -42,9 +41,10 @@ func getProxyClientFromToken(authToken string) *openai.Client {
 func (p *OpenAiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
 	client := getProxyClientFromToken(p.secretKey)
 
+	modelIndex := getOpenaiEmbeddingModelIndex(p.subType)
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
-		Model: openai.EmbeddingModel(util.ParseInt(p.subType)),
+		Model: openai.EmbeddingModel(modelIndex),
 	})
 	if err != nil {
 		return nil, err

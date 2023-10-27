@@ -55,13 +55,45 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 	}
 
+	modelIndex := getOpenaiEmbeddingModelIndex(p.subType)
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
-		Model: openai.EmbeddingModel(1),
+		Model: openai.EmbeddingModel(modelIndex),
 	})
 	if err != nil {
 		return nil, err
 	}
 
 	return resp.Data[0].Embedding, nil
+}
+
+func getOpenaiEmbeddingModelIndex(modelName string) int {
+	models := []string{
+		"Unknown",
+		"AdaSimilarity",
+		"BabbageSimilarity",
+		"CurieSimilarity",
+		"DavinciSimilarity",
+		"AdaSearchDocument",
+		"AdaSearchQuery",
+		"BabbageSearchDocument",
+		"BabbageSearchQuery",
+		"CurieSearchDocument",
+		"CurieSearchQuery",
+		"DavinciSearchDocument",
+		"DavinciSearchQuery",
+		"AdaCodeSearchCode",
+		"AdaCodeSearchText",
+		"BabbageCodeSearchCode",
+		"BabbageCodeSearchText",
+		"AdaEmbeddingV2",
+	}
+
+	for index, model := range models {
+		if model == modelName {
+			return index
+		}
+	}
+
+	return 0
 }
