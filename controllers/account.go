@@ -103,6 +103,9 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
 		MessageCount: 0,
 	}
 
+	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
+	chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
+
 	_, err = object.AddChat(&chat)
 	if err != nil {
 		panic(err)

@@ -267,10 +267,20 @@ class ChatListPage extends React.Component {
         width: "150px",
         sorter: (a, b) => a.clientIp.localeCompare(b.clientIp),
         render: (text, record, index) => {
+          if (text === "") {
+            return null;
+          }
+
           return (
             <a target="_blank" rel="noreferrer" href={`https://db-ip.com/${text}`}>
               {
-                text
+                record.clientIpDesc === "" ? text : (
+                  <div>
+                    {text}
+                    <br />
+                    {record.clientIpDesc}
+                  </div>
+                )
               }
             </a>
           );
@@ -282,6 +292,21 @@ class ChatListPage extends React.Component {
         key: "userAgent",
         width: "150px",
         sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
+        render: (text, record, index) => {
+          if (record.userAgentDesc === "") {
+            return text;
+          } else {
+            return record.userAgentDesc.split("|").map(text => {
+              if (text.includes("Other") || text.includes("Generic Smartphone")) {
+                return null;
+              }
+
+              return (
+                <div key={text}>{text}</div>
+              );
+            });
+          }
+        },
       },
       {
         title: i18next.t("chat:Count"),

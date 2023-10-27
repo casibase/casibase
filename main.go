@@ -21,12 +21,15 @@ import (
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/proxy"
 	"github.com/casibase/casibase/routers"
+	"github.com/casibase/casibase/util"
 )
 
 func main() {
 	object.InitAdapter()
 	object.InitDb()
 	proxy.InitHttpClient()
+	util.InitIpDb()
+	util.InitParser()
 
 	beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
 		AllowOrigins:     []string{"*"},

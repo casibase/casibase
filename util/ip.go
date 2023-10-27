@@ -17,8 +17,33 @@ package util
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 )
+
+func InitIpDb() {
+	err := Init("data/17monipdb.dat")
+	if _, ok := err.(*os.PathError); ok {
+		err = Init("../data/17monipdb.dat")
+	}
+	if err != nil {
+		panic(err)
+	}
+}
+
+func GetDescFromIP(ip string) string {
+	info, err := Find(ip)
+	if err != nil {
+		return ""
+	}
+
+	res := info.Country + ", " + info.Region + ", " + info.City
+	if info.Isp != Null {
+		res += ", " + info.Isp
+	}
+
+	return res
+}
 
 func GetIPInfo(clientIP string) string {
 	if clientIP == "" {

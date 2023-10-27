@@ -17,7 +17,11 @@
 
 package object
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/casibase/casibase/util"
+)
 
 func TestUpdateMessageCounts(t *testing.T) {
 	InitConfig()
@@ -46,6 +50,35 @@ func TestUpdateMessageCounts(t *testing.T) {
 	}
 
 	for _, chat := range chats {
+		_, err = UpdateChat(chat.GetId(), chat)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func TestUpdateChatDescs(t *testing.T) {
+	InitConfig()
+	util.InitIpDb()
+	util.InitParser()
+
+	chats, err := GetGlobalChats()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, chat := range chats {
+		if chat.ClientIpDesc != "" && chat.UserAgentDesc != "" {
+			continue
+		}
+
+		if chat.ClientIp == "" && chat.UserAgent == "" {
+			continue
+		}
+
+		chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
+		chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
+
 		_, err = UpdateChat(chat.GetId(), chat)
 		if err != nil {
 			panic(err)

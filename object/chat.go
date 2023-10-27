@@ -28,16 +28,18 @@ type Chat struct {
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 
 	// Organization string   `xorm:"varchar(100)" json:"organization"`
-	DisplayName  string   `xorm:"varchar(100)" json:"displayName"`
-	Category     string   `xorm:"varchar(100)" json:"category"`
-	Type         string   `xorm:"varchar(100)" json:"type"`
-	User         string   `xorm:"varchar(100) index" json:"user"`
-	User1        string   `xorm:"varchar(100)" json:"user1"`
-	User2        string   `xorm:"varchar(100)" json:"user2"`
-	Users        []string `xorm:"varchar(100)" json:"users"`
-	ClientIp     string   `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent    string   `xorm:"varchar(100)" json:"userAgent"`
-	MessageCount int      `json:"messageCount"`
+	DisplayName   string   `xorm:"varchar(100)" json:"displayName"`
+	Category      string   `xorm:"varchar(100)" json:"category"`
+	Type          string   `xorm:"varchar(100)" json:"type"`
+	User          string   `xorm:"varchar(100) index" json:"user"`
+	User1         string   `xorm:"varchar(100)" json:"user1"`
+	User2         string   `xorm:"varchar(100)" json:"user2"`
+	Users         []string `xorm:"varchar(100)" json:"users"`
+	ClientIp      string   `xorm:"varchar(100)" json:"clientIp"`
+	UserAgent     string   `xorm:"varchar(100)" json:"userAgent"`
+	ClientIpDesc  string   `xorm:"varchar(100)" json:"clientIpDesc"`
+	UserAgentDesc string   `xorm:"varchar(100)" json:"userAgentDesc"`
+	MessageCount  int      `json:"messageCount"`
 }
 
 func GetGlobalChats() ([]*Chat, error) {

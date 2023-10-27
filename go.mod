@@ -25,6 +25,7 @@ require (
 	github.com/pkoukk/tiktoken-go v0.1.1
 	github.com/sashabaranov/go-openai v1.12.0
 	github.com/tealeg/xlsx v1.0.5
+	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.4.0
 	github.com/vogo/xfspark v0.1.2
 	golang.org/x/net v0.16.0

@@ -95,6 +95,8 @@ func (c *ApiController) AddChat() {
 	chat.UpdatedTime = currentTime
 	chat.ClientIp = c.getClientIp()
 	chat.UserAgent = c.getUserAgent()
+	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
+	chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
 
 	success, err := object.AddChat(&chat)
 	if err != nil {
