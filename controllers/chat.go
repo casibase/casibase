@@ -16,7 +16,6 @@ package controllers
 
 import (
 	"encoding/json"
-
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -97,6 +96,21 @@ func (c *ApiController) AddChat() {
 	chat.UserAgent = c.getUserAgent()
 	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
 	chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
+
+	if chat.Store == "" {
+		var store *object.Store
+		store, err = object.GetDefaultStore("admin")
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if store == nil {
+			c.ResponseError("The default store is not found")
+			return
+		}
+
+		chat.Store = store.GetId()
+	}
 
 	success, err := object.AddChat(&chat)
 	if err != nil {

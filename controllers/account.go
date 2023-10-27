@@ -61,7 +61,11 @@ func (c *ApiController) Signin() {
 		claims.Type = "chat-user"
 	}
 
-	c.addInitialChat(&claims.User)
+	err = c.addInitialChat(&claims.User)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	claims.AccessToken = token.AccessToken
 	c.SetSessionClaims(claims)
@@ -75,14 +79,22 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
-func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
+func (c *ApiController) addInitialChat(user *casdoorsdk.User) error {
 	chats, err := object.GetChatsByUser("admin", user.Name)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	if len(chats) != 0 {
-		return
+		return nil
+	}
+
+	store, err := object.GetDefaultStore("admin")
+	if err != nil {
+		return err
+	}
+	if store == nil {
+		return fmt.Errorf("The default store is not found")
 	}
 
 	randomName := util.GetRandomName()
@@ -92,6 +104,7 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
 		CreatedTime:  util.GetCurrentTime(),
 		UpdatedTime:  util.GetCurrentTime(),
 		DisplayName:  fmt.Sprintf("New Chat - %d", 1),
+		Store:        store.GetId(),
 		Category:     "Default Category",
 		Type:         "AI",
 		User:         user.Name,
@@ -108,7 +121,7 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
 
 	_, err = object.AddChat(&chat)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	randomName = util.GetRandomName()
@@ -125,9 +138,7 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) {
 		VectorScores: []object.VectorScore{},
 	}
 	_, err = object.AddMessage(answerMessage)
-	if err != nil {
-		panic(err)
-	}
+	return err
 }
 
 func (c *ApiController) anonymousSignin() {
@@ -158,7 +169,11 @@ func (c *ApiController) anonymousSignin() {
 		CreatedIp:       "",
 	}
 
-	c.addInitialChat(&user)
+	err := c.addInitialChat(&user)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	c.ResponseOk(user)
 }

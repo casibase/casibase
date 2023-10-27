@@ -138,6 +138,16 @@ class ChatEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("chat:Store")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.chat.store} onChange={e => {
+              this.updateChatField("store", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("chat:Category")}:
           </Col>
           <Col span={22} >

@@ -57,7 +57,7 @@ func (c *ApiController) GetStore() {
 		return
 	}
 	if store == nil {
-		c.ResponseError("store is empty")
+		c.ResponseError("store should not be empty")
 		return
 	}
 
