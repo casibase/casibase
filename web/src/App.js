@@ -468,11 +468,12 @@ class App extends Component {
         <Footer id="footer" style={
           {
             borderTop: "1px solid #e8e8e8",
-            backgroundColor: "#f5f5f5",
+            backgroundColor: "white",
             textAlign: "center",
+            height: "67px",
           }
         }>
-          Powered by <a style={{fontWeight: "bold", color: "black"}} target="_blank" rel="noreferrer" href="https://github.com/casibase/casibase">Casibase</a>
+          Powered by <a target="_blank" href="https://github.com/casibase/casibase" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casibase"} src={`${Setting.StaticBaseUrl}/img/casbin_logo_1024x256.png`} /></a>
         </Footer>
       </React.Fragment>
     );

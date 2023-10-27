@@ -105,7 +105,7 @@ func getUrlPath(urlPath string) string {
 }
 
 func isAllowedInDemoMode(method string, urlPath string) bool {
-	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout") {
+	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-message") {
 		return false
 	}
 
