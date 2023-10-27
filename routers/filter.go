@@ -79,29 +79,18 @@ func TransparentStatic(ctx *context.Context) {
 
 func ApiFilter(ctx *context.Context) {
 	method := ctx.Request.Method
-	urlPath := getUrlPath(ctx.Request.URL.Path)
+	urlPath := ctx.Request.URL.Path
+
+	adminDomain := beego.AppConfig.String("adminDomain")
+	if adminDomain != "" && ctx.Request.Host == adminDomain {
+		return
+	}
 
 	if conf.IsDemoMode() {
 		if !isAllowedInDemoMode(method, urlPath) {
 			controllers.DenyRequest(ctx)
 		}
 	}
-}
-
-func getUrlPath(urlPath string) string {
-	if strings.HasPrefix(urlPath, "/cas") && (strings.HasSuffix(urlPath, "/serviceValidate") || strings.HasSuffix(urlPath, "/proxy") || strings.HasSuffix(urlPath, "/proxyValidate") || strings.HasSuffix(urlPath, "/validate") || strings.HasSuffix(urlPath, "/p3/serviceValidate") || strings.HasSuffix(urlPath, "/p3/proxyValidate") || strings.HasSuffix(urlPath, "/samlValidate")) {
-		return "/cas"
-	}
-
-	if strings.HasPrefix(urlPath, "/api/login/oauth") {
-		return "/api/login/oauth"
-	}
-
-	if strings.HasPrefix(urlPath, "/api/webauthn") {
-		return "/api/webauthn"
-	}
-
-	return urlPath
 }
 
 func isAllowedInDemoMode(method string, urlPath string) bool {

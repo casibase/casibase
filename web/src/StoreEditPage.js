@@ -30,6 +30,7 @@ class StoreEditPage extends React.Component {
       classes: props,
       owner: props.match.params.owner,
       storeName: props.match.params.storeName,
+      casdoorStorageProviders: [],
       storageProviders: [],
       modelProviders: [],
       embeddingProviders: [],
@@ -65,7 +66,7 @@ class StoreEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            storageProviders: res.data,
+            casdoorStorageProviders: res.data,
           });
         } else {
           Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
@@ -78,6 +79,7 @@ class StoreEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
+            storageProviders: res.data.filter(provider => provider.category === "Storage"),
             modelProviders: res.data.filter(provider => provider.category === "Model"),
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
           });
@@ -139,7 +141,7 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.storageProvider} onChange={(value => {this.updateStoreField("storageProvider", value);})}
-              options={this.state.storageProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+              options={this.state.storageProviders.concat(this.state.casdoorStorageProviders).map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
               } />
           </Col>
         </Row>
