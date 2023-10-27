@@ -178,6 +178,7 @@ func AddMessage(message *Message) (bool, error) {
 		}
 
 		if chat != nil {
+			chat.UpdatedTime = util.GetCurrentTime()
 			chat.MessageCount += 1
 			_, err = UpdateChat(chat.GetId(), chat)
 			if err != nil {

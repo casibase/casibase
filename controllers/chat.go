@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 func (c *ApiController) GetGlobalChats() {
@@ -89,8 +90,12 @@ func (c *ApiController) AddChat() {
 		return
 	}
 
+	currentTime := util.GetCurrentTime()
+	chat.CreatedTime = currentTime
+	chat.UpdatedTime = currentTime
 	chat.ClientIp = c.getClientIp()
 	chat.UserAgent = c.getUserAgent()
+
 	success, err := object.AddChat(&chat)
 	if err != nil {
 		c.ResponseError(err.Error())
