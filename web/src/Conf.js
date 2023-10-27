@@ -33,6 +33,8 @@ export const ForceLanguage = "";
 export const DefaultLanguage = "en";
 
 export const AppUrl = "";
+
+export const ShowGithubCorner = false;
 export const IsDemoMode = false;
 
 export const ThemeDefault = {

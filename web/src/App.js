@@ -49,6 +49,7 @@ import MessageEditPage from "./MessageEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
 import ChatPage from "./ChatPage";
+import CustomGithubCorner from "./CustomGithubCorner";
 
 const {Header, Footer, Content} = Layout;
 
@@ -484,7 +485,7 @@ class App extends Component {
         {/*   this.renderBanner() */}
         {/* } */}
         <FloatButton.BackTop />
-        {/* <CustomGithubCorner />*/}
+        <CustomGithubCorner />
         {
           this.renderContent()
         }
