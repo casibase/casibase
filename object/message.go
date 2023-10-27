@@ -90,7 +90,7 @@ func isWithinTime(createdTime string, minutes int) bool {
 	return time.Now().Before(t)
 }
 
-func GetNearMessageCount(user string) (int, error) {
+func GetNearMessageCount(user string, limitMinutes int) (int, error) {
 	messages, err := GetMessagesByUser("admin", user)
 	if err != nil {
 		return -1, err
@@ -98,7 +98,7 @@ func GetNearMessageCount(user string) (int, error) {
 
 	count := 0
 	for _, message := range messages {
-		if message.Author == "AI" && isWithinTime(message.CreatedTime, 10) {
+		if message.Author == "AI" && isWithinTime(message.CreatedTime, limitMinutes) {
 			count += 1
 		}
 	}

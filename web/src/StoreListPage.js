@@ -66,6 +66,8 @@ class StoreListPage extends React.Component {
       displayName: `New Store - ${randomName}`,
       storageProvider: "",
       modelProvider: "",
+      frequency: 10000,
+      limitMinutes: 10,
       embeddingProvider: "",
       welcome: "Hello",
       prompt: defaultPrompt,

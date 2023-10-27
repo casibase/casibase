@@ -136,13 +136,13 @@ func (c *ApiController) GetMessageAnswer() {
 	_, ok := c.CheckSignedIn()
 	if !ok {
 		var count int
-		count, err = object.GetNearMessageCount(message.User)
+		count, err = object.GetNearMessageCount(message.User, store.LimitMinutes)
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
 		}
-		if count > 10 {
-			c.ResponseErrorStream(fmt.Sprintf("You cannot query more than 10 times for answers within 10 minutes, please wait for a while"))
+		if count > store.Frequency {
+			c.ResponseErrorStream("You have queried too many times, please wait for a while")
 			return
 		}
 	}

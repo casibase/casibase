@@ -49,8 +49,10 @@ type Store struct {
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
 
-	Welcome string `xorm:"varchar(100)" json:"welcome"`
-	Prompt  string `xorm:"mediumtext" json:"prompt"`
+	Frequency    int    `json:"frequency"`
+	LimitMinutes int    `json:"limitMinutes"`
+	Welcome      string `xorm:"varchar(100)" json:"welcome"`
+	Prompt       string `xorm:"mediumtext" json:"prompt"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
