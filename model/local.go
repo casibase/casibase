@@ -79,58 +79,108 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
 
-	respStream, err := client.CreateChatCompletionStream(
-		ctx,
-		openai.ChatCompletionRequest{
-			Model: model,
-			Messages: []openai.ChatCompletionMessage{
-				{
-					Role:    openai.ChatMessageRoleUser,
-					Content: question,
-				},
-			},
-			Stream:           true,
-			Temperature:      temperature,
-			TopP:             topP,
-			FrequencyPenalty: frequencyPenalty,
-			PresencePenalty:  presencePenalty,
-		},
-	)
-	if err != nil {
-		return err
-	}
-	defer respStream.Close()
-
-	isLeadingReturn := true
-	for {
-		completion, streamErr := respStream.Recv()
-		if streamErr != nil {
-			if streamErr == io.EOF {
-				break
-			}
-			return streamErr
-		}
-
-		if len(completion.Choices) == 0 {
-			continue
-		}
-
-		data := completion.Choices[0].Delta.Content
-		if isLeadingReturn && len(data) != 0 {
-			if strings.Count(data, "\n") == len(data) {
-				continue
-			} else {
-				isLeadingReturn = false
-			}
-		}
-
-		// Write the streamed data as Server-Sent Events
-		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+	flushData := func(data string) error {
+		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()
-		// Append the response to the strings.Builder
 		builder.WriteString(data)
+		return nil
+	}
+
+	if GetModeByAzureSubType(p.subType) == "chat" {
+		respStream, err := client.CreateChatCompletionStream(
+			ctx,
+			openai.ChatCompletionRequest{
+				Model: model,
+				Messages: []openai.ChatCompletionMessage{
+					{
+						Role:    openai.ChatMessageRoleUser,
+						Content: question,
+					},
+				},
+				Stream:           true,
+				Temperature:      temperature,
+				TopP:             topP,
+				FrequencyPenalty: frequencyPenalty,
+				PresencePenalty:  presencePenalty,
+			},
+		)
+		if err != nil {
+			return err
+		}
+		defer respStream.Close()
+
+		isLeadingReturn := true
+		for {
+			completion, streamErr := respStream.Recv()
+			if streamErr != nil {
+				if streamErr == io.EOF {
+					break
+				}
+				return streamErr
+			}
+
+			if len(completion.Choices) == 0 {
+				continue
+			}
+
+			data := completion.Choices[0].Delta.Content
+			if isLeadingReturn && len(data) != 0 {
+				if strings.Count(data, "\n") == len(data) {
+					continue
+				} else {
+					isLeadingReturn = false
+				}
+			}
+
+			err := flushData(data)
+			if err != nil {
+				return err
+			}
+		}
+	} else if GetModeByAzureSubType(p.subType) == "completion" {
+		respStream, err := client.CreateCompletionStream(
+			ctx,
+			openai.CompletionRequest{
+				Model:            model,
+				Prompt:           question,
+				Stream:           true,
+				Temperature:      temperature,
+				TopP:             topP,
+				FrequencyPenalty: frequencyPenalty,
+				PresencePenalty:  presencePenalty,
+			},
+		)
+		if err != nil {
+			return err
+		}
+		defer respStream.Close()
+
+		isLeadingReturn := true
+		for {
+			completion, streamErr := respStream.Recv()
+			if streamErr != nil {
+				if streamErr == io.EOF {
+					break
+				}
+				return streamErr
+			}
+
+			data := completion.Choices[0].Text
+			if isLeadingReturn && len(data) != 0 {
+				if strings.Count(data, "\n") == len(data) {
+					continue
+				} else {
+					isLeadingReturn = false
+				}
+			}
+
+			err := flushData(data)
+			if err != nil {
+				return err
+			}
+		}
 	}
 
 	return nil
