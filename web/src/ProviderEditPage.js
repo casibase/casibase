@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select, Slider} from "antd";
+import {AutoComplete, Button, Card, Col, Input, InputNumber, Row, Select, Slider} from "antd";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -104,14 +104,6 @@ class ProviderEditPage extends React.Component {
       </>
     );
   }
-
-  handleTagChange = (key, value) => {
-    if (Array.isArray(value) && value.length > 0) {
-      this.updateProviderField(key, value[value.length - 1]);
-    } else {
-      this.updateProviderField(key, value);
-    }
-  };
 
   renderProvider() {
     return (
@@ -498,7 +490,7 @@ class ProviderEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Deployment Name")}:
+                  {i18next.t("provider:Deployment name")}:
                 </Col>
                 <Col span={22} >
                   <Input value={this.state.provider.clientId} onChange={e => {
@@ -508,14 +500,12 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:API Version")}:
+                  {i18next.t("provider:API version")}:
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} mode="tags" style={{width: "100%"}}
-                    value={this.state.provider.apiVersion}
-                    onSelect={(value) => {this.handleTagChange("apiVersion", value);}}
-                    onChange={(value) => {this.handleTagChange("apiVersion", value);}}
+                  <AutoComplete style={{width: "100%"}} value={this.state.provider.apiVersion}
                     options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))}
+                    onChange={(value) => {this.updateProviderField("apiVersion", value);}}
                   />
                 </Col>
               </Row>
