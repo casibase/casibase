@@ -874,3 +874,15 @@ export function getProviderAzureApiVersionOptions() {
     {id: "2023-08-01-preview", name: "2023-08-01-preview"},
   ]);
 }
+
+export function getBoolValue(key, defaultValue) {
+  const value = localStorage.getItem(key);
+  if (value === null) {
+    return defaultValue;
+  }
+  return value === "true";
+}
+
+export function setBoolValue(key, value) {
+  localStorage.setItem(key, `${value}`);
+}

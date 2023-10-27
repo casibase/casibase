@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -30,6 +30,7 @@ class ChatListPage extends React.Component {
       classes: props,
       chats: null,
       messagesMap: {},
+      filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
     };
   }
 
@@ -283,7 +284,7 @@ class ChatListPage extends React.Component {
         sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
       },
       {
-        title: i18next.t("chat:Message count"),
+        title: i18next.t("chat:Count"),
         dataIndex: "messageCount",
         key: "messageCount",
         width: "100px",
@@ -329,6 +330,10 @@ class ChatListPage extends React.Component {
       },
     ];
 
+    if (this.state.filterSingleChat) {
+      chats = chats?.filter(chat => chat.messageCount > 1);
+    }
+
     return (
       <div>
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
@@ -336,6 +341,16 @@ class ChatListPage extends React.Component {
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("chat:Filter single chat")}
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <Switch checked={this.state.filterSingleChat} onChange={(checked, e) => {
+                this.setState({
+                  filterSingleChat: checked,
+                });
+                Setting.setBoolValue("filterSingleChat", checked);
+                this.UNSAFE_componentWillMount();
+              }} />
             </div>
           )}
           loading={chats === null}
