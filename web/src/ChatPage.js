@@ -283,7 +283,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (Setting.isAnonymousUser(this.props.account) || Setting.isChatUser(this.props.account)) ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname === "/chat") ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
         }
