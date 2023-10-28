@@ -20,15 +20,7 @@ import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
-const defaultPrompt = `You have some background knowledge: 
-
-%s
-
-Now, please answer the following question based on the provided information:
-
-%s
-
-(Please answer directly in the questioner's language without using phrases like "the answer is" or "the question is.". Empty answer is not allowed. If the text is not question, you should ask for a question politely.)`;
+const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
 class StoreListPage extends React.Component {
   constructor(props) {

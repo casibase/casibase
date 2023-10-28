@@ -33,10 +33,10 @@ func NewChatGLMModelProvider(subType string, clientSecret string) (*ChatGLMModel
 	return &ChatGLMModelProvider{subType: subType, clientSecret: clientSecret}, nil
 }
 
-func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, systemPrompt string, knowledge []*RawMessage) error {
+func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	proxy := client.NewChatGLMClient(p.clientSecret, 30*time.Second)
-	prompt := []client.Message{{Role: "user", Content: question}}
-	taskId, err := proxy.AsyncInvoke(p.subType, 0.2, prompt)
+	text := []client.Message{{Role: "user", Content: question}}
+	taskId, err := proxy.AsyncInvoke(p.subType, 0.2, text)
 	if err != nil {
 		return err
 	}

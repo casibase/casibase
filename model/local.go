@@ -59,7 +59,7 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, systemPrompt string, knowledge []*RawMessage) error {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
@@ -90,12 +90,12 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 	maxTokens := getOpenAiMaxTokens(model)
 
 	if getOpenAiModelType(p.subType) == "Chat" {
-		rawMessages, err := getLimitedMessages(systemPrompt, question, history, knowledge, model, maxTokens)
+		rawMessages, err := generateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
 			return err
 		}
 
-		messages := parseOpenAiMessages(rawMessages)
+		messages := rawMessagesToOpenAiMessages(rawMessages)
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
 			openai.ChatCompletionRequest{

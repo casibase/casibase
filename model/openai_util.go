@@ -79,14 +79,16 @@ func getOpenAiModelType(model string) string {
 	return "Unknown"
 }
 
-func parseOpenAiMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
+func rawMessagesToOpenAiMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
-		role := openai.ChatMessageRoleUser
+		var role string
 		if message.Author == "AI" {
 			role = openai.ChatMessageRoleAssistant
 		} else if message.Author == "System" {
 			role = openai.ChatMessageRoleSystem
+		} else {
+			role = openai.ChatMessageRoleUser
 		}
 
 		item := openai.ChatCompletionMessage{
