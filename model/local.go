@@ -59,7 +59,7 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
@@ -89,15 +89,8 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 
 	maxTokens := 4097
 
-	if getOpenAiModelType(p.subType) == "Chat" {
-		__recentMessages := builder.String()
-		var recentMessages []string
-		if len(__recentMessages) != 0 {
-			__recentMessages = strings.TrimSuffix(__recentMessages, "!@#$%^&*()")
-			recentMessages = strings.Split(__recentMessages, "!@#$%^&*()")
-		}
-
-		currentMessages, err := GetCurrentMessages(question, recentMessages, maxTokens)
+	if getOpenAiModelType(p.subType) == "chat" {
+		currentMessages, err := GetCurrentMessages(question, history, maxTokens)
 		if err != nil {
 			return err
 		}

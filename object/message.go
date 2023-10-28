@@ -20,6 +20,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
 	"github.com/google/uuid"
 	"xorm.io/core"
@@ -211,4 +212,22 @@ func GetRecentMessages(chat string) ([]*Message, error) {
 	}
 
 	return messages, nil
+}
+
+func GetRawRecentMessages(chat string) ([]*model.RawMessage, error) {
+	recentMessages, err := GetRecentMessages(chat)
+	if err != nil {
+		return nil, err
+	}
+
+	var res []*model.RawMessage
+	for _, message := range recentMessages {
+		rawMessage := &model.RawMessage{
+			Text:   message.Text,
+			Author: message.Author,
+		}
+		res = append(res, rawMessage)
+	}
+
+	return res, nil
 }

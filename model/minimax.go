@@ -27,7 +27,7 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 	}, nil
 }
 
-func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	ctx := context.Background()
 	client, _ := minimax.New(
 		minimax.WithApiToken(p.apiKey),
