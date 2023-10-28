@@ -89,7 +89,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 
 	maxTokens := 4097
 
-	if getOpenAiModelType(p.subType) == "chat" {
+	if getOpenAiModelType(p.subType) == "Chat" {
 		currentMessages, err := GetCurrentMessages(question, history, maxTokens)
 		if err != nil {
 			return err
