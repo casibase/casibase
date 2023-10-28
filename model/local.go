@@ -59,6 +59,24 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
+func getAzureMessagesFromStringArray(messages []string) []openai.ChatCompletionMessage {
+	var res []openai.ChatCompletionMessage
+	for i, message := range messages {
+		if i%2 == 0 {
+			res = append(res, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleUser,
+				Content: message,
+			})
+		} else {
+			res = append(res, openai.ChatCompletionMessage{
+				Role:    openai.ChatMessageRoleAssistant,
+				Content: message,
+			})
+		}
+	}
+	return res
+}
+
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	var client *openai.Client
 	if p.typ == "Local" {
@@ -90,67 +108,18 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 	maxTokens := 4097
 
 	if GetModeByAzureSubType(p.subType) == "chat" {
-		var messages []openai.ChatCompletionMessage
-		messages = append(messages, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleUser,
-			Content: question,
-		})
-		messageToken, err := GetTokenSize("gpt-3.5-turbo", question)
+		__recentMessages := builder.String()
+		var recentMessages []string
+		if len(__recentMessages) != 0 {
+			__recentMessages = strings.TrimSuffix(__recentMessages, "!@#$%^&*()")
+			recentMessages = strings.Split(__recentMessages, "!@#$%^&*()")
+		}
+
+		currentMessages, err := GetCurrentMessages(question, recentMessages, maxTokens)
 		if err != nil {
 			return err
 		}
-		maxTokens -= messageToken
-
-		__recentMessages := builder.String()
-		__recentMessages = strings.TrimSuffix(__recentMessages, "!@#$%^&*()")
-		recentMessages := strings.Split(__recentMessages, "!@#$%^&*()")
-
-		if maxTokens > 0 {
-			if len(recentMessages) >= 2 {
-				for i := 0; i < len(recentMessages); i += 2 {
-					assistantMessage := recentMessages[i]
-					if i+1 >= len(recentMessages) {
-						return fmt.Errorf("history message length: [%d] is not even", len(recentMessages))
-					}
-					userMessage := recentMessages[i+1]
-
-					assistantMessageToken, err1 := GetTokenSize("gpt-3.5-turbo", assistantMessage)
-					if err1 != nil {
-						return err1
-					}
-
-					userMessageToken, err2 := GetTokenSize("gpt-3.5-turbo", userMessage)
-					if err2 != nil {
-						return err2
-					}
-
-					combinedTokens := assistantMessageToken + userMessageToken
-					maxTokens -= combinedTokens
-
-					if maxTokens <= 0 {
-						break
-					}
-
-					messages = append(messages, openai.ChatCompletionMessage{
-						Role:    openai.ChatMessageRoleAssistant,
-						Content: assistantMessage,
-					})
-
-					if userMessage != "" {
-						messages = append(messages, openai.ChatCompletionMessage{
-							Role:    openai.ChatMessageRoleUser,
-							Content: userMessage,
-						})
-					}
-				}
-			}
-		} else {
-			return fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageToken, model, 8192)
-		}
-
-		for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
-			messages[i], messages[j] = messages[j], messages[i]
-		}
+		messages := getAzureMessagesFromStringArray(currentMessages)
 
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
