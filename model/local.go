@@ -87,15 +87,15 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 		return nil
 	}
 
-	maxTokens := 4097
+	maxTokens := getOpenAiMaxTokens(model)
 
 	if getOpenAiModelType(p.subType) == "Chat" {
-		currentMessages, err := GetCurrentMessages(question, history, maxTokens)
+		rawMessages, err := getLimitedMessages(question, history, model, maxTokens)
 		if err != nil {
 			return err
 		}
-		messages := parseOpenAiMessages(currentMessages)
 
+		messages := parseOpenAiMessages(rawMessages)
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
 			openai.ChatCompletionRequest{
@@ -136,7 +136,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 				}
 			}
 
-			err := flushData(data)
+			err = flushData(data)
 			if err != nil {
 				return err
 			}
@@ -178,7 +178,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 				}
 			}
 
-			err := flushData(data)
+			err = flushData(data)
 			if err != nil {
 				return err
 			}

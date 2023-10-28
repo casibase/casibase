@@ -173,7 +173,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 	stringBuilder := &strings.Builder{}
-	history, err := object.GetRawRecentMessages(chat.Name)
+	history, err := object.GetRecentRawMessages(chat.Name)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

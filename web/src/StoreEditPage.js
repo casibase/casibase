@@ -187,6 +187,16 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Memory limit")}:
+          </Col>
+          <Col span={22} >
+            <InputNumber value={this.state.store.memoryLimit} onChange={value => {
+              this.updateStoreField("memoryLimit", value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Limit minutes")}:
           </Col>
           <Col span={22} >

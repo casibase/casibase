@@ -204,30 +204,20 @@ func (message *Message) GetId() string {
 	return fmt.Sprintf("%s/%s", message.Owner, message.Name)
 }
 
-func GetRecentMessages(chat string) ([]*Message, error) {
+func GetRecentRawMessages(chat string) ([]*model.RawMessage, error) {
 	messages := []*Message{}
 	err := adapter.engine.Desc("created_time").Limit(6, 2).Find(&messages, &Message{Chat: chat})
-	if err != nil {
-		return messages, err
-	}
-
-	return messages, nil
-}
-
-func GetRawRecentMessages(chat string) ([]*model.RawMessage, error) {
-	recentMessages, err := GetRecentMessages(chat)
 	if err != nil {
 		return nil, err
 	}
 
-	var res []*model.RawMessage
-	for _, message := range recentMessages {
+	res := []*model.RawMessage{}
+	for _, message := range messages {
 		rawMessage := &model.RawMessage{
 			Text:   message.Text,
 			Author: message.Author,
 		}
 		res = append(res, rawMessage)
 	}
-
 	return res, nil
 }

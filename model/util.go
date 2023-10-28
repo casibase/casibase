@@ -18,6 +18,7 @@ import (
 	"fmt"
 
 	"github.com/pkoukk/tiktoken-go"
+	"github.com/sashabaranov/go-openai"
 )
 
 type RawMessage struct {
@@ -25,7 +26,7 @@ type RawMessage struct {
 	Author string
 }
 
-func ReverseMessagesArray(arr []*RawMessage) []*RawMessage {
+func reverseMessages(arr []*RawMessage) []*RawMessage {
 	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
 		arr[i], arr[j] = arr[j], arr[i]
 	}
@@ -44,65 +45,63 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	return res, nil
 }
 
-func GetRecentMessagesLimitedByToken(recentMessages []*RawMessage, maxTokens int) ([]*RawMessage, error) {
+func getRecentMessagesLimitedByToken(recentMessages []*RawMessage, model string, leftTokens int) ([]*RawMessage, error) {
 	var res []*RawMessage
 
 	for i := 0; i < len(recentMessages); i += 2 {
-		assistantMessage := recentMessages[i]
+		aiMessage := recentMessages[i]
 		if len(recentMessages) != 0 && i+1 >= len(recentMessages) {
 			return nil, fmt.Errorf("history message length: [%d] is not even", len(recentMessages))
 		}
 		userMessage := recentMessages[i+1]
 
-		assistantMessageToken, err1 := GetTokenSize("gpt-3.5-turbo", assistantMessage.Text)
+		aiMessageToken, err1 := GetTokenSize(model, aiMessage.Text)
 		if err1 != nil {
 			return nil, err1
 		}
 
-		userMessageToken, err2 := GetTokenSize("gpt-3.5-turbo", userMessage.Text)
+		userMessageToken, err2 := GetTokenSize(model, userMessage.Text)
 		if err2 != nil {
 			return nil, err2
 		}
 
-		combinedTokens := assistantMessageToken + userMessageToken
-		maxTokens -= combinedTokens
+		combinedTokens := aiMessageToken + userMessageToken
+		leftTokens -= combinedTokens
 
-		if maxTokens <= 0 {
+		if leftTokens <= 0 {
 			break
 		}
 
-		res = append(res, assistantMessage)
+		res = append(res, aiMessage)
 		res = append(res, userMessage)
 	}
 
 	return res, nil
 }
 
-func GetCurrentMessages(question string, recentMessages []*RawMessage, maxTokens int) ([]*RawMessage, error) {
-	var res []*RawMessage
+func getLimitedMessages(question string, recentMessages []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
 	message := &RawMessage{
 		Text:   question,
-		Author: "User",
+		Author: openai.ChatMessageRoleUser,
 	}
 	leftTokens := maxTokens
 
-	messageToken, err := GetTokenSize("gpt-3.5-turbo", message.Text)
+	messageTokenSize, err := GetTokenSize(model, message.Text)
 	if err != nil {
 		return nil, err
 	}
-	leftTokens -= messageToken
+	leftTokens -= messageTokenSize
+
 	if leftTokens <= 0 {
-		return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageToken, "gpt-3.5-turbo", maxTokens)
+		return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageTokenSize, model, maxTokens)
 	}
 
-	limitedRecentMessages, err := GetRecentMessagesLimitedByToken(recentMessages, leftTokens)
+	limitedRecentMessages, err := getRecentMessagesLimitedByToken(recentMessages, model, leftTokens)
 	if err != nil {
 		return nil, err
 	}
-	res = append(res, limitedRecentMessages...)
-	res = ReverseMessagesArray(res)
 
+	res := reverseMessages(limitedRecentMessages)
 	res = append(res, message)
-
 	return res, nil
 }

@@ -50,6 +50,7 @@ type Store struct {
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
 
+	MemoryLimit  int    `json:"memoryLimit"`
 	Frequency    int    `json:"frequency"`
 	LimitMinutes int    `json:"limitMinutes"`
 	Welcome      string `xorm:"varchar(100)" json:"welcome"`

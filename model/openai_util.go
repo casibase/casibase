@@ -80,19 +80,18 @@ func getOpenAiModelType(model string) string {
 }
 
 func parseOpenAiMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
-	var res []openai.ChatCompletionMessage
+	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
+		role := openai.ChatMessageRoleUser
 		if message.Author == "AI" {
-			res = append(res, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleAssistant,
-				Content: message.Text,
-			})
-		} else {
-			res = append(res, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: message.Text,
-			})
+			role = openai.ChatMessageRoleAssistant
 		}
+
+		item := openai.ChatCompletionMessage{
+			Role:    role,
+			Content: message.Text,
+		}
+		res = append(res, item)
 	}
 	return res
 }

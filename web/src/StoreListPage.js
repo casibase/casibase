@@ -68,6 +68,7 @@ class StoreListPage extends React.Component {
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
+      memoryLimit: 3,
       frequency: 10000,
       limitMinutes: 10,
       welcome: "Hello",
@@ -134,7 +135,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "200px",
+        width: "120px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -189,7 +190,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("store:Model provider"),
         dataIndex: "modelProvider",
         key: "modelProvider",
-        width: "250px",
+        width: "200px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
         render: (text, record, index) => {
           return (
@@ -203,7 +204,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("store:Embedding provider"),
         dataIndex: "embeddingProvider",
         key: "embeddingProvider",
-        width: "250px",
+        width: "200px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
           return (
@@ -212,6 +213,13 @@ class StoreListPage extends React.Component {
             </Link>
           );
         },
+      },
+      {
+        title: i18next.t("store:Memory limit"),
+        dataIndex: "memoryLimit",
+        key: "memoryLimit",
+        width: "120px",
+        sorter: (a, b) => a.memoryLimit - b.memoryLimit,
       },
       {
         title: i18next.t("general:Action"),
