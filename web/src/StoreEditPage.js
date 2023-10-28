@@ -180,7 +180,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Frequency")}:
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.store.frequency} onChange={value => {
+            <InputNumber min={0} value={this.state.store.frequency} onChange={value => {
               this.updateStoreField("frequency", value);
             }} />
           </Col>
@@ -190,7 +190,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Memory limit")}:
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.store.memoryLimit} onChange={value => {
+            <InputNumber min={0} value={this.state.store.memoryLimit} onChange={value => {
               this.updateStoreField("memoryLimit", value);
             }} />
           </Col>
@@ -200,7 +200,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Limit minutes")}:
           </Col>
           <Col span={22} >
-            <InputNumber value={this.state.store.limitMinutes} onChange={value => {
+            <InputNumber min={0} value={this.state.store.limitMinutes} onChange={value => {
               this.updateStoreField("limitMinutes", value);
             }} />
           </Col>
