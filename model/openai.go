@@ -25,31 +25,6 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-// https://pkg.go.dev/github.com/sashabaranov/go-openai@v1.12.0#pkg-constants
-// https://platform.openai.com/docs/models/overview
-var __maxTokens = map[string]int{
-	openai.GPT4:                 8192,
-	openai.GPT40613:             8192,
-	openai.GPT432K:              32768,
-	openai.GPT432K0613:          32768,
-	openai.GPT40314:             8192,
-	openai.GPT432K0314:          32768,
-	openai.GPT3Dot5Turbo:        4097,
-	openai.GPT3Dot5Turbo16K:     16385,
-	openai.GPT3Dot5Turbo0613:    4097,
-	openai.GPT3Dot5Turbo16K0613: 16385,
-	openai.GPT3Dot5Turbo0301:    4097,
-	openai.GPT3TextDavinci003:   4097,
-	openai.GPT3TextDavinci002:   4097,
-	openai.GPT3TextCurie001:     2049,
-	openai.GPT3TextBabbage001:   2049,
-	openai.GPT3TextAda001:       2049,
-	openai.GPT3Davinci:          2049,
-	openai.GPT3Curie:            2049,
-	openai.GPT3Ada:              2049,
-	openai.GPT3Babbage:          2049,
-}
-
 type OpenAiModelProvider struct {
 	subType          string
 	secretKey        string
@@ -79,15 +54,6 @@ func getProxyClientFromToken(authToken string) *openai.Client {
 	return c
 }
 
-// GetMaxTokens returns the max tokens for a given openai model.
-func (p *OpenAiModelProvider) GetMaxTokens() int {
-	res, ok := __maxTokens[p.subType]
-	if !ok {
-		return 4097
-	}
-	return res
-}
-
 func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	client := getProxyClientFromToken(p.secretKey)
 
@@ -109,9 +75,9 @@ func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, build
 		return err
 	}
 
-	maxTokens := p.GetMaxTokens() - tokenCount
+	maxTokens := getOpenAiMaxTokens(p.subType) - tokenCount
 	if maxTokens < 0 {
-		return fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, p.GetMaxTokens())
+		return fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, getOpenAiMaxTokens(p.subType))
 	}
 
 	temperature := p.temperature
