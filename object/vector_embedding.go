@@ -202,9 +202,9 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 	vectorScores := []VectorScore{}
 	texts := []string{}
 	for _, vector := range vectors {
-		if embeddingProvider.Name != vector.Provider {
-			return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
-		}
+		// if embeddingProvider.Name != vector.Provider {
+		//	return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
+		// }
 
 		vectorScores = append(vectorScores, VectorScore{
 			Vector: vector.Name,
