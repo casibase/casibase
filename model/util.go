@@ -20,7 +20,12 @@ import (
 	"github.com/pkoukk/tiktoken-go"
 )
 
-func ReverseArray(arr []string) []string {
+type RawMessage struct {
+	Text   string
+	Author string
+}
+
+func ReverseMessagesArray(arr []*RawMessage) []*RawMessage {
 	for i, j := 0, len(arr)-1; i < j; i, j = i+1, j-1 {
 		arr[i], arr[j] = arr[j], arr[i]
 	}
@@ -39,8 +44,8 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	return res, nil
 }
 
-func GetRecentMessagesLimitedByToken(recentMessages []string, maxTokens int) ([]string, error) {
-	var res []string
+func GetRecentMessagesLimitedByToken(recentMessages []*RawMessage, maxTokens int) ([]*RawMessage, error) {
+	var res []*RawMessage
 
 	for i := 0; i < len(recentMessages); i += 2 {
 		assistantMessage := recentMessages[i]
@@ -49,12 +54,12 @@ func GetRecentMessagesLimitedByToken(recentMessages []string, maxTokens int) ([]
 		}
 		userMessage := recentMessages[i+1]
 
-		assistantMessageToken, err1 := GetTokenSize("gpt-3.5-turbo", assistantMessage)
+		assistantMessageToken, err1 := GetTokenSize("gpt-3.5-turbo", assistantMessage.Text)
 		if err1 != nil {
 			return nil, err1
 		}
 
-		userMessageToken, err2 := GetTokenSize("gpt-3.5-turbo", userMessage)
+		userMessageToken, err2 := GetTokenSize("gpt-3.5-turbo", userMessage.Text)
 		if err2 != nil {
 			return nil, err2
 		}
@@ -73,11 +78,15 @@ func GetRecentMessagesLimitedByToken(recentMessages []string, maxTokens int) ([]
 	return res, nil
 }
 
-func GetCurrentMessages(message string, recentMessages []string, maxTokens int) ([]string, error) {
-	var res []string
+func GetCurrentMessages(question string, recentMessages []*RawMessage, maxTokens int) ([]*RawMessage, error) {
+	var res []*RawMessage
+	message := &RawMessage{
+		Text:   question,
+		Author: "User",
+	}
 	leftTokens := maxTokens
 
-	messageToken, err := GetTokenSize("gpt-3.5-turbo", message)
+	messageToken, err := GetTokenSize("gpt-3.5-turbo", message.Text)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +100,7 @@ func GetCurrentMessages(message string, recentMessages []string, maxTokens int) 
 		return nil, err
 	}
 	res = append(res, limitedRecentMessages...)
-	res = ReverseArray(res)
+	res = ReverseMessagesArray(res)
 
 	res = append(res, message)
 

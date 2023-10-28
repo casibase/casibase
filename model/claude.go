@@ -32,7 +32,7 @@ func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvi
 	return &ClaudeModelProvider{subType: subType, secretKey: secretKey}, nil
 }
 
-func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	client, err := anthropic.NewClient(p.secretKey)
 	if err != nil {
 		panic(err)

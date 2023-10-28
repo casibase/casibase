@@ -33,7 +33,7 @@ func NewHuggingFaceModelProvider(subType string, secretKey string) (*HuggingFace
 	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey}, nil
 }
 
-func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	client := huggingface.New(p.subType, 1, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
 
 	ctx := context.Background()

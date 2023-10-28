@@ -54,7 +54,7 @@ func getProxyClientFromToken(authToken string) *openai.Client {
 	return c
 }
 
-func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *OpenAiModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	client := getProxyClientFromToken(p.secretKey)
 
 	ctx := context.Background()

@@ -45,7 +45,7 @@ func NewErnieModelProvider(subType string, apiKey string, secretKey string, temp
 	}, nil
 }
 
-func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	client := ernie.NewDefaultClient(p.apiKey, p.secretKey)
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)

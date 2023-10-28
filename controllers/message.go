@@ -172,16 +172,11 @@ func (c *ApiController) GetMessageAnswer() {
 	realQuestion := object.GetRefinedQuestion(store.Prompt, knowledge, question)
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-
 	stringBuilder := &strings.Builder{}
-	recentMessages, err := object.GetRecentMessages(chat.Name)
+	history, err := object.GetRawRecentMessages(chat.Name)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
-	}
-	for _, recentMessage := range recentMessages {
-		stringBuilder.WriteString(recentMessage.Text)
-		stringBuilder.WriteString("!@#$%^&*()") // Split the messages
 	}
 
 	fmt.Printf("Question: [%s]\n", question)
@@ -189,7 +184,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(realQuestion, writer, stringBuilder)
+	err = modelProviderObj.QueryText(realQuestion, writer, stringBuilder, history)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

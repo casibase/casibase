@@ -58,7 +58,7 @@ func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
 	return c
 }
 
-func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
+func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
 	client := p.getProxyClientFromToken()
 
 	ctx := context.Background()
