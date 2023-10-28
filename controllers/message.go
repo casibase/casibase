@@ -17,7 +17,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -170,7 +169,6 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-	stringBuilder := &strings.Builder{}
 	history, err := object.GetRecentRawMessages(chat.Name, store.MemoryLimit)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
@@ -186,7 +184,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(question, writer, stringBuilder, history, store.Prompt, knowledge)
+	err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

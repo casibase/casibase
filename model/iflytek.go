@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	iflytek "github.com/vogo/xfspark/chat"
 )
@@ -44,7 +43,7 @@ func NewiFlytekModelProvider(subType string, secretKey string, temperature float
 	return p, nil
 }
 
-func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	client := iflytek.NewServer(p.appID, p.apiKey, p.secretKey)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
@@ -72,7 +71,6 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, buil
 			return err
 		}
 		flusher.Flush()
-		builder.WriteString(data)
 		return nil
 	}
 

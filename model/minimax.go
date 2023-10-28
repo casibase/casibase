@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 
 	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
 	"github.com/ConnectAI-E/go-minimax/minimax"
@@ -27,7 +26,7 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 	}, nil
 }
 
-func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	ctx := context.Background()
 	client, _ := minimax.New(
 		minimax.WithApiToken(p.apiKey),
@@ -53,7 +52,6 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, buil
 			return err
 		}
 		flusher.Flush()
-		builder.WriteString(data)
 		return nil
 	}
 	err := flushData(res.Choices[0].Text)

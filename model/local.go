@@ -59,7 +59,7 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)

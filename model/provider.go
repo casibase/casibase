@@ -14,13 +14,10 @@
 
 package model
 
-import (
-	"io"
-	"strings"
-)
+import "io"
 
 type ModelProvider interface {
-	QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error
+	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error
 }
 
 func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (ModelProvider, error) {
