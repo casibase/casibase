@@ -79,7 +79,7 @@ func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, k
 	defer dst.Close()
 
 	_, err = io.Copy(dst, fileBuffer)
-	return "", err
+	return fullPath, err
 }
 
 func (p *LocalFileSystemStorageProvider) DeleteObject(key string) error {

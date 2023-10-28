@@ -143,10 +143,9 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 	return true, nil
 }
 
-func processMessageImages(message *Message) error {
+func RefineMessageImages(message *Message, origin string) error {
 	text := message.Text
 	re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
-	//message.Text = re.ReplaceAllString(message.Text, "")
 	matches := re.FindAllString(text, -1)
 	if matches != nil {
 		store, err := GetDefaultStore("admin")
@@ -167,12 +166,17 @@ func processMessageImages(message *Message) error {
 
 			filename := fmt.Sprintf("%s_%s_image_%d.%s", message.User, message.Name, i, ext)
 
-			url, err := obj.PutObject(message.User, "Casibase-Image", filename, bytes.NewBuffer(content))
+			fileUrl, err := obj.PutObject(message.User, "Casibase-Image", filename, bytes.NewBuffer(content))
 			if err != nil {
 				return err
 			}
 
-			text = strings.Replace(text, match, url, 1)
+			httpUrl, err := getUrlFromPath(fileUrl, origin)
+			if err != nil {
+				return err
+			}
+
+			text = strings.Replace(text, match, httpUrl, 1)
 		}
 	}
 
@@ -181,11 +185,6 @@ func processMessageImages(message *Message) error {
 }
 
 func AddMessage(message *Message) (bool, error) {
-	err := processMessageImages(message)
-	if err != nil {
-		return false, err
-	}
-
 	affected, err := adapter.engine.Insert(message)
 	if err != nil {
 		return false, err
