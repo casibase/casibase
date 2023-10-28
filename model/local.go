@@ -59,37 +59,6 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func AddRecentMessagesToMessages(maxTokens int, messages []openai.ChatCompletionMessage, recentMessages []string, model string) error {
-	if len(recentMessages) < 2 {
-		return nil
-	}
-
-	conversationTokens := 0
-	for i := len(recentMessages) - 2; i < len(recentMessages); i++ {
-		message := recentMessages[i]
-		messageToken, err := GetTokenSize(model, message)
-		if err != nil {
-			return err
-		}
-		conversationTokens += messageToken
-	}
-
-	if conversationTokens <= maxTokens {
-		// Add the two most recent messages to the conversation
-		messages = append(messages, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleUser,
-			Content: recentMessages[len(recentMessages)-2],
-		})
-		messages = append(messages, openai.ChatCompletionMessage{
-			Role:    openai.ChatMessageRoleAssistant,
-			Content: recentMessages[len(recentMessages)-1],
-		})
-		return nil
-	} else {
-		return fmt.Errorf("the conversation's token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", conversationTokens, model, maxTokens)
-	}
-}
-
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	var client *openai.Client
 	if p.typ == "Local" {
