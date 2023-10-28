@@ -82,7 +82,7 @@ func GetCurrentMessages(message string, recentMessages []string, maxTokens int) 
 		return nil, err
 	}
 	leftTokens -= messageToken
-	if maxTokens <= 0 {
+	if leftTokens <= 0 {
 		return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageToken, "gpt-3.5-turbo", maxTokens)
 	}
 
