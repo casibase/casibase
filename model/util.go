@@ -45,22 +45,25 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	return res, nil
 }
 
-func GetKnowledgeFromRawMessages(systemPrompt string, rawMessages []*RawMessage) *RawMessage {
-	var res *RawMessage
-
+func GetKnowledgeFromRawMessages(systemPrompt string, rawMessages []*RawMessage) []*RawMessage {
 	if systemPrompt == "" {
-		systemPrompt = "You're an expert in your field, and you specialize in using the knowledge you've acquired to help people solve problems."
+		systemPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
 	}
-
-	systemPrompt += "\n\nHere's what you know:"
+	res := []*RawMessage{
+		{
+			Text:   systemPrompt,
+			Author: "System",
+		},
+	}
 	for i, rawMessage := range rawMessages {
-		systemPrompt += fmt.Sprintf("\n%d. %s", i+1, rawMessage.Text)
+		res = append(
+			res,
+			&RawMessage{
+				Text:   fmt.Sprintf("Knowledge %d: %s", i+1, rawMessage.Text),
+				Author: "System",
+			})
 	}
 
-	res = &RawMessage{
-		Text:   systemPrompt,
-		Author: "System",
-	}
 	return res
 }
 
@@ -108,11 +111,11 @@ func getLimitedMessages(systemPrompt string, question string, recentMessages []*
 	if err != nil {
 		return nil, err
 	}
+	res := reverseMessages(limitedRecentMessages)
 	if len(knowledge) != 0 {
 		systemMessage := GetKnowledgeFromRawMessages(systemPrompt, knowledge)
-		limitedRecentMessages = append(limitedRecentMessages, systemMessage)
+		res = append(systemMessage, res...)
 	}
-	res := reverseMessages(limitedRecentMessages)
 	res = append(res, query)
 	return res, nil
 }

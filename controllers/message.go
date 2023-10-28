@@ -19,7 +19,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -67,16 +66,6 @@ func (c *ApiController) GetMessage() {
 	}
 
 	c.ResponseOk(message)
-}
-
-func knowledgeTexts(knowledge []*model.RawMessage) string {
-	var res []string
-
-	for _, k := range knowledge {
-		res = append(res, k.Text)
-	}
-
-	return strings.Join(res, "\n\n")
 }
 
 func (c *ApiController) GetMessageAnswer() {
@@ -189,7 +178,11 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	fmt.Printf("Question: [%s]\n", question)
-	fmt.Printf("Knowledge: [%s]\n", knowledgeTexts(knowledge))
+	fmt.Printf("Knowledge: [\n")
+	for i, k := range knowledge {
+		fmt.Printf("Knowledge %d: [%s]\n", i, k.Text)
+	}
+	fmt.Printf("]\n")
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
