@@ -201,3 +201,13 @@ func DeleteMessage(message *Message) (bool, error) {
 func (message *Message) GetId() string {
 	return fmt.Sprintf("%s/%s", message.Owner, message.Name)
 }
+
+func GetRecentMessages(chat string) ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Desc("created_time").Limit(6, 2).Find(&messages, &Message{Chat: chat})
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}

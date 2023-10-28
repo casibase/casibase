@@ -59,6 +59,37 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
+func AddRecentMessagesToMessages(maxTokens int, messages []openai.ChatCompletionMessage, recentMessages []string, model string) error {
+	if len(recentMessages) < 2 {
+		return nil
+	}
+
+	conversationTokens := 0
+	for i := len(recentMessages) - 2; i < len(recentMessages); i++ {
+		message := recentMessages[i]
+		messageToken, err := GetTokenSize(model, message)
+		if err != nil {
+			return err
+		}
+		conversationTokens += messageToken
+	}
+
+	if conversationTokens <= maxTokens {
+		// Add the two most recent messages to the conversation
+		messages = append(messages, openai.ChatCompletionMessage{
+			Role:    openai.ChatMessageRoleUser,
+			Content: recentMessages[len(recentMessages)-2],
+		})
+		messages = append(messages, openai.ChatCompletionMessage{
+			Role:    openai.ChatMessageRoleAssistant,
+			Content: recentMessages[len(recentMessages)-1],
+		})
+		return nil
+	} else {
+		return fmt.Errorf("the conversation's token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", conversationTokens, model, maxTokens)
+	}
+}
+
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	var client *openai.Client
 	if p.typ == "Local" {
@@ -84,21 +115,79 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 			return err
 		}
 		flusher.Flush()
-		builder.WriteString(data)
 		return nil
 	}
 
+	maxTokens := 4097
+
 	if GetModeByAzureSubType(p.subType) == "chat" {
+		var messages []openai.ChatCompletionMessage
+		messages = append(messages, openai.ChatCompletionMessage{
+			Role:    openai.ChatMessageRoleUser,
+			Content: question,
+		})
+		messageToken, err := GetTokenSize("gpt-3.5-turbo", question)
+		if err != nil {
+			return err
+		}
+		maxTokens -= messageToken
+
+		__recentMessages := builder.String()
+		__recentMessages = strings.TrimSuffix(__recentMessages, "!@#$%^&*()")
+		recentMessages := strings.Split(__recentMessages, "!@#$%^&*()")
+
+		if maxTokens > 0 {
+			if len(recentMessages) >= 2 {
+				for i := 0; i < len(recentMessages); i += 2 {
+					assistantMessage := recentMessages[i]
+					if i+1 >= len(recentMessages) {
+						return fmt.Errorf("history message length: [%d] is not even", len(recentMessages))
+					}
+					userMessage := recentMessages[i+1]
+
+					assistantMessageToken, err1 := GetTokenSize("gpt-3.5-turbo", assistantMessage)
+					if err1 != nil {
+						return err1
+					}
+
+					userMessageToken, err2 := GetTokenSize("gpt-3.5-turbo", userMessage)
+					if err2 != nil {
+						return err2
+					}
+
+					combinedTokens := assistantMessageToken + userMessageToken
+					maxTokens -= combinedTokens
+
+					if maxTokens <= 0 {
+						break
+					}
+
+					messages = append(messages, openai.ChatCompletionMessage{
+						Role:    openai.ChatMessageRoleAssistant,
+						Content: assistantMessage,
+					})
+
+					if userMessage != "" {
+						messages = append(messages, openai.ChatCompletionMessage{
+							Role:    openai.ChatMessageRoleUser,
+							Content: userMessage,
+						})
+					}
+				}
+			}
+		} else {
+			return fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageToken, model, 8192)
+		}
+
+		for i, j := 0, len(messages)-1; i < j; i, j = i+1, j-1 {
+			messages[i], messages[j] = messages[j], messages[i]
+		}
+
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
 			openai.ChatCompletionRequest{
-				Model: model,
-				Messages: []openai.ChatCompletionMessage{
-					{
-						Role:    openai.ChatMessageRoleUser,
-						Content: question,
-					},
-				},
+				Model:            model,
+				Messages:         messages,
 				Stream:           true,
 				Temperature:      temperature,
 				TopP:             topP,
