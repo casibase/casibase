@@ -59,24 +59,6 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func getAzureMessagesFromStringArray(messages []string) []openai.ChatCompletionMessage {
-	var res []openai.ChatCompletionMessage
-	for i, message := range messages {
-		if i%2 == 0 {
-			res = append(res, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleUser,
-				Content: message,
-			})
-		} else {
-			res = append(res, openai.ChatCompletionMessage{
-				Role:    openai.ChatMessageRoleAssistant,
-				Content: message,
-			})
-		}
-	}
-	return res
-}
-
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder) error {
 	var client *openai.Client
 	if p.typ == "Local" {
@@ -107,7 +89,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 
 	maxTokens := 4097
 
-	if GetModeByAzureSubType(p.subType) == "chat" {
+	if getOpenAiModelType(p.subType) == "Chat" {
 		__recentMessages := builder.String()
 		var recentMessages []string
 		if len(__recentMessages) != 0 {
@@ -119,7 +101,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 		if err != nil {
 			return err
 		}
-		messages := getAzureMessagesFromStringArray(currentMessages)
+		messages := parseOpenAiMessages(currentMessages)
 
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
@@ -166,7 +148,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, builde
 				return err
 			}
 		}
-	} else if GetModeByAzureSubType(p.subType) == "completion" {
+	} else if getOpenAiModelType(p.subType) == "Completion" {
 		respStream, err := client.CreateCompletionStream(
 			ctx,
 			openai.CompletionRequest{
