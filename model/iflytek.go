@@ -44,7 +44,7 @@ func NewiFlytekModelProvider(subType string, secretKey string, temperature float
 	return p, nil
 }
 
-func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage) error {
+func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, builder *strings.Builder, history []*RawMessage, systemPrompt string, knowledge []*RawMessage) error {
 	client := iflytek.NewServer(p.appID, p.apiKey, p.secretKey)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {

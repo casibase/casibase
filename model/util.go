@@ -45,6 +45,25 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	return res, nil
 }
 
+func GetKnowledgeFromRawMessages(systemPrompt string, rawMessages []*RawMessage) *RawMessage {
+	var res *RawMessage
+
+	if systemPrompt == "" {
+		systemPrompt = "You're an expert in your field, and you specialize in using the knowledge you've acquired to help people solve problems."
+	}
+
+	systemPrompt += "\n\nHere's what you know:"
+	for i, rawMessage := range rawMessages {
+		systemPrompt += fmt.Sprintf("\n%d. %s", i+1, rawMessage.Text)
+	}
+
+	res = &RawMessage{
+		Text:   systemPrompt,
+		Author: "System",
+	}
+	return res
+}
+
 func getRecentMessagesLimitedByToken(recentMessages []*RawMessage, model string, leftTokens int) ([]*RawMessage, error) {
 	var res []*RawMessage
 
@@ -64,29 +83,36 @@ func getRecentMessagesLimitedByToken(recentMessages []*RawMessage, model string,
 	return res, nil
 }
 
-func getLimitedMessages(question string, recentMessages []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
-	message := &RawMessage{
+func getLimitedMessages(systemPrompt string, question string, recentMessages []*RawMessage, knowledge []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
+	query := &RawMessage{
 		Text:   question,
 		Author: openai.ChatMessageRoleUser,
 	}
 	leftTokens := maxTokens
 
-	messageTokenSize, err := GetTokenSize(model, message.Text)
-	if err != nil {
-		return nil, err
-	}
-	leftTokens -= messageTokenSize
-
-	if leftTokens <= 0 {
-		return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageTokenSize, model, maxTokens)
+	for i, message := range append([]*RawMessage{query}, knowledge...) {
+		messageTokenSize, err := GetTokenSize(model, message.Text)
+		if err != nil {
+			return nil, err
+		}
+		leftTokens -= messageTokenSize
+		if message.Author == "User" && leftTokens <= 0 {
+			return nil, fmt.Errorf("the token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", messageTokenSize, model, maxTokens)
+		} else if message.Author == "System" && leftTokens <= 0 {
+			knowledge = knowledge[:i-1]
+			break
+		}
 	}
 
 	limitedRecentMessages, err := getRecentMessagesLimitedByToken(recentMessages, model, leftTokens)
 	if err != nil {
 		return nil, err
 	}
-
+	if len(knowledge) != 0 {
+		systemMessage := GetKnowledgeFromRawMessages(systemPrompt, knowledge)
+		limitedRecentMessages = append(limitedRecentMessages, systemMessage)
+	}
 	res := reverseMessages(limitedRecentMessages)
-	res = append(res, message)
+	res = append(res, query)
 	return res, nil
 }
