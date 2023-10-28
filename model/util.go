@@ -48,34 +48,19 @@ func GetTokenSize(model string, prompt string) (int, error) {
 func getRecentMessagesLimitedByToken(recentMessages []*RawMessage, model string, leftTokens int) ([]*RawMessage, error) {
 	var res []*RawMessage
 
-	for i := 0; i < len(recentMessages); i += 2 {
-		aiMessage := recentMessages[i]
-		if len(recentMessages) != 0 && i+1 >= len(recentMessages) {
-			return nil, fmt.Errorf("history message length: [%d] is not even", len(recentMessages))
-		}
-		userMessage := recentMessages[i+1]
-
-		aiMessageToken, err1 := GetTokenSize(model, aiMessage.Text)
-		if err1 != nil {
-			return nil, err1
+	for _, message := range recentMessages {
+		messageTokenSize, err := GetTokenSize(model, message.Text)
+		if err != nil {
+			return nil, err
 		}
 
-		userMessageToken, err2 := GetTokenSize(model, userMessage.Text)
-		if err2 != nil {
-			return nil, err2
-		}
-
-		combinedTokens := aiMessageToken + userMessageToken
-		leftTokens -= combinedTokens
-
+		leftTokens -= messageTokenSize
 		if leftTokens <= 0 {
 			break
 		}
 
-		res = append(res, aiMessage)
-		res = append(res, userMessage)
+		res = append(res, message)
 	}
-
 	return res, nil
 }
 
