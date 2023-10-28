@@ -25,7 +25,7 @@ type Object struct {
 
 type StorageProvider interface {
 	ListObjects(prefix string) ([]*Object, error)
-	PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error
+	PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error)
 	DeleteObject(key string) error
 }
 

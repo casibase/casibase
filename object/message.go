@@ -18,11 +18,11 @@ import (
 	"bytes"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
-	"github.com/google/uuid"
 	"xorm.io/core"
 )
 
@@ -143,27 +143,47 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 	return true, nil
 }
 
-func AddMessage(message *Message) (bool, error) {
+func processMessageImages(message *Message) error {
+	text := message.Text
 	re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
-	matches := re.FindAll([]byte(message.Text), -1)
+	//message.Text = re.ReplaceAllString(message.Text, "")
+	matches := re.FindAllString(text, -1)
 	if matches != nil {
 		store, err := GetDefaultStore("admin")
 		if err != nil {
-			return false, err
+			return err
 		}
 
 		obj, err := store.GetStorageProviderObj()
 		if err != nil {
-			return false, err
+			return err
 		}
 
-		for _, m := range matches {
-			key := uuid.New().String()
-			err = obj.PutObject(message.Author, message.Author, key, bytes.NewBuffer(m))
+		for i, match := range matches {
+			ext, content, err := parseBase64Image(match)
 			if err != nil {
-				return false, err
+				return err
 			}
+
+			filename := fmt.Sprintf("%s_%s_image_%d.%s", message.User, message.Name, i, ext)
+
+			url, err := obj.PutObject(message.User, "Casibase-Image", filename, bytes.NewBuffer(content))
+			if err != nil {
+				return err
+			}
+
+			text = strings.Replace(text, match, url, 1)
 		}
+	}
+
+	message.Text = text
+	return nil
+}
+
+func AddMessage(message *Message) (bool, error) {
+	err := processMessageImages(message)
+	if err != nil {
+		return false, err
 	}
 
 	affected, err := adapter.engine.Insert(message)

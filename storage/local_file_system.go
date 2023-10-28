@@ -65,21 +65,21 @@ func (p *LocalFileSystemStorageProvider) ListObjects(prefix string) ([]*Object, 
 	return objects, nil
 }
 
-func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
+func (p *LocalFileSystemStorageProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
 	fullPath := filepath.Join(p.path, key)
 	err := os.MkdirAll(filepath.Dir(fullPath), os.ModePerm)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	dst, err := os.Create(filepath.Clean(fullPath))
 	if err != nil {
-		return err
+		return "", err
 	}
 	defer dst.Close()
 
 	_, err = io.Copy(dst, fileBuffer)
-	return err
+	return "", err
 }
 
 func (p *LocalFileSystemStorageProvider) DeleteObject(key string) error {

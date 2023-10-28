@@ -54,12 +54,12 @@ func (p *CasdoorProvider) ListObjects(prefix string) ([]*Object, error) {
 	return res, nil
 }
 
-func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) error {
-	_, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
+func (p *CasdoorProvider) PutObject(user string, parent string, key string, fileBuffer *bytes.Buffer) (string, error) {
+	fileUrl, _, err := casdoorsdk.UploadResource(user, "Casibase", parent, fmt.Sprintf("Direct/%s/%s", p.providerName, key), fileBuffer.Bytes())
 	if err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	return fileUrl, nil
 }
 
 func (p *CasdoorProvider) DeleteObject(key string) error {

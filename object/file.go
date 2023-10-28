@@ -52,7 +52,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		}
 
 		bs := fileBuffer.Bytes()
-		err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
@@ -63,7 +63,7 @@ func AddFile(storeId string, userName string, key string, isLeaf bool, filename 
 		objectKey = strings.TrimLeft(objectKey, "/")
 		fileBuffer = bytes.NewBuffer(nil)
 		bs := fileBuffer.Bytes()
-		err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
+		_, err = storageProviderObj.PutObject(userName, store.Name, objectKey, fileBuffer)
 		if err != nil {
 			return false, nil, err
 		}
