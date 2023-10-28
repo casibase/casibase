@@ -85,6 +85,8 @@ func parseOpenAiMessages(messages []*RawMessage) []openai.ChatCompletionMessage 
 		role := openai.ChatMessageRoleUser
 		if message.Author == "AI" {
 			role = openai.ChatMessageRoleAssistant
+		} else if message.Author == "System" {
+			role = openai.ChatMessageRoleSystem
 		}
 
 		item := openai.ChatCompletionMessage{

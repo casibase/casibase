@@ -169,8 +169,6 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	realQuestion := object.GetRefinedQuestion(store.Prompt, knowledge, question)
-
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 	stringBuilder := &strings.Builder{}
 	history, err := object.GetRecentRawMessages(chat.Name, store.MemoryLimit)
@@ -180,11 +178,15 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	fmt.Printf("Question: [%s]\n", question)
-	fmt.Printf("Knowledge: [%s]\n", knowledge)
+	fmt.Printf("Knowledge: [\n")
+	for i, k := range knowledge {
+		fmt.Printf("Knowledge %d: [%s]\n", i, k.Text)
+	}
+	fmt.Printf("]\n")
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(realQuestion, writer, stringBuilder, history)
+	err = modelProviderObj.QueryText(question, writer, stringBuilder, history, store.Prompt, knowledge)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

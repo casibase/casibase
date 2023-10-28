@@ -18,7 +18,6 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/casibase/casibase/embedding"
@@ -180,27 +179,27 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) (string, []VectorScore, error) {
+func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) ([]*model.RawMessage, []VectorScore, error) {
 	qVector, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 	if qVector == nil || len(qVector) == 0 {
-		return "", nil, fmt.Errorf("no qVector found")
+		return nil, nil, fmt.Errorf("no qVector found")
 	}
 
 	searchProvider, err := GetSearchProvider("Default", owner)
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 
 	vectors, err := searchProvider.Search(qVector)
 	if err != nil {
-		return "", nil, err
+		return nil, nil, err
 	}
 
 	vectorScores := []VectorScore{}
-	texts := []string{}
+	knowledge := []*model.RawMessage{}
 	for _, vector := range vectors {
 		// if embeddingProvider.Name != vector.Provider {
 		//	return "", nil, fmt.Errorf("The store's embedding provider: [%s] should equal to vector's embedding provider: [%s], vector = %v", embeddingProvider.Name, vector.Provider, vector)
@@ -210,9 +209,11 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 			Vector: vector.Name,
 			Score:  vector.Score,
 		})
-		texts = append(texts, vector.Text)
+		knowledge = append(knowledge, &model.RawMessage{
+			Text:   vector.Text,
+			Author: "System",
+		})
 	}
 
-	res := strings.Join(texts, "\n\n")
-	return res, vectorScores, nil
+	return knowledge, vectorScores, nil
 }
