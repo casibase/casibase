@@ -18,6 +18,11 @@ import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/markdown/markdown");
+
 const {TextArea} = Input;
 
 class VectorEditPage extends React.Component {
@@ -128,9 +133,12 @@ class VectorEditPage extends React.Component {
             {i18next.t("vector:Text")}:
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.vector.text} onChange={(e) => {
-              this.updateVectorField("text", e.target.value);
-            }} />
+            <CodeMirror value={this.state.vector.text}
+              options={{mode: "markdown", theme: "material-darker", lineWrapping: true}}
+              onBeforeChange={(editor, data, value) => {
+                this.updateVectorField("text", value);
+              }}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

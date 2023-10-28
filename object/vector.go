@@ -51,7 +51,7 @@ func GetGlobalVectors() ([]*Vector, error) {
 
 func GetVectors(owner string) ([]*Vector, error) {
 	vectors := []*Vector{}
-	err := adapter.engine.Desc("created_time").Find(&vectors, &Vector{Owner: owner})
+	err := adapter.engine.Asc("file").Asc("index").Find(&vectors, &Vector{Owner: owner})
 	if err != nil {
 		return vectors, err
 	}

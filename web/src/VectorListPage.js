@@ -14,11 +14,16 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
+
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/markdown/markdown");
 
 class VectorListPage extends React.Component {
   constructor(props) {
@@ -168,11 +173,18 @@ class VectorListPage extends React.Component {
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
-            <Tooltip placement="left" title={text}>
+            <Popover placement="left" content={
+              <div style={{width: "600px"}}>
+                <CodeMirror value={text}
+                  options={{mode: "markdown", theme: "material-darker", lineWrapping: true}}
+                  onBeforeChange={(editor, data, value) => {}}
+                />
+              </div>
+            } title="" trigger="hover">
               <div style={{maxWidth: "200px"}}>
                 {Setting.getShortText(text)}
               </div>
-            </Tooltip>
+            </Popover>
           );
         },
       },
