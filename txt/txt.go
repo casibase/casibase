@@ -20,30 +20,6 @@ import (
 	"strings"
 )
 
-func GetTextSections(text string) []string {
-	const maxLength = 210 * 3
-	var res []string
-	var temp string
-
-	lines := strings.Split(text, "\n")
-	for _, line := range lines {
-		if len(temp)+len(line) <= maxLength {
-			temp += line
-		} else {
-			if temp != "" {
-				res = append(res, temp)
-			}
-			temp = line
-		}
-	}
-
-	if len(temp) > 0 {
-		res = append(res, temp)
-	}
-
-	return res
-}
-
 func GetSupportedFileTypes() []string {
 	return []string{".txt", ".md", ".csv", ".yaml", ".docx", ".pdf"}
 }

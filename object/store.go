@@ -46,6 +46,7 @@ type Store struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
 	StorageProvider   string `xorm:"varchar(100)" json:"storageProvider"`
+	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
 
@@ -221,6 +222,6 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		limit = 3
 	}
 
-	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, embeddingProvider.Name, modelProvider.SubType, limit)
+	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, limit)
 	return ok, err
 }

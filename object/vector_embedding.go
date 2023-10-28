@@ -23,6 +23,7 @@ import (
 
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/split"
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
@@ -79,7 +80,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 	return AddVector(vector)
 }
 
-func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, embeddingProviderName string, modelSubType string, limit int) (bool, error) {
+func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingProviderObj embedding.EmbeddingProvider, prefix string, storeName string, splitProviderName string, embeddingProviderName string, modelSubType string, limit int) (bool, error) {
 	var affected bool
 
 	files, err := storageProviderObj.ListObjects(prefix)
@@ -98,7 +99,18 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			return false, err
 		}
 
-		textSections := txt.GetTextSections(text)
+		var splitProvider split.SplitProvider
+		splitProvider, err = split.GetSplitProvider("Default")
+		if err != nil {
+			return false, err
+		}
+
+		var textSections []string
+		textSections, err = splitProvider.SplitText(text)
+		if err != nil {
+			return false, err
+		}
+
 		for i, textSection := range textSections {
 			var vector *Vector
 			vector, err = getVectorByIndex("admin", storeName, file.Key, i)

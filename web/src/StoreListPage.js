@@ -64,11 +64,12 @@ class StoreListPage extends React.Component {
       name: `store_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,
-      storageProvider: "",
+      storageProvider: "provider-storage-built-in",
+      splitProvider: "Default",
       modelProvider: "",
+      embeddingProvider: "",
       frequency: 10000,
       limitMinutes: 10,
-      embeddingProvider: "",
       welcome: "Hello",
       prompt: defaultPrompt,
       propertiesMap: {},
@@ -133,7 +134,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "300px",
+        width: "200px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -154,7 +155,7 @@ class StoreListPage extends React.Component {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
-        width: "290px",
+        width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         render: (text, record, index) => {
           if (text === "") {
@@ -176,6 +177,13 @@ class StoreListPage extends React.Component {
             </a>
           );
         },
+      },
+      {
+        title: i18next.t("store:Split provider"),
+        dataIndex: "splitProvider",
+        key: "splitProvider",
+        width: "200px",
+        sorter: (a, b) => a.splitProvider.localeCompare(b.splitProvider),
       },
       {
         title: i18next.t("store:Model provider"),
