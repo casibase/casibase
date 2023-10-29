@@ -14,7 +14,11 @@
 
 package split
 
-import "strings"
+import (
+	"strings"
+
+	"github.com/casibase/casibase/model"
+)
 
 type DefaultSplitProvider struct{}
 
@@ -23,13 +27,21 @@ func NewDefaultSplitProvider() (*DefaultSplitProvider, error) {
 }
 
 func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
-	const maxLength = 210 * 3
+	const maxLength = 210
 	var res []string
 	var temp string
 
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
-		if len(temp)+len(line) <= maxLength {
+		tokenSize, err := model.GetTokenSize("gpt-3.5-turbo", temp+line)
+		if err != nil {
+			return nil, err
+		}
+
+		if tokenSize <= maxLength {
+			if temp != "" {
+				temp += "\n"
+			}
 			temp += line
 		} else {
 			if temp != "" {
@@ -39,8 +51,12 @@ func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
 		}
 	}
 
-	if len(temp) > 0 {
-		res = append(res, temp)
+	if temp != "" {
+		if len(temp) < 300 && len(res) > 0 {
+			res[len(res)-1] += temp
+		} else {
+			res = append(res, temp)
+		}
 	}
 
 	return res, nil
