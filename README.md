@@ -49,6 +49,12 @@
 
 ## Online Demo
 
+### Chat Demo
+
+- Demo site: https://ai.casbin.com (indexed with Casbin knowledge)
+
+### Admin Portal Demo
+
 - Read-only site: https://ai.casibase.com (any modification operation will fail)
 - Writable site: https://demo.casibase.com (original data will be restored for every 5 minutes)
 
