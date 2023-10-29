@@ -25,22 +25,22 @@ func NewDefaultSplitProvider() (*DefaultSplitProvider, error) {
 func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
 	const maxLength = 210 * 3
 	var res []string
-	var temp string
+	var tempLines []string
 
 	lines := strings.Split(text, "\n")
 	for _, line := range lines {
-		if len(temp)+len(line) <= maxLength {
-			temp += line
+		if len(strings.Join(tempLines, "\n"))+len(line) <= maxLength {
+			tempLines = append(tempLines, line)
 		} else {
-			if temp != "" {
-				res = append(res, temp)
+			if len(tempLines) > 0 {
+				res = append(res, strings.Join(tempLines, "\n"))
 			}
-			temp = line
+			tempLines = []string{line}
 		}
 	}
 
-	if len(temp) > 0 {
-		res = append(res, temp)
+	if len(tempLines) > 0 {
+		res = append(res, strings.Join(tempLines, "\n"))
 	}
 
 	return res, nil
