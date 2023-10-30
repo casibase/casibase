@@ -132,6 +132,11 @@ func (c *ApiController) GetMessageAnswer() {
 		question = questionMessage.Text
 	}
 
+	if question == "" {
+		c.ResponseErrorStream(fmt.Sprintf("The question should not be empty"))
+		return
+	}
+
 	_, ok := c.CheckSignedIn()
 	if !ok {
 		var count int
