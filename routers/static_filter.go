@@ -15,7 +15,9 @@
 package routers
 
 import (
+	"compress/gzip"
 	"fmt"
+	"io"
 	"net/http"
 	"strings"
 
@@ -39,13 +41,13 @@ func StaticFilter(ctx *context.Context) {
 	landingFolder := beego.AppConfig.String("landingFolder")
 	if landingFolder != "" {
 		if urlPath == "" || urlPath == "/" || urlPath == "/about" {
-			http.ServeFile(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("../%s/web/build/index.html", landingFolder))
+			makeGzipResponse(ctx.ResponseWriter, ctx.Request, fmt.Sprintf("../%s/web/build/index.html", landingFolder))
 			return
 		}
 
 		landingPath := fmt.Sprintf("../%s/web/build%s", landingFolder, urlPath)
 		if util.FileExist(landingPath) {
-			http.ServeFile(ctx.ResponseWriter, ctx.Request, landingPath)
+			makeGzipResponse(ctx.ResponseWriter, ctx.Request, landingPath)
 			return
 		}
 	}
@@ -57,7 +59,7 @@ func StaticFilter(ctx *context.Context) {
 
 		urlPath = strings.TrimPrefix(urlPath, "/storage/")
 		urlPath = strings.Replace(urlPath, "|", ":", 1)
-		http.ServeFile(ctx.ResponseWriter, ctx.Request, urlPath)
+		makeGzipResponse(ctx.ResponseWriter, ctx.Request, urlPath)
 		return
 	}
 
@@ -69,8 +71,29 @@ func StaticFilter(ctx *context.Context) {
 	}
 
 	if util.FileExist(path) {
-		http.ServeFile(ctx.ResponseWriter, ctx.Request, path)
+		makeGzipResponse(ctx.ResponseWriter, ctx.Request, path)
 	} else {
-		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
+		makeGzipResponse(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	}
+}
+
+type gzipResponseWriter struct {
+	io.Writer
+	http.ResponseWriter
+}
+
+func (w gzipResponseWriter) Write(b []byte) (int, error) {
+	return w.Writer.Write(b)
+}
+
+func makeGzipResponse(w http.ResponseWriter, r *http.Request, path string) {
+	if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
+		http.ServeFile(w, r, path)
+		return
+	}
+	w.Header().Set("Content-Encoding", "gzip")
+	gz := gzip.NewWriter(w)
+	defer gz.Close()
+	gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
+	http.ServeFile(gzw, r, path)
 }
