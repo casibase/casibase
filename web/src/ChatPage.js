@@ -22,6 +22,7 @@ import * as ChatBackend from "./backend/ChatBackend";
 import * as MessageBackend from "./backend/MessageBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
+import * as Conf from "./Conf";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
@@ -38,6 +39,20 @@ class ChatPage extends BaseListPage {
     });
 
     this.fetch();
+  }
+
+  componentDidMount() {
+    window.addEventListener("message", event => {
+      if ((event.data.source !== undefined && event.data.source.includes("react-devtools")) || event.data.wappalyzer !== undefined) {
+        return;
+      }
+
+      if (event.data === "close") {
+        this.setState({
+          isModalOpen: false,
+        });
+      }
+    });
   }
 
   getNextChatIndex(name) {
@@ -83,7 +98,7 @@ class ChatPage extends BaseListPage {
       createdTime: moment().format(),
       // organization: this.props.account.owner,
       user: this.props.account.name,
-      chat: this.state.chatName,
+      chat: this.state.chat?.name,
       replyTo: "",
       author: `${this.props.account.owner}/${this.props.account.name}`,
       text: text,
@@ -95,7 +110,7 @@ class ChatPage extends BaseListPage {
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
-          this.getMessages(this.state.chatName);
+          this.getMessages(this.state.chat);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -105,12 +120,18 @@ class ChatPage extends BaseListPage {
       });
   }
 
-  getMessages(chatName) {
-    MessageBackend.getChatMessages("admin", chatName)
+  getMessages(chat) {
+    MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
         this.setState({
           messages: res.data,
         });
+
+        if (Conf.IframeUrl !== "" && Setting.isAnonymousUser(this.props.account) && res.data.filter(message => message.author === "AI").length >= 3) {
+          this.setState({
+            isModalOpen: true,
+          });
+        }
 
         if (res.data.length > 0) {
           const lastMessage = res.data[res.data.length - 1];
@@ -159,10 +180,10 @@ class ChatPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
-            chatName: newChat.name,
+            chat: newChat,
             messages: null,
           });
-          this.getMessages(newChat.name);
+          this.getMessages(newChat);
 
           this.fetch({}, false);
         } else {
@@ -184,18 +205,18 @@ class ChatPage extends BaseListPage {
           const j = Math.min(i, data.length - 1);
           if (j < 0) {
             this.setState({
-              chatName: undefined,
+              chat: undefined,
               messages: [],
               data: data,
             });
           } else {
             const focusedChat = data[j];
             this.setState({
-              chatName: focusedChat.name,
+              chat: focusedChat,
               messages: null,
               data: data,
             });
-            this.getMessages(focusedChat.name);
+            this.getMessages(focusedChat);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -223,17 +244,21 @@ class ChatPage extends BaseListPage {
   }
 
   getCurrentChat() {
-    return this.state.data.filter(chat => chat.name === this.state.chatName)[0];
+    return this.state.data.filter(chat => chat.name === this.state.chat?.name)[0];
   }
 
   renderModal() {
+    const aiMessages = this.state.messages.filter(message => message.author === "AI");
+    const lastMessage = aiMessages[aiMessages.length - 1];
+    const json = (lastMessage === undefined) ? "" : Setting.parseJsonFromText(lastMessage.text);
+
     return (
       <Modal
         width={850}
         height={550}
         bodyStyle={{width: "800px", height: "500px"}}
         title={""}
-        closable={true}
+        closable={false}
         open={this.state.isModalOpen}
         okButtonProps={{style: {display: "none"}}}
         cancelButtonProps={{style: {display: "none"}}}
@@ -244,7 +269,8 @@ class ChatPage extends BaseListPage {
           });
         }}
       >
-        <iframe key={"provider"} title={"provider"} src={"http://provider"} width={"100%"} height={"100%"} frameBorder={0} seamless="seamless" scrolling="no" />
+        {/* eslint-disable-next-line react/no-unknown-property */}
+        <iframe key={"provider"} title={"provider"} src={`${Conf.IframeUrl}&json=${encodeURIComponent(json)}`} width={"100%"} height={"100%"} frameBorder={0} seamless="seamless" scrolling="no" allowtransparency="true" />
       </Modal>
     );
   }
@@ -253,10 +279,10 @@ class ChatPage extends BaseListPage {
     const onSelectChat = (i) => {
       const chat = chats[i];
       this.setState({
-        chatName: chat.name,
+        chat: chat,
         messages: null,
       });
-      this.getMessages(chat.name);
+      this.getMessages(chat);
     };
 
     const onAddChat = () => {
@@ -346,11 +372,11 @@ class ChatPage extends BaseListPage {
           });
 
           const chats = res.data;
-          if (this.state.chatName === undefined && chats.length > 0) {
+          if (this.state.chat?.name === undefined && chats.length > 0) {
             const chat = chats[0];
-            this.getMessages(chat.name);
+            this.getMessages(chat);
             this.setState({
-              chatName: chat.name,
+              chat: chat,
             });
           }
 

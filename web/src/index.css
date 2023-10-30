@@ -106,3 +106,9 @@ code {
   max-width: 100%;
   height: auto;
 }
+
+.ant-modal-content {
+  padding: 0 !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}

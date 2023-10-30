@@ -886,3 +886,21 @@ export function getBoolValue(key, defaultValue) {
 export function setBoolValue(key, value) {
   localStorage.setItem(key, `${value}`);
 }
+
+export function parseJsonFromText(text) {
+  const regex = /\[\[(.*?)\]\]/;
+  const match = regex.exec(text);
+
+  if (match) {
+    try {
+      // const parsedJSON = JSON.parse(match[1]);
+      const parsedJSON = match[1];
+      return parsedJSON;
+    } catch (error) {
+      showMessage("error", error);
+      return "";
+    }
+  }
+
+  return "";
+}
