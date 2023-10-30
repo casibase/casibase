@@ -21,8 +21,6 @@ import (
 
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/controllers"
 	"github.com/casibase/casibase/util"
 )
 
@@ -32,7 +30,7 @@ const (
 	headerAllowHeaders = "Access-Control-Allow-Headers"
 )
 
-func TransparentStatic(ctx *context.Context) {
+func StaticFilter(ctx *context.Context) {
 	urlPath := ctx.Request.URL.Path
 	if strings.HasPrefix(urlPath, "/api/") {
 		return
@@ -75,28 +73,4 @@ func TransparentStatic(ctx *context.Context) {
 	} else {
 		http.ServeFile(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	}
-}
-
-func ApiFilter(ctx *context.Context) {
-	method := ctx.Request.Method
-	urlPath := ctx.Request.URL.Path
-
-	adminDomain := beego.AppConfig.String("adminDomain")
-	if adminDomain != "" && ctx.Request.Host == adminDomain {
-		return
-	}
-
-	if conf.IsDemoMode() {
-		if !isAllowedInDemoMode(method, urlPath) {
-			controllers.DenyRequest(ctx)
-		}
-	}
-}
-
-func isAllowedInDemoMode(method string, urlPath string) bool {
-	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-message") {
-		return false
-	}
-
-	return true
 }
