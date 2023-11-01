@@ -904,3 +904,16 @@ export function parseJsonFromText(text) {
 
   return "";
 }
+
+export function getSubdomain() {
+  const url = window.location.origin;
+  const regex = /^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:/\n]+)/;
+  const matches = url.match(regex);
+  if (matches && matches[1]) {
+    const domainParts = matches[1].split(".");
+    if (domainParts.length > 2) {
+      return domainParts[0];
+    }
+  }
+  return null;
+}

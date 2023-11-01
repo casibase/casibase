@@ -50,6 +50,7 @@ import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
 import ChatPage from "./ChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
+import ShortcutsPage from "./basic/ShortcutsPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -294,50 +295,77 @@ class App extends Component {
       return res;
     }
 
+    const domain = Setting.getSubdomain();
+    // const domain = "data";
+
     res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
 
-    if (this.state.account.tag === "Video") {
-      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-      return res;
-    }
+    if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+    } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
+      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
+      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+    } else if (Conf.ShortcutPageItems.length > 0 && domain === "emo") {
+      if (Conf.EnableExtraPages) {
+        res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
+        res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
+        res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
 
-    res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
-    res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+        if (window.location.pathname === "/") {
+          Setting.goToLinkSoft(this, "/wordsets");
+        }
+      }
+    } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
+      if (Conf.EnableExtraPages) {
+        res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      }
 
-    res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-    res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-    res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
-    res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-    res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
+      if (window.location.pathname === "/") {
+        Setting.goToLinkSoft(this, "/videos");
+      }
+    } else {
+      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
+      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
+      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
+      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
 
-    if (Conf.EnableExtraPages) {
       res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
       res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
       res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
+
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-    }
 
-    if (Setting.isLocalAdminUser(this.state.account)) {
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
-          {i18next.t("general:Resources")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "#"));
+      if (Setting.isLocalAdminUser(this.state.account)) {
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+            {i18next.t("general:Resources")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "#"));
 
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
-          {i18next.t("general:Permissions")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "##"));
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+            {i18next.t("general:Permissions")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "##"));
 
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-          {i18next.t("general:Logs")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "###"));
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+            {i18next.t("general:Logs")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "###"));
+      }
     }
 
     return res;
@@ -403,6 +431,10 @@ class App extends Component {
     if (Setting.getUrlParam("isRaw") !== null) {
       return (
         <HomePage account={this.state.account} />
+      );
+    } else if (Setting.getSubdomain() === "portal") {
+      return (
+        <ShortcutsPage account={this.state.account} />
       );
     }
 
