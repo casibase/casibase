@@ -18,7 +18,6 @@ import * as StoreBackend from "./backend/StoreBackend";
 import FileTree from "./FileTree";
 import i18next from "i18next";
 import * as Setting from "./Setting";
-import ChatPage from "./ChatPage";
 
 class FileTreePage extends React.Component {
   constructor(props) {
@@ -64,7 +63,7 @@ class FileTreePage extends React.Component {
     return (
       <div>
         <Row>
-          <Col span={14}>
+          <Col span={24}>
             <FileTree account={this.props.account} store={this.state.store} onUpdateStore={(store) => {
               this.setState({
                 store: store,
@@ -72,9 +71,9 @@ class FileTreePage extends React.Component {
               Setting.submitStoreEdit(store);
             }} onRefresh={() => this.getStore()} />
           </Col>
-          <Col span={10}>
-            <ChatPage account={this.props.account} />
-          </Col>
+          {/* <Col span={10}>*/}
+          {/*  <ChatPage account={this.props.account} />*/}
+          {/* </Col>*/}
         </Row>
       </div>
     );
