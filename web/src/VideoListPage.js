@@ -161,6 +161,13 @@ class VideoListPage extends React.Component {
         sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       },
       {
+        title: i18next.t("video:Tag"),
+        dataIndex: "tag",
+        key: "tag",
+        width: "250px",
+        sorter: (a, b) => a.tag.localeCompare(b.tag),
+      },
+      {
         title: i18next.t("video:Video ID"),
         dataIndex: "videoId",
         key: "videoId",
