@@ -37,7 +37,7 @@ type Chat struct {
 	User2         string   `xorm:"varchar(100)" json:"user2"`
 	Users         []string `xorm:"varchar(100)" json:"users"`
 	ClientIp      string   `xorm:"varchar(100)" json:"clientIp"`
-	UserAgent     string   `xorm:"varchar(100)" json:"userAgent"`
+	UserAgent     string   `xorm:"varchar(200)" json:"userAgent"`
 	ClientIpDesc  string   `xorm:"varchar(100)" json:"clientIpDesc"`
 	UserAgentDesc string   `xorm:"varchar(100)" json:"userAgentDesc"`
 	MessageCount  int      `json:"messageCount"`
