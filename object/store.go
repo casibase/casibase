@@ -207,10 +207,16 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	if modelProvider == nil {
+		return false, fmt.Errorf("The model provider for store: %s is not found", store.GetId())
+	}
 
 	embeddingProvider, err := store.GetEmbeddingProvider()
 	if err != nil {
 		return false, err
+	}
+	if embeddingProvider == nil {
+		return false, fmt.Errorf("The embedding provider for store: %s is not found", store.GetId())
 	}
 
 	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider()
