@@ -36,6 +36,7 @@ type Video struct {
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
 	Tag        string   `xorm:"varchar(100)" json:"tag"`
+	Type       string   `xorm:"varchar(100)" json:"type"`
 	VideoId    string   `xorm:"varchar(100)" json:"videoId"`
 	CoverUrl   string   `xorm:"varchar(200)" json:"coverUrl"`
 	Labels     []*Label `xorm:"mediumtext" json:"labels"`

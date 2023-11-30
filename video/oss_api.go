@@ -20,23 +20,21 @@ import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func getOssClient(endpoint string, accessKeyId string, accessKeySecret string, securityToken string) *oss.Client {
+func getOssClient(endpoint string, accessKeyId string, accessKeySecret string, securityToken string) (*oss.Client, error) {
 	client, err := oss.New(endpoint, accessKeyId, accessKeySecret, oss.SecurityToken(securityToken))
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
-	return client
+	return client, nil
 }
 
-func uploadLocalFile(ossClient *oss.Client, bucketName string, objectKey string, fileBuffer *bytes.Buffer) {
+func uploadLocalFile(ossClient *oss.Client, bucketName string, objectKey string, fileBuffer *bytes.Buffer) error {
 	bucket, err := ossClient.Bucket(bucketName)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	err = bucket.PutObject(objectKey, fileBuffer)
-	if err != nil {
-		panic(err)
-	}
+	return err
 }

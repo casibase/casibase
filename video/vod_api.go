@@ -53,17 +53,16 @@ type UploadAuth struct {
 	Region          string    `json:"Region"`
 }
 
-func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) string {
+func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) (string, error) {
 	// https://help.aliyun.com/document_detail/476208.html
 
 	r := vod.CreateCreateUploadVideoRequest()
 	r.Scheme = "https"
 	r.FileName = filename
 	r.Title = fileId
-
 	resp, err := vodClient.CreateUploadVideo(r)
 	if err != nil {
-		panic(err)
+		return "", nil
 	}
 
 	encodedUploadAddress := resp.UploadAddress
@@ -76,20 +75,26 @@ func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) strin
 	uploadAddress := &UploadAddress{}
 	err = util.JsonToStruct(uploadAddressStr, uploadAddress)
 	if err != nil {
-		panic(err)
+		return "", nil
 	}
 
 	uploadAuth := &UploadAuth{}
 	err = util.JsonToStruct(uploadAuthStr, uploadAuth)
 	if err != nil {
-		panic(err)
+		return "", nil
 	}
 
-	ossClient := getOssClient(uploadAddress.Endpoint, uploadAuth.AccessKeyId, uploadAuth.AccessKeySecret, uploadAuth.SecurityToken)
+	ossClient, err := getOssClient(uploadAddress.Endpoint, uploadAuth.AccessKeyId, uploadAuth.AccessKeySecret, uploadAuth.SecurityToken)
+	if err != nil {
+		return "", nil
+	}
 
-	uploadLocalFile(ossClient, uploadAddress.Bucket, uploadAddress.FileName, fileBuffer)
+	err = uploadLocalFile(ossClient, uploadAddress.Bucket, uploadAddress.FileName, fileBuffer)
+	if err != nil {
+		return "", nil
+	}
 
-	return videoId
+	return videoId, nil
 }
 
 func GetVideoCoverUrl(videoId string) string {

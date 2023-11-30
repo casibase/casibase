@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"path/filepath"
 	"time"
 
 	"github.com/casibase/casibase/object"
@@ -119,24 +120,31 @@ func (c *ApiController) DeleteVideo() {
 	c.ResponseOk(success)
 }
 
-func startCoverUrlJob(owner string, name string, videoId string) {
-	go func(owner string, name string, videoId string) {
+func startCoverUrlJob(id string, videoId string) {
+	go func(id string, videoId string) {
 		for i := 0; i < 20; i++ {
 			coverUrl := video.GetVideoCoverUrl(videoId)
 			if coverUrl != "" {
-				video, _ := object.GetVideo(util.GetIdFromOwnerAndName(owner, name))
-				if video.CoverUrl != "" {
+				v, err := object.GetVideo(id)
+				if err != nil {
+					panic(err)
+				}
+				if v.CoverUrl != "" {
 					break
 				}
 
-				video.CoverUrl = coverUrl
-				object.UpdateVideo(util.GetIdFromOwnerAndName(owner, name), video)
+				v.CoverUrl = coverUrl
+				_, err = object.UpdateVideo(id, v)
+				if err != nil {
+					panic(err)
+				}
+
 				break
 			}
 
 			time.Sleep(time.Second * 5)
 		}
-	}(owner, name, videoId)
+	}(id, videoId)
 }
 
 func (c *ApiController) UploadVideo() {
@@ -151,9 +159,11 @@ func (c *ApiController) UploadVideo() {
 
 	filename := header.Filename
 	fileId := util.RemoveExt(filename)
+	ext := filepath.Ext(filename)
 
 	fileBuffer := bytes.NewBuffer(nil)
-	if _, err = io.Copy(fileBuffer, file); err != nil {
+	_, err = io.Copy(fileBuffer, file)
+	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
@@ -161,35 +171,42 @@ func (c *ApiController) UploadVideo() {
 	fileType := "unknown"
 	contentType := header.Header.Get("Content-Type")
 	fileType, _ = util.GetOwnerAndNameFromId(contentType)
-
 	if fileType != "video" {
 		c.ResponseError(fmt.Sprintf("contentType: %s is not video", contentType))
 		return
 	}
 
-	videoId := video.UploadVideo(fileId, filename, fileBuffer)
-	if videoId != "" {
-		startCoverUrlJob(owner, fileId, videoId)
-
-		video := &object.Video{
-			Owner:       owner,
-			Name:        fileId,
-			CreatedTime: util.GetCurrentTime(),
-			DisplayName: fileId,
-			VideoId:     videoId,
-			Labels:      []*object.Label{},
-			DataUrls:    []string{},
-			DataUrl:     "",
-			TagOnPause:  true,
-		}
-		_, err = object.AddVideo(video)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		c.ResponseOk(fileId)
-	} else {
-		c.ResponseError("videoId is empty")
+	videoId, err := video.UploadVideo(fileId, filename, fileBuffer)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
 	}
+	if videoId == "" {
+		c.ResponseError("UploadVideo() error, videoId should not be empty")
+		return
+	}
+
+	v := &object.Video{
+		Owner:       owner,
+		Name:        fileId,
+		CreatedTime: util.GetCurrentTime(),
+		DisplayName: fileId,
+		Tag:         "",
+		Type:        ext,
+		VideoId:     videoId,
+		Labels:      []*object.Label{},
+		DataUrls:    []string{},
+		DataUrl:     "",
+		TagOnPause:  true,
+	}
+	_, err = object.AddVideo(v)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	id := util.GetIdFromOwnerAndName(owner, fileId)
+	startCoverUrlJob(id, videoId)
+
+	c.ResponseOk(fileId)
 }
