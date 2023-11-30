@@ -20,9 +20,13 @@ import (
 	"fmt"
 	"io"
 	"path/filepath"
+	"strings"
 	"time"
 
+	"github.com/astaxie/beego"
+	"github.com/casibase/casibase/audio"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
 	"github.com/casibase/casibase/video"
 )
@@ -147,8 +151,17 @@ func startCoverUrlJob(id string, videoId string) {
 	}(id, videoId)
 }
 
+func copyBuffer(original *bytes.Buffer) *bytes.Buffer {
+	bufCopy := make([]byte, original.Len())
+	copy(bufCopy, original.Bytes())
+	return bytes.NewBuffer(bufCopy)
+}
+
 func (c *ApiController) UploadVideo() {
-	owner := c.GetSessionUsername()
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
 
 	file, header, err := c.GetFile("file")
 	if err != nil {
@@ -168,6 +181,8 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
+	fileBuffer2 := copyBuffer(fileBuffer)
+
 	fileType := "unknown"
 	contentType := header.Header.Get("Content-Type")
 	fileType, _ = util.GetOwnerAndNameFromId(contentType)
@@ -186,14 +201,36 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
+	audioBuffer, err := audio.GetAudioFromVideo(fileBuffer2)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
+	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	audioFilename := strings.Replace(filename, ".mp4", ".mp3", 1)
+	audioUrl, err := audioStorageProvider.PutObject(userName, "Uploaded-Audio", audioFilename, audioBuffer)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	v := &object.Video{
-		Owner:       owner,
+		Owner:       userName,
 		Name:        fileId,
 		CreatedTime: util.GetCurrentTime(),
 		DisplayName: fileId,
 		Tag:         "",
 		Type:        ext,
 		VideoId:     videoId,
+		CoverUrl:    "",
+		AudioUrl:    audioUrl,
 		Labels:      []*object.Label{},
 		DataUrls:    []string{},
 		DataUrl:     "",
@@ -205,7 +242,7 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
-	id := util.GetIdFromOwnerAndName(owner, fileId)
+	id := util.GetIdFromOwnerAndName(userName, fileId)
 	startCoverUrlJob(id, videoId)
 
 	c.ResponseOk(fileId)
