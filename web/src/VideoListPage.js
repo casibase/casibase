@@ -146,6 +146,7 @@ class VideoListPage extends React.Component {
         width: "140px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
+          text = text.replace(".MP4", ".mp4");
           return (
             <Link to={`/videos/${text}`}>
               {text}
@@ -153,13 +154,13 @@ class VideoListPage extends React.Component {
           );
         },
       },
-      {
-        title: i18next.t("general:Display name"),
-        dataIndex: "displayName",
-        key: "displayName",
-        width: "200px",
-        sorter: (a, b) => a.displayName.localeCompare(b.displayName),
-      },
+      // {
+      //   title: i18next.t("general:Display name"),
+      //   dataIndex: "displayName",
+      //   key: "displayName",
+      //   width: "200px",
+      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      // },
       {
         title: i18next.t("video:Tag"),
         dataIndex: "tag",
