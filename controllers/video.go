@@ -19,7 +19,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -221,6 +223,32 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
+	tmpInputFile, err := os.CreateTemp("", "casibase-audio-*.mp3")
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	defer os.Remove(tmpInputFile.Name())
+
+	_, err = io.Copy(tmpInputFile, audioBuffer)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	tmpInputFile.Close()
+
+	segments := []*object.Label{}
+	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name())
+	for i, item := range oSegments {
+		segment := &object.Label{
+			Id:        strconv.Itoa(i),
+			StartTime: util.ParseFloat(item.Bg),
+			EndTime:   util.ParseFloat(item.Ed),
+			Text:      item.Onebest,
+		}
+		segments = append(segments, segment)
+	}
+
 	v := &object.Video{
 		Owner:       userName,
 		Name:        fileId,
@@ -232,6 +260,7 @@ func (c *ApiController) UploadVideo() {
 		CoverUrl:    "",
 		AudioUrl:    audioUrl,
 		Labels:      []*object.Label{},
+		Segments:    segments,
 		DataUrls:    []string{},
 		DataUrl:     "",
 		TagOnPause:  true,

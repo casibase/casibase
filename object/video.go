@@ -41,6 +41,7 @@ type Video struct {
 	CoverUrl   string   `xorm:"varchar(200)" json:"coverUrl"`
 	AudioUrl   string   `xorm:"varchar(200)" json:"audioUrl"`
 	Labels     []*Label `xorm:"mediumtext" json:"labels"`
+	Segments   []*Label `xorm:"mediumtext" json:"segments"`
 	DataUrls   []string `xorm:"mediumtext" json:"dataUrls"`
 	DataUrl    string   `xorm:"varchar(200)" json:"dataUrl"`
 	TagOnPause bool     `json:"tagOnPause"`
