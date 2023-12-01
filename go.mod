@@ -4,13 +4,13 @@ go 1.20
 
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
-	github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.30.0
 	github.com/casibase/go-hnsw v1.0.0
+	github.com/casibase/go-openrouter v1.0.0
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0

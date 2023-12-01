@@ -40,8 +40,6 @@ github.com/ConnectAI-E/go-minimax v0.0.1/go.mod h1:c+9xxqMgmtwdpZEq/lBtrwkbwlK7d
 github.com/DATA-DOG/go-sqlmock v1.3.3/go.mod h1:f/Ixk793poVmq4qj/V1dPUg2JEAKC73Q5eFN3EC/SaM=
 github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
-github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3 h1:E15Zr1fu3QEIleqINqXpl4SlYuWkwWPJ4cx6UVaJITE=
-github.com/Lok-Lu/go-openrouter v0.0.0-20230807015935-ab5cee433ad3/go.mod h1:nM0kITDAJEkwn9x2DQPdfJynThaLe0vGNpPcqJ8vjAI=
 github.com/Masterminds/semver/v3 v3.1.1/go.mod h1:VPu/7SZ7ePZ3QOrcuXROw5FAcLl4a0cBrbBpGY/8hQs=
 github.com/Shopify/sarama v1.19.0/go.mod h1:FVkBWblsNy7DGZRfXLU0O9RCGt5g3g3yEuWXgklEdEo=
 github.com/Shopify/toxiproxy v2.1.4+incompatible/go.mod h1:OXgGpZ6Cli1/URJOF1DMxUHB2q5Ap20/P/eIdh4G0pI=
@@ -89,6 +87,8 @@ github.com/casdoor/casdoor-go-sdk v0.30.0 h1:qUoDvmFyCLfLZpMG81XMkY/8h86z5fdoiy5
 github.com/casdoor/casdoor-go-sdk v0.30.0/go.mod h1:MBed3ISHQfXTtoOCAk5T8l5lt4wFvsyynrw0awggydY=
 github.com/casibase/go-hnsw v1.0.0 h1:P0rQMvM/BudblFB83yj9yi9+wHVnYOuaPeL0e1gHwbM=
 github.com/casibase/go-hnsw v1.0.0/go.mod h1:SVuCrv39V/GhBKdkNnRIiaper9UJhTErqvo5sA8P45g=
+github.com/casibase/go-openrouter v1.0.0 h1:xWtKUXXZMdk1xZod8EGc7jrbSpAKGGhbKtqSGvr1a1k=
+github.com/casibase/go-openrouter v1.0.0/go.mod h1:QvTckANaf6eO/iIxAjOOI/A4FsTOF+FYUfWZ/PcNk7A=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash/v2 v2.1.1/go.mod h1:VGX0DQ3Q6kWi7AoAeZDth3/j3BFtOZR5XLFGgcrjCOs=
