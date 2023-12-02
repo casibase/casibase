@@ -259,19 +259,19 @@ class App extends Component {
     } else if (this.state.account === null) {
       return (
         <React.Fragment>
-          <Menu.Item key="/signup" style={{float: "right", marginRight: "20px"}}>
+          <div key="/signup" style={{float: "right", marginRight: "20px"}}>
             <a href={Setting.getSignupUrl()}>
               {i18next.t("account:Sign Up")}
             </a>
-          </Menu.Item>
-          <Menu.Item key="/signin" style={{float: "right"}}>
+          </div>
+          <div key="/signin" style={{float: "right"}}>
             <a href={Setting.getSigninUrl()}>
               {i18next.t("account:Sign In")}
             </a>
-          </Menu.Item>
-          <Menu.Item style={{float: "right", margin: "0px", padding: "0px"}}>
+          </div>
+          <div style={{float: "right", margin: "0px", padding: "0px"}}>
             <LanguageSelect />
-          </Menu.Item>
+          </div>
         </React.Fragment>
       );
     } else {
