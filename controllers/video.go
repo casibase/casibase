@@ -52,6 +52,14 @@ func (c *ApiController) GetVideos() {
 		return
 	}
 
+	for _, v := range videos {
+		err = v.Populate()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
 	c.ResponseOk(videos)
 }
 

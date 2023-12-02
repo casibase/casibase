@@ -35,16 +35,17 @@ type Video struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
-	Tag        string   `xorm:"varchar(100)" json:"tag"`
-	Type       string   `xorm:"varchar(100)" json:"type"`
-	VideoId    string   `xorm:"varchar(100)" json:"videoId"`
-	CoverUrl   string   `xorm:"varchar(200)" json:"coverUrl"`
-	AudioUrl   string   `xorm:"varchar(200)" json:"audioUrl"`
-	Labels     []*Label `xorm:"mediumtext" json:"labels"`
-	Segments   []*Label `xorm:"mediumtext" json:"segments"`
-	DataUrls   []string `xorm:"mediumtext" json:"dataUrls"`
-	DataUrl    string   `xorm:"varchar(200)" json:"dataUrl"`
-	TagOnPause bool     `json:"tagOnPause"`
+	Tag          string         `xorm:"varchar(100)" json:"tag"`
+	Type         string         `xorm:"varchar(100)" json:"type"`
+	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
+	CoverUrl     string         `xorm:"varchar(200)" json:"coverUrl"`
+	AudioUrl     string         `xorm:"varchar(200)" json:"audioUrl"`
+	Labels       []*Label       `xorm:"mediumtext" json:"labels"`
+	Segments     []*Label       `xorm:"mediumtext" json:"segments"`
+	WordCountMap map[string]int `xorm:"mediumtext" json:"wordCountMap"`
+	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
+	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
+	TagOnPause   bool           `json:"tagOnPause"`
 
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }
@@ -140,20 +141,25 @@ func (video *Video) GetId() string {
 }
 
 func (video *Video) Populate() error {
-	store, err := GetDefaultStore("admin")
+	// store, err := GetDefaultStore("admin")
+	// if err != nil {
+	//	return err
+	// }
+	// if store == nil {
+	//	return nil
+	// }
+	//
+	// dataUrls, err := store.GetVideoData()
+	// if err != nil {
+	//	return err
+	// }
+	// video.DataUrls = dataUrls
+
+	err := video.PopulateWordCountMap()
 	if err != nil {
 		return err
 	}
-	if store == nil {
-		return nil
-	}
 
-	dataUrls, err := store.GetVideoData()
-	if err != nil {
-		return err
-	}
-
-	video.DataUrls = dataUrls
 	return nil
 }
 

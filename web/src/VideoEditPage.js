@@ -22,6 +22,7 @@ import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
 import VideoDataChart from "./VideoDataChart";
+import WordCloudChart from "./WordCloudChart";
 
 const {Option} = Select;
 
@@ -314,6 +315,7 @@ class VideoEditPage extends React.Component {
                 </p>
               </Card>
             </div>
+            <WordCloudChart wordCountMap={this.state.video.wordCountMap} />
             <LabelTable
               ref={this.labelTable}
               title={i18next.t("video:Labels")}

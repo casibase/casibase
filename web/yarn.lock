@@ -4717,6 +4717,11 @@ echarts-for-react@^3.0.2:
     fast-deep-equal "^3.1.3"
     size-sensor "^1.0.1"
 
+echarts-wordcloud@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/echarts-wordcloud/-/echarts-wordcloud-2.1.0.tgz#c3de6fe267044f6c3343e4ff0e05eedb01c05096"
+  integrity sha512-Kt1JmbcROgb+3IMI48KZECK2AP5lG6bSsOEs+AsuwaWJxQom31RTNd6NFYI01E/YaI1PFZeueaupjlmzSQasjQ==
+
 echarts@^5.4.2:
   version "5.4.2"
   resolved "https://registry.yarnpkg.com/echarts/-/echarts-5.4.2.tgz#9f38781c9c6ae323e896956178f6956952c77a48"

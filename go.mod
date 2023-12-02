@@ -28,6 +28,7 @@ require (
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.4.0
 	github.com/vogo/xfspark v0.1.2
+	github.com/wangbin/jiebago v0.3.2
 	golang.org/x/net v0.16.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
