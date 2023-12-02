@@ -242,8 +242,8 @@ func (c *ApiController) UploadVideo() {
 	for i, item := range oSegments {
 		segment := &object.Label{
 			Id:        strconv.Itoa(i),
-			StartTime: util.ParseFloat(item.Bg),
-			EndTime:   util.ParseFloat(item.Ed),
+			StartTime: util.ParseFloat(item.Bg) / 1000,
+			EndTime:   util.ParseFloat(item.Ed) / 1000,
 			Text:      item.Onebest,
 		}
 		segments = append(segments, segment)
