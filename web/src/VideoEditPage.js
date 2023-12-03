@@ -298,24 +298,32 @@ class VideoEditPage extends React.Component {
           <Col span={1}>
           </Col>
           <Col span={10} >
-            <div style={{marginTop: "20px", marginBottom: "20px"}}>
-              <Card size="small" title="Text">
-                <p>
-                  {
-                    this.state.video.segments.map((segment, index) => {
-                      return (
-                        <React.Fragment key={index}>
-                          <Tag style={{fontSize: "medium", lineHeight: "30px", marginBottom: "10px", marginRight: "10px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
-                            {segment.text}
-                          </Tag>
-                        </React.Fragment>
-                      );
-                    })
-                  }
-                </p>
-              </Card>
-            </div>
-            <WordCloudChart wordCountMap={this.state.video.wordCountMap} />
+            {
+              this.state.video.segments === null || this.state.video.segments.length === 0 ? null : (
+                <div style={{marginTop: "20px", marginBottom: "20px"}}>
+                  <Card size="small" title="Text">
+                    <p>
+                      {
+                        this.state.video.segments.map((segment, index) => {
+                          return (
+                            <React.Fragment key={index}>
+                              <Tag style={{fontSize: "medium", lineHeight: "30px", marginBottom: "10px", marginRight: "10px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
+                                {segment.text}
+                              </Tag>
+                            </React.Fragment>
+                          );
+                        })
+                      }
+                    </p>
+                  </Card>
+                </div>
+              )
+            }
+            {
+              this.state.video.wordCountMap === null || this.state.video.wordCountMap.length === 0 ? null : (
+                <WordCloudChart wordCountMap={this.state.video.wordCountMap} />
+              )
+            }
             <LabelTable
               ref={this.labelTable}
               title={i18next.t("video:Labels")}
