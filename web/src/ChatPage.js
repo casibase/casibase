@@ -248,6 +248,10 @@ class ChatPage extends BaseListPage {
   }
 
   renderModal() {
+    if (Conf.IframeUrl === "" || this.state.messages === null) {
+      return null;
+    }
+
     const aiMessages = this.state.messages.filter(message => message.author === "AI");
     const lastMessage = aiMessages[aiMessages.length - 1];
     const json = (lastMessage === undefined) ? "" : Setting.parseJsonFromText(lastMessage.text);

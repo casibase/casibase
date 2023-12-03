@@ -17,12 +17,13 @@ import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Ti
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {FileSearchOutlined, LinkOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
+import {FileSearchOutlined, LinkOutlined, ShareAltOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
 import VideoDataChart from "./VideoDataChart";
 import WordCloudChart from "./WordCloudChart";
+import ChatPage from "./ChatPage";
 
 const {Option} = Select;
 
@@ -238,19 +239,29 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  renderChat() {
+    return (
+      <div style={{marginTop: "20px"}}>
+        <ChatPage account={this.props.account} />
+      </div>
+    );
+  }
+
   renderLabels() {
     return (
-      <LabelTable
-        ref={this.labelTable}
-        title={i18next.t("video:Labels")}
-        table={this.state.video.labels}
-        currentTime={this.state.currentTime}
-        video={this.state.video}
-        player={this.state.player}
-        screen={this.state.screen}
-        videoObj={this.state.videoObj}
-        onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
-      />
+      <div style={{marginTop: "20px"}}>
+        <LabelTable
+          ref={this.labelTable}
+          title={i18next.t("video:Labels")}
+          table={this.state.video.labels}
+          currentTime={this.state.currentTime}
+          video={this.state.video}
+          player={this.state.player}
+          screen={this.state.screen}
+          videoObj={this.state.videoObj}
+          onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+        />
+      </div>
     );
   }
 
@@ -373,6 +384,7 @@ class VideoEditPage extends React.Component {
               options={[
                 {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
                 {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
+                {label: "AI Assistant", value: "AI Assistant", icon: <ShareAltOutlined />},
               ]}
               block value={this.state.video.editMode} onChange={checked => {
                 this.updateVideoField("editMode", checked);
@@ -390,9 +402,30 @@ class VideoEditPage extends React.Component {
                   {
                     this.renderWords()
                   }
+                  {
+                    this.renderChat()
+                  }
+                </div>
+              ) : this.state.video.editMode === "Text Recognition" ? (
+                <div>
+                  {
+                    this.renderSegments()
+                  }
+                  {
+                    this.renderWords()
+                  }
+                  {
+                    this.renderChat()
+                  }
+                  {
+                    this.renderLabels()
+                  }
                 </div>
               ) : (
                 <div>
+                  {
+                    this.renderChat()
+                  }
                   {
                     this.renderSegments()
                   }
