@@ -39,6 +39,7 @@ type Video struct {
 	Tag          string         `xorm:"varchar(100)" json:"tag"`
 	Type         string         `xorm:"varchar(100)" json:"type"`
 	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
+	VideoLength  string         `xorm:"varchar(100)" json:"videoLength"`
 	CoverUrl     string         `xorm:"varchar(200)" json:"coverUrl"`
 	AudioUrl     string         `xorm:"varchar(200)" json:"audioUrl"`
 	EditMode     string         `xorm:"varchar(100)" json:"editMode"`
