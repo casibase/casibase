@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {FileSearchOutlined, LinkOutlined, TagsOutlined} from "@ant-design/icons";
+import {FileSearchOutlined, LinkOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
@@ -191,19 +191,27 @@ class VideoEditPage extends React.Component {
     return (
       <div style={{marginTop: "20px", marginBottom: "20px"}}>
         <Card size="small" title="Text">
-          <p>
-            {
+          <Timeline style={{marginTop: "10px", marginLeft: "10px"}}
+            items={
               this.state.video.segments.map((segment, index) => {
                 return (
-                  <React.Fragment key={index}>
-                    <Tag style={{fontSize: "medium", lineHeight: "30px", marginBottom: "10px", marginRight: "10px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
-                      {segment.text}
-                    </Tag>
-                  </React.Fragment>
+                  {
+                    color: this.isSegmentActive(segment) ? "blue" : "gray",
+                    dot: this.isSegmentActive(segment) ? <SyncOutlined spin /> : null,
+                    children: (
+                      <div>
+                        <div style={{display: "inline-block", width: "70px"}}>{Setting.getTimeFromSeconds(segment.startTime)}</div>
+                        &nbsp;&nbsp;
+                        <Tag style={{fontSize: "medium", lineHeight: "30px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
+                          {segment.text}
+                        </Tag>
+                      </div>
+                    ),
+                  }
                 );
               })
             }
-          </p>
+          />
         </Card>
       </div>
     );
@@ -335,7 +343,7 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Video")}:
           </Col>
-          <Col span={11} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
+          <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
             <React.Fragment>
               <Affix offsetTop={-100}>
                 {
@@ -349,7 +357,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={1}>
           </Col>
-          <Col span={10} >
+          <Col span={12} >
             <Segmented
               options={[
                 {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},

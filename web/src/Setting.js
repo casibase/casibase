@@ -917,3 +917,12 @@ export function getSubdomain() {
   }
   return null;
 }
+
+export function getTimeFromSeconds(seconds) {
+  const duration = moment.duration(seconds, "seconds");
+  // const hours = Math.floor(duration.asHours()).toString().padStart(2, "0");
+  const minutes = duration.minutes().toString().padStart(2, "0");
+  const sec = duration.seconds().toString().padStart(2, "0");
+  const millisec = duration.milliseconds().toString().padStart(3, "0").substring(0, 3);
+  return `${minutes} : ${sec}.${millisec}`;
+}
