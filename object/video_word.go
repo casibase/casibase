@@ -59,7 +59,7 @@ func (v *Video) PopulateWordCountMap() error {
 	for _, segment := range v.Segments {
 		words := seg.Cut(segment.Text, true)
 		for word := range words {
-			if !isPunctuation([]rune(word)[0]) && !isNumber(word) {
+			if len(word) > 3 && !isPunctuation([]rune(word)[0]) && !isNumber(word) {
 				v.WordCountMap[word]++
 			}
 		}

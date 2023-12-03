@@ -50,10 +50,10 @@ class WordCloudChart extends Component {
         top: "center",
         width: "100%",
         height: "80%",
-        sizeRange: [20, 150],
+        sizeRange: [20, 100],
         rotationRange: [-45, 45],
         rotationStep: 5,
-        gridSize: 2,
+        gridSize: 20,
         drawOutOfBound: false,
         layoutAnimation: true,
         textStyle: {
