@@ -49,6 +49,14 @@ type Video struct {
 	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
 	TagOnPause   bool           `json:"tagOnPause"`
 
+	School   string   `xorm:"varchar(100)" json:"school"`
+	Stage    string   `xorm:"varchar(100)" json:"stage"`
+	Grade    string   `xorm:"varchar(100)" json:"grade"`
+	Class    string   `xorm:"varchar(100)" json:"class"`
+	Subject  string   `xorm:"varchar(100)" json:"subject"`
+	Topic    string   `xorm:"varchar(100)" json:"topic"`
+	Keywords []string `xorm:"varchar(200)" json:"keywords"`
+
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }
 
