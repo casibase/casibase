@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Select, Switch, Tag} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {LinkOutlined} from "@ant-design/icons";
+import {FileSearchOutlined, LinkOutlined, TagsOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
@@ -183,6 +183,58 @@ class VideoEditPage extends React.Component {
     return this.state.currentTime >= segment.startTime && this.state.currentTime <= segment.endTime;
   }
 
+  renderSegments() {
+    if (this.state.video.segments === null || this.state.video.segments.length === 0) {
+      return null;
+    }
+
+    return (
+      <div style={{marginTop: "20px", marginBottom: "20px"}}>
+        <Card size="small" title="Text">
+          <p>
+            {
+              this.state.video.segments.map((segment, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Tag style={{fontSize: "medium", lineHeight: "30px", marginBottom: "10px", marginRight: "10px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
+                      {segment.text}
+                    </Tag>
+                  </React.Fragment>
+                );
+              })
+            }
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
+  renderWords() {
+    if (this.state.video.wordCountMap === null || this.state.video.wordCountMap.length === 0) {
+      return null;
+    }
+
+    return (
+      <WordCloudChart wordCountMap={this.state.video.wordCountMap} />
+    );
+  }
+
+  renderLabels() {
+    return (
+      <LabelTable
+        ref={this.labelTable}
+        title={i18next.t("video:Labels")}
+        table={this.state.video.labels}
+        currentTime={this.state.currentTime}
+        video={this.state.video}
+        player={this.state.player}
+        screen={this.state.screen}
+        videoObj={this.state.videoObj}
+        onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+      />
+    );
+  }
+
   renderVideo() {
     return (
       <Card size="small" title={
@@ -298,43 +350,42 @@ class VideoEditPage extends React.Component {
           <Col span={1}>
           </Col>
           <Col span={10} >
+            <Segmented
+              options={[
+                {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
+                {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
+              ]}
+              block value={this.state.video.editMode} onChange={checked => {
+                this.updateVideoField("editMode", checked);
+              }}
+            />
             {
-              this.state.video.segments === null || this.state.video.segments.length === 0 ? null : (
-                <div style={{marginTop: "20px", marginBottom: "20px"}}>
-                  <Card size="small" title="Text">
-                    <p>
-                      {
-                        this.state.video.segments.map((segment, index) => {
-                          return (
-                            <React.Fragment key={index}>
-                              <Tag style={{fontSize: "medium", lineHeight: "30px", marginBottom: "10px", marginRight: "10px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
-                                {segment.text}
-                              </Tag>
-                            </React.Fragment>
-                          );
-                        })
-                      }
-                    </p>
-                  </Card>
+              this.state.video.editMode === "Labeling" ? (
+                <div>
+                  {
+                    this.renderLabels()
+                  }
+                  {
+                    this.renderSegments()
+                  }
+                  {
+                    this.renderWords()
+                  }
+                </div>
+              ) : (
+                <div>
+                  {
+                    this.renderSegments()
+                  }
+                  {
+                    this.renderWords()
+                  }
+                  {
+                    this.renderLabels()
+                  }
                 </div>
               )
             }
-            {
-              this.state.video.wordCountMap === null || this.state.video.wordCountMap.length === 0 ? null : (
-                <WordCloudChart wordCountMap={this.state.video.wordCountMap} />
-              )
-            }
-            <LabelTable
-              ref={this.labelTable}
-              title={i18next.t("video:Labels")}
-              table={this.state.video.labels}
-              currentTime={this.state.currentTime}
-              video={this.state.video}
-              player={this.state.player}
-              screen={this.state.screen}
-              videoObj={this.state.videoObj}
-              onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
-            />
           </Col>
         </Row>
       </Card>

@@ -40,6 +40,7 @@ type Video struct {
 	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
 	CoverUrl     string         `xorm:"varchar(200)" json:"coverUrl"`
 	AudioUrl     string         `xorm:"varchar(200)" json:"audioUrl"`
+	EditMode     string         `xorm:"varchar(100)" json:"editMode"`
 	Labels       []*Label       `xorm:"mediumtext" json:"labels"`
 	Segments     []*Label       `xorm:"mediumtext" json:"segments"`
 	WordCountMap map[string]int `xorm:"mediumtext" json:"wordCountMap"`
@@ -158,6 +159,14 @@ func (video *Video) Populate() error {
 	err := video.PopulateWordCountMap()
 	if err != nil {
 		return err
+	}
+
+	if video.EditMode == "" {
+		if len(video.Segments) == 0 {
+			video.EditMode = "Labeling"
+		} else {
+			video.EditMode = "Text Recognition"
+		}
 	}
 
 	return nil
