@@ -17,7 +17,7 @@ import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Ti
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {FileSearchOutlined, LinkOutlined, ShareAltOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
+import {CloudOutlined, FileSearchOutlined, LinkOutlined, ShareAltOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
@@ -212,10 +212,10 @@ class VideoEditPage extends React.Component {
                       }}>
                         <div style={{display: "inline-block", width: "75px", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal"}}>{Setting.getTimeFromSeconds(segment.startTime)}</div>
                         &nbsp;&nbsp;
-                        <Tag color={segment.speaker === "Teacher" ? "success" : "error"}>
+                        <Tag color={segment.speaker === "Teacher" ? "success" : segment.speaker.startsWith("Student") ? "error" : "processing"}>
                           {segment.speaker}
                         </Tag>
-                        <Tag style={{fontSize: "medium", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal", lineHeight: "30px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
+                        <Tag style={{fontSize: "medium", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal", marginTop: "10px", lineHeight: "30px", whiteSpace: "normal", overflow: "visible"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
                           {segment.text}
                         </Tag>
                       </div>
@@ -403,6 +403,18 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Keywords")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
+              {
+                this.state.video.keywords?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Subject")}:
           </Col>
           <Col span={3} >
@@ -418,17 +430,6 @@ class VideoEditPage extends React.Component {
             <Input value={this.state.video.topic} onChange={e => {
               this.updateVideoField("topic", e.target.value);
             }} />
-          </Col>
-          <Col span={1} />
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Keywords")}:
-          </Col>
-          <Col span={3} >
-            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
-              {
-                this.state.video.keywords?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
-              }
-            </Select>
           </Col>
           <Col span={1} />
           <Col span={3} >
@@ -477,6 +478,7 @@ class VideoEditPage extends React.Component {
               options={[
                 {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
                 {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
+                {label: "Word Cloud", value: "Word Cloud", icon: <CloudOutlined />},
                 {label: "AI Assistant", value: "AI Assistant", icon: <ShareAltOutlined />},
               ]}
               block value={this.state.video.editMode} onChange={checked => {
@@ -509,6 +511,21 @@ class VideoEditPage extends React.Component {
                   }
                   {
                     this.renderChat()
+                  }
+                  {
+                    this.renderLabels()
+                  }
+                </div>
+              ) : this.state.video.editMode === "Word Cloud" ? (
+                <div>
+                  {
+                    this.renderWords()
+                  }
+                  {
+                    this.renderChat()
+                  }
+                  {
+                    this.renderSegments()
                   }
                   {
                     this.renderLabels()
