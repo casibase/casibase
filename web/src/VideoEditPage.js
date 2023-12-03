@@ -460,7 +460,7 @@ class VideoEditPage extends React.Component {
           </Col>
           <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
             <React.Fragment>
-              <Affix offsetTop={-100}>
+              <Affix offsetTop={100}>
                 {
                   this.state.video !== null ? this.renderVideoContent() : null
                 }

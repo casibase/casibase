@@ -28,6 +28,15 @@ func isPunctuation(r rune) bool {
 	return !unicode.IsLetter(r) && !unicode.IsNumber(r)
 }
 
+func isNumber(s string) bool {
+	for _, r := range s {
+		if !unicode.IsNumber(r) {
+			return false
+		}
+	}
+	return true
+}
+
 func (v *Video) PopulateWordCountMap() error {
 	if len(v.Segments) == 0 {
 		return nil
@@ -50,7 +59,7 @@ func (v *Video) PopulateWordCountMap() error {
 	for _, segment := range v.Segments {
 		words := seg.Cut(segment.Text, true)
 		for word := range words {
-			if !isPunctuation([]rune(word)[0]) {
+			if !isPunctuation([]rune(word)[0]) && !isNumber(word) {
 				v.WordCountMap[word]++
 			}
 		}
