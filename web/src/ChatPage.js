@@ -53,6 +53,10 @@ class ChatPage extends BaseListPage {
         });
       }
     });
+
+    if (this.props.onCreateChatPage) {
+      this.props.onCreateChatPage(this);
+    }
   }
 
   getNextChatIndex(name) {
@@ -90,7 +94,7 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text) {
+  newMessage(text, isHidden) {
     const randomName = Setting.getRandomName();
     return {
       owner: "admin",
@@ -102,11 +106,12 @@ class ChatPage extends BaseListPage {
       replyTo: "",
       author: `${this.props.account.owner}/${this.props.account.name}`,
       text: text,
+      isHidden: isHidden,
     };
   }
 
-  sendMessage(text) {
-    const newMessage = this.newMessage(text);
+  sendMessage(text, isHidden) {
+    const newMessage = this.newMessage(text, isHidden);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -341,7 +346,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text) => {this.sendMessage(text);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text) => {this.sendMessage(text, false);}} account={this.props.account} />
         </div>
       </div>
     );

@@ -56,6 +56,7 @@ type Video struct {
 	Subject  string   `xorm:"varchar(100)" json:"subject"`
 	Topic    string   `xorm:"varchar(100)" json:"topic"`
 	Keywords []string `xorm:"varchar(200)" json:"keywords"`
+	Template string   `xorm:"varchar(200)" json:"template"`
 
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }

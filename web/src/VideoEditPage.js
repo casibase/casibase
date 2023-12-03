@@ -37,6 +37,7 @@ class VideoEditPage extends React.Component {
       player: null,
       screen: null,
       videoObj: null,
+      ChatPageObj: null,
       videoData: null,
     };
 
@@ -239,10 +240,21 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  generatePlan() {
+    let text = this.state.video.template;
+    text = text.replaceAll("${stage}", this.state.video.stage);
+    text = text.replaceAll("${grade}", this.state.video.grade);
+    text = text.replaceAll("${subject}", this.state.video.subject);
+    text = text.replaceAll("${topic}", this.state.video.topic);
+    text = text.replaceAll("${keywords}", this.state.video.keywords);
+    // Setting.showMessage("success", text);
+    this.state.chatPageObj.sendMessage(text, true);
+  }
+
   renderChat() {
     return (
       <div style={{marginTop: "20px"}}>
-        <ChatPage account={this.props.account} />
+        <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
       </div>
     );
   }
@@ -398,7 +410,7 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Topic")}:
           </Col>
-          <Col span={6} >
+          <Col span={3} >
             <Input value={this.state.video.topic} onChange={e => {
               this.updateVideoField("topic", e.target.value);
             }} />
@@ -407,12 +419,16 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Keywords")}:
           </Col>
-          <Col span={6} >
+          <Col span={3} >
             <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
               {
                 this.state.video.keywords?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
               }
             </Select>
+          </Col>
+          <Col span={1} />
+          <Col span={3} >
+            <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.generatePlan()}>{i18next.t("video:Generate Plan")}</Button>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

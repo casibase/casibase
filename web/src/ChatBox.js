@@ -110,7 +110,7 @@ class ChatBox extends React.Component {
               )
             }
             <MessageList style={{marginTop: "10px"}}>
-              {messages.map((message, index) => (
+              {messages.filter(message => message.isHidden === false).map((message, index) => (
                 <Message key={index} model={{
                   message: message.text !== "" ? message.text : this.state.dots,
                   sender: message.name,

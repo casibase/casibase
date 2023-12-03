@@ -42,6 +42,7 @@ type Message struct {
 	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
 	Author       string        `xorm:"varchar(100)" json:"author"`
 	Text         string        `xorm:"mediumtext" json:"text"`
+	IsHidden     bool          `json:"isHidden"`
 	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
 
