@@ -37,6 +37,12 @@ class WordCloudChart extends Component {
     const myChart = echarts.init(this.chartRef.current);
 
     const option = {
+      tooltip: {
+        show: true,
+        formatter: function(params) {
+          return `词频: ${params.value}`;
+        },
+      },
       series: [{
         type: "wordCloud",
         shape: "cardioid",

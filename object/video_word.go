@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"unicode"
 
 	"github.com/casibase/casibase/util"
@@ -34,7 +35,7 @@ func (v *Video) PopulateWordCountMap() error {
 
 	dictPath := "data/dict.txt"
 	if !util.FileExist(dictPath) {
-		return nil
+		return fmt.Errorf("Cannot generate word cloud, the dict file: [%s] does not exist", dictPath)
 	}
 
 	if seg == nil {
