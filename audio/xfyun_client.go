@@ -20,6 +20,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -229,7 +230,7 @@ func GetSegmentsFromAudio(audioUrl string) ([]*Segment, error) {
 	for {
 		var resp *Response
 		resp, err = client.getProgress(taskId)
-		if err != nil {
+		if err != nil && !strings.Contains(err.Error(), "请稍后重试") {
 			return nil, err
 		}
 

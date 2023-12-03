@@ -27,6 +27,7 @@ type Label struct {
 	StartTime float64 `json:"startTime"`
 	EndTime   float64 `json:"endTime"`
 	Text      string  `xorm:"varchar(100)" json:"text"`
+	Speaker   string  `xorm:"varchar(100)" json:"speaker"`
 }
 
 type Video struct {

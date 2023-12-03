@@ -82,7 +82,7 @@ class VideoEditPage extends React.Component {
   }
 
   onPause() {
-    if (this.state.video.tagOnPause) {
+    if (this.state.video.editMode === "Labeling" && this.state.video.tagOnPause) {
       this.labelTable.current.addRow(this.state.video.labels);
     }
   }
@@ -180,7 +180,7 @@ class VideoEditPage extends React.Component {
   }
 
   isSegmentActive(segment) {
-    return this.state.currentTime >= segment.startTime && this.state.currentTime <= segment.endTime;
+    return this.state.currentTime >= segment.startTime && this.state.currentTime < segment.endTime;
   }
 
   renderSegments() {
@@ -199,10 +199,21 @@ class VideoEditPage extends React.Component {
                     color: this.isSegmentActive(segment) ? "blue" : "gray",
                     dot: this.isSegmentActive(segment) ? <SyncOutlined spin /> : null,
                     children: (
-                      <div>
-                        <div style={{display: "inline-block", width: "70px"}}>{Setting.getTimeFromSeconds(segment.startTime)}</div>
+                      <div style={{marginTop: "-10px", cursor: "pointer"}} onClick={() => {
+                        this.setState({
+                          currentTime: segment.startTime,
+                        });
+
+                        if (this.state.videoObj) {
+                          this.state.videoObj.changeTime(segment.startTime);
+                        }
+                      }}>
+                        <div style={{display: "inline-block", width: "75px", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal"}}>{Setting.getTimeFromSeconds(segment.startTime)}</div>
                         &nbsp;&nbsp;
-                        <Tag style={{fontSize: "medium", lineHeight: "30px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
+                        <Tag color={segment.speaker === "Teacher" ? "success" : "error"}>
+                          {segment.speaker}
+                        </Tag>
+                        <Tag style={{fontSize: "medium", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal", lineHeight: "30px"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
                           {segment.text}
                         </Tag>
                       </div>

@@ -167,6 +167,16 @@ func copyBuffer(original *bytes.Buffer) *bytes.Buffer {
 	return bytes.NewBuffer(bufCopy)
 }
 
+func getSpeaker(s string) string {
+	if s == "0" {
+		return "Teacher"
+	} else if s == "1" {
+		return "Student"
+	} else {
+		return fmt.Sprintf("Student %s", s)
+	}
+}
+
 func (c *ApiController) UploadVideo() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
@@ -247,12 +257,18 @@ func (c *ApiController) UploadVideo() {
 
 	segments := []*object.Label{}
 	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name())
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	for i, item := range oSegments {
 		segment := &object.Label{
 			Id:        strconv.Itoa(i),
 			StartTime: util.ParseFloat(item.Bg) / 1000,
 			EndTime:   util.ParseFloat(item.Ed) / 1000,
 			Text:      item.Onebest,
+			Speaker:   getSpeaker(item.Speaker),
 		}
 		segments = append(segments, segment)
 	}

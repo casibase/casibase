@@ -75,6 +75,12 @@ class Video extends React.Component {
     });
   }
 
+  changeTime = (time) => {
+    if (this.state.player) {
+      this.state.player.seek(time);
+    }
+  };
+
   updateTime(time) {
     const labels = this.props.labels;
     labels.forEach((label, i) => {
