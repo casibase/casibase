@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -252,6 +252,10 @@ class VideoEditPage extends React.Component {
   }
 
   renderChat() {
+    if (this.state.video.template === "") {
+      return null;
+    }
+
     return (
       <div style={{marginTop: "20px"}}>
         <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
@@ -429,6 +433,15 @@ class VideoEditPage extends React.Component {
           <Col span={1} />
           <Col span={3} >
             <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.generatePlan()}>{i18next.t("video:Generate Plan")}</Button>
+          </Col>
+          <Col span={3} >
+            <Tooltip placement="top" trigger={"click"} title={
+              <Input value={this.state.video.template} onChange={e => {
+                this.updateVideoField("template", e.target.value);
+              }} />
+            }>
+              <Button style={{marginLeft: "20px"}}>{i18next.t("video:Edit Template")}</Button>
+            </Tooltip>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

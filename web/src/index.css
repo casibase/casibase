@@ -112,3 +112,7 @@ code {
   background-color: transparent !important;
   box-shadow: none !important;
 }
+
+.ant-tooltip-inner {
+  background-color: white !important;
+}
