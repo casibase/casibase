@@ -15,7 +15,7 @@
 package object
 
 type SearchProvider interface {
-	Search(qVector []float32) ([]Vector, error)
+	Search(embeddingProviderName string, qVector []float32) ([]Vector, error)
 }
 
 func GetSearchProvider(typ string, owner string) (SearchProvider, error) {

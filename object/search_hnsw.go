@@ -29,7 +29,7 @@ func NewHnswSearchProvider() (*HnswSearchProvider, error) {
 	return &HnswSearchProvider{}, nil
 }
 
-func (p *HnswSearchProvider) Search(qVector []float32) ([]Vector, error) {
+func (p *HnswSearchProvider) Search(embeddingProviderName string, qVector []float32) ([]Vector, error) {
 	return Index.Search(qVector)
 }
 

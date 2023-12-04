@@ -140,8 +140,8 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 	return affected, err
 }
 
-func getRelatedVectors(owner string) ([]*Vector, error) {
-	vectors, err := GetVectors(owner)
+func getRelatedVectors(provider string) ([]*Vector, error) {
+	vectors, err := getVectorsByProvider(provider)
 	if err != nil {
 		return nil, err
 	}
@@ -193,7 +193,7 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 		return nil, nil, err
 	}
 
-	vectors, err := searchProvider.Search(qVector)
+	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector)
 	if err != nil {
 		return nil, nil, err
 	}

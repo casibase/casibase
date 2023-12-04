@@ -28,7 +28,7 @@ type Vector struct {
 
 	DisplayName string  `xorm:"varchar(100)" json:"displayName"`
 	Store       string  `xorm:"varchar(100)" json:"store"`
-	Provider    string  `xorm:"varchar(100)" json:"provider"`
+	Provider    string  `xorm:"varchar(100) index" json:"provider"`
 	File        string  `xorm:"varchar(100)" json:"file"`
 	Index       int     `json:"index"`
 	Text        string  `xorm:"mediumtext" json:"text"`
@@ -52,6 +52,16 @@ func GetGlobalVectors() ([]*Vector, error) {
 func GetVectors(owner string) ([]*Vector, error) {
 	vectors := []*Vector{}
 	err := adapter.engine.Asc("file").Asc("index").Find(&vectors, &Vector{Owner: owner})
+	if err != nil {
+		return vectors, err
+	}
+
+	return vectors, nil
+}
+
+func getVectorsByProvider(provider string) ([]*Vector, error) {
+	vectors := []*Vector{}
+	err := adapter.engine.Find(&vectors, &Vector{Provider: provider})
 	if err != nil {
 		return vectors, err
 	}
