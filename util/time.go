@@ -29,8 +29,9 @@ func GetCurrentTimeEx(timestamp string) string {
 		panic(err)
 	}
 
-	if !tm.After(inputTime) {
-		tm = inputTime.Add(1 * time.Millisecond)
+	inputTimeAfterTwoSeconds := inputTime.Add(2 * time.Second)
+	if !tm.After(inputTimeAfterTwoSeconds) {
+		tm = inputTimeAfterTwoSeconds
 	}
 
 	return tm.Format("2006-01-02T15:04:05.999Z07:00")
