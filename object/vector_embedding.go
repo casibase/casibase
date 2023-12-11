@@ -59,6 +59,9 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 
 	size, err := model.GetTokenSize(modelSubType, text)
 	if err != nil {
+		size, err = model.GetTokenSize("gpt-3.5-turbo", text)
+	}
+	if err != nil {
 		return false, err
 	}
 
