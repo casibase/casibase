@@ -17,23 +17,21 @@ package object
 import "github.com/casibase/casibase/util"
 
 func InitDb() {
-	existed := initBuiltInStore()
-	if !existed {
-		initBuiltInProvider()
-	}
+	initBuiltInStore()
+	initBuiltInProvider()
 }
 
-func initBuiltInStore() bool {
-	store, err := getStore("admin", "store-built-in")
+func initBuiltInStore() {
+	stores, err := GetGlobalStores()
 	if err != nil {
 		panic(err)
 	}
 
-	if store != nil {
-		return true
+	if len(stores) > 0 {
+		return
 	}
 
-	store = &Store{
+	store := &Store{
 		Owner:             "admin",
 		Name:              "store-built-in",
 		CreatedTime:       util.GetCurrentTime(),
@@ -46,12 +44,10 @@ func initBuiltInStore() bool {
 	if err != nil {
 		panic(err)
 	}
-
-	return false
 }
 
 func initBuiltInProvider() {
-	provider, err := GetProvider(util.GetId("admin", "provider-storage-local-built-in"))
+	provider, err := GetDefaultStorageProvider()
 	if err != nil {
 		panic(err)
 	}
