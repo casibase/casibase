@@ -65,6 +65,8 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
+	} else if p.typ == "OpenAI" {
+		client = getOpenAiClientFromToken(p.secretKey)
 	}
 
 	ctx := context.Background()

@@ -23,8 +23,12 @@ type ModelProvider interface {
 func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
-	if typ == "OpenAI" {
-		p, err = NewOpenAiModelProvider(subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
+	if typ == "Local" {
+		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
+	} else if typ == "OpenAI" {
+		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
+	} else if typ == "Azure" {
+		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
 	} else if typ == "Claude" {
@@ -39,10 +43,6 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {
 		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
-	} else if typ == "Local" {
-		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
-	} else if typ == "Azure" {
-		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	}
 
 	if err != nil {
