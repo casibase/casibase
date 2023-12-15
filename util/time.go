@@ -22,6 +22,11 @@ func GetCurrentTime() string {
 	return tm.Format(time.RFC3339)
 }
 
+func GetCurrentTimeWithMilli() string {
+	tm := time.Now()
+	return tm.Format("2006-01-02T15:04:05.999Z07:00")
+}
+
 func GetCurrentTimeEx(timestamp string) string {
 	tm := time.Now()
 	inputTime, err := time.Parse(time.RFC3339, timestamp)
@@ -29,9 +34,8 @@ func GetCurrentTimeEx(timestamp string) string {
 		panic(err)
 	}
 
-	inputTimeAfterTwoSeconds := inputTime.Add(2 * time.Second)
-	if !tm.After(inputTimeAfterTwoSeconds) {
-		tm = inputTimeAfterTwoSeconds
+	if !tm.After(inputTime) {
+		tm = inputTime.Add(1 * time.Millisecond)
 	}
 
 	return tm.Format("2006-01-02T15:04:05.999Z07:00")

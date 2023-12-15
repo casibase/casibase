@@ -281,6 +281,8 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
+	message.CreatedTime = util.GetCurrentTimeWithMilli()
+
 	success, err := object.AddMessage(&message)
 	if err != nil {
 		c.ResponseError(err.Error())
