@@ -189,7 +189,10 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "custom-model");
                 } else if (value === "Azure") {
                   this.updateProviderField("subType", "gpt-4");
+                } else if (value === "Gemini") {
+                  this.updateProviderField("subType", "Gemini Pro");
                 }
+
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
                   this.updateProviderField("subType", "AdaSimilarity");
@@ -478,6 +481,57 @@ class ProviderEditPage extends React.Component {
                   value={this.state.provider.temperature || 0.7}
                   onChange={(value) => {
                     this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && this.state.provider.type === "Gemini") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top K")}:
+                </Col>
+                <this.InputSlider
+                  min={1}
+                  max={6}
+                  step={1}
+                  value={this.state.provider.topK}
+                  onChange={(value) => {
+                    this.updateProviderField("topK", value);
                   }}
                   isMobile={Setting.isMobile()}
                 />

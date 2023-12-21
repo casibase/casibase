@@ -647,6 +647,7 @@ export function getProviderTypeOptions(category) {
         {id: "MiniMax", name: "MiniMax"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "Gemini", name: "Gemini"},
       ]
     );
   } else if (category === "Embedding") {
@@ -831,6 +832,13 @@ export function getProviderSubTypeOptions(category, type) {
     return (
       [
         {id: "abab5-chat", name: "abab5-chat"},
+      ]
+    );
+  } else if (type === "Gemini") {
+    return (
+      [
+        {id: "Gemini Pro", name: "Gemini Pro"},
+        {id: "Gemini Pro Vision", name: "Gemini Pro Vision"},
       ]
     );
   } else if (type === "Local") {
