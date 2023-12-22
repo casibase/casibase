@@ -638,6 +638,7 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
+        {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
         {id: "OpenRouter", name: "OpenRouter"},
@@ -653,6 +654,7 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
+        {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Cohere", name: "Cohere"},
         {id: "Ernie", name: "Ernie"},
@@ -720,6 +722,23 @@ export function getProviderSubTypeOptions(category, type) {
     } else if (category === "Embedding") {
       return (
         openaiEmbeddings
+      );
+    } else {
+      return [];
+    }
+  } else if (type === "Gemini") {
+    if (category === "Model") {
+      return (
+        [
+          {id: "gemini-pro", name: "Gemini Pro"},
+          {id: "gemini-pro-vision", name: "Gemini Pro Vision"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "embedding-001", name: "embedding-001"},
+        ]
       );
     } else {
       return [];
