@@ -9,6 +9,7 @@ require (
 	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.30.0
+	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-hnsw v1.0.0
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
@@ -32,6 +33,7 @@ require (
 	golang.org/x/net v0.17.0
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
+	google.golang.org/api v0.149.0
 	modernc.org/sqlite v1.18.1
 	xorm.io/core v0.7.3
 	xorm.io/xorm v1.2.5
@@ -42,20 +44,9 @@ require (
 	cloud.google.com/go/compute v1.23.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/longrunning v0.5.2 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/google/s2a-go v0.1.7 // indirect
-	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
-	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
-	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/sync v0.4.0 // indirect
-	google.golang.org/api v0.149.0 // indirect
-)
-
-require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bits-and-blooms/bitset v1.8.0 // indirect
-	github.com/casibase/generative-ai-go v0.0.0-20231222072326-0ca4bd970497
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dlclark/regexp2 v1.8.1 // indirect
@@ -64,11 +55,15 @@ require (
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
+	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gomodule/redigo v2.0.0+incompatible // indirect
 	github.com/google/pprof v0.0.0-20230510103437-eeec1cb781c3 // indirect
+	github.com/google/s2a-go v0.1.7 // indirect
+	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
+	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
@@ -99,10 +94,12 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect
+	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/oauth2 v0.13.0 // indirect
+	golang.org/x/sync v0.4.0 // indirect
 	golang.org/x/sys v0.13.0 // indirect
 	golang.org/x/text v0.13.0 // indirect
 	golang.org/x/tools v0.14.0 // indirect
