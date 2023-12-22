@@ -27,6 +27,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
 	} else if typ == "OpenAI" {
 		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
+	} else if typ == "Gemini" {
+		p, err = NewGeminiModelProvider(subType, clientSecret, temperature, topP, topK)
 	} else if typ == "Azure" {
 		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	} else if typ == "Hugging Face" {
@@ -44,7 +46,6 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "MiniMax" {
 		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
 	}
-
 	if err != nil {
 		return nil, err
 	}

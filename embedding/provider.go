@@ -25,6 +25,8 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	var err error
 	if typ == "OpenAI" {
 		p, err = NewOpenAiEmbeddingProvider(subType, clientSecret)
+	} else if typ == "Gemini" {
+		p, err = NewGeminiEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Cohere" {
