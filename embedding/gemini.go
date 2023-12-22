@@ -43,7 +43,6 @@ func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) 
 	defer client.Close()
 	em := client.EmbeddingModel(p.subType)
 	res, err := em.EmbedContent(ctx, genai.Text(text))
-
 	if err != nil {
 		return nil, err
 	}
