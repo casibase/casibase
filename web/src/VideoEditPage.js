@@ -13,11 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Tag, Timeline, Tooltip} from "antd";
+import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {CloudOutlined, FileSearchOutlined, LinkOutlined, ShareAltOutlined, SyncOutlined, TagsOutlined} from "@ant-design/icons";
+import {LinkOutlined, SyncOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
@@ -325,7 +325,7 @@ class VideoEditPage extends React.Component {
           <Col span={3} >
             <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.generatePlan()}>{i18next.t("video:Generate Plan")}</Button>
           </Col>
-          <Col span={2} />
+          <Col span={1} />
           <Col span={3} >
             <Tooltip placement="top" trigger={"click"} title={
               <Input value={this.state.video.template} onChange={e => {
@@ -387,10 +387,46 @@ class VideoEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Segmented
           options={[
-            {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
-            {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
-            {label: "Word Cloud", value: "Word Cloud", icon: <CloudOutlined />},
-            {label: "AI Assistant", value: "AI Assistant", icon: <ShareAltOutlined />},
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                  &nbsp;
+                  Labeling
+                </div>
+              ),
+              value: "Labeling",
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                  &nbsp;
+                  Text Recognition
+                </div>
+              ),
+              value: "Text Recognition",
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                  &nbsp;
+                  Word Cloud
+                </div>
+              ),
+              value: "Word Cloud",
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                  &nbsp;
+                  AI Assistant
+                </div>
+              ),
+              value: "AI Assistant",
+            },
           ]}
           block value={this.state.video.editMode} onChange={checked => {
             this.updateVideoField("editMode", checked);
@@ -480,24 +516,30 @@ class VideoEditPage extends React.Component {
           !this.props.isViewMode ? null : (
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Video")}:
-                </Col>
-                <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
-                  <React.Fragment>
-                    <Affix offsetTop={100}>
-                      {
-                        this.state.video !== null ? this.renderVideoContent() : null
-                      }
-                      {
-                        this.state.video.dataUrl !== "" ? this.renderDataContent() : null
-                      }
-                    </Affix>
-                  </React.Fragment>
-                </Col>
-                <Col span={1}>
-                </Col>
-                <Col span={12} >
+                {
+                  this.state.video.editMode === "AI Assistant" ? null : (
+                    <React.Fragment>
+                      <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                        {i18next.t("video:Video")}:
+                      </Col>
+                      <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
+                        <React.Fragment>
+                          <Affix offsetTop={50}>
+                            {
+                              this.state.video !== null ? this.renderVideoContent() : null
+                            }
+                            {
+                              this.state.video.dataUrl !== "" ? this.renderDataContent() : null
+                            }
+                          </Affix>
+                        </React.Fragment>
+                      </Col>
+                      <Col span={1}>
+                      </Col>
+                    </React.Fragment>
+                  )
+                }
+                <Col span={this.state.video.editMode !== "AI Assistant" ? 12 : 24} >
                   {
                     this.state.video.editMode === "Labeling" ? (
                       <div>
