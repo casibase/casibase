@@ -485,7 +485,7 @@ class VideoEditPage extends React.Component {
                       <div style={{padding: 4}}>
                         <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
                         &nbsp;
-                        Labeling
+                        <span style={{fontWeight: "bold"}}>Labeling</span>
                       </div>
                     ),
                     value: "Labeling",
@@ -495,7 +495,7 @@ class VideoEditPage extends React.Component {
                       <div style={{padding: 4}}>
                         <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
                         &nbsp;
-                        Text Recognition
+                        <span style={{fontWeight: "bold"}}>Text Recognition</span>
                       </div>
                     ),
                     value: "Text Recognition",
@@ -506,7 +506,7 @@ class VideoEditPage extends React.Component {
                       <div style={{padding: 4}}>
                         <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
                         &nbsp;
-                        Word Cloud
+                        <span style={{fontWeight: "bold"}}>Word Cloud</span>
                       </div>
                     ),
                     value: "Word Cloud",
@@ -517,7 +517,7 @@ class VideoEditPage extends React.Component {
                       <div style={{padding: 4}}>
                         <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
                         &nbsp;
-                        AI Assistant
+                        <span style={{fontWeight: "bold"}}>AI Assistant</span>
                       </div>
                     ),
                     value: "AI Assistant",
