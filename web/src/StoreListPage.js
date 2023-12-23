@@ -60,7 +60,7 @@ class StoreListPage extends React.Component {
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
-      memoryLimit: 3,
+      memoryLimit: 20,
       frequency: 10000,
       limitMinutes: 10,
       welcome: "Hello",

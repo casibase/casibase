@@ -14,7 +14,13 @@
 
 package object
 
-import "github.com/casibase/casibase/util"
+import (
+	"runtime"
+
+	"github.com/casibase/casibase/util"
+)
+
+const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
 
 func InitDb() {
 	initBuiltInStore()
@@ -37,8 +43,15 @@ func initBuiltInStore() {
 		CreatedTime:       util.GetCurrentTime(),
 		DisplayName:       "Built-in Store",
 		StorageProvider:   "provider-storage-built-in",
+		SplitProvider:     "Default",
 		ModelProvider:     "",
 		EmbeddingProvider: "",
+		MemoryLimit:       20,
+		Frequency:         10000,
+		LimitMinutes:      10,
+		Welcome:           "Hello",
+		Prompt:            defaultPrompt,
+		PropertiesMap:     map[string]*Properties{},
 	}
 	_, err = AddStore(store)
 	if err != nil {
@@ -56,6 +69,11 @@ func initBuiltInProvider() {
 		return
 	}
 
+	path := "/storage_casibase"
+	if runtime.GOOS == "windows" {
+		path = "C:/storage_casibase"
+	}
+
 	provider = &Provider{
 		Owner:       "admin",
 		Name:        "provider-storage-built-in",
@@ -63,7 +81,7 @@ func initBuiltInProvider() {
 		DisplayName: "Built-in Storage Provider",
 		Category:    "Storage",
 		Type:        "Local File System",
-		ClientId:    "C:/storage_casibase",
+		ClientId:    path,
 	}
 	_, err = AddProvider(provider)
 	if err != nil {
