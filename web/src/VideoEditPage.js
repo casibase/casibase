@@ -251,6 +251,95 @@ class VideoEditPage extends React.Component {
     this.state.chatPageObj.sendMessage(text, true);
   }
 
+  renderAiAssistantOptions() {
+    return (
+      <React.Fragment>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:School")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.school} onChange={e => {
+              this.updateVideoField("school", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Stage")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.stage} onChange={e => {
+              this.updateVideoField("stage", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Grade")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.grade} onChange={e => {
+              this.updateVideoField("grade", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Class")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.class} onChange={e => {
+              this.updateVideoField("class", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Keywords")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
+              {
+                this.state.video.keywords?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Subject")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.subject} onChange={e => {
+              this.updateVideoField("subject", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Topic")}:
+          </Col>
+          <Col span={3} >
+            <Input value={this.state.video.topic} onChange={e => {
+              this.updateVideoField("topic", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col span={3} >
+            <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.generatePlan()}>{i18next.t("video:Generate Plan")}</Button>
+          </Col>
+          <Col span={2} />
+          <Col span={3} >
+            <Tooltip placement="top" trigger={"click"} title={
+              <Input value={this.state.video.template} onChange={e => {
+                this.updateVideoField("template", e.target.value);
+              }} />
+            }>
+              <Button style={{marginLeft: "20px"}}>{i18next.t("video:Edit Template")}</Button>
+            </Tooltip>
+          </Col>
+        </Row>
+      </React.Fragment>
+    );
+  }
+
   renderChat() {
     if (this.state.video.template === "") {
       return null;
@@ -258,7 +347,12 @@ class VideoEditPage extends React.Component {
 
     return (
       <div style={{marginTop: "20px"}}>
-        <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
+        {
+          this.renderAiAssistantOptions()
+        }
+        <div style={{marginTop: "20px"}}>
+          <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
+        </div>
       </div>
     );
   }
@@ -290,6 +384,17 @@ class VideoEditPage extends React.Component {
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
+        <Segmented
+          options={[
+            {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
+            {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
+            {label: "Word Cloud", value: "Word Cloud", icon: <CloudOutlined />},
+            {label: "AI Assistant", value: "AI Assistant", icon: <ShareAltOutlined />},
+          ]}
+          block value={this.state.video.editMode} onChange={checked => {
+            this.updateVideoField("editMode", checked);
+          }}
+        />
         {
           this.props.isViewMode ? null : (
             <React.Fragment>
@@ -375,87 +480,6 @@ class VideoEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:School")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.school} onChange={e => {
-                    this.updateVideoField("school", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Stage")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.stage} onChange={e => {
-                    this.updateVideoField("stage", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Grade")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.grade} onChange={e => {
-                    this.updateVideoField("grade", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Class")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.class} onChange={e => {
-                    this.updateVideoField("class", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Keywords")}:
-                </Col>
-                <Col span={22} >
-                  <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.video.keywords} onChange={(value => {this.updateVideoField("keywords", value);})}>
-                    {
-                      this.state.video.keywords?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
-                    }
-                  </Select>
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Subject")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.subject} onChange={e => {
-                    this.updateVideoField("subject", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Topic")}:
-                </Col>
-                <Col span={3} >
-                  <Input value={this.state.video.topic} onChange={e => {
-                    this.updateVideoField("topic", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col span={3} >
-                  <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.generatePlan()}>{i18next.t("video:Generate Plan")}</Button>
-                </Col>
-                <Col span={3} >
-                  <Tooltip placement="top" trigger={"click"} title={
-                    <Input value={this.state.video.template} onChange={e => {
-                      this.updateVideoField("template", e.target.value);
-                    }} />
-                  }>
-                    <Button style={{marginLeft: "20px"}}>{i18next.t("video:Edit Template")}</Button>
-                  </Tooltip>
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {i18next.t("video:Tag on pause")}:
                 </Col>
                 <Col span={22} >
@@ -483,17 +507,6 @@ class VideoEditPage extends React.Component {
                 <Col span={1}>
                 </Col>
                 <Col span={12} >
-                  <Segmented
-                    options={[
-                      {label: "Labeling", value: "Labeling", icon: <TagsOutlined />},
-                      {label: "Text Recognition", value: "Text Recognition", icon: <FileSearchOutlined />},
-                      {label: "Word Cloud", value: "Word Cloud", icon: <CloudOutlined />},
-                      {label: "AI Assistant", value: "AI Assistant", icon: <ShareAltOutlined />},
-                    ]}
-                    block value={this.state.video.editMode} onChange={checked => {
-                      this.updateVideoField("editMode", checked);
-                    }}
-                  />
                   {
                     this.state.video.editMode === "Labeling" ? (
                       <div>
