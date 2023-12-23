@@ -83,7 +83,7 @@ class WordCloudChart extends Component {
 
   render() {
     return (
-      <div ref={this.chartRef} style={{width: "100%", height: "400px"}}></div>
+      <div ref={this.chartRef} style={{width: "100%", height: "calc(100vh - 200px)", marginTop: "-100px"}}></div>
     );
   }
 }

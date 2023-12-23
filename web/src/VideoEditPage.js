@@ -553,67 +553,10 @@ class VideoEditPage extends React.Component {
                 }
                 <Col span={this.state.video.editMode !== "AI Assistant" ? 12 : 24} >
                   {
-                    this.state.video.editMode === "Labeling" ? (
-                      <div>
-                        {
-                          this.renderLabels()
-                        }
-                        {
-                          this.renderSegments()
-                        }
-                        {
-                          this.renderWords()
-                        }
-                        {
+                    this.state.video.editMode === "Labeling" ? this.renderLabels() :
+                      this.state.video.editMode === "Text Recognition" ? this.renderSegments() :
+                        this.state.video.editMode === "Word Cloud" ? this.renderWords() :
                           this.renderChat()
-                        }
-                      </div>
-                    ) : this.state.video.editMode === "Text Recognition" ? (
-                      <div>
-                        {
-                          this.renderSegments()
-                        }
-                        {
-                          this.renderWords()
-                        }
-                        {
-                          this.renderChat()
-                        }
-                        {
-                          this.renderLabels()
-                        }
-                      </div>
-                    ) : this.state.video.editMode === "Word Cloud" ? (
-                      <div>
-                        {
-                          this.renderWords()
-                        }
-                        {
-                          this.renderChat()
-                        }
-                        {
-                          this.renderSegments()
-                        }
-                        {
-                          this.renderLabels()
-                        }
-                      </div>
-                    ) : (
-                      <div>
-                        {
-                          this.renderChat()
-                        }
-                        {
-                          this.renderSegments()
-                        }
-                        {
-                          this.renderWords()
-                        }
-                        {
-                          this.renderLabels()
-                        }
-                      </div>
-                    )
                   }
                 </Col>
               </Row>
