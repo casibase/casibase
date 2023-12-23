@@ -29,6 +29,7 @@ RUN adduser -D $USER -u 1000 \
 USER 1000
 WORKDIR /
 COPY --from=BACK --chown=$USER:$USER /go/src/casibase/server ./server
+COPY --from=BACK --chown=$USER:$USER /go/src/casibase/data ./data
 COPY --from=BACK --chown=$USER:$USER /go/src/casibase/conf/app.conf ./conf/app.conf
 COPY --from=FRONT --chown=$USER:$USER /web/build ./web/build
 
@@ -51,6 +52,7 @@ RUN apt install -y ca-certificates && update-ca-certificates
 
 WORKDIR /
 COPY --from=BACK /go/src/casibase/server ./server
+COPY --from=BACK /go/src/casibase/data ./data
 COPY --from=BACK /go/src/casibase/docker-entrypoint.sh /docker-entrypoint.sh
 COPY --from=BACK /go/src/casibase/conf/app.conf ./conf/app.conf
 COPY --from=FRONT /web/build ./web/build
