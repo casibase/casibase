@@ -36,6 +36,16 @@ class VideoDataChart extends Component {
       }
     }
 
+    let currentItem = null;
+    for (const item of data) {
+      if (item.time <= currentTime) {
+        currentItem = item;
+      } else {
+        break;
+      }
+    }
+    const newCurrentTime = currentItem?.time;
+
     const option = {
       grid: {
         top: "5%",
@@ -47,6 +57,27 @@ class VideoDataChart extends Component {
       xAxis: {
         type: "category",
         data: xAxisData,
+        axisPointer: {
+          value: (newCurrentTime - (data[0] === undefined ? 0 : data[0].time)) / 5,
+          snap: false,
+          lineStyle: {
+            color: "#ff4d4f",
+            width: 2,
+          },
+          label: {
+            show: true,
+            formatter: function(params) {
+              return newCurrentTime;
+            },
+            color: "#ff4d4f",
+            backgroundColor: "#fff2f0",
+            borderColor: "#ffccc7",
+          },
+          handle: {
+            show: true,
+            color: "",
+          },
+        },
       },
       yAxis: {
         type: "value",
@@ -58,32 +89,11 @@ class VideoDataChart extends Component {
           name: "Data",
           type: "line",
           data: seriesData,
-          markLine: {
-            data: [
-              [
-                {
-                  symbol: "none",
-                  x: `${currentTime / 0.65 + 40}`,
-                  y: "80%",
-                  lineStyle: {
-                    color: "red",
-                  },
-                  // label: {
-                  //   position: 'start',
-                  //   formatter: 'Max'
-                  // },
-                },
-                {
-                  symbol: "none",
-                  x: `${currentTime / 0.65 + 40}`,
-                  y: "0%",
-                  // label: {
-                  //   position: 'start',
-                  //   formatter: 'Max'
-                  // },
-                },
-              ],
-            ],
+          lineStyle: {
+            color: "#ccb6fa",
+          },
+          itemStyle: {
+            color: "#5734d3",
           },
         },
       ],

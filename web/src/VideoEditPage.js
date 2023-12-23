@@ -57,8 +57,8 @@ class VideoEditPage extends React.Component {
             currentTime: 0,
           });
 
-          if (res.dataUrl !== "") {
-            this.getDataAndParse(res.dataUrl);
+          if (res.data.dataUrl !== "") {
+            this.getDataAndParse(res.data.dataUrl);
           }
         } else {
           Setting.showMessage("error", `Failed to get video: ${res.msg}`);
@@ -141,7 +141,7 @@ class VideoEditPage extends React.Component {
         data = data.filter(item => item.time !== "");
         data = data.map(item => {
           const res = {};
-          res.time = Number(item.time);
+          res.time = Number(item.time) - 5;
           res.data = Number(item.data);
           return res;
         });
