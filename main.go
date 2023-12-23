@@ -15,6 +15,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/plugins/cors"
 	_ "github.com/astaxie/beego/session/redis"
@@ -25,7 +27,10 @@ import (
 )
 
 func main() {
+	object.InitFlag()
 	object.InitAdapter()
+	object.CreateTables()
+
 	object.InitDb()
 	proxy.InitHttpClient()
 	util.InitIpDb()
@@ -44,6 +49,8 @@ func main() {
 	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
 
+	beego.BConfig.WebConfig.Session.SessionOn = true
+	beego.BConfig.WebConfig.Session.SessionName = "casibase_session_id"
 	if beego.AppConfig.String("redisEndpoint") == "" {
 		beego.BConfig.WebConfig.Session.SessionProvider = "file"
 		beego.BConfig.WebConfig.Session.SessionProviderConfig = "./tmp"
@@ -53,5 +60,6 @@ func main() {
 	}
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
 
-	beego.Run()
+	port := beego.AppConfig.DefaultInt("httpport", 14000)
+	beego.Run(fmt.Sprintf(":%v", port))
 }

@@ -15,6 +15,7 @@
 package object
 
 import (
+	"flag"
 	"fmt"
 	"runtime"
 
@@ -26,7 +27,24 @@ import (
 	"xorm.io/xorm"
 )
 
-var adapter *Adapter
+var (
+	adapter                 *Adapter = nil
+	isCreateDatabaseDefined          = false
+	createDatabase                   = true
+)
+
+func InitFlag() {
+	if !isCreateDatabaseDefined {
+		isCreateDatabaseDefined = true
+		createDatabase = getCreateDatabaseFlag()
+	}
+}
+
+func getCreateDatabaseFlag() bool {
+	res := flag.Bool("createDatabase", false, "true if you need to create database")
+	flag.Parse()
+	return *res
+}
 
 func InitConfig() {
 	err := beego.LoadAppConfig("ini", "../conf/app.conf")
@@ -35,10 +53,22 @@ func InitConfig() {
 	}
 
 	InitAdapter()
+	CreateTables()
 }
 
 func InitAdapter() {
 	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"))
+}
+
+func CreateTables() {
+	if createDatabase {
+		err := adapter.CreateDatabase()
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	adapter.createTable()
 }
 
 // Adapter represents the MySQL adapter for policy storage.
@@ -71,7 +101,7 @@ func NewAdapter(driverName string, dataSourceName string) *Adapter {
 	return a
 }
 
-func (a *Adapter) createDatabase() error {
+func (a *Adapter) CreateDatabase() error {
 	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName)
 	if err != nil {
 		return err
