@@ -20,6 +20,7 @@ import (
 	"runtime"
 
 	"github.com/astaxie/beego"
+	"github.com/casibase/casibase/conf"
 	_ "github.com/denisenkom/go-mssqldb" // mssql
 	_ "github.com/go-sql-driver/mysql"   // mysql
 	_ "github.com/lib/pq"                // postgres
@@ -57,7 +58,7 @@ func InitConfig() {
 }
 
 func InitAdapter() {
-	adapter = NewAdapter(beego.AppConfig.String("driverName"), beego.AppConfig.String("dataSourceName"))
+	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
 }
 
 func CreateTables() {
@@ -108,7 +109,7 @@ func (a *Adapter) CreateDatabase() error {
 	}
 	defer engine.Close()
 
-	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8 COLLATE utf8_general_ci", beego.AppConfig.String("dbName")))
+	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8mb4 COLLATE utf8mb4_general_ci", conf.GetConfigString("dbName")))
 	if err != nil {
 		return err
 	}
@@ -123,7 +124,6 @@ func (a *Adapter) open() {
 	}
 
 	a.engine = engine
-	a.createTable()
 }
 
 func (a *Adapter) close() {
