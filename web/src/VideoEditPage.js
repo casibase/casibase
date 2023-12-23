@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline, Tooltip} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Segmented, Select, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -370,6 +370,7 @@ class VideoEditPage extends React.Component {
           screen={this.state.screen}
           videoObj={this.state.videoObj}
           onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+          onUpdateTagOnPause={(value) => {this.updateVideoField("tagOnPause", value);}}
         />
       </div>
     );
@@ -478,16 +479,6 @@ class VideoEditPage extends React.Component {
         {
           !this.props.isViewMode ? null : (
             <React.Fragment>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Tag on pause")}:
-                </Col>
-                <Col span={22} >
-                  <Switch checked={this.state.video.tagOnPause} onChange={checked => {
-                    this.updateVideoField("tagOnPause", checked);
-                  }} />
-                </Col>
-              </Row>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {i18next.t("video:Video")}:

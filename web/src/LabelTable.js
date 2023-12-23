@@ -14,7 +14,7 @@
 
 import React from "react";
 import {DeleteOutlined} from "@ant-design/icons";
-import {Button, Col, Input, InputNumber, Row, Table, Tooltip} from "antd";
+import {Button, Col, Input, InputNumber, Row, Switch, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import XLSX from "xlsx";
@@ -39,6 +39,10 @@ class LabelTable extends React.Component {
 
   updateTable(table) {
     this.props.onUpdateTable(table);
+  }
+
+  updateTagOnPause(tagOnPause) {
+    this.props.onUpdateTagOnPause(tagOnPause);
   }
 
   parseField(key, value) {
@@ -230,11 +234,18 @@ class LabelTable extends React.Component {
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
             <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            &nbsp;&nbsp;
             {
               table.length === 0 ? null : (
                 <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
               )
             }
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            {i18next.t("video:Tag on pause")}:
+            &nbsp;&nbsp;
+            <Switch checked={this.props.video.tagOnPause} onChange={checked => {
+              this.updateTagOnPause(checked);
+            }} />
           </div>
         )}
         rowClassName={(record, index) => {
