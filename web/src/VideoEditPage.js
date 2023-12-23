@@ -185,8 +185,15 @@ class VideoEditPage extends React.Component {
     return this.state.currentTime >= segment.startTime && this.state.currentTime < segment.endTime;
   }
 
-  renderSegments() {
+  isSegmentsDisabled() {
     if (this.state.video.segments === null || this.state.video.segments.length === 0) {
+      return true;
+    }
+    return false;
+  }
+
+  renderSegments() {
+    if (this.isSegmentsDisabled()) {
       return null;
     }
 
@@ -230,8 +237,15 @@ class VideoEditPage extends React.Component {
     );
   }
 
-  renderWords() {
+  isWordsDisabled() {
     if (this.state.video.wordCountMap === null || this.state.video.wordCountMap.length === 0) {
+      return true;
+    }
+    return false;
+  }
+
+  renderWords() {
+    if (this.isWordsDisabled()) {
       return null;
     }
 
@@ -341,10 +355,6 @@ class VideoEditPage extends React.Component {
   }
 
   renderChat() {
-    if (this.state.video.template === "") {
-      return null;
-    }
-
     return (
       <div style={{marginTop: "20px"}}>
         {
@@ -385,53 +395,6 @@ class VideoEditPage extends React.Component {
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
-        <Segmented
-          options={[
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
-                  &nbsp;
-                  Labeling
-                </div>
-              ),
-              value: "Labeling",
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
-                  &nbsp;
-                  Text Recognition
-                </div>
-              ),
-              value: "Text Recognition",
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
-                  &nbsp;
-                  Word Cloud
-                </div>
-              ),
-              value: "Word Cloud",
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
-                  &nbsp;
-                  AI Assistant
-                </div>
-              ),
-              value: "AI Assistant",
-            },
-          ]}
-          block value={this.state.video.editMode} onChange={checked => {
-            this.updateVideoField("editMode", checked);
-          }}
-        />
         {
           this.props.isViewMode ? null : (
             <React.Fragment>
@@ -515,6 +478,55 @@ class VideoEditPage extends React.Component {
         {
           !this.props.isViewMode ? null : (
             <React.Fragment>
+              <Segmented
+                options={[
+                  {
+                    label: (
+                      <div style={{padding: 4}}>
+                        <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                        &nbsp;
+                        Labeling
+                      </div>
+                    ),
+                    value: "Labeling",
+                  },
+                  {
+                    label: (
+                      <div style={{padding: 4}}>
+                        <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                        &nbsp;
+                        Text Recognition
+                      </div>
+                    ),
+                    value: "Text Recognition",
+                    disabled: this.isSegmentsDisabled(),
+                  },
+                  {
+                    label: (
+                      <div style={{padding: 4}}>
+                        <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                        &nbsp;
+                        Word Cloud
+                      </div>
+                    ),
+                    value: "Word Cloud",
+                    disabled: this.isWordsDisabled(),
+                  },
+                  {
+                    label: (
+                      <div style={{padding: 4}}>
+                        <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                        &nbsp;
+                        AI Assistant
+                      </div>
+                    ),
+                    value: "AI Assistant",
+                  },
+                ]}
+                block value={this.state.video.editMode} onChange={checked => {
+                  this.updateVideoField("editMode", checked);
+                }}
+              />
               <Row style={{marginTop: "20px"}} >
                 {
                   this.state.video.editMode === "AI Assistant" ? null : (

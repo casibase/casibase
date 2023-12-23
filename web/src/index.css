@@ -116,12 +116,3 @@ code {
 .ant-tooltip-inner {
   background-color: white !important;
 }
-
-.ant-segmented-item {
-  background-color: white;
-}
-
-.css-dev-only-do-not-override-1pbunu2.ant-segmented .ant-segmented-item-selected {
-  background-color: rgb(210,210,210);
-  font-weight: bold;
-}
