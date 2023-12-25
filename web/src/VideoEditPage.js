@@ -395,174 +395,162 @@ class VideoEditPage extends React.Component {
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
       } style={{marginLeft: "5px"}} type="inner">
-        {
-          this.props.isViewMode ? null : (
-            <React.Fragment>
-              <Row style={{marginTop: "10px"}} >
+        <Row style={{marginTop: "10px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Name")}:
+          </Col>
+          <Col span={5} >
+            <Input value={this.state.video.name} onChange={e => {
+              this.updateVideoField("name", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Display name")}:
+          </Col>
+          <Col span={5} >
+            <Input value={this.state.video.displayName} onChange={e => {
+              this.updateVideoField("displayName", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Tag")}:
+          </Col>
+          <Col span={5} >
+            <Input value={this.state.video.tag} onChange={e => {
+              this.updateVideoField("tag", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Audio URL")}:
+          </Col>
+          <Col span={9} >
+            <Input value={this.state.video.audioUrl} onChange={e => {
+              this.updateVideoField("audioUrl", e.target.value);
+            }} />
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Video ID")}:
+          </Col>
+          <Col span={9} >
+            <Input disabled={true} value={this.state.video.videoId} onChange={e => {
+              this.updateVideoField("videoId", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Cover")}:
+          </Col>
+          <Col span={22} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                {i18next.t("general:URL")}:
+              </Col>
+              <Col span={23} >
+                <Input disabled={true} prefix={<LinkOutlined />} value={this.state.video.coverUrl} onChange={e => {
+                  this.updateVideoField("coverUrl", e.target.value);
+                }} />
+              </Col>
+            </Row>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
+                {i18next.t("general:Preview")}:
+              </Col>
+              <Col span={23} >
+                <a target="_blank" rel="noreferrer" href={this.state.video.coverUrl}>
+                  <img src={this.state.video.coverUrl} alt={this.state.video.coverUrl} height={90} style={{marginBottom: "20px"}} />
+                </a>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+        <Segmented
+          options={[
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                  &nbsp;
+                  <span style={{fontWeight: "bold"}}>Labeling</span>
+                </div>
+              ),
+              value: "Labeling",
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                  &nbsp;
+                  <span style={{fontWeight: "bold"}}>Text Recognition</span>
+                </div>
+              ),
+              value: "Text Recognition",
+              disabled: this.isSegmentsDisabled(),
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                  &nbsp;
+                  <span style={{fontWeight: "bold"}}>Word Cloud</span>
+                </div>
+              ),
+              value: "Word Cloud",
+              disabled: this.isWordsDisabled(),
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                  &nbsp;
+                  <span style={{fontWeight: "bold"}}>AI Assistant</span>
+                </div>
+              ),
+              value: "AI Assistant",
+            },
+          ]}
+          block value={this.state.video.editMode} onChange={checked => {
+            this.updateVideoField("editMode", checked);
+          }}
+        />
+        <Row style={{marginTop: "20px"}} >
+          {
+            this.state.video.editMode === "AI Assistant" ? null : (
+              <React.Fragment>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Name")}:
+                  {i18next.t("video:Video")}:
                 </Col>
-                <Col span={5} >
-                  <Input value={this.state.video.name} onChange={e => {
-                    this.updateVideoField("name", e.target.value);
-                  }} />
+                <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
+                  <React.Fragment>
+                    <Affix offsetTop={50}>
+                      {
+                        this.state.video !== null ? this.renderVideoContent() : null
+                      }
+                      {
+                        this.state.video.dataUrl !== "" ? this.renderDataContent() : null
+                      }
+                    </Affix>
+                  </React.Fragment>
                 </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Display name")}:
+                <Col span={1}>
                 </Col>
-                <Col span={5} >
-                  <Input value={this.state.video.displayName} onChange={e => {
-                    this.updateVideoField("displayName", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Tag")}:
-                </Col>
-                <Col span={5} >
-                  <Input value={this.state.video.tag} onChange={e => {
-                    this.updateVideoField("tag", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Audio URL")}:
-                </Col>
-                <Col span={9} >
-                  <Input value={this.state.video.audioUrl} onChange={e => {
-                    this.updateVideoField("audioUrl", e.target.value);
-                  }} />
-                </Col>
-                <Col span={1} />
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Video ID")}:
-                </Col>
-                <Col span={9} >
-                  <Input disabled={true} value={this.state.video.videoId} onChange={e => {
-                    this.updateVideoField("videoId", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Cover")}:
-                </Col>
-                <Col span={22} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
-                  <Row style={{marginTop: "20px"}} >
-                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                      {i18next.t("general:URL")}:
-                    </Col>
-                    <Col span={23} >
-                      <Input disabled={true} prefix={<LinkOutlined />} value={this.state.video.coverUrl} onChange={e => {
-                        this.updateVideoField("coverUrl", e.target.value);
-                      }} />
-                    </Col>
-                  </Row>
-                  <Row style={{marginTop: "20px"}} >
-                    <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 1}>
-                      {i18next.t("general:Preview")}:
-                    </Col>
-                    <Col span={23} >
-                      <a target="_blank" rel="noreferrer" href={this.state.video.coverUrl}>
-                        <img src={this.state.video.coverUrl} alt={this.state.video.coverUrl} height={90} style={{marginBottom: "20px"}} />
-                      </a>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
-            </React.Fragment>
-          )
-        }
-        {
-          !this.props.isViewMode ? null : (
-            <React.Fragment>
-              <Segmented
-                options={[
-                  {
-                    label: (
-                      <div style={{padding: 4}}>
-                        <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
-                        &nbsp;
-                        <span style={{fontWeight: "bold"}}>Labeling</span>
-                      </div>
-                    ),
-                    value: "Labeling",
-                  },
-                  {
-                    label: (
-                      <div style={{padding: 4}}>
-                        <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
-                        &nbsp;
-                        <span style={{fontWeight: "bold"}}>Text Recognition</span>
-                      </div>
-                    ),
-                    value: "Text Recognition",
-                    disabled: this.isSegmentsDisabled(),
-                  },
-                  {
-                    label: (
-                      <div style={{padding: 4}}>
-                        <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
-                        &nbsp;
-                        <span style={{fontWeight: "bold"}}>Word Cloud</span>
-                      </div>
-                    ),
-                    value: "Word Cloud",
-                    disabled: this.isWordsDisabled(),
-                  },
-                  {
-                    label: (
-                      <div style={{padding: 4}}>
-                        <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
-                        &nbsp;
-                        <span style={{fontWeight: "bold"}}>AI Assistant</span>
-                      </div>
-                    ),
-                    value: "AI Assistant",
-                  },
-                ]}
-                block value={this.state.video.editMode} onChange={checked => {
-                  this.updateVideoField("editMode", checked);
-                }}
-              />
-              <Row style={{marginTop: "20px"}} >
-                {
-                  this.state.video.editMode === "AI Assistant" ? null : (
-                    <React.Fragment>
-                      <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                        {i18next.t("video:Video")}:
-                      </Col>
-                      <Col span={9} style={(Setting.isMobile()) ? {maxWidth: "100%"} : {}}>
-                        <React.Fragment>
-                          <Affix offsetTop={50}>
-                            {
-                              this.state.video !== null ? this.renderVideoContent() : null
-                            }
-                            {
-                              this.state.video.dataUrl !== "" ? this.renderDataContent() : null
-                            }
-                          </Affix>
-                        </React.Fragment>
-                      </Col>
-                      <Col span={1}>
-                      </Col>
-                    </React.Fragment>
-                  )
-                }
-                <Col span={this.state.video.editMode !== "AI Assistant" ? 12 : 24} >
-                  {
-                    this.state.video.editMode === "Labeling" ? this.renderLabels() :
-                      this.state.video.editMode === "Text Recognition" ? this.renderSegments() :
-                        this.state.video.editMode === "Word Cloud" ? this.renderWords() :
-                          this.renderChat()
-                  }
-                </Col>
-              </Row>
-            </React.Fragment>
-          )
-        }
+              </React.Fragment>
+            )
+          }
+          <Col span={this.state.video.editMode !== "AI Assistant" ? 12 : 24} >
+            {
+              this.state.video.editMode === "Labeling" ? this.renderLabels() :
+                this.state.video.editMode === "Text Recognition" ? this.renderSegments() :
+                  this.state.video.editMode === "Word Cloud" ? this.renderWords() :
+                    this.renderChat()
+            }
+          </Col>
+        </Row>
       </Card>
     );
   }

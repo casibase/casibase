@@ -105,14 +105,14 @@ class VideoListPage extends React.Component {
     // }
     if (status === "done") {
       if (res.status === "ok") {
-        Setting.showMessage("success", "上传视频成功");
+        Setting.showMessage("success", "Video uploaded successfully");
         const videoName = res.data;
         this.props.history.push(`/videos/${videoName}`);
       } else {
-        Setting.showMessage("error", `上传视频失败：${res.msg}`);
+        Setting.showMessage("error", `Video failed to upload: ${res.msg}`);
       }
     } else if (status === "error") {
-      Setting.showMessage("success", "上传视频失败");
+      Setting.showMessage("success", "Video failed to upload");
     }
   }
 
@@ -131,7 +131,7 @@ class VideoListPage extends React.Component {
     return (
       <Upload {...props}>
         <Button type="primary" size="small">
-          <UploadOutlined /> 上传视频（.mp4）
+          <UploadOutlined /> Upload Video (.mp4)
         </Button>
       </Upload>
     );
@@ -236,7 +236,7 @@ class VideoListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.name}/view`)}>{i18next.t("general:Open")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.name}`)}>{i18next.t("general:Open")}</Button>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
