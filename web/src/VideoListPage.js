@@ -165,28 +165,28 @@ class VideoListPage extends React.Component {
         title: i18next.t("video:Tag"),
         dataIndex: "tag",
         key: "tag",
-        width: "200px",
+        width: "120px",
         sorter: (a, b) => a.tag.localeCompare(b.tag),
       },
       {
         title: i18next.t("video:School"),
         dataIndex: "school",
         key: "school",
-        width: "110px",
+        width: "80px",
         sorter: (a, b) => a.school.localeCompare(b.school),
       },
       {
         title: i18next.t("video:Grade"),
         dataIndex: "grade",
         key: "grade",
-        width: "110px",
+        width: "80px",
         sorter: (a, b) => a.grade.localeCompare(b.grade),
       },
       {
         title: i18next.t("video:Subject"),
         dataIndex: "subject",
         key: "subject",
-        width: "110px",
+        width: "80px",
         sorter: (a, b) => a.subject.localeCompare(b.subject),
       },
       {
@@ -200,7 +200,7 @@ class VideoListPage extends React.Component {
         title: i18next.t("video:Cover"),
         dataIndex: "coverUrl",
         key: "coverUrl",
-        width: "200px",
+        width: "170px",
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={text}>
