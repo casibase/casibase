@@ -19,6 +19,7 @@ import "github.com/sashabaranov/go-openai"
 // https://pkg.go.dev/github.com/sashabaranov/go-openai@v1.12.0#pkg-constants
 // https://platform.openai.com/docs/models/overview
 var __maxTokens = map[string]int{
+	openai.GPT4VisionPreview:    128000,
 	openai.GPT4:                 8192,
 	openai.GPT40613:             8192,
 	openai.GPT432K:              32768,
@@ -52,7 +53,7 @@ func getOpenAiMaxTokens(model string) int {
 
 func getOpenAiModelType(model string) string {
 	chatModels := []string{
-		"gpt-4-32k-0613", "gpt-4-32k-0314", "gpt-4-32k",
+		"gpt-4-vision-preview", "gpt-4-32k-0613", "gpt-4-32k-0314", "gpt-4-32k",
 		"gpt-4-0613", "gpt-4-0314", "gpt-4", "gpt-3.5-turbo-0613",
 		"gpt-3.5-turbo-0301", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
 		"gpt-3.5-turbo",

@@ -668,6 +668,7 @@ export function getProviderTypeOptions(category) {
 }
 
 const openaiModels = [
+  {id: "gpt-4-vision-preview", name: "gpt-4-vision-preview"},
   {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
   {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
   {id: "gpt-4-32k", name: "gpt-4-32k"},

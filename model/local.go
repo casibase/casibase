@@ -96,8 +96,14 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		if err != nil {
 			return err
 		}
+		var messages = []openai.ChatCompletionMessage{}
 
-		messages := rawMessagesToOpenAiMessages(rawMessages)
+		if p.subType == "gpt-4-vision-preview" {
+			messages = rawMessagesToGPT4VisionMessages(rawMessages)
+		} else {
+			messages = rawMessagesToOpenAiMessages(rawMessages)
+		}
+
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
 			openai.ChatCompletionRequest{
@@ -108,6 +114,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				TopP:             topP,
 				FrequencyPenalty: frequencyPenalty,
 				PresencePenalty:  presencePenalty,
+				MaxTokens:        4096,
 			},
 		)
 		if err != nil {
