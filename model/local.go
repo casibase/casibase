@@ -96,7 +96,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		if err != nil {
 			return err
 		}
-		var messages = []openai.ChatCompletionMessage{}
+		messages := []openai.ChatCompletionMessage{}
 
 		if p.subType == "gpt-4-vision-preview" {
 			messages = rawMessagesToGPT4VisionMessages(rawMessages)
