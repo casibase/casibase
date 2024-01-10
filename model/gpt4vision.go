@@ -15,29 +15,11 @@
 package model
 
 import (
-	"encoding/base64"
-	"io"
-	"os"
 	"regexp"
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
-
-func encodeImage(imagePath string) (string, error) {
-	imageFile, err := os.Open(imagePath)
-	if err != nil {
-		return "", err
-	}
-	defer imageFile.Close()
-
-	imageBytes, err := io.ReadAll(imageFile)
-	if err != nil {
-		return "", err
-	}
-
-	return base64.StdEncoding.EncodeToString(imageBytes), nil
-}
 
 func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
 	res := []openai.ChatCompletionMessage{}
@@ -59,15 +41,22 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 		urls := re.FindAllString(message.Text, -1)
 		message.Text = re.ReplaceAllString(message.Text, "")
 
+		img := regexp.MustCompile(`<img[^>]+>`)
+		message.Text = img.ReplaceAllString(message.Text, "")
+
 		item := openai.ChatCompletionMessage{
 			Role: role,
-			MultiContent: []openai.ChatMessagePart{
+		}
+
+		if len(message.Text) > 0 {
+			item.MultiContent = []openai.ChatMessagePart{
 				{
 					Type: openai.ChatMessagePartTypeText,
 					Text: message.Text,
 				},
-			},
+			}
 		}
+
 		for _, url := range urls {
 			item.MultiContent = append(item.MultiContent, openai.ChatMessagePart{
 				Type: openai.ChatMessagePartTypeImageURL,
