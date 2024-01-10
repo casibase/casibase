@@ -43,6 +43,7 @@ type Provider struct {
 	TopK             int     `xorm:"int" json:"topK"`
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
+	MaxTokens        int     `xorm:"int" json:"maxTokens"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
@@ -212,7 +213,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.MaxTokens)
 	if err != nil {
 		return nil, err
 	}

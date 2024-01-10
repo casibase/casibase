@@ -49,7 +49,7 @@ class ProviderEditPage extends React.Component {
   }
 
   parseProviderField(key, value) {
-    if (["topK"].includes(key)) {
+    if (["topK", "maxTokens"].includes(key)) {
       value = Setting.myParseInt(value);
     } else if (["temperature", "topP", "frequencyPenalty", "presencePenalty"].includes(key)) {
       value = Setting.myParseFloat(value);
@@ -327,6 +327,22 @@ class ProviderEditPage extends React.Component {
                   value={this.state.provider.presencePenalty}
                   onChange={(value) => {
                     this.updateProviderField("presencePenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:maxTokens")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Presence penalty")}
+                  min={0}
+                  max={4096}
+                  step={1}
+                  value={this.state.provider.maxTokens}
+                  onChange={(value) => {
+                    this.updateProviderField("maxTokens", value);
                   }}
                   isMobile={Setting.isMobile()}
                 />

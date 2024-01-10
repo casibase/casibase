@@ -65,6 +65,7 @@ class ProviderListPage extends React.Component {
       presencePenalty: 0,
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
+      maxTokens: 4096,
     };
   }
 

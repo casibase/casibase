@@ -35,6 +35,7 @@ type LocalModelProvider struct {
 	presencePenalty  float32
 	providerUrl      string
 	apiVersion       string
+	maxTokens        int
 }
 
 func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
@@ -80,6 +81,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	topP := p.topP
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
+	maxOutputTokens := p.maxTokens
 
 	flushData := func(data string) error {
 		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
@@ -114,7 +116,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				TopP:             topP,
 				FrequencyPenalty: frequencyPenalty,
 				PresencePenalty:  presencePenalty,
-				MaxTokens:        4096,
+				MaxTokens:        maxOutputTokens,
 			},
 		)
 		if err != nil {
