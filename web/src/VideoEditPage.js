@@ -17,7 +17,7 @@ import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Tag, Ti
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import {LinkOutlined, SyncOutlined} from "@ant-design/icons";
+import {CheckOutlined, EditOutlined, LinkOutlined, SyncOutlined} from "@ant-design/icons";
 import Video from "./Video";
 import LabelTable from "./LabelTable";
 import * as Papa from "papaparse";
@@ -39,6 +39,7 @@ class VideoEditPage extends React.Component {
       videoObj: null,
       ChatPageObj: null,
       videoData: null,
+      segmentEditIndex: -1,
     };
 
     this.labelTable = React.createRef();
@@ -223,8 +224,34 @@ class VideoEditPage extends React.Component {
                           {segment.speaker}
                         </Tag>
                         <Tag style={{fontSize: "medium", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal", marginTop: "10px", lineHeight: "30px", whiteSpace: "normal", overflow: "visible"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
-                          {segment.text}
+                          {
+                            (this.state.segmentEditIndex !== index) ? segment.text : (
+                              <Input style={{width: "400px"}} value={segment.text} onChange={e => {
+                                const segments = this.state.video.segments;
+                                segments[index].text = e.target.value;
+
+                                this.updateVideoField("segments", segments);
+                              }} />
+                            )
+                          }
                         </Tag>
+                        {
+                          (this.state.segmentEditIndex !== index) ? (
+                            <Button icon={<EditOutlined />} size="small" onClick={(event) => {
+                              event.stopPropagation();
+                              this.setState({
+                                segmentEditIndex: index,
+                              });
+                            }} />
+                          ) : (
+                            <Button icon={<CheckOutlined />} size="small" onClick={(event) => {
+                              event.stopPropagation();
+                              this.setState({
+                                segmentEditIndex: -1,
+                              });
+                            }} />
+                          )
+                        }
                       </div>
                     ),
                   }
