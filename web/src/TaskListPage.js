@@ -56,6 +56,10 @@ class TaskListPage extends React.Component {
       provider: "provider_openai",
       application: "Docs-Polish",
       path: "F:/github_repos/casdoor-website",
+      text: "",
+      example: "",
+      labels: [],
+      log: "",
     };
   }
 
