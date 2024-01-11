@@ -98,7 +98,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		if err != nil {
 			return err
 		}
-		messages := []openai.ChatCompletionMessage{}
+		var messages []openai.ChatCompletionMessage
 
 		if p.subType == "gpt-4-vision-preview" {
 			messages = rawMessagesToGPT4VisionMessages(rawMessages)
@@ -108,16 +108,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
-			openai.ChatCompletionRequest{
-				Model:            model,
-				Messages:         messages,
-				Stream:           true,
-				Temperature:      temperature,
-				TopP:             topP,
-				FrequencyPenalty: frequencyPenalty,
-				PresencePenalty:  presencePenalty,
-				MaxTokens:        maxOutputTokens,
-			},
+			ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty),
 		)
 		if err != nil {
 			return err
