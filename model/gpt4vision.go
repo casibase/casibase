@@ -21,6 +21,20 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
+func extractImagesURL(message string) ([]string, string) {
+	message = strings.Replace(message, "&nbsp;", " ", -1)
+	br := regexp.MustCompile(`<br\s*/?>`)
+	message = br.ReplaceAllString(message, " ")
+
+	imgURL := regexp.MustCompile(`http[s]?://\S+`)
+	urls := imgURL.FindAllString(message, -1)
+	message = imgURL.ReplaceAllString(message, "")
+
+	img := regexp.MustCompile(`<img[^>]+>`)
+	message = img.ReplaceAllString(message, "")
+	return urls, message
+}
+
 func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
@@ -33,26 +47,17 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 			role = openai.ChatMessageRoleUser
 		}
 
-		message.Text = strings.Replace(message.Text, "&nbsp;", " ", -1)
-		br := regexp.MustCompile(`<br\s*/?>`)
-		message.Text = br.ReplaceAllString(message.Text, " ")
-
-		re := regexp.MustCompile(`http[s]?://\S+`)
-		urls := re.FindAllString(message.Text, -1)
-		message.Text = re.ReplaceAllString(message.Text, "")
-
-		img := regexp.MustCompile(`<img[^>]+>`)
-		message.Text = img.ReplaceAllString(message.Text, "")
+		urls, messageText := extractImagesURL(message.Text)
 
 		item := openai.ChatCompletionMessage{
 			Role: role,
 		}
 
-		if len(message.Text) > 0 {
+		if len(messageText) > 0 {
 			item.MultiContent = []openai.ChatMessagePart{
 				{
 					Type: openai.ChatMessagePartTypeText,
-					Text: message.Text,
+					Text: messageText,
 				},
 			}
 		}

@@ -100,3 +100,28 @@ func rawMessagesToOpenAiMessages(messages []*RawMessage) []openai.ChatCompletion
 	}
 	return res
 }
+
+func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) openai.ChatCompletionRequest {
+	if model == "gpt-4-vision-preview" {
+		return openai.ChatCompletionRequest{
+			Model:            model,
+			Messages:         messages,
+			Stream:           true,
+			Temperature:      temperature,
+			TopP:             topP,
+			FrequencyPenalty: frequencyPenalty,
+			PresencePenalty:  presencePenalty,
+			MaxTokens:        4096,
+		}
+	}
+
+	return openai.ChatCompletionRequest{
+		Model:            model,
+		Messages:         messages,
+		Stream:           true,
+		Temperature:      temperature,
+		TopP:             topP,
+		FrequencyPenalty: frequencyPenalty,
+		PresencePenalty:  presencePenalty,
+	}
+}
