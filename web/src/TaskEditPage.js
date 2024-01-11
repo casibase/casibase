@@ -18,6 +18,7 @@ import * as TaskBackend from "./backend/TaskBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as MessageBackend from "./backend/MessageBackend";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
@@ -25,6 +26,7 @@ require("codemirror/theme/material-darker.css");
 require("codemirror/mode/javascript/javascript");
 
 const {Option} = Select;
+const {TextArea} = Input;
 
 class TaskEditPage extends React.Component {
   constructor(props) {
@@ -51,6 +53,23 @@ class TaskEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `Failed to get task: ${res.msg}`);
+        }
+      });
+  }
+
+  getQuestion() {
+    return `${this.state.task.text.replace("{example}", this.state.task.example).replace("{labels}", this.state.task.labels.map(label => `"${label}"`).join(", "))}`;
+  }
+
+  getAnswer() {
+    const provider = this.state.task.provider;
+    const question = this.getQuestion();
+    MessageBackend.getAnswer(provider, question)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.updateTaskField("log", res.data);
+        } else {
+          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
         }
       });
   }
@@ -153,7 +172,7 @@ class TaskEditPage extends React.Component {
             {i18next.t("task:Text")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.task.text} onChange={e => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.task.text} onChange={(e) => {
               this.updateTaskField("text", e.target.value);
             }} />
           </Col>
@@ -182,11 +201,19 @@ class TaskEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("task:Question")}:
+          </Col>
+          <Col span={22} >
+            <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={this.getQuestion()} onChange={(e) => {}} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("task:Log")}:
           </Col>
           <Col span={22} >
             <Button style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
-            <div style={{height: "600px"}}>
+            <div style={{height: "200px"}}>
               <CodeMirror
                 value={this.state.task.log}
                 options={{mode: "javascript", theme: "material-darker"}}
@@ -200,7 +227,7 @@ class TaskEditPage extends React.Component {
   }
 
   runTask() {
-    alert("runTask");
+    this.getAnswer();
   }
 
   submitTaskEdit(exitAfterSave) {

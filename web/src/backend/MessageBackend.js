@@ -52,6 +52,13 @@ export function getMessageAnswer(owner, name, onMessage, onError) {
   });
 }
 
+export function getAnswer(provider, question) {
+  return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}`, {
+    method: "GET",
+    credentials: "include",
+  }).then(res => res.json());
+}
+
 export function getMessage(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-message?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

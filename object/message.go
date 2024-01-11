@@ -245,3 +245,37 @@ func GetRecentRawMessages(chat string, memoryLimit int) ([]*model.RawMessage, er
 	}
 	return res, nil
 }
+
+type MyWriter struct {
+	bytes.Buffer
+}
+
+func (w *MyWriter) Flush() {}
+
+func (w *MyWriter) Write(p []byte) (n int, err error) {
+	s := string(p)
+	if strings.HasPrefix(s, "event: message\ndata: ") && strings.HasSuffix(s, "\n\n") {
+		data := strings.TrimSuffix(strings.TrimPrefix(s, "event: message\ndata: "), "\n\n")
+		return w.Buffer.WriteString(data)
+	}
+	return w.Buffer.Write(p)
+}
+
+func GetAnswer(provider string, question string) (string, error) {
+	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
+	if err != nil {
+		return "", err
+	}
+
+	history := []*model.RawMessage{}
+	knowledge := []*model.RawMessage{}
+	var writer MyWriter
+	err = modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+	if err != nil {
+		return "", err
+	}
+
+	res := writer.String()
+	res = strings.Trim(res, "\"")
+	return res, nil
+}

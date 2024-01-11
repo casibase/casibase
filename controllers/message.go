@@ -231,6 +231,19 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 }
 
+func (c *ApiController) GetAnswer() {
+	provider := c.Input().Get("provider")
+	question := c.Input().Get("question")
+
+	answer, err := object.GetAnswer(provider, question)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(answer)
+}
+
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 
