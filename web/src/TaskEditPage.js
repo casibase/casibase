@@ -36,6 +36,7 @@ class TaskEditPage extends React.Component {
       taskName: props.match.params.taskName,
       modelProviders: [],
       task: null,
+      loading: false,
     };
   }
 
@@ -71,6 +72,10 @@ class TaskEditPage extends React.Component {
         } else {
           Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
         }
+
+        this.setState({
+          loading: false,
+        });
       });
   }
 
@@ -212,12 +217,14 @@ class TaskEditPage extends React.Component {
             {i18next.t("task:Log")}:
           </Col>
           <Col span={22} >
-            <Button style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
+            <Button loading={this.state.loading} style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
             <div style={{height: "200px"}}>
               <CodeMirror
                 value={this.state.task.log}
                 options={{mode: "javascript", theme: "material-darker"}}
-                onBeforeChange={(editor, data, value) => {}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateTaskField("log", value);
+                }}
               />
             </div>
           </Col>
@@ -227,6 +234,10 @@ class TaskEditPage extends React.Component {
   }
 
   runTask() {
+    this.updateTaskField("log", "");
+    this.setState({
+      loading: true,
+    });
     this.getAnswer();
   }
 
