@@ -49,7 +49,7 @@ class TaskListPage extends React.Component {
   newTask() {
     const randomName = Setting.getRandomName();
     return {
-      owner: "admin",
+      owner: this.props.account.name,
       name: `task_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Task - ${randomName}`,

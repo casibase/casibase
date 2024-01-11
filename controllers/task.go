@@ -31,7 +31,7 @@ func (c *ApiController) GetGlobalTasks() {
 }
 
 func (c *ApiController) GetTasks() {
-	owner := "admin"
+	owner := c.Input().Get("owner")
 
 	tasks, err := object.GetTasks(owner)
 	if err != nil {
@@ -81,7 +81,6 @@ func (c *ApiController) AddTask() {
 		return
 	}
 
-	task.Owner = "admin"
 	success, err := object.AddTask(&task)
 	if err != nil {
 		c.ResponseError(err.Error())
