@@ -236,3 +236,81 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 
 	return pProvider, nil
 }
+
+func GetModelProviderFromContext(owner string, name string) (*Provider, model.ModelProvider, error) {
+	var providerName string
+	if name != "" {
+		providerName = name
+	} else {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && store.ModelProvider != "" {
+			providerName = store.ModelProvider
+		}
+	}
+
+	var provider *Provider
+	var err error
+	if providerName != "" {
+		providerId := util.GetIdFromOwnerAndName(owner, providerName)
+		provider, err = GetProvider(providerId)
+	} else {
+		provider, err = GetDefaultModelProvider()
+	}
+
+	if provider == nil && err == nil {
+		return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
+	}
+	if provider.Category != "Model" || provider.ClientSecret == "" {
+		return nil, nil, fmt.Errorf("The model provider: %s is invalid", providerName)
+	}
+
+	providerObj, err := provider.GetModelProvider()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return provider, providerObj, err
+}
+
+func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embedding.EmbeddingProvider, error) {
+	var providerName string
+	if name != "" {
+		providerName = name
+	} else {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && store.EmbeddingProvider != "" {
+			providerName = store.EmbeddingProvider
+		}
+	}
+
+	var provider *Provider
+	var err error
+	if providerName != "" {
+		providerId := util.GetIdFromOwnerAndName(owner, providerName)
+		provider, err = GetProvider(providerId)
+	} else {
+		provider, err = GetDefaultEmbeddingProvider()
+	}
+
+	if provider == nil && err == nil {
+		return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
+	}
+	if provider.Category != "Embedding" || provider.ClientSecret == "" {
+		return nil, nil, fmt.Errorf("The embedding provider: %s is invalid", providerName)
+	}
+
+	providerObj, err := provider.GetEmbeddingProvider()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return provider, providerObj, err
+}

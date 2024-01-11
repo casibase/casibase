@@ -17,11 +17,6 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/casibase/casibase/embedding"
-	"github.com/casibase/casibase/model"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
 )
 
 func (c *ApiController) ResponseErrorStream(errorText string) {
@@ -31,84 +26,6 @@ func (c *ApiController) ResponseErrorStream(errorText string) {
 		c.ResponseError(err.Error())
 		return
 	}
-}
-
-func getModelProviderFromContext(owner string, name string) (*object.Provider, model.ModelProvider, error) {
-	var providerName string
-	if name != "" {
-		providerName = name
-	} else {
-		store, err := object.GetDefaultStore(owner)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		if store != nil && store.ModelProvider != "" {
-			providerName = store.ModelProvider
-		}
-	}
-
-	var provider *object.Provider
-	var err error
-	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = object.GetProvider(providerId)
-	} else {
-		provider, err = object.GetDefaultModelProvider()
-	}
-
-	if provider == nil && err == nil {
-		return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
-	}
-	if provider.Category != "Model" || provider.ClientSecret == "" {
-		return nil, nil, fmt.Errorf("The model provider: %s is invalid", providerName)
-	}
-
-	providerObj, err := provider.GetModelProvider()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return provider, providerObj, err
-}
-
-func getEmbeddingProviderFromContext(owner string, name string) (*object.Provider, embedding.EmbeddingProvider, error) {
-	var providerName string
-	if name != "" {
-		providerName = name
-	} else {
-		store, err := object.GetDefaultStore(owner)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		if store != nil && store.EmbeddingProvider != "" {
-			providerName = store.EmbeddingProvider
-		}
-	}
-
-	var provider *object.Provider
-	var err error
-	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = object.GetProvider(providerId)
-	} else {
-		provider, err = object.GetDefaultEmbeddingProvider()
-	}
-
-	if provider == nil && err == nil {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
-	}
-	if provider.Category != "Embedding" || provider.ClientSecret == "" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is invalid", providerName)
-	}
-
-	providerObj, err := provider.GetEmbeddingProvider()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return provider, providerObj, err
 }
 
 func ConvertMessageDataToJSON(data string) ([]byte, error) {

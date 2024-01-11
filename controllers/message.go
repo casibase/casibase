@@ -151,13 +151,13 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := getModelProviderFromContext("admin", chat.User2)
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
 
-	embeddingProvider, embeddingProviderObj, err := getEmbeddingProviderFromContext("admin", chat.User2)
+	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
