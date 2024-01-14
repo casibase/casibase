@@ -62,6 +62,10 @@ type Video struct {
 	Keywords []string `xorm:"varchar(200)" json:"keywords"`
 	Template string   `xorm:"varchar(200)" json:"template"`
 
+	Task1 string `xorm:"varchar(100)" json:"task1"`
+	Task2 string `xorm:"varchar(100)" json:"task2"`
+	Task3 string `xorm:"varchar(100)" json:"task3"`
+
 	PlayAuth string `xorm:"-" json:"playAuth"`
 }
 

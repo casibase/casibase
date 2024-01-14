@@ -25,6 +25,7 @@ import VideoDataChart from "./VideoDataChart";
 import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
 import TagTable from "./TagTable";
+import * as TaskBackend from "./backend/TaskBackend";
 
 const {Option} = Select;
 
@@ -35,6 +36,7 @@ class VideoEditPage extends React.Component {
       classes: props,
       videoName: props.match.params.videoName,
       video: null,
+      tasks: null,
       player: null,
       screen: null,
       videoObj: null,
@@ -48,6 +50,7 @@ class VideoEditPage extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.getVideo();
+    this.getTasks();
   }
 
   getVideo() {
@@ -64,6 +67,19 @@ class VideoEditPage extends React.Component {
           }
         } else {
           Setting.showMessage("error", `Failed to get video: ${res.msg}`);
+        }
+      });
+  }
+
+  getTasks() {
+    TaskBackend.getTasks(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            tasks: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get tasks: ${res.msg}`);
         }
       });
   }
@@ -272,12 +288,14 @@ class VideoEditPage extends React.Component {
           ref={this.labelTable}
           title={i18next.t("video:Tags")}
           table={this.state.video.segments}
+          tasks={this.state.tasks}
           currentTime={this.state.currentTime}
           video={this.state.video}
           player={this.state.player}
           screen={this.state.screen}
           videoObj={this.state.videoObj}
           onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+          onUpdateVideoField={(key, value) => {this.updateVideoField(key, value);}}
         />
       </div>
     );

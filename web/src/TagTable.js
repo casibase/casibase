@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Row, Table} from "antd";
+import {Button, Col, Input, Row, Select, Table} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
@@ -41,6 +41,10 @@ class TagTable extends React.Component {
 
     table[index][key] = value;
     this.updateTable(table);
+  }
+
+  updateVideoField(key, value) {
+    this.props.onUpdateVideoField(key, value);
   }
 
   renderTable(table) {
@@ -87,10 +91,18 @@ class TagTable extends React.Component {
         // width: "200px",
       },
       {
-        title: i18next.t("video:Tag1"),
+        title: (
+          <React.Fragment>
+            {i18next.t("video:Tag1")}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task1} onChange={(value => {this.updateVideoField("task1", value);})}
+              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
+              } />
+          </React.Fragment>
+        ),
         dataIndex: "tag1",
         key: "tag1",
-        width: "150px",
+        width: "200px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -100,10 +112,18 @@ class TagTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Tag2"),
+        title: (
+          <React.Fragment>
+            {i18next.t("video:Tag2")}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task2} onChange={(value => {this.updateVideoField("task2", value);})}
+              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
+              } />
+          </React.Fragment>
+        ),
         dataIndex: "tag2",
         key: "tag2",
-        width: "150px",
+        width: "200px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -113,10 +133,18 @@ class TagTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Tag3"),
+        title: (
+          <React.Fragment>
+            {i18next.t("video:Tag3")}
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task3} onChange={(value => {this.updateVideoField("task3", value);})}
+              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
+              } />
+          </React.Fragment>
+        ),
         dataIndex: "tag3",
         key: "tag3",
-        width: "150px",
+        width: "200px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
