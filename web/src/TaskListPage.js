@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Table, Tag, Tooltip} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
@@ -135,19 +135,67 @@ class TaskListPage extends React.Component {
           );
         },
       },
+      // {
+      //   title: i18next.t("task:Application"),
+      //   dataIndex: "application",
+      //   key: "application",
+      //   width: "180px",
+      //   sorter: (a, b) => a.application.localeCompare(b.application),
+      // },
+      // {
+      //   title: i18next.t("task:Path"),
+      //   dataIndex: "path",
+      //   key: "path",
+      //   // width: "160px",
+      //   sorter: (a, b) => a.path.localeCompare(b.path),
+      // },
       {
-        title: i18next.t("task:Application"),
-        dataIndex: "application",
-        key: "application",
-        width: "180px",
-        sorter: (a, b) => a.application.localeCompare(b.application),
+        title: i18next.t("task:Text"),
+        dataIndex: "text",
+        key: "text",
+        // width: "160px",
+        sorter: (a, b) => a.text.localeCompare(b.text),
+        render: (text, record, index) => {
+          return (
+            <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Tooltip>
+          );
+        },
       },
       {
-        title: i18next.t("task:Path"),
-        dataIndex: "path",
-        key: "path",
+        title: i18next.t("task:Labels"),
+        dataIndex: "labels",
+        key: "labels",
         // width: "160px",
-        sorter: (a, b) => a.path.localeCompare(b.path),
+        sorter: (a, b) => a.labels.localeCompare(b.labels),
+        render: (text, record, index) => {
+          return record.labels?.map(label => {
+            return (
+              <Tag key={label} color={"processing"}>
+                {label}
+              </Tag>
+            );
+          });
+        },
+      },
+      {
+        title: i18next.t("task:Example"),
+        dataIndex: "example",
+        key: "example",
+        // width: "160px",
+        sorter: (a, b) => a.example.localeCompare(b.example),
+        render: (text, record, index) => {
+          return (
+            <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
+              <div style={{maxWidth: "200px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Tooltip>
+          );
+        },
       },
       {
         title: i18next.t("general:Action"),
