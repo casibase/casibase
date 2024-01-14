@@ -13,9 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Row, Select, Table} from "antd";
+import {Button, Col, Input, Row, Select, Table, Tooltip} from "antd";
+import {DeleteOutlined, RedoOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import * as MessageBackend from "./backend/MessageBackend";
 
 class TagTable extends React.Component {
   constructor(props) {
@@ -45,6 +47,51 @@ class TagTable extends React.Component {
 
   updateVideoField(key, value) {
     this.props.onUpdateVideoField(key, value);
+  }
+
+  getQuestion(task, example) {
+    return `${task.text.replace("{example}", example).replace("{labels}", task.labels.map(label => `"${label}"`).join(", "))}`;
+  }
+
+  trimAnswer(s) {
+    let res = Setting.trim(s, "[");
+    res = Setting.trim(res, "]");
+    res = Setting.trim(res, "\"");
+    return res;
+  }
+
+  getAnswer(task, text, rowIndex, columnIndex) {
+    const provider = task.provider;
+    const question = this.getQuestion(task, text);
+    MessageBackend.getAnswer(provider, question)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.updateField(this.props.table, rowIndex, `tag${columnIndex + 1}`, this.trimAnswer(res.data));
+        } else {
+          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+        }
+      });
+  }
+
+  runTask(columnIndex) {
+    const task = this.props.tasks[columnIndex];
+    this.props.table.forEach((row, rowIndex) => {
+      if (rowIndex >= 10) {
+        return;
+      }
+
+      this.getAnswer(task, row.text, rowIndex, columnIndex);
+    });
+  }
+
+  clearTask(columnIndex) {
+    this.props.table.forEach((row, rowIndex) => {
+      if (rowIndex >= 10) {
+        return;
+      }
+
+      this.updateField(this.props.table, rowIndex, `tag${columnIndex + 1}`, "");
+    });
   }
 
   renderTable(table) {
@@ -95,14 +142,22 @@ class TagTable extends React.Component {
           <React.Fragment>
             {i18next.t("video:Tag1")}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task1} onChange={(value => {this.updateVideoField("task1", value);})}
+            <Select virtual={false} size={"small"} style={{width: "100px"}} value={this.props.video.task1} onChange={(value => {this.updateVideoField("task1", value);})}
               options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
               } />
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Run"}>
+              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(0)} />
+            </Tooltip>
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Clear"}>
+              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(0)} />
+            </Tooltip>
           </React.Fragment>
         ),
         dataIndex: "tag1",
         key: "tag1",
-        width: "200px",
+        width: "230px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -116,14 +171,22 @@ class TagTable extends React.Component {
           <React.Fragment>
             {i18next.t("video:Tag2")}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task2} onChange={(value => {this.updateVideoField("task2", value);})}
+            <Select virtual={false} size={"small"} style={{width: "100px"}} value={this.props.video.task2} onChange={(value => {this.updateVideoField("task2", value);})}
               options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
               } />
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Run"}>
+              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(1)} />
+            </Tooltip>
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Clear"}>
+              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(1)} />
+            </Tooltip>
           </React.Fragment>
         ),
         dataIndex: "tag2",
         key: "tag2",
-        width: "200px",
+        width: "230px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
@@ -137,14 +200,22 @@ class TagTable extends React.Component {
           <React.Fragment>
             {i18next.t("video:Tag3")}
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Select virtual={false} size={"small"} style={{width: "120px"}} value={this.props.video.task3} onChange={(value => {this.updateVideoField("task3", value);})}
+            <Select virtual={false} size={"small"} style={{width: "100px"}} value={this.props.video.task3} onChange={(value => {this.updateVideoField("task3", value);})}
               options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
               } />
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Run"}>
+              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(2)} />
+            </Tooltip>
+            &nbsp;&nbsp;
+            <Tooltip placement="right" title={"Clear"}>
+              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(2)} />
+            </Tooltip>
           </React.Fragment>
         ),
         dataIndex: "tag3",
         key: "tag3",
-        width: "200px",
+        width: "230px",
         render: (text, record, index) => {
           return (
             <Input value={text} onChange={e => {
