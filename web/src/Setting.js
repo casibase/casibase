@@ -946,3 +946,15 @@ export function getTimeFromSeconds(seconds) {
   const millisec = duration.milliseconds().toString().padStart(3, "0").substring(0, 3);
   return `${minutes} : ${sec}.${millisec}`;
 }
+
+export function getSpeakerTag(speaker) {
+  if (speaker.startsWith("Unknown")) {
+    speaker = "Unknown";
+  }
+
+  return (
+    <Tag color={speaker === "Teacher" ? "success" : speaker.startsWith("Student") ? "error" : "processing"}>
+      {speaker}
+    </Tag>
+  );
+}

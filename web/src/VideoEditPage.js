@@ -24,6 +24,7 @@ import * as Papa from "papaparse";
 import VideoDataChart from "./VideoDataChart";
 import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
+import TagTable from "./TagTable";
 
 const {Option} = Select;
 
@@ -220,9 +221,9 @@ class VideoEditPage extends React.Component {
                       }}>
                         <div style={{display: "inline-block", width: "75px", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal"}}>{Setting.getTimeFromSeconds(segment.startTime)}</div>
                         &nbsp;&nbsp;
-                        <Tag color={segment.speaker === "Teacher" ? "success" : segment.speaker.startsWith("Student") ? "error" : "processing"}>
-                          {segment.speaker}
-                        </Tag>
+                        {
+                          Setting.getSpeakerTag(segment.speaker)
+                        }
                         <Tag style={{fontSize: "medium", fontWeight: this.isSegmentActive(segment) ? "bold" : "normal", marginTop: "10px", lineHeight: "30px", whiteSpace: "normal", overflow: "visible"}} color={this.isSegmentActive(segment) ? "rgb(87,52,211)" : ""}>
                           {
                             (this.state.segmentEditIndex !== index) ? segment.text : (
@@ -260,6 +261,24 @@ class VideoEditPage extends React.Component {
             }
           />
         </Card>
+      </div>
+    );
+  }
+
+  renderSegmentTags() {
+    return (
+      <div>
+        <TagTable
+          ref={this.labelTable}
+          title={i18next.t("video:Tags")}
+          table={this.state.video.segments}
+          currentTime={this.state.currentTime}
+          video={this.state.video}
+          player={this.state.player}
+          screen={this.state.screen}
+          videoObj={this.state.videoObj}
+          onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+        />
       </div>
     );
   }
@@ -522,6 +541,17 @@ class VideoEditPage extends React.Component {
             {
               label: (
                 <div style={{padding: 4}}>
+                  <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
+                  &nbsp;
+                  <span style={{fontWeight: "bold"}}>Text Tagging</span>
+                </div>
+              ),
+              value: "Text Tagging",
+              disabled: this.isSegmentsDisabled(),
+            },
+            {
+              label: (
+                <div style={{padding: 4}}>
                   <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
                   &nbsp;
                   <span style={{fontWeight: "bold"}}>Word Cloud</span>
@@ -547,7 +577,7 @@ class VideoEditPage extends React.Component {
         />
         <Row style={{marginTop: "20px"}} >
           {
-            this.state.video.editMode === "AI Assistant" ? null : (
+            (this.state.video.editMode === "Text Tagging" || this.state.video.editMode === "AI Assistant") ? null : (
               <React.Fragment>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {i18next.t("video:Video")}:
@@ -569,12 +599,13 @@ class VideoEditPage extends React.Component {
               </React.Fragment>
             )
           }
-          <Col span={this.state.video.editMode !== "AI Assistant" ? 12 : 24} >
+          <Col span={(this.state.video.editMode === "Text Tagging" || this.state.video.editMode === "AI Assistant") ? 24 : 12} >
             {
               this.state.video.editMode === "Labeling" ? this.renderLabels() :
                 this.state.video.editMode === "Text Recognition" ? this.renderSegments() :
-                  this.state.video.editMode === "Word Cloud" ? this.renderWords() :
-                    this.renderChat()
+                  this.state.video.editMode === "Text Tagging" ? this.renderSegmentTags() :
+                    this.state.video.editMode === "Word Cloud" ? this.renderWords() :
+                      this.renderChat()
             }
           </Col>
         </Row>

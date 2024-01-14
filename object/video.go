@@ -28,6 +28,9 @@ type Label struct {
 	EndTime   float64 `json:"endTime"`
 	Text      string  `xorm:"varchar(100)" json:"text"`
 	Speaker   string  `xorm:"varchar(100)" json:"speaker"`
+	Tag1      string  `xorm:"varchar(100)" json:"tag1"`
+	Tag2      string  `xorm:"varchar(100)" json:"tag2"`
+	Tag3      string  `xorm:"varchar(100)" json:"tag3"`
 }
 
 type Video struct {
