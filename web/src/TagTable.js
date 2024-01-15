@@ -24,6 +24,7 @@ class TagTable extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      selectedRowKeys: [],
     };
   }
 
@@ -76,7 +77,7 @@ class TagTable extends React.Component {
   runTask(columnIndex) {
     const task = this.props.tasks[columnIndex];
     this.props.table.forEach((row, rowIndex) => {
-      if (rowIndex >= 10) {
+      if (!this.state.selectedRowKeys.includes(`${rowIndex}`)) {
         return;
       }
 
@@ -86,12 +87,34 @@ class TagTable extends React.Component {
 
   clearTask(columnIndex) {
     this.props.table.forEach((row, rowIndex) => {
-      if (rowIndex >= 10) {
+      if (!this.state.selectedRowKeys.includes(`${rowIndex}`)) {
         return;
       }
 
       this.updateField(this.props.table, rowIndex, `tag${columnIndex + 1}`, "");
     });
+  }
+
+  renderTableHeader(columnIndex) {
+    const taskFieldName = `task${columnIndex + 1}`;
+    return (
+      <React.Fragment>
+        <Select virtual={false} size={"small"} style={{width: "160px"}} value={this.props.video[taskFieldName]} onChange={(value => {this.updateVideoField(taskFieldName, value);})}
+          options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
+          } />
+        &nbsp;&nbsp;
+        <Tooltip placement="right" title={"Run"}>
+          <Button disabled={this.props.video[taskFieldName] === "" || this.state.selectedRowKeys.length === 0} icon={<RedoOutlined />} size="small" onClick={() => this.runTask(columnIndex)} />
+        </Tooltip>
+        &nbsp;&nbsp;
+        <Tooltip placement="right" title={"Clear"}>
+          <Button icon={<DeleteOutlined />} size="small" onClick={() => {
+            this.clearTask(columnIndex);
+            this.updateVideoField(taskFieldName, "");
+          }} />
+        </Tooltip>
+      </React.Fragment>
+    );
   }
 
   renderTable(table) {
@@ -138,21 +161,7 @@ class TagTable extends React.Component {
         // width: "200px",
       },
       {
-        title: (
-          <React.Fragment>
-            <Select virtual={false} size={"small"} style={{width: "160px"}} value={this.props.video.task1} onChange={(value => {this.updateVideoField("task1", value);})}
-              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
-              } />
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Run"}>
-              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(0)} />
-            </Tooltip>
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Clear"}>
-              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(0)} />
-            </Tooltip>
-          </React.Fragment>
-        ),
+        title: this.renderTableHeader(0),
         dataIndex: "tag1",
         key: "tag1",
         width: "250px",
@@ -165,21 +174,7 @@ class TagTable extends React.Component {
         },
       },
       {
-        title: (
-          <React.Fragment>
-            <Select virtual={false} size={"small"} style={{width: "160px"}} value={this.props.video.task2} onChange={(value => {this.updateVideoField("task2", value);})}
-              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
-              } />
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Run"}>
-              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(1)} />
-            </Tooltip>
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Clear"}>
-              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(1)} />
-            </Tooltip>
-          </React.Fragment>
-        ),
+        title: this.renderTableHeader(1),
         dataIndex: "tag2",
         key: "tag2",
         width: "250px",
@@ -192,21 +187,7 @@ class TagTable extends React.Component {
         },
       },
       {
-        title: (
-          <React.Fragment>
-            <Select virtual={false} size={"small"} style={{width: "160px"}} value={this.props.video.task3} onChange={(value => {this.updateVideoField("task3", value);})}
-              options={this.props.tasks.map((task) => Setting.getOption(task.displayName, task.name))
-              } />
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Run"}>
-              <Button icon={<RedoOutlined />} size="small" onClick={() => this.runTask(2)} />
-            </Tooltip>
-            &nbsp;&nbsp;
-            <Tooltip placement="right" title={"Clear"}>
-              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.clearTask(2)} />
-            </Tooltip>
-          </React.Fragment>
-        ),
+        title: this.renderTableHeader(2),
         dataIndex: "tag3",
         key: "tag3",
         width: "250px",
@@ -220,27 +201,26 @@ class TagTable extends React.Component {
       },
     ];
 
-    let highlightIndex = -1;
-    table.forEach((segment, i) => {
-      if (highlightIndex === -1) {
-        if (segment.startTime > this.props.currentTime) {
-          if (i > 0) {
-            highlightIndex = i - 1;
-          }
-        }
-      }
-    });
+    const rowSelection = {
+      onChange: (newSelectedRowKeys) => {
+        this.setState({
+          selectedRowKeys: newSelectedRowKeys,
+        });
+      },
+      selections: [
+        Table.SELECTION_ALL,
+        Table.SELECTION_INVERT,
+        Table.SELECTION_NONE,
+      ],
+    };
 
     return (
-      <Table rowKey={"id"} columns={columns} dataSource={table} size="middle" bordered pagination={false}
+      <Table rowKey={"id"} rowSelection={rowSelection} columns={columns} dataSource={table} size="middle" bordered pagination={false}
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
           </div>
         )}
-        rowClassName={(record, index) => {
-          return (highlightIndex === index) ? "alert-row" : "";
-        }}
       />
     );
   }
