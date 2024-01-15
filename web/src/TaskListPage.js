@@ -158,7 +158,7 @@ class TaskListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
-              <div style={{maxWidth: "200px"}}>
+              <div style={{maxWidth: "300px"}}>
                 {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
@@ -169,7 +169,7 @@ class TaskListPage extends React.Component {
         title: i18next.t("task:Labels"),
         dataIndex: "labels",
         key: "labels",
-        // width: "160px",
+        width: "250px",
         sorter: (a, b) => a.labels.localeCompare(b.labels),
         render: (text, record, index) => {
           return record.labels?.map(label => {
@@ -202,6 +202,7 @@ class TaskListPage extends React.Component {
         dataIndex: "action",
         key: "action",
         width: "180px",
+        fixed: (Setting.isMobile()) ? "false" : "right",
         render: (text, record, index) => {
           return (
             <div>
