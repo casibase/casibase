@@ -1,5 +1,5 @@
 <h1 align="center" style="border-bottom: none;">📦⚡️ Casibase</h1>
-<h3 align="center">Open-source AIGC vector & knowledge database with beautiful web UI, similar to LangChain</h3>
+<h3 align="center">Open-source AI LangChain-like RAG (Retrieval-Augmented Generation) knowledge database with web UI and Enterprise SSO, supports OpenAI, Azure, LLaMA, Google Gemini, HuggingFace, Claude, Grok, etc.,</h3>
 <p align="center">
   <a href="#badge">
     <img alt="semantic-release" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg">
@@ -49,14 +49,14 @@
 
 ## Online Demo
 
-### Chat Demo
+### Chat Bot
 
-- Demo site: https://ai.casbin.com (indexed with Casbin knowledge)
+- Demo site: https://demo.casibase.com
 
-### Admin Portal Demo
+### Admin UI
 
-- Read-only site: https://ai.casibase.com (any modification operation will fail)
-- Writable site: https://demo.casibase.com (original data will be restored for every 5 minutes)
+- Read-only site: https://demo-admin.casibase.com (any modification operation will fail)
+- Writable site: https://demo-admin-w.casibase.com (original data will be restored for every 5 minutes)
 
 ## Documentation
 
