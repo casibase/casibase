@@ -17,6 +17,7 @@ package controllers
 import (
 	_ "embed"
 	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -178,9 +179,30 @@ func (c *ApiController) anonymousSignin() {
 	c.ResponseOk(user)
 }
 
-func (c *ApiController) GetAccount() {
+func (c *ApiController) isPublicDomain() bool {
 	configPublicDomain := beego.AppConfig.String("publicDomain")
-	if configPublicDomain == "" || c.Ctx.Request.Host != configPublicDomain {
+	if configPublicDomain == "" {
+		return false
+	}
+
+	if strings.Contains(configPublicDomain, ",") {
+		configPublicDomains := strings.Split(configPublicDomain, ",")
+		for _, domain := range configPublicDomains {
+			if c.Ctx.Request.Host == domain {
+				return true
+			}
+		}
+	} else {
+		if c.Ctx.Request.Host == configPublicDomain {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (c *ApiController) GetAccount() {
+	if !c.isPublicDomain() {
 		_, ok := c.RequireSignedIn()
 		if !ok {
 			return
