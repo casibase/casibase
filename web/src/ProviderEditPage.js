@@ -191,6 +191,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "custom-model");
                 } else if (value === "Azure") {
                   this.updateProviderField("subType", "gpt-4");
+                } else if (value === "Cohere") {
+                  this.updateProviderField("subType", "command");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {

@@ -24,6 +24,7 @@ import (
 type RawMessage struct {
 	Text   string
 	Author string
+	User   *string // chat_history in cohere may need a user
 }
 
 func reverseMessages(arr []*RawMessage) []*RawMessage {
