@@ -24,6 +24,7 @@ import (
 type RawMessage struct {
 	Text   string
 	Author string
+	User   *string
 }
 
 func reverseMessages(arr []*RawMessage) []*RawMessage {
