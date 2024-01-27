@@ -92,6 +92,24 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	maxTokens := getOpenAiMaxTokens(model)
 
 	if getOpenAiModelType(p.subType) == "Chat" {
+		if p.subType == "dall-e-3" {
+			reqUrl := openai.ImageRequest{
+				Prompt:         question,
+				Model:          openai.CreateImageModelDallE3,
+				Size:           openai.CreateImageSize1024x1024,
+				ResponseFormat: openai.CreateImageResponseFormatURL,
+				N:              1,
+			}
+			respUrl, err := client.CreateImage(ctx, reqUrl)
+			if err != nil {
+				fmt.Printf("Image creation error: %v\n", err)
+				return err
+			}
+			//imageURL := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
+			fmt.Fprint(writer, respUrl.Data[0].URL)
+			flusher.Flush()
+			return nil
+		}
 		rawMessages, err := generateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
 			return err
