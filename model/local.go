@@ -105,7 +105,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				fmt.Printf("Image creation error: %v\n", err)
 				return err
 			}
-			//imageURL := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
 			fmt.Fprint(writer, respUrl.Data[0].URL)
 			flusher.Flush()
 			return nil
