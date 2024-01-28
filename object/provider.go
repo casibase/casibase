@@ -299,12 +299,22 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 	} else {
 		provider, err = GetDefaultEmbeddingProvider()
 	}
-
-	if provider == nil && err == nil {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
+	if err != nil {
+		return nil, nil, err
 	}
-	if provider.Category != "Embedding" || provider.ClientSecret == "" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is invalid", providerName)
+	if provider == nil {
+		if providerName != "" {
+			return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
+		} else {
+			return nil, nil, fmt.Errorf("Please add an embedding provider first")
+		}
+	}
+
+	if provider.Category != "Embedding" {
+		return nil, nil, fmt.Errorf("The embedding provider: %s is not \"Embedding\" category, got: \"%s\"", provider.GetId(), provider.Category)
+	}
+	if provider.ClientSecret == "" {
+		return nil, nil, fmt.Errorf("The embedding provider: %s's client secret should not be empty", provider.GetId())
 	}
 
 	providerObj, err := provider.GetEmbeddingProvider()
