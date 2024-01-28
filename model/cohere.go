@@ -33,21 +33,21 @@ type CohereModelProvider struct {
 }
 
 type ChatMessage struct {
-    Role    string `json:"role"`
-    Message string `json:"message"`
+	Role    string  `json:"role"`
+	Message string  `json:"message"`
 	User    *string `json:"user,omitempty"`
 }
 
 func NewCohereModelProvider(subType string, secretKey string) (*CohereModelProvider, error) {
 	return &CohereModelProvider{
-		secretKey: secretKey, 
-		subType: subType,
+		secretKey: secretKey,
+		subType:   subType,
 	}, nil
 }
 
 func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
 	client := cohere.NewCompletion().WithAPIKey(c.secretKey).WithModel(cohere.Model(c.subType))
-	
+
 	ctx := context.Background()
 
 	resp, err := client.Completion(ctx, message)
@@ -57,5 +57,11 @@ func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 
 	resp = strings.Split(resp, "\n")[0]
 	fmt.Println(resp)
+
+	_, writeErr := fmt.Fprint(writer, resp)
+	if writeErr != nil {
+		return writeErr
+	}
+
 	return nil
 }
