@@ -648,6 +648,7 @@ export function getProviderTypeOptions(category) {
         {id: "MiniMax", name: "MiniMax"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "Cohere", name: "Cohere"},
       ]
     );
   } else if (category === "Embedding") {
@@ -668,6 +669,7 @@ export function getProviderTypeOptions(category) {
 }
 
 const openaiModels = [
+  {id: "dall-e-3", name: "dall-e-3"},
   {id: "gpt-4-vision-preview", name: "gpt-4-vision-preview"},
   {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
   {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
@@ -827,13 +829,22 @@ export function getProviderSubTypeOptions(category, type) {
       return [];
     }
   } else if (type === "Cohere") {
-    return (
-      [
-        {id: "embed-english-v2.0", name: "embed-english-v2.0"},
-        {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
-        {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
-      ]
-    );
+    if (category === "Model") {
+      return (
+        [
+          {id: "command-light", name: "command-light"},
+          {id: "command", name: "command"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "embed-english-v2.0", name: "embed-english-v2.0"},
+          {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
+          {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
+        ]
+      );
+    }
   } else if (type === "iFlytek") {
     return (
       [

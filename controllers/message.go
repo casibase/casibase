@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -151,7 +152,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	p, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -195,7 +196,13 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 	if writer.writerCleaner.cleaned == false {
-		cleanedData := writer.writerCleaner.GetCleanedData()
+		var cleanedData string
+		if p.SubType == "dall-e-3" {
+			url := strings.Join(writer.writerCleaner.buffer, "")
+			cleanedData = fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", url)
+		} else {
+			cleanedData = writer.writerCleaner.GetCleanedData()
+		}
 		writer.buf = append(writer.buf, []byte(cleanedData)...)
 		jsonData, err := ConvertMessageDataToJSON(cleanedData)
 		if err != nil {
