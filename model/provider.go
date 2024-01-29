@@ -32,7 +32,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Azure" {
 		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceModelProvider(subType, clientSecret)
+		p, err = NewHuggingFaceModelProvider(subType, clientSecret, temperature)
 	} else if typ == "Claude" {
 		p, err = NewClaudeModelProvider(subType, clientSecret)
 	} else if typ == "OpenRouter" {

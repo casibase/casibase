@@ -25,16 +25,17 @@ import (
 )
 
 type HuggingFaceModelProvider struct {
-	subType   string
-	secretKey string
+	subType     string
+	secretKey   string
+	temperature float32
 }
 
-func NewHuggingFaceModelProvider(subType string, secretKey string) (*HuggingFaceModelProvider, error) {
-	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey}, nil
+func NewHuggingFaceModelProvider(subType string, secretKey string, temperature float32) (*HuggingFaceModelProvider, error) {
+	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey, temperature: temperature}, nil
 }
 
 func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
-	client := huggingface.New(p.subType, 1, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
+	client := huggingface.New(p.subType, p.temperature, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
 
 	ctx := context.Background()
 
@@ -45,5 +46,11 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 
 	resp = strings.Split(resp, "\n")[0]
 	fmt.Println(resp)
+
+	_, writeErr := fmt.Fprint(writer, resp)
+	if writeErr != nil {
+		return writeErr
+	}
+
 	return nil
 }
