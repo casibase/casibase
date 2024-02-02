@@ -15,15 +15,15 @@
 package model
 
 import (
-	"io"
-	"os"
-	"fmt"
 	"bytes"
-	"regexp"
-	"net/url"
-	"strings"
-	"path/filepath"
 	"encoding/base64"
+	"fmt"
+	"io"
+	"net/url"
+	"os"
+	"path/filepath"
+	"regexp"
+	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -134,7 +134,7 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 				},
 			}
 		}
-		
+
 		for _, url := range urls {
 			if isFromCDN(message.Text) {
 				base64Content, ext, err := GetBase64Image(url)
