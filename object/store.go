@@ -45,10 +45,11 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider   string `xorm:"varchar(100)" json:"storageProvider"`
-	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
-	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
+	StorageProvider    string `xorm:"varchar(100)" json:"storageProvider"`
+	SplitProvider      string `xorm:"varchar(100)" json:"splitProvider"`
+	ModelProvider      string `xorm:"varchar(100)" json:"modelProvider"`
+	ImageModelProvider string `xorm:"varchar(100)" json:"imageModelProvider"`
+	EmbeddingProvider  string `xorm:"varchar(100)" json:"embeddingProvider"`
 
 	MemoryLimit  int    `json:"memoryLimit"`
 	Frequency    int    `json:"frequency"`

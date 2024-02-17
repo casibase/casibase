@@ -33,6 +33,7 @@ class StoreEditPage extends React.Component {
       casdoorStorageProviders: [],
       storageProviders: [],
       modelProviders: [],
+      imageModelProviders: [],
       embeddingProviders: [],
       store: null,
     };
@@ -81,6 +82,7 @@ class StoreEditPage extends React.Component {
           this.setState({
             storageProviders: res.data.filter(provider => provider.category === "Storage"),
             modelProviders: res.data.filter(provider => provider.category === "Model"),
+            imageModelProviders: res.data.filter(provider => provider.category === "Model" && provider.subType === "dall-e-3"),
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
           });
         } else {
@@ -163,6 +165,18 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
               options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Image Model provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageModelProvider} onChange={(value => {this.updateStoreField("imageModelProvider", value);})}
+              options={[
+                Setting.getOption(i18next.t("common:Please select"), ""),
+                ...this.state.imageModelProviders.map(provider => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name)),
+              ]} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

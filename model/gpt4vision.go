@@ -63,6 +63,8 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 		}
 
 		for _, url := range urls {
+			re := regexp.MustCompile(`\"$`)
+			url = re.ReplaceAllString(url, "")
 			item.MultiContent = append(item.MultiContent, openai.ChatMessagePart{
 				Type: openai.ChatMessagePartTypeImageURL,
 				ImageURL: &openai.ChatMessageImageURL{

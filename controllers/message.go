@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -158,6 +159,12 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	imageModelProvider, imageModelProviderObj, err := object.GetImageModelProviderFromContext("admin", chat.User2)
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
@@ -190,32 +197,56 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
-	if err != nil {
-		c.ResponseErrorStream(err.Error())
-		return
-	}
-	if writer.writerCleaner.cleaned == false {
-		var cleanedData string
-		if p.SubType == "dall-e-3" {
-			url := strings.Join(writer.writerCleaner.buffer, "")
-			cleanedData = fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", url)
-		} else {
-			cleanedData = writer.writerCleaner.GetCleanedData()
+	if imageModelProvider != nil {
+		stdPrompt := PromptProcessing(question)
+		var promptStruct Prompt
+		for {
+			processedPrompt, err := object.GetAnswer(p.Name, stdPrompt)
+			if err != nil {
+				c.ResponseErrorStream(err.Error())
+				return
+			}
+
+			promptStruct, err = ConvertJSONToPrompt(processedPrompt)
+			if err == nil {
+				break
+			}
+
+			time.Sleep(2 * time.Second)
 		}
-		writer.buf = append(writer.buf, []byte(cleanedData)...)
-		jsonData, err := ConvertMessageDataToJSON(cleanedData)
+		err = getImageTextAnswer(promptStruct, modelProviderObj, imageModelProviderObj, writer, imageModelProvider.Name)
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
 		}
-		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
+	} else {
+		err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
 		}
-		writer.Flush()
-		fmt.Print(cleanedData)
+		if writer.writerCleaner.cleaned == false {
+			var cleanedData string
+			if p.SubType == "dall-e-3" {
+				url := strings.Join(writer.writerCleaner.buffer, "")
+				cleanedData = fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", url)
+			} else {
+				cleanedData = writer.writerCleaner.GetCleanedData()
+			}
+			writer.buf = append(writer.buf, []byte(cleanedData)...)
+			jsonData, err := ConvertMessageDataToJSON(cleanedData)
+			if err != nil {
+				c.ResponseErrorStream(err.Error())
+				return
+			}
+			_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
+			if err != nil {
+				c.ResponseErrorStream(err.Error())
+				return
+			}
+			writer.Flush()
+			fmt.Print(cleanedData)
+		}
 	}
 
 	fmt.Printf("]\n")

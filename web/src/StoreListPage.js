@@ -59,6 +59,7 @@ class StoreListPage extends React.Component {
       storageProvider: "provider-storage-built-in",
       splitProvider: "Default",
       modelProvider: "",
+      imageModelProvider: "",
       embeddingProvider: "",
       memoryLimit: 20,
       frequency: 10000,
@@ -184,6 +185,20 @@ class StoreListPage extends React.Component {
         key: "modelProvider",
         width: "200px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
+        render: (text, record, index) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
+        title: i18next.t("store:Image Model provider"),
+        dataIndex: "imageModelProvider",
+        key: "imageModelProvider",
+        width: "200px",
+        sorter: (a, b) => a.imageModelProvider.localeCompare(b.imageModelProvider),
         render: (text, record, index) => {
           return (
             <Link to={`/providers/${text}`}>
