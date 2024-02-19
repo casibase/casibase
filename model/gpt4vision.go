@@ -15,6 +15,11 @@
 package model
 
 import (
+	"encoding/base64"
+	"fmt"
+	"io"
+	"net/http"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -35,7 +40,32 @@ func extractImagesURL(message string) ([]string, string) {
 	return urls, message
 }
 
-func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
+func getImageRefinedText(text string) (string, string, error) {
+	re := regexp.MustCompile(`\"$`)
+	text = re.ReplaceAllString(text, "")
+
+	ext := filepath.Ext(text)
+	ext = ext[1:]
+
+	resp, err := http.Get(text)
+	if err != nil {
+		fmt.Println("Error fetching URL:", err)
+		return "", "", err
+	}
+	defer resp.Body.Close()
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("Error reading response body:", err)
+		return "", "", err
+	}
+
+	base64Data := base64.StdEncoding.EncodeToString(data)
+
+	return base64Data, ext, nil
+}
+
+func rawMessagesToGPT4VisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		var role string
@@ -63,10 +93,15 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 		}
 
 		for _, url := range urls {
+			imgString, ext, err := getImageRefinedText(url)
+			if err != nil {
+				return []openai.ChatCompletionMessage{}, err
+			}
+
 			item.MultiContent = append(item.MultiContent, openai.ChatMessagePart{
 				Type: openai.ChatMessagePartTypeImageURL,
 				ImageURL: &openai.ChatMessageImageURL{
-					URL:    url,
+					URL:    fmt.Sprintf("data:image/%s;base64,%s", ext, imgString),
 					Detail: openai.ImageURLDetailAuto,
 				},
 			})
@@ -74,5 +109,5 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 
 		res = append(res, item)
 	}
-	return res
+	return res, nil
 }
