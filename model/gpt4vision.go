@@ -15,6 +15,11 @@
 package model
 
 import (
+	"encoding/base64"
+	"fmt"
+	"io"
+	"net/http"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -28,6 +33,11 @@ func extractImagesURL(message string) ([]string, string) {
 
 	imgURL := regexp.MustCompile(`http[s]?://\S+`)
 	urls := imgURL.FindAllString(message, -1)
+	quote := regexp.MustCompile(`\"$`)
+	for i, url := range urls {
+		urls[i] = quote.ReplaceAllString(url, "")
+	}
+
 	message = imgURL.ReplaceAllString(message, "")
 
 	img := regexp.MustCompile(`<img[^>]+>`)
@@ -35,7 +45,27 @@ func extractImagesURL(message string) ([]string, string) {
 	return urls, message
 }
 
-func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
+func getImageRefinedText(text string) (string, error) {
+	ext := filepath.Ext(text)
+	ext = ext[1:]
+
+	resp, err := http.Get(text)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	data, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+
+	base64Data := base64.StdEncoding.EncodeToString(data)
+	res := fmt.Sprintf("data:image/%s;base64,%s", ext, base64Data)
+	return res, nil
+}
+
+func rawMessagesToGPT4VisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		var role string
@@ -63,10 +93,15 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 		}
 
 		for _, url := range urls {
+			imageText, err := getImageRefinedText(url)
+			if err != nil {
+				return []openai.ChatCompletionMessage{}, err
+			}
+
 			item.MultiContent = append(item.MultiContent, openai.ChatMessagePart{
 				Type: openai.ChatMessagePartTypeImageURL,
 				ImageURL: &openai.ChatMessageImageURL{
-					URL:    url,
+					URL:    imageText,
 					Detail: openai.ImageURLDetailAuto,
 				},
 			})
@@ -74,5 +109,5 @@ func rawMessagesToGPT4VisionMessages(messages []*RawMessage) []openai.ChatComple
 
 		res = append(res, item)
 	}
-	return res
+	return res, nil
 }
