@@ -112,7 +112,6 @@ func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider str
 	}
 	defer respStream.Close()
 
-	// 接收流转成字符串
 	var answer string
 	isLeadingReturn := true
 	for {
