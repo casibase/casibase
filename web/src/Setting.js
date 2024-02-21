@@ -638,6 +638,7 @@ export function getProviderTypeOptions(category) {
     return (
       [
         {id: "OpenAI", name: "OpenAI"},
+        {id: "OpenAI Revised", name: "OpenAI Revised"},
         {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
@@ -729,6 +730,12 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (type === "OpenAI Revised") {
+    return (
+      [
+        {id: "dall-e-3 and gpt-4-vision-preview", name: "dall-e-3 and gpt-4-vision-preview"},
+      ]
+    );
   } else if (type === "Gemini") {
     if (category === "Model") {
       return (

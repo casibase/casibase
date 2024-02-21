@@ -171,6 +171,8 @@ class ProviderEditPage extends React.Component {
               if (this.state.provider.category === "Model") {
                 if (value === "OpenAI") {
                   this.updateProviderField("subType", "gpt-4");
+                } else if (value === "OpenAI Revised") {
+                  this.updateProviderField("subType", "dall-e-3 and gpt-4-vision-preview");
                 } else if (value === "Gemini") {
                   this.updateProviderField("subType", "gemini-pro");
                 } else if (value === "OpenRouter") {
@@ -270,6 +272,74 @@ class ProviderEditPage extends React.Component {
         }
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Frequency penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Frequency penalty")}
+                  min={-2}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.frequencyPenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("frequencyPenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Presence penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Presence penalty")}
+                  min={-2}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.presencePenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("presencePenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI Revised") ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
