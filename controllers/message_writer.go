@@ -17,6 +17,7 @@ package controllers
 import (
 	"bytes"
 	"fmt"
+	"regexp"
 	"strings"
 
 	"github.com/astaxie/beego/context"
@@ -91,6 +92,11 @@ func (c *Cleaner) GetCleanedData() string {
 }
 
 func cleanString(data string) string {
+	img := regexp.MustCompile(`<img[^>]+>`)
+	if img.MatchString(data) {
+		return data
+	}
+
 	data = strings.Replace(data, "?", "", -1)
 	data = strings.Replace(data, "？", "", -1)
 	data = strings.Replace(data, "-", "", -1)

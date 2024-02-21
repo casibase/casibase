@@ -47,7 +47,9 @@ func extractImagesURL(message string) ([]string, string) {
 
 func getImageRefinedText(text string) (string, error) {
 	ext := filepath.Ext(text)
-	ext = ext[1:]
+	if ext != "" {
+		ext = ext[1:]
+	}
 
 	resp, err := http.Get(text)
 	if err != nil {
