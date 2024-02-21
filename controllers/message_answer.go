@@ -117,10 +117,6 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
-	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
-	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
-
 	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
@@ -148,6 +144,7 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(err.Error())
 		return
 	}
+
 	if writer.writerCleaner.cleaned == false {
 		cleanedData := writer.writerCleaner.GetCleanedData()
 		writer.buf = append(writer.buf, []byte(cleanedData)...)
@@ -156,11 +153,13 @@ func (c *ApiController) GetMessageAnswer() {
 			c.ResponseErrorStream(err.Error())
 			return
 		}
+
 		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
 		}
+
 		writer.Flush()
 		fmt.Print(cleanedData)
 	}
