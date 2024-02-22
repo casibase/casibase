@@ -48,7 +48,7 @@ func NewOpenAiRevisedModelProvider(typ string, subType string, secretKey string,
 	return p, nil
 }
 
-func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider string, writer io.Writer, writerUsed bool) (string, error) {
+func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider string, writer io.Writer, writerUsed bool, history []*RawMessage, knowledge []*RawMessage) (string, error) {
 	client := getOpenAiClientFromToken(p.secretKey)
 	ctx := context.Background()
 
@@ -91,10 +91,7 @@ func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider str
 		return url, nil
 	}
 
-	emptyHistory := []*RawMessage{}
-	emptyKnowledge := []*RawMessage{}
-
-	rawMessages, err := generateMessages("", question, emptyHistory, emptyKnowledge, model, maxTokens)
+	rawMessages, err := generateMessages("", question, history, knowledge, model, maxTokens)
 	if err != nil {
 		return "", err
 	}
@@ -112,6 +109,7 @@ func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider str
 	}
 	defer respStream.Close()
 
+	// 接收流转成字符串
 	var answer string
 	isLeadingReturn := true
 	for {
@@ -146,14 +144,14 @@ func getAnswer(question string, p *openaiRefinedModelProvider, modelProvider str
 	return answer, nil
 }
 
-func textFirst(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider) error {
-	textAnswer, err := getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true)
+func textFirst(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider, history []*RawMessage, knowledge []*RawMessage) error {
+	textAnswer, err := getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
 
 	imagePrompt = promptConcatenate(imagePrompt, textAnswer)
-	_, err = getAnswer(imagePrompt, p, "dall-e-3", writer, true)
+	_, err = getAnswer(imagePrompt, p, "dall-e-3", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
@@ -161,14 +159,14 @@ func textFirst(textPrompt string, imagePrompt string, writer io.Writer, p *opena
 	return nil
 }
 
-func imageFirst(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider) error {
-	imageAnswer, err := getAnswer(imagePrompt, p, "dall-e-3", writer, true)
+func imageFirst(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider, history []*RawMessage, knowledge []*RawMessage) error {
+	imageAnswer, err := getAnswer(imagePrompt, p, "dall-e-3", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
 
 	textPrompt = promptConcatenate(textPrompt, imageAnswer)
-	_, err = getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true)
+	_, err = getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
@@ -176,13 +174,13 @@ func imageFirst(textPrompt string, imagePrompt string, writer io.Writer, p *open
 	return nil
 }
 
-func noneRelation(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider) error {
-	_, err := getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true)
+func noneRelation(textPrompt string, imagePrompt string, writer io.Writer, p *openaiRefinedModelProvider, history []*RawMessage, knowledge []*RawMessage) error {
+	_, err := getAnswer(textPrompt, p, "gpt-4-vision-preview", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
 
-	_, err = getAnswer(imagePrompt, p, "dall-e-3", writer, true)
+	_, err = getAnswer(imagePrompt, p, "dall-e-3", writer, true, history, knowledge)
 	if err != nil {
 		return err
 	}
@@ -194,7 +192,7 @@ func (p *openaiRefinedModelProvider) QueryText(question string, writer io.Writer
 	question = PromptProcessing(question)
 	var promptStruct Prompt
 	for {
-		answer, err := getAnswer(question, p, "gpt-4-vision-preview", writer, false)
+		answer, err := getAnswer(question, p, "gpt-4-vision-preview", writer, false, []*RawMessage{}, []*RawMessage{})
 		if err != nil {
 			return err
 		}
@@ -210,17 +208,17 @@ func (p *openaiRefinedModelProvider) QueryText(question string, writer io.Writer
 
 	switch promptStruct.Relation {
 	case "image first":
-		err := imageFirst(promptStruct.Text, promptStruct.Image, writer, p)
+		err := imageFirst(promptStruct.Text, promptStruct.Image, writer, p, history, knowledgeMessages)
 		if err != nil {
 			return err
 		}
 	case "text first":
-		err := textFirst(promptStruct.Text, promptStruct.Image, writer, p)
+		err := textFirst(promptStruct.Text, promptStruct.Image, writer, p, history, knowledgeMessages)
 		if err != nil {
 			return err
 		}
 	case "none":
-		err := noneRelation(promptStruct.Text, promptStruct.Image, writer, p)
+		err := noneRelation(promptStruct.Text, promptStruct.Image, writer, p, history, knowledgeMessages)
 		if err != nil {
 			return err
 		}
