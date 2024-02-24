@@ -20,7 +20,13 @@ import (
 	"io"
 	"strings"
 
-	cohere "github.com/henomis/lingoose/llm/cohere"
+	cohere "github.com/cohere-ai/cohere-go/v2"
+	cohereclient "github.com/cohere-ai/cohere-go/v2/client"
+)
+
+var (
+	CohereDefaultMaxTokens   int     = 256
+	CohereDefaultTemperature float64 = 0.75
 )
 
 type CohereModelProvider struct {
@@ -46,17 +52,29 @@ func NewCohereModelProvider(subType string, secretKey string) (*CohereModelProvi
 }
 
 func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
-	client := cohere.NewCompletion().WithAPIKey(c.secretKey).WithModel(cohere.Model(c.subType))
-
+	client := cohereclient.NewClient(
+		cohereclient.WithToken(c.secretKey),
+	)
 	ctx := context.Background()
 
-	resp, err := client.Completion(ctx, message)
+	generation, err := client.Generate(
+		ctx,
+		&cohere.GenerateRequest{
+			Prompt:      prompt,
+			Temperature: &CohereDefaultTemperature,
+			MaxTokens:   &CohereDefaultMaxTokens,
+			Model:       &c.subType,
+		},
+	)
 	if err != nil {
 		return err
 	}
+	if len(generation.Generations) == 0 {
+		return fmt.Errorf("no generations returned")
+	}
 
-	resp = strings.Split(resp, "\n")[0]
-	fmt.Println(resp)
+	output := generation.Generations[0].Text
+	resp := strings.Split(output, "\n")[0]
 
 	_, writeErr := fmt.Fprint(writer, resp)
 	if writeErr != nil {
