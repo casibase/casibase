@@ -239,6 +239,23 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
+          (this.state.provider.type === "Cohere" && this.state.provider.category === "Embedding") && (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Input type")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.provider.clientId} onChange={(value => {this.updateProviderField("clientId", value);})}>
+                  {
+                    ["search_document", "search_query"]
+                      .map((item, index) => <Option key={index} value={item}>{item}</Option>)
+                  }
+                </Select>
+              </Col>
+            </Row>
+          )
+        }
+        {
           (this.state.provider.type !== "Ernie" && this.state.provider.category !== "Storage") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

@@ -843,6 +843,7 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "embed-english-v2.0", name: "embed-english-v2.0"},
           {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
           {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
+          {id: "embed-english-v3.0", name: "embed-english-v3.0"},
         ]
       );
     }

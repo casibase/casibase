@@ -35,7 +35,7 @@ func NewHuggingFaceModelProvider(subType string, secretKey string, temperature f
 }
 
 func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
-	client := huggingface.New(p.subType, p.temperature, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.HuggingFaceModeTextGeneration)
+	client := huggingface.New(p.subType, p.temperature, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.ModeTextGeneration)
 
 	ctx := context.Background()
 

@@ -17,24 +17,62 @@ package embedding
 import (
 	"context"
 
-	cohereembedder "github.com/henomis/lingoose/embedder/cohere"
+	coherego "github.com/henomis/cohere-go"
+	"github.com/henomis/cohere-go/model"
+	"github.com/henomis/cohere-go/request"
+	"github.com/henomis/cohere-go/response"
+	"github.com/henomis/lingoose/embedder"
 )
 
 type CohereEmbeddingProvider struct {
 	subType   string
 	secretKey string
+	inputType string
 }
 
-func NewCohereEmbeddingProvider(subType string, secretKey string) (*CohereEmbeddingProvider, error) {
-	return &CohereEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
+func NewCohereEmbeddingProvider(subType string, inputType string, secretKey string) (*CohereEmbeddingProvider, error) {
+	return &CohereEmbeddingProvider{
+		subType:   subType,
+		secretKey: secretKey,
+		inputType: inputType,
+	}, nil
 }
 
 func (c *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
-	client := cohereembedder.New().WithModel(cohereembedder.EmbedderModel(c.subType)).WithAPIKey(c.secretKey)
-	embed, err := client.Embed(ctx, []string{text})
+	client := coherego.New(c.secretKey)
+
+	// Used for embeddings stored in a vector database for search use-cases
+	// mark as default
+	inputType := model.EmbedInputType(c.inputType)
+
+	embed, err := embed(ctx, client, model.EmbedModel(c.subType), &inputType, []string{text})
 	if err != nil {
 		return nil, err
 	}
 
 	return float64ToFloat32(embed[0]), nil
+}
+
+// copy from lingoose@v0.1.0/embedder/cohere/cohere.go
+func embed(ctx context.Context, client *coherego.Client, model model.EmbedModel, inputType *model.EmbedInputType, texts []string) ([]embedder.Embedding, error) {
+	resp := &response.Embed{}
+	err := client.Embed(
+		ctx,
+		&request.Embed{
+			Texts:     texts,
+			Model:     model,
+			InputType: inputType,
+		},
+		resp,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	embeddings := make([]embedder.Embedding, len(resp.Embeddings))
+
+	for i, embedding := range resp.Embeddings {
+		embeddings[i] = embedding
+	}
+	return embeddings, nil
 }
