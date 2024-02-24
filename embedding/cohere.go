@@ -17,11 +17,8 @@ package embedding
 import (
 	"context"
 
-	coherego "github.com/henomis/cohere-go"
-	"github.com/henomis/cohere-go/model"
-	"github.com/henomis/cohere-go/request"
-	"github.com/henomis/cohere-go/response"
-	"github.com/henomis/lingoose/embedder"
+	cohere "github.com/cohere-ai/cohere-go/v2"
+	cohereclient "github.com/cohere-ai/cohere-go/v2/client"
 )
 
 type CohereEmbeddingProvider struct {
@@ -39,13 +36,11 @@ func NewCohereEmbeddingProvider(subType string, inputType string, secretKey stri
 }
 
 func (c *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
-	client := coherego.New(c.secretKey)
+	client := cohereclient.NewClient(
+		cohereclient.WithToken(c.secretKey),
+	)
 
-	// Used for embeddings stored in a vector database for search use-cases
-	// mark as default
-	inputType := model.EmbedInputType(c.inputType)
-
-	embed, err := embed(ctx, client, model.EmbedModel(c.subType), &inputType, []string{text})
+	embed, err := embed(ctx, client, &c.subType, &c.inputType, []string{text})
 	if err != nil {
 		return nil, err
 	}
@@ -53,25 +48,19 @@ func (c *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) 
 	return float64ToFloat32(embed[0]), nil
 }
 
-// copy from lingoose@v0.1.0/embedder/cohere/cohere.go
-func embed(ctx context.Context, client *coherego.Client, model model.EmbedModel, inputType *model.EmbedInputType, texts []string) ([]embedder.Embedding, error) {
-	resp := &response.Embed{}
-	err := client.Embed(
-		ctx,
-		&request.Embed{
-			Texts:     texts,
-			Model:     model,
-			InputType: inputType,
-		},
-		resp,
-	)
+func embed(ctx context.Context, client *cohereclient.Client, model *string, inputType *string, texts []string) ([][]float64, error) {
+	resp, err := client.Embed(ctx, &cohere.EmbedRequest{
+		Texts:     texts,
+		Model:     model,
+		InputType: (*cohere.EmbedInputType)(inputType),
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	embeddings := make([]embedder.Embedding, len(resp.Embeddings))
+	embeddings := make([][]float64, len(resp.EmbeddingsFloats.Embeddings))
 
-	for i, embedding := range resp.Embeddings {
+	for i, embedding := range resp.EmbeddingsFloats.Embeddings {
 		embeddings[i] = embedding
 	}
 	return embeddings, nil

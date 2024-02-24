@@ -12,11 +12,11 @@ require (
 	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-hnsw v1.0.0
 	github.com/casibase/go-openrouter v1.0.0
+	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.4.0
-	github.com/henomis/cohere-go v1.1.2
 	github.com/henomis/lingoose v0.1.0
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/leverly/ChatGLM v1.2.0
@@ -70,14 +70,12 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/henomis/restclientgo v1.2.0 // indirect
 	github.com/imroc/req/v3 v3.35.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
-	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/moul/http2curl v1.0.0 // indirect
