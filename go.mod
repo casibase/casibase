@@ -1,6 +1,6 @@
 module github.com/casibase/casibase
 
-go 1.20
+go 1.21
 
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
@@ -16,7 +16,8 @@ require (
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.4.0
-	github.com/henomis/lingoose v0.0.11-alpha1
+	github.com/henomis/cohere-go v1.1.2
+	github.com/henomis/lingoose v0.1.0
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
@@ -24,7 +25,7 @@ require (
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.1
-	github.com/sashabaranov/go-openai v1.17.10
+	github.com/sashabaranov/go-openai v1.19.2
 	github.com/tealeg/xlsx v1.0.5
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.4.0
@@ -69,14 +70,14 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/henomis/cohere-go v1.0.1 // indirect
-	github.com/henomis/restclientgo v1.0.5 // indirect
+	github.com/henomis/restclientgo v1.2.0 // indirect
 	github.com/imroc/req/v3 v3.35.1 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
+	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/moul/http2curl v1.0.0 // indirect

@@ -30,7 +30,7 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	} else if typ == "Hugging Face" {
 		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Cohere" {
-		p, err = NewCohereEmbeddingProvider(subType, clientSecret)
+		p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Ernie" {
 		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Local" {
