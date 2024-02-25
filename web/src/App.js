@@ -51,6 +51,7 @@ import TaskEditPage from "./TaskEditPage";
 import ChatPage from "./ChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
 import ShortcutsPage from "./basic/ShortcutsPage";
+import ChatBotWidget from "./ChatBotWidget.js";
 
 const {Header, Footer, Content} = Layout;
 
@@ -487,8 +488,17 @@ class App extends Component {
             </Card>
           }
         </Content>
+        {this.renderChatBotWidget()}
         {this.renderFooter()}
       </Layout>
+    );
+  }
+
+  renderChatBotWidget() {
+    return (
+      <React.Fragment>
+        <ChatBotWidget />
+      </React.Fragment>
     );
   }
 
