@@ -87,7 +87,7 @@ func GetDefaultStore(owner string) (*Store, error) {
 	}
 
 	for _, store := range stores {
-		if store.StorageProvider != "" {
+		if store.StorageProvider != "" && store.ModelProvider != "" && store.EmbeddingProvider != "" {
 			return store, nil
 		}
 	}
