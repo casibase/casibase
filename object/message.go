@@ -43,6 +43,8 @@ type Message struct {
 	Author       string        `xorm:"varchar(100)" json:"author"`
 	Text         string        `xorm:"mediumtext" json:"text"`
 	TokenCount   int           `json:"tokenCount"`
+	Price        float64       `json:"price"`
+	Currency     string        `xorm:"varchar(100)" json:"currency"`
 	IsHidden     bool          `json:"isHidden"`
 	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
@@ -271,7 +273,7 @@ func GetAnswer(provider string, question string) (string, error) {
 	history := []*model.RawMessage{}
 	knowledge := []*model.RawMessage{}
 	var writer MyWriter
-	err = modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+	_, err = modelProviderObj.QueryText(question, &writer, history, "", knowledge)
 	if err != nil {
 		return "", err
 	}

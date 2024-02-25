@@ -139,7 +139,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
+	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
@@ -176,8 +176,23 @@ func (c *ApiController) GetMessageAnswer() {
 	answer := writer.String()
 
 	message.Text = answer
+	message.TokenCount = modelResult.TotalTokenCount
+	message.Price = modelResult.TotalPrice
+	currency, _ := modelProviderObj.GetPricing()
+	message.Currency = currency
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
+	if err != nil {
+		c.ResponseErrorStream(err.Error())
+		return
+	}
+
+	chat.TokenCount += message.TokenCount
+	chat.Price += message.Price
+	if chat.Currency == "" {
+		chat.Currency = message.Currency
+	}
+	_, err = object.UpdateChat(chat.GetId(), chat)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return

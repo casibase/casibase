@@ -59,7 +59,66 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *LocalModelProvider) GetPricing() (string, string) {
+	return "USD", `URL:
+https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/
+
+Language models:
+
+| Models                | Context | Input (Per 1,000 tokens) | Output (Per 1,000 tokens) |
+|-----------------------|---------|--------------------------|--------------------------|
+| GPT-3.5-Turbo-0125    | 16K     | $0.0005                  | $0.0015                  |
+| GPT-3.5-Turbo-Instruct| 4K      | $0.0015                  | $0.002                   |
+| GPT-4-Turbo           | 128K    | $0.01                    | $0.03                    |
+| GPT-4-Turbo-Vision    | 128K    | $0.01                    | $0.03                    |
+| GPT-4                 | 8K      | $0.03                    | $0.06                    |
+| GPT-4                 | 32K     | $0.06                    | $0.12                    |
+
+Image models:
+
+| Models   | Quality | Resolution               | Price (per 100 images) |
+|----------|---------|--------------------------|------------------------|
+| Dall-E-3 | Standard| 1024 * 1024              | N/A                    |
+|          | Standard| 1024 * 1792, 1792 * 1024 | $8                     |
+| Dall-E-3 | HD      | 1024 * 1024              | N/A                    |
+|          | HD      | 1024 * 1792, 1792 * 1024 | N/A                    |
+| Dall-E-2 | Standard| 1024 * 1024              | N/A                    |
+`
+}
+
+func (p *LocalModelProvider) calculatePrice(res *ModelResult) error {
+	model := p.subType
+	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
+	switch {
+	case strings.Contains(model, "gpt-3.5-turbo-0125"):
+		inputPricePerThousandTokens = 0.0005
+		outputPricePerThousandTokens = 0.0015
+	case strings.Contains(model, "gpt-3.5-turbo-instruct"):
+		inputPricePerThousandTokens = 0.0015
+		outputPricePerThousandTokens = 0.002
+	case strings.Contains(model, "gpt-4-turbo"), strings.Contains(model, "gpt-4-turbo-vision"):
+		inputPricePerThousandTokens = 0.01
+		outputPricePerThousandTokens = 0.03
+	case strings.Contains(model, "gpt-4") && strings.Contains(model, "32k"):
+		inputPricePerThousandTokens = 0.06
+		outputPricePerThousandTokens = 0.12
+	case strings.Contains(model, "gpt-4"):
+		inputPricePerThousandTokens = 0.03
+		outputPricePerThousandTokens = 0.06
+	case strings.Contains(model, "dall-e-3"):
+		res.TotalPrice = float64(res.ImageCount) * 0.08
+		return nil
+	default:
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
+	}
+
+	totalInputPrice := (float64(res.PromptTokenCount) / 1000.0) * inputPricePerThousandTokens
+	totalOutputPrice := (float64(res.ResponseTokenCount) / 1000.0) * outputPricePerThousandTokens
+	res.TotalPrice = totalInputPrice + totalOutputPrice
+	return nil
+}
+
+func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
@@ -72,7 +131,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
 	model := p.subType
@@ -91,6 +150,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	maxTokens := getOpenAiMaxTokens(model)
 
+	res := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
 			reqUrl := openai.ImageRequest{
@@ -100,26 +160,35 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				ResponseFormat: openai.CreateImageResponseFormatURL,
 				N:              1,
 			}
+
 			respUrl, err := client.CreateImage(ctx, reqUrl)
 			if err != nil {
-				fmt.Printf("Image creation error: %v\n", err)
-				return err
+				return nil, err
 			}
+
 			url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
 			fmt.Fprint(writer, url)
 			flusher.Flush()
-			return nil
+
+			res.ImageCount = 1
+			err = p.calculatePrice(res)
+			if err != nil {
+				return nil, err
+			}
+
+			return res, nil
 		}
+
 		rawMessages, err := generateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		var messages []openai.ChatCompletionMessage
 
+		var messages []openai.ChatCompletionMessage
 		if p.subType == "gpt-4-vision-preview" {
 			messages, err = rawMessagesToGPT4VisionMessages(rawMessages)
 			if err != nil {
-				return err
+				return nil, err
 			}
 		} else {
 			messages = rawMessagesToOpenAiMessages(rawMessages)
@@ -130,7 +199,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty),
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		defer respStream.Close()
 
@@ -141,7 +210,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				if streamErr == io.EOF {
 					break
 				}
-				return streamErr
+				return nil, streamErr
 			}
 
 			if len(completion.Choices) == 0 {
@@ -159,9 +228,19 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 			err = flushData(data)
 			if err != nil {
-				return err
+				return nil, err
 			}
+
+			// res.PromptTokenCount += completion.Usage.PromptTokens
+			// res.ResponseTokenCount += completion.Usage.CompletionTokens
+			// res.TotalTokenCount += completion.Usage.TotalTokens
+			// err = p.calculatePrice(res)
+			// if err != nil {
+			//	return nil, err
+			// }
 		}
+
+		return res, nil
 	} else if getOpenAiModelType(p.subType) == "Completion" {
 		respStream, err := client.CreateCompletionStream(
 			ctx,
@@ -176,7 +255,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			},
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		defer respStream.Close()
 
@@ -187,7 +266,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				if streamErr == io.EOF {
 					break
 				}
-				return streamErr
+				return nil, streamErr
 			}
 
 			data := completion.Choices[0].Text
@@ -201,10 +280,20 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 			err = flushData(data)
 			if err != nil {
-				return err
+				return nil, err
+			}
+
+			res.PromptTokenCount += completion.Usage.PromptTokens
+			res.ResponseTokenCount += completion.Usage.CompletionTokens
+			res.TotalTokenCount += completion.Usage.TotalTokens
+			err = p.calculatePrice(res)
+			if err != nil {
+				return nil, err
 			}
 		}
-	}
 
-	return nil
+		return res, nil
+	} else {
+		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
+	}
 }

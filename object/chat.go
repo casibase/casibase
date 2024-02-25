@@ -42,6 +42,8 @@ type Chat struct {
 	UserAgentDesc string   `xorm:"varchar(100)" json:"userAgentDesc"`
 	MessageCount  int      `json:"messageCount"`
 	TokenCount    int      `json:"tokenCount"`
+	Price         float64  `json:"price"`
+	Currency      string   `xorm:"varchar(100)" json:"currency"`
 }
 
 func GetGlobalChats() ([]*Chat, error) {
