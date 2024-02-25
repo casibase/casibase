@@ -203,6 +203,14 @@ class MessageListPage extends React.Component {
         sorter: (a, b) => a.text.localeCompare(b.text),
       },
       {
+        title: i18next.t("chat:Token count"),
+        dataIndex: "tokenCount",
+        key: "tokenCount",
+        width: "120px",
+        sorter: (a, b) => a.tokenCount - b.tokenCount,
+        // ...this.getColumnSearchProps("tokenCount"),
+      },
+      {
         title: i18next.t("message:Knowledge"),
         dataIndex: "knowledge",
         key: "knowledge",

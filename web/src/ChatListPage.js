@@ -317,10 +317,18 @@ class ChatListPage extends React.Component {
         // ...this.getColumnSearchProps("messageCount"),
       },
       {
+        title: i18next.t("chat:Token count"),
+        dataIndex: "tokenCount",
+        key: "tokenCount",
+        width: "120px",
+        sorter: (a, b) => a.tokenCount - b.tokenCount,
+        // ...this.getColumnSearchProps("tokenCount"),
+      },
+      {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "500px",
+        width: "380px",
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
           if (messages === undefined) {

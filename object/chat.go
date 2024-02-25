@@ -41,6 +41,7 @@ type Chat struct {
 	ClientIpDesc  string   `xorm:"varchar(100)" json:"clientIpDesc"`
 	UserAgentDesc string   `xorm:"varchar(100)" json:"userAgentDesc"`
 	MessageCount  int      `json:"messageCount"`
+	TokenCount    int      `json:"tokenCount"`
 }
 
 func GetGlobalChats() ([]*Chat, error) {
