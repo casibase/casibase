@@ -698,23 +698,9 @@ const openaiModels = [
 ];
 
 const openaiEmbeddings = [
-  {id: "AdaSimilarity", name: "AdaSimilarity"},
-  {id: "BabbageSimilarity", name: "BabbageSimilarity"},
-  {id: "CurieSimilarity", name: "CurieSimilarity"},
-  {id: "DavinciSimilarity", name: "DavinciSimilarity"},
-  {id: "AdaSearchDocument", name: "AdaSearchDocument"},
-  {id: "AdaSearchQuery", name: "AdaSearchQuery"},
-  {id: "BabbageSearchDocument", name: "BabbageSearchDocument"},
-  {id: "BabbageSearchQuery", name: "BabbageSearchQuery"},
-  {id: "CurieSearchDocument", name: "CurieSearchDocument"},
-  {id: "CurieSearchQuery", name: "CurieSearchQuery"},
-  {id: "DavinciSearchDocument", name: "DavinciSearchDocument"},
-  {id: "DavinciSearchQuery", name: "DavinciSearchQuery"},
-  {id: "AdaCodeSearchCode", name: "AdaCodeSearchCode"},
-  {id: "AdaCodeSearchText", name: "AdaCodeSearchText"},
-  {id: "BabbageCodeSearchCode", name: "BabbageCodeSearchCode"},
-  {id: "BabbageCodeSearchText", name: "BabbageCodeSearchText"},
-  {id: "AdaEmbeddingV2", name: "AdaEmbeddingV2"},
+  {id: "text-embedding-ada-002", name: "text-embedding-ada-002"},
+  {id: "text-embedding-3-small", name: "text-embedding-3-small"},
+  {id: "text-embedding-3-large", name: "text-embedding-3-large"},
 ];
 
 export function getProviderSubTypeOptions(category, type) {
