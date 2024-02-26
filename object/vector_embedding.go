@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/casibase/casibase/embedding"
@@ -101,8 +102,13 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			return false, err
 		}
 
+		splitProviderType := "Default"
+		if strings.HasPrefix(file.Key, "QA") && fileExt == ".docx" {
+			splitProviderType = "QA"
+		}
+
 		var splitProvider split.SplitProvider
-		splitProvider, err = split.GetSplitProvider("Default")
+		splitProvider, err = split.GetSplitProvider(splitProviderType)
 		if err != nil {
 			return false, err
 		}

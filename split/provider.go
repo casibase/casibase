@@ -23,6 +23,8 @@ func GetSplitProvider(typ string) (SplitProvider, error) {
 	var err error
 	if typ == "Default" {
 		p, err = NewDefaultSplitProvider()
+	} else if typ == "QA" {
+		p, err = NewQaSplitProvider()
 	} else {
 		p, err = NewDefaultSplitProvider()
 	}

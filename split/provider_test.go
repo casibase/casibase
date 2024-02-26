@@ -24,6 +24,7 @@ import (
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/split"
+	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
 )
 
@@ -42,6 +43,36 @@ func TestSplit(t *testing.T) {
 
 	path := filepath.Join(storageProvider.ClientId, "test.md")
 	text := util.ReadStringFromPath(path)
+	textSections, err := p.SplitText(text)
+	if err != nil {
+		panic(err)
+	}
+
+	for i, s := range textSections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+}
+
+func TestSplit2(t *testing.T) {
+	object.InitConfig()
+
+	p, err := split.GetSplitProvider("QA")
+	if err != nil {
+		panic(err)
+	}
+
+	storageProvider, err := object.GetProvider("admin/provider-storage-built-in")
+	if err != nil {
+		panic(err)
+	}
+
+	path := filepath.Join(storageProvider.ClientId, "QAText.docx")
+
+	text, err := txt.GetParsedTextFromUrl(path, ".docx")
+	if err != nil {
+		panic(err)
+	}
+
 	textSections, err := p.SplitText(text)
 	if err != nil {
 		panic(err)
