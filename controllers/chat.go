@@ -36,6 +36,10 @@ func (c *ApiController) GetChats() {
 	field := c.Input().Get("field")
 	value := c.Input().Get("value")
 
+	if c.IsAdmin() {
+		owner = ""
+	}
+
 	var chats []*object.Chat
 	var err error
 	if field == "user" {

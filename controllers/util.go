@@ -86,6 +86,15 @@ func (c *ApiController) RequireAdmin() bool {
 	return false
 }
 
+func (c *ApiController) IsAdmin() bool {
+	user := c.GetSessionUser()
+	if user == nil || !user.IsAdmin {
+		return false
+	}
+
+	return true
+}
+
 func DenyRequest(ctx *context.Context) {
 	responseError(ctx, "Unauthorized operation")
 }

@@ -36,6 +36,10 @@ func (c *ApiController) GetMessages() {
 	owner := c.Input().Get("owner")
 	chat := c.Input().Get("chat")
 
+	if c.IsAdmin() {
+		owner = ""
+	}
+
 	if chat == "" {
 		messages, err := object.GetMessages(owner)
 		if err != nil {
