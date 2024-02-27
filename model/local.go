@@ -18,8 +18,10 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"math/rand"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -118,14 +120,59 @@ func (p *LocalModelProvider) calculatePrice(res *ModelResult) error {
 	return nil
 }
 
+func flushDataAzure(data string, writer io.Writer) error {
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return fmt.Errorf("writer does not implement http.Flusher")
+	}
+	for _, runeValue := range data {
+		char := string(runeValue)
+		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", char); err != nil {
+			return err
+		}
+		flusher.Flush()
+
+		delay := 10 * time.Millisecond
+
+		if char == "," || char == "，" {
+			delay = time.Duration(100+rand.Intn(101)) * time.Millisecond
+		} else if char == "." || char == "。" || char == "!" || char == "！" || char == "?" || char == "？" {
+			delay = time.Duration(250+rand.Intn(101)) * time.Millisecond
+		} else if char == " " || char == "　" || char == "(" || char == "（" || char == ")" || char == "）" {
+			delay = time.Duration(50+rand.Intn(101)) * time.Millisecond
+		} else {
+			randomDelay := time.Duration(rand.Intn(50)) * time.Millisecond
+			delay += randomDelay
+		}
+
+		time.Sleep(delay)
+	}
+	return nil
+}
+
+func flushDataOpenai(data string, writer io.Writer) error {
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return fmt.Errorf("writer does not implement http.Flusher")
+	}
+	if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		return err
+	}
+	flusher.Flush()
+	return nil
+}
+
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	var client *openai.Client
+	var flushData func(string, io.Writer) error
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
+		flushData = flushDataAzure
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
+		flushData = flushDataOpenai
 	}
 
 	ctx := context.Background()
@@ -139,14 +186,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	topP := p.topP
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
-
-	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
 
 	maxTokens := getOpenAiMaxTokens(model)
 
@@ -226,7 +265,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			}
 
-			err = flushData(data)
+			err = flushData(data, writer)
 			if err != nil {
 				return nil, err
 			}
@@ -278,7 +317,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			}
 
-			err = flushData(data)
+			err = flushData(data, writer)
 			if err != nil {
 				return nil, err
 			}
