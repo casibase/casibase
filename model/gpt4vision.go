@@ -31,7 +31,7 @@ func extractImagesURL(message string) ([]string, string) {
 	br := regexp.MustCompile(`<br\s*/?>`)
 	message = br.ReplaceAllString(message, " ")
 
-	imgURL := regexp.MustCompile(`http[s]?://\S+`)
+	imgURL := regexp.MustCompile(`http[s]?://\S+\.(jpg|jpeg|png|gif|webp)`)
 	urls := imgURL.FindAllString(message, -1)
 	quote := regexp.MustCompile(`\"$`)
 	for i, url := range urls {
