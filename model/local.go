@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -134,18 +135,29 @@ func flushDataAzure(data string, writer io.Writer) error {
 
 		flusher.Flush()
 
-		var delay int
-		if char == "," || char == "，" {
-			delay = 20 + rand.Intn(50)
-		} else if char == "." || char == "。" || char == "!" || char == "！" || char == "?" || char == "？" {
-			delay = 50 + rand.Intn(50)
-		} else if char == " " || char == "　" || char == "(" || char == "（" || char == ")" || char == "）" {
-			delay = 10 + rand.Intn(50)
-		} else {
-			delay = rand.Intn(20)
+		delta := 0
+		if !unicode.In(runeValue, unicode.Latin) {
+			delta = 50
 		}
 
-		time.Sleep(time.Duration(delay) * time.Millisecond)
+		var delay int
+		if char == "," || char == "，" {
+			delay = 20 + rand.Intn(50) + delta
+		} else if char == "." || char == "。" || char == "!" || char == "！" || char == "?" || char == "？" {
+			delay = 50 + rand.Intn(50) + delta
+		} else if char == " " || char == "　" || char == "(" || char == "（" || char == ")" || char == "）" {
+			delay = 10 + rand.Intn(50) + delta
+		} else {
+			delay = rand.Intn(1 + delta*2/5)
+		}
+
+		if unicode.In(runeValue, unicode.Latin) {
+			delay -= 20
+		}
+
+		if delay > 0 {
+			time.Sleep(time.Duration(delay) * time.Millisecond)
+		}
 	}
 	return nil
 }
