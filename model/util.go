@@ -46,10 +46,6 @@ func GetTokenSize(model string, prompt string) (int, error) {
 }
 
 func getSystemMessages(prompt string, knowledgeMessages []*RawMessage) []*RawMessage {
-	if len(knowledgeMessages) == 0 {
-		return []*RawMessage{}
-	}
-
 	if prompt == "" {
 		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
 	}
