@@ -127,25 +127,25 @@ func flushDataAzure(data string, writer io.Writer) error {
 	}
 	for _, runeValue := range data {
 		char := string(runeValue)
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", char); err != nil {
+		_, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", char)
+		if err != nil {
 			return err
 		}
+
 		flusher.Flush()
 
-		delay := 10 * time.Millisecond
-
+		var delay int
 		if char == "," || char == "，" {
-			delay = time.Duration(100+rand.Intn(101)) * time.Millisecond
+			delay = 100 + rand.Intn(101)
 		} else if char == "." || char == "。" || char == "!" || char == "！" || char == "?" || char == "？" {
-			delay = time.Duration(250+rand.Intn(101)) * time.Millisecond
+			delay = 250 + rand.Intn(101)
 		} else if char == " " || char == "　" || char == "(" || char == "（" || char == ")" || char == "）" {
-			delay = time.Duration(50+rand.Intn(101)) * time.Millisecond
+			delay = 50 + rand.Intn(101)
 		} else {
-			randomDelay := time.Duration(rand.Intn(50)) * time.Millisecond
-			delay += randomDelay
+			delay = 10 + rand.Intn(50)
 		}
 
-		time.Sleep(delay)
+		time.Sleep(time.Duration(delay) * time.Millisecond)
 	}
 	return nil
 }
