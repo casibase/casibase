@@ -136,13 +136,13 @@ func flushDataAzure(data string, writer io.Writer) error {
 
 		var delay int
 		if char == "," || char == "，" {
-			delay = 100 + rand.Intn(101)
+			delay = 20 + rand.Intn(50)
 		} else if char == "." || char == "。" || char == "!" || char == "！" || char == "?" || char == "？" {
-			delay = 250 + rand.Intn(101)
+			delay = 50 + rand.Intn(50)
 		} else if char == " " || char == "　" || char == "(" || char == "（" || char == ")" || char == "）" {
-			delay = 50 + rand.Intn(101)
-		} else {
 			delay = 10 + rand.Intn(50)
+		} else {
+			delay = rand.Intn(20)
 		}
 
 		time.Sleep(time.Duration(delay) * time.Millisecond)
