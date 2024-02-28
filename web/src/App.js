@@ -311,7 +311,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
-    } else if (Conf.ShortcutPageItems.length > 0 && domain === "edu") {
+    } else if (Conf.ShortcutPageItems.length > 0 && domain === "edu" && this.state.account.name !== "admin") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
@@ -374,27 +374,34 @@ class App extends Component {
 
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
 
+      res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+          {i18next.t("general:Users")}
+          {Setting.renderExternalLink()}
+        </a>,
+        "#"));
+
       if (Setting.isLocalAdminUser(this.state.account)) {
         res.push(Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
             {i18next.t("general:Resources")}
             {Setting.renderExternalLink()}
           </a>,
-          "#"));
+          "##"));
 
         res.push(Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
             {i18next.t("general:Permissions")}
             {Setting.renderExternalLink()}
           </a>,
-          "##"));
+          "###"));
 
         res.push(Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
             {i18next.t("general:Logs")}
             {Setting.renderExternalLink()}
           </a>,
-          "###"));
+          "####"));
       }
     }
 
