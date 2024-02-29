@@ -72,11 +72,33 @@ func GetMaskedProviders(providers []*Provider, isMaskEnabled bool) []*Provider {
 	return providers
 }
 
+func getFilteredProviders(providers []*Provider, needStorage bool) []*Provider {
+	res := []*Provider{}
+	for _, provider := range providers {
+		if (needStorage && provider.Category == "Storage") || (!needStorage && provider.Category != "Storage") {
+			res = append(res, provider)
+		}
+	}
+	return res
+}
+
 func GetGlobalProviders() ([]*Provider, error) {
 	providers := []*Provider{}
 	err := adapter.engine.Asc("owner").Desc("created_time").Find(&providers)
 	if err != nil {
 		return providers, err
+	}
+
+	if providerAdapter != nil {
+		providers = getFilteredProviders(providers, true)
+
+		providers2 := []*Provider{}
+		err = providerAdapter.engine.Asc("owner").Desc("created_time").Find(&providers2)
+		if err != nil {
+			return providers2, err
+		}
+
+		providers = append(providers, providers2...)
 	}
 
 	return providers, nil
@@ -89,6 +111,18 @@ func GetProviders(owner string) ([]*Provider, error) {
 		return providers, err
 	}
 
+	if providerAdapter != nil {
+		providers2 := []*Provider{}
+		err = providerAdapter.engine.Desc("created_time").Find(&providers2, &Provider{Owner: owner})
+		if err != nil {
+			return providers2, err
+		}
+
+		providers = getFilteredProviders(providers, true)
+		providers2 = getFilteredProviders(providers2, false)
+		providers = append(providers, providers2...)
+	}
+
 	return providers, nil
 }
 
@@ -97,6 +131,16 @@ func getProvider(owner string, name string) (*Provider, error) {
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+		if provider.Category == "Storage" {
+			return nil, nil
+		}
 	}
 
 	if existed {
@@ -132,6 +176,13 @@ func GetDefaultModelProvider() (*Provider, error) {
 		return &provider, err
 	}
 
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
 	if !existed {
 		return nil, nil
 	}
@@ -144,6 +195,13 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
 	}
 
 	if !existed {
@@ -167,6 +225,16 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.ClientSecret = p.ClientSecret
 	}
 
+	if providerAdapter != nil && provider.Category != "Storage" {
+		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
+		if err != nil {
+			return false, err
+		}
+
+		// return affected != 0
+		return true, nil
+	}
+
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
 	if err != nil {
 		return false, err
@@ -177,6 +245,15 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 }
 
 func AddProvider(provider *Provider) (bool, error) {
+	if providerAdapter != nil && provider.Category != "Storage" {
+		affected, err := providerAdapter.engine.Insert(provider)
+		if err != nil {
+			return false, err
+		}
+
+		return affected != 0, nil
+	}
+
 	affected, err := adapter.engine.Insert(provider)
 	if err != nil {
 		return false, err
@@ -186,6 +263,15 @@ func AddProvider(provider *Provider) (bool, error) {
 }
 
 func DeleteProvider(provider *Provider) (bool, error) {
+	if providerAdapter != nil && provider.Category != "Storage" {
+		affected, err := providerAdapter.engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
+		if err != nil {
+			return false, err
+		}
+
+		return affected != 0, nil
+	}
+
 	affected, err := adapter.engine.ID(core.PK{provider.Owner, provider.Name}).Delete(&Provider{})
 	if err != nil {
 		return false, err

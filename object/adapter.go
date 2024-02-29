@@ -30,6 +30,7 @@ import (
 
 var (
 	adapter                 *Adapter = nil
+	providerAdapter         *Adapter = nil
 	isCreateDatabaseDefined          = false
 	createDatabase                   = true
 )
@@ -59,6 +60,11 @@ func InitConfig() {
 
 func InitAdapter() {
 	adapter = NewAdapter(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName())
+
+	providerDbName := conf.GetConfigString("providerDbName")
+	if providerDbName != "" {
+		providerAdapter = NewAdapterWithDbName(conf.GetConfigString("driverName"), conf.GetConfigDataSourceName(), providerDbName)
+	}
 }
 
 func CreateTables() {
@@ -76,6 +82,7 @@ func CreateTables() {
 type Adapter struct {
 	driverName     string
 	dataSourceName string
+	DbName         string
 	engine         *xorm.Engine
 }
 
@@ -92,6 +99,22 @@ func NewAdapter(driverName string, dataSourceName string) *Adapter {
 	a := &Adapter{}
 	a.driverName = driverName
 	a.dataSourceName = dataSourceName
+	a.DbName = conf.GetConfigString("dbName")
+
+	// Open the DB, create it if not existed.
+	a.open()
+
+	// Call the destructor when the object is released.
+	runtime.SetFinalizer(a, finalizer)
+
+	return a
+}
+
+func NewAdapterWithDbName(driverName string, dataSourceName string, dbName string) *Adapter {
+	a := &Adapter{}
+	a.driverName = driverName
+	a.dataSourceName = dataSourceName
+	a.DbName = dbName
 
 	// Open the DB, create it if not existed.
 	a.open()
@@ -109,7 +132,7 @@ func (a *Adapter) CreateDatabase() error {
 	}
 	defer engine.Close()
 
-	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8mb4 COLLATE utf8mb4_general_ci", conf.GetConfigString("dbName")))
+	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8mb4 COLLATE utf8mb4_general_ci", a.DbName))
 	if err != nil {
 		return err
 	}
@@ -118,7 +141,7 @@ func (a *Adapter) CreateDatabase() error {
 }
 
 func (a *Adapter) open() {
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+beego.AppConfig.String("dbName"))
+	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.DbName)
 	if err != nil {
 		panic(err)
 	}

@@ -68,8 +68,26 @@ class ProviderListPage extends React.Component {
     };
   }
 
-  addProvider() {
-    const newProvider = this.newProvider();
+  newStorageProvider() {
+    const randomName = Setting.getRandomName();
+    return {
+      owner: "admin",
+      name: `provider_${randomName}`,
+      createdTime: moment().format(),
+      displayName: `New Provider - ${randomName}`,
+      category: "Storage",
+      type: "Local File System",
+      subType: "",
+      clientId: "C:/storage_casibase",
+      providerUrl: "",
+    };
+  }
+
+  addProvider(needStorage = false) {
+    let newProvider = this.newProvider();
+    if (needStorage) {
+      newProvider = this.newStorageProvider();
+    }
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
         if (res.status === "ok") {
@@ -206,7 +224,9 @@ class ProviderListPage extends React.Component {
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addProvider.bind(this)}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" onClick={() => this.addProvider()}>{i18next.t("general:Add")}</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
             </div>
           )}
           loading={providers === null}
