@@ -99,7 +99,15 @@ func (c *ApiController) AddMessage() {
 	}
 
 	var chat *object.Chat
-	if message.Chat != "" {
+	if message.Chat == "" {
+		chat, err = c.addInitialChat(message.Author)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		message.Chat = chat.Name
+	} else {
 		chatId := util.GetId(message.Owner, message.Chat)
 		chat, err = object.GetChat(chatId)
 		if err != nil {
@@ -151,7 +159,7 @@ func (c *ApiController) AddMessage() {
 		}
 	}
 
-	c.ResponseOk(success)
+	c.ResponseOk(chat)
 }
 
 func (c *ApiController) DeleteMessage() {

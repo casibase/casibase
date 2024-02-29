@@ -62,7 +62,7 @@ func (c *ApiController) Signin() {
 		claims.Type = "chat-user"
 	}
 
-	err = c.addInitialChat(&claims.User)
+	err = c.addInitialChatAndMessage(&claims.User)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -80,38 +80,32 @@ func (c *ApiController) Signout() {
 	c.ResponseOk()
 }
 
-func (c *ApiController) addInitialChat(user *casdoorsdk.User) error {
-	chats, err := object.GetChatsByUser("admin", user.Name)
-	if err != nil {
-		return err
-	}
-
-	if len(chats) != 0 {
-		return nil
-	}
-
+func (c *ApiController) addInitialChat(userId string) (*object.Chat, error) {
 	store, err := object.GetDefaultStore("admin")
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if store == nil {
-		return fmt.Errorf("The default store is not found")
+		return nil, fmt.Errorf("The default store is not found")
 	}
 
+	_, userName := util.GetOwnerAndNameFromId(userId)
+
 	randomName := util.GetRandomName()
-	chat := object.Chat{
+	currentTime := util.GetCurrentTime()
+	chat := &object.Chat{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("chat_%s", randomName),
-		CreatedTime:  util.GetCurrentTime(),
-		UpdatedTime:  util.GetCurrentTime(),
+		CreatedTime:  currentTime,
+		UpdatedTime:  currentTime,
 		DisplayName:  fmt.Sprintf("New Chat - %d", 1),
 		Store:        store.GetId(),
 		Category:     "Default Category",
 		Type:         "AI",
-		User:         user.Name,
-		User1:        fmt.Sprintf("%s/%s", user.Owner, user.Name),
+		User:         userName,
+		User1:        userId,
 		User2:        "",
-		Users:        []string{fmt.Sprintf("%s/%s", user.Owner, user.Name)},
+		Users:        []string{userId},
 		ClientIp:     c.getClientIp(),
 		UserAgent:    c.getUserAgent(),
 		MessageCount: 0,
@@ -125,12 +119,29 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) error {
 	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
 	chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
 
-	_, err = object.AddChat(&chat)
+	_, err = object.AddChat(chat)
+	if err != nil {
+		return nil, err
+	}
+
+	return chat, nil
+}
+
+func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
+	chats, err := object.GetChatsByUser("admin", user.Name)
 	if err != nil {
 		return err
 	}
 
-	randomName = util.GetRandomName()
+	if len(chats) != 0 {
+		return nil
+	}
+
+	chat, err := c.addInitialChat(user.GetId())
+	if err != nil {
+		return err
+	}
+
 	answerMessage := &object.Message{
 		Owner:       "admin",
 		Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
@@ -175,7 +186,7 @@ func (c *ApiController) anonymousSignin() {
 		CreatedIp:       "",
 	}
 
-	err := c.addInitialChat(&user)
+	err := c.addInitialChatAndMessage(&user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
