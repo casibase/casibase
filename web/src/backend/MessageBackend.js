@@ -18,6 +18,9 @@ export function getGlobalMessages() {
   return fetch(`${Setting.ServerUrl}/api/get-global-messages`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getMessages(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-messages?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getChatMessages(owner, chat) {
   return fetch(`${Setting.ServerUrl}/api/get-messages?owner=${owner}&chat=${chat}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -56,6 +65,9 @@ export function getAnswer(provider, question) {
   return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -63,6 +75,9 @@ export function getMessage(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-message?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -71,6 +86,9 @@ export function updateMessage(owner, name, message) {
   return fetch(`${Setting.ServerUrl}/api/update-message?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newMessage),
   }).then(res => res.json());
 }
@@ -80,6 +98,9 @@ export function addMessage(message) {
   return fetch(`${Setting.ServerUrl}/api/add-message`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newMessage),
   }).then(res => res.json());
 }
@@ -89,6 +110,9 @@ export function deleteMessage(message) {
   return fetch(`${Setting.ServerUrl}/api/delete-message`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newMessage),
   }).then(res => res.json());
 }

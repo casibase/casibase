@@ -18,6 +18,9 @@ export function getGlobalVectors() {
   return fetch(`${Setting.ServerUrl}/api/get-global-vectors`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getVectors(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-vectors?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getVector(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-vector?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -40,6 +49,9 @@ export function updateVector(owner, name, vector) {
   return fetch(`${Setting.ServerUrl}/api/update-vector?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVector),
   }).then(res => res.json());
 }
@@ -49,6 +61,9 @@ export function addVector(vector) {
   return fetch(`${Setting.ServerUrl}/api/add-vector`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVector),
   }).then(res => res.json());
 }
@@ -58,6 +73,9 @@ export function deleteVector(vector) {
   return fetch(`${Setting.ServerUrl}/api/delete-vector`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVector),
   }).then(res => res.json());
 }

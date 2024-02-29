@@ -18,6 +18,9 @@ export function getGlobalChats() {
   return fetch(`${Setting.ServerUrl}/api/get-global-chats`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getChats(owner, page = "", pageSize = "", field = "", value = ""
   return fetch(`${Setting.ServerUrl}/api/get-chats?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getChat(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-chat?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -40,6 +49,9 @@ export function updateChat(owner, name, chat) {
   return fetch(`${Setting.ServerUrl}/api/update-chat?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newChat),
   }).then(res => res.json());
 }
@@ -49,6 +61,9 @@ export function addChat(chat) {
   return fetch(`${Setting.ServerUrl}/api/add-chat`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newChat),
   }).then(res => res.json());
 }
@@ -58,6 +73,9 @@ export function deleteChat(chat) {
   return fetch(`${Setting.ServerUrl}/api/delete-chat`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newChat),
   }).then(res => res.json());
 }

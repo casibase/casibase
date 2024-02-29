@@ -18,6 +18,9 @@ export function getGlobalTasks() {
   return fetch(`${Setting.ServerUrl}/api/get-global-tasks`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getTasks(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-tasks?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getTask(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-task?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -40,6 +49,9 @@ export function updateTask(owner, name, task) {
   return fetch(`${Setting.ServerUrl}/api/update-task?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newTask),
   }).then(res => res.json());
 }
@@ -49,6 +61,9 @@ export function addTask(task) {
   return fetch(`${Setting.ServerUrl}/api/add-task`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newTask),
   }).then(res => res.json());
 }
@@ -58,6 +73,9 @@ export function deleteTask(task) {
   return fetch(`${Setting.ServerUrl}/api/delete-task`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newTask),
   }).then(res => res.json());
 }

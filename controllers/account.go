@@ -117,6 +117,12 @@ func (c *ApiController) addInitialChat(user *casdoorsdk.User) error {
 		MessageCount: 0,
 	}
 
+	lang := c.GetAcceptLanguage()
+	if lang == "zh" {
+		chat.DisplayName = fmt.Sprintf("新会话 - %d", 1)
+		chat.Category = "默认类别"
+	}
+
 	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
 	chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
 

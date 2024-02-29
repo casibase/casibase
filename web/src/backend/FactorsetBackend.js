@@ -18,6 +18,9 @@ export function getGlobalFactorsets() {
   return fetch(`${Setting.ServerUrl}/api/get-global-factorsets`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getFactorsets(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-factorsets?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getFactorset(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-factorset?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -40,6 +49,9 @@ export function updateFactorset(owner, name, factorset) {
   return fetch(`${Setting.ServerUrl}/api/update-factorset?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newFactorset),
   }).then(res => res.json());
 }
@@ -49,6 +61,9 @@ export function addFactorset(factorset) {
   return fetch(`${Setting.ServerUrl}/api/add-factorset`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newFactorset),
   }).then(res => res.json());
 }
@@ -58,6 +73,9 @@ export function deleteFactorset(factorset) {
   return fetch(`${Setting.ServerUrl}/api/delete-factorset`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newFactorset),
   }).then(res => res.json());
 }

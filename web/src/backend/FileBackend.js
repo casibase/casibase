@@ -19,6 +19,9 @@ export function updateFile(storeId, name, file) {
   return fetch(`${Setting.ServerUrl}/api/update-file?store=${storeId}&name=${name}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newFile),
   }).then(res => res.json());
 }
@@ -29,6 +32,9 @@ export function addFile(storeId, key, isLeaf, filename, file) {
   return fetch(`${Setting.ServerUrl}/api/add-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}&filename=${filename}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: formData,
   }).then(res => res.json());
 }
@@ -37,6 +43,9 @@ export function deleteFile(storeId, key, isLeaf) {
   return fetch(`${Setting.ServerUrl}/api/delete-file?store=${storeId}&key=${key}&isLeaf=${isLeaf ? 1 : 0}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -44,5 +53,8 @@ export function activateFile(key, filename) {
   return fetch(`${Setting.ServerUrl}/api/activate-file?key=${key}&filename=${filename}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }

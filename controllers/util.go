@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
 
@@ -57,6 +58,14 @@ func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	}
 	c.Data["json"] = resp
 	c.ServeJSON()
+}
+
+func (c *ApiController) GetAcceptLanguage() string {
+	language := c.Ctx.Request.Header.Get("Accept-Language")
+	if len(language) > 2 {
+		language = language[0:2]
+	}
+	return conf.GetLanguage(language)
 }
 
 func (c *ApiController) RequireSignedIn() (string, bool) {

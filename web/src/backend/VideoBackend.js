@@ -18,6 +18,9 @@ export function getGlobalVideos() {
   return fetch(`${Setting.ServerUrl}/api/get-global-videos`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -25,6 +28,9 @@ export function getVideos(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-videos?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -32,6 +38,9 @@ export function getVideo(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-video?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
 
@@ -40,6 +49,9 @@ export function updateVideo(owner, name, video) {
   return fetch(`${Setting.ServerUrl}/api/update-video?id=${owner}/${encodeURIComponent(name)}`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVideo),
   }).then(res => res.json());
 }
@@ -49,6 +61,9 @@ export function addVideo(video) {
   return fetch(`${Setting.ServerUrl}/api/add-video`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVideo),
   }).then(res => res.json());
 }
@@ -58,6 +73,9 @@ export function deleteVideo(video) {
   return fetch(`${Setting.ServerUrl}/api/delete-video`, {
     method: "POST",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
     body: JSON.stringify(newVideo),
   }).then(res => res.json());
 }

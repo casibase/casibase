@@ -239,9 +239,11 @@ export function setLanguage(language) {
   i18next.changeLanguage(language);
 }
 
-export function changeLanguage(language) {
-  setLanguage(language);
-  window.location.reload(true);
+export function getAcceptLanguage() {
+  if (i18next.language === null || i18next.language === "") {
+    return "en;q=0.9,en;q=0.8";
+  }
+  return i18next.language + ";q=0.9,en;q=0.8";
 }
 
 export function getUrlParam(name) {

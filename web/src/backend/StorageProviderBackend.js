@@ -18,5 +18,8 @@ export function getStorageProviders(owner) {
   return fetch(`${Setting.ServerUrl}/api/get-storage-providers?owner=${owner}`, {
     method: "GET",
     credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
   }).then(res => res.json());
 }
