@@ -44,12 +44,45 @@ func NewErnieModelProvider(subType string, apiKey string, secretKey string, temp
 	}, nil
 }
 
-func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *ErnieModelProvider) GetPricing() (string, string) {
+	return "CNY", `URL:
+https://cloud.baidu.com/article/517050
+
+| Module     | Service Type                                                                | Price                   |
+|------------|-----------------------------------------------------------------------------|-------------------------|
+| Prediction | ERNIE-Bot Large Model Public Cloud Online Invocation Service                | ¥0.012/thousand tokens  |
+| Prediction | ERNIE-Bot-turbo Large Model Public Cloud Online Invocation Service (Input)  | ¥0.008/thousand tokens  |
+| Prediction | ERNIE-Bot-turbo Large Model Public Cloud Online Invocation Service (Output) | ¥0.008/thousand tokens  |
+| Prediction | BLOOMZ-7B Large Model Public Cloud Online Invocation Service                | ¥0.006/thousand tokens  |
+| Prediction | Embedding-V1 Public Cloud Online Invocation Service                         | ¥0.002/thousand tokens  |
+| Prediction | Llama-2-7B-Chat Public Cloud Online Invocation Service                      | ¥0.006/thousand tokens  |
+| Prediction | Llama-2-13B-Chat Public Cloud Online Invocation Service                     | ¥0.008/thousand tokens  |
+| Prediction | Llama-2-70B-Chat Public Cloud Online Invocation Service                     | ¥0.044/thousand tokens  |
+| Prediction | Pre-built Model Public Cloud Online Invocation Service                      | Free for a limited time |
+`
+}
+
+func (p *ErnieModelProvider) calculatePrice(mr *ModelResult) {
+	priceTable := map[string][]float64{
+		"ERNIE-Bot":       {0.012, 0.012},
+		"ERNIE-Bot-turbo": {0.008, 0.008},
+		"BLOOMZ-7B":       {0.006, 0.006},
+		"Llama-2":         {0.006, 0.006}, // Llama-2-7B-Chat
+	}
+	if price, ok := priceTable[p.subType]; ok {
+		mr.TotalPrice = (price[0]*float64(mr.PromptTokenCount) + price[1]*float64(mr.ResponseTokenCount)) / 1_000.0
+	} else {
+		// model not found
+		mr.TotalPrice = 0.0
+	}
+}
+
+func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := ernie.NewDefaultClient(p.apiKey, p.secretKey)
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
 	messages := []ernie.ChatCompletionMessage{
@@ -71,6 +104,8 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 	topP := p.topP
 	presencePenalty := p.presencePenalty
 
+	mr := new(ModelResult)
+
 	if p.subType == "ERNIE-Bot" {
 		stream, err := client.CreateErnieBotChatCompletionStream(ctx,
 			ernie.ErnieBotRequest{
@@ -82,24 +117,29 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 			},
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		defer stream.Close()
 		for {
 			response, err := stream.Recv()
 			if errors.Is(err, io.EOF) {
-				return nil
+				p.calculatePrice(mr)
+				return mr, nil
 			}
 
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			err = flushData(response.Result)
 			if err != nil {
-				return err
+				return nil, err
 			}
+
+			mr.PromptTokenCount += response.Usage.PromptTokens
+			mr.ResponseTokenCount += response.Usage.CompletionTokens
+			mr.TotalTokenCount += response.Usage.TotalTokens
 		}
 	} else if p.subType == "ERNIE-Bot-turbo" {
 		stream, err := client.CreateErnieBotTurboChatCompletionStream(ctx,
@@ -112,24 +152,29 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 			},
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		defer stream.Close()
 		for {
 			response, err := stream.Recv()
 			if errors.Is(err, io.EOF) {
-				return nil
+				p.calculatePrice(mr)
+				return mr, nil
 			}
 
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			err = flushData(response.Result)
 			if err != nil {
-				return err
+				return nil, err
 			}
+
+			mr.PromptTokenCount += response.Usage.PromptTokens
+			mr.ResponseTokenCount += response.Usage.CompletionTokens
+			mr.TotalTokenCount += response.Usage.TotalTokens
 		}
 	} else if p.subType == "BLOOMZ-7B" {
 		stream, err := client.CreateBloomz7b1ChatCompletionStream(
@@ -140,24 +185,29 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 			},
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		defer stream.Close()
 		for {
 			response, err := stream.Recv()
 			if errors.Is(err, io.EOF) {
-				return nil
+				p.calculatePrice(mr)
+				return mr, nil
 			}
 
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			err = flushData(response.Result)
 			if err != nil {
-				return err
+				return nil, err
 			}
+
+			mr.PromptTokenCount += response.Usage.PromptTokens
+			mr.ResponseTokenCount += response.Usage.CompletionTokens
+			mr.TotalTokenCount += response.Usage.TotalTokens
 		}
 	} else if p.subType == "Llama-2" {
 		stream, err := client.CreateLlamaChatCompletionStream(
@@ -169,26 +219,31 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 			},
 		)
 		if err != nil {
-			return err
+			return nil, err
 		}
 
 		defer stream.Close()
 		for {
 			response, err := stream.Recv()
 			if errors.Is(err, io.EOF) {
-				return nil
+				p.calculatePrice(mr)
+				return mr, nil
 			}
 
 			if err != nil {
-				return err
+				return nil, err
 			}
 
 			err = flushData(response.Result)
 			if err != nil {
-				return err
+				return nil, err
 			}
+
+			mr.PromptTokenCount += response.Usage.PromptTokens
+			mr.ResponseTokenCount += response.Usage.CompletionTokens
+			mr.TotalTokenCount += response.Usage.TotalTokens
 		}
 	}
 
-	return nil
+	return mr, nil
 }

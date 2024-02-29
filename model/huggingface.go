@@ -34,14 +34,22 @@ func NewHuggingFaceModelProvider(subType string, secretKey string, temperature f
 	return &HuggingFaceModelProvider{subType: subType, secretKey: secretKey, temperature: temperature}, nil
 }
 
-func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *HuggingFaceModelProvider) GetPricing() (string, string) {
+	return "Free", "Free"
+}
+
+func (p *HuggingFaceModelProvider) caculatePrice(mr *ModelResult) {
+	mr.TotalPrice = 0.0
+}
+
+func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := huggingface.New(p.subType, p.temperature, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.ModeTextGeneration)
 
 	ctx := context.Background()
 
 	resp, err := client.Completion(ctx, question)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	resp = strings.Split(resp, "\n")[0]
@@ -49,8 +57,23 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 
 	_, writeErr := fmt.Fprint(writer, resp)
 	if writeErr != nil {
-		return writeErr
+		return nil, writeErr
 	}
 
-	return nil
+	// get token count and price
+	mr := new(ModelResult)
+	promptTokenCount, err := GetTokenSize(p.subType, question)
+	if err != nil {
+		return nil, err
+	}
+	mr.PromptTokenCount = promptTokenCount
+	responseTokenCount, err := GetTokenSize(p.subType, resp)
+	if err != nil {
+		return nil, err
+	}
+	mr.ResponseTokenCount = responseTokenCount
+	mr.TotalTokenCount = promptTokenCount + responseTokenCount
+	p.caculatePrice(mr)
+
+	return mr, nil
 }

@@ -26,7 +26,34 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 	}, nil
 }
 
-func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *MiniMaxModelProvider) GetPricing() (string, string) {
+	return "CNY", `URL:
+https://api.minimax.chat/document/price
+
+| Billing Item     | Unit Price                    | Billing Description                                                                                            |
+|------------------|-------------------------------|----------------------------------------------------------------------------------------------------------------|
+| abab6            | 0.1 CNY/1k tokens             | Token count includes input and output                                                                          |
+| abab5.5          | 0.015 CNY/1k tokens           |                                                                                                                |
+| abab5.5s         | 0.005 CNY/1k tokens           |                                                                                                                |
+| Web Search Count | 0.03 CNY/each web search call | After enabling the plugin_web_search plugin, the interface automatically counts the number of web search calls |
+`
+}
+
+func (p *MiniMaxModelProvider) caculatePrice(mr *ModelResult) {
+	priceTable := map[string][]float64{
+		"abab6":      {0.1, 0.1},
+		"abab5.5":    {0.015, 0.015},
+		"abab5-chat": {0.015, 0.015},
+		"abab5.5s":   {0.005, 0.005},
+	}
+	if mr.ResponseTokenCount < 1000 {
+		mr.TotalPrice = priceTable[p.subType][0] * float64(mr.TotalTokenCount)
+	} else {
+		mr.TotalPrice = 0.0
+	}
+}
+
+func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
 	client, _ := minimax.New(
 		minimax.WithApiToken(p.apiKey),
@@ -45,7 +72,7 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 	res, _ := client.ChatCompletions(ctx, req)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 	flushData := func(data string) error {
 		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
@@ -56,7 +83,12 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 	}
 	err := flushData(res.Choices[0].Text)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return nil
+
+	mr := new(ModelResult)
+	mr.PromptTokenCount = int(res.Usage.TotalTokens)
+	p.caculatePrice(mr)
+
+	return mr, nil
 }
