@@ -15,19 +15,16 @@
 package embedding
 
 import (
-	"context"
-
 	"github.com/casibase/casibase/proxy"
 	"github.com/sashabaranov/go-openai"
 )
 
-type OpenAiEmbeddingProvider struct {
-	subType   string
-	secretKey string
-}
-
-func NewOpenAiEmbeddingProvider(subType string, secretKey string) (*OpenAiEmbeddingProvider, error) {
-	return &OpenAiEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
+func NewOpenAiEmbeddingProvider(typ string, subType string, secretKey string) (*LocalEmbeddingProvider, error) {
+	return &LocalEmbeddingProvider{
+		typ:       typ,
+		subType:   subType,
+		secretKey: secretKey,
+	}, nil
 }
 
 func getProxyClientFromToken(authToken string) *openai.Client {
@@ -36,18 +33,4 @@ func getProxyClientFromToken(authToken string) *openai.Client {
 
 	c := openai.NewClientWithConfig(config)
 	return c
-}
-
-func (p *OpenAiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
-	client := getProxyClientFromToken(p.secretKey)
-
-	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
-		Input: []string{text},
-		Model: openai.EmbeddingModel(p.subType),
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	return resp.Data[0].Embedding, nil
 }
