@@ -30,7 +30,14 @@ func getExtFromMimeType(mimeType string) (string, error) {
 		return "", fmt.Errorf("getExtFromMimeType() error: unknown MimeType: %s", mimeType)
 	}
 
-	return exts[len(exts)-1][1:], nil
+	res := ""
+	if strings.HasPrefix(exts[len(exts)-1], ".x-") && len(exts) > 1 {
+		res = exts[len(exts)-2][1:]
+	} else {
+		res = exts[len(exts)-1][1:]
+
+	}
+	return res, nil
 }
 
 func parseBase64Image(data string) (string, []byte, error) {

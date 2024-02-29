@@ -175,6 +175,11 @@ func RefineMessageImages(message *Message, origin string) error {
 				return err
 			}
 
+			if strings.Contains(fileUrl, "?") {
+				tokens := strings.Split(fileUrl, "?")
+				fileUrl = tokens[0]
+			}
+
 			httpUrl, err := getUrlFromPath(fileUrl, origin)
 			if err != nil {
 				return err
