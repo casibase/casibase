@@ -57,6 +57,7 @@ class StoreListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,
       storageProvider: "provider-storage-built-in",
+      imageProvider: "",
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
@@ -171,12 +172,19 @@ class StoreListPage extends React.Component {
           );
         },
       },
+      // {
+      //   title: i18next.t("store:Split provider"),
+      //   dataIndex: "splitProvider",
+      //   key: "splitProvider",
+      //   width: "200px",
+      //   sorter: (a, b) => a.splitProvider.localeCompare(b.splitProvider),
+      // },
       {
-        title: i18next.t("store:Split provider"),
-        dataIndex: "splitProvider",
-        key: "splitProvider",
+        title: i18next.t("store:Image provider"),
+        dataIndex: "imageProvider",
+        key: "imageProvider",
         width: "200px",
-        sorter: (a, b) => a.splitProvider.localeCompare(b.splitProvider),
+        sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
       },
       {
         title: i18next.t("store:Model provider"),

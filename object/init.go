@@ -43,6 +43,7 @@ func initBuiltInStore() {
 		CreatedTime:       util.GetCurrentTime(),
 		DisplayName:       "Built-in Store",
 		StorageProvider:   "provider-storage-built-in",
+		ImageProvider:     "",
 		SplitProvider:     "Default",
 		ModelProvider:     "",
 		EmbeddingProvider: "",

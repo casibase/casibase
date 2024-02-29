@@ -46,6 +46,7 @@ type Store struct {
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
 	StorageProvider   string `xorm:"varchar(100)" json:"storageProvider"`
+	ImageProvider     string `xorm:"varchar(100)" json:"imageProvider"`
 	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
@@ -177,6 +178,14 @@ func (store *Store) GetStorageProviderObj() (storage.StorageProvider, error) {
 	} else {
 		return storage.NewCasdoorProvider(store.StorageProvider)
 	}
+}
+
+func (store *Store) GetImageProviderObj() (storage.StorageProvider, error) {
+	if store.ImageProvider == "" {
+		return nil, fmt.Errorf("The image provider for store: %s should not be empty", store.GetId())
+	}
+
+	return storage.NewCasdoorProvider(store.ImageProvider)
 }
 
 func (store *Store) GetModelProvider() (*Provider, error) {

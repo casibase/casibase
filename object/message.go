@@ -157,7 +157,7 @@ func RefineMessageImages(message *Message, origin string) error {
 			return err
 		}
 
-		obj, err := store.GetStorageProviderObj()
+		obj, err := store.GetImageProviderObj()
 		if err != nil {
 			return err
 		}
