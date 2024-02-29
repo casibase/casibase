@@ -113,7 +113,7 @@ func (c *ApiController) addInitialChat(userId string) (*object.Chat, error) {
 
 	if store.Welcome != "Hello" {
 		chat.DisplayName = fmt.Sprintf("新会话 - %d", 1)
-		chat.Category = "默认类别"
+		chat.Category = "默认分类"
 	}
 
 	chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
