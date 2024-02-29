@@ -131,7 +131,7 @@ class VideoListPage extends React.Component {
     return (
       <Upload {...props}>
         <Button type="primary" size="small">
-          <UploadOutlined /> Upload Video (.mp4)
+          <UploadOutlined /> {i18next.t("video:Upload Video")} (.mp4)
         </Button>
       </Upload>
     );

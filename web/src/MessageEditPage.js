@@ -195,7 +195,7 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:replyTo")}:
+            {i18next.t("message:Reply to")}:
           </Col>
           <Col span={22}>
             <Select
