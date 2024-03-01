@@ -46,6 +46,67 @@ func NewOpenRouterModelProvider(subType string, secretKey string, temperature fl
 	return p, nil
 }
 
+func (p *OpenRouterModelProvider) GetPricing() (string, string) {
+	return "USB", `URL:
+https://openrouter.ai/docs#models
+
+| Model Name                   | Prompt cost ($ per 1k tokens) | Completion cost ($ per 1k tokens) | Context (tokens) | Moderation |
+|------------------------------|-------------------------------|-----------------------------------|------------------|------------|
+| google/palm-2-codechat-bison | $0.00025                      | $0.0005                           | 28,672           | None       |
+| google/palm-2-chat-bison     | $0.00025                      | $0.0005                           | 36,864           | None       |
+| openai/gpt-3.5-turbo         | $0.001                        | $0.002                            | 4,095            | Moderated  |
+| openai/gpt-3.5-turbo-16k     | $0.0005                       | $0.0015                           | 16,385           | Moderated  |
+| openai/gpt-4                 | $0.03                         | $0.06                             | 8,191            | Moderated  |
+| openai/gpt-4-32k             | $0.06                         | $0.12                             | 32,767           | Moderated  |
+| anthropic/claude-2           | $0.008                        | $0.024                            | 200,000          | Moderated  |
+| anthropic/claude-instant-v1  | $0.0008                       | $0.0024                           | 100,000          | Moderated  |
+| meta-llama/llama-2-13b-chat  | $0.0007                       | $0.0009                           | 4,096            | None       |
+| meta-llama/llama-2-70b-chat  | $0.0007                       | $0.0009                           | 4,096            | None       |
+| palm-2-codechat-bison        | $0.00025                      | $0.0005                           | 28,672           | None       |
+| palm-2-chat-bison            | $0.00025                      | $0.0005                           | 36,864           | None       |
+| gpt-3.5-turbo                | $0.001                        | $0.002                            | 4,095            | Moderated  |
+| gpt-3.5-turbo-16k            | $0.0005                       | $0.0015                           | 16,385           | Moderated  |
+| gpt-4                        | $0.03                         | $0.06                             | 8,191            | Moderated  |
+| gpt-4-32k                    | $0.06                         | $0.12                             | 32,767           | Moderated  |
+| claude-2                     | $0.008                        | $0.024                            | 200,000          | Moderated  |
+| claude-instant-v1            | $0.0008                       | $0.0024                           | 100,000          | Moderated  |
+| llama-2-13b-chat             | $0.0007                       | $0.0009                           | 4,096            | None       |
+| llama-2-70b-chat             | $0.0007                       | $0.0009                           | 4,096            | None       |
+`
+}
+
+func (p *OpenRouterModelProvider) caculatePrice(mr *ModelResult) {
+	priceTable := map[string][]float64{
+		"google/palm-2-codechat-bison": {0.00025, 0.0005},
+		"google/palm-2-chat-bison":     {0.00025, 0.0005},
+		"openai/gpt-3.5-turbo":         {0.001, 0.002},
+		"openai/gpt-3.5-turbo-16k":     {0.0005, 0.0015},
+		"openai/gpt-4":                 {0.03, 0.06},
+		"openai/gpt-4-32k":             {0.06, 0.12},
+		"anthropic/claude-2":           {0.008, 0.024},
+		"anthropic/claude-instant-v1":  {0.0008, 0.0024},
+		"meta-llama/llama-2-13b-chat":  {0.0007, 0.0009},
+		"meta-llama/llama-2-70b-chat":  {0.0007, 0.0009},
+		"palm-2-codechat-bison":        {0.00025, 0.0005},
+		"palm-2-chat-bison":            {0.00025, 0.0005},
+		"gpt-3.5-turbo":                {0.001, 0.002},
+		"gpt-3.5-turbo-16k":            {0.0005, 0.0015},
+		"gpt-4":                        {0.03, 0.06},
+		"gpt-4-32k":                    {0.06, 0.12},
+		"claude-2":                     {0.008, 0.024},
+		"claude-instant-v1":            {0.0008, 0.0024},
+		"llama-2-13b-chat":             {0.0007, 0.0009},
+		"llama-2-70b-chat":             {0.0007, 0.0009},
+	}
+
+	if price, ok := priceTable[p.subType]; ok {
+		mr.TotalPrice = price[0]*float64(mr.PromptTokenCount) + price[1]*float64(mr.ResponseTokenCount)
+	} else {
+		// model not found
+		mr.TotalPrice = 0.0
+	}
+}
+
 func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
 	config, err := openrouter.DefaultConfig(p.secretKey, p.siteName, p.siteUrl)
 	if err != nil {
@@ -58,13 +119,13 @@ func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
 	return c
 }
 
-func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := p.getProxyClientFromToken()
 
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
 	model := p.subType
@@ -74,12 +135,12 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 
 	tokenCount, err := GetTokenSize(model, question)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	maxTokens := getOpenAiMaxTokens(model) - tokenCount
 	if maxTokens < 0 {
-		return fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, getOpenAiMaxTokens(model))
+		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, getOpenAiMaxTokens(model))
 	}
 
 	temperature := p.temperature
@@ -106,9 +167,11 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		},
 	)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer respStream.Close()
+
+	responseStringBuilder := strings.Builder{}
 
 	isLeadingReturn := true
 	for {
@@ -117,7 +180,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 			if streamErr == io.EOF {
 				break
 			}
-			return streamErr
+			return nil, streamErr
 		}
 
 		data := completion.Choices[0].Message.Content
@@ -130,10 +193,25 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		}
 
 		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
-			return err
+			return nil, err
 		}
+
+		// save the response for token count
+		_, _ = responseStringBuilder.WriteString(data)
+
 		flusher.Flush()
 	}
 
-	return nil
+	// get token count and price
+	responseTokenSize, err := GetTokenSize(model, responseStringBuilder.String())
+	if err != nil {
+		return nil, err
+	}
+	mr := new(ModelResult)
+	mr.PromptTokenCount = tokenCount
+	mr.ResponseTokenCount = responseTokenSize
+	mr.TotalTokenCount = mr.PromptTokenCount + mr.ResponseTokenCount
+	p.caculatePrice(mr)
+
+	return mr, nil
 }

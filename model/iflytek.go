@@ -43,19 +43,51 @@ func NewiFlytekModelProvider(subType string, secretKey string, temperature float
 	return p, nil
 }
 
-func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) error {
+func (p *iFlytekModelProvider) GetPricing() (string, string) {
+	return "", `URL:
+https://xinghuo.xfyun.cn/sparkapi
+
+| Service Volume     | QPS | Validity | Version          | Unit Price       | Original Price |
+|--------------------|-----|----------|------------------|------------------|----------------|
+| 2 million tokens   | 2   | 1 year   | Spark Model V1.5 | Free             | ¥0             |
+| 5 million tokens   | 2   | 1 year   | Spark Model V1.5 | Free             | ¥0             |
+| 2 million tokens   | 2   | 1 year   | Spark Model V3.0 | Free             | ¥0             |
+| 5 million tokens   | 2   | 1 year   | Spark Model V3.0 | Free             | ¥0             |
+| 2 million tokens   | 2   | 1 year   | Spark Model V3.5 | Free             | ¥0             |
+| 5 million tokens   | 2   | 1 year   | Spark Model V3.5 | Free             | ¥0             |
+| 50 million tokens  | 2   | 1 year   | Spark Model V1.5 | ¥0.15/10k tokens | ¥750           |
+| 50 million tokens  | 2   | 1 year   | Spark Model V3.0 | ¥0.30/10k tokens | ¥1500          |
+| 50 million tokens  | 2   | 1 year   | Spark Model V3.5 | ¥0.30/10k tokens | ¥1500          |
+| 100 million tokens | 2   | 1 year   | Spark Model V1.5 | ¥0.14/10k tokens | ¥1400          |
+| 100 million tokens | 2   | 1 year   | Spark Model V3.0 | ¥0.28/10k tokens | ¥2800          |
+| 100 million tokens | 2   | 1 year   | Spark Model V3.5 | ¥0.28/10k tokens | ¥2800          |
+| 1 billion tokens   | 20  | 1 year   | Spark Model V1.5 | ¥0.13/10k tokens | ¥13000         |
+| 1 billion tokens   | 20  | 1 year   | Spark Model V3.0 | ¥0.26/10k tokens | ¥26000         |
+| 1 billion tokens   | 20  | 1 year   | Spark Model V3.5 | ¥0.26/10k tokens | ¥26000         |
+| 5 billion tokens   | 50  | 1 year   | Spark Model V1.5 | ¥0.12/10k tokens | ¥60000         |
+| 5 billion tokens   | 50  | 1 year   | Spark Model V3.0 | ¥0.24/10k tokens | ¥120000        |
+| 5 billion tokens   | 50  | 1 year   | Spark Model V3.5 | ¥0.24/10k tokens | ¥120000        |
+`
+}
+
+func (p *iFlytekModelProvider) caculatePrice(mr *ModelResult) {
+	// Because it is a one-time purchase, it is inconvenient to charge
+	mr.TotalPrice = 0.0
+}
+
+func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := iflytek.NewServer(p.appID, p.apiKey, p.secretKey)
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
-		return fmt.Errorf("writer does not implement http.Flusher")
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
 	session, err := client.GetSession("1")
 	if err != nil {
-		return fmt.Errorf("iflytek get session error: %v", err)
+		return nil, fmt.Errorf("iflytek get session error: %v", err)
 	}
 	if session == nil {
-		return fmt.Errorf("iflytek get session error: session is nil")
+		return nil, fmt.Errorf("iflytek get session error: session is nil")
 	}
 
 	session.Req.Parameter.Chat.Temperature = p.temperature
@@ -63,7 +95,7 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 
 	response, err := session.Send(question)
 	if err != nil {
-		return fmt.Errorf("iflytek send error: %v", err)
+		return nil, fmt.Errorf("iflytek send error: %v", err)
 	}
 
 	flushData := func(data string) error {
@@ -76,8 +108,22 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 
 	err = flushData(response)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	mr := new(ModelResult)
+	promptTokenCount, err := GetTokenSize(p.subType, question)
+	if err != nil {
+		return nil, err
+	}
+	mr.PromptTokenCount = promptTokenCount
+	responseTokenCount, err := GetTokenSize(p.subType, response)
+	if err != nil {
+		return nil, err
+	}
+	mr.ResponseTokenCount = responseTokenCount
+	mr.TotalTokenCount = promptTokenCount + responseTokenCount
+	p.caculatePrice(mr)
+
+	return mr, nil
 }

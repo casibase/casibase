@@ -33,6 +33,7 @@ func newModelResult(promptTokenCount int, responseTokenCount int, totalTokenCoun
 }
 
 type ModelProvider interface {
+	// GetPricing returns the concurrency and pricing information
 	GetPricing() (string, string)
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error)
 }
@@ -45,25 +46,25 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "OpenAI" {
 		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Gemini" {
-		// p, err = NewGeminiModelProvider(subType, clientSecret, temperature, topP, topK)
+		p, err = NewGeminiModelProvider(subType, clientSecret, temperature, topP, topK)
 	} else if typ == "Azure" {
 		p, err = NewAzureModelProvider(typ, subType, clientId, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, apiVersion)
 	} else if typ == "Hugging Face" {
-		// p, err = NewHuggingFaceModelProvider(subType, clientSecret, temperature)
+		p, err = NewHuggingFaceModelProvider(subType, clientSecret, temperature)
 	} else if typ == "Claude" {
-		// p, err = NewClaudeModelProvider(subType, clientSecret)
+		p, err = NewClaudeModelProvider(subType, clientSecret)
 	} else if typ == "OpenRouter" {
-		// p, err = NewOpenRouterModelProvider(subType, clientSecret, temperature, topP)
+		p, err = NewOpenRouterModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Ernie" {
-		// p, err = NewErnieModelProvider(subType, clientId, clientSecret, temperature, topP, presencePenalty)
+		p, err = NewErnieModelProvider(subType, clientId, clientSecret, temperature, topP, presencePenalty)
 	} else if typ == "iFlytek" {
-		// p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
+		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
 	} else if typ == "ChatGLM" {
-		// p, err = NewChatGLMModelProvider(subType, clientSecret)
+		p, err = NewChatGLMModelProvider(subType, clientSecret)
 	} else if typ == "MiniMax" {
-		// p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
+		p, err = NewMiniMaxModelProvider(subType, clientId, clientSecret, temperature)
 	} else if typ == "Cohere" {
-		// p, err = NewCohereModelProvider(subType, clientSecret)
+		p, err = NewCohereModelProvider(subType, clientSecret)
 	}
 	if err != nil {
 		return nil, err
