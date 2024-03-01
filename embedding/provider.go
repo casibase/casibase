@@ -14,16 +14,21 @@
 
 package embedding
 
-import "context"
+import (
+	"context"
+
+	"github.com/casibase/casibase/model"
+)
 
 type EmbeddingResult struct {
 	TokenCount int
 	Price      float64
+	Currency   string
 }
 
 type EmbeddingProvider interface {
-	GetPricing() (string, string)
-	QueryVector(text string, ctx context.Context) (*EmbeddingResult, []float32, error)
+	GetPricing() string
+	QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error)
 }
 
 func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string) (EmbeddingProvider, error) {
@@ -49,4 +54,24 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		return nil, err
 	}
 	return p, nil
+}
+
+func GetDefaultEmbeddingResult(modelSubType string, text string) (*EmbeddingResult, error) {
+	tokenCount, err := model.GetTokenSize(modelSubType, text)
+	if err != nil {
+		tokenCount, err = model.GetTokenSize("text-embedding-ada-002", text)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	price := (float64(tokenCount) / 1000.0) * 0.0001
+	currency := "USD"
+
+	res := &EmbeddingResult{
+		TokenCount: tokenCount,
+		Price:      price,
+		Currency:   currency,
+	}
+	return res, nil
 }

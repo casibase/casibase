@@ -48,7 +48,7 @@ func filterTextFiles(files []*storage.Object) []*storage.Object {
 }
 
 func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text string, storeName string, fileName string, index int, embeddingProviderName string, modelSubType string) (bool, error) {
-	data, err := queryVectorSafe(embeddingProviderObj, text)
+	data, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return false, err
 	}
@@ -58,12 +58,28 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 		displayName = text[:25]
 	}
 
-	size, err := model.GetTokenSize(modelSubType, text)
-	if err != nil {
-		size, err = model.GetTokenSize("gpt-3.5-turbo", text)
+	tokenCount := 0
+	price := 0.0
+	currency := ""
+	if embeddingResult != nil {
+		tokenCount = embeddingResult.TokenCount
+		price = embeddingResult.Price
+		currency = embeddingResult.Currency
 	}
+
+	defaultEmbeddingResult, err := embedding.GetDefaultEmbeddingResult(modelSubType, text)
 	if err != nil {
 		return false, err
+	}
+
+	if tokenCount == 0 {
+		tokenCount = defaultEmbeddingResult.TokenCount
+	}
+	if price == 0 {
+		price = defaultEmbeddingResult.Price
+	}
+	if currency == "" {
+		currency = defaultEmbeddingResult.Currency
 	}
 
 	vector := &Vector{
@@ -76,7 +92,9 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 		File:        fileName,
 		Index:       index,
 		Text:        text,
-		Size:        size,
+		TokenCount:  tokenCount,
+		Price:       price,
+		Currency:    currency,
 		Data:        data,
 		Dimension:   len(data),
 	}
@@ -161,20 +179,19 @@ func getRelatedVectors(provider string) ([]*Vector, error) {
 	return vectors, nil
 }
 
-func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int) ([]float32, error) {
+func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int) ([]float32, *embedding.EmbeddingResult, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
 	defer cancel()
-	// embeddingResult, vector, err := embeddingProvider.QueryVector(text, ctx)
-	// return embeddingResult, vector, err
-	_, vector, err := embeddingProvider.QueryVector(text, ctx)
-	return vector, err
+	vector, embeddingResult, err := embeddingProvider.QueryVector(text, ctx)
+	return vector, embeddingResult, err
 }
 
-func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string) ([]float32, error) {
+func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string) ([]float32, *embedding.EmbeddingResult, error) {
 	var res []float32
+	var embeddingResult *embedding.EmbeddingResult
 	var err error
 	for i := 0; i < 10; i++ {
-		res, err = queryVectorWithContext(embeddingProvider, text, i)
+		res, embeddingResult, err = queryVectorWithContext(embeddingProvider, text, i)
 		if err != nil {
 			if i > 0 {
 				fmt.Printf("\tFailed (%d): %s\n", i+1, err.Error())
@@ -185,29 +202,29 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	} else {
-		return res, nil
+		return res, embeddingResult, nil
 	}
 }
 
-func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) ([]*model.RawMessage, []VectorScore, error) {
-	qVector, err := queryVectorSafe(embeddingProviderObj, text)
+func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 	if qVector == nil || len(qVector) == 0 {
-		return nil, nil, fmt.Errorf("no qVector found")
+		return nil, nil, nil, fmt.Errorf("no qVector found")
 	}
 
 	searchProvider, err := GetSearchProvider("Default", owner)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector)
 	if err != nil {
-		return nil, nil, err
+		return nil, nil, nil, err
 	}
 
 	vectorScores := []VectorScore{}
@@ -227,5 +244,5 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 		})
 	}
 
-	return knowledge, vectorScores, nil
+	return knowledge, vectorScores, embeddingResult, nil
 }

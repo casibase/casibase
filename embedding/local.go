@@ -49,8 +49,8 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalEmbeddingProvider) GetPricing() (string, string) {
-	return "USD", `URL:
+func (p *LocalEmbeddingProvider) GetPricing() string {
+	return `URL:
 https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/
 
 Embedding models:
@@ -78,10 +78,11 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	}
 
 	res.Price = (float64(res.TokenCount) / 1000.0) * pricePerThousandTokens
+	res.Currency = "USD"
 	return nil
 }
 
-func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (*EmbeddingResult, []float32, error) {
+func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	var client *openai.Client
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
@@ -106,5 +107,6 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		return nil, nil, err
 	}
 
-	return res, resp.Data[0].Embedding, nil
+	vector := resp.Data[0].Embedding
+	return vector, res, nil
 }

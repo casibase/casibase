@@ -72,8 +72,9 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	question := store.Welcome
+	var questionMessage *object.Message
 	if message.ReplyTo != "Welcome" {
-		questionMessage, err := object.GetMessage(message.ReplyTo)
+		questionMessage, err = object.GetMessage(message.ReplyTo)
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
@@ -117,10 +118,22 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	knowledge, vectorScores, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
+	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(err.Error())
 		return
+	}
+
+	if questionMessage != nil {
+		questionMessage.TokenCount = embeddingResult.TokenCount
+		questionMessage.Price = embeddingResult.Price
+		questionMessage.Currency = embeddingResult.Currency
+
+		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage)
+		if err != nil {
+			c.ResponseErrorStream(err.Error())
+			return
+		}
 	}
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
@@ -175,11 +188,12 @@ func (c *ApiController) GetMessageAnswer() {
 
 	answer := writer.String()
 
-	message.Text = answer
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	currency, _ := modelProviderObj.GetPricing()
 	message.Currency = currency
+
+	message.Text = answer
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {

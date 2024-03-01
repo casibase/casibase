@@ -20,25 +20,30 @@ package object
 import (
 	"testing"
 
-	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/embedding"
 )
 
-func TestUpdateVectors(t *testing.T) {
+func TestUpdateMessages(t *testing.T) {
 	InitConfig()
 
-	vectors, err := GetGlobalVectors()
+	messages, err := GetGlobalMessages()
 	if err != nil {
 		panic(err)
 	}
 
-	for _, vector := range vectors {
-		if vector.Text != "" && (vector.TokenCount == 0 || vector.Price == 0) {
-			vector.TokenCount, err = model.GetTokenSize("text-davinci-003", vector.Text)
+	for _, message := range messages {
+		if message.Author != "AI" && message.Text != "" && (message.TokenCount == 0 || message.Price == 0) {
+			var defaultEmbeddingResult *embedding.EmbeddingResult
+			defaultEmbeddingResult, err = embedding.GetDefaultEmbeddingResult("text-embedding-ada-002", message.Text)
 			if err != nil {
 				panic(err)
 			}
 
-			_, err = UpdateVector(vector.GetId(), vector)
+			message.TokenCount = defaultEmbeddingResult.TokenCount
+			message.Price = defaultEmbeddingResult.Price
+			message.Currency = defaultEmbeddingResult.Currency
+
+			_, err = UpdateMessage(message.GetId(), message)
 			if err != nil {
 				panic(err)
 			}
