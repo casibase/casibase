@@ -164,7 +164,10 @@ func getRelatedVectors(provider string) ([]*Vector, error) {
 func queryVectorWithContext(embeddingProvider embedding.EmbeddingProvider, text string, timeout int) ([]float32, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(30+timeout*2)*time.Second)
 	defer cancel()
-	return embeddingProvider.QueryVector(text, ctx)
+	// embeddingResult, vector, err := embeddingProvider.QueryVector(text, ctx)
+	// return embeddingResult, vector, err
+	_, vector, err := embeddingProvider.QueryVector(text, ctx)
+	return vector, err
 }
 
 func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string) ([]float32, error) {

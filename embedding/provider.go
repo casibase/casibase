@@ -16,23 +16,31 @@ package embedding
 
 import "context"
 
+type EmbeddingResult struct {
+	PromptTokenCount   int
+	ResponseTokenCount int
+	TotalTokenCount    int
+	TotalPrice         float64
+}
+
 type EmbeddingProvider interface {
-	QueryVector(text string, ctx context.Context) ([]float32, error)
+	GetPricing() (string, string)
+	QueryVector(text string, ctx context.Context) (*EmbeddingResult, []float32, error)
 }
 
 func GetEmbeddingProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string) (EmbeddingProvider, error) {
 	var p EmbeddingProvider
 	var err error
 	if typ == "OpenAI" {
-		p, err = NewOpenAiEmbeddingProvider(subType, clientSecret)
+		p, err = NewOpenAiEmbeddingProvider(typ, subType, clientSecret)
 	} else if typ == "Gemini" {
-		p, err = NewGeminiEmbeddingProvider(subType, clientSecret)
+		// p, err = NewGeminiEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
-		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
+		// p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Cohere" {
-		p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
+		// p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Ernie" {
-		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
+		// p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Local" {
 		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Azure" {
