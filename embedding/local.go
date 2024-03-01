@@ -77,7 +77,7 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", embeddingModel)
 	}
 
-	res.Price = (float64(res.TokenCount) / 1000.0) * pricePerThousandTokens
+	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
 	res.Currency = "USD"
 	return nil
 }

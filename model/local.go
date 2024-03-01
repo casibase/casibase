@@ -115,8 +115,8 @@ func (p *LocalModelProvider) calculatePrice(res *ModelResult) error {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
 	}
 
-	totalInputPrice := (float64(res.PromptTokenCount) / 1000.0) * inputPricePerThousandTokens
-	totalOutputPrice := (float64(res.ResponseTokenCount) / 1000.0) * outputPricePerThousandTokens
+	totalInputPrice := getPrice(res.PromptTokenCount, inputPricePerThousandTokens)
+	totalOutputPrice := getPrice(res.ResponseTokenCount, outputPricePerThousandTokens)
 	res.TotalPrice = totalInputPrice + totalOutputPrice
 	return nil
 }

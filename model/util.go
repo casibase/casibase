@@ -16,6 +16,7 @@ package model
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
@@ -32,6 +33,12 @@ func reverseMessages(arr []*RawMessage) []*RawMessage {
 	}
 
 	return arr
+}
+
+func getPrice(tokenCount int, pricePerThousandTokens float64) float64 {
+	res := (float64(tokenCount) / 1000.0) * pricePerThousandTokens
+	res = math.Round(res*1e8) / 1e8
+	return res
 }
 
 func GetTokenSize(model string, prompt string) (int, error) {

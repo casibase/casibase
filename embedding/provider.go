@@ -65,7 +65,7 @@ func GetDefaultEmbeddingResult(modelSubType string, text string) (*EmbeddingResu
 		return nil, err
 	}
 
-	price := (float64(tokenCount) / 1000.0) * 0.0001
+	price := getPrice(tokenCount, 0.0001)
 	currency := "USD"
 
 	res := &EmbeddingResult{
