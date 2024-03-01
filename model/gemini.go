@@ -59,7 +59,7 @@ https://ai.google.dev/pricing
 `
 }
 
-func (p *GeminiModelProvider) caculatePrice(mr *ModelResult) {
+func (p *GeminiModelProvider) calculatePrice(mr *ModelResult) {
 	switch p.subType {
 	case GeminiPro:
 		mr.TotalPrice = float64(mr.TotalTokenCount) * 0.000_125 / 1_000
@@ -106,7 +106,7 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 	mr := new(ModelResult)
 	// gemini only count total token
 	mr.TotalTokenCount = int(resp.Candidates[0].TokenCount)
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

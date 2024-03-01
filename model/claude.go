@@ -43,7 +43,7 @@ https://www.anthropic.com/pricing
 `
 }
 
-func (p *ClaudeModelProvider) caculatePrice(mr *ModelResult) {
+func (p *ClaudeModelProvider) calculatePrice(mr *ModelResult) {
 	priceTable := map[string][]float64{
 		"claude-2": {0.80, 2.40},
 	}
@@ -95,7 +95,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	}
 	mr.ResponseTokenCount = responseTokenCount
 	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

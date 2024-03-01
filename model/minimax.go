@@ -39,7 +39,7 @@ https://api.minimax.chat/document/price
 `
 }
 
-func (p *MiniMaxModelProvider) caculatePrice(mr *ModelResult) {
+func (p *MiniMaxModelProvider) calculatePrice(mr *ModelResult) {
 	priceTable := map[string][]float64{
 		"abab6":      {0.1, 0.1},
 		"abab5.5":    {0.015, 0.015},
@@ -88,7 +88,7 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 
 	mr := new(ModelResult)
 	mr.PromptTokenCount = int(res.Usage.TotalTokens)
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

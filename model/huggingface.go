@@ -38,7 +38,7 @@ func (p *HuggingFaceModelProvider) GetPricing() (string, string) {
 	return "Free", "Free"
 }
 
-func (p *HuggingFaceModelProvider) caculatePrice(mr *ModelResult) {
+func (p *HuggingFaceModelProvider) calculatePrice(mr *ModelResult) {
 	mr.TotalPrice = 0.0
 }
 
@@ -73,7 +73,7 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 	}
 	mr.ResponseTokenCount = responseTokenCount
 	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

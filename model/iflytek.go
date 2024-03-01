@@ -70,7 +70,7 @@ https://xinghuo.xfyun.cn/sparkapi
 `
 }
 
-func (p *iFlytekModelProvider) caculatePrice(mr *ModelResult) {
+func (p *iFlytekModelProvider) calculatePrice(mr *ModelResult) {
 	// Because it is a one-time purchase, it is inconvenient to charge
 	mr.TotalPrice = 0.0
 }
@@ -123,7 +123,7 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	}
 	mr.ResponseTokenCount = responseTokenCount
 	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

@@ -255,6 +255,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		defer respStream.Close()
 
 		isLeadingReturn := true
+		responseStringBuilder := strings.Builder{}
 		for {
 			completion, streamErr := respStream.Recv()
 			if streamErr != nil {
@@ -281,15 +282,25 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			if err != nil {
 				return nil, err
 			}
-
-			// res.PromptTokenCount += completion.Usage.PromptTokens
-			// res.ResponseTokenCount += completion.Usage.CompletionTokens
-			// res.TotalTokenCount += completion.Usage.TotalTokens
-			// err = p.calculatePrice(res)
-			// if err != nil {
-			//	return nil, err
-			// }
+			_, _ = responseStringBuilder.WriteString(data)
+			if err != nil {
+				return nil, err
+			}
 		}
+
+		// get token count and price
+		responseTokenSize, err := GetTokenSize(model, responseStringBuilder.String())
+		if err != nil {
+			return nil, err
+		}
+		promptTokenCount, err := GetTokenSize(p.subType, question)
+		if err != nil {
+			return nil, err
+		}
+		res.PromptTokenCount = promptTokenCount
+		res.ResponseTokenCount = responseTokenSize
+		res.TotalTokenCount = res.PromptTokenCount + res.ResponseTokenCount
+		p.calculatePrice(res)
 
 		return res, nil
 	} else if getOpenAiModelType(p.subType) == "Completion" {

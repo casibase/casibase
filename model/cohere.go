@@ -81,7 +81,7 @@ Embed Model:
 `
 }
 
-func (c *CohereModelProvider) caculatePrice(mr *ModelResult) {
+func (c *CohereModelProvider) calculatePrice(mr *ModelResult) {
 	switch c.subType {
 	case CohereModelCommand, CohereModelCommandNightly:
 		mr.TotalPrice += float64(mr.PromptTokenCount) * 1.00 / 1_000_000
@@ -125,12 +125,12 @@ func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 		return nil, writeErr
 	}
 
-	// caculate token
+	// calculate token
 	modelResult := new(ModelResult)
 	modelResult.PromptTokenCount = int(*generation.Meta.BilledUnits.InputTokens)
 	modelResult.ResponseTokenCount = int(*generation.Meta.BilledUnits.OutputTokens)
 	modelResult.TotalTokenCount = modelResult.ResponseTokenCount + modelResult.PromptTokenCount
-	c.caculatePrice(modelResult)
+	c.calculatePrice(modelResult)
 
 	return modelResult, nil
 }

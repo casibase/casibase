@@ -75,7 +75,7 @@ https://openrouter.ai/docs#models
 `
 }
 
-func (p *OpenRouterModelProvider) caculatePrice(mr *ModelResult) {
+func (p *OpenRouterModelProvider) calculatePrice(mr *ModelResult) {
 	priceTable := map[string][]float64{
 		"google/palm-2-codechat-bison": {0.00025, 0.0005},
 		"google/palm-2-chat-bison":     {0.00025, 0.0005},
@@ -211,7 +211,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 	mr.PromptTokenCount = tokenCount
 	mr.ResponseTokenCount = responseTokenSize
 	mr.TotalTokenCount = mr.PromptTokenCount + mr.ResponseTokenCount
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }
