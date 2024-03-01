@@ -51,14 +51,15 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 
 func (p *LocalEmbeddingProvider) GetPricing() (string, string) {
 	return "USD", `URL:
+https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/
 
-Language models:
+Embedding models:
 
 | Models                   | Per 1,000 tokens |
 |--------------------------|------------------|
-| ada v2                   | $0.0001          |
-| text-embedding-3-small   | $0.00002         |
+| Ada                      | $0.0001          |
 | text-embedding-3-large   | $0.00013         |
+| text-embedding-3-small   | $0.00002         |
 `
 }
 
@@ -76,7 +77,7 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", embeddingModel)
 	}
 
-	res.TotalPrice = (float64(res.PromptTokenCount) / 1000.0) * pricePerThousandTokens
+	res.Price = (float64(res.TokenCount) / 1000.0) * pricePerThousandTokens
 	return nil
 }
 
@@ -99,9 +100,7 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		return nil, nil, err
 	}
 
-	res.PromptTokenCount += resp.Usage.PromptTokens
-	res.ResponseTokenCount += resp.Usage.CompletionTokens
-	res.TotalTokenCount += resp.Usage.TotalTokens
+	res.TokenCount += resp.Usage.PromptTokens
 	err = p.calculatePrice(res)
 	if err != nil {
 		return nil, nil, err

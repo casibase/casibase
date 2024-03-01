@@ -17,10 +17,8 @@ package embedding
 import "context"
 
 type EmbeddingResult struct {
-	PromptTokenCount   int
-	ResponseTokenCount int
-	TotalTokenCount    int
-	TotalPrice         float64
+	TokenCount int
+	Price      float64
 }
 
 type EmbeddingProvider interface {
