@@ -35,7 +35,6 @@ func getExtFromMimeType(mimeType string) (string, error) {
 		res = exts[len(exts)-2][1:]
 	} else {
 		res = exts[len(exts)-1][1:]
-
 	}
 	return res, nil
 }
