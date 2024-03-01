@@ -34,17 +34,40 @@ func NewGeminiEmbeddingProvider(subType string, secretKey string) (*GeminiEmbedd
 	return p, nil
 }
 
-func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
+func (p *GeminiEmbeddingProvider) GetPricing() string {
+	return `URL:
+https://cloud.google.com/vertex-ai/generative-ai/pricing
+
+Embedding Models:
+
+| Model                | Output Price          |
+|----------------------|-----------------------|
+| multimodalembeddings | $0.0002/1K characters |
+	`
+}
+
+func (p *GeminiEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+	pricePerThousandTokens := 0.0002
+	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
+	res.Currency = "USD"
+	return nil
+}
+
+func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	// Access your API key as an environment variable (see "Set up your API key" above)
 	client, err := genai.NewClient(ctx, option.WithAPIKey(p.secretKey))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	defer client.Close()
 	em := client.EmbeddingModel(p.subType)
 	res, err := em.EmbedContent(ctx, genai.Text(text))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return res.Embedding.Values, nil
+
+	embeddingResult := &EmbeddingResult{}
+	embeddingResult.TokenCount = 0
+	p.calculatePrice(embeddingResult)
+	return res.Embedding.Values, embeddingResult, nil
 }

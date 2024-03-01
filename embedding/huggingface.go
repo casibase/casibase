@@ -30,14 +30,26 @@ func NewHuggingFaceEmbeddingProvider(subType string, secretKey string) (*Hugging
 	return &HuggingFaceEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
 }
 
-func (h *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
+func (h *HuggingFaceEmbeddingProvider) GetPricing() string {
+	return "0"
+}
+
+// func (h *HuggingFaceEmbeddingProvider) calculatePrice(res *EmbeddingResult) {
+// 	res.Price = 0.0
+// 	res.Currency = "USD"
+// }
+
+func (h *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	client := huggingfaceembedder.New().WithToken(h.secretKey).WithModel(h.subType).WithHTTPClient(proxy.ProxyHttpClient)
 	embed, err := client.Embed(ctx, []string{text})
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-
-	return float64ToFloat32(embed[0]), nil
+	res, err := GetDefaultEmbeddingResult(h.subType, text)
+	if err != nil {
+		return nil, nil, err
+	}
+	return float64ToFloat32(embed[0]), res, nil
 }
 
 func float64ToFloat32(slice []float64) []float32 {
