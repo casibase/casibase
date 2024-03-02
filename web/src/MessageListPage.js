@@ -98,7 +98,7 @@ class MessageListPage extends React.Component {
   }
 
   renderTable(messages) {
-    const columns = [
+    let columns = [
       // {
       //   title: i18next.t("general:Owner"),
       //   dataIndex: "owner",
@@ -196,13 +196,6 @@ class MessageListPage extends React.Component {
         },
       },
       {
-        title: i18next.t("message:Text"),
-        dataIndex: "text",
-        key: "text",
-        width: "300px",
-        sorter: (a, b) => a.text.localeCompare(b.text),
-      },
-      {
         title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
@@ -216,27 +209,34 @@ class MessageListPage extends React.Component {
         key: "price",
         width: "120px",
         sorter: (a, b) => a.price - b.price,
-        // ...this.getColumnSearchProps("tokenCount"),
+        // ...this.getColumnSearchProps("price"),
+        render: (text, record, index) => {
+          return Setting.getDisplayPrice(text, record.currency);
+        },
       },
       {
-        title: i18next.t("chat:Currency"),
-        dataIndex: "currency",
-        key: "currency",
-        width: "120px",
-        sorter: (a, b) => a.currency - b.currency,
-        // ...this.getColumnSearchProps("tokenCount"),
+        title: i18next.t("message:Text"),
+        dataIndex: "text",
+        key: "text",
+        width: "250px",
+        sorter: (a, b) => a.text.localeCompare(b.text),
+        render: (text, record, index) => {
+          return (
+            <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
       },
       {
         title: i18next.t("message:Knowledge"),
         dataIndex: "knowledge",
         key: "knowledge",
-        width: "200px",
+        width: "100px",
         sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
         render: (text, record, index) => {
           return record.vectorScores?.map(vectorScore => {
             return (
               <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
-                <Tag color={"processing"}>
+                <Tag style={{marginTop: "5px"}} color={"processing"}>
                   {vectorScore.score}
                 </Tag>
               </Link>
@@ -249,6 +249,7 @@ class MessageListPage extends React.Component {
         dataIndex: "action",
         key: "action",
         width: "110px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
@@ -274,6 +275,10 @@ class MessageListPage extends React.Component {
         },
       },
     ];
+
+    if (!this.props.account || this.props.account.name !== "admin") {
+      columns = columns.filter(column => column.key !== "price");
+    }
 
     return (
       <div>

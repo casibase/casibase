@@ -138,7 +138,7 @@ class ChatListPage extends React.Component {
   }
 
   renderTable(chats) {
-    const columns = [
+    let columns = [
       // {
       //   title: i18next.t("general:Owner"),
       //   dataIndex: "owner",
@@ -334,6 +334,17 @@ class ChatListPage extends React.Component {
         // ...this.getColumnSearchProps("tokenCount"),
       },
       {
+        title: i18next.t("chat:Price"),
+        dataIndex: "price",
+        key: "price",
+        width: "120px",
+        sorter: (a, b) => a.price - b.price,
+        // ...this.getColumnSearchProps("price"),
+        render: (text, record, index) => {
+          return Setting.getDisplayPrice(text, record.currency);
+        },
+      },
+      {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
@@ -391,6 +402,10 @@ class ChatListPage extends React.Component {
 
     if (this.state.filterSingleChat) {
       chats = chats?.filter(chat => chat.messageCount > 1);
+    }
+
+    if (!this.props.account || this.props.account.name !== "admin") {
+      columns = columns.filter(column => column.key !== "price");
     }
 
     return (

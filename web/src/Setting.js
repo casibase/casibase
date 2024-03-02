@@ -959,3 +959,27 @@ export function getSpeakerTag(speaker) {
     </Tag>
   );
 }
+
+export function getDisplayPrice(price, currency) {
+  const tmp = price.toFixed(7);
+  let numberStr = tmp.toString();
+  if (numberStr.includes(".")) {
+    numberStr = numberStr.replace(/(\.\d*?[1-9])0+$/, "$1");
+    numberStr = numberStr.replace(/\.$/, "");
+  }
+
+  if (price === 0) {
+    numberStr = "0";
+  }
+
+  let prefix = "$";
+  if (currency === "CNY") {
+    prefix = "￥";
+  }
+
+  return (
+    <Tag style={{fontWeight: "bold"}} color={price === 0 ? "default" : "orange"}>
+      {`${prefix}${numberStr}`}
+    </Tag>
+  );
+}
