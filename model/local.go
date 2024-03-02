@@ -122,6 +122,10 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
+func (p *LocalModelProvider) CalculatePrice(modelResult *ModelResult) error {
+	return p.calculatePrice(modelResult)
+}
+
 func flushDataAzure(data string, writer io.Writer) error {
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
@@ -200,7 +204,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
 
-	maxTokens := getOpenAiMaxTokens(model)
+	maxTokens := GetOpenAiMaxTokens(model)
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
@@ -231,23 +235,23 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return modelResult, nil
 		}
 
-		rawMessages, err := generateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
 		if err != nil {
 			return nil, err
 		}
 
 		var messages []openai.ChatCompletionMessage
 		if p.subType == "gpt-4-vision-preview" {
-			messages, err = rawMessagesToGPT4VisionMessages(rawMessages)
+			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
 			if err != nil {
 				return nil, err
 			}
 		} else {
-			messages = rawMessagesToOpenAiMessages(rawMessages)
+			messages = OpenaiRawMessagesToMessages(rawMessages)
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		promptTokenCount, err := numTokensFromMessages(messages, p.subType)
+		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
 		if err != nil {
 			return nil, err
 		}

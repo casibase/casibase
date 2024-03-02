@@ -48,8 +48,8 @@ var __maxTokens = map[string]int{
 	openai.GPT3Babbage:          2049,
 }
 
-// getOpenAiMaxTokens returns the max tokens for a given OpenAI model.
-func getOpenAiMaxTokens(model string) int {
+// GetOpenAiMaxTokens returns the max tokens for a given OpenAI model.
+func GetOpenAiMaxTokens(model string) int {
 	res, ok := __maxTokens[model]
 	if !ok {
 		return 4097
@@ -86,7 +86,7 @@ func getOpenAiModelType(model string) string {
 	return "Unknown"
 }
 
-func rawMessagesToOpenAiMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
+func OpenaiRawMessagesToMessages(messages []*RawMessage) []openai.ChatCompletionMessage {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		var role string
@@ -127,7 +127,7 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 
 // https://github.com/pkoukk/tiktoken-go?tab=readme-ov-file#counting-tokens-for-chat-api-calls
 // https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1608689882
-func numTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (int, error) {
+func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (int, error) {
 	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {
 		return 0, err
@@ -149,12 +149,12 @@ func numTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 	default:
 		if strings.Contains(model, "gpt-3.5-turbo") {
 			// warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613
-			return numTokensFromMessages(messages, "gpt-3.5-turbo-0613")
+			return OpenaiNumTokensFromMessages(messages, "gpt-3.5-turbo-0613")
 		} else if strings.Contains(model, "gpt-4") {
 			// warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613
-			return numTokensFromMessages(messages, "gpt-4-0613")
+			return OpenaiNumTokensFromMessages(messages, "gpt-4-0613")
 		} else {
-			return 0, fmt.Errorf("numTokensFromMessages() error: unknown model type: %s", model)
+			return 0, fmt.Errorf("OpenaiNumTokensFromMessages() error: unknown model type: %s", model)
 		}
 	}
 

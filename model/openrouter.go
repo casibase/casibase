@@ -145,9 +145,9 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		return nil, err
 	}
 
-	maxTokens := getOpenAiMaxTokens(model) - tokenCount
+	maxTokens := GetOpenAiMaxTokens(model) - tokenCount
 	if maxTokens < 0 {
-		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, getOpenAiMaxTokens(model))
+		return nil, fmt.Errorf("The token count: [%d] exceeds the model: [%s]'s maximum token count: [%d]", tokenCount, model, GetOpenAiMaxTokens(model))
 	}
 
 	temperature := p.temperature

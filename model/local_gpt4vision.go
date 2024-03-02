@@ -67,7 +67,7 @@ func getImageRefinedText(text string) (string, error) {
 	return res, nil
 }
 
-func rawMessagesToGPT4VisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
+func OpenaiRawMessagesToGpt4VisionMessages(messages []*RawMessage) ([]openai.ChatCompletionMessage, error) {
 	res := []openai.ChatCompletionMessage{}
 	for _, message := range messages {
 		var role string

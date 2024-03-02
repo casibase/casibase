@@ -127,7 +127,7 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	return res, nil
 }
 
-func generateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
+func OpenaiGenerateMessages(prompt string, question string, recentMessages []*RawMessage, knowledgeMessages []*RawMessage, model string, maxTokens int) ([]*RawMessage, error) {
 	queryMessage := &RawMessage{
 		Text:   question,
 		Author: openai.ChatMessageRoleUser,
