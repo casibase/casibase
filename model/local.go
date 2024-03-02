@@ -202,7 +202,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 	maxTokens := getOpenAiMaxTokens(model)
 
-	res := &ModelResult{}
+	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
 			reqUrl := openai.ImageRequest{
@@ -222,13 +222,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			fmt.Fprint(writer, url)
 			flusher.Flush()
 
-			res.ImageCount = 1
-			err = p.calculatePrice(res)
+			modelResult.ImageCount = 1
+			err = p.calculatePrice(modelResult)
 			if err != nil {
 				return nil, err
 			}
 
-			return res, nil
+			return modelResult, nil
 		}
 
 		rawMessages, err := generateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
@@ -244,6 +244,19 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 		} else {
 			messages = rawMessagesToOpenAiMessages(rawMessages)
+		}
+
+		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
+		promptTokenCount, err := numTokensFromMessages(messages, p.subType)
+		if err != nil {
+			return nil, err
+		}
+
+		modelResult.PromptTokenCount = promptTokenCount
+		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+		err = p.calculatePrice(modelResult)
+		if err != nil {
+			return nil, err
 		}
 
 		respStream, err := client.CreateChatCompletionStream(
@@ -283,16 +296,22 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			// res.PromptTokenCount += completion.Usage.PromptTokens
-			// res.ResponseTokenCount += completion.Usage.CompletionTokens
-			// res.TotalTokenCount += completion.Usage.TotalTokens
-			// err = p.calculatePrice(res)
-			// if err != nil {
-			//	return nil, err
-			// }
+			// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
+			var responseTokenCount int
+			responseTokenCount, err = GetTokenSize(p.subType, data)
+			if err != nil {
+				return nil, err
+			}
+
+			modelResult.ResponseTokenCount += responseTokenCount
+			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+			err = p.calculatePrice(modelResult)
+			if err != nil {
+				return nil, err
+			}
 		}
 
-		return res, nil
+		return modelResult, nil
 	} else if getOpenAiModelType(p.subType) == "Completion" {
 		respStream, err := client.CreateCompletionStream(
 			ctx,
@@ -335,16 +354,16 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			res.PromptTokenCount += completion.Usage.PromptTokens
-			res.ResponseTokenCount += completion.Usage.CompletionTokens
-			res.TotalTokenCount += completion.Usage.TotalTokens
-			err = p.calculatePrice(res)
+			modelResult.PromptTokenCount += completion.Usage.PromptTokens
+			modelResult.ResponseTokenCount += completion.Usage.CompletionTokens
+			modelResult.TotalTokenCount += completion.Usage.TotalTokens
+			err = p.calculatePrice(modelResult)
 			if err != nil {
 				return nil, err
 			}
 		}
 
-		return res, nil
+		return modelResult, nil
 	} else {
 		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
 	}
