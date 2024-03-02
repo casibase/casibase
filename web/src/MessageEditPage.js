@@ -55,7 +55,7 @@ class MessageEditPage extends React.Component {
   }
 
   getChat(chatName) {
-    ChatBackend.getChat(this.props.account.name, chatName)
+    ChatBackend.getChat("admin", chatName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -68,7 +68,7 @@ class MessageEditPage extends React.Component {
   }
 
   getMessage() {
-    MessageBackend.getMessage(this.props.account.name, this.state.messageName)
+    MessageBackend.getMessage("admin", this.state.messageName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({

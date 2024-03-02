@@ -41,7 +41,7 @@ class ChatEditPage extends React.Component {
   }
 
   getChat() {
-    ChatBackend.getChat(this.props.account.name, this.state.chatName)
+    ChatBackend.getChat("admin", this.state.chatName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
