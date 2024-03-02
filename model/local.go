@@ -93,13 +93,13 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	model := p.subType
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch {
-	case strings.Contains(model, "gpt-3.5-turbo-0125"):
-		inputPricePerThousandTokens = 0.0005
-		outputPricePerThousandTokens = 0.0015
 	case strings.Contains(model, "gpt-3.5-turbo-instruct"):
 		inputPricePerThousandTokens = 0.0015
 		outputPricePerThousandTokens = 0.002
-	case strings.Contains(model, "gpt-4-turbo"), strings.Contains(model, "gpt-4-turbo-vision"):
+	case strings.Contains(model, "gpt-3.5-turbo"):
+		inputPricePerThousandTokens = 0.0005
+		outputPricePerThousandTokens = 0.0015
+	case strings.Contains(model, "gpt-4-turbo"), strings.Contains(model, "gpt-4-vision"):
 		inputPricePerThousandTokens = 0.01
 		outputPricePerThousandTokens = 0.03
 	case strings.Contains(model, "gpt-4") && strings.Contains(model, "32k"):
