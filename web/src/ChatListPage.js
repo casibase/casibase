@@ -408,6 +408,20 @@ class ChatListPage extends React.Component {
       columns = columns.filter(column => column.key !== "price");
     }
 
+    const sumTokenCounts = (chats) => {
+      if (!chats) {
+        return 0;
+      }
+      return chats.reduce((sum, chat) => sum + chat.tokenCount, 0);
+    };
+
+    const sumPrices = (chats) => {
+      if (!chats) {
+        return 0;
+      }
+      return chats.reduce((sum, chat) => sum + chat.price, 0);
+    };
+
     return (
       <div>
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
@@ -425,6 +439,20 @@ class ChatListPage extends React.Component {
                 Setting.setBoolValue("filterSingleChat", checked);
                 this.UNSAFE_componentWillMount();
               }} />
+              {
+                (!this.props.account || this.props.account.name !== "admin") ? null : (
+                  <React.Fragment>
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("chat:Token count")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(sumTokenCounts(chats))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("chat:Price")}:
+                    &nbsp;
+                    {Setting.getDisplayPrice(sumPrices(chats))}
+                  </React.Fragment>
+                )
+              }
             </div>
           )}
           loading={chats === null}

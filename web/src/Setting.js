@@ -983,3 +983,11 @@ export function getDisplayPrice(price, currency) {
     </Tag>
   );
 }
+
+export function getDisplayTag(s) {
+  return (
+    <Tag style={{fontWeight: "bold"}} color={"default"}>
+      {s}
+    </Tag>
+  );
+}
