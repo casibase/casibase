@@ -94,7 +94,7 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
 	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
-	modelResult.TotalPrice = addPrices(inputPrice, outputPrice)
+	modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
 	modelResult.Currency = "USD"
 	return nil
 }
