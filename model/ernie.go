@@ -46,32 +46,70 @@ func NewErnieModelProvider(subType string, apiKey string, secretKey string, temp
 
 func (p *ErnieModelProvider) GetPricing() string {
 	return `URL:
-https://cloud.baidu.com/article/517050
+https://cloud.baidu.com/doc/WENXINWORKSHOP/s/Blfmc9dlf
 
-| Module     | Service Type     | Price (thousand tokens) |
-|------------|------------------|-------------------------|
-| Prediction | ERNIE-Bot Large  | ¥0.012                  |
-| Prediction | ERNIE-Bot-turbo  | ¥0.008                  |
-| Prediction | BLOOMZ-7B Large  | ¥0.006                  |
-| Prediction | Embedding-V1     | ¥0.002                  |
-| Prediction | Llama-2-7B-Chat  | ¥0.006                  |
-| Prediction | Llama-2-13B-Chat | ¥0.008                  |
-| Prediction | Llama-2-70B-Chat | ¥0.044                  |
-| Prediction | Pre-built Model  | Free                    |
+| Model                               | Input Price per 1K characters | Output Price per 1K characters |
+|-------------------------------------|-------------------------------|--------------------------------|
+| ERNIE-Bot 4.0                       | 0.120 (originally 0.15 CNY)   | 0.120 (originally 0.3 CNY)     |
+| ERNIE-Bot-8k                        | 0.024                         | 0.048                          |
+| ERNIE-Bot                           | 0.012                         | 0.012                          |
+| ERNIE-Bot-turbo-0922                | 0.008                         | 0.008                          |
+| EB-turbo-AppBuilder                 | 0.008                         | 0.008                          |
+| Tokenizer Public Cloud API          | 0.0006                        | 0.0006                         |
+| ERNIE-Speed                         | 0.004                         | 0.008                          |
+| ERNIE-3.5-4K-0205                   | 0.012                         | 0.012                          |
+| ERNIE-3.5-8K-0205                   | 0.024                         | 0.048                          |
+| ERNIE-3.5-8K-1222                   | 0.012                         | 0.012                          |
+| BLOOMZ-7B                           | 0.004                         | 0.004                          |
+| Llama-2-7B-Chat                     | 0.004                         | 0.004                          |
+| Llama-2-13B-Chat                    | 0.004                         | 0.004                          |
+| Llama-2-70B-Chat                    | 0.006                         | 0.006                          |
+| ChatGLM2-6B-32K                     | 0.004                         | 0.004                          |
+| AquilaChat-7B                       | 0.004                         | 0.004                          |
+| Mixtral-8x7B-Instruct               | 0.035                         | 0.035                          |
+| SQLCoder-7B                         | 0.004                         | 0.004                          |
+| CodeLlama-7B-Instruct               | 0.004                         | 0.004                          |
+| XuanYuan-70B-Chat-4bit              | 0.035                         | 0.035                          |
+| Qianfan-BLOOMZ-7B-compressed        | 0.004                         | 0.004                          |
+| Qianfan-Chinese-Llama-2-7B          | 0.004                         | 0.004                          |
+| Qianfan-Chinese-Llama-2-13B         | 0.006                         | 0.006                          |
+| ChatLaw                             | 0.008                         | 0.008                          |
 `
 }
 
 func (p *ErnieModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
-	priceTable := map[string]float64{
-		"ERNIE-Bot":       0.012,
-		"ERNIE-Bot-turbo": 0.008,
-		"BLOOMZ-7B":       0.006,
-		"Llama-2":         0.006, // Llama-2-7B-Chat
+	priceTable := map[string][2]float64{
+		"ERNIE-Bot 4.0":                {0.120, 0.120},
+		"ERNIE-Bot-8k":                 {0.024, 0.048},
+		"ERNIE-Bot":                    {0.012, 0.012},
+		"ERNIE-Bot-turbo-0922":         {0.008, 0.008},
+		"ERNIE-Speed":                  {0.004, 0.008},
+		"EB-turbo-AppBuilder":          {0.008, 0.008},
+		"ERNIE-3.5-4K-0205":            {0.012, 0.012},
+		"ERNIE-3.5-8K-0205":            {0.024, 0.048},
+		"ERNIE-3.5-8K-1222":            {0.012, 0.012},
+		"BLOOMZ-7B":                    {0.004, 0.004},
+		"Llama-2":                      {0.004, 0.004}, // Equal to Llama-2-7B-Chat
+		"Llama-2-7B-Chat":              {0.004, 0.004},
+		"Llama-2-13B-Chat":             {0.004, 0.004},
+		"Llama-2-70B-Chat":             {0.006, 0.006},
+		"ChatGLM2-6B-32K":              {0.004, 0.004},
+		"AquilaChat-7B":                {0.004, 0.004},
+		"Mixtral-8x7B-Instruct":        {0.035, 0.035},
+		"SQLCoder-7B":                  {0.004, 0.004},
+		"CodeLlama-7B-Instruct":        {0.004, 0.004},
+		"XuanYuan-70B-Chat-4bit":       {0.035, 0.035},
+		"Qianfan-BLOOMZ-7B-compressed": {0.004, 0.004},
+		"Qianfan-Chinese-Llama-2-7B":   {0.004, 0.004},
+		"Qianfan-Chinese-Llama-2-13B":  {0.006, 0.006},
+		"ChatLaw":                      {0.008, 0.008},
 	}
 
-	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
-		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
+	if priceItem, ok := priceTable[p.subType]; ok {
+		inputPrice := getPrice(modelResult.TotalTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
