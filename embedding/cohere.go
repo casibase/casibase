@@ -54,24 +54,26 @@ func NewCohereEmbeddingProvider(subType string, inputType string, secretKey stri
 	}, nil
 }
 
-func (c *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *CohereEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	client := cohereclient.NewClient(
-		cohereclient.WithToken(c.secretKey),
+		cohereclient.WithToken(p.secretKey),
 	)
 
-	res, embed, err := embed(ctx, client, &c.subType, &c.inputType, []string{text})
+	embeddingResult, embed, err := cohereEmbed(ctx, client, &p.subType, &p.inputType, []string{text})
 	if err != nil {
 		return nil, nil, err
 	}
 
-	err = c.calculatePrice(res)
+	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
 	}
-	return float64ToFloat32(embed[0]), res, nil
+
+	vector := float64ToFloat32(embed[0])
+	return vector, embeddingResult, nil
 }
 
-func embed(ctx context.Context, client *cohereclient.Client, model *string, inputType *string, texts []string) (*EmbeddingResult, [][]float64, error) {
+func cohereEmbed(ctx context.Context, client *cohereclient.Client, model *string, inputType *string, texts []string) (*EmbeddingResult, [][]float64, error) {
 	resp, err := client.Embed(ctx, &cohere.EmbedRequest{
 		Texts:     texts,
 		Model:     model,
@@ -81,12 +83,13 @@ func embed(ctx context.Context, client *cohereclient.Client, model *string, inpu
 		return nil, nil, err
 	}
 
-	res := &EmbeddingResult{}
-	res.TokenCount = int(*resp.EmbeddingsFloats.Meta.BilledUnits.InputTokens)
-	embeddings := make([][]float64, len(resp.EmbeddingsFloats.Embeddings))
+	tokenCount := int(*resp.EmbeddingsFloats.Meta.BilledUnits.InputTokens)
+	embeddingResult := &EmbeddingResult{TokenCount: tokenCount}
 
+	embeddings := make([][]float64, len(resp.EmbeddingsFloats.Embeddings))
 	for i, embedding := range resp.EmbeddingsFloats.Embeddings {
 		embeddings[i] = embedding
 	}
-	return res, embeddings, nil
+
+	return embeddingResult, embeddings, nil
 }

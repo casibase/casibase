@@ -223,10 +223,12 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 	}
 
 	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector)
-	if err != nil && err.Error() == "no knowledge vectors found" {
-		return nil, nil, embeddingResult, err
-	} else if err != nil && err.Error() != "no knowledge vectors found" {
-		return nil, nil, nil, err
+	if err != nil {
+		if err.Error() == "no knowledge vectors found" {
+			return nil, nil, embeddingResult, err
+		} else {
+			return nil, nil, nil, err
+		}
 	}
 
 	vectorScores := []VectorScore{}

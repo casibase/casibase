@@ -30,32 +30,35 @@ func NewHuggingFaceEmbeddingProvider(subType string, secretKey string) (*Hugging
 	return &HuggingFaceEmbeddingProvider{subType: subType, secretKey: secretKey}, nil
 }
 
-func (h *HuggingFaceEmbeddingProvider) GetPricing() string {
-	return "0"
+func (p *HuggingFaceEmbeddingProvider) GetPricing() string {
+	return `URL:
+https://huggingface.co/pricing
+
+Not charged
+`
 }
 
-// func (h *HuggingFaceEmbeddingProvider) calculatePrice(res *EmbeddingResult) {
-// 	res.Price = 0.0
-// 	res.Currency = "USD"
-// }
+func (p *HuggingFaceEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+	return nil
+}
 
-func (h *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
-	client := huggingfaceembedder.New().WithToken(h.secretKey).WithModel(h.subType).WithHTTPClient(proxy.ProxyHttpClient)
+func (p *HuggingFaceEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+	client := huggingfaceembedder.New().WithToken(p.secretKey).WithModel(p.subType).WithHTTPClient(proxy.ProxyHttpClient)
 	embed, err := client.Embed(ctx, []string{text})
 	if err != nil {
 		return nil, nil, err
 	}
-	res, err := GetDefaultEmbeddingResult(h.subType, text)
+
+	embeddingResult, err := GetDefaultEmbeddingResult(p.subType, text)
 	if err != nil {
 		return nil, nil, err
 	}
-	return float64ToFloat32(embed[0]), res, nil
-}
 
-func float64ToFloat32(slice []float64) []float32 {
-	newSlice := make([]float32, len(slice))
-	for i, v := range slice {
-		newSlice[i] = float32(v)
+	err = p.calculatePrice(embeddingResult)
+	if err != nil {
+		return nil, nil, err
 	}
-	return newSlice
+
+	vector := float64ToFloat32(embed[0])
+	return vector, embeddingResult, nil
 }

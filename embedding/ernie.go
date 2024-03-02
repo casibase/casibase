@@ -42,26 +42,29 @@ Embedding Models:
 `
 }
 
-func (e *ErnieEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+func (p *ErnieEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	pricePerThousandTokens := 0.002
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
 	res.Currency = "CNY"
 	return nil
 }
 
-func (e *ErnieEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
-	client := ernie.NewDefaultClient(e.apiKey, e.secretKey)
+func (p *ErnieEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+	client := ernie.NewDefaultClient(p.apiKey, p.secretKey)
+
 	request := ernie.EmbeddingRequest{Input: []string{text}}
 	embeddings, err := client.CreateEmbeddings(ctx, request)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res := &EmbeddingResult{}
-	res.TokenCount = embeddings.Usage.TotalTokens
-	err = e.calculatePrice(res)
+	embeddingResult := &EmbeddingResult{TokenCount: embeddings.Usage.TotalTokens}
+
+	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
 	}
-	return float64ToFloat32(embeddings.Data[0].Embedding), res, nil
+
+	vector := float64ToFloat32(embeddings.Data[0].Embedding)
+	return vector, embeddingResult, nil
 }

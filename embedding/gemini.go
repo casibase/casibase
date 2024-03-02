@@ -60,14 +60,20 @@ func (p *GeminiEmbeddingProvider) QueryVector(text string, ctx context.Context) 
 		return nil, nil, err
 	}
 	defer client.Close()
+
 	em := client.EmbeddingModel(p.subType)
 	res, err := em.EmbedContent(ctx, genai.Text(text))
 	if err != nil {
 		return nil, nil, err
 	}
 
-	embeddingResult := &EmbeddingResult{}
-	embeddingResult.TokenCount = 0
-	p.calculatePrice(embeddingResult)
-	return res.Embedding.Values, embeddingResult, nil
+	embeddingResult := &EmbeddingResult{TokenCount: 0}
+
+	err = p.calculatePrice(embeddingResult)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	vector := res.Embedding.Values
+	return vector, embeddingResult, nil
 }

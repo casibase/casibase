@@ -92,7 +92,6 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getProxyClientFromToken(p.secretKey)
 	}
 
-	res := &EmbeddingResult{}
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
 		Input: []string{text},
 		Model: openai.EmbeddingModel(p.subType),
@@ -101,12 +100,14 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		return nil, nil, err
 	}
 
-	res.TokenCount += resp.Usage.PromptTokens
-	err = p.calculatePrice(res)
+	tokenCount := resp.Usage.PromptTokens
+	embeddingResult := &EmbeddingResult{TokenCount: tokenCount}
+
+	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	vector := resp.Data[0].Embedding
-	return vector, res, nil
+	return vector, embeddingResult, nil
 }

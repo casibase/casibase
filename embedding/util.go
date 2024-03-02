@@ -21,3 +21,11 @@ func getPrice(tokenCount int, pricePerThousandTokens float64) float64 {
 	res = math.Round(res*1e8) / 1e8
 	return res
 }
+
+func float64ToFloat32(slice []float64) []float32 {
+	newSlice := make([]float32, len(slice))
+	for i, v := range slice {
+		newSlice[i] = float32(v)
+	}
+	return newSlice
+}
