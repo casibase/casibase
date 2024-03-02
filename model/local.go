@@ -62,8 +62,8 @@ func getLocalClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *LocalModelProvider) GetPricing() (string, string) {
-	return "USD", `URL:
+func (p *LocalModelProvider) GetPricing() string {
+	return `URL:
 https://azure.microsoft.com/en-us/pricing/details/cognitive-services/openai-service/
 
 Language models:
@@ -89,7 +89,7 @@ Image models:
 `
 }
 
-func (p *LocalModelProvider) calculatePrice(res *ModelResult) error {
+func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	model := p.subType
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch {
@@ -109,15 +109,16 @@ func (p *LocalModelProvider) calculatePrice(res *ModelResult) error {
 		inputPricePerThousandTokens = 0.03
 		outputPricePerThousandTokens = 0.06
 	case strings.Contains(model, "dall-e-3"):
-		res.TotalPrice = float64(res.ImageCount) * 0.08
+		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
 		return nil
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
 	}
 
-	totalInputPrice := getPrice(res.PromptTokenCount, inputPricePerThousandTokens)
-	totalOutputPrice := getPrice(res.ResponseTokenCount, outputPricePerThousandTokens)
-	res.TotalPrice = totalInputPrice + totalOutputPrice
+	totalInputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
+	totalOutputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
+	modelResult.TotalPrice = totalInputPrice + totalOutputPrice
+	modelResult.Currency = "USD"
 	return nil
 }
 

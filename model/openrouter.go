@@ -46,8 +46,8 @@ func NewOpenRouterModelProvider(subType string, secretKey string, temperature fl
 	return p, nil
 }
 
-func (p *OpenRouterModelProvider) GetPricing() (string, string) {
-	return "USB", `URL:
+func (p *OpenRouterModelProvider) GetPricing() string {
+	return `URL:
 https://openrouter.ai/docs#models
 
 | Model Name                   | Prompt cost ($ per 1k tokens) | Completion cost ($ per 1k tokens) | Context (tokens) | Moderation |
@@ -75,7 +75,7 @@ https://openrouter.ai/docs#models
 `
 }
 
-func (p *OpenRouterModelProvider) caculatePrice(mr *ModelResult) {
+func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult) error {
 	priceTable := map[string][]float64{
 		"google/palm-2-codechat-bison": {0.00025, 0.0005},
 		"google/palm-2-chat-bison":     {0.00025, 0.0005},
@@ -100,11 +100,14 @@ func (p *OpenRouterModelProvider) caculatePrice(mr *ModelResult) {
 	}
 
 	if price, ok := priceTable[p.subType]; ok {
-		mr.TotalPrice = price[0]*float64(mr.PromptTokenCount) + price[1]*float64(mr.ResponseTokenCount)
+		modelResult.TotalPrice = price[0]*float64(modelResult.PromptTokenCount) + price[1]*float64(modelResult.ResponseTokenCount)
 	} else {
-		// model not found
-		mr.TotalPrice = 0.0
+		modelResult.TotalPrice = 0.0
 	}
+
+	// need error handling
+	modelResult.Currency = "USD"
+	return nil
 }
 
 func (p *OpenRouterModelProvider) getProxyClientFromToken() *openrouter.Client {
@@ -202,7 +205,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		flusher.Flush()
 	}
 
-	// get token count and price
+	// need refactoring
 	responseTokenSize, err := GetTokenSize(model, responseStringBuilder.String())
 	if err != nil {
 		return nil, err
@@ -211,7 +214,7 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 	mr.PromptTokenCount = tokenCount
 	mr.ResponseTokenCount = responseTokenSize
 	mr.TotalTokenCount = mr.PromptTokenCount + mr.ResponseTokenCount
-	p.caculatePrice(mr)
+	p.calculatePrice(mr)
 
 	return mr, nil
 }

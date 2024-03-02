@@ -26,8 +26,8 @@ func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temp
 	}, nil
 }
 
-func (p *MiniMaxModelProvider) GetPricing() (string, string) {
-	return "CNY", `URL:
+func (p *MiniMaxModelProvider) GetPricing() string {
+	return `URL:
 https://api.minimax.chat/document/price
 
 | Billing Item     | Unit Price                    | Billing Description                                                                                            |
@@ -39,26 +39,33 @@ https://api.minimax.chat/document/price
 `
 }
 
-func (p *MiniMaxModelProvider) caculatePrice(mr *ModelResult) {
+func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
 	priceTable := map[string][]float64{
 		"abab6":      {0.1, 0.1},
 		"abab5.5":    {0.015, 0.015},
 		"abab5-chat": {0.015, 0.015},
 		"abab5.5s":   {0.005, 0.005},
 	}
-	if mr.ResponseTokenCount < 1000 {
-		mr.TotalPrice = priceTable[p.subType][0] * float64(mr.TotalTokenCount)
+	if modelResult.ResponseTokenCount < 1000 {
+		modelResult.TotalPrice = priceTable[p.subType][0] * float64(modelResult.TotalTokenCount)
 	} else {
-		mr.TotalPrice = 0.0
+		modelResult.TotalPrice = 0.0
 	}
+
+	modelResult.Currency = "CNY"
+	return nil
 }
 
 func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
-	client, _ := minimax.New(
+	client, err := minimax.New(
 		minimax.WithApiToken(p.apiKey),
 		minimax.WithGroupId(p.groupID),
 	)
+	if err != nil {
+		return nil, err
+	}
+
 	req := &textv1.ChatCompletionsRequest{
 		Messages: []*textv1.Message{
 			{
@@ -69,26 +76,36 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 		Model:       p.subType,
 		Temperature: p.temperature,
 	}
-	res, _ := client.ChatCompletions(ctx, req)
+	res, err := client.ChatCompletions(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
+
 	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()
 		return nil
 	}
-	err := flushData(res.Choices[0].Text)
+
+	err = flushData(res.Choices[0].Text)
 	if err != nil {
 		return nil, err
 	}
 
-	mr := new(ModelResult)
-	mr.PromptTokenCount = int(res.Usage.TotalTokens)
-	p.caculatePrice(mr)
+	totalTokens := int(res.Usage.TotalTokens)
+	modelResult := &ModelResult{ResponseTokenCount: totalTokens}
 
-	return mr, nil
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelResult, nil
 }

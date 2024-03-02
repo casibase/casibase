@@ -38,8 +38,8 @@ func NewChatGLMModelProvider(subType string, clientSecret string) (*ChatGLMModel
 	return &ChatGLMModelProvider{subType: subType, clientSecret: clientSecret}, nil
 }
 
-func (c *ChatGLMModelProvider) GetPricing() (string, string) {
-	return "CNY", `URL:
+func (c *ChatGLMModelProvider) GetPricing() string {
+	return `URL:
 https://open.bigmodel.cn/pricing
 
 Generate Model:
@@ -52,28 +52,35 @@ Generate Model:
 `
 }
 
-func (c *ChatGLMModelProvider) calculate(mr *ModelResult) {
-	switch c.subType {
+func (p *ChatGLMModelProvider) calculatePrice(modelResult *ModelResult) error {
+	switch p.subType {
 	case ChatglmModelGLM3TURBO:
-		mr.TotalPrice = float64(mr.PromptTokenCount) * 0.005 / 1_000
+		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.005 / 1_000
 	case ChatglmModelGLM4:
-		mr.TotalPrice = float64(mr.PromptTokenCount) * 0.1 / 1_000
+		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.1 / 1_000
 	case ChatglmModelGLM4V:
-		mr.TotalPrice = float64(mr.PromptTokenCount) * 0.1 / 1_000
+		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.1 / 1_000
+	default:
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
+
+	modelResult.Currency = "CNY"
+	return nil
 }
 
 func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	proxy := client.NewChatGLMClient(p.clientSecret, 30*time.Second)
-	text := []client.Message{{Role: "user", Content: question}}
-	taskId, err := proxy.AsyncInvoke(p.subType, 0.2, text)
+	messages := []client.Message{{Role: "user", Content: question}}
+	taskId, err := proxy.AsyncInvoke(p.subType, 0.2, messages)
 	if err != nil {
 		return nil, err
 	}
+
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
+
 	flushData := func(data string) error {
 		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
@@ -81,22 +88,28 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 		flusher.Flush()
 		return nil
 	}
+
 	response, err := proxy.AsyncInvokeTask(p.subType, taskId)
 	if err != nil {
 		return nil, err
 	}
+
 	content := (*response.Choices)[0].Content
+
 	err = flushData(content)
 	if err != nil {
 		return nil, err
 	}
 
-	// get token count and price
-	mr := new(ModelResult)
-	mr.PromptTokenCount = response.Usage.PromptTokens
-	mr.ResponseTokenCount = response.Usage.CompletionTokens
-	mr.TotalTokenCount = response.Usage.TotalTokens
-	p.calculate(mr)
+	modelResult := &ModelResult{}
+	modelResult.PromptTokenCount = response.Usage.PromptTokens
+	modelResult.ResponseTokenCount = response.Usage.CompletionTokens
+	modelResult.TotalTokenCount = response.Usage.TotalTokens
 
-	return mr, nil
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelResult, nil
 }

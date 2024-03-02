@@ -190,8 +190,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
-	currency, _ := modelProviderObj.GetPricing()
-	message.Currency = currency
+	message.Currency = modelResult.Currency
 
 	message.Text = answer
 	message.VectorScores = vectorScores

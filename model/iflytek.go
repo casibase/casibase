@@ -43,8 +43,8 @@ func NewiFlytekModelProvider(subType string, secretKey string, temperature float
 	return p, nil
 }
 
-func (p *iFlytekModelProvider) GetPricing() (string, string) {
-	return "", `URL:
+func (p *iFlytekModelProvider) GetPricing() string {
+	return `URL:
 https://xinghuo.xfyun.cn/sparkapi
 
 | Service Volume     | QPS | Validity | Version          | Unit Price       | Original Price |
@@ -70,9 +70,12 @@ https://xinghuo.xfyun.cn/sparkapi
 `
 }
 
-func (p *iFlytekModelProvider) caculatePrice(mr *ModelResult) {
+func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 	// Because it is a one-time purchase, it is inconvenient to charge
-	mr.TotalPrice = 0.0
+
+	// need error handling
+	modelResult.Currency = "CNY"
+	return nil
 }
 
 func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
@@ -92,14 +95,13 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 
 	session.Req.Parameter.Chat.Temperature = p.temperature
 	session.Req.Parameter.Chat.TopK = p.topK
-
 	response, err := session.Send(question)
 	if err != nil {
 		return nil, fmt.Errorf("iflytek send error: %v", err)
 	}
 
 	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()
@@ -111,19 +113,22 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil, err
 	}
 
-	mr := new(ModelResult)
+	// need refactoring
+	modelResult := new(ModelResult)
 	promptTokenCount, err := GetTokenSize(p.subType, question)
 	if err != nil {
 		return nil, err
 	}
-	mr.PromptTokenCount = promptTokenCount
+
+	modelResult.PromptTokenCount = promptTokenCount
 	responseTokenCount, err := GetTokenSize(p.subType, response)
 	if err != nil {
 		return nil, err
 	}
-	mr.ResponseTokenCount = responseTokenCount
-	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.caculatePrice(mr)
 
-	return mr, nil
+	modelResult.ResponseTokenCount = responseTokenCount
+	modelResult.TotalTokenCount = promptTokenCount + responseTokenCount
+	p.calculatePrice(modelResult)
+
+	return modelResult, nil
 }

@@ -31,8 +31,8 @@ func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvi
 	return &ClaudeModelProvider{subType: subType, secretKey: secretKey}, nil
 }
 
-func (p *ClaudeModelProvider) GetPricing() (string, string) {
-	return "Free", `URL:
+func (p *ClaudeModelProvider) GetPricing() string {
+	return `URL:
 https://www.anthropic.com/pricing
 
 | Model family   | Best for                                                                              | Context window | Standard Pricing     | Instant Pricing       |
@@ -43,7 +43,7 @@ https://www.anthropic.com/pricing
 `
 }
 
-func (p *ClaudeModelProvider) caculatePrice(mr *ModelResult) {
+func (p *ClaudeModelProvider) calculatePrice(mr *ModelResult) {
 	priceTable := map[string][]float64{
 		"claude-2": {0.80, 2.40},
 	}
@@ -58,44 +58,52 @@ func (p *ClaudeModelProvider) caculatePrice(mr *ModelResult) {
 func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client, err := anthropic.NewClient(p.secretKey)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	response, _ := client.Complete(&anthropic.CompletionRequest{
+
+	response, err := client.Complete(&anthropic.CompletionRequest{
 		Prompt:            anthropic.GetPrompt(question),
 		Model:             anthropic.Model(p.subType),
 		MaxTokensToSample: 100,
 		StopSequences:     []string{"\r", "Human:"},
 	}, nil)
+	if err != nil {
+		return nil, err
+	}
+
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
+
 	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()
 		return nil
 	}
+
 	err = flushData(response.Completion)
 	if err != nil {
 		return nil, err
 	}
 
-	// get token count and price
-	mr := new(ModelResult)
+	// need refactoring
+	modelResult := new(ModelResult)
 	promptTokenCount, err := GetTokenSize(p.subType, question)
 	if err != nil {
 		return nil, err
 	}
-	mr.PromptTokenCount = promptTokenCount
+	modelResult.PromptTokenCount = promptTokenCount
 	responseTokenCount, err := GetTokenSize(p.subType, response.Completion)
 	if err != nil {
 		return nil, err
 	}
-	mr.ResponseTokenCount = responseTokenCount
-	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.caculatePrice(mr)
 
-	return mr, nil
+	modelResult.ResponseTokenCount = responseTokenCount
+	modelResult.TotalTokenCount = promptTokenCount + responseTokenCount
+	p.calculatePrice(modelResult)
+
+	return modelResult, nil
 }

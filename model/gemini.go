@@ -48,8 +48,8 @@ func NewGeminiModelProvider(subType string, secretKey string, temperature float3
 	return p, nil
 }
 
-func (p *GeminiModelProvider) GetPricing() (string, string) {
-	return "USB", `URL:
+func (p *GeminiModelProvider) GetPricing() string {
+	return `URL:
 https://ai.google.dev/pricing
 
 | Model          | Type            | Input Price                            | Output Price             |
@@ -59,15 +59,19 @@ https://ai.google.dev/pricing
 `
 }
 
-func (p *GeminiModelProvider) caculatePrice(mr *ModelResult) {
+func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 	switch p.subType {
 	case GeminiPro:
-		mr.TotalPrice = float64(mr.TotalTokenCount) * 0.000_125 / 1_000
+		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.000_125 / 1_000
 	case GeminiVision:
-		mr.TotalPrice = float64(mr.TotalTokenCount) * 0.002_5 / 1_000
+		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.002_5 / 1_000
 	default:
-		mr.TotalPrice = float64(mr.TotalTokenCount) * 0.000_125 / 1_000
+		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.000_125 / 1_000
 	}
+
+	// need error handling
+	modelResult.Currency = "USD"
+	return nil
 }
 
 func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
@@ -84,10 +88,12 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 	if err != nil {
 		return nil, err
 	}
+
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
+
 	flushData := func(data []genai.Part) error {
 		for _, message := range data {
 			if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", message); err != nil {
@@ -97,16 +103,19 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		}
 		return nil
 	}
+
 	err = flushData(resp.Candidates[0].Content.Parts)
 	if err != nil {
 		return nil, err
 	}
 
-	// get token count and price
-	mr := new(ModelResult)
-	// gemini only count total token
-	mr.TotalTokenCount = int(resp.Candidates[0].TokenCount)
-	p.caculatePrice(mr)
+	tokenCount := int(resp.Candidates[0].TokenCount)
+	modelResult := &ModelResult{TotalTokenCount: tokenCount}
 
-	return mr, nil
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelResult, nil
 }

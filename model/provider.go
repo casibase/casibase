@@ -22,6 +22,7 @@ type ModelResult struct {
 	TotalTokenCount    int
 	ImageCount         int
 	TotalPrice         float64
+	Currency           string
 }
 
 func newModelResult(promptTokenCount int, responseTokenCount int, totalTokenCount int) *ModelResult {
@@ -33,8 +34,7 @@ func newModelResult(promptTokenCount int, responseTokenCount int, totalTokenCoun
 }
 
 type ModelProvider interface {
-	// GetPricing returns the concurrency and pricing information
-	GetPricing() (string, string)
+	GetPricing() string
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error)
 }
 

@@ -60,8 +60,8 @@ func NewCohereModelProvider(subType string, secretKey string) (*CohereModelProvi
 
 // GetPricing returns the pricing of the model
 // https://cohere.com/pricing
-func (c *CohereModelProvider) GetPricing() (string, string) {
-	return "USB", `URL:
+func (c *CohereModelProvider) GetPricing() string {
+	return `URL:
 https://cohere.com/pricing
 
 Generate Model:
@@ -81,18 +81,22 @@ Embed Model:
 `
 }
 
-func (c *CohereModelProvider) caculatePrice(mr *ModelResult) {
+func (c *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 	switch c.subType {
 	case CohereModelCommand, CohereModelCommandNightly:
-		mr.TotalPrice += float64(mr.PromptTokenCount) * 1.00 / 1_000_000
-		mr.TotalPrice += float64(mr.ResponseTokenCount) * 2.00 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 1.00 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 2.00 / 1_000_000
 	case CohereModelCommandLight, CohereModelCommandLightNightly:
-		mr.TotalPrice += float64(mr.PromptTokenCount) * 0.30 / 1_000_000
-		mr.TotalPrice += float64(mr.ResponseTokenCount) * 0.60 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 0.30 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 0.60 / 1_000_000
 	default:
-		mr.TotalPrice += float64(mr.PromptTokenCount) * 1.00 / 1_000_000
-		mr.TotalPrice += float64(mr.ResponseTokenCount) * 2.00 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 1.00 / 1_000_000
+		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 2.00 / 1_000_000
 	}
+
+	// need error handling
+	modelResult.Currency = "USD"
+	return nil
 }
 
 func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
@@ -130,7 +134,7 @@ func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 	modelResult.PromptTokenCount = int(*generation.Meta.BilledUnits.InputTokens)
 	modelResult.ResponseTokenCount = int(*generation.Meta.BilledUnits.OutputTokens)
 	modelResult.TotalTokenCount = modelResult.ResponseTokenCount + modelResult.PromptTokenCount
-	c.caculatePrice(modelResult)
+	c.calculatePrice(modelResult)
 
 	return modelResult, nil
 }
