@@ -48,34 +48,35 @@ func (p *ErnieModelProvider) GetPricing() string {
 	return `URL:
 https://cloud.baidu.com/article/517050
 
-| Module     | Service Type                                                                | Price                   |
-|------------|-----------------------------------------------------------------------------|-------------------------|
-| Prediction | ERNIE-Bot Large Model Public Cloud Online Invocation Service                | ¥0.012/thousand tokens  |
-| Prediction | ERNIE-Bot-turbo Large Model Public Cloud Online Invocation Service (Input)  | ¥0.008/thousand tokens  |
-| Prediction | ERNIE-Bot-turbo Large Model Public Cloud Online Invocation Service (Output) | ¥0.008/thousand tokens  |
-| Prediction | BLOOMZ-7B Large Model Public Cloud Online Invocation Service                | ¥0.006/thousand tokens  |
-| Prediction | Embedding-V1 Public Cloud Online Invocation Service                         | ¥0.002/thousand tokens  |
-| Prediction | Llama-2-7B-Chat Public Cloud Online Invocation Service                      | ¥0.006/thousand tokens  |
-| Prediction | Llama-2-13B-Chat Public Cloud Online Invocation Service                     | ¥0.008/thousand tokens  |
-| Prediction | Llama-2-70B-Chat Public Cloud Online Invocation Service                     | ¥0.044/thousand tokens  |
-| Prediction | Pre-built Model Public Cloud Online Invocation Service                      | Free for a limited time |
+| Module     | Service Type     | Price (thousand tokens) |
+|------------|------------------|-------------------------|
+| Prediction | ERNIE-Bot Large  | ¥0.012                  |
+| Prediction | ERNIE-Bot-turbo  | ¥0.008                  |
+| Prediction | BLOOMZ-7B Large  | ¥0.006                  |
+| Prediction | Embedding-V1     | ¥0.002                  |
+| Prediction | Llama-2-7B-Chat  | ¥0.006                  |
+| Prediction | Llama-2-13B-Chat | ¥0.008                  |
+| Prediction | Llama-2-70B-Chat | ¥0.044                  |
+| Prediction | Pre-built Model  | Free                    |
 `
 }
 
 func (p *ErnieModelProvider) calculatePrice(modelResult *ModelResult) error {
-	priceTable := map[string][]float64{
-		"ERNIE-Bot":       {0.012, 0.012},
-		"ERNIE-Bot-turbo": {0.008, 0.008},
-		"BLOOMZ-7B":       {0.006, 0.006},
-		"Llama-2":         {0.006, 0.006}, // Llama-2-7B-Chat
-	}
-	if price, ok := priceTable[p.subType]; ok {
-		modelResult.TotalPrice = (price[0]*float64(modelResult.PromptTokenCount) + price[1]*float64(modelResult.ResponseTokenCount)) / 1_000.0
-	} else {
-		modelResult.TotalPrice = 0.0
+	price := 0.0
+	priceTable := map[string]float64{
+		"ERNIE-Bot":       0.012,
+		"ERNIE-Bot-turbo": 0.008,
+		"BLOOMZ-7B":       0.006,
+		"Llama-2":         0.006, // Llama-2-7B-Chat
 	}
 
-	// need error handling
+	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
+		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
+	} else {
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+	}
+
+	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
 }

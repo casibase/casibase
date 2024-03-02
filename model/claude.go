@@ -35,7 +35,7 @@ func (p *ClaudeModelProvider) GetPricing() string {
 	return `URL:
 https://www.anthropic.com/pricing
 
-| Model family   | Best for                                                                              | Context window | Standard Pricing     | Instant Pricing       |
+| Model family   | Best for                                                                              | Context window | Prompt Pricing       | Completion Pricing    |
 |----------------|---------------------------------------------------------------------------------------|----------------|----------------------|-----------------------|
 | Claude Instant | Low latency, high throughput use cases                                                | 100,000 tokens | $0.80/million tokens | $2.40/million tokens  |
 | Claude 2.0     | Tasks that require complex reasoning                                                  | 100,000 tokens | $8.00/million tokens | $24.00/million tokens |
@@ -43,16 +43,23 @@ https://www.anthropic.com/pricing
 `
 }
 
-func (p *ClaudeModelProvider) calculatePrice(mr *ModelResult) {
+func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
+	price := 0.0
 	priceTable := map[string][]float64{
-		"claude-2": {0.80, 2.40},
+		"claude-2": {0.008, 0.024},
 	}
-	if price, ok := priceTable[p.subType]; ok {
-		mr.TotalPrice = price[0]*float64(mr.PromptTokenCount) + price[1]*float64(mr.ResponseTokenCount)
+
+	if priceItem, ok := priceTable[p.subType]; ok {
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.PromptTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
 	} else {
-		// model not found
-		mr.TotalPrice = 0.0
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
+
+	modelResult.TotalPrice = price
+	modelResult.Currency = "USD"
+	return nil
 }
 
 func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {

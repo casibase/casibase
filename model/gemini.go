@@ -24,11 +24,6 @@ import (
 	option "google.golang.org/api/option"
 )
 
-const (
-	GeminiPro    = "Gemini Pro"
-	GeminiVision = "Gemini Vision"
-)
-
 type GeminiModelProvider struct {
 	subType     string
 	secretKey   string
@@ -50,26 +45,33 @@ func NewGeminiModelProvider(subType string, secretKey string, temperature float3
 
 func (p *GeminiModelProvider) GetPricing() string {
 	return `URL:
-https://ai.google.dev/pricing
+https://cloud.google.com/vertex-ai/generative-ai/pricing
 
 | Model          | Type            | Input Price                            | Output Price             |
 |----------------|-----------------|----------------------------------------|--------------------------|
-| Gemini 1.0 pro | Pay-as-you-go   | $0.000125/1K characters, $0.0025/image | $0.000375/1K characters |
+| Gemini 1.0 pro | Pay-as-you-go   | $0.000125/1K characters, $0.0025/image | $0.000375/1K characters  |
 |                | Free of charge  | Free                                   | Free                     |
 `
 }
 
 func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
-	switch p.subType {
-	case GeminiPro:
-		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.000_125 / 1_000
-	case GeminiVision:
-		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.002_5 / 1_000
-	default:
-		modelResult.TotalPrice = float64(modelResult.TotalTokenCount) * 0.000_125 / 1_000
+	if modelResult.PromptTokenCount == 0 && modelResult.ResponseTokenCount == 0 && modelResult.TotalTokenCount != 0 {
+		modelResult.ResponseTokenCount = modelResult.TotalTokenCount
 	}
 
-	// need error handling
+	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
+	switch p.subType {
+	case "Gemini Pro":
+		inputPricePerThousandTokens = 0.000125
+		outputPricePerThousandTokens = 0.000375
+
+	default:
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+	}
+
+	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
+	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
+	modelResult.TotalPrice = inputPrice + outputPrice
 	modelResult.Currency = "USD"
 	return nil
 }

@@ -29,13 +29,6 @@ var (
 	CohereDefaultTemperature float64 = 0.75
 )
 
-const (
-	CohereModelCommand             = "command"
-	CohereModelCommandNightly      = "command-nightly"
-	CohereModelCommandLight        = "command-light"
-	CohereModelCommandLightNightly = "command-light-nightly"
-)
-
 type CohereModelProvider struct {
 	secretKey   string
 	subType     string
@@ -66,12 +59,10 @@ https://cohere.com/pricing
 
 Generate Model:
 
-| Model            | Type          | Input Price (Per 1,000,000 tokens) | Output Price (Per 1,000,000 tokens) |
-|------------------|---------------|------------------------------------|-------------------------------------|
-| Default Model    | Command       | $1.00                              | $2.00                               |
-|                  | Command Light | $0.30                              | $0.60                               |
-| Fine-tuned Model | Training      | $1.00                              | N/A                                 |
-|                  | Command Light | $0.30                              | $0.60                               |
+| Model         | Input Price (Per 1,000,000 tokens) | Output Price (Per 1,000,000 tokens) |
+|---------------|------------------------------------|-------------------------------------|
+| Command Light | $0.30                              | $0.60                               |
+| Command       | $1.00                              | $2.00                               |
 
 Embed Model:
 
@@ -81,27 +72,29 @@ Embed Model:
 `
 }
 
-func (c *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
-	switch c.subType {
-	case CohereModelCommand, CohereModelCommandNightly:
-		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 1.00 / 1_000_000
-		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 2.00 / 1_000_000
-	case CohereModelCommandLight, CohereModelCommandLightNightly:
-		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 0.30 / 1_000_000
-		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 0.60 / 1_000_000
+func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
+	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
+	switch p.subType {
+	case "command-light", "command-light-nightly":
+		inputPricePerThousandTokens = 0.0003
+		outputPricePerThousandTokens = 0.0006
+	case "command", "command-nightly":
+		inputPricePerThousandTokens = 0.001
+		outputPricePerThousandTokens = 0.002
 	default:
-		modelResult.TotalPrice += float64(modelResult.PromptTokenCount) * 1.00 / 1_000_000
-		modelResult.TotalPrice += float64(modelResult.ResponseTokenCount) * 2.00 / 1_000_000
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
-	// need error handling
+	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
+	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
+	modelResult.TotalPrice = inputPrice + outputPrice
 	modelResult.Currency = "USD"
 	return nil
 }
 
-func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := cohereclient.NewClient(
-		cohereclient.WithToken(c.secretKey),
+		cohereclient.WithToken(p.secretKey),
 	)
 	ctx := context.Background()
 
@@ -111,7 +104,7 @@ func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 			Prompt:      prompt,
 			Temperature: &CohereDefaultTemperature,
 			MaxTokens:   &CohereDefaultMaxTokens,
-			Model:       &c.subType,
+			Model:       &p.subType,
 		},
 	)
 	if err != nil {
@@ -124,17 +117,20 @@ func (c *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 	output := generation.Generations[0].Text
 	resp := strings.Split(output, "\n")[0]
 
-	_, writeErr := fmt.Fprint(writer, resp)
-	if writeErr != nil {
-		return nil, writeErr
+	_, err = fmt.Fprint(writer, resp)
+	if err != nil {
+		return nil, err
 	}
 
-	// caculate token
-	modelResult := new(ModelResult)
-	modelResult.PromptTokenCount = int(*generation.Meta.BilledUnits.InputTokens)
-	modelResult.ResponseTokenCount = int(*generation.Meta.BilledUnits.OutputTokens)
+	promptTokenCount := int(*generation.Meta.BilledUnits.InputTokens)
+	responseTokenCount := int(*generation.Meta.BilledUnits.OutputTokens)
+	modelResult := &ModelResult{PromptTokenCount: promptTokenCount, ResponseTokenCount: responseTokenCount}
 	modelResult.TotalTokenCount = modelResult.ResponseTokenCount + modelResult.PromptTokenCount
-	c.calculatePrice(modelResult)
+
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
 
 	return modelResult, nil
 }

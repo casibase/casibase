@@ -23,12 +23,6 @@ import (
 	"github.com/leverly/ChatGLM/client"
 )
 
-const (
-	ChatglmModelGLM4      = "GLM-4"
-	ChatglmModelGLM4V     = "GLM-4V"
-	ChatglmModelGLM3TURBO = "GLM-3-Turbo"
-)
-
 type ChatGLMModelProvider struct {
 	subType      string
 	clientSecret string
@@ -46,24 +40,24 @@ Generate Model:
 
 | Model        | Context Length | Unit Price (Per 1,000 tokens) |
 |--------------|----------------|-------------------------------|
-| GLM-4        | 128K           | 0.1 yuan / K tokens          |
-| GLM-4V       | 2K             | 0.1 yuan / K tokens          |
-| GLM-3-Turbo  | 128K           | 0.005 yuan / K tokens        |
+| GLM-3-Turbo  | 128K           | 0.005 yuan / K tokens         |
+| GLM-4        | 128K           | 0.1 yuan / K tokens           |
+| GLM-4V       | 2K             | 0.1 yuan / K tokens           |
 `
 }
 
 func (p *ChatGLMModelProvider) calculatePrice(modelResult *ModelResult) error {
+	price := 0.0
 	switch p.subType {
-	case ChatglmModelGLM3TURBO:
-		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.005 / 1_000
-	case ChatglmModelGLM4:
-		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.1 / 1_000
-	case ChatglmModelGLM4V:
-		modelResult.TotalPrice = float64(modelResult.PromptTokenCount) * 0.1 / 1_000
+	case "GLM-3-Turbo":
+		price = getPrice(modelResult.TotalTokenCount, 0.005)
+	case "GLM-4", "GLM-4V":
+		price = getPrice(modelResult.TotalTokenCount, 0.1)
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
+	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
 }
@@ -82,7 +76,7 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 	}
 
 	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+		if _, err = fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
 			return err
 		}
 		flusher.Flush()

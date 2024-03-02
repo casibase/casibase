@@ -35,23 +35,25 @@ https://api.minimax.chat/document/price
 | abab6            | 0.1 CNY/1k tokens             | Token count includes input and output                                                                          |
 | abab5.5          | 0.015 CNY/1k tokens           |                                                                                                                |
 | abab5.5s         | 0.005 CNY/1k tokens           |                                                                                                                |
-| Web Search Count | 0.03 CNY/each web search call | After enabling the plugin_web_search plugin, the interface automatically counts the number of web search calls |
 `
 }
 
 func (p *MiniMaxModelProvider) calculatePrice(modelResult *ModelResult) error {
-	priceTable := map[string][]float64{
-		"abab6":      {0.1, 0.1},
-		"abab5.5":    {0.015, 0.015},
-		"abab5-chat": {0.015, 0.015},
-		"abab5.5s":   {0.005, 0.005},
-	}
-	if modelResult.ResponseTokenCount < 1000 {
-		modelResult.TotalPrice = priceTable[p.subType][0] * float64(modelResult.TotalTokenCount)
-	} else {
-		modelResult.TotalPrice = 0.0
+	price := 0.0
+	priceTable := map[string]float64{
+		"abab6":      0.1,
+		"abab5.5":    0.015,
+		"abab5-chat": 0.015,
+		"abab5.5s":   0.005,
 	}
 
+	if pricePerThousandTokens, ok := priceTable[p.subType]; ok {
+		price = getPrice(modelResult.TotalTokenCount, pricePerThousandTokens)
+	} else {
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+	}
+
+	modelResult.TotalPrice = price
 	modelResult.Currency = "CNY"
 	return nil
 }

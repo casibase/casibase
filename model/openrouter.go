@@ -76,6 +76,7 @@ https://openrouter.ai/docs#models
 }
 
 func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult) error {
+	price := 0.0
 	priceTable := map[string][]float64{
 		"google/palm-2-codechat-bison": {0.00025, 0.0005},
 		"google/palm-2-chat-bison":     {0.00025, 0.0005},
@@ -99,13 +100,15 @@ func (p *OpenRouterModelProvider) calculatePrice(modelResult *ModelResult) error
 		"llama-2-70b-chat":             {0.0007, 0.0009},
 	}
 
-	if price, ok := priceTable[p.subType]; ok {
-		modelResult.TotalPrice = price[0]*float64(modelResult.PromptTokenCount) + price[1]*float64(modelResult.ResponseTokenCount)
+	if priceItem, ok := priceTable[p.subType]; ok {
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.PromptTokenCount, priceItem[1])
+		price = inputPrice + outputPrice
 	} else {
-		modelResult.TotalPrice = 0.0
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
-	// need error handling
+	modelResult.TotalPrice = price
 	modelResult.Currency = "USD"
 	return nil
 }
