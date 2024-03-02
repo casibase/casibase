@@ -121,6 +121,22 @@ class ChatListPage extends React.Component {
       });
   }
 
+  renderUserAgent(record) {
+    if (record.userAgentDesc === "") {
+      return record.userAgent;
+    } else {
+      return record.userAgentDesc.split("|").map(text => {
+        if (text.includes("Other") || text.includes("Generic Smartphone")) {
+          return null;
+        }
+
+        return (
+          <div key={text}>{text}</div>
+        );
+      });
+    }
+  }
+
   renderTable(chats) {
     const columns = [
       // {
@@ -158,7 +174,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Updated time"),
         dataIndex: "updatedTime",
         key: "updatedTime",
-        width: "150px",
+        width: "130px",
         sorter: (a, b) => a.updatedTime.localeCompare(b.updatedTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
@@ -279,6 +295,11 @@ class ChatListPage extends React.Component {
                     {text}
                     <br />
                     {record.clientIpDesc}
+                    <br />
+                    <br />
+                    {
+                      this.renderUserAgent(record)
+                    }
                   </div>
                 )
               }
@@ -286,28 +307,16 @@ class ChatListPage extends React.Component {
           );
         },
       },
-      {
-        title: i18next.t("general:User agent"),
-        dataIndex: "userAgent",
-        key: "userAgent",
-        width: "120px",
-        sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
-        render: (text, record, index) => {
-          if (record.userAgentDesc === "") {
-            return text;
-          } else {
-            return record.userAgentDesc.split("|").map(text => {
-              if (text.includes("Other") || text.includes("Generic Smartphone")) {
-                return null;
-              }
-
-              return (
-                <div key={text}>{text}</div>
-              );
-            });
-          }
-        },
-      },
+      // {
+      //   title: i18next.t("general:User agent"),
+      //   dataIndex: "userAgent",
+      //   key: "userAgent",
+      //   width: "120px",
+      //   sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
+      //   render: (text, record, index) => {
+      //     return this.renderUserAgent(record);
+      //   },
+      // },
       {
         title: i18next.t("chat:Count"),
         dataIndex: "messageCount",
@@ -328,7 +337,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "300px",
+        width: "800px",
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
           if (messages === undefined || messages.length === 0) {
@@ -336,7 +345,24 @@ class ChatListPage extends React.Component {
           }
 
           return (
-            <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} />
+            <div style={{
+              padding: "5px",
+              margin: "5px",
+              background: "rgb(191,191,191)",
+              borderRadius: "10px",
+              width: "800px",
+              // boxSizing: "border-box",
+              // boxShadow: "0 0 0 1px inset",
+            }}>
+              <div style={{
+                maxHeight: "500px",
+                overflowY: "auto",
+                width: "100%",
+              }}>
+                <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} />
+              </div>
+            </div>
+
           );
         },
       },
@@ -344,7 +370,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "110px",
         render: (text, record, index) => {
           return (
             <div>
