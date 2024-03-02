@@ -20,6 +20,7 @@ package object
 import (
 	"testing"
 
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
 )
 
@@ -46,6 +47,43 @@ func TestUpdateMessageCounts(t *testing.T) {
 		chat, ok := chatMap[message.Chat]
 		if ok {
 			chat.MessageCount += 1
+		}
+	}
+
+	for _, chat := range chats {
+		_, err = UpdateChat(chat.GetId(), chat)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func TestUpdateMessageTokens(t *testing.T) {
+	InitConfig()
+
+	chats, err := GetGlobalChats()
+	if err != nil {
+		panic(err)
+	}
+
+	chatMap := map[string]*Chat{}
+	for _, chat := range chats {
+		chat.TokenCount = 0
+		chat.Price = 0
+		chat.Currency = "USD"
+		chatMap[chat.Name] = chat
+	}
+
+	messages, err := GetGlobalMessages()
+	if err != nil {
+		panic(err)
+	}
+
+	for _, message := range messages {
+		chat, ok := chatMap[message.Chat]
+		if ok {
+			chat.TokenCount += message.TokenCount
+			chat.Price = model.AddPrices(chat.Price, message.Price)
 		}
 	}
 

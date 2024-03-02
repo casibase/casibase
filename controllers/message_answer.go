@@ -205,6 +205,14 @@ func (c *ApiController) GetMessageAnswer() {
 	if chat.Currency == "" {
 		chat.Currency = message.Currency
 	}
+
+	if questionMessage != nil {
+		if chat.Currency == questionMessage.Currency {
+			chat.TokenCount += questionMessage.TokenCount
+			chat.Price += questionMessage.Price
+		}
+	}
+
 	_, err = object.UpdateChat(chat.GetId(), chat)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
