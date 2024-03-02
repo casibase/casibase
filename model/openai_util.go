@@ -160,8 +160,15 @@ func numTokensFromMessages(messages []openai.ChatCompletionMessage, model string
 
 	numTokens := 0
 	for _, message := range messages {
+		content := message.Content
+		for _, multiContentPart := range message.MultiContent {
+			if multiContentPart.Type == "text" {
+				content += multiContentPart.Text
+			}
+		}
+
 		numTokens += tokensPerMessage
-		numTokens += len(tkm.Encode(message.Content, nil, nil))
+		numTokens += len(tkm.Encode(content, nil, nil))
 		numTokens += len(tkm.Encode(message.Role, nil, nil))
 		numTokens += len(tkm.Encode(message.Name, nil, nil))
 		if message.Name != "" {
