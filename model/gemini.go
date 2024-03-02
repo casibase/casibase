@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	genai "github.com/casibase/generative-ai-go/genai"
 	option "google.golang.org/api/option"
@@ -47,10 +48,23 @@ func (p *GeminiModelProvider) GetPricing() string {
 	return `URL:
 https://cloud.google.com/vertex-ai/generative-ai/pricing
 
-| Model          | Type            | Input Price                            | Output Price             |
-|----------------|-----------------|----------------------------------------|--------------------------|
-| Gemini 1.0 pro | Pay-as-you-go   | $0.000125/1K characters, $0.0025/image | $0.000375/1K characters  |
-|                | Free of charge  | Free                                   | Free                     |
+| Model                                | Input Price                            | Output Price                    |
+|--------------------------------------|----------------------------------------|---------------------------------|
+| Gemini 1.0 pro                       | $0.000125/1K characters, $0.0025/image | $0.000375/1K characters         |
+
+| Model                                | Input Price per 1K characters      | Output Price per 1K characters  |
+|--------------------------------------|------------------------------------|---------------------------------|
+| PaLM 2 for Text (Text Bison)         | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
+| PaLM 2 for Text 32k (Text Bison 32k) | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
+| PaLM 2 for Text (Text Unicorn)       | Online: $0.0025, Batch: $0.0020    | Online: $0.0075, Batch: $0.0060 |
+| PaLM 2 for Chat (Chat Bison)         | Online: $0.00025                   | Online: $0.0005                 |
+| PaLM 2 for Chat 32k (Chat Bison 32k) | Online: $0.00025                   | Online: $0.0005                 |
+| Embeddings for Text                  | Online: $0.000025, Batch: $0.00002 | No charge                       |
+| Codey for Code Generation            | Online: $0.00025, Batch: $0.00020  | Online: $0.0005, Batch: $0.0004 |
+| Codey for Code Generation 32k        | Online: $0.00025                   | Online: $0.0005                 |
+| Codey for Code Chat                  | Online: $0.00025                   | Online: $0.0005                 |
+| Codey for Code Chat 32k              | Online: $0.00025                   | Online: $0.0005                 |
+| Codey for Code Completion            | Online: $0.00025                   | Online: $0.0005                 |
 `
 }
 
@@ -60,11 +74,22 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 	}
 
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
-	switch p.subType {
-	case "Gemini Pro":
+	switch {
+	case strings.Contains(p.subType, "gemini-1.0-pro"), strings.Contains(p.subType, "gemini-pro"), strings.Contains(p.subType, "gemini-pro-vision"):
+		// https://ai.google.dev/models/gemini
+		// gemini-pro is an alias for gemini-1.0-pro
 		inputPricePerThousandTokens = 0.000125
 		outputPricePerThousandTokens = 0.000375
-
+	// https://ai.google.dev/models/palm
+	case strings.Contains(p.subType, "text-bison-001"), strings.Contains(p.subType, "text-bison-32k"):
+		inputPricePerThousandTokens = 0.00025
+		outputPricePerThousandTokens = 0.0005
+	case strings.Contains(p.subType, "text-unicorn"):
+		inputPricePerThousandTokens = 0.0025
+		outputPricePerThousandTokens = 0.0075
+	case strings.Contains(p.subType, "chat-bison-001"), strings.Contains(p.subType, "chat-bison-32k"):
+		inputPricePerThousandTokens = 0.00025
+		outputPricePerThousandTokens = 0.0005
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
@@ -86,6 +111,14 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 	defer client.Close()
 
 	model := client.GenerativeModel(p.subType)
+
+	// https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/get-token-count#gemini-get-token-count-samples-drest
+	// has to use CountToken() to get
+	promptTokenCountResp, err := model.CountTokens(ctx, genai.Text(question))
+	if err != nil {
+		return nil, err
+	}
+
 	resp, err := model.GenerateContent(ctx, genai.Text(question))
 	if err != nil {
 		return nil, err
@@ -111,8 +144,13 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 
-	tokenCount := int(resp.Candidates[0].TokenCount)
-	modelResult := &ModelResult{TotalTokenCount: tokenCount}
+	respTokenCount := int(resp.Candidates[0].TokenCount)
+	promptTokenCount := int(promptTokenCountResp.TotalTokens)
+	modelResult := &ModelResult{
+		PromptTokenCount:   promptTokenCount,
+		ResponseTokenCount: respTokenCount,
+		TotalTokenCount:    promptTokenCount + respTokenCount,
+	}
 
 	err = p.calculatePrice(modelResult)
 	if err != nil {
