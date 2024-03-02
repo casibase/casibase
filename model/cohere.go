@@ -25,8 +25,15 @@ import (
 )
 
 var (
-	CohereDefaultMaxTokens   int     = 256
-	CohereDefaultTemperature float64 = 0.75
+	// https://docs.cohere.com/docs/command-beta#whats-the-context-window-on-the-command-models
+	CohereDefaultMaxTokens   int            = 4096
+	CohereDefaultTemperature float64        = 0.75
+	CohereModelMaxTokens     map[string]int = map[string]int{
+		"command-light":         4096,
+		"command-light-nightly": 8192,
+		"command":               4096,
+		"command-nightly":       8192,
+	}
 )
 
 type CohereModelProvider struct {
@@ -92,18 +99,30 @@ func (p *CohereModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
+func (p *CohereModelProvider) getMaxTokens(model string) int {
+	if p.maxTokens > 0 {
+		return p.maxTokens
+	}
+	if val, ok := CohereModelMaxTokens[model]; ok {
+		return val
+	}
+	return CohereDefaultMaxTokens
+}
+
 func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	client := cohereclient.NewClient(
 		cohereclient.WithToken(p.secretKey),
 	)
 	ctx := context.Background()
 
+	// if p.maxTokens > 0, use p.maxTokens, otherwise use model's default Maxtokens
+	maxTokens := p.getMaxTokens(p.subType)
 	generation, err := client.Generate(
 		ctx,
 		&cohere.GenerateRequest{
 			Prompt:      prompt,
 			Temperature: &CohereDefaultTemperature,
-			MaxTokens:   &CohereDefaultMaxTokens,
+			MaxTokens:   &maxTokens,
 			Model:       &p.subType,
 		},
 	)
