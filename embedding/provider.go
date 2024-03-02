@@ -37,13 +37,13 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	if typ == "OpenAI" {
 		p, err = NewOpenAiEmbeddingProvider(typ, subType, clientSecret)
 	} else if typ == "Gemini" {
-		// p, err = NewGeminiEmbeddingProvider(subType, clientSecret)
+		p, err = NewGeminiEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Hugging Face" {
-		// p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
+		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Cohere" {
-		// p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
+		p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Ernie" {
-		// p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
+		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Local" {
 		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Azure" {

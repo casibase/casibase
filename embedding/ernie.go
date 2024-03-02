@@ -30,13 +30,38 @@ func NewErnieEmbeddingProvider(subType string, apiKey string, secretKey string) 
 	return &ErnieEmbeddingProvider{subType: subType, apiKey: apiKey, secretKey: secretKey}, nil
 }
 
-func (e *ErnieEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, error) {
+func (e *ErnieEmbeddingProvider) GetPricing() string {
+	return `URL:
+https://cloud.baidu.com/article/517050
+
+Embedding Models:
+
+| Module     | Service Type                                        | Price (Per 1000 tokens) |
+|------------|-----------------------------------------------------|-------------------------|
+| Prediction | Embedding-V1 Public Cloud Online Invocation Service | ¥0.002/thousand tokens  |
+`
+}
+
+func (e *ErnieEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+	pricePerThousandTokens := 0.002
+	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
+	res.Currency = "CNY"
+	return nil
+}
+
+func (e *ErnieEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	client := ernie.NewDefaultClient(e.apiKey, e.secretKey)
 	request := ernie.EmbeddingRequest{Input: []string{text}}
 	embeddings, err := client.CreateEmbeddings(ctx, request)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return float64ToFloat32(embeddings.Data[0].Embedding), nil
+	res := &EmbeddingResult{}
+	res.TokenCount = embeddings.Usage.TotalTokens
+	err = e.calculatePrice(res)
+	if err != nil {
+		return nil, nil, err
+	}
+	return float64ToFloat32(embeddings.Data[0].Embedding), res, nil
 }
