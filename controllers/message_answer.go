@@ -137,7 +137,7 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-	history, err := object.GetRecentRawMessages(chat.Name, store.MemoryLimit)
+	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
 		return
