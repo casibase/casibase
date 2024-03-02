@@ -41,6 +41,12 @@ func getPrice(tokenCount int, pricePerThousandTokens float64) float64 {
 	return res
 }
 
+func addPrices(price1 float64, price2 float64) float64 {
+	res := price1 + price2
+	res = math.Round(res*1e8) / 1e8
+	return res
+}
+
 func GetTokenSize(model string, prompt string) (int, error) {
 	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {

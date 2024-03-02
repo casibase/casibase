@@ -96,7 +96,7 @@ func (p *GeminiModelProvider) calculatePrice(modelResult *ModelResult) error {
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
 	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
-	modelResult.TotalPrice = inputPrice + outputPrice
+	modelResult.TotalPrice = addPrices(inputPrice, outputPrice)
 	modelResult.Currency = "USD"
 	return nil
 }

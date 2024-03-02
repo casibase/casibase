@@ -44,20 +44,21 @@ https://www.anthropic.com/pricing
 }
 
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
-	price := 0.0
+	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
 		"claude-2": {0.008, 0.024},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
-		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
-		outputPrice := getPrice(modelResult.PromptTokenCount, priceItem[1])
-		price = inputPrice + outputPrice
+		inputPricePerThousandTokens = priceItem[0]
+		outputPricePerThousandTokens = priceItem[1]
 	} else {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
 	}
 
-	modelResult.TotalPrice = price
+	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
+	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
+	modelResult.TotalPrice = addPrices(inputPrice, outputPrice)
 	modelResult.Currency = "USD"
 	return nil
 }
