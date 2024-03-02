@@ -1,6 +1,6 @@
 module github.com/casibase/casibase
 
-go 1.21
+go 1.20
 
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
@@ -25,7 +25,7 @@ require (
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.1
-	github.com/sashabaranov/go-openai v1.19.2
+	github.com/sashabaranov/go-openai v1.20.2
 	github.com/tealeg/xlsx v1.0.5
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.4.0
