@@ -96,21 +96,15 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 
-	// need refactoring
-	modelResult := new(ModelResult)
-	promptTokenCount, err := GetTokenSize(p.subType, question)
-	if err != nil {
-		return nil, err
-	}
-	modelResult.PromptTokenCount = promptTokenCount
-	responseTokenCount, err := GetTokenSize(p.subType, response.Completion)
+	modelResult, err := getDefaultModelResult(p.subType, question, response.Completion)
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult.ResponseTokenCount = responseTokenCount
-	modelResult.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.calculatePrice(modelResult)
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
 
 	return modelResult, nil
 }

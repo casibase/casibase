@@ -113,22 +113,15 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 		return nil, err
 	}
 
-	// need refactoring
-	modelResult := new(ModelResult)
-	promptTokenCount, err := GetTokenSize(p.subType, question)
+	modelResult, err := getDefaultModelResult(p.subType, question, response)
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult.PromptTokenCount = promptTokenCount
-	responseTokenCount, err := GetTokenSize(p.subType, response)
+	err = p.calculatePrice(modelResult)
 	if err != nil {
 		return nil, err
 	}
-
-	modelResult.ResponseTokenCount = responseTokenCount
-	modelResult.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.calculatePrice(modelResult)
 
 	return modelResult, nil
 }

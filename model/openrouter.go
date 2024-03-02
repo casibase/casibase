@@ -208,16 +208,15 @@ func (p *OpenRouterModelProvider) QueryText(question string, writer io.Writer, h
 		flusher.Flush()
 	}
 
-	// need refactoring
-	responseTokenSize, err := GetTokenSize(model, responseStringBuilder.String())
+	modelResult, err := getDefaultModelResult(p.subType, question, responseStringBuilder.String())
 	if err != nil {
 		return nil, err
 	}
-	mr := new(ModelResult)
-	mr.PromptTokenCount = tokenCount
-	mr.ResponseTokenCount = responseTokenSize
-	mr.TotalTokenCount = mr.PromptTokenCount + mr.ResponseTokenCount
-	p.calculatePrice(mr)
 
-	return mr, nil
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelResult, nil
 }

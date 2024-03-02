@@ -52,6 +52,32 @@ func GetTokenSize(model string, prompt string) (int, error) {
 	return res, nil
 }
 
+func getDefaultModelResult(modelSubType string, prompt string, response string) (*ModelResult, error) {
+	modelResult := &ModelResult{}
+
+	promptTokenCount, err := GetTokenSize(modelSubType, prompt)
+	if err != nil {
+		promptTokenCount, err = GetTokenSize("gpt-3.5-turbo", prompt)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	responseTokenCount, err := GetTokenSize(modelSubType, response)
+	if err != nil {
+		responseTokenCount, err = GetTokenSize("gpt-3.5-turbo", response)
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	modelResult.PromptTokenCount = promptTokenCount
+	modelResult.ResponseTokenCount = responseTokenCount
+	modelResult.TotalTokenCount = promptTokenCount + responseTokenCount
+	modelResult.Currency = "USD"
+	return modelResult, nil
+}
+
 func getSystemMessages(prompt string, knowledgeMessages []*RawMessage) []*RawMessage {
 	if prompt == "" {
 		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."

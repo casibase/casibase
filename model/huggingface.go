@@ -62,20 +62,15 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 		return nil, err
 	}
 
-	// need refactoring
-	mr := new(ModelResult)
-	promptTokenCount, err := GetTokenSize(p.subType, question)
+	modelResult, err := getDefaultModelResult(p.subType, question, resp)
 	if err != nil {
 		return nil, err
 	}
-	mr.PromptTokenCount = promptTokenCount
-	responseTokenCount, err := GetTokenSize(p.subType, resp)
-	if err != nil {
-		return nil, err
-	}
-	mr.ResponseTokenCount = responseTokenCount
-	mr.TotalTokenCount = promptTokenCount + responseTokenCount
-	p.calculatePrice(mr)
 
-	return mr, nil
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
+	return modelResult, nil
 }
