@@ -72,9 +72,19 @@ https://xinghuo.xfyun.cn/sparkapi
 
 func (p *iFlytekModelProvider) calculatePrice(modelResult *ModelResult) error {
 	// Because it is a one-time purchase, it is inconvenient to charge
-
-	// need error handling
+	price := 0.0
+	switch p.subType {
+	case "spark-v1.5":
+		price = getPrice(modelResult.TotalTokenCount, 0.015)
+	case "spark-v3.0":
+		price = getPrice(modelResult.TotalTokenCount, 0.030)
+	case "spark-v3.5":
+		price = getPrice(modelResult.TotalTokenCount, 0.030)
+	default:
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+	}
 	modelResult.Currency = "CNY"
+	modelResult.TotalPrice = price
 	return nil
 }
 
