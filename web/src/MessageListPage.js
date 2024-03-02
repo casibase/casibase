@@ -99,13 +99,13 @@ class MessageListPage extends React.Component {
 
   renderTable(messages) {
     const columns = [
-      {
-        title: i18next.t("general:Owner"),
-        dataIndex: "owner",
-        key: "owner",
-        width: "90px",
-        sorter: (a, b) => a.owner.localeCompare(b.owner),
-      },
+      // {
+      //   title: i18next.t("general:Owner"),
+      //   dataIndex: "owner",
+      //   key: "owner",
+      //   width: "90px",
+      //   sorter: (a, b) => a.owner.localeCompare(b.owner),
+      // },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
@@ -134,7 +134,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:User"),
         dataIndex: "user",
         key: "user",
-        width: "120px",
+        width: "90px",
         sorter: (a, b) => a.user.localeCompare(b.user),
         render: (text, record, index) => {
           if (text.startsWith("u-")) {
@@ -181,7 +181,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Author"),
         dataIndex: "author",
         key: "author",
-        width: "100px",
+        width: "120px",
         sorter: (a, b) => a.author.localeCompare(b.author),
         render: (text, record, index) => {
           if (text === "AI") {
@@ -199,7 +199,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Text"),
         dataIndex: "text",
         key: "text",
-        width: "400px",
+        width: "300px",
         sorter: (a, b) => a.text.localeCompare(b.text),
       },
       {
@@ -208,6 +208,22 @@ class MessageListPage extends React.Component {
         key: "tokenCount",
         width: "120px",
         sorter: (a, b) => a.tokenCount - b.tokenCount,
+        // ...this.getColumnSearchProps("tokenCount"),
+      },
+      {
+        title: i18next.t("chat:Price"),
+        dataIndex: "price",
+        key: "price",
+        width: "120px",
+        sorter: (a, b) => a.price - b.price,
+        // ...this.getColumnSearchProps("tokenCount"),
+      },
+      {
+        title: i18next.t("chat:Currency"),
+        dataIndex: "currency",
+        key: "currency",
+        width: "120px",
+        sorter: (a, b) => a.currency - b.currency,
         // ...this.getColumnSearchProps("tokenCount"),
       },
       {

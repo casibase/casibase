@@ -134,7 +134,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "140px",
+        width: "100px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
@@ -144,16 +144,16 @@ class ChatListPage extends React.Component {
           );
         },
       },
-      {
-        title: i18next.t("general:Created time"),
-        dataIndex: "createdTime",
-        key: "createdTime",
-        width: "150px",
-        sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, record, index) => {
-          return Setting.getFormattedDate(text);
-        },
-      },
+      // {
+      //   title: i18next.t("general:Created time"),
+      //   dataIndex: "createdTime",
+      //   key: "createdTime",
+      //   width: "150px",
+      //   sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
+      //   render: (text, record, index) => {
+      //     return Setting.getFormattedDate(text);
+      //   },
+      // },
       {
         title: i18next.t("general:Updated time"),
         dataIndex: "updatedTime",
@@ -200,7 +200,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:User"),
         dataIndex: "user",
         key: "user",
-        width: "120px",
+        width: "90px",
         sorter: (a, b) => a.user.localeCompare(b.user),
         // ...this.getColumnSearchProps("user"),
         render: (text, record, index) => {
@@ -264,7 +264,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Client IP"),
         dataIndex: "clientIp",
         key: "clientIp",
-        width: "150px",
+        width: "120px",
         sorter: (a, b) => a.clientIp.localeCompare(b.clientIp),
         render: (text, record, index) => {
           if (text === "") {
@@ -290,7 +290,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:User agent"),
         dataIndex: "userAgent",
         key: "userAgent",
-        width: "150px",
+        width: "120px",
         sorter: (a, b) => a.userAgent.localeCompare(b.userAgent),
         render: (text, record, index) => {
           if (record.userAgentDesc === "") {
@@ -312,7 +312,7 @@ class ChatListPage extends React.Component {
         title: i18next.t("chat:Count"),
         dataIndex: "messageCount",
         key: "messageCount",
-        width: "100px",
+        width: "80px",
         sorter: (a, b) => a.messageCount - b.messageCount,
         // ...this.getColumnSearchProps("messageCount"),
       },
@@ -328,10 +328,10 @@ class ChatListPage extends React.Component {
         title: i18next.t("general:Messages"),
         dataIndex: "messages",
         key: "messages",
-        width: "380px",
+        width: "300px",
         render: (text, record, index) => {
           const messages = this.state.messagesMap[record.name];
-          if (messages === undefined) {
+          if (messages === undefined || messages.length === 0) {
             return null;
           }
 
