@@ -124,3 +124,9 @@ func TestUpdateMessages(t *testing.T) {
 		}
 	}
 }
+
+func TestUpdateMessagesAndChats(t *testing.T) {
+	TestUpdateMessages(t)
+	TestUpdateMessageCounts(t)
+	TestUpdateMessageTokens(t)
+}

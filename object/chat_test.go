@@ -18,6 +18,7 @@
 package object
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/casibase/casibase/model"
@@ -91,6 +92,26 @@ func TestUpdateMessageTokens(t *testing.T) {
 		_, err = UpdateChat(chat.GetId(), chat)
 		if err != nil {
 			panic(err)
+		}
+	}
+}
+
+func TestDeleteEmptyChats(t *testing.T) {
+	InitConfig()
+
+	chats, err := GetGlobalChats()
+	if err != nil {
+		panic(err)
+	}
+
+	for i, chat := range chats {
+		if chat.MessageCount == 0 {
+			_, err = DeleteChat(chat)
+			if err != nil {
+				panic(err)
+			}
+
+			fmt.Printf("[%d/%d] deleted chat: %s, user: %s, clientIP: %s (%s), userAgent: %s (%s)\n", i+1, len(chats), chat.Name, chat.User, chat.ClientIpDesc, chat.ClientIp, chat.UserAgentDesc, chat.UserAgent)
 		}
 	}
 }
