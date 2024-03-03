@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -408,19 +408,26 @@ class ChatListPage extends React.Component {
       columns = columns.filter(column => column.key !== "price");
     }
 
-    const sumTokenCounts = (chats) => {
+    const sumFields = (chats, field) => {
       if (!chats) {
         return 0;
       }
-      return chats.reduce((sum, chat) => sum + chat.tokenCount, 0);
+
+      if (field === "count") {
+        return chats.reduce((sum, chat) => sum + 1, 0);
+      } else {
+        return chats.reduce((sum, chat) => sum + chat[field], 0);
+      }
     };
 
-    const sumPrices = (chats) => {
+    function uniqueFields(chats, field) {
       if (!chats) {
         return 0;
       }
-      return chats.reduce((sum, chat) => sum + chat.price, 0);
-    };
+
+      const res = new Set(chats.map(chat => chat[field]));
+      return res.size;
+    }
 
     return (
       <div>
@@ -430,26 +437,38 @@ class ChatListPage extends React.Component {
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("chat:Filter single chat")}
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Switch checked={this.state.filterSingleChat} onChange={(checked, e) => {
-                this.setState({
-                  filterSingleChat: checked,
-                });
-                Setting.setBoolValue("filterSingleChat", checked);
-                this.UNSAFE_componentWillMount();
-              }} />
+              {/* {i18next.t("chat:Filter single chat")}*/}
+              {/* &nbsp;&nbsp;&nbsp;&nbsp;*/}
+              {/* <Switch checked={this.state.filterSingleChat} onChange={(checked, e) => {*/}
+              {/*  this.setState({*/}
+              {/*    filterSingleChat: checked,*/}
+              {/*  });*/}
+              {/*  Setting.setBoolValue("filterSingleChat", checked);*/}
+              {/*  this.UNSAFE_componentWillMount();*/}
+              {/* }} />*/}
               {
                 (!this.props.account || this.props.account.name !== "admin") ? null : (
                   <React.Fragment>
                     &nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("chat:Token count")}:
+                    {i18next.t("general:Users")}:
                     &nbsp;
-                    {Setting.getDisplayTag(sumTokenCounts(chats))}
-                    &nbsp;&nbsp;&nbsp;&nbsp;
+                    {Setting.getDisplayTag(uniqueFields(chats, "user"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("general:Chats")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(sumFields(chats, "count"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("general:Messages")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(sumFields(chats, "messageCount"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("general:Tokens")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(sumFields(chats, "tokenCount"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {i18next.t("chat:Price")}:
                     &nbsp;
-                    {Setting.getDisplayPrice(sumPrices(chats))}
+                    {Setting.getDisplayPrice(sumFields(chats, "price"))}
                   </React.Fragment>
                 )
               }
