@@ -304,7 +304,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 
 			// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-			if p.subType != "Local" {
+			if p.subType == "Local" {
+				modelResult.ResponseTokenCount = 0
+				modelResult.TotalTokenCount = 0
+				modelResult.TotalPrice = 0.0
+			} else {
 				var responseTokenCount int
 				responseTokenCount, err = GetTokenSize(p.subType, data)
 				if err != nil {
