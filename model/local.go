@@ -184,6 +184,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	var flushData func(string, io.Writer) error
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
