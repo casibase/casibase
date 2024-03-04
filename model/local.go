@@ -360,22 +360,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			_, err := response.WriteString(data)
+			_, err = response.WriteString(data)
 			if err != nil {
 				return nil, err
 			}
-			// modelResult.PromptTokenCount += completion.Usage.PromptTokens
-			// modelResult.ResponseTokenCount += completion.Usage.CompletionTokens
-			// modelResult.TotalTokenCount += completion.Usage.TotalTokens
-			// err = p.calculatePrice(modelResult)
-			// if err != nil {
-			// 	return nil, err
-			// }
 		}
+
 		modelResult, err = getDefaultModelResult(model, question, response.String())
-		if err != nil {
-			return nil, err
-		}
 		return modelResult, nil
 	} else {
 		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
