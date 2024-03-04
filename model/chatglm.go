@@ -49,9 +49,9 @@ Generate Model:
 func (p *ChatGLMModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	switch p.subType {
-	case "GLM-3-Turbo":
+	case "glm-3-turbo":
 		price = getPrice(modelResult.TotalTokenCount, 0.005)
-	case "GLM-4", "GLM-4V":
+	case "glm-4", "glm-4v":
 		price = getPrice(modelResult.TotalTokenCount, 0.1)
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)

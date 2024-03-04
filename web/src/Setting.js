@@ -845,7 +845,9 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "ChatGLM") {
     return (
       [
-        {id: "chatglm2-6b", name: "chatglm2-6b"},
+        {id: "glm-3-turbo", name: "glm-3-turbo"},
+        {id: "glm-4", name: "glm-4"},
+        {id: "glm-4V", name: "glm-4V"},
       ]
     );
   } else if (type === "MiniMax") {
