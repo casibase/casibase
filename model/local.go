@@ -184,7 +184,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	var flushData func(string, io.Writer) error
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
-		flushData = flushDataOpenai
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
@@ -208,7 +207,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	maxTokens := GetOpenAiMaxTokens(model)
 
 	modelResult := &ModelResult{}
-	if getOpenAiModelType(p.subType) == "Chat" || p.typ == "Local" {
+	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
 			reqUrl := openai.ImageRequest{
 				Prompt:         question,
@@ -236,34 +235,32 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return modelResult, nil
 		}
 
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		if err != nil {
+			return nil, err
+		}
+
 		var messages []openai.ChatCompletionMessage
-		if p.typ != "Local" {
-			rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		if p.subType == "gpt-4-vision-preview" {
+			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
 			if err != nil {
 				return nil, err
 			}
+		} else {
+			messages = OpenaiRawMessagesToMessages(rawMessages)
+		}
 
-			if p.subType == "gpt-4-vision-preview" {
-				messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
-				if err != nil {
-					return nil, err
-				}
-			} else {
-				messages = OpenaiRawMessagesToMessages(rawMessages)
-			}
+		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
+		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
+		if err != nil {
+			return nil, err
+		}
 
-			// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-			promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
-			if err != nil {
-				return nil, err
-			}
-
-			modelResult.PromptTokenCount = promptTokenCount
-			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-			err = p.calculatePrice(modelResult)
-			if err != nil {
-				return nil, err
-			}
+		modelResult.PromptTokenCount = promptTokenCount
+		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+		err = p.calculatePrice(modelResult)
+		if err != nil {
+			return nil, err
 		}
 
 		respStream, err := client.CreateChatCompletionStream(
@@ -304,23 +301,17 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			}
 
 			// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-			if p.subType == "Local" {
-				modelResult.ResponseTokenCount = 0
-				modelResult.TotalTokenCount = 0
-				modelResult.TotalPrice = 0.0
-			} else {
-				var responseTokenCount int
-				responseTokenCount, err = GetTokenSize(p.subType, data)
-				if err != nil {
-					return nil, err
-				}
+			var responseTokenCount int
+			responseTokenCount, err = GetTokenSize(p.subType, data)
+			if err != nil {
+				return nil, err
+			}
 
-				modelResult.ResponseTokenCount += responseTokenCount
-				modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-				err = p.calculatePrice(modelResult)
-				if err != nil {
-					return nil, err
-				}
+			modelResult.ResponseTokenCount += responseTokenCount
+			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+			err = p.calculatePrice(modelResult)
+			if err != nil {
+				return nil, err
 			}
 		}
 
@@ -344,6 +335,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		defer respStream.Close()
 
 		isLeadingReturn := true
+		var response strings.Builder
 		for {
 			completion, streamErr := respStream.Recv()
 			if streamErr != nil {
@@ -367,15 +359,22 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			modelResult.PromptTokenCount += completion.Usage.PromptTokens
-			modelResult.ResponseTokenCount += completion.Usage.CompletionTokens
-			modelResult.TotalTokenCount += completion.Usage.TotalTokens
-			err = p.calculatePrice(modelResult)
+			_, err := response.WriteString(data)
 			if err != nil {
 				return nil, err
 			}
+			// modelResult.PromptTokenCount += completion.Usage.PromptTokens
+			// modelResult.ResponseTokenCount += completion.Usage.CompletionTokens
+			// modelResult.TotalTokenCount += completion.Usage.TotalTokens
+			// err = p.calculatePrice(modelResult)
+			// if err != nil {
+			// 	return nil, err
+			// }
 		}
-
+		modelResult, err = getDefaultModelResult(model, question, response.String())
+		if err != nil {
+			return nil, err
+		}
 		return modelResult, nil
 	} else {
 		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
