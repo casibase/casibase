@@ -184,6 +184,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	var flushData func(string, io.Writer) error
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	} else if p.typ == "Azure" {
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 		flushData = flushDataAzure
@@ -335,6 +336,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		defer respStream.Close()
 
 		isLeadingReturn := true
+		var response strings.Builder
 		for {
 			completion, streamErr := respStream.Recv()
 			if streamErr != nil {
@@ -358,15 +360,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			modelResult.PromptTokenCount += completion.Usage.PromptTokens
-			modelResult.ResponseTokenCount += completion.Usage.CompletionTokens
-			modelResult.TotalTokenCount += completion.Usage.TotalTokens
-			err = p.calculatePrice(modelResult)
+			_, err = response.WriteString(data)
 			if err != nil {
 				return nil, err
 			}
 		}
 
+		modelResult, err = getDefaultModelResult(model, question, response.String())
 		return modelResult, nil
 	} else {
 		return nil, fmt.Errorf("QueryText() error: unknown model type: %s", p.subType)
