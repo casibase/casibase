@@ -16,6 +16,7 @@
     "Filter single chat": "筛选单个会话",
     "Group": "群聊",
     "New Chat": "新会话",
+    "Price": "价格",
     "Single": "单聊",
     "Store": "数据仓库",
     "Token count": "Token数量",
@@ -84,6 +85,7 @@
     "Successfully update": "更新成功",
     "Sure to delete": "确定删除",
     "This is a read-only demo site!": "这是一个只读的演示站点！",
+    "Tokens": "Tokens",
     "URL": "链接",
     "Updated time": "更新时间",
     "User": "用户",
@@ -100,6 +102,7 @@
   "message": {
     "Author": "作者",
     "Chat": "会话",
+    "Comment": "批注",
     "Edit Chat": "编辑会话",
     "Knowledge": "知识",
     "Messages": "消息",

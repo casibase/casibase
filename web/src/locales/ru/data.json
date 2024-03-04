@@ -16,6 +16,7 @@
     "Filter single chat": "Filter single chat",
     "Group": "Группа",
     "New Chat": "New Chat",
+    "Price": "Price",
     "Single": "Один",
     "Store": "Store",
     "Token count": "Token count",
@@ -84,6 +85,7 @@
     "Successfully update": "Successfully update",
     "Sure to delete": "Sure to delete",
     "This is a read-only demo site!": "This is a read-only demo site!",
+    "Tokens": "Tokens",
     "URL": "URL",
     "Updated time": "Обновленное время",
     "User": "User",
@@ -100,6 +102,7 @@
   "message": {
     "Author": "Автор",
     "Chat": "Чат",
+    "Comment": "Comment",
     "Edit Chat": "Редактировать чат",
     "Knowledge": "Knowledge",
     "Messages": "Сообщения",

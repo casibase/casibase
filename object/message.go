@@ -42,6 +42,7 @@ type Message struct {
 	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
 	Author       string        `xorm:"varchar(100)" json:"author"`
 	Text         string        `xorm:"mediumtext" json:"text"`
+	Comment      string        `xorm:"mediumtext" json:"comment"`
 	TokenCount   int           `json:"tokenCount"`
 	Price        float64       `json:"price"`
 	Currency     string        `xorm:"varchar(100)" json:"currency"`
