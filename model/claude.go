@@ -33,20 +33,27 @@ func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvi
 
 func (p *ClaudeModelProvider) GetPricing() string {
 	return `URL:
-https://www.anthropic.com/pricing
+https://docs.anthropic.com/claude/docs/models-overview#model-comparison
 
-| Model family   | Best for                                                                              | Context window | Prompt Pricing       | Completion Pricing    |
-|----------------|---------------------------------------------------------------------------------------|----------------|----------------------|-----------------------|
-| Claude Instant | Low latency, high throughput use cases                                                | 100,000 tokens | $0.80/million tokens | $2.40/million tokens  |
-| Claude 2.0     | Tasks that require complex reasoning                                                  | 100,000 tokens | $8.00/million tokens | $24.00/million tokens |
-| Claude 2.1     | Same performance as Claude 2, plus significant reduction in model hallucination rates | 200,000 tokens | $8.00/million tokens | $24.00/million tokens |
+| Model family   | Context window | Input Pricing         | Output Pricing        |
+|----------------|----------------|-----------------------|-----------------------|
+| Claude Instant | 100,000 tokens | $0.80/million tokens  | $2.40/million tokens  |
+| Claude 2.0     | 100,000 tokens | $8.00/million tokens  | $24.00/million tokens |
+| Claude 2.1     | 200,000 tokens | $8.00/million tokens  | $24.00/million tokens |
+| Claude Haiku   | 200,000 tokens | $0.25/million tokens  | $1.25/million tokens  |
+| Claude Sonnet  | 200,000 tokens | $3.00/million tokens  | $15.00/million tokens |
+| Claude Opus    | 200,000 tokens | $15.00/million tokens | $75.00/million tokens |
 `
 }
 
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
-		"claude-2": {0.008, 0.024},
+		"claude-instant-1.2":       {0.0008, 0.0024},
+		"claude-2.0":               {0.008, 0.024},
+		"claude-2.1":               {0.008, 0.024},
+		"claude-3-sonnet-20240229": {0.003, 0.015},
+		"claude-3-opus-20240229":   {0.015, 0.075},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
