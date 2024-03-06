@@ -54,8 +54,10 @@ class ChatBox extends React.Component {
     if (this.state.value === "" || this.props.disableInput) {
       return;
     }
-
-    this.props.sendMessage(this.state.value);
+    const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g, (match, src, alt, width, height, scaledWidth, scaledHeight) => {
+      return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
+    });
+    this.props.sendMessage(newValue);
     this.setState({value: ""});
   };
 
@@ -71,15 +73,21 @@ class ChatBox extends React.Component {
       img.onload = () => {
         const originalWidth = img.width;
         const originalHeight = img.height;
-        const maxWidth = 800;
+        const inputMaxWidth = 70;
+        const chatMaxWidth = 600;
         let Ratio = 1;
-        if (originalWidth > maxWidth) {
-          Ratio = maxWidth / originalWidth;
+        if (originalWidth > inputMaxWidth) {
+          Ratio = inputMaxWidth / originalWidth;
         }
         const scaledWidth = Math.round(originalWidth * Ratio);
         const scaledHeight = Math.round(originalHeight * Ratio);
+        if (originalWidth > chatMaxWidth) {
+          Ratio = chatMaxWidth / originalWidth;
+        }
+        const chatScaledWidth = Math.round(originalWidth * Ratio);
+        const chatScaledHeight = Math.round(originalHeight * Ratio);
         this.setState({
-          value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}">`,
+          value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
         });
       };
 
