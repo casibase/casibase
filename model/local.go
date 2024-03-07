@@ -89,25 +89,65 @@ Image models:
 `
 }
 
+// calculatePrice calculates the total price for using a specific AI model based on the input and output token counts.
+// This function supports various models with different pricing strategies as outlined below:
+//
+// GPT-3.5 Turbo Models:
+// - "gpt-3.5-turbo-16k" and variants: $0.003 per 1,000 input tokens, $0.004 per 1,000 output tokens.
+// - "gpt-3.5-turbo-instruct": $0.0015 per 1,000 input tokens, $0.002 per 1,000 output tokens.
+// - "gpt-3.5-turbo-1106": $0.001 per 1,000 input tokens, $0.002 per 1,000 output tokens.
+// - Other GPT-3.5 Turbo models (default pricing): $0.0005 per 1,000 input tokens, $0.0015 per 1,000 output tokens.
+//
+// GPT-4.0 Models:
+// - Models with "preview" in their name: $0.01 per 1,000 input tokens, $0.03 per 1,000 output tokens.
+// - "gpt-4-32k" and variants: $0.06 per 1,000 input tokens, $0.12 per 1,000 output tokens.
+// - Other GPT-4 models (default pricing): $0.03 per 1,000 input tokens, $0.06 per 1,000 output tokens.
+//
+// DALL-E Models:
+// - "dall-e-3": Flat rate of $0.08 per image generated, regardless of token count.
+//
+// The function dynamically calculates the total price based on the specific model and the number of input/output tokens or images.
+// Prices are calculated in USD.
+//
+// Parameters:
+// - modelResult: A pointer to a ModelResult struct, which contains model details, including the token count and the number of images (if applicable).
+//
+// Returns:
+// - error: Returns an error if the model type is unknown, otherwise nil.
 func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 	model := p.subType
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	switch {
-	case strings.Contains(model, "gpt-3.5-turbo-instruct"):
-		inputPricePerThousandTokens = 0.0015
-		outputPricePerThousandTokens = 0.002
-	case strings.Contains(model, "gpt-3.5-turbo"):
-		inputPricePerThousandTokens = 0.0005
-		outputPricePerThousandTokens = 0.0015
-	case strings.Contains(model, "gpt-4-turbo"), strings.Contains(model, "gpt-4-vision"):
-		inputPricePerThousandTokens = 0.01
-		outputPricePerThousandTokens = 0.03
-	case strings.Contains(model, "gpt-4") && strings.Contains(model, "32k"):
-		inputPricePerThousandTokens = 0.06
-		outputPricePerThousandTokens = 0.12
+	// gpt 3.5 turbo model Support:
+	case strings.Contains(model, "gpt-3.5"):
+		if strings.Contains(model, "16k") {
+			inputPricePerThousandTokens = 0.003
+			outputPricePerThousandTokens = 0.004
+		} else if strings.Contains(model, "instruct") {
+			inputPricePerThousandTokens = 0.0015
+			outputPricePerThousandTokens = 0.002
+		} else if strings.Contains(model, "1106") {
+			inputPricePerThousandTokens = 0.001
+			outputPricePerThousandTokens = 0.002
+		} else {
+			inputPricePerThousandTokens = 0.0005
+			outputPricePerThousandTokens = 0.0015
+		}
+
+	// gpt 4.0 model
 	case strings.Contains(model, "gpt-4"):
-		inputPricePerThousandTokens = 0.03
-		outputPricePerThousandTokens = 0.06
+		if strings.Contains(model, "preview") {
+			inputPricePerThousandTokens = 0.01
+			outputPricePerThousandTokens = 0.03
+		} else if strings.Contains(model, "32k") {
+			inputPricePerThousandTokens = 0.06
+			outputPricePerThousandTokens = 0.12
+		} else {
+			inputPricePerThousandTokens = 0.03
+			outputPricePerThousandTokens = 0.06
+		}
+
+	// dall-e model
 	case strings.Contains(model, "dall-e-3"):
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
 		return nil
