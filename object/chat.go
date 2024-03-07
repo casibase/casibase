@@ -27,7 +27,7 @@ type Chat struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	UpdatedTime string `xorm:"varchar(100)" json:"updatedTime"`
 
-	// Organization string   `xorm:"varchar(100)" json:"organization"`
+	Organization  string   `xorm:"varchar(100)" json:"organization"`
 	DisplayName   string   `xorm:"varchar(100)" json:"displayName"`
 	Store         string   `xorm:"varchar(100)" json:"store"`
 	Category      string   `xorm:"varchar(100)" json:"category"`

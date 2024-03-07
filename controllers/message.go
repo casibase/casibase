@@ -106,6 +106,7 @@ func (c *ApiController) AddMessage() {
 			return
 		}
 
+		message.Organization = chat.Organization
 		message.Chat = chat.Name
 	} else {
 		chatId := util.GetId(message.Owner, message.Chat)
@@ -140,10 +141,10 @@ func (c *ApiController) AddMessage() {
 	if success {
 		if chat != nil && chat.Type == "AI" {
 			answerMessage := &object.Message{
-				Owner:       message.Owner,
-				Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
-				CreatedTime: util.GetCurrentTimeEx(message.CreatedTime),
-				// Organization: message.Organization,
+				Owner:        message.Owner,
+				Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+				CreatedTime:  util.GetCurrentTimeEx(message.CreatedTime),
+				Organization: message.Organization,
 				User:         message.User,
 				Chat:         message.Chat,
 				ReplyTo:      message.GetId(),

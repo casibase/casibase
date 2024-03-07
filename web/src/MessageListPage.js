@@ -53,7 +53,7 @@ class MessageListPage extends React.Component {
       owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
-      // organization: "Message Organization - 1",
+      organization: this.props.account.owner,
       user: this.props.account.name,
       chat: "",
       replyTo: "",

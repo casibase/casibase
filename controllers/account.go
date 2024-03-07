@@ -89,7 +89,7 @@ func (c *ApiController) addInitialChat(userId string) (*object.Chat, error) {
 		return nil, fmt.Errorf("The default store is not found")
 	}
 
-	_, userName := util.GetOwnerAndNameFromId(userId)
+	organization, userName := util.GetOwnerAndNameFromId(userId)
 
 	randomName := util.GetRandomName()
 	currentTime := util.GetCurrentTime()
@@ -98,6 +98,7 @@ func (c *ApiController) addInitialChat(userId string) (*object.Chat, error) {
 		Name:         fmt.Sprintf("chat_%s", randomName),
 		CreatedTime:  currentTime,
 		UpdatedTime:  currentTime,
+		Organization: organization,
 		DisplayName:  fmt.Sprintf("New Chat - %d", 1),
 		Store:        store.GetId(),
 		Category:     "Default Category",
@@ -143,10 +144,10 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	}
 
 	answerMessage := &object.Message{
-		Owner:       "admin",
-		Name:        fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime: util.GetCurrentTimeEx(chat.CreatedTime),
-		// Organization: message.Organization,
+		Owner:        "admin",
+		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
+		Organization: chat.Organization,
 		User:         user.Name,
 		Chat:         chat.Name,
 		ReplyTo:      "Welcome",
