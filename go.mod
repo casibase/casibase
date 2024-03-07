@@ -1,6 +1,8 @@
 module github.com/casibase/casibase
 
-go 1.20
+go 1.21
+
+toolchain go1.22.0
 
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
