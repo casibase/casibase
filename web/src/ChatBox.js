@@ -57,7 +57,11 @@ class ChatBox extends React.Component {
     const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g, (match, src, alt, width, height, scaledWidth, scaledHeight) => {
       return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
     });
-    this.props.sendMessage(newValue);
+    let fileName = "";
+    if (this.inputImage.files[0]) {
+      fileName = this.inputImage.files[0].name;
+    }
+    this.props.sendMessage(newValue, fileName);
     this.setState({value: ""});
   };
 
