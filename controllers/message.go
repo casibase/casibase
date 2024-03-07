@@ -149,6 +149,7 @@ func (c *ApiController) AddMessage() {
 				ReplyTo:      message.GetId(),
 				Author:       "AI",
 				Text:         "",
+				FileName:     message.FileName,
 				VectorScores: []object.VectorScore{},
 			}
 			_, err = object.AddMessage(answerMessage)

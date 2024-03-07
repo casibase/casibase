@@ -94,24 +94,25 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text, isHidden) {
+  newMessage(text, fileName, isHidden) {
     const randomName = Setting.getRandomName();
     return {
       owner: "admin",
       name: `message_${randomName}`,
       createdTime: moment().format(),
-      // organization: this.props.account.owner,
+      organization: this.props.account.owner,
       user: this.props.account.name,
       chat: this.state.chat?.name,
       replyTo: "",
       author: `${this.props.account.owner}/${this.props.account.name}`,
       text: text,
       isHidden: isHidden,
+      fileName: fileName,
     };
   }
 
-  sendMessage(text, isHidden) {
-    const newMessage = this.newMessage(text, isHidden);
+  sendMessage(text, fileName, isHidden) {
+    const newMessage = this.newMessage(text, fileName, isHidden);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -372,7 +373,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text) => {this.sendMessage(text, false);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} />
         </div>
       </div>
     );
