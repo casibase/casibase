@@ -147,6 +147,11 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 			outputPricePerThousandTokens = 0.06
 		}
 
+	// local custom model:
+	case model == "custom-model":
+		inputPricePerThousandTokens = 0.001
+		outputPricePerThousandTokens = 0.002
+
 	// dall-e model
 	case strings.Contains(model, "dall-e-3"):
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08

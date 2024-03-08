@@ -73,6 +73,8 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 		pricePerThousandTokens = 0.00002
 	case strings.Contains(embeddingModel, "text-embedding-3-large"):
 		pricePerThousandTokens = 0.00013
+	case embeddingModel == "custom-embedding":
+		pricePerThousandTokens = 0.0001
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", embeddingModel)
 	}
