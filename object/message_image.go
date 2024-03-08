@@ -39,27 +39,21 @@ func getExtFromMimeType(mimeType string) (string, error) {
 	return res, nil
 }
 
-func parseBase64Image(data string) (string, []byte, error) {
+func parseBase64Image(data string) ([]byte, error) {
 	parts := strings.SplitN(data, ";", 2)
 	if len(parts) < 2 {
-		return "", nil, fmt.Errorf("parseBase64Image() error: invalid image format")
-	}
-
-	mimeType := parts[0][5:]
-	ext, err := getExtFromMimeType(mimeType)
-	if err != nil {
-		return "", nil, err
+		return nil, fmt.Errorf("parseBase64Image() error: invalid image format")
 	}
 
 	b64Parts := strings.SplitN(parts[1], ",", 2)
 	if len(b64Parts) < 2 {
-		return "", nil, fmt.Errorf("parseBase64Image() error: invalid image format")
+		return nil, fmt.Errorf("parseBase64Image() error: invalid image format")
 	}
 
 	imageContent, err := base64.StdEncoding.DecodeString(b64Parts[1])
 	if err != nil {
-		return "", nil, err
+		return nil, err
 	}
 
-	return ext, imageContent, nil
+	return imageContent, nil
 }
