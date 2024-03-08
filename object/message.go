@@ -166,14 +166,16 @@ func RefineMessageImages(message *Message, origin string) error {
 		}
 
 		for _, match := range matches {
-			_, content, err := parseBase64Image(match)
+			var content []byte
+			content, err = parseBase64Image(match)
 			if err != nil {
 				return err
 			}
 
-			filename := fmt.Sprintf(`%s\%s\%s\%s`, message.Organization, message.User, message.Chat, message.FileName)
+			filePath := fmt.Sprintf(`%s\%s\%s\%s`, message.Organization, message.User, message.Chat, message.FileName)
 
-			fileUrl, err := obj.PutObject(message.User, "Casibase-Image", filename, bytes.NewBuffer(content))
+			var fileUrl string
+			fileUrl, err = obj.PutObject(message.User, message.Chat, filePath, bytes.NewBuffer(content))
 			if err != nil {
 				return err
 			}
@@ -183,7 +185,8 @@ func RefineMessageImages(message *Message, origin string) error {
 				fileUrl = tokens[0]
 			}
 
-			httpUrl, err := getUrlFromPath(fileUrl, origin)
+			var httpUrl string
+			httpUrl, err = getUrlFromPath(fileUrl, origin)
 			if err != nil {
 				return err
 			}
