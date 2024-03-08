@@ -29,7 +29,7 @@ class ChatBox extends React.Component {
     this.toggleCursorBlink = this.toggleCursorBlink.bind(this);
   }
 
-  UNSAFE_componentWillUnmount() {
+  componentWillUnmount() {
     clearInterval(this.cursorBlinkInterval);
   }
 
