@@ -23,31 +23,24 @@ class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dots: ".",
       value: "",
+      showCursor: false,
     };
-    this.timer = null;
+    this.toggleCursorBlink = this.toggleCursorBlink.bind(this);
+  }
+
+  UNSAFE_componentWillUnmount() {
+    clearInterval(this.cursorBlinkInterval);
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => {
-      this.setState(prevState => {
-        switch (prevState.dots) {
-        case ".":
-          return {dots: ".."};
-        case "..":
-          return {dots: "..."};
-        case "...":
-          return {dots: "."};
-        default:
-          return {dots: "."};
-        }
-      });
-    }, 500);
+    this.cursorBlinkInterval = setInterval(this.toggleCursorBlink, 500);
   }
 
-  componentWillUnmount() {
-    clearInterval(this.timer);
+  toggleCursorBlink() {
+    this.setState(prevState => ({
+      showCursor: !prevState.showCursor,
+    }));
   }
 
   handleSend = (innerHtml) => {
@@ -110,6 +103,8 @@ class ChatBox extends React.Component {
     if (messages === null) {
       messages = [];
     }
+
+    const cursor = this.state.showCursor ? "\u258d" : "\u00A0";
     return (
       <React.Fragment>
         <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
@@ -124,7 +119,7 @@ class ChatBox extends React.Component {
             <MessageList style={{marginTop: "10px"}}>
               {messages.filter(message => message.isHidden === false).map((message, index) => (
                 <Message key={index} model={{
-                  message: message.text !== "" ? message.text : this.state.dots,
+                  message: message.text !== "" ? message.text : cursor,
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>

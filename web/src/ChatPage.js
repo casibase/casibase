@@ -27,8 +27,8 @@ import * as Conf from "./Conf";
 class ChatPage extends BaseListPage {
   constructor(props) {
     super(props);
-
     this.menu = React.createRef();
+    this.toggleCursorBlink = this.toggleCursorBlink.bind(this);
   }
 
   UNSAFE_componentWillMount() {
@@ -36,9 +36,11 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
+      showCursor: false,
     });
 
     this.fetch();
+    clearInterval(this.cursorBlinkInterval);
   }
 
   componentDidMount() {
@@ -57,6 +59,14 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
+
+    this.cursorBlinkInterval = setInterval(this.toggleCursorBlink, 300);
+  }
+
+  toggleCursorBlink() {
+    this.setState(prevState => ({
+      showCursor: !prevState.showCursor,
+    }));
   }
 
   getNextChatIndex(name) {
@@ -175,8 +185,14 @@ class ChatPage extends BaseListPage {
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
               const jsonData = JSON.parse(data);
 
+              const blockChar = " \u258d";
+              const spaceChar = " \u00A0";
+              let newText;
               if (jsonData.text === "") {
                 jsonData.text = "\n";
+                newText = "";
+              } else {
+                newText = this.state.showCursor ? blockChar : spaceChar;
               }
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
@@ -184,7 +200,12 @@ class ChatPage extends BaseListPage {
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
               this.setState({
-                messages: res.data,
+                messages: res.data.map((message, index) => {
+                  if (index === res.data.length - 1) {
+                    return {...message, text: message.text + newText};
+                  }
+                  return message;
+                }),
                 disableInput: false,
               });
             }, (error) => {
@@ -373,7 +394,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} showCursor={this.state.showCursor} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} />
         </div>
       </div>
     );
