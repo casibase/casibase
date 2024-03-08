@@ -26,6 +26,7 @@ class ChatBox extends React.Component {
       value: "",
       blockChar: " \u258d",
     };
+    this.cursorBlinkInterval = null;
   }
 
   componentDidMount() {

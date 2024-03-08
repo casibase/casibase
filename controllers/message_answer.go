@@ -194,6 +194,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message.Text = answer
 	message.VectorScores = vectorScores
+	message.IsFinished = true
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {
 		c.ResponseErrorStream(err.Error())
