@@ -24,23 +24,27 @@ class ChatBox extends React.Component {
     super(props);
     this.state = {
       value: "",
-      showCursor: false,
+      blockChar: " \u258d",
     };
-    this.toggleCursorBlink = this.toggleCursorBlink.bind(this);
+  }
+
+  componentDidMount() {
+    this.cursorBlinkInterval = setInterval(() => {
+      this.setState(prevState => {
+        switch (prevState.blockChar) {
+        case " \u258d":
+          return {blockChar: "\u00A0"};
+        case "\u00A0":
+          return {blockChar: " \u258d"};
+        default:
+          return {blockChar: "\u00A0"};
+        }
+      });
+    }, 400);
   }
 
   componentWillUnmount() {
     clearInterval(this.cursorBlinkInterval);
-  }
-
-  componentDidMount() {
-    this.cursorBlinkInterval = setInterval(this.toggleCursorBlink, 500);
-  }
-
-  toggleCursorBlink() {
-    this.setState(prevState => ({
-      showCursor: !prevState.showCursor,
-    }));
   }
 
   handleSend = (innerHtml) => {
@@ -93,6 +97,13 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
+  renderCursor(message) {
+    if (message.author === "AI" && message.isFinished === false) {
+      return this.state.blockChar;
+    }
+    return "";
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -103,8 +114,6 @@ class ChatBox extends React.Component {
     if (messages === null) {
       messages = [];
     }
-
-    const cursor = this.state.showCursor ? "\u258d" : "\u00A0";
     return (
       <React.Fragment>
         <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
@@ -119,7 +128,7 @@ class ChatBox extends React.Component {
             <MessageList style={{marginTop: "10px"}}>
               {messages.filter(message => message.isHidden === false).map((message, index) => (
                 <Message key={index} model={{
-                  message: message.text !== "" ? message.text : cursor,
+                  message: message.text !== "" ? message.text + this.renderCursor(message) : this.state.blockChar,
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>

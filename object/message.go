@@ -48,6 +48,7 @@ type Message struct {
 	Price        float64       `json:"price"`
 	Currency     string        `xorm:"varchar(100)" json:"currency"`
 	IsHidden     bool          `json:"isHidden"`
+	IsFinished   bool          `json:"isFinished"`
 	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
 
@@ -165,16 +166,14 @@ func RefineMessageImages(message *Message, origin string) error {
 		}
 
 		for _, match := range matches {
-			var content []byte
-			content, err = parseBase64Image(match)
+			_, content, err := parseBase64Image(match)
 			if err != nil {
 				return err
 			}
 
-			filePath := fmt.Sprintf(`%s\%s\%s\%s`, message.Organization, message.User, message.Chat, message.FileName)
+			filename := fmt.Sprintf(`%s\%s\%s\%s`, message.Organization, message.User, message.Chat, message.FileName)
 
-			var fileUrl string
-			fileUrl, err = obj.PutObject(message.User, message.Chat, filePath, bytes.NewBuffer(content))
+			fileUrl, err := obj.PutObject(message.User, "Casibase-Image", filename, bytes.NewBuffer(content))
 			if err != nil {
 				return err
 			}
@@ -184,8 +183,7 @@ func RefineMessageImages(message *Message, origin string) error {
 				fileUrl = tokens[0]
 			}
 
-			var httpUrl string
-			httpUrl, err = getUrlFromPath(fileUrl, origin)
+			httpUrl, err := getUrlFromPath(fileUrl, origin)
 			if err != nil {
 				return err
 			}
