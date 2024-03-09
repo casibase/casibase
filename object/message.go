@@ -171,7 +171,7 @@ func RefineMessageImages(message *Message, origin string) error {
 				return err
 			}
 
-			filePath := fmt.Sprintf(`%s\%s\%s\%s`, message.Organization, message.User, message.Chat, message.FileName)
+			filePath := fmt.Sprintf("%s/%s/%s/%s", message.Organization, message.User, message.Chat, message.FileName)
 
 			var fileUrl string
 			fileUrl, err = obj.PutObject(message.User, message.Chat, filePath, bytes.NewBuffer(content))
