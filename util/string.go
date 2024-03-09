@@ -153,5 +153,9 @@ func GetRandomName() string {
 }
 
 func GetId(owner, name string) string {
+	if strings.Contains(name, "/") {
+		return name
+	}
+
 	return fmt.Sprintf("%s/%s", owner, name)
 }

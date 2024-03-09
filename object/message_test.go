@@ -23,6 +23,7 @@ import (
 
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
+	"github.com/casibase/casibase/util"
 )
 
 func TestUpdateMessages(t *testing.T) {
@@ -63,7 +64,7 @@ func TestUpdateMessages(t *testing.T) {
 		} else {
 			question := store.Welcome
 			if message.ReplyTo != "Welcome" {
-				questionMessage, err := GetMessage(message.ReplyTo)
+				questionMessage, err := GetMessage(util.GetId("admin", message.ReplyTo))
 				if err != nil {
 					panic(err)
 				}
