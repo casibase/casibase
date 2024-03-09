@@ -87,7 +87,7 @@ class ChatPage extends BaseListPage {
       category: chat !== undefined ? chat.category : i18next.t("chat:Default Category"),
       user1: "",
       user2: "",
-      users: [this.props.account.name],
+      users: [],
       clientIp: this.props.account.createdIp,
       userAgent: this.props.account.education,
       messageCount: 0,

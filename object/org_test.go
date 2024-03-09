@@ -75,10 +75,7 @@ func TestUpdateChatsForOrg(t *testing.T) {
 
 		chat.User1 = ""
 
-		if strings.Contains(chat.Users[0], "/") {
-			_, user := util.GetOwnerAndNameFromId(chat.Users[0])
-			chat.Users[0] = user
-		}
+		chat.Users = []string{}
 
 		chat.Organization = organization
 

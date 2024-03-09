@@ -87,7 +87,7 @@ class ChatListPage extends React.Component {
       user: this.props.account.name,
       user1: "",
       user2: "",
-      users: [this.props.account.name],
+      users: [],
       messageCount: 0,
     };
   }
