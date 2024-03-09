@@ -140,5 +140,15 @@ func (c *ApiController) DeleteChat() {
 		return
 	}
 
+	message := object.Message{
+		Owner: chat.Owner,
+		Chat:  chat.Name,
+	}
+	success, err = object.DeleteMessagesByChat(&message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	c.ResponseOk(success)
 }

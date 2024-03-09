@@ -157,6 +157,10 @@ func TestPrintChatUsers(t *testing.T) {
 	userMap := make(map[string]struct{})
 	var users []string
 	for _, chat := range chats {
+		if chat.User == "admin" {
+			continue
+		}
+
 		if _, exists := userMap[chat.User]; !exists {
 			userMap[chat.User] = struct{}{}
 			users = append(users, chat.User)
@@ -168,4 +172,15 @@ func TestPrintChatUsers(t *testing.T) {
 	for _, user := range users {
 		fmt.Printf("%s\n", user)
 	}
+
+	fmt.Printf("\nCount: %d\n\n", len(users))
+
+	var concatenatedUsers string
+	for i, user := range users {
+		if i > 0 {
+			concatenatedUsers += " or "
+		}
+		concatenatedUsers += fmt.Sprintf(`name = "%s"`, user)
+	}
+	fmt.Println(concatenatedUsers)
 }
