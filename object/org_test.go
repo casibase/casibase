@@ -25,10 +25,10 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+var organization = "casbin"
+
 func TestUpdateMessagesForOrg(t *testing.T) {
 	InitConfig()
-
-	organization := "casbin"
 
 	messages, err := GetGlobalMessages()
 	if err != nil {
@@ -56,4 +56,42 @@ func TestUpdateMessagesForOrg(t *testing.T) {
 			panic(err)
 		}
 	}
+}
+
+func TestUpdateChatsForOrg(t *testing.T) {
+	InitConfig()
+
+	chats, err := GetGlobalChats()
+	if err != nil {
+		panic(err)
+	}
+
+	for i, chat := range chats {
+		if !strings.Contains(chat.Store, "/") && chat.User1 == "" && !strings.Contains(chat.Users[0], "/") && chat.Organization == organization {
+			continue
+		}
+
+		chat.Store = strings.TrimPrefix(chat.Store, "admin/")
+
+		chat.User1 = ""
+
+		if strings.Contains(chat.Users[0], "/") {
+			_, user := util.GetOwnerAndNameFromId(chat.Users[0])
+			chat.Users[0] = user
+		}
+
+		chat.Organization = organization
+
+		fmt.Printf("[%d/%d] chat: %s, store: %s, organization: %s, user1: %s, users: %v\n", i+1, len(chats), chat.Name, chat.Store, chat.Organization, chat.User1, chat.Users)
+
+		_, err = UpdateChat(chat.GetId(), chat)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
+func TestUpdateMessagesAndChatsForOrg(t *testing.T) {
+	TestUpdateMessagesForOrg(t)
+	TestUpdateChatsForOrg(t)
 }
