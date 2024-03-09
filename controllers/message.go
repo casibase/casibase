@@ -147,7 +147,7 @@ func (c *ApiController) AddMessage() {
 				Organization: message.Organization,
 				User:         message.User,
 				Chat:         message.Chat,
-				ReplyTo:      message.GetId(),
+				ReplyTo:      message.Name,
 				Author:       "AI",
 				Text:         "",
 				FileName:     message.FileName,

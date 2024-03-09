@@ -74,7 +74,7 @@ func (c *ApiController) GetMessageAnswer() {
 	question := store.Welcome
 	var questionMessage *object.Message
 	if message.ReplyTo != "Welcome" {
-		questionMessage, err = object.GetMessage(message.ReplyTo)
+		questionMessage, err = object.GetMessage(util.GetId("admin", message.ReplyTo))
 		if err != nil {
 			c.ResponseErrorStream(err.Error())
 			return
