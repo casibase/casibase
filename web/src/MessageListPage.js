@@ -57,7 +57,7 @@ class MessageListPage extends React.Component {
       user: this.props.account.name,
       chat: "",
       replyTo: "",
-      author: `${this.props.account.owner}/${this.props.account.name}`,
+      author: this.props.account.name,
       text: "",
     };
   }
@@ -188,8 +188,13 @@ class MessageListPage extends React.Component {
             return text;
           }
 
+          let userId = text;
+          if (!userId.includes("/")) {
+            userId = `${record.organization}/${userId}`;
+          }
+
           return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${text}`)}>
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${userId}`)}>
               {text}
             </a>
           );
