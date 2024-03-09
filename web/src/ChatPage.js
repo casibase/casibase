@@ -36,6 +36,7 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
+      isFinished: true,
     });
 
     this.fetch();
@@ -107,7 +108,6 @@ class ChatPage extends BaseListPage {
       author: this.props.account.name,
       text: text,
       isHidden: isHidden,
-      isFinished: true,
       fileName: fileName,
     };
   }
@@ -175,16 +175,21 @@ class ChatPage extends BaseListPage {
             });
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
               const jsonData = JSON.parse(data);
-              let isFinished = false;
+
               if (jsonData.text === "") {
                 jsonData.text = "\n";
-                isFinished = true;
+                this.setState({
+                  isFinished: true,
+                });
+              } else {
+                this.setState({
+                  isFinished: false,
+                });
               }
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
               lastMessage2.text = text;
-              lastMessage2.isFinished = isFinished;
               res.data[res.data.length - 1] = lastMessage2;
               this.setState({
                 messages: res.data,
@@ -199,6 +204,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 disableInput: true,
+                isFinished: true,
               });
             });
           }
@@ -376,7 +382,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} isFinished={this.state.isFinished} />
         </div>
       </div>
     );

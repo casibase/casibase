@@ -98,8 +98,8 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
-  renderCursor(message) {
-    if (message.author === "AI" && message.isFinished === false) {
+  renderCursor(message, isLastMessage) {
+    if (message.author === "AI" && isLastMessage && !this.props.isFinished) {
       return this.state.blockChar;
     }
     return "";
@@ -127,15 +127,18 @@ class ChatBox extends React.Component {
               )
             }
             <MessageList style={{marginTop: "10px"}}>
-              {messages.filter(message => message.isHidden === false).map((message, index) => (
-                <Message key={index} model={{
-                  message: message.text !== "" ? message.text + this.renderCursor(message) : this.state.blockChar,
-                  sender: message.name,
-                  direction: message.author === "AI" ? "incoming" : "outgoing",
-                }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
-                </Message>
-              ))}
+              {messages.filter(message => message.isHidden === false).map((message, index, filteredMessages) => {
+                const isLastMessage = index === filteredMessages.length - 1;
+                return (
+                  <Message key={index} model={{
+                    message: message.text !== "" ? message.text + this.renderCursor(message, isLastMessage) : this.state.blockChar,
+                    sender: message.name,
+                    direction: message.author === "AI" ? "incoming" : "outgoing",
+                  }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
+                    <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  </Message>
+                );
+              })}
             </MessageList>
             {
               this.props.hideInput === true ? null : (
