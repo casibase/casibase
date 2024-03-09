@@ -42,11 +42,16 @@ class ChatListPage extends React.Component {
     ChatBackend.getChats(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
+          let chats = res.data;
+          if (this.props.account.name !== "admin") {
+            chats = chats.filter(chat => chat.user !== "admin");
+          }
+
           this.setState({
-            chats: res.data,
+            chats: chats,
           });
 
-          res.data.forEach((chat) => {
+          chats.forEach((chat) => {
             if (chat.messageCount > 1) {
               this.getMessages(chat.name);
             }
