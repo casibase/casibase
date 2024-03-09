@@ -325,6 +325,13 @@ class App extends Component {
           {i18next.t("general:Users")}
           {Setting.renderExternalLink()}
         </a>,
+        "#"));
+
+      res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+          {i18next.t("general:Resources")}
+          {Setting.renderExternalLink()}
+        </a>,
         "##"));
 
       res.push(Setting.getItem(
