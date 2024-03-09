@@ -19,6 +19,7 @@ package object
 
 import (
 	"fmt"
+	"sort"
 	"testing"
 
 	"github.com/casibase/casibase/model"
@@ -142,5 +143,29 @@ func TestUpdateChatDescs(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
+	}
+}
+
+func TestPrintChatUsers(t *testing.T) {
+	InitConfig()
+
+	chats, err := GetGlobalChats()
+	if err != nil {
+		panic(err)
+	}
+
+	userMap := make(map[string]struct{})
+	var users []string
+	for _, chat := range chats {
+		if _, exists := userMap[chat.User]; !exists {
+			userMap[chat.User] = struct{}{}
+			users = append(users, chat.User)
+		}
+	}
+
+	sort.Strings(users)
+
+	for _, user := range users {
+		fmt.Printf("%s\n", user)
 	}
 }
