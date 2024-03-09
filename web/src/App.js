@@ -292,7 +292,9 @@ class App extends Component {
     }
 
     if (!this.state.account.isAdmin) {
-      return res;
+      if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
+        return res;
+      }
     }
 
     const domain = Setting.getSubdomain();
