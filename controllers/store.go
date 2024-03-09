@@ -100,13 +100,13 @@ func (c *ApiController) AddStore() {
 		return
 	}
 
-	sucess, err := object.AddStore(&store)
+	success, err := object.AddStore(&store)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(sucess)
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) DeleteStore() {
@@ -117,13 +117,13 @@ func (c *ApiController) DeleteStore() {
 		return
 	}
 
-	sucess, err := object.DeleteStore(&store)
+	success, err := object.DeleteStore(&store)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	c.ResponseOk(sucess)
+	c.ResponseOk(success)
 }
 
 func (c *ApiController) RefreshStoreVectors() {
