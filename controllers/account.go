@@ -104,7 +104,7 @@ func (c *ApiController) addInitialChat(organization string, userName string) (*o
 		User:         userName,
 		User1:        "",
 		User2:        "",
-		Users:        []string{userName},
+		Users:        []string{},
 		ClientIp:     c.getClientIp(),
 		UserAgent:    c.getUserAgent(),
 		MessageCount: 0,
