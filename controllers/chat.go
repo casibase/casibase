@@ -114,7 +114,7 @@ func (c *ApiController) AddChat() {
 			return
 		}
 
-		chat.Store = store.GetId()
+		chat.Store = store.Name
 	}
 
 	success, err := object.AddChat(&chat)

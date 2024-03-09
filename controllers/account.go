@@ -98,7 +98,7 @@ func (c *ApiController) addInitialChat(organization string, userName string) (*o
 		UpdatedTime:  currentTime,
 		Organization: organization,
 		DisplayName:  fmt.Sprintf("New Chat - %d", 1),
-		Store:        store.GetId(),
+		Store:        store.Name,
 		Category:     "Default Category",
 		Type:         "AI",
 		User:         userName,
