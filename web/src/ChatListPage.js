@@ -388,6 +388,7 @@ class ChatListPage extends React.Component {
         dataIndex: "action",
         key: "action",
         width: "110px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>

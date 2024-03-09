@@ -233,6 +233,15 @@ func DeleteMessage(message *Message) (bool, error) {
 	return affected != 0, nil
 }
 
+func DeleteMessagesByChat(message *Message) (bool, error) {
+	affected, err := adapter.engine.Delete(&Message{Owner: message.Owner, Chat: message.Chat})
+	if err != nil {
+		return false, err
+	}
+
+	return affected != 0, nil
+}
+
 func (message *Message) GetId() string {
 	return fmt.Sprintf("%s/%s", message.Owner, message.Name)
 }
