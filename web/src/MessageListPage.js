@@ -38,8 +38,13 @@ class MessageListPage extends React.Component {
     MessageBackend.getMessages(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
+          let messages = res.data;
+          if (this.props.account.name !== "admin") {
+            messages = messages.filter(message => message.user !== "admin");
+          }
+
           this.setState({
-            messages: res.data,
+            messages: messages,
           });
         } else {
           Setting.showMessage("error", `Failed to get messages: ${res.msg}`);
