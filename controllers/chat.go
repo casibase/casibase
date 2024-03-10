@@ -127,6 +127,11 @@ func (c *ApiController) AddChat() {
 }
 
 func (c *ApiController) DeleteChat() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	var chat object.Chat
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
 	if err != nil {

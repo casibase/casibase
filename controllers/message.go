@@ -165,6 +165,11 @@ func (c *ApiController) AddMessage() {
 }
 
 func (c *ApiController) DeleteMessage() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
+	}
+
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {

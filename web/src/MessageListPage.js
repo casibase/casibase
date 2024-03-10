@@ -292,7 +292,7 @@ class MessageListPage extends React.Component {
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>
+                <Button disabled={!Setting.isLocalAdminUser(this.props.account)} style={{marginBottom: "10px"}} type="primary" danger>
                   {i18next.t("general:Delete")}
                 </Button>
               </Popconfirm>
@@ -308,18 +308,11 @@ class MessageListPage extends React.Component {
 
     return (
       <div>
-        <Table
-          scroll={{x: "max-content"}}
-          columns={columns}
-          dataSource={messages}
-          rowKey="name"
-          size="middle"
-          bordered
-          pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
           title={() => (
             <div>
               {i18next.t("message:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addMessage.bind(this)}>
+              <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>
                 {i18next.t("general:Add")}
               </Button>
             </div>
