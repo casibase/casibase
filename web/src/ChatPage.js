@@ -36,6 +36,7 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
+      isFinished: true,
     });
 
     this.fetch();
@@ -177,6 +178,13 @@ class ChatPage extends BaseListPage {
 
               if (jsonData.text === "") {
                 jsonData.text = "\n";
+                this.setState({
+                  isFinished: true,
+                });
+              } else {
+                this.setState({
+                  isFinished: false,
+                });
               }
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
@@ -196,6 +204,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 disableInput: true,
+                isFinished: true,
               });
             });
           }
@@ -373,7 +382,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName) => {this.sendMessage(text, fileName, false);}} account={this.props.account} isFinished={this.state.isFinished} />
         </div>
       </div>
     );
