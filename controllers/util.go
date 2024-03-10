@@ -86,22 +86,22 @@ func (c *ApiController) CheckSignedIn() (string, bool) {
 }
 
 func (c *ApiController) RequireAdmin() bool {
-	user := c.GetSessionUser()
-	if user == nil || !user.IsAdmin {
+	if !c.IsAdmin() {
 		c.ResponseError("this operation requires admin privilege")
-		return true
-	}
-
-	return false
-}
-
-func (c *ApiController) IsAdmin() bool {
-	user := c.GetSessionUser()
-	if user == nil || !user.IsAdmin {
 		return false
 	}
 
 	return true
+}
+
+func (c *ApiController) IsAdmin() bool {
+	user := c.GetSessionUser()
+	if user == nil {
+		return false
+	}
+
+	res := user.IsAdmin || user.Type == "chat-admin"
+	return res
 }
 
 func DenyRequest(ctx *context.Context) {

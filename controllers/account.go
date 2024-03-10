@@ -58,7 +58,7 @@ func (c *ApiController) Signin() {
 		return
 	}
 
-	if !claims.IsAdmin {
+	if !claims.IsAdmin && claims.Type != "chat-admin" {
 		claims.Type = "chat-user"
 	}
 
