@@ -193,6 +193,10 @@ class MessageListPage extends React.Component {
             return text;
           }
 
+          if (text.startsWith("u-")) {
+            return text;
+          }
+
           let userId = text;
           if (!userId.includes("/")) {
             userId = `${record.organization}/${userId}`;

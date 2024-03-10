@@ -67,7 +67,7 @@ func TestUpdateChatsForOrg(t *testing.T) {
 	}
 
 	for i, chat := range chats {
-		if !strings.Contains(chat.Store, "/") && chat.User1 == "" && !strings.Contains(chat.Users[0], "/") && chat.Organization == organization {
+		if !strings.Contains(chat.Store, "/") && chat.User1 == "" && len(chat.Users) > 0 && !strings.Contains(chat.Users[0], "/") && chat.Organization == organization {
 			continue
 		}
 
