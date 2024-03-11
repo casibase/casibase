@@ -15,9 +15,22 @@
 import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {marked} from "marked";
+import DOMPurify from "dompurify";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: true,
+});
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -100,6 +113,16 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
+  renderMarkdown(markdownText) {
+    if (markdownText === "") {
+      markdownText = this.state.dots;
+    }
+    const rawHtml = marked(markdownText);
+    let cleanHtml = DOMPurify.sanitize(rawHtml);
+    cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>").replace(/<(h[1-6])>/g, "<$1 style='margin-top: 5px; margin-bottom: 5px'>").replace(/<(ul|ol)>/g, "<$1 style='display: flex; flex-direction: column; gap: 5px; margin-top: 0px; margin-bottom: 0px'>");
+    return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -124,11 +147,14 @@ class ChatBox extends React.Component {
             <MessageList style={{marginTop: "10px"}}>
               {messages.filter(message => message.isHidden === false).map((message, index) => (
                 <Message key={index} model={{
-                  message: message.text !== "" ? message.text : this.state.dots,
+                  type: "custom",
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  <Message.CustomContent>
+                    {this.renderMarkdown(message.text)}
+                  </Message.CustomContent>
                 </Message>
               ))}
             </MessageList>
