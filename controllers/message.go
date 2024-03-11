@@ -81,6 +81,16 @@ func (c *ApiController) UpdateMessage() {
 		return
 	}
 
+	if message.NeedNotify {
+		err = message.SendEmail()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		message.NeedNotify = false
+	}
+
 	success, err := object.UpdateMessage(id, &message)
 	if err != nil {
 		c.ResponseError(err.Error())

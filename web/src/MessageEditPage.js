@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -231,7 +231,23 @@ class MessageEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.comment} onChange={(e) => {
+              if (e.target.value !== "") {
+                this.updateMessageField("needNotify", true);
+              } else {
+                this.updateMessageField("needNotify", false);
+              }
+
               this.updateMessageField("comment", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Need notify")}:
+          </Col>
+          <Col span={1} >
+            <Switch checked={this.state.message.needNotify} onChange={checked => {
+              this.updateMessageField("needNotify", checked);
             }} />
           </Col>
         </Row>
