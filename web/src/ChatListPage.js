@@ -412,7 +412,16 @@ class ChatListPage extends React.Component {
     }
 
     if (!this.props.account || this.props.account.name !== "admin") {
-      columns = columns.filter(column => column.key !== "price");
+      columns = columns.filter(column => column.key !== "name" && column.key !== "price" && column.key !== "clientIp");
+
+      const tokenCountIndex = columns.findIndex(column => column.key === "tokenCount");
+      if (tokenCountIndex !== -1) {
+        const [tokenCountElement] = columns.splice(tokenCountIndex, 1);
+
+        const actionIndex = columns.findIndex(column => column.key === "action");
+        const insertIndex = actionIndex !== -1 ? actionIndex : columns.length;
+        columns.splice(insertIndex, 0, tokenCountElement);
+      }
     }
 
     const sumFields = (chats, field) => {
