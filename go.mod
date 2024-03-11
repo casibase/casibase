@@ -8,7 +8,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
 	github.com/anhao/go-ernie v1.0.4
 	github.com/astaxie/beego v1.12.3
-	github.com/casdoor/casdoor-go-sdk v0.30.0
+	github.com/casdoor/casdoor-go-sdk v0.37.0
 	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-hnsw v1.0.0
 	github.com/casibase/go-openrouter v1.0.0
