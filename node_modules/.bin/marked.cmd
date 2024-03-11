@@ -1,7 +1,0 @@
-@IF EXIST "%~dp0\node.exe" (
-  "%~dp0\node.exe"  "%~dp0\..\marked\bin\marked.js" %*
-) ELSE (
-  @SETLOCAL
-  @SET PATHEXT=%PATHEXT:;.JS;=;%
-  node  "%~dp0\..\marked\bin\marked.js" %*
-)

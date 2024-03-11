@@ -114,13 +114,12 @@ class ChatBox extends React.Component {
   };
 
   renderMarkdown(markdownText) {
-    const validMarkdownText = markdownText || "";
-    const rawHtml = marked(validMarkdownText);
+    if (markdownText === "") {
+      markdownText = this.state.dots;
+    }
+    const rawHtml = marked(markdownText);
     let cleanHtml = DOMPurify.sanitize(rawHtml);
-    cleanHtml = cleanHtml.replace(/<p>/g, "<div>");
-    cleanHtml = cleanHtml.replace(/<\/p>/g, "</div>");
-    cleanHtml = cleanHtml.replace(/<(h[1-6])>/g, "<$1 style='margin-top: 5px; margin-bottom: 5px'>");
-    cleanHtml = cleanHtml.replace(/<ul>/g, "<ul style='display: flex; flex-direction: column; gap: 5px; margin-top: 0px; margin-bottom: 0px'>");
+    cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>").replace(/<(h[1-6])>/g, "<$1 style='margin-top: 5px; margin-bottom: 5px'>").replace(/<(ul|ol)>/g, "<$1 style='display: flex; flex-direction: column; gap: 5px; margin-top: 0px; margin-bottom: 0px'>");
     return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
   }
 
@@ -146,43 +145,18 @@ class ChatBox extends React.Component {
               )
             }
             <MessageList style={{marginTop: "10px"}}>
-              {messages.filter(message => message.isHidden === false).map((message, index) => {
-                if (message.author === "AI" && message.text === "") {
-                  return (
-                    <Message key={index} model={{
-                      message: this.state.dots,
-                      sender: message.name,
-                      direction: "incoming",
-                    }} avatarPosition={"tl"}>
-                      <Avatar src={Conf.AiAvatar} name="GPT" />
-                    </Message>
-                  );
-                } else if (message.author === "AI" && message.text !== "") {
-                  const convertedMarkdown = this.renderMarkdown(message.text);
-                  return (
-                    <Message key={index} model={{
-                      sender: message.name,
-                      direction: "incoming",
-                      type: "custom",
-                    }} avatarPosition={"tl"}>
-                      <Avatar src={Conf.AiAvatar} name="GPT" />
-                      <Message.CustomContent>
-                        {convertedMarkdown}
-                      </Message.CustomContent>
-                    </Message>
-                  );
-                } else {
-                  return (
-                    <Message key={index} model={{
-                      message: message.text,
-                      sender: message.name,
-                      direction: "outgoing",
-                    }} avatarPosition={"tr"}>
-                      <Avatar src={(this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
-                    </Message>
-                  );
-                }
-              })}
+              {messages.filter(message => message.isHidden === false).map((message, index) => (
+                <Message key={index} model={{
+                  type: "custom",
+                  sender: message.name,
+                  direction: message.author === "AI" ? "incoming" : "outgoing",
+                }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
+                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  <Message.CustomContent>
+                    {this.renderMarkdown(message.text)}
+                  </Message.CustomContent>
+                </Message>
+              ))}
             </MessageList>
             {
               this.props.hideInput === true ? null : (
