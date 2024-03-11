@@ -129,7 +129,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "120px",
+        width: "90px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
@@ -157,7 +157,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Chat"),
         dataIndex: "chat",
         key: "chat",
-        width: "100px",
+        width: "90px",
         sorter: (a, b) => a.chat.localeCompare(b.chat),
         render: (text, record, index) => {
           return (
@@ -171,7 +171,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Reply to"),
         dataIndex: "replyTo",
         key: "replyTo",
-        width: "100px",
+        width: "90px",
         sorter: (a, b) => a.replyTo.localeCompare(b.replyTo),
         render: (text, record, index) => {
           return (
@@ -185,7 +185,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Author"),
         dataIndex: "author",
         key: "author",
-        width: "120px",
+        width: "90px",
         sorter: (a, b) => a.author.localeCompare(b.author),
         render: (text, record, index) => {
           if (text === "AI") {
@@ -212,7 +212,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("chat:Token count"),
         dataIndex: "tokenCount",
         key: "tokenCount",
-        width: "120px",
+        width: "90px",
         sorter: (a, b) => a.tokenCount - b.tokenCount,
         // ...this.getColumnSearchProps("tokenCount"),
       },
@@ -231,7 +231,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Text"),
         dataIndex: "text",
         key: "text",
-        width: "250px",
+        width: "400px",
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
@@ -243,7 +243,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("message:Comment"),
         dataIndex: "comment",
         key: "comment",
-        width: "250px",
+        width: "200px",
         sorter: (a, b) => a.comment.localeCompare(b.comment),
         render: (text, record, index) => {
           return (
@@ -273,7 +273,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "110px",
+        width: "90px",
         fixed: "right",
         render: (text, record, index) => {
           return (
