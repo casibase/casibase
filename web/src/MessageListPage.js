@@ -129,7 +129,7 @@ class MessageListPage extends React.Component {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "90px",
+        width: "110px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
@@ -302,7 +302,7 @@ class MessageListPage extends React.Component {
     ];
 
     if (!this.props.account || this.props.account.name !== "admin") {
-      columns = columns.filter(column => column.key !== "name" && column.key !== "price");
+      columns = columns.filter(column => column.key !== "name" && column.key !== "tokenCount" && column.key !== "price");
 
       const tokenCountIndex = columns.findIndex(column => column.key === "tokenCount");
       if (tokenCountIndex !== -1) {

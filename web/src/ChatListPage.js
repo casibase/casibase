@@ -412,9 +412,9 @@ class ChatListPage extends React.Component {
     }
 
     if (!this.props.account || this.props.account.name !== "admin") {
-      columns = columns.filter(column => column.key !== "name" && column.key !== "price" && column.key !== "clientIp");
+      columns = columns.filter(column => column.key !== "name" && column.key !== "tokenCount" && column.key !== "price" && column.key !== "clientIp");
 
-      const tokenCountIndex = columns.findIndex(column => column.key === "tokenCount");
+      const tokenCountIndex = columns.findIndex(column => column.key === "messageCount");
       if (tokenCountIndex !== -1) {
         const [tokenCountElement] = columns.splice(tokenCountIndex, 1);
 
@@ -462,21 +462,21 @@ class ChatListPage extends React.Component {
               {/*  Setting.setBoolValue("filterSingleChat", checked);*/}
               {/*  this.UNSAFE_componentWillMount();*/}
               {/* }} />*/}
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Users")}:
+              &nbsp;
+              {Setting.getDisplayTag(uniqueFields(chats, "user"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Chats")}:
+              &nbsp;
+              {Setting.getDisplayTag(sumFields(chats, "count"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Messages")}:
+              &nbsp;
+              {Setting.getDisplayTag(sumFields(chats, "messageCount"))}
               {
                 (!this.props.account || this.props.account.name !== "admin") ? null : (
                   <React.Fragment>
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("general:Users")}:
-                    &nbsp;
-                    {Setting.getDisplayTag(uniqueFields(chats, "user"))}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("general:Chats")}:
-                    &nbsp;
-                    {Setting.getDisplayTag(sumFields(chats, "count"))}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("general:Messages")}:
-                    &nbsp;
-                    {Setting.getDisplayTag(sumFields(chats, "messageCount"))}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {i18next.t("general:Tokens")}:
                     &nbsp;
