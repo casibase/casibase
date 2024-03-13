@@ -62,13 +62,13 @@ func getOpenAiModelType(model string) string {
 		"dall-e-3", "gpt-4-vision-preview", "gpt-4-32k-0613", "gpt-4-32k-0314", "gpt-4-32k",
 		"gpt-4-0613", "gpt-4-0314", "gpt-4", "gpt-3.5-turbo-0613",
 		"gpt-3.5-turbo-0301", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
-		"gpt-3.5-turbo",
+		"gpt-3.5-turbo", "custom-model",
 	}
 
 	completionModels := []string{
 		"text-davinci-003", "text-davinci-002", "text-curie-001",
 		"text-babbage-001", "text-ada-001", "text-davinci-001",
-		"davinci-instruct-beta", "davinci", "curie-instruct-beta", "curie", "ada", "babbage", "custom-model",
+		"davinci-instruct-beta", "davinci", "curie-instruct-beta", "curie", "ada", "babbage",
 	}
 
 	for _, chatModel := range chatModels {
