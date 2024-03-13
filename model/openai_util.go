@@ -118,6 +118,10 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 		PresencePenalty:  presencePenalty,
 	}
 
+	if model == "custom-model" {
+		res.Stop = []string{"."}
+	}
+
 	if model == "gpt-4-vision-preview" {
 		res.MaxTokens = 4096
 	}
