@@ -119,7 +119,7 @@ class ChatBox extends React.Component {
     }
     const rawHtml = marked(markdownText);
     let cleanHtml = DOMPurify.sanitize(rawHtml);
-    cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>").replace(/<(h[1-6])>/g, "<$1 style='margin-top: 5px; margin-bottom: 5px'>").replace(/<(ul|ol)>/g, "<$1 style='display: flex; flex-direction: column; gap: 5px; margin-top: 0px; margin-bottom: 0px'>").replace(/<pre>/g, "<pre style='white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;'>");
+    cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>").replace(/<h1>/g, "<h2>").replace(/<(h[1-6])>/g, "<$1 style='margin-top: 20px; margin-bottom: 20px'>").replace(/<(ul|ol)>/g, "<$1 style='display: flex; flex-direction: column; gap: 10px; margin-top: 0px; margin-bottom: 0px'>").replace(/<pre>/g, "<pre style='white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;'>");
     return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
   }
 
