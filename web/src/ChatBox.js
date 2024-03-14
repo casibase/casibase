@@ -23,31 +23,29 @@ class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dots: ".",
       value: "",
+      blockChar: " \u258d",
     };
-    this.timer = null;
+    this.cursorBlinkInterval = null;
   }
 
   componentDidMount() {
-    this.timer = setInterval(() => {
+    this.cursorBlinkInterval = setInterval(() => {
       this.setState(prevState => {
-        switch (prevState.dots) {
-        case ".":
-          return {dots: ".."};
-        case "..":
-          return {dots: "..."};
-        case "...":
-          return {dots: "."};
+        switch (prevState.blockChar) {
+        case " \u258d":
+          return {blockChar: "\u00A0"};
+        case "\u00A0":
+          return {blockChar: " \u258d"};
         default:
-          return {dots: "."};
+          return {blockChar: "\u00A0"};
         }
       });
-    }, 500);
+    }, 400);
   }
 
   componentWillUnmount() {
-    clearInterval(this.timer);
+    clearInterval(this.cursorBlinkInterval);
   }
 
   handleSend = (innerHtml) => {
@@ -100,6 +98,13 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
+  renderCursor(message, isLastMessage) {
+    if (message.author === "AI" && isLastMessage && !this.props.isFinished) {
+      return this.state.blockChar;
+    }
+    return "";
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -122,15 +127,18 @@ class ChatBox extends React.Component {
               )
             }
             <MessageList style={{marginTop: "10px"}}>
-              {messages.filter(message => message.isHidden === false).map((message, index) => (
-                <Message key={index} model={{
-                  message: message.text !== "" ? message.text : this.state.dots,
-                  sender: message.name,
-                  direction: message.author === "AI" ? "incoming" : "outgoing",
-                }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
-                </Message>
-              ))}
+              {messages.filter(message => message.isHidden === false).map((message, index, filteredMessages) => {
+                const isLastMessage = index === filteredMessages.length - 1;
+                return (
+                  <Message key={index} model={{
+                    message: message.text !== "" ? message.text + this.renderCursor(message, isLastMessage) : this.state.blockChar,
+                    sender: message.name,
+                    direction: message.author === "AI" ? "incoming" : "outgoing",
+                  }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
+                    <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  </Message>
+                );
+              })}
             </MessageList>
             {
               this.props.hideInput === true ? null : (
