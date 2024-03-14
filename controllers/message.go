@@ -149,6 +149,12 @@ func (c *ApiController) AddMessage() {
 	}
 
 	if success {
+		chatId := util.GetId(message.Owner, message.Chat)
+		chat, err = object.GetChat(chatId)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 		if chat != nil && chat.Type == "AI" {
 			answerMessage := &object.Message{
 				Owner:        message.Owner,

@@ -175,6 +175,7 @@ class ChatMenu extends React.Component {
 
   render() {
     const items = this.chatsToItems(this.props.chats);
+    const hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
 
     return (
       <div>
@@ -186,6 +187,7 @@ class ChatMenu extends React.Component {
             margin: "4px",
             borderColor: "rgb(229,229,229)",
           }}
+          disabled={hasEmptyChat}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = "rgba(89,54,213,0.6)";
           }}
