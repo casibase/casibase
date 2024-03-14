@@ -116,31 +116,26 @@ class ChatPage extends BaseListPage {
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
-          let chat;
-          if (this.state.chat) {
-            chat = this.state.chat;
-          } else {
-            chat = res.data;
-            this.setState({
-              chat: chat,
-              messages: null,
+          const chat = res.data;
+          this.setState({
+            chat: chat,
+            messages: null,
+          });
+
+          const field = "user";
+          const value = this.props.account.name;
+          const sortField = "", sortOrder = "";
+          ChatBackend.getChats("admin", -1, -1, field, value, sortField, sortOrder)
+            .then((res) => {
+              if (res.status === "ok") {
+                this.setState({
+                  data: res.data,
+                });
+
+                const chats = res.data;
+                this.menu.current.setSelectedKeyToNewChat(chats);
+              }
             });
-
-            const field = "user";
-            const value = this.props.account.name;
-            const sortField = "", sortOrder = "";
-            ChatBackend.getChats("admin", -1, -1, field, value, sortField, sortOrder)
-              .then((res) => {
-                if (res.status === "ok") {
-                  this.setState({
-                    data: res.data,
-                  });
-
-                  const chats = res.data;
-                  this.menu.current.setSelectedKeyToNewChat(chats);
-                }
-              });
-          }
 
           this.getMessages(chat);
         } else {
