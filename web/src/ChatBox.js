@@ -15,9 +15,22 @@
 import React from "react";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {marked} from "marked";
+import DOMPurify from "dompurify";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  tables: true,
+  breaks: true,
+  pedantic: false,
+  sanitize: false,
+  smartLists: true,
+  smartypants: true,
+});
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -100,6 +113,23 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
+  renderMarkdown(markdownText) {
+    if (markdownText === "") {
+      markdownText = this.state.dots;
+    }
+    const rawHtml = marked(markdownText);
+    let cleanHtml = DOMPurify.sanitize(rawHtml);
+    /* replace <p></p> with <div></div>, reduce paragraph spacing. */
+    cleanHtml = cleanHtml.replace(/<p>/g, "<div>").replace(/<\/p>/g, "</div>");
+    /* h2 is larger than h1, h2 is the largest, so replace h1 with h2, and set margin as 20px. */
+    cleanHtml = cleanHtml.replace(/<h1>/g, "<h2>").replace(/<(h[1-6])>/g, "<$1 style='margin-top: 20px; margin-bottom: 20px'>");
+    /* adjust margin and internal gap for unordered list and ordered list. */
+    cleanHtml = cleanHtml.replace(/<(ul)>/g, "<ul style='display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px'>").replace(/<(ol)>/g, "<ol style='display: flex; flex-direction: column; gap: 0px; margin-top: 20px; margin-bottom: 20px'>");
+    /* adjust code block, for auto line feed. */
+    cleanHtml = cleanHtml.replace(/<pre>/g, "<pre style='white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;'>");
+    return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -124,11 +154,14 @@ class ChatBox extends React.Component {
             <MessageList style={{marginTop: "10px"}}>
               {messages.filter(message => message.isHidden === false).map((message, index) => (
                 <Message key={index} model={{
-                  message: message.text !== "" ? message.text : this.state.dots,
+                  type: "custom",
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  <Message.CustomContent>
+                    {this.renderMarkdown(message.text)}
+                  </Message.CustomContent>
                 </Message>
               ))}
             </MessageList>
