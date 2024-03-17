@@ -65,7 +65,9 @@ class TaskEditPage extends React.Component {
   getAnswer() {
     const provider = this.state.task.provider;
     const question = this.getQuestion();
-    MessageBackend.getAnswer(provider, question)
+    const framework = this.state.task.name;
+    const video = "";
+    MessageBackend.getAnswer(provider, question, framework, video)
       .then((res) => {
         if (res.status === "ok") {
           this.updateTaskField("log", res.data);

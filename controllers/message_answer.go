@@ -17,6 +17,7 @@ package controllers
 import (
 	"fmt"
 
+	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -221,10 +222,106 @@ func (c *ApiController) GetMessageAnswer() {
 }
 
 func (c *ApiController) GetAnswer() {
+	userName, ok := c.RequireSignedIn()
+	if !ok {
+		return
+	}
+
 	provider := c.Input().Get("provider")
 	question := c.Input().Get("question")
+	framework := c.Input().Get("framework")
+	video := c.Input().Get("video")
 
-	answer, err := object.GetAnswer(provider, question)
+	category := "Custom"
+	chatName := fmt.Sprintf("chat_%s", util.GetRandomName())
+	if framework != "" {
+		if video == "" {
+			category = "FrameworkTest"
+			chatName = framework
+		} else {
+			category = "FrameworkVideoRun"
+			chatName = fmt.Sprintf("%s - %s", video, framework)
+		}
+	}
+
+	answer, modelResult, err := object.GetAnswer(provider, question)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	chat, err := object.GetChat(util.GetId("admin", chatName))
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if chat == nil {
+		casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+		currentTime := util.GetCurrentTime()
+		chat = &object.Chat{
+			Owner:        "admin",
+			Name:         chatName,
+			CreatedTime:  currentTime,
+			UpdatedTime:  currentTime,
+			Organization: casdoorOrganization,
+			DisplayName:  chatName,
+			Store:        "",
+			Category:     category,
+			Type:         "AI",
+			User:         userName,
+			User1:        "",
+			User2:        "",
+			Users:        []string{},
+			ClientIp:     c.getClientIp(),
+			UserAgent:    c.getUserAgent(),
+			MessageCount: 0,
+		}
+
+		chat.ClientIpDesc = util.GetDescFromIP(chat.ClientIp)
+		chat.UserAgentDesc = util.GetDescFromUserAgent(chat.UserAgent)
+
+		_, err = object.AddChat(chat)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
+	questionMessage := &object.Message{
+		Owner:        "admin",
+		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:  chat.CreatedTime,
+		Organization: chat.Organization,
+		User:         userName,
+		Chat:         chat.Name,
+		ReplyTo:      "",
+		Author:       userName,
+		Text:         question,
+	}
+
+	_, err = object.AddMessage(questionMessage)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	answerMessage := &object.Message{
+		Owner:        "admin",
+		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:  util.GetCurrentTimeEx(chat.CreatedTime),
+		Organization: chat.Organization,
+		User:         userName,
+		Chat:         chat.Name,
+		ReplyTo:      questionMessage.Name,
+		Author:       "AI",
+		Text:         answer,
+	}
+
+	answerMessage.TokenCount = modelResult.TotalTokenCount
+	answerMessage.Price = modelResult.TotalPrice
+	answerMessage.Currency = modelResult.Currency
+
+	_, err = object.AddMessage(answerMessage)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

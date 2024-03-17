@@ -61,8 +61,8 @@ export function getMessageAnswer(owner, name, onMessage, onError) {
   });
 }
 
-export function getAnswer(provider, question) {
-  return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}`, {
+export function getAnswer(provider, question, framework, video) {
+  return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}&framework=${encodeURIComponent(framework)}&video=${encodeURIComponent(video)}`, {
     method: "GET",
     credentials: "include",
     headers: {

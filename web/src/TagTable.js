@@ -64,7 +64,9 @@ class TagTable extends React.Component {
   getAnswer(task, text, rowIndex, columnIndex) {
     const provider = task.provider;
     const question = this.getQuestion(task, text);
-    MessageBackend.getAnswer(provider, question)
+    const framework = task.name;
+    const video = this.props.video.name;
+    MessageBackend.getAnswer(provider, question, framework, video)
       .then((res) => {
         if (res.status === "ok") {
           this.updateField(this.props.table, rowIndex, `tag${columnIndex + 1}`, this.trimAnswer(res.data));

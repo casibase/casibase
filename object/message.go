@@ -284,21 +284,22 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 	return w.Buffer.Write(p)
 }
 
-func GetAnswer(provider string, question string) (string, error) {
+func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	history := []*model.RawMessage{}
 	knowledge := []*model.RawMessage{}
 	var writer MyWriter
-	_, err = modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+
+	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge)
 	if err != nil {
-		return "", err
+		return "", nil, err
 	}
 
 	res := writer.String()
 	res = strings.Trim(res, "\"")
-	return res, nil
+	return res, modelResult, nil
 }

@@ -89,11 +89,10 @@ func (c *ApiController) addInitialChat(organization string, userName string) (*o
 		return nil, fmt.Errorf("The default store is not found")
 	}
 
-	randomName := util.GetRandomName()
 	currentTime := util.GetCurrentTime()
 	chat := &object.Chat{
 		Owner:        "admin",
-		Name:         fmt.Sprintf("chat_%s", randomName),
+		Name:         fmt.Sprintf("chat_%s", util.GetRandomName()),
 		CreatedTime:  currentTime,
 		UpdatedTime:  currentTime,
 		Organization: organization,
