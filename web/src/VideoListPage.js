@@ -143,7 +143,7 @@ class VideoListPage extends React.Component {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "140px",
+        width: "180px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           text = text.replace(".MP4", ".mp4");
@@ -223,9 +223,20 @@ class VideoListPage extends React.Component {
         title: i18next.t("video:Label count"),
         dataIndex: "labelCount",
         key: "labelCount",
-        width: "110px",
+        width: "90px",
+        sorter: (a, b) => a.labels.length - b.labels.length,
         render: (text, record, index) => {
           return record.labels.length;
+        },
+      },
+      {
+        title: i18next.t("video:Segment count"),
+        dataIndex: "segmentCount",
+        key: "segmentCount",
+        width: "110px",
+        sorter: (a, b) => a.segments.length - b.segments.length,
+        render: (text, record, index) => {
+          return record.segments.length;
         },
       },
       {
