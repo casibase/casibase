@@ -294,7 +294,7 @@ class VideoEditPage extends React.Component {
           player={this.state.player}
           screen={this.state.screen}
           videoObj={this.state.videoObj}
-          onUpdateTable={(value) => {this.updateVideoField("labels", value);}}
+          onUpdateTable={(value) => {this.updateVideoField("segments", value);}}
           onUpdateVideoField={(key, value) => {this.updateVideoField(key, value);}}
         />
       </div>
