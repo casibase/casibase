@@ -25,3 +25,13 @@ func TestImportVideos(t *testing.T) {
 		panic(err)
 	}
 }
+
+func TestImportVideos2(t *testing.T) {
+	InitConfig()
+
+	path := ""
+	err := importVideos2(path)
+	if err != nil {
+		panic(err)
+	}
+}

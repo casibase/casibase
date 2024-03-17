@@ -21,7 +21,7 @@ import (
 	"github.com/unidoc/unioffice/document"
 )
 
-func getTextFromDocx(path string) (string, error) {
+func GetTextFromDocx(path string) (string, error) {
 	docx, err := document.Open(path)
 	if err != nil {
 		return "", err

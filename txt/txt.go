@@ -48,7 +48,7 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	} else if ext == ".csv" {
 		res, err = getTextFromCsv(path)
 	} else if ext == ".docx" {
-		res, err = getTextFromDocx(path)
+		res, err = GetTextFromDocx(path)
 	} else if ext == ".pdf" {
 		res, err = getTextFromPdf(path)
 	} else {
