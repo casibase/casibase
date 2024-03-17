@@ -126,7 +126,7 @@ func (c *ApiController) addInitialChat(organization string, userName string) (*o
 }
 
 func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
-	chats, err := object.GetChatsByUser("admin", user.Name)
+	chats, err := object.GetChats("admin", user.Name)
 	if err != nil {
 		return err
 	}

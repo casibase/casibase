@@ -125,7 +125,7 @@ class ChatPage extends BaseListPage {
           const field = "user";
           const value = this.props.account.name;
           const sortField = "", sortOrder = "";
-          ChatBackend.getChats("admin", -1, -1, field, value, sortField, sortOrder)
+          ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
             .then((res) => {
               if (res.status === "ok") {
                 this.setState({
@@ -382,7 +382,7 @@ class ChatPage extends BaseListPage {
     if (setLoading) {
       this.setState({loading: true});
     }
-    ChatBackend.getChats("admin", -1, -1, field, value, sortField, sortOrder)
+    ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({

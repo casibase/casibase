@@ -72,17 +72,7 @@ func GetChatMessages(chat string) ([]*Message, error) {
 	return messages, nil
 }
 
-func GetMessages(owner string) ([]*Message, error) {
-	messages := []*Message{}
-	err := adapter.engine.Desc("created_time").Find(&messages, &Message{Owner: owner})
-	if err != nil {
-		return messages, err
-	}
-
-	return messages, nil
-}
-
-func GetMessagesByUser(owner string, user string) ([]*Message, error) {
+func GetMessages(owner string, user string) ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Desc("created_time").Find(&messages, &Message{Owner: owner, User: user})
 	if err != nil {
@@ -99,7 +89,7 @@ func isWithinTime(createdTime string, minutes int) bool {
 }
 
 func GetNearMessageCount(user string, limitMinutes int) (int, error) {
-	messages, err := GetMessagesByUser("admin", user)
+	messages, err := GetMessages("admin", user)
 	if err != nil {
 		return -1, err
 	}

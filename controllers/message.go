@@ -33,15 +33,15 @@ func (c *ApiController) GetGlobalMessages() {
 }
 
 func (c *ApiController) GetMessages() {
-	owner := c.Input().Get("owner")
+	user := c.Input().Get("user")
 	chat := c.Input().Get("chat")
 
 	if c.IsAdmin() {
-		owner = ""
+		user = ""
 	}
 
 	if chat == "" {
-		messages, err := object.GetMessages(owner)
+		messages, err := object.GetMessages("admin", user)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return

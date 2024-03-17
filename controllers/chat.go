@@ -32,20 +32,20 @@ func (c *ApiController) GetGlobalChats() {
 }
 
 func (c *ApiController) GetChats() {
-	owner := c.Input().Get("owner")
+	user := c.Input().Get("user")
 	field := c.Input().Get("field")
 	value := c.Input().Get("value")
 
 	if c.IsAdmin() {
-		owner = ""
+		user = ""
 	}
 
 	var chats []*object.Chat
 	var err error
 	if field == "user" {
-		chats, err = object.GetChatsByUser(owner, value)
+		chats, err = object.GetChats("admin", value)
 	} else {
-		chats, err = object.GetChats(owner)
+		chats, err = object.GetChats("admin", user)
 	}
 	if err != nil {
 		c.ResponseError(err.Error())

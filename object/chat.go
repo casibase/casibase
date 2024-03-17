@@ -56,17 +56,7 @@ func GetGlobalChats() ([]*Chat, error) {
 	return chats, nil
 }
 
-func GetChats(owner string) ([]*Chat, error) {
-	chats := []*Chat{}
-	err := adapter.engine.Desc("updated_time").Find(&chats, &Chat{Owner: owner})
-	if err != nil {
-		return chats, err
-	}
-
-	return chats, nil
-}
-
-func GetChatsByUser(owner string, user string) ([]*Chat, error) {
+func GetChats(owner string, user string) ([]*Chat, error) {
 	chats := []*Chat{}
 	err := adapter.engine.Desc("updated_time").Find(&chats, &Chat{Owner: owner, User: user})
 	if err != nil {
