@@ -106,6 +106,7 @@
     "Edit Chat": "Редактировать чат",
     "Knowledge": "Knowledge",
     "Messages": "Сообщения",
+    "Need notify": "Need notify",
     "Reply to": "Ответить",
     "Text": "Текст"
   },
@@ -209,6 +210,7 @@
     "Labels": "Метки",
     "Role": "Role",
     "School": "School",
+    "Segment count": "Segment count",
     "Stage": "Stage",
     "Start time (s)": "Время начала (с)",
     "Subject": "Subject",

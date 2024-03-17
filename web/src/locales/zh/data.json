@@ -106,6 +106,7 @@
     "Edit Chat": "编辑会话",
     "Knowledge": "知识",
     "Messages": "消息",
+    "Need notify": "启用邮件通知",
     "Reply to": "父消息",
     "Text": "内容"
   },
@@ -209,6 +210,7 @@
     "Labels": "标签",
     "Role": "角色",
     "School": "学校",
+    "Segment count": "片段数量",
     "Stage": "阶段",
     "Start time (s)": "开始时间（秒）",
     "Subject": "主题",
