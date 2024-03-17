@@ -299,6 +299,8 @@ func (c *ApiController) GetAnswer() {
 		Text:         question,
 	}
 
+	questionMessage.Currency = modelResult.Currency
+
 	_, err = object.AddMessage(questionMessage)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -324,6 +326,21 @@ func (c *ApiController) GetAnswer() {
 	_, err = object.AddMessage(answerMessage)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	chat.TokenCount += answerMessage.TokenCount
+	chat.Price += answerMessage.Price
+	if chat.Currency == "" {
+		chat.Currency = answerMessage.Currency
+	}
+
+	chat.UpdatedTime = util.GetCurrentTime()
+	chat.MessageCount += 2
+
+	_, err = object.UpdateChat(chat.GetId(), chat)
+	if err != nil {
+		c.ResponseOk(err.Error())
 		return
 	}
 
