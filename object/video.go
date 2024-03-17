@@ -48,6 +48,8 @@ type Video struct {
 	EditMode     string         `xorm:"varchar(100)" json:"editMode"`
 	Labels       []*Label       `xorm:"mediumtext" json:"labels"`
 	Segments     []*Label       `xorm:"mediumtext" json:"segments"`
+	LabelCount   int            `xorm:"-" json:"labelCount"`
+	SegmentCount int            `xorm:"-" json:"segmentCount"`
 	WordCountMap map[string]int `xorm:"mediumtext" json:"wordCountMap"`
 	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
 	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`

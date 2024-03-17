@@ -224,20 +224,14 @@ class VideoListPage extends React.Component {
         dataIndex: "labelCount",
         key: "labelCount",
         width: "90px",
-        sorter: (a, b) => a.labels.length - b.labels.length,
-        render: (text, record, index) => {
-          return record.labels.length;
-        },
+        sorter: (a, b) => a.labelCount - b.labelCount,
       },
       {
         title: i18next.t("video:Segment count"),
         dataIndex: "segmentCount",
         key: "segmentCount",
         width: "110px",
-        sorter: (a, b) => a.segments.length - b.segments.length,
-        render: (text, record, index) => {
-          return record.segments.length;
-        },
+        sorter: (a, b) => a.segmentCount - b.segmentCount,
       },
       {
         title: i18next.t("general:Action"),

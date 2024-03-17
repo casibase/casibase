@@ -52,6 +52,18 @@ func (c *ApiController) GetVideos() {
 		return
 	}
 
+	for _, v := range videos {
+		if len(v.Labels) != 0 {
+			v.LabelCount = len(v.Labels)
+			v.Labels = []*object.Label{}
+		}
+
+		if len(v.Segments) != 0 {
+			v.SegmentCount = len(v.Segments)
+			v.Segments = []*object.Label{}
+		}
+	}
+
 	// for _, v := range videos {
 	//	err = v.Populate()
 	//	if err != nil {
