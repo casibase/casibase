@@ -23,6 +23,7 @@
     "eslint-plugin-unused-imports": "^2.0.0",
     "file-saver": "^2.0.2",
     "i18next": "^19.8.9",
+    "katex": "^0.16.9",
     "markdown-it": "^13.0.1",
     "marked": "^12.0.1",
     "moment": "^2.29.1",
