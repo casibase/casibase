@@ -17,6 +17,8 @@ import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, Messa
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {marked} from "marked";
 import DOMPurify from "dompurify";
+import katex from "katex";
+import "katex/dist/katex.min.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -114,6 +116,27 @@ class ChatBox extends React.Component {
   };
 
   renderMarkdown(markdownText) {
+    const processLatex = (text) => {
+      const inlineLatexRegex = /\(\s*(([a-zA-Z])|(\\.+?)|([^)]*?[_^!].*?))\s*\)/g;
+      const blockLatexRegex = /\[\s*(.+?)\s*\]/g;
+
+      text = text.replace(blockLatexRegex, (match, formula) => {
+        try {
+          return katex.renderToString(formula, {throwOnError: false, displayMode: true});
+        } catch (error) {
+          return match;
+        }
+      });
+
+      return text.replace(inlineLatexRegex, (match, formula) => {
+        try {
+          return katex.renderToString(formula, {throwOnError: false, displayMode: false});
+        } catch (error) {
+          return match;
+        }
+      });
+    };
+
     if (markdownText === "") {
       markdownText = this.state.dots;
     }
@@ -127,6 +150,8 @@ class ChatBox extends React.Component {
     cleanHtml = cleanHtml.replace(/<(ul)>/g, "<ul style='display: flex; flex-direction: column; gap: 10px; margin-top: 10px; margin-bottom: 10px'>").replace(/<(ol)>/g, "<ol style='display: flex; flex-direction: column; gap: 0px; margin-top: 20px; margin-bottom: 20px'>");
     /* adjust code block, for auto line feed. */
     cleanHtml = cleanHtml.replace(/<pre>/g, "<pre style='white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;'>");
+    /* process latex formula */
+    cleanHtml = processLatex(cleanHtml);
     return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
   }
 
