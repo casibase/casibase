@@ -17,6 +17,7 @@ import {Modal, Spin} from "antd";
 import moment from "moment";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
+import {renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -150,6 +151,9 @@ class ChatPage extends BaseListPage {
   getMessages(chat) {
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
+        res.data.map((message) => {
+          message.html = renderText(message.text);
+        });
         this.setState({
           messages: res.data,
         });
@@ -178,6 +182,9 @@ class ChatPage extends BaseListPage {
               text += jsonData.text;
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
+              res.data.map((message) => {
+                message.html = renderText(message.text);
+              });
               this.setState({
                 messages: res.data,
                 disableInput: false,
@@ -188,6 +195,9 @@ class ChatPage extends BaseListPage {
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = error;
               res.data[res.data.length - 1] = lastMessage2;
+              res.data.map((message) => {
+                message.html = renderText(message.text);
+              });
               this.setState({
                 messages: res.data,
                 disableInput: true,

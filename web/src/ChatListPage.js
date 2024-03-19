@@ -22,6 +22,7 @@ import i18next from "i18next";
 import * as Conf from "./Conf";
 import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
+import {renderText} from "./ChatMessageRender";
 
 class ChatListPage extends React.Component {
   constructor(props) {
@@ -66,6 +67,9 @@ class ChatListPage extends React.Component {
     MessageBackend.getChatMessages("admin", chatName)
       .then((res) => {
         const messagesMap = this.state.messagesMap;
+        res.data.map((message) => {
+          message.html = renderText(message.text);
+        });
         messagesMap[chatName] = res.data;
         this.setState({
           messagesMap: messagesMap,
