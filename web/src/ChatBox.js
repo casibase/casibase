@@ -19,6 +19,8 @@ import {marked} from "marked";
 import DOMPurify from "dompurify";
 import katex from "katex";
 import "katex/dist/katex.min.css";
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark-reasonable.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -120,6 +122,14 @@ class ChatBox extends React.Component {
       const inlineLatexRegex = /\(\s*(([a-zA-Z])|(\\.+?)|([^)]*?[_^!].*?))\s*\)/g;
       const blockLatexRegex = /\[\s*(.+?)\s*\]/g;
 
+      const codeBlockRegex = /(<pre><code[\s\S]*?)(<\/code><\/pre>|$)/g;
+      const codeBlocks = [];
+      let index = 0;
+      text = text.replace(codeBlockRegex, (match) => {
+        codeBlocks.push(match);
+        return `codeblockPlaceholder${index++}`;
+      });
+
       text = text.replace(blockLatexRegex, (match, formula) => {
         try {
           return katex.renderToString(formula, {throwOnError: false, displayMode: true});
@@ -128,13 +138,27 @@ class ChatBox extends React.Component {
         }
       });
 
-      return text.replace(inlineLatexRegex, (match, formula) => {
+      text = text.replace(inlineLatexRegex, (match, formula) => {
         try {
           return katex.renderToString(formula, {throwOnError: false, displayMode: false});
         } catch (error) {
           return match;
         }
       });
+
+      codeBlocks.forEach((code, i) => {
+        text = text.replace(`codeblockPlaceholder${i}`, code);
+      });
+      return text;
+    };
+
+    const processCodeBlock = (html) => {
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = html;
+      tempDiv.querySelectorAll("pre code").forEach((block) => {
+        hljs.highlightBlock(block);
+      });
+      return tempDiv.innerHTML;
     };
 
     if (markdownText === "") {
@@ -152,6 +176,8 @@ class ChatBox extends React.Component {
     cleanHtml = cleanHtml.replace(/<pre>/g, "<pre style='white-space: pre-wrap; white-space: -moz-pre-wrap; white-space: -pre-wrap; white-space: -o-pre-wrap; word-wrap: break-word;'>");
     /* process latex formula */
     cleanHtml = processLatex(cleanHtml);
+    /* process code block */
+    cleanHtml = processCodeBlock(cleanHtml);
     return <div dangerouslySetInnerHTML={{__html: cleanHtml}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />;
   }
 
