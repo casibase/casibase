@@ -428,27 +428,6 @@ class ChatListPage extends React.Component {
       }
     }
 
-    const sumFields = (chats, field) => {
-      if (!chats) {
-        return 0;
-      }
-
-      if (field === "count") {
-        return chats.reduce((sum, chat) => sum + 1, 0);
-      } else {
-        return chats.reduce((sum, chat) => sum + chat[field], 0);
-      }
-    };
-
-    function uniqueFields(chats, field) {
-      if (!chats) {
-        return 0;
-      }
-
-      const res = new Set(chats.map(chat => chat[field]));
-      return res.size;
-    }
-
     return (
       <div>
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
@@ -457,38 +436,29 @@ class ChatListPage extends React.Component {
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addChat.bind(this)}>{i18next.t("general:Add")}</Button>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {/* {i18next.t("chat:Filter single chat")}*/}
-              {/* &nbsp;&nbsp;&nbsp;&nbsp;*/}
-              {/* <Switch checked={this.state.filterSingleChat} onChange={(checked, e) => {*/}
-              {/*  this.setState({*/}
-              {/*    filterSingleChat: checked,*/}
-              {/*  });*/}
-              {/*  Setting.setBoolValue("filterSingleChat", checked);*/}
-              {/*  this.UNSAFE_componentWillMount();*/}
-              {/* }} />*/}
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:
               &nbsp;
-              {Setting.getDisplayTag(uniqueFields(chats, "user"))}
+              {Setting.getDisplayTag(Setting.uniqueFields(chats, "user"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Chats")}:
               &nbsp;
-              {Setting.getDisplayTag(sumFields(chats, "count"))}
+              {Setting.getDisplayTag(Setting.sumFields(chats, "count"))}
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Messages")}:
               &nbsp;
-              {Setting.getDisplayTag(sumFields(chats, "messageCount"))}
+              {Setting.getDisplayTag(Setting.sumFields(chats, "messageCount"))}
               {
                 (!this.props.account || this.props.account.name !== "admin") ? null : (
                   <React.Fragment>
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {i18next.t("general:Tokens")}:
                     &nbsp;
-                    {Setting.getDisplayTag(sumFields(chats, "tokenCount"))}
+                    {Setting.getDisplayTag(Setting.sumFields(chats, "tokenCount"))}
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     {i18next.t("chat:Price")}:
                     &nbsp;
-                    {Setting.getDisplayPrice(sumFields(chats, "price"))}
+                    {Setting.getDisplayPrice(Setting.sumFields(chats, "price"))}
                   </React.Fragment>
                 )
               }

@@ -320,9 +320,34 @@ class MessageListPage extends React.Component {
           title={() => (
             <div>
               {i18next.t("message:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>
-                {i18next.t("general:Add")}
-              </Button>
+              <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Users")}:
+              &nbsp;
+              {Setting.getDisplayTag(Setting.uniqueFields(messages, "user"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Chats")}:
+              &nbsp;
+              {Setting.getDisplayTag(Setting.uniqueFields(messages, "chat"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Messages")}:
+              &nbsp;
+              {Setting.getDisplayTag(Setting.sumFields(messages, "count"))}
+              {
+                (!this.props.account || this.props.account.name !== "admin") ? null : (
+                  <React.Fragment>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("general:Tokens")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(Setting.sumFields(messages, "tokenCount"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("chat:Price")}:
+                    &nbsp;
+                    {Setting.getDisplayPrice(Setting.sumFields(messages, "price"))}
+                  </React.Fragment>
+                )
+              }
             </div>
           )}
           loading={messages === null}

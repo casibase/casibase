@@ -974,3 +974,24 @@ export function getDisplayTag(s) {
     </Tag>
   );
 }
+
+export function sumFields(chats, field) {
+  if (!chats) {
+    return 0;
+  }
+
+  if (field === "count") {
+    return chats.reduce((sum, chat) => sum + 1, 0);
+  } else {
+    return chats.reduce((sum, chat) => sum + chat[field], 0);
+  }
+}
+
+export function uniqueFields(chats, field) {
+  if (!chats) {
+    return 0;
+  }
+
+  const res = new Set(chats.map(chat => chat[field]));
+  return res.size;
+}
