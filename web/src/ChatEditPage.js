@@ -18,6 +18,7 @@ import * as ChatBackend from "./backend/ChatBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import ChatBox from "./ChatBox";
+import {renderText} from "./ChatMessageRender";
 import * as MessageBackend from "./backend/MessageBackend";
 
 const {Option} = Select;
@@ -56,6 +57,9 @@ class ChatEditPage extends React.Component {
   getMessages(chatName) {
     MessageBackend.getChatMessages("admin", chatName)
       .then((res) => {
+        res.data.map((message) => {
+          message.html = renderText(message.text);
+        });
         this.setState({
           messages: res.data,
         });
