@@ -28,6 +28,8 @@ export const EnableExtraPages = false;
 
 export const ShortcutPageItems = [];
 
+export const UsageEndpoints = [];
+
 export const AiName = "AI";
 export const AiAvatar = "https://cdn.casbin.com/casdoor/static/gpt.png";
 

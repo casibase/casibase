@@ -13,13 +13,15 @@
 // limitations under the License.
 
 import React from "react";
-import {Col, Row, Statistic} from "antd";
+import {Col, Row, Select, Statistic} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
 import ReactEcharts from "echarts-for-react";
 import * as Conf from "./Conf";
 import i18next from "i18next";
+
+const {Option} = Select;
 
 class UsagePage extends BaseListPage {
   constructor(props) {
@@ -28,15 +30,16 @@ class UsagePage extends BaseListPage {
       classes: props,
       usages: null,
       usageMetadata: null,
+      endpoint: window.location.host,
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getUsages();
+    this.getUsages("");
   }
 
-  getUsages() {
-    UsageBackend.getUsages(30)
+  getUsages(serverUrl) {
+    UsageBackend.getUsages(serverUrl, 30)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -227,10 +230,10 @@ class UsagePage extends BaseListPage {
                 Conf.DefaultLanguage === "en" ? null : (
                   <React.Fragment>
                     <Col span={3}>
-                      <Statistic title={i18next.t("chat:CPrice")} value={lastUsage.price * 7.2} prefix={"￥"} />
+                      <Statistic title={i18next.t("chat:CPrice")} value={parseFloat((lastUsage.price * 7.2).toFixed(2))} prefix={"￥"} />
                     </Col>
                     <Col span={3}>
-                      <Statistic title={i18next.t("chat:FPrice")} value={lastUsage.price * 7.2 * 5} prefix={"￥"} />
+                      <Statistic title={i18next.t("chat:FPrice")} value={parseFloat((lastUsage.price * 7.2 * 5).toFixed(2))} prefix={"￥"} />
                     </Col>
                   </React.Fragment>
                 )
@@ -242,6 +245,27 @@ class UsagePage extends BaseListPage {
     );
   }
 
+  renderSelect() {
+    if (Conf.UsageEndpoints.length === 0 || this.props.account.name !== "admin") {
+      return null;
+    }
+
+    return (
+      <Select virtual={false} style={{width: "280px", marginBottom: "10px", float: "right"}} value={this.state.endpoint} onChange={(value => {
+        this.setState({
+          endpoint: value,
+        });
+
+        const serverUrl = `https://${value}`;
+        this.getUsages(serverUrl);
+      })}>
+        {
+          Conf.UsageEndpoints.map((item, index) => <Option key={index} value={item.id}>{`${item.name} (${item.id})`}</Option>)
+        }
+      </Select>
+    );
+  }
+
   render() {
     if (this.state.usages === null) {
       return null;
@@ -249,6 +273,7 @@ class UsagePage extends BaseListPage {
 
     return (
       <div>
+        {this.renderSelect()}
         {this.renderStatistic(this.state.usages)}
         <br />
         <br />

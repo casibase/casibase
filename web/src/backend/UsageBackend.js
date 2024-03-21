@@ -14,8 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function getUsages(days) {
-  return fetch(`${Setting.ServerUrl}/api/get-usages?days=${days}`, {
+export function getUsages(serverUrl, days) {
+  if (serverUrl === "") {
+    serverUrl = Setting.ServerUrl;
+  }
+
+  return fetch(`${serverUrl}/api/get-usages?days=${days}`, {
     method: "GET",
     credentials: "include",
     headers: {
