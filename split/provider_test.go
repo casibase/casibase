@@ -32,16 +32,17 @@ func TestSplit(t *testing.T) {
 	object.InitConfig()
 
 	p, err := split.GetSplitProvider("Default")
+	// p, err := split.GetSplitProvider("Basic")
 	if err != nil {
 		panic(err)
 	}
 
-	storageProvider, err := object.GetProvider("admin/provider-storage-built-in")
+	storageProvider, err := object.GetProvider("admin/storage-built")
 	if err != nil {
 		panic(err)
 	}
 
-	path := filepath.Join(storageProvider.ClientId, "test.md")
+	path := filepath.Join(storageProvider.ClientId, "myFileName")
 	text := util.ReadStringFromPath(path)
 	textSections, err := p.SplitText(text)
 	if err != nil {
@@ -61,12 +62,43 @@ func TestSplit2(t *testing.T) {
 		panic(err)
 	}
 
-	storageProvider, err := object.GetProvider("admin/provider-storage-built-in")
+	storageProvider, err := object.GetProvider("admin/storage-built")
 	if err != nil {
 		panic(err)
 	}
 
 	path := filepath.Join(storageProvider.ClientId, "QAText.docx")
+
+	text, err := txt.GetParsedTextFromUrl(path, ".docx")
+	if err != nil {
+		panic(err)
+	}
+
+	textSections, err := p.SplitText(text)
+	if err != nil {
+		panic(err)
+	}
+
+	for i, s := range textSections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+}
+
+func TestSplit3(t *testing.T) {
+	object.InitConfig()
+
+	p, err := split.GetSplitProvider("Default")
+	// p, err := split.GetSplitProvider("Basic")
+	if err != nil {
+		panic(err)
+	}
+
+	storageProvider, err := object.GetProvider("admin/storage-built")
+	if err != nil {
+		panic(err)
+	}
+
+	path := filepath.Join(storageProvider.ClientId, "myfile.docx")
 
 	text, err := txt.GetParsedTextFromUrl(path, ".docx")
 	if err != nil {
