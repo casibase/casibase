@@ -48,7 +48,7 @@ func AddPrices(price1 float64, price2 float64) float64 {
 }
 
 func RefinePrice(price float64) float64 {
-	res := math.Round(price*1e8) / 1e8
+	res := math.Round(price*1e2) / 1e2
 	return res
 }
 

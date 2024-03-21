@@ -18,6 +18,7 @@ import {Redirect} from "react-router-dom";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as Setting from "./Setting";
 import ChatPage from "./ChatPage";
+import UsagePage from "./UsagePage";
 
 class HomePage extends React.Component {
   constructor(props) {
@@ -66,6 +67,10 @@ class HomePage extends React.Component {
       if (this.state.store === null) {
         return null;
       } else {
+        if (this.props.account.name === "admin") {
+          return <UsagePage />;
+        }
+
         return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;
       }
     }
