@@ -307,7 +307,7 @@ class TaskEditPage extends React.Component {
             {i18next.t("general:Chat")}:
           </Col>
           <Col span={22} >
-            <Button style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
+            <Button disabled={this.state.task.subject === "" || this.state.task.topic === "" || this.state.task.result === "" || this.state.task.activity === "" || this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
             <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
           </Col>
         </Row>

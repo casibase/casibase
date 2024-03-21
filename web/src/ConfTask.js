@@ -23,3 +23,5 @@ export const GradeOptions = [];
 export const ResultOptions = [];
 
 export const ActivityOptions = [];
+
+export const TaskText = "";

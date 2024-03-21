@@ -58,7 +58,7 @@ class TaskListPage extends React.Component {
       type: ConfTask.TaskMode === "Labeling" ? "Labeling" : "PBL",
       application: "Docs-Polish",
       path: "F:/github_repos/casdoor-website",
-      text: "",
+      text: ConfTask.TaskText,
       example: "",
       labels: [],
       log: "",
