@@ -8,11 +8,13 @@
   },
   "chat": {
     "AI": "AI",
+    "CPrice": "CPrice",
     "Category": "Category",
     "Chats": "Chats",
     "Count": "Count",
     "Default Category": "Default Category",
     "Edit Chat": "Edit Chat",
+    "FPrice": "FPrice",
     "Group": "Group",
     "New Chat": "New Chat",
     "Price": "Price",
@@ -175,9 +177,11 @@
     "folders are checked": "folders are checked"
   },
   "task": {
+    "Activity": "Activity",
     "Application": "Application",
     "Edit Framework": "Edit Framework",
     "Example": "Example",
+    "Generate Project": "Generate Project",
     "Labels": "Labels",
     "Log": "Log",
     "Path": "Path",

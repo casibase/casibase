@@ -8,11 +8,13 @@
   },
   "chat": {
     "AI": "AI",
+    "CPrice": "C价格",
     "Category": "分类",
     "Chats": "会话",
     "Count": "数量",
     "Default Category": "默认分类",
     "Edit Chat": "编辑会话",
+    "FPrice": "F价格",
     "Group": "群聊",
     "New Chat": "新会话",
     "Price": "价格",
@@ -73,7 +75,7 @@
     "Provider URL": "提供商URL",
     "Providers": "提供商",
     "Resources": "资源",
-    "Result": "结果",
+    "Result": "最终成果",
     "Run": "运行",
     "Save": "保存",
     "Save \u0026 Exit": "保存并退出",
@@ -175,9 +177,11 @@
     "folders are checked": "文件夹已选"
   },
   "task": {
+    "Activity": "入项活动",
     "Application": "应用",
     "Edit Framework": "编辑框架",
     "Example": "示例",
+    "Generate Project": "生成项目",
     "Labels": "标签",
     "Log": "日志",
     "Path": "路径",
@@ -219,7 +223,7 @@
     "Tags": "标签",
     "Text": "文本",
     "Time": "时间",
-    "Topic": "话题",
+    "Topic": "主题",
     "Upload Video": "上传视频",
     "Video": "视频",
     "Video ID": "视频ID"

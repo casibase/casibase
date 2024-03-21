@@ -8,11 +8,13 @@
   },
   "chat": {
     "AI": "ИИ",
+    "CPrice": "CPrice",
     "Category": "Категория",
     "Chats": "Чаты",
     "Count": "Count",
     "Default Category": "Default Category",
     "Edit Chat": "Редактировать чат",
+    "FPrice": "FPrice",
     "Group": "Группа",
     "New Chat": "New Chat",
     "Price": "Price",
@@ -175,9 +177,11 @@
     "folders are checked": "папки проверены"
   },
   "task": {
+    "Activity": "Activity",
     "Application": "Application",
     "Edit Framework": "Edit Framework",
     "Example": "Example",
+    "Generate Project": "Generate Project",
     "Labels": "Labels",
     "Log": "Log",
     "Path": "Path",

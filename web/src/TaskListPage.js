@@ -19,6 +19,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
 import i18next from "i18next";
+import * as ConfTask from "./ConfTask";
 
 class TaskListPage extends React.Component {
   constructor(props) {
@@ -54,6 +55,7 @@ class TaskListPage extends React.Component {
       createdTime: moment().format(),
       displayName: `New Task - ${randomName}`,
       provider: "provider_model_azure_gpt4",
+      type: ConfTask.TaskMode === "Labeling" ? "Labeling" : "PBL",
       application: "Docs-Polish",
       path: "F:/github_repos/casdoor-website",
       text: "",
@@ -99,7 +101,7 @@ class TaskListPage extends React.Component {
   }
 
   renderTable(tasks) {
-    const columns = [
+    let columns = [
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
@@ -134,6 +136,48 @@ class TaskListPage extends React.Component {
             </Link>
           );
         },
+      },
+      {
+        title: i18next.t("chat:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "90px",
+        sorter: (a, b) => a.type.localeCompare(b.type),
+      },
+      {
+        title: i18next.t("store:Subject"),
+        dataIndex: "subject",
+        key: "subject",
+        width: "200px",
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
+      },
+      {
+        title: i18next.t("video:Topic"),
+        dataIndex: "topic",
+        key: "topic",
+        width: "200px",
+        sorter: (a, b) => a.topic.localeCompare(b.topic),
+      },
+      {
+        title: i18next.t("general:Result"),
+        dataIndex: "result",
+        key: "result",
+        width: "200px",
+        sorter: (a, b) => a.result.localeCompare(b.result),
+      },
+      {
+        title: i18next.t("task:Activity"),
+        dataIndex: "activity",
+        key: "activity",
+        width: "200px",
+        sorter: (a, b) => a.activity.localeCompare(b.activity),
+      },
+      {
+        title: i18next.t("video:Grade"),
+        dataIndex: "grade",
+        key: "grade",
+        width: "200px",
+        sorter: (a, b) => a.grade.localeCompare(b.grade),
       },
       // {
       //   title: i18next.t("task:Application"),
@@ -220,6 +264,10 @@ class TaskListPage extends React.Component {
         },
       },
     ];
+
+    if (ConfTask.TaskMode !== "Labeling") {
+      columns = columns.filter(column => column.key !== "displayName" && column.key !== "provider" && column.key !== "labels" && column.key !== "example");
+    }
 
     return (
       <div>
