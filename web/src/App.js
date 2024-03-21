@@ -318,10 +318,6 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
 
-      if (window.location.pathname === "/") {
-        Setting.goToLinkSoft(this, "/chat");
-      }
-
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
           {i18next.t("general:Users")}

@@ -67,8 +67,8 @@ class HomePage extends React.Component {
       if (this.state.store === null) {
         return null;
       } else {
-        if (this.props.account.name === "admin") {
-          return <UsagePage />;
+        if (this.props.account.name === "admin" || this.props.account.type === "chat-admin") {
+          return <UsagePage account={this.props.account} />;
         }
 
         return <FileTreePage account={this.props.account} storeName={this.state.store.name} />;

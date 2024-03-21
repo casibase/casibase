@@ -172,6 +172,12 @@ class UsagePage extends BaseListPage {
       ],
     };
 
+    if (this.props.account.name !== "admin") {
+      rightOption.legend.data = rightOption.legend.data.filter(item => item !== "Price");
+      rightOption.yAxis = rightOption.yAxis.filter(yAxis => yAxis.name !== "Price");
+      rightOption.series = rightOption.series.filter(series => series.name !== "Price");
+    }
+
     return <ReactEcharts option={rightOption} style={{height: "400px", width: "48%", display: "inline-block"}} />;
   }
 
@@ -200,18 +206,24 @@ class UsagePage extends BaseListPage {
         <Col span={3}>
           <Statistic title="Token Count" value={lastUsage.tokenCount} />
         </Col>
-        <Col span={3}>
-          <Statistic title="Price" value={lastUsage.price} prefix={lastUsage.currency && "$"} />
-        </Col>
         {
-          Conf.DefaultLanguage === "en" ? null : (
+          this.props.account.name !== "admin" ? null : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic title="CPrice" value={lastUsage.price * 7.2} prefix={"￥"} />
+                <Statistic title="Price" value={lastUsage.price} prefix={lastUsage.currency && "$"} />
               </Col>
-              <Col span={3}>
-                <Statistic title="FPrice" value={lastUsage.price * 7.2 * 5} prefix={"￥"} />
-              </Col>
+              {
+                Conf.DefaultLanguage === "en" ? null : (
+                  <React.Fragment>
+                    <Col span={3}>
+                      <Statistic title="CPrice" value={lastUsage.price * 7.2} prefix={"￥"} />
+                    </Col>
+                    <Col span={3}>
+                      <Statistic title="FPrice" value={lastUsage.price * 7.2 * 5} prefix={"￥"} />
+                    </Col>
+                  </React.Fragment>
+                )
+              }
             </React.Fragment>
           )
         }
