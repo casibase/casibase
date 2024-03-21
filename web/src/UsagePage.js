@@ -19,6 +19,7 @@ import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
 import ReactEcharts from "echarts-for-react";
 import * as Conf from "./Conf";
+import i18next from "i18next";
 
 class UsagePage extends BaseListPage {
   constructor(props) {
@@ -58,7 +59,7 @@ class UsagePage extends BaseListPage {
         trigger: "axis",
       },
       legend: {
-        data: ["User Count", "Chat Count"],
+        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
       },
       toolbox: {
         feature: {
@@ -79,23 +80,23 @@ class UsagePage extends BaseListPage {
       yAxis: [
         {
           type: "value",
-          name: "User Count",
+          name: i18next.t("general:Users"),
           position: "left",
         },
         {
           type: "value",
-          name: "Chat Count",
+          name: i18next.t("general:Chats"),
           position: "right",
         },
       ],
       series: [
         {
-          name: "User Count",
+          name: i18next.t("general:Users"),
           type: "line",
           data: userCounts,
         },
         {
-          name: "Chat Count",
+          name: i18next.t("general:Chats"),
           type: "line",
           yAxisIndex: 1,
           data: chatCounts,
@@ -117,7 +118,7 @@ class UsagePage extends BaseListPage {
         trigger: "axis",
       },
       legend: {
-        data: ["Message Count", "Token Count", "Price"],
+        data: [i18next.t("general:Messages"), i18next.t("general:Tokens"), i18next.t("chat:Price")],
       },
       toolbox: {
         feature: {
@@ -138,35 +139,35 @@ class UsagePage extends BaseListPage {
       yAxis: [
         {
           type: "value",
-          name: "Message Count",
+          name: i18next.t("general:Messages"),
           position: "left",
         },
         {
           type: "value",
-          name: "Token Count",
+          name: i18next.t("general:Tokens"),
           position: "right",
         },
         {
           type: "value",
-          name: "Price",
+          name: i18next.t("chat:Price"),
           position: "right",
           offset: 100,
         },
       ],
       series: [
         {
-          name: "Message Count",
+          name: i18next.t("general:Messages"),
           type: "line",
           data: messageCounts,
         },
         {
-          name: "Token Count",
+          name: i18next.t("general:Tokens"),
           type: "line",
           yAxisIndex: 1,
           data: tokenCounts,
         },
         {
-          name: "Price",
+          name: i18next.t("chat:Price"),
           type: "line",
           yAxisIndex: 2,
           data: prices,
@@ -175,9 +176,9 @@ class UsagePage extends BaseListPage {
     };
 
     if (this.props.account.name !== "admin") {
-      rightOption.legend.data = rightOption.legend.data.filter(item => item !== "Price");
-      rightOption.yAxis = rightOption.yAxis.filter(yAxis => yAxis.name !== "Price");
-      rightOption.series = rightOption.series.filter(series => series.name !== "Price");
+      rightOption.legend.data = rightOption.legend.data.filter(item => item !== i18next.t("chat:Price"));
+      rightOption.yAxis = rightOption.yAxis.filter(yAxis => yAxis.name !== i18next.t("chat:Price"));
+      rightOption.series = rightOption.series.filter(series => series.name !== i18next.t("chat:Price"));
     }
 
     return <ReactEcharts option={rightOption} style={{height: "400px", width: "48%", display: "inline-block"}} />;
@@ -199,37 +200,37 @@ class UsagePage extends BaseListPage {
           this.props.account.name !== "admin" ? <Col span={6} /> : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic title="Application" value={this.state.usageMetadata.application} />
+                <Statistic title={i18next.t("task:Application")} value={this.state.usageMetadata.application} />
               </Col>
             </React.Fragment>
           )
         }
         <Col span={3}>
-          <Statistic title="User Count" value={lastUsage.userCount} />
+          <Statistic title={i18next.t("general:Users")} value={lastUsage.userCount} />
         </Col>
         <Col span={3}>
-          <Statistic title="Chat Count" value={lastUsage.chatCount} />
+          <Statistic title={i18next.t("general:Chats")} value={lastUsage.chatCount} />
         </Col>
         <Col span={3}>
-          <Statistic title="Message Count" value={lastUsage.messageCount} />
+          <Statistic title={i18next.t("general:Messages")} value={lastUsage.messageCount} />
         </Col>
         <Col span={3}>
-          <Statistic title="Token Count" value={lastUsage.tokenCount} />
+          <Statistic title={i18next.t("general:Tokens")} value={lastUsage.tokenCount} />
         </Col>
         {
           this.props.account.name !== "admin" ? null : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic title="Price" value={lastUsage.price} prefix={lastUsage.currency && "$"} />
+                <Statistic title={i18next.t("chat:Price")} value={lastUsage.price} prefix={lastUsage.currency && "$"} />
               </Col>
               {
                 Conf.DefaultLanguage === "en" ? null : (
                   <React.Fragment>
                     <Col span={3}>
-                      <Statistic title="CPrice" value={lastUsage.price * 7.2} prefix={"￥"} />
+                      <Statistic title={i18next.t("chat:CPrice")} value={lastUsage.price * 7.2} prefix={"￥"} />
                     </Col>
                     <Col span={3}>
-                      <Statistic title="FPrice" value={lastUsage.price * 7.2 * 5} prefix={"￥"} />
+                      <Statistic title={i18next.t("chat:FPrice")} value={lastUsage.price * 7.2 * 5} prefix={"￥"} />
                     </Col>
                   </React.Fragment>
                 )
