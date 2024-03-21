@@ -17,6 +17,8 @@ package object
 import (
 	"time"
 
+	"github.com/astaxie/beego"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/model"
 )
 
@@ -28,6 +30,11 @@ type Usage struct {
 	TokenCount   int     `json:"tokenCount"`
 	Price        float64 `json:"price"`
 	Currency     string  `json:"currency"`
+}
+
+type UsageMetadata struct {
+	Organization string `json:"organization"`
+	Application  string `json:"application"`
 }
 
 func GetUsages(days int) ([]*Usage, error) {
@@ -166,4 +173,24 @@ func GetUsage(date string) (*Usage, error) {
 		Currency:     currency,
 	}
 	return usage, nil
+}
+
+func GetUsageMetadata() (*UsageMetadata, error) {
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
+	if err != nil {
+		return nil, err
+	}
+
+	casdoorApplication := beego.AppConfig.String("casdoorApplication")
+	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &UsageMetadata{
+		Organization: organization.DisplayName,
+		Application:  application.DisplayName,
+	}
+	return res, nil
 }

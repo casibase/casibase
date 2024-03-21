@@ -28,5 +28,11 @@ func (c *ApiController) GetUsages() {
 		return
 	}
 
-	c.ResponseOk(usages)
+	usageMetadata, err := object.GetUsageMetadata()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(usages, usageMetadata)
 }

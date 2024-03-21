@@ -26,6 +26,7 @@ class UsagePage extends BaseListPage {
     this.state = {
       classes: props,
       usages: null,
+      usageMetadata: null,
     };
   }
 
@@ -39,6 +40,7 @@ class UsagePage extends BaseListPage {
         if (res.status === "ok") {
           this.setState({
             usages: res.data,
+            usageMetadata: res.data2,
           });
         } else {
           Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
@@ -193,7 +195,15 @@ class UsagePage extends BaseListPage {
 
     return (
       <Row gutter={16}>
-        <Col span={1} />
+        {
+          this.props.account.name !== "admin" ? <Col span={6} /> : (
+            <React.Fragment>
+              <Col span={3}>
+                <Statistic title="Application" value={this.state.usageMetadata.application} />
+              </Col>
+            </React.Fragment>
+          )
+        }
         <Col span={3}>
           <Statistic title="User Count" value={lastUsage.userCount} />
         </Col>
@@ -227,7 +237,6 @@ class UsagePage extends BaseListPage {
             </React.Fragment>
           )
         }
-        <Col span={1} />
       </Row>
     );
   }
