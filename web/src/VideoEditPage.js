@@ -40,7 +40,7 @@ class VideoEditPage extends React.Component {
       player: null,
       screen: null,
       videoObj: null,
-      ChatPageObj: null,
+      chatPageObj: null,
       videoData: null,
       segmentEditIndex: -1,
     };
@@ -326,7 +326,7 @@ class VideoEditPage extends React.Component {
     text = text.replaceAll("${topic}", this.state.video.topic);
     text = text.replaceAll("${keywords}", this.state.video.keywords);
     // Setting.showMessage("success", text);
-    this.state.chatPageObj.sendMessage(text, true);
+    this.state.chatPageObj.sendMessage(text, "", true);
   }
 
   renderAiAssistantOptions() {

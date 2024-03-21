@@ -26,8 +26,16 @@ type Task struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName string   `xorm:"varchar(100)" json:"displayName"`
-	Provider    string   `xorm:"varchar(100)" json:"provider"`
+	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+	Provider    string `xorm:"varchar(100)" json:"provider"`
+	Type        string `xorm:"varchar(100)" json:"type"`
+
+	Subject  string `xorm:"varchar(100)" json:"subject"`
+	Topic    string `xorm:"varchar(100)" json:"topic"`
+	Result   string `xorm:"varchar(100)" json:"result"`
+	Activity string `xorm:"varchar(100)" json:"activity"`
+	Grade    string `xorm:"varchar(100)" json:"grade"`
+
 	Application string   `xorm:"varchar(100)" json:"application"`
 	Path        string   `xorm:"varchar(100)" json:"path"`
 	Text        string   `xorm:"mediumtext" json:"text"`

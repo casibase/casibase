@@ -53,7 +53,7 @@ class TaskListPage extends React.Component {
       name: `task_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Task - ${randomName}`,
-      provider: "provider_openai",
+      provider: "provider_model_azure_gpt4",
       application: "Docs-Polish",
       path: "F:/github_repos/casdoor-website",
       text: "",
