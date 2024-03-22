@@ -25,6 +25,8 @@ func GetSplitProvider(typ string) (SplitProvider, error) {
 		p, err = NewDefaultSplitProvider()
 	} else if typ == "QA" {
 		p, err = NewQaSplitProvider()
+	} else if typ == "Basic" {
+		p, err = NewBasicSplitProvider()
 	} else {
 		p, err = NewDefaultSplitProvider()
 	}

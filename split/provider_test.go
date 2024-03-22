@@ -82,3 +82,33 @@ func TestSplit2(t *testing.T) {
 		fmt.Printf("[%d] %s\n\n", i, s)
 	}
 }
+
+func TestSplit3(t *testing.T) {
+	object.InitConfig()
+
+	p, err := split.GetSplitProvider("Default")
+	if err != nil {
+		panic(err)
+	}
+
+	storageProvider, err := object.GetProvider("admin/storage-built")
+	if err != nil {
+		panic(err)
+	}
+
+	path := filepath.Join(storageProvider.ClientId, "myfile.docx")
+
+	text, err := txt.GetParsedTextFromUrl(path, ".docx")
+	if err != nil {
+		panic(err)
+	}
+
+	textSections, err := p.SplitText(text)
+	if err != nil {
+		panic(err)
+	}
+
+	for i, s := range textSections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+}

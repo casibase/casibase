@@ -1,4 +1,4 @@
-// Copyright 2023 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 package split
 
 import (
+	"regexp"
 	"strings"
 
 	"github.com/casibase/casibase/model"
@@ -28,36 +29,105 @@ func NewDefaultSplitProvider() (*DefaultSplitProvider, error) {
 
 func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
 	const maxLength = 210
-	var res []string
-	var temp string
+	var sections []string
+	var currentSection strings.Builder
+	var codeBlock strings.Builder
+	inCodeBlock := false
+	codeBlockLines := 0
 
 	lines := strings.Split(text, "\n")
+	emptyLineCount := 0
+
 	for _, line := range lines {
-		tokenSize, err := model.GetTokenSize("gpt-3.5-turbo", temp+line)
+		line = strings.TrimSpace(line)
+
+		if line == "" {
+			emptyLineCount++
+			if emptyLineCount >= 4 && currentSection.Len() > 0 {
+				sections = append(sections, currentSection.String())
+				currentSection.Reset()
+			}
+			continue
+		} else {
+			emptyLineCount = 0
+		}
+
+		if line == "```" {
+			if inCodeBlock {
+				inCodeBlock = false
+				if codeBlockLines >= 5 {
+					if currentSection.Len() > 0 {
+						sections = append(sections, currentSection.String())
+						currentSection.Reset()
+					}
+					sections = append(sections, codeBlock.String())
+				} else {
+					currentSection.WriteString(codeBlock.String())
+				}
+				codeBlock.Reset()
+				codeBlockLines = 0
+			} else {
+				inCodeBlock = true
+			}
+			continue
+		}
+
+		if inCodeBlock {
+			codeBlock.WriteString(line + "\n")
+			codeBlockLines++
+			if codeBlockLines >= 20 {
+				if currentSection.Len() > 0 {
+					sections = append(sections, currentSection.String())
+					currentSection.Reset()
+				}
+				sections = append(sections, codeBlock.String())
+				codeBlock.Reset()
+				codeBlockLines = 0
+			}
+			continue
+		}
+
+		if isSectionSeparator(line) {
+			if currentSection.Len() > 0 {
+				sections = append(sections, currentSection.String())
+				currentSection.Reset()
+			}
+			currentSection.WriteString(line + "\n")
+			continue
+		}
+
+		tokenSize, err := model.GetTokenSize("gpt-3.5-turbo", currentSection.String()+line)
 		if err != nil {
 			return nil, err
 		}
 
 		if tokenSize <= maxLength {
-			if temp != "" {
-				temp += "\n"
+			if currentSection.Len() > 0 {
+				currentSection.WriteString("\n")
 			}
-			temp += line
+			currentSection.WriteString(line)
 		} else {
-			if temp != "" {
-				res = append(res, temp)
+			if currentSection.Len() > 0 {
+				sections = append(sections, currentSection.String())
+				currentSection.Reset()
 			}
-			temp = line
+			currentSection.WriteString(line)
 		}
 	}
 
-	if temp != "" {
-		if len(temp) < 300 && len(res) > 0 {
-			res[len(res)-1] += temp
-		} else {
-			res = append(res, temp)
-		}
+	if currentSection.Len() > 0 {
+		sections = append(sections, currentSection.String())
 	}
 
-	return res, nil
+	return sections, nil
+}
+
+func isSectionSeparator(line string) bool {
+	// Check for chapter or section titles
+	if strings.HasPrefix(line, "Chapter") || strings.HasPrefix(line, "Section") {
+		return true
+	}
+	// Check for numeric bullet points (e.g., "1. ", "2. ")
+	matched, _ := regexp.MatchString(`^\d+\.\s`, line)
+	return matched
 }

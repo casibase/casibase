@@ -120,7 +120,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			return false, err
 		}
 
-		splitProviderType := "Default"
+		splitProviderType := splitProviderName
+		if splitProviderType == "" {
+			splitProviderType = "Default"
+		}
+
 		if strings.HasPrefix(file.Key, "QA") && fileExt == ".docx" {
 			splitProviderType = "QA"
 		}
