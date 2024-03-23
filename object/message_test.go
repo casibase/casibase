@@ -26,7 +26,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-func TestUpdateMessages(t *testing.T) {
+func TestUpdateMessagePrices(t *testing.T) {
 	InitConfig()
 
 	store, err := GetDefaultStore("admin")
@@ -127,7 +127,7 @@ func TestUpdateMessages(t *testing.T) {
 }
 
 func TestUpdateMessagesAndChats(t *testing.T) {
-	TestUpdateMessages(t)
-	TestUpdateMessageCounts(t)
-	TestUpdateMessageTokens(t)
+	TestUpdateMessagePrices(t)
+	TestUpdateChatCounts(t)
+	TestUpdateChatPrices(t)
 }

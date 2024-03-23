@@ -26,7 +26,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-func TestUpdateMessageCounts(t *testing.T) {
+func TestUpdateChatCounts(t *testing.T) {
 	InitConfig()
 
 	chats, err := GetGlobalChats()
@@ -60,7 +60,7 @@ func TestUpdateMessageCounts(t *testing.T) {
 	}
 }
 
-func TestUpdateMessageTokens(t *testing.T) {
+func TestUpdateChatPrices(t *testing.T) {
 	InitConfig()
 
 	chats, err := GetGlobalChats()
