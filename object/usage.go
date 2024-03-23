@@ -93,7 +93,6 @@ func GetUsages(days int) ([]*Usage, error) {
 			currentUsage.MessageCount++
 			currentUsage.TokenCount += message.TokenCount
 			currentUsage.Price += message.Price
-			currentUsage.Price = model.RefinePrice(currentUsage.Price)
 			currentUsage.Currency = message.Currency
 		}
 	}
@@ -108,8 +107,11 @@ func GetUsages(days int) ([]*Usage, error) {
 		currentUsage.MessageCount = previousUsage.MessageCount
 		currentUsage.TokenCount = previousUsage.TokenCount
 		currentUsage.Price = previousUsage.Price
-		currentUsage.Price = model.RefinePrice(currentUsage.Price)
 		currentUsage.Currency = previousUsage.Currency
+	}
+
+	for _, usage := range usages {
+		usage.Price = model.RefinePrice(usage.Price)
 	}
 
 	return usages, nil
