@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Col, Row, Select, Statistic} from "antd";
+import {Button, Col, Row, Select, Statistic} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
@@ -251,18 +251,21 @@ class UsagePage extends BaseListPage {
     }
 
     return (
-      <Select virtual={false} listHeight={320} style={{width: "280px", marginBottom: "10px", float: "right"}} value={this.state.endpoint} onChange={(value => {
-        this.setState({
-          endpoint: value,
-        });
+      <div style={{marginBottom: "10px", float: "right"}}>
+        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}} value={this.state.endpoint} onChange={(value => {
+          this.setState({
+            endpoint: value,
+          });
 
-        const serverUrl = `https://${value}`;
-        this.getUsages(serverUrl);
-      })}>
-        {
-          Conf.UsageEndpoints.map((item, index) => <Option key={index} value={item.id}>{`${item.name} (${item.id})`}</Option>)
-        }
-      </Select>
+          const serverUrl = `https://${value}`;
+          this.getUsages(serverUrl);
+        })}>
+          {
+            Conf.UsageEndpoints.map((item, index) => <Option key={index} value={item.id}>{`${item.name} (${item.id})`}</Option>)
+          }
+        </Select>
+        <Button disabled={window.location.host === "this.state.endpoint"} type="primary" onClick={() => Setting.openLink(`https://${this.state.endpoint}`)}>Go</Button>
+      </div>
     );
   }
 
