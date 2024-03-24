@@ -43,3 +43,20 @@ func TestGetUsages(t *testing.T) {
 		fmt.Printf("%+v\n", usage)
 	}
 }
+
+func TestGetRangeUsages(t *testing.T) {
+	InitConfig()
+
+	//usages, err := GetRangeUsages("Month", 6)
+	usages, err := GetRangeUsages("Week", 12)
+	//usages, err := GetRangeUsages("Day", 30)
+	//usages, err := GetRangeUsages("Hour", 168)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("GetRangeUsages results:")
+	for _, usage := range usages {
+		fmt.Printf("%+v\n", usage)
+	}
+}
