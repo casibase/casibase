@@ -352,7 +352,7 @@ class UsagePage extends BaseListPage {
     }
   }
 
-  generateChartOptions(xData, leftYData, rightYData, leftYName, rightYName) {
+  generateChartOptions(xData, leftYData, rightYData, leftYName, rightYName, chartType = "line") {
     return {
       tooltip: {
         trigger: "axis",
@@ -390,13 +390,13 @@ class UsagePage extends BaseListPage {
       series: [
         {
           name: leftYName,
-          type: "line",
+          type: chartType,
           yAxisIndex: 0,
           data: leftYData,
         },
         {
           name: rightYName,
-          type: "line",
+          type: chartType,
           yAxisIndex: 1,
           data: rightYData,
         },
@@ -410,7 +410,7 @@ class UsagePage extends BaseListPage {
     const userCountData = usages.map(usage => usage.userCount);
     const chatCountData = usages.map(usage => usage.chatCount);
 
-    const options = this.generateChartOptions(xData, userCountData, chatCountData, "User", "Chat");
+    const options = this.generateChartOptions(xData, userCountData, chatCountData, "User", "Chat", "bar");
 
     return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
   }
@@ -421,7 +421,7 @@ class UsagePage extends BaseListPage {
     const messageCountData = usages.map(usage => usage.messageCount);
     const tokenCountData = usages.map(usage => usage.tokenCount);
 
-    const options = this.generateChartOptions(xData, messageCountData, tokenCountData, "Message", "Token");
+    const options = this.generateChartOptions(xData, messageCountData, tokenCountData, "Message", "Token", "bar");
 
     return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
   }
