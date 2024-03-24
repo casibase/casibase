@@ -363,17 +363,32 @@ class UsagePage extends BaseListPage {
   }
 
   formatDate(date, rangeType) {
+    const dateTime = new Date(date);
+
     switch (rangeType) {
-    case "Hour":
+    case "Hour": {
+      return `${date}:00`;
+    }
+    case "Day": {
       return date;
-    case "Day":
-      return date;
-    case "Week":
-      return date;
-    case "Month":
+    }
+    case "Week": {
+      const startOfWeek = dateTime;
+      const endOfWeek = new Date(startOfWeek);
+      endOfWeek.setDate(startOfWeek.getDate() + 6); // Add 6 days to get to the end of the week
+
+      const startMonth = String(startOfWeek.getMonth() + 1).padStart(2, "0");
+      const startDay = String(startOfWeek.getDate()).padStart(2, "0");
+      const endMonth = String(endOfWeek.getMonth() + 1).padStart(2, "0");
+      const endDay = String(endOfWeek.getDate()).padStart(2, "0");
+      return `${startMonth}-${startDay} ~ ${endMonth}-${endDay}`;
+    }
+    case "Month": {
       return date.slice(0, 7);
-    default:
+    }
+    default: {
       return date;
+    }
     }
   }
 
