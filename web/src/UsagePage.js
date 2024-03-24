@@ -251,7 +251,7 @@ class UsagePage extends BaseListPage {
     }
 
     return (
-      <Select virtual={false} style={{width: "280px", marginBottom: "10px", float: "right"}} value={this.state.endpoint} onChange={(value => {
+      <Select virtual={false} listHeight={320} style={{width: "280px", marginBottom: "10px", float: "right"}} value={this.state.endpoint} onChange={(value => {
         this.setState({
           endpoint: value,
         });
