@@ -126,6 +126,44 @@ func TestUpdateMessagePrices(t *testing.T) {
 	}
 }
 
+func TestUpdateMessagePricesFromTokens(t *testing.T) {
+	InitConfig()
+
+	allMessages, err := GetGlobalMessages()
+	if err != nil {
+		panic(err)
+	}
+
+	modelSubType := "gpt-4-vision-preview"
+
+	for i, message := range allMessages {
+		if message.TokenCount == 0 || message.Price != 0 {
+			continue
+		}
+
+		modelResult := &model.ModelResult{}
+		modelResult.PromptTokenCount = 0
+		modelResult.ResponseTokenCount = message.TokenCount
+		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+
+		p, err := model.NewLocalModelProvider("", modelSubType, "", 0, 0, 0, 0, "")
+		err = p.CalculatePrice(modelResult)
+		if err != nil {
+			panic(err)
+		}
+
+		message.Price = modelResult.TotalPrice
+		message.Currency = modelResult.Currency
+
+		fmt.Printf("[%d/%d] message: %s, user: %s, author: %s, tokenCount: %d, price: %f\n", i+1, len(allMessages), message.Name, message.User, message.Author, message.TokenCount, message.Price)
+
+		_, err = UpdateMessage(message.GetId(), message)
+		if err != nil {
+			panic(err)
+		}
+	}
+}
+
 func TestUpdateMessagesAndChats(t *testing.T) {
 	TestUpdateMessagePrices(t)
 	TestUpdateChatCounts(t)
