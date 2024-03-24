@@ -82,6 +82,7 @@ class UsagePage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
+            rangeType: rangeType,
             rangeUsages: res.data,
             usageMetadata: res.data2,
           });
@@ -319,6 +320,7 @@ class UsagePage extends BaseListPage {
         <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
           const rangeType = e.target.value;
           this.setState({
+            rangeUsages: [],
             rangeType: rangeType,
           });
 
