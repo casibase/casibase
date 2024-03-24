@@ -62,8 +62,23 @@ class UsagePage extends BaseListPage {
       });
   }
 
+  getCountFromRangeType(rangeType) {
+    if (rangeType === "Hour") {
+      return 72;
+    } else if (rangeType === "Day") {
+      return 30;
+    } else if (rangeType === "Week") {
+      return 16;
+    } else if (rangeType === "Month") {
+      return 12;
+    } else {
+      return 30;
+    }
+  }
+
   getRangeUsages(serverUrl, rangeType) {
-    UsageBackend.getRangeUsages(serverUrl, rangeType, 30)
+    const count = this.getCountFromRangeType(rangeType);
+    UsageBackend.getRangeUsages(serverUrl, rangeType, count)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -298,11 +313,7 @@ class UsagePage extends BaseListPage {
     }
   }
 
-  renderSelect() {
-    if (Conf.UsageEndpoints.length === 0 || this.props.account.name !== "admin") {
-      return null;
-    }
-
+  renderRadio() {
     return (
       <div style={{marginBottom: "10px", float: "right"}}>
         <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
@@ -319,21 +330,35 @@ class UsagePage extends BaseListPage {
           <Radio.Button value={"Week"}>{i18next.t("usage:Week")}</Radio.Button>
           <Radio.Button value={"Month"}>{i18next.t("usage:Month")}</Radio.Button>
         </Radio.Group>
-        <br />
-        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}} value={this.state.endpoint} onChange={(value => {
-          const endpoint = value;
-          this.setState({
-            endpoint: endpoint,
-          });
+        {this.renderSelect()}
+      </div>
+    );
+  }
 
-          this.getUsagesForAllCases(endpoint, "");
-        })}>
+  renderSelect() {
+    if (Conf.UsageEndpoints.length === 0 || this.props.account.name !== "admin") {
+      return null;
+    }
+
+    return (
+      <React.Fragment>
+        <br />
+        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}}
+          value={this.state.endpoint} onChange={(value => {
+            const endpoint = value;
+            this.setState({
+              endpoint: endpoint,
+            });
+
+            this.getUsagesForAllCases(endpoint, "");
+          })}>
           {
-            Conf.UsageEndpoints.map((item, index) => <Option key={index} value={item.id}>{`${item.name} (${item.id})`}</Option>)
+            Conf.UsageEndpoints.map((item, index) => <Option key={index}
+              value={item.id}>{`${item.name} (${item.id})`}</Option>)
           }
         </Select>
         <Button disabled={this.getHost() === this.state.endpoint} type="primary" onClick={() => Setting.openLink(`https://${this.state.endpoint}`)}>{i18next.t("usage:Go")}</Button>
-      </div>
+      </React.Fragment>
     );
   }
 
@@ -449,7 +474,7 @@ class UsagePage extends BaseListPage {
           type: "value",
           name: i18next.t("general:Tokens"),
           position: "right",
-          offset: 0,
+          offset: (this.props.account.name !== "admin") ? undefined : 0,
         },
         {
           type: "value",
@@ -478,6 +503,12 @@ class UsagePage extends BaseListPage {
         },
       ],
     };
+
+    if (this.props.account.name !== "admin") {
+      options.legend.data = options.legend.data.filter(item => item !== i18next.t("chat:Price"));
+      options.yAxis = options.yAxis.filter(yAxis => yAxis.name !== i18next.t("chat:Price"));
+      options.series = options.series.filter(series => series.name !== i18next.t("chat:Price"));
+    }
 
     return <ReactEcharts option={options} style={{height: "400px", width: "48%", display: "inline-block"}} />;
   }
@@ -511,7 +542,7 @@ class UsagePage extends BaseListPage {
   render() {
     return (
       <div>
-        {this.renderSelect()}
+        {this.renderRadio()}
         {this.renderStatistic(this.state.usages)}
         <br />
         <br />

@@ -188,6 +188,14 @@
     "Question": "Question",
     "Text": "Text"
   },
+  "usage": {
+    "All": "All",
+    "Day": "Day",
+    "Go": "Go",
+    "Hour": "Hour",
+    "Month": "Month",
+    "Week": "Week"
+  },
   "vector": {
     "Data": "Data",
     "Dimension": "Dimension",

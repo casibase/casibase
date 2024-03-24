@@ -188,6 +188,14 @@
     "Question": "问题",
     "Text": "文本"
   },
+  "usage": {
+    "All": "总计",
+    "Day": "每日",
+    "Go": "跳转",
+    "Hour": "每小时",
+    "Month": "每月",
+    "Week": "每周"
+  },
   "vector": {
     "Data": "数据",
     "Dimension": "维度",
