@@ -27,3 +27,17 @@ export function getUsages(serverUrl, days) {
     },
   }).then(res => res.json());
 }
+
+export function getRangeUsages(serverUrl, rangeType, count) {
+  if (serverUrl === "") {
+    serverUrl = Setting.ServerUrl;
+  }
+
+  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}

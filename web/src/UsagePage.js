@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Row, Select, Statistic} from "antd";
+import {Button, Col, Radio, Row, Select, Statistic} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
@@ -29,13 +29,23 @@ class UsagePage extends BaseListPage {
     this.state = {
       classes: props,
       usages: null,
+      rangeUsages: null,
       usageMetadata: null,
-      endpoint: window.location.host,
+      rangeType: "All",
+      endpoint: this.getHost(),
     };
   }
 
   UNSAFE_componentWillMount() {
     this.getUsages("");
+  }
+
+  getHost() {
+    let res = window.location.host;
+    if (res === "localhost:13001") {
+      res = "localhost:14000";
+    }
+    return res;
   }
 
   getUsages(serverUrl) {
@@ -44,6 +54,20 @@ class UsagePage extends BaseListPage {
         if (res.status === "ok") {
           this.setState({
             usages: res.data,
+            usageMetadata: res.data2,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
+        }
+      });
+  }
+
+  getRangeUsages(serverUrl, rangeType) {
+    UsageBackend.getRangeUsages(serverUrl, rangeType, 30)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            rangeUsages: res.data,
             usageMetadata: res.data2,
           });
         } else {
@@ -188,6 +212,10 @@ class UsagePage extends BaseListPage {
   }
 
   renderStatistic(usages) {
+    if (this.state.usages === null) {
+      return null;
+    }
+
     const lastUsage = usages && usages.length > 0 ? usages[usages.length - 1] : {
       userCount: 0,
       chatCount: 0,
@@ -245,6 +273,31 @@ class UsagePage extends BaseListPage {
     );
   }
 
+  getServerUrlFromEndpoint(endpoint) {
+    if (endpoint === "localhost:14000") {
+      return `http://${endpoint}`;
+    } else {
+      return `https://${endpoint}`;
+    }
+  }
+
+  getUsagesForAllCases(endpoint, rangeType) {
+    if (endpoint === "") {
+      endpoint = this.state.endpoint;
+    }
+    const serverUrl = this.getServerUrlFromEndpoint(endpoint);
+
+    if (rangeType === "") {
+      rangeType = this.state.rangeType;
+    }
+
+    if (rangeType === "All") {
+      this.getUsages(serverUrl);
+    } else {
+      this.getRangeUsages(serverUrl, rangeType);
+    }
+  }
+
   renderSelect() {
     if (Conf.UsageEndpoints.length === 0 || this.props.account.name !== "admin") {
       return null;
@@ -252,36 +305,161 @@ class UsagePage extends BaseListPage {
 
     return (
       <div style={{marginBottom: "10px", float: "right"}}>
-        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}} value={this.state.endpoint} onChange={(value => {
+        <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
+          const rangeType = e.target.value;
           this.setState({
-            endpoint: value,
+            rangeType: rangeType,
           });
 
-          const serverUrl = `https://${value}`;
-          this.getUsages(serverUrl);
+          this.getUsagesForAllCases("", rangeType);
+        }}>
+          <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
+          <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
+          <Radio.Button value={"Day"}>{i18next.t("usage:Day")}</Radio.Button>
+          <Radio.Button value={"Week"}>{i18next.t("usage:Week")}</Radio.Button>
+          <Radio.Button value={"Month"}>{i18next.t("usage:Month")}</Radio.Button>
+        </Radio.Group>
+        <br />
+        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}} value={this.state.endpoint} onChange={(value => {
+          const endpoint = value;
+          this.setState({
+            endpoint: endpoint,
+          });
+
+          this.getUsagesForAllCases(endpoint, "");
         })}>
           {
             Conf.UsageEndpoints.map((item, index) => <Option key={index} value={item.id}>{`${item.name} (${item.id})`}</Option>)
           }
         </Select>
-        <Button disabled={window.location.host === "this.state.endpoint"} type="primary" onClick={() => Setting.openLink(`https://${this.state.endpoint}`)}>Go</Button>
+        <Button disabled={this.getHost() === this.state.endpoint} type="primary" onClick={() => Setting.openLink(`https://${this.state.endpoint}`)}>{i18next.t("usage:Go")}</Button>
       </div>
     );
   }
 
-  render() {
-    if (this.state.usages === null) {
-      return null;
+  formatDate(date, rangeType) {
+    switch (rangeType) {
+    case "Hour":
+      return date;
+    case "Day":
+      return date;
+    case "Week":
+      return date;
+    case "Month":
+      return date.slice(0, 7);
+    default:
+      return date;
     }
+  }
 
+  generateChartOptions(xData, leftYData, rightYData, leftYName, rightYName) {
+    return {
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+          crossStyle: {
+            color: "#999",
+          },
+        },
+      },
+      legend: {
+        data: [leftYName, rightYName],
+      },
+      xAxis: [
+        {
+          type: "category",
+          data: xData,
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "value",
+          name: leftYName,
+          position: "left",
+        },
+        {
+          type: "value",
+          name: rightYName,
+          position: "right",
+        },
+      ],
+      series: [
+        {
+          name: leftYName,
+          type: "line",
+          yAxisIndex: 0,
+          data: leftYData,
+        },
+        {
+          name: rightYName,
+          type: "line",
+          yAxisIndex: 1,
+          data: rightYData,
+        },
+      ],
+    };
+  }
+
+  renderLeftRangeChart(usages) {
+    const rangeType = this.state.rangeType;
+    const xData = usages.map(usage => this.formatDate(usage.date, rangeType));
+    const userCountData = usages.map(usage => usage.userCount);
+    const chatCountData = usages.map(usage => usage.chatCount);
+
+    const options = this.generateChartOptions(xData, userCountData, chatCountData, "User", "Chat");
+
+    return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
+  }
+
+  renderRightRangeChart(usages) {
+    const rangeType = this.state.rangeType;
+    const xData = usages.map(usage => this.formatDate(usage.date, rangeType));
+    const messageCountData = usages.map(usage => usage.messageCount);
+    const tokenCountData = usages.map(usage => usage.tokenCount);
+
+    const options = this.generateChartOptions(xData, messageCountData, tokenCountData, "Message", "Token");
+
+    return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
+  }
+
+  renderChart() {
+    if (this.state.rangeType === "All") {
+      if (this.state.usages === null) {
+        return null;
+      }
+
+      return (
+        <React.Fragment>
+          {this.renderLeftChart(this.state.usages)}
+          {this.renderRightChart(this.state.usages)}
+        </React.Fragment>
+      );
+    } else {
+      if (this.state.rangeUsages === null) {
+        return null;
+      }
+
+      return (
+        <React.Fragment>
+          {this.renderLeftRangeChart(this.state.rangeUsages)}
+          {this.renderRightRangeChart(this.state.rangeUsages)}
+        </React.Fragment>
+      );
+    }
+  }
+
+  render() {
     return (
       <div>
         {this.renderSelect()}
         {this.renderStatistic(this.state.usages)}
         <br />
         <br />
-        {this.renderLeftChart(this.state.usages)}
-        {this.renderRightChart(this.state.usages)}
+        {this.renderChart()}
       </div>
     );
   }

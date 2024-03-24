@@ -36,3 +36,22 @@ func (c *ApiController) GetUsages() {
 
 	c.ResponseOk(usages, usageMetadata)
 }
+
+func (c *ApiController) GetRangeUsages() {
+	rangeType := c.Input().Get("rangeType")
+	count := util.ParseInt(c.Input().Get("count"))
+
+	usages, err := object.GetRangeUsages(rangeType, count)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	usageMetadata, err := object.GetUsageMetadata()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(usages, usageMetadata)
+}
