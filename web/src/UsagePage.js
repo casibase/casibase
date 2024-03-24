@@ -352,8 +352,13 @@ class UsagePage extends BaseListPage {
     }
   }
 
-  generateChartOptions(xData, leftYData, rightYData, leftYName, rightYName, chartType = "line") {
-    return {
+  renderLeftRangeChart(usages) {
+    const rangeType = this.state.rangeType;
+    const xData = usages.map(usage => this.formatDate(usage.date, rangeType));
+    const userCountData = usages.map(usage => usage.userCount);
+    const chatCountData = usages.map(usage => usage.chatCount);
+
+    const options = {
       tooltip: {
         trigger: "axis",
         axisPointer: {
@@ -364,7 +369,7 @@ class UsagePage extends BaseListPage {
         },
       },
       legend: {
-        data: [leftYName, rightYName],
+        data: [i18next.t("general:Users"), i18next.t("general:Chats")],
       },
       xAxis: [
         {
@@ -378,41 +383,31 @@ class UsagePage extends BaseListPage {
       yAxis: [
         {
           type: "value",
-          name: leftYName,
+          name: i18next.t("general:Users"),
           position: "left",
         },
         {
           type: "value",
-          name: rightYName,
+          name: i18next.t("general:Chats"),
           position: "right",
         },
       ],
       series: [
         {
-          name: leftYName,
-          type: chartType,
-          yAxisIndex: 0,
-          data: leftYData,
+          name: i18next.t("general:Users"),
+          type: "bar",
+          data: userCountData,
         },
         {
-          name: rightYName,
-          type: chartType,
+          name: i18next.t("general:Chats"),
+          type: "bar",
           yAxisIndex: 1,
-          data: rightYData,
+          data: chatCountData,
         },
       ],
     };
-  }
 
-  renderLeftRangeChart(usages) {
-    const rangeType = this.state.rangeType;
-    const xData = usages.map(usage => this.formatDate(usage.date, rangeType));
-    const userCountData = usages.map(usage => usage.userCount);
-    const chatCountData = usages.map(usage => usage.chatCount);
-
-    const options = this.generateChartOptions(xData, userCountData, chatCountData, "User", "Chat", "bar");
-
-    return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
+    return <ReactEcharts option={options} style={{height: "400px", width: "48%", display: "inline-block"}} />;
   }
 
   renderRightRangeChart(usages) {
@@ -420,10 +415,71 @@ class UsagePage extends BaseListPage {
     const xData = usages.map(usage => this.formatDate(usage.date, rangeType));
     const messageCountData = usages.map(usage => usage.messageCount);
     const tokenCountData = usages.map(usage => usage.tokenCount);
+    const priceData = usages.map(usage => usage.price);
 
-    const options = this.generateChartOptions(xData, messageCountData, tokenCountData, "Message", "Token", "bar");
+    const options = {
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "cross",
+          crossStyle: {
+            color: "#999",
+          },
+        },
+      },
+      legend: {
+        data: [i18next.t("general:Messages"), i18next.t("general:Tokens"), i18next.t("chat:Price")],
+      },
+      xAxis: [
+        {
+          type: "category",
+          data: xData,
+          axisPointer: {
+            type: "shadow",
+          },
+        },
+      ],
+      yAxis: [
+        {
+          type: "value",
+          name: i18next.t("general:Messages"),
+          position: "left",
+        },
+        {
+          type: "value",
+          name: i18next.t("general:Tokens"),
+          position: "right",
+          offset: 0,
+        },
+        {
+          type: "value",
+          name: i18next.t("chat:Price"),
+          position: "right",
+          offset: 50,
+        },
+      ],
+      series: [
+        {
+          name: i18next.t("general:Messages"),
+          type: "bar",
+          data: messageCountData,
+        },
+        {
+          name: i18next.t("general:Tokens"),
+          type: "bar",
+          yAxisIndex: 1,
+          data: tokenCountData,
+        },
+        {
+          name: i18next.t("chat:Price"),
+          type: "bar",
+          yAxisIndex: 2,
+          data: priceData,
+        },
+      ],
+    };
 
-    return <ReactEcharts option={options} style={{height: "400px", width: "100%"}} />;
+    return <ReactEcharts option={options} style={{height: "400px", width: "48%", display: "inline-block"}} />;
   }
 
   renderChart() {
