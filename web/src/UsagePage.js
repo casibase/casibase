@@ -29,7 +29,6 @@ class UsagePage extends BaseListPage {
     this.state = {
       classes: props,
       usages: null,
-      rangeUsages: null,
       usageMetadata: null,
       rangeType: "All",
       endpoint: this.getHost(),
@@ -38,6 +37,7 @@ class UsagePage extends BaseListPage {
 
   UNSAFE_componentWillMount() {
     this.getUsages("");
+    this.getRangeUsagesAll("");
   }
 
   getHost() {
@@ -76,16 +76,21 @@ class UsagePage extends BaseListPage {
     }
   }
 
+  getRangeUsagesAll(serverUrl) {
+    this.getRangeUsages(serverUrl, "Hour");
+    this.getRangeUsages(serverUrl, "Day");
+    this.getRangeUsages(serverUrl, "Week");
+    this.getRangeUsages(serverUrl, "Month");
+  }
+
   getRangeUsages(serverUrl, rangeType) {
     const count = this.getCountFromRangeType(rangeType);
     UsageBackend.getRangeUsages(serverUrl, rangeType, count)
       .then((res) => {
         if (res.status === "ok") {
-          this.setState({
-            rangeType: rangeType,
-            rangeUsages: res.data,
-            usageMetadata: res.data2,
-          });
+          const state = {};
+          state[`rangeUsages${rangeType}`] = res.data;
+          this.setState(state);
         } else {
           Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
         }
@@ -310,7 +315,7 @@ class UsagePage extends BaseListPage {
     if (rangeType === "All") {
       this.getUsages(serverUrl);
     } else {
-      this.getRangeUsages(serverUrl, rangeType);
+      this.getRangeUsagesAll(serverUrl);
     }
   }
 
@@ -320,11 +325,8 @@ class UsagePage extends BaseListPage {
         <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
           const rangeType = e.target.value;
           this.setState({
-            rangeUsages: [],
             rangeType: rangeType,
           });
-
-          this.getUsagesForAllCases("", rangeType);
         }}>
           <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
           <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
@@ -491,13 +493,12 @@ class UsagePage extends BaseListPage {
           type: "value",
           name: i18next.t("general:Tokens"),
           position: "right",
-          offset: (this.props.account.name !== "admin") ? undefined : 0,
         },
         {
           type: "value",
           name: i18next.t("chat:Price"),
           position: "right",
-          offset: 50,
+          offset: 100,
         },
       ],
       series: [
@@ -543,14 +544,17 @@ class UsagePage extends BaseListPage {
         </React.Fragment>
       );
     } else {
-      if (this.state.rangeUsages === null) {
+      const fieldName = `rangeUsages${this.state.rangeType}`;
+      const rangeUsages = this.state[fieldName];
+
+      if (rangeUsages === null) {
         return null;
       }
 
       return (
         <React.Fragment>
-          {this.renderLeftRangeChart(this.state.rangeUsages)}
-          {this.renderRightRangeChart(this.state.rangeUsages)}
+          {this.renderLeftRangeChart(rangeUsages)}
+          {this.renderRightRangeChart(rangeUsages)}
         </React.Fragment>
       );
     }
