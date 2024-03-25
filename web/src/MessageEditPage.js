@@ -157,18 +157,21 @@ class MessageEditPage extends React.Component {
             {i18next.t("message:Chat")}:
           </Col>
           <Col span={22}>
-            <Select
-              virtual={false}
-              style={{width: "100%"}}
-              value={this.state.message.chat}
-              onChange={(value) => {
-                this.updateMessageField("chat", value);
-                this.getChat(value);
-              }}
-              options={this.state.chats.map((chat) =>
-                Setting.getOption(chat.name, chat.name)
-              )}
-            />
+            <Button onClick={() => this.props.history.push(`/chats/${this.state.message.chat}`)} >
+              {this.state.message.chat}
+            </Button>
+            {/* <Select*/}
+            {/*  virtual={false}*/}
+            {/*  style={{width: "100%"}}*/}
+            {/*  value={this.state.message.chat}*/}
+            {/*  onChange={(value) => {*/}
+            {/*    this.updateMessageField("chat", value);*/}
+            {/*    this.getChat(value);*/}
+            {/*  }}*/}
+            {/*  options={this.state.chats.map((chat) =>*/}
+            {/*    Setting.getOption(chat.name, chat.name)*/}
+            {/*  )}*/}
+            {/* />*/}
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}}>
