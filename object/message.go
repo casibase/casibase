@@ -42,6 +42,7 @@ type Message struct {
 	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
 	Author       string        `xorm:"varchar(100)" json:"author"`
 	Text         string        `xorm:"mediumtext" json:"text"`
+	ErrorText    string        `xorm:"mediumtext" json:"errorText"`
 	FileName     string        `xorm:"varchar(100)" json:"fileName"`
 	Comment      string        `xorm:"mediumtext" json:"comment"`
 	TokenCount   int           `json:"tokenCount"`

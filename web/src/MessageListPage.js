@@ -240,6 +240,18 @@ class MessageListPage extends React.Component {
         },
       },
       {
+        title: i18next.t("message:Error text"),
+        dataIndex: "errorText",
+        key: "errorText",
+        width: "200px",
+        sorter: (a, b) => a.errorText.localeCompare(b.errorText),
+        render: (text, record, index) => {
+          return (
+            <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
+      },
+      {
         title: i18next.t("message:Comment"),
         dataIndex: "comment",
         key: "comment",

@@ -31,44 +31,44 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message, err := object.GetMessage(id)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
 	if message == nil {
-		c.ResponseErrorStream(fmt.Sprintf("The message: %s is not found", id))
+		c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", id))
 		return
 	}
 
 	if message.Author != "AI" || message.ReplyTo == "" || message.Text != "" {
-		c.ResponseErrorStream("The message is invalid")
+		c.ResponseErrorStream(message, "The message is invalid")
 		return
 	}
 
 	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
 	chat, err := object.GetChat(chatId)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
 	//if chat == nil || chat.Organization != message.Organization {
-	//	c.ResponseErrorStream(fmt.Sprintf("The chat: %s is not found", chatId))
+	//	c.ResponseErrorStream(message, fmt.Sprintf("The chat: %s is not found", chatId))
 	//	return
 	//}
 
 	if chat.Type != "AI" {
-		c.ResponseErrorStream("The chat type must be \"AI\"")
+		c.ResponseErrorStream(message, "The chat type must be \"AI\"")
 		return
 	}
 
 	store, err := object.GetDefaultStore("admin")
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 	if store == nil {
-		c.ResponseErrorStream(fmt.Sprintf("The default store is not found"))
+		c.ResponseErrorStream(message, fmt.Sprintf("The default store is not found"))
 		return
 	}
 
@@ -77,11 +77,11 @@ func (c *ApiController) GetMessageAnswer() {
 	if message.ReplyTo != "Welcome" {
 		questionMessage, err = object.GetMessage(util.GetId("admin", message.ReplyTo))
 		if err != nil {
-			c.ResponseErrorStream(err.Error())
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 		if questionMessage == nil {
-			c.ResponseErrorStream(fmt.Sprintf("The message: %s is not found", id))
+			c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", id))
 			return
 		}
 
@@ -89,7 +89,7 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	if question == "" {
-		c.ResponseErrorStream(fmt.Sprintf("The question should not be empty"))
+		c.ResponseErrorStream(message, fmt.Sprintf("The question should not be empty"))
 		return
 	}
 
@@ -98,30 +98,30 @@ func (c *ApiController) GetMessageAnswer() {
 		var count int
 		count, err = object.GetNearMessageCount(message.User, store.LimitMinutes)
 		if err != nil {
-			c.ResponseErrorStream(err.Error())
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 		if count > store.Frequency {
-			c.ResponseErrorStream("You have queried too many times, please wait for a while")
+			c.ResponseErrorStream(message, "You have queried too many times, please wait for a while")
 			return
 		}
 	}
 
 	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
 	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
@@ -132,7 +132,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage)
 		if err != nil {
-			c.ResponseErrorStream(err.Error())
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 	}
@@ -140,7 +140,7 @@ func (c *ApiController) GetMessageAnswer() {
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
@@ -155,7 +155,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
@@ -164,13 +164,13 @@ func (c *ApiController) GetMessageAnswer() {
 		writer.buf = append(writer.buf, []byte(cleanedData)...)
 		jsonData, err := ConvertMessageDataToJSON(cleanedData)
 		if err != nil {
-			c.ResponseErrorStream(err.Error())
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 
 		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
 		if err != nil {
-			c.ResponseErrorStream(err.Error())
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 
@@ -183,7 +183,7 @@ func (c *ApiController) GetMessageAnswer() {
 	event := fmt.Sprintf("event: end\ndata: %s\n\n", "end")
 	_, err = c.Ctx.ResponseWriter.Write([]byte(event))
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
@@ -197,7 +197,7 @@ func (c *ApiController) GetMessageAnswer() {
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
@@ -216,7 +216,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	_, err = object.UpdateChat(chat.GetId(), chat)
 	if err != nil {
-		c.ResponseErrorStream(err.Error())
+		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 }

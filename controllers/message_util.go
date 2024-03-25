@@ -17,11 +17,20 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/casibase/casibase/object"
 )
 
-func (c *ApiController) ResponseErrorStream(errorText string) {
+func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
+	message.ErrorText = errorText
+	_, err := object.UpdateMessage(message.GetId(), message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	event := fmt.Sprintf("event: myerror\ndata: %s\n\n", errorText)
-	_, err := c.Ctx.ResponseWriter.Write([]byte(event))
+	_, err = c.Ctx.ResponseWriter.Write([]byte(event))
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
