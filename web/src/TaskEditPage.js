@@ -134,29 +134,31 @@ class TaskEditPage extends React.Component {
           </Col>
         </Row>
         {
-          (this.state.task.type !== "Labeling") ? null : (
-            <React.Fragment>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Display name")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.task.displayName} onChange={e => {
-                    this.updateTaskField("displayName", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("store:Model provider")}:
-                </Col>
-                <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.provider} onChange={(value => {this.updateTaskField("provider", value);})}
-                    options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
-                    } />
-                </Col>
-              </Row>
-            </React.Fragment>
+          this.state.task.type !== "Labeling" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("general:Display name")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.task.displayName} onChange={e => {
+                  this.updateTaskField("displayName", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.props.account.name !== "admin" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("store:Model provider")}:
+              </Col>
+              <Col span={22} >
+                <Select virtual={false} style={{width: "100%"}} value={this.state.task.provider} onChange={(value => {this.updateTaskField("provider", value);})}
+                  options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+                  } />
+              </Col>
+            </Row>
           )
         }
         {/* <Row style={{marginTop: "20px"}} >*/}
@@ -198,64 +200,70 @@ class TaskEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Subject")}:
-          </Col>
-          <Col span={3} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.task.subject} onChange={(value => {this.updateTaskField("subject", value);})}>
-              {
-                ConfTask.SubjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-          <Col span={2} />
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Topic")}:
-          </Col>
-          <Col span={3} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.task.topic} onChange={(value => {this.updateTaskField("topic", value);})}>
-              {
-                ConfTask.TopicOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-          <Col span={2} />
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Grade")}:
-          </Col>
-          <Col span={3} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.task.grade} onChange={(value => {this.updateTaskField("grade", value);})}>
-              {
-                ConfTask.GradeOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Result")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.task.result} onChange={(value => {this.updateTaskField("result", value);})}>
-              {
-                ConfTask.ResultOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("task:Activity")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.task.activity} onChange={(value => {this.updateTaskField("activity", value);})}>
-              {
-                ConfTask.ActivityOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
+        {
+          this.state.task.type === "Labeling" ? null : (
+            <React.Fragment>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("store:Subject")}:
+                </Col>
+                <Col span={3} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.subject} onChange={(value => {this.updateTaskField("subject", value);})}>
+                    {
+                      ConfTask.SubjectOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+                <Col span={2} />
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Topic")}:
+                </Col>
+                <Col span={3} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.topic} onChange={(value => {this.updateTaskField("topic", value);})}>
+                    {
+                      ConfTask.TopicOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+                <Col span={2} />
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Grade")}:
+                </Col>
+                <Col span={3} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.grade} onChange={(value => {this.updateTaskField("grade", value);})}>
+                    {
+                      ConfTask.GradeOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("general:Result")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.result} onChange={(value => {this.updateTaskField("result", value);})}>
+                    {
+                      ConfTask.ResultOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("task:Activity")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.task.activity} onChange={(value => {this.updateTaskField("activity", value);})}>
+                    {
+                      ConfTask.ActivityOptions.map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+            </React.Fragment>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("task:Text")}:
@@ -302,36 +310,35 @@ class TaskEditPage extends React.Component {
             <TextArea disabled={true} autoSize={{minRows: 1, maxRows: 15}} value={(this.state.task.type !== "Labeling") ? this.getProjectText() : this.getQuestion()} onChange={(e) => {}} />
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Chat")}:
-          </Col>
-          <Col span={22} >
-            <Button disabled={this.state.task.subject === "" || this.state.task.topic === "" || this.state.task.result === "" || this.state.task.activity === "" || this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
-            <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
-          </Col>
-        </Row>
         {
-          (this.state.task.type !== "Labeling") ? null : (
-            <React.Fragment>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("task:Log")}:
-                </Col>
-                <Col span={22} >
-                  <Button loading={this.state.loading} style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
-                  <div style={{height: "200px"}}>
-                    <CodeMirror
-                      value={this.state.task.log}
-                      options={{mode: "javascript", theme: "material-darker"}}
-                      onBeforeChange={(editor, data, value) => {
-                        this.updateTaskField("log", value);
-                      }}
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </React.Fragment>
+          (this.state.task.type !== "Labeling") ? (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("general:Chat")}:
+              </Col>
+              <Col span={22} >
+                <Button disabled={this.state.task.subject === "" || this.state.task.topic === "" || this.state.task.result === "" || this.state.task.activity === "" || this.state.task.grade === ""} style={{marginBottom: "20px", width: "200px"}} type="primary" onClick={() => this.generateProject()}>{i18next.t("task:Generate Project")}</Button>
+                <ChatPage onCreateChatPage={(chatPageObj) => {this.setState({chatPageObj: chatPageObj});}} account={this.props.account} />
+              </Col>
+            </Row>
+          ) : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("task:Log")}:
+              </Col>
+              <Col span={22} >
+                <Button loading={this.state.loading} style={{marginBottom: "20px", width: "100px"}} type="primary" onClick={this.runTask.bind(this)}>{i18next.t("general:Run")}</Button>
+                <div style={{height: "200px"}}>
+                  <CodeMirror
+                    value={this.state.task.log}
+                    options={{mode: "javascript", theme: "material-darker"}}
+                    onBeforeChange={(editor, data, value) => {
+                      this.updateTaskField("log", value);
+                    }}
+                  />
+                </div>
+              </Col>
+            </Row>
           )
         }
       </Card>

@@ -265,8 +265,14 @@ class TaskListPage extends React.Component {
       },
     ];
 
+    if (!this.props.account || this.props.account.name !== "admin") {
+      columns = columns.filter(column => column.key !== "provider");
+    }
+
     if (ConfTask.TaskMode !== "Labeling") {
-      columns = columns.filter(column => column.key !== "displayName" && column.key !== "provider" && column.key !== "labels" && column.key !== "example");
+      columns = columns.filter(column => column.key !== "displayName" && column.key !== "labels" && column.key !== "example");
+    } else {
+      columns = columns.filter(column => column.key !== "subject" && column.key !== "topic" && column.key !== "result" && column.key !== "activity" && column.key !== "grade");
     }
 
     return (
