@@ -29,6 +29,12 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 		return
 	}
 
+	err = message.SendErrorEmail()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	event := fmt.Sprintf("event: myerror\ndata: %s\n\n", errorText)
 	_, err = c.Ctx.ResponseWriter.Write([]byte(event))
 	if err != nil {

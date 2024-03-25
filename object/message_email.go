@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -94,6 +95,86 @@ func (message *Message) SendEmail() error {
 </body>
 </html>
 `, title, username, question, message.Text, message.Comment, title)
+
+	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (message *Message) SendErrorEmail() error {
+	adminUser, err := casdoorsdk.GetUser("admin")
+	if err != nil {
+		return err
+	}
+	receiverEmail := adminUser.Email
+	if !strings.HasPrefix(receiverEmail, "51") {
+		return nil
+	}
+
+	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
+	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
+	if err != nil {
+		return err
+	}
+	sender := organization.DisplayName
+
+	user, err := casdoorsdk.GetUser(message.User)
+	if err != nil {
+		return err
+	}
+	username := user.Name
+
+	title := fmt.Sprintf("AI-Error: %s - %s - %s - %s", sender, username, message.Chat, message.Name)
+
+	questionMessage, err := GetMessage(util.GetId("admin", message.ReplyTo))
+	if err != nil {
+		return err
+	}
+	question := questionMessage.Text
+
+	content := fmt.Sprintf(`<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Casibase Message Error</title>
+<style>
+    body { font-family: Arial, sans-serif; }
+    .email-container { width: 600px; margin: 0 auto; }
+    .header { text-align: center; }
+    .code { font-size: 24px; margin: 20px 0; text-align: center; }
+    .footer { font-size: 12px; text-align: center; margin-top: 50px; }
+    .footer a { color: #000; text-decoration: none; }
+</style>
+</head>
+<body>
+<div class="email-container">
+  <div class="header">
+        <h3>%s</h3>
+        <img src="https://cdn.casbin.org/img/casbin_logo_1024x256.png" alt="Casibase Logo" width="300">
+    </div>
+    <p>The message for user: <strong>%s</strong> has encountered error! </p>
+    <p>Question:</p>
+    <div class="code">
+        %s
+    </div>
+    <p>Error text:</p>
+    <div class="code">
+        %s
+    </div>
+    <p>Thanks</p>
+    <p>%s</p>
+    <hr>
+    <div class="footer">
+        <p>Copyright © 2024 Casibase Organization</p>
+    </div>
+</div>
+</body>
+</html>
+`, title, username, question, message.ErrorText, sender)
 
 	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {
