@@ -130,7 +130,11 @@ class ChatBox extends React.Component {
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
                   <Message.CustomContent>
-                    {message.text === "" ? this.state.dots : message.html}
+                    {
+                      message.errorText !== "" ? `Error: ${message.errorText}` : (
+                        message.text === "" ? this.state.dots : message.html
+                      )
+                    }
                   </Message.CustomContent>
                 </Message>
               ))}
