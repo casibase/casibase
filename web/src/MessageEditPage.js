@@ -114,7 +114,7 @@ class MessageEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {i18next.t("message:Edit Chat")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {i18next.t("message:Edit Message")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitMessageEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitMessageEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
