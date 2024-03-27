@@ -1,6 +1,6 @@
 {
   "account": {
-    "Chats \u0026 Messages": "会话与消息",
+    "Chats & Messages": "会话与消息",
     "My Account": "我的账户",
     "Sign In": "登录",
     "Sign Out": "登出",
@@ -78,7 +78,7 @@
     "Result": "最终成果",
     "Run": "运行",
     "Save": "保存",
-    "Save \u0026 Exit": "保存并退出",
+    "Save & Exit": "保存并退出",
     "Sorry, you do not have permission to access this page or logged in status invalid.": "抱歉，您无权限访问此页面或登录状态无效。",
     "Stores": "数据仓库",
     "Successfully added": "添加成功",
