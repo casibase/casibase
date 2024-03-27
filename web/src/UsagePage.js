@@ -347,7 +347,7 @@ class UsagePage extends BaseListPage {
     return (
       <React.Fragment>
         <br />
-        <Select virtual={false} listHeight={320} style={{width: "280px", marginRight: "10px"}}
+        <Select virtual={false} listHeight={360} style={{width: "280px", marginRight: "10px"}}
           value={this.state.endpoint} onChange={(value => {
             const endpoint = value;
             this.setState({
