@@ -32,6 +32,11 @@ export function initServerUrl() {
   }
 }
 
+export function isLocalhost() {
+  const hostname = window.location.hostname;
+  return hostname === "localhost";
+}
+
 export function initCasdoorSdk(config) {
   CasdoorSdk = new Sdk(config);
 }

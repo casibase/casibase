@@ -12,6 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// Package routers
+// @APIVersion 1.70.0
+// @Title Casibase RESTful API
+// @Description Swagger Docs of Casibase Backend API
+// @Contact admin@casbin.org
+// @SecurityDefinition AccessToken apiKey Authorization header
+// @Schemes https,http
+// @ExternalDocs Find out more about Casibase
+// @ExternalDocsUrl https://casibase.org/
 package routers
 
 import (

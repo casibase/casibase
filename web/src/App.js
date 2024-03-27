@@ -116,6 +116,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
+    } else if (uri.includes("/swagger")) {
+      this.setState({selectedMenuKey: "/swagger"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -388,6 +390,8 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
 
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+
+      res.push(Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>{i18next.t("general:Swagger")}</a>, "/swagger"));
 
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>

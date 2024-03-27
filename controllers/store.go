@@ -20,6 +20,12 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+// GetGlobalStores
+// @Title GetGlobalStores
+// @Tag Store API
+// @Description get global stores
+// @Success 200 {array} object.Cert The Response object
+// @router /get-global-stores [get]
 func (c *ApiController) GetGlobalStores() {
 	stores, err := object.GetGlobalStores()
 	if err != nil {

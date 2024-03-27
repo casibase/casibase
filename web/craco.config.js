@@ -15,6 +15,18 @@
 const CracoLessPlugin = require("craco-less");
 
 module.exports = {
+  devServer: {
+    proxy: {
+      "/api": {
+        target: "http://localhost:14000",
+        changeOrigin: true,
+      },
+      "/swagger": {
+        target: "http://localhost:14000",
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [
     {
       plugin: CracoLessPlugin,

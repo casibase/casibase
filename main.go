@@ -46,6 +46,7 @@ func main() {
 
 	// beego.DelStaticPath("/static")
 	beego.SetStaticPath("/static", "web/build/static")
+	beego.SetStaticPath("/swagger", "swagger")
 	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
 

@@ -1,0 +1,51 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Casibase RESTful API",
+        "description": "Swagger Docs of Casibase Backend API",
+        "version": "1.70.0",
+        "contact": {
+            "email": "admin@casbin.org"
+        }
+    },
+    "basePath": "/api",
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "paths": {
+        "/get-global-stores": {
+            "get": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "get global stores",
+                "operationId": "ApiController.GetGlobalStores",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Cert"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "object.Cert": {
+            "title": "Cert",
+            "type": "object"
+        }
+    },
+    "securityDefinitions": {
+        "AccessToken": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}
