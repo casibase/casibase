@@ -36,6 +36,13 @@ func (c *ApiController) GetGlobalStores() {
 	c.ResponseOk(stores)
 }
 
+// GetStores
+// @Title GetStores
+// @Tag Store API
+// @Description Retrieve stores based on the owner.
+// @Param owner query string false "The owner of the stores to retrieve."
+// @Success 200 {array} object.Store The response object contains an array of stores.
+// @router /get-stores [get]
 func (c *ApiController) GetStores() {
 	owner := c.Input().Get("owner")
 
@@ -48,6 +55,14 @@ func (c *ApiController) GetStores() {
 	c.ResponseOk(stores)
 }
 
+// GetStore
+// @Title GetStore
+// @Tag Store API
+// @Description Retrieves a single store based on its ID.
+// @Param id query string true "The ID of the store to retrieve."
+// @Success 200 {object} object.Store The response object contains the store information.
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /get-store [get]
 func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
@@ -79,6 +94,14 @@ func (c *ApiController) GetStore() {
 	c.ResponseOk(store)
 }
 
+// UpdateStore
+// @Title UpdateStore
+// @Tag Store API
+// @Description Updates an existing store's information.
+// @Param id query string true "The ID of the store to update."
+// @Success 200 {boolean} bool "The success status of the update operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /update-store [post]
 func (c *ApiController) UpdateStore() {
 	id := c.Input().Get("id")
 
@@ -98,6 +121,13 @@ func (c *ApiController) UpdateStore() {
 	c.ResponseOk(success)
 }
 
+// AddStore
+// @Title AddStore
+// @Tag Store API
+// @Description Adds a new store to the system.
+// @Success 200 {boolean} bool "The success status of the add operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /add-store [post]
 func (c *ApiController) AddStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
@@ -115,6 +145,13 @@ func (c *ApiController) AddStore() {
 	c.ResponseOk(success)
 }
 
+// DeleteStore
+// @Title DeleteStore
+// @Tag Store API
+// @Description Deletes an existing store from the system.
+// @Success 200 {boolean} bool "The success status of the delete operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /delete-store [post]
 func (c *ApiController) DeleteStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
@@ -132,6 +169,13 @@ func (c *ApiController) DeleteStore() {
 	c.ResponseOk(success)
 }
 
+// RefreshStoreVectors
+// @Title RefreshStoreVectors
+// @Tag Store API
+// @Description Refreshes the vector information for a specific store.
+// @Success 200 {boolean} bool "The success status of the refresh operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /refresh-store-vectors [post]
 func (c *ApiController) RefreshStoreVectors() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
