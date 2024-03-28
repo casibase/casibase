@@ -22,6 +22,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetGlobalMessages
+// @Title GetGlobalMessages
+// @Tag Message API
+// @Description Retrieves all global messages.
+// @Success 200 {array} object.Message "The response object contains an array of global messages."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
 	messages, err := object.GetGlobalMessages()
 	if err != nil {
@@ -32,6 +39,15 @@ func (c *ApiController) GetGlobalMessages() {
 	c.ResponseOk(messages)
 }
 
+// GetMessages
+// @Title GetMessages
+// @Tag Message API
+// @Description Retrieves messages for a specific user and/or chat.
+// @Param user query string false "The user for whom to retrieve messages."
+// @Param chat query string false "The chat for which to retrieve messages."
+// @Success 200 {array} object.Message "The response object contains an array of messages."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /get-messages [get]
 func (c *ApiController) GetMessages() {
 	user := c.Input().Get("user")
 	chat := c.Input().Get("chat")
@@ -59,6 +75,14 @@ func (c *ApiController) GetMessages() {
 	c.ResponseOk(messages)
 }
 
+// GetMessage
+// @Title GetMessage
+// @Tag Message API
+// @Description Retrieves a single message by its ID.
+// @Param id query string true "The ID of the message to retrieve."
+// @Success 200 {object} object.Message "The response object contains the detailed information of the retrieved message."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /get-message [get]
 func (c *ApiController) GetMessage() {
 	id := c.Input().Get("id")
 
@@ -71,6 +95,14 @@ func (c *ApiController) GetMessage() {
 	c.ResponseOk(message)
 }
 
+// UpdateMessage
+// @Title UpdateMessage
+// @Tag Message API
+// @Description Updates an existing message based on its ID.
+// @Param id query string true "The ID of the message to update."
+// @Success 200 {boolean} bool "The success status of the update operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 
@@ -100,6 +132,13 @@ func (c *ApiController) UpdateMessage() {
 	c.ResponseOk(success)
 }
 
+// AddMessage
+// @Title AddMessage
+// @Tag Message API
+// @Description Adds a new message to the system.
+// @Success 200 {object} object.Chat "The response object contains the chat information related to the new message."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /add-message [post]
 func (c *ApiController) AddMessage() {
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
@@ -180,6 +219,13 @@ func (c *ApiController) AddMessage() {
 	c.ResponseOk(chat)
 }
 
+// DeleteMessage
+// @Title DeleteMessage
+// @Tag Message API
+// @Description Deletes an existing message from the system.
+// @Success 200 {boolean} bool "The success status of the delete operation."
+// @Failure 400 {string} string "The error message in case of failure."
+// @router /delete-message [post]
 func (c *ApiController) DeleteMessage() {
 	ok := c.RequireAdmin()
 	if !ok {
