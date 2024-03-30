@@ -49,6 +49,7 @@ type Message struct {
 	Price        float64       `json:"price"`
 	Currency     string        `xorm:"varchar(100)" json:"currency"`
 	IsHidden     bool          `json:"isHidden"`
+	IsDeleted    bool          `json:"isDeleted"`
 	NeedNotify   bool          `json:"needNotify"`
 	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }

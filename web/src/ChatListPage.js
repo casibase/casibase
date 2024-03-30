@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -388,6 +388,19 @@ class ChatListPage extends React.Component {
         },
       },
       {
+        title: i18next.t("general:Is deleted"),
+        dataIndex: "isDeleted",
+        key: "isDeleted",
+        width: "120px",
+        sorter: (a, b) => a.isDeleted - b.isDeleted,
+        // ...this.getColumnSearchProps("isDeleted"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
@@ -465,6 +478,9 @@ class ChatListPage extends React.Component {
             </div>
           )}
           loading={chats === null}
+          rowClassName={(record, index) => {
+            return record.isDeleted ? "highlight-row" : "";
+          }}
         />
       </div>
     );

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Switch, Table} from "antd";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
@@ -263,6 +263,19 @@ class MessageListPage extends React.Component {
           );
         },
       },
+      {
+        title: i18next.t("general:Is deleted"),
+        dataIndex: "isDeleted",
+        key: "isDeleted",
+        width: "120px",
+        sorter: (a, b) => a.isDeleted - b.isDeleted,
+        // ...this.getColumnSearchProps("isDeleted"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
       // {
       //   title: i18next.t("message:Knowledge"),
       //   dataIndex: "knowledge",
@@ -363,6 +376,9 @@ class MessageListPage extends React.Component {
             </div>
           )}
           loading={messages === null}
+          rowClassName={(record, index) => {
+            return record.isDeleted ? "highlight-row" : "";
+          }}
         />
       </div>
     );

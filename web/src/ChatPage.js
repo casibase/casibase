@@ -109,6 +109,7 @@ class ChatPage extends BaseListPage {
       author: this.props.account.name,
       text: text,
       isHidden: isHidden,
+      isDeleted: false,
       fileName: fileName,
     };
   }

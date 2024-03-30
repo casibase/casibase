@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, Row, Select, Switch} from "antd";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -199,6 +199,16 @@ class ChatEditPage extends React.Component {
               onChange={(value => {this.updateChatField("users", value);})}
               options={this.state.chat.users.map((user) => Setting.getOption(`${user}`, `${user}`))}
             />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 19 : 2}>
+            {i18next.t("general:Is deleted")}:
+          </Col>
+          <Col span={1} >
+            <Switch checked={this.state.chat.isDeleted} onChange={checked => {
+              this.updateChatField("isDeleted", checked);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
