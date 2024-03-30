@@ -110,6 +110,7 @@ class ChatPage extends BaseListPage {
       text: text,
       isHidden: isHidden,
       isDeleted: false,
+      isAlerted: false,
       fileName: fileName,
     };
   }

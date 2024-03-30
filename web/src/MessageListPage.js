@@ -276,6 +276,19 @@ class MessageListPage extends React.Component {
           );
         },
       },
+      {
+        title: i18next.t("general:Is alerted"),
+        dataIndex: "isAlerted",
+        key: "isAlerted",
+        width: "120px",
+        sorter: (a, b) => a.isAlerted - b.isAlerted,
+        // ...this.getColumnSearchProps("isAlerted"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
+      },
       // {
       //   title: i18next.t("message:Knowledge"),
       //   dataIndex: "knowledge",

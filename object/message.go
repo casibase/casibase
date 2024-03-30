@@ -51,6 +51,7 @@ type Message struct {
 	IsHidden     bool          `json:"isHidden"`
 	IsDeleted    bool          `json:"isDeleted"`
 	NeedNotify   bool          `json:"needNotify"`
+	IsAlerted    bool          `json:"isAlerted"`
 	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
 
