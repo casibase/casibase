@@ -16,6 +16,7 @@ package i18n
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casibase/casibase/util"
 )
@@ -37,6 +38,7 @@ func readI18nFile(language string) *I18nData {
 
 func writeI18nFile(language string, data *I18nData) {
 	s := util.StructToJson(data)
+	s = strings.ReplaceAll(s, "\\\\\"", "\"")
 	println(s)
 
 	util.WriteStringToPath(s, getI18nFilePath(language))
