@@ -41,8 +41,16 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	if message.Author != "AI" || message.ReplyTo == "" || message.Text != "" {
-		c.ResponseErrorStream(message, "The message is invalid")
+	if message.Author != "AI" {
+		c.ResponseErrorStream(message, fmt.Sprintf("The message is invalid, message author should be \"AI\", but got \"%s\"", message.Author))
+		return
+	}
+	if message.ReplyTo == "" {
+		c.ResponseErrorStream(message, "The message is invalid, message replyTo should not be empty")
+		return
+	}
+	if message.Text != "" {
+		c.ResponseErrorStream(message, fmt.Sprintf("The message is invalid, message text should be empty, but got \"%s\"", message.Text))
 		return
 	}
 
