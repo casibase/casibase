@@ -1,10 +1,16 @@
 {
   "account": {
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. 点击下方的“我的账户”按钮，前往您的个人设置页面；",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. 点击“编辑密码...”按钮更改您的密码。成功更改后，关闭个人设置页面；",
+    "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. 返回此页面，并按F5键刷新。这个警告信息会自行消失；",
+    "4. If you encounter any issues, please contact your administrator.": "4. 如果还有任何问题，请联系管理员。",
     "Chats \u0026 Messages": "会话与消息",
     "My Account": "我的账户",
+    "Please Modify Your Password": "请修改您的密码",
     "Sign In": "登录",
     "Sign Out": "登出",
-    "Sign Up": "注册"
+    "Sign Up": "注册",
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "系统检测到您正在使用默认密码，存在安全隐患。请立即修改您的密码。以下是具体操作"
   },
   "chat": {
     "AI": "AI",
@@ -85,6 +91,7 @@
     "Successfully deleted": "删除成功",
     "Successfully update": "更新成功",
     "Sure to delete": "确定删除",
+    "Swagger": "Swagger",
     "This is a read-only demo site!": "这是一个只读的演示站点！",
     "Tokens": "Tokens",
     "URL": "链接",

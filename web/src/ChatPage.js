@@ -13,7 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Modal, Spin} from "antd";
+import {Button, Modal, Spin} from "antd";
+import {CloseCircleFilled} from "@ant-design/icons";
 import moment from "moment";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
@@ -316,6 +317,41 @@ class ChatPage extends BaseListPage {
     );
   }
 
+  renderUnsafePasswordModal() {
+    if (this.props.account.password !== "#NeedToModify#") {
+      return null;
+    }
+
+    return (
+      <Modal
+        title={
+          <div>
+            <CloseCircleFilled style={{color: "rgb(255,77,79)"}} />
+            &nbsp;
+            {" " + i18next.t("account:Please Modify Your Password")}
+          </div>
+        }
+        closable={false}
+        open={true}
+        okButtonProps={{style: {display: "none"}}}
+        cancelButtonProps={{style: {display: "none"}}}
+        onOk={null}
+        onCancel={null}
+      >
+        <div>
+          <p>{i18next.t("account:The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions")}:</p>
+          <p>{i18next.t("account:1. Go to your setting page by clicking on the below \"My Account\" button.")}</p>
+          <p>{i18next.t("account:2. Click \"Modify password...\" button to change your password. Then close the setting page.")}</p>
+          <p>{i18next.t("account:3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.")}</p>
+          <p>{i18next.t("account:4. If you encounter any issues, please contact your administrator.")}</p>
+          <div style={{display: "flex", justifyContent: "center", marginTop: "30px"}}>
+            <Button type="primary" onClick={() => Setting.openLink(Setting.getMyProfileUrl(this.props.account))}>{i18next.t("account:My Account")}</Button>
+          </div>
+        </div>
+      </Modal>
+    );
+  }
+
   renderTable(chats) {
     const onSelectChat = (i) => {
       const chat = chats[i];
@@ -353,6 +389,9 @@ class ChatPage extends BaseListPage {
       <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname === "/chat") ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
+        }
+        {
+          this.renderUnsafePasswordModal()
         }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
           <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />

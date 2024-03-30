@@ -218,6 +218,28 @@ func (c *ApiController) isPublicDomain() bool {
 	return false
 }
 
+func (c *ApiController) isSafePassword() (bool, error) {
+	claims := c.GetSessionClaims()
+	if claims == nil {
+		return true, nil
+	}
+
+	if len(claims.User.Id) != 11 || !strings.HasPrefix(claims.User.Id, "270") {
+		return true, nil
+	}
+
+	user, err := casdoorsdk.GetUser(claims.User.Name)
+	if err != nil {
+		return false, err
+	}
+
+	if user.Password == "#NeedToModify#" {
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
 func (c *ApiController) GetAccount() {
 	if !c.isPublicDomain() {
 		_, ok := c.RequireSignedIn()
@@ -233,6 +255,16 @@ func (c *ApiController) GetAccount() {
 	}
 
 	claims := c.GetSessionClaims()
+
+	isSafePassword, err := c.isSafePassword()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if !isSafePassword {
+		claims.User.Password = "#NeedToModify#"
+	}
 
 	c.ResponseOk(claims)
 }

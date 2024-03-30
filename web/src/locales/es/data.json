@@ -1,10 +1,16 @@
 {
   "account": {
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
+    "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.",
+    "4. If you encounter any issues, please contact your administrator.": "4. If you encounter any issues, please contact your administrator.",
     "Chats \u0026 Messages": "Chats \u0026 Messages",
     "My Account": "My Account",
+    "Please Modify Your Password": "Please Modify Your Password",
     "Sign In": "Sign In",
     "Sign Out": "Sign Out",
-    "Sign Up": "Sign Up"
+    "Sign Up": "Sign Up",
+    "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions": "The system has detected that you are using the default password, which is not secure. You need to modify your password immediately. Here are the instructions"
   },
   "chat": {
     "AI": "AI",
@@ -85,6 +91,7 @@
     "Successfully deleted": "Successfully deleted",
     "Successfully update": "Successfully update",
     "Sure to delete": "Sure to delete",
+    "Swagger": "Swagger",
     "This is a read-only demo site!": "This is a read-only demo site!",
     "Tokens": "Tokens",
     "URL": "URL",
