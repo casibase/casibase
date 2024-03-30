@@ -31,7 +31,8 @@
     "Type message here": "Type message here",
     "User1": "User1",
     "User2": "User2",
-    "Users": "Users"
+    "Users": "Users",
+    "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated."
   },
   "factorset": {
     "Count": "Count",
@@ -65,6 +66,8 @@
     "Frameworks": "Frameworks",
     "Go to writable demo site?": "Go to writable demo site?",
     "Home": "Home",
+    "Is alerted": "Is alerted",
+    "Is deleted": "Is deleted",
     "Loading...": "Loading...",
     "Logs": "Logs",
     "Menu": "Menu",

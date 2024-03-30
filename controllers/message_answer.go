@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
@@ -42,6 +43,11 @@ func (c *ApiController) GetMessageAnswer() {
 
 	if message.Author != "AI" || message.ReplyTo == "" || message.Text != "" {
 		c.ResponseErrorStream(message, "The message is invalid")
+		return
+	}
+
+	if strings.HasPrefix(message.ErrorText, "error, status code: 400, message: The response was filtered due to the prompt triggering") {
+		c.ResponseErrorStream(message, message.ErrorText)
 		return
 	}
 
@@ -194,6 +200,11 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Currency = modelResult.Currency
 
 	message.Text = answer
+	if message.Text != "" {
+		message.ErrorText = ""
+		message.IsAlerted = false
+	}
+
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
 	if err != nil {

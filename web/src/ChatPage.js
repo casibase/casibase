@@ -193,7 +193,7 @@ class ChatPage extends BaseListPage {
                 disableInput: false,
               });
             }, (error) => {
-              Setting.showMessage("error", error);
+              Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = error;

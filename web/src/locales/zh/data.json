@@ -31,7 +31,8 @@
     "Type message here": "请输入您的问题",
     "User1": "用户1",
     "User2": "用户2",
-    "Users": "用户列表"
+    "Users": "用户列表",
+    "Your chat text involves sensitive content. This chat has been forcibly terminated.": "您的聊天信息涉及敏感内容。此会话已被强制终止。"
   },
   "factorset": {
     "Count": "数量",
@@ -65,6 +66,8 @@
     "Frameworks": "框架",
     "Go to writable demo site?": "前往可写的演示站点？",
     "Home": "首页",
+    "Is alerted": "已警告",
+    "Is deleted": "已删除",
     "Loading...": "加载中...",
     "Logs": "日志",
     "Menu": "菜单",
