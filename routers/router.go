@@ -118,6 +118,13 @@ func initAPI() {
 	beego.Router("/api/add-task", &controllers.ApiController{}, "POST:AddTask")
 	beego.Router("/api/delete-task", &controllers.ApiController{}, "POST:DeleteTask")
 
+	beego.Router("/api/get-global-articles", &controllers.ApiController{}, "GET:GetGlobalArticles")
+	beego.Router("/api/get-articles", &controllers.ApiController{}, "GET:GetArticles")
+	beego.Router("/api/get-article", &controllers.ApiController{}, "GET:GetArticle")
+	beego.Router("/api/update-article", &controllers.ApiController{}, "POST:UpdateArticle")
+	beego.Router("/api/add-article", &controllers.ApiController{}, "POST:AddArticle")
+	beego.Router("/api/delete-article", &controllers.ApiController{}, "POST:DeleteArticle")
+
 	beego.Router("/api/update-file", &controllers.ApiController{}, "POST:UpdateFile")
 	beego.Router("/api/add-file", &controllers.ApiController{}, "POST:AddFile")
 	beego.Router("/api/delete-file", &controllers.ApiController{}, "POST:DeleteFile")
