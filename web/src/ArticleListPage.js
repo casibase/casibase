@@ -55,6 +55,7 @@ class ArticleListPage extends React.Component {
       displayName: `New Article - ${randomName}`,
       provider: "provider_model_azure_gpt4",
       type: "",
+      content: [],
     };
   }
 

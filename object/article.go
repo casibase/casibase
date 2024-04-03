@@ -21,6 +21,13 @@ import (
 	"xorm.io/core"
 )
 
+type Block struct {
+	Type   string `json:"type"`
+	Text   string `json:"text"`
+	TextEn string `json:"textEn"`
+	State  string `json:"state"`
+}
+
 type Article struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -30,7 +37,7 @@ type Article struct {
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Type        string `xorm:"varchar(100)" json:"type"`
 
-	Content string `xorm:"mediumtext" json:"content"`
+	Content []*Block `xorm:"mediumtext" json:"content"`
 }
 
 func GetMaskedArticle(article *Article, isMaskEnabled bool) *Article {
@@ -52,6 +59,7 @@ func GetMaskedArticles(articles []*Article, isMaskEnabled bool) []*Article {
 
 	for _, article := range articles {
 		article = GetMaskedArticle(article, isMaskEnabled)
+		article.Content = nil
 	}
 	return articles
 }

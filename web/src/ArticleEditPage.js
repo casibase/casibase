@@ -18,8 +18,7 @@ import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
-
-const {TextArea} = Input;
+import ArticleTable from "./ArticleTable";
 
 class ArticleEditPage extends React.Component {
   constructor(props) {
@@ -130,9 +129,7 @@ class ArticleEditPage extends React.Component {
             {i18next.t("article:Content")}:
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.article.text} onChange={(e) => {
-              this.updateArticleField("text", e.target.value);
-            }} />
+            <ArticleTable table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} />
           </Col>
         </Row>
       </Card>
