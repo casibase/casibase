@@ -17,6 +17,7 @@ import {Button, Col, Input, Row, Select, Table, Tooltip} from "antd";
 import {BarsOutlined, DeleteOutlined, DownOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import * as MessageBackend from "./backend/MessageBackend";
 
 const {Option} = Select;
 const {TextArea} = Input;
@@ -107,8 +108,36 @@ class ArticleTable extends React.Component {
     this.updateTable(updatedTable);
   }
 
-  translateTable(table, i) {
-    alert("111");
+  translateTableToZh(article, table, i) {
+    const provider = article.provider;
+    const text = table[i].textEn;
+    const question = `Translate the following text to Chinese, only respond with the translated text:\n${text}`;
+    const framework = article.name;
+    const video = "";
+    MessageBackend.getAnswer(provider, question, framework, video)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.updateField(this.props.table, i, "text", res.data);
+        } else {
+          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+        }
+      });
+  }
+
+  translateTableToEn(article, table, i) {
+    const provider = article.provider;
+    const text = table[i].text;
+    const question = `Translate the following text to English, only respond with the translated text:\n${text}`;
+    const framework = article.name;
+    const video = "";
+    MessageBackend.getAnswer(provider, question, framework, video)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.updateField(this.props.table, i, "textEn", res.data);
+        } else {
+          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+        }
+      });
   }
 
   renderTable(table) {
@@ -187,9 +216,14 @@ class ArticleTable extends React.Component {
                   {i18next.t("article:Parse En")}
                 </Button>
               </Tooltip>
-              <Tooltip placement="bottomLeft" title={"Translate"}>
-                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={text === ""} icon={<TranslationOutlined />} onClick={() => this.translateTable(table, index)} >
-                  {i18next.t("article:Translate")}
+              <Tooltip placement="bottomLeft" title={"Translate to EN"}>
+                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
+                  {i18next.t("article:ZH 🡲 EN")}
+                </Button>
+              </Tooltip>
+              <Tooltip placement="bottomLeft" title={"Translate to ZH"}>
+                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
+                  {i18next.t("article:ZH 🡰 EN")}
                 </Button>
               </Tooltip>
               <Tooltip placement="bottomLeft" title={"Up"}>
