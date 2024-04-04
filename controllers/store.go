@@ -24,7 +24,7 @@ import (
 // @Title GetGlobalStores
 // @Tag Store API
 // @Description get global stores
-// @Success 200 {array} object.Cert The Response object
+// @Success 200 {array} object.Store The Response object
 // @router /get-global-stores [get]
 func (c *ApiController) GetGlobalStores() {
 	stores, err := object.GetGlobalStores()
@@ -36,6 +36,13 @@ func (c *ApiController) GetGlobalStores() {
 	c.ResponseOk(stores)
 }
 
+// GetStores
+// @Title GetStores
+// @Tag Store API
+// @Description get stores
+// @Param owner query string true "The owner of the store"
+// @Success 200 {array} object.Store The Response object
+// @router /get-stores [get]
 func (c *ApiController) GetStores() {
 	owner := c.Input().Get("owner")
 
@@ -48,6 +55,13 @@ func (c *ApiController) GetStores() {
 	c.ResponseOk(stores)
 }
 
+// GetStore
+// @Title GetStore
+// @Tag Store API
+// @Description get store
+// @Param id query string true "The id (owner/name) of the store"
+// @Success 200 {object} object.Store The Response object
+// @router /get-store [get]
 func (c *ApiController) GetStore() {
 	id := c.Input().Get("id")
 
@@ -79,6 +93,14 @@ func (c *ApiController) GetStore() {
 	c.ResponseOk(store)
 }
 
+// UpdateStore
+// @Title UpdateStore
+// @Tag Store API
+// @Description update store
+// @Param id   query string       true "The id (owner/name) of the store"
+// @Param body body  object.Store true "The details of the store"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-store [post]
 func (c *ApiController) UpdateStore() {
 	id := c.Input().Get("id")
 
@@ -98,6 +120,13 @@ func (c *ApiController) UpdateStore() {
 	c.ResponseOk(success)
 }
 
+// AddStore
+// @Title AddStore
+// @Tag Store API
+// @Description add store
+// @Param body body object.Store true "The details of the store"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-store [post]
 func (c *ApiController) AddStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
@@ -115,6 +144,13 @@ func (c *ApiController) AddStore() {
 	c.ResponseOk(success)
 }
 
+// DeleteStore
+// @Title DeleteStore
+// @Tag Store API
+// @Description delete store
+// @Param body body object.Store true "The details of the store"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-store [post]
 func (c *ApiController) DeleteStore() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)
@@ -132,6 +168,13 @@ func (c *ApiController) DeleteStore() {
 	c.ResponseOk(success)
 }
 
+// RefreshStoreVectors
+// @Title RefreshStoreVectors
+// @Tag Store API
+// @Description refresh store vectors
+// @Param body body object.Store true "The details of the store"
+// @Success 200 {object} controllers.Response The Response object
+// @router /refresh-store-vectors [post]
 func (c *ApiController) RefreshStoreVectors() {
 	var store object.Store
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &store)

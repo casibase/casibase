@@ -14,6 +14,62 @@
         "http"
     ],
     "paths": {
+        "/add-store": {
+            "post": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "add store",
+                "operationId": "ApiController.AddStore",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-store": {
+            "post": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "delete store",
+                "operationId": "ApiController.DeleteStore",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/get-global-stores": {
             "get": {
                 "tags": [
@@ -27,8 +83,126 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/object.Cert"
+                                "$ref": "#/definitions/object.Store"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-store": {
+            "get": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "get store",
+                "operationId": "ApiController.GetStore",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the store",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-stores": {
+            "get": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "get stores",
+                "operationId": "ApiController.GetStores",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of the store",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Store"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh-store-vectors": {
+            "post": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "refresh store vectors",
+                "operationId": "ApiController.RefreshStoreVectors",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-store": {
+            "post": {
+                "tags": [
+                    "Store API"
+                ],
+                "description": "update store",
+                "operationId": "ApiController.UpdateStore",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the store",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the store",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
                         }
                     }
                 }
@@ -36,9 +210,129 @@
         }
     },
     "definitions": {
-        "object.Cert": {
-            "title": "Cert",
+        "81136.File": {
+            "title": "File",
             "type": "object"
+        },
+        "82282.Properties": {
+            "title": "Properties",
+            "type": "object"
+        },
+        "controllers.Response": {
+            "title": "Response",
+            "type": "object",
+            "properties": {
+                "data": {
+                    "additionalProperties": {
+                        "description": "support string, struct or []struct",
+                        "type": "string"
+                    }
+                },
+                "data2": {
+                    "additionalProperties": {
+                        "description": "support string, struct or []struct",
+                        "type": "string"
+                    }
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "object": {
+            "title": "object",
+            "type": "object"
+        },
+        "object.File": {
+            "title": "File",
+            "type": "object",
+            "properties": {
+                "children": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.File"
+                    }
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "isLeaf": {
+                    "type": "boolean"
+                },
+                "key": {
+                    "type": "string"
+                },
+                "size": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Store": {
+            "title": "Store",
+            "type": "object",
+            "properties": {
+                "createdTime": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "embeddingProvider": {
+                    "type": "string"
+                },
+                "fileTree": {
+                    "$ref": "#/definitions/object.File"
+                },
+                "frequency": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "imageProvider": {
+                    "type": "string"
+                },
+                "limitMinutes": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "memoryLimit": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "modelProvider": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "propertiesMap": {
+                    "$ref": "#/definitions/82282.Properties"
+                },
+                "splitProvider": {
+                    "type": "string"
+                },
+                "storageProvider": {
+                    "type": "string"
+                },
+                "welcome": {
+                    "type": "string"
+                }
+            }
         }
     },
     "securityDefinitions": {
