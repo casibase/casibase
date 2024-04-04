@@ -14,6 +14,254 @@
         "http"
     ],
     "paths": {
+        "/activate-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "activate file",
+                "operationId": "ApiController.ActivateFile",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "description": "The key of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "filename",
+                        "description": "The name of the file",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-article": {
+            "post": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "add article",
+                "operationId": "ApiController.AddArticle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the article",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-chat": {
+            "post": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "add chat",
+                "operationId": "ApiController.AddChat",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the chat",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Chat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-factorset": {
+            "post": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "add factorset",
+                "operationId": "ApiController.AddFactorset",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the factorset",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Factorset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "add file",
+                "operationId": "ApiController.AddFile",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "store",
+                        "description": "The store of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "description": "The key of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "isLeaf",
+                        "description": "if is leaf",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "filename",
+                        "description": "The name of the file",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-message": {
+            "post": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "add message",
+                "operationId": "ApiController.AddMessage",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the message",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Message"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Chat"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-permission": {
+            "post": {
+                "tags": [
+                    "Permission API"
+                ],
+                "description": "add permission",
+                "operationId": "ApiController.AddPermission",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the permission",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/casdoorsdk.Permission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-provider": {
+            "post": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "add provider",
+                "operationId": "ApiController.AddProvider",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the provider",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Provider"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/add-store": {
             "post": {
                 "tags": [
@@ -29,6 +277,326 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-task": {
+            "post": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "add task",
+                "operationId": "ApiController.AddTask",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the task",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-vector": {
+            "post": {
+                "tags": [
+                    "Vector API"
+                ],
+                "description": "add vector",
+                "operationId": "ApiController.AddVector",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the vector",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Vector"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-video": {
+            "post": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "add video",
+                "operationId": "ApiController.AddVideo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the video",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Video"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/add-wordset": {
+            "post": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "add wordset",
+                "operationId": "ApiController.AddWordset",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the wordset",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Wordset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-article": {
+            "post": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "delete article",
+                "operationId": "ApiController.DeleteArticle",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the article",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-chat": {
+            "post": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "delete chat",
+                "operationId": "ApiController.DeleteChat",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the chat",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Chat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-factorset": {
+            "post": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "delete factorset",
+                "operationId": "ApiController.DeleteFactorset",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the factorset",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Factorset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "delete file",
+                "operationId": "ApiController.DeleteFile",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "store",
+                        "description": "The store of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "description": "The key of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "isLeaf",
+                        "description": "if is leaf",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-message": {
+            "post": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "delete message",
+                "operationId": "ApiController.DeleteMessage",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the message",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Message"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-permission": {
+            "post": {
+                "tags": [
+                    "Permission API"
+                ],
+                "description": "delete permission",
+                "operationId": "ApiController.DeletePermission",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the permission",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/casdoorsdk.Permission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-provider": {
+            "post": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "delete provider",
+                "operationId": "ApiController.DeleteProvider",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the provider",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Provider"
                         }
                     }
                 ],
@@ -70,6 +638,514 @@
                 }
             }
         },
+        "/delete-task": {
+            "post": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "delete task",
+                "operationId": "ApiController.DeleteTask",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the task",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-vector": {
+            "post": {
+                "tags": [
+                    "Vector API"
+                ],
+                "description": "delete vector",
+                "operationId": "ApiController.DeleteVector",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the vector",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Vector"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-video": {
+            "post": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "delete video",
+                "operationId": "ApiController.DeleteVideo",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the video",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Video"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/delete-wordset": {
+            "post": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "delete wordset",
+                "operationId": "ApiController.DeleteWordset",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the wordset",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Wordset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-Messages": {
+            "get": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "get Messages",
+                "operationId": "ApiController.GetMessages",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "description": "The user of message",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "chat",
+                        "description": "The chat of message",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-account": {
+            "get": {
+                "tags": [
+                    "Account API"
+                ],
+                "description": "get account",
+                "operationId": "ApiController.GetAccount",
+                "responses": {
+                    "200": {
+                        "description": "{casdoorsdk} casdoorsdk.Claims The Response object"
+                    }
+                }
+            }
+        },
+        "/get-active-file": {
+            "get": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "get active file",
+                "operationId": "ApiController.GetActiveFile",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "prefix",
+                        "description": "The prefix of the file",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string \"get active file\""
+                    }
+                }
+            }
+        },
+        "/get-answer": {
+            "get": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "get answer",
+                "operationId": "ApiController.GetAnswer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "provider",
+                        "description": "The provider",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "question",
+                        "description": "The question of message",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "framework",
+                        "description": "The framework",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "video",
+                        "description": "The video",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{string} string \"answer message\""
+                    }
+                }
+            }
+        },
+        "/get-article": {
+            "get": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "get article",
+                "operationId": "ApiController.GetArticle",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of article",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Article"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-articles": {
+            "get": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "get articles",
+                "operationId": "ApiController.GetArticles",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of article",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Article"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-chat": {
+            "get": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "get chat",
+                "operationId": "ApiController.GetChat",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of chat",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Chat"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-chats": {
+            "get": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "get chats",
+                "operationId": "ApiController.GetChats",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "user",
+                        "description": "The user of chat",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "field",
+                        "description": "The field of chat",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "value",
+                        "description": "The value of chat",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Chat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-factorset": {
+            "get": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "get factorset",
+                "operationId": "ApiController.GetFactorset",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of factorset",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Factorset"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-factorsets": {
+            "get": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "get factorsets",
+                "operationId": "ApiController.GetFactorsets",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of factorsets",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Factorset"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-articles": {
+            "get": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "get global articles",
+                "operationId": "ApiController.GetGlobalArticles",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Article"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-chats": {
+            "get": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "get global chats",
+                "operationId": "ApiController.GetGlobalChats",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Chat"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-factorsets": {
+            "get": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "get global factorsets",
+                "operationId": "ApiController.GetGlobalFactorSets",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Factorset"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-messages": {
+            "get": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "get global messages",
+                "operationId": "ApiController.GetGlobalMessages",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-providers": {
+            "get": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "get global providers",
+                "operationId": "ApiController.GetGlobalProviders",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Provider"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/get-global-stores": {
             "get": {
                 "tags": [
@@ -84,6 +1160,276 @@
                             "type": "array",
                             "items": {
                                 "$ref": "#/definitions/object.Store"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-tasks": {
+            "get": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "get global tasks",
+                "operationId": "ApiController.GetGlobalTasks",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Task"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-vectors": {
+            "get": {
+                "tags": [
+                    "Vector API"
+                ],
+                "description": "get global vectors",
+                "operationId": "ApiController.GetGlobalVectors",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Vector"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-videos": {
+            "get": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "get global videos",
+                "operationId": "ApiController.GetGlobalVideos",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Video"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-global-wordsets": {
+            "get": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "get global wordsets",
+                "operationId": "ApiController.GetGlobalWordsets",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Wordset"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-message": {
+            "get": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "get message",
+                "operationId": "ApiController.GetMessage",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of message",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Message"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-message-answer": {
+            "get": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "get message answer",
+                "operationId": "ApiController.GetMessageAnswer",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of message",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{stream} string \"An event stream of message answers in JSON format\""
+                    }
+                }
+            }
+        },
+        "/get-permission": {
+            "get": {
+                "tags": [
+                    "Permission API"
+                ],
+                "description": "get permission",
+                "operationId": "ApiController.GetPermission",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id(owner/name) of permission",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/casdoorsdk.Permission"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-permissions": {
+            "get": {
+                "tags": [
+                    "Permission API"
+                ],
+                "description": "get permissions",
+                "operationId": "ApiController.GetPermissions",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/casdoorsdk.Permission"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-provider": {
+            "get": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "get provider",
+                "operationId": "ApiController.GetProvider",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of provider",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Provider"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-providers": {
+            "get": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "get providers",
+                "operationId": "ApiController.GetProviders",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Provider"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-range-usages": {
+            "get": {
+                "tags": [
+                    "Usage API"
+                ],
+                "description": "get range usages",
+                "operationId": "ApiController.GetRangeUsages",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "count",
+                        "description": "count of range usages",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Usage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-storage-providers": {
+            "get": {
+                "tags": [
+                    "Storage Provider API"
+                ],
+                "description": "get storage providers",
+                "operationId": "ApiController.GetStorageProviders",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Provider"
                             }
                         }
                     }
@@ -145,6 +1491,286 @@
                 }
             }
         },
+        "/get-task": {
+            "get": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "get task",
+                "operationId": "ApiController.GetTask",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of task",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-tasks": {
+            "get": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "get tasks",
+                "operationId": "ApiController.GetTasks",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of task",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Task"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-usages": {
+            "get": {
+                "tags": [
+                    "Usage API"
+                ],
+                "description": "get usages",
+                "operationId": "ApiController.GetUsages",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "days",
+                        "description": "days count",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Usage"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-vectors": {
+            "get": {
+                "tags": [
+                    "Vector API"
+                ],
+                "description": "get vectors",
+                "operationId": "ApiController.GetVectors",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Vector"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-video": {
+            "get": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "get video",
+                "operationId": "ApiController.GetVideo",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of video",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Video"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-videos": {
+            "get": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "get videos",
+                "operationId": "ApiController.GetVideos",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of videos",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Video"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get-wordset": {
+            "get": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "get wordset",
+                "operationId": "ApiController.GetWordset",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of wordset",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Wordset"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-wordset-graph": {
+            "get": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "get wordset graph",
+                "operationId": "ApiController.GetWordsetGraph",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of wordset",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "clusterNumber",
+                        "description": "The clusterNumber of wordset",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "distanceLimit",
+                        "description": "The distanceLimit of wordset",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Graph"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-wordset-match": {
+            "get": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "get wordset match",
+                "operationId": "ApiController.GetWordsetMatch",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id of wordset",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/object.Wordset"
+                        }
+                    }
+                }
+            }
+        },
+        "/get-wordsets": {
+            "get": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "get wordsets",
+                "operationId": "ApiController.GetWordsets",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "owner",
+                        "description": "The owner of wordsets",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/object.Wordset"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/refresh-store-vectors": {
             "post": {
                 "tags": [
@@ -160,6 +1786,298 @@
                         "required": true,
                         "schema": {
                             "$ref": "#/definitions/object.Store"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/signin": {
+            "post": {
+                "tags": [
+                    "Account API"
+                ],
+                "description": "sign in",
+                "operationId": "ApiController.Signin",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "code",
+                        "description": "code of account",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "state",
+                        "description": "state of account",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{casdoorsdk} casdoorsdk.Claims The Response object"
+                    }
+                }
+            }
+        },
+        "/signout": {
+            "post": {
+                "tags": [
+                    "Account API"
+                ],
+                "description": "sign out",
+                "operationId": "ApiController.Signout",
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-article": {
+            "post": {
+                "tags": [
+                    "Article API"
+                ],
+                "description": "update article",
+                "operationId": "ApiController.UpdateArticle",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the article",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the article",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Article"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-chat": {
+            "post": {
+                "tags": [
+                    "Chat API"
+                ],
+                "description": "update Chat",
+                "operationId": "ApiController.UpdateChat",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the chat",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the chat",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Chat"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-factorset": {
+            "post": {
+                "tags": [
+                    "Factorset API"
+                ],
+                "description": "update factorset",
+                "operationId": "ApiController.UpdateFactorset",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the factorset",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the factorset",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Factorset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-file": {
+            "post": {
+                "tags": [
+                    "File API"
+                ],
+                "description": "update file",
+                "operationId": "ApiController.UpdateFile",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "storeId",
+                        "description": "The store id of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "query",
+                        "name": "key",
+                        "description": "The key of the file",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the File",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.File"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-message": {
+            "post": {
+                "tags": [
+                    "Message API"
+                ],
+                "description": "update message",
+                "operationId": "ApiController.UpdateMessage",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the message",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the message",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Message"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-permission": {
+            "post": {
+                "tags": [
+                    "Permission API"
+                ],
+                "description": "update permission",
+                "operationId": "ApiController.UpdatePermission",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the permission",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/casdoorsdk.Permission"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-provider": {
+            "post": {
+                "tags": [
+                    "Provider API"
+                ],
+                "description": "update provider",
+                "operationId": "ApiController.UpdateProvider",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the provider",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the provider",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Provider"
                         }
                     }
                 ],
@@ -207,15 +2125,189 @@
                     }
                 }
             }
+        },
+        "/update-task": {
+            "post": {
+                "tags": [
+                    "Task API"
+                ],
+                "description": "update task",
+                "operationId": "ApiController.UpdateTask",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the task",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the task",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Task"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-vector": {
+            "post": {
+                "tags": [
+                    "Vector API"
+                ],
+                "description": "update vector",
+                "operationId": "ApiController.UpdateVector",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the vector",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the vector",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Vector"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-video": {
+            "post": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "update video",
+                "operationId": "ApiController.UpdateVideo",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the video",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the video",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Video"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/update-wordset": {
+            "post": {
+                "tags": [
+                    "Wordset API"
+                ],
+                "description": "update wordset",
+                "operationId": "ApiController.UpdateWordset",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "id",
+                        "description": "The id (owner/name) of the wordset",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "in": "body",
+                        "name": "body",
+                        "description": "The details of the role",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/object.Wordset"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The Response object",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/upload-video": {
+            "post": {
+                "tags": [
+                    "Video API"
+                ],
+                "description": "upload video",
+                "operationId": "ApiController.UploadVideo",
+                "parameters": [
+                    {
+                        "in": "formData",
+                        "name": "file",
+                        "description": "The video file to upload",
+                        "required": true,
+                        "type": "file"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "\"The fileId of the uploaded video\"",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "17838.Factor": {
+            "title": "Factor",
+            "type": "object"
+        },
         "81136.File": {
             "title": "File",
             "type": "object"
         },
         "82282.Properties": {
             "title": "Properties",
+            "type": "object"
+        },
+        "casdoorsdk.Permission": {
+            "title": "Permission",
             "type": "object"
         },
         "controllers.Response": {
@@ -246,6 +2338,204 @@
             "title": "object",
             "type": "object"
         },
+        "object.Article": {
+            "title": "Article",
+            "type": "object",
+            "properties": {
+                "content": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Block"
+                    }
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Block": {
+            "title": "Block",
+            "type": "object",
+            "properties": {
+                "state": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "textEn": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Chat": {
+            "title": "Chat",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "clientIp": {
+                    "type": "string"
+                },
+                "clientIpDesc": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "isDeleted": {
+                    "type": "boolean"
+                },
+                "messageCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "store": {
+                    "type": "string"
+                },
+                "tokenCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "updatedTime": {
+                    "type": "string"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "user1": {
+                    "type": "string"
+                },
+                "user2": {
+                    "type": "string"
+                },
+                "userAgent": {
+                    "type": "string"
+                },
+                "userAgentDesc": {
+                    "type": "string"
+                },
+                "users": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "object.Factor": {
+            "title": "Factor",
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string"
+                },
+                "color": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Factorset": {
+            "title": "Factorset",
+            "type": "object",
+            "properties": {
+                "allFactors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Factor"
+                    }
+                },
+                "count": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "dimension": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "factorMap": {
+                    "$ref": "#/definitions/17838.Factor"
+                },
+                "factors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Factor"
+                    }
+                },
+                "fileName": {
+                    "type": "string"
+                },
+                "fileSize": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "url": {
+                    "type": "string"
+                }
+            }
+        },
         "object.File": {
             "title": "File",
             "type": "object",
@@ -273,6 +2563,237 @@
                     "type": "string"
                 },
                 "url": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Graph": {
+            "title": "Graph",
+            "type": "object",
+            "properties": {
+                "links": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Link"
+                    }
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Node"
+                    }
+                }
+            }
+        },
+        "object.Label": {
+            "title": "Label",
+            "type": "object",
+            "properties": {
+                "endTime": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "speaker": {
+                    "type": "string"
+                },
+                "startTime": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "tag1": {
+                    "type": "string"
+                },
+                "tag2": {
+                    "type": "string"
+                },
+                "tag3": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Link": {
+            "title": "Link",
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "source": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "target": {
+                    "type": "string"
+                },
+                "value": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "object.Message": {
+            "title": "Message",
+            "type": "object",
+            "properties": {
+                "author": {
+                    "type": "string"
+                },
+                "chat": {
+                    "type": "string"
+                },
+                "comment": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "errorText": {
+                    "type": "string"
+                },
+                "fileName": {
+                    "type": "string"
+                },
+                "isAlerted": {
+                    "type": "boolean"
+                },
+                "isDeleted": {
+                    "type": "boolean"
+                },
+                "isHidden": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "needNotify": {
+                    "type": "boolean"
+                },
+                "organization": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "replyTo": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "tokenCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "user": {
+                    "type": "string"
+                },
+                "vectorScores": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.VectorScore"
+                    }
+                }
+            }
+        },
+        "object.Node": {
+            "title": "Node",
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "val": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "weight": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "object.Provider": {
+            "title": "Provider",
+            "type": "object",
+            "properties": {
+                "apiVersion": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "clientId": {
+                    "type": "string"
+                },
+                "clientSecret": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "frequencyPenalty": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "presencePenalty": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "providerUrl": {
+                    "type": "string"
+                },
+                "subType": {
+                    "type": "string"
+                },
+                "temperature": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "topK": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "topP": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "type": {
                     "type": "string"
                 }
             }
@@ -330,6 +2851,318 @@
                     "type": "string"
                 },
                 "welcome": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Task": {
+            "title": "Task",
+            "type": "object",
+            "properties": {
+                "activity": {
+                    "type": "string"
+                },
+                "application": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "example": {
+                    "type": "string"
+                },
+                "grade": {
+                    "type": "string"
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "log": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "path": {
+                    "type": "string"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "result": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Usage": {
+            "title": "Usage",
+            "type": "object",
+            "properties": {
+                "chatCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "messageCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "tokenCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "userCount": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "object.Vector": {
+            "title": "Vector",
+            "type": "object",
+            "properties": {
+                "createdTime": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "number",
+                        "format": "float"
+                    }
+                },
+                "dimension": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "file": {
+                    "type": "string"
+                },
+                "index": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "double"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "score": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "store": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                },
+                "tokenCount": {
+                    "type": "integer",
+                    "format": "int64"
+                }
+            }
+        },
+        "object.VectorScore": {
+            "title": "VectorScore",
+            "type": "object",
+            "properties": {
+                "score": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "vector": {
+                    "type": "string"
+                }
+            }
+        },
+        "object.Video": {
+            "title": "Video",
+            "type": "object",
+            "properties": {
+                "audioUrl": {
+                    "type": "string"
+                },
+                "class": {
+                    "type": "string"
+                },
+                "coverUrl": {
+                    "type": "string"
+                },
+                "createdTime": {
+                    "type": "string"
+                },
+                "dataUrl": {
+                    "type": "string"
+                },
+                "dataUrls": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "editMode": {
+                    "type": "string"
+                },
+                "grade": {
+                    "type": "string"
+                },
+                "keywords": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "labelCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Label"
+                    }
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
+                    "type": "string"
+                },
+                "playAuth": {
+                    "type": "string"
+                },
+                "school": {
+                    "type": "string"
+                },
+                "segmentCount": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "segments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Label"
+                    }
+                },
+                "stage": {
+                    "type": "string"
+                },
+                "subject": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                },
+                "tagOnPause": {
+                    "type": "boolean"
+                },
+                "task1": {
+                    "type": "string"
+                },
+                "task2": {
+                    "type": "string"
+                },
+                "task3": {
+                    "type": "string"
+                },
+                "template": {
+                    "type": "string"
+                },
+                "topic": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "videoId": {
+                    "type": "string"
+                },
+                "videoLength": {
+                    "type": "string"
+                },
+                "wordCountMap": {
+                    "additionalProperties": {
+                        "type": "integer",
+                        "format": "int64"
+                    }
+                }
+            }
+        },
+        "object.Wordset": {
+            "title": "Wordset",
+            "type": "object",
+            "properties": {
+                "createdTime": {
+                    "type": "string"
+                },
+                "displayName": {
+                    "type": "string"
+                },
+                "distanceLimit": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "factors": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/object.Factor"
+                    }
+                },
+                "factorset": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "owner": {
                     "type": "string"
                 }
             }

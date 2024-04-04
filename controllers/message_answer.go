@@ -23,6 +23,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetMessageAnswer
+// @Title GetMessageAnswer
+// @Tag Message API
+// @Description get message answer
+// @Param id query string true "The id of message"
+// @Success 200 {stream} string "An event stream of message answers in JSON format"
+// @router /get-message-answer [get]
 func (c *ApiController) GetMessageAnswer() {
 	id := c.Input().Get("id")
 
@@ -240,6 +247,16 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 }
 
+// GetAnswer
+// @Title GetAnswer
+// @Tag Message API
+// @Description get answer
+// @Param provider query string true "The provider"
+// @Param question query string true "The question of message"
+// @Param framework query string true "The framework"
+// @Param video query string true "The video"
+// @Success 200 {string} string "answer message"
+// @router /get-answer [get]
 func (c *ApiController) GetAnswer() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {

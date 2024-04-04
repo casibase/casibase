@@ -22,6 +22,12 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetGlobalMessages
+// @Title GetGlobalMessages
+// @Tag Message API
+// @Description get global messages
+// @Success 200 {array} object.Message The Response object
+// @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
 	messages, err := object.GetGlobalMessages()
 	if err != nil {
@@ -32,6 +38,14 @@ func (c *ApiController) GetGlobalMessages() {
 	c.ResponseOk(messages)
 }
 
+// GetMessages
+// @Title GetMessages
+// @Tag Message API
+// @Description get Messages
+// @Param user query string true "The user of message"
+// @Param chat query string true "The chat of message"
+// @Success 200 {array} object.Message The Response object
+// @router /get-Messages [get]
 func (c *ApiController) GetMessages() {
 	user := c.Input().Get("user")
 	chat := c.Input().Get("chat")
@@ -59,6 +73,13 @@ func (c *ApiController) GetMessages() {
 	c.ResponseOk(messages)
 }
 
+// GetMessage
+// @Title GetMessage
+// @Tag Message API
+// @Description get message
+// @Param id query string true "The id of message"
+// @Success 200 {object} object.Message The Response object
+// @router /get-message [get]
 func (c *ApiController) GetMessage() {
 	id := c.Input().Get("id")
 
@@ -71,6 +92,14 @@ func (c *ApiController) GetMessage() {
 	c.ResponseOk(message)
 }
 
+// UpdateMessage
+// @Title UpdateMessage
+// @Tag Message API
+// @Description update message
+// @Param id query string true "The id (owner/name) of the message"
+// @Param body body object.Message true "The details of the message"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 
@@ -100,6 +129,13 @@ func (c *ApiController) UpdateMessage() {
 	c.ResponseOk(success)
 }
 
+// AddMessage
+// @Title AddMessage
+// @Tag Message API
+// @Description add message
+// @Param body body object.Message true "The details of the message"
+// @Success 200 {object} object.Chat The Response object
+// @router /add-message [post]
 func (c *ApiController) AddMessage() {
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
@@ -180,6 +216,13 @@ func (c *ApiController) AddMessage() {
 	c.ResponseOk(chat)
 }
 
+// DeleteMessage
+// @Title DeleteMessage
+// @Tag Message API
+// @Description delete message
+// @Param body body object.Message true "The details of the message"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-message [post]
 func (c *ApiController) DeleteMessage() {
 	ok := c.RequireAdmin()
 	if !ok {

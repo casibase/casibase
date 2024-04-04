@@ -20,6 +20,12 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+// GetGlobalArticles
+// @Title GetGlobalArticles
+// @Tag Article API
+// @Description get global articles
+// @Success 200 {array} object.Article The Response object
+// @router /get-global-articles [get]
 func (c *ApiController) GetGlobalArticles() {
 	articles, err := object.GetGlobalArticles()
 	if err != nil {
@@ -30,6 +36,13 @@ func (c *ApiController) GetGlobalArticles() {
 	c.ResponseOk(object.GetMaskedArticles(articles, true))
 }
 
+// GetArticles
+// @Title GetArticles
+// @Tag Article API
+// @Description get articles
+// @Param owner query string true "The owner of article"
+// @Success 200 {array} object.Article The Response object
+// @router /get-articles [get]
 func (c *ApiController) GetArticles() {
 	owner := c.Input().Get("owner")
 
@@ -42,6 +55,13 @@ func (c *ApiController) GetArticles() {
 	c.ResponseOk(object.GetMaskedArticles(articles, true))
 }
 
+// GetArticle
+// @Title GetArticle
+// @Tag Article API
+// @Description get article
+// @Param id query string true "The id (owner/name) of article"
+// @Success 200 {object} object.Article The Response object
+// @router /get-article [get]
 func (c *ApiController) GetArticle() {
 	id := c.Input().Get("id")
 
@@ -54,6 +74,14 @@ func (c *ApiController) GetArticle() {
 	c.ResponseOk(object.GetMaskedArticle(article, true))
 }
 
+// UpdateArticle
+// @Title UpdateArticle
+// @Tag Article API
+// @Description update article
+// @Param id query string true "The id (owner/name) of the article"
+// @Param body body object.Article true "The details of the article"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-article [post]
 func (c *ApiController) UpdateArticle() {
 	id := c.Input().Get("id")
 
@@ -73,6 +101,13 @@ func (c *ApiController) UpdateArticle() {
 	c.ResponseOk(success)
 }
 
+// AddArticle
+// @Title AddArticle
+// @Tag Article API
+// @Description add article
+// @Param body body object.Article true "The details of the article"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-article [post]
 func (c *ApiController) AddArticle() {
 	var article object.Article
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &article)
@@ -90,6 +125,13 @@ func (c *ApiController) AddArticle() {
 	c.ResponseOk(success)
 }
 
+// DeleteArticle
+// @Title DeleteArticle
+// @Tag Article API
+// @Description delete article
+// @Param body body object.Article true "The details of the article"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-article [post]
 func (c *ApiController) DeleteArticle() {
 	var article object.Article
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &article)

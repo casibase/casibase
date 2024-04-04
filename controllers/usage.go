@@ -19,6 +19,13 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetUsages
+// @Title GetUsages
+// @Tag Usage API
+// @Description get usages
+// @Param days query string true "days count"
+// @Success 200 {array} object.Usage The Response object
+// @router /get-usages [get]
 func (c *ApiController) GetUsages() {
 	days := util.ParseInt(c.Input().Get("days"))
 
@@ -37,6 +44,13 @@ func (c *ApiController) GetUsages() {
 	c.ResponseOk(usages, usageMetadata)
 }
 
+// GetRangeUsages
+// @Title GetRangeUsages
+// @Tag Usage API
+// @Description get range usages
+// @Param count query string true "count of range usages"
+// @Success 200 {array} object.Usage The Response object
+// @router /get-range-usages [get]
 func (c *ApiController) GetRangeUsages() {
 	rangeType := c.Input().Get("rangeType")
 	count := util.ParseInt(c.Input().Get("count"))

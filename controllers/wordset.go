@@ -21,6 +21,12 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetGlobalWordsets
+// @Title GetGlobalWordsets
+// @Tag Wordset API
+// @Description get global wordsets
+// @Success 200 {array} object.Wordset The Response object
+// @router /get-global-wordsets [get]
 func (c *ApiController) GetGlobalWordsets() {
 	wordsets, err := object.GetGlobalWordsets()
 	if err != nil {
@@ -30,6 +36,13 @@ func (c *ApiController) GetGlobalWordsets() {
 	c.ResponseOk(wordsets)
 }
 
+// GetWordsets
+// @Title GetWordsets
+// @Tag Wordset API
+// @Description get wordsets
+// @Param owner query string true "The owner of wordsets"
+// @Success 200 {array} object.Wordset The Response object
+// @router /get-wordsets [get]
 func (c *ApiController) GetWordsets() {
 	owner := c.Input().Get("owner")
 
@@ -41,6 +54,13 @@ func (c *ApiController) GetWordsets() {
 	c.ResponseOk(wordsets)
 }
 
+// GetWordset
+// @Title GetWordset
+// @Tag Wordset API
+// @Description get wordset
+// @Param id query string true "The id of wordset"
+// @Success 200 {object} object.Wordset The Response object
+// @router /get-wordset [get]
 func (c *ApiController) GetWordset() {
 	id := c.Input().Get("id")
 
@@ -52,6 +72,15 @@ func (c *ApiController) GetWordset() {
 	c.ResponseOk(wordset)
 }
 
+// GetWordsetGraph
+// @Title GetWordsetGraph
+// @Tag Wordset API
+// @Description get wordset graph
+// @Param id query string true "The id of wordset"
+// @Param clusterNumber query string true "The clusterNumber of wordset"
+// @Param distanceLimit query string true "The distanceLimit of wordset"
+// @Success 200 {object} object.Graph The Response object
+// @router /get-wordset-graph [get]
 func (c *ApiController) GetWordsetGraph() {
 	id := c.Input().Get("id")
 	clusterNumber := util.ParseInt(c.Input().Get("clusterNumber"))
@@ -65,6 +94,13 @@ func (c *ApiController) GetWordsetGraph() {
 	c.ResponseOk(g)
 }
 
+// GetWordsetMatch
+// @Title GetWordsetMatch
+// @Tag Wordset API
+// @Description get wordset match
+// @Param id query string true "The id of wordset"
+// @Success 200 {object} object.Wordset The Response object
+// @router /get-wordset-match [get]
 func (c *ApiController) GetWordsetMatch() {
 	id := c.Input().Get("id")
 
@@ -76,6 +112,14 @@ func (c *ApiController) GetWordsetMatch() {
 	c.ResponseOk(wordset)
 }
 
+// UpdateWordset
+// @Title UpdateWordset
+// @Tag Wordset API
+// @Description update wordset
+// @Param id query string true "The id (owner/name) of the wordset"
+// @Param body body object.Wordset true "The details of the role"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-wordset [post]
 func (c *ApiController) UpdateWordset() {
 	id := c.Input().Get("id")
 
@@ -94,6 +138,13 @@ func (c *ApiController) UpdateWordset() {
 	c.ResponseOk(success)
 }
 
+// AddWordset
+// @Title AddWordset
+// @Tag Wordset API
+// @Description add wordset
+// @Param body body object.Wordset true "The details of the wordset"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-wordset [post]
 func (c *ApiController) AddWordset() {
 	var wordset object.Wordset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)
@@ -110,6 +161,13 @@ func (c *ApiController) AddWordset() {
 	c.ResponseOk(success)
 }
 
+// DeleteWordset
+// @Title DeleteWordset
+// @Tag Wordset API
+// @Description delete wordset
+// @Param body body object.Wordset true "The details of the wordset"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-wordset [post]
 func (c *ApiController) DeleteWordset() {
 	var wordset object.Wordset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &wordset)

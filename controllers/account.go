@@ -42,6 +42,14 @@ func InitAuthConfig() {
 	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
 }
 
+// Signin
+// @Title Signin
+// @Tag Account API
+// @Description sign in
+// @Param code  query string true "code of account"
+// @Param state query string true "state of account"
+// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @router /signin [post]
 func (c *ApiController) Signin() {
 	code := c.Input().Get("code")
 	state := c.Input().Get("state")
@@ -74,6 +82,12 @@ func (c *ApiController) Signin() {
 	c.ResponseOk(claims)
 }
 
+// Signout
+// @Title Signout
+// @Tag Account API
+// @Description sign out
+// @Success 200 {object} controllers.Response The Response object
+// @router /signout [post]
 func (c *ApiController) Signout() {
 	c.SetSessionClaims(nil)
 
@@ -240,6 +254,12 @@ func (c *ApiController) isSafePassword() (bool, error) {
 	}
 }
 
+// GetAccount
+// @Title GetAccount
+// @Tag Account API
+// @Description get account
+// @Success 200 {casdoorsdk} casdoorsdk.Claims The Response object
+// @router /get-account [get]
 func (c *ApiController) GetAccount() {
 	if !c.isPublicDomain() {
 		_, ok := c.RequireSignedIn()

@@ -33,6 +33,12 @@ import (
 	"github.com/casibase/casibase/video"
 )
 
+// GetGlobalVideos
+// @Title GetGlobalVideos
+// @Tag Video API
+// @Description get global videos
+// @Success 200 {array} object.Video The Response object
+// @router /get-global-videos [get]
 func (c *ApiController) GetGlobalVideos() {
 	videos, err := object.GetGlobalVideos()
 	if err != nil {
@@ -43,6 +49,13 @@ func (c *ApiController) GetGlobalVideos() {
 	c.ResponseOk(videos)
 }
 
+// GetVideos
+// @Title GetVideos
+// @Tag Video API
+// @Description get videos
+// @Param owner query string true "The owner of videos"
+// @Success 200 {array} object.Video The Response object
+// @router /get-videos [get]
 func (c *ApiController) GetVideos() {
 	owner := c.Input().Get("owner")
 
@@ -75,6 +88,13 @@ func (c *ApiController) GetVideos() {
 	c.ResponseOk(videos)
 }
 
+// GetVideo
+// @Title GetVideo
+// @Tag Video API
+// @Description get video
+// @Param id query string true "The id of video"
+// @Success 200 {object} object.Video The Response object
+// @router /get-video [get]
 func (c *ApiController) GetVideo() {
 	id := c.Input().Get("id")
 
@@ -93,6 +113,14 @@ func (c *ApiController) GetVideo() {
 	c.ResponseOk(video)
 }
 
+// UpdateVideo
+// @Title UpdateVideo
+// @Tag Video API
+// @Description update video
+// @Param id query string true "The id (owner/name) of the video"
+// @Param body body object.Video true "The details of the video"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-video [post]
 func (c *ApiController) UpdateVideo() {
 	id := c.Input().Get("id")
 
@@ -112,6 +140,13 @@ func (c *ApiController) UpdateVideo() {
 	c.ResponseOk(success)
 }
 
+// AddVideo
+// @Title AddVideo
+// @Tag Video API
+// @Description add video
+// @Param body body object.Video true "The details of the video"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-video [post]
 func (c *ApiController) AddVideo() {
 	var video object.Video
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &video)
@@ -129,6 +164,13 @@ func (c *ApiController) AddVideo() {
 	c.ResponseOk(success)
 }
 
+// DeleteVideo
+// @Title DeleteVideo
+// @Tag Video API
+// @Description delete video
+// @Param body body object.Video true "The details of the video"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-video [post]
 func (c *ApiController) DeleteVideo() {
 	var video object.Video
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &video)
@@ -189,6 +231,13 @@ func getSpeaker(s string) string {
 	}
 }
 
+// UploadVideo
+// @Title UploadVideo
+// @Tag Video API
+// @Description upload video
+// @Param file formData file true "The video file to upload"
+// @Success 200 {object} string "The fileId of the uploaded video"
+// @router /upload-video [post]
 func (c *ApiController) UploadVideo() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
