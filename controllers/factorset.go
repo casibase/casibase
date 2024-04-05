@@ -20,6 +20,12 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+// GetGlobalFactorsets
+// @Title GetGlobalFactorSets
+// @Tag Factorset API
+// @Description get global factorsets
+// @Success 200 {array} object.Factorset The Response object
+// @router /get-global-factorsets [get]
 func (c *ApiController) GetGlobalFactorsets() {
 	factorsets, err := object.GetGlobalFactorsets()
 	if err != nil {
@@ -30,6 +36,13 @@ func (c *ApiController) GetGlobalFactorsets() {
 	c.ResponseOk(factorsets)
 }
 
+// GetFactorsets
+// @Title GetFactorsets
+// @Tag Factorset API
+// @Description get factorsets
+// @Param owner query string true "The owner of factorsets"
+// @Success 200 {array} object.Factorset The Response object
+// @router /get-factorsets [get]
 func (c *ApiController) GetFactorsets() {
 	owner := c.Input().Get("owner")
 
@@ -42,6 +55,13 @@ func (c *ApiController) GetFactorsets() {
 	c.ResponseOk(factorsets)
 }
 
+// GetFactorset
+// @Title GetFactorset
+// @Tag Factorset API
+// @Description get factorset
+// @Param id query string true "The id of factorset"
+// @Success 200 {object} object.Factorset The Response object
+// @router /get-factorset [get]
 func (c *ApiController) GetFactorset() {
 	id := c.Input().Get("id")
 
@@ -54,6 +74,14 @@ func (c *ApiController) GetFactorset() {
 	c.ResponseOk(factorset)
 }
 
+// UpdateFactorset
+// @Title UpdateFactorset
+// @Tag Factorset API
+// @Description update factorset
+// @Param id query string true "The id (owner/name) of the factorset"
+// @Param body body object.Factorset true "The details of the factorset"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-factorset [post]
 func (c *ApiController) UpdateFactorset() {
 	id := c.Input().Get("id")
 
@@ -73,6 +101,13 @@ func (c *ApiController) UpdateFactorset() {
 	c.ResponseOk(success)
 }
 
+// AddFactorset
+// @Title AddFactorset
+// @Tag Factorset API
+// @Description add factorset
+// @Param body body object.Factorset true "The details of the factorset"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-factorset [post]
 func (c *ApiController) AddFactorset() {
 	var factorset object.Factorset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &factorset)
@@ -90,6 +125,13 @@ func (c *ApiController) AddFactorset() {
 	c.ResponseOk(success)
 }
 
+// DeleteFactorset
+// @Title DeleteFactorset
+// @Tag Factorset API
+// @Description delete factorset
+// @Param body body object.Factorset true "The details of the factorset"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-factorset [post]
 func (c *ApiController) DeleteFactorset() {
 	var factorset object.Factorset
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &factorset)

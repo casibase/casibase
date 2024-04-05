@@ -21,6 +21,12 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetGlobalChats
+// @Title GetGlobalChats
+// @Tag Chat API
+// @Description get global chats
+// @Success 200 {array} object.Chat The Response object
+// @router /get-global-chats [get]
 func (c *ApiController) GetGlobalChats() {
 	chats, err := object.GetGlobalChats()
 	if err != nil {
@@ -31,6 +37,15 @@ func (c *ApiController) GetGlobalChats() {
 	c.ResponseOk(chats)
 }
 
+// GetChats
+// @Title GetChats
+// @Tag Chat API
+// @Description get chats
+// @Param user query string true "The user of chat"
+// @Param field query string true "The field of chat"
+// @Param value query string true "The value of chat"
+// @Success 200 {array} object.Chat The Response object
+// @router /get-chats [get]
 func (c *ApiController) GetChats() {
 	user := c.Input().Get("user")
 	field := c.Input().Get("field")
@@ -55,6 +70,13 @@ func (c *ApiController) GetChats() {
 	c.ResponseOk(chats)
 }
 
+// GetChat
+// @Title GetChat
+// @Tag Chat API
+// @Description get chat
+// @Param id query string true "The id of chat"
+// @Success 200 {object} object.Chat The Response object
+// @router /get-chat [get]
 func (c *ApiController) GetChat() {
 	id := c.Input().Get("id")
 
@@ -67,6 +89,14 @@ func (c *ApiController) GetChat() {
 	c.ResponseOk(chat)
 }
 
+// UpdateChat
+// @Title UpdateChat
+// @Tag Chat API
+// @Description update Chat
+// @Param id query string true "The id (owner/name) of the chat"
+// @Param body body object.Chat true "The details of the chat"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-chat [post]
 func (c *ApiController) UpdateChat() {
 	id := c.Input().Get("id")
 
@@ -86,6 +116,13 @@ func (c *ApiController) UpdateChat() {
 	c.ResponseOk(success)
 }
 
+// AddChat
+// @Title AddChat
+// @Tag Chat API
+// @Description add chat
+// @Param body body object.Chat true "The details of the chat"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-chat [post]
 func (c *ApiController) AddChat() {
 	var chat object.Chat
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &chat)
@@ -126,6 +163,13 @@ func (c *ApiController) AddChat() {
 	c.ResponseOk(success)
 }
 
+// DeleteChat
+// @Title DeleteChat
+// @Tag Chat API
+// @Description delete chat
+// @Param body body object.Chat true "The details of the chat"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-chat [post]
 func (c *ApiController) DeleteChat() {
 	ok := c.RequireAdmin()
 	if !ok {

@@ -20,6 +20,12 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+// GetGlobalTasks
+// @Title GetGlobalTasks
+// @Tag Task API
+// @Description get global tasks
+// @Success 200 {array} object.Task The Response object
+// @router /get-global-tasks [get]
 func (c *ApiController) GetGlobalTasks() {
 	tasks, err := object.GetGlobalTasks()
 	if err != nil {
@@ -30,6 +36,13 @@ func (c *ApiController) GetGlobalTasks() {
 	c.ResponseOk(object.GetMaskedTasks(tasks, true))
 }
 
+// GetTasks
+// @Title GetTasks
+// @Tag Task API
+// @Description get tasks
+// @Param owner query string true "The owner of task"
+// @Success 200 {array} object.Task The Response object
+// @router /get-tasks [get]
 func (c *ApiController) GetTasks() {
 	owner := c.Input().Get("owner")
 
@@ -42,6 +55,13 @@ func (c *ApiController) GetTasks() {
 	c.ResponseOk(object.GetMaskedTasks(tasks, true))
 }
 
+// GetTask
+// @Title GetTask
+// @Tag Task API
+// @Description get task
+// @Param id query string true "The id (owner/name) of task"
+// @Success 200 {object} object.Task The Response object
+// @router /get-task [get]
 func (c *ApiController) GetTask() {
 	id := c.Input().Get("id")
 
@@ -54,6 +74,14 @@ func (c *ApiController) GetTask() {
 	c.ResponseOk(object.GetMaskedTask(task, true))
 }
 
+// UpdateTask
+// @Title UpdateTask
+// @Tag Task API
+// @Description update task
+// @Param id query string true "The id (owner/name) of the task"
+// @Param body body object.Task true "The details of the task"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-task [post]
 func (c *ApiController) UpdateTask() {
 	id := c.Input().Get("id")
 
@@ -73,6 +101,13 @@ func (c *ApiController) UpdateTask() {
 	c.ResponseOk(success)
 }
 
+// AddTask
+// @Title AddTask
+// @Tag Task API
+// @Description add task
+// @Param body body object.Task true "The details of the task"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-task [post]
 func (c *ApiController) AddTask() {
 	var task object.Task
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &task)
@@ -90,6 +125,13 @@ func (c *ApiController) AddTask() {
 	c.ResponseOk(success)
 }
 
+// DeleteTask
+// @Title DeleteTask
+// @Tag Task API
+// @Description delete task
+// @Param body body object.Task true "The details of the task"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-task [post]
 func (c *ApiController) DeleteTask() {
 	var task object.Task
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &task)

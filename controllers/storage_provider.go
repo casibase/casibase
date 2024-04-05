@@ -31,6 +31,12 @@ func getStorageProviders() ([]*casdoorsdk.Provider, error) {
 	return res, nil
 }
 
+// GetStorageProviders
+// @Title GetStorageProviders
+// @Tag Storage Provider API
+// @Description get storage providers
+// @Success 200 {array} object.Provider The Response object
+// @router /get-storage-providers [get]
 func (c *ApiController) GetStorageProviders() {
 	// owner := c.Input().Get("owner")
 

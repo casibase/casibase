@@ -58,6 +58,14 @@ func addFileToCache(key string, filename string, bs []byte) {
 	util.WriteBytesToPath(bs, path)
 }
 
+// ActivateFile
+// @Title ActivateFile
+// @Tag File API
+// @Description activate file
+// @Param key query string true "The key of the file"
+// @Param filename query string true "The name of the file"
+// @Success 200 {object} controllers.Response The Response object
+// @router /activate-file [post]
 func (c *ApiController) ActivateFile() {
 	_, ok := c.RequireSignedIn()
 	if !ok {
@@ -84,6 +92,13 @@ func (c *ApiController) ActivateFile() {
 	c.ResponseOk(true)
 }
 
+// GetActiveFile
+// @Title GetActiveFile
+// @Tag File API
+// @Description get active file
+// @Param prefix query string true "The prefix of the file"
+// @Success 200 {string} string "get active file"
+// @router /get-active-file [get]
 func (c *ApiController) GetActiveFile() {
 	prefix := c.Input().Get("prefix")
 

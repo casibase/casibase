@@ -21,6 +21,15 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
+// UpdateFile
+// @Title UpdateFile
+// @Tag File API
+// @Description update file
+// @Param storeId query string true "The store id of the file"
+// @Param key query string true "The key of the file"
+// @Param body body object.File true "The details of the File"
+// @Success 200 {object} controllers.Response The Response object
+// @router /update-file [post]
 func (c *ApiController) UpdateFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
@@ -45,6 +54,16 @@ func (c *ApiController) UpdateFile() {
 	c.ResponseOk(res)
 }
 
+// AddFile
+// @Title AddFile
+// @Tag File API
+// @Description add file
+// @Param store query string true "The store of the file"
+// @Param key query string true "The key of the file"
+// @Param isLeaf query string true "if is leaf"
+// @Param filename query string true "The name of the file"
+// @Success 200 {object} controllers.Response The Response object
+// @router /add-file [post]
 func (c *ApiController) AddFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
@@ -81,6 +100,15 @@ func (c *ApiController) AddFile() {
 	c.ResponseOk(res)
 }
 
+// DeleteFile
+// @Title DeleteFile
+// @Tag File API
+// @Description delete file
+// @Param store query string true "The store of the file"
+// @Param key query string true "The key of the file"
+// @Param isLeaf query string true "if is leaf"
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-file [post]
 func (c *ApiController) DeleteFile() {
 	userName, ok := c.RequireSignedIn()
 	if !ok {
