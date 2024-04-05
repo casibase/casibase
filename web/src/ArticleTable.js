@@ -188,7 +188,7 @@ class ArticleTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea autoSize={{minRows: 1}} value={text} onChange={(e) => {
+            <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
@@ -201,7 +201,7 @@ class ArticleTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea autoSize={{minRows: 1}} value={text} onChange={(e) => {
+            <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
               this.updateField(table, index, "textEn", e.target.value);
             }} />
           );

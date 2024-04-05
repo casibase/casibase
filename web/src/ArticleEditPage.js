@@ -107,12 +107,55 @@ class ArticleEditPage extends React.Component {
     return text;
   }
 
+  splitTextBlocks(blocks) {
+    // Maximum length of text in a block before splitting
+    const textMaxLength = 1000; // Adjust this value as needed
+
+    let blockIndex = 0;
+    blocks.forEach((block, index) => {
+      if (block.type === "Text") {
+        const paragraphs = block.textEn.split("\n");
+        const newBlocks = [];
+        let currentText = "";
+
+        paragraphs.forEach((paragraph) => {
+          if ((currentText.length + paragraph.length) > textMaxLength) {
+            if (currentText.trim() !== "") {
+              // Push the current text as a new block and reset currentText
+              newBlocks.push({no: blockIndex++, type: "Text", text: "", textEn: currentText.trim(), state: ""});
+              currentText = "";
+            }
+            // If the paragraph itself is longer than textMaxLength, it becomes a new block
+            if (paragraph.length > textMaxLength) {
+              newBlocks.push({no: blockIndex++, type: "Text", text: "", textEn: paragraph, state: ""});
+            } else {
+              currentText = paragraph;
+            }
+          } else {
+            // Accumulate paragraph
+            currentText += paragraph + "\n";
+          }
+        });
+
+        // Check if there is remaining text to be pushed as a new block
+        if (currentText.trim() !== "") {
+          newBlocks.push({no: blockIndex++, type: "Text", text: "", textEn: currentText.trim(), state: ""});
+        }
+
+        // Replace the original block with the new blocks
+        blocks.splice(index, 1, ...newBlocks);
+      }
+    });
+
+    return blocks;
+  }
+
   parseText() {
     let text = this.state.article.text;
     text = this.preprocessText(text);
     this.updateArticleField("text", text);
 
-    const blocks = [];
+    let blocks = [];
     let blockIndex = 0;
 
     const patterns = [
@@ -168,6 +211,8 @@ class ArticleEditPage extends React.Component {
       block.textEn = this.refineTextEn(block.textEn);
     });
 
+    blocks = this.splitTextBlocks(blocks);
+
     this.updateArticleField("content", blocks);
   }
 
@@ -220,7 +265,7 @@ class ArticleEditPage extends React.Component {
           </Col>
           <Col span={22}>
             <Button style={{marginBottom: "20px"}} type="primary" onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.article.text} onChange={(e) => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} showCount value={this.state.article.text} onChange={(e) => {
               this.updateArticleField("text", e.target.value);
             }} />
           </Col>
