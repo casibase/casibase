@@ -49,7 +49,7 @@ class ArticleTable extends React.Component {
   }
 
   addRow(table) {
-    const row = {no: table.length, type: "Text", text: `New Block - ${table.length}`, textEn: ""};
+    const row = {no: table.length, type: "Text", text: `New Block - ${table.length}`, textEn: "", state: ""};
     if (table === undefined) {
       table = [];
     }
@@ -114,9 +114,12 @@ class ArticleTable extends React.Component {
     const question = `Translate the following text to Chinese, only respond with the translated text:\n${text}`;
     const framework = article.name;
     const video = "";
+    this.updateField(this.props.table, i, "isLoading", true);
     MessageBackend.getAnswer(provider, question, framework, video)
       .then((res) => {
+        this.updateField(this.props.table, i, "isLoading", false);
         if (res.status === "ok") {
+          Setting.showMessage("success", "Translated EN to ZH successfully");
           this.updateField(this.props.table, i, "text", res.data);
         } else {
           Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
@@ -130,9 +133,12 @@ class ArticleTable extends React.Component {
     const question = `Translate the following text to English, only respond with the translated text:\n${text}`;
     const framework = article.name;
     const video = "";
+    this.updateField(this.props.table, i, "isLoadingEn", true);
     MessageBackend.getAnswer(provider, question, framework, video)
       .then((res) => {
+        this.updateField(this.props.table, i, "isLoadingEn", false);
         if (res.status === "ok") {
+          Setting.showMessage("success", "Translated ZH to EN successfully");
           this.updateField(this.props.table, i, "textEn", res.data);
         } else {
           Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
@@ -217,12 +223,12 @@ class ArticleTable extends React.Component {
                 </Button>
               </Tooltip>
               <Tooltip placement="bottomLeft" title={"Translate to EN"}>
-                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
+                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
                   {i18next.t("article:ZH 🡲 EN")}
                 </Button>
               </Tooltip>
               <Tooltip placement="bottomLeft" title={"Translate to ZH"}>
-                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
+                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
                   {i18next.t("article:ZH 🡰 EN")}
                 </Button>
               </Tooltip>
