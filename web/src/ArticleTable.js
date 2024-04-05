@@ -169,10 +169,12 @@ class ArticleTable extends React.Component {
             })}>
               {
                 [
-                  {id: "Text", name: i18next.t("article:Text")},
+                  {id: "Title", name: i18next.t("article:Title")},
+                  {id: "Abstract", name: i18next.t("article:Abstract")},
                   {id: "Header 1", name: i18next.t("article:Header 1")},
                   {id: "Header 2", name: i18next.t("article:Header 2")},
                   {id: "Header 3", name: i18next.t("article:Header 3")},
+                  {id: "Text", name: i18next.t("article:Text")},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>

@@ -20,6 +20,8 @@ import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import ArticleTable from "./ArticleTable";
 
+const {TextArea} = Input;
+
 class ArticleEditPage extends React.Component {
   constructor(props) {
     super(props);
@@ -81,6 +83,60 @@ class ArticleEditPage extends React.Component {
     });
   }
 
+  preprocessText(text) {
+    text = text.split("\n").filter(line => !line.trim().startsWith("%")).join("\n");
+
+    const ignoreCommands = [
+      "\\documentclass", "\\usepackage", "\\setcounter", "\\urldef", "\\newcommand",
+      "\\begin{document}", "\\end{document}", "\\titlerunning", "\\authorrunning",
+      "\\toctitle", "\\tocauthor", "\\maketitle", "\\mainmatter", "\\bibliographystyle", "\\bibliography",
+      "\\begin{spacing}", "\\end{spacing}", "\\noindent", "\\author", "\\institute", "\\email", "\\keywords", "\\label",
+    ];
+    text = text.split("\n").filter(line => {
+      return !ignoreCommands.some(cmd => line.trim().startsWith(cmd));
+    }).join("\n");
+
+    return text;
+  }
+
+  parseText() {
+    let text = this.state.article.text;
+    text = this.preprocessText(text);
+    this.updateArticleField("text", text);
+
+    const blocks = [];
+    let blockIndex = 0;
+
+    const titlePattern = /\\title\{([^}]+)\}/;
+    const abstractPattern = /\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/;
+    const sectionPattern = /\\section\{([^}]+)\}/g;
+    const subsectionPattern = /\\subsection\{([^}]+)\}/g;
+    const subsubsectionPattern = /\\subsubsection\{([^}]+)\}/g;
+
+    const titleMatch = titlePattern.exec(text);
+    if (titleMatch) {
+      blocks.push({no: blockIndex++, type: "Title", text: "", textEn: titleMatch[1], state: ""});
+    }
+
+    const abstractMatch = abstractPattern.exec(text);
+    if (abstractMatch) {
+      blocks.push({no: blockIndex++, type: "Abstract", text: "", textEn: abstractMatch[1].trim(), state: ""});
+    }
+
+    let match;
+    while ((match = sectionPattern.exec(text)) !== null) {
+      blocks.push({no: blockIndex++, type: "Header 1", text: "", textEn: match[1], state: ""});
+    }
+    while ((match = subsectionPattern.exec(text)) !== null) {
+      blocks.push({no: blockIndex++, type: "Header 2", text: "", textEn: match[1], state: ""});
+    }
+    while ((match = subsubsectionPattern.exec(text)) !== null) {
+      blocks.push({no: blockIndex++, type: "Header 3", text: "", textEn: match[1], state: ""});
+    }
+
+    this.updateArticleField("content", blocks);
+  }
+
   renderArticle() {
     return (
       <Card size="small" title={
@@ -124,6 +180,17 @@ class ArticleEditPage extends React.Component {
             </Row>
           )
         }
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Text")}:
+          </Col>
+          <Col span={22}>
+            <Button style={{marginBottom: "20px"}} type="primary" onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.article.text} onChange={(e) => {
+              this.updateArticleField("text", e.target.value);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("article:Content")}:
