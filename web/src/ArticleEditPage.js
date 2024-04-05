@@ -96,6 +96,14 @@ class ArticleEditPage extends React.Component {
       return !ignoreCommands.some(cmd => line.trim().startsWith(cmd));
     }).join("\n");
 
+    text = text.replace("\\section*{", "\\section{");
+
+    return text;
+  }
+
+  refineTextEn(text) {
+    text = text.replace(/\n{3,}/g, "\n\n");
+    text = text.replace(/^\n+/, "").replace(/\n+$/, "");
     return text;
   }
 
@@ -107,32 +115,58 @@ class ArticleEditPage extends React.Component {
     const blocks = [];
     let blockIndex = 0;
 
-    const titlePattern = /\\title\{([^}]+)\}/;
-    const abstractPattern = /\\begin\{abstract\}([\s\S]*?)\\end\{abstract\}/;
-    const sectionPattern = /\\section\{([^}]+)\}/g;
-    const subsectionPattern = /\\subsection\{([^}]+)\}/g;
-    const subsubsectionPattern = /\\subsubsection\{([^}]+)\}/g;
+    const patterns = [
+      {pattern: new RegExp("\\\\title\\{([^}]+)}", "g"), type: "Title"},
+      {pattern: new RegExp("\\\\begin\\{abstract}([\\s\\S]*?)\\\\end\\{abstract}", "g"), type: "Abstract"},
+      {pattern: new RegExp("\\\\section\\{([^}]+)}", "g"), type: "Header 1"},
+      {pattern: new RegExp("\\\\subsection\\{([^}]+)}", "g"), type: "Header 2"},
+      {pattern: new RegExp("\\\\subsubsection\\{([^}]+)}", "g"), type: "Header 3"},
+    ];
 
-    const titleMatch = titlePattern.exec(text);
-    if (titleMatch) {
-      blocks.push({no: blockIndex++, type: "Title", text: "", textEn: titleMatch[1], state: ""});
+    const matches = [];
+
+    patterns.forEach(({pattern, type}) => {
+      const allMatches = [...text.matchAll(pattern)];
+
+      allMatches.forEach(match => {
+        matches.push({
+          index: match.index,
+          length: match[0].length,
+          type: type,
+          text: match[1],
+        });
+      });
+    });
+
+    // Sort the matches by their position in the text
+    matches.sort((a, b) => a.index - b.index);
+
+    // Process the matches to create blocks
+    let lastIndex = 0;
+    matches.forEach(match => {
+      // Check for any text before the current match that hasn't been matched; consider it as regular text
+      if (match.index > lastIndex) {
+        const textPart = text.substring(lastIndex, match.index).trim();
+        if (textPart) {
+          blocks.push({no: blockIndex++, type: "Text", text: "", textEn: textPart, state: ""});
+        }
+      }
+      // Add the current match as a block
+      blocks.push({no: blockIndex++, type: match.type, text: "", textEn: match.text, state: ""});
+      lastIndex = match.index + match.length;
+    });
+
+    // Check for any unmatched text at the end of the document as regular text
+    if (lastIndex < text.length) {
+      const textPart = text.substring(lastIndex).trim();
+      if (textPart) {
+        blocks.push({no: blockIndex++, type: "Text", text: "", textEn: textPart, state: ""});
+      }
     }
 
-    const abstractMatch = abstractPattern.exec(text);
-    if (abstractMatch) {
-      blocks.push({no: blockIndex++, type: "Abstract", text: "", textEn: abstractMatch[1].trim(), state: ""});
-    }
-
-    let match;
-    while ((match = sectionPattern.exec(text)) !== null) {
-      blocks.push({no: blockIndex++, type: "Header 1", text: "", textEn: match[1], state: ""});
-    }
-    while ((match = subsectionPattern.exec(text)) !== null) {
-      blocks.push({no: blockIndex++, type: "Header 2", text: "", textEn: match[1], state: ""});
-    }
-    while ((match = subsubsectionPattern.exec(text)) !== null) {
-      blocks.push({no: blockIndex++, type: "Header 3", text: "", textEn: match[1], state: ""});
-    }
+    blocks.forEach(block => {
+      block.textEn = this.refineTextEn(block.textEn);
+    });
 
     this.updateArticleField("content", blocks);
   }
