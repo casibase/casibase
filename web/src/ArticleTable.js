@@ -34,6 +34,10 @@ class ArticleTable extends React.Component {
     this.props.onUpdateTable(table);
   }
 
+  submitArticleEdit() {
+    this.props.onSubmitArticleEdit();
+  }
+
   parseField(key, value) {
     if ([].includes(key)) {
       value = Setting.myParseInt(value);
@@ -119,8 +123,9 @@ class ArticleTable extends React.Component {
       .then((res) => {
         this.updateField(this.props.table, i, "isLoading", false);
         if (res.status === "ok") {
-          Setting.showMessage("success", "Translated EN to ZH successfully");
+          // Setting.showMessage("success", "Translated EN to ZH successfully");
           this.updateField(this.props.table, i, "text", res.data);
+          this.submitArticleEdit();
         } else {
           Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
         }
@@ -138,8 +143,9 @@ class ArticleTable extends React.Component {
       .then((res) => {
         this.updateField(this.props.table, i, "isLoadingEn", false);
         if (res.status === "ok") {
-          Setting.showMessage("success", "Translated ZH to EN successfully");
+          // Setting.showMessage("success", "Translated ZH to EN successfully");
           this.updateField(this.props.table, i, "textEn", res.data);
+          this.submitArticleEdit();
         } else {
           Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
         }

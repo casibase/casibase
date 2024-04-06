@@ -275,7 +275,7 @@ class ArticleEditPage extends React.Component {
             {i18next.t("article:Content")}:
           </Col>
           <Col span={22} >
-            <ArticleTable article={this.state.article} table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} />
+            <ArticleTable article={this.state.article} table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
           </Col>
         </Row>
       </Card>
