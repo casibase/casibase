@@ -13,14 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Input, Row, Select, Table, Tooltip} from "antd";
+import {Button, Col, Row, Select, Table, Tooltip} from "antd";
 import {BarsOutlined, DeleteOutlined, DownOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as MessageBackend from "./backend/MessageBackend";
+import MemoTextArea from "./MemoTextArea";
 
 const {Option} = Select;
-const {TextArea} = Input;
 
 class ArticleTable extends React.Component {
   constructor(props) {
@@ -188,11 +188,20 @@ class ArticleTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
+            <MemoTextArea value={text} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
+
+          // return (
+          //   <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
+          //     this.updateField(table, index, "text", e.target.value);
+          //   }} />
+          // );
         },
+        // shouldCellUpdate: (record, prevRecord) => {
+        //   return record.text !== prevRecord.text;
+        // },
       },
       {
         title: i18next.t("article:Text En"),
@@ -201,11 +210,20 @@ class ArticleTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
+            <MemoTextArea value={text} onChange={(e) => {
               this.updateField(table, index, "textEn", e.target.value);
             }} />
           );
+
+          // return (
+          //   <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
+          //     this.updateField(table, index, "textEn", e.target.value);
+          //   }} />
+          // );
         },
+        // shouldCellUpdate: (record, prevRecord) => {
+        //   return record.textEn !== prevRecord.textEn;
+        // },
       },
       {
         title: i18next.t("general:Action"),
