@@ -219,7 +219,57 @@ class ArticleEditPage extends React.Component {
     this.updateArticleField("content", blocks);
   }
 
+  getBlocksWithPrefix(blocks) {
+    let header1Counter = 0;
+    let header2Counter = 0;
+    let header3Counter = 0;
+    let lastHeader1Index = 0;
+
+    return blocks.map((block, index) => {
+      switch (block.type) {
+      case "Title":
+        block.prefix = "Tit: ";
+        break;
+      case "Abstract":
+        block.prefix = "Abs: ";
+        break;
+      case "Text":
+        block.prefix = "";
+        break;
+      case "Header 1":
+        header1Counter++;
+        header2Counter = 0;
+        lastHeader1Index = header1Counter;
+        block.prefix = `${header1Counter}. `;
+        break;
+      case "Header 2":
+        if (index > 0 && blocks[index - 1].type === "Header 1") {
+          header2Counter = 1;
+        } else {
+          header2Counter++;
+        }
+        block.prefix = `${lastHeader1Index}.${header2Counter} `;
+        break;
+      case "Header 3":
+        header3Counter++;
+        block.prefix = `${lastHeader1Index}.${header2Counter}.${header3Counter} `;
+        break;
+      default:
+        block.prefix = "";
+      }
+      if (block.type !== "Header 3") {
+        header3Counter = 0;
+      }
+      if (block.type === "Header 1" || block.type === "Header 2") {
+        header3Counter = 0;
+      }
+      return block;
+    });
+  }
+
   renderArticle() {
+    const blocks = this.getBlocksWithPrefix(this.state.article.content);
+
     return (
       <Card size="small" title={
         <div>
@@ -253,7 +303,7 @@ class ArticleEditPage extends React.Component {
           {/* </Col>*/}
           <Col span={6} >
             <Affix offsetTop={50}>
-              <ArticleMenu table={this.state.article.content} onGoToRow={(table, i) => {
+              <ArticleMenu table={blocks} onGoToRow={(table, i) => {
                 if (this.articleTableRef.current) {
                   this.articleTableRef.current.goToRow(table, i);
                 }
@@ -262,7 +312,7 @@ class ArticleEditPage extends React.Component {
           </Col>
           <Col span={1} />
           <Col span={17} >
-            <ArticleTable ref={this.articleTableRef} article={this.state.article} table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
+            <ArticleTable ref={this.articleTableRef} article={this.state.article} table={blocks} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
           </Col>
         </Row>
         {

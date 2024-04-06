@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Row, Select, Table, Tooltip} from "antd";
+import {Button, Col, Row, Select, Table, Tag, Tooltip} from "antd";
 import {BarsOutlined, DeleteOutlined, DownOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -168,7 +168,15 @@ class ArticleTable extends React.Component {
         key: "no",
         width: "60px",
         render: (text, record, index) => {
-          return (index + 1);
+          if (record.prefix !== "") {
+            return (
+              <Tag color={"processing"}>
+                {record.prefix}
+              </Tag>
+            );
+          } else {
+            return (index + 1);
+          }
         },
       },
       {

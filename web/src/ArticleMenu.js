@@ -28,7 +28,7 @@ class ArticleMenu extends React.Component {
     const stack = []; // Stack to maintain the current menu item hierarchy
 
     blocks.forEach((block, index) => {
-      const title = this.truncateText(block.text || block.textEn);
+      const title = block.prefix + this.truncateText(block.text || block.textEn);
       const key = `${block.type}-${index}`;
 
       // Basic structure of a menu item
