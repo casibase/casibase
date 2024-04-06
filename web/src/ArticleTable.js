@@ -76,6 +76,14 @@ class ArticleTable extends React.Component {
     this.updateTable(table);
   }
 
+  goToRow(table, i) {
+    const rowId = `row-${i}`;
+    const element = document.getElementById(rowId);
+    if (element) {
+      element.scrollIntoView({behavior: "smooth", block: "center"});
+    }
+  }
+
   parseTable(table, i) {
     const target = table[i];
     const splitTexts = target.text.split("\n").filter(t => t !== "");
@@ -198,16 +206,7 @@ class ArticleTable extends React.Component {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
-
-          // return (
-          //   <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
-          //     this.updateField(table, index, "text", e.target.value);
-          //   }} />
-          // );
         },
-        // shouldCellUpdate: (record, prevRecord) => {
-        //   return record.text !== prevRecord.text;
-        // },
       },
       {
         title: i18next.t("article:Text En"),
@@ -220,16 +219,7 @@ class ArticleTable extends React.Component {
               this.updateField(table, index, "textEn", e.target.value);
             }} />
           );
-
-          // return (
-          //   <TextArea autoSize={{minRows: 1}} showCount value={text} onChange={(e) => {
-          //     this.updateField(table, index, "textEn", e.target.value);
-          //   }} />
-          // );
         },
-        // shouldCellUpdate: (record, prevRecord) => {
-        //   return record.textEn !== prevRecord.textEn;
-        // },
       },
       {
         title: i18next.t("general:Action"),
@@ -286,6 +276,11 @@ class ArticleTable extends React.Component {
             {/* }*/}
           </div>
         )}
+        onRow={(record, rowIndex) => {
+          return {
+            id: `row-${rowIndex}`,
+          };
+        }}
       />
     );
   }

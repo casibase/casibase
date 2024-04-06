@@ -13,12 +13,13 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Affix, Button, Card, Col, Input, Row, Select} from "antd";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import ArticleTable from "./ArticleTable";
+import ArticleMenu from "./ArticleMenu";
 
 const {TextArea} = Input;
 
@@ -33,6 +34,8 @@ class ArticleEditPage extends React.Component {
       chatPageObj: null,
       loading: false,
     };
+
+    this.articleTableRef = React.createRef();
   }
 
   UNSAFE_componentWillMount() {
@@ -229,20 +232,37 @@ class ArticleEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Name")}:
           </Col>
-          <Col span={22} >
+          <Col span={4} >
             <Input value={this.state.article.name} onChange={e => {
               this.updateArticleField("name", e.target.value);
             }} />
           </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
+          <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
-          <Col span={22} >
+          <Col span={15} >
             <Input value={this.state.article.displayName} onChange={e => {
               this.updateArticleField("displayName", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          {/* <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
+          {/*  {i18next.t("article:Content")}:*/}
+          {/* </Col>*/}
+          <Col span={6} >
+            <Affix offsetTop={50}>
+              <ArticleMenu table={this.state.article.content} onGoToRow={(table, i) => {
+                if (this.articleTableRef.current) {
+                  this.articleTableRef.current.goToRow(table, i);
+                }
+              }} />
+            </Affix>
+          </Col>
+          <Col span={1} />
+          <Col span={17} >
+            <ArticleTable ref={this.articleTableRef} article={this.state.article} table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
           </Col>
         </Row>
         {
@@ -268,14 +288,6 @@ class ArticleEditPage extends React.Component {
             <TextArea autoSize={{minRows: 1, maxRows: 15}} showCount value={this.state.article.text} onChange={(e) => {
               this.updateArticleField("text", e.target.value);
             }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("article:Content")}:
-          </Col>
-          <Col span={22} >
-            <ArticleTable article={this.state.article} table={this.state.article.content} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
           </Col>
         </Row>
       </Card>
