@@ -224,6 +224,7 @@ class ArticleEditPage extends React.Component {
     let header2Counter = 0;
     let header3Counter = 0;
     let lastHeader1Index = 0;
+    let lastHeader2Index = 0;
 
     return blocks.map((block, index) => {
       switch (block.type) {
@@ -238,30 +239,23 @@ class ArticleEditPage extends React.Component {
         break;
       case "Header 1":
         header1Counter++;
-        header2Counter = 0;
+        header2Counter = 0; // Reset header2Counter when a new Header 1 is encountered
+        header3Counter = 0; // Reset header3Counter for new Header 1 section
         lastHeader1Index = header1Counter;
         block.prefix = `${header1Counter}. `;
         break;
       case "Header 2":
-        if (index > 0 && blocks[index - 1].type === "Header 1") {
-          header2Counter = 1;
-        } else {
-          header2Counter++;
-        }
+        header2Counter++;
+        header3Counter = 0; // Reset header3Counter when a new Header 2 is encountered
+        lastHeader2Index = header2Counter;
         block.prefix = `${lastHeader1Index}.${header2Counter} `;
         break;
       case "Header 3":
         header3Counter++;
-        block.prefix = `${lastHeader1Index}.${header2Counter}.${header3Counter} `;
+        block.prefix = `${lastHeader1Index}.${lastHeader2Index}.${header3Counter} `;
         break;
       default:
         block.prefix = "";
-      }
-      if (block.type !== "Header 3") {
-        header3Counter = 0;
-      }
-      if (block.type === "Header 1" || block.type === "Header 2") {
-        header3Counter = 0;
       }
       return block;
     });
@@ -302,12 +296,14 @@ class ArticleEditPage extends React.Component {
           {/*  {i18next.t("article:Content")}:*/}
           {/* </Col>*/}
           <Col span={6} >
-            <Affix offsetTop={50}>
-              <ArticleMenu table={blocks} onGoToRow={(table, i) => {
-                if (this.articleTableRef.current) {
-                  this.articleTableRef.current.goToRow(table, i);
-                }
-              }} />
+            <Affix offsetTop={0}>
+              <div style={{height: "100vh", overflowY: "auto", borderRight: 0}}>
+                <ArticleMenu table={blocks} onGoToRow={(table, i) => {
+                  if (this.articleTableRef.current) {
+                    this.articleTableRef.current.goToRow(table, i);
+                  }
+                }} />
+              </div>
             </Affix>
           </Col>
           <Col span={1} />
