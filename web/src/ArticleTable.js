@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Col, Row, Select, Table, Tag} from "antd";
-import {BarsOutlined, DeleteOutlined, DownOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
+import {BarsOutlined, DeleteOutlined, DownOutlined, FileAddOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -53,11 +53,20 @@ class ArticleTable extends React.Component {
   }
 
   addRow(table) {
-    const row = {no: table.length, type: "Text", text: `New Block - ${table.length}`, textEn: "", state: ""};
+    const row = {no: table.length, type: "Text", text: "", textEn: "", state: ""};
     if (table === undefined) {
       table = [];
     }
     table = Setting.addRow(table, row);
+    this.updateTable(table);
+  }
+
+  insertRow(table, i) {
+    const row = {no: table.length, type: "Text", text: "", textEn: "", state: ""};
+    if (table === undefined) {
+      table = [];
+    }
+    table = Setting.insertRow(table, row, i + 1);
     this.updateTable(table);
   }
 
@@ -256,6 +265,7 @@ class ArticleTable extends React.Component {
               <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
                 {i18next.t("article:ZH 🡰 EN")}
               </Button>
+              <Button style={{marginBottom: "5px", marginRight: "5px"}} icon={<FileAddOutlined />} size="small" onClick={() => this.insertRow(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
               <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
