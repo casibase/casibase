@@ -43,6 +43,22 @@ class ArticleEditPage extends React.Component {
     this.getModelProviders();
   }
 
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyDown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyDown);
+  }
+
+  handleKeyDown = (event) => {
+    // Check if Ctrl or Command (for macOS) is pressed along with S
+    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+      event.preventDefault(); // Prevent the browser's save action
+      this.submitArticleEdit(false); // Call your method here
+    }
+  };
+
   getArticle() {
     ArticleBackend.getArticle(this.props.account.name, this.state.articleName)
       .then((res) => {
