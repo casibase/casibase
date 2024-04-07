@@ -228,7 +228,7 @@ class ArticleTable extends React.Component {
         render: (text, record, index) => {
           return (
             <MemoTextArea value={text} onChange={(e) => {
-              this.updateField(table, index, "text", e.target.value);
+              this.updateField(this.props.table, index, "text", e.target.value);
             }} />
           );
         },
@@ -241,7 +241,7 @@ class ArticleTable extends React.Component {
         render: (text, record, index) => {
           return (
             <MemoTextArea value={text} onChange={(e) => {
-              this.updateField(table, index, "textEn", e.target.value);
+              this.updateField(this.props.table, index, "textEn", e.target.value);
             }} />
           );
         },
