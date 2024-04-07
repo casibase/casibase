@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Button, Card, Col, Input, Row, Select} from "antd";
+import {Affix, Button, Card, Col, Input, Popover, Row, Select} from "antd";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -276,7 +276,7 @@ class ArticleEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Name")}:
           </Col>
-          <Col span={4} >
+          <Col span={2} >
             <Input value={this.state.article.name} onChange={e => {
               this.updateArticleField("name", e.target.value);
             }} />
@@ -285,10 +285,44 @@ class ArticleEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
-          <Col span={15} >
+          <Col span={2} >
             <Input value={this.state.article.displayName} onChange={e => {
               this.updateArticleField("displayName", e.target.value);
             }} />
+          </Col>
+          {
+            this.props.account.name !== "admin" ? null : (
+              <React.Fragment>
+                <Col span={1} />
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("store:Model provider")}:
+                </Col>
+                <Col span={5} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.article.provider} onChange={(value => {this.updateArticleField("provider", value);})}
+                    options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+                    } />
+                </Col>
+              </React.Fragment>
+            )
+          }
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("message:Text")}:
+          </Col>
+          <Col span={4}>
+            <Popover placement="left" content={
+              <div style={{width: "1000px"}}>
+                <Button style={{marginBottom: "20px"}} type="primary"
+                  onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
+                <TextArea autoSize={{minRows: 1, maxRows: 30}} showCount value={this.state.article.text} onChange={(e) => {
+                  this.updateArticleField("text", e.target.value);
+                }} />
+              </div>
+            } title="" trigger="hover">
+              <Input value={this.state.article.text} onChange={e => {
+                this.updateArticleField("text", e.target.value);
+              }} />
+            </Popover>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -297,7 +331,7 @@ class ArticleEditPage extends React.Component {
           {/* </Col>*/}
           <Col span={6} >
             <Affix offsetTop={0}>
-              <div style={{height: "100vh", overflowY: "auto", borderRight: 0}}>
+              <div style={{backgroundColor: "white", height: "100vh", overflowY: "auto", borderRight: 0}}>
                 <ArticleMenu table={blocks} onGoToRow={(table, i) => {
                   if (this.articleTableRef.current) {
                     this.articleTableRef.current.goToRow(table, i);
@@ -309,31 +343,6 @@ class ArticleEditPage extends React.Component {
           <Col span={1} />
           <Col span={17} >
             <ArticleTable ref={this.articleTableRef} article={this.state.article} table={blocks} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
-          </Col>
-        </Row>
-        {
-          this.props.account.name !== "admin" ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Model provider")}:
-              </Col>
-              <Col span={22} >
-                <Select virtual={false} style={{width: "100%"}} value={this.state.article.provider} onChange={(value => {this.updateArticleField("provider", value);})}
-                  options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
-                  } />
-              </Col>
-            </Row>
-          )
-        }
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Text")}:
-          </Col>
-          <Col span={22}>
-            <Button style={{marginBottom: "20px"}} type="primary" onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} showCount value={this.state.article.text} onChange={(e) => {
-              this.updateArticleField("text", e.target.value);
-            }} />
           </Col>
         </Row>
       </Card>
