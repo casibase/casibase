@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Row, Select, Table, Tag, Tooltip} from "antd";
+import {Button, Col, Row, Select, Table, Tag} from "antd";
 import {BarsOutlined, DeleteOutlined, DownOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -244,35 +244,21 @@ class ArticleTable extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Tooltip placement="bottomLeft" title={"Parse"}>
-                <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={!record.text.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTable(table, index)} >
-                  {i18next.t("article:Parse")}
-                </Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title={"Parse"}>
-                <Button style={{marginBottom: "10px", marginRight: "5px"}} disabled={!record.textEn.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTableEn(table, index)} >
-                  {i18next.t("article:Parse En")}
-                </Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title={"Translate to EN"}>
-                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
-                  {i18next.t("article:ZH 🡲 EN")}
-                </Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title={"Translate to ZH"}>
-                <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
-                  {i18next.t("article:ZH 🡰 EN")}
-                </Button>
-              </Tooltip>
-              <Tooltip placement="bottomLeft" title={"Up"}>
-                <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
-              </Tooltip>
-              <Tooltip placement="topLeft" title={"Down"}>
-                <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
-              </Tooltip>
-              <Tooltip placement="topLeft" title={"Delete"}>
-                <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
-              </Tooltip>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={!record.text.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTable(table, index)} >
+                {i18next.t("article:Parse")}
+              </Button>
+              <Button style={{marginBottom: "10px", marginRight: "5px"}} disabled={!record.textEn.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTableEn(table, index)} >
+                {i18next.t("article:Parse En")}
+              </Button>
+              <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
+                {i18next.t("article:ZH 🡲 EN")}
+              </Button>
+              <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
+                {i18next.t("article:ZH 🡰 EN")}
+              </Button>
+              <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
+              <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
+              <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
             </div>
           );
         },
