@@ -29,12 +29,18 @@ func (message *Message) SendEmail() error {
 	if err != nil {
 		return err
 	}
+	if organization == nil {
+		return fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
+	}
 	sender := organization.DisplayName
 
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
 		return err
+	}
+	if application == nil {
+		return fmt.Errorf("Casdoor application: [%s] doesn't exist", casdoorApplication)
 	}
 	title := application.DisplayName
 
@@ -118,6 +124,9 @@ func (message *Message) SendErrorEmail() error {
 	organization, err := casdoorsdk.GetOrganization(casdoorOrganization)
 	if err != nil {
 		return err
+	}
+	if organization == nil {
+		return fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
 	}
 	sender := organization.DisplayName
 

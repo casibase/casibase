@@ -15,6 +15,7 @@
 package object
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/astaxie/beego"
@@ -183,11 +184,17 @@ func GetUsageMetadata() (*UsageMetadata, error) {
 	if err != nil {
 		return nil, err
 	}
+	if organization == nil {
+		return nil, fmt.Errorf("Casdoor organization: [%s] doesn't exist", casdoorOrganization)
+	}
 
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 	application, err := casdoorsdk.GetApplication(casdoorApplication)
 	if err != nil {
 		return nil, err
+	}
+	if application == nil {
+		return nil, fmt.Errorf("Casdoor application: [%s] doesn't exist", casdoorApplication)
 	}
 
 	res := &UsageMetadata{
