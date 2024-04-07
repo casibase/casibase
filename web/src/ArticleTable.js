@@ -80,7 +80,15 @@ class ArticleTable extends React.Component {
     const rowId = `row-${i}`;
     const element = document.getElementById(rowId);
     if (element) {
-      element.scrollIntoView({behavior: "smooth", block: "center"});
+      const viewportHeight = window.innerHeight; // Height of the viewport
+      const elementOffsetTop = element.offsetTop; // Element's top offset relative to the document
+      const desiredTopPosition = viewportHeight / 4; // Target position for the element's top from the viewport's top
+
+      // Calculate the desired scroll position to align the element as specified
+      const scrollToPosition = elementOffsetTop - desiredTopPosition + 300;
+
+      // Scroll immediately to the calculated position
+      window.scrollTo({top: scrollToPosition, behavior: "auto"});
     }
   }
 
