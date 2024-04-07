@@ -175,7 +175,7 @@ class ArticleTable extends React.Component {
               </Tag>
             );
           } else {
-            return (index + 1);
+            return `Txt.${index + 1}`;
           }
         },
       },

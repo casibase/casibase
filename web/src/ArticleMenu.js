@@ -22,27 +22,20 @@ class ArticleMenu extends React.Component {
     return openKeys;
   }
 
-  // Function to build menu items from blocks
   buildMenuItems(blocks) {
-    const items = []; // Array to hold the final menu items
-    const stack = []; // Stack to maintain the current menu item hierarchy
+    const items = [];
+    let lastHeader1 = null;
+    let lastHeader2 = null;
+    let lastHeader3 = null;
 
     blocks.forEach((block, index) => {
       const title = block.prefix + this.truncateText(block.text || block.textEn);
       const key = `${block.type}-${index}`;
 
-      // Basic structure of a menu item
-      let menuItem = {
-        key,
-        label: title,
-      };
+      const menuItem = {key, label: title};
 
-      // Only set the onClick event for Title, Abstract, and Text block types
       if (["Title", "Abstract", "Text"].includes(block.type)) {
-        menuItem = {
-          ...menuItem,
-          onClick: () => this.gotoRow(blocks, index),
-        };
+        menuItem.onClick = () => this.gotoRow(blocks, index);
       }
 
       switch (block.type) {
@@ -50,46 +43,36 @@ class ArticleMenu extends React.Component {
       case "Abstract":
       case "Header 1":
         items.push(menuItem);
-        stack.length = 0; // Clear the stack
-        stack.push(menuItem); // Push the current item onto the stack as a potential parent
+        lastHeader1 = menuItem;
+        lastHeader2 = null;
+        lastHeader3 = null;
         break;
       case "Header 2":
-        if (stack.length > 0 && stack[stack.length - 1].key.startsWith("Header 1")) {
-          if (!stack[stack.length - 1].children) {
-            stack[stack.length - 1].children = [];
-          }
-          stack[stack.length - 1].children.push(menuItem);
-          stack.push(menuItem); // Push the current item onto the stack
+        if (lastHeader1) {
+          lastHeader1.children = lastHeader1.children || [];
+          lastHeader1.children.push(menuItem);
+          lastHeader2 = menuItem;
+          lastHeader3 = null;
         }
         break;
       case "Header 3":
-        if (stack.length > 0 && stack[stack.length - 1].key.startsWith("Header 2")) {
-          if (!stack[stack.length - 1].children) {
-            stack[stack.length - 1].children = [];
-          }
-          stack[stack.length - 1].children.push(menuItem);
-          stack.push(menuItem); // Push the current item onto the stack
+        if (lastHeader2) {
+          lastHeader2.children = lastHeader2.children || [];
+          lastHeader2.children.push(menuItem);
+          lastHeader3 = menuItem;
         }
         break;
       case "Text":
-        if (stack.length > 0) {
-          const parentItem = stack[stack.length - 1];
-          if (!parentItem.children) {
-            parentItem.children = [];
-          }
-          parentItem.children.push(menuItem);
+        const parent = lastHeader3 || lastHeader2 || lastHeader1;
+        if (parent) {
+          parent.children = parent.children || [];
+          parent.children.push(menuItem);
         } else {
-          // If the stack is empty, treat it as a top-level item
           items.push(menuItem);
         }
         break;
       default:
         break;
-      }
-
-      // Ensure that Text type does not make subsequent Text as its submenu item, so it does not enter the stack
-      if (block.type !== "Text") {
-        stack.push(menuItem);
       }
     });
 
