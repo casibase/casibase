@@ -345,8 +345,8 @@ class ArticleEditPage extends React.Component {
           {/* <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
           {/*  {i18next.t("article:Content")}:*/}
           {/* </Col>*/}
-          <Col span={6} >
-            <Affix offsetTop={0}>
+          <Col span={5} >
+            <Affix offsetTop={0} style={{marginRight: "10px"}}>
               <div style={{backgroundColor: "white", height: "100vh", overflowY: "auto", borderRight: 0}}>
                 <ArticleMenu table={blocks} onGoToRow={(table, i) => {
                   if (this.articleTableRef.current) {
@@ -356,8 +356,8 @@ class ArticleEditPage extends React.Component {
               </div>
             </Affix>
           </Col>
-          <Col span={1} />
-          <Col span={17} >
+          {/* <Col span={1} />*/}
+          <Col span={19} >
             <ArticleTable ref={this.articleTableRef} article={this.state.article} table={blocks} onUpdateTable={(value) => {this.updateArticleField("content", value);}} onSubmitArticleEdit={() => {this.submitArticleEdit(false);}} />
           </Col>
         </Row>

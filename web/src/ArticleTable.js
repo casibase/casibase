@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Col, Row, Select, Table, Tag} from "antd";
-import {BarsOutlined, DeleteOutlined, DownOutlined, FileAddOutlined, TranslationOutlined, UpOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DeploymentUnitOutlined, DownOutlined, FileAddOutlined, OrderedListOutlined, TranslationOutlined, UnorderedListOutlined, UpOutlined} from "@ant-design/icons";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -177,6 +177,24 @@ class ArticleTable extends React.Component {
       });
   }
 
+  expandBlock(article, table, i) {
+    const provider = article.provider;
+    const text = table[i].text;
+    const question = `Expand the following academic paper content in a creative manner, only respond with the expanded text:\n${text}`;
+    const framework = article.name;
+    const video = "";
+    this.updateField(this.props.table, i, "isLoadingExpand", true);
+    MessageBackend.getAnswer(provider, question, framework, video)
+      .then((res) => {
+        this.updateField(this.props.table, i, "isLoadingExpand", false);
+        if (res.status === "ok") {
+          this.updateField(this.props.table, i, "text", res.data);
+        } else {
+          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+        }
+      });
+  }
+
   renderTable(table) {
     const columns = [
       {
@@ -203,20 +221,25 @@ class ArticleTable extends React.Component {
         width: "110px",
         render: (text, record, index) => {
           return (
-            <Select virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
-              this.updateField(table, index, "type", value);
-            })}>
-              {
-                [
-                  {id: "Title", name: i18next.t("article:Title")},
-                  {id: "Abstract", name: i18next.t("article:Abstract")},
-                  {id: "Header 1", name: i18next.t("article:Header 1")},
-                  {id: "Header 2", name: i18next.t("article:Header 2")},
-                  {id: "Header 3", name: i18next.t("article:Header 3")},
-                  {id: "Text", name: i18next.t("article:Text")},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
+            <div>
+              <Select virtual={false} style={{width: "100%", marginTop: "10px"}} value={text} onChange={(value => {
+                this.updateField(table, index, "type", value);
+              })}>
+                {
+                  [
+                    {id: "Title", name: i18next.t("article:Title")},
+                    {id: "Abstract", name: i18next.t("article:Abstract")},
+                    {id: "Header 1", name: i18next.t("article:Header 1")},
+                    {id: "Header 2", name: i18next.t("article:Header 2")},
+                    {id: "Header 3", name: i18next.t("article:Header 3")},
+                    {id: "Text", name: i18next.t("article:Text")},
+                  ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                }
+              </Select>
+              <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingExpand === true} icon={<DeploymentUnitOutlined />} onClick={() => this.expandBlock(this.props.article, table, index)} >
+                {i18next.t("article:Expand")}
+              </Button>
+            </div>
           );
         },
       },
@@ -253,18 +276,14 @@ class ArticleTable extends React.Component {
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={!record.text.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTable(table, index)} >
-                {i18next.t("article:Parse")}
-              </Button>
-              <Button style={{marginBottom: "10px", marginRight: "5px"}} disabled={!record.textEn.includes("\n")} icon={<BarsOutlined />} onClick={() => this.parseTableEn(table, index)} >
-                {i18next.t("article:Parse En")}
-              </Button>
-              <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
+              <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "5px"}} disabled={record.text === ""} loading={record.isLoadingEn === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToEn(this.props.article, table, index)} >
                 {i18next.t("article:ZH 🡲 EN")}
               </Button>
               <Button type="primary" style={{marginBottom: "10px", marginRight: "5px"}} disabled={record.textEn === ""} loading={record.isLoading === true} icon={<TranslationOutlined />} onClick={() => this.translateTableToZh(this.props.article, table, index)} >
                 {i18next.t("article:ZH 🡰 EN")}
               </Button>
+              <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={!record.text.includes("\n")} icon={<OrderedListOutlined />} size="small" onClick={() => this.parseTable(table, index)} />
+              <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={!record.textEn.includes("\n")} icon={<UnorderedListOutlined />} size="small" onClick={() => this.parseTableEn(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} icon={<FileAddOutlined />} size="small" onClick={() => this.insertRow(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
               <Button style={{marginBottom: "5px", marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
