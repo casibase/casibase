@@ -21,6 +21,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import ArticleTable from "./ArticleTable";
 import ArticleMenu from "./ArticleMenu";
 
+const {Option} = Select;
 const {TextArea} = Input;
 
 class ArticleEditPage extends React.Component {
@@ -328,7 +329,12 @@ class ArticleEditPage extends React.Component {
           <Col span={4}>
             <Popover placement="left" content={
               <div style={{width: "1000px"}}>
-                <Button style={{marginBottom: "20px"}} type="primary"
+                <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.article.glossary} onChange={(value => {this.updateArticleField("glossary", value);})}>
+                  {
+                    this.state.article.glossary?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
+                  }
+                </Select>
+                <Button style={{marginTop: "20px", marginBottom: "20px"}} type="primary"
                   onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
                 <TextArea autoSize={{minRows: 1, maxRows: 30}} showCount value={this.state.article.text} onChange={(e) => {
                   this.updateArticleField("text", e.target.value);

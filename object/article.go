@@ -37,8 +37,9 @@ type Article struct {
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Type        string `xorm:"varchar(100)" json:"type"`
 
-	Text    string   `xorm:"mediumtext" json:"text"`
-	Content []*Block `xorm:"mediumtext" json:"content"`
+	Text     string   `xorm:"mediumtext" json:"text"`
+	Content  []*Block `xorm:"mediumtext" json:"content"`
+	Glossary []string `xorm:"varchar(200)" json:"glossary"`
 }
 
 func GetMaskedArticle(article *Article, isMaskEnabled bool) *Article {

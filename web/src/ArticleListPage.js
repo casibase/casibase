@@ -56,6 +56,7 @@ class ArticleListPage extends React.Component {
       provider: "provider_model_azure_gpt4",
       type: "",
       content: [],
+      glossary: [],
     };
   }
 

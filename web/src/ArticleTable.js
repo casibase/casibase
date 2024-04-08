@@ -140,7 +140,7 @@ class ArticleTable extends React.Component {
   translateTableToZh(article, table, i) {
     const provider = article.provider;
     const text = table[i].textEn;
-    const question = `Translate the following text to Chinese, only respond with the translated text:\n${text}`;
+    const question = `Translate the following text to Chinese, the words related to this glossary: ${JSON.stringify(article.glossary)} should not be translated. Only respond with the translated text:\n${text}`;
     const framework = article.name;
     const video = "";
     this.updateField(this.props.table, i, "isLoading", true);

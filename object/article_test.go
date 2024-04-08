@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"github.com/casibase/casibase/proxy"
+	"github.com/casibase/casibase/util"
 )
 
 func TestTranslateArticle(t *testing.T) {
@@ -33,12 +34,13 @@ func TestTranslateArticle(t *testing.T) {
 		panic(err)
 	}
 
+	glossary := util.StructToJsonNoIndent(article.Glossary)
 	for i, block := range article.Content {
 		if block.Text != "" || block.TextEn == "" {
 			continue
 		}
 
-		question := fmt.Sprintf("Translate the following text to Chinese, only respond with the translated text:\n%s", block.TextEn)
+		question := fmt.Sprintf("Translate the following text to Chinese, the words related to this glossary: %s should not be translated. Only respond with the translated text:\n%s", glossary, block.TextEn)
 		var answer string
 		answer, _, err = GetAnswer(article.Provider, question)
 		if err != nil {
