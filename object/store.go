@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/casibase/casibase/storage"
 	"github.com/casibase/casibase/util"
@@ -39,6 +40,11 @@ type Properties struct {
 	Subject       string `xorm:"varchar(100)" json:"subject"`
 }
 
+type UsageInfo struct {
+	TokenCount int       `json:"tokenCount"`
+	StartTime  time.Time `json:"startTime" xorm:"created"`
+}
+
 type Store struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -50,6 +56,11 @@ type Store struct {
 	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
+
+	ModelProviders     []string             `xorm:"mediumtext" json:"modelProviders" xorm:"json"`
+	EmbeddingProviders []string             `xorm:"mediumtext" json:"embeddingProviders" xorm:"json"`
+	ModelUsageMap      map[string]UsageInfo `xorm:"mediumtext" json:"modelUsageMap" xorm:"json"`
+	EmbeddingUsageMap  map[string]UsageInfo `xorm:"mediumtext" json:"embeddingUsageMap" xorm:"json"`
 
 	MemoryLimit  int    `json:"memoryLimit"`
 	Frequency    int    `json:"frequency"`

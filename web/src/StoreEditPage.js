@@ -106,6 +106,19 @@ class StoreEditPage extends React.Component {
     });
   }
 
+  updateModelUsageMapForStore(value) {
+    const modelUsageMap = {};
+
+    value.forEach(provider => {
+      modelUsageMap[provider] = {
+        tokenCount: 0,
+        startTime: new Date().toISOString(),
+      };
+    });
+
+    this.updateStoreField("modelUsageMap", modelUsageMap);
+  }
+
   renderStore() {
     return (
       <Card size="small" title={
@@ -177,10 +190,33 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Model providers")}:
+          </Col>
+          <Col span={22} >
+            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.modelProviders ?? []} onChange={(value => {
+              this.updateStoreField("modelProviders", value);
+              this.updateModelUsageMapForStore(value);
+            })}
+            options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+            } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Embedding provider")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
+              options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+              } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Embedding providers")}:
+          </Col>
+          <Col span={22} >
+            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {this.updateStoreField("embeddingProviders", value);})}
               options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
           </Col>

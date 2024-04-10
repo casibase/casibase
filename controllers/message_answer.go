@@ -17,6 +17,7 @@ package controllers
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
@@ -128,7 +129,19 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	modelProviders, modelProviderObjs, err := object.GetModelProvidersFromContext("admin", chat.User2)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(*store, modelProviders, modelProviderObjs, defaultModelProvider, defaultModelProviderObj)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -220,8 +233,26 @@ func (c *ApiController) GetMessageAnswer() {
 		message.IsAlerted = false
 	}
 
+	message.ModelProvider = modelProvider
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	for _, usageInfo := range store.ModelUsageMap {
+		if time.Since(usageInfo.StartTime) >= time.Minute {
+			usageInfo.TokenCount = 0
+			usageInfo.StartTime = time.Time{}
+		}
+	}
+
+	store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
+		TokenCount: message.TokenCount,
+		StartTime:  time.Now(),
+	}
+	_, err = object.UpdateStore(store.GetId(), store)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
