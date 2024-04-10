@@ -278,6 +278,38 @@ class ArticleEditPage extends React.Component {
     });
   }
 
+  exportText() {
+    const blocks = this.state.article.content;
+    let text = "";
+
+    blocks.forEach(block => {
+      switch (block.type) {
+      case "Title":
+        text += `\\title{${block.textEn}}\n\n`;
+        break;
+      case "Abstract":
+        text += `\\begin{abstract}\n${block.textEn}\n\\end{abstract}\n\n`;
+        break;
+      case "Header 1":
+        text += `\\section{${block.textEn}}\n\n`;
+        break;
+      case "Header 2":
+        text += `\\subsection{${block.textEn}}\n\n`;
+        break;
+      case "Header 3":
+        text += `\\subsubsection{${block.textEn}}\n\n`;
+        break;
+      case "Text":
+        text += `${block.textEn}\n\n`;
+        break;
+      default:
+        Setting.showMessage("error", `Unknown block type: ${block.type}`);
+      }
+    });
+
+    this.updateArticleField("text", text);
+  }
+
   renderArticle() {
     const blocks = this.getBlocksWithPrefix(this.state.article.content);
 
@@ -334,8 +366,10 @@ class ArticleEditPage extends React.Component {
                     this.state.article.glossary?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
                   }
                 </Select>
-                <Button style={{marginTop: "20px", marginBottom: "20px"}} type="primary"
+                <Button style={{marginTop: "20px", marginBottom: "20px", marginRight: "20px"}} type="primary"
                   onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
+                <Button style={{marginTop: "20px", marginBottom: "20px"}} type="primary"
+                  onClick={() => this.exportText()}>{i18next.t("article:Export")}</Button>
                 <TextArea autoSize={{minRows: 1, maxRows: 30}} showCount value={this.state.article.text} onChange={(e) => {
                   this.updateArticleField("text", e.target.value);
                 }} />
