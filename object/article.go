@@ -25,6 +25,7 @@ type Block struct {
 	Type   string `json:"type"`
 	Text   string `json:"text"`
 	TextEn string `json:"textEn"`
+	Prompt string `json:"prompt"`
 	State  string `json:"state"`
 }
 

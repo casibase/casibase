@@ -196,7 +196,7 @@ class ArticleTable extends React.Component {
   }
 
   renderTable(table) {
-    const columns = [
+    let columns = [
       {
         title: i18next.t("general:No."),
         dataIndex: "no",
@@ -270,6 +270,19 @@ class ArticleTable extends React.Component {
         },
       },
       {
+        title: i18next.t("article:Prompt"),
+        dataIndex: "prompt",
+        key: "prompt",
+        // width: '300px',
+        render: (text, record, index) => {
+          return (
+            <MemoTextArea value={text} onChange={(e) => {
+              this.updateField(this.props.table, index, "prompt", e.target.value);
+            }} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Action"),
         key: "action",
         width: "100px",
@@ -293,6 +306,12 @@ class ArticleTable extends React.Component {
         },
       },
     ];
+
+    if (this.props.article.displayName.endsWith("-P")) {
+      columns = columns.filter(column => column.key !== "textEn");
+    } else {
+      columns = columns.filter(column => column.key !== "prompt");
+    }
 
     return (
       <Table rowKey="index" columns={columns} dataSource={table} size="middle" bordered pagination={false}
