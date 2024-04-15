@@ -283,24 +283,29 @@ class ArticleEditPage extends React.Component {
     let text = "";
 
     blocks.forEach(block => {
+      let blockText = block.textEn;
+      if (blockText === "") {
+        blockText = block.text;
+      }
+
       switch (block.type) {
       case "Title":
-        text += `\\title{${block.textEn}}\n\n`;
+        text += `\\title{${blockText}}\n\n`;
         break;
       case "Abstract":
-        text += `\\begin{abstract}\n${block.textEn}\n\\end{abstract}\n\n`;
+        text += `\\begin{abstract}\n${blockText}\n\\end{abstract}\n\n`;
         break;
       case "Header 1":
-        text += `\\section{${block.textEn}}\n\n`;
+        text += `\\section{${blockText}}\n\n`;
         break;
       case "Header 2":
-        text += `\\subsection{${block.textEn}}\n\n`;
+        text += `\\subsection{${blockText}}\n\n`;
         break;
       case "Header 3":
-        text += `\\subsubsection{${block.textEn}}\n\n`;
+        text += `\\subsubsection{${blockText}}\n\n`;
         break;
       case "Text":
-        text += `${block.textEn}\n\n`;
+        text += `${blockText}\n\n`;
         break;
       default:
         Setting.showMessage("error", `Unknown block type: ${block.type}`);
