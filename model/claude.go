@@ -81,24 +81,10 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	if err != nil {
 		return nil, err
 	}
-	var model anthropic.Model
-	if p.subType == "claude-2.0" {
-		model = anthropic.ClaudeV2
-	} else if p.subType == "claude-2.1" {
-		model = anthropic.ClaudeV2_1
-	} else if p.subType == "claude-instant-1.2" {
-		model = anthropic.ClaudeV1_2
-	} else if p.subType == "claude-3-sonnet-20240229" {
-		model = anthropic.Claude3Sonnet
-	} else if p.subType == "claude-3-opus-20240229" {
-		model = anthropic.Claude3Opus
-	} else if p.subType == "claude-3-haiku-20240307" {
-		model = anthropic.Claude3Haiku
-	}
 
 	request := anthropic.NewCompletionRequest(
 		question,
-		anthropic.WithModel[anthropic.CompletionRequest](model),
+		anthropic.WithModel[anthropic.CompletionRequest](anthropic.Model(p.subType)),
 		anthropic.WithMaxTokens[anthropic.CompletionRequest](100),
 		anthropic.WithStopSequences[anthropic.CompletionRequest]([]string{"\r", "Human:"}),
 	)
