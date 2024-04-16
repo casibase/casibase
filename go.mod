@@ -2,8 +2,6 @@ module github.com/casibase/casibase
 
 go 1.21
 
-toolchain go1.21.6
-
 require (
 	github.com/ConnectAI-E/go-minimax v0.0.1
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
