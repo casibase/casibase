@@ -19,7 +19,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/madebywelch/anthropic-go/pkg/anthropic"
+	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic"
+	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic/utils"
 )
 
 type ClaudeModelProvider struct {
@@ -76,12 +77,33 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 
-	response, err := client.Complete(&anthropic.CompletionRequest{
-		Prompt:            anthropic.GetPrompt(question),
-		Model:             anthropic.Model(p.subType),
-		MaxTokensToSample: 100,
-		StopSequences:     []string{"\r", "Human:"},
-	}, nil)
+	question, err = utils.GetPrompt(question)
+	if err != nil {
+		return nil, err
+	}
+	var model anthropic.Model
+	if p.subType == "claude-2.0" {
+		model = anthropic.ClaudeV2
+	} else if p.subType == "claude-2.1" {
+		model = anthropic.ClaudeV2_1
+	} else if p.subType == "claude-instant-1.2" {
+		model = anthropic.ClaudeV1_2
+	} else if p.subType == "claude-3-sonnet-20240229" {
+		model = anthropic.Claude3Sonnet
+	} else if p.subType == "claude-3-opus-20240229" {
+		model = anthropic.Claude3Opus
+	} else if p.subType == "claude-3-haiku-20240307" {
+		model = anthropic.Claude3Haiku
+	}
+
+	request := anthropic.NewCompletionRequest(
+		question,
+		anthropic.WithModel[anthropic.CompletionRequest](model),
+		anthropic.WithMaxTokens[anthropic.CompletionRequest](100),
+		anthropic.WithStopSequences[anthropic.CompletionRequest]([]string{"\r", "Human:"}),
+	)
+
+	response, err := client.Complete(request)
 	if err != nil {
 		return nil, err
 	}
