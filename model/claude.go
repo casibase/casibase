@@ -85,7 +85,7 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 	request := anthropic.NewCompletionRequest(
 		question,
 		anthropic.WithModel[anthropic.CompletionRequest](anthropic.Model(p.subType)),
-		anthropic.WithMaxTokens[anthropic.CompletionRequest](100),
+		anthropic.WithMaxTokens[anthropic.CompletionRequest](1024),
 		anthropic.WithStopSequences[anthropic.CompletionRequest]([]string{"\r", "Human:"}),
 	)
 
