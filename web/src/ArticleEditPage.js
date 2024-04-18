@@ -288,6 +288,8 @@ class ArticleEditPage extends React.Component {
         blockText = block.text;
       }
 
+      const label = `\\label{sec:${blockText}}`;
+
       switch (block.type) {
       case "Title":
         text += `\\title{${blockText}}\n\n`;
@@ -296,13 +298,13 @@ class ArticleEditPage extends React.Component {
         text += `\\begin{abstract}\n${blockText}\n\\end{abstract}\n\n`;
         break;
       case "Header 1":
-        text += `\\section{${blockText}}\n\n`;
+        text += `\\section{${blockText}}\n${label}\n\n`;
         break;
       case "Header 2":
-        text += `\\subsection{${blockText}}\n\n`;
+        text += `\\subsection{${blockText}}\n${label}\n\n`;
         break;
       case "Header 3":
-        text += `\\subsubsection{${blockText}}\n\n`;
+        text += `\\subsubsection{${blockText}}\n${label}\n\n`;
         break;
       case "Text":
         text += `${blockText}\n\n`;
