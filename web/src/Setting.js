@@ -758,6 +758,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "claude-instant-1.2", name: "claude-instant-1.2"},
       {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
       {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
+      {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
     ];
   } else if (type === "OpenRouter") {
     return (
