@@ -323,6 +323,51 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 	return pProvider, nil
 }
 
+func GetModelProvidersFromContext(owner string, name string) ([]*Provider, []model.ModelProvider, error) {
+	var providerNames []string
+	if name != "" {
+		providerNames = append(providerNames, name)
+	} else {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && len(store.ModelProviders) != 0 {
+			providerNames = store.ModelProviders
+		}
+	}
+
+	var providers []*Provider
+	var providerObjs []model.ModelProvider
+	var err error
+	if len(providerNames) != 0 {
+		var provider *Provider
+		for _, providerName := range providerNames {
+			if providerName != "" {
+				providerId := util.GetIdFromOwnerAndName(owner, providerName)
+				provider, err = GetProvider(providerId)
+			} else {
+				provider, err = GetDefaultModelProvider()
+			}
+
+			if provider == nil && err == nil {
+				return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
+			}
+			if provider.Category != "Model" || provider.ClientSecret == "" {
+				return nil, nil, fmt.Errorf("The model provider: %s is invalid", providerName)
+			}
+			providerObj, err := provider.GetModelProvider()
+			if err != nil {
+				return nil, nil, err
+			}
+			providers = append(providers, provider)
+			providerObjs = append(providerObjs, providerObj)
+		}
+	}
+	return providers, providerObjs, err
+}
+
 func GetModelProviderFromContext(owner string, name string) (*Provider, model.ModelProvider, error) {
 	var providerName string
 	if name != "" {

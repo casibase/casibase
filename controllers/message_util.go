@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 )
 
@@ -55,4 +56,27 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 		return nil, err
 	}
 	return jsonBytes, nil
+}
+
+func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, defaultModelProvider *object.Provider, defaultModelProviderObj model.ModelProvider) (string, model.ModelProvider, error) {
+	minTokenCount := int(^uint(0) >> 1)
+	var minProvider string
+
+	if len(store.ModelUsageMap) == 0 {
+		return defaultModelProvider.Name, defaultModelProviderObj, nil
+	}
+
+	for provider, usageInfo := range store.ModelUsageMap {
+		if usageInfo.TokenCount < minTokenCount {
+			minTokenCount = usageInfo.TokenCount
+			minProvider = provider
+		}
+	}
+
+	for i, modelProvider := range modelProviders {
+		if modelProvider.Name == minProvider {
+			return modelProvider.Name, modelProviderObjs[i], nil
+		}
+	}
+	return "", nil, fmt.Errorf("")
 }

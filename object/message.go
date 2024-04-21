@@ -36,23 +36,25 @@ type Message struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	Organization string        `xorm:"varchar(100)" json:"organization"`
-	User         string        `xorm:"varchar(100) index" json:"user"`
-	Chat         string        `xorm:"varchar(100) index" json:"chat"`
-	ReplyTo      string        `xorm:"varchar(100) index" json:"replyTo"`
-	Author       string        `xorm:"varchar(100)" json:"author"`
-	Text         string        `xorm:"mediumtext" json:"text"`
-	ErrorText    string        `xorm:"mediumtext" json:"errorText"`
-	FileName     string        `xorm:"varchar(100)" json:"fileName"`
-	Comment      string        `xorm:"mediumtext" json:"comment"`
-	TokenCount   int           `json:"tokenCount"`
-	Price        float64       `json:"price"`
-	Currency     string        `xorm:"varchar(100)" json:"currency"`
-	IsHidden     bool          `json:"isHidden"`
-	IsDeleted    bool          `json:"isDeleted"`
-	NeedNotify   bool          `json:"needNotify"`
-	IsAlerted    bool          `json:"isAlerted"`
-	VectorScores []VectorScore `xorm:"mediumtext" json:"vectorScores"`
+	Organization      string        `xorm:"varchar(100)" json:"organization"`
+	User              string        `xorm:"varchar(100) index" json:"user"`
+	Chat              string        `xorm:"varchar(100) index" json:"chat"`
+	ReplyTo           string        `xorm:"varchar(100) index" json:"replyTo"`
+	Author            string        `xorm:"varchar(100)" json:"author"`
+	Text              string        `xorm:"mediumtext" json:"text"`
+	ErrorText         string        `xorm:"mediumtext" json:"errorText"`
+	FileName          string        `xorm:"varchar(100)" json:"fileName"`
+	Comment           string        `xorm:"mediumtext" json:"comment"`
+	TokenCount        int           `json:"tokenCount"`
+	Price             float64       `json:"price"`
+	Currency          string        `xorm:"varchar(100)" json:"currency"`
+	IsHidden          bool          `json:"isHidden"`
+	IsDeleted         bool          `json:"isDeleted"`
+	NeedNotify        bool          `json:"needNotify"`
+	IsAlerted         bool          `json:"isAlerted"`
+	ModelProvider     string        `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider string        `xorm:"varchar(100)" json:"embeddingProvider"`
+	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
