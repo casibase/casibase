@@ -10,7 +10,6 @@ require (
 	github.com/astaxie/beego v1.12.3
 	github.com/casdoor/casdoor-go-sdk v0.37.0
 	github.com/casibase/generative-ai-go v0.5.1
-	github.com/casibase/go-hnsw v1.0.0
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
@@ -21,7 +20,7 @@ require (
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
-	github.com/madebywelch/anthropic-go v1.0.1
+	github.com/madebywelch/anthropic-go/v2 v2.2.0
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.6
@@ -47,7 +46,6 @@ require (
 	cloud.google.com/go/longrunning v0.5.2 // indirect
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/bits-and-blooms/bitset v1.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
@@ -74,7 +72,6 @@ require (
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
-	github.com/madebywelch/anthropic-go/v2 v2.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -91,6 +88,7 @@ require (
 	github.com/quic-go/quic-go v0.37.6 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+	github.com/stretchr/testify v1.8.4 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect

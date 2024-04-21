@@ -86,8 +86,6 @@ github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+Ce
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bgentry/speakeasy v0.1.0/go.mod h1:+zsyZBPWlz7T6j88CTgSN5bM796AkVf0kBD4zp0CCIs=
-github.com/bits-and-blooms/bitset v1.8.0 h1:FD+XqgOZDUxxZ8hzoBFuV9+cGWY9CslN6d5MS5JVb4c=
-github.com/bits-and-blooms/bitset v1.8.0/go.mod h1:7hO7Gc7Pp1vODcmWvKMRA9BNmbv6a/7QIWpPxHddWR8=
 github.com/bradfitz/gomemcache v0.0.0-20180710155616-bc664df96737/go.mod h1:PmM6Mmwb0LSuEubjR8N7PtNe1KxZLtOUHtbeikc5h60=
 github.com/casbin/casbin v1.7.0/go.mod h1:c67qKN6Oum3UF5Q1+BByfFxkwKvhwW57ITjqwtzR1KE=
 github.com/casbin/casbin/v2 v2.1.2/go.mod h1:YcPU1XXisHhLzuxH9coDNf2FbKpjGlbCg3n9yuLkIJQ=
@@ -95,8 +93,6 @@ github.com/casdoor/casdoor-go-sdk v0.37.0 h1:Vx6V25m7xa8SAG1xZfEjQCAGwtpoCE+UAP0
 github.com/casdoor/casdoor-go-sdk v0.37.0/go.mod h1:hVSgmSdwTCsBEJNt9r2K5aLVsoeMc37/N4Zzescy5SA=
 github.com/casibase/generative-ai-go v0.5.1 h1:7qY85rOby3Bl19AP5CUF+wyP1vlFXvikJgBcVb6NcLA=
 github.com/casibase/generative-ai-go v0.5.1/go.mod h1:j9jONsaMPiLGu5PV+zqse+RCSFP2fqTocBhqrKtMkao=
-github.com/casibase/go-hnsw v1.0.0 h1:P0rQMvM/BudblFB83yj9yi9+wHVnYOuaPeL0e1gHwbM=
-github.com/casibase/go-hnsw v1.0.0/go.mod h1:SVuCrv39V/GhBKdkNnRIiaper9UJhTErqvo5sA8P45g=
 github.com/casibase/go-openrouter v1.0.0 h1:xWtKUXXZMdk1xZod8EGc7jrbSpAKGGhbKtqSGvr1a1k=
 github.com/casibase/go-openrouter v1.0.0/go.mod h1:QvTckANaf6eO/iIxAjOOI/A4FsTOF+FYUfWZ/PcNk7A=
 github.com/cenkalti/backoff v2.2.1+incompatible/go.mod h1:90ReRw6GdpyfrHakVjL/QHaoyV4aDUVVkXQJJJ3NXXM=
@@ -427,8 +423,6 @@ github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-b
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/lucasb-eyer/go-colorful v1.0.2/go.mod h1:0MS4r+7BZKSJ5mw4/S5MPN+qHFF1fYclkSPilDOKW0s=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
-github.com/madebywelch/anthropic-go v1.0.1 h1:LalIkikXbN53MIHGQekhwDWTs/x+/WHU71Ht1T4F0Ug=
-github.com/madebywelch/anthropic-go v1.0.1/go.mod h1:ipU4SV1KHLcxo7lpR/O3JWq6985kaNcdYQgB46gaQCQ=
 github.com/madebywelch/anthropic-go/v2 v2.2.0 h1:2Fy5HT5F6/x1zWCDVrn5BCs+tceUY7+MNYYIzgGpeDg=
 github.com/madebywelch/anthropic-go/v2 v2.2.0/go.mod h1:sXtJg4XROodT00PuOhpl5mXW7xhxNjb93B3oZnk8Yus=
 github.com/mattn/go-colorable v0.0.9/go.mod h1:9vuHe8Xs5qXnSaW/c/ABM9alt+Vo+STaOChaDxuIBZU=
@@ -627,6 +621,7 @@ github.com/stretchr/testify v1.7.1/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/stretchr/testify v1.8.1/go.mod h1:w2LPCIKwWwSfY2zedu0+kehJoqGctiVI29o6fzry7u4=
 github.com/stretchr/testify v1.8.4 h1:CcVxjf3Q8PM0mHUKJCdn+eZZtm5yQwehR5yeSVQQcUk=
+github.com/stretchr/testify v1.8.4/go.mod h1:sz/lmYIOXD/1dqDmKjjqLyZ2RngseejIcXlSw2iwfAo=
 github.com/syndtr/goleveldb v0.0.0-20160425020131-cfa635847112/go.mod h1:Z4AUp2Km+PwemOoO/VB5AOx9XSsIItzFjoJlOSiYmn0=
 github.com/syndtr/goleveldb v0.0.0-20181127023241-353a9fca669c/go.mod h1:Z4AUp2Km+PwemOoO/VB5AOx9XSsIItzFjoJlOSiYmn0=
 github.com/syndtr/goleveldb v1.0.0 h1:fBdIW9lB4Iz0n9khmH8w27SJ3QEJ7+IgjPEwGSZiFdE=
