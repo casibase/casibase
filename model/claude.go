@@ -19,7 +19,8 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/madebywelch/anthropic-go/pkg/anthropic"
+	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic"
+	"github.com/madebywelch/anthropic-go/v2/pkg/anthropic/utils"
 )
 
 type ClaudeModelProvider struct {
@@ -76,12 +77,19 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 
-	response, err := client.Complete(&anthropic.CompletionRequest{
-		Prompt:            anthropic.GetPrompt(question),
-		Model:             anthropic.Model(p.subType),
-		MaxTokensToSample: 100,
-		StopSequences:     []string{"\r", "Human:"},
-	}, nil)
+	question, err = utils.GetPrompt(question)
+	if err != nil {
+		return nil, err
+	}
+
+	request := anthropic.NewCompletionRequest(
+		question,
+		anthropic.WithModel[anthropic.CompletionRequest](anthropic.Model(p.subType)),
+		anthropic.WithMaxTokens[anthropic.CompletionRequest](1024),
+		anthropic.WithStopSequences[anthropic.CompletionRequest]([]string{"\r", "Human:"}),
+	)
+
+	response, err := client.Complete(request)
 	if err != nil {
 		return nil, err
 	}
