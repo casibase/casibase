@@ -656,6 +656,7 @@ export function getProviderTypeOptions(category) {
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "Cohere", name: "Cohere"},
+        {id: "Moonshot", name: "Moonshot"},
       ]
     );
   } else if (category === "Embedding") {
@@ -869,6 +870,19 @@ export function getProviderSubTypeOptions(category, type) {
         openaiEmbeddings
       );
     }
+  } else if (type === "Moonshot") {
+    if (category === "Model") {
+      return (
+          [
+            {id: "moonshot-v1-8k",name:"moonshot-v1-8k"},
+            {id: "moonshot-v1-32k",name:"moonshot-v1-32k"},
+            {id: "moonshot-v1-128k",name:"moonshot-v1-128k"},
+          ]
+      );
+    } else if (category === "Embedding") {
+      return (
+          openaiModels
+      );
   } else {
     return [];
   }
