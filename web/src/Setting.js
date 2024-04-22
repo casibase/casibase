@@ -883,6 +883,7 @@ export function getProviderSubTypeOptions(category, type) {
       return (
           openaiModels
       );
+    }
   } else {
     return [];
   }
