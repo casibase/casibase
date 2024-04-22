@@ -25,6 +25,7 @@ require (
 	github.com/madebywelch/anthropic-go/v2 v2.2.0
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
+	github.com/northes/go-moonshot v0.2.0
 	github.com/pkoukk/tiktoken-go v0.1.6
 	github.com/sashabaranov/go-openai v1.20.2
 	github.com/tealeg/xlsx v1.0.5
@@ -79,7 +80,6 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/moul/http2curl v1.0.0 // indirect
-	github.com/northes/go-moonshot v0.2.0 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.5 // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
@@ -91,7 +91,6 @@ require (
 	github.com/quic-go/quic-go v0.37.6 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20200410134404-eec4a21b6bb0 // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
-	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect
