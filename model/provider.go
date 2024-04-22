@@ -66,7 +66,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Cohere" {
 		p, err = NewCohereModelProvider(subType, clientSecret)
 	} else if typ == "Moonshot" {
-		p, err = NewMoonshotModelProvider(subType, clientSecret)
+		p, err = NewMoonshotModelProvider(subType, clientSecret, float64(temperature))
 	}
 	if err != nil {
 		return nil, err

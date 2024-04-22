@@ -871,19 +871,13 @@ export function getProviderSubTypeOptions(category, type) {
       );
     }
   } else if (type === "Moonshot") {
-    if (category === "Model") {
-      return (
-          [
-            {id: "moonshot-v1-8k",name:"moonshot-v1-8k"},
-            {id: "moonshot-v1-32k",name:"moonshot-v1-32k"},
-            {id: "moonshot-v1-128k",name:"moonshot-v1-128k"},
-          ]
-      );
-    } else if (category === "Embedding") {
-      return (
-          openaiModels
-      );
-    }
+    return (
+      [
+        {id: "moonshot-v1-8k", name: "moonshot-v1-8k"},
+        {id: "moonshot-v1-32k", name: "moonshot-v1-32k"},
+        {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
+      ]
+    );
   } else {
     return [];
   }

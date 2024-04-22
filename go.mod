@@ -23,7 +23,7 @@ require (
 	github.com/madebywelch/anthropic-go/v2 v2.2.0
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
-	github.com/northes/go-moonshot v0.2.0
+	github.com/northes/go-moonshot v0.3.0
 	github.com/pkoukk/tiktoken-go v0.1.6
 	github.com/sashabaranov/go-openai v1.20.2
 	github.com/tealeg/xlsx v1.0.5

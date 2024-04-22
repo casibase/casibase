@@ -30,10 +30,11 @@ type MoonshotModelProvider struct {
 	secretKey   string
 }
 
-func NewMoonshotModelProvider(subType string, secretKey string) (*MoonshotModelProvider, error) {
+func NewMoonshotModelProvider(subType string, secretKey string, temperature float64) (*MoonshotModelProvider, error) {
 	client := &MoonshotModelProvider{
-		subType:   subType,
-		secretKey: secretKey,
+		subType:     subType,
+		secretKey:   secretKey,
+		temperature: temperature,
 	}
 	return client, nil
 }
