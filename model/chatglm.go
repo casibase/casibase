@@ -36,6 +36,8 @@ func (c *ChatGLMModelProvider) GetPricing() string {
 	return `URL:
 https://open.bigmodel.cn/pricing
 
+Generate Model:
+
 | Model        | Context Length | Unit Price (Per 1,000 tokens) |
 |--------------|----------------|-------------------------------|
 | GLM-3-Turbo  | 128K           | 0.005 yuan / K tokens         |
