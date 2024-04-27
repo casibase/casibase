@@ -155,9 +155,10 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 	return true, nil
 }
 
-func RefineMessageImages(message *Message, origin string) error {
+func RefineMessageFiles(message *Message, origin string) error {
 	text := message.Text
-	re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
+	// re := regexp.MustCompile(`data:image\/([a-zA-Z]*);base64,([^"]*)`)
+	re := regexp.MustCompile(`data:([a-zA-Z]*\/[a-zA-Z\-\.]*);base64,([^"]*)`)
 	matches := re.FindAllString(text, -1)
 	if matches != nil {
 		store, err := GetDefaultStore("admin")
