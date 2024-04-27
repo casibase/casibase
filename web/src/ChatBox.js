@@ -72,31 +72,38 @@ class ChatBox extends React.Component {
   handleInputChange = async() => {
     const file = this.inputImage.files[0];
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const originalWidth = img.width;
-        const originalHeight = img.height;
-        const inputMaxWidth = 70;
-        const chatMaxWidth = 600;
-        let Ratio = 1;
-        if (originalWidth > inputMaxWidth) {
-          Ratio = inputMaxWidth / originalWidth;
-        }
-        const scaledWidth = Math.round(originalWidth * Ratio);
-        const scaledHeight = Math.round(originalHeight * Ratio);
-        if (originalWidth > chatMaxWidth) {
-          Ratio = chatMaxWidth / originalWidth;
-        }
-        const chatScaledWidth = Math.round(originalWidth * Ratio);
-        const chatScaledHeight = Math.round(originalHeight * Ratio);
+    if (file.type.startsWith("image/")) {
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const originalWidth = img.width;
+          const originalHeight = img.height;
+          const inputMaxWidth = 70;
+          const chatMaxWidth = 600;
+          let Ratio = 1;
+          if (originalWidth > inputMaxWidth) {
+            Ratio = inputMaxWidth / originalWidth;
+          }
+          const scaledWidth = Math.round(originalWidth * Ratio);
+          const scaledHeight = Math.round(originalHeight * Ratio);
+          if (originalWidth > chatMaxWidth) {
+            Ratio = chatMaxWidth / originalWidth;
+          }
+          const chatScaledWidth = Math.round(originalWidth * Ratio);
+          const chatScaledHeight = Math.round(originalHeight * Ratio);
+          this.setState({
+            value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
+          });
+        };
+        img.src = e.target.result;
+      };
+    } else {
+      reader.onload = (e) => {
         this.setState({
-          value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
+          value: this.state.value + `<a href="${e.target.result}" target="_blank">${file.name}</a>`,
         });
       };
-
-      img.src = e.target.result;
-    };
+    }
     reader.readAsDataURL(file);
   };
 
@@ -164,7 +171,7 @@ class ChatBox extends React.Component {
         <input
           ref={e => this.inputImage = e}
           type="file"
-          accept="image/*"
+          accept="image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx"
           multiple={false}
           onChange={this.handleInputChange}
           style={{display: "none"}}
