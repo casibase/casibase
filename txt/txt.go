@@ -53,6 +53,8 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 		res, err = getTextFromPdf(path)
 	} else if ext == ".xlsx" {
 		res, err = getTextFromXlsx(path)
+	} else if ext == ".pptx" {
+		res, err = getTextFromPptx(path)
 	} else {
 		return "", fmt.Errorf("unsupported file type: %s", ext)
 	}
