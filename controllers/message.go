@@ -170,7 +170,7 @@ func (c *ApiController) AddMessage() {
 
 	host := c.Ctx.Request.Host
 	origin := getOriginFromHost(host)
-	err = object.RefineMessageImages(&message, origin)
+	err = object.RefineMessageFiles(&message, origin)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
