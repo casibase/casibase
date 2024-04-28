@@ -287,7 +287,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		var messages []openai.ChatCompletionMessage
-		if p.subType == "gpt-4-vision-preview" {
+		if p.subType == "gpt-4-vision-preview" || p.subType == "gpt-4-1106-vision-preview" {
 			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
 			if err != nil {
 				return nil, err
