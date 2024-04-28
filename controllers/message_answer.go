@@ -265,10 +265,13 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
-		TokenCount: message.TokenCount,
-		StartTime:  time.Now(),
+	if store.ModelUsageMap != nil {
+		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
+			TokenCount: message.TokenCount,
+			StartTime:  time.Now(),
+		}
 	}
+
 	_, err = object.UpdateStore(store.GetId(), store)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
