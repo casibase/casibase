@@ -59,7 +59,7 @@ func GetOpenAiMaxTokens(model string) int {
 
 func getOpenAiModelType(model string) string {
 	chatModels := []string{
-		"dall-e-3", "gpt-4-vision-preview", "gpt-4-32k-0613", "gpt-4-32k-0314", "gpt-4-32k",
+		"dall-e-3", "gpt-4-vision-preview", "gpt-4-1106-vision-preview", "gpt-4-32k-0613", "gpt-4-32k-0314", "gpt-4-32k",
 		"gpt-4-0613", "gpt-4-0314", "gpt-4", "gpt-3.5-turbo-0613",
 		"gpt-3.5-turbo-0301", "gpt-3.5-turbo-16k", "gpt-3.5-turbo-16k-0613",
 		"gpt-3.5-turbo", "custom-model",
@@ -122,7 +122,7 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 		res.Stop = []string{"."}
 	}
 
-	if model == "gpt-4-vision-preview" {
+	if model == "gpt-4-vision-preview" || model == "gpt-4-1106-vision-preview" {
 		res.MaxTokens = 4096
 	}
 
