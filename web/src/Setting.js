@@ -657,6 +657,7 @@ export function getProviderTypeOptions(category) {
         {id: "Azure", name: "Azure"},
         {id: "Cohere", name: "Cohere"},
         {id: "Moonshot", name: "Moonshot"},
+        {id: "Amazon Bedrock", name: "Amazon Bedrock"},
       ]
     );
   } else if (category === "Embedding") {
@@ -878,6 +879,23 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
       ]
     );
+  } else if (type === "Amazon Bedrock") {
+    return ([
+      {id: "claude", name: "Claude"},
+      {id: "claude-instant", name: "Claude Instant"},
+      {id: "command", name: "Command"},
+      {id: "command-light", name: "Command Light"},
+      {id: "embed-english", name: "Embed - English"},
+      {id: "embed-multilingual", name: "Embed - Multilingual"},
+      {id: "jurassic-2-mid", name: "Jurassic-2 Mid"},
+      {id: "jurassic-2-ultra", name: "Jurassic-2 Ultra"},
+      {id: "llama-2-chat-13b", name: "Llama 2 Chat (13B)"},
+      {id: "llama-2-chat-70b", name: "Llama 2 Chat (70B)"},
+      {id: "titan-text-lite", name: "Titan Text Lite"},
+      {id: "titan-text-express", name: "Titan Text Express"},
+      {id: "titan-embeddings", name: "Titan Embeddings"},
+      {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
+    ]);
   } else {
     return [];
   }
