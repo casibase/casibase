@@ -70,7 +70,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	} else if typ == "Amazon Bedrock" {
 		p, err = NewAmazonBedrockModelProvider(subType, clientSecret, float64(temperature))
 	} else if typ == "Dummy" {
-		p, err = NewDummyProvider(subType)
+		p, err = NewDummyModelProvider(subType)
 	} else {
 		return nil, nil
 	}

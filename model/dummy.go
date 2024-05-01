@@ -1,4 +1,4 @@
-// Copyright 2023 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ type DummyModelProvider struct {
 	subType string
 }
 
-func NewDummyProvider(subType string) (*DummyModelProvider, error) {
+func NewDummyModelProvider(subType string) (*DummyModelProvider, error) {
 	return &DummyModelProvider{
 		subType: subType,
 	}, nil
