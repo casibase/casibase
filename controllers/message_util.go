@@ -62,7 +62,7 @@ func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider,
 	minTokenCount := int(^uint(0) >> 1)
 	var minProvider string
 
-	if len(store.ModelUsageMap) == 0 {
+	if len(store.ModelUsageMap) <= 1 {
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
@@ -78,5 +78,5 @@ func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider,
 			return modelProvider.Name, modelProviderObjs[i], nil
 		}
 	}
-	return "", nil, fmt.Errorf("")
+	return "", nil, fmt.Errorf("No idle model provider found")
 }

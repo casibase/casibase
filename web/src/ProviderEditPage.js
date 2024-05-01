@@ -193,6 +193,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "gpt-4");
                 } else if (value === "Cohere") {
                   this.updateProviderField("subType", "command");
+                } else if (value === "Dummy") {
+                  this.updateProviderField("subType", "Dummy");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -209,6 +211,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "custom-embedding");
                 } else if (value === "Azure") {
                   this.updateProviderField("subType", "AdaSimilarity");
+                } else if (value === "Dummy") {
+                  this.updateProviderField("subType", "Dummy");
                 }
               }
             })}>
@@ -272,7 +276,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          this.state.provider.category === "Storage" ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Secret key")}:
