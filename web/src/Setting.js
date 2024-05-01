@@ -658,6 +658,7 @@ export function getProviderTypeOptions(category) {
         {id: "Cohere", name: "Cohere"},
         {id: "Moonshot", name: "Moonshot"},
         {id: "Amazon Bedrock", name: "Amazon Bedrock"},
+        {id: "Dummy", name: "Dummy"},
       ]
     );
   } else if (category === "Embedding") {
@@ -670,6 +671,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "Dummy", name: "Dummy"},
       ]
     );
   } else {
@@ -895,6 +897,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-text-express", name: "Titan Text Express"},
       {id: "titan-embeddings", name: "Titan Embeddings"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
+    ]);
+  } else if (type === "Dummy") {
+    return ([
+      {id: "Dummy", name: "Dummy"},
     ]);
   } else {
     return [];
