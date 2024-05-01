@@ -105,7 +105,7 @@ func initBuiltInProvider() {
 		DisplayName: "Dummy Model Provider",
 		Category:    "Model",
 		Type:        "Dummy",
-		SubType: 	 "Dummy",
+		SubType:     "Dummy",
 	}
 	_, err = AddProvider(modelProvider)
 	if err != nil {
@@ -119,7 +119,7 @@ func initBuiltInProvider() {
 		DisplayName: "Dummy Embedding Provider",
 		Category:    "Embedding",
 		Type:        "Dummy",
-		SubType: 	 "Dummy",
+		SubType:     "Dummy",
 	}
 	_, err = AddProvider(embeddingProvider)
 	if err != nil {

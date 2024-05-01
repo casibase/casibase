@@ -21,12 +21,12 @@ import (
 )
 
 type DummyEmbeddingProvider struct {
-	subType        string
+	subType string
 }
 
 func NewDummyEmbeddingProvider(subType string) (*DummyEmbeddingProvider, error) {
 	p := &DummyEmbeddingProvider{
-		subType:     subType,
+		subType: subType,
 	}
 	return p, nil
 }

@@ -18,8 +18,8 @@ import (
 	"io"
 )
 
-type DummyModelProvider struct{
-	subType     string
+type DummyModelProvider struct {
+	subType string
 }
 
 func NewDummyProvider(subType string) (*DummyModelProvider, error) {
