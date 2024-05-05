@@ -156,10 +156,10 @@ class ChatBox extends React.Component {
                     this.setState({value: val});
                   }}
                   value={this.state.value}
-                  onPaste={(evt) => {
-                    evt.preventDefault();
-                    this.setState({value: this.state.value + evt.clipboardData.getData("text")});
-                  }}
+                 // onPaste={(evt) => {
+                   // evt.preventDefault();
+                   // this.setState({value: this.state.value + evt.clipboardData.getData("text")});
+                 // }}
                   onAttachClick={() => {
                     this.handleImageClick();
                   }}
