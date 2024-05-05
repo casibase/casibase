@@ -152,13 +152,9 @@ class ChatBox extends React.Component {
                   sendDisabled={this.state.value === "" || this.props.disableInput}
                   placeholder={i18next.t("chat:Type message here")}
                   onSend={this.handleSend}
+                  value={this.state.value}
                   onChange={(val) => {
                     this.setState({value: val});
-                  }}
-                  value={this.state.value}
-                  onPaste={(evt) => {
-                    evt.preventDefault();
-                    this.setState({value: this.state.value + evt.clipboardData.getData("text")});
                   }}
                   onAttachClick={() => {
                     this.handleImageClick();
