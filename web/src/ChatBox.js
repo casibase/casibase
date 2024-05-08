@@ -18,6 +18,7 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import moment from "moment";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -27,6 +28,7 @@ class ChatBox extends React.Component {
       value: "",
     };
     this.timer = null;
+    this.copyFileName = null;
   }
 
   componentDidMount() {
@@ -57,9 +59,16 @@ class ChatBox extends React.Component {
     const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g, (match, src, alt, width, height, scaledWidth, scaledHeight) => {
       return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
     });
+    const date = moment();
+    const dateString = date.format("YYYYMMDD_HHmmss");
+
     let fileName = "";
     if (this.inputImage.files[0]) {
       fileName = this.inputImage.files[0].name;
+    } else if (this.copyFileName) {
+      const fileExtension = this.copyFileName.match(/\..+$/)[0];
+      fileName = dateString + fileExtension;
+      this.copyFileName = null;
     }
     this.props.sendMessage(newValue, fileName);
     this.setState({value: ""});
@@ -69,8 +78,7 @@ class ChatBox extends React.Component {
     this.inputImage.click();
   };
 
-  handleInputChange = async() => {
-    const file = this.inputImage.files[0];
+  handleInputChange = async(file) => {
     const reader = new FileReader();
     if (file.type.startsWith("image/")) {
       reader.onload = (e) => {
@@ -159,6 +167,16 @@ class ChatBox extends React.Component {
                   onAttachClick={() => {
                     this.handleImageClick();
                   }}
+                  onPaste={(event) => {
+                    const items = event.clipboardData.items;
+                    const item = items[0];
+                    if (item.kind === "file") {
+                      event.preventDefault();
+                      const file = item.getAsFile();
+                      this.copyFileName = file.name;
+                      this.handleInputChange(file);
+                    }
+                  }}
                 />
               )
             }
@@ -169,7 +187,7 @@ class ChatBox extends React.Component {
           type="file"
           accept="image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx"
           multiple={false}
-          onChange={this.handleInputChange}
+          onChange={() => this.handleInputChange(this.inputImage.files[0])}
           style={{display: "none"}}
         />
       </React.Fragment>
