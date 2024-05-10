@@ -19,6 +19,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
+import {ThemeDefault} from "./Conf";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
@@ -66,6 +67,7 @@ class StoreListPage extends React.Component {
       limitMinutes: 10,
       welcome: "Hello",
       prompt: defaultPrompt,
+      themeColor: ThemeDefault.colorPrimary,
       propertiesMap: {},
     };
   }

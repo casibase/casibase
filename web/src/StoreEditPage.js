@@ -20,6 +20,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
+import {ThemeDefault} from "./Conf";
 
 const {TextArea} = Input;
 
@@ -35,6 +36,7 @@ class StoreEditPage extends React.Component {
       modelProviders: [],
       embeddingProviders: [],
       store: null,
+      themeColor: ThemeDefault.colorPrimary,
     };
   }
 
@@ -271,6 +273,20 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        {
+          this.state.store.name !== "store-built-in" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("store:Theme Color")}:
+              </Col>
+              <Col span={22} >
+                <input type="color" value={this.state.store.themeColor} onChange={(e) => {
+                  this.updateStoreField("themeColor", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:File tree")}:
@@ -299,6 +315,7 @@ class StoreEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
+            Setting.setThemeColor(this.state.store.themeColor);
             Setting.showMessage("success", "Successfully saved");
             this.setState({
               storeName: this.state.store.name,
