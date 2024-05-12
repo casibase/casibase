@@ -19,6 +19,7 @@ import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import moment from "moment";
+import {ThemeDefault} from "./Conf";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -127,11 +128,11 @@ class ChatBox extends React.Component {
     }
     return (
       <React.Fragment>
-        <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid rgb(242,242,242)", borderRadius: "6px"}} >
+        <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid " + ThemeDefault.colorBackground, borderRadius: "6px"}} >
           <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
             {
               (title === "") ? null : (
-                <ConversationHeader style={{backgroundColor: "rgb(246,240,255)", height: "42px"}}>
+                <ConversationHeader style={{backgroundColor: ThemeDefault.colorBackground, height: "42px"}}>
                   <ConversationHeader.Content userName={title} />
                 </ConversationHeader>
               )

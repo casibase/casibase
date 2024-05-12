@@ -16,6 +16,7 @@ import React from "react";
 import {Button, Input, Menu, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 import i18next from "i18next";
+import {ThemeDefault} from "./Conf";
 
 class ChatMenu extends React.Component {
   constructor(props) {
@@ -51,19 +52,23 @@ class ChatMenu extends React.Component {
           const globalChatIndex = chats.indexOf(chat);
           const isSelected = selectedKeys.includes(`${index}-${chatIndex}`);
           const handleIconMouseEnter = (e) => {
-            e.currentTarget.style.color = "rgba(89,54,213,0.6)";
+            e.currentTarget.style.color = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.6;
           };
 
           const handleIconMouseLeave = (e) => {
             e.currentTarget.style.color = "inherit";
+            e.currentTarget.style.opacity = 1;
           };
 
           const handleIconMouseDown = (e) => {
-            e.currentTarget.style.color = "rgba(89,54,213,0.4)";
+            e.currentTarget.style.color = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.4;
           };
 
           const handleIconMouseUp = (e) => {
-            e.currentTarget.style.color = "rgba(89,54,213,0.6)";
+            e.currentTarget.style.color = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.6;
           };
 
           const onSave = (e) => {
@@ -189,16 +194,19 @@ class ChatMenu extends React.Component {
           }}
           disabled={hasEmptyChat}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "rgba(89,54,213,0.6)";
+            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.6;
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.borderColor = "rgba(0, 0, 0, 0.1)";
           }}
           onMouseDown={(e) => {
-            e.currentTarget.style.borderColor = "rgba(89,54,213,0.4)";
+            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.4;
           }}
           onMouseUp={(e) => {
-            e.currentTarget.style.borderColor = "rgba(89,54,213,0.6)";
+            e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
+            e.currentTarget.style.opacity = 0.6;
           }}
           onClick={this.props.onAddChat}
         >
