@@ -277,7 +277,7 @@ class StoreEditPage extends React.Component {
           this.state.store.name !== "store-built-in" ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Theme Color")}:
+                {i18next.t("store:Theme color")}:
               </Col>
               <Col span={22} >
                 <input type="color" value={this.state.store.themeColor} onChange={(e) => {
