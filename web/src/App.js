@@ -54,6 +54,7 @@ import ChatPage from "./ChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import UsagePage from "./UsagePage";
+import * as StoreBackend from "./backend/StoreBackend";
 
 const {Header, Footer, Content} = Layout;
 
@@ -76,6 +77,19 @@ class App extends Component {
   UNSAFE_componentWillMount() {
     this.updateMenuKey();
     this.getAccount();
+    this.setTheme();
+  }
+
+  setTheme() {
+    StoreBackend.getStore("admin", "store-built-in").then((res) => {
+      if (res.status === "ok") {
+        const store = res.data;
+        Setting.setThemeColor(store.themeColor);
+      } else {
+        Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
+        Setting.showMessage("error", `Failed to get theme: ${res.msg}`);
+      }
+    });
   }
 
   componentDidUpdate() {

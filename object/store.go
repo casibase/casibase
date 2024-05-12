@@ -67,6 +67,7 @@ type Store struct {
 	LimitMinutes int    `json:"limitMinutes"`
 	Welcome      string `xorm:"varchar(100)" json:"welcome"`
 	Prompt       string `xorm:"mediumtext" json:"prompt"`
+	ThemeColor   string `xorm:"varchar(100)" json:"themeColor"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`

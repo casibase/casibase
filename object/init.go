@@ -52,6 +52,7 @@ func initBuiltInStore() {
 		LimitMinutes:      10,
 		Welcome:           "Hello",
 		Prompt:            defaultPrompt,
+		ThemeColor:        "#5734d3",
 		PropertiesMap:     map[string]*Properties{},
 	}
 	_, err = AddStore(store)
