@@ -78,12 +78,9 @@ class ChatBox extends React.Component {
   };
 
   handleRegenerate = () => {
-    const lastUserMessage = this.props.messages
-      .reverse()
-      .find(message => message.author !== "AI");
-    const lastAIMessage = this.props.messages
-      .reverse()
-      .find(message => message.author === "AI" && message.errorText !== "");
+    const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
+    const lastAIMessage = this.props.messages.reverse().find(message => message.author === "AI" && message.errorText !== "");
+
     MessageBackend.deleteMessage(lastUserMessage)
       .then((res) => {
         if (res.status !== "ok") {
@@ -93,6 +90,7 @@ class ChatBox extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `Message failed to delete: ${error}`);
       });
+
     MessageBackend.deleteMessage(lastAIMessage)
       .then((res) => {
         if (res.status !== "ok") {
@@ -102,6 +100,7 @@ class ChatBox extends React.Component {
       .catch(error => {
         Setting.showMessage("error", `Message failed to delete: ${error}`);
       });
+
     this.props.sendMessage(lastUserMessage.text, "");
   };
 
