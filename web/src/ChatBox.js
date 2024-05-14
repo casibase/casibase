@@ -155,11 +155,14 @@ class ChatBox extends React.Component {
           </>
         );
       }
+
       return Setting.getRefinedErrorText(message.errorText);
     }
+
     if (message.text === "") {
       return this.state.dots;
     }
+
     return message.html;
   };
 
