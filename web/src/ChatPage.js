@@ -174,6 +174,11 @@ class ChatPage extends BaseListPage {
             this.setState({
               disableInput: true,
             });
+
+            if (lastMessage.errorText.endsWith("An established connection was aborted by the software in your host machine.")) {
+              return ;
+            }
+
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
               const jsonData = JSON.parse(data);
 

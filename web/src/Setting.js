@@ -1047,10 +1047,12 @@ export function uniqueFields(chats, field) {
 
 export function getRefinedErrorText(errorText) {
   if (errorText.startsWith("error, status code: 400, message: The response was filtered due to the prompt triggering")) {
-    return "⚠️ " + i18next.t("chat:Your chat text involves sensitive content. This chat has been forcibly terminated.");
+    return i18next.t("chat:Your chat text involves sensitive content. This chat has been forcibly terminated.");
+  } else if (errorText.startsWith("write tcp ")) {
+    return i18next.t("chat:The response has been interrupted. Please do not refresh the page during responding.");
+  } else {
+    return i18next.t("chat:An error occurred during responding.");
   }
-
-  return errorText;
 }
 
 export function lighten(hexColor, amount) {
