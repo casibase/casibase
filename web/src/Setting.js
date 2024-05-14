@@ -1048,6 +1048,13 @@ export function uniqueFields(chats, field) {
 export function getRefinedErrorText(errorText) {
   if (errorText.startsWith("error, status code: 400, message: The response was filtered due to the prompt triggering")) {
     return "⚠️ " + i18next.t("chat:Your chat text involves sensitive content. This chat has been forcibly terminated.");
+  } else if (errorText.startsWith("write tcp ")) {
+    return (
+      <>
+        <div style={{fontSize: "16px"}}>{i18next.t("Connection interrupted, the request can not be completed")}</div>
+        <p>{errorText}</p>
+      </>
+    );
   }
 
   return errorText;

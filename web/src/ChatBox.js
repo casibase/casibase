@@ -13,12 +13,14 @@
 // limitations under the License.
 
 import React from "react";
+import {Button} from "antd";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import moment from "moment";
+import * as MessageBackend from "./backend/MessageBackend";
 import {ThemeDefault} from "./Conf";
 
 class ChatBox extends React.Component {
@@ -75,6 +77,34 @@ class ChatBox extends React.Component {
     this.setState({value: ""});
   };
 
+  handleRegenerate = () => {
+    const lastUserMessage = this.props.messages
+      .reverse()
+      .find(message => message.author !== "AI");
+    const lastAIMessage = this.props.messages
+      .reverse()
+      .find(message => message.author === "AI" && message.errorText !== "");
+    MessageBackend.deleteMessage(lastUserMessage)
+      .then((res) => {
+        if (res.status !== "ok") {
+          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Message failed to delete: ${error}`);
+      });
+    MessageBackend.deleteMessage(lastAIMessage)
+      .then((res) => {
+        if (res.status !== "ok") {
+          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Message failed to delete: ${error}`);
+      });
+    this.props.sendMessage(lastUserMessage.text, "");
+  };
+
   handleImageClick = () => {
     this.inputImage.click();
   };
@@ -116,6 +146,24 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
+  renderMessageContent = (message) => {
+    if (message.errorText !== "") {
+      if (message.errorText.endsWith("An established connection was aborted by the software in your host machine.")) {
+        return (
+          <>
+            {Setting.getRefinedErrorText(message.errorText)}
+            <Button onClick={this.handleRegenerate}>Regenerate</Button>
+          </>
+        );
+      }
+      return Setting.getRefinedErrorText(message.errorText);
+    }
+    if (message.text === "") {
+      return this.state.dots;
+    }
+    return message.html;
+  };
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -146,11 +194,7 @@ class ChatBox extends React.Component {
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
                   <Message.CustomContent>
-                    {
-                      message.errorText !== "" ? Setting.getRefinedErrorText(message.errorText) : (
-                        message.text === "" ? this.state.dots : message.html
-                      )
-                    }
+                    {this.renderMessageContent(message)}
                   </Message.CustomContent>
                 </Message>
               ))}
