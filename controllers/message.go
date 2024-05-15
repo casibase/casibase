@@ -143,7 +143,29 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
-
+	if message.IsRegenerated {
+		messages, err := object.GetChatMessages(message.Chat)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		var lastAIMessage *object.Message
+		var lastUserMessage *object.Message
+		for i := len(messages) - 1; i >= 0; i-- {
+			if messages[i].Author == "AI" && messages[i].ErrorText != "" {
+				lastAIMessage = messages[i]
+				break
+			}
+		}
+		for i := len(messages) - 1; i >= 0; i-- {
+			if messages[i].Author != "AI" {
+				lastUserMessage = messages[i]
+				break
+			}
+		}
+		object.DeleteMessage(lastAIMessage)
+		object.DeleteMessage(lastUserMessage)
+	}
 	var chat *object.Chat
 	if message.Chat == "" {
 		chat, err = c.addInitialChat(message.Organization, message.User)
