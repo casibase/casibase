@@ -20,7 +20,6 @@ import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import moment from "moment";
-import * as MessageBackend from "./backend/MessageBackend";
 import {ThemeDefault} from "./Conf";
 
 class ChatBox extends React.Component {
@@ -79,29 +78,7 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
-    const lastAIMessage = this.props.messages.reverse().find(message => message.author === "AI" && message.errorText !== "");
-
-    MessageBackend.deleteMessage(lastUserMessage)
-      .then((res) => {
-        if (res.status !== "ok") {
-          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `Message failed to delete: ${error}`);
-      });
-
-    MessageBackend.deleteMessage(lastAIMessage)
-      .then((res) => {
-        if (res.status !== "ok") {
-          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `Message failed to delete: ${error}`);
-      });
-
-    this.props.sendMessage(lastUserMessage.text, "");
+    this.props.sendMessage(lastUserMessage.text, "", true);
   };
 
   handleImageClick = () => {
