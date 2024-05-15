@@ -151,18 +151,18 @@ func (c *ApiController) AddMessage() {
 		}
 		var lastAIMessage *object.Message
 		var lastUserMessage *object.Message
-    	for i := len(messages) - 1; i >= 0; i-- {
-        	if messages[i].Author == "AI" && messages[i].ErrorText != "" {
-            	lastAIMessage = messages[i]
-            	break
-        	}
-    	}
 		for i := len(messages) - 1; i >= 0; i-- {
-        	if messages[i].Author != "AI" {
-            	lastUserMessage = messages[i]
-            	break
-        	}
-    	}
+			if messages[i].Author == "AI" && messages[i].ErrorText != "" {
+				lastAIMessage = messages[i]
+				break
+			}
+		}
+		for i := len(messages) - 1; i >= 0; i-- {
+			if messages[i].Author != "AI" {
+				lastUserMessage = messages[i]
+				break
+			}
+		}
 		object.DeleteMessage(lastAIMessage)
 		object.DeleteMessage(lastUserMessage)
 	}
