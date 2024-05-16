@@ -135,7 +135,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2)
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -244,6 +244,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	if store.ModelUsageMap != nil {
 		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
+			Provider:   message.ModelProvider,
 			TokenCount: message.TokenCount,
 			StartTime:  time.Now(),
 		}

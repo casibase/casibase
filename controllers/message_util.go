@@ -81,10 +81,10 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func getMinFromModelUsageMap(store *object.Store) string {
+func getMinFromModelUsageMap(modelUsageMap map[string]object.UsageInfo) string {
 	min := math.MaxInt
 	res := ""
-	for provider, usageInfo := range store.ModelUsageMap {
+	for provider, usageInfo := range modelUsageMap {
 		if min > usageInfo.TokenCount {
 			min = usageInfo.TokenCount
 			res = provider
@@ -93,7 +93,15 @@ func getMinFromModelUsageMap(store *object.Store) string {
 	return res
 }
 
-func GetIdleModelProvider(store *object.Store, name string) (string, model.ModelProvider, error) {
+func isImageQuestion(question string) bool {
+	return false
+}
+
+func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider) map[string]object.UsageInfo {
+	return modelUsageMap
+}
+
+func GetIdleModelProvider(store *object.Store, name string, question string) (string, model.ModelProvider, error) {
 	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
 	if err != nil {
 		return "", nil, err
@@ -108,7 +116,13 @@ func GetIdleModelProvider(store *object.Store, name string) (string, model.Model
 		return "", nil, err
 	}
 
-	minProvider := getMinFromModelUsageMap(store)
+	modelUsageMap := store.ModelUsageMap
+
+	if isImageQuestion(question) {
+		modelUsageMap = getFilteredModelUsageMap(modelUsageMap, modelProviderMap)
+	}
+
+	minProvider := getMinFromModelUsageMap(modelUsageMap)
 	modelProvider, ok := modelProviderMap[minProvider]
 	if !ok {
 		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
