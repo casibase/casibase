@@ -20,11 +20,18 @@ import (
 	"math"
 	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
 )
+
+var reImage *regexp.Regexp
+
+func init() {
+	reImage, _ = regexp.Compile(`<img[^>]+src="([^"]+)"[^>]*>`)
+}
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
 	if !message.IsAlerted {
@@ -94,11 +101,19 @@ func getMinFromModelUsageMap(modelUsageMap map[string]object.UsageInfo) string {
 }
 
 func isImageQuestion(question string) bool {
-	return false
+	res := reImage.MatchString(question)
+	return res
 }
 
 func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider) map[string]object.UsageInfo {
-	return modelUsageMap
+	res := map[string]object.UsageInfo{}
+	for providerName, usageInfo := range modelUsageMap {
+		providerObj := modelProviderMap[providerName]
+		if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
+			res[providerName] = usageInfo
+		}
+	}
+	return res
 }
 
 func GetIdleModelProvider(store *object.Store, name string, question string) (string, model.ModelProvider, error) {
