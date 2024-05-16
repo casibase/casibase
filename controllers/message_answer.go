@@ -16,14 +16,11 @@ package controllers
 
 import (
 	"fmt"
-	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
 )
 
@@ -111,19 +108,11 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 
 		question = questionMessage.Text
-		re := regexp.MustCompile(`href="([^"]+)"`)
-		urls := re.FindStringSubmatch(questionMessage.Text)
-		if len(urls) > 0 {
-			href := urls[1]
-			ext := filepath.Ext(href)
 
-			content, err := txt.GetParsedTextFromUrl(href, ext)
-			if err != nil {
-				c.ResponseErrorStream(message, err.Error())
-				return
-			}
-			aTag := regexp.MustCompile(`<a\s+[^>]*href=["']([^"']+)["'][^>]*>.*?</a>`)
-			question = aTag.ReplaceAllString(question, content)
+		question, err = refineQuestionTextViaParsingUrlContent(question)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
 		}
 	}
 
