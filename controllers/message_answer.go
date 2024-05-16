@@ -132,6 +132,9 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	imgRe := regexp.MustCompile(`<img[^>]+src="([^"]+)"[^>]*>`)
+	isVision := imgRe.MatchString(question)
+
 	_, ok := c.CheckSignedIn()
 	if !ok {
 		var count int
@@ -158,7 +161,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(*store, modelProviders, modelProviderObjs, defaultModelProvider, defaultModelProviderObj)
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(*store, modelProviders, modelProviderObjs, defaultModelProvider, defaultModelProviderObj, isVision)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return

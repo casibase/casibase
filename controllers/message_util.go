@@ -58,7 +58,23 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, defaultModelProvider *object.Provider, defaultModelProviderObj model.ModelProvider) (string, model.ModelProvider, error) {
+func GetVisionModelProvider(modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, usageMap map[string]object.UsageInfo) ([]*object.Provider, []model.ModelProvider, map[string]object.UsageInfo) {
+	var visionModelProviders []*object.Provider
+	var visionModelProviderObjs []model.ModelProvider
+	visionModelUsageMap := make(map[string]object.UsageInfo)
+	for index, modelProvider := range modelProviders {
+		if modelProvider.SubType == "gpt-4-1106-vision-preview" || modelProvider.SubType == "gpt-4-vision-preview" {
+			visionModelProviders = append(visionModelProviders, modelProvider)
+			visionModelProviderObjs = append(visionModelProviderObjs, modelProviderObjs[index])
+			if usage, exists := usageMap[modelProvider.Name]; exists {
+				visionModelUsageMap[modelProvider.Name] = usage
+			}
+		}
+	}
+	return visionModelProviders, visionModelProviderObjs, visionModelUsageMap
+}
+
+func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, defaultModelProvider *object.Provider, defaultModelProviderObj model.ModelProvider, isVision bool) (string, model.ModelProvider, error) {
 	minTokenCount := int(^uint(0) >> 1)
 	var minProvider string
 
@@ -66,16 +82,26 @@ func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider,
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
-	for provider, usageInfo := range store.ModelUsageMap {
+	var newModelProviders []*object.Provider
+	var newModelProviderObjs []model.ModelProvider
+	var newModelUsageMap map[string]object.UsageInfo
+
+	if isVision {
+		newModelProviders, newModelProviderObjs, newModelUsageMap = GetVisionModelProvider(modelProviders, modelProviderObjs, store.ModelUsageMap)
+	} else {
+		newModelProviders, newModelProviderObjs, newModelUsageMap = modelProviders, modelProviderObjs, store.ModelUsageMap
+	}
+
+	for provider, usageInfo := range newModelUsageMap {
 		if usageInfo.TokenCount < minTokenCount {
 			minTokenCount = usageInfo.TokenCount
 			minProvider = provider
 		}
 	}
 
-	for i, modelProvider := range modelProviders {
+	for i, modelProvider := range newModelProviders {
 		if modelProvider.Name == minProvider {
-			return modelProvider.Name, modelProviderObjs[i], nil
+			return modelProvider.Name, newModelProviderObjs[i], nil
 		}
 	}
 	return "", nil, fmt.Errorf("No idle model provider found")
