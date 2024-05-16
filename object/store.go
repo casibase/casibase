@@ -41,8 +41,9 @@ type Properties struct {
 }
 
 type UsageInfo struct {
+	Provider   string    `xorm:"varchar(100)" json:"provider"`
 	TokenCount int       `json:"tokenCount"`
-	StartTime  time.Time `json:"startTime" xorm:"created"`
+	StartTime  time.Time `xorm:"created" json:"startTime"`
 }
 
 type Store struct {
