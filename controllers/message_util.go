@@ -17,9 +17,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+	"path/filepath"
+	"regexp"
 
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/txt"
 )
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
@@ -49,6 +53,25 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 	}
 }
 
+func refineQuestionTextViaParsingUrlContent(question string) (string, error) {
+	re := regexp.MustCompile(`href="([^"]+)"`)
+	urls := re.FindStringSubmatch(question)
+	if len(urls) == 0 {
+		return question, nil
+	}
+
+	href := urls[1]
+	ext := filepath.Ext(href)
+	content, err := txt.GetParsedTextFromUrl(href, ext)
+	if err != nil {
+		return "", err
+	}
+
+	aTag := regexp.MustCompile(`<a\s+[^>]*href=["']([^"']+)["'][^>]*>.*?</a>`)
+	res := aTag.ReplaceAllString(question, content)
+	return res, nil
+}
+
 func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	jsonData := map[string]string{"text": data}
 	jsonBytes, err := json.Marshal(jsonData)
@@ -58,51 +81,65 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func GetVisionModelProvider(modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, usageMap map[string]object.UsageInfo) ([]*object.Provider, []model.ModelProvider, map[string]object.UsageInfo) {
-	var visionModelProviders []*object.Provider
-	var visionModelProviderObjs []model.ModelProvider
-	visionModelUsageMap := make(map[string]object.UsageInfo)
-	for index, modelProvider := range modelProviders {
-		if modelProvider.SubType == "gpt-4-1106-vision-preview" || modelProvider.SubType == "gpt-4-vision-preview" {
-			visionModelProviders = append(visionModelProviders, modelProvider)
-			visionModelProviderObjs = append(visionModelProviderObjs, modelProviderObjs[index])
-			if usage, exists := usageMap[modelProvider.Name]; exists {
-				visionModelUsageMap[modelProvider.Name] = usage
+func getMinFromModelUsageMap(modelUsageMap map[string]object.UsageInfo) string {
+	min := math.MaxInt
+	res := ""
+	for provider, usageInfo := range modelUsageMap {
+		if min > usageInfo.TokenCount {
+			min = usageInfo.TokenCount
+			res = provider
+		}
+	}
+	return res
+}
+
+func isImageQuestion(question string) bool {
+	imgRe := regexp.MustCompile(`<img[^>]+src="([^"]+)"[^>]*>`)
+	return imgRe.MatchString(question)
+}
+
+func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider) map[string]object.UsageInfo {
+	filteredMap := make(map[string]object.UsageInfo)
+	for model, provider := range modelProviderMap {
+		if provider.SubType == "gpt-4-vision-preview" || provider.SubType == "gpt-4-1106-vision-preview" {
+			if usageInfo, exists := modelUsageMap[model]; exists {
+				filteredMap[model] = usageInfo
 			}
 		}
 	}
-	return visionModelProviders, visionModelProviderObjs, visionModelUsageMap
+	return filteredMap
 }
 
-func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, defaultModelProvider *object.Provider, defaultModelProviderObj model.ModelProvider, isVision bool) (string, model.ModelProvider, error) {
-	minTokenCount := int(^uint(0) >> 1)
-	var minProvider string
+func GetIdleModelProvider(store *object.Store, name string, question string) (string, model.ModelProvider, error) {
+	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
+	if err != nil {
+		return "", nil, err
+	}
 
 	if len(store.ModelUsageMap) <= 1 {
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
-	var newModelProviders []*object.Provider
-	var newModelProviderObjs []model.ModelProvider
-	var newModelUsageMap map[string]object.UsageInfo
-
-	if isVision {
-		newModelProviders, newModelProviderObjs, newModelUsageMap = GetVisionModelProvider(modelProviders, modelProviderObjs, store.ModelUsageMap)
-	} else {
-		newModelProviders, newModelProviderObjs, newModelUsageMap = modelProviders, modelProviderObjs, store.ModelUsageMap
+	modelProviderMap, modelProviderObjMap, err := object.GetModelProvidersFromContext("admin", name)
+	if err != nil {
+		return "", nil, err
 	}
 
-	for provider, usageInfo := range newModelUsageMap {
-		if usageInfo.TokenCount < minTokenCount {
-			minTokenCount = usageInfo.TokenCount
-			minProvider = provider
-		}
+	modelUsageMap := store.ModelUsageMap
+
+	if isImageQuestion(question) {
+		modelUsageMap = getFilteredModelUsageMap(modelUsageMap, modelProviderMap)
 	}
 
-	for i, modelProvider := range newModelProviders {
-		if modelProvider.Name == minProvider {
-			return modelProvider.Name, newModelProviderObjs[i], nil
-		}
+	minProvider := getMinFromModelUsageMap(modelUsageMap)
+	modelProvider, ok := modelProviderMap[minProvider]
+	if !ok {
+		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
 	}
-	return "", nil, fmt.Errorf("No idle model provider found")
+	modelProviderObj, ok := modelProviderObjMap[minProvider]
+	if !ok {
+		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
+	}
+
+	return modelProvider.Name, modelProviderObj, nil
 }

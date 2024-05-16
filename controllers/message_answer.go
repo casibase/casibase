@@ -16,14 +16,11 @@ package controllers
 
 import (
 	"fmt"
-	"path/filepath"
-	"regexp"
 	"strings"
 	"time"
 
 	"github.com/astaxie/beego"
 	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/txt"
 	"github.com/casibase/casibase/util"
 )
 
@@ -111,19 +108,11 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 
 		question = questionMessage.Text
-		re := regexp.MustCompile(`href="([^"]+)"`)
-		urls := re.FindStringSubmatch(questionMessage.Text)
-		if len(urls) > 0 {
-			href := urls[1]
-			ext := filepath.Ext(href)
 
-			content, err := txt.GetParsedTextFromUrl(href, ext)
-			if err != nil {
-				c.ResponseErrorStream(message, err.Error())
-				return
-			}
-			aTag := regexp.MustCompile(`<a\s+[^>]*href=["']([^"']+)["'][^>]*>.*?</a>`)
-			question = aTag.ReplaceAllString(question, content)
+		question, err = refineQuestionTextViaParsingUrlContent(question)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
 		}
 	}
 
@@ -131,9 +120,6 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, fmt.Sprintf("The question should not be empty"))
 		return
 	}
-
-	imgRe := regexp.MustCompile(`<img[^>]+src="([^"]+)"[^>]*>`)
-	isVision := imgRe.MatchString(question)
 
 	_, ok := c.CheckSignedIn()
 	if !ok {
@@ -149,19 +135,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	modelProviders, modelProviderObjs, err := object.GetModelProvidersFromContext("admin", chat.User2)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(*store, modelProviders, modelProviderObjs, defaultModelProvider, defaultModelProviderObj, isVision)
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -270,6 +244,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	if store.ModelUsageMap != nil {
 		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
+			Provider:   message.ModelProvider,
 			TokenCount: message.TokenCount,
 			StartTime:  time.Now(),
 		}
