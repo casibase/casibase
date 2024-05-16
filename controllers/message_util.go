@@ -17,9 +17,13 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"math"
+	"path/filepath"
+	"regexp"
 
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/txt"
 )
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
@@ -47,6 +51,25 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 		c.ResponseError(err.Error())
 		return
 	}
+}
+
+func refineQuestionTextViaParsingUrlContent(question string) (string, error) {
+	re := regexp.MustCompile(`href="([^"]+)"`)
+	urls := re.FindStringSubmatch(question)
+	if len(urls) == 0 {
+		return question, nil
+	}
+
+	href := urls[1]
+	ext := filepath.Ext(href)
+	content, err := txt.GetParsedTextFromUrl(href, ext)
+	if err != nil {
+		return "", err
+	}
+
+	aTag := regexp.MustCompile(`<a\s+[^>]*href=["']([^"']+)["'][^>]*>.*?</a>`)
+	res := aTag.ReplaceAllString(question, content)
+	return res, nil
 }
 
 func ConvertMessageDataToJSON(data string) ([]byte, error) {
