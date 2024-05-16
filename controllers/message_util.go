@@ -81,14 +81,23 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func GetIdleModelProvider(store object.Store, modelProviders []*object.Provider, modelProviderObjs []model.ModelProvider, defaultModelProvider *object.Provider, defaultModelProviderObj model.ModelProvider) (string, model.ModelProvider, error) {
-	minTokenCount := int(^uint(0) >> 1)
-	var minProvider string
+func GetIdleModelProvider(store *object.Store, name string) (string, model.ModelProvider, error) {
+	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
+	if err != nil {
+		return "", nil, err
+	}
+
+	modelProviders, modelProviderObjs, err := object.GetModelProvidersFromContext("admin", name)
+	if err != nil {
+		return "", nil, err
+	}
 
 	if len(store.ModelUsageMap) <= 1 {
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
+	minTokenCount := math.MaxInt
+	var minProvider string
 	for provider, usageInfo := range store.ModelUsageMap {
 		if usageInfo.TokenCount < minTokenCount {
 			minTokenCount = usageInfo.TokenCount

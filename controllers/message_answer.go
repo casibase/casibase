@@ -135,19 +135,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	modelProviders, modelProviderObjs, err := object.GetModelProvidersFromContext("admin", chat.User2)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(*store, modelProviders, modelProviderObjs, defaultModelProvider, defaultModelProviderObj)
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
