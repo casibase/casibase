@@ -324,9 +324,9 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 }
 
 func GetModelProvidersFromContext(owner string, name string) ([]*Provider, []model.ModelProvider, error) {
-	var providerNames []string
+	providerNames := []string{}
 	if name != "" {
-		providerNames = append(providerNames, name)
+		providerNames = []string{name}
 	} else {
 		store, err := GetDefaultStore(owner)
 		if err != nil {
@@ -338,34 +338,19 @@ func GetModelProvidersFromContext(owner string, name string) ([]*Provider, []mod
 		}
 	}
 
-	var providers []*Provider
-	var providerObjs []model.ModelProvider
-	var err error
-	if len(providerNames) != 0 {
-		var provider *Provider
-		for _, providerName := range providerNames {
-			if providerName != "" {
-				providerId := util.GetIdFromOwnerAndName(owner, providerName)
-				provider, err = GetProvider(providerId)
-			} else {
-				provider, err = GetDefaultModelProvider()
-			}
-
-			if provider == nil && err == nil {
-				return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
-			}
-			if provider.Category != "Model" || (provider.ClientSecret == "" && provider.Type != "Dummy") {
-				return nil, nil, fmt.Errorf("The model provider: %s is invalid", providerName)
-			}
-			providerObj, err := provider.GetModelProvider()
-			if err != nil {
-				return nil, nil, err
-			}
-			providers = append(providers, provider)
-			providerObjs = append(providerObjs, providerObj)
+	providers := []*Provider{}
+	providerObjs := []model.ModelProvider{}
+	for _, providerName := range providerNames {
+		provider, providerObj, err := getModelProviderFromName(owner, providerName)
+		if err != nil {
+			return nil, nil, err
 		}
+
+		providers = append(providers, provider)
+		providerObjs = append(providerObjs, providerObj)
 	}
-	return providers, providerObjs, err
+
+	return providers, providerObjs, nil
 }
 
 func GetModelProviderFromContext(owner string, name string) (*Provider, model.ModelProvider, error) {
@@ -383,38 +368,7 @@ func GetModelProviderFromContext(owner string, name string) (*Provider, model.Mo
 		}
 	}
 
-	var provider *Provider
-	var err error
-	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = GetProvider(providerId)
-	} else {
-		provider, err = GetDefaultModelProvider()
-	}
-	if err != nil {
-		return nil, nil, err
-	}
-	if provider == nil {
-		if providerName != "" {
-			return nil, nil, fmt.Errorf("The model provider: %s is not found", providerName)
-		} else {
-			return nil, nil, fmt.Errorf("Please add a model provider first")
-		}
-	}
-
-	if provider.Category != "Model" {
-		return nil, nil, fmt.Errorf("The model provider: %s is expected to be \"Model\" category, got: \"%s\"", provider.GetId(), provider.Category)
-	}
-	if provider.ClientSecret == "" && provider.Type != "Dummy" {
-		return nil, nil, fmt.Errorf("The model provider: %s's client secret should not be empty", provider.GetId())
-	}
-
-	providerObj, err := provider.GetModelProvider()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return provider, providerObj, err
+	return getModelProviderFromName(owner, providerName)
 }
 
 func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embedding.EmbeddingProvider, error) {
@@ -432,36 +386,5 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 		}
 	}
 
-	var provider *Provider
-	var err error
-	if providerName != "" {
-		providerId := util.GetIdFromOwnerAndName(owner, providerName)
-		provider, err = GetProvider(providerId)
-	} else {
-		provider, err = GetDefaultEmbeddingProvider()
-	}
-	if err != nil {
-		return nil, nil, err
-	}
-	if provider == nil {
-		if providerName != "" {
-			return nil, nil, fmt.Errorf("The embedding provider: %s is not found", providerName)
-		} else {
-			return nil, nil, fmt.Errorf("Please add an embedding provider first")
-		}
-	}
-
-	if provider.Category != "Embedding" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s is expected to be \"Embedding\" category, got: \"%s\"", provider.GetId(), provider.Category)
-	}
-	if provider.ClientSecret == "" && provider.Type != "Dummy" {
-		return nil, nil, fmt.Errorf("The embedding provider: %s's client secret should not be empty", provider.GetId())
-	}
-
-	providerObj, err := provider.GetEmbeddingProvider()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	return provider, providerObj, err
+	return getEmbeddingProviderFromName(owner, providerName)
 }
