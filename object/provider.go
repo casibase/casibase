@@ -323,7 +323,7 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 	return pProvider, nil
 }
 
-func GetModelProvidersFromContext(owner string, name string) ([]*Provider, []model.ModelProvider, error) {
+func GetModelProvidersFromContext(owner string, name string) (map[string]*Provider, map[string]model.ModelProvider, error) {
 	providerNames := []string{}
 	if name != "" {
 		providerNames = []string{name}
@@ -338,19 +338,19 @@ func GetModelProvidersFromContext(owner string, name string) ([]*Provider, []mod
 		}
 	}
 
-	providers := []*Provider{}
-	providerObjs := []model.ModelProvider{}
+	providerMap := map[string]*Provider{}
+	providerObjMap := map[string]model.ModelProvider{}
 	for _, providerName := range providerNames {
 		provider, providerObj, err := getModelProviderFromName(owner, providerName)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		providers = append(providers, provider)
-		providerObjs = append(providerObjs, providerObj)
+		providerMap[providerName] = provider
+		providerObjMap[providerName] = providerObj
 	}
 
-	return providers, providerObjs, nil
+	return providerMap, providerObjMap, nil
 }
 
 func GetModelProviderFromContext(owner string, name string) (*Provider, model.ModelProvider, error) {

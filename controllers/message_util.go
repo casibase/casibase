@@ -81,13 +81,20 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
+func getMinFromModelUsageMap(store *object.Store) string {
+	min := math.MaxInt
+	res := ""
+	for provider, usageInfo := range store.ModelUsageMap {
+		if min > usageInfo.TokenCount {
+			min = usageInfo.TokenCount
+			res = provider
+		}
+	}
+	return res
+}
+
 func GetIdleModelProvider(store *object.Store, name string) (string, model.ModelProvider, error) {
 	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
-	if err != nil {
-		return "", nil, err
-	}
-
-	modelProviders, modelProviderObjs, err := object.GetModelProvidersFromContext("admin", name)
 	if err != nil {
 		return "", nil, err
 	}
@@ -96,19 +103,20 @@ func GetIdleModelProvider(store *object.Store, name string) (string, model.Model
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
-	minTokenCount := math.MaxInt
-	var minProvider string
-	for provider, usageInfo := range store.ModelUsageMap {
-		if usageInfo.TokenCount < minTokenCount {
-			minTokenCount = usageInfo.TokenCount
-			minProvider = provider
-		}
+	modelProviderMap, modelProviderObjMap, err := object.GetModelProvidersFromContext("admin", name)
+	if err != nil {
+		return "", nil, err
 	}
 
-	for i, modelProvider := range modelProviders {
-		if modelProvider.Name == minProvider {
-			return modelProvider.Name, modelProviderObjs[i], nil
-		}
+	minProvider := getMinFromModelUsageMap(store)
+	modelProvider, ok := modelProviderMap[minProvider]
+	if !ok {
+		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
 	}
-	return "", nil, fmt.Errorf("No idle model provider found")
+	modelProviderObj, ok := modelProviderObjMap[minProvider]
+	if !ok {
+		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
+	}
+
+	return modelProvider.Name, modelProviderObj, nil
 }
