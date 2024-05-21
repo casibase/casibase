@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -135,12 +136,6 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
@@ -181,10 +176,29 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
+	modelResult := &model.ModelResult{}
+
+	shouldResImage, err := shouldResponseImage(store, question)
+
+	var modelProviderObj model.ModelProvider
+	var modelProvider string
+	if err == nil {
+		outputType := "text"
+		if shouldResImage {
+			outputType = "image"
+		}
+
+		modelProvider, modelProviderObj, err = GetModelProviderByOutputType(store, outputType, question)
+		if err == nil {
+			modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
+		}
+	}
+
 	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
+		fmt.Fprintf(writer, "event: message\ndata: %s\n\n", err.Error())
+		err = nil
+		// c.ResponseErrorStream(message, err.Error())
+		// return
 	}
 
 	if writer.writerCleaner.cleaned == false {
@@ -410,4 +424,47 @@ func (c *ApiController) GetAnswer() {
 	}
 
 	c.ResponseOk(answer)
+}
+
+func shouldResponseImage(store *object.Store, question string) (bool, error) {
+	imageProviders := []string{
+		"dall-e-3",
+		"dall-e-2",
+	}
+
+	newProviders := []string{store.ModelProvider}
+
+	for _, provider := range store.ModelProviders {
+		if provider != store.ModelProvider {
+			newProviders = append(newProviders, provider)
+		}
+	}
+
+	if len(newProviders) == 1 {
+		modelProvider, _, err := object.GetModelProviderFromContext("admin", newProviders[0])
+		if err != nil {
+			return false, err
+		}
+
+		for i := range imageProviders {
+			if modelProvider.SubType == imageProviders[i] {
+				return true, nil
+			}
+		}
+	}
+
+	prompt := "First, please forget the previous Q&A, and focus only on the answer to this question. Please judge whether the answer to this question should be an image. If yes, reply with 'true'; otherwise, reply with 'false'. Your answer should only contain one of the words 'true' or 'false', and should not include any additional content. Here is my question:"
+	finalQuestion := fmt.Sprintf("%s\n%s", prompt, question)
+
+	modelProvider, _, err := GetModelProviderByOutputType(store, "text", question)
+	if err != nil {
+		return false, err
+	}
+
+	answer, _, err := object.GetAnswer(modelProvider, finalQuestion)
+	if err != nil {
+		return false, err
+	}
+
+	return strings.Contains(answer, "true"), nil
 }

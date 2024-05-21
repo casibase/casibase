@@ -16,6 +16,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"math"
 	"path/filepath"
@@ -148,4 +149,45 @@ func GetIdleModelProvider(store *object.Store, name string, question string) (st
 	}
 
 	return modelProvider.Name, modelProviderObj, nil
+}
+
+func GetModelProviderByOutputType(store *object.Store, outputType string, question string) (string, model.ModelProvider, error) {
+	primary := store.ModelProvider
+	providers := store.ModelProviders
+
+	newProviders := []string{primary}
+
+	for _, provider := range providers {
+		if provider != primary {
+			newProviders = append(newProviders, provider)
+		}
+	}
+
+	providers = newProviders
+
+	imageProviders := []string{
+		"dall-e-3",
+		"dall-e-2",
+	}
+
+	elementInArray := func(val string, arr []string) bool {
+		for _, item := range arr {
+			if item == val {
+				return true
+			}
+		}
+		return false
+	}
+
+	for _, providerName := range providers {
+		modelProvider, modelProviderObj, err := object.GetModelProviderFromContext("admin", providerName)
+		if err != nil {
+			return "", nil, err
+		}
+		if ((outputType == "image") == elementInArray(modelProvider.SubType, imageProviders)) ||
+			(isImageQuestion(question) && strings.HasSuffix(modelProvider.SubType, "-vision-preview")) {
+			return modelProvider.Name, modelProviderObj, nil
+		}
+	}
+	return "", nil, errors.New("For image-related issues, a model that supports image output needs to be added, such as DALL-E 3")
 }
