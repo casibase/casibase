@@ -669,6 +669,7 @@ export function getProviderTypeOptions(category) {
         {id: "Moonshot", name: "Moonshot"},
         {id: "Amazon Bedrock", name: "Amazon Bedrock"},
         {id: "Dummy", name: "Dummy"},
+        {id: "Qwen", name: "Qwen"},
       ]
     );
   } else if (category === "Embedding") {
@@ -907,6 +908,14 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-text-express", name: "Titan Text Express"},
       {id: "titan-embeddings", name: "Titan Embeddings"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
+    ]);
+  } else if (type === "Qwen") {
+    return ([
+      {id: "qwen-long", name: "qwen-long"},
+      {id: "qwen-turbo", name: "qwen-turbo"},
+      {id: "qwen-plus", name: "qwen-plus"},
+      {id: "qwen-max", name: "qwen-max"},
+      {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
     ]);
   } else if (type === "Dummy") {
     return ([
