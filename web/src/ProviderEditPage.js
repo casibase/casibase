@@ -195,6 +195,10 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "command");
                 } else if (value === "Dummy") {
                   this.updateProviderField("subType", "Dummy");
+                } else if (value === "Qwen") {
+                  this.updateProviderField("subType", "qwen-long");
+                } else if (value === "Moonshot") {
+                  this.updateProviderField("subType", "Moonshot-v1-8k");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -607,6 +611,42 @@ class ProviderEditPage extends React.Component {
                     onChange={(value) => {this.updateProviderField("apiVersion", value);}}
                   />
                 </Col>
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && this.state.provider.type === "Qwen") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1.99}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={0.99}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
               </Row>
             </>
           ) : null
