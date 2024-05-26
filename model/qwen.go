@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	
+
 	"github.com/sashabaranov/go-openai"
 )
 
