@@ -17,9 +17,9 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"io"
 	"net/http"
+	"github.com/sashabaranov/go-openai"
 )
 
 type QwenModelProvider struct {
