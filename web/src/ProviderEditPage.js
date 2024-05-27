@@ -105,210 +105,6 @@ class ProviderEditPage extends React.Component {
     );
   }
 
-  ProviderTemplateInput(props) {
-    const {
-      colName,
-      filedName,
-      colValue,
-    } = props;
-    return (
-      <>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t(colName)}:
-          </Col>
-          <Col span={22} >
-            <Input value={colValue} onChange={e => {
-              this.updateProviderField(filedName, e.target.value);
-            }} />
-          </Col>
-        </Row>
-      </>
-    );
-  }
-
-  ProviderTemplateInputSlider(props) {
-    const {
-      colName,
-      min,
-      max,
-      colValue,
-      step,
-      filedName,
-    } = props;
-
-    return (
-      <>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t(colName)}:
-          </Col>
-          <this.InputSlider
-            label={i18next.t(colName)}
-            min={min}
-            max={max}
-            step={step}
-            value={colValue}
-            onChange={(value) => {
-              this.updateProviderField(filedName, value);
-            }}
-            isMobile={Setting.isMobile()}
-          />
-        </Row>
-      </>
-    );
-  }
-
-  ProviderTemplateOptions(props) {
-    const {
-      colName,
-      options,
-      filedName,
-      colValue,
-    } = props;
-
-    return (
-      <>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t(colName)}:
-          </Col>
-          <Col span={22} >
-            <AutoComplete style={{width: "100%"}} value={colValue}
-              options={options}
-              onChange={(value) => {this.updateProviderField(filedName, value);}}
-            />
-          </Col>
-        </Row>
-      </>
-    );
-  }
-
-  ProviderTemplate(props) {
-    const {
-      temperature,
-      topP,
-      frequencyPenalty,
-      presencePenalty,
-      topK,
-      groupId,
-      deploymentName,
-      apiVersion,
-      secretKey,
-    } = props;
-
-    const TemperatureSliderConfig = {
-      colName: "provider:Temperature",
-      min: 0,
-      max: 1.99,
-      step: 0.01,
-      colValue: this.state.provider.temperature,
-      filedName: "temperature",
-    };
-
-    const TopPSilderConfig = {
-      colName: "provider:Top P",
-      min: 0,
-      max: 0.99,
-      step: 0.01,
-      colValue: this.state.provider.topP,
-      filedName: "topP",
-    };
-
-    const FrequencyPenaltySliderConfig = {
-      colName: "provider:Frequency penalty",
-      min: -2,
-      max: 2,
-      step: 0.01,
-      colValue: this.state.provider.frequencyPenalty,
-      filedName: "frequencyPenalty",
-    };
-
-    const PresencePenaltySliderConfig = {
-      colName: "provider:Presence penalty",
-      min: -2,
-      max: 2,
-      step: 0.01,
-      colValue: this.state.provider.presencePenalty,
-      filedName: "presencePenalty",
-    };
-
-    const TopKSliderConfig = {
-      colName: "provider:Top K",
-      min: 1,
-      max: 6,
-      step: 1,
-      colValue: this.state.provider.topK,
-      filedName: "topK",
-    };
-
-    const GroupIDConfig = {
-      colName: "provider:groupID",
-      filedName: "clientId",
-      colValue: this.state.provider.clientId,
-    };
-
-    const DeploymentNameConfig = {
-      colName: "provider:Deployment name",
-      filedName: "clientId",
-      colValue: this.state.provider.clientId,
-    };
-
-    const APIVersionConfig = {
-      colName: "provider:API version",
-      filedName: "apiVersion",
-      colValue: this.state.provider.apiVersion,
-      options: Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id)),
-    };
-
-    const SecretConfig = {
-      colName: "provider:Secret key",
-      filedName: "clientSecret",
-      colValue: this.state.provider.clientSecret,
-    };
-    return (
-      <>
-        {groupId && this.ProviderTemplateInput(GroupIDConfig)}
-        {deploymentName && this.ProviderTemplateInput(DeploymentNameConfig)}
-        {apiVersion && this.ProviderTemplateOptions(APIVersionConfig)}
-        {temperature && this.ProviderTemplateInputSlider(TemperatureSliderConfig)}
-        {topP && this.ProviderTemplateInputSlider(TopPSilderConfig)}
-        {frequencyPenalty && this.ProviderTemplateInputSlider(FrequencyPenaltySliderConfig)}
-        {presencePenalty && this.ProviderTemplateInputSlider(PresencePenaltySliderConfig)}
-        {topK && this.ProviderTemplateInputSlider(TopKSliderConfig)}
-        {secretKey && this.ProviderTemplateInput(SecretConfig)}
-
-      </>
-    );
-  }
-
-  GetProviderParamSetting(modelName) {
-    const QwenConfig = {temperature: true, topP: true};
-    const OpenAiConfig = {temperature: true, topP: true, frequencyPenalty: true, presencePenalty: true};
-    const OpenRouterConfig = {temperature: true, topP: true};
-    const iFlytekConfig = {temperature: true, topK: true};
-    const HuggingFaceConfig = {temperature: true};
-    const ErnieConfig = {temperature: true, topP: true, presencePenalty: true};
-    const MiniMaxConfig = {groupId: true, temperature: true};
-    const GeminiConfig = {temperature: true, topP: true, topK: true};
-    const AzureConfig = {deploymentName: true, apiVersion: true};
-    const SecretInputConfig = {secretKey: true};
-    const modelConfigs = {
-      "Qwen": QwenConfig,
-      "OpenAI": OpenAiConfig,
-      "OpenRouter": OpenRouterConfig,
-      "iFlytek": iFlytekConfig,
-      "Hugging Face": HuggingFaceConfig,
-      "Ernie": ErnieConfig,
-      "MiniMax": MiniMaxConfig,
-      "Gemini": GeminiConfig,
-      "Azure": AzureConfig,
-      "secretKey": SecretInputConfig,
-    };
-
-    return modelConfigs[modelName];
-  }
-
   renderProvider() {
     return (
       <Card size="small" title={
@@ -403,6 +199,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "qwen-long");
                 } else if (value === "Moonshot") {
                   this.updateProviderField("subType", "Moonshot-v1-8k");
+                } else if (value === "Amazon Bedrock") {
+                  this.updateProviderField("subType", "Claude");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -498,50 +296,156 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen"].includes(this.state.provider.type)) ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Temperature")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.temperature}
+                  onChange={(value) => {
+                    this.updateProviderField("temperature", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen"].includes(this.state.provider.type)) ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top P")}:
+                </Col>
+                <this.InputSlider
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  value={this.state.provider.topP}
+                  onChange={(value) => {
+                    this.updateProviderField("topP", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && ["iFlytek", "Gemini"].includes(this.state.provider.type)) ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Top K")}:
+                </Col>
+                <this.InputSlider
+                  min={1}
+                  max={6}
+                  step={1}
+                  value={this.state.provider.topK}
+                  onChange={(value) => {
+                    this.updateProviderField("topK", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Model" && ["OpenAI", "Ernie"].includes(this.state.provider.type)) ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Presence penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Presence penalty")}
+                  min={1}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.presencePenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("presencePenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
+          ) : null
+        }
+        {
           (this.state.provider.category === "Model" && this.state.provider.type === "OpenAI") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("OpenAI"))
-          ) : null
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "OpenRouter") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("OpenRouter"))
-          ) : null
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "iFlytek") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("iFlytek"))
-          ) : null
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Hugging Face") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("Hugging Face"))
-          ) : null
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Ernie") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("Ernie"))
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Frequency penalty")}:
+                </Col>
+                <this.InputSlider
+                  label={i18next.t("provider:Frequency penalty")}
+                  min={-2}
+                  max={2}
+                  step={0.01}
+                  value={this.state.provider.frequencyPenalty}
+                  onChange={(value) => {
+                    this.updateProviderField("frequencyPenalty", value);
+                  }}
+                  isMobile={Setting.isMobile()}
+                />
+              </Row>
+            </>
           ) : null
         }
         {
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("MiniMax"))
-          ) : null
-        }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Gemini") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("Gemini"))
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:groupID")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            </>
           ) : null
         }
         {
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("Azure"))
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Deployment name")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:API version")}:
+                </Col>
+                <Col span={22} >
+                  <AutoComplete style={{width: "100%"}} value={this.state.provider.apiVersion}
+                    options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))}
+                    onChange={(value) => {this.updateProviderField("apiVersion", value);}}
+                  />
+                </Col>
+              </Row>
+            </>
           ) : null
         }
-        {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Qwen") ? (
-            this.ProviderTemplate(this.GetProviderParamSetting("Qwen"))
-          ) : null
-        }
+
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Provider URL")}:
