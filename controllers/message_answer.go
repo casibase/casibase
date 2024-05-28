@@ -153,7 +153,9 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question, knowledge, history)
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question, writer, knowledge, history)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -170,8 +172,6 @@ func (c *ApiController) GetMessageAnswer() {
 			return
 		}
 	}
-
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 
 	fmt.Printf("Question: [%s]\n", question)
 	fmt.Printf("Knowledge: [\n")
