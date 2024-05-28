@@ -304,7 +304,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={2}
+                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -367,7 +367,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   label={i18next.t("provider:Presence penalty")}
-                  min={1}
+                  min={(this.state.provider.type === "OpenAI" ? -2 : 1)}
                   max={2}
                   step={0.01}
                   value={this.state.provider.presencePenalty}
