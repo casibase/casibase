@@ -278,17 +278,31 @@ class ArticleEditPage extends React.Component {
     });
   }
 
-  exportText() {
+  exportText(isEn) {
     const blocks = this.state.article.content;
     let text = "";
 
     blocks.forEach(block => {
-      let blockText = block.textEn;
-      if (blockText === "") {
-        blockText = block.text;
-      }
+      let blockText;
+      let label;
+      if (isEn) {
+        blockText = block.textEn;
+        if (blockText === "") {
+          blockText = block.text;
+        }
 
-      const label = `\\label{sec:${blockText}}`;
+        label = `\\label{sec:${blockText}}`;
+      } else {
+        blockText = block.text;
+        if (blockText === "") {
+          blockText = block.textEn;
+        }
+
+        label = block.textEn;
+        if (label === "") {
+          label = block.text;
+        }
+      }
 
       switch (block.type) {
       case "Title":
@@ -373,10 +387,12 @@ class ArticleEditPage extends React.Component {
                     this.state.article.glossary?.map((item, index) => <Option key={index} value={item}>{item}</Option>)
                   }
                 </Select>
-                <Button style={{marginTop: "20px", marginBottom: "20px", marginRight: "20px"}} type="primary"
+                <Button style={{marginTop: "20px", marginBottom: "20px", marginRight: "20px"}}
                   onClick={() => this.parseText()}>{i18next.t("article:Parse")}</Button>
-                <Button style={{marginTop: "20px", marginBottom: "20px"}} type="primary"
-                  onClick={() => this.exportText()}>{i18next.t("article:Export")}</Button>
+                <Button style={{marginTop: "20px", marginBottom: "20px", marginRight: "20px"}} type="primary"
+                  onClick={() => this.exportText(true)}>{i18next.t("article:Export")}</Button>
+                <Button style={{marginTop: "20px", marginBottom: "20px"}}
+                  onClick={() => this.exportText(false)}>{i18next.t("article:Export ZH")}</Button>
                 <TextArea autoSize={{minRows: 1, maxRows: 30}} showCount value={this.state.article.text} onChange={(e) => {
                   this.updateArticleField("text", e.target.value);
                 }} />
