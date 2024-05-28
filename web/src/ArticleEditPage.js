@@ -284,24 +284,21 @@ class ArticleEditPage extends React.Component {
 
     blocks.forEach(block => {
       let blockText;
-      let label;
       if (isEn) {
         blockText = block.textEn;
         if (blockText === "") {
           blockText = block.text;
         }
-
-        label = `\\label{sec:${blockText}}`;
       } else {
         blockText = block.text;
         if (blockText === "") {
           blockText = block.textEn;
         }
+      }
 
-        label = block.textEn;
-        if (label === "") {
-          label = block.text;
-        }
+      let label = `\\label{sec:${block.textEn}}`;
+      if (label === "") {
+        label = `\\label{sec:${block.text}}`;
       }
 
       switch (block.type) {
