@@ -110,6 +110,18 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 	}
 	defer client.Close()
 
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if 32000 > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
+	}
+
 	model := client.GenerativeModel(p.subType)
 
 	// https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/get-token-count#gemini-get-token-count-samples-drest

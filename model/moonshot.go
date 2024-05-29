@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/northes/go-moonshot"
 )
@@ -37,6 +38,15 @@ func NewMoonshotModelProvider(subType string, secretKey string, temperature floa
 		temperature: temperature,
 	}
 	return client, nil
+}
+
+func GetMoonShotMaxTokens(model string) int {
+	if model == "moonshot-v1-128k" {
+		return 128000
+	} else if model == "moonshot-v1-32k" {
+		return 32000
+	}
+	return 8000
 }
 
 func (p *MoonshotModelProvider) GetPricing() string {
@@ -82,6 +92,19 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 	if err != nil {
 		return nil, err
 	}
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if GetMoonShotMaxTokens(p.subType) > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
+	}
+
 	// Chat completions
 	resp, err := cli.Chat().Completions(context.Background(), &moonshot.ChatCompletionsRequest{
 		Model: moonshot.ChatCompletionsModelID(p.subType),
