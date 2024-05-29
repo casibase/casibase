@@ -135,12 +135,6 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
@@ -149,6 +143,20 @@ func (c *ApiController) GetMessageAnswer() {
 
 	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question, writer, knowledge, history)
+	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
@@ -163,13 +171,6 @@ func (c *ApiController) GetMessageAnswer() {
 			c.ResponseErrorStream(message, err.Error())
 			return
 		}
-	}
-
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
 	}
 
 	fmt.Printf("Question: [%s]\n", question)

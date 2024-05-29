@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -119,6 +120,14 @@ func (p *QwenModelProvider) QueryText(question string, writer io.Writer, history
 	}
 	modelResult.PromptTokenCount = promptTokenCount
 	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
+	}
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {

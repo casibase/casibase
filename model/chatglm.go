@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/leverly/ChatGLM/client"
@@ -26,6 +27,13 @@ import (
 type ChatGLMModelProvider struct {
 	subType      string
 	clientSecret string
+}
+
+func GetChatGLMMaxTokens(model string) int {
+	if model == "GLM-4V" {
+		return 2000
+	}
+	return 128000
 }
 
 func NewChatGLMModelProvider(subType string, clientSecret string) (*ChatGLMModelProvider, error) {
@@ -81,6 +89,18 @@ func (p *ChatGLMModelProvider) QueryText(question string, writer io.Writer, hist
 		}
 		flusher.Flush()
 		return nil
+	}
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if GetChatGLMMaxTokens(p.subType) > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
 	}
 
 	response, err := proxy.AsyncInvokeTask(p.subType, taskId)

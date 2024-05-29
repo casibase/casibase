@@ -117,6 +117,17 @@ func (p *CohereModelProvider) QueryText(message string, writer io.Writer, chat_h
 
 	// if p.maxTokens > 0, use p.maxTokens, otherwise use model's default Maxtokens
 	maxTokens := p.getMaxTokens(p.subType)
+	if strings.HasPrefix(message, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, message, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if maxTokens > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
+	}
 	generation, err := client.Generate(
 		ctx,
 		&cohere.GenerateRequest{

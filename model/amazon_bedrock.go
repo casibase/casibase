@@ -19,6 +19,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -120,6 +121,18 @@ func (p *AmazonBedrockModelProvider) QueryText(question string, writer io.Writer
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if 2048 > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
 	}
 
 	resp, err := client.InvokeModel(context.TODO(), &bedrockruntime.InvokeModelInput{

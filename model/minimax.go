@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	textv1 "github.com/ConnectAI-E/go-minimax/gen/go/minimax/text/v1"
 	"github.com/ConnectAI-E/go-minimax/minimax"
@@ -66,6 +67,18 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 	)
 	if err != nil {
 		return nil, err
+	}
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if 4096 > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
 	}
 
 	req := &textv1.ChatCompletionsRequest{
