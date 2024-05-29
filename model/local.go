@@ -309,6 +309,14 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return nil, err
 		}
 
+		if strings.HasPrefix(question, "$CasibaseDryRun$") {
+			if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+				return modelResult, nil
+			} else {
+				return nil, fmt.Errorf("exceed max tokens")
+			}
+		}
+
 		respStream, err := client.CreateChatCompletionStream(
 			ctx,
 			ChatCompletionRequest(model, messages, temperature, topP, frequencyPenalty, presencePenalty),

@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"math"
 	"path/filepath"
 	"regexp"
@@ -105,18 +106,32 @@ func isImageQuestion(question string) bool {
 	return res
 }
 
-func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider) map[string]object.UsageInfo {
-	res := map[string]object.UsageInfo{}
-	for providerName, usageInfo := range modelUsageMap {
-		providerObj := modelProviderMap[providerName]
-		if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
-			res[providerName] = usageInfo
+func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
+	visionModelUsageMap := map[string]object.UsageInfo{}
+	if isImageQuestion(question) {
+		for providerName, usageInfo := range modelUsageMap {
+			providerObj := modelProviderMap[providerName]
+			if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
+				visionModelUsageMap[providerName] = usageInfo
+			}
+		}
+	} else {
+		visionModelUsageMap = modelUsageMap
+	}
+
+	filteredModelUsageMap := map[string]object.UsageInfo{}
+	for providerName, usageInfo := range visionModelUsageMap {
+		providerObj := modelProviderObjMap[providerName]
+		dryRunQuestion := "$CasibaseDryRun$" + question
+		_, err := providerObj.QueryText(dryRunQuestion, writer, history, "", knowledge)
+		if err == nil {
+			filteredModelUsageMap[providerName] = usageInfo
 		}
 	}
-	return res
+	return filteredModelUsageMap, nil
 }
 
-func GetIdleModelProvider(store *object.Store, name string, question string) (string, model.ModelProvider, error) {
+func GetIdleModelProvider(store *object.Store, name string, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (string, model.ModelProvider, error) {
 	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
 	if err != nil {
 		return "", nil, err
@@ -133,8 +148,9 @@ func GetIdleModelProvider(store *object.Store, name string, question string) (st
 
 	modelUsageMap := store.ModelUsageMap
 
-	if isImageQuestion(question) {
-		modelUsageMap = getFilteredModelUsageMap(modelUsageMap, modelProviderMap)
+	modelUsageMap, err = getFilteredModelUsageMap(modelUsageMap, modelProviderMap, modelProviderObjMap, question, writer, knowledge, history)
+	if err != nil {
+		return "", nil, err
 	}
 
 	minProvider := getMinFromModelUsageMap(modelUsageMap)

@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	ernie "github.com/anhao/go-ernie"
 )
@@ -132,6 +133,18 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 			Role:    "user",
 			Content: question,
 		},
+	}
+
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if 4096 > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
 	}
 
 	flushData := func(data string) error {

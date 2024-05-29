@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 
 	iflytek "github.com/vogo/xfspark/chat"
 )
@@ -93,6 +94,17 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
+	}
+	if strings.HasPrefix(question, "$CasibaseDryRun$") {
+		modelResult, err := getDefaultModelResult(p.subType, question, "")
+		if err != nil {
+			return nil, fmt.Errorf("cannot calculate tokens")
+		}
+		if 32000 > modelResult.TotalTokenCount {
+			return modelResult, nil
+		} else {
+			return nil, fmt.Errorf("exceed max tokens")
+		}
 	}
 
 	session, err := client.GetSession("1")

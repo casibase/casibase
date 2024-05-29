@@ -16,6 +16,7 @@ package model
 
 import (
 	"io"
+	"strings"
 )
 
 type DummyModelProvider struct {
@@ -40,6 +41,9 @@ This is a dummy module provider.
 
 func (p *DummyModelProvider) QueryText(message string, writer io.Writer, chat_history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	answer := "this is the answer for \"" + message + "\""
+	if strings.HasPrefix(message, "$CasibaseDryRun$") {
+		return &ModelResult{}, nil
+	}
 	err := flushDataAzure(answer, writer)
 	if err != nil {
 		return nil, err
