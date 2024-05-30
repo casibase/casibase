@@ -23,15 +23,15 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type baichuanModelProvider struct {
+type BaichuanModelProvider struct {
 	subType     string
 	apiKey      string
 	temperature float32
 	topP        float32
 }
 
-func NewbaichuanModelProvider(subType string, apiKey string, temperature float32, topP float32) (*baichuanModelProvider, error) {
-	return &baichuanModelProvider{
+func NewBaichuanModelProvider(subType string, apiKey string, temperature float32, topP float32) (*BaichuanModelProvider, error) {
+	return &BaichuanModelProvider{
 		subType:     subType,
 		apiKey:      apiKey,
 		temperature: temperature,
@@ -39,19 +39,19 @@ func NewbaichuanModelProvider(subType string, apiKey string, temperature float32
 	}, nil
 }
 
-func (p *baichuanModelProvider) GetPricing() string {
+func (p *BaichuanModelProvider) GetPricing() string {
 	return `URL:
 https://platform.baichuan-ai.com/price
 
 | Model      | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
 |------------|----------------------|----------------------------------|--------------------------------|
-| baichuan   | Baichuan2-Turbo      | 0.008yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
-| baichuan   | Baichuan3-Turbo      | 0.012yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
-| baichuan   | Baichuan4            | 0.100yuan/1,000 tokens           | 0.100yuan/1,000 tokens         |
+| Baichuan   | Baichuan2-Turbo      | 0.008yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
+| Baichuan   | Baichuan3-Turbo      | 0.012yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
+| Baichuan   | Baichuan4            | 0.100yuan/1,000 tokens           | 0.100yuan/1,000 tokens         |
 `
 }
 
-func (p *baichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *BaichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"Baichuan2-Turbo": {0.008, 0.008},
@@ -72,7 +72,7 @@ func (p *baichuanModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *baichuanModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *BaichuanModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {

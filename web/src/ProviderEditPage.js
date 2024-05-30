@@ -201,7 +201,7 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "Moonshot-v1-8k");
                 } else if (value === "Amazon Bedrock") {
                   this.updateProviderField("subType", "Claude");
-                } else if (value === "baichuan") {
+                } else if (value === "Baichuan") {
                   this.updateProviderField("subType", "Baichuan2-Turbo");
                 }
               } else if (this.state.provider.category === "Embedding") {
@@ -306,7 +306,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter", "baichuan"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter", "Baichuan"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
