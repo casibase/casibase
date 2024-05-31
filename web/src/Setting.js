@@ -670,6 +670,7 @@ export function getProviderTypeOptions(category) {
         {id: "Amazon Bedrock", name: "Amazon Bedrock"},
         {id: "Dummy", name: "Dummy"},
         {id: "Qwen", name: "Qwen"},
+        {id: "Baichuan", name: "Baichuan"},
       ]
     );
   } else if (category === "Embedding") {
@@ -916,6 +917,12 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "qwen-plus", name: "qwen-plus"},
       {id: "qwen-max", name: "qwen-max"},
       {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+    ]);
+  } else if (type === "Baichuan") {
+    return ([
+      {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
+      {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
+      {id: "Baichuan4", name: "Baichuan4"},
     ]);
   } else if (type === "Dummy") {
     return ([
