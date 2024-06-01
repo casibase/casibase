@@ -38,9 +38,11 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
+      dots: "●",
     });
 
     this.fetch();
+    this.timer = null;
   }
 
   componentDidMount() {
@@ -59,6 +61,18 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
+    this.timer = setInterval(() => {
+      this.setState(prevState => {
+        switch (prevState.dots) {
+        case "●":
+          return {dots: " "};
+        case " ":
+          return {dots: "●"};
+        default:
+          return {dots: "●"};
+        }
+      });
+    }, 500);
   }
 
   getNextChatIndex(name) {
@@ -186,13 +200,16 @@ class ChatPage extends BaseListPage {
               if (jsonData.text === "") {
                 jsonData.text = "\n";
               }
-
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
-              res.data.map((message) => {
-                message.html = renderText(message.text);
+              res.data.map((message, index) => {
+                if (index === res.data.length - 1) {
+                  message.html = renderText(message.text + this.state.dots);
+                } else {
+                  message.html = renderText(message.text);
+                }
               });
               this.setState({
                 messages: res.data,
@@ -210,6 +227,18 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 disableInput: true,
+              });
+            }, (data) => {
+              const lastMessage2 = Setting.deepCopy(lastMessage);
+              lastMessage2.text = text;
+              res.data[res.data.length - 1] = lastMessage2;
+              res.data.map((message, index) => {
+                message.html = renderText(message.text);
+              });
+
+              this.setState({
+                messages: res.data,
+                disableInput: false,
               });
             });
           }

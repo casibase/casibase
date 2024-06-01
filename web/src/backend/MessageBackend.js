@@ -44,7 +44,7 @@ export function getChatMessages(owner, chat) {
   }).then(res => res.json());
 }
 
-export function getMessageAnswer(owner, name, onMessage, onError) {
+export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
   const eventSource = new EventSource(`${Setting.ServerUrl}/api/get-message-answer?id=${owner}/${encodeURIComponent(name)}`);
 
   eventSource.addEventListener("message", (e) => {
@@ -57,6 +57,7 @@ export function getMessageAnswer(owner, name, onMessage, onError) {
   });
 
   eventSource.addEventListener("end", (e) => {
+    onEnd(e.data);
     eventSource.close();
   });
 }
