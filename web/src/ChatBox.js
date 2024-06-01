@@ -139,7 +139,7 @@ class ChatBox extends React.Component {
     }
 
     if (message.text === "") {
-      return this.state.dots;
+      return <font size="4">{this.state.dots}</font>;
     }
 
     return message.html;

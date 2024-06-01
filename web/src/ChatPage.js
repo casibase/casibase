@@ -206,7 +206,7 @@ class ChatPage extends BaseListPage {
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1) {
-                  message.html = renderText(message.text + this.state.dots);
+                  message.html = renderText(message.text + "<font='4'>" + this.state.dots + "<font/>");
                 } else {
                   message.html = renderText(message.text);
                 }
