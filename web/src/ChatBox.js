@@ -26,7 +26,7 @@ class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dots: ".",
+      dots: "⚫",
       value: "",
     };
     this.timer = null;
@@ -37,14 +37,12 @@ class ChatBox extends React.Component {
     this.timer = setInterval(() => {
       this.setState(prevState => {
         switch (prevState.dots) {
-        case ".":
-          return {dots: ".."};
-        case "..":
-          return {dots: "..."};
-        case "...":
-          return {dots: "."};
+        case "⚫":
+          return {dots: " "};
+        case " ":
+          return {dots: "⚫"};
         default:
-          return {dots: "."};
+          return {dots: "⚫"};
         }
       });
     }, 500);
