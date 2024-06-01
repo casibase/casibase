@@ -38,7 +38,7 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
-      dots: "●",
+      dots: "⚫",
     });
 
     this.fetch();
@@ -64,12 +64,12 @@ class ChatPage extends BaseListPage {
     this.timer = setInterval(() => {
       this.setState(prevState => {
         switch (prevState.dots) {
-        case "●":
+        case "⚫":
           return {dots: " "};
         case " ":
-          return {dots: "●"};
+          return {dots: "⚫"};
         default:
-          return {dots: "●"};
+          return {dots: "⚫"};
         }
       });
     }, 500);
@@ -206,7 +206,7 @@ class ChatPage extends BaseListPage {
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1) {
-                  message.html = renderText(message.text + "<font='4'>" + this.state.dots + "<font/>");
+                  message.html = renderText(message.text + this.state.dots);
                 } else {
                   message.html = renderText(message.text);
                 }
