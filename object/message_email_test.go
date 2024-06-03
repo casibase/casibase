@@ -33,7 +33,7 @@ func TestSendErrorEmail(t *testing.T) {
 		panic(err)
 	}
 
-	err = message.SendErrorEmail()
+	err = message.SendErrorEmail(message.ErrorText)
 	if err != nil {
 		panic(err)
 	}

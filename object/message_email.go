@@ -110,7 +110,7 @@ func (message *Message) SendEmail() error {
 	return nil
 }
 
-func (message *Message) SendErrorEmail() error {
+func (message *Message) SendErrorEmail(errorText string) error {
 	adminUser, err := casdoorsdk.GetUser("admin")
 	if err != nil {
 		return err
@@ -187,7 +187,7 @@ func (message *Message) SendErrorEmail() error {
 </div>
 </body>
 </html>
-`, title, username, question, message.ErrorText, sender)
+`, title, username, question, errorText, sender)
 
 	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {
