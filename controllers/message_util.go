@@ -36,7 +36,7 @@ func init() {
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
 	if !message.IsAlerted {
-		err := message.SendErrorEmail()
+		err := message.SendErrorEmail(errorText)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
