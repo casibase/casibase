@@ -142,6 +142,10 @@ func (message *Message) SendErrorEmail() error {
 	if err != nil {
 		return err
 	}
+	if questionMessage == nil {
+		return fmt.Errorf("Question message: [%s] doesn't exist", message.ReplyTo)
+	}
+
 	question := questionMessage.Text
 
 	content := fmt.Sprintf(`<!DOCTYPE html>
