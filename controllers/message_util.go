@@ -132,12 +132,12 @@ func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelPr
 }
 
 func GetIdleModelProvider(store *object.Store, name string, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (string, model.ModelProvider, error) {
-	defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
-	if err != nil {
-		return "", nil, err
-	}
-
 	if len(store.ModelUsageMap) <= 1 {
+		defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
+		if err != nil {
+			return "", nil, err
+		}
+
 		return defaultModelProvider.Name, defaultModelProviderObj, nil
 	}
 
