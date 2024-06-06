@@ -114,6 +114,19 @@ class TaskEditPage extends React.Component {
     });
   }
 
+  updateModelUsageMapForTask(value) {
+    const modelUsageMap = {};
+
+    value.forEach(provider => {
+      modelUsageMap[provider] = {
+        tokenCount: 0,
+        startTime: new Date().toISOString(),
+      };
+    });
+
+    this.updateTaskField("modelUsageMap", modelUsageMap);
+  }
+
   renderTask() {
     return (
       <Card size="small" title={
@@ -157,6 +170,23 @@ class TaskEditPage extends React.Component {
                 <Select virtual={false} style={{width: "100%"}} value={this.state.task.provider} onChange={(value => {this.updateTaskField("provider", value);})}
                   options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
                   } />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.props.account.name !== "admin" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("store:Model providers")}:
+              </Col>
+              <Col span={22} >
+                <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.task.providers ?? []} onChange={(value => {
+                  this.updateTaskField("providers", value);
+                  this.updateModelUsageMapForTask(value);
+                })}
+                options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, `${provider.name}`))
+                } />
               </Col>
             </Row>
           )

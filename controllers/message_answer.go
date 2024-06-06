@@ -20,6 +20,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -155,7 +156,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store, chat.User2, question, writer, knowledge, history)
+	modelProvider, modelProviderObj, err := GetIdleModelProvider(store.ModelUsageMap, chat.User2, question, writer, knowledge, history, true)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -293,9 +294,15 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	provider := c.Input().Get("provider")
-	question := c.Input().Get("question")
 	framework := c.Input().Get("framework")
+	id := util.GetId("admin", framework)
+	task, err := object.GetTask(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	question := c.Input().Get("question")
 	video := c.Input().Get("video")
 
 	category := "Custom"
@@ -308,12 +315,6 @@ func (c *ApiController) GetAnswer() {
 			category = "FrameworkVideoRun"
 			chatName = fmt.Sprintf("%s - %s", video, framework)
 		}
-	}
-
-	answer, modelResult, err := object.GetAnswer(provider, question)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
 	}
 
 	chat, err := object.GetChat(util.GetId("admin", chatName))
@@ -351,6 +352,19 @@ func (c *ApiController) GetAnswer() {
 			c.ResponseError(err.Error())
 			return
 		}
+	}
+
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	provider, _, err := GetIdleModelProvider(task.ModelUsageMap, chat.User2, question, writer, []*model.RawMessage{}, []*model.RawMessage{}, false)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	answer, modelResult, err := object.GetAnswer(provider, question, id, *task)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
 	}
 
 	questionMessage := &object.Message{
