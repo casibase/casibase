@@ -145,6 +145,23 @@ class ChatBox extends React.Component {
     return message.html;
   };
 
+  copyMessage(message) {
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = message;
+    const textToCopy = tempElement.innerText;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      Setting.showMessage("success", "Message copied successfully");
+    });
+  }
+
+  likeMesage() {
+    Setting.showMessage("success", "Message liked successfully");
+  }
+
+  dislikeMesage() {
+    Setting.showMessage("success", "Message disliked successfully");
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -177,6 +194,27 @@ class ChatBox extends React.Component {
                   <Message.CustomContent>
                     {this.renderMessageContent(message)}
                   </Message.CustomContent>
+                  {
+                    (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
+                      <Message.Footer>
+                        {<Button icon={
+                          <>
+                            <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M829.568 53.12H960V1024H194.432v-121.344H64V284.48L361.92 0h467.648v53.12z m0 80.896v768.64H279.488v40.448h595.456V134.016h-45.44zM149.056 317.952v503.808h595.456V80.896H397.248L149.12 317.952z" fill="#cdcdcd"></path></svg>
+                          </>
+                        } style={{border: "none"}} onClick={() => this.copyMessage(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                        {<Button icon={
+                          <>
+                            <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M885.9 533.7c16.8-22.2 26.1-49.4 26.1-77.7 0-44.9-25.1-87.4-65.5-111.1a67.67 67.67 0 0 0-34.3-9.3H572.4l6-122.9c1.4-29.7-9.1-57.9-29.5-79.4-20.5-21.5-48.1-33.4-77.9-33.4-52 0-98 35-111.8 85.1l-85.9 311h-0.3v428h472.3c9.2 0 18.2-1.8 26.5-5.4 47.6-20.3 78.3-66.8 78.3-118.4 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7 0-12.6-1.8-25-5.4-37 16.8-22.2 26.1-49.4 26.1-77.7-0.2-12.6-2-25.1-5.6-37.1zM112 528v364c0 17.7 14.3 32 32 32h65V496h-65c-17.7 0-32 14.3-32 32z" fill="#cdcdcd"></path></svg>
+                          </>
+                        } style={{border: "none"}} onClick={() => this.likeMesage()}></Button>}
+                        {<Button icon={
+                          <>
+                            <svg viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" width="22" height="22"><path d="M885.9 490.3c3.6-12 5.4-24.4 5.4-37 0-28.3-9.3-55.5-26.1-77.7 3.6-12 5.4-24.4 5.4-37 0-28.3-9.3-55.5-26.1-77.7 3.6-12 5.4-24.4 5.4-37 0-51.6-30.7-98.1-78.3-118.4-8.3-3.6-17.2-5.4-26.5-5.4H273v428h0.3l85.8 310.8C372.9 889 418.9 924 470.9 924c29.7 0 57.4-11.8 77.9-33.4 20.5-21.5 31-49.7 29.5-79.4l-6-122.9h239.9c12.1 0 23.9-3.2 34.3-9.3 40.4-23.5 65.5-66.1 65.5-111 0-28.3-9.3-55.5-26.1-77.7zM112 132v364c0 17.7 14.3 32 32 32h65V100h-65c-17.7 0-32 14.3-32 32z" fill="#cdcdcd"></path></svg>
+                          </>
+                        } style={{border: "none"}} onClick={() => this.dislikeMesage()}></Button>}
+                      </Message.Footer>
+                    ) : null
+                  }
                 </Message>
               ))}
             </MessageList>
