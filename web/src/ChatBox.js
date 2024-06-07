@@ -21,6 +21,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
+import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -207,6 +208,9 @@ class ChatBox extends React.Component {
               )
             }
           </ChatContainer>
+          {
+            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+          }
         </MainContainer>
         <input
           ref={e => this.inputImage = e}
