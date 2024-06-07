@@ -291,7 +291,7 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 	return w.Buffer.Write(p)
 }
 
-func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
+func GetAnswer(provider string, question string, id string, task Task) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
 	if err != nil {
 		return "", nil, err
@@ -302,6 +302,25 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	var writer MyWriter
 
 	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+	if err != nil {
+		return "", nil, err
+	}
+
+	for _, usageInfo := range task.ModelUsageMap {
+		if time.Since(usageInfo.StartTime) >= time.Minute {
+			usageInfo.TokenCount = 0
+			usageInfo.StartTime = time.Time{}
+		}
+	}
+
+	if task.ModelUsageMap != nil {
+		task.ModelUsageMap[provider] = UsageInfo{
+			Provider:   provider,
+			TokenCount: modelResult.TotalTokenCount,
+			StartTime:  time.Now(),
+		}
+	}
+	_, err = UpdateTask(id, &task)
 	if err != nil {
 		return "", nil, err
 	}

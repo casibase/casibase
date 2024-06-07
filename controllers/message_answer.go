@@ -361,7 +361,7 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	answer, modelResult, err := object.GetAnswer(provider, question)
+	answer, modelResult, err := object.GetAnswer(provider, question, id, *task)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -424,24 +424,5 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	for _, usageInfo := range task.ModelUsageMap {
-		if time.Since(usageInfo.StartTime) >= time.Minute {
-			usageInfo.TokenCount = 0
-			usageInfo.StartTime = time.Time{}
-		}
-	}
-
-	if task.ModelUsageMap != nil {
-		task.ModelUsageMap[provider] = object.UsageInfo{
-			Provider:   provider,
-			TokenCount: modelResult.TotalTokenCount,
-			StartTime:  time.Now(),
-		}
-	}
-	_, err = object.UpdateTask(id, task)
-	if err != nil {
-		c.ResponseOk(err.Error())
-		return
-	}
 	c.ResponseOk(answer)
 }
