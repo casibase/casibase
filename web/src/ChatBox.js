@@ -198,9 +198,9 @@ class ChatBox extends React.Component {
                   {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
                       <Message.Footer>
-                        {<Button icon={<CopyOutlined />} style={{border: "none"}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
-                        {<Button icon={<LikeOutlined />} style={{border: "none"}} onClick={() => this.likeMessage()}></Button>}
-                        {<Button icon={<DislikeOutlined />} style={{border: "none"}} onClick={() => this.dislikeMessage()}></Button>}
+                        {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                        {<Button icon={<LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.likeMessage()}></Button>}
+                        {<Button icon={<DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.dislikeMessage()}></Button>}
                       </Message.Footer>
                     ) : null
                   }
