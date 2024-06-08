@@ -19,8 +19,10 @@ import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
+import {CopyOutlined, DislikeOutlined, LikeOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
@@ -146,6 +148,22 @@ class ChatBox extends React.Component {
     return message.html;
   };
 
+  copyMessageFromHTML(message) {
+    const tempElement = document.createElement("div");
+    tempElement.innerHTML = message;
+    const text = tempElement.innerText;
+    copy(text);
+    Setting.showMessage("success", "Message copied successfully");
+  }
+
+  likeMessage() {
+    Setting.showMessage("success", "Message liked successfully");
+  }
+
+  dislikeMessage() {
+    Setting.showMessage("success", "Message disliked successfully");
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -178,6 +196,15 @@ class ChatBox extends React.Component {
                   <Message.CustomContent>
                     {this.renderMessageContent(message)}
                   </Message.CustomContent>
+                  {
+                    (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
+                      <Message.Footer>
+                        {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                        {<Button icon={<LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.likeMessage()}></Button>}
+                        {<Button icon={<DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.dislikeMessage()}></Button>}
+                      </Message.Footer>
+                    ) : null
+                  }
                 </Message>
               ))}
             </MessageList>
