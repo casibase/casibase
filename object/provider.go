@@ -323,11 +323,11 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 	return pProvider, nil
 }
 
-func GetModelProvidersFromContext(owner string, name string) (map[string]*Provider, map[string]model.ModelProvider, error) {
+func GetModelProvidersFromContext(owner string, name string, isFromStore bool) (map[string]*Provider, map[string]model.ModelProvider, error) {
 	providerNames := []string{}
 	if name != "" {
 		providerNames = []string{name}
-	} else {
+	} else if isFromStore {
 		store, err := GetDefaultStore(owner)
 		if err != nil {
 			return nil, nil, err
@@ -335,6 +335,14 @@ func GetModelProvidersFromContext(owner string, name string) (map[string]*Provid
 
 		if store != nil && len(store.ModelProviders) != 0 {
 			providerNames = store.ModelProviders
+		}
+	} else {
+		task, err := getTask(owner, name)
+		if err != nil {
+			return nil, nil, err
+		}
+		if task != nil && len(task.Providers) != 0 {
+			providerNames = task.Providers
 		}
 	}
 
