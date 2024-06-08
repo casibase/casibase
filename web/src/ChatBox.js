@@ -23,6 +23,7 @@ import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
 import {CopyOutlined, DislikeOutlined, LikeOutlined} from "@ant-design/icons";
+import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -234,6 +235,9 @@ class ChatBox extends React.Component {
               )
             }
           </ChatContainer>
+          {
+            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+          }
         </MainContainer>
         <input
           ref={e => this.inputImage = e}

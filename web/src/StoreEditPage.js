@@ -21,6 +21,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
+import PromptTable from "./PromptTable";
 
 const {TextArea} = Input;
 
@@ -270,6 +271,16 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
               this.updateStoreField("prompt", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Prompts")}:
+          </Col>
+          <Col span={22} >
+            <PromptTable prompts={this.state.store.prompts} onUpdatePrompts={(prompts) => {
+              this.updateStoreField("prompts", prompts);
             }} />
           </Col>
         </Row>
