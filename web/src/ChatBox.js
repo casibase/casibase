@@ -79,8 +79,6 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
-    // eslint-disable-next-line no-console
-    console.log(lastUserMessage.text);
     this.props.sendMessage(lastUserMessage.text, "", true);
   };
 
