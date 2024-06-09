@@ -14,12 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function getUsages(serverUrl, days) {
+export function getUsages(serverUrl, selectedUser, days) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-usages?days=${days}`, {
+  return fetch(`${serverUrl}/api/get-usages?days=${days}&selectedUser=${selectedUser}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -28,12 +28,39 @@ export function getUsages(serverUrl, days) {
   }).then(res => res.json());
 }
 
-export function getRangeUsages(serverUrl, rangeType, count) {
+export function getRangeUsages(serverUrl, rangeType, count, selectedUser) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}`, {
+  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}&user=${selectedUser}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function getUsers(serverUrl, user) {
+  if (serverUrl === "") {
+    serverUrl = Setting.ServerUrl;
+  }
+
+  return fetch(`${serverUrl}/api/get-users?user=${user}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function getUserTableInfos(serverUrl, user) {
+  if (serverUrl === "") {
+    serverUrl = Setting.ServerUrl;
+  }
+  return fetch(`${serverUrl}/api/get-user-table-infos?user=${user}`, {
     method: "GET",
     credentials: "include",
     headers: {

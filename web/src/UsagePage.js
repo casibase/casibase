@@ -13,13 +13,15 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Radio, Row, Select, Statistic} from "antd";
+import {Button, Col, Dropdown, Menu, Radio, Row, Select, Statistic} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
 import ReactEcharts from "echarts-for-react";
 import * as Conf from "./Conf";
 import i18next from "i18next";
+import {UserOutlined} from "@ant-design/icons";
+import UsageTable from "./UsageTable";
 
 const {Option} = Select;
 
@@ -32,12 +34,15 @@ class UsagePage extends BaseListPage {
       usageMetadata: null,
       rangeType: "All",
       endpoint: this.getHost(),
+      users: ["All"],
+      selectedUser: "All",
+      userTableInfo: null,
+      selectedTableInfo: null,
     };
   }
 
   UNSAFE_componentWillMount() {
-    this.getUsages("");
-    this.getRangeUsagesAll("");
+    this.getUsers("");
   }
 
   getHost() {
@@ -49,7 +54,7 @@ class UsagePage extends BaseListPage {
   }
 
   getUsages(serverUrl) {
-    UsageBackend.getUsages(serverUrl, 30)
+    UsageBackend.getUsages(serverUrl, this.state.selectedUser, 30)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -83,9 +88,38 @@ class UsagePage extends BaseListPage {
     this.getRangeUsages(serverUrl, "Month");
   }
 
+  updateTableInfo(user) {
+    if (user === "All") {
+      this.state.selectedTableInfo = this.state.userTableInfo;
+    } else {
+      this.state.selectedTableInfo = this.state.userTableInfo.filter(item => item.user === user);
+    }
+  }
+
+  getUsers(serverUrl) {
+    UsageBackend.getUsers(serverUrl, this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          if (this.props.account.name === "admin") {
+            res.data.unshift("All");
+          }
+          this.setState({
+            users: res.data,
+          }, () => {
+            this.getUsages("");
+            this.getRangeUsagesAll("");
+            this.getUserTableInfos("");
+          }
+          );
+          this.state.selectedUser = res.data[0];
+        } else {
+          Setting.showMessage("error", `Failed to get users: ${res.msg}`);
+        }
+      });
+  }
   getRangeUsages(serverUrl, rangeType) {
     const count = this.getCountFromRangeType(rangeType);
-    UsageBackend.getRangeUsages(serverUrl, rangeType, count)
+    UsageBackend.getRangeUsages(serverUrl, rangeType, count, this.state.selectedUser)
       .then((res) => {
         if (res.status === "ok") {
           const state = {};
@@ -93,6 +127,18 @@ class UsagePage extends BaseListPage {
           this.setState(state);
         } else {
           Setting.showMessage("error", `Failed to get usages: ${res.msg}`);
+        }
+      });
+  }
+  getUserTableInfos(serverUrl) {
+    UsageBackend.getUserTableInfos(serverUrl, this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            userTableInfo: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get userTableInfo: ${res.msg}`);
         }
       });
   }
@@ -290,6 +336,7 @@ class UsagePage extends BaseListPage {
             </React.Fragment>
           )
         }
+        {this.renderDropdown()}
       </Row>
     );
   }
@@ -311,12 +358,13 @@ class UsagePage extends BaseListPage {
     if (rangeType === "") {
       rangeType = this.state.rangeType;
     }
-
-    if (rangeType === "All") {
-      this.getUsages(serverUrl);
-    } else {
-      this.getRangeUsagesAll(serverUrl);
-    }
+    this.getRangeUsagesAll(serverUrl);
+    this.getUsages(serverUrl);
+    // if (rangeType === "All") {
+    //   this.getUsages(serverUrl);
+    // } else {
+    //   this.getRangeUsagesAll(serverUrl);
+    // }
   }
 
   renderRadio() {
@@ -326,7 +374,8 @@ class UsagePage extends BaseListPage {
           const rangeType = e.target.value;
           this.setState({
             rangeType: rangeType,
-          });
+          }
+          );
         }}>
           <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
           <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
@@ -363,6 +412,44 @@ class UsagePage extends BaseListPage {
         </Select>
         <Button disabled={this.getHost() === this.state.endpoint} type="primary" onClick={() => Setting.openLink(`https://${this.state.endpoint}`)}>{i18next.t("usage:Go")}</Button>
       </React.Fragment>
+    );
+  }
+
+  renderDropdown() {
+    const users_withKey = this.state.users.map((user, index) => ({
+      key: String(index),
+      label: user,
+      icon: <UserOutlined />,
+    }));
+
+    const menuProps = (
+      <Menu
+        items={users_withKey}
+        selectable={true}
+        defaultSelectedKeys={["0"]}
+        onClick={(e) => {
+          const selectedUser = this.state.users[parseInt(e.key)];
+          this.setState({
+            selectedUser: selectedUser,
+          }, () => {
+            this.getUsagesForAllCases("", this.state.rangeType);
+            this.updateTableInfo(selectedUser);
+          });
+        }}
+      />
+    );
+
+    return (
+      <div style={{display: "flex", alignItems: "center", marginBottom: "10px"}}>
+        <span style={{marginRight: "10px"}}>Users:</span>
+        <Dropdown.Button overlay={menuProps}
+          trigger={["click"]}
+          placement="bottom"
+          icon={<UserOutlined />}
+        >
+          {this.state.selectedUser}
+        </Dropdown.Button>
+      </div>
     );
   }
 
@@ -568,6 +655,7 @@ class UsagePage extends BaseListPage {
         <br />
         <br />
         {this.renderChart()}
+        <UsageTable data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
       </div>
     );
   }
