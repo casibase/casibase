@@ -22,7 +22,7 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {CopyOutlined, DislikeOutlined, LikeOutlined} from "@ant-design/icons";
+import {CopyOutlined, DislikeOutlined, LikeOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
@@ -79,6 +79,8 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
+    // eslint-disable-next-line no-console
+    console.log(lastUserMessage.text);
     this.props.sendMessage(lastUserMessage.text, "", true);
   };
 
@@ -200,6 +202,7 @@ class ChatBox extends React.Component {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
                       <Message.Footer>
                         {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                        {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
                         {<Button icon={<LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.likeMessage()}></Button>}
                         {<Button icon={<DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.dislikeMessage()}></Button>}
                       </Message.Footer>
