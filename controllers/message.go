@@ -157,6 +157,14 @@ func (c *ApiController) AddMessage() {
 				break
 			}
 		}
+		if lastAIMessage == nil {
+			for i := len(messages) - 1; i >= 0; i-- {
+				if messages[i].Author == "AI" {
+					lastAIMessage = messages[i]
+					break
+				}
+			}
+		}
 		for i := len(messages) - 1; i >= 0; i-- {
 			if messages[i].Author != "AI" {
 				lastUserMessage = messages[i]
