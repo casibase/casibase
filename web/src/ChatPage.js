@@ -190,7 +190,7 @@ class ChatPage extends BaseListPage {
               disableInput: true,
             });
 
-            if (lastMessage.errorText.endsWith("An established connection was aborted by the software in your host machine.")) {
+            if (lastMessage.errorText !== "") {
               return ;
             }
 
