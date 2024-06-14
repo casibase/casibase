@@ -32,15 +32,16 @@ class ChatPrompts extends React.Component {
   }
 
   selectPrompts = () => {
-    if (this.prompts.length <= 8) {
+    const limit = Setting.isMobile() ? 4 : 8;
+    if (this.prompts.length <= limit) {
       if (this.state.prompts.length === 0) {
         this.setState({
           prompts: this.prompts,
         });
       }
-    } else if (this.prompts.length > 8) {
+    } else if (this.prompts.length > limit) {
       this.setState({
-        prompts: this.prompts.sort(() => 0.5 - Math.random()).slice(0, 8),
+        prompts: this.prompts.sort(() => 0.5 - Math.random()).slice(0, limit),
       });
     }
   };
@@ -64,40 +65,44 @@ class ChatPrompts extends React.Component {
     for (let i = 0; i < this.state.prompts.length; i += 4) {
       groupedPrompts.push(this.state.prompts.slice(i, i + 4));
     }
+    const limit = Setting.isMobile() ? 4 : 8;
+    const direction = Setting.isMobile() ? "column" : "row";
+    const fontSize = Setting.isMobile() ? "12px" : "16px";
+    const height = Setting.isMobile() ? "calc((100% - 20px)/ 2)" : "calc((100% - 20px)/ 4)";
 
     return (
       <div style={{
         position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%, -50%)",
         zIndex: "100",
+        height: "100%",
+        width: "100%",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        justifyContent: "center",
       }}>
         {
           groupedPrompts.map((group, index) => (
             <div key={index} style={{
               display: "flex",
-              flexDirection: "row",
+              flexDirection: direction,
               justifyContent: "center",
               alignItems: "center",
-              marginTop: "20px",
+              height: height,
+              margin: "10px",
             }}>
               {
                 group.map((prompt, index) => (
                   <div key={index} style={{
-                    fontSize: "16px",
+                    fontSize: fontSize,
                     boxShadow: "0 0 10px rgba(0,0,0,0.1)",
                     backgroundColor: "#ffffff",
                     width: "150px",
-                    height: "120px",
+                    height: "100%",
                     borderRadius: "10px",
                     textAlign: "start",
                     overflow: "hidden",
-                    marginRight: "10px",
-                    marginLeft: "10px",
+                    margin: "10px",
                     cursor: "pointer",
                     padding: "10px",
                     display: "flex",
@@ -116,7 +121,7 @@ class ChatPrompts extends React.Component {
           ))
         }
         {
-          this.prompts.length <= 8 ? null : (
+          this.prompts.length <= limit ? null : (
             <div style={{
               display: "flex",
               flexDirection: "row",
