@@ -35,21 +35,23 @@ func init() {
 }
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
-	if !message.IsAlerted {
-		err := message.SendErrorEmail(errorText)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
+	if message != nil {
+		if !message.IsAlerted {
+			err := message.SendErrorEmail(errorText)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
 		}
-	}
 
-	if message.ErrorText != errorText || !message.IsAlerted {
-		message.ErrorText = errorText
-		message.IsAlerted = true
-		_, err := object.UpdateMessage(message.GetId(), message)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
+		if message.ErrorText != errorText || !message.IsAlerted {
+			message.ErrorText = errorText
+			message.IsAlerted = true
+			_, err := object.UpdateMessage(message.GetId(), message)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
 		}
 	}
 
