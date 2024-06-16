@@ -141,7 +141,7 @@ class ChatBox extends React.Component {
       );
     }
 
-    if (message.text === "") {
+    if (message.text === "" && message.author === "AI") {
       return this.state.dots;
     }
 
