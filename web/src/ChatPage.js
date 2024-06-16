@@ -191,7 +191,7 @@ class ChatPage extends BaseListPage {
             });
 
             if (lastMessage.errorText !== "") {
-              return ;
+              return;
             }
 
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
@@ -240,6 +240,10 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
                 disableInput: false,
               });
+            });
+          } else {
+            this.setState({
+              disableInput: false,
             });
           }
         }
