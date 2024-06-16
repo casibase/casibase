@@ -15,10 +15,30 @@
 package txt
 
 import (
+	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/ledongthuc/pdf"
 )
+
+func getPageTexts(p pdf.Page) (texts []pdf.Text, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			switch x := r.(type) {
+			case string:
+				err = errors.New(x)
+			case error:
+				err = x
+			default:
+				err = errors.New(fmt.Sprint(x))
+			}
+		}
+	}()
+
+	texts = p.Content().Text
+	return
+}
 
 func getTextFromPdf(path string) (string, error) {
 	f, r, err := pdf.Open(path)
@@ -37,7 +57,13 @@ func getTextFromPdf(path string) (string, error) {
 		var lastTextStyle pdf.Text
 		var mergedSentence string
 
-		texts := p.Content().Text
+		var texts []pdf.Text
+		texts, err = getPageTexts(p)
+		if err != nil {
+			return "", err
+		}
+		defer f.Close()
+
 		for _, text := range texts {
 			if text.Y == lastTextStyle.Y {
 				mergedSentence += text.S
