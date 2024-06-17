@@ -74,8 +74,11 @@ class ChatPrompts extends React.Component {
       <div style={{
         position: "absolute",
         zIndex: "100",
-        height: "100%",
-        width: "100%",
+        height: "80%",
+        width: "80%",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
