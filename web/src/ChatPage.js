@@ -61,18 +61,6 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
-    this.timer = setInterval(() => {
-      this.setState(prevState => {
-        switch (prevState.dots) {
-        case "⚫":
-          return {dots: " "};
-        case " ":
-          return {dots: "⚫"};
-        default:
-          return {dots: "⚫"};
-        }
-      });
-    }, 500);
   }
 
   getNextChatIndex(name) {
@@ -132,6 +120,18 @@ class ChatPage extends BaseListPage {
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
+    this.timer = setInterval(() => {
+      this.setState(prevState => {
+        switch (prevState.dots) {
+        case "⚫":
+          return {dots: " "};
+        case " ":
+          return {dots: "⚫"};
+        default:
+          return {dots: "⚫"};
+        }
+      });
+    }, 500);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -215,6 +215,9 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
                 disableInput: false,
               });
+              if (this.timer !== null) {
+                clearInterval(this.timer);
+              }
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
@@ -240,6 +243,9 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
                 disableInput: false,
               });
+              if (this.timer !== null) {
+                clearInterval(this.timer);
+              }
             });
           } else {
             this.setState({
@@ -458,7 +464,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} />
         </div>
       </div>
     );

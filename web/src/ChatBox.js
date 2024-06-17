@@ -29,30 +29,9 @@ class ChatBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dots: "⚫",
       value: "",
     };
-    this.timer = null;
     this.copyFileName = null;
-  }
-
-  componentDidMount() {
-    this.timer = setInterval(() => {
-      this.setState(prevState => {
-        switch (prevState.dots) {
-        case "⚫":
-          return {dots: " "};
-        case " ":
-          return {dots: "⚫"};
-        default:
-          return {dots: "⚫"};
-        }
-      });
-    }, 500);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
   }
 
   handleSend = (innerHtml) => {
@@ -142,7 +121,7 @@ class ChatBox extends React.Component {
     }
 
     if (message.text === "" && message.author === "AI") {
-      return this.state.dots;
+      return this.props.dots;
     }
 
     return message.html;
