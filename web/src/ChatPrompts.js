@@ -14,6 +14,7 @@
 
 import React from "react";
 import * as StoreBackend from "./backend/StoreBackend";
+import ImageWithFallback from "./ChatPromptsIcon";
 import * as Setting from "./Setting";
 import {Button} from "antd";
 import i18next from "i18next";
@@ -97,6 +98,7 @@ class ChatPrompts extends React.Component {
               {
                 group.map((prompt, index) => (
                   <div key={index} style={{
+                    position: "relative",
                     fontSize: fontSize,
                     boxShadow: "0 0 10px rgba(0,0,0,0.1)",
                     backgroundColor: "#ffffff",
@@ -116,6 +118,13 @@ class ChatPrompts extends React.Component {
                   }} onClick={() => {
                     this.props.sendMessage(prompt.text, "");
                   }}>
+                    <div style={{
+                      position: "absolute",
+                      top: "10px",
+                      left: "10px",
+                    }}>
+                      <ImageWithFallback src={prompt.image} />
+                    </div>
                     {prompt.title}
                   </div>
                 ))
