@@ -49,6 +49,7 @@ type UsageInfo struct {
 type Prompt struct {
 	Title string `json:"title"`
 	Text  string `json:"text"`
+	Image string `json:"image"`
 }
 
 type Store struct {

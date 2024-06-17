@@ -44,7 +44,7 @@ class PromptTable extends React.Component {
         title: i18next.t("Title"),
         dataIndex: "title",
         key: "title",
-        width: "50%",
+        width: "30%",
         render: (text, record, index) => (
           <Input value={text} onChange={e => this.updatePrompts(index, "title", e.target.value)} />
         ),
@@ -53,9 +53,19 @@ class PromptTable extends React.Component {
         title: i18next.t("Text"),
         dataIndex: "text",
         key: "text",
-        width: "50%",
+        width: "30%",
         render: (text, record, index) => (
           <Input value={text} onChange={e => this.updatePrompts(index, "text", e.target.value)} />
+        ),
+      },
+      {
+        title: i18next.t("Icon"),
+        dataIndex: "image",
+        key: "image",
+        width: "30%",
+        render: (text, record, index) => (
+          <Input value={text} onChange={e => this.updatePrompts(index, "image", e.target.value)}
+            placeholder="provide special the icon for this prompt, input url" />
         ),
       },
       {
