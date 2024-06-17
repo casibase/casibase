@@ -222,7 +222,7 @@ class ChatPage extends BaseListPage {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
-              lastMessage2.text = error;
+              lastMessage2.errorText = error;
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message) => {
                 message.html = renderText(message.text);
