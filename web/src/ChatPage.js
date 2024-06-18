@@ -445,7 +445,7 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-          <ChatMenu ref={this.menu} chats={chats} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
+          <ChatMenu ref={this.menu} chats={chats} chatName={this.props.match.params.chatName} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
@@ -478,6 +478,7 @@ class ChatPage extends BaseListPage {
     const field = "user";
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
+    const chatName = this.props.match.params.chatName;
 
     if (setLoading) {
       this.setState({loading: true});
@@ -494,7 +495,13 @@ class ChatPage extends BaseListPage {
           });
 
           const chats = res.data;
-          if (this.state.chat?.name === undefined && chats.length > 0) {
+          if (chatName !== undefined && chats.length > 0) {
+            const chat = chats.find(chat => chat.name === chatName);
+            this.getMessages(chat);
+            this.setState({
+              chat: chat,
+            });
+          } else if (this.state.chat?.name === undefined && chats.length > 0) {
             const chat = chats[0];
             this.getMessages(chat);
             this.setState({
