@@ -271,6 +271,7 @@ class ChatPage extends BaseListPage {
           this.getMessages(newChat);
 
           this.fetch({}, false);
+          this.props.history.push(`/chat/${newChat.name}`);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -294,6 +295,7 @@ class ChatPage extends BaseListPage {
               messages: [],
               data: data,
             });
+            this.props.history.push("/chat");
           } else {
             const focusedChat = data[j];
             this.setState({
@@ -302,6 +304,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
+            this.props.history.push(`/chat/${focusedChat.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -407,6 +410,7 @@ class ChatPage extends BaseListPage {
         messages: null,
       });
       this.getMessages(chat);
+      this.props.history.push(`/chat/${chat.name}`);
     };
 
     const onAddChat = () => {
@@ -433,7 +437,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname === "/chat") ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
         }
