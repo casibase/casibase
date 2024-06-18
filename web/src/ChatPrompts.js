@@ -69,7 +69,6 @@ class ChatPrompts extends React.Component {
     const limit = Setting.isMobile() ? 4 : 8;
     const direction = Setting.isMobile() ? "column" : "row";
     const fontSize = Setting.isMobile() ? "12px" : "16px";
-    const height = Setting.isMobile() ? "calc((100% - 20px)/ 2)" : "calc((100% - 20px)/ 4)";
 
     return (
       <div style={{
@@ -92,40 +91,42 @@ class ChatPrompts extends React.Component {
               flexDirection: direction,
               justifyContent: "center",
               alignItems: "center",
-              height: height,
               margin: "10px",
             }}>
               {
                 group.map((prompt, index) => (
                   <div key={index} style={{
+                    padding: "10px",
                     position: "relative",
-                    fontSize: fontSize,
                     boxShadow: "0 0 10px rgba(0,0,0,0.1)",
                     backgroundColor: "#ffffff",
                     width: "150px",
-                    height: "100%",
                     borderRadius: "10px",
-                    textAlign: "start",
                     overflow: "hidden",
                     margin: "10px",
                     cursor: "pointer",
-                    padding: "10px",
                     display: "flex",
                     flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    maxLines: "2",
                   }} onClick={() => {
                     this.props.sendMessage(prompt.text, "");
                   }}>
                     <div style={{
-                      position: "absolute",
                       top: "10px",
                       left: "10px",
                     }}>
                       <ImageWithFallback src={prompt.image} />
                     </div>
-                    {prompt.title}
+                    <p
+                      style={{
+                        marginTop: "10px",
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: "2",
+                        WebkitBoxOrient: "vertical",
+                        fontSize: fontSize,
+                        lineHeight: "1.5em",
+                        height: "3em",
+                      }}>{prompt.title}</p>
                   </div>
                 ))
               }
