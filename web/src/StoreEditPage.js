@@ -39,6 +39,8 @@ class StoreEditPage extends React.Component {
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
+    const debounce = Setting.debounce;
+    this.updateStoreField = debounce(this.updateStoreField.bind(this), 300);
   }
 
   UNSAFE_componentWillMount() {
@@ -136,7 +138,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("general:Name")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.name} onChange={e => {
+            <Input defaultValue={this.state.store.name} onChange={e => {
               this.updateStoreField("name", e.target.value);
             }} />
           </Col>
@@ -146,7 +148,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("general:Display name")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.displayName} onChange={e => {
+            <Input defaultValue={this.state.store.displayName} onChange={e => {
               this.updateStoreField("displayName", e.target.value);
             }} />
           </Col>
@@ -229,7 +231,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Frequency")}:
           </Col>
           <Col span={22} >
-            <InputNumber min={0} value={this.state.store.frequency} onChange={value => {
+            <InputNumber min={0} defaultValue={this.state.store.frequency} onChange={value => {
               this.updateStoreField("frequency", value);
             }} />
           </Col>
@@ -239,7 +241,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Memory limit")}:
           </Col>
           <Col span={22} >
-            <InputNumber min={0} value={this.state.store.memoryLimit} onChange={value => {
+            <InputNumber min={0} defaultValue={this.state.store.memoryLimit} onChange={value => {
               this.updateStoreField("memoryLimit", value);
             }} />
           </Col>
@@ -249,7 +251,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Limit minutes")}:
           </Col>
           <Col span={22} >
-            <InputNumber min={0} value={this.state.store.limitMinutes} onChange={value => {
+            <InputNumber min={0} defaultValue={this.state.store.limitMinutes} onChange={value => {
               this.updateStoreField("limitMinutes", value);
             }} />
           </Col>
@@ -259,7 +261,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Welcome")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.store.welcome} onChange={e => {
+            <Input defaultValue={this.state.store.welcome} onChange={e => {
               this.updateStoreField("welcome", e.target.value);
             }} />
           </Col>
@@ -269,7 +271,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Prompt")}:
           </Col>
           <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.store.prompt} onChange={(e) => {
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} defaultValue={this.state.store.prompt} onChange={(e) => {
               this.updateStoreField("prompt", e.target.value);
             }} />
           </Col>

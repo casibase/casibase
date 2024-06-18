@@ -46,7 +46,7 @@ class PromptTable extends React.Component {
         key: "title",
         width: "30%",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updatePrompts(index, "title", e.target.value)} />
+          <Input defaultValue={text} onChange={e => this.updatePrompts(index, "title", e.target.value)} />
         ),
       },
       {
@@ -55,7 +55,7 @@ class PromptTable extends React.Component {
         key: "text",
         width: "30%",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updatePrompts(index, "text", e.target.value)} />
+          <Input defaultValue={text} onChange={e => this.updatePrompts(index, "text", e.target.value)} />
         ),
       },
       {
@@ -64,7 +64,7 @@ class PromptTable extends React.Component {
         key: "image",
         width: "30%",
         render: (text, record, index) => (
-          <Input value={text} onChange={e => this.updatePrompts(index, "image", e.target.value)}
+          <Input defaultValue={text} onChange={e => this.updatePrompts(index, "image", e.target.value)}
             placeholder="provide special the icon for this prompt, input url" />
         ),
       },

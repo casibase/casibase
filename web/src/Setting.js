@@ -1163,3 +1163,16 @@ export function updateTheme(color) {
   document.documentElement.style.setProperty("--theme-button", ThemeDefault.colorButton);
   document.documentElement.style.setProperty("--theme-background-secondary", ThemeDefault.colorBackgroundSecondary);
 }
+
+export function debounce(fn, delay) {
+  if (!delay) {delay = 500;}
+  let timer = null;
+  return function() {
+    const context = this;
+    const args = arguments;
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(context, args);
+    }, delay);
+  };
+}
