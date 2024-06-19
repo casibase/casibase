@@ -23,11 +23,12 @@ class ChatMenu extends React.Component {
     super(props);
 
     const items = this.chatsToItems(this.props.chats);
+    const selectedKey = this.getSelectedKeyOfCurrentChat(this.props.chats, this.props.chatName);
     const openKeys = items.map((item) => item.key);
 
     this.state = {
       openKeys: openKeys,
-      selectedKeys: ["0-0"],
+      selectedKeys: [selectedKey],
       editChat: false,
       editChatName: "",
     };
@@ -164,6 +165,26 @@ class ChatMenu extends React.Component {
       openKeys: openKeys,
       selectedKeys: ["0-0"],
     });
+  }
+
+  getSelectedKeyOfCurrentChat(chats, chatName) {
+    const items = this.chatsToItems(chats);
+    const chat = chats.find(chat => chat.name === chatName);
+    let selectedKey = null;
+
+    for (let categoryIndex = 0; categoryIndex < items.length; categoryIndex++) {
+      const category = items[categoryIndex];
+      for (let chatIndex = 0; chatIndex < category.children.length; chatIndex++) {
+        if (category.children[chatIndex].index === chats.indexOf(chat)) {
+          selectedKey = `${categoryIndex}-${chatIndex}`;
+          break;
+        }
+      }
+      if (selectedKey) {
+        break;
+      }
+    }
+    return selectedKey === null ? "0-0" : selectedKey;
   }
 
   onOpenChange = (keys) => {
