@@ -31,6 +31,9 @@ class ChatPrompts extends React.Component {
   componentDidMount() {
     this.getPrompts();
   }
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.prompts !== nextState.prompts;
+  }
 
   selectPrompts = () => {
     const limit = Setting.isMobile() ? 4 : 8;
