@@ -499,12 +499,13 @@ class App extends Component {
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
       </Switch>
     );
   }
 
   isWithoutCard() {
-    return Setting.isMobile() || window.location.pathname === "/chat";
+    return Setting.isMobile() || window.location.pathname.startsWith("/chat");
   }
 
   renderContent() {
