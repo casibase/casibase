@@ -109,6 +109,7 @@ func initAPI() {
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
+	beego.Router("/api/get-usages-user", &controllers.ApiController{}, "GET:GetUsagesUser")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
 
 	beego.Router("/api/get-global-tasks", &controllers.ApiController{}, "GET:GetGlobalTasks")

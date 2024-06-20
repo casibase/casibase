@@ -33,13 +33,23 @@ type Usage struct {
 	Currency     string  `json:"currency"`
 }
 
+type UsageUser struct {
+	User string `json:"user"`
+}
+
 type UsageMetadata struct {
 	Organization string `json:"organization"`
 	Application  string `json:"application"`
 }
 
-func GetUsages(days int) ([]*Usage, error) {
-	messages, err := GetGlobalMessagesByCreatedTime()
+func GetUsages(days int, user string) ([]*Usage, error) {
+	var messages []*Message
+	var err error
+	if user == "All" {
+		messages, err = GetGlobalMessagesByCreatedTime()
+	} else {
+		messages, err = GetGlobalMessagesByUser(user)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -176,6 +186,22 @@ func GetUsage(date string) (*Usage, error) {
 		Currency:     currency,
 	}
 	return usage, nil
+}
+
+func GetUsageUser() ([]*UsageUser, error) {
+	messages, err := GetGlobalMessages()
+	if err != nil {
+		return nil, err
+	}
+	allUser := make([]*UsageUser, 0)
+	userSet := make(map[string]int)
+	for _, message := range messages {
+		if _, exists := userSet[message.User]; !exists {
+			userSet[message.User] = 1
+			allUser = append(allUser, &UsageUser{User: message.User})
+		}
+	}
+	return allUser, nil
 }
 
 func GetUsageMetadata() (*UsageMetadata, error) {

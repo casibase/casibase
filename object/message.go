@@ -78,6 +78,16 @@ func GetGlobalMessagesByCreatedTime() ([]*Message, error) {
 	return messages, nil
 }
 
+func GetGlobalMessagesByUser(user string) ([]*Message, error) {
+	messages := []*Message{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&messages, &Message{User: user})
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
 func GetChatMessages(chat string) ([]*Message, error) {
 	messages := []*Message{}
 	err := adapter.engine.Asc("created_time").Find(&messages, &Message{Chat: chat})

@@ -19,17 +19,34 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
+// GetUsagesUser
+// @Title GetUsagesUser
+// @Tag Usage API
+// @Description get usages by user
+// @Success 200 {array} object.Usage The Response object
+// @router /get-usages-user [get]
+func (c *ApiController) GetUsagesUser() {
+	usages, err := object.GetUsageUser()
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(usages)
+}
+
 // GetUsages
 // @Title GetUsages
 // @Tag Usage API
 // @Description get usages
-// @Param days query string true "days count"
+// @Param days query string true "days count" and user query string true "user"
 // @Success 200 {array} object.Usage The Response object
 // @router /get-usages [get]
 func (c *ApiController) GetUsages() {
 	days := util.ParseInt(c.Input().Get("days"))
+	user := c.Input().Get("user")
 
-	usages, err := object.GetUsages(days)
+	usages, err := object.GetUsages(days, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -48,14 +65,15 @@ func (c *ApiController) GetUsages() {
 // @Title GetRangeUsages
 // @Tag Usage API
 // @Description get range usages
-// @Param count query string true "count of range usages"
+// @Param count query string true "count of range usages" and user query string true "user"
 // @Success 200 {array} object.Usage The Response object
 // @router /get-range-usages [get]
 func (c *ApiController) GetRangeUsages() {
 	rangeType := c.Input().Get("rangeType")
 	count := util.ParseInt(c.Input().Get("count"))
+	user := c.Input().Get("user")
 
-	usages, err := object.GetRangeUsages(rangeType, count)
+	usages, err := object.GetRangeUsages(rangeType, count, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

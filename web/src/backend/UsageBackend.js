@@ -14,12 +14,12 @@
 
 import * as Setting from "../Setting";
 
-export function getUsages(serverUrl, days) {
+export function getUsages(serverUrl, days, user) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-usages?days=${days}`, {
+  return fetch(`${serverUrl}/api/get-usages?days=${days}&user=${user}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -28,12 +28,26 @@ export function getUsages(serverUrl, days) {
   }).then(res => res.json());
 }
 
-export function getRangeUsages(serverUrl, rangeType, count) {
+export function getRangeUsages(serverUrl, rangeType, count, user) {
   if (serverUrl === "") {
     serverUrl = Setting.ServerUrl;
   }
 
-  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}`, {
+  return fetch(`${serverUrl}/api/get-range-usages?rangeType=${rangeType}&count=${count}&user=${user}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
+export function getUsagesUser(serverUrl) {
+  if (serverUrl === "") {
+    serverUrl = Setting.ServerUrl;
+  }
+
+  return fetch(`${serverUrl}/api/get-usages-user`, {
     method: "GET",
     credentials: "include",
     headers: {

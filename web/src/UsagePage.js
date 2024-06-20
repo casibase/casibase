@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Radio, Row, Select, Statistic} from "antd";
+import {Button, Col, Radio, Row, Select, Statistic, Table} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
@@ -31,11 +31,21 @@ class UsagePage extends BaseListPage {
       usages: null,
       usageMetadata: null,
       rangeType: "All",
+      filterUser: "All",
+      usagesUser: null,
       endpoint: this.getHost(),
     };
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.filterUser !== this.state.filterUser) {
+      this.getUsages("");
+      this.getRangeUsagesAll("");
+    }
+  }
+
   UNSAFE_componentWillMount() {
+    this.getUsageUser("");
     this.getUsages("");
     this.getRangeUsagesAll("");
   }
@@ -48,8 +58,27 @@ class UsagePage extends BaseListPage {
     return res;
   }
 
+  getUsageUser(serverUrl) {
+    UsageBackend.getUsagesUser(serverUrl)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            usagesUser: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get usagesUser: ${res.msg}`);
+        }
+      });
+  }
+
   getUsages(serverUrl) {
-    UsageBackend.getUsages(serverUrl, 30)
+    let filterUser;
+    if (this.state.filterUser === undefined) {
+      filterUser = "All";
+    } else {
+      filterUser = this.state.filterUser;
+    }
+    UsageBackend.getUsages(serverUrl, 30, filterUser)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
@@ -85,7 +114,13 @@ class UsagePage extends BaseListPage {
 
   getRangeUsages(serverUrl, rangeType) {
     const count = this.getCountFromRangeType(rangeType);
-    UsageBackend.getRangeUsages(serverUrl, rangeType, count)
+    let filterUser;
+    if (this.state.filterUser === undefined) {
+      filterUser = "All";
+    } else {
+      filterUser = this.state.filterUser;
+    }
+    UsageBackend.getRangeUsages(serverUrl, rangeType, count, filterUser)
       .then((res) => {
         if (res.status === "ok") {
           const state = {};
@@ -321,21 +356,52 @@ class UsagePage extends BaseListPage {
 
   renderRadio() {
     return (
-      <div style={{marginBottom: "10px", float: "right"}}>
-        <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
-          const rangeType = e.target.value;
-          this.setState({
-            rangeType: rangeType,
-          });
-        }}>
-          <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
-          <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
-          <Radio.Button value={"Day"}>{i18next.t("usage:Day")}</Radio.Button>
-          <Radio.Button value={"Week"}>{i18next.t("usage:Week")}</Radio.Button>
-          <Radio.Button value={"Month"}>{i18next.t("usage:Month")}</Radio.Button>
-        </Radio.Group>
-        {this.renderSelect()}
+      <div>
+        <div style={{marginBottom: "10px", float: "right"}}>
+          <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
+            const rangeType = e.target.value;
+            this.setState({
+              rangeType: rangeType,
+            });
+          }}>
+            <Radio.Button value={"All"}>{i18next.t("usage:All")}</Radio.Button>
+            <Radio.Button value={"Hour"}>{i18next.t("usage:Hour")}</Radio.Button>
+            <Radio.Button value={"Day"}>{i18next.t("usage:Day")}</Radio.Button>
+            <Radio.Button value={"Week"}>{i18next.t("usage:Week")}</Radio.Button>
+            <Radio.Button value={"Month"}>{i18next.t("usage:Month")}</Radio.Button>
+          </Radio.Group>
+          {this.renderSelect()}
+        </div>
+        <div style={{position: "sticky", float: "right", width: "500px"}}>
+          {this.renderSelectAll()}
+        </div>
       </div>
+    );
+  }
+
+  renderSelectAll() {
+    const handleChange = (value) => {
+      // this.state.filterUser = value;
+      this.setState({filterUser: value});
+      // eslint-disable-next-line no-console
+      console.log("select端" + this.state.filterUser);
+    };
+    const allName = this.state.usagesUser;
+    let opts = [];
+    if (Array.isArray(allName)) {
+      opts = allName.map(value => ({
+        value: value.user,
+        label: value.user,
+      }));
+    }
+    return (
+      <React.Fragment>
+        <Select defaultValue="all" style={{width: 180}} onChange={handleChange}
+          options={[
+            {value: "All", label: "all"},
+            ...opts,
+          ]} />
+      </React.Fragment>
     );
   }
 
@@ -560,6 +626,84 @@ class UsagePage extends BaseListPage {
     }
   }
 
+  renderTableDown() {
+    const cols = [
+      {
+        title: "用户",
+        dataIndex: "userCount",
+        sorter: {
+          compare: (a, b) => a.userCount - b.userCount,
+        // multiple: 6,
+        },
+      },
+      {
+        title: "会话",
+        dataIndex: "chatCount",
+        sorter: {
+          compare: (a, b) => a.chatCount - b.chatCount,
+        // multiple: 5,
+        },
+      },
+      {
+        title: "消息",
+        dataIndex: "messageCount",
+        sorter: {
+          compare: (a, b) => a.messageCount - b.messageCount,
+        // multiple: 2,
+        },
+      },
+      {
+        title: "Tokens",
+        dataIndex: "tokenCount",
+        sorter: {
+          compare: (a, b) => a.tokenCount - b.tokenCount,
+        // multiple: 4,
+        },
+      },
+      {
+        title: "价格",
+        dataIndex: "price",
+        sorter: {
+          compare: (a, b) => a.price - b.price,
+        // multiple: 3,
+        },
+      },
+      {
+        title: "日期",
+        dataIndex: "date",
+        sorter: {
+          compare: (a, b) => a.date.localeCompare(b.date),
+        },
+      },
+    ];
+    // eslint-disable-next-line no-console
+    // console.log(this.state.usages);
+    if (this.state.rangeType === "All") {
+      if (this.state.usages === null) {
+        return null;
+      }
+
+      return (
+        <React.Fragment>
+          <Table columns={cols} dataSource={this.state.usages} />
+        </React.Fragment>
+      );
+    } else {
+      const fieldName = `rangeUsages${this.state.rangeType}`;
+      const rangeUsages = this.state[fieldName];
+
+      if (rangeUsages === null) {
+        return null;
+      }
+
+      return (
+        <React.Fragment>
+          <Table columns={cols} dataSource={rangeUsages} />
+        </React.Fragment>
+      );
+    }
+  }
+
   render() {
     return (
       <div>
@@ -568,6 +712,7 @@ class UsagePage extends BaseListPage {
         <br />
         <br />
         {this.renderChart()}
+        {this.renderTableDown()}
       </div>
     );
   }

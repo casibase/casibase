@@ -7,8 +7,14 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-func GetRangeUsages(rangeType string, count int) ([]*Usage, error) {
-	messages, err := GetGlobalMessagesByCreatedTime()
+func GetRangeUsages(rangeType string, count int, user string) ([]*Usage, error) {
+	var messages []*Message
+	var err error
+	if user == "All" {
+		messages, err = GetGlobalMessagesByCreatedTime()
+	} else {
+		messages, err = GetGlobalMessagesByUser(user)
+	}
 	if err != nil {
 		return nil, err
 	}
