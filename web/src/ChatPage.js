@@ -63,17 +63,17 @@ class ChatPage extends BaseListPage {
     }
   }
 
-  getChatNameFromURL(match) {
-    if (match) {
-      return match.params.chatName;
+  getChat() {
+    if (this.props.match) {
+      return this.props.match.params.chatName;
     } else {
       return undefined;
     }
   }
 
-  updateHistory(history, path) {
-    if (history) {
-      history.push(path);
+  goToLinkSoft(path) {
+    if (this.props.history) {
+      this.props.history.push(path);
     } else {
       return "";
     }
@@ -276,7 +276,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat) {
     const newChat = this.newChat(chat);
-    this.updateHistory(this.props.history, `/chat/${newChat.name}`);
+    this.goToLinkSoft(`/chat/${newChat.name}`);
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -311,7 +311,7 @@ class ChatPage extends BaseListPage {
               messages: [],
               data: data,
             });
-            this.updateHistory(this.props.history, "/chat");
+            this.goToLinkSoft("/chat");
           } else {
             const focusedChat = data[j];
             this.setState({
@@ -320,7 +320,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.updateHistory(this.props.history, `/chat/${focusedChat.name}`);
+            this.goToLinkSoft(`/chat/${focusedChat.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -426,7 +426,7 @@ class ChatPage extends BaseListPage {
         messages: null,
       });
       this.getMessages(chat);
-      this.updateHistory(this.props.history, `/chat/${chat.name}`);
+      this.goToLinkSoft(`/chat/${chat.name}`);
     };
 
     const onAddChat = () => {
@@ -461,7 +461,7 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChatNameFromURL(this.props.match)} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
+          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
@@ -494,7 +494,7 @@ class ChatPage extends BaseListPage {
     const field = "user";
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
-    const chatName = this.getChatNameFromURL(this.props.match);
+    const chatName = this.getChat();
 
     if (setLoading) {
       this.setState({loading: true});
