@@ -270,8 +270,10 @@ class ChatPage extends BaseListPage {
           });
           this.getMessages(newChat);
 
-          this.fetch({}, false);
           this.props.history.push(`/chat/${newChat.name}`);
+          setTimeout(() => {
+            this.fetch({}, false);
+          }, 0);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
