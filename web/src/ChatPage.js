@@ -270,8 +270,10 @@ class ChatPage extends BaseListPage {
           });
           this.getMessages(newChat);
 
-          this.fetch({}, false);
           this.props.history.push(`/chat/${newChat.name}`);
+          setTimeout(() => {
+            this.fetch({}, false);
+          }, 50);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
@@ -478,7 +480,10 @@ class ChatPage extends BaseListPage {
     const field = "user";
     const value = this.props.account.name;
     const sortField = params.sortField, sortOrder = params.sortOrder;
-    const chatName = this.props.match.params.chatName;
+    let chatName;
+    if (this.props.match) {
+      chatName = this.props.match.params.chatName;
+    }
 
     if (setLoading) {
       this.setState({loading: true});
