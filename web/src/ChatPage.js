@@ -260,6 +260,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat) {
     const newChat = this.newChat(chat);
+    this.props.history.push(`/chat/${newChat.name}`);
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -270,10 +271,7 @@ class ChatPage extends BaseListPage {
           });
           this.getMessages(newChat);
 
-          this.props.history.push(`/chat/${newChat.name}`);
-          setTimeout(() => {
-            this.fetch({}, false);
-          }, 50);
+          this.fetch({}, false);
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
