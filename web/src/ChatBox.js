@@ -143,6 +143,44 @@ class ChatBox extends React.Component {
     Setting.showMessage("success", "Message disliked successfully");
   }
 
+  renderSuggestions() {
+    const inputBox = document.getElementById("message-input");
+    const inputBoxHeight = inputBox ? inputBox.clientHeight : 0;
+    const length = Setting.isMobile() ? 2 : 3;
+    const targetSuggestions = this.props.suggestions.slice(0, length);
+    if (!inputBoxHeight) {
+      return null;
+    }
+    const fontSize = Setting.isMobile() ? "10px" : "12px";
+    return (
+      <div style={{
+        width: "100%",
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "row",
+        justifyContent: "end",
+        alignItems: "center",
+        position: "absolute",
+        bottom: `${inputBoxHeight}px`,
+        zIndex: "10000",
+      }}>
+        {
+          targetSuggestions.map((suggestion, index) => (
+            <Button key={index} type="primary" style={{
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              border: "1px solid " + ThemeDefault.colorPrimary,
+              color: ThemeDefault.colorPrimary, borderRadius: "4px",
+              fontSize: fontSize,
+              margin: "3px",
+            }} onClick={() => {
+              this.props.sendMessage(suggestion.split(".")[1], "");
+            }}>{suggestion}</Button>
+          ))
+        }
+      </div>
+    );
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -190,7 +228,8 @@ class ChatBox extends React.Component {
             </MessageList>
             {
               this.props.hideInput === true ? null : (
-                <MessageInput disabled={false}
+                <MessageInput id={"message-input"}
+                  disabled={false}
                   sendDisabled={this.state.value === "" || this.props.disableInput}
                   placeholder={i18next.t("chat:Type message here")}
                   onSend={this.handleSend}
@@ -215,6 +254,9 @@ class ChatBox extends React.Component {
               )
             }
           </ChatContainer>
+          {
+            this.props.suggestions.length === 0 ? null : this.renderSuggestions()
+          }
           {
             messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
           }

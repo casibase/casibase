@@ -292,16 +292,26 @@ func (w *MyWriter) Write(p []byte) (n int, err error) {
 }
 
 func GetAnswer(provider string, question string) (string, *model.ModelResult, error) {
+	return GetAnswerWithHistory(provider, question, nil, nil)
+}
+
+func GetAnswerWithHistory(provider string, question string, history *[]*model.RawMessage, knowledge *[]*model.RawMessage) (string, *model.ModelResult, error) {
 	_, modelProviderObj, err := GetModelProviderFromContext("admin", provider)
 	if err != nil {
 		return "", nil, err
 	}
 
-	history := []*model.RawMessage{}
-	knowledge := []*model.RawMessage{}
+	if history == nil {
+		history = &[]*model.RawMessage{}
+	}
+
+	if knowledge == nil {
+		knowledge = &[]*model.RawMessage{}
+	}
+
 	var writer MyWriter
 
-	modelResult, err := modelProviderObj.QueryText(question, &writer, history, "", knowledge)
+	modelResult, err := modelProviderObj.QueryText(question, &writer, *history, "", *knowledge)
 	if err != nil {
 		return "", nil, err
 	}

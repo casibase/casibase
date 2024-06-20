@@ -82,6 +82,16 @@ export function getMessage(owner, name) {
   }).then(res => res.json());
 }
 
+export function getSuggestions(owner, name) {
+  return fetch(`${Setting.ServerUrl}/api/get-suggestions?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
 export function updateMessage(owner, name, message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/update-message?id=${owner}/${encodeURIComponent(name)}`, {

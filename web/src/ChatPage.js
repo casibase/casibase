@@ -39,6 +39,7 @@ class ChatPage extends BaseListPage {
       disableInput: false,
       isModalOpen: false,
       dots: "⚫",
+      suggestions: [],
     });
 
     this.fetch();
@@ -119,6 +120,9 @@ class ChatPage extends BaseListPage {
   }
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
+    this.setState({
+      suggestions: [],
+    });
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     this.timer = setInterval(() => {
       this.setState(prevState => {
@@ -246,6 +250,12 @@ class ChatPage extends BaseListPage {
               if (this.timer !== null) {
                 clearInterval(this.timer);
               }
+              const chat = this.getCurrentChat();
+              MessageBackend.getSuggestions(chat.owner, chat.name).then((res) => {
+                this.setState({
+                  suggestions: res.data.split("|"),
+                });
+              });
             });
           } else {
             this.setState({
@@ -267,6 +277,7 @@ class ChatPage extends BaseListPage {
           this.setState({
             chat: newChat,
             messages: null,
+            suggestions: [],
           });
           this.getMessages(newChat);
 
@@ -408,6 +419,7 @@ class ChatPage extends BaseListPage {
       this.setState({
         chat: chat,
         messages: null,
+        suggestions: [],
       });
       this.getMessages(chat);
       this.props.history.push(`/chat/${chat.name}`);
@@ -468,7 +480,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} suggestions={this.state.suggestions} />
         </div>
       </div>
     );
