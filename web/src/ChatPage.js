@@ -211,6 +211,9 @@ class ChatPage extends BaseListPage {
             }
 
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
+              if (chat && (this.state.chat.name !== chat.name)) {
+                return;
+              }
               const jsonData = JSON.parse(data);
 
               if (jsonData.text === "") {
@@ -248,6 +251,9 @@ class ChatPage extends BaseListPage {
                 disableInput: true,
               });
             }, (data) => {
+              if (chat && (this.state.chat.name !== chat.name)) {
+                return;
+              }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
