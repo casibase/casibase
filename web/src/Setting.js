@@ -644,6 +644,29 @@ export function isResponseDenied(data) {
   return data.msg === "Unauthorized operation";
 }
 
+export function getCompitableProviderOptions(category) {
+  if (category === "Model") {
+    return (
+      [
+        {id: "gpt-3.5-turbo-0613", name: "gpt-3.5-turbo-0613"},
+        {id: "gpt-3.5-turbo-16k-0613", name: "gpt-3.5-turbo-16k-0613"},
+        {id: "gpt-4-0314", name: "gpt-4-0314"},
+        {id: "gpt-4-32k-0314", name: "gpt-4-32k-0314"},
+        {id: "gpt-4-0613", name: "gpt-4-0613"},
+        {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+      ]
+    );
+  } else if (category === "Embedding") {
+    return (
+      [
+        {id: "text-embedding-ada-002", name: "text-embedding-ada-002"},
+        {id: "text-embedding-3-small", name: "text-embedding-3-small"},
+        {id: "text-embedding-3-large", name: "text-embedding-3-large"},
+      ]
+    );
+  }
+}
+
 export function getProviderTypeOptions(category) {
   if (category === "Storage") {
     return (

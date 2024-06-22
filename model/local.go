@@ -28,28 +28,30 @@ import (
 )
 
 type LocalModelProvider struct {
-	typ              string
-	subType          string
-	deploymentName   string
-	secretKey        string
-	temperature      float32
-	topP             float32
-	frequencyPenalty float32
-	presencePenalty  float32
-	providerUrl      string
-	apiVersion       string
+	typ                string
+	subType            string
+	deploymentName     string
+	secretKey          string
+	temperature        float32
+	topP               float32
+	frequencyPenalty   float32
+	presencePenalty    float32
+	providerUrl        string
+	apiVersion         string
+	compitableProvider string
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvier string) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
-		typ:              typ,
-		subType:          subType,
-		secretKey:        secretKey,
-		temperature:      temperature,
-		topP:             topP,
-		frequencyPenalty: frequencyPenalty,
-		presencePenalty:  presencePenalty,
-		providerUrl:      providerUrl,
+		typ:                typ,
+		subType:            subType,
+		secretKey:          secretKey,
+		temperature:        temperature,
+		topP:               topP,
+		frequencyPenalty:   frequencyPenalty,
+		presencePenalty:    presencePenalty,
+		providerUrl:        providerUrl,
+		compitableProvider: compitableProvier,
 	}
 	return p, nil
 }
@@ -245,6 +247,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
+	if model == "custom-model" && p.compitableProvider != "" {
+		model = p.compitableProvider
+	} else if model == "custom-model" && p.compitableProvider == "" {
+		model = "gpt-3.5-turbo-0613"
+	}
 	temperature := p.temperature
 	topP := p.topP
 	frequencyPenalty := p.frequencyPenalty
@@ -297,7 +304,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
+		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, model)
 		if err != nil {
 			return nil, err
 		}
