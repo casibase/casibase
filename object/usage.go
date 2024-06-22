@@ -38,7 +38,15 @@ type UsageMetadata struct {
 	Application  string `json:"application"`
 }
 
-func GetUsages(days int) ([]*Usage, error) {
+type UserUsage struct {
+	User         string  `json:"user"`
+	Chats        int     `json:"chats"`
+	MessageCount int     `json:"messageCount"`
+	TokenCount   int     `json:"tokenCount"`
+	Price        float64 `json:"price"`
+}
+
+func GetUsages(days int, user string) ([]*Usage, error) {
 	messages, err := GetGlobalMessagesByCreatedTime()
 	if err != nil {
 		return nil, err
@@ -66,6 +74,9 @@ func GetUsages(days int) ([]*Usage, error) {
 	}
 
 	for _, message := range messages {
+		if !(message.User == user || user == "All") {
+			continue
+		}
 		messageTime, _ := time.Parse(time.RFC3339, message.CreatedTime)
 		// Find the date index for the message
 		for dayIndex < days && !messageTime.Before(startDateTime.AddDate(0, 0, dayIndex+1)) {
@@ -202,4 +213,58 @@ func GetUsageMetadata() (*UsageMetadata, error) {
 		Application:  application.DisplayName,
 	}
 	return res, nil
+}
+
+func GetUsers(user string) ([]string, error) {
+	var users []string
+	addedAuthors := make(map[string]bool)
+	messages, err := GetMessages("admin", user)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, message := range messages {
+		if !addedAuthors[message.User] {
+			users = append(users, message.User)
+			addedAuthors[message.User] = true
+		}
+	}
+	return users, nil
+}
+
+func GetUserTableInfos(user string) ([]*UserUsage, error) {
+	messages, err := GetMessages("admin", user)
+	if err != nil {
+		return nil, err
+	}
+	userUsage := make(map[string]*UserUsage)
+	userChats := make(map[string]map[string]bool)
+
+	for _, message := range messages {
+		if _, ok := userChats[message.User]; !ok {
+			userChats[message.User] = make(map[string]bool)
+		}
+		userChats[message.User][message.Chat] = true
+		if _, ok := userUsage[message.User]; !ok {
+			userUsage[message.User] = &UserUsage{
+				User:         message.User,
+				MessageCount: 0,
+				TokenCount:   0,
+				Price:        0,
+			}
+		}
+		userUsage[message.User].MessageCount++
+		userUsage[message.User].TokenCount += message.TokenCount
+		userUsage[message.User].Price += message.Price
+	}
+
+	userUsageSlice := make([]*UserUsage, len(userUsage))
+	i := 0
+	for _, user := range userUsage {
+		user.Price = model.RefinePrice(user.Price)
+		user.Chats = len(userChats[user.User])
+		userUsageSlice[i] = user
+		i++
+	}
+	return userUsageSlice, nil
 }

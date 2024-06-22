@@ -28,8 +28,9 @@ import (
 // @router /get-usages [get]
 func (c *ApiController) GetUsages() {
 	days := util.ParseInt(c.Input().Get("days"))
+	user := c.Input().Get("selectedUser")
 
-	usages, err := object.GetUsages(days)
+	usages, err := object.GetUsages(days, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -54,8 +55,9 @@ func (c *ApiController) GetUsages() {
 func (c *ApiController) GetRangeUsages() {
 	rangeType := c.Input().Get("rangeType")
 	count := util.ParseInt(c.Input().Get("count"))
+	user := c.Input().Get("user")
 
-	usages, err := object.GetRangeUsages(rangeType, count)
+	usages, err := object.GetRangeUsages(rangeType, count, user)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -68,4 +70,43 @@ func (c *ApiController) GetRangeUsages() {
 	}
 
 	c.ResponseOk(usages, usageMetadata)
+}
+
+// GetUsers
+// @Title GetUsers
+// @Tag Usage API
+// @Description get users
+// @Success 200 {array} string The Response object
+// @router /get-users [get]
+func (c *ApiController) GetUsers() {
+	user := c.Input().Get("user")
+	if c.IsAdmin() {
+		user = ""
+	}
+	users, err := object.GetUsers(user)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(users)
+}
+
+// GetUserTableInfos
+// @Title GetUserTableInfos
+// @Tag Usage API
+// @Description get userTableInfos
+// @Success 200 {array} object.Usage The Response object
+// @router /get-usages [get]
+func (c *ApiController) GetUserTableInfos() {
+	user := c.Input().Get("user")
+	if c.IsAdmin() {
+		user = ""
+	}
+	userInfos, err := object.GetUserTableInfos(user)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(userInfos)
 }
