@@ -28,30 +28,28 @@ import (
 )
 
 type LocalModelProvider struct {
-	typ                string
-	subType            string
-	deploymentName     string
-	secretKey          string
-	temperature        float32
-	topP               float32
-	frequencyPenalty   float32
-	presencePenalty    float32
-	providerUrl        string
-	apiVersion         string
-	compitableProvider string
+	typ              string
+	subType          string
+	deploymentName   string
+	secretKey        string
+	temperature      float32
+	topP             float32
+	frequencyPenalty float32
+	presencePenalty  float32
+	providerUrl      string
+	apiVersion       string
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvier string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
-		typ:                typ,
-		subType:            subType,
-		secretKey:          secretKey,
-		temperature:        temperature,
-		topP:               topP,
-		frequencyPenalty:   frequencyPenalty,
-		presencePenalty:    presencePenalty,
-		providerUrl:        providerUrl,
-		compitableProvider: compitableProvier,
+		typ:              typ,
+		subType:          subType,
+		secretKey:        secretKey,
+		temperature:      temperature,
+		topP:             topP,
+		frequencyPenalty: frequencyPenalty,
+		presencePenalty:  presencePenalty,
+		providerUrl:      providerUrl,
 	}
 	return p, nil
 }
@@ -247,10 +245,8 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
-	if model == "custom-model" && p.compitableProvider != "" {
-		model = p.compitableProvider
-	} else if model == "custom-model" && p.compitableProvider == "" {
-		model = "gpt-3.5-turbo-0613"
+	if model == "custom-model" {
+		model = "gpt-3.5-turbo"
 	}
 	temperature := p.temperature
 	topP := p.topP

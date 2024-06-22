@@ -29,15 +29,14 @@ type Provider struct {
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
-	DisplayName        string `xorm:"varchar(100)" json:"displayName"`
-	Category           string `xorm:"varchar(100)" json:"category"`
-	Type               string `xorm:"varchar(100)" json:"type"`
-	SubType            string `xorm:"varchar(100)" json:"subType"`
-	ClientId           string `xorm:"varchar(100)" json:"clientId"`
-	ClientSecret       string `xorm:"varchar(2000)" json:"clientSecret"`
-	ProviderUrl        string `xorm:"varchar(200)" json:"providerUrl"`
-	ApiVersion         string `xorm:"varchar(100)" json:"apiVersion"`
-	CompitableProvider string `xorm:"varchar(100)" json:"compitableProvider"`
+	DisplayName  string `xorm:"varchar(100)" json:"displayName"`
+	Category     string `xorm:"varchar(100)" json:"category"`
+	Type         string `xorm:"varchar(100)" json:"type"`
+	SubType      string `xorm:"varchar(100)" json:"subType"`
+	ClientId     string `xorm:"varchar(100)" json:"clientId"`
+	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
+	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
+	ApiVersion   string `xorm:"varchar(100)" json:"apiVersion"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -299,7 +298,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion)
 	if err != nil {
 		return nil, err
 	}
