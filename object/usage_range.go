@@ -7,7 +7,7 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-func GetRangeUsages(rangeType string, count int) ([]*Usage, error) {
+func GetRangeUsages(rangeType string, count int, user string) ([]*Usage, error) {
 	messages, err := GetGlobalMessagesByCreatedTime()
 	if err != nil {
 		return nil, err
@@ -49,6 +49,9 @@ func GetRangeUsages(rangeType string, count int) ([]*Usage, error) {
 	}
 
 	for _, message := range messages {
+		if !(user == "All" || message.User == user) {
+			continue
+		}
 		messageTime, _ := time.Parse(time.RFC3339, message.CreatedTime)
 		bucketIndex := -1
 

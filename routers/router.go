@@ -110,6 +110,8 @@ func initAPI() {
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
+	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
+	beego.Router("/api/get-user-table-infos", &controllers.ApiController{}, "GET:GetUserTableInfos")
 
 	beego.Router("/api/get-global-tasks", &controllers.ApiController{}, "GET:GetGlobalTasks")
 	beego.Router("/api/get-tasks", &controllers.ApiController{}, "GET:GetTasks")
