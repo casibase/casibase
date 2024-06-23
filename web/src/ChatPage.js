@@ -182,19 +182,21 @@ class ChatPage extends BaseListPage {
       });
   }
 
-  getMessageFromURL() {
+  getMessageAnswerFromURL(messages) {
     const params = new URLSearchParams(window.location.search);
     const newMessage = params.get("newMessage");
-    return newMessage;
+    const hasAsked = messages.some(message => message.text === newMessage);
+    if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
+      this.sendMessage(newMessage);
+      return true;
+    }
+    return false;
   }
 
   getMessages(chat) {
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
-        const newMessage = this.getMessageFromURL();
-        const hasAsked = res.data.some(message => message.text === newMessage);
-        if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
-          this.sendMessage(newMessage);
+        if (this.getMessageAnswerFromURL(res.data)) {
           return;
         }
         res.data.map((message) => {
