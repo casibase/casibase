@@ -37,6 +37,7 @@ type Provider struct {
 	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion   string `xorm:"varchar(100)" json:"apiVersion"`
+	EntrypointID   string `xorm:"varchar(100)" json:"EntrypointID"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -298,7 +299,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.EntrypointID)
 	if err != nil {
 		return nil, err
 	}
@@ -324,6 +325,7 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 }
 
 func GetModelProvidersFromContext(owner string, name string, isFromStore bool) (map[string]*Provider, map[string]model.ModelProvider, error) {
+	
 	providerNames := []string{}
 	if name != "" {
 		providerNames = []string{name}

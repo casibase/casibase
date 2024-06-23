@@ -38,7 +38,7 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error)
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, entrypointID string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "Local" {
@@ -73,6 +73,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewQwenModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baichuan" {
 		p, err = NewBaichuanModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Doubao" {
+		p, err = NewDoubaoModelProvider(subType, entrypointID, clientSecret, temperature, topP)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
 	} else {
