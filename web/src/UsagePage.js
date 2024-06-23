@@ -336,7 +336,6 @@ class UsagePage extends BaseListPage {
             </React.Fragment>
           )
         }
-        {this.renderDropdown()}
       </Row>
     );
   }
@@ -369,7 +368,8 @@ class UsagePage extends BaseListPage {
 
   renderRadio() {
     return (
-      <div style={{marginBottom: "10px", float: "right"}}>
+      <div style={{marginTop: "-10px", float: "right"}}>
+        {this.renderDropdown()}
         <Radio.Group style={{marginBottom: "10px"}} buttonStyle="solid" value={this.state.rangeType} onChange={e => {
           const rangeType = e.target.value;
           this.setState({
@@ -440,8 +440,7 @@ class UsagePage extends BaseListPage {
     );
 
     return (
-      <div style={{display: "flex", alignItems: "center", marginBottom: "10px"}}>
-        <span style={{marginRight: "10px"}}>Users:</span>
+      <div style={{display: "flex", marginBottom: "10px", alignItems: "center"}}>
         <Dropdown.Button overlay={menuProps}
           trigger={["click"]}
           placement="bottom"
@@ -653,9 +652,8 @@ class UsagePage extends BaseListPage {
         {this.renderRadio()}
         {this.renderStatistic(this.state.usages)}
         <br />
-        <br />
         {this.renderChart()}
-        <UsageTable data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
+        <UsageTable account={this.props.account} data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
       </div>
     );
   }

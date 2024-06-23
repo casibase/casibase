@@ -14,33 +14,32 @@
 
 import React from "react";
 import {Table} from "antd";
+import i18next from "i18next";
 
-const UsageTable = ({data}) => {
-  const columns = [
+const UsageTable = ({data, account}) => {
+  let columns = [
     {
-      title: "User",
+      title: i18next.t("general:User"),
       dataIndex: "user",
       key: "user",
       width: "12%",
     },
     {
-      title: "Chats",
+      title: i18next.t("general:Chats"),
       dataIndex: "chats",
       key: "chats",
       width: "15%",
-      defaultSortOrder: "descend",
       sorter: (a, b) => a.chats - b.chats,
     },
     {
-      title: "Messages",
+      title: i18next.t("general:Messages"),
       dataIndex: "messageCount",
       key: "message",
       width: "15%",
-      defaultSortOrder: "descend",
       sorter: (a, b) => a.messageCount - b.messageCount,
     },
     {
-      title: "Tokens",
+      title: i18next.t("chat:Token count"),
       dataIndex: "tokenCount",
       key: "token",
       width: "15%",
@@ -48,24 +47,27 @@ const UsageTable = ({data}) => {
       sorter: (a, b) => a.tokenCount - b.tokenCount,
     },
     {
-      title: "Price",
+      title: i18next.t("chat:Price"),
       dataIndex: "price",
       key: "price",
       width: "15%",
-      defaultSortOrder: "descend",
       sorter: (a, b) => a.price - b.price,
     },
   ];
 
+  if (!account || account.name !== "admin") {
+    columns = columns.filter(column => column.key !== "tokenCount" && column.key !== "price");
+  }
+
   return (
-    <div style={{margin: "20px", width: "78%", marginLeft: "11%"}}>
+    <div style={{margin: "20px", marginLeft: "60px", marginRight: "60px"}}>
       <span style={{display: "block", fontSize: "20px", marginBottom: "10px"}}>
-        UserTable
+        {i18next.t("general:Users")}
       </span>
       <Table
         columns={columns}
         dataSource={data}
-        pagination={{pageSize: 5}}
+        size="middle" bordered pagination={{pageSize: 100}}
         showSorterTooltip={{target: "sorter-icon"}}
       />
     </div>
