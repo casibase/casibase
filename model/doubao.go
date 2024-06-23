@@ -33,11 +33,11 @@ type DoubaoModelProvider struct {
 
 func NewDoubaoModelProvider(subType string, entrypointID string, apiKey string, temperature float32, topP float32) (*DoubaoModelProvider, error) {
 	return &DoubaoModelProvider{
-		subType:     subType,
+		subType:      subType,
 		entrypointID: entrypointID,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		apiKey:       apiKey,
+		temperature:  temperature,
+		topP:         topP,
 	}, nil
 }
 
@@ -59,13 +59,12 @@ https://www.volcengine.com/docs/82379/1099320
 func (p *DoubaoModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"Doubao-lite-4k": {0.0003, 0.0006},
-		"Doubao-lite-32k": {0.0003, 0.0006},
+		"Doubao-lite-4k":   {0.0003, 0.0006},
+		"Doubao-lite-32k":  {0.0003, 0.0006},
 		"Doubao-lite-128k": {0.0008, 0.0010},
-		"Doubao-pro-4k": {0.0008, 0.0020},
-		"Doubao-pro-32k": {0.0008, 0.0020},
-		"Doubao-pro-128k": {0.0050, 0.0090},
-
+		"Doubao-pro-4k":    {0.0008, 0.0020},
+		"Doubao-pro-32k":   {0.0008, 0.0020},
+		"Doubao-pro-128k":  {0.0050, 0.0090},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {

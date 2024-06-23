@@ -37,7 +37,7 @@ type Provider struct {
 	ClientSecret string `xorm:"varchar(2000)" json:"clientSecret"`
 	ProviderUrl  string `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion   string `xorm:"varchar(100)" json:"apiVersion"`
-	EntrypointID   string `xorm:"varchar(100)" json:"EntrypointID"`
+	EntrypointID string `xorm:"varchar(100)" json:"EntrypointID"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -325,7 +325,7 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 }
 
 func GetModelProvidersFromContext(owner string, name string, isFromStore bool) (map[string]*Provider, map[string]model.ModelProvider, error) {
-	
+
 	providerNames := []string{}
 	if name != "" {
 		providerNames = []string{name}
