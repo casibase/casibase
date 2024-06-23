@@ -95,10 +95,6 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 	// set request params
 	messages := []openai.ChatCompletionMessage{
 		{
-			Role:    "system",
-			Content: "你是豆包，是由字节跳动开发的 AI 人工智能助手",
-		},
-		{
 			Role:    "user",
 			Content: question,
 		},
