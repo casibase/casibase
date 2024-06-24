@@ -157,6 +157,11 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		return err
 	}
 
+	newMessage := c.Input().Get("newMessage")
+	if newMessage != "" {
+		return nil
+	}
+
 	answerMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
