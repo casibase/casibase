@@ -445,3 +445,53 @@ func (c *ApiController) GetAnswer() {
 	}
 	c.ResponseOk(answer)
 }
+
+// GetSuggestions
+// @Title GetSuggestions
+// @Tag Message API
+// @Description get answer by pure question
+// @Param owner query string true "The owner of chat"
+// @Param name query string true "The name of chat"
+// @Success 200 {string} string "answer message"
+// @router /get-suggestions [get]
+func (c *ApiController) GetSuggestions() {
+	const question = "" +
+		"Please generate three sentences." +
+		"Guess and generate the three most likely sentences the user would say." +
+		"Note the following points:" +
+		"0. Dont add any other information except the three sentences" +
+		"1. Each sentence should be short, with no more than twenty words" +
+		"2. Use ‘|’ to separate sentences" +
+		"3. Each reply should be a complete sentence" +
+		"4. Please use simple language" +
+		"5. Each sentence should start with a number followed by a period" +
+		"6. Each sentence should based on the historical records" +
+		"7. If there are no historical records here, please generate some interesting questions"
+
+	id := c.Input().Get("id")
+	chat, err := object.GetChat(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	history, err := object.GetRecentRawMessages(chat.Name, util.GetCurrentTime(), 10)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	provider, _, err := GetIdleModelProvider(nil, chat.User2, question, nil, history, []*model.RawMessage{}, false)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	answer, _, err := object.GetAnswerWithHistory(provider, question, &history, nil)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(answer)
+}
