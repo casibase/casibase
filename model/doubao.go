@@ -21,6 +21,9 @@ import (
 	"net/http"
 
 	"github.com/sashabaranov/go-openai"
+	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
+	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
+	"github.com/volcengine/volcengine-go-sdk/volcengine"
 )
 
 type DoubaoModelProvider struct {
@@ -90,22 +93,24 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 	const BaseUrl = "https://ark.cn-beijing.volces.com/api/v3"
 	config := openai.DefaultConfig(p.apiKey)
 	config.BaseURL = BaseUrl
-	client := openai.NewClientWithConfig(config)
+	client := arkruntime.NewClientWithApiKey(p.apiKey)
 
 	// set request params
-	messages := []openai.ChatCompletionMessage{
+	messages := []*model.ChatCompletionMessage{
 		{
-			Role:    "user",
-			Content: question,
+			Role: model.ChatMessageRoleUser,
+			Content: &model.ChatCompletionMessageContent{
+				StringValue: volcengine.String(question),
+			},
 		},
 	}
-
-	request := openai.ChatCompletionRequest{
-		Model:       p.entrypointID,
-		Messages:    messages,
-		Temperature: p.temperature,
-		TopP:        p.topP,
-		Stream:      true,
+	request := model.ChatCompletionRequest{
+		Model:         p.entrypointID,
+		Messages:      messages,
+		Temperature:   p.temperature,
+		TopP:          p.topP,
+		Stream:        true,
+		StreamOptions: &model.StreamOptions{true},
 	}
 
 	flushData := func(data string) error {
@@ -115,22 +120,24 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 		flusher.Flush()
 		return nil
 	}
-	modelResult := &ModelResult{}
-
-	promptTokenCount, err := OpenaiNumTokensFromMessages(messages, "gpt-4") // calculate token
-	if err != nil {
-		return nil, err
-	}
-	modelResult.PromptTokenCount = promptTokenCount
-	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
+		fmt.Printf("stream chat error: %v\n", err)
 		return nil, err
 	}
 	defer stream.Close()
+	modelResult := &ModelResult{}
+
 	for {
 		response, err := stream.Recv()
+
+		if response.Usage != nil {
+			modelResult.PromptTokenCount += response.Usage.PromptTokens
+			modelResult.ResponseTokenCount += response.Usage.CompletionTokens
+			modelResult.TotalTokenCount += response.Usage.TotalTokens
+		}
+
 		if err != nil {
 			if err == io.EOF {
 				break
@@ -147,18 +154,12 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 		if err != nil {
 			return nil, err
 		}
-
-		responseTokenCount, err := GetTokenSize("gpt-4", data)
-		if err != nil {
-			return nil, err
-		}
-		modelResult.ResponseTokenCount += responseTokenCount
-		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-
-		err = p.calculatePrice(modelResult)
-		if err != nil {
-			return nil, err
-		}
 	}
+
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
+
 	return modelResult, nil
 }
