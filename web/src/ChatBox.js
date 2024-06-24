@@ -16,6 +16,7 @@ import React from "react";
 import {Alert, Button} from "antd";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {renderText} from "./ChatMessageRender";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -102,7 +103,7 @@ class ChatBox extends React.Component {
     reader.readAsDataURL(file);
   };
 
-  renderMessageContent = (message) => {
+  renderMessageContent = (message, isLastMessage) => {
     if (message.errorText !== "") {
       const refinedErrorText = Setting.getRefinedErrorText(message.errorText);
       return (
@@ -122,6 +123,10 @@ class ChatBox extends React.Component {
 
     if (message.text === "" && message.author === "AI") {
       return this.props.dots;
+    }
+
+    if (isLastMessage) {
+      return renderText(message.text + this.props.dots);
     }
 
     return message.html;
@@ -173,7 +178,7 @@ class ChatBox extends React.Component {
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
                   <Message.CustomContent>
-                    {this.renderMessageContent(message)}
+                    {this.renderMessageContent(message, index === messages.length - 1)}
                   </Message.CustomContent>
                   {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (

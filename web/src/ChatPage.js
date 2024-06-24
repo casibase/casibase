@@ -38,7 +38,7 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
-      dots: "⚫",
+      dots: "",
     });
 
     this.fetch();
@@ -248,9 +248,6 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
                 disableInput: false,
               });
-              if (this.timer !== null) {
-                clearInterval(this.timer);
-              }
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
@@ -281,6 +278,9 @@ class ChatPage extends BaseListPage {
               });
               if (this.timer !== null) {
                 clearInterval(this.timer);
+                this.setState({
+                  dots: "",
+                });
               }
             });
           } else {
