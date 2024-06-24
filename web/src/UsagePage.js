@@ -13,14 +13,13 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Col, Dropdown, Menu, Radio, Row, Select, Statistic} from "antd";
+import {Button, Col, Radio, Row, Select, Statistic} from "antd";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as UsageBackend from "./backend/UsageBackend";
 import ReactEcharts from "echarts-for-react";
 import * as Conf from "./Conf";
 import i18next from "i18next";
-import {UserOutlined} from "@ant-design/icons";
 import UsageTable from "./UsageTable";
 
 const {Option} = Select;
@@ -92,7 +91,7 @@ class UsagePage extends BaseListPage {
     if (user === "All") {
       this.state.selectedTableInfo = this.state.userTableInfo;
     } else {
-      this.state.selectedTableInfo = this.state.userTableInfo.filter(item => item.user === user);
+      this.state.selectedTableInfo = this.state.userTableInfo.filter(item => item.user === this.state.users[user]);
     }
   }
 
@@ -100,9 +99,6 @@ class UsagePage extends BaseListPage {
     UsageBackend.getUsers(serverUrl, this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
-          if (this.props.account.name === "admin") {
-            res.data.unshift("All");
-          }
           this.setState({
             users: res.data,
           }, () => {
@@ -111,7 +107,7 @@ class UsagePage extends BaseListPage {
             this.getUserTableInfos("");
           }
           );
-          this.state.selectedUser = res.data[0];
+          this.state.selectedUser = !(this.props.account.name === "admin" || this.props.account.type === "chat-admin") ? res.data[0] : "All";
         } else {
           Setting.showMessage("error", `Failed to get users: ${res.msg}`);
         }
@@ -416,38 +412,42 @@ class UsagePage extends BaseListPage {
   }
 
   renderDropdown() {
-    const users_withKey = this.state.users.map((user, index) => ({
-      key: String(index),
-      label: user,
-      icon: <UserOutlined />,
-    }));
-
-    const menuProps = (
-      <Menu
-        items={users_withKey}
-        selectable={true}
-        defaultSelectedKeys={["0"]}
-        onClick={(e) => {
-          const selectedUser = this.state.users[parseInt(e.key)];
-          this.setState({
-            selectedUser: selectedUser,
-          }, () => {
-            this.getUsagesForAllCases("", this.state.rangeType);
-            this.updateTableInfo(selectedUser);
-          });
-        }}
-      />
-    );
+    const users_options = [
+      <option key="all" value="All" disabled={!(this.props.account.name === "admin" || this.props.account.type === "chat-admin")}>
+        All
+      </option>,
+      ...this.state.users.map((user, index) => (
+        <option key={index} value={index}>
+          {user}
+        </option>
+      )),
+    ];
+    const handleChange = (value) => {
+      let user;
+      if (value === "All") {
+        user = "All";
+      } else {
+        user = this.state.users[value];
+      }
+      this.setState({
+        selectedUser: user,
+      }, () => {
+        this.getUsagesForAllCases("", this.state.rangeType);
+        this.updateTableInfo(value);
+      });
+    };
 
     return (
-      <div style={{display: "flex", marginBottom: "10px", alignItems: "center"}}>
-        <Dropdown.Button overlay={menuProps}
-          trigger={["click"]}
-          placement="bottom"
-          icon={<UserOutlined />}
+      <div style={{display: "flex", alignItems: "center", marginBottom: "10px"}}>
+        <span style={{marginRight: "10px"}}>{i18next.t("general:User")}:</span>
+        <Select
+          virtual={true}
+          value={this.state.selectedUser}
+          onChange={(value => handleChange(value))}
+          style={{padding: "5px", width: "200px"}}
         >
-          {this.state.selectedUser}
-        </Dropdown.Button>
+          {users_options}
+        </Select>
       </div>
     );
   }
