@@ -203,6 +203,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "Claude");
                 } else if (value === "Baichuan") {
                   this.updateProviderField("subType", "Baichuan2-Turbo");
+                } else if (value === "Doubao") {
+                  this.updateProviderField("subType", "Doubao-lite-4k");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -298,7 +300,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen", "Baichuan"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen", "Baichuan", "Doubao"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -319,7 +321,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen", "Baichuan"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen", "Baichuan", "Doubao"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -327,7 +329,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={1}
+                  max={1.0}
                   step={0.01}
                   value={this.state.provider.topP}
                   onChange={(value) => {
@@ -447,10 +449,9 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
-
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Provider URL")}:
+            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
