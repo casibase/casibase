@@ -423,22 +423,6 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "Doubao") ? (
-            <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:EntrypointID")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.EntrypointID} onChange={e => {
-                    this.updateProviderField("EntrypointID", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-            </>
-          ) : null
-        }
-        {
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ? (
             <>
               <Row style={{marginTop: "20px"}}>
@@ -465,10 +449,9 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
-
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Provider URL")}:
+            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {

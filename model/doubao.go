@@ -20,27 +20,26 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/sashabaranov/go-openai"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime"
 	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
 )
 
 type DoubaoModelProvider struct {
-	subType      string
-	entrypointID string
-	apiKey       string
-	temperature  float32
-	topP         float32
+	subType     string
+	endpointID  string
+	apiKey      string
+	temperature float32
+	topP        float32
 }
 
-func NewDoubaoModelProvider(subType string, entrypointID string, apiKey string, temperature float32, topP float32) (*DoubaoModelProvider, error) {
+func NewDoubaoModelProvider(subType string, endpointID string, apiKey string, temperature float32, topP float32) (*DoubaoModelProvider, error) {
 	return &DoubaoModelProvider{
-		subType:      subType,
-		entrypointID: entrypointID,
-		apiKey:       apiKey,
-		temperature:  temperature,
-		topP:         topP,
+		subType:     subType,
+		endpointID:  endpointID,
+		apiKey:      apiKey,
+		temperature: temperature,
+		topP:        topP,
 	}, nil
 }
 
@@ -89,10 +88,6 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
-
-	const BaseUrl = "https://ark.cn-beijing.volces.com/api/v3"
-	config := openai.DefaultConfig(p.apiKey)
-	config.BaseURL = BaseUrl
 	client := arkruntime.NewClientWithApiKey(p.apiKey)
 
 	// set request params
@@ -105,12 +100,12 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 		},
 	}
 	request := model.ChatCompletionRequest{
-		Model:         p.entrypointID,
+		Model:         p.endpointID,
 		Messages:      messages,
 		Temperature:   p.temperature,
 		TopP:          p.topP,
 		Stream:        true,
-		StreamOptions: &model.StreamOptions{true},
+		StreamOptions: &model.StreamOptions{IncludeUsage: true},
 	}
 
 	flushData := func(data string) error {
@@ -127,7 +122,7 @@ func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 	defer stream.Close()
-	modelResult := &ModelResult{}
+	modelResult := newModelResult(0, 0, 0)
 
 	for {
 		response, err := stream.Recv()
