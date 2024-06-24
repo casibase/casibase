@@ -110,6 +110,8 @@ require (
 	github.com/syndtr/goleveldb v1.0.0 // indirect
 	github.com/vogo/gorun v1.1.0 // indirect
 	github.com/vogo/logger v1.5.1 // indirect
+	github.com/volcengine/volc-sdk-golang v1.0.23 // indirect
+	github.com/volcengine/volcengine-go-sdk v1.0.141 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	golang.org/x/crypto v0.19.0 // indirect
 	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect

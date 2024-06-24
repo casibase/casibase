@@ -73,6 +73,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewQwenModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baichuan" {
 		p, err = NewBaichuanModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Doubao" {
+		p, err = NewDoubaoModelProvider(subType, providerUrl, clientSecret, temperature, topP)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
 	} else {

@@ -671,6 +671,7 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
         {id: "Qwen", name: "Qwen"},
         {id: "Baichuan", name: "Baichuan"},
+        {id: "Doubao", name: "Doubao"},
       ]
     );
   } else if (category === "Embedding") {
@@ -923,6 +924,15 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
       {id: "Baichuan4", name: "Baichuan4"},
+    ]);
+  } else if (type === "Doubao") {
+    return ([
+      {id: "Doubao-lite-4k", name: "Doubao-lite-4k"},
+      {id: "Doubao-lite-32k", name: "Doubao-lite-32k"},
+      {id: "Doubao-lite-128k", name: "Doubao-lite-128k"},
+      {id: "Doubao-pro-4k", name: "Doubao-pro-4k"},
+      {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
+      {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
     ]);
   } else if (type === "Dummy") {
     return ([
