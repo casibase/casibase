@@ -56,6 +56,15 @@ export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
     eventSource.close();
   });
 
+  eventSource.addEventListener("error", (e) => {
+    let error = e.data;
+    if (!error) {
+      error = "Unknown error";
+    }
+    onError(error);
+    eventSource.close();
+  });
+
   eventSource.addEventListener("end", (e) => {
     onEnd(e.data);
     eventSource.close();
