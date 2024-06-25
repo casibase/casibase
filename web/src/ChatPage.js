@@ -114,7 +114,7 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text, fileName, isHidden, isRegenerated) {
+  newMessage(text, fileName, isHidden, isRegenerated, isParams) {
     const randomName = Setting.getRandomName();
     return {
       owner: "admin",
@@ -130,12 +130,13 @@ class ChatPage extends BaseListPage {
       isDeleted: false,
       isAlerted: false,
       isRegenerated: isRegenerated,
+      isParams: isParams,
       fileName: fileName,
     };
   }
 
-  sendMessage(text, fileName, isHidden, isRegenerated) {
-    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
+  sendMessage(text, fileName, isHidden, isRegenerated, isParams) {
+    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated, isParams);
     this.timer = setInterval(() => {
       this.setState(prevState => {
         switch (prevState.dots) {
@@ -187,7 +188,7 @@ class ChatPage extends BaseListPage {
     const newMessage = params.get("newMessage");
     const hasAsked = messages.some(message => message.text === newMessage);
     if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
-      this.sendMessage(newMessage);
+      this.sendMessage(newMessage, "", false, false, true);
       return true;
     }
     return false;
