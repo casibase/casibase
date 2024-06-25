@@ -187,7 +187,7 @@ class ChatPage extends BaseListPage {
     const newMessage = params.get("newMessage");
     const hasAsked = messages.some(message => message.text === newMessage);
     if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
-      if (messages[0].replyTo === "Welcome") {
+      if (messages.length > 0 && messages[0].replyTo === "Welcome") {
         MessageBackend.deleteMessageWithoutAdmin(messages[0])
           .then((res) => {
             if (res.status !== "ok") {
