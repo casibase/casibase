@@ -143,13 +143,12 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
-
-	messages, err := object.GetChatMessages(message.Chat)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
 	if message.IsRegenerated {
+		messages, err := object.GetChatMessages(message.Chat)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 		var lastAIMessage *object.Message
 		var lastUserMessage *object.Message
 		for i := len(messages) - 1; i >= 0; i-- {
@@ -175,20 +174,6 @@ func (c *ApiController) AddMessage() {
 		object.DeleteMessage(lastAIMessage)
 		object.DeleteMessage(lastUserMessage)
 	}
-
-	if message.IsParams {
-		var lastAIMessage *object.Message
-		for i := len(messages) - 1; i >= 0; i-- {
-			if messages[i].Author == "AI" && messages[i].ReplyTo == "Welcome" {
-				lastAIMessage = messages[i]
-				break
-			}
-		}
-		if lastAIMessage != nil {
-			object.DeleteMessage(lastAIMessage)
-		}
-	}
-
 	var chat *object.Chat
 	if message.Chat == "" {
 		chat, err = c.addInitialChat(message.Organization, message.User)
@@ -274,6 +259,23 @@ func (c *ApiController) DeleteMessage() {
 		return
 	}
 
+	var message object.Message
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	success, err := object.DeleteMessage(&message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	c.ResponseOk(success)
+}
+
+func (c *ApiController) DeleteMessageWithoutAdmin() {
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {

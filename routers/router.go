@@ -107,6 +107,7 @@ func initAPI() {
 	beego.Router("/api/update-message", &controllers.ApiController{}, "POST:UpdateMessage")
 	beego.Router("/api/add-message", &controllers.ApiController{}, "POST:AddMessage")
 	beego.Router("/api/delete-message", &controllers.ApiController{}, "POST:DeleteMessage")
+	beego.Router("/api/delete-message-without-admin", &controllers.ApiController{}, "POST:DeleteMessageWithoutAdmin")
 
 	beego.Router("/api/get-usages", &controllers.ApiController{}, "GET:GetUsages")
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")

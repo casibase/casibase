@@ -114,7 +114,7 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  newMessage(text, fileName, isHidden, isRegenerated, isParams) {
+  newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
     return {
       owner: "admin",
@@ -130,13 +130,12 @@ class ChatPage extends BaseListPage {
       isDeleted: false,
       isAlerted: false,
       isRegenerated: isRegenerated,
-      isParams: isParams,
       fileName: fileName,
     };
   }
 
-  sendMessage(text, fileName, isHidden, isRegenerated, isParams) {
-    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated, isParams);
+  sendMessage(text, fileName, isHidden, isRegenerated) {
+    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     this.timer = setInterval(() => {
       this.setState(prevState => {
         switch (prevState.dots) {
@@ -188,7 +187,18 @@ class ChatPage extends BaseListPage {
     const newMessage = params.get("newMessage");
     const hasAsked = messages.some(message => message.text === newMessage);
     if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
-      this.sendMessage(newMessage, "", false, false, true);
+      if (messages[0].replyTo === "Welcome") {
+        MessageBackend.deleteMessageWithoutAdmin(messages[0])
+          .then((res) => {
+            if (res.status !== "ok") {
+              Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+            }
+          })
+          .catch(error => {
+            Setting.showMessage("error", `Message failed to delete: ${error}`);
+          });
+      }
+      this.sendMessage(newMessage);
       return true;
     }
     return false;

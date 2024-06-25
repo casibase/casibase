@@ -44,14 +44,8 @@ export function getChatMessages(owner, chat) {
   }).then(res => res.json());
 }
 
-const eventSourceMap = new Map();
-
 export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
-  if (eventSourceMap.has(`${owner}/${name}`)) {
-    return;
-  }
   const eventSource = new EventSource(`${Setting.ServerUrl}/api/get-message-answer?id=${owner}/${encodeURIComponent(name)}`);
-  eventSourceMap.set(`${owner}/${name}`, eventSource);
 
   eventSource.addEventListener("message", (e) => {
     onMessage(e.data);
@@ -60,7 +54,6 @@ export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
   eventSource.addEventListener("myerror", (e) => {
     onError(e.data);
     eventSource.close();
-    eventSourceMap.delete(`${owner}/${name}`);
   });
 
   eventSource.addEventListener("error", (e) => {
@@ -70,13 +63,11 @@ export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
     }
     onError(error);
     eventSource.close();
-    eventSourceMap.delete(`${owner}/${name}`);
   });
 
   eventSource.addEventListener("end", (e) => {
     onEnd(e.data);
     eventSource.close();
-    eventSourceMap.delete(`${owner}/${name}`);
   });
 }
 
@@ -127,6 +118,18 @@ export function addMessage(message) {
 export function deleteMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/delete-message`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newMessage),
+  }).then(res => res.json());
+}
+
+export function deleteMessageWithoutAdmin(message) {
+  const newMessage = Setting.deepCopy(message);
+  return fetch(`${Setting.ServerUrl}/api/delete-message-without-admin`, {
     method: "POST",
     credentials: "include",
     headers: {
