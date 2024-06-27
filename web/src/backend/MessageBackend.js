@@ -136,18 +136,6 @@ export function deleteMessage(message) {
   }).then(res => res.json());
 }
 
-export function deleteMessageWithoutAdmin(message) {
-  const newMessage = Setting.deepCopy(message);
-  return fetch(`${Setting.ServerUrl}/api/delete-message-without-admin`, {
-    method: "POST",
-    credentials: "include",
-    headers: {
-      "Accept-Language": Setting.getAcceptLanguage(),
-    },
-    body: JSON.stringify(newMessage),
-  }).then(res => res.json());
-}
-
 export function deleteWelcomeMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/delete-welcome-message`, {
