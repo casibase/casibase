@@ -24,8 +24,8 @@ export function getGlobalMessages() {
   }).then(res => res.json());
 }
 
-export function getMessages(user) {
-  return fetch(`${Setting.ServerUrl}/api/get-messages?user=${user}`, {
+export function getMessages(user, selectedUser = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-messages?user=${user}&selectedUser=${selectedUser}`, {
     method: "GET",
     credentials: "include",
     headers: {
