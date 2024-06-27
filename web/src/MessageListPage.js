@@ -35,7 +35,10 @@ class MessageListPage extends React.Component {
   }
 
   getMessages() {
-    MessageBackend.getMessages(this.props.account.name)
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get("user");
+
+    MessageBackend.getMessages(this.props.account.name, user)
       .then((res) => {
         if (res.status === "ok") {
           let messages = res.data;

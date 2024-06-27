@@ -50,9 +50,19 @@ func (c *ApiController) GetChats() {
 	user := c.Input().Get("user")
 	field := c.Input().Get("field")
 	value := c.Input().Get("value")
+	selectedUser := c.Input().Get("selectedUser")
 
 	if c.IsAdmin() {
 		user = ""
+	}
+
+	if selectedUser != "" && selectedUser != "null" && c.IsAdmin() {
+		user = selectedUser
+	}
+
+	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
+		c.ResponseError("You can only view your own chats")
+		return
 	}
 
 	var chats []*object.Chat
