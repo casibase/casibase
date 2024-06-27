@@ -40,7 +40,10 @@ class ChatListPage extends React.Component {
   }
 
   getChats() {
-    ChatBackend.getChats(this.props.account.name)
+    const params = new URLSearchParams(window.location.search);
+    const user = params.get("user");
+
+    ChatBackend.getChats(this.props.account.name, "", "", "", "", "", "", user)
       .then((res) => {
         if (res.status === "ok") {
           let chats = res.data;
