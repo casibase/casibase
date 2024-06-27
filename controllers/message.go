@@ -49,9 +49,19 @@ func (c *ApiController) GetGlobalMessages() {
 func (c *ApiController) GetMessages() {
 	user := c.Input().Get("user")
 	chat := c.Input().Get("chat")
+	selectedUser := c.Input().Get("selectedUser")
 
 	if c.IsAdmin() {
 		user = ""
+	}
+
+	if selectedUser != "" && selectedUser != "null" && c.IsAdmin() {
+		user = selectedUser
+	}
+
+	if !c.IsAdmin() && user != selectedUser && selectedUser != "" {
+		c.ResponseError("You can only view your own messages")
+		return
 	}
 
 	if chat == "" {
