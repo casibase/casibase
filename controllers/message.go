@@ -285,7 +285,7 @@ func (c *ApiController) DeleteMessage() {
 	c.ResponseOk(success)
 }
 
-func (c *ApiController) DeleteMessageWithoutAdmin() {
+func (c *ApiController) DeleteWelcomeMessage() {
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
@@ -293,11 +293,12 @@ func (c *ApiController) DeleteMessageWithoutAdmin() {
 		return
 	}
 
-	success, err := object.DeleteMessage(&message)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if message.Author == "AI" && message.ReplyTo == "Welcome" {
+		success, err := object.DeleteMessage(&message)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(success)
 	}
-
-	c.ResponseOk(success)
 }
