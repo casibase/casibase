@@ -108,26 +108,92 @@ func isImageQuestion(question string) bool {
 	return res
 }
 
-func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
-	visionModelUsageMap := map[string]object.UsageInfo{}
-	if isImageQuestion(question) {
-		for providerName, usageInfo := range modelUsageMap {
-			providerObj := modelProviderMap[providerName]
-			if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
-				visionModelUsageMap[providerName] = usageInfo
-			}
-		}
-	} else {
-		visionModelUsageMap = modelUsageMap
+func getModelResponseType(modelName string) (bool, error) {
+	// this function returns the model response type, which is either "image" or "text"
+	// return True if the model response type is "image", otherwise return False
+
+	// TODO: Only include OpenAI API here, may include more api.
+	TextResponseModelList :=[]string{
+		"gpt-3.5-turbo-0125", "gpt-3.5-turbo", "gpt-3.5-turbo-1106", "gpt-3.5-turbo-instruct", 
+		"gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-16k", "gpt-4-0125-preview", 
+		"gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview", 
+		"gpt-4-1106-vision-preview", "gpt-4", "gpt-4-0613", 
+		"gpt-4-32k", "gpt-4-32k-0613", "custom_model",
 	}
 
+	ImageResponseModelList := []string{
+		"dall-e-3", 
+	}
+
+	for _, model := range TextResponseModelList {
+		if model == modelName {
+			return false, nil
+		}
+	}
+	for _, model := range ImageResponseModelList {
+		if model == modelName {
+			return true, nil
+		}
+	}
+	return false, fmt.Errorf("model response type not found: %s", modelName)
+}
+
+func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
+	visionModelUsageMap := map[string]object.UsageInfo{}
+	imageModelUsageMap := map[string]object.UsageInfo{}
+	textModelUsageMap := map[string]object.UsageInfo{}
+	// Filter the model usage map based on the model response type
+	for providerName, usageInfo := range modelUsageMap {
+		providerObj := modelProviderMap[providerName]
+		if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
+			visionModelUsageMap[providerName] = usageInfo
+		} else {
+			modelType, err := getModelResponseType(providerObj.SubType)
+			if err != nil {
+				return nil, err
+			}
+			if modelType {
+				imageModelUsageMap[providerName] = usageInfo
+			} else {
+				textModelUsageMap[providerName] = usageInfo
+			}
+		}
+	}
+	// Pick the text model provider to identify the prompt intention
+	// Different strategies can be used to pick the text model provider
+	// Here we use the model with the minimum token count
+	getIntentionModelName := getMinFromModelUsageMap(textModelUsageMap)
+	getIntentionModelObj := modelProviderObjMap[getIntentionModelName]
+	
+	// Get the prompt intention, result is either "image" or "text"
+	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + question + "]"
+	result, err := getIntentionModelObj.QueryText("$CasibaseGetPromptIntention$" + getIntentionPrompt, writer, nil, "" , nil)
+	
+	if err != nil {
+		return nil, err
+	}
+	var tmpModelUsageMap map[string]object.UsageInfo
+	
+	if isImageQuestion(question) {
+		tmpModelUsageMap = visionModelUsageMap
+	} else {
+		if result.Content == "image" {
+			tmpModelUsageMap = imageModelUsageMap
+		} else if result.Content == "text"{
+			tmpModelUsageMap = textModelUsageMap
+		} else {
+			return nil, fmt.Errorf("prompt intention not valid: %s. It should be either 'image' or 'text'", result.Content)
+		}
+	}
 	filteredModelUsageMap := map[string]object.UsageInfo{}
-	for providerName, usageInfo := range visionModelUsageMap {
+	for providerName, usageInfo := range tmpModelUsageMap {
 		providerObj := modelProviderObjMap[providerName]
 		dryRunQuestion := "$CasibaseDryRun$" + question
 		_, err := providerObj.QueryText(dryRunQuestion, writer, history, "", knowledge)
 		if err == nil {
 			filteredModelUsageMap[providerName] = usageInfo
+		} else {
+			fmt.Println(err.Error())
 		}
 	}
 	return filteredModelUsageMap, nil

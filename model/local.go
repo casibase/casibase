@@ -253,6 +253,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	maxTokens := GetOpenAiMaxTokens(model)
 
 	modelResult := &ModelResult{}
+	modelResult.Content = ""
 	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
 			reqUrl := openai.ImageRequest{
@@ -285,7 +286,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		if err != nil {
 			return nil, err
 		}
-
 		var messages []openai.ChatCompletionMessage
 		if p.subType == "gpt-4-vision-preview" || p.subType == "gpt-4-1106-vision-preview" {
 			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
@@ -295,7 +295,6 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		} else {
 			messages = OpenaiRawMessagesToMessages(rawMessages)
 		}
-
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
 		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
 		if err != nil {
@@ -347,6 +346,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				} else {
 					isLeadingReturn = false
 				}
+			}
+
+			if strings.HasPrefix(question, "$CasibaseGetPromptIntention$") {
+				modelResult.Content += data
+				continue
 			}
 
 			err = flushData(data, writer)
