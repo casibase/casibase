@@ -165,7 +165,6 @@ func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelPr
 		// Get the prompt intention, result is either "image" or "text"
 		getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + question + "]"
 		result, err = getIntentionModelObj.QueryText("$CasibaseGetPromptIntention$"+getIntentionPrompt, writer, nil, "", nil)
-
 		if err != nil {
 			return nil, err
 		}
