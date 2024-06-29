@@ -187,6 +187,17 @@ class ChatPage extends BaseListPage {
     const newMessage = params.get("newMessage");
     const hasAsked = messages.some(message => message.text === newMessage);
     if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
+      if (messages.length > 0 && messages[0].replyTo === "Welcome") {
+        MessageBackend.deleteWelcomeMessage(messages[0])
+          .then((res) => {
+            if (res.status !== "ok") {
+              Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+            }
+          })
+          .catch(error => {
+            Setting.showMessage("error", `Message failed to delete: ${error}`);
+          });
+      }
       this.sendMessage(newMessage);
       return true;
     }

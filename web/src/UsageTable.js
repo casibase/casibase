@@ -13,8 +13,9 @@
 // limitations under the License.
 
 import React from "react";
-import {Table} from "antd";
+import {Table, Tag} from "antd";
 import i18next from "i18next";
+import * as Setting from "./Setting";
 
 const UsageTable = ({data, account}) => {
   let columns = [
@@ -28,6 +29,16 @@ const UsageTable = ({data, account}) => {
       title: i18next.t("general:Chats"),
       dataIndex: "chats",
       key: "chats",
+      render: (text, record) => (
+        <Tag
+          color={"success"}
+          onClick={() => {
+            Setting.goToLink(`/chats?user=${record.user}`);
+          }}
+        >
+          {text}
+        </Tag>
+      ),
       width: "15%",
       sorter: (a, b) => a.chats - b.chats,
     },
@@ -35,6 +46,16 @@ const UsageTable = ({data, account}) => {
       title: i18next.t("general:Messages"),
       dataIndex: "messageCount",
       key: "message",
+      render: (text, record) => (
+        <Tag
+          color={"success"}
+          onClick={() => {
+            Setting.goToLink(`/messages?user=${record.user}`);
+          }}
+        >
+          {text}
+        </Tag>
+      ),
       width: "15%",
       sorter: (a, b) => a.messageCount - b.messageCount,
     },
