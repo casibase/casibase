@@ -112,30 +112,20 @@ func getModelResponseType(modelName string) (bool, error) {
 	// this function returns the model response type, which is either "image" or "text"
 	// return True if the model response type is "image", otherwise return False
 
-	// TODO: Only include OpenAI API here, may include more api.
-	TextResponseModelList :=[]string{
-		"gpt-3.5-turbo-0125", "gpt-3.5-turbo", "gpt-3.5-turbo-1106", "gpt-3.5-turbo-instruct", 
-		"gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-16k", "gpt-4-0125-preview", 
-		"gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview", 
-		"gpt-4-1106-vision-preview", "gpt-4", "gpt-4-0613", 
-		"gpt-4-32k", "gpt-4-32k-0613", "custom_model",
-	}
+	// TODO: Seperate the model response type by text and image
+	// The current implementation just check if a model is image model or not
+	// May need change in the
 
 	ImageResponseModelList := []string{
 		"dall-e-3", 
 	}
 
-	for _, model := range TextResponseModelList {
-		if model == modelName {
-			return false, nil
-		}
-	}
 	for _, model := range ImageResponseModelList {
 		if model == modelName {
 			return true, nil
 		}
 	}
-	return false, fmt.Errorf("model response type not found: %s", modelName)
+	return false, nil
 }
 
 func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
@@ -148,11 +138,11 @@ func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelPr
 		if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
 			visionModelUsageMap[providerName] = usageInfo
 		} else {
-			modelType, err := getModelResponseType(providerObj.SubType)
+			modelResponseType, err := getModelResponseType(providerObj.SubType)
 			if err != nil {
 				return nil, err
 			}
-			if modelType {
+			if modelResponseType {
 				imageModelUsageMap[providerName] = usageInfo
 			} else {
 				textModelUsageMap[providerName] = usageInfo
