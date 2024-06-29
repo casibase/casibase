@@ -298,7 +298,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		} else {
 			messages = OpenaiRawMessagesToMessages(rawMessages)
 		}
-		
+
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
 		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
 		if err != nil {

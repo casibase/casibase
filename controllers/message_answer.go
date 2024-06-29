@@ -158,6 +158,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	modelProvider, modelProviderObj, err := GetIdleModelProvider(store.ModelUsageMap, chat.User2, question, writer, knowledge, history, true)
 	if err != nil {
+		fmt.Println(err.Error())
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
