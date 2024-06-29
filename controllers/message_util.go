@@ -117,7 +117,7 @@ func getModelResponseType(modelName string) (bool, error) {
 	// May need change in the
 
 	ImageResponseModelList := []string{
-		"dall-e-3", 
+		"dall-e-3",
 	}
 
 	for _, model := range ImageResponseModelList {
@@ -149,32 +149,42 @@ func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelPr
 			}
 		}
 	}
-	// Pick the text model provider to identify the prompt intention
-	// Different strategies can be used to pick the text model provider
-	// Here we use the model with the minimum token count
-	getIntentionModelName := getMinFromModelUsageMap(textModelUsageMap)
-	getIntentionModelObj := modelProviderObjMap[getIntentionModelName]
-	
-	// Get the prompt intention, result is either "image" or "text"
-	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + question + "]"
-	result, err := getIntentionModelObj.QueryText("$CasibaseGetPromptIntention$" + getIntentionPrompt, writer, nil, "" , nil)
-	
-	if err != nil {
-		return nil, err
+
+	result := &model.ModelResult{}
+	var err error
+	if len(imageModelUsageMap) == 0 {
+		// If there's no image model provider, the prompt intention is text at first place
+		result.Content = "text"
+	} else {
+		// Pick the text model provider to identify the prompt intention
+		// Different strategies can be used to pick the text model provider
+		// Here we use the model with the minimum token count
+		getIntentionModelName := getMinFromModelUsageMap(textModelUsageMap)
+		getIntentionModelObj := modelProviderObjMap[getIntentionModelName]
+
+		// Get the prompt intention, result is either "image" or "text"
+		getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + question + "]"
+		result, err = getIntentionModelObj.QueryText("$CasibaseGetPromptIntention$"+getIntentionPrompt, writer, nil, "", nil)
+
+		if err != nil {
+			return nil, err
+		}
 	}
+
 	var tmpModelUsageMap map[string]object.UsageInfo
-	
+
 	if isImageQuestion(question) {
 		tmpModelUsageMap = visionModelUsageMap
 	} else {
 		if result.Content == "image" {
 			tmpModelUsageMap = imageModelUsageMap
-		} else if result.Content == "text"{
+		} else if result.Content == "text" {
 			tmpModelUsageMap = textModelUsageMap
 		} else {
 			return nil, fmt.Errorf("prompt intention not valid: %s. It should be either 'image' or 'text'", result.Content)
 		}
 	}
+
 	filteredModelUsageMap := map[string]object.UsageInfo{}
 	for providerName, usageInfo := range tmpModelUsageMap {
 		providerObj := modelProviderObjMap[providerName]
