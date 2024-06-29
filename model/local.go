@@ -256,6 +256,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	modelResult.Content = ""
 	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
+			if strings.HasPrefix(question, "$CasibaseDryRun$") {
+				return modelResult, nil
+			}
 			reqUrl := openai.ImageRequest{
 				Prompt:         question,
 				Model:          openai.CreateImageModelDallE3,
@@ -295,6 +298,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		} else {
 			messages = OpenaiRawMessagesToMessages(rawMessages)
 		}
+		
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
 		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, p.subType)
 		if err != nil {
