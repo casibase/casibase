@@ -161,7 +161,7 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
-	
+
 	if questionMessage != nil {
 		questionMessage.TokenCount = embeddingResult.TokenCount
 		questionMessage.Price = embeddingResult.Price
