@@ -310,20 +310,21 @@ class App extends Component {
   getMenuItems() {
     const res = [];
 
+    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
+
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
 
     if (!this.state.account.isAdmin) {
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
+        res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
       }
     }
 
     const domain = Setting.getSubdomain();
     // const domain = "data";
-
-    res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
 
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));

@@ -24,8 +24,8 @@ export function getGlobalMessages() {
   }).then(res => res.json());
 }
 
-export function getMessages(user) {
-  return fetch(`${Setting.ServerUrl}/api/get-messages?user=${user}`, {
+export function getMessages(user, selectedUser = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-messages?user=${user}&selectedUser=${selectedUser}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -127,6 +127,18 @@ export function addMessage(message) {
 export function deleteMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/delete-message`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newMessage),
+  }).then(res => res.json());
+}
+
+export function deleteWelcomeMessage(message) {
+  const newMessage = Setting.deepCopy(message);
+  return fetch(`${Setting.ServerUrl}/api/delete-welcome-message`, {
     method: "POST",
     credentials: "include",
     headers: {
