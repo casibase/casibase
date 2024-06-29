@@ -23,7 +23,6 @@ type ModelResult struct {
 	ImageCount         int
 	TotalPrice         float64
 	Currency           string
-	Content            string
 }
 
 func newModelResult(promptTokenCount int, responseTokenCount int, totalTokenCount int) *ModelResult {
