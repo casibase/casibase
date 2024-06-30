@@ -644,6 +644,38 @@ export function isResponseDenied(data) {
   return data.msg === "Unauthorized operation";
 }
 
+export function getCompitableProviderOptions(category) {
+  if (category === "Model") {
+    return (
+      [
+        {"id": "gpt-3.5-turbo-0125", "name": "gpt-3.5-turbo-0125"},
+        {"id": "gpt-3.5-turbo", "name": "gpt-3.5-turbo"},
+        {"id": "gpt-3.5-turbo-1106", "name": "gpt-3.5-turbo-1106"},
+        {"id": "gpt-3.5-turbo-instruct", "name": "gpt-3.5-turbo-instruct"},
+        {"id": "gpt-3.5-turbo-16k-0613", "name": "gpt-3.5-turbo-16k-0613"},
+        {"id": "gpt-3.5-turbo-16k", "name": "gpt-3.5-turbo-16k"},
+        {"id": "gpt-4-0125-preview", "name": "gpt-4-0125-preview"},
+        {"id": "gpt-4-1106-preview", "name": "gpt-4-1106-preview"},
+        {"id": "gpt-4-turbo-preview", "name": "gpt-4-turbo-preview"},
+        {"id": "gpt-4-vision-preview", "name": "gpt-4-vision-preview"},
+        {"id": "gpt-4-1106-vision-preview", "name": "gpt-4-1106-vision-preview"},
+        {"id": "gpt-4", "name": "gpt-4"},
+        {"id": "gpt-4-0613", "name": "gpt-4-0613"},
+        {"id": "gpt-4-32k", "name": "gpt-4-32k"},
+        {"id": "gpt-4-32k-0613", "name": "gpt-4-32k-0613"},
+      ]
+    );
+  } else if (category === "Embedding") {
+    return (
+      [
+        {id: "text-embedding-ada-002", name: "text-embedding-ada-002"},
+        {id: "text-embedding-3-small", name: "text-embedding-3-small"},
+        {id: "text-embedding-3-large", name: "text-embedding-3-large"},
+      ]
+    );
+  }
+}
+
 export function getProviderTypeOptions(category) {
   if (category === "Storage") {
     return (
