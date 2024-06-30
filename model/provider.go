@@ -38,11 +38,11 @@ type ModelProvider interface {
 	QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error)
 }
 
-func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string) (ModelProvider, error) {
+func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compitableProvider string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
 	if typ == "Local" {
-		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl)
+		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compitableProvider)
 	} else if typ == "OpenAI" {
 		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
 	} else if typ == "Gemini" {

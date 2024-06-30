@@ -133,10 +133,6 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 // https://github.com/pkoukk/tiktoken-go?tab=readme-ov-file#counting-tokens-for-chat-api-calls
 // https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1608689882
 func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (int, error) {
-	if model == "custom-model" {
-		model = "gpt-3.5-turbo"
-	}
-
 	tkm, err := tiktoken.EncodingForModel(model)
 	if err != nil {
 		return 0, err
