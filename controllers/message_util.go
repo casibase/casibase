@@ -128,7 +128,7 @@ func getModelResponseType(modelName string) (bool, error) {
 	return false, nil
 }
 
-func getPromptIntetion(textModelUsageMap map[string]object.UsageInfo, modelProviderObjMap map[string]model.ModelProvider, question string) (string, error) {
+func getPromptIntentionHelper(textModelUsageMap map[string]object.UsageInfo, modelProviderObjMap map[string]model.ModelProvider, question string) (string, error) {
 	// Pick the text model provider to identify the prompt intention
 	// Different strategies can be used to pick the text model provider
 	// Here we use the model with the minimum token count
@@ -157,6 +157,7 @@ type modelUsageMapByResponseType struct {
 	textModelUsageMap   map[string]object.UsageInfo
 }
 
+
 func (m *modelUsageMapByResponseType) filterModelUsageMapByIntention(question string, intention string) map[string]object.UsageInfo {
 	var tmpModelUsageMap map[string]object.UsageInfo
 	if isImageQuestion(question) {
@@ -172,7 +173,11 @@ func (m *modelUsageMapByResponseType) filterModelUsageMapByIntention(question st
 }
 
 func classifyModelUsageMapByResponseType(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, question string) (*modelUsageMapByResponseType, error) {
-	modelUsageMapByResp := &modelUsageMapByResponseType{}
+	modelUsageMapByResp := &modelUsageMapByResponseType{ 
+		visionModelUsageMap: map[string]object.UsageInfo{}, 
+		imageModelUsageMap: map[string]object.UsageInfo{}, 
+		textModelUsageMap: map[string]object.UsageInfo{},
+	}
 	// Filter the model usage map based on the model response type
 	for providerName, usageInfo := range modelUsageMap {
 		providerObj := modelProviderMap[providerName]
@@ -201,7 +206,7 @@ func getPromptIntention(modelUsageMapByResp *modelUsageMapByResponseType, modelP
 	} else if len(modelUsageMapByResp.textModelUsageMap) == 0 {
 		intention = "image"
 	} else {
-		res, err := getPromptIntetion(modelUsageMapByResp.textModelUsageMap, modelProviderObjMap, question)
+		res, err := getPromptIntentionHelper(modelUsageMapByResp.textModelUsageMap, modelProviderObjMap, question)
 		if err != nil {
 			return "", err
 		}
