@@ -255,6 +255,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
 		if p.subType == "dall-e-3" {
+			if strings.HasPrefix(question, "$CasibaseDryRun$") {
+				return modelResult, nil
+			}
 			reqUrl := openai.ImageRequest{
 				Prompt:         question,
 				Model:          openai.CreateImageModelDallE3,
