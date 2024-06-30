@@ -157,7 +157,6 @@ type modelUsageMapByResponseType struct {
 	textModelUsageMap   map[string]object.UsageInfo
 }
 
-
 func (m *modelUsageMapByResponseType) filterModelUsageMapByIntention(question string, intention string) map[string]object.UsageInfo {
 	var tmpModelUsageMap map[string]object.UsageInfo
 	if isImageQuestion(question) {
@@ -173,10 +172,10 @@ func (m *modelUsageMapByResponseType) filterModelUsageMapByIntention(question st
 }
 
 func classifyModelUsageMapByResponseType(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, question string) (*modelUsageMapByResponseType, error) {
-	modelUsageMapByResp := &modelUsageMapByResponseType{ 
-		visionModelUsageMap: map[string]object.UsageInfo{}, 
-		imageModelUsageMap: map[string]object.UsageInfo{}, 
-		textModelUsageMap: map[string]object.UsageInfo{},
+	modelUsageMapByResp := &modelUsageMapByResponseType{
+		visionModelUsageMap: map[string]object.UsageInfo{},
+		imageModelUsageMap:  map[string]object.UsageInfo{},
+		textModelUsageMap:   map[string]object.UsageInfo{},
 	}
 	// Filter the model usage map based on the model response type
 	for providerName, usageInfo := range modelUsageMap {
