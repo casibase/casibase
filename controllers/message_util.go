@@ -108,122 +108,21 @@ func isImageQuestion(question string) bool {
 	return res
 }
 
-func getModelResponseType(modelName string) (bool, error) {
-	// this function returns the model response type, which is either "image" or "text"
-	// return True if the model response type is "image", otherwise return False
-
-	// TODO: Seperate the model response type by text and image
-	// The current implementation just check if a model is image model or not
-	// May need change in the
-
-	ImageResponseModelList := []string{
-		"dall-e-3",
-	}
-
-	for _, model := range ImageResponseModelList {
-		if model == modelName {
-			return true, nil
-		}
-	}
-	return false, nil
-}
-
-func getPromptIntetion(textModelUsageMap map[string]object.UsageInfo, modelProviderObjMap map[string]model.ModelProvider, question string) (string, error) {
-	// Pick the text model provider to identify the prompt intention
-	// Different strategies can be used to pick the text model provider
-	// Here we use the model with the minimum token count
-	getIntentionModelName := getMinFromModelUsageMap(textModelUsageMap)
-	getIntentionModelObj := modelProviderObjMap[getIntentionModelName]
-
-	// Get the prompt intention, result is either "image" or "text"
-	history := []*model.RawMessage{}
-	knowledge := []*model.RawMessage{}
-	var tmpWriter object.MyWriter
-	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + question + "]"
-
-	_, err := getIntentionModelObj.QueryText(getIntentionPrompt, &tmpWriter, history, "", knowledge)
-	if err != nil {
-		return "", err
-	}
-
-	res := tmpWriter.String()
-	respType := strings.Trim(res, "\"")
-	return respType, nil
-}
-
-type modelUsageMapByResponseType struct {
-	visionModelUsageMap map[string]object.UsageInfo
-	imageModelUsageMap  map[string]object.UsageInfo
-	textModelUsageMap   map[string]object.UsageInfo
-}
-
-func (m *modelUsageMapByResponseType) filterModelUsageMapByIntention(question string, intention string) map[string]object.UsageInfo {
-	var tmpModelUsageMap map[string]object.UsageInfo
-	if isImageQuestion(question) {
-		tmpModelUsageMap = m.visionModelUsageMap
-	} else {
-		if intention == "image" {
-			tmpModelUsageMap = m.imageModelUsageMap
-		} else {
-			tmpModelUsageMap = m.textModelUsageMap
-		}
-	}
-	return tmpModelUsageMap
-}
-
-func classifyModelUsageMapByResponseType(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, question string) (*modelUsageMapByResponseType, error) {
-	modelUsageMapByResp := &modelUsageMapByResponseType{}
-	// Filter the model usage map based on the model response type
-	for providerName, usageInfo := range modelUsageMap {
-		providerObj := modelProviderMap[providerName]
-		if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
-			modelUsageMapByResp.visionModelUsageMap[providerName] = usageInfo
-		} else {
-			modelResponseType, err := getModelResponseType(providerObj.SubType)
-			if err != nil {
-				return modelUsageMapByResp, err
-			}
-			if modelResponseType {
-				modelUsageMapByResp.imageModelUsageMap[providerName] = usageInfo
-			} else {
-				modelUsageMapByResp.textModelUsageMap[providerName] = usageInfo
-			}
-		}
-	}
-	return modelUsageMapByResp, nil
-}
-
-func getPromptIntention(modelUsageMapByResp *modelUsageMapByResponseType, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string) (string, error) {
-	var intention string
-	if len(modelUsageMapByResp.imageModelUsageMap) == 0 {
-		// If there's no image model provider, the prompt intention is text at first place
-		intention = "text"
-	} else if len(modelUsageMapByResp.textModelUsageMap) == 0 {
-		intention = "image"
-	} else {
-		res, err := getPromptIntetion(modelUsageMapByResp.textModelUsageMap, modelProviderObjMap, question)
-		if err != nil {
-			return "", err
-		}
-		intention = res
-	}
-	return intention, nil
-}
-
 func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
-	modelUsageMapByResp, err := classifyModelUsageMapByResponseType(modelUsageMap, modelProviderMap, question)
-	if err != nil {
-		return nil, err
+	visionModelUsageMap := map[string]object.UsageInfo{}
+	if isImageQuestion(question) {
+		for providerName, usageInfo := range modelUsageMap {
+			providerObj := modelProviderMap[providerName]
+			if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
+				visionModelUsageMap[providerName] = usageInfo
+			}
+		}
+	} else {
+		visionModelUsageMap = modelUsageMap
 	}
 
-	intention, err := getPromptIntention(modelUsageMapByResp, modelProviderMap, modelProviderObjMap, question)
-	if err != nil {
-		return nil, err
-	}
-
-	modelUsageMapFilteredByIntention := modelUsageMapByResp.filterModelUsageMapByIntention(question, intention)
 	filteredModelUsageMap := map[string]object.UsageInfo{}
-	for providerName, usageInfo := range modelUsageMapFilteredByIntention {
+	for providerName, usageInfo := range visionModelUsageMap {
 		providerObj := modelProviderObjMap[providerName]
 		dryRunQuestion := "$CasibaseDryRun$" + question
 		_, err := providerObj.QueryText(dryRunQuestion, writer, history, "", knowledge)
