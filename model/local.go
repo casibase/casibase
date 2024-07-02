@@ -338,6 +338,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		defer respStream.Close()
 
 		isLeadingReturn := true
+		var answerData strings.Builder
 		for {
 			completion, streamErr := respStream.Recv()
 			if streamErr != nil {
@@ -365,21 +366,22 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-			var responseTokenCount int
-			responseTokenCount, err = GetTokenSize(model, data)
-			if err != nil {
-				return nil, err
-			}
-
-			modelResult.ResponseTokenCount += responseTokenCount
-			modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-			err = p.calculatePrice(modelResult)
-			if err != nil {
-				return nil, err
-			}
+			answerData.WriteString(data)
 		}
 
+		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
+		var responseTokenCount int
+		responseTokenCount, err = GetTokenSize(model, answerData.String())
+		if err != nil {
+			return nil, err
+		}
+
+		modelResult.ResponseTokenCount += responseTokenCount
+		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
+		err = p.calculatePrice(modelResult)
+		if err != nil {
+			return nil, err
+		}
 		return modelResult, nil
 	} else if getOpenAiModelType(p.subType) == "Completion" {
 		respStream, err := client.CreateCompletionStream(
