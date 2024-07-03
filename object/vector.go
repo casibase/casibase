@@ -99,6 +99,20 @@ func getVectorByIndex(owner string, store string, file string, index int) (*Vect
 	}
 }
 
+func getVectorByData(data []float32) (*Vector, error) {
+	vector := Vector{Data: data}
+	existed, err := adapter.engine.Get(&vector)
+	if err != nil {
+		return &vector, err
+	}
+
+	if existed {
+		return &vector, nil
+	} else {
+		return nil, nil
+	}
+}
+
 func GetVector(id string) (*Vector, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getVector(owner, name)

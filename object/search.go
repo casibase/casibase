@@ -24,6 +24,9 @@ func GetSearchProvider(typ string, owner string) (SearchProvider, error) {
 	if typ == "Default" {
 		p, err = NewDefaultSearchProvider(owner)
 	}
+	if typ == "Annoy" {
+		p, err = NewAnnoySearchProvider(owner)
+	}
 
 	if err != nil {
 		return nil, err

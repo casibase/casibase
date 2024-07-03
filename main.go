@@ -32,6 +32,7 @@ func main() {
 	object.CreateTables()
 
 	object.InitDb()
+	object.StartAnnoyDeleteTimer()
 	proxy.InitHttpClient()
 	util.InitIpDb()
 	util.InitParser()
