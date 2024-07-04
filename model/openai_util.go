@@ -63,7 +63,7 @@ func getOpenAiModelType(model string) string {
 		"gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-16k", "gpt-4-0125-preview",
 		"gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview",
 		"gpt-4-1106-vision-preview", "gpt-4", "gpt-4-0613",
-		"gpt-4-32k", "gpt-4-32k-0613", "custom_model",
+		"gpt-4-32k", "gpt-4-32k-0613", "custom-model",
 	}
 
 	completionModels := []string{
