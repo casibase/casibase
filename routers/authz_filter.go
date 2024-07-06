@@ -40,7 +40,7 @@ func AuthzFilter(ctx *context.Context) {
 }
 
 func isAllowedInDemoMode(method string, urlPath string) bool {
-	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-message") {
+	if method == "POST" && !(strings.HasPrefix(urlPath, "/api/signin") || urlPath == "/api/signout" || urlPath == "/api/add-message" || urlPath == "/api/delete-welcome-message") {
 		return false
 	}
 
