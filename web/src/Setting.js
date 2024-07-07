@@ -704,6 +704,7 @@ export function getProviderTypeOptions(category) {
         {id: "Qwen", name: "Qwen"},
         {id: "Baichuan", name: "Baichuan"},
         {id: "Doubao", name: "Doubao"},
+        {id: "Luminous", name: "Luminous"},
       ]
     );
   } else if (category === "Embedding") {
@@ -969,6 +970,11 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
+    ]);
+  } else if (type === "Luminous") {
+    return ([
+        {id: "Luminous2-Turbo", name: "Luminous2-Turbo"},
+        {id: "Luminous3-Turbo", name: "Luminous3-Turbo"},
     ]);
   } else {
     return [];
