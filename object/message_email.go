@@ -115,6 +115,10 @@ func (message *Message) SendErrorEmail(errorText string) error {
 	if err != nil {
 		return err
 	}
+	if adminUser == nil {
+		return fmt.Errorf("SendErrorEmail() error, the receiver user: \"admin\" doesn't exist")
+	}
+
 	receiverEmail := adminUser.Email
 	if !strings.HasPrefix(receiverEmail, "51") {
 		return nil
