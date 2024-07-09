@@ -115,6 +115,10 @@ func (message *Message) SendErrorEmail(errorText string) error {
 	if err != nil {
 		return err
 	}
+	if adminUser == nil {
+		fmt.Printf("The user named `admin` does not exist in Casdoor, and cannot send emails.")
+		return nil
+	}
 	receiverEmail := adminUser.Email
 	if !strings.HasPrefix(receiverEmail, "51") {
 		return nil
