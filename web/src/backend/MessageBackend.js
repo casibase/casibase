@@ -50,7 +50,9 @@ export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
   if (eventSourceMap.has(`${owner}/${name}`)) {
     return;
   }
-  const eventSource = new EventSource(`${Setting.ServerUrl}/api/get-message-answer?id=${owner}/${encodeURIComponent(name)}`);
+  const eventSource = new EventSource(`${Setting.ServerUrl}/api/get-message-answer?id=${owner}/${encodeURIComponent(name)}`, {
+    withCredentials: true,
+  });
   eventSourceMap.set(`${owner}/${name}`, eventSource);
 
   eventSource.addEventListener("message", (e) => {
