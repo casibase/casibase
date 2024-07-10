@@ -139,4 +139,10 @@ func initAPI() {
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
+
+	beego.Router("/api/save-assets-config", &controllers.ApiController{}, "POST:SaveAssetsConfig")
+	beego.Router("/api/get-scans", &controllers.ApiController{}, "GET:GetScans")
+	beego.Router("/api/get-a-scan", &controllers.ApiController{}, "GET:GetAScan")
+	beego.Router("/api/delete-a-scan", &controllers.ApiController{}, "GET:DeleteAScan")
+	beego.Router("/api/start-scan", &controllers.ApiController{}, "GET:StartScan")
 }
