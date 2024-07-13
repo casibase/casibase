@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row, Select, Tag} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -122,6 +122,19 @@ class StoreEditPage extends React.Component {
     this.updateStoreField("modelUsageMap", modelUsageMap);
   }
 
+  updateEmbeddingUsageMapForStore(value) {
+    const embeddingUsageMap = {};
+
+    value.forEach(provider => {
+      embeddingUsageMap[provider] = {
+        tokenCount: 0,
+        startTime: new Date().toISOString(),
+      };
+    });
+
+    this.updateStoreField("embeddingUsageMap", embeddingUsageMap);
+  }
+
   renderStore() {
     return (
       <Card size="small" title={
@@ -204,6 +217,21 @@ class StoreEditPage extends React.Component {
             } />
           </Col>
         </Row>
+        {this.state.store.modelUsageMap !== null && Object.entries(this.state.store.modelUsageMap).map(([provider, usageInfo]) => {
+          return (
+            <Row key={provider} style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {provider}:
+              </Col>
+              <Col span={22} >
+                <Tag color="geekblue">
+                  {usageInfo.tokenCount} Tokens
+                </Tag>
+                in recent one minute
+              </Col>
+            </Row>
+          );
+        })}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Embedding provider")}:
@@ -219,11 +247,29 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Embedding providers")}:
           </Col>
           <Col span={22} >
-            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {this.updateStoreField("embeddingProviders", value);})}
-              options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {
+              this.updateStoreField("embeddingProviders", value);
+              this.updateEmbeddingUsageMapForStore(value);
+            })}
+            options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+            } />
           </Col>
         </Row>
+        {this.state.store.embeddingUsageMap !== null && Object.entries(this.state.store.embeddingUsageMap).map(([provider, usageInfo]) => {
+          return (
+            <Row key={provider} style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {provider}:
+              </Col>
+              <Col span={22} >
+                <Tag color="geekblue">
+                  {usageInfo.tokenCount} Tokens
+                </Tag>
+                in recent one minute
+              </Col>
+            </Row>
+          );
+        })}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Frequency")}:
