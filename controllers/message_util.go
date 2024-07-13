@@ -193,5 +193,4 @@ func GetIdleEmbeddingProvider(embeddingUsageMap map[string]object.UsageInfo, nam
 	}
 
 	return embeddingProvider, embeddingProviderObj, nil
-
 }
