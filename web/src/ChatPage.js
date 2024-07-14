@@ -184,9 +184,6 @@ class ChatPage extends BaseListPage {
 
   getMessageAnswerFromURL(messages) {
     const params = new URLSearchParams(window.location.search);
-    if (!params.get("newMessage")) {
-      return false;
-    }
     const newMessage = params.get("newMessage");
     const hasAsked = messages.some(message => message.text === newMessage);
     if (newMessage !== null && !hasAsked && (!this.props.account.isAdmin || Setting.isAnonymousUser(this.props.account))) {
