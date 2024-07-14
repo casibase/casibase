@@ -159,7 +159,6 @@ class LiveChatBox extends React.Component {
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
     let agent, skeleton;
-
     let idleAction, greetingAction, talkAction_1, talkAction_2, talkAction_3, talkAction_4, thinkAction;
 
     this.camera = new THREE.PerspectiveCamera(
