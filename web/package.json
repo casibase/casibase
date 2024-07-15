@@ -9,6 +9,7 @@
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@craco/craco": "6.4.5",
     "@cyntler/react-doc-viewer": "^1.5.2",
+    "@tweenjs/tween.js": "^23.1.2",
     "aliplayer-react": "^0.7.0",
     "antd": "5.2.3",
     "casdoor-js-sdk": "^0.2.7",
@@ -44,6 +45,7 @@
     "react-scripts": "5.0.1",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
+    "three": "^0.166.1",
     "xlsx": "^0.16.9"
   },
   "scripts": {
@@ -79,7 +81,7 @@
     "@babel/core": "^7.18.13",
     "@babel/eslint-parser": "^7.18.9",
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@babel/preset-react": "^7.18.6",
+    "@babel/preset-react": "^7.24.7",
     "cross-env": "^7.0.3",
     "eslint": "8.22.0",
     "eslint-plugin-react": "^7.31.1",
