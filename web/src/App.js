@@ -51,7 +51,6 @@ import TaskEditPage from "./TaskEditPage";
 import ArticleListPage from "./ArticleListPage";
 import ArticleEditPage from "./ArticleEditPage";
 import ChatPage from "./ChatPage";
-import LiveChatPage from "./LiveChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import UsagePage from "./UsagePage";
@@ -133,12 +132,10 @@ class App extends Component {
       this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
-    } else if (uri.includes("/chat") && !uri.includes("/livechat")) {
+    } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/swagger")) {
       this.setState({selectedMenuKey: "/swagger"});
-    } else if (uri.includes("/livechat")) {
-      this.setState({selectedMenuKey: "/livechat"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -312,7 +309,9 @@ class App extends Component {
 
   getMenuItems() {
     const res = [];
+
     res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
+
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
@@ -325,6 +324,8 @@ class App extends Component {
     }
 
     const domain = Setting.getSubdomain();
+    // const domain = "data";
+
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
@@ -397,7 +398,6 @@ class App extends Component {
       }
     } else {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
-      res.push(Setting.getItem(<Link to="/livechat">{i18next.t("general:Livechat")}</Link>, "/livechat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
@@ -501,14 +501,12 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
-        <Route exact path="/livechat" render={(props) => this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />)} />
-        <Route exact path="/livechat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />)} />
       </Switch>
     );
   }
 
   isWithoutCard() {
-    return (Setting.isMobile() || window.location.pathname.startsWith("/chat")) || (Setting.isMobile() || window.location.pathname.startsWith("/livechat"));
+    return Setting.isMobile() || window.location.pathname.startsWith("/chat");
   }
 
   renderContent() {
