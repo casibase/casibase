@@ -31,6 +31,7 @@ class ChatBox extends React.Component {
     super(props);
     this.state = {
       value: "",
+      files: [],
     };
     this.copyFileName = null;
   }
@@ -46,8 +47,8 @@ class ChatBox extends React.Component {
     const dateString = date.format("YYYYMMDD_HHmmss");
 
     let fileName = "";
-    if (this.inputImage.files[0]) {
-      fileName = this.inputImage.files[0].name;
+    if (this.state.files[0]) {
+      fileName = this.state.files[0].name;
     } else if (this.copyFileName) {
       const fileExtension = this.copyFileName.match(/\..+$/)[0];
       fileName = dateString + fileExtension;
@@ -87,9 +88,10 @@ class ChatBox extends React.Component {
           }
           const chatScaledWidth = Math.round(originalWidth * Ratio);
           const chatScaledHeight = Math.round(originalHeight * Ratio);
-          this.setState({
-            value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
-          });
+          this.setState(prevState => ({
+            value: prevState.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
+            files: [...prevState.files, file],
+          }));
         };
         img.src = e.target.result;
       };
@@ -147,6 +149,18 @@ class ChatBox extends React.Component {
   dislikeMessage() {
     Setting.showMessage("success", "Message disliked successfully");
   }
+
+  handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  handleDrop = (e) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      this.handleInputChange(files[0]);
+    }
+  };
 
   render() {
     let title = Setting.getUrlParam("title");
@@ -216,6 +230,8 @@ class ChatBox extends React.Component {
                       this.handleInputChange(file);
                     }
                   }}
+                  onDragOver={this.handleDragOver}
+                  onDrop={this.handleDrop}
                 />
               )
             }

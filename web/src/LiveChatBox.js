@@ -5,7 +5,6 @@ import {ChatContainer, ConversationHeader, MainContainer, Message, MessageInput,
 import {renderText} from "./ChatMessageRender";
 import i18next from "i18next";
 import * as Setting from "./Setting";
-import copy from "copy-to-clipboard";
 import * as Conf from "./Conf";
 import "./LiveChatBox.css";
 import {ThemeDefault} from "./Conf";
@@ -16,14 +15,11 @@ import {Water} from "three/examples/jsm/objects/Water2";
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
 import {RGBELoader} from "three/examples/jsm/loaders/RGBELoader";
+import ChatBox from "./ChatBox";
 
-class LiveChatBox extends React.Component {
+class LiveChatBox extends ChatBox {
   constructor(props) {
     super(props);
-    this.state = {
-      value: "",
-    };
-    this.copyFileName = null;
     this.mountRef = React.createRef();
     this.inputImage = React.createRef();
     this.mixer = null;
@@ -34,7 +30,7 @@ class LiveChatBox extends React.Component {
     this.currentAnim = "idle";
   }
 
-  handleSend = (innerHtml) => {
+  handleAnimSend = (innerHtml) => {
     if (this.state.value === "" || this.props.disableInput) {
       return;
     }
@@ -57,53 +53,7 @@ class LiveChatBox extends React.Component {
     this.shouldAnim = true;
   };
 
-  handleRegenerate = () => {
-    const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
-    this.props.sendMessage(lastUserMessage.text, "", true);
-  };
-
-  handleImageClick = () => {
-    this.inputImage.click();
-  };
-
-  handleInputChange = async(file) => {
-    const reader = new FileReader();
-    if (file.type.startsWith("image/")) {
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const originalWidth = img.width;
-          const originalHeight = img.height;
-          const inputMaxWidth = 70;
-          const chatMaxWidth = 600;
-          let Ratio = 1;
-          if (originalWidth > inputMaxWidth) {
-            Ratio = inputMaxWidth / originalWidth;
-          }
-          const scaledWidth = Math.round(originalWidth * Ratio);
-          const scaledHeight = Math.round(originalHeight * Ratio);
-          if (originalWidth > chatMaxWidth) {
-            Ratio = chatMaxWidth / originalWidth;
-          }
-          const chatScaledWidth = Math.round(originalWidth * Ratio);
-          const chatScaledHeight = Math.round(originalHeight * Ratio);
-          this.setState({
-            value: this.state.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
-          });
-        };
-        img.src = e.target.result;
-      };
-    } else {
-      reader.onload = (e) => {
-        this.setState({
-          value: this.state.value + `<a href="${e.target.result}" target="_blank">${file.name}</a>`,
-        });
-      };
-    }
-    reader.readAsDataURL(file);
-  };
-
-  renderMessageContent = (message, isLastMessage) => {
+  renderAnimMessageContent = (message, isLastMessage) => {
     if (message.errorText !== "") {
       const refinedErrorText = Setting.getRefinedErrorText(message.errorText);
       return (
@@ -133,22 +83,6 @@ class LiveChatBox extends React.Component {
     }
     return message.html;
   };
-
-  copyMessageFromHTML(message) {
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = message;
-    const text = tempElement.innerText;
-    copy(text);
-    Setting.showMessage("success", "Message copied successfully");
-  }
-
-  likeMessage() {
-    Setting.showMessage("success", "Message liked successfully");
-  }
-
-  dislikeMessage() {
-    Setting.showMessage("success", "Message disliked successfully");
-  }
 
   componentDidMount() {
     this.scene = new THREE.Scene();
@@ -203,7 +137,7 @@ class LiveChatBox extends React.Component {
 
     this.animate();
 
-    const texture = new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/assets/textures/skysphere/Sky_horiz_1.jpg");
+    const texture = new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/skybox/Sky_horiz_1.jpg");
 
     const skyGeometry = new THREE.SphereGeometry(500, 60, 60);
     const skyMaterial = new THREE.MeshBasicMaterial({
@@ -215,11 +149,11 @@ class LiveChatBox extends React.Component {
 
     const waterGeometry = new THREE.CircleGeometry(300, 64);
     const water = new Water(waterGeometry, {
-      normalMap0: new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/assets/textures/water/water_normal_0.jpeg", texture => {
+      normalMap0: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_0.jpeg", texture => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(0.1, 0.1);
       }),
-      normalMap1: new THREE.TextureLoader().load(process.env.PUBLIC_URL + "/assets/textures/water/water_normal_1.jpeg", texture => {
+      normalMap1: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_1.jpeg", texture => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(0.1, 0.1);
       }),
@@ -238,10 +172,10 @@ class LiveChatBox extends React.Component {
 
     const islandLoader = new GLTFLoader();
     const islandDracoLoader = new DRACOLoader();
-    islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./assets/draco");
+    islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
     islandLoader.setDRACOLoader(islandDracoLoader);
 
-    islandLoader.load(process.env.PUBLIC_URL + "./assets/models/island.glb", (gltf) => {
+    islandLoader.load("https://cdn.casibase.org/assets/models/island.glb", (gltf) => {
       const island = gltf.scene;
       island.scale.set(30, 30, 30);
       island.position.set(0, -0.5, 0);
@@ -250,10 +184,10 @@ class LiveChatBox extends React.Component {
 
     const agentLoader = new GLTFLoader();
     const agentDracoLoader = new DRACOLoader();
-    agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./assets/draco");
+    agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
     agentLoader.setDRACOLoader(agentDracoLoader);
 
-    agentLoader.load(process.env.PUBLIC_URL + "./assets/models/agent.glb", (gltf) => {
+    agentLoader.load("https://cdn.casibase.org/assets/models/agent.glb", (gltf) => {
       agent = gltf.scene;
       this.scene.add(agent);
       agent.traverse(function(object) {
@@ -289,7 +223,7 @@ class LiveChatBox extends React.Component {
     });
 
     const hdrLoader = new RGBELoader();
-    hdrLoader.loadAsync(process.env.PUBLIC_URL + "./assets/textures/skysphere/skyHDR.hdr"). then((texture) => {
+    hdrLoader.loadAsync("https://cdn.casibase.org/assets/textures/skybox/skyHDR.hdr"). then((texture) => {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       this.scene.background = texture;
       this.scene.environment = texture;
@@ -411,7 +345,7 @@ class LiveChatBox extends React.Component {
                     }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
                       {/* <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" /> */}
                       <Message.CustomContent className="text">
-                        {this.renderMessageContent(message, index === messages.length - 1)}
+                        {this.renderAnimMessageContent(message, index === messages.length - 1)}
                       </Message.CustomContent>
                     </Message>
                   ))}
@@ -424,7 +358,7 @@ class LiveChatBox extends React.Component {
                 <MessageInput disabled={false}
                   sendDisabled={this.state.value === "" || this.props.disableInput}
                   placeholder={i18next.t("chat:Type message here")}
-                  onSend={this.handleSend}
+                  onSend={this.handleAnimSend}
                   value={this.state.value}
                   onChange={(val) => {
                     this.setState({value: val});
