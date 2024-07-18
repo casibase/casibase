@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select, Tag} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -22,6 +22,7 @@ import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./PromptTable";
+import ProvidersUsageTable from "./ProvidersUsageTable";
 
 const {TextArea} = Input;
 
@@ -217,21 +218,12 @@ class StoreEditPage extends React.Component {
             } />
           </Col>
         </Row>
-        {this.state.store.modelUsageMap !== null && Object.entries(this.state.store.modelUsageMap).map(([provider, usageInfo]) => {
-          return (
-            <Row key={provider} style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {provider}:
-              </Col>
-              <Col span={22} >
-                <Tag color="geekblue">
-                  {usageInfo.tokenCount} Tokens
-                </Tag>
-                in recent one minute
-              </Col>
-            </Row>
-          );
-        })}
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
+          <Col span={22} >
+            <ProvidersUsageTable usageMap={this.state.store.modelUsageMap} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Embedding provider")}:
@@ -255,21 +247,12 @@ class StoreEditPage extends React.Component {
             } />
           </Col>
         </Row>
-        {this.state.store.embeddingUsageMap !== null && Object.entries(this.state.store.embeddingUsageMap).map(([provider, usageInfo]) => {
-          return (
-            <Row key={provider} style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {provider}:
-              </Col>
-              <Col span={22} >
-                <Tag color="geekblue">
-                  {usageInfo.tokenCount} Tokens
-                </Tag>
-                in recent one minute
-              </Col>
-            </Row>
-          );
-        })}
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
+          <Col span={22} >
+            <ProvidersUsageTable usageMap={this.state.store.embeddingUsageMap} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Frequency")}:
