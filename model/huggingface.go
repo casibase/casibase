@@ -21,7 +21,7 @@ import (
 	"strings"
 
 	"github.com/casibase/casibase/proxy"
-	"github.com/henomis/lingoose/llm/huggingface"
+	"github.com/hupe1980/go-huggingface"
 )
 
 type HuggingFaceModelProvider struct {
@@ -49,7 +49,10 @@ func (p *HuggingFaceModelProvider) calculatePrice(modelResult *ModelResult) erro
 
 func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
-	client := huggingface.New(p.subType, p.temperature, false).WithToken(p.secretKey).WithHTTPClient(proxy.ProxyHttpClient).WithMode(huggingface.ModeTextGeneration)
+	client := huggingface.NewInferenceClient(p.secretKey, func(o *huggingface.InferenceClientOptions) {
+		o.HTTPClient = proxy.ProxyHttpClient
+	})
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
@@ -62,19 +65,28 @@ func (p *HuggingFaceModelProvider) QueryText(question string, writer io.Writer, 
 		}
 	}
 
-	resp, err := client.Completion(ctx, question)
+	resp, err := client.TextGeneration(ctx, &huggingface.TextGenerationRequest{
+		Inputs: question,
+		Parameters: huggingface.TextGenerationParameters{
+			Temperature: huggingface.PTR(float64(p.temperature)),
+		},
+		Options: huggingface.Options{
+			WaitForModel: huggingface.PTR(true),
+		},
+		Model: p.subType,
+	})
 	if err != nil {
 		return nil, err
 	}
 
-	resp = strings.Split(resp, "\n")[0]
+	respText := strings.Split(resp[0].GeneratedText, "\n")[0]
 
-	_, err = fmt.Fprint(writer, resp)
+	_, err = fmt.Fprint(writer, respText)
 	if err != nil {
 		return nil, err
 	}
 
-	modelResult, err := getDefaultModelResult(p.subType, question, resp)
+	modelResult, err := getDefaultModelResult(p.subType, question, respText)
 	if err != nil {
 		return nil, err
 	}
