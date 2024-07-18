@@ -20,6 +20,7 @@ require (
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.4.0
 	github.com/henomis/lingoose v0.1.0
+	github.com/hupe1980/go-huggingface v0.0.15
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
