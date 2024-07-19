@@ -22,6 +22,7 @@ import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./PromptTable";
+import ProvidersUsageTable from "./ProvidersUsageTable";
 
 const {TextArea} = Input;
 
@@ -122,6 +123,19 @@ class StoreEditPage extends React.Component {
     this.updateStoreField("modelUsageMap", modelUsageMap);
   }
 
+  updateEmbeddingUsageMapForStore(value) {
+    const embeddingUsageMap = {};
+
+    value.forEach(provider => {
+      embeddingUsageMap[provider] = {
+        tokenCount: 0,
+        startTime: new Date().toISOString(),
+      };
+    });
+
+    this.updateStoreField("embeddingUsageMap", embeddingUsageMap);
+  }
+
   renderStore() {
     return (
       <Card size="small" title={
@@ -205,6 +219,12 @@ class StoreEditPage extends React.Component {
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
+          <Col span={22} >
+            <ProvidersUsageTable usageMap={this.state.store.modelUsageMap} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Embedding provider")}:
           </Col>
@@ -219,9 +239,18 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Embedding providers")}:
           </Col>
           <Col span={22} >
-            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {this.updateStoreField("embeddingProviders", value);})}
-              options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {
+              this.updateStoreField("embeddingProviders", value);
+              this.updateEmbeddingUsageMapForStore(value);
+            })}
+            options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+            } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
+          <Col span={22} >
+            <ProvidersUsageTable usageMap={this.state.store.embeddingUsageMap} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

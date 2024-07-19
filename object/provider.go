@@ -380,6 +380,44 @@ func GetModelProviderFromContext(owner string, name string) (*Provider, model.Mo
 	return getModelProviderFromName(owner, providerName)
 }
 
+func GetEmbeddingProvidersFromContext(owner string, name string, isFromStore bool) (map[string]*Provider, map[string]embedding.EmbeddingProvider, error) {
+	providerNames := []string{}
+	if name != "" {
+		providerNames = []string{name}
+	} else if isFromStore {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && len(store.EmbeddingProviders) != 0 {
+			providerNames = store.EmbeddingProviders
+		}
+	} else {
+		task, err := getTask(owner, name)
+		if err != nil {
+			return nil, nil, err
+		}
+		if task != nil && len(task.Providers) != 0 {
+			providerNames = task.Providers
+		}
+	}
+
+	providerMap := map[string]*Provider{}
+	providerObjMap := map[string]embedding.EmbeddingProvider{}
+	for _, providerName := range providerNames {
+		provider, providerObj, err := getEmbeddingProviderFromName(owner, providerName)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		providerMap[providerName] = provider
+		providerObjMap[providerName] = providerObj
+	}
+
+	return providerMap, providerObjMap, nil
+}
+
 func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embedding.EmbeddingProvider, error) {
 	var providerName string
 	if name != "" {

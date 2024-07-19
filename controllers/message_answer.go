@@ -136,7 +136,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
+	embeddingProvider, embeddingProviderObj, err := GetIdleEmbeddingProvider(store.EmbeddingUsageMap, chat.User2, true)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -244,10 +244,25 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
+	for _, usageInfo := range store.EmbeddingUsageMap {
+		if time.Since(usageInfo.StartTime) >= time.Minute {
+			usageInfo.TokenCount = 0
+			usageInfo.StartTime = time.Time{}
+		}
+	}
+
 	if store.ModelUsageMap != nil {
 		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
 			Provider:   message.ModelProvider,
 			TokenCount: message.TokenCount,
+			StartTime:  time.Now(),
+		}
+	}
+
+	if store.EmbeddingUsageMap != nil {
+		store.EmbeddingUsageMap[embeddingProvider.Name] = object.UsageInfo{
+			Provider:   embeddingProvider.Name,
+			TokenCount: embeddingResult.TokenCount,
 			StartTime:  time.Now(),
 		}
 	}

@@ -23,6 +23,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
@@ -90,10 +91,10 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func getMinFromModelUsageMap(modelUsageMap map[string]object.UsageInfo) string {
+func getMinFromUsageMap(usageMap map[string]object.UsageInfo) string {
 	min := math.MaxInt
 	res := ""
-	for provider, usageInfo := range modelUsageMap {
+	for provider, usageInfo := range usageMap {
 		if min > usageInfo.TokenCount {
 			min = usageInfo.TokenCount
 			res = provider
@@ -152,7 +153,7 @@ func GetIdleModelProvider(modelUsageMap map[string]object.UsageInfo, name string
 		return "", nil, err
 	}
 
-	minProvider := getMinFromModelUsageMap(modelUsageMap)
+	minProvider := getMinFromUsageMap(modelUsageMap)
 	modelProvider, ok := modelProviderMap[minProvider]
 	if !ok {
 		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
@@ -163,4 +164,33 @@ func GetIdleModelProvider(modelUsageMap map[string]object.UsageInfo, name string
 	}
 
 	return modelProvider.Name, modelProviderObj, nil
+}
+
+func GetIdleEmbeddingProvider(embeddingUsageMap map[string]object.UsageInfo, name string, isFromStore bool) (*object.Provider, embedding.EmbeddingProvider, error) {
+	if len(embeddingUsageMap) <= 1 {
+		defaultEmbeddingProvider, defaultEmbeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", name)
+		if err != nil {
+			return &object.Provider{}, nil, err
+		}
+
+		return defaultEmbeddingProvider, defaultEmbeddingProviderObj, nil
+	}
+
+	embeddingProviderMap, embeddingProviderObjMap, err := object.GetEmbeddingProvidersFromContext("admin", name, isFromStore)
+	if err != nil {
+		return &object.Provider{}, nil, err
+	}
+
+	minProvider := getMinFromUsageMap(embeddingUsageMap)
+
+	embeddingProvider, ok := embeddingProviderMap[minProvider]
+	if !ok {
+		return &object.Provider{}, nil, fmt.Errorf("No idle model provider found: %s", minProvider)
+	}
+	embeddingProviderObj, ok := embeddingProviderObjMap[minProvider]
+	if !ok {
+		return &object.Provider{}, nil, fmt.Errorf("No idle model provider found: %s", minProvider)
+	}
+
+	return embeddingProvider, embeddingProviderObj, nil
 }
