@@ -22,10 +22,12 @@ class ProvidersUsageTable extends React.Component {
   }
 
   render() {
-    const dataSource = Object.keys(this.props.usageMap).map(key => ({
-      key,
-      ...this.props.usageMap[key],
-    }));
+    const dataSource = this.props.usageMap && Object.keys(this.props.usageMap).length > 0
+      ? Object.keys(this.props.usageMap).map(key => ({
+        key,
+        ...this.props.usageMap[key],
+      }))
+      : [];
 
     const providersUsageColumn = [
       {
@@ -54,7 +56,7 @@ class ProvidersUsageTable extends React.Component {
       <div style={{
         marginTop: "20px",
       }}>
-        <Table rowKey="index" columns={providersUsageColumn} dataSource={dataSource} size="middle" bordered
+        <Table rowKey="key" columns={providersUsageColumn} dataSource={dataSource} size="middle" bordered
           pagination={false} />
       </div>
     );
