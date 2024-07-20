@@ -237,17 +237,21 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	for _, usageInfo := range store.ModelUsageMap {
+	for key, usageInfo := range store.ModelUsageMap {
 		if time.Since(usageInfo.StartTime) >= time.Minute {
 			usageInfo.TokenCount = 0
 			usageInfo.StartTime = time.Time{}
+
+			store.ModelUsageMap[key] = usageInfo
 		}
 	}
 
-	for _, usageInfo := range store.EmbeddingUsageMap {
+	for key, usageInfo := range store.EmbeddingUsageMap {
 		if time.Since(usageInfo.StartTime) >= time.Minute {
 			usageInfo.TokenCount = 0
 			usageInfo.StartTime = time.Time{}
+
+			store.EmbeddingUsageMap[key] = usageInfo
 		}
 	}
 

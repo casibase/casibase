@@ -37,7 +37,7 @@ class ProvidersUsageTable extends React.Component {
         width: "50%",
       },
       {
-        title: i18next.t("Usage"),
+        title: i18next.t("Usage (tokens/min)"),
         dataIndex: "tokenCount",
         key: "tokenCount",
         width: "50%",
