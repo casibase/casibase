@@ -139,4 +139,6 @@ func initAPI() {
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
+
+	beego.Router("/api/imchat", &controllers.ApiController{}, "GET:AddConnection")
 }

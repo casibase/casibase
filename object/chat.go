@@ -59,7 +59,10 @@ func GetGlobalChats() ([]*Chat, error) {
 
 func GetChats(owner string, user string) ([]*Chat, error) {
 	chats := []*Chat{}
-	err := adapter.engine.Desc("updated_time").Find(&chats, &Chat{Owner: owner, User: user})
+	err := adapter.engine.Desc("updated_time").
+		Where("owner = ?", owner).
+		And("user = ? or user1 = ? or user2 = ? or JSON_CONTAINS(users, ?)", user, user, user, fmt.Sprintf(`"%s"`, user)).
+		Find(&chats)
 	if err != nil {
 		return chats, err
 	}

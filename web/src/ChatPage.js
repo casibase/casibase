@@ -16,6 +16,8 @@ import React from "react";
 import {Button, Modal, Spin} from "antd";
 import {CloseCircleFilled} from "@ant-design/icons";
 import moment from "moment";
+import {initIMConnect} from "./backend/ImBackend";
+import * as ImBackend from "./backend/ImBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
@@ -61,6 +63,30 @@ class ChatPage extends BaseListPage {
     if (this.props.onCreateChatPage) {
       this.props.onCreateChatPage(this);
     }
+
+    this.initUserChatIM.bind(this)();
+  }
+
+  initUserChatIM() {
+    initIMConnect(this.props.account.name);
+    ImBackend.setNewMessageCallBack((data) => {
+      if (!this.state.data.some((item) => item.name === data.body.chat)) {
+        this.fetch({}, false);
+        return;
+      }
+      if (!this.state.chat || this.state.chat.name !== data.body.chat) {return;}
+      let messages = [...this.state.messages];
+      const index = messages.findIndex(message => message.name === data.body.name);
+      // if exited, update it, else add it
+      if (index !== -1) {
+        messages[index] = data.body;
+      } else {
+        messages = [...messages, data.body];
+      }
+      this.setState({
+        messages: messages,
+      });
+    });
   }
 
   getChat() {
@@ -95,19 +121,20 @@ class ChatPage extends BaseListPage {
 
   newChat(chat) {
     const randomName = Setting.getRandomName();
+    const displayName = chat.type === "AI" ? `${i18next.t("chat:New Chat")} - ${this.getNextChatIndex(chat?.displayName) ?? randomName}` : chat.displayName;
     return {
       owner: "admin",
       name: `chat_${randomName}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
       organization: this.props.account.owner,
-      displayName: `${i18next.t("chat:New Chat")} - ${this.getNextChatIndex(chat?.displayName) ?? randomName}`,
-      type: "AI",
+      displayName: displayName,
+      type: (!chat || !chat.type) ? "AI" : chat.type,
       user: this.props.account.name,
-      category: chat !== undefined ? chat.category : i18next.t("chat:Default Category"),
-      user1: "",
-      user2: "",
-      users: [],
+      category: chat.category,
+      user1: (!chat || !chat.user1) ? "" : chat.user1,
+      user2: (!chat || !chat.user2) ? "" : chat.user2,
+      users: (!chat || !chat.users) ? [] : chat.users,
       clientIp: this.props.account.createdIp,
       userAgent: this.props.account.education,
       messageCount: 0,
@@ -136,6 +163,15 @@ class ChatPage extends BaseListPage {
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
+    if (this.state.chat && this.state.chat.type !== "AI") {
+      newMessage.chat = this.state.chat.name;
+      const messages = [...this.state.messages, newMessage];
+      this.setState({
+        messages: messages,
+      });
+      MessageBackend.addMessage(newMessage);
+      return;
+    }
     this.timer = setInterval(() => {
       this.setState(prevState => {
         switch (prevState.dots) {
@@ -208,6 +244,7 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chat) {
+    if (!chat) {return;}
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
         if (this.getMessageAnswerFromURL(res.data)) {
@@ -234,9 +271,7 @@ class ChatPage extends BaseListPage {
               disableInput: true,
             });
 
-            if (lastMessage.errorText !== "") {
-              return;
-            }
+            if (lastMessage.errorText) {return;}
 
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
               if (chat && (this.state.chat.name !== chat.name)) {
@@ -310,6 +345,23 @@ class ChatPage extends BaseListPage {
 
   addChat(chat) {
     const newChat = this.newChat(chat);
+    const findChatAndUpdate = (user, user1) => {
+      const foundChat = this.state.data.find(chat => chat.user === user && chat.user1 === user1);
+      if (foundChat) {
+        this.setState({chat: foundChat});
+        this.goToLinkSoft(`/chat/${foundChat.name}`);
+        this.getMessages(foundChat);
+        return true;
+      }
+      return false;
+    };
+
+    if (chat.type === "Signal") {
+      if (findChatAndUpdate(newChat.user, newChat.user1) || findChatAndUpdate(newChat.user1, newChat.user)) {
+        return;
+      }
+    }
+
     this.goToLinkSoft(`/chat/${newChat.name}`);
     ChatBackend.addChat(newChat)
       .then((res) => {
@@ -463,8 +515,8 @@ class ChatPage extends BaseListPage {
       this.goToLinkSoft(`/chat/${chat.name}`);
     };
 
-    const onAddChat = () => {
-      const chat = this.getCurrentChat();
+    const onAddChat = (chat) => {
+      if (!chat) {chat = this.getCurrentChat();}
       this.addChat(chat);
     };
 
@@ -495,7 +547,9 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
+          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={(chat) => {
+            onAddChat(chat);
+          }} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} account={this.props.account} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
@@ -518,7 +572,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} chat={this.state.chat} />
         </div>
       </div>
     );

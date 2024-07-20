@@ -106,7 +106,7 @@ class ChatBox extends React.Component {
   };
 
   renderMessageContent = (message, isLastMessage) => {
-    if (message.errorText !== "") {
+    if (message.errorText) {
       const refinedErrorText = Setting.getRefinedErrorText(message.errorText);
       return (
         <Alert
@@ -129,6 +129,10 @@ class ChatBox extends React.Component {
 
     if (isLastMessage) {
       return renderText(message.text + this.props.dots);
+    }
+
+    if (!message.html) {
+      return renderText(message.text);
     }
 
     return message.html;
@@ -163,8 +167,13 @@ class ChatBox extends React.Component {
   };
 
   render() {
-    let title = Setting.getUrlParam("title");
-    if (title === null) {
+    let title;
+    if (this.props.chat && this.props.chat.type === "Signal") {
+      title = this.props.account.name === this.props.chat.user ? this.props.chat.user1 : this.props.chat.user;
+    } else {
+      title = Setting.getUrlParam("title");
+    }
+    if (!title) {
       title = Conf.AiName;
     }
 
@@ -188,9 +197,12 @@ class ChatBox extends React.Component {
                 <Message key={index} model={{
                   type: "custom",
                   sender: message.name,
-                  direction: message.author === "AI" ? "incoming" : "outgoing",
-                }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
+                  direction: !(message.author === this.props.account.name) ? "incoming" : "outgoing",
+                }} avatarPosition={!(message.author === this.props.account.name) ? "tl" : "tr"}>
                   <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  <Message.Header sender={message.author} sentTime={message.time} >
+                    {message.author}
+                  </Message.Header>
                   <Message.CustomContent>
                     {this.renderMessageContent(message, index === messages.length - 1)}
                   </Message.CustomContent>
@@ -237,7 +249,7 @@ class ChatBox extends React.Component {
             }
           </ChatContainer>
           {
-            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+            (messages.length !== 0 || (this.props.chat && this.props.chat.type !== "AI")) ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
           }
         </MainContainer>
         <input

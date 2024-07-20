@@ -251,6 +251,13 @@ func (c *ApiController) AddMessage() {
 				return
 			}
 		}
+		if chat != nil && chat.Type == "Signal" {
+			result := object.IMMessage{
+				Body: message,
+			}
+			jsonData, _ := json.Marshal(result)
+			object.IMController.SendMessageToChat(*chat, string(jsonData))
+		}
 	}
 
 	c.ResponseOk(chat)

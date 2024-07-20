@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import Search from "antd/es/input/Search";
+import moment from "moment/moment";
 import React from "react";
 import {Button, Input, Menu, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 import i18next from "i18next";
+import * as UsageBackend from "./backend/UsageBackend";
 import {ThemeDefault} from "./Conf";
+import * as Setting from "./Setting";
 
 class ChatMenu extends React.Component {
   constructor(props) {
@@ -25,13 +29,29 @@ class ChatMenu extends React.Component {
     const items = this.chatsToItems(this.props.chats);
     const selectedKey = this.getSelectedKeyOfCurrentChat(this.props.chats, this.props.chatName);
     const openKeys = items.map((item) => item.key);
+    this.userList = [];
 
     this.state = {
       openKeys: openKeys,
       selectedKeys: [selectedKey],
       editChat: false,
       editChatName: "",
+      users: [],
+      inSearch: false,
     };
+  }
+
+  componentDidMount() {
+    this.getUserList();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const selectedKey = this.getSelectedKeyOfCurrentChat(this.props.chats, this.props.chatName);
+    if (this.state.selectedKeys[0] !== selectedKey) {
+      this.setState({
+        selectedKeys: [selectedKey],
+      });
+    }
   }
 
   chatsToItems(chats) {
@@ -78,6 +98,15 @@ class ChatMenu extends React.Component {
             this.setState({editChat: false});
           };
 
+          const isAIChat = chat.type === "AI";
+
+          let title;
+          if (chat && chat.type === "Signal") {
+            title = this.props.account.name === chat.user ? chat.user1 : chat.user;
+          } else {
+            title = chat.displayName;
+          }
+
           return {
             key: `${index}-${chatIndex}`,
             index: globalChatIndex,
@@ -97,8 +126,8 @@ class ChatMenu extends React.Component {
                   />
                 </div>) : (
                 <div className="menu-item-container">
-                  <div>{chat.displayName}</div>
-                  {isSelected && (
+                  <div>{title}</div>
+                  {isSelected && isAIChat && (
                     <div>
                       <EditOutlined className="menu-item-icon"
                         onMouseEnter={handleIconMouseEnter}
@@ -199,7 +228,77 @@ class ChatMenu extends React.Component {
     }
   };
 
-  render() {
+  // type is Signal or Group
+  newUserChat(user, type = "Signal") {
+    const randomName = Setting.getRandomName();
+    const displayName = `${this.props.account.name} - ${user}`;
+    return {
+      owner: "admin",
+      name: `chat_${randomName}`,
+      createdTime: moment().format(),
+      updatedTime: moment().format(),
+      organization: this.props.account.owner,
+      displayName: displayName,
+      category: i18next.t("chat:Default Category"),
+      type: type,
+      user: this.props.account.name,
+      user1: user,
+      user2: "",
+      users: [],
+      messageCount: 0,
+    };
+  }
+
+  getUserList() {
+    UsageBackend.getUsers("", "").then((data) => {
+      if (data.status === "ok") {
+        this.setState({
+          users: data.data,
+        });
+        this.userList = data.data;
+      } else {
+        Setting.showMessage("error", data.msg);
+      }
+    });
+  }
+
+  updateUserList(value) {
+    if (value === "") {
+      this.setState({
+        inSearch: false,
+      });
+      return;
+    }
+    this.setState({
+      inSearch: true,
+      users: this.userList.filter(user => user.includes(value)),
+    });
+  }
+
+  renderUserList() {
+    return (
+      <Menu onClick={(item, key, keyPath, domEvent) => {
+        const newChat = this.newUserChat(item.key);
+        this.props.onAddChat(newChat);
+        this.setState({
+          inSearch: false,
+        });
+      }}>
+        {this.state.users.map((user, index) => {
+          if (user === this.props.account.name) {
+            return null;
+          }
+          return (
+            <Menu.Item key={user}>
+              {user}
+            </Menu.Item>
+          );
+        })}
+      </Menu>
+    );
+  }
+
+  renderChatList() {
     const items = this.chatsToItems(this.props.chats);
     const hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
 
@@ -229,7 +328,9 @@ class ChatMenu extends React.Component {
             e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
           }}
-          onClick={this.props.onAddChat}
+          onClick={() => {
+            this.props.onAddChat();
+          }}
         >
           {i18next.t("chat:New Chat")}
         </Button>
@@ -244,6 +345,18 @@ class ChatMenu extends React.Component {
             items={items}
           />
         </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div>
+        <Search placeholder={i18next.t("chat:Search User")} style={{width: "calc(100% - 8px)", margin: "4px"}} onSearch={(e) => {
+          this.updateUserList(e);
+        }} />
+        {!this.state.inSearch && this.renderChatList()}
+        {this.state.inSearch && this.renderUserList()}
       </div>
     );
   }
