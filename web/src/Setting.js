@@ -441,6 +441,34 @@ export function downloadXlsx(wordset) {
   }
 }
 
+export function toggleElementFromSet(array, element) {
+  if (!array) {
+    array = [];
+  }
+  if (array.includes(element)) {
+    return array.filter(e => e !== element);
+  } else {
+    return [...array, element];
+  }
+}
+
+export function addElementToSet(set, newUser) {
+  if (!set) {
+    set = [];
+  }
+  if (!set.includes(newUser)) {
+    set.push(newUser);
+  }
+  return set;
+}
+
+export function deleteElementFromSet(set, newUser) {
+  if (!set) {
+    return [];
+  }
+  return set.filter(user => user !== newUser);
+}
+
 export const redirectCatchJsonError = async(url) => {
   try {
     const response = await fetch(url);

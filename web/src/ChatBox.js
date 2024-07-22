@@ -16,6 +16,7 @@ import React from "react";
 import {Alert, Button} from "antd";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
@@ -23,7 +24,7 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {CopyOutlined, DislikeOutlined, LikeOutlined, ReloadOutlined} from "@ant-design/icons";
+import {CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
@@ -32,6 +33,7 @@ class ChatBox extends React.Component {
     this.state = {
       value: "",
       files: [],
+      messages: this.props.messages,
     };
     this.copyFileName = null;
   }
@@ -142,12 +144,20 @@ class ChatBox extends React.Component {
     Setting.showMessage("success", "Message copied successfully");
   }
 
-  likeMessage() {
-    Setting.showMessage("success", "Message liked successfully");
-  }
+  handleMessageLike(message, reactionType) {
+    const oppositeReaction = reactionType === "like" ? "dislike" : "like";
 
-  dislikeMessage() {
-    Setting.showMessage("success", "Message disliked successfully");
+    message[`${reactionType}Users`] = Setting.toggleElementFromSet(message[`${reactionType}Users`], this.props.account.name);
+    message[`${oppositeReaction}Users`] = Setting.deleteElementFromSet(message[`${oppositeReaction}Users`], this.props.account.name);
+
+    this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
+    updateMessage(message.owner, message.name, message).then((result) => {
+      if (result.status === "ok") {
+        Setting.showMessage("success", `Message ${reactionType}d successfully`);
+        return;
+      }
+      Setting.showMessage("error", result.msg);
+    });
   }
 
   handleDragOver = (e) => {
@@ -199,8 +209,8 @@ class ChatBox extends React.Component {
                       <Message.Footer>
                         {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
                         {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
-                        {<Button icon={<LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.likeMessage()}></Button>}
-                        {<Button icon={<DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.dislikeMessage()}></Button>}
+                        {<Button icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
+                        {<Button icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
                       </Message.Footer>
                     ) : null
                   }
