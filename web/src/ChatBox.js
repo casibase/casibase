@@ -24,7 +24,7 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, ReloadOutlined} from "@ant-design/icons";
+import {CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
@@ -34,8 +34,17 @@ class ChatBox extends React.Component {
       value: "",
       files: [],
       messages: this.props.messages,
+      currentReadingMessage: null,
+      isReading: false,
     };
+    this.synth = window.speechSynthesis;
     this.copyFileName = null;
+  }
+
+  componentDidMount() {
+    window.addEventListener("beforeunload", () => {
+      this.synth.cancel();
+    });
   }
 
   handleSend = (innerHtml) => {
@@ -179,6 +188,26 @@ class ChatBox extends React.Component {
     }
   };
 
+  toggleMessageReadState(message) {
+    const shouldPaused = (this.state.readingMessage === message.name && this.state.isReading);
+    if (shouldPaused) {
+      this.synth.pause();
+      this.setState({isReading: false});
+      return;
+    }
+    if (this.state.readingMessage === message.name && this.state.isReading === false) {
+      this.synth.resume();
+      this.setState({isReading: true});
+    } else {
+      this.synth.cancel();
+      const utterThis = new SpeechSynthesisUtterance(message.text);
+      this.synth.speak(utterThis);
+      this.setState({
+        readingMessage: message.name,
+        isReading: true,
+      });
+    }
+  }
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -218,6 +247,7 @@ class ChatBox extends React.Component {
                         {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
                         {<Button icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
                         {<Button icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
+                        {<Button icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
                       </Message.Footer>
                     ) : null
                   }
