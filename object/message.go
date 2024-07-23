@@ -57,7 +57,7 @@ type Message struct {
 	EmbeddingProvider string        `xorm:"varchar(100)" json:"embeddingProvider"`
 	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 	LikeUsers         []string      `json:"likeUsers"`
-	DisLikeUsers      []string      `json:"disLikeUsers"`
+	DisLikeUsers      []string      `json:"dislikeUsers"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

@@ -147,13 +147,20 @@ class ChatBox extends React.Component {
   handleMessageLike(message, reactionType) {
     const oppositeReaction = reactionType === "like" ? "dislike" : "like";
 
-    message[`${reactionType}Users`] = Setting.toggleElementFromSet(message[`${reactionType}Users`], this.props.account.name);
+    const isCancel = !!message[`${reactionType}Users`]?.includes(this.props.account.name);
+
+    if (isCancel) {
+      message[`${reactionType}Users`] = Setting.deleteElementFromSet(message[`${reactionType}Users`], this.props.account.name);
+    } else {
+      message[`${reactionType}Users`] = Setting.addElementToSet(message[`${reactionType}Users`], this.props.account.name);
+    }
+
     message[`${oppositeReaction}Users`] = Setting.deleteElementFromSet(message[`${oppositeReaction}Users`], this.props.account.name);
 
     this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
     updateMessage(message.owner, message.name, message).then((result) => {
       if (result.status === "ok") {
-        Setting.showMessage("success", `Message ${reactionType}d successfully`);
+        Setting.showMessage("success", `${isCancel ? "Cancel " : ""}${reactionType}d successfully`);
         return;
       }
       Setting.showMessage("error", result.msg);
