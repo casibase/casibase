@@ -138,7 +138,7 @@ class ChatBox extends React.Component {
       return this.props.dots;
     }
 
-    if (isLastMessage && message.author === "AI") {
+    if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
       return renderText(message.text + this.props.dots);
     }
 

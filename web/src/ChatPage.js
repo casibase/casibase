@@ -145,6 +145,19 @@ class ChatPage extends BaseListPage {
             messages: null,
           });
 
+          this.timer = setInterval(() => {
+            this.setState(prevState => {
+              switch (prevState.dots) {
+              case "⚫":
+                return {dots: " "};
+              case " ":
+                return {dots: "⚫"};
+              default:
+                return {dots: "⚫"};
+              }
+            });
+          }, 500);
+
           const field = "user";
           const value = this.props.account.name;
           const sortField = "", sortOrder = "";
@@ -157,18 +170,6 @@ class ChatPage extends BaseListPage {
 
                 const chats = res.data;
                 this.menu.current.setSelectedKeyToNewChat(chats);
-                this.timer = setInterval(() => {
-                  this.setState(prevState => {
-                    switch (prevState.dots) {
-                    case "⚫":
-                      return {dots: " "};
-                    case " ":
-                      return {dots: "⚫"};
-                    default:
-                      return {dots: "⚫"};
-                    }
-                  });
-                }, 500);
               }
             });
 
