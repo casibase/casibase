@@ -58,6 +58,7 @@ type Message struct {
 	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 	LikeUsers         []string      `json:"likeUsers"`
 	DisLikeUsers      []string      `json:"dislikeUsers"`
+	Suggestions       []string      `json:"suggestions"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

@@ -240,7 +240,7 @@ class ChatPage extends BaseListPage {
             }
 
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
-              if (chat && (this.state.chat.name !== chat.name)) {
+              if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
               const jsonData = JSON.parse(data);
@@ -256,7 +256,7 @@ class ChatPage extends BaseListPage {
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
-              lastMessage2.text = text;
+              lastMessage2.text = Setting.parseAnswerAndSuggestions(text)["answer"];
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1 && message.author === "AI") {
@@ -283,11 +283,17 @@ class ChatPage extends BaseListPage {
                 disableInput: true,
               });
             }, (data) => {
-              if (chat && (this.state.chat.name !== chat.name)) {
+              if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = text;
+
+              // If there are suggestions, split them from the text
+              const parseResult = Setting.parseAnswerAndSuggestions(text);
+              lastMessage2.text = parseResult["answer"];
+              lastMessage2.suggestions = parseResult["suggestions"];
+
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 message.html = renderText(message.text);

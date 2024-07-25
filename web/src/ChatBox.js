@@ -139,7 +139,7 @@ class ChatBox extends React.Component {
     }
 
     if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
-      return renderText(message.text + this.props.dots);
+      return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"] + this.props.dots);
     }
 
     return message.html;
@@ -212,6 +212,58 @@ class ChatBox extends React.Component {
       });
     }
   }
+
+  renderSuggestions(message) {
+    if (message.author !== "AI" || !message.suggestions || !Array.isArray(message.suggestions)) {
+      return null;
+    }
+    const fontSize = Setting.isMobile() ? "10px" : "12px";
+    return (
+      <div style={{
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "column",
+        justifyContent: "start",
+        alignItems: "start",
+        zIndex: "10000",
+        maxWidth: "80%",
+      }}>
+        {
+          message?.suggestions?.map((suggestion, index) => {
+            if (suggestion.trim() === "") {
+              return null;
+            }
+            if (suggestion.trim().startsWith("<")) {
+              suggestion = suggestion.substring(1);
+            }
+            if (suggestion.trim().endsWith(">")) {
+              suggestion = suggestion.substring(0, suggestion.length - 1);
+            }
+            if (!suggestion.trim().endsWith("?") && !suggestion.trim().endsWith("？")) {
+              suggestion += "?";
+            }
+
+            return (
+              <Button
+                className={"suggestions-item"}
+                key={index} type="primary" style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  border: "1px solid " + ThemeDefault.colorPrimary,
+                  color: ThemeDefault.colorPrimary,
+                  borderRadius: "4px",
+                  fontSize: fontSize,
+                  margin: "3px",
+                }} onClick={() => {
+                  this.props.sendMessage(suggestion, "");
+                }}
+              >{suggestion}</Button>
+            );
+          })
+        }
+      </div>
+    );
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -247,11 +299,16 @@ class ChatBox extends React.Component {
                   {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
                       <Message.Footer>
-                        {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
-                        {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
-                        {<Button icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
-                        {<Button icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
-                        {<Button icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
+                        <div>
+                          {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                          {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
+                          {<Button icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
+                          {<Button icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
+                          {<Button icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
+                          <div>
+                            {index !== messages.length - 1 ? null : this.renderSuggestions(message)}
+                          </div>
+                        </div>
                       </Message.Footer>
                     ) : null
                   }
