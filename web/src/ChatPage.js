@@ -134,9 +134,24 @@ class ChatPage extends BaseListPage {
     };
   }
 
-  sendMessage(text, fileName, isHidden, isRegenerated) {
-    const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
-    MessageBackend.addMessage(newMessage)
+  newAIMessage() {
+    return {
+      wner: "admin",
+      name: `message_${Setting.getRandomName()}`,
+      createdTime: moment().format(),
+      organization: this.props.account.owner,
+      user: this.props.account.name,
+      chat: this.state.chat.name,
+      replyTo: "Welcome",
+      author: "AI",
+      text: "",
+    };
+  }
+
+  sendMessage(text, fileName, isHidden, isRegenerated, regenerateWelcomeMessage) {
+    const newMessage = regenerateWelcomeMessage ? this.newAIMessage() : this.newMessage(text, fileName, isHidden, isRegenerated);
+    const addMessageMethod = regenerateWelcomeMessage ? "addWelcomeMessage" : "addMessage";
+    MessageBackend[addMessageMethod](newMessage)
       .then((res) => {
         if (res.status === "ok") {
           const chat = res.data;
@@ -531,7 +546,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false, regenerateWelcomeMessage = false) => {this.sendMessage(text, fileName, false, regenerate, regenerateWelcomeMessage);}} account={this.props.account} dots={this.state.dots} />
         </div>
       </div>
     );

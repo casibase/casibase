@@ -256,6 +256,66 @@ func (c *ApiController) AddMessage() {
 	c.ResponseOk(chat)
 }
 
+func (c *ApiController) AddWelcomeMessage() {
+	var message *object.Message
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
+	message, err = object.GetMessage(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	user := c.GetSessionUsername()
+	if user != "" && user != message.User {
+		c.ResponseError("No permission")
+		return
+	}
+
+	if user == "" {
+		clientIp := c.getClientIp()
+		userAgent := c.getUserAgent()
+		hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
+		username := fmt.Sprintf("u-%s", hash)
+		if username != message.User {
+			c.ResponseError("No permission")
+			return
+		}
+	}
+
+	if message.Author != "AI" || message.ReplyTo != "Welcome" {
+		c.ResponseError("No permission")
+		return
+	}
+
+	var chat *object.Chat
+	chatId := util.GetId(message.Owner, message.Chat)
+	chat, err = object.GetChat(chatId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if chat == nil {
+		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
+		return
+	}
+	if chat.MessageCount > 0 {
+		c.ResponseError("No Permission")
+	}
+
+	_, err = object.AddMessage(message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	c.ResponseOk(chat)
+}
+
 // DeleteMessage
 // @Title DeleteMessage
 // @Tag Message API

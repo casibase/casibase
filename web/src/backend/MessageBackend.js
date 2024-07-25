@@ -126,6 +126,18 @@ export function addMessage(message) {
   }).then(res => res.json());
 }
 
+export function addWelcomeMessage(message) {
+  const newMessage = Setting.deepCopy(message);
+  return fetch(`${Setting.ServerUrl}/api/add-welcome-message`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newMessage),
+  }).then(res => res.json());
+}
+
 export function deleteMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/delete-message`, {
