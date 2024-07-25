@@ -194,3 +194,41 @@ func GetIdleEmbeddingProvider(embeddingUsageMap map[string]object.UsageInfo, nam
 
 	return embeddingProvider, embeddingProviderObj, nil
 }
+
+var divider = "|||"
+
+func getQuestionWithSuggestions(question string, count int) (string, error) {
+	if count <= 0 {
+		return question, nil
+	}
+
+	format := "<Your answer>"
+	for i := 0; i < count; i++ {
+		format += divider + "<Predicted question " + string(rune(i+1)) + ">"
+	}
+
+	question = "Please follow the steps below to optimize your answer:\n\n" +
+		"1. **Generate an answer**: Provide a clear, accurate, and helpful answer to the user's question.\n\n" +
+		"2. **Predict possible follow-up questions from the user**: Based on the current question and answer, think and predict three questions that the user might ask further.\n\n" +
+		"3. **Format the answer and predicted questions**: Use a specific format to connect the answer and the predicted questions. The format is as follows:\n" +
+		"   - Follow the answer with a separator `" + divider + "`\n" +
+		"   - Then there are the predicted " + string(rune(count)) + " questions, each separated by `" + divider + "`, do not add any other symbols.\n\n" +
+		"Your answer should be replied in the following format: " + format + "\n\n" +
+		"The '<>' is to tell you to put something in here, your answer does not need to include '<>'.\n" +
+		"The language of suggestions should be the same as the language of answer" +
+		"Every Predicted question should end with a question mark '?'.\n\n" +
+		"Please note, the separator for each part is `" + divider + "`, make sure not to use this separator in the answer or question.\n\n" +
+		"Examples of generated predicted questions:\n1. Do you know the weather today?\n2. Do you have any news to share?\n\n" +
+		"Here is the user's question: " + question
+
+	return question, nil
+}
+
+func parseAnswerAndSuggestions(answer string) (string, []string, error) {
+	parts := strings.Split(answer, divider)
+	if len(parts) < 2 {
+		return "", nil, fmt.Errorf("The answer is not formatted correctly")
+	}
+
+	return parts[0], parts[1:], nil
+}

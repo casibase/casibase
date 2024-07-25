@@ -69,6 +69,7 @@ class StoreListPage extends React.Component {
       prompt: defaultPrompt,
       themeColor: ThemeDefault.colorPrimary,
       propertiesMap: {},
+      suggestionCount: 3,
     };
   }
 

@@ -183,6 +183,12 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
+	question, err = getQuestionWithSuggestions(question, store.SuggestionCount)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
 	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
@@ -223,11 +229,19 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
 
-	message.Text = answer
+	textAnswer, textSuggestions, err := parseAnswerAndSuggestions(answer)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+	message.Text = textAnswer
+
 	if message.Text != "" {
 		message.ErrorText = ""
 		message.IsAlerted = false
 	}
+
+	message.Suggestions = textSuggestions
 
 	message.ModelProvider = modelProvider
 	message.VectorScores = vectorScores
