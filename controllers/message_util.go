@@ -226,8 +226,9 @@ func getQuestionWithSuggestions(question string, count int) (string, error) {
 
 func parseAnswerAndSuggestions(answer string) (string, []string, error) {
 	parts := strings.Split(answer, divider)
+
 	if len(parts) < 2 {
-		return "", nil, fmt.Errorf("The answer is not formatted correctly")
+		return answer, []string{}, nil
 	}
 
 	return parts[0], parts[1:], nil
