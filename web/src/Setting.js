@@ -1233,3 +1233,14 @@ export function updateTheme(color) {
   document.documentElement.style.setProperty("--theme-button", ThemeDefault.colorButton);
   document.documentElement.style.setProperty("--theme-background-secondary", ThemeDefault.colorBackgroundSecondary);
 }
+
+export const suggestionsDivider = "|||";
+
+export function parseAnswerAndSuggestions(answer) {
+  const parts = answer.split(suggestionsDivider);
+
+  return {
+    answer: parts[0],
+    suggestions: parts.slice(1),
+  };
+}

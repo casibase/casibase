@@ -313,6 +313,20 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Suggestion count")}:
+          </Col>
+          <Col span={22} >
+            <InputNumber min={0} value={this.state.store.suggestionCount} onChange={value => {
+              if (value > 5) {
+                Setting.showMessage("error", "The maximum value of suggestion count is 5");
+                value = 5;
+              }
+              this.updateStoreField("suggestionCount", value);
+            }} />
+          </Col>
+        </Row>
         {
           this.state.store.name !== "store-built-in" ? null : (
             <Row style={{marginTop: "20px"}} >
