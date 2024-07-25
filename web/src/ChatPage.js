@@ -136,18 +136,6 @@ class ChatPage extends BaseListPage {
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
-    this.timer = setInterval(() => {
-      this.setState(prevState => {
-        switch (prevState.dots) {
-        case "⚫":
-          return {dots: " "};
-        case " ":
-          return {dots: "⚫"};
-        default:
-          return {dots: "⚫"};
-        }
-      });
-    }, 500);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -156,6 +144,19 @@ class ChatPage extends BaseListPage {
             chat: chat,
             messages: null,
           });
+
+          this.timer = setInterval(() => {
+            this.setState(prevState => {
+              switch (prevState.dots) {
+              case "⚫":
+                return {dots: " "};
+              case " ":
+                return {dots: "⚫"};
+              default:
+                return {dots: "⚫"};
+              }
+            });
+          }, 500);
 
           const field = "user";
           const value = this.props.account.name;
@@ -246,13 +247,19 @@ class ChatPage extends BaseListPage {
 
               if (jsonData.text === "") {
                 jsonData.text = "\n";
+                if (this.timer !== null) {
+                  clearInterval(this.timer);
+                  this.setState({
+                    dots: "",
+                  });
+                }
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
               lastMessage2.text = text;
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
-                if (index === res.data.length - 1) {
+                if (index === res.data.length - 1 && message.author === "AI") {
                   message.html = renderText(message.text + " " + this.state.dots);
                 } else {
                   message.html = renderText(message.text);
