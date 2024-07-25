@@ -198,11 +198,7 @@ func GetIdleEmbeddingProvider(embeddingUsageMap map[string]object.UsageInfo, nam
 var divider = "|||"
 
 func getQuestionWithSuggestions(question string, count int) (string, error) {
-	if count < 0 {
-		return "", fmt.Errorf("the count should be greater than or equal to 0")
-	}
-
-	if count == 0 {
+	if count <= 0 {
 		return question, nil
 	}
 
