@@ -318,11 +318,7 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Suggestion count")}:
           </Col>
           <Col span={22} >
-            <InputNumber min={0} value={this.state.store.suggestionCount} onChange={value => {
-              if (value > 5) {
-                Setting.showMessage("error", "The maximum value of suggestion count is 5");
-                value = 5;
-              }
+            <InputNumber min={0} max={10} value={this.state.store.suggestionCount} onChange={value => {
               this.updateStoreField("suggestionCount", value);
             }} />
           </Col>
