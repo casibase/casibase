@@ -228,11 +228,14 @@ func (c *ApiController) GetMessageAnswer() {
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
-
-	textAnswer, textSuggestions, err := parseAnswerAndSuggestions(answer)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
+	textAnswer := answer
+	textSuggestions := []object.Suggestion{}
+	if store.SuggestionCount != 0 {
+		textAnswer, textSuggestions, err = parseAnswerAndSuggestions(answer)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
 	}
 	message.Text = textAnswer
 

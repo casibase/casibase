@@ -245,18 +245,11 @@ class ChatBox extends React.Component {
       }}>
         {
           message?.suggestions?.map((suggestion, index) => {
-            if (suggestion.trim() === "") {
+            let suggestionText = suggestion.text;
+            if (suggestionText.trim() === "") {
               return null;
             }
-            if (suggestion.trim().startsWith("<")) {
-              suggestion = suggestion.substring(1);
-            }
-            if (suggestion.trim().endsWith(">")) {
-              suggestion = suggestion.substring(0, suggestion.length - 1);
-            }
-            if (!suggestion.trim().endsWith("?") && !suggestion.trim().endsWith("？")) {
-              suggestion += "?";
-            }
+            suggestionText = Setting.formatSuggestion(suggestionText);
 
             return (
               <Button
@@ -269,9 +262,11 @@ class ChatBox extends React.Component {
                   fontSize: fontSize,
                   margin: "3px",
                 }} onClick={() => {
-                  this.props.sendMessage(suggestion, "");
+                  this.props.sendMessage(suggestionText, "");
+                  message.suggestions[index].isHit = true;
+                  updateMessage(message.owner, message.name, message);
                 }}
-              >{suggestion}</Button>
+              >{suggestionText}</Button>
             );
           })
         }

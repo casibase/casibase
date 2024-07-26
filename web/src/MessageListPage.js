@@ -14,7 +14,8 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table} from "antd";
+import {Button, Popconfirm, Switch, Table, Tag} from "antd";
+import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
 import moment from "moment";
@@ -239,6 +240,21 @@ class MessageListPage extends React.Component {
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
+      },
+      {
+        title: i18next.t("message:Suggestions"),
+        dataIndex: "suggestions",
+        key: "suggestions",
+        width: "400px",
+        render: (text, record, index) => {
+          return (
+            text?.map(suggestion => {
+              return (
+                <Tag key={suggestion.text} color={suggestion.isHit ? ThemeDefault.colorPrimary : ""}>{suggestion.text}</Tag>
+              );
+            })
           );
         },
       },

@@ -1238,9 +1238,25 @@ export const suggestionsDivider = "|||";
 
 export function parseAnswerAndSuggestions(answer) {
   const parts = answer.split(suggestionsDivider);
+  const suggestionTexts = parts.slice(1);
+
+  const suggestions = suggestionTexts.map(text => {
+    return {
+      text: text,
+      isHit: false,
+    };
+  });
 
   return {
     answer: parts[0],
-    suggestions: parts.slice(1),
+    suggestions: suggestions,
   };
+}
+
+export function formatSuggestion(suggestionText) {
+  suggestionText = suggestionText.trim().replace(/^</, "").replace(/>$/, "");
+  if (!suggestionText.endsWith("?") && !suggestionText.endsWith("？")) {
+    suggestionText += "?";
+  }
+  return suggestionText;
 }
