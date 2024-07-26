@@ -31,6 +31,11 @@ type VectorScore struct {
 	Score  float32 `json:"score"`
 }
 
+type Suggestion struct {
+	Text  string `json:"text"`
+	IsHit bool   `json:"isHit"`
+}
+
 type Message struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -58,7 +63,7 @@ type Message struct {
 	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
 	LikeUsers         []string      `json:"likeUsers"`
 	DisLikeUsers      []string      `json:"dislikeUsers"`
-	Suggestions       []string      `json:"suggestions"`
+	Suggestions       []Suggestion  `json:"suggestions"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {

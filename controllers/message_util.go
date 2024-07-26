@@ -224,12 +224,28 @@ func getQuestionWithSuggestions(question string, count int) (string, error) {
 	return question, nil
 }
 
-func parseAnswerAndSuggestions(answer string) (string, []string, error) {
+func parseAnswerAndSuggestions(answer string) (string, []object.Suggestion, error) {
 	parts := strings.Split(answer, divider)
 
+	suggestions := []object.Suggestion{}
+
 	if len(parts) < 2 {
-		return answer, []string{}, nil
+		return answer, suggestions, nil
 	}
 
-	return parts[0], parts[1:], nil
+	for i := 1; i < len(parts); i++ {
+		suggestions = append(suggestions, object.Suggestion{Text: formatSuggestion(parts[i]), IsHit: false})
+	}
+
+	return parts[0], suggestions, nil
+}
+
+func formatSuggestion(suggestionText string) string {
+	suggestionText = strings.TrimSpace(suggestionText)
+	suggestionText = strings.TrimPrefix(suggestionText, "<")
+	suggestionText = strings.TrimSuffix(suggestionText, `>`)
+	if !(strings.HasSuffix(suggestionText, "?") || strings.HasSuffix(suggestionText, "？")) {
+		suggestionText += "?"
+	}
+	return suggestionText
 }
