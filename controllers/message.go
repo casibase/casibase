@@ -153,12 +153,20 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
-	if message.IsRegenerated {
-		messages, err := object.GetChatMessages(message.Chat)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
+
+	addMessageAfterSuccess := true
+	messages, err := object.GetChatMessages(message.Chat)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if message.IsRegenerated && len(messages) == 1 && messages[0].ReplyTo == "Welcome" && messages[0].Author == "AI" {
+		object.DeleteMessage(messages[0])
+		message.Author = "AI"
+		message.ReplyTo = "Welcome"
+		addMessageAfterSuccess = false
+	} else if message.IsRegenerated {
 		var lastAIMessage *object.Message
 		var lastUserMessage *object.Message
 		for i := len(messages) - 1; i >= 0; i-- {
@@ -224,7 +232,7 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
-	if success {
+	if success && addMessageAfterSuccess {
 		chatId := util.GetId(message.Owner, message.Chat)
 		chat, err = object.GetChat(chatId)
 		if err != nil {
@@ -253,66 +261,6 @@ func (c *ApiController) AddMessage() {
 		}
 	}
 
-	c.ResponseOk(chat)
-}
-
-func (c *ApiController) AddWelcomeMessage() {
-	var message *object.Message
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, message)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
-	message, err = object.GetMessage(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	user := c.GetSessionUsername()
-	if user != "" && user != message.User {
-		c.ResponseError("No permission")
-		return
-	}
-
-	if user == "" {
-		clientIp := c.getClientIp()
-		userAgent := c.getUserAgent()
-		hash := getContentHash(fmt.Sprintf("%s|%s", clientIp, userAgent))
-		username := fmt.Sprintf("u-%s", hash)
-		if username != message.User {
-			c.ResponseError("No permission")
-			return
-		}
-	}
-
-	if message.Author != "AI" || message.ReplyTo != "Welcome" {
-		c.ResponseError("No permission")
-		return
-	}
-
-	var chat *object.Chat
-	chatId := util.GetId(message.Owner, message.Chat)
-	chat, err = object.GetChat(chatId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if chat == nil {
-		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
-		return
-	}
-	if chat.MessageCount > 0 {
-		c.ResponseError("No Permission")
-	}
-
-	_, err = object.AddMessage(message)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
 	c.ResponseOk(chat)
 }
 

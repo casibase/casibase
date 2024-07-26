@@ -16,7 +16,7 @@ import React from "react";
 import {Alert, Button} from "antd";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import {deleteWelcomeMessage, updateMessage} from "./backend/MessageBackend";
+import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
@@ -71,22 +71,13 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const messages = this.props.messages;
-    if (messages.length === 1 && messages[0].replyTo === "Welcome") {
-      deleteWelcomeMessage(messages[0])
-        .then((res) => {
-          if (res.status === "ok") {
-            this.props.sendMessage("", "", false, true);
-          } else {
-            Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
-          }
-        })
-        .catch(error => {
-          Setting.showMessage("error", `Message failed to delete: ${error}`);
-        });
+    if (messages.length === 1 && messages[0].replyTo === "Welcome" && messages[0].author === "AI") {
+      this.props.sendMessage("", "", true);
       return;
     }
+
     const lastUserMessage = messages.reverse().find(message => message.author !== "AI");
-    this.props.sendMessage(lastUserMessage.text, "", true, false);
+    this.props.sendMessage(lastUserMessage.text, "", true);
   };
 
   handleImageClick = () => {
