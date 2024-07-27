@@ -71,12 +71,12 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const messages = this.props.messages;
-    let text;
-    if (messages.length === 1 && messages[0].replyTo === "Welcome" && messages[0].author === "AI") {
-      text = "";
-    } else {
-      text = messages.reverse().find(message => message.author !== "AI").text;
-    }
+    const isSingleWelcomeMessage = (
+      messages.length === 1 &&
+      messages[0].replyTo === "Welcome" &&
+      messages[0].author === "AI"
+    );
+    const text = isSingleWelcomeMessage ? "" : messages.reverse().find(message => message.author !== "AI").text;
     this.props.sendMessage(text, "", true);
   };
 
