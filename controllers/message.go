@@ -153,6 +153,8 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	addMessageAfterSuccess := true
 	if message.IsRegenerated {
 		messages, err := object.GetChatMessages(message.Chat)
 		if err != nil {
@@ -181,8 +183,25 @@ func (c *ApiController) AddMessage() {
 				break
 			}
 		}
-		object.DeleteMessage(lastAIMessage)
-		object.DeleteMessage(lastUserMessage)
+		if lastAIMessage != nil {
+			if lastAIMessage.ReplyTo == "Welcome" {
+				message.Author = "AI"
+				message.ReplyTo = "Welcome"
+				addMessageAfterSuccess = false
+			}
+			_, err = object.DeleteMessage(lastAIMessage)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
+		}
+		if lastUserMessage != nil {
+			_, err = object.DeleteMessage(lastUserMessage)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
+		}
 	}
 	var chat *object.Chat
 	if message.Chat == "" {
@@ -224,7 +243,7 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
-	if success {
+	if success && addMessageAfterSuccess {
 		chatId := util.GetId(message.Owner, message.Chat)
 		chat, err = object.GetChat(chatId)
 		if err != nil {
