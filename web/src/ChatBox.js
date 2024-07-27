@@ -71,13 +71,13 @@ class ChatBox extends React.Component {
 
   handleRegenerate = () => {
     const messages = this.props.messages;
+    let text;
     if (messages.length === 1 && messages[0].replyTo === "Welcome" && messages[0].author === "AI") {
-      this.props.sendMessage("", "", true);
-      return;
+      text = "";
+    } else {
+      text = messages.reverse().find(message => message.author !== "AI").text;
     }
-
-    const lastUserMessage = messages.reverse().find(message => message.author !== "AI");
-    this.props.sendMessage(lastUserMessage.text, "", true);
+    this.props.sendMessage(text, "", true);
   };
 
   handleImageClick = () => {
