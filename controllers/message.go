@@ -250,6 +250,25 @@ func (c *ApiController) AddMessage() {
 				c.ResponseError(err.Error())
 				return
 			}
+
+			messages, _ := object.GetChatMessages(message.Chat)
+			var secondLastAIMessage *object.Message
+			for i := len(messages) - 2; i >= 0; i-- {
+				if messages[i].Author == "AI" {
+					secondLastAIMessage = messages[i]
+					break
+				}
+			}
+
+			if secondLastAIMessage != nil {
+				for i := 0; i < len(secondLastAIMessage.Suggestions); i++ {
+					if secondLastAIMessage.Suggestions[i].Text == message.Text {
+						secondLastAIMessage.Suggestions[i].IsHit = true
+						_, _ = object.UpdateMessage(secondLastAIMessage.GetId(), secondLastAIMessage)
+						break
+					}
+				}
+			}
 		}
 	}
 

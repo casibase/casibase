@@ -248,8 +248,6 @@ class ChatBox extends React.Component {
                   margin: "3px",
                 }} onClick={() => {
                   this.props.sendMessage(suggestionText, "");
-                  message.suggestions[index].isHit = true;
-                  updateMessage(message.owner, message.name, message);
                 }}
               >{suggestionText}</Button>
             );
