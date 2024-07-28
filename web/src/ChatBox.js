@@ -24,7 +24,7 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
+import {AudioFilled, AudioOutlined, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
 class ChatBox extends React.Component {
@@ -36,8 +36,11 @@ class ChatBox extends React.Component {
       messages: this.props.messages,
       currentReadingMessage: null,
       isReading: false,
+      isVoiceInput: false,
     };
     this.synth = window.speechSynthesis;
+    this.recognition = undefined;
+    this.cursorPosition = undefined;
     this.copyFileName = null;
   }
 
@@ -45,9 +48,33 @@ class ChatBox extends React.Component {
     window.addEventListener("beforeunload", () => {
       this.synth.cancel();
     });
+    this.addCursorPositionListener();
+  }
+
+  addCursorPositionListener() {
+    const inputElement = document.querySelector(".cs-message-input__content-editor");
+    const updateCursorPosition = () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const preSelectionRange = range.cloneRange();
+        preSelectionRange.selectNodeContents(inputElement);
+        preSelectionRange.setEnd(range.startContainer, range.startOffset);
+        this.cursorPosition = preSelectionRange.toString().length;
+        if (this.state.isVoiceInput) {
+          this.recognition.abort();
+          this.recognition.onresult = this.insertVoiceMessage.call(this);
+        }
+      }
+    };
+    // add listener to update cursor position
+    inputElement.addEventListener("keyup", updateCursorPosition);
+    inputElement.addEventListener("click", updateCursorPosition);
   }
 
   handleSend = (innerHtml) => {
+    // abort because the remaining recognition results are useless
+    this.recognition?.abort();
     if (this.state.value === "" || this.props.disableInput) {
       return;
     }
@@ -265,6 +292,73 @@ class ChatBox extends React.Component {
     );
   }
 
+  insertVoiceMessage() {
+    const oldValue = this.state.value;
+
+    return (event) => {
+      const result = Array.from(event?.results)?.map((result) => result[0].transcript).join(",");
+      if (this.cursorPosition === undefined) {
+        this.setState({value: oldValue + result});
+      } else {
+        const newValue = oldValue.slice(0, this.cursorPosition) + result + oldValue.slice(this.cursorPosition);
+        this.setState({value: newValue});
+      }
+    };
+  }
+
+  renderVoiceInput() {
+    if (!(window["SpeechRecognition"] || window["webkitSpeechRecognition"])) {
+      return null;
+    }
+    if (!this.recognition) {
+      this.recognition = new (window["SpeechRecognition"] || window["webkitSpeechRecognition"])();
+      this.recognition.continuous = true;
+      this.recognition.interimResults = true;
+      this.recognition.onend = () => {
+        this.setState({isVoiceInput: false});
+      };
+    }
+
+    const onStart = () => {
+      this.setState({isVoiceInput: true});
+      this.recognition.onresult = this.insertVoiceMessage.call(this);
+      this.recognition.start();
+    };
+
+    const onStop = () => {
+      this.recognition.abort();
+    };
+
+    return (
+      <div className={"cs-message-input__tools"} style={{height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingBottom: "1em"}}>
+        {
+          this.state.isVoiceInput
+            ? <AudioFilled className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStop} />
+            : <AudioOutlined className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStart} />
+        }
+      </div>
+    );
+  }
+
+  renderVoiceInputHint() {
+    const baseUnit = Setting.isMobile() ? "vw" : "vh";
+    return (
+      <div style={{position: "absolute", zIndex: "100", top: "50%", left: "50%", transform: "translate(-50%, -50%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+        <div style={{padding: "10px", boxShadow: "0 0 10px rgba(0,0,0,0.1)", borderRadius: "50%", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "50" + baseUnit, height: "50" + baseUnit, backgroundColor: "rgba(255, 255, 255, 0.8)"}}
+          onClick={
+            () => {
+              this.recognition.abort();
+              this.setState({isVoiceInput: false});
+            }
+          }>
+          <AudioFilled style={{fontSize: `10${baseUnit}`, color: ThemeDefault.colorPrimary, marginBottom: "10%"}} />
+          <div style={{fontSize: "14px", color: ThemeDefault.colorPrimary, marginBottom: "5%", fontFamily: "Arial, sans-serif", fontWeight: "bold"}}>{i18next.t("chat:I'm listening...")}</div>
+          <div style={{fontSize: "12px", color: ThemeDefault.colorPrimary, fontFamily: "Arial, sans-serif"}}>{i18next.t("chat:click to stop...")}</div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     let title = Setting.getUrlParam("title");
     if (title === null) {
@@ -316,37 +410,45 @@ class ChatBox extends React.Component {
                 </Message>
               ))}
             </MessageList>
-            {
-              this.props.hideInput === true ? null : (
-                <MessageInput disabled={false}
-                  sendDisabled={this.state.value === "" || this.props.disableInput}
-                  placeholder={i18next.t("chat:Type message here")}
-                  onSend={this.handleSend}
-                  value={this.state.value}
-                  onChange={(val) => {
-                    this.setState({value: val});
-                  }}
-                  onAttachClick={() => {
-                    this.handleImageClick();
-                  }}
-                  onPaste={(event) => {
-                    const items = event.clipboardData.items;
-                    const item = items[0];
-                    if (item.kind === "file") {
-                      event.preventDefault();
-                      const file = item.getAsFile();
-                      this.copyFileName = file.name;
-                      this.handleInputChange(file);
-                    }
-                  }}
-                  onDragOver={this.handleDragOver}
-                  onDrop={this.handleDrop}
-                />
-              )
-            }
+            {/* the "as" property make div could be played in ChatContainer */}
+            {/* eslint-disable-next-line react/no-unknown-property */}
+            <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
+              {
+                this.props.hideInput === true ? null : (
+                  <MessageInput disabled={false}
+                    style={{flex: 1, border: "none"}}
+                    sendDisabled={this.state.value === "" || this.props.disableInput}
+                    placeholder={i18next.t("chat:Type message here")}
+                    onSend={this.handleSend}
+                    value={this.state.value}
+                    onChange={(val) => {
+                      this.setState({value: val});
+                    }}
+                    onAttachClick={() => {
+                      this.handleImageClick();
+                    }}
+                    onPaste={(event) => {
+                      const items = event.clipboardData.items;
+                      const item = items[0];
+                      if (item.kind === "file") {
+                        event.preventDefault();
+                        const file = item.getAsFile();
+                        this.copyFileName = file.name;
+                        this.handleInputChange(file);
+                      }
+                    }}
+                    onDragOver={this.handleDragOver}
+                    onDrop={this.handleDrop}
+                  />
+                )
+              }
+              {
+                this.renderVoiceInput()
+              }
+            </div>
           </ChatContainer>
           {
-            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+            !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} /> : this.renderVoiceInputHint()
           }
         </MainContainer>
         <input
