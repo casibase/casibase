@@ -31,13 +31,13 @@ class ProvidersUsageTable extends React.Component {
 
     const providersUsageColumn = [
       {
-        title: i18next.t("Provider"),
+        title: i18next.t("provider:Provider"),
         dataIndex: "key",
         key: "key",
         width: "50%",
       },
       {
-        title: i18next.t("Usage (tokens/min)"),
+        title: i18next.t("provider:Usage (tokens/min)"),
         dataIndex: "tokenCount",
         key: "tokenCount",
         width: "50%",
