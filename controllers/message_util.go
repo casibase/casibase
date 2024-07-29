@@ -161,7 +161,7 @@ func GetIdleModelProvider(modelUsageMap map[string]object.UsageInfo, name string
 		return "", nil, err
 	}
 	if intention == "image" {
-		for providerName, _ := range modelUsageMap {
+		for providerName := range modelUsageMap {
 			providerObj := modelProviderMap[providerName]
 			if providerObj.SubType == "dall-e-3" {
 				return providerName, modelProviderObjMap[providerName], nil
