@@ -17,6 +17,7 @@ package model
 import (
 	"fmt"
 	"math"
+	"regexp"
 
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
@@ -164,9 +165,17 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	if err != nil {
 		return nil, err
 	}
+	nonImageHistoryMessage := []*RawMessage{}
+	for _, message := range historyMessages {
+		re := regexp.MustCompile(`<img[^>]*\s+src=["']?([^"'>\s]+)["']?[^>]*>`)
+		match := re.FindStringSubmatch(message.Text)
+		if match == nil {
+			nonImageHistoryMessage = append(nonImageHistoryMessage, message)
+		}
+	}
 
 	res := getSystemMessages(prompt, knowledgeMessages)
-	res = append(res, historyMessages...)
+	res = append(res, nonImageHistoryMessage...)
 	res = append(res, queryMessage)
 	return res, nil
 }
