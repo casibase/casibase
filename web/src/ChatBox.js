@@ -320,9 +320,21 @@ class ChatBox extends React.Component {
     }
 
     const onStart = () => {
-      this.setState({isVoiceInput: true});
-      this.recognition.onresult = this.insertVoiceMessage.call(this);
-      this.recognition.start();
+      const constraints = {
+        audio: true,
+      };
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+          this.setState({isVoiceInput: true});
+          this.recognition.onresult = this.insertVoiceMessage.call(this);
+          this.recognition.start();
+        }).catch((error) => {
+          if (error.name === "NotAllowedError") {
+            Setting.showMessage("error", i18next.t("chat:Please enable microphone permission in your browser settings"));
+          } else {
+            Setting.showMessage("error", error.message);
+          }
+        });
     };
 
     const onStop = () => {
