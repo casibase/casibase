@@ -109,16 +109,24 @@ func isImageQuestion(question string) bool {
 }
 
 func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
+	nonDALLEModelUsageMap := map[string]object.UsageInfo{}
+	for providerName, usageInfo := range modelUsageMap {
+		providerObj := modelProviderMap[providerName]
+		if providerObj.SubType == "dall-e-3" {
+			continue
+		}
+		nonDALLEModelUsageMap[providerName] = usageInfo
+	}
 	visionModelUsageMap := map[string]object.UsageInfo{}
 	if isImageQuestion(question) {
-		for providerName, usageInfo := range modelUsageMap {
+		for providerName, usageInfo := range nonDALLEModelUsageMap {
 			providerObj := modelProviderMap[providerName]
 			if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
 				visionModelUsageMap[providerName] = usageInfo
 			}
 		}
 	} else {
-		visionModelUsageMap = modelUsageMap
+		visionModelUsageMap = nonDALLEModelUsageMap
 	}
 
 	filteredModelUsageMap := map[string]object.UsageInfo{}
@@ -146,6 +154,20 @@ func GetIdleModelProvider(modelUsageMap map[string]object.UsageInfo, name string
 	modelProviderMap, modelProviderObjMap, err := object.GetModelProvidersFromContext("admin", name, isFromStore)
 	if err != nil {
 		return "", nil, err
+	}
+
+	intention, err := getPromptIntention(question, name)
+	if err != nil {
+		return "", nil, err
+	}
+	if intention == "image" {
+		for providerName := range modelUsageMap {
+			providerObj := modelProviderMap[providerName]
+			if providerObj.SubType == "dall-e-3" {
+				return providerName, modelProviderObjMap[providerName], nil
+			}
+		}
+		return "", nil, fmt.Errorf("please config a DALL-E-3 model provider firstly")
 	}
 
 	modelUsageMap, err = getFilteredModelUsageMap(modelUsageMap, modelProviderMap, modelProviderObjMap, question, writer, knowledge, history)
@@ -248,4 +270,19 @@ func formatSuggestion(suggestionText string) string {
 		suggestionText += "?"
 	}
 	return suggestionText
+}
+
+func getPromptIntention(prompt string, name string) (string, error) {
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", name)
+	if err != nil {
+		return "", err
+	}
+	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + prompt + "]"
+	var writer object.MyWriter
+	_, err = modelProviderObj.QueryText(getIntentionPrompt, &writer, []*model.RawMessage{}, "", []*model.RawMessage{})
+	if err != nil {
+		return "", err
+	}
+	intention := writer.String()
+	return intention, nil
 }
