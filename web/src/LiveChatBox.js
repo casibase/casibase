@@ -88,7 +88,14 @@ class LiveChatBox extends ChatBox {
     this.scene = new THREE.Scene();
     this.scene.castShadow = true;
     this.scene.receiveShadow = true;
-    this.scene.fog = new THREE.Fog("#cce0ff", 5, 500);
+    this.scene.fog = new THREE.Fog("#cce0ff", 5, 800);
+    // const ambientLight = new THREE.AmbientLight(0x404040); // 低亮度的白光
+    // ambientLight.intensity = 20;
+    // this.scene.add(ambientLight);
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    pointLight.position.set(-5, 10, 40);
+    this.scene.add(pointLight);
+
     const canvas = document.getElementById("canvas");
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
