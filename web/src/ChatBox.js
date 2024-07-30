@@ -27,6 +27,9 @@ import {ThemeDefault} from "./Conf";
 import {AudioFilled, AudioOutlined, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
 
+// store the input value when the name(chat) leaves
+const inputStore = new Map();
+
 class ChatBox extends React.Component {
   constructor(props) {
     super(props);
@@ -54,8 +57,18 @@ class ChatBox extends React.Component {
   componentDidUpdate(prevProps, prevState, snapshot) {
     // clear old status when the name(chat) changes
     if (prevProps.name !== this.props.name) {
+      inputStore.set(prevProps.name, this.state.value);
       this.clearOldStatus();
     }
+    if (inputStore.has(this.props.name)) {
+      this.setState({value: inputStore.get(this.props.name)});
+      inputStore.delete(this.props.name);
+    }
+  }
+
+  componentWillUnmount() {
+    inputStore.set(this.props.name, this.state.value);
+    this.clearOldStatus();
   }
 
   clearOldStatus() {
