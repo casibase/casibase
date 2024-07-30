@@ -51,6 +51,27 @@ class ChatBox extends React.Component {
     this.addCursorPositionListener();
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // clear old status when the name(chat) changes
+    if (prevProps.name !== this.props.name) {
+      this.clearOldStatus();
+    }
+  }
+
+  clearOldStatus() {
+    this.recognition?.abort();
+    this.synth.cancel();
+    this.setState({
+      value: "",
+      files: [],
+      messages: this.props.messages,
+      currentReadingMessage: null,
+      isReading: false,
+      isVoiceInput: false,
+    });
+    this.cursorPosition = undefined;
+  }
+
   addCursorPositionListener() {
     const inputElement = document.querySelector(".cs-message-input__content-editor");
     const updateCursorPosition = () => {
@@ -63,7 +84,7 @@ class ChatBox extends React.Component {
         this.cursorPosition = preSelectionRange.toString().length;
         if (this.state.isVoiceInput) {
           this.recognition.abort();
-          this.recognition.onresult = this.insertVoiceMessage.call(this);
+          // this.recognition.onresult = this.insertVoiceMessage.call(this);
         }
       }
     };
