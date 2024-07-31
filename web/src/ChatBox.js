@@ -441,11 +441,11 @@ class ChatBox extends React.Component {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
                       <Message.Footer>
                         <div>
-                          {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
-                          {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
-                          {<Button icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
-                          {<Button icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
-                          {<Button icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
+                          {<Button className={"cs-button"} icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                          {index !== messages.length - 1 ? null : <Button className={"cs-button"} icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
+                          {<Button className={"cs-button"} icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
+                          {<Button className={"cs-button"} icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
+                          {<Button className={"cs-button"} icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
                           <div>
                             {index !== messages.length - 1 ? null : this.renderSuggestions(message)}
                           </div>
