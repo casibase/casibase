@@ -111,6 +111,7 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 
 	files = filterTextFiles(files)
 
+	addedFlag := false
 	timeLimiter := rate.NewLimiter(rate.Every(time.Minute), limit)
 	for _, file := range files {
 		var text string
@@ -165,9 +166,18 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				fmt.Printf("[%d/%d] Generating embedding for store: [%s], file: [%s], index: [%d]: %s\n", i+1, len(textSections), storeName, file.Key, i, textSection)
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			}
+
+			if affected {
+				addedFlag = true
+			}
 		}
 	}
-
+	// indexing vectors after refreshing stores
+	if addedFlag {
+		go func() {
+			ReIndexing(embeddingProviderName)
+		}()
+	}
 	return affected, err
 }
 
@@ -221,7 +231,7 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 		return nil, nil, nil, fmt.Errorf("no qVector found")
 	}
 
-	searchProvider, err := GetSearchProvider("Default", owner)
+	searchProvider, err := GetSearchProvider("Annoy", owner)
 	if err != nil {
 		return nil, nil, nil, err
 	}

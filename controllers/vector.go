@@ -28,6 +28,9 @@ import (
 // @router /get-global-vectors [get]
 func (c *ApiController) GetGlobalVectors() {
 	vectors, err := object.GetGlobalVectors()
+	go func() {
+		object.CheckAndReIndexing(vectors)
+	}()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -46,6 +49,9 @@ func (c *ApiController) GetVectors() {
 	owner := "admin"
 
 	vectors, err := object.GetVectors(owner)
+	go func() {
+		object.CheckAndReIndexing(vectors)
+	}()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -133,6 +139,7 @@ func (c *ApiController) DeleteVector() {
 	}
 
 	success, err := object.DeleteVector(&vector)
+	object.MarkDeleted(vector.Provider)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
