@@ -273,17 +273,19 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	if store.ModelUsageMap != nil {
+		tokenCount := store.ModelUsageMap[message.ModelProvider].TokenCount + message.TokenCount
 		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
 			Provider:   message.ModelProvider,
-			TokenCount: message.TokenCount,
+			TokenCount: tokenCount,
 			StartTime:  time.Now(),
 		}
 	}
 
 	if store.EmbeddingUsageMap != nil {
+		tokenCount := store.EmbeddingUsageMap[message.EmbeddingProvider].TokenCount + message.TokenCount
 		store.EmbeddingUsageMap[embeddingProvider.Name] = object.UsageInfo{
 			Provider:   embeddingProvider.Name,
-			TokenCount: embeddingResult.TokenCount,
+			TokenCount: tokenCount,
 			StartTime:  time.Now(),
 		}
 	}
