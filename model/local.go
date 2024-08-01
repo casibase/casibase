@@ -284,6 +284,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			flusher.Flush()
 
 			modelResult.ImageCount = 1
+			modelResult.TotalTokenCount = modelResult.ImageCount
 			err = p.calculatePrice(modelResult)
 			if err != nil {
 				return nil, err
