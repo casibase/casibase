@@ -22,9 +22,13 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-// https://pkg.go.dev/github.com/sashabaranov/go-openai@v1.12.0#pkg-constants
+// https://pkg.go.dev/github.com/sashabaranov/go-openai@v1.27.1#pkg-constants
 // https://platform.openai.com/docs/models/overview
 var __maxTokens = map[string]int{
+	openai.GPT4o:                128000,
+	openai.GPT4o20240513:        128000,
+	openai.GPT4oMini:            128000,
+	openai.GPT4oMini20240718:    128000,
 	openai.GPT4VisionPreview:    128000,
 	openai.GPT4:                 8192,
 	openai.GPT40613:             8192,
@@ -63,7 +67,7 @@ func getOpenAiModelType(model string) string {
 		"gpt-3.5-turbo-16k-0613", "gpt-3.5-turbo-16k", "gpt-4-0125-preview",
 		"gpt-4-1106-preview", "gpt-4-turbo-preview", "gpt-4-vision-preview",
 		"gpt-4-1106-vision-preview", "gpt-4", "gpt-4-0613",
-		"gpt-4-32k", "gpt-4-32k-0613", "custom-model",
+		"gpt-4-32k", "gpt-4-32k-0613", "gpt-4o", "gpt-4o-2024-05-13", "gpt-4o-mini", "gpt-4o-mini-2024-07-18", "custom-model",
 	}
 
 	completionModels := []string{

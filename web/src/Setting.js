@@ -691,6 +691,10 @@ export function getCompitableProviderOptions(category) {
         {"id": "gpt-4-0613", "name": "gpt-4-0613"},
         {"id": "gpt-4-32k", "name": "gpt-4-32k"},
         {"id": "gpt-4-32k-0613", "name": "gpt-4-32k-0613"},
+        {"id": "gpt-4o", "name": "gpt-4o"},
+        {"id": "gpt-4o-2024-05-13", "name": "gpt-4o-2024-05-13"},
+        {"id": "gpt-4o-mini", "name": "gpt-4o-mini"},
+        {"id": "gpt-4o-mini-2024-07-18", "name": "gpt-4o-mini-2024-07-18"},
       ]
     );
   } else if (category === "Embedding") {
@@ -769,6 +773,10 @@ const openaiModels = [
   {id: "gpt-4-0613", name: "gpt-4-0613"},
   {id: "gpt-4-32k", name: "gpt-4-32k"},
   {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+  {id: "gpt-4o", name: "gpt-4o"},
+  {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
+  {id: "gpt-4o-mini", name: "gpt-4o-mini"},
+  {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
 ];
 
 const openaiEmbeddings = [

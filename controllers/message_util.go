@@ -121,7 +121,7 @@ func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelPr
 	if isImageQuestion(question) {
 		for providerName, usageInfo := range nonDALLEModelUsageMap {
 			providerObj := modelProviderMap[providerName]
-			if strings.HasSuffix(providerObj.SubType, "-vision-preview") {
+			if strings.HasSuffix(providerObj.SubType, "-vision-preview") || strings.Contains(providerObj.SubType, "4o") {
 				visionModelUsageMap[providerName] = usageInfo
 			}
 		}
