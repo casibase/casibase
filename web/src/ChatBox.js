@@ -102,8 +102,8 @@ class ChatBox extends React.Component {
       }
     };
     // add listener to update cursor position
-    inputElement.addEventListener("keyup", updateCursorPosition);
-    inputElement.addEventListener("click", updateCursorPosition);
+    inputElement?.addEventListener("keyup", updateCursorPosition);
+    inputElement?.addEventListener("click", updateCursorPosition);
   }
 
   handleSend = (innerHtml) => {
@@ -456,42 +456,44 @@ class ChatBox extends React.Component {
                 </Message>
               ))}
             </MessageList>
-            {/* the "as" property make div could be played in ChatContainer */}
-            {/* eslint-disable-next-line react/no-unknown-property */}
-            <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
-              {
-                this.props.hideInput === true ? null : (
-                  <MessageInput disabled={false}
-                    style={{flex: 1, border: "none"}}
-                    sendDisabled={this.state.value === "" || this.props.disableInput}
-                    placeholder={i18next.t("chat:Type message here")}
-                    onSend={this.handleSend}
-                    value={this.state.value}
-                    onChange={(val) => {
-                      this.setState({value: val});
-                    }}
-                    onAttachClick={() => {
-                      this.handleImageClick();
-                    }}
-                    onPaste={(event) => {
-                      const items = event.clipboardData.items;
-                      const item = items[0];
-                      if (item.kind === "file") {
-                        event.preventDefault();
-                        const file = item.getAsFile();
-                        this.copyFileName = file.name;
-                        this.handleInputChange(file);
-                      }
-                    }}
-                    onDragOver={this.handleDragOver}
-                    onDrop={this.handleDrop}
-                  />
-                )
-              }
-              {
-                this.renderVoiceInput()
-              }
-            </div>
+            {
+              this.props.disableInput ? null : (
+                // the "as" property make div could be played in ChatContainer
+                // eslint-disable-next-line react/no-unknown-property
+                <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
+                  {
+                    <MessageInput disabled={false}
+                      style={{flex: 1, border: "none"}}
+                      sendDisabled={this.state.value === "" || this.props.disableInput}
+                      placeholder={i18next.t("chat:Type message here")}
+                      onSend={this.handleSend}
+                      value={this.state.value}
+                      onChange={(val) => {
+                        this.setState({value: val});
+                      }}
+                      onAttachClick={() => {
+                        this.handleImageClick();
+                      }}
+                      onPaste={(event) => {
+                        const items = event.clipboardData.items;
+                        const item = items[0];
+                        if (item.kind === "file") {
+                          event.preventDefault();
+                          const file = item.getAsFile();
+                          this.copyFileName = file.name;
+                          this.handleInputChange(file);
+                        }
+                      }}
+                      onDragOver={this.handleDragOver}
+                      onDrop={this.handleDrop}
+                    />
+                  }
+                  {
+                    this.renderVoiceInput()
+                  }
+                </div>
+              )
+            }
           </ChatContainer>
           {
             !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} /> : this.renderVoiceInputHint()
