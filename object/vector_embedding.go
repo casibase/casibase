@@ -55,7 +55,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 
 	displayName := text
 	if len(text) > 25 {
-		displayName = text[:25]
+		displayName = string([]rune(text)[:25])
 	}
 
 	tokenCount := 0
@@ -166,6 +166,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 				affected, err = addEmbeddedVector(embeddingProviderObj, textSection, storeName, file.Key, i, embeddingProviderName, modelSubType)
 			}
 		}
+	}
+	// after add vector, sync
+	err = syncVectorCache(storeName)
+	if err != nil {
+		return false, err
 	}
 
 	return affected, err
