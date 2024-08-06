@@ -18,6 +18,8 @@ import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/css
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu} from "antd";
 import {BarsOutlined, CommentOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
+import AssetsScanDetailPage from "./AssetsScanDetailPage";
+import AssetsScanListPage from "./AssetsScanListPage";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -136,6 +138,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/swagger")) {
       this.setState({selectedMenuKey: "/swagger"});
+    } else if (uri.includes("/assets")) {
+      this.setState({selectedMenuKey: "/assets"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
@@ -406,6 +410,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
       res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
+      res.push(Setting.getItem(<Link to="/assets">{i18next.t("general:Assets")}</Link>, "/assets"));
 
       res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
       res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
@@ -501,6 +506,8 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/assets" render={(props) => this.renderSigninIfNotSignedIn(<AssetsScanListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/assets/:id" render={(props) => this.renderSigninIfNotSignedIn(<AssetsScanDetailPage account={this.state.account} {...props} />)} />
       </Switch>
     );
   }
