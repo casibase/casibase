@@ -207,6 +207,9 @@ func getFirstVectorCache(vector *Vector) (*Vector, bool) {
 		if vector.Index != 0 && vector.Index != v.Index {
 			continue
 		}
+		if vector.Provider != "" && vector.Provider != v.Provider {
+			continue
+		}
 		return v, true
 	}
 	return nil, false
@@ -304,6 +307,9 @@ func syncSpecialVectorCache(vector *Vector) error {
 			continue
 		}
 		if vector.Index != 0 && vector.Index != v.Index {
+			continue
+		}
+		if vector.Provider != "" && vector.Provider != v.Provider {
 			continue
 		}
 		vectorCache[key] = append(vectorCache[key], v)
