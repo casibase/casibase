@@ -17,6 +17,7 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -28,13 +29,37 @@ import (
 // @Success 200 {array} object.Chat The Response object
 // @router /get-global-chats [get]
 func (c *ApiController) GetGlobalChats() {
-	chats, err := object.GetGlobalChats()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	c.ResponseOk(chats)
+	if limit == "" || page == "" {
+		chats, err := object.GetGlobalChats()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(chats)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetChatCount("", field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		chats, err := object.GetPaginationChat("", paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(chats, paginator.Nums())
+	}
 }
 
 // GetChats

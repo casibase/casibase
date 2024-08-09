@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -29,13 +30,37 @@ import (
 // @Success 200 {array} object.Message The Response object
 // @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
-	messages, err := object.GetGlobalMessages()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
+	owner := "admin"
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	c.ResponseOk(messages)
+	if limit == "" || page == "" {
+		messages, err := object.GetGlobalMessages()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(messages)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetMessageCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		messages, err := object.GetPaginationMessage(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(messages, paginator.Nums())
+	}
 }
 
 // GetMessages

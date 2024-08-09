@@ -24,8 +24,8 @@ export function getGlobalTasks() {
   }).then(res => res.json());
 }
 
-export function getTasks(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-tasks?owner=${owner}`, {
+export function getTasks(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-tasks?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {

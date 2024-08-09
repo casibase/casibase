@@ -24,8 +24,8 @@ export function getGlobalWordsets() {
   }).then(res => res.json());
 }
 
-export function getWordsets(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-wordsets?owner=${owner}`, {
+export function getWordsets(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-wordsets?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {

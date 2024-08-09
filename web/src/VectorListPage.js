@@ -16,6 +16,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
@@ -25,30 +26,9 @@ import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/markdown/markdown");
 
-class VectorListPage extends React.Component {
+class VectorListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      vectors: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getVectors();
-  }
-
-  getVectors() {
-    VectorBackend.getVectors(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            vectors: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get vectors: ${res.msg}`);
-        }
-      });
   }
 
   newVector() {
@@ -72,7 +52,11 @@ class VectorListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Vector added successfully");
           this.setState({
-            vectors: Setting.prependRow(this.state.vectors, newVector),
+            data: Setting.prependRow(this.state.data, newVector),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add vector: ${res.msg}`);
@@ -83,13 +67,17 @@ class VectorListPage extends React.Component {
       });
   }
 
-  deleteVector(i) {
-    VectorBackend.deleteVector(this.state.vectors[i])
+  deleteVector(record) {
+    VectorBackend.deleteVector(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Vector deleted successfully");
           this.setState({
-            vectors: Setting.deleteRow(this.state.vectors, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Vector failed to delete: ${res.msg}`);
@@ -229,7 +217,7 @@ class VectorListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/vectors/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteVector(index)}
+                onConfirm={() => this.deleteVector(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -241,9 +229,16 @@ class VectorListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={vectors} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -251,20 +246,42 @@ class VectorListPage extends React.Component {
             </div>
           )}
           loading={vectors === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.vectors)
+  fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    this.setState({loading: true});
+    VectorBackend.getVectors("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default VectorListPage;

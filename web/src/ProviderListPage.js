@@ -16,34 +16,14 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 
-class ProviderListPage extends React.Component {
+class ProviderListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      providers: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getProviders();
-  }
-
-  getProviders() {
-    ProviderBackend.getProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            providers: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
-        }
-      });
   }
 
   newProvider() {
@@ -93,7 +73,11 @@ class ProviderListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Provider added successfully");
           this.setState({
-            providers: Setting.prependRow(this.state.providers, newProvider),
+            data: Setting.prependRow(this.state.data, newProvider),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add provider: ${res.msg}`);
@@ -104,13 +88,17 @@ class ProviderListPage extends React.Component {
       });
   }
 
-  deleteProvider(i) {
-    ProviderBackend.deleteProvider(this.state.providers[i])
+  deleteProvider(record) {
+    ProviderBackend.deleteProvider(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Provider deleted successfully");
           this.setState({
-            providers: Setting.deleteRow(this.state.providers, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Provider failed to delete: ${res.msg}`);
@@ -218,9 +206,16 @@ class ProviderListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={providers} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Providers")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -230,20 +225,46 @@ class ProviderListPage extends React.Component {
             </div>
           )}
           loading={providers === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.providers)
+  fetch = (params = {}) => {
+    let field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    if (params.type !== undefined && params.type !== null) {
+      field = "type";
+      value = params.type;
+    }
+    this.setState({loading: true});
+    ProviderBackend.getProviders(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default ProviderListPage;

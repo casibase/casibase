@@ -16,37 +16,16 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table, Tag, Tooltip} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as TaskBackend from "./backend/TaskBackend";
 import i18next from "i18next";
 import * as ConfTask from "./ConfTask";
 
-class TaskListPage extends React.Component {
+class TaskListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      tasks: null,
-    };
   }
-
-  UNSAFE_componentWillMount() {
-    this.getTasks();
-  }
-
-  getTasks() {
-    TaskBackend.getTasks(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            tasks: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get tasks: ${res.msg}`);
-        }
-      });
-  }
-
   newTask() {
     const randomName = Setting.getRandomName();
     return {
@@ -72,7 +51,11 @@ class TaskListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Task added successfully");
           this.setState({
-            tasks: Setting.prependRow(this.state.tasks, newTask),
+            data: Setting.prependRow(this.state.data, newTask),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add task: ${res.msg}`);
@@ -83,13 +66,17 @@ class TaskListPage extends React.Component {
       });
   }
 
-  deleteTask(i) {
-    TaskBackend.deleteTask(this.state.tasks[i])
+  deleteTask(record) {
+    TaskBackend.deleteTask(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Task deleted successfully");
           this.setState({
-            tasks: Setting.deleteRow(this.state.tasks, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Task failed to delete: ${res.msg}`);
@@ -253,7 +240,7 @@ class TaskListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/tasks/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteTask(index)}
+                onConfirm={() => this.deleteTask(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -275,9 +262,16 @@ class TaskListPage extends React.Component {
       columns = columns.filter(column => column.key !== "subject" && column.key !== "topic" && column.key !== "result" && column.key !== "activity" && column.key !== "grade");
     }
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={tasks} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={tasks} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Frameworks")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -285,20 +279,42 @@ class TaskListPage extends React.Component {
             </div>
           )}
           loading={tasks === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.tasks)
+  fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    this.setState({loading: true});
+    TaskBackend.getTasks(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default TaskListPage;

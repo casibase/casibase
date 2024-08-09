@@ -207,3 +207,26 @@ func (v *Video) UpdateCoverUrl() error {
 
 	return nil
 }
+
+func GetVideoCount(owner string, field string, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Vector{})
+}
+
+func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string) ([]*Video, error) {
+	videos := []*Video{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&videos)
+	if err != nil {
+		return videos, err
+	}
+
+	for _, v := range videos {
+		err = v.UpdateCoverUrl()
+		if err != nil {
+			return videos, err
+		}
+	}
+
+	return videos, nil
+}
