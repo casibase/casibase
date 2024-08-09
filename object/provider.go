@@ -435,3 +435,19 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 
 	return getEmbeddingProviderFromName(owner, providerName)
 }
+
+func GetProviderCount(owner, field, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Provider{})
+}
+
+func GetPaginationProviders(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
+	providers := []*Provider{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&providers)
+	if err != nil {
+		return providers, err
+	}
+
+	return providers, nil
+}

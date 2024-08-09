@@ -16,6 +16,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
@@ -23,33 +24,14 @@ import {ThemeDefault} from "./Conf";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
-class StoreListPage extends React.Component {
+class StoreListPage extends BaseListPage {
   constructor(props) {
     super(props);
     this.state = {
-      classes: props,
-      stores: null,
+      ...this.state,
       generating: false,
     };
   }
-
-  UNSAFE_componentWillMount() {
-    this.getStores();
-  }
-
-  getStores() {
-    StoreBackend.getGlobalStores()
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            stores: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
-        }
-      });
-  }
-
   newStore() {
     const randomName = Setting.getRandomName();
     return {
@@ -80,7 +62,11 @@ class StoreListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Store added successfully");
           this.setState({
-            stores: Setting.prependRow(this.state.stores, newStore),
+            data: Setting.prependRow(this.state.data, newStore),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Store failed to add: ${res.msg}`);
@@ -91,13 +77,17 @@ class StoreListPage extends React.Component {
       });
   }
 
-  deleteStore(i) {
-    StoreBackend.deleteStore(this.state.stores[i])
+  deleteStore(record) {
+    StoreBackend.deleteStore(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Store deleted successfully");
           this.setState({
-            stores: Setting.deleteRow(this.state.stores, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Store failed to delete: ${res.msg}`);
@@ -110,7 +100,7 @@ class StoreListPage extends React.Component {
 
   refreshStoreVectors(i) {
     this.setState({generating: true});
-    StoreBackend.refreshStoreVectors(this.state.stores[i])
+    StoreBackend.refreshStoreVectors(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Vectors generated successfully");
@@ -240,7 +230,7 @@ class StoreListPage extends React.Component {
                     <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/stores/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
                     <Popconfirm
                       title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                      onConfirm={() => this.deleteStore(index)}
+                      onConfirm={() => this.deleteStore(record)}
                       okText={i18next.t("general:OK")}
                       cancelText={i18next.t("general:Cancel")}
                     >
@@ -255,9 +245,16 @@ class StoreListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={stores} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Stores")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -269,20 +266,46 @@ class StoreListPage extends React.Component {
             </div>
           )}
           loading={stores === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.stores)
+  fetch = (params = {}) => {
+    let field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    if (params.type !== undefined && params.type !== null) {
+      field = "type";
+      value = params.type;
+    }
+    this.setState({loading: true});
+    StoreBackend.getGlobalStores(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default StoreListPage;

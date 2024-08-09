@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalProviders
@@ -44,14 +46,38 @@ func (c *ApiController) GetGlobalProviders() {
 // @router /get-providers [get]
 func (c *ApiController) GetProviders() {
 	owner := "admin"
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	providers, err := object.GetProviders(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		providers, err := object.GetProviders(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(providers)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetProviderCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		providers, err := object.GetPaginationProviders(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(providers, paginator.Nums())
 	}
-
-	c.ResponseOk(object.GetMaskedProviders(providers, true))
 }
 
 // GetProvider

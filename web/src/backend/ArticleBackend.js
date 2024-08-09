@@ -24,8 +24,8 @@ export function getGlobalArticles() {
   }).then(res => res.json());
 }
 
-export function getArticles(owner) {
-  return fetch(`${Setting.ServerUrl}/api/get-articles?owner=${owner}`, {
+export function getArticles(owner, page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-articles?owner=${owner}&p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {

@@ -112,3 +112,19 @@ func DeleteWordset(wordset *Wordset) (bool, error) {
 func (wordset *Wordset) GetId() string {
 	return fmt.Sprintf("%s/%s", wordset.Owner, wordset.Name)
 }
+
+func GetWordsetCount(owner string, field string, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Wordset{})
+}
+
+func GetPaginationWordsets(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Wordset, error) {
+	wordsets := []*Wordset{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&wordsets)
+	if err != nil {
+		return wordsets, err
+	}
+
+	return wordsets, nil
+}

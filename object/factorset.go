@@ -117,3 +117,19 @@ func DeleteFactorset(factorset *Factorset) (bool, error) {
 func (factorset *Factorset) GetId() string {
 	return fmt.Sprintf("%s/%s", factorset.Owner, factorset.Name)
 }
+
+func GetFactorsetCount(owner, field, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Factorset{})
+}
+
+func GetPaginationFactorsets(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Factorset, error) {
+	factorsets := []*Factorset{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&factorsets)
+	if err != nil {
+		return factorsets, err
+	}
+
+	return factorsets, nil
+}

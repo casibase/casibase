@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalVectors
@@ -44,14 +46,38 @@ func (c *ApiController) GetGlobalVectors() {
 // @router /get-vectors [get]
 func (c *ApiController) GetVectors() {
 	owner := "admin"
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	vectors, err := object.GetVectors(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		vectors, err := object.GetVectors(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(vectors)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetVectorCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		vectors, err := object.GetPaginationVectors(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(vectors, paginator.Nums())
 	}
-
-	c.ResponseOk(vectors)
 }
 
 func (c *ApiController) GetVector() {

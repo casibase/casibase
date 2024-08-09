@@ -17,17 +17,14 @@ import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VideoBackend from "./backend/VideoBackend";
 import i18next from "i18next";
 
-class VideoListPage extends React.Component {
+class VideoListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      videos: null,
-    };
   }
 
   UNSAFE_componentWillMount() {
@@ -39,7 +36,11 @@ class VideoListPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
-            videos: res.data,
+            data: res.data,
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to get videos: ${res.msg}`);
@@ -63,31 +64,17 @@ class VideoListPage extends React.Component {
     };
   }
 
-  addVideo() {
-    const newVideo = this.newVideo();
-    VideoBackend.addVideo(newVideo)
-      .then((res) => {
-        if (res.status === "ok") {
-          Setting.showMessage("success", "Video added successfully");
-          this.setState({
-            videos: Setting.prependRow(this.state.videos, newVideo),
-          });
-        } else {
-          Setting.showMessage("error", `Video failed to add: ${res.msg}`);
-        }
-      })
-      .catch(error => {
-        Setting.showMessage("error", `Video failed to add: ${error}`);
-      });
-  }
-
-  deleteVideo(i) {
-    VideoBackend.deleteVideo(this.state.videos[i])
+  deleteVideo(record) {
+    VideoBackend.deleteVideo(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Video deleted successfully");
           this.setState({
-            videos: Setting.deleteRow(this.state.videos, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Video failed to delete: ${res.msg}`);
@@ -245,7 +232,7 @@ class VideoListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteVideo(index)}
+                onConfirm={() => this.deleteVideo(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -257,9 +244,16 @@ class VideoListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Videos")}
@@ -272,20 +266,42 @@ class VideoListPage extends React.Component {
             </div>
           )}
           loading={videos === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.videos)
+  fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    this.setState({loading: true});
+    VideoBackend.getVideos("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default VideoListPage;

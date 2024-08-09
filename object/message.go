@@ -318,3 +318,19 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	res = strings.Trim(res, "\"")
 	return res, modelResult, nil
 }
+
+func GetMessageCount(owner string, field string, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Message{})
+}
+
+func GetPaginationMessage(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
+	messages := []*Message{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&messages)
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
