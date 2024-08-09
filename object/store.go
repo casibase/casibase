@@ -262,3 +262,19 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, limit)
 	return ok, err
 }
+
+func GetStoreCount(field, value string) (int64, error) {
+	session := GetSession("", -1, -1, field, value, "", "")
+	return session.Count(&Store{})
+}
+
+func GetPaginationStores(offset, limit int, field, value, sortField, sortOrder string) ([]*Store, error) {
+	stores := []*Store{}
+	session := GetSession("", offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&stores)
+	if err != nil {
+		return stores, err
+	}
+
+	return stores, nil
+}

@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/astaxie/beego"
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/audio"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/storage"
@@ -58,34 +59,38 @@ func (c *ApiController) GetGlobalVideos() {
 // @router /get-videos [get]
 func (c *ApiController) GetVideos() {
 	owner := c.Input().Get("owner")
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	videos, err := object.GetVideos(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	for _, v := range videos {
-		if len(v.Labels) != 0 {
-			v.LabelCount = len(v.Labels)
-			v.Labels = []*object.Label{}
+	if limit == "" || page == "" {
+		videos, err := object.GetVideos(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
 		}
 
-		if len(v.Segments) != 0 {
-			v.SegmentCount = len(v.Segments)
-			v.Segments = []*object.Label{}
+		c.ResponseOk(videos)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetVideoCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
 		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		videos, err := object.GetPaginationVideos(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(videos, paginator.Nums())
 	}
-
-	// for _, v := range videos {
-	//	err = v.Populate()
-	//	if err != nil {
-	//		c.ResponseError(err.Error())
-	//		return
-	//	}
-	// }
-
-	c.ResponseOk(videos)
 }
 
 // GetVideo

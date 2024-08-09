@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalFactorsets
@@ -45,14 +47,38 @@ func (c *ApiController) GetGlobalFactorsets() {
 // @router /get-factorsets [get]
 func (c *ApiController) GetFactorsets() {
 	owner := c.Input().Get("owner")
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	factorsets, err := object.GetFactorsets(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		factorsets, err := object.GetFactorsets(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(factorsets)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetFactorsetCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		factorsets, err := object.GetPaginationFactorsets(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(factorsets, paginator.Nums())
 	}
-
-	c.ResponseOk(factorsets)
 }
 
 // GetFactorset

@@ -16,34 +16,14 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table, Tooltip} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ArticleBackend from "./backend/ArticleBackend";
 import i18next from "i18next";
 
-class ArticleListPage extends React.Component {
+class ArticleListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      articles: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getArticles();
-  }
-
-  getArticles() {
-    ArticleBackend.getArticles(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            articles: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get articles: ${res.msg}`);
-        }
-      });
   }
 
   newArticle() {
@@ -67,7 +47,11 @@ class ArticleListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Article added successfully");
           this.setState({
-            articles: Setting.prependRow(this.state.articles, newArticle),
+            data: Setting.prependRow(this.state.data, newArticle),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add article: ${res.msg}`);
@@ -78,13 +62,17 @@ class ArticleListPage extends React.Component {
       });
   }
 
-  deleteArticle(i) {
-    ArticleBackend.deleteArticle(this.state.articles[i])
+  deleteArticle(record) {
+    ArticleBackend.deleteArticle(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Article deleted successfully");
           this.setState({
-            articles: Setting.deleteRow(this.state.articles, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Article failed to delete: ${res.msg}`);
@@ -171,7 +159,7 @@ class ArticleListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/articles/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteArticle(index)}
+                onConfirm={() => this.deleteArticle(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -187,9 +175,16 @@ class ArticleListPage extends React.Component {
       columns = columns.filter(column => column.key !== "provider");
     }
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={articles} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Articles")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -197,20 +192,46 @@ class ArticleListPage extends React.Component {
             </div>
           )}
           loading={articles === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.articles)
+  fetch = (params = {}) => {
+    let field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    if (params.type !== undefined && params.type !== null) {
+      field = "type";
+      value = params.type;
+    }
+    this.setState({loading: true});
+    ArticleBackend.getArticles(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default ArticleListPage;

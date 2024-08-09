@@ -14,8 +14,8 @@
 
 import * as Setting from "../Setting";
 
-export function getGlobalMessages() {
-  return fetch(`${Setting.ServerUrl}/api/get-global-messages`, {
+export function getGlobalMessages(page = "", pageSize = "", field = "", value = "", sortField = "", sortOrder = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-global-messages?p=${page}&pageSize=${pageSize}&field=${field}&value=${value}&sortField=${sortField}&sortOrder=${sortOrder}`, {
     method: "GET",
     credentials: "include",
     headers: {

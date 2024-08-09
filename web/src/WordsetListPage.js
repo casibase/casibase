@@ -16,34 +16,14 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as WordsetBackend from "./backend/WordsetBackend";
 import i18next from "i18next";
 
-class WordsetListPage extends React.Component {
+class WordsetListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      wordsets: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getWordsets();
-  }
-
-  getWordsets() {
-    WordsetBackend.getWordsets(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            wordsets: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get wordsets: ${res.msg}`);
-        }
-      });
   }
 
   newWordset() {
@@ -66,7 +46,11 @@ class WordsetListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Wordset added successfully");
           this.setState({
-            wordsets: Setting.prependRow(this.state.wordsets, newWordset),
+            data: Setting.prependRow(this.state.data, newWordset),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add wordset: ${res.msg}`);
@@ -77,13 +61,17 @@ class WordsetListPage extends React.Component {
       });
   }
 
-  deleteWordset(i) {
-    WordsetBackend.deleteWordset(this.state.wordsets[i])
+  deleteWordset(record) {
+    WordsetBackend.deleteWordset(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Wordset deleted successfully");
           this.setState({
-            wordsets: Setting.deleteRow(this.state.wordsets, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to delete wordset: ${res.msg}`);
@@ -172,7 +160,7 @@ class WordsetListPage extends React.Component {
               <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/wordsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteWordset(index)}
+                onConfirm={() => this.deleteWordset(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -184,9 +172,16 @@ class WordsetListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={wordsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={wordsets} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Wordsets")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -194,20 +189,42 @@ class WordsetListPage extends React.Component {
             </div>
           )}
           loading={wordsets === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.wordsets)
+  fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    this.setState({loading: true});
+    WordsetBackend.getWordsets("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default WordsetListPage;

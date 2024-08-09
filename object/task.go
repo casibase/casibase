@@ -148,3 +148,19 @@ func DeleteTask(task *Task) (bool, error) {
 func (task *Task) GetId() string {
 	return fmt.Sprintf("%s/%s", task.Owner, task.Name)
 }
+
+func GetTaskCount(owner string, field, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Task{})
+}
+
+func GetPaginationTasks(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Task, error) {
+	tasks := []*Task{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&tasks)
+	if err != nil {
+		return tasks, err
+	}
+
+	return tasks, nil
+}

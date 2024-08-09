@@ -15,6 +15,7 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Switch, Table, Tag} from "antd";
+import BaseListPage from "./BaseListPage";
 import {ThemeDefault} from "./Conf";
 import * as Setting from "./Setting";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -22,38 +23,9 @@ import moment from "moment";
 import i18next from "i18next";
 import * as Conf from "./Conf";
 
-class MessageListPage extends React.Component {
+class MessageListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      messages: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getMessages();
-  }
-
-  getMessages() {
-    const params = new URLSearchParams(window.location.search);
-    const user = params.get("user");
-
-    MessageBackend.getMessages(this.props.account.name, user)
-      .then((res) => {
-        if (res.status === "ok") {
-          let messages = res.data;
-          if (this.props.account.name !== "admin") {
-            messages = messages.filter(message => message.user !== "admin");
-          }
-
-          this.setState({
-            messages: messages,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get messages: ${res.msg}`);
-        }
-      });
   }
 
   newMessage() {
@@ -78,7 +50,11 @@ class MessageListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Message added successfully");
           this.setState({
-            messages: Setting.prependRow(this.state.messages, newMessage),
+            data: Setting.prependRow(this.state.data, newMessage),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add Message: ${res.msg}`);
@@ -89,13 +65,17 @@ class MessageListPage extends React.Component {
       });
   }
 
-  deleteMessage(i) {
-    MessageBackend.deleteMessage(this.state.messages[i])
+  deleteMessage(record) {
+    MessageBackend.deleteMessage(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Message deleted successfully");
           this.setState({
-            messages: Setting.deleteRow(this.state.messages, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
@@ -344,7 +324,7 @@ class MessageListPage extends React.Component {
               </Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteMessage(index)}
+                onConfirm={() => this.deleteMessage(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -371,9 +351,16 @@ class MessageListPage extends React.Component {
       }
     }
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("message:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -390,7 +377,7 @@ class MessageListPage extends React.Component {
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Messages")}:
               &nbsp;
-              {Setting.getDisplayTag(Setting.sumFields(messages, "count"))}
+              {Setting.getDisplayTag(this.state.pagination.total)}
               {
                 (!this.props.account || this.props.account.name !== "admin") ? null : (
                   <React.Fragment>
@@ -411,20 +398,46 @@ class MessageListPage extends React.Component {
           rowClassName={(record, index) => {
             return record.isDeleted ? "highlight-row" : "";
           }}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.messages)
+  fetch = (params = {}) => {
+    let field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    if (params.type !== undefined && params.type !== null) {
+      field = "type";
+      value = params.type;
+    }
+    this.setState({loading: true});
+    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default MessageListPage;

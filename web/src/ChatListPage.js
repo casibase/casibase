@@ -16,6 +16,7 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
@@ -24,46 +25,14 @@ import * as MessageBackend from "./backend/MessageBackend";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
 
-class ChatListPage extends React.Component {
+class ChatListPage extends BaseListPage {
   constructor(props) {
     super(props);
     this.state = {
-      classes: props,
-      chats: null,
+      ...this.state,
       messagesMap: {},
       filterSingleChat: Setting.getBoolValue("filterSingleChat", false),
     };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getChats();
-  }
-
-  getChats() {
-    const params = new URLSearchParams(window.location.search);
-    const user = params.get("user");
-
-    ChatBackend.getChats(this.props.account.name, "", "", "", "", "", "", user)
-      .then((res) => {
-        if (res.status === "ok") {
-          let chats = res.data;
-          if (this.props.account.name !== "admin") {
-            chats = chats.filter(chat => chat.user !== "admin");
-          }
-
-          this.setState({
-            chats: chats,
-          });
-
-          chats.forEach((chat) => {
-            if (chat.messageCount > 1) {
-              this.getMessages(chat.name);
-            }
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get chats: ${res.msg}`);
-        }
-      });
   }
 
   getMessages(chatName) {
@@ -106,7 +75,11 @@ class ChatListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Chat added successfully");
           this.setState({
-            chats: Setting.prependRow(this.state.chats, newChat),
+            data: Setting.prependRow(this.state.chats, newChat),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add Chat: ${res.msg}`);
@@ -117,13 +90,17 @@ class ChatListPage extends React.Component {
       });
   }
 
-  deleteChat(i) {
-    ChatBackend.deleteChat(this.state.chats[i])
+  deleteChat(record) {
+    ChatBackend.deleteChat(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Chat deleted successfully");
           this.setState({
-            chats: Setting.deleteRow(this.state.chats, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to delete Chat: ${res.msg}`);
@@ -415,7 +392,7 @@ class ChatListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/chats/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteChat(index)}
+                onConfirm={() => this.deleteChat(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -444,9 +421,16 @@ class ChatListPage extends React.Component {
       }
     }
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={chats} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("chat:Chats")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -484,20 +468,57 @@ class ChatListPage extends React.Component {
           rowClassName={(record, index) => {
             return record.isDeleted ? "highlight-row" : "";
           }}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.chats)
+  fetch = (params = {}) => {
+    let field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    if (params.type !== undefined && params.type !== null) {
+      field = "type";
+      value = params.type;
+    }
+    this.setState({loading: true});
+    ChatBackend.getGlobalChats(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          let chats = res.data;
+          if (this.props.account.name !== "admin") {
+            chats = chats.filter(chat => chat.user !== "admin");
+          }
+
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+
+          chats.forEach((chat) => {
+            if (chat.messageCount > 1) {
+              this.getMessages(chat.name);
+            }
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default ChatListPage;
