@@ -54,7 +54,7 @@ func RefinePrice(price float64) float64 {
 }
 
 func GetTokenSize(model string, prompt string) (int, error) {
-	tkm, err := tiktoken.EncodingForModel(model)
+	tkm, err := getTikTokenEncoder(model)
 	if err != nil {
 		return 0, err
 	}
@@ -178,4 +178,24 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	res = append(res, nonImageHistoryMessage...)
 	res = append(res, queryMessage)
 	return res, nil
+}
+
+// the tiktoken.encodingForModel function takes 30-80ms to run
+// and the GetTokenSize function is called for each history and knowledge message
+// so we cache the encoder for each model
+var encoderMap = make(map[string]*tiktoken.Tiktoken)
+
+func getTikTokenEncoder(model string) (*tiktoken.Tiktoken, error) {
+	if encoder, exists := encoderMap[model]; exists {
+		return encoder, nil
+	}
+
+	encoder, err := tiktoken.EncodingForModel(model)
+	if err != nil {
+		return nil, err
+	}
+
+	encoderMap[model] = encoder
+
+	return encoder, nil
 }

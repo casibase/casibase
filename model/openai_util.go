@@ -18,7 +18,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -137,7 +136,7 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 // https://github.com/pkoukk/tiktoken-go?tab=readme-ov-file#counting-tokens-for-chat-api-calls
 // https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1608689882
 func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (int, error) {
-	tkm, err := tiktoken.EncodingForModel(model)
+	tkm, err := getTikTokenEncoder(model)
 	if err != nil {
 		return 0, err
 	}
