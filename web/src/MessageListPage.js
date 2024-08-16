@@ -201,6 +201,14 @@ class MessageListPage extends BaseListPage {
         // ...this.getColumnSearchProps("tokenCount"),
       },
       {
+        title: i18next.t("chat:Text token count"),
+        dataIndex: "textTokenCount",
+        key: "textTokenCount",
+        width: "90px",
+        sorter: (a, b) => a.textTokenCount - b.textTokenCount,
+        // ...this.getColumnSearchProps("tokenCount"),
+      },
+      {
         title: i18next.t("chat:Price"),
         dataIndex: "price",
         key: "price",
