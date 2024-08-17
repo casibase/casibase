@@ -51,6 +51,7 @@ type Message struct {
 	FileName          string        `xorm:"varchar(100)" json:"fileName"`
 	Comment           string        `xorm:"mediumtext" json:"comment"`
 	TokenCount        int           `json:"tokenCount"`
+	TextTokenCount    int           `json:"textTokenCount"`
 	Price             float64       `json:"price"`
 	Currency          string        `xorm:"varchar(100)" json:"currency"`
 	IsHidden          bool          `json:"isHidden"`
@@ -148,12 +149,20 @@ func GetMessage(id string) (*Message, error) {
 
 func UpdateMessage(id string, message *Message) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getMessage(owner, name)
+	originMessage, err := getMessage(owner, name)
 	if err != nil {
 		return false, err
 	}
 	if message == nil {
 		return false, nil
+	}
+
+	if originMessage.TextTokenCount == 0 || originMessage.Text != message.Text {
+		size, err := getMessageTextTokenCount(message.ModelProvider, message.Text)
+		if err != nil {
+			return false, err
+		}
+		message.TextTokenCount = size
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(message)
@@ -215,6 +224,11 @@ func RefineMessageFiles(message *Message, origin string) error {
 }
 
 func AddMessage(message *Message) (bool, error) {
+	size, err := getMessageTextTokenCount(message.ModelProvider, message.Text)
+	if err != nil {
+		return false, err
+	}
+	message.TextTokenCount = size
 	affected, err := adapter.engine.Insert(message)
 	if err != nil {
 		return false, err
@@ -333,4 +347,15 @@ func GetPaginationMessage(owner string, offset, limit int, field, value, sortFie
 	}
 
 	return messages, nil
+}
+
+func getMessageTextTokenCount(modelName string, text string) (int, error) {
+	tokenCount, err := model.GetTokenSize(modelName, text)
+	if err != nil {
+		tokenCount, err = model.GetTokenSize("gpt-3.5-turbo", text)
+	}
+	if err != nil {
+		return 0, err
+	}
+	return tokenCount, nil
 }
