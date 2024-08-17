@@ -147,7 +147,7 @@ func GetMessage(id string) (*Message, error) {
 	return getMessage(owner, name)
 }
 
-func UpdateMessage(id string, message *Message) (bool, error) {
+func UpdateMessage(id string, message *Message, isHitOnly bool) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	originMessage, err := getMessage(owner, name)
 	if err != nil {
@@ -165,7 +165,11 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 		message.TextTokenCount = size
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(message)
+	if isHitOnly {
+		_, err = adapter.engine.ID(core.PK{owner, name}).Cols("suggestions").Update(message)
+	} else {
+		_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(message)
+	}
 	if err != nil {
 		return false, err
 	}

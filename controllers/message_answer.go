@@ -167,7 +167,7 @@ func (c *ApiController) GetMessageAnswer() {
 		questionMessage.Price = embeddingResult.Price
 		questionMessage.Currency = embeddingResult.Currency
 
-		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage)
+		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage, false)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
@@ -248,7 +248,7 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message.ModelProvider = modelProvider
 	message.VectorScores = vectorScores
-	_, err = object.UpdateMessage(message.GetId(), message)
+	_, err = object.UpdateMessage(message.GetId(), message, false)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return

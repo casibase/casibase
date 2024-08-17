@@ -137,6 +137,7 @@ func (c *ApiController) GetMessage() {
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
+	isHitOnly := c.Input().Get("isHitOnly")
 
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
@@ -155,7 +156,7 @@ func (c *ApiController) UpdateMessage() {
 		message.NeedNotify = false
 	}
 
-	success, err := object.UpdateMessage(id, &message)
+	success, err := object.UpdateMessage(id, &message, isHitOnly == "true")
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

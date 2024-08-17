@@ -316,7 +316,7 @@ class ChatBox extends React.Component {
                 }} onClick={() => {
                   this.props.sendMessage(suggestionText, "");
                   message.suggestions[index].isHit = true;
-                  updateMessage(message.owner, message.name, message);
+                  updateMessage(message.owner, message.name, message, true);
                 }}
               >{suggestionText}</Button>
             );
