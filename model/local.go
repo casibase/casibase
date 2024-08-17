@@ -287,7 +287,8 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				return nil, err
 			}
 
-			url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", respUrl.Data[0].URL)
+			base64Image, err := getImageRefinedText(respUrl.Data[0].URL)
+			url := fmt.Sprintf("<img src=\"%s\" width=\"100%%\" height=\"auto\">", base64Image)
 			fmt.Fprint(writer, url)
 			flusher.Flush()
 
