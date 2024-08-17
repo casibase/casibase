@@ -102,9 +102,9 @@ export function getMessage(owner, name) {
   }).then(res => res.json());
 }
 
-export function updateMessage(owner, name, message) {
+export function updateMessage(owner, name, message, isHitOnly = false) {
   const newMessage = Setting.deepCopy(message);
-  return fetch(`${Setting.ServerUrl}/api/update-message?id=${owner}/${encodeURIComponent(name)}`, {
+  return fetch(`${Setting.ServerUrl}/api/update-message?id=${owner}/${encodeURIComponent(name)}&isHitOnly=${isHitOnly}`, {
     method: "POST",
     credentials: "include",
     headers: {

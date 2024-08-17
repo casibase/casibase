@@ -48,7 +48,7 @@ func (c *ApiController) ResponseErrorStream(message *object.Message, errorText s
 		if message.ErrorText != errorText || !message.IsAlerted || err != nil {
 			message.ErrorText = errorText
 			message.IsAlerted = true
-			_, err = object.UpdateMessage(message.GetId(), message)
+			_, err = object.UpdateMessage(message.GetId(), message, false)
 			if err != nil {
 				errorText = fmt.Sprintf("%s\n%s", errorText, err.Error())
 			}
