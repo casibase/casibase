@@ -24,8 +24,9 @@ import (
 )
 
 type RawMessage struct {
-	Text   string
-	Author string
+	Text           string
+	Author         string
+	TextTokenCount int
 }
 
 func reverseMessages(arr []*RawMessage) []*RawMessage {
@@ -116,12 +117,7 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	var res []*RawMessage
 
 	for _, message := range recentMessages {
-		messageTokenSize, err := GetTokenSize(model, message.Text)
-		if err != nil {
-			return nil, err
-		}
-
-		leftTokens -= messageTokenSize
+		leftTokens -= message.TextTokenCount
 		if leftTokens <= 0 {
 			break
 		}
@@ -149,12 +145,7 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	}
 
 	for i, message := range knowledgeMessages {
-		messageSize, err := GetTokenSize(model, message.Text)
-		if err != nil {
-			return nil, err
-		}
-
-		leftTokens -= messageSize
+		leftTokens -= message.TextTokenCount
 		if leftTokens <= 0 {
 			knowledgeMessages = knowledgeMessages[:i]
 			break
