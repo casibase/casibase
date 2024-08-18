@@ -293,9 +293,17 @@ func GetRecentRawMessages(chat string, createdTime string, memoryLimit int) ([]*
 	}
 
 	for _, message := range messages {
+		rawTextTokenCount := message.TextTokenCount
+		if rawTextTokenCount == 0 {
+			rawTextTokenCount, err = getMessageTextTokenCount(message.ModelProvider, message.Text)
+			if err != nil {
+				return nil, err
+			}
+		}
 		rawMessage := &model.RawMessage{
-			Text:   message.Text,
-			Author: message.Author,
+			Text:           message.Text,
+			Author:         message.Author,
+			TextTokenCount: message.TextTokenCount,
 		}
 		res = append(res, rawMessage)
 	}

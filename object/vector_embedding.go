@@ -252,8 +252,9 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 			Score:  vector.Score,
 		})
 		knowledge = append(knowledge, &model.RawMessage{
-			Text:   vector.Text,
-			Author: "System",
+			Text:           vector.Text,
+			Author:         "System",
+			TextTokenCount: vector.TokenCount,
 		})
 	}
 
