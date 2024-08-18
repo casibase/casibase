@@ -286,3 +286,22 @@ func getPromptIntention(prompt string, name string) (string, error) {
 	intention := writer.String()
 	return intention, nil
 }
+
+func storeDALLEImgae(chat string, origin string) (bool, error) {
+	messages, err := object.GetChatMessages(chat)
+	if err != nil {
+		return false, err
+	}
+	answerMessage := messages[len(messages)-1]
+	answerMessage.FileName = answerMessage.Name + ".jpg"
+
+	err = object.RefineMessageFiles(answerMessage, origin)
+	if err != nil {
+		return false, err
+	}
+	_, err = object.UpdateMessage(answerMessage.GetId(), answerMessage, false)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

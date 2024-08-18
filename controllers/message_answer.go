@@ -255,24 +255,11 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	if modelProvider == "dall-e-3" {
-		messages, err := object.GetChatMessages(chat.Name)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		answerMessage := messages[len(messages)-1]
-		answerMessage.FileName = answerMessage.Name + ".jpg"
 		host := c.Ctx.Request.Host
 		origin := getOriginFromHost(host)
-
-		err = object.RefineMessageFiles(answerMessage, origin)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-		_, err = object.UpdateMessage(answerMessage.GetId(), answerMessage, false)
-		if err != nil {
-			c.ResponseErrorStream(answerMessage, err.Error())
+		success, err := storeDALLEImgae(chat.Name, origin)
+		if !success {
+			c.ResponseErrorStream(message, err.Error())
 			return
 		}
 	}
