@@ -260,7 +260,7 @@ func (c *ApiController) GetMessageAnswer() {
 		err := storeImage(message, origin)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
-			return 
+			return
 		}
 	}
 

@@ -15,8 +15,8 @@
 package controllers
 
 import (
-	"encoding/json"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math"
@@ -291,14 +291,14 @@ func getPromptIntention(prompt string, name string) (string, error) {
 
 func RefineMessageImage(message *object.Message) error {
 	imgRegex := regexp.MustCompile(`<img[^>]*src="([^"]*)"[^>]*>`)
-    srcMatches := imgRegex.FindStringSubmatch(message.Text)
-    if len(srcMatches) <= 1 {
-        return fmt.Errorf("no image url found")
+	srcMatches := imgRegex.FindStringSubmatch(message.Text)
+	if len(srcMatches) <= 1 {
+		return fmt.Errorf("no image url found")
 	}
 	imageUrl := srcMatches[1]
 
-    extRegex := regexp.MustCompile(`\.([a-zA-Z]+)\?`)
-    extMatches := extRegex.FindStringSubmatch(imageUrl)
+	extRegex := regexp.MustCompile(`\.([a-zA-Z]+)\?`)
+	extMatches := extRegex.FindStringSubmatch(imageUrl)
 	if len(extMatches) <= 1 {
 		return fmt.Errorf("no extension found")
 	}
