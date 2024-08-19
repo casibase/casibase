@@ -257,10 +257,10 @@ func (c *ApiController) GetMessageAnswer() {
 	if modelProvider == "dall-e-3" {
 		host := c.Ctx.Request.Host
 		origin := getOriginFromHost(host)
-		success, err := storeDALLEImgae(chat.Name, origin)
-		if !success {
+		err := storeImage(message, origin)
+		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
-			return
+			return 
 		}
 	}
 
