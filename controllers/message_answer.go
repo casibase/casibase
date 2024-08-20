@@ -254,6 +254,16 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	if modelProvider == "dall-e-3" {
+		host := c.Ctx.Request.Host
+		origin := getOriginFromHost(host)
+		err := storeImage(message, origin)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+	}
+
 	for key, usageInfo := range store.ModelUsageMap {
 		if time.Since(usageInfo.StartTime) >= time.Minute {
 			usageInfo.TokenCount = 0
