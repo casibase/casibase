@@ -313,6 +313,9 @@ class ChatBox extends React.Component {
                   borderRadius: "4px",
                   fontSize: fontSize,
                   margin: "3px",
+                  textAlign: "start",
+                  whiteSpace: "pre-wrap",
+                  height: "auto",
                 }} onClick={() => {
                   this.props.sendMessage(suggestionText, "");
                   message.suggestions[index].isHit = true;
