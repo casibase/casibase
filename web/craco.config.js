@@ -15,6 +15,14 @@
 const CracoLessPlugin = require("craco-less");
 
 module.exports = {
+  webpack: {
+    configure: (webpackConfig) => {
+      webpackConfig.externals = {
+        three: "THREE",
+      };
+      return webpackConfig;
+    },
+  },
   devServer: {
     proxy: {
       "/api": {

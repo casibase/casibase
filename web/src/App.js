@@ -59,6 +59,16 @@ import * as StoreBackend from "./backend/StoreBackend";
 
 const {Header, Footer, Content} = Layout;
 
+// eslint-disable-next-line no-console
+const originalWarn = console.warn;
+// eslint-disable-next-line no-console
+console.warn = (...args) => {
+  if (args[0].includes("THREE.WebGLRenderer")) {
+    return;
+  }
+  originalWarn(...args);
+};
+
 class App extends Component {
   constructor(props) {
     super(props);

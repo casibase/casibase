@@ -10,11 +10,6 @@ import "./LiveChatBox.css";
 import {ThemeDefault} from "./Conf";
 import ChatPrompts from "./ChatPrompts";
 import * as THREE from "three";
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import {Water} from "three/examples/jsm/objects/Water2";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {DRACOLoader} from "three/examples/jsm/loaders/DRACOLoader";
-import {RGBELoader} from "three/examples/jsm/loaders/RGBELoader";
 import ChatBox from "./ChatBox";
 
 class LiveChatBox extends ChatBox {
@@ -112,7 +107,7 @@ class LiveChatBox extends ChatBox {
     this.renderer = new THREE.WebGLRenderer({
       antialias: true,
     });
-    this.renderer.outputEncoding = THREE.SRGBColorSpace;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.setSize(width, height);
 
     window.addEventListener("resize", () => {
@@ -122,7 +117,7 @@ class LiveChatBox extends ChatBox {
     });
     this.mountRef.current.appendChild(this.renderer.domElement);
 
-    const controls = new OrbitControls(this.camera, this.renderer.domElement);
+    const controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 
     const axesHelper = new THREE.AxesHelper(5);
     this.scene.add(axesHelper);
@@ -148,7 +143,7 @@ class LiveChatBox extends ChatBox {
     this.scene.add(sky);
 
     const waterGeometry = new THREE.CircleGeometry(300, 64);
-    const water = new Water(waterGeometry, {
+    const water = new THREE.Water(waterGeometry, {
       normalMap0: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_0.jpeg", texture => {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.repeat.set(0.1, 0.1);
@@ -170,10 +165,10 @@ class LiveChatBox extends ChatBox {
     water.rotation.x = -Math.PI / 2;
     this.scene.add(water);
 
-    const islandLoader = new GLTFLoader();
-    const islandDracoLoader = new DRACOLoader();
-    islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
-    islandLoader.setDRACOLoader(islandDracoLoader);
+    const islandLoader = new THREE.GLTFLoader();
+    // const islandDracoLoader = new DRACOLoader();
+    // islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
+    // islandLoader.setDRACOLoader(islandDracoLoader);
 
     islandLoader.load("https://cdn.casibase.org/assets/models/island.glb", (gltf) => {
       const island = gltf.scene;
@@ -182,10 +177,10 @@ class LiveChatBox extends ChatBox {
       this.scene.add(island);
     });
 
-    const agentLoader = new GLTFLoader();
-    const agentDracoLoader = new DRACOLoader();
-    agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
-    agentLoader.setDRACOLoader(agentDracoLoader);
+    const agentLoader = new THREE.GLTFLoader();
+    // const agentDracoLoader = new DRACOLoader();
+    // agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
+    // agentLoader.setDRACOLoader(agentDracoLoader);
 
     agentLoader.load("https://cdn.casibase.org/assets/models/agent.glb", (gltf) => {
       agent = gltf.scene;
@@ -222,7 +217,7 @@ class LiveChatBox extends ChatBox {
       this.actions.idle.play();
     });
 
-    const hdrLoader = new RGBELoader();
+    const hdrLoader = new THREE.RGBELoader();
     hdrLoader.loadAsync("https://cdn.casibase.org/assets/textures/skybox/skyHDR.hdr"). then((texture) => {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       this.scene.background = texture;

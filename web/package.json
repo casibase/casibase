@@ -9,7 +9,6 @@
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@craco/craco": "6.4.5",
     "@cyntler/react-doc-viewer": "^1.5.2",
-    "@tweenjs/tween.js": "^23.1.2",
     "aliplayer-react": "^0.7.0",
     "antd": "5.2.3",
     "casdoor-js-sdk": "^0.2.7",
@@ -45,7 +44,6 @@
     "react-scripts": "5.0.1",
     "remark-frontmatter": "^4.0.1",
     "remark-gfm": "^3.0.1",
-    "three": "^0.166.1",
     "xlsx": "^0.16.9"
   },
   "scripts": {
