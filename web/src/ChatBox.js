@@ -287,6 +287,8 @@ class ChatBox extends React.Component {
     const fontSize = Setting.isMobile() ? "10px" : "12px";
     return (
       <div style={{
+        position: "absolute",
+        marginRight: "10%",
         display: "flex",
         flexWrap: "wrap",
         flexDirection: "column",
