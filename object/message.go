@@ -107,25 +107,14 @@ func GetMessages(owner string, user string) ([]*Message, error) {
 	return messages, nil
 }
 
-func isWithinTime(createdTime string, minutes int) bool {
-	createdTimeObj, _ := time.Parse(time.RFC3339, createdTime)
-	t := createdTimeObj.Add(time.Duration(minutes) * time.Minute)
-	return time.Now().Before(t)
-}
-
 func GetNearMessageCount(user string, limitMinutes int) (int, error) {
-	messages, err := GetMessages("admin", user)
+	sinceTime := time.Now().Add(-time.Minute * time.Duration(limitMinutes))
+	messages := []*Message{}
+	err := adapter.engine.Desc("created_time").Where("createdTime >= ?", sinceTime).Find(&messages, &Message{Owner: "admin", User: user, Author: "AI"})
 	if err != nil {
 		return -1, err
 	}
-
-	count := 0
-	for _, message := range messages {
-		if message.Author == "AI" && isWithinTime(message.CreatedTime, limitMinutes) {
-			count += 1
-		}
-	}
-	return count, nil
+	return len(messages), nil
 }
 
 func getMessage(owner, name string) (*Message, error) {
