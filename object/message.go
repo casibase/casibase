@@ -110,7 +110,7 @@ func GetMessages(owner string, user string) ([]*Message, error) {
 func GetNearMessageCount(user string, limitMinutes int) (int, error) {
 	sinceTime := time.Now().Add(-time.Minute * time.Duration(limitMinutes))
 	messages := []*Message{}
-	err := adapter.engine.Desc("created_time").Where("createdTime >= ?", sinceTime).Find(&messages, &Message{Owner: "admin", User: user, Author: "AI"})
+	err := adapter.engine.Desc("created_time").Where("created_time >= ?", sinceTime).Find(&messages, &Message{Owner: "admin", User: user, Author: "AI"})
 	if err != nil {
 		return -1, err
 	}
