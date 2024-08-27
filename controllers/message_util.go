@@ -279,6 +279,7 @@ func getPromptIntention(prompt string, name string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	prompt = reImage.ReplaceAllString(prompt, "")
 	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + prompt + "]"
 	var writer object.MyWriter
 	_, err = modelProviderObj.QueryText(getIntentionPrompt, &writer, []*model.RawMessage{}, "", []*model.RawMessage{})
