@@ -5,6 +5,7 @@
   "dependencies": {
     "@ant-design/cssinjs": "^1.12.0",
     "@ant-design/icons": "4.6.2",
+    "@babel/preset-react": "^7.24.7",
     "@chatscope/chat-ui-kit-react": "^1.10.1",
     "@chatscope/chat-ui-kit-styles": "^1.4.0",
     "@craco/craco": "6.4.5",
