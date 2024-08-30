@@ -479,6 +479,24 @@ class App extends Component {
   }
 
   renderRouter() {
+    const add3DExternals = () => {
+      const scripts = [
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/RGBELoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Water2.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Reflector.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Refractor.js",
+      ];
+
+      scripts.forEach(src => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        document.head.appendChild(script);
+      });
+    };
+
     return (
       <Switch>
         <Route exact path="/callback" component={AuthCallback} />
@@ -511,8 +529,8 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
-        <Route exact path="/livechat" render={(props) => this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />)} />
-        <Route exact path="/livechat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/livechat" render={(props) => {add3DExternals();return this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />);}} />
+        <Route exact path="/livechat/:chatName" render={(props) => {add3DExternals();return this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />);}} />
       </Switch>
     );
   }
