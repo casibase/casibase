@@ -31,6 +31,11 @@ type VectorScore struct {
 	Score  float32 `json:"score"`
 }
 
+type Suggestion struct {
+	Text  string `json:"text"`
+	IsHit bool   `json:"isHit"`
+}
+
 type Message struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -46,6 +51,7 @@ type Message struct {
 	FileName          string        `xorm:"varchar(100)" json:"fileName"`
 	Comment           string        `xorm:"mediumtext" json:"comment"`
 	TokenCount        int           `json:"tokenCount"`
+	TextTokenCount    int           `json:"textTokenCount"`
 	Price             float64       `json:"price"`
 	Currency          string        `xorm:"varchar(100)" json:"currency"`
 	IsHidden          bool          `json:"isHidden"`
@@ -56,6 +62,9 @@ type Message struct {
 	ModelProvider     string        `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string        `xorm:"varchar(100)" json:"embeddingProvider"`
 	VectorScores      []VectorScore `xorm:"mediumtext" json:"vectorScores"`
+	LikeUsers         []string      `json:"likeUsers"`
+	DisLikeUsers      []string      `json:"dislikeUsers"`
+	Suggestions       []Suggestion  `json:"suggestions"`
 }
 
 func GetGlobalMessages() ([]*Message, error) {
@@ -98,25 +107,13 @@ func GetMessages(owner string, user string) ([]*Message, error) {
 	return messages, nil
 }
 
-func isWithinTime(createdTime string, minutes int) bool {
-	createdTimeObj, _ := time.Parse(time.RFC3339, createdTime)
-	t := createdTimeObj.Add(time.Duration(minutes) * time.Minute)
-	return time.Now().Before(t)
-}
-
 func GetNearMessageCount(user string, limitMinutes int) (int, error) {
-	messages, err := GetMessages("admin", user)
+	sinceTime := time.Now().Add(-time.Minute * time.Duration(limitMinutes))
+	nearMessageCount, err := adapter.engine.Desc("created_time").Where("created_time >= ?", sinceTime).Count(&Message{Owner: "admin", User: user, Author: "AI"})
 	if err != nil {
 		return -1, err
 	}
-
-	count := 0
-	for _, message := range messages {
-		if message.Author == "AI" && isWithinTime(message.CreatedTime, limitMinutes) {
-			count += 1
-		}
-	}
-	return count, nil
+	return int(nearMessageCount), nil
 }
 
 func getMessage(owner, name string) (*Message, error) {
@@ -138,9 +135,9 @@ func GetMessage(id string) (*Message, error) {
 	return getMessage(owner, name)
 }
 
-func UpdateMessage(id string, message *Message) (bool, error) {
+func UpdateMessage(id string, message *Message, isHitOnly bool) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getMessage(owner, name)
+	originMessage, err := getMessage(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -148,7 +145,19 @@ func UpdateMessage(id string, message *Message) (bool, error) {
 		return false, nil
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(message)
+	if originMessage.TextTokenCount == 0 || originMessage.Text != message.Text {
+		size, err := getMessageTextTokenCount(message.ModelProvider, message.Text)
+		if err != nil {
+			return false, err
+		}
+		message.TextTokenCount = size
+	}
+
+	if isHitOnly {
+		_, err = adapter.engine.ID(core.PK{owner, name}).Cols("suggestions").Update(message)
+	} else {
+		_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(message)
+	}
 	if err != nil {
 		return false, err
 	}
@@ -207,6 +216,11 @@ func RefineMessageFiles(message *Message, origin string) error {
 }
 
 func AddMessage(message *Message) (bool, error) {
+	size, err := getMessageTextTokenCount(message.ModelProvider, message.Text)
+	if err != nil {
+		return false, err
+	}
+	message.TextTokenCount = size
 	affected, err := adapter.engine.Insert(message)
 	if err != nil {
 		return false, err
@@ -267,9 +281,17 @@ func GetRecentRawMessages(chat string, createdTime string, memoryLimit int) ([]*
 	}
 
 	for _, message := range messages {
+		rawTextTokenCount := message.TextTokenCount
+		if rawTextTokenCount == 0 {
+			rawTextTokenCount, err = getMessageTextTokenCount(message.ModelProvider, message.Text)
+			if err != nil {
+				return nil, err
+			}
+		}
 		rawMessage := &model.RawMessage{
-			Text:   message.Text,
-			Author: message.Author,
+			Text:           message.Text,
+			Author:         message.Author,
+			TextTokenCount: message.TextTokenCount,
 		}
 		res = append(res, rawMessage)
 	}
@@ -309,4 +331,31 @@ func GetAnswer(provider string, question string) (string, *model.ModelResult, er
 	res := writer.String()
 	res = strings.Trim(res, "\"")
 	return res, modelResult, nil
+}
+
+func GetMessageCount(owner string, field string, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Message{})
+}
+
+func GetPaginationMessage(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Message, error) {
+	messages := []*Message{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&messages)
+	if err != nil {
+		return messages, err
+	}
+
+	return messages, nil
+}
+
+func getMessageTextTokenCount(modelName string, text string) (int, error) {
+	tokenCount, err := model.GetTokenSize(modelName, text)
+	if err != nil {
+		tokenCount, err = model.GetTokenSize("gpt-3.5-turbo", text)
+	}
+	if err != nil {
+		return 0, err
+	}
+	return tokenCount, nil
 }

@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalArticles
@@ -45,14 +47,36 @@ func (c *ApiController) GetGlobalArticles() {
 // @router /get-articles [get]
 func (c *ApiController) GetArticles() {
 	owner := c.Input().Get("owner")
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	articles, err := object.GetArticles(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		articles, err := object.GetArticles(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(object.GetMaskedArticles(articles, true))
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetArticleCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		articles, err := object.GetPaginationArticles(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(articles, paginator.Nums())
 	}
-
-	c.ResponseOk(object.GetMaskedArticles(articles, true))
 }
 
 // GetArticle

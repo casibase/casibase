@@ -16,6 +16,7 @@ import React from "react";
 import {Alert, Button} from "antd";
 import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
 import * as Conf from "./Conf";
 import * as Setting from "./Setting";
@@ -23,8 +24,11 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {CopyOutlined, DislikeOutlined, LikeOutlined, ReloadOutlined} from "@ant-design/icons";
+import {AudioFilled, AudioOutlined, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
+
+// store the input value when the name(chat) leaves
+const inputStore = new Map();
 
 class ChatBox extends React.Component {
   constructor(props) {
@@ -32,11 +36,79 @@ class ChatBox extends React.Component {
     this.state = {
       value: "",
       files: [],
+      messages: this.props.messages,
+      currentReadingMessage: null,
+      isReading: false,
+      isVoiceInput: false,
     };
+    this.synth = window.speechSynthesis;
+    this.recognition = undefined;
+    this.cursorPosition = undefined;
     this.copyFileName = null;
   }
 
+  componentDidMount() {
+    window.addEventListener("beforeunload", () => {
+      this.synth.cancel();
+    });
+    this.addCursorPositionListener();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    // clear old status when the name(chat) changes
+    if (prevProps.name !== this.props.name) {
+      inputStore.set(prevProps.name, this.state.value);
+      this.clearOldStatus();
+    }
+    if (inputStore.has(this.props.name)) {
+      this.setState({value: inputStore.get(this.props.name)});
+      inputStore.delete(this.props.name);
+    }
+  }
+
+  componentWillUnmount() {
+    inputStore.set(this.props.name, this.state.value);
+    this.clearOldStatus();
+  }
+
+  clearOldStatus() {
+    this.recognition?.abort();
+    this.synth.cancel();
+    this.setState({
+      value: "",
+      files: [],
+      messages: this.props.messages,
+      currentReadingMessage: null,
+      isReading: false,
+      isVoiceInput: false,
+    });
+    this.cursorPosition = undefined;
+  }
+
+  addCursorPositionListener() {
+    const inputElement = document.querySelector(".cs-message-input__content-editor");
+    const updateCursorPosition = () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const preSelectionRange = range.cloneRange();
+        preSelectionRange.selectNodeContents(inputElement);
+        preSelectionRange.setEnd(range.startContainer, range.startOffset);
+        this.cursorPosition = preSelectionRange.toString().length;
+        if (this.state.isVoiceInput) {
+          this.recognition.abort();
+          // this.recognition.onresult = this.insertVoiceMessage.call(this);
+        }
+      }
+    };
+    // add listener to update cursor position
+    inputElement?.addEventListener("keyup", updateCursorPosition);
+    inputElement?.addEventListener("click", updateCursorPosition);
+  }
+
   handleSend = (innerHtml) => {
+    // abort because the remaining recognition results are useless
+    this.recognition?.abort();
     if (this.state.value === "" || this.props.disableInput) {
       return;
     }
@@ -59,8 +131,14 @@ class ChatBox extends React.Component {
   };
 
   handleRegenerate = () => {
-    const lastUserMessage = this.props.messages.reverse().find(message => message.author !== "AI");
-    this.props.sendMessage(lastUserMessage.text, "", true);
+    const messages = this.props.messages;
+    const isSingleWelcomeMessage = (
+      messages.length === 1 &&
+      messages[0].replyTo === "Welcome" &&
+      messages[0].author === "AI"
+    );
+    const text = isSingleWelcomeMessage ? "" : messages.reverse().find(message => message.author !== "AI").text;
+    this.props.sendMessage(text, "", true);
   };
 
   handleImageClick = () => {
@@ -127,8 +205,8 @@ class ChatBox extends React.Component {
       return this.props.dots;
     }
 
-    if (isLastMessage) {
-      return renderText(message.text + this.props.dots);
+    if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
+      return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"] + this.props.dots);
     }
 
     return message.html;
@@ -142,12 +220,27 @@ class ChatBox extends React.Component {
     Setting.showMessage("success", "Message copied successfully");
   }
 
-  likeMessage() {
-    Setting.showMessage("success", "Message liked successfully");
-  }
+  handleMessageLike(message, reactionType) {
+    const oppositeReaction = reactionType === "like" ? "dislike" : "like";
 
-  dislikeMessage() {
-    Setting.showMessage("success", "Message disliked successfully");
+    const isCancel = !!message[`${reactionType}Users`]?.includes(this.props.account.name);
+
+    if (isCancel) {
+      message[`${reactionType}Users`] = Setting.deleteElementFromSet(message[`${reactionType}Users`], this.props.account.name);
+    } else {
+      message[`${reactionType}Users`] = Setting.addElementToSet(message[`${reactionType}Users`], this.props.account.name);
+    }
+
+    message[`${oppositeReaction}Users`] = Setting.deleteElementFromSet(message[`${oppositeReaction}Users`], this.props.account.name);
+
+    this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
+    updateMessage(message.owner, message.name, message).then((result) => {
+      if (result.status === "ok") {
+        Setting.showMessage("success", `${isCancel ? "Cancel " : ""}${reactionType}d successfully`);
+        return;
+      }
+      Setting.showMessage("error", result.msg);
+    });
   }
 
   handleDragOver = (e) => {
@@ -161,6 +254,161 @@ class ChatBox extends React.Component {
       this.handleInputChange(files[0]);
     }
   };
+
+  toggleMessageReadState(message) {
+    const shouldPaused = (this.state.readingMessage === message.name && this.state.isReading);
+    if (shouldPaused) {
+      this.synth.pause();
+      this.setState({isReading: false});
+      return;
+    }
+    if (this.state.readingMessage === message.name && this.state.isReading === false) {
+      this.synth.resume();
+      this.setState({isReading: true});
+    } else {
+      this.synth.cancel();
+      const utterThis = new SpeechSynthesisUtterance(message.text);
+      utterThis.addEventListener("end", () => {
+        this.synth.cancel();
+        this.setState({isReading: false, readingMessage: null});
+      });
+      this.synth.speak(utterThis);
+      this.setState({
+        readingMessage: message.name,
+        isReading: true,
+      });
+    }
+  }
+
+  renderSuggestions(message) {
+    if (message.author !== "AI" || !message.suggestions || !Array.isArray(message.suggestions)) {
+      return null;
+    }
+    const fontSize = Setting.isMobile() ? "10px" : "12px";
+    return (
+      <div style={{
+        position: "absolute",
+        marginRight: "10%",
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "column",
+        justifyContent: "start",
+        alignItems: "start",
+        zIndex: "10000",
+        maxWidth: "80%",
+      }}>
+        {
+          message?.suggestions?.map((suggestion, index) => {
+            let suggestionText = suggestion.text;
+            if (suggestionText.trim() === "") {
+              return null;
+            }
+            suggestionText = Setting.formatSuggestion(suggestionText);
+
+            return (
+              <Button
+                className={"suggestions-item"}
+                key={index} type="primary" style={{
+                  backgroundColor: "rgba(255, 255, 255, 0.8)",
+                  border: "1px solid " + ThemeDefault.colorPrimary,
+                  color: ThemeDefault.colorPrimary,
+                  borderRadius: "4px",
+                  fontSize: fontSize,
+                  margin: "3px",
+                  textAlign: "start",
+                  whiteSpace: "pre-wrap",
+                  height: "auto",
+                }} onClick={() => {
+                  this.props.sendMessage(suggestionText, "");
+                  message.suggestions[index].isHit = true;
+                  updateMessage(message.owner, message.name, message, true);
+                }}
+              >{suggestionText}</Button>
+            );
+          })
+        }
+      </div>
+    );
+  }
+
+  insertVoiceMessage() {
+    const oldValue = this.state.value;
+
+    return (event) => {
+      const result = Array.from(event?.results)?.map((result) => result[0].transcript).join(",");
+      if (this.cursorPosition === undefined) {
+        this.setState({value: oldValue + result});
+      } else {
+        const newValue = oldValue.slice(0, this.cursorPosition) + result + oldValue.slice(this.cursorPosition);
+        this.setState({value: newValue});
+      }
+    };
+  }
+
+  renderVoiceInput() {
+    if (!(window["SpeechRecognition"] || window["webkitSpeechRecognition"])) {
+      return null;
+    }
+    if (!this.recognition) {
+      this.recognition = new (window["SpeechRecognition"] || window["webkitSpeechRecognition"])();
+      this.recognition.continuous = true;
+      this.recognition.interimResults = true;
+      this.recognition.onend = () => {
+        this.setState({isVoiceInput: false});
+      };
+    }
+
+    const onStart = () => {
+      const constraints = {
+        audio: true,
+      };
+      navigator.mediaDevices.getUserMedia(constraints)
+        .then(stream => {
+          this.setState({isVoiceInput: true});
+          this.recognition.onresult = this.insertVoiceMessage.call(this);
+          this.recognition.start();
+        }).catch((error) => {
+          if (error.name === "NotAllowedError") {
+            Setting.showMessage("error", i18next.t("chat:Please enable microphone permission in your browser settings"));
+          } else {
+            Setting.showMessage("error", error.message);
+          }
+        });
+    };
+
+    const onStop = () => {
+      this.recognition.abort();
+    };
+
+    return (
+      <div className={"cs-message-input__tools"} style={{height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingBottom: "1em"}}>
+        {
+          this.state.isVoiceInput
+            ? <AudioFilled className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStop} />
+            : <AudioOutlined className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStart} />
+        }
+      </div>
+    );
+  }
+
+  renderVoiceInputHint() {
+    const baseUnit = Setting.isMobile() ? "vw" : "vh";
+    return (
+      <div style={{position: "absolute", zIndex: "100", top: "50%", left: "50%", transform: "translate(-50%, -50%)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+        <div style={{padding: "10px", boxShadow: "0 0 10px rgba(0,0,0,0.1)", borderRadius: "50%", cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", width: "50" + baseUnit, height: "50" + baseUnit, backgroundColor: "rgba(255, 255, 255, 0.8)"}}
+          onClick={
+            () => {
+              this.recognition.abort();
+              this.setState({isVoiceInput: false});
+            }
+          }>
+          <AudioFilled style={{fontSize: `10${baseUnit}`, color: ThemeDefault.colorPrimary, marginBottom: "10%"}} />
+          <div style={{fontSize: "14px", color: ThemeDefault.colorPrimary, marginBottom: "5%", fontFamily: "Arial, sans-serif", fontWeight: "bold"}}>{i18next.t("chat:I'm listening...")}</div>
+          <div style={{fontSize: "12px", color: ThemeDefault.colorPrimary, fontFamily: "Arial, sans-serif"}}>{i18next.t("chat:click to stop...")}</div>
+        </div>
+      </div>
+    );
+  }
 
   render() {
     let title = Setting.getUrlParam("title");
@@ -197,10 +445,16 @@ class ChatBox extends React.Component {
                   {
                     (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
                       <Message.Footer>
-                        {<Button icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
-                        {index !== messages.length - 1 ? null : <Button icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
-                        {<Button icon={<LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.likeMessage()}></Button>}
-                        {<Button icon={<DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.dislikeMessage()}></Button>}
+                        <div>
+                          {<Button className={"cs-button"} icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
+                          {index !== messages.length - 1 ? null : <Button className={"cs-button"} icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
+                          {<Button className={"cs-button"} icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
+                          {<Button className={"cs-button"} icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
+                          {<Button className={"cs-button"} icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
+                          <div>
+                            {index !== messages.length - 1 ? null : this.renderSuggestions(message)}
+                          </div>
+                        </div>
                       </Message.Footer>
                     ) : null
                   }
@@ -208,36 +462,46 @@ class ChatBox extends React.Component {
               ))}
             </MessageList>
             {
-              this.props.hideInput === true ? null : (
-                <MessageInput disabled={false}
-                  sendDisabled={this.state.value === "" || this.props.disableInput}
-                  placeholder={i18next.t("chat:Type message here")}
-                  onSend={this.handleSend}
-                  value={this.state.value}
-                  onChange={(val) => {
-                    this.setState({value: val});
-                  }}
-                  onAttachClick={() => {
-                    this.handleImageClick();
-                  }}
-                  onPaste={(event) => {
-                    const items = event.clipboardData.items;
-                    const item = items[0];
-                    if (item.kind === "file") {
-                      event.preventDefault();
-                      const file = item.getAsFile();
-                      this.copyFileName = file.name;
-                      this.handleInputChange(file);
-                    }
-                  }}
-                  onDragOver={this.handleDragOver}
-                  onDrop={this.handleDrop}
-                />
+              this.props.disableInput ? null : (
+                // the "as" property make div could be played in ChatContainer
+                // eslint-disable-next-line react/no-unknown-property
+                <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
+                  {
+                    <MessageInput disabled={false}
+                      style={{flex: 1, border: "none"}}
+                      sendDisabled={this.state.value === "" || this.props.disableInput}
+                      placeholder={i18next.t("chat:Type message here")}
+                      onSend={this.handleSend}
+                      value={this.state.value}
+                      onChange={(val) => {
+                        this.setState({value: val});
+                      }}
+                      onAttachClick={() => {
+                        this.handleImageClick();
+                      }}
+                      onPaste={(event) => {
+                        const items = event.clipboardData.items;
+                        const item = items[0];
+                        if (item.kind === "file") {
+                          event.preventDefault();
+                          const file = item.getAsFile();
+                          this.copyFileName = file.name;
+                          this.handleInputChange(file);
+                        }
+                      }}
+                      onDragOver={this.handleDragOver}
+                      onDrop={this.handleDrop}
+                    />
+                  }
+                  {
+                    this.renderVoiceInput()
+                  }
+                </div>
               )
             }
           </ChatContainer>
           {
-            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+            !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} /> : this.renderVoiceInputHint()
           }
         </MainContainer>
         <input

@@ -55,7 +55,7 @@ func addEmbeddedVector(embeddingProviderObj embedding.EmbeddingProvider, text st
 
 	displayName := text
 	if len(text) > 25 {
-		displayName = text[:25]
+		displayName = string([]rune(text)[:25])
 	}
 
 	tokenCount := 0
@@ -167,6 +167,11 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 		}
 	}
+	// after add vector, sync
+	err = syncVectorCache(storeName)
+	if err != nil {
+		return false, err
+	}
 
 	return affected, err
 }
@@ -247,8 +252,9 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 			Score:  vector.Score,
 		})
 		knowledge = append(knowledge, &model.RawMessage{
-			Text:   vector.Text,
-			Author: "System",
+			Text:           vector.Text,
+			Author:         "System",
+			TextTokenCount: vector.TokenCount,
 		})
 	}
 

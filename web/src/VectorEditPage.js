@@ -40,7 +40,7 @@ class VectorEditPage extends React.Component {
   }
 
   getVector() {
-    VectorBackend.getVector(this.props.account.name, this.state.vectorName)
+    VectorBackend.getVector("admin", this.props.match.params.vectorName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({

@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalTasks
@@ -45,14 +47,37 @@ func (c *ApiController) GetGlobalTasks() {
 // @router /get-tasks [get]
 func (c *ApiController) GetTasks() {
 	owner := c.Input().Get("owner")
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	tasks, err := object.GetTasks(owner)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if limit == "" || page == "" {
+		tasks, err := object.GetTasks(owner)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(object.GetMaskedTasks(tasks, true))
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetTaskCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		tasks, err := object.GetPaginationTasks(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(tasks, paginator.Nums())
 	}
-
-	c.ResponseOk(object.GetMaskedTasks(tasks, true))
 }
 
 // GetTask

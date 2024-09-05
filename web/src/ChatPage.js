@@ -136,18 +136,6 @@ class ChatPage extends BaseListPage {
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
-    this.timer = setInterval(() => {
-      this.setState(prevState => {
-        switch (prevState.dots) {
-        case "⚫":
-          return {dots: " "};
-        case " ":
-          return {dots: "⚫"};
-        default:
-          return {dots: "⚫"};
-        }
-      });
-    }, 500);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
@@ -156,6 +144,19 @@ class ChatPage extends BaseListPage {
             chat: chat,
             messages: null,
           });
+
+          this.timer = setInterval(() => {
+            this.setState(prevState => {
+              switch (prevState.dots) {
+              case "⚫":
+                return {dots: " "};
+              case " ":
+                return {dots: "⚫"};
+              default:
+                return {dots: "⚫"};
+              }
+            });
+          }, 500);
 
           const field = "user";
           const value = this.props.account.name;
@@ -239,20 +240,26 @@ class ChatPage extends BaseListPage {
             }
 
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
-              if (chat && (this.state.chat.name !== chat.name)) {
+              if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
               const jsonData = JSON.parse(data);
 
               if (jsonData.text === "") {
                 jsonData.text = "\n";
+                if (this.timer !== null) {
+                  clearInterval(this.timer);
+                  this.setState({
+                    dots: "",
+                  });
+                }
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
-              lastMessage2.text = text;
+              lastMessage2.text = Setting.parseAnswerAndSuggestions(text)["answer"];
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
-                if (index === res.data.length - 1) {
+                if (index === res.data.length - 1 && message.author === "AI") {
                   message.html = renderText(message.text + " " + this.state.dots);
                 } else {
                   message.html = renderText(message.text);
@@ -276,11 +283,17 @@ class ChatPage extends BaseListPage {
                 disableInput: true,
               });
             }, (data) => {
-              if (chat && (this.state.chat.name !== chat.name)) {
+              if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = text;
+
+              // If there are suggestions, split them from the text
+              const parseResult = Setting.parseAnswerAndSuggestions(text);
+              lastMessage2.text = parseResult["answer"];
+              lastMessage2.suggestions = parseResult["suggestions"];
+
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 message.html = renderText(message.text);
@@ -487,7 +500,7 @@ class ChatPage extends BaseListPage {
     }
 
     return (
-      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : "calc(100vh - 186px)"}}>
+      <div style={{display: "flex", backgroundColor: "white", height: (Setting.getUrlParam("isRaw") !== null) ? "calc(100vh)" : (window.location.pathname.startsWith("/chat")) ? "calc(100vh - 135px)" : Setting.isMobile() ? "calc(100vh - 136px)" : "calc(100vh - 186px)"}}>
         {
           this.renderModal()
         }
@@ -518,7 +531,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} />
         </div>
       </div>
     );

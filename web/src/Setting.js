@@ -441,6 +441,34 @@ export function downloadXlsx(wordset) {
   }
 }
 
+export function toggleElementFromSet(array, element) {
+  if (!array) {
+    array = [];
+  }
+  if (array.includes(element)) {
+    return array.filter(e => e !== element);
+  } else {
+    return [...array, element];
+  }
+}
+
+export function addElementToSet(set, newUser) {
+  if (!set) {
+    set = [];
+  }
+  if (!set.includes(newUser)) {
+    set.push(newUser);
+  }
+  return set;
+}
+
+export function deleteElementFromSet(set, newUser) {
+  if (!set) {
+    return [];
+  }
+  return set.filter(user => user !== newUser);
+}
+
 export const redirectCatchJsonError = async(url) => {
   try {
     const response = await fetch(url);
@@ -663,6 +691,10 @@ export function getCompitableProviderOptions(category) {
         {"id": "gpt-4-0613", "name": "gpt-4-0613"},
         {"id": "gpt-4-32k", "name": "gpt-4-32k"},
         {"id": "gpt-4-32k-0613", "name": "gpt-4-32k-0613"},
+        {"id": "gpt-4o", "name": "gpt-4o"},
+        {"id": "gpt-4o-2024-05-13", "name": "gpt-4o-2024-05-13"},
+        {"id": "gpt-4o-mini", "name": "gpt-4o-mini"},
+        {"id": "gpt-4o-mini-2024-07-18", "name": "gpt-4o-mini-2024-07-18"},
       ]
     );
   } else if (category === "Embedding") {
@@ -741,6 +773,10 @@ const openaiModels = [
   {id: "gpt-4-0613", name: "gpt-4-0613"},
   {id: "gpt-4-32k", name: "gpt-4-32k"},
   {id: "gpt-4-32k-0613", name: "gpt-4-32k-0613"},
+  {id: "gpt-4o", name: "gpt-4o"},
+  {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
+  {id: "gpt-4o-mini", name: "gpt-4o-mini"},
+  {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
 ];
 
 const openaiEmbeddings = [
@@ -1204,4 +1240,31 @@ export function updateTheme(color) {
   document.documentElement.style.setProperty("--theme-background", ThemeDefault.colorBackground);
   document.documentElement.style.setProperty("--theme-button", ThemeDefault.colorButton);
   document.documentElement.style.setProperty("--theme-background-secondary", ThemeDefault.colorBackgroundSecondary);
+}
+
+export const suggestionsDivider = "|||";
+
+export function parseAnswerAndSuggestions(answer) {
+  const parts = answer.split(suggestionsDivider);
+  const suggestionTexts = parts.slice(1);
+
+  const suggestions = suggestionTexts.map(text => {
+    return {
+      text: text,
+      isHit: false,
+    };
+  });
+
+  return {
+    answer: parts[0],
+    suggestions: suggestions,
+  };
+}
+
+export function formatSuggestion(suggestionText) {
+  suggestionText = suggestionText.trim().replace(/^</, "").replace(/>$/, "");
+  if (!suggestionText.endsWith("?") && !suggestionText.endsWith("？")) {
+    suggestionText += "?";
+  }
+  return suggestionText;
 }

@@ -18,6 +18,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -29,13 +30,37 @@ import (
 // @Success 200 {array} object.Message The Response object
 // @router /get-global-messages [get]
 func (c *ApiController) GetGlobalMessages() {
-	messages, err := object.GetGlobalMessages()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
+	owner := "admin"
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	c.ResponseOk(messages)
+	if limit == "" || page == "" {
+		messages, err := object.GetGlobalMessages()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		c.ResponseOk(messages)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetMessageCount(owner, field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		messages, err := object.GetPaginationMessage(owner, paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(messages, paginator.Nums())
+	}
 }
 
 // GetMessages
@@ -112,6 +137,7 @@ func (c *ApiController) GetMessage() {
 // @router /update-message [post]
 func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
+	isHitOnly := c.Input().Get("isHitOnly")
 
 	var message object.Message
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
@@ -130,7 +156,7 @@ func (c *ApiController) UpdateMessage() {
 		message.NeedNotify = false
 	}
 
-	success, err := object.UpdateMessage(id, &message)
+	success, err := object.UpdateMessage(id, &message, isHitOnly == "true")
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -153,6 +179,8 @@ func (c *ApiController) AddMessage() {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	addMessageAfterSuccess := true
 	if message.IsRegenerated {
 		messages, err := object.GetChatMessages(message.Chat)
 		if err != nil {
@@ -181,8 +209,25 @@ func (c *ApiController) AddMessage() {
 				break
 			}
 		}
-		object.DeleteMessage(lastAIMessage)
-		object.DeleteMessage(lastUserMessage)
+		if lastAIMessage != nil {
+			if lastAIMessage.ReplyTo == "Welcome" {
+				message.Author = "AI"
+				message.ReplyTo = "Welcome"
+				addMessageAfterSuccess = false
+			}
+			_, err = object.DeleteMessage(lastAIMessage)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
+		}
+		if lastUserMessage != nil {
+			_, err = object.DeleteMessage(lastUserMessage)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
+		}
 	}
 	var chat *object.Chat
 	if message.Chat == "" {
@@ -224,7 +269,7 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
-	if success {
+	if success && addMessageAfterSuccess {
 		chatId := util.GetId(message.Owner, message.Chat)
 		chat, err = object.GetChat(chatId)
 		if err != nil {

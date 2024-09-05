@@ -136,7 +136,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
+	embeddingProvider, embeddingProviderObj, err := GetIdleEmbeddingProvider(store.EmbeddingUsageMap, chat.User2, true)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -167,7 +167,7 @@ func (c *ApiController) GetMessageAnswer() {
 		questionMessage.Price = embeddingResult.Price
 		questionMessage.Currency = embeddingResult.Currency
 
-		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage)
+		_, err = object.UpdateMessage(questionMessage.GetId(), questionMessage, false)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
@@ -182,6 +182,12 @@ func (c *ApiController) GetMessageAnswer() {
 	fmt.Printf("]\n")
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
+
+	question, err = getQuestionWithSuggestions(question, store.SuggestionCount)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
 
 	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
@@ -222,32 +228,74 @@ func (c *ApiController) GetMessageAnswer() {
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
+	textAnswer := answer
+	textSuggestions := []object.Suggestion{}
+	if store.SuggestionCount != 0 {
+		textAnswer, textSuggestions, err = parseAnswerAndSuggestions(answer)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+	}
+	message.Text = textAnswer
 
-	message.Text = answer
 	if message.Text != "" {
 		message.ErrorText = ""
 		message.IsAlerted = false
 	}
 
+	message.Suggestions = textSuggestions
+
 	message.ModelProvider = modelProvider
 	message.VectorScores = vectorScores
-	_, err = object.UpdateMessage(message.GetId(), message)
+	_, err = object.UpdateMessage(message.GetId(), message, false)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	for _, usageInfo := range store.ModelUsageMap {
+	if modelProvider == "dall-e-3" {
+		host := c.Ctx.Request.Host
+		origin := getOriginFromHost(host)
+		err := storeImage(message, origin)
+		if err != nil {
+			c.ResponseErrorStream(message, err.Error())
+			return
+		}
+	}
+
+	for key, usageInfo := range store.ModelUsageMap {
 		if time.Since(usageInfo.StartTime) >= time.Minute {
 			usageInfo.TokenCount = 0
 			usageInfo.StartTime = time.Time{}
+
+			store.ModelUsageMap[key] = usageInfo
+		}
+	}
+
+	for key, usageInfo := range store.EmbeddingUsageMap {
+		if time.Since(usageInfo.StartTime) >= time.Minute {
+			usageInfo.TokenCount = 0
+			usageInfo.StartTime = time.Time{}
+
+			store.EmbeddingUsageMap[key] = usageInfo
 		}
 	}
 
 	if store.ModelUsageMap != nil {
+		tokenCount := store.ModelUsageMap[message.ModelProvider].TokenCount + message.TokenCount
 		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
 			Provider:   message.ModelProvider,
-			TokenCount: message.TokenCount,
+			TokenCount: tokenCount,
+			StartTime:  time.Now(),
+		}
+	}
+
+	if store.EmbeddingUsageMap != nil {
+		tokenCount := store.EmbeddingUsageMap[message.EmbeddingProvider].TokenCount + message.TokenCount
+		store.EmbeddingUsageMap[embeddingProvider.Name] = object.UsageInfo{
+			Provider:   embeddingProvider.Name,
+			TokenCount: tokenCount,
 			StartTime:  time.Now(),
 		}
 	}

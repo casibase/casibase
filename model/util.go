@@ -17,14 +17,16 @@ package model
 import (
 	"fmt"
 	"math"
+	"regexp"
 
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )
 
 type RawMessage struct {
-	Text   string
-	Author string
+	Text           string
+	Author         string
+	TextTokenCount int
 }
 
 func reverseMessages(arr []*RawMessage) []*RawMessage {
@@ -115,12 +117,7 @@ func getHistoryMessages(recentMessages []*RawMessage, model string, leftTokens i
 	var res []*RawMessage
 
 	for _, message := range recentMessages {
-		messageTokenSize, err := GetTokenSize(model, message.Text)
-		if err != nil {
-			return nil, err
-		}
-
-		leftTokens -= messageTokenSize
+		leftTokens -= message.TextTokenCount
 		if leftTokens <= 0 {
 			break
 		}
@@ -148,12 +145,7 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	}
 
 	for i, message := range knowledgeMessages {
-		messageSize, err := GetTokenSize(model, message.Text)
-		if err != nil {
-			return nil, err
-		}
-
-		leftTokens -= messageSize
+		leftTokens -= message.TextTokenCount
 		if leftTokens <= 0 {
 			knowledgeMessages = knowledgeMessages[:i]
 			break
@@ -164,9 +156,17 @@ func OpenaiGenerateMessages(prompt string, question string, recentMessages []*Ra
 	if err != nil {
 		return nil, err
 	}
+	nonImageHistoryMessage := []*RawMessage{}
+	for _, message := range historyMessages {
+		re := regexp.MustCompile(`<img[^>]*\s+src=["']?([^"'>\s]+)["']?[^>]*>`)
+		match := re.FindStringSubmatch(message.Text)
+		if match == nil {
+			nonImageHistoryMessage = append(nonImageHistoryMessage, message)
+		}
+	}
 
 	res := getSystemMessages(prompt, knowledgeMessages)
-	res = append(res, historyMessages...)
+	res = append(res, nonImageHistoryMessage...)
 	res = append(res, queryMessage)
 	return res, nil
 }

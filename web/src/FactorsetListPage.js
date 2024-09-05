@@ -16,34 +16,14 @@ import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
+import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as FactorsetBackend from "./backend/FactorsetBackend";
 import i18next from "i18next";
 
-class FactorsetListPage extends React.Component {
+class FactorsetListPage extends BaseListPage {
   constructor(props) {
     super(props);
-    this.state = {
-      classes: props,
-      factorsets: null,
-    };
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getFactorsets();
-  }
-
-  getFactorsets() {
-    FactorsetBackend.getFactorsets(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            factorsets: res.data,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get factorsets: ${res.msg}`);
-        }
-      });
   }
 
   newFactorset() {
@@ -69,7 +49,11 @@ class FactorsetListPage extends React.Component {
         if (res.status === "ok") {
           Setting.showMessage("success", "Factorset added successfully");
           this.setState({
-            factorsets: Setting.prependRow(this.state.factorsets, newFactorset),
+            data: Setting.prependRow(this.state.data, newFactorset),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total + 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Failed to add factorset: ${res.msg}`);
@@ -80,13 +64,17 @@ class FactorsetListPage extends React.Component {
       });
   }
 
-  deleteFactorset(i) {
-    FactorsetBackend.deleteFactorset(this.state.factorsets[i])
+  deleteFactorset(record) {
+    FactorsetBackend.deleteFactorset(record)
       .then((res) => {
         if (res.status === "ok") {
           Setting.showMessage("success", "Factorset deleted successfully");
           this.setState({
-            factorsets: Setting.deleteRow(this.state.factorsets, i),
+            data: this.state.data.filter((item) => item.name !== record.name),
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
           Setting.showMessage("error", `Factorset failed to delete: ${res.msg}`);
@@ -185,7 +173,7 @@ class FactorsetListPage extends React.Component {
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/factorsets/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteFactorset(index)}
+                onConfirm={() => this.deleteFactorset(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
@@ -197,9 +185,16 @@ class FactorsetListPage extends React.Component {
       },
     ];
 
+    const paginationProps = {
+      total: this.state.pagination.total,
+      showQuickJumper: true,
+      showSizeChanger: true,
+      showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
+    };
+
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={factorsets} rowKey="name" size="middle" bordered pagination={{pageSize: 100}}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={factorsets} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Factorsets")}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -207,20 +202,42 @@ class FactorsetListPage extends React.Component {
             </div>
           )}
           loading={factorsets === null}
+          onChange={this.handleTableChange}
         />
       </div>
     );
   }
 
-  render() {
-    return (
-      <div>
-        {
-          this.renderTable(this.state.factorsets)
+  fetch = (params = {}) => {
+    const field = params.searchedColumn, value = params.searchText;
+    const sortField = params.sortField, sortOrder = params.sortOrder;
+    this.setState({loading: true});
+    FactorsetBackend.getFactorsets("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+      .then((res) => {
+        this.setState({
+          loading: false,
+        });
+        if (res.status === "ok") {
+          this.setState({
+            data: res.data,
+            pagination: {
+              ...params.pagination,
+              total: res.data2,
+            },
+            searchText: params.searchText,
+            searchedColumn: params.searchedColumn,
+          });
+        } else {
+          if (Setting.isResponseDenied(res)) {
+            this.setState({
+              isAuthorized: false,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+          }
         }
-      </div>
-    );
-  }
+      });
+  };
 }
 
 export default FactorsetListPage;

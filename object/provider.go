@@ -380,6 +380,44 @@ func GetModelProviderFromContext(owner string, name string) (*Provider, model.Mo
 	return getModelProviderFromName(owner, providerName)
 }
 
+func GetEmbeddingProvidersFromContext(owner string, name string, isFromStore bool) (map[string]*Provider, map[string]embedding.EmbeddingProvider, error) {
+	providerNames := []string{}
+	if name != "" {
+		providerNames = []string{name}
+	} else if isFromStore {
+		store, err := GetDefaultStore(owner)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		if store != nil && len(store.EmbeddingProviders) != 0 {
+			providerNames = store.EmbeddingProviders
+		}
+	} else {
+		task, err := getTask(owner, name)
+		if err != nil {
+			return nil, nil, err
+		}
+		if task != nil && len(task.Providers) != 0 {
+			providerNames = task.Providers
+		}
+	}
+
+	providerMap := map[string]*Provider{}
+	providerObjMap := map[string]embedding.EmbeddingProvider{}
+	for _, providerName := range providerNames {
+		provider, providerObj, err := getEmbeddingProviderFromName(owner, providerName)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		providerMap[providerName] = provider
+		providerObjMap[providerName] = providerObj
+	}
+
+	return providerMap, providerObjMap, nil
+}
+
 func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embedding.EmbeddingProvider, error) {
 	var providerName string
 	if name != "" {
@@ -396,4 +434,20 @@ func GetEmbeddingProviderFromContext(owner string, name string) (*Provider, embe
 	}
 
 	return getEmbeddingProviderFromName(owner, providerName)
+}
+
+func GetProviderCount(owner, field, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Provider{})
+}
+
+func GetPaginationProviders(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Provider, error) {
+	providers := []*Provider{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&providers)
+	if err != nil {
+		return providers, err
+	}
+
+	return providers, nil
 }

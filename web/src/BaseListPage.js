@@ -22,12 +22,32 @@ class BaseListPage extends React.Component {
     this.state = {
       classes: props,
       data: [],
+      pagination: {
+        current: 1,
+        pageSize: 10,
+      },
       loading: false,
       searchText: "",
       searchedColumn: "",
       isAuthorized: true,
     };
   }
+
+  UNSAFE_componentWillMount() {
+    const {pagination} = this.state;
+    this.fetch({pagination});
+  }
+
+  handleTableChange = (pagination, filters, sorter) => {
+    this.fetch({
+      sortField: sorter.field,
+      sortOrder: sorter.order,
+      pagination,
+      ...filters,
+      searchText: this.state.searchText,
+      searchedColumn: this.state.searchedColumn,
+    });
+  };
 
   render() {
     if (!this.state.isAuthorized) {

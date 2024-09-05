@@ -78,6 +78,8 @@ Language models:
 | GPT-4-Turbo-Vision    | 128K    | $0.01                    | $0.03                    |
 | GPT-4                 | 8K      | $0.03                    | $0.06                    |
 | GPT-4                 | 32K     | $0.06                    | $0.12                    |
+| GPT-4o                | 128K    | $0.0025                  | $0.0075                  |
+| GPT-4o-mini           | 128K    | $0.000075                | $0.0003                  |
 
 Image models:
 
@@ -144,6 +146,12 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		} else if strings.Contains(model, "32k") {
 			inputPricePerThousandTokens = 0.06
 			outputPricePerThousandTokens = 0.12
+		} else if strings.Contains(model, "4o-mini") {
+			inputPricePerThousandTokens = 0.000075
+			outputPricePerThousandTokens = 0.0003
+		} else if strings.Contains(model, "4o") {
+			inputPricePerThousandTokens = 0.0025
+			outputPricePerThousandTokens = 0.0075
 		} else {
 			inputPricePerThousandTokens = 0.03
 			outputPricePerThousandTokens = 0.06
@@ -284,6 +292,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			flusher.Flush()
 
 			modelResult.ImageCount = 1
+			modelResult.TotalTokenCount = modelResult.ImageCount
 			err = p.calculatePrice(modelResult)
 			if err != nil {
 				return nil, err
@@ -298,7 +307,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		var messages []openai.ChatCompletionMessage
-		if p.subType == "gpt-4-vision-preview" || p.subType == "gpt-4-1106-vision-preview" {
+		if strings.HasSuffix(p.subType, "-vision-preview") || strings.Contains(p.subType, "4o") {
 			messages, err = OpenaiRawMessagesToGpt4VisionMessages(rawMessages)
 			if err != nil {
 				return nil, err

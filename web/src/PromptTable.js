@@ -41,7 +41,7 @@ class PromptTable extends React.Component {
 
     const promptsColumn = [
       {
-        title: i18next.t("Title"),
+        title: i18next.t("store:Title"),
         dataIndex: "title",
         key: "title",
         width: "30%",
@@ -50,7 +50,7 @@ class PromptTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("Text"),
+        title: i18next.t("store:Text"),
         dataIndex: "text",
         key: "text",
         width: "30%",
@@ -59,7 +59,7 @@ class PromptTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("Icon"),
+        title: i18next.t("store:Icon"),
         dataIndex: "image",
         key: "image",
         width: "30%",
@@ -69,7 +69,7 @@ class PromptTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("Action"),
+        title: i18next.t("store:Action"),
         key: "action",
         render: (text, record, index) => (
           <Button type="primary" size="small" onClick={() => {
@@ -92,7 +92,7 @@ class PromptTable extends React.Component {
             pagination={false}
             title={() => (
               <div>
-                {i18next.t("wordset:Prompts")}&nbsp;&nbsp;&nbsp;&nbsp;
+                {i18next.t("store:Prompts")}&nbsp;&nbsp;&nbsp;&nbsp;
                 <Button style={{marginRight: "5px"}} type="primary" size="small"
                   onClick={() => {
                     const newPrompt = {

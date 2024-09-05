@@ -137,3 +137,19 @@ func DeleteChat(chat *Chat) (bool, error) {
 func (chat *Chat) GetId() string {
 	return fmt.Sprintf("%s/%s", chat.Owner, chat.Name)
 }
+
+func GetChatCount(owner string, field string, value string) (int64, error) {
+	session := GetSession(owner, -1, -1, field, value, "", "")
+	return session.Count(&Chat{})
+}
+
+func GetPaginationChat(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Chat, error) {
+	chats := []*Chat{}
+	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&chats)
+	if err != nil {
+		return chats, err
+	}
+
+	return chats, nil
+}

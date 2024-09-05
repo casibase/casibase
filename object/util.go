@@ -18,6 +18,9 @@ import (
 	"fmt"
 	"net/url"
 	"strings"
+
+	"github.com/casibase/casibase/util"
+	"xorm.io/xorm"
 )
 
 func getUrlFromPath(path string, origin string) (string, error) {
@@ -29,4 +32,28 @@ func getUrlFromPath(path string, origin string) (string, error) {
 	res = fmt.Sprintf("storage/%s", res)
 	res, err := url.JoinPath(origin, res)
 	return res, err
+}
+
+func GetSession(owner string, offset, limit int, field, value, sortField, sortOrder string) *xorm.Session {
+	session := adapter.engine.Prepare()
+	if offset != -1 && limit != -1 {
+		session.Limit(limit, offset)
+	}
+	if owner != "" {
+		session = session.And("owner=?", owner)
+	}
+	if field != "" && value != "" {
+		if util.FilterField(field) {
+			session = session.And(fmt.Sprintf("%s like ?", util.SnakeString(field)), fmt.Sprintf("%%%s%%", value))
+		}
+	}
+	if sortField == "" || sortOrder == "" {
+		sortField = "created_time"
+	}
+	if sortOrder == "ascend" {
+		session = session.Asc(util.SnakeString(sortField))
+	} else {
+		session = session.Desc(util.SnakeString(sortField))
+	}
+	return session
 }

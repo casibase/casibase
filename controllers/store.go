@@ -17,7 +17,9 @@ package controllers
 import (
 	"encoding/json"
 
+	"github.com/astaxie/beego/utils/pagination"
 	"github.com/casibase/casibase/object"
+	"github.com/casibase/casibase/util"
 )
 
 // GetGlobalStores
@@ -27,13 +29,38 @@ import (
 // @Success 200 {array} object.Store The Response object
 // @router /get-global-stores [get]
 func (c *ApiController) GetGlobalStores() {
-	stores, err := object.GetGlobalStores()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
+	limit := c.Input().Get("pageSize")
+	page := c.Input().Get("p")
+	field := c.Input().Get("field")
+	value := c.Input().Get("value")
+	sortField := c.Input().Get("sortField")
+	sortOrder := c.Input().Get("sortOrder")
 
-	c.ResponseOk(stores)
+	if limit == "" || page == "" {
+		stores, err := object.GetGlobalStores()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(stores)
+	} else {
+		limit := util.ParseInt(limit)
+		count, err := object.GetStoreCount(field, value)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		paginator := pagination.SetPaginator(c.Ctx, limit, count)
+		stores, err := object.GetPaginationStores(paginator.Offset(), limit, field, value, sortField, sortOrder)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		c.ResponseOk(stores, paginator.Nums())
+	}
 }
 
 // GetStores

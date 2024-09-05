@@ -69,13 +69,14 @@ type Store struct {
 	ModelUsageMap      map[string]UsageInfo `xorm:"mediumtext" json:"modelUsageMap" xorm:"json"`
 	EmbeddingUsageMap  map[string]UsageInfo `xorm:"mediumtext" json:"embeddingUsageMap" xorm:"json"`
 
-	MemoryLimit  int      `json:"memoryLimit"`
-	Frequency    int      `json:"frequency"`
-	LimitMinutes int      `json:"limitMinutes"`
-	Welcome      string   `xorm:"varchar(100)" json:"welcome"`
-	Prompt       string   `xorm:"mediumtext" json:"prompt"`
-	Prompts      []Prompt `xorm:"mediumtext" json:"prompts"`
-	ThemeColor   string   `xorm:"varchar(100)" json:"themeColor"`
+	MemoryLimit     int      `json:"memoryLimit"`
+	Frequency       int      `json:"frequency"`
+	LimitMinutes    int      `json:"limitMinutes"`
+	SuggestionCount int      `json:"suggestionCount"`
+	Welcome         string   `xorm:"varchar(100)" json:"welcome"`
+	Prompt          string   `xorm:"mediumtext" json:"prompt"`
+	Prompts         []Prompt `xorm:"mediumtext" json:"prompts"`
+	ThemeColor      string   `xorm:"varchar(100)" json:"themeColor"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
@@ -260,4 +261,20 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 
 	ok, err := addVectorsForStore(storageProviderObj, embeddingProviderObj, "", store.Name, store.SplitProvider, embeddingProvider.Name, modelProvider.SubType, limit)
 	return ok, err
+}
+
+func GetStoreCount(field, value string) (int64, error) {
+	session := GetSession("", -1, -1, field, value, "", "")
+	return session.Count(&Store{})
+}
+
+func GetPaginationStores(offset, limit int, field, value, sortField, sortOrder string) ([]*Store, error) {
+	stores := []*Store{}
+	session := GetSession("", offset, limit, field, value, sortField, sortOrder)
+	err := session.Find(&stores)
+	if err != nil {
+		return stores, err
+	}
+
+	return stores, nil
 }
