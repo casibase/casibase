@@ -142,7 +142,7 @@ class ChatPage extends BaseListPage {
           const chat = res.data;
           this.setState({
             chat: chat,
-            messages: null,
+            // messages: null,
           });
 
           this.timer = setInterval(() => {
@@ -363,7 +363,7 @@ class ChatPage extends BaseListPage {
             const focusedChat = data[j];
             this.setState({
               chat: focusedChat,
-              messages: null,
+              // messages: null,
               data: data,
             });
             this.getMessages(focusedChat);
@@ -470,7 +470,7 @@ class ChatPage extends BaseListPage {
       const chat = chats[i];
       this.setState({
         chat: chat,
-        messages: null,
+        // messages: null,
       });
       this.getMessages(chat);
       this.goToLinkSoft(`/chat/${chat.name}`);
