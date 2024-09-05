@@ -75,7 +75,7 @@ class ChatListPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage("success", "Chat added successfully");
           this.setState({
-            data: Setting.prependRow(this.state.chats, newChat),
+            data: Setting.prependRow(this.state.data, newChat),
             pagination: {
               ...this.state.pagination,
               total: this.state.pagination.total + 1,
