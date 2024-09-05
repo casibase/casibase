@@ -184,48 +184,6 @@ class ListChatPage extends ChatPage {
       </div>
     );
   }
-
-  fetch = (params = {}, setLoading = true) => {
-    const field = "user";
-    const value = this.props.account.name;
-    const sortField = params.sortField, sortOrder = params.sortOrder;
-    const chatName = this.getChat();
-
-    if (setLoading) {
-      this.setState({loading: true});
-    }
-    ChatBackend.getChats(value, -1, -1, field, value, sortField, sortOrder)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            loading: false,
-            data: res.data,
-            messages: [],
-            searchText: params.searchText,
-            searchedColumn: params.searchedColumn,
-          });
-
-          const chats = res.data;
-          if (chatName !== undefined && chats.length > 0) {
-            const chat = chats.find(chat => chat.name === chatName);
-            this.getMessages(chat);
-            this.setState({
-              chat: chat,
-            });
-          } else if (this.state.chat?.name === undefined && chats.length > 0) {
-            const chat = chats[0];
-            this.getMessages(chat);
-            this.setState({
-              chat: chat,
-            });
-          }
-
-          if (!setLoading) {
-            this.menu.current.setSelectedKeyToNewChat(chats);
-          }
-        }
-      });
-  };
 }
 
 export default ListChatPage;

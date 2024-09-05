@@ -80,6 +80,11 @@ class LiveChatBox extends ChatBox {
   };
 
   componentDidMount() {
+    this.scrollToBottom();
+    if (window.THREE.OrbitControls && window.THREE.GLTFLoader && window.THREE.RGBELoader && window.THREE.Water && window.THREE.Reflector && window.THREE.Refractor) {
+      // eslint-disable-next-line
+      console.log("External Imports Ready.");
+    }
     this.scene = new THREE.Scene();
     this.scene.castShadow = true;
     this.scene.receiveShadow = true;
@@ -297,7 +302,16 @@ class LiveChatBox extends ChatBox {
     if (prevProps.messages !== null && this.props.messages !== null) {
       this.lastPropsUpdateTime = Date.now();
     }
+
+    if (this.props.messages !== prevProps.messages) {
+      this.scrollToBottom();
+    }
   }
+
+  scrollToBottom = () => {
+    const messageList = document.querySelector(".overlay-message-list");
+    messageList.scrollTop = messageList.scrollHeight;
+  };
 
   changeState = () => {
     const timeSinceLastUpdate = Date.now() - this.lastPropsUpdateTime;
