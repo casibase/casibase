@@ -82,156 +82,154 @@ class LiveChatBox extends ChatBox {
   componentDidMount() {
     this.scrollToBottom();
     if (window.THREE.OrbitControls && window.THREE.GLTFLoader && window.THREE.RGBELoader && window.THREE.Water && window.THREE.Reflector && window.THREE.Refractor) {
-      // eslint-disable-next-line
-      console.log("External Imports Ready.");
-    }
-    this.scene = new THREE.Scene();
-    this.scene.castShadow = true;
-    this.scene.receiveShadow = true;
-    this.scene.fog = new THREE.Fog("#cce0ff", 5, 500);
-    const canvas = document.getElementById("canvas");
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    let agent, skeleton;
-    let idleAction, greetingAction, talkAction_1, talkAction_2, talkAction_3, talkAction_4, thinkAction;
+      this.scene = new THREE.Scene();
+      this.scene.castShadow = true;
+      this.scene.receiveShadow = true;
+      this.scene.fog = new THREE.Fog("#cce0ff", 5, 500);
+      const canvas = document.getElementById("canvas");
+      const width = canvas.clientWidth;
+      const height = canvas.clientHeight;
+      let agent, skeleton;
+      let idleAction, greetingAction, talkAction_1, talkAction_2, talkAction_3, talkAction_4, thinkAction;
 
-    this.camera = new THREE.PerspectiveCamera(
-      75,
-      width / height,
-      0.1,
-      2000
-    );
+      this.camera = new THREE.PerspectiveCamera(
+        75,
+        width / height,
+        0.1,
+        2000
+      );
 
-    this.camera.position.set(-7, 7, 49);
-    this.camera.lookAt(0, 0, 0);
+      this.camera.position.set(-7, 7, 49);
+      this.camera.lookAt(0, 0, 0);
 
-    this.camera.aspect = width / height;
-    this.camera.updateProjectionMatrix();
-    this.scene.add(this.camera);
-
-    this.renderer = new THREE.WebGLRenderer({
-      antialias: true,
-    });
-    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
-    this.renderer.setSize(width, height);
-
-    window.addEventListener("resize", () => {
       this.camera.aspect = width / height;
-      this.camera.updateProjectionMatrix;
-      this.renderer.setSize(width, height);
-    });
-    this.mountRef.current.appendChild(this.renderer.domElement);
+      this.camera.updateProjectionMatrix();
+      this.scene.add(this.camera);
 
-    const controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-
-    const axesHelper = new THREE.AxesHelper(5);
-    this.scene.add(axesHelper);
-
-    this.animate = () => {
-      controls.update();
-      const delta = this.clock.getDelta();
-      if (this.mixer) {this.mixer.update(delta);}
-      this.renderer.render(this.scene, this.camera);
-      this.animationId = requestAnimationFrame(this.animate);
-    };
-
-    this.animate();
-
-    const texture = new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/skybox/Sky_horiz_1.jpg");
-
-    const skyGeometry = new THREE.SphereGeometry(500, 60, 60);
-    const skyMaterial = new THREE.MeshBasicMaterial({
-      map: texture,
-    });
-    skyGeometry.scale(1, 1, -1);
-    const sky = new THREE.Mesh(skyGeometry, skyMaterial);
-    this.scene.add(sky);
-
-    const waterGeometry = new THREE.CircleGeometry(300, 64);
-    const water = new THREE.Water(waterGeometry, {
-      normalMap0: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_0.jpeg", texture => {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(0.1, 0.1);
-      }),
-      normalMap1: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_1.jpeg", texture => {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.repeat.set(0.1, 0.1);
-      }),
-      textureWidth: 1024,
-      textureHeight: 1024,
-      color: "#eeeeff",
-      sunDirection: new THREE.Vector3(),
-      sunColor: 0xffffff,
-      distortionScale: 3.7,
-      flowDirection: new THREE.Vector2(1, 1),
-      scale: 2,
-      fog: this.scene.fog !== undefined,
-    });
-    water.rotation.x = -Math.PI / 2;
-    this.scene.add(water);
-
-    const islandLoader = new THREE.GLTFLoader();
-    // const islandDracoLoader = new DRACOLoader();
-    // islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
-    // islandLoader.setDRACOLoader(islandDracoLoader);
-
-    islandLoader.load("https://cdn.casibase.org/assets/models/island.glb", (gltf) => {
-      const island = gltf.scene;
-      island.scale.set(30, 30, 30);
-      island.position.set(0, -0.5, 0);
-      this.scene.add(island);
-    });
-
-    const agentLoader = new THREE.GLTFLoader();
-    // const agentDracoLoader = new DRACOLoader();
-    // agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
-    // agentLoader.setDRACOLoader(agentDracoLoader);
-
-    agentLoader.load("https://cdn.casibase.org/assets/models/agent.glb", (gltf) => {
-      agent = gltf.scene;
-      this.scene.add(agent);
-      agent.traverse(function(object) {
-        if (object.isMesh) {object.castShadow = true;}
+      this.renderer = new THREE.WebGLRenderer({
+        antialias: true,
       });
-      agent.position.set(-6, 1.5, 45);
-      agent.scale.set(4, 4, 4);
-      skeleton = new THREE.SkeletonHelper(agent);
-      skeleton.visible = false;
-      this.scene.add(skeleton);
+      this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+      this.renderer.setSize(width, height);
 
-      const animations = gltf.animations;
-      this.mixer = new THREE.AnimationMixer(agent);
+      window.addEventListener("resize", () => {
+        this.camera.aspect = width / height;
+        this.camera.updateProjectionMatrix;
+        this.renderer.setSize(width, height);
+      });
+      this.mountRef.current.appendChild(this.renderer.domElement);
 
-      greetingAction = this.mixer.clipAction(animations[0]);
-      idleAction = this.mixer.clipAction(animations[2]);
-      talkAction_1 = this.mixer.clipAction(animations[3]);
-      talkAction_2 = this.mixer.clipAction(animations[4]);
-      talkAction_3 = this.mixer.clipAction(animations[5]);
-      talkAction_4 = this.mixer.clipAction(animations[6]);
-      thinkAction = this.mixer.clipAction(animations[7]);
+      const controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
 
-      this.actions = {
-        greeting: greetingAction,
-        idle: idleAction,
-        talk1: talkAction_1,
-        talk2: talkAction_2,
-        talk3: talkAction_3,
-        talk4: talkAction_4,
-        think: thinkAction,
+      const axesHelper = new THREE.AxesHelper(5);
+      this.scene.add(axesHelper);
+
+      this.animate = () => {
+        controls.update();
+        const delta = this.clock.getDelta();
+        if (this.mixer) {this.mixer.update(delta);}
+        this.renderer.render(this.scene, this.camera);
+        this.animationId = requestAnimationFrame(this.animate);
       };
-      this.actions.idle.play();
-    });
 
-    const hdrLoader = new THREE.RGBELoader();
-    hdrLoader.loadAsync("https://cdn.casibase.org/assets/textures/skybox/skyHDR.hdr"). then((texture) => {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      this.scene.background = texture;
-      this.scene.environment = texture;
-    });
+      this.animate();
 
-    this.intervalId = setInterval(() => {
-      this.changeState();
-    }, 1000);
+      const texture = new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/skybox/Sky_horiz_1.jpg");
+
+      const skyGeometry = new THREE.SphereGeometry(500, 60, 60);
+      const skyMaterial = new THREE.MeshBasicMaterial({
+        map: texture,
+      });
+      skyGeometry.scale(1, 1, -1);
+      const sky = new THREE.Mesh(skyGeometry, skyMaterial);
+      this.scene.add(sky);
+
+      const waterGeometry = new THREE.CircleGeometry(300, 64);
+      const water = new THREE.Water(waterGeometry, {
+        normalMap0: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_0.jpeg", texture => {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(0.1, 0.1);
+        }),
+        normalMap1: new THREE.TextureLoader().load("https://cdn.casibase.org/assets/textures/water/water_normal_1.jpeg", texture => {
+          texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+          texture.repeat.set(0.1, 0.1);
+        }),
+        textureWidth: 1024,
+        textureHeight: 1024,
+        color: "#eeeeff",
+        sunDirection: new THREE.Vector3(),
+        sunColor: 0xffffff,
+        distortionScale: 3.7,
+        flowDirection: new THREE.Vector2(1, 1),
+        scale: 2,
+        fog: this.scene.fog !== undefined,
+      });
+      water.rotation.x = -Math.PI / 2;
+      this.scene.add(water);
+
+      const islandLoader = new THREE.GLTFLoader();
+      // const islandDracoLoader = new DRACOLoader();
+      // islandDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
+      // islandLoader.setDRACOLoader(islandDracoLoader);
+
+      islandLoader.load("https://cdn.casibase.org/assets/models/island.glb", (gltf) => {
+        const island = gltf.scene;
+        island.scale.set(30, 30, 30);
+        island.position.set(0, -0.5, 0);
+        this.scene.add(island);
+      });
+
+      const agentLoader = new THREE.GLTFLoader();
+      // const agentDracoLoader = new DRACOLoader();
+      // agentDracoLoader.setDecoderPath(process.env.PUBLIC_URL + "./draco");
+      // agentLoader.setDRACOLoader(agentDracoLoader);
+
+      agentLoader.load("https://cdn.casibase.org/assets/models/agent.glb", (gltf) => {
+        agent = gltf.scene;
+        this.scene.add(agent);
+        agent.traverse(function(object) {
+          if (object.isMesh) {object.castShadow = true;}
+        });
+        agent.position.set(-6, 1.5, 45);
+        agent.scale.set(4, 4, 4);
+        skeleton = new THREE.SkeletonHelper(agent);
+        skeleton.visible = false;
+        this.scene.add(skeleton);
+
+        const animations = gltf.animations;
+        this.mixer = new THREE.AnimationMixer(agent);
+
+        greetingAction = this.mixer.clipAction(animations[0]);
+        idleAction = this.mixer.clipAction(animations[2]);
+        talkAction_1 = this.mixer.clipAction(animations[3]);
+        talkAction_2 = this.mixer.clipAction(animations[4]);
+        talkAction_3 = this.mixer.clipAction(animations[5]);
+        talkAction_4 = this.mixer.clipAction(animations[6]);
+        thinkAction = this.mixer.clipAction(animations[7]);
+
+        this.actions = {
+          greeting: greetingAction,
+          idle: idleAction,
+          talk1: talkAction_1,
+          talk2: talkAction_2,
+          talk3: talkAction_3,
+          talk4: talkAction_4,
+          think: thinkAction,
+        };
+        this.actions.idle.play();
+      });
+
+      const hdrLoader = new THREE.RGBELoader();
+      hdrLoader.loadAsync("https://cdn.casibase.org/assets/textures/skybox/skyHDR.hdr"). then((texture) => {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        this.scene.background = texture;
+        this.scene.environment = texture;
+      });
+
+      this.intervalId = setInterval(() => {
+        this.changeState();
+      }, 1000);
+    }
   }
 
   componentWillUnmount() {
