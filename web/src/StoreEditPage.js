@@ -167,6 +167,26 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Title")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.store.title} onChange={e => {
+              this.updateStoreField("title", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Avatar")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.store.avatar} onChange={e => {
+              this.updateStoreField("avatar", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Storage provider")}:
           </Col>
           <Col span={22} >
@@ -332,6 +352,20 @@ class StoreEditPage extends React.Component {
               <Col span={22} >
                 <input type="color" value={this.state.store.themeColor} onChange={(e) => {
                   this.updateStoreField("themeColor", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.state.store.name !== "store-built-in" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("store:Can Select Store")}:
+              </Col>
+              <Col span={22} style={{display: "flex", alignItems: "center"}}>
+                <input type="checkbox" checked={this.state.store.canSelectStore} onClick={(e) => {
+                  this.updateStoreField("canSelectStore", e.target.checked);
                 }} />
               </Col>
             </Row>

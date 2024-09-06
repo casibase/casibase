@@ -16,6 +16,7 @@ import React from "react";
 import {Button, Modal, Spin} from "antd";
 import {CloseCircleFilled} from "@ant-design/icons";
 import moment from "moment";
+import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
 import {renderText} from "./ChatMessageRender";
@@ -63,6 +64,25 @@ class ChatPage extends BaseListPage {
     }
   }
 
+  getGlobalStores() {
+    StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
+      if (res.status === "ok") {
+        this.setState({
+          stores: res?.data,
+        });
+        let canSelectStore = res.data.find(store => store.name === "store-built-in")?.canSelectStore;
+        if (!canSelectStore) {
+          canSelectStore = false;
+        }
+        this.setState({
+          canSelectStore: canSelectStore,
+        });
+      } else {
+        Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
+      }
+    });
+  }
+
   getChat() {
     if (this.props.match) {
       return this.props.match.params.chatName;
@@ -93,11 +113,16 @@ class ChatPage extends BaseListPage {
     return 1;
   }
 
-  newChat(chat) {
+  newChat(chat, selectStore = {}) {
     const randomName = Setting.getRandomName();
+    let store = selectStore.name;
+    if (!store) {
+      store = "";
+    }
     return {
       owner: "admin",
       name: `chat_${randomName}`,
+      store: store,
       createdTime: moment().format(),
       updatedTime: moment().format(),
       organization: this.props.account.owner,
@@ -321,8 +346,8 @@ class ChatPage extends BaseListPage {
       });
   }
 
-  addChat(chat) {
-    const newChat = this.newChat(chat);
+  addChat(chat, selectStore) {
+    const newChat = this.newChat(chat, selectStore);
     this.goToLinkSoft(`/chat/${newChat.name}`);
     ChatBackend.addChat(newChat)
       .then((res) => {
@@ -476,9 +501,9 @@ class ChatPage extends BaseListPage {
       this.goToLinkSoft(`/chat/${chat.name}`);
     };
 
-    const onAddChat = () => {
+    const onAddChat = (selectStore = {}) => {
       const chat = this.getCurrentChat();
-      this.addChat(chat);
+      this.addChat(chat, selectStore);
     };
 
     const onDeleteChat = (i) => {
@@ -508,7 +533,7 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} />
+          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={!this.state.canSelectStore ? [] : this.state.stores} />
         </div>
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
@@ -531,7 +556,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.stores?.find(store => store.name === this.state.chat.store)} />
         </div>
       </div>
     );
@@ -571,6 +596,7 @@ class ChatPage extends BaseListPage {
               chat: chat,
             });
           }
+          this.getGlobalStores();
 
           if (!setLoading) {
             this.menu.current.setSelectedKeyToNewChat(chats);

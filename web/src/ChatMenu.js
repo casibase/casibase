@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Input, Menu, Popconfirm} from "antd";
+import {Button, Dropdown, Input, Menu, Popconfirm} from "antd";
 import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
@@ -199,12 +199,27 @@ class ChatMenu extends React.Component {
     }
   };
 
-  render() {
-    const items = this.chatsToItems(this.props.chats);
+  renderAddChatButton(stores = []) {
+    if (!stores) {
+      stores = [];
+    }
+    // get usable store for select
+    stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
     const hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
 
-    return (
-      <div>
+    const items = stores.map((store, index) => {
+      return {
+        key: store.name,
+        label: <p onClick={() => {
+          this.props.onAddChat(store);
+        }}>
+          {store.name}
+        </p>,
+      };
+    });
+
+    const AddChatButton = () => {
+      return (
         <Button
           icon={<PlusOutlined />}
           style={{
@@ -229,10 +244,32 @@ class ChatMenu extends React.Component {
             e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
           }}
-          onClick={this.props.onAddChat}
+          onClick={() => {
+            this.props.onAddChat("");
+          }}
         >
           {i18next.t("chat:New Chat")}
         </Button>
+      );
+    };
+
+    if (stores.length === 0) {
+      return AddChatButton();
+    }
+
+    return (
+      <Dropdown menu={{items}} disabled={hasEmptyChat}>
+        {AddChatButton()}
+      </Dropdown>
+    );
+  }
+
+  render() {
+    const items = this.chatsToItems(this.props.chats);
+
+    return (
+      <div>
+        {this.renderAddChatButton(this.props.stores)}
         <div style={{marginRight: "4px"}}>
           <Menu
             style={{maxHeight: "calc(100vh - 140px - 40px - 8px)", overflowY: "auto"}}
