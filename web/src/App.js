@@ -485,12 +485,12 @@ class App extends Component {
   renderRouter() {
     const add3DExternals = () => {
       const scripts = [
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/loaders/GLTFLoader.js",
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/loaders/RGBELoader.js",
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/controls/OrbitControls.js",
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Water2.js",
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Reflector.js",
-        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Refractor.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/RGBELoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Water2.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Reflector.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Refractor.js",
       ];
 
       scripts.forEach(src => {
