@@ -322,7 +322,9 @@ class App extends Component {
 
   getMenuItems() {
     const res = [];
+
     res.push(Setting.getItem(<Link to="/">{i18next.t("general:Home")}</Link>, "/"));
+
     if (this.state.account === null || this.state.account === undefined) {
       return [];
     }
@@ -335,6 +337,8 @@ class App extends Component {
     }
 
     const domain = Setting.getSubdomain();
+    // const domain = "data";
+
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
@@ -481,12 +485,12 @@ class App extends Component {
   renderRouter() {
     const add3DExternals = () => {
       const scripts = [
-        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js",
-        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/RGBELoader.js",
-        "https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js",
-        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Water2.js",
-        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Reflector.js",
-        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Refractor.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/loaders/GLTFLoader.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/loaders/RGBELoader.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/controls/OrbitControls.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Water2.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Reflector.js",
+        "https://jsd.cdn.zzko.cn/npm/three/examples/js/objects/Refractor.js",
       ];
 
       scripts.forEach(src => {
