@@ -218,7 +218,7 @@ class ChatMenu extends React.Component {
       };
     });
 
-    const AddChatButton = () => {
+    const getNewChatButton = () => {
       return (
         <Button
           icon={<PlusOutlined />}
@@ -254,12 +254,12 @@ class ChatMenu extends React.Component {
     };
 
     if (stores.length === 0) {
-      return AddChatButton();
+      return getNewChatButton();
     }
 
     return (
       <Dropdown menu={{items}} disabled={hasEmptyChat}>
-        {AddChatButton()}
+        {getNewChatButton()}
       </Dropdown>
     );
   }
