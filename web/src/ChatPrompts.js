@@ -13,7 +13,6 @@
 // limitations under the License.
 
 import React from "react";
-import * as StoreBackend from "./backend/StoreBackend";
 import ImageWithFallback from "./ChatPromptsIcon";
 import * as Setting from "./Setting";
 import {Button} from "antd";
@@ -22,48 +21,40 @@ import i18next from "i18next";
 class ChatPrompts extends React.Component {
   constructor(props) {
     super(props);
-    this.prompts = [];
     this.state = {
       prompts: [],
     };
   }
 
   componentDidMount() {
-    this.getPrompts();
+    this.selectPrompts();
   }
   shouldComponentUpdate(nextProps, nextState) {
-    return this.state.prompts !== nextState.prompts;
+    return (
+      this.state.prompts !== nextState.prompts ||
+      JSON.stringify(this.props.prompts) !== JSON.stringify(nextProps.prompts)
+    );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (JSON.stringify(prevProps.prompts) !== JSON.stringify(this.props.prompts)) {
+      this.selectPrompts();
+    }
   }
 
   selectPrompts = () => {
     const limit = Setting.isMobile() ? 4 : 8;
-    if (this.prompts.length <= limit) {
-      if (this.state.prompts.length === 0) {
-        this.setState({
-          prompts: this.prompts,
-        });
-      }
-    } else if (this.prompts.length > limit) {
+    if (this.props.prompts.length <= limit) {
       this.setState({
-        prompts: this.prompts.sort(() => 0.5 - Math.random()).slice(0, limit),
+        prompts: this.props.prompts,
+      });
+    } else if (this.props.prompts.length > limit) {
+      this.setState({
+        prompts: this.props.prompts.sort(() => 0.5 - Math.random()).slice(0, limit),
       });
     }
   };
 
-  getPrompts() {
-    StoreBackend.getStore("admin", "_casibase_default_store_")
-      .then((res) => {
-        if (res.status === "ok") {
-          if (typeof res.data2 === "string" && res.data2 !== "") {
-            res.data.error = res.data2;
-          }
-          this.prompts = res.data?.prompts ?? [];
-          this.selectPrompts();
-        } else {
-          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
-        }
-      });
-  }
   render = () => {
     const groupedPrompts = [];
     for (let i = 0; i < this.state.prompts.length; i += 4) {
@@ -150,7 +141,7 @@ class ChatPrompts extends React.Component {
           ))
         }
         {
-          this.prompts.length <= limit ? null : (
+          this.props.prompts.length <= limit ? null : (
             <div style={{
               display: "flex",
               flexDirection: "row",

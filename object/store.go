@@ -77,6 +77,9 @@ type Store struct {
 	Prompt          string   `xorm:"mediumtext" json:"prompt"`
 	Prompts         []Prompt `xorm:"mediumtext" json:"prompts"`
 	ThemeColor      string   `xorm:"varchar(100)" json:"themeColor"`
+	Avatar          string   `xorm:"varchar(200)" json:"avatar"`
+	Title           string   `xorm:"varchar(100)" json:"title"`
+	CanSelectStore  bool     `json:"canSelectStore"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
