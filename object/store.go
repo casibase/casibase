@@ -55,8 +55,6 @@ type Prompt struct {
 type Store struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
-	Avatar      string `xorm:"varchar(100)" json:"avatar"`
-	Title       string `xorm:"varchar(100)" json:"title"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
@@ -79,7 +77,9 @@ type Store struct {
 	Prompt          string   `xorm:"mediumtext" json:"prompt"`
 	Prompts         []Prompt `xorm:"mediumtext" json:"prompts"`
 	ThemeColor      string   `xorm:"varchar(100)" json:"themeColor"`
-	CanSelectStore  bool     `xorm:"default false" json:"canSelectStore" `
+	Avatar          string   `xorm:"varchar(200)" json:"avatar"`
+	Title           string   `xorm:"varchar(100)" json:"title"`
+	CanSelectStore  bool     `json:"canSelectStore"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
