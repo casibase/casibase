@@ -143,12 +143,12 @@ class App extends Component {
       this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
-    } else if (uri.includes("/chat") && !uri.includes("/livechat")) {
+    } else if (uri.includes("/livechat")) {
+      this.setState({selectedMenuKey: "/livechat"});
+    } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/swagger")) {
       this.setState({selectedMenuKey: "/swagger"});
-    } else if (uri.includes("/livechat")) {
-      this.setState({selectedMenuKey: "/livechat"});
     } else {
       this.setState({selectedMenuKey: "null"});
     }
