@@ -411,9 +411,22 @@ class ChatBox extends React.Component {
   }
 
   render() {
-    let title = Setting.getUrlParam("title");
-    if (title === null) {
-      title = Conf.AiName;
+    const getStoreTitle = (store) => {
+      let title = Setting.getUrlParam("title");
+      if (title === null) {
+        title = (!store?.title) ? this.props.displayName : store.title;
+      }
+      return title;
+    };
+
+    const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
+
+    const title = getStoreTitle(this.props.store);
+    const avatar = getStoreAvatar(this.props.store);
+
+    let prompts = this.props.store?.prompts;
+    if (!prompts) {
+      prompts = [];
     }
 
     let messages = this.props.messages;
@@ -438,7 +451,7 @@ class ChatBox extends React.Component {
                   sender: message.name,
                   direction: message.author === "AI" ? "incoming" : "outgoing",
                 }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                  <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
+                  <Avatar src={message.author === "AI" ? avatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
                   <Message.CustomContent>
                     {this.renderMessageContent(message, index === messages.length - 1)}
                   </Message.CustomContent>
@@ -501,7 +514,7 @@ class ChatBox extends React.Component {
             }
           </ChatContainer>
           {
-            !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} /> : this.renderVoiceInputHint()
+            !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} prompts={prompts} /> : this.renderVoiceInputHint()
           }
         </MainContainer>
         <input

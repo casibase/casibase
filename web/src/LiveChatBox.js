@@ -19,7 +19,6 @@ import {ChatContainer, ConversationHeader, MainContainer, Message, MessageInput,
 import {renderText} from "./ChatMessageRender";
 import i18next from "i18next";
 import * as Setting from "./Setting";
-import * as Conf from "./Conf";
 import "./LiveChatBox.css";
 import {ThemeDefault} from "./Conf";
 import ChatPrompts from "./ChatPrompts";
@@ -331,9 +330,19 @@ class LiveChatBox extends ChatBox {
   };
 
   render() {
-    let title = Setting.getUrlParam("title");
-    if (title === null) {
-      title = Conf.AiName;
+    const getStoreTitle = (store) => {
+      let title = Setting.getUrlParam("title");
+      if (title === null) {
+        title = (!store?.title) ? this.props.displayName : store.title;
+      }
+      return title;
+    };
+
+    const title = getStoreTitle(this.props.store);
+
+    let prompts = this.props.store?.prompts;
+    if (!prompts) {
+      prompts = [];
     }
 
     let messages = this.props.messages;
@@ -361,7 +370,6 @@ class LiveChatBox extends ChatBox {
                       sender: message.name,
                       direction: message.author === "AI" ? "incoming" : "outgoing",
                     }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                      {/* <Avatar src={message.author === "AI" ? Conf.AiAvatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" /> */}
                       <Message.CustomContent className="text">
                         {this.renderAnimMessageContent(message, index === messages.length - 1)}
                       </Message.CustomContent>
@@ -399,7 +407,7 @@ class LiveChatBox extends ChatBox {
             }
           </ChatContainer>
           {
-            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} />
+            messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} prompts={prompts} />
           }
         </MainContainer>
         <input
