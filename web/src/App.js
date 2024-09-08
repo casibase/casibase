@@ -51,12 +51,23 @@ import TaskEditPage from "./TaskEditPage";
 import ArticleListPage from "./ArticleListPage";
 import ArticleEditPage from "./ArticleEditPage";
 import ChatPage from "./ChatPage";
+import LiveChatPage from "./LiveChatPage";
 import CustomGithubCorner from "./CustomGithubCorner";
 import ShortcutsPage from "./basic/ShortcutsPage";
 import UsagePage from "./UsagePage";
 import * as StoreBackend from "./backend/StoreBackend";
 
 const {Header, Footer, Content} = Layout;
+
+// eslint-disable-next-line no-console
+const originalWarn = console.warn;
+// eslint-disable-next-line no-console
+console.warn = (...args) => {
+  if (args[0].includes("THREE.WebGLRenderer")) {
+    return;
+  }
+  originalWarn(...args);
+};
 
 class App extends Component {
   constructor(props) {
@@ -132,6 +143,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
+    } else if (uri.includes("/livechat")) {
+      this.setState({selectedMenuKey: "/livechat"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
     } else if (uri.includes("/swagger")) {
@@ -398,6 +411,7 @@ class App extends Component {
       }
     } else {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      res.push(Setting.getItem(<Link to="/livechat">{i18next.t("general:Livechat")}</Link>, "/livechat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
@@ -469,6 +483,24 @@ class App extends Component {
   }
 
   renderRouter() {
+    const add3DExternals = () => {
+      const scripts = [
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/GLTFLoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/loaders/RGBELoader.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/controls/OrbitControls.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Water2.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Reflector.js",
+        "https://cdn.jsdelivr.net/npm/three/examples/js/objects/Refractor.js",
+      ];
+
+      scripts.forEach(src => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.async = true;
+        document.head.appendChild(script);
+      });
+    };
+
     return (
       <Switch>
         <Route exact path="/callback" component={AuthCallback} />
@@ -501,12 +533,14 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/livechat" render={(props) => {add3DExternals();return this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />);}} />
+        <Route exact path="/livechat/:chatName" render={(props) => {add3DExternals();return this.renderSigninIfNotSignedIn(<LiveChatPage account={this.state.account} {...props} />);}} />
       </Switch>
     );
   }
 
   isWithoutCard() {
-    return Setting.isMobile() || window.location.pathname.startsWith("/chat");
+    return (Setting.isMobile() || window.location.pathname.startsWith("/chat")) || (Setting.isMobile() || window.location.pathname.startsWith("/livechat"));
   }
 
   renderContent() {
