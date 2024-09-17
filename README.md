@@ -13,14 +13,9 @@
   <a href="https://github.com/casibase/casibase/releases/latest">
     <img alt="GitHub Release" src="https://img.shields.io/github/v/release/casibase/casibase.svg">
   </a>
-  <a href="https://hub.docker.com/repository/docker/casbin/casibase">
+  <a href="https://hub.docker.com/r/casbin/casibase">
     <img alt="Docker Image Version (latest semver)" src="https://img.shields.io/badge/Docker%20Hub-latest-brightgreen">
   </a>
-<!-- waiting for changing -->
-<!-- <a href="https://hub.docker.com/r/casbin/casibase"> -->
-<!-- <a href="https://github.com/casibase/casibase/actions/workflows/build.yml"> -->
-<!-- <a href="https://github.com/casibase/casibase/releases/latest"> -->
-<!-- <a href="https://hub.docker.com/repository/docker/casbin/casibase"> -->
 </p>
 
 <p align="center">
