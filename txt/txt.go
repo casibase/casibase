@@ -43,7 +43,7 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 	}
 
 	var res string
-	if ext == ".txt" || ext == ".md" || ext == ".yaml" {
+	if ext == "" || ext == ".txt" || ext == ".md" || ext == ".yaml" {
 		res, err = getTextFromPlain(path)
 	} else if ext == ".csv" {
 		res, err = getTextFromCsv(path)
