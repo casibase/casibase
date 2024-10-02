@@ -92,6 +92,16 @@ export function getAnswer(provider, question, framework, video) {
   }).then(res => res.json());
 }
 
+export function getQuestionAnswer(provider, question) {
+  return fetch(`${Setting.ServerUrl}/api/get-question-answer?provider=${provider}&question=${encodeURIComponent(question)}}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+  }).then(res => res.json());
+}
+
 export function getMessage(owner, name) {
   return fetch(`${Setting.ServerUrl}/api/get-message?id=${owner}/${encodeURIComponent(name)}`, {
     method: "GET",

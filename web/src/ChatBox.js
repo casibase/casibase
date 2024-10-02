@@ -411,17 +411,17 @@ class ChatBox extends React.Component {
   }
 
   render() {
-    const getStoreTitle = (store) => {
-      let title = Setting.getUrlParam("title");
-      if (title === null) {
-        title = (!store?.title) ? this.props.displayName : store.title;
-      }
-      return title;
-    };
+    // const getStoreTitle = (store) => {
+    //   let title = Setting.getUrlParam("title");
+    //   if (title === null) {
+    //     title = (!store?.title) ? this.props.displayName : store.title;
+    //   }
+    //   return title;
+    // };
 
     const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
 
-    const title = getStoreTitle(this.props.store);
+    const title = this.props.displayName;
     const avatar = getStoreAvatar(this.props.store);
 
     let prompts = this.props.store?.prompts;
