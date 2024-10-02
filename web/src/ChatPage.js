@@ -233,6 +233,41 @@ class ChatPage extends BaseListPage {
     return false;
   }
 
+  getSuitableTitle(message) {
+    const prompt = "Generate a suitable chat title based on the user's first sentence, " +
+      "ensuring the title uses the same language as the user's first sentence, and is not too long. " +
+      "only you do is return your title only with text , no markdown or any other format" +
+      "Here is the user's first sentence: [" + message + "]";
+
+    MessageBackend.getQuestionAnswer("", prompt).then(async res => {
+      if (res.status === "ok") {
+        const suitableTitle = res.data;
+        for (let i = 0; i < res.data.split("").length; i++) {
+          const title = res.data.slice(0, i + 1);
+          await new Promise((resolve) => {
+            setTimeout(() => {
+              resolve();
+            }, 50);
+          });
+          this.setState({
+            chat: {
+              ...this.state.chat,
+              displayName: title,
+            },
+            // 更新name相同的title
+            data: this.state.data.map((chat) => {
+              if (chat.name === this.state.chat.name) {
+                chat.displayName = title;
+              }
+              return chat;
+            }),
+          });
+        }
+        this.updateChatName(this.state.data, -1, this.state.chat, suitableTitle, false);
+      }
+    });
+  }
+
   getMessages(chat) {
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
@@ -334,6 +369,11 @@ class ChatPage extends BaseListPage {
                   dots: "",
                 });
               }
+              // if is first message , get suitable title
+              if (this.state.messages.length <= 2) {
+                const pro = this.state.messages[0].text;
+                this.getSuitableTitle(pro);
+              }
             });
           } else {
             this.setState({
@@ -403,11 +443,15 @@ class ChatPage extends BaseListPage {
       });
   }
 
-  updateChatName(chats, i, chat, newName) {
+  updateChatName(chats, i, chat, newName, isActive = true) {
     const name = chat.name;
     chat.displayName = newName;
     ChatBackend.updateChat("admin", name, chat)
       .then((res) => {
+        // If the change is not human-triggered , do not use showMessage
+        if (!isActive) {
+          return;
+        }
         if (res.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully update"));
         } else {
@@ -416,6 +460,9 @@ class ChatPage extends BaseListPage {
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      })
+      .finally(() => {
+        this.fetch({});
       });
   }
 

@@ -493,3 +493,41 @@ func (c *ApiController) GetAnswer() {
 	}
 	c.ResponseOk(answer)
 }
+
+// GetQuestionAnswer
+// @Title GetQuestionAnswer
+// @Tag Message API
+// @Description only get a question answer
+// @Param id query string true "The id of message"
+// @Success 200 {stream} string "An event stream of message answers in JSON format"
+// @router /get-question-answer [get]
+func (c *ApiController) GetQuestionAnswer() {
+	question := c.Input().Get("question")
+	provider := c.Input().Get("provider")
+
+	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
+	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
+	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
+
+	store, err := object.GetDefaultStore("admin")
+	if store == nil {
+		c.ResponseError("no usable store")
+		return
+	}
+
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	fmt.Printf("Question: [%s]\n", question)
+	fmt.Printf("Answer: [")
+
+	answer, _, err := object.GetAnswer(provider, question)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	fmt.Printf("]\n")
+	c.ResponseOk(answer)
+}
