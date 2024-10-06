@@ -495,7 +495,7 @@ class ChatPage extends BaseListPage {
       const chat = chats[i];
       this.setState({
         chat: chat,
-        // messages: null,
+      // messages: null,
       });
       this.getMessages(chat);
       this.goToLinkSoft(`/chat/${chat.name}`);
@@ -535,6 +535,7 @@ class ChatPage extends BaseListPage {
         <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
           <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={!this.state.canSelectStore ? [] : this.state.stores} />
         </div>
+
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
             (this.state.messages === undefined || this.state.messages === null) ? null : (
@@ -556,7 +557,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.stores?.find(store => store.name === this.state.chat.store)} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.stores?.find(store => store.name === this.state.chat?.store)} />
         </div>
       </div>
     );
