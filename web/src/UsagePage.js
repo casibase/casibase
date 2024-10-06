@@ -416,18 +416,18 @@ class UsagePage extends BaseListPage {
       <option key="all" value="All" disabled={!(this.props.account.name === "admin" || this.props.account.type === "chat-admin")}>
         All
       </option>,
-      ...this.state.users.map((user, index) => (
+      ...(this.state.users ? this.state.users.map((user, index) => (
         <option key={index} value={index}>
           {user}
         </option>
-      )),
+      )) : []),
     ];
     const handleChange = (value) => {
       let user;
       if (value === "All") {
         user = "All";
       } else {
-        user = this.state.users[value];
+        user = this.state.users ? this.state.users[value] : null;
       }
       this.setState({
         selectedUser: user,
