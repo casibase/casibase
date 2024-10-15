@@ -105,15 +105,28 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		}
 	}
 
+	messages := []*moonshot.ChatCompletionsMessage{}
+
+	for i := len(history) - 1; i >= 0; i-- {
+		rawMessage := history[i]
+		role := moonshot.RoleUser
+		if rawMessage.Author == "AI" {
+			role = moonshot.RoleAssistant
+		}
+		messages = append(messages, &moonshot.ChatCompletionsMessage{
+			Role:    role,
+			Content: rawMessage.Text,
+		})
+	}
+	messages = append(messages, &moonshot.ChatCompletionsMessage{
+		Role:    moonshot.RoleUser,
+		Content: question,
+	})
+
 	// Chat completions
 	resp, err := cli.Chat().Completions(context.Background(), &moonshot.ChatCompletionsRequest{
-		Model: moonshot.ChatCompletionsModelID(p.subType),
-		Messages: []*moonshot.ChatCompletionsMessage{
-			{
-				Role:    moonshot.RoleUser,
-				Content: question,
-			},
-		},
+		Model:       moonshot.ChatCompletionsModelID(p.subType),
+		Messages:    messages,
 		Temperature: p.temperature,
 	})
 	if err != nil {
