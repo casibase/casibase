@@ -128,12 +128,23 @@ func (p *ErnieModelProvider) QueryText(question string, writer io.Writer, histor
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
 
-	messages := []ernie.ChatCompletionMessage{
-		{
-			Role:    "user",
-			Content: question,
-		},
+	messages := []ernie.ChatCompletionMessage{}
+
+	for i := len(history) - 1; i >= 0; i-- {
+		rawMessage := history[i]
+		role := "user"
+		if rawMessage.Author == "AI" {
+			role = "assistant"
+		}
+		messages = append(messages, ernie.ChatCompletionMessage{
+			Role:    role,
+			Content: rawMessage.Text,
+		})
 	}
+	messages = append(messages, ernie.ChatCompletionMessage{
+		Role:    "user",
+		Content: question,
+	})
 
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
