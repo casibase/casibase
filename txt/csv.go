@@ -37,7 +37,7 @@ func getTextFromCsv(path string) (string, error) {
 		return "", err
 	}
 
-	var result []string
+	result := []string{}
 	for {
 		record, err := r.Read()
 		if err == io.EOF {

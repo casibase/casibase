@@ -28,7 +28,7 @@ func NewBasicSplitProvider() (*BasicSplitProvider, error) {
 
 func (p *BasicSplitProvider) SplitText(text string) ([]string, error) {
 	const maxLength = 210
-	var res []string
+	res := []string{}
 	var temp string
 
 	lines := strings.Split(text, "\n")
