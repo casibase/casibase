@@ -216,19 +216,21 @@ func GetUsageMetadata() (*UsageMetadata, error) {
 }
 
 func GetUsers(user string) ([]string, error) {
-	var users []string
-	addedAuthors := make(map[string]bool)
+	users := []string{}
+	userMap := map[string]bool{}
+
 	messages, err := GetMessages("admin", user)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, message := range messages {
-		if !addedAuthors[message.User] {
+		if !userMap[message.User] {
+			userMap[message.User] = true
 			users = append(users, message.User)
-			addedAuthors[message.User] = true
 		}
 	}
+
 	return users, nil
 }
 

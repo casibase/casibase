@@ -29,7 +29,7 @@ func NewDefaultSplitProvider() (*DefaultSplitProvider, error) {
 
 func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
 	const maxLength = 210
-	var sections []string
+	sections := []string{}
 	var currentSection strings.Builder
 	var codeBlock strings.Builder
 	inCodeBlock := false

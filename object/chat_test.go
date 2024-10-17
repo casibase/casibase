@@ -155,7 +155,7 @@ func TestPrintChatUsers(t *testing.T) {
 	}
 
 	userMap := make(map[string]struct{})
-	var users []string
+	users := []string{}
 	for _, chat := range chats {
 		if chat.User == "admin" {
 			continue

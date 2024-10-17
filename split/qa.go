@@ -26,7 +26,7 @@ func NewQaSplitProvider() (*QaSplitProvider, error) {
 
 // SplitText method splits the text into question-answer pairs
 func (p *QaSplitProvider) SplitText(text string) ([]string, error) {
-	var res []string
+	res := []string{}
 	var currentPair string
 	var collectingAnswer bool
 

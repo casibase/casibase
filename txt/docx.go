@@ -27,7 +27,7 @@ func GetTextFromDocx(path string) (string, error) {
 		return "", err
 	}
 
-	var paragraphs []string
+	paragraphs := []string{}
 	for _, para := range docx.Paragraphs() {
 		var paraText string
 
