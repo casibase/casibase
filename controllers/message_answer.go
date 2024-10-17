@@ -334,10 +334,12 @@ func (c *ApiController) GetMessageAnswer() {
 // @Param question query string true "The question of message"
 // @Param framework query string true "The framework"
 // @Param video query string true "The video"
+// @Param chatName query string true "The name of target chat"
 // @Success 200 {string} string "answer message"
 // @router /get-answer [get]
 func (c *ApiController) GetAnswer() {
 	userName, ok := c.RequireSignedIn()
+	targetChatName := c.Input().Get("chatName")
 	if !ok {
 		return
 	}
@@ -345,9 +347,13 @@ func (c *ApiController) GetAnswer() {
 	framework := c.Input().Get("framework")
 	id := util.GetId("admin", framework)
 	task, err := object.GetTask(id)
-	if err != nil {
+	if framework != "" && err != nil {
 		c.ResponseError(err.Error())
 		return
+	} else if framework == "" {
+		task = &object.Task{
+			ModelUsageMap: map[string]object.UsageInfo{},
+		}
 	}
 
 	question := c.Input().Get("question")
@@ -355,6 +361,9 @@ func (c *ApiController) GetAnswer() {
 
 	category := "Custom"
 	chatName := fmt.Sprintf("chat_%s", util.GetRandomName())
+	if targetChatName != "" {
+		chatName = targetChatName
+	}
 	if framework != "" {
 		if video == "" {
 			category = "FrameworkTest"
@@ -429,7 +438,9 @@ func (c *ApiController) GetAnswer() {
 
 	questionMessage.Currency = modelResult.Currency
 
-	_, err = object.AddMessage(questionMessage)
+	if framework != "" {
+		_, err = object.AddMessage(questionMessage)
+	}
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -451,7 +462,9 @@ func (c *ApiController) GetAnswer() {
 	answerMessage.Price = modelResult.TotalPrice
 	answerMessage.Currency = modelResult.Currency
 
-	_, err = object.AddMessage(answerMessage)
+	if framework != "" {
+		_, err = object.AddMessage(answerMessage)
+	}
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -472,24 +485,26 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	for _, usageInfo := range task.ModelUsageMap {
-		if time.Since(usageInfo.StartTime) >= time.Minute {
-			usageInfo.TokenCount = 0
-			usageInfo.StartTime = time.Time{}
+	if framework != "" {
+		for _, usageInfo := range task.ModelUsageMap {
+			if time.Since(usageInfo.StartTime) >= time.Minute {
+				usageInfo.TokenCount = 0
+				usageInfo.StartTime = time.Time{}
+			}
 		}
-	}
 
-	if task.ModelUsageMap != nil {
-		task.ModelUsageMap[provider] = object.UsageInfo{
-			Provider:   provider,
-			TokenCount: modelResult.TotalTokenCount,
-			StartTime:  time.Now(),
+		if task.ModelUsageMap != nil {
+			task.ModelUsageMap[provider] = object.UsageInfo{
+				Provider:   provider,
+				TokenCount: modelResult.TotalTokenCount,
+				StartTime:  time.Now(),
+			}
 		}
-	}
-	_, err = object.UpdateTask(id, task)
-	if err != nil {
-		c.ResponseOk(err.Error())
-		return
+		_, err = object.UpdateTask(id, task)
+		if err != nil {
+			c.ResponseOk(err.Error())
+			return
+		}
 	}
 	c.ResponseOk(answer)
 }

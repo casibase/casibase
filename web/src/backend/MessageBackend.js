@@ -82,8 +82,8 @@ export function getMessageAnswer(owner, name, onMessage, onError, onEnd) {
   });
 }
 
-export function getAnswer(provider, question, framework, video) {
-  return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}&framework=${encodeURIComponent(framework)}&video=${encodeURIComponent(video)}`, {
+export function getAnswer(provider, question, framework, video, chatName = "") {
+  return fetch(`${Setting.ServerUrl}/api/get-answer?provider=${provider}&question=${encodeURIComponent(question)}&framework=${encodeURIComponent(framework)}&video=${encodeURIComponent(video)}&chatName=${encodeURIComponent(chatName)}`, {
     method: "GET",
     credentials: "include",
     headers: {
