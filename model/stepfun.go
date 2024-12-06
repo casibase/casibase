@@ -155,7 +155,6 @@ func StepFunNumTokensFromMessages(prompt string, response string, subType string
 }
 
 func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
-
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
