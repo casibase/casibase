@@ -988,11 +988,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "qwen-max", name: "qwen-max"},
       {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
     ]);
-  } else if (type === "DeepSeek") {
-    return ([
-      {id: "deepseek-chat", name: "deepseek-chat"},
-    ]);
-  } else if (type === "Baichuan") {
+  }  else if (type === "Baichuan") {
     return ([
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
@@ -1006,6 +1002,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Doubao-pro-4k", name: "Doubao-pro-4k"},
       {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
       {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
+    ]);
+  } else if (type === "DeepSeek") {
+    return ([
+      {id: "deepseek-chat", name: "deepseek-chat"},
     ]);
   } else if (type === "Dummy") {
     return ([
