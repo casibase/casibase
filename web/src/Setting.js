@@ -988,7 +988,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "qwen-max", name: "qwen-max"},
       {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
     ]);
-  }  else if (type === "Baichuan") {
+  } else if (type === "Baichuan") {
     return ([
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
