@@ -32,7 +32,7 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 
 | Model          | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
 |----------------|----------------------|----------------------------------|--------------------------------|
-| deepseek-chat  | qwen-long            | 0.0001yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
+|    deepseek    |     deepseek-chat    | 0.0001yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
 `
 }
 
