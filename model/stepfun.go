@@ -118,22 +118,21 @@ func StepFunNumTokensFromMessages(prompt string, response string, subType string
 			Messages: []ChatCompletionMessage{user_prompt},
 		}
 	}
-	// 将请求体转换为JSON格式
+
 	requestBodyJSON, err := json.Marshal(messages)
 	if err != nil {
 		log.Fatalf("JSON Marshal Error: %v", err)
 	}
-	// 创建POST请求
+
 	url := "https://api.stepfun.com/v1/token/count"
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBodyJSON))
 	if err != nil {
 		log.Fatalf("Request Creation Error: %v", err)
 	}
 
-	// 设置请求头
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey) // 用 subType 填充 API Key
-	// 发送请求
+	req.Header.Set("Authorization", "Bearer "+apiKey)
+
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -141,20 +140,17 @@ func StepFunNumTokensFromMessages(prompt string, response string, subType string
 	}
 	defer resp.Body.Close()
 
-	// 读取响应体
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatalf("Read Response Error: %v", err)
 	}
 
-	// 解析响应的 JSON
 	var TokenNumResponse TokenCountResponse
 	err = json.Unmarshal(body, &TokenNumResponse)
 	if err != nil {
 		log.Fatalf("JSON Unmarshal Error: %v", err)
 	}
 
-	// 返回token数量
 	return TokenNumResponse.Data.TotalTokens, nil
 }
 
