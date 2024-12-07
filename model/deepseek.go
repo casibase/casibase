@@ -1,4 +1,4 @@
-// Copyright 2023 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 package model
 
 import (
@@ -52,7 +53,7 @@ https://api-docs.deepseek.com/zh-cn/quick_start/pricing
 func (p *DeepSeekProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"deepseek-chat": {0.0001, 0.002},
+		"deepseek-chat": {0.001, 0.002},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
