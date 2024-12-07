@@ -14,14 +14,10 @@
 package model
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
-	"strings"
 
 	"github.com/sashabaranov/go-openai"
 )
@@ -81,79 +77,6 @@ func (p *StepFunModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-type ChatCompletionMessage struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
-}
-
-type TokenCountRequest struct {
-	Model    string                  `json:"model"`
-	Messages []ChatCompletionMessage `json:"messages"`
-}
-
-type TokenCountResponse struct {
-	Data struct {
-		TotalTokens int `json:"total_tokens"`
-	} `json:"data"`
-}
-
-func StepFunNumTokensFromMessages(prompt string, response string, subType string, apiKey string) (int, error) {
-	user_prompt := ChatCompletionMessage{
-		Role:    "user",
-		Content: prompt,
-	}
-	sys_response := ChatCompletionMessage{
-		Role:    "system",
-		Content: response,
-	}
-	var messages TokenCountRequest
-	if response != "" {
-		messages = TokenCountRequest{
-			Model:    subType,
-			Messages: []ChatCompletionMessage{user_prompt, sys_response},
-		}
-	} else {
-		messages = TokenCountRequest{
-			Model:    subType,
-			Messages: []ChatCompletionMessage{user_prompt},
-		}
-	}
-
-	requestBodyJSON, err := json.Marshal(messages)
-	if err != nil {
-		log.Fatalf("JSON Marshal Error: %v", err)
-	}
-
-	url := "https://api.stepfun.com/v1/token/count"
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(requestBodyJSON))
-	if err != nil {
-		log.Fatalf("Request Creation Error: %v", err)
-	}
-
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey)
-
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Fatalf("Request Error: %v", err)
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalf("Read Response Error: %v", err)
-	}
-
-	var TokenNumResponse TokenCountResponse
-	err = json.Unmarshal(body, &TokenNumResponse)
-	if err != nil {
-		log.Fatalf("JSON Unmarshal Error: %v", err)
-	}
-
-	return TokenNumResponse.Data.TotalTokens, nil
-}
-
 func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
@@ -191,35 +114,12 @@ func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, hist
 	}
 	modelResult := &ModelResult{}
 
-	promptTokenCount, err := StepFunNumTokensFromMessages(question, "", p.subType, p.apiKey) // calculate token
-	if err != nil {
-		return nil, err
-	}
-	modelResult.PromptTokenCount = promptTokenCount
-	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-
-	StepFunMaxTokens := map[string]int{
-		"step-1-8k":    8000,
-		"step-1-32k":   32000,
-		"step-1-128k":  128000,
-		"step-1-256k":  256000,
-		"step-1-flash": 8000,
-		"step-2-16k":   16000,
-	}
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		if StepFunMaxTokens[p.subType] > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf("exceed max tokens")
-		}
-	}
-
 	stream, err := client.CreateChatCompletionStream(ctx, request)
 	if err != nil {
 		return nil, err
 	}
 	defer stream.Close()
-	var receive_message string = ""
+
 	for {
 		response, err := stream.Recv()
 		if err != nil {
@@ -239,12 +139,11 @@ func (p *StepFunModelProvider) QueryText(question string, writer io.Writer, hist
 			return nil, err
 		}
 
-		receive_message += data
-		if err != nil {
-			return nil, err
-		}
+		modelResult.PromptTokenCount = response.Usage.PromptTokens
+		modelResult.ResponseTokenCount = response.Usage.CompletionTokens
+		modelResult.TotalTokenCount = response.Usage.TotalTokens
 	}
-	modelResult.TotalTokenCount, _ = StepFunNumTokensFromMessages(question, receive_message, p.subType, p.apiKey)
+
 	err = p.calculatePrice(modelResult)
 	if err != nil {
 		return nil, err

@@ -1003,10 +1003,6 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
       {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
     ]);
-  } else if (type === "Dummy") {
-    return ([
-      {id: "Dummy", name: "Dummy"},
-    ]);
   } else if (type === "StepFun") {
     return ([
       {id: "step-1-8k", name: "step-1-8k"},
@@ -1015,6 +1011,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "step-1-256k", name: "step-1-256k"},
       {id: "step-1-flash", name: "step-1-flash"},
       {id: "step-2-16k", name: "step-2-16k"},
+    ]);
+  } else if (type === "Dummy") {
+    return ([
+      {id: "Dummy", name: "Dummy"},
     ]);
   } else {
     return [];
