@@ -736,6 +736,7 @@ export function getProviderTypeOptions(category) {
         {id: "Qwen", name: "Qwen"},
         {id: "Baichuan", name: "Baichuan"},
         {id: "Doubao", name: "Doubao"},
+        {id: "DeepSeek", name: "DeepSeek"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1001,6 +1002,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Doubao-pro-4k", name: "Doubao-pro-4k"},
       {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
       {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
+    ]);
+  } else if (type === "DeepSeek") {
+    return ([
+      {id: "deepseek-chat", name: "deepseek-chat"},
     ]);
   } else if (type === "Dummy") {
     return ([
