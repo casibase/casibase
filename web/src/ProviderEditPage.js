@@ -205,6 +205,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "Baichuan2-Turbo");
                 } else if (value === "Doubao") {
                   this.updateProviderField("subType", "Doubao-lite-4k");
+                } else if (value === "DeepSeek") {
+                  this.updateProviderField("subType", "deepseek-chat");
                 } else if (value === "StepFun") {
                   this.updateProviderField("subType", "step-1-8k");
                 }
