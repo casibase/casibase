@@ -1016,6 +1016,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "step-1-256k", name: "step-1-256k"},
       {id: "step-1-flash", name: "step-1-flash"},
       {id: "step-2-16k", name: "step-2-16k"},
+    ]);
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
