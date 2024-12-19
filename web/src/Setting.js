@@ -750,6 +750,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "Qwen", name: "Qwen"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Dummy", name: "Dummy"},
       ]
@@ -991,13 +992,24 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
     ]);
   } else if (type === "Qwen") {
-    return ([
-      {id: "qwen-long", name: "qwen-long"},
-      {id: "qwen-turbo", name: "qwen-turbo"},
-      {id: "qwen-plus", name: "qwen-plus"},
-      {id: "qwen-max", name: "qwen-max"},
-      {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
-    ]);
+    if (category === "Embedding") {
+      return (
+        [
+          {id: "text-embedding-v1", name: "text-embedding-v1"},
+          {id: "text-embedding-v2", name: "text-embedding-v2"},
+          {id: "text-embedding-v3", name: "text-embedding-v3"},
+        ]
+      );
+    } else {
+      return (
+        [
+          {id: "qwen-long", name: "qwen-long"},
+          {id: "qwen-turbo", name: "qwen-turbo"},
+          {id: "qwen-plus", name: "qwen-plus"},
+          {id: "qwen-max", name: "qwen-max"},
+          {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+        ]);
+    }
   } else if (type === "Baichuan") {
     return ([
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
