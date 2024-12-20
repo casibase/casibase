@@ -132,5 +132,4 @@ func (p *MiniMaxEmbeddingProvider) QueryVector(text string, ctx context.Context)
 	}
 
 	return embeddingResponse.Vectors[0], embeddingResult, nil
-
 }
