@@ -750,6 +750,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "MiniMax", name: "MiniMax"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -925,11 +926,19 @@ export function getProviderSubTypeOptions(category, type) {
       ]
     );
   } else if (type === "MiniMax") {
-    return (
-      [
-        {id: "abab5-chat", name: "abab5-chat"},
-      ]
-    );
+    if (category === "Model") {
+      return (
+        [
+          {id: "abab5-chat", name: "abab5-chat"},
+        ]
+      );
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "embo-01", name: "embo-01"},
+        ]
+      );
+    }
   } else if (type === "Local") {
     if (category === "Model") {
       return (
