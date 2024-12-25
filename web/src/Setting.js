@@ -750,6 +750,7 @@ export function getProviderTypeOptions(category) {
         {id: "Ernie", name: "Ernie"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
+        {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Dummy", name: "Dummy"},
