@@ -993,15 +993,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
     ]);
   } else if (type === "Qwen") {
-    if (category === "Embedding") {
-      return (
-        [
-          {id: "text-embedding-v1", name: "text-embedding-v1"},
-          {id: "text-embedding-v2", name: "text-embedding-v2"},
-          {id: "text-embedding-v3", name: "text-embedding-v3"},
-        ]
-      );
-    } else {
+    if (category === "Model") {
       return (
         [
           {id: "qwen-long", name: "qwen-long"},
@@ -1010,6 +1002,14 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "qwen-max", name: "qwen-max"},
           {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
         ]);
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "text-embedding-v1", name: "text-embedding-v1"},
+          {id: "text-embedding-v2", name: "text-embedding-v2"},
+          {id: "text-embedding-v3", name: "text-embedding-v3"},
+        ]
+      );
     }
   } else if (type === "Baichuan") {
     return ([

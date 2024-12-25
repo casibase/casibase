@@ -45,8 +45,22 @@ func getQwenClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
+func (p *QwenEmbeddingProvider) GetPricing() string {
+	return `URL:
+https://help.aliyun.com/zh/model-studio/user-guide/embedding?spm=a2c4g.11186623.help-menu-search-2400256.d_0
+
+Embedding models:
+
+|    Models         |     Per 1,000 tokens   |
+|-------------------|----------------------- |
+| text-embedding-v1 |  0.0007 yuan/1k token  |
+| text-embedding-v2 |  0.0007 yuan/1k token  |  
+| text-embedding-v3 |  0.0007 yuan/1k token  |                  
+`
+}
+
 func (p *QwenEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
-	var pricePerThousandTokens float64 = 0.0007
+	pricePerThousandTokens := 0.0007
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
 	res.Currency = "yuan"
 	return nil
@@ -72,18 +86,4 @@ func (p *QwenEmbeddingProvider) QueryVector(text string, ctx context.Context) ([
 
 	vector := resp.Data[0].Embedding
 	return vector, embeddingResult, nil
-}
-
-func (p *QwenEmbeddingProvider) GetPricing() string {
-	return `URL:
-https://help.aliyun.com/zh/model-studio/user-guide/embedding?spm=a2c4g.11186623.help-menu-search-2400256.d_0
-
-Embedding models:
-
-|    Models         |     Per 1,000 tokens   |
-|-------------------|----------------------- |
-| text-embedding-v1 |  0.0007 yuan/1k token  |
-| text-embedding-v2 |  0.0007 yuan/1k token  |  
-| text-embedding-v3 |  0.0007 yuan/1k token  |                  
-`
 }
