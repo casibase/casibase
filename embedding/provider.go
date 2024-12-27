@@ -50,6 +50,8 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		p, err = NewAzureEmbeddingProvider(typ, subType, clientId, clientSecret, providerUrl, apiVersion)
 	} else if typ == "MiniMax" {
 		p, err = NewMiniMaxEmbeddingProvider(typ, subType, clientSecret, providerUrl)
+	} else if typ == "Qwen" {
+		p, err = NewQwenEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Dummy" {
 		p, err = NewDummyEmbeddingProvider(subType)
 	}
