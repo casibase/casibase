@@ -752,7 +752,6 @@ export function getProviderTypeOptions(category) {
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
-        {id: "MiniMax", name: "MiniMax"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
