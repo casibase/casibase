@@ -79,6 +79,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewDeepSeekProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "StepFun" {
 		p, err = NewStepFunModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Hunyuan" {
+		p, err = NewTencentHunyuanProvider(clientId, clientSecret, providerUrl, subType)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
 	} else {
