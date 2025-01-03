@@ -738,6 +738,7 @@ export function getProviderTypeOptions(category) {
         {id: "Doubao", name: "Doubao"},
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
+        {id: "Hunyuan", name: "Hunyuan"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1028,6 +1029,16 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "DeepSeek") {
     return ([
       {id: "deepseek-chat", name: "deepseek-chat"},
+    ]);
+  } else if (type === "Hunyuan") {
+    return ([
+      {id: "hunyuan-lite", name: "hunyuan-lite"},
+      {id: "hunyuan-standard", name: "hunyuan-standard"},
+      {id: "hunyuan-standard-256K", name: "hunyuan-standard-256K"},
+      {id: "hunyuan-pro", name: "hunyuan-pro"},
+      {id: " hunyuan-code", name: " hunyuan-code"},
+      {id: "hunyuan-role", name: "hunyuan-role"},
+      {id: "hunyuan-turbo", name: "hunyuan-turbo"},
     ]);
   } else if (type === "StepFun") {
     return ([
