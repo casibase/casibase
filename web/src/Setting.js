@@ -753,6 +753,7 @@ export function getProviderTypeOptions(category) {
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
+        {id: "Mistral", name: "Mistral"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -938,6 +939,14 @@ export function getProviderSubTypeOptions(category, type) {
       return (
         [
           {id: "embo-01", name: "embo-01"},
+        ]
+      );
+    }
+  } else if (type === "Mistral") {
+    if (category === "Embedding") {
+      return (
+        [
+          {id: "mistral-embed", name: "mistral-embed"},
         ]
       );
     }
