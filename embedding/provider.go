@@ -52,6 +52,8 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		p, err = NewMiniMaxEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Qwen" {
 		p, err = NewQwenEmbeddingProvider(typ, subType, clientSecret, providerUrl)
+	} else if typ == "Hunyuan" {
+		p, err = NewTencentEmbeddingProvider(clientId, clientSecret)
 	} else if typ == "Dummy" {
 		p, err = NewDummyEmbeddingProvider(subType)
 	}
