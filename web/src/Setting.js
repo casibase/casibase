@@ -753,6 +753,7 @@ export function getProviderTypeOptions(category) {
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
+        {id: "Hunyuan", name: "Hunyuan"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -1030,16 +1031,6 @@ export function getProviderSubTypeOptions(category, type) {
     return ([
       {id: "deepseek-chat", name: "deepseek-chat"},
     ]);
-  } else if (type === "Hunyuan") {
-    return ([
-      {id: "hunyuan-lite", name: "hunyuan-lite"},
-      {id: "hunyuan-standard", name: "hunyuan-standard"},
-      {id: "hunyuan-standard-256K", name: "hunyuan-standard-256K"},
-      {id: "hunyuan-pro", name: "hunyuan-pro"},
-      {id: " hunyuan-code", name: " hunyuan-code"},
-      {id: "hunyuan-role", name: "hunyuan-role"},
-      {id: "hunyuan-turbo", name: "hunyuan-turbo"},
-    ]);
   } else if (type === "StepFun") {
     return ([
       {id: "step-1-8k", name: "step-1-8k"},
@@ -1049,6 +1040,25 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "step-1-flash", name: "step-1-flash"},
       {id: "step-2-16k", name: "step-2-16k"},
     ]);
+  } else if (type === "Hunyuan") {
+    if (category === "Model") {
+      return (
+        [
+          {id: "hunyuan-lite", name: "hunyuan-lite"},
+          {id: "hunyuan-standard", name: "hunyuan-standard"},
+          {id: "hunyuan-standard-256K", name: "hunyuan-standard-256K"},
+          {id: "hunyuan-pro", name: "hunyuan-pro"},
+          {id: "hunyuan-code", name: " hunyuan-code"},
+          {id: "hunyuan-role", name: "hunyuan-role"},
+          {id: "hunyuan-turbo", name: "hunyuan-turbo"},
+        ]);
+    } else if (category === "Embedding") {
+      return (
+        [
+          {id: "hunyuan-embedding", name: "hunyuan-embedding"},
+        ]
+      );
+    }
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
