@@ -754,6 +754,7 @@ export function getProviderTypeOptions(category) {
         {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
         {id: "Hunyuan", name: "Hunyuan"},
+        {id: "Jina", name: "Jina"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -1056,6 +1057,14 @@ export function getProviderSubTypeOptions(category, type) {
       return (
         [
           {id: "hunyuan-embedding", name: "hunyuan-embedding"},
+        ]
+      );
+    }
+  } else if (type === "Jina") {
+    if (category === "Embedding") {
+      return (
+        [
+          {id: "jina-embedding-v3", name: "Jina Embedding V3"},
         ]
       );
     }
