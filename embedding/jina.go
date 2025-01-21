@@ -134,4 +134,8 @@ func (p *JinaEmbeddingProvider) QueryVector(text string, ctx context.Context) ([
 	}
 
 	return embedding, embeddingResult, nil
+<<<<<<< HEAD
+=======
+
+>>>>>>> 82f83273d99ad6ce39c785980a0352fa0b63d852
 }
