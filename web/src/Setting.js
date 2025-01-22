@@ -754,6 +754,7 @@ export function getProviderTypeOptions(category) {
         {id: "MiniMax", name: "MiniMax"},
         {id: "Qwen", name: "Qwen"},
         {id: "Hunyuan", name: "Hunyuan"},
+        {id: "Jina", name: "Jina"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -1056,6 +1057,17 @@ export function getProviderSubTypeOptions(category, type) {
       return (
         [
           {id: "hunyuan-embedding", name: "hunyuan-embedding"},
+        ]
+      );
+    }
+  } else if (type === "Jina") {
+    if (category === "Embedding") {
+      return (
+        [
+          {id: "jina-embeddings-v2-base-zh", name: "jina-embeddings-v2-base-zh"},
+          {id: "jina-embeddings-v2-base-en", name: "jina-embeddings-v2-base-en"},
+          {id: "jina-embeddings-v2-base-de", name: "jina-embeddings-v2-base-de"},
+          {id: "jina-embeddings-v2-base-code", name: "jina-embeddings-v2-base-code"},
         ]
       );
     }
