@@ -1064,7 +1064,10 @@ export function getProviderSubTypeOptions(category, type) {
     if (category === "Embedding") {
       return (
         [
-          {id: "jina-embedding-v3", name: "Jina Embedding V3"},
+          {id: "jina-embeddings-v2-base-zh", name: "jina-embeddings-v2-base-zh"},
+          {id: "jina-embeddings-v2-base-en", name: "jina-embeddings-v2-base-en"},
+          {id: "jina-embeddings-v2-base-de", name: "jina-embeddings-v2-base-de"},
+          {id: "jina-embeddings-v2-base-code", name: "jina-embeddings-v2-base-code"},
         ]
       );
     }
