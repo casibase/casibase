@@ -83,6 +83,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewTencentHunyuanProvider(clientId, clientSecret, providerUrl, subType)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
+	} else if typ == "Yi" {
+		p, err = NewYiProvider(subType, clientSecret, temperature, topP)
 	} else {
 		return nil, nil
 	}

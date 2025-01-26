@@ -739,6 +739,7 @@ export function getProviderTypeOptions(category) {
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
         {id: "Hunyuan", name: "Hunyuan"},
+        {id: "Yi", name: "Yi"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1074,6 +1075,11 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
+    ]);
+  } else if (type === "Yi") {
+    return ([
+      {id: "yi-lightning", name: "yi-lightning"},
+      {id: "yi-vision-v2", name: "yi-vision-v2"},
     ]);
   } else {
     return [];

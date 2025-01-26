@@ -211,6 +211,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "step-1-8k");
                 } else if (value === "Hunyuan") {
                   this.updateProviderField("subType", "hunyuan-turbo");
+                } else if (value === "Yi") {
+                  this.updateProviderField("subType", "yi-lightning");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -328,7 +330,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Yi"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -336,7 +338,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Hunyuan"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Hunyuan", "Yi"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -349,7 +351,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Yi"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
