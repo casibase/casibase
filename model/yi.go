@@ -17,10 +17,11 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/sashabaranov/go-openai"
 )
 
 type YiProvider struct {
