@@ -1071,6 +1071,20 @@ export function getProviderSubTypeOptions(category, type) {
         ]
       );
     }
+  } else if (type === "Mistral") {
+    return ([
+      {id: "mistral-large-latest", name: "mistral-large-latest"},
+      {id: "pixtral-large-latest", name: "pixtral-large-latest"},
+      {id: "mistral-small-latest", name: "mistral-small-latest"},
+      {id: "codestral-latest", name: "codestral-latest"},
+      {id: "ministral-8b-latest", name: "ministral-8b-latest"},
+      {id: "ministral-3b-latest", name: "ministral-3b-latest"},
+      {id: "pixtral-12b", name: "pixtral-12b"},
+      {id: "mistral-nemo", name: "mistral-nemo"},
+      {id: "open-mistral-7b", name: "open-mistral-7b"},
+      {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
+      {id: "open-mixtral-8x22b", name: "open-mixtral-8x22b"},
+    ]);
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
