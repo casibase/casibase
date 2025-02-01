@@ -94,6 +94,7 @@ Casibase contains 2 parts:
 | DeepSeek       | deepseek-chat                                                | [DeepSeek](https://www.deepseek.com/)                        |
 | StepFun        | step-1-8k，step-1-32k，step-1-128k，sstep-1-256k，step-1-flash，step-2-16k | [StepFun](https://www.stepfun.com/)                          |
 | Hunyuan        | hunyuan-lite，hunyuan-standard，hunyuan-standard-256K，hunyuan-pro，hunyuan-code， hunyuan-role，hunyuan-turbo | [Hunyuan](https://hunyuan.tencent.com/)                      |
+| Mistral        | mistral-large-latest，pixtral-large-latest，mistral-small-latest，codestral-latest，ministral-8b-latest，ministral-3b-latest，pixtral-12b，mistral-nemo，open-mistral-7b，open-mixtral-8x7b，open-mixtral-8x22b | [Mistral](https://mistral.ai/)                               |
 
 **Embedding Model**
 
