@@ -33,6 +33,14 @@ type Label struct {
 	Tag3      string  `xorm:"varchar(100)" json:"tag3"`
 }
 
+type Remark struct {
+	Timestamp string `xorm:"varchar(100)" json:"timestamp"`
+	User      string `xorm:"varchar(100)" json:"user"`
+	Score     string `xorm:"varchar(100)" json:"score"`
+	Text      string `xorm:"varchar(100)" json:"text"`
+	IsPublic  bool   `json:"isPublic"`
+}
+
 type Video struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
@@ -55,6 +63,7 @@ type Video struct {
 	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
 	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
 	TagOnPause   bool           `json:"tagOnPause"`
+	Remarks      []*Remark      `xorm:"mediumtext" json:"remarks"`
 	State        string         `xorm:"varchar(100)" json:"state"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
