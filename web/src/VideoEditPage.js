@@ -26,6 +26,7 @@ import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
 import TagTable from "./TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
+import * as VideoConf from "./VideoConf";
 
 const {Option} = Select;
 
@@ -472,38 +473,94 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
-          <Col span={5} >
+          <Col span={6} >
             <Input value={this.state.video.displayName} onChange={e => {
               this.updateVideoField("displayName", e.target.value);
             }} />
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Tag")}:
+            {i18next.t("video:Video ID")}:
           </Col>
           <Col span={5} >
-            <Input value={this.state.video.tag} onChange={e => {
-              this.updateVideoField("tag", e.target.value);
+            <Input value={this.state.video.videoId} onChange={e => {
+              this.updateVideoField("videoId", e.target.value);
             }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Audio URL")}:
+            {i18next.t("general:Description")}:
           </Col>
-          <Col span={9} >
-            <Input value={this.state.video.audioUrl} onChange={e => {
-              this.updateVideoField("audioUrl", e.target.value);
+          <Col span={22} >
+            <Input value={this.state.video.description} onChange={e => {
+              this.updateVideoField("description", e.target.value);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Grade")}:
+          </Col>
+          <Col span={5} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
+              this.updateVideoField("grade", value);
+              this.updateVideoField("unit", "");
+              this.updateVideoField("lesson", "");
+            })}>
+              {
+                VideoConf.GradeOptions
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Video ID")}:
+            {i18next.t("video:Unit")}:
           </Col>
-          <Col span={9} >
-            <Input disabled={true} value={this.state.video.videoId} onChange={e => {
-              this.updateVideoField("videoId", e.target.value);
-            }} />
+          <Col span={5} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
+              this.updateVideoField("unit", value);
+              this.updateVideoField("lesson", "");
+            })}>
+              {
+                VideoConf.getUnitOptions(this.state.video.grade)
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.id}</Option>)
+              }
+            </Select>
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Lesson")}:
+          </Col>
+          <Col span={5} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.video.lesson} onChange={(value => {this.updateVideoField("lesson", value);})}>
+              {
+                VideoConf.getLessonOptions(this.state.video.grade, this.state.video.unit)
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{`${item.id} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("provider:State")}:
+          </Col>
+          <Col span={5} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
+              this.updateVideoField("state", value);
+            })}>
+              {
+                [
+                  {id: "Draft", name: i18next.t("provider:Draft")},
+                  {id: "In Review", name: i18next.t("provider:In Review")},
+                  {id: "Published", name: i18next.t("provider:Published")},
+                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
