@@ -21,6 +21,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VideoBackend from "./backend/VideoBackend";
 import i18next from "i18next";
+import * as Conf from "./Conf";
 
 class VideoListPage extends BaseListPage {
   constructor(props) {
@@ -127,6 +128,20 @@ class VideoListPage extends BaseListPage {
   renderTable(videos) {
     const columns = [
       {
+        title: i18next.t("general:User"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "90px",
+        sorter: (a, b) => a.owner.localeCompare(b.owner),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -149,18 +164,14 @@ class VideoListPage extends BaseListPage {
       //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       // },
       {
-        title: i18next.t("video:Tag"),
-        dataIndex: "tag",
-        key: "tag",
+        title: i18next.t("general:Description"),
+        dataIndex: "description",
+        key: "description",
         width: "120px",
-        sorter: (a, b) => a.tag.localeCompare(b.tag),
-      },
-      {
-        title: i18next.t("video:School"),
-        dataIndex: "school",
-        key: "school",
-        width: "80px",
-        sorter: (a, b) => a.school.localeCompare(b.school),
+        sorter: (a, b) => a.description.localeCompare(b.description),
+        render: (text, record, index) => {
+          return Setting.getShortText(text, 50);
+        },
       },
       {
         title: i18next.t("video:Grade"),
@@ -170,11 +181,18 @@ class VideoListPage extends BaseListPage {
         sorter: (a, b) => a.grade.localeCompare(b.grade),
       },
       {
-        title: i18next.t("video:Subject"),
-        dataIndex: "subject",
-        key: "subject",
+        title: i18next.t("video:Unit"),
+        dataIndex: "unit",
+        key: "unit",
         width: "80px",
-        sorter: (a, b) => a.subject.localeCompare(b.subject),
+        sorter: (a, b) => a.unit.localeCompare(b.unit),
+      },
+      {
+        title: i18next.t("video:Lesson"),
+        dataIndex: "lesson",
+        key: "lesson",
+        width: "80px",
+        sorter: (a, b) => a.lesson.localeCompare(b.lesson),
       },
       {
         title: i18next.t("video:Video ID"),

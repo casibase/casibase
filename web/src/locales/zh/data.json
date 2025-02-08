@@ -131,7 +131,7 @@
     "User agent": "User agent",
     "Users": "用户",
     "Vectors": "向量",
-    "Videos": "视频",
+    "Videos": "录像",
     "View": "查看",
     "Wordsets": "词汇集"
   },
@@ -265,7 +265,7 @@
     "Cover": "封面图片",
     "Current time (second)": "当前时间（秒）",
     "Edit Template": "编辑模板",
-    "Edit Video": "编辑视频",
+    "Edit Video": "编辑录像",
     "End time (s)": "结束时间（秒）",
     "Generate Plan": "生成教学计划",
     "Grade": "年级",
@@ -284,9 +284,9 @@
     "Text": "文本",
     "Time": "时间",
     "Topic": "主题",
-    "Upload Video": "上传视频",
-    "Video": "视频",
-    "Video ID": "视频ID"
+    "Upload Video": "上传录像",
+    "Video": "录像",
+    "Video ID": "录像ID"
   },
   "wordset": {
     "Distance limit": "距离限制",

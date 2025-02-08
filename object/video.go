@@ -39,6 +39,7 @@ type Video struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
+	Description  string         `xorm:"mediumtext" json:"description"`
 	Tag          string         `xorm:"varchar(100)" json:"tag"`
 	Type         string         `xorm:"varchar(100)" json:"type"`
 	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
@@ -54,10 +55,13 @@ type Video struct {
 	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
 	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
 	TagOnPause   bool           `json:"tagOnPause"`
+	State        string         `xorm:"varchar(100)" json:"state"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
 	Stage    string   `xorm:"varchar(100)" json:"stage"`
 	Grade    string   `xorm:"varchar(100)" json:"grade"`
+	Unit     string   `xorm:"varchar(100)" json:"unit"`
+	Lesson   string   `xorm:"varchar(100)" json:"lesson"`
 	Class    string   `xorm:"varchar(100)" json:"class"`
 	Subject  string   `xorm:"varchar(100)" json:"subject"`
 	Topic    string   `xorm:"varchar(100)" json:"topic"`
