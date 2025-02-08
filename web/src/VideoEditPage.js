@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Tag, Timeline, Tooltip} from "antd";
+import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -563,6 +563,16 @@ class VideoEditPage extends React.Component {
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Is public")}:
+          </Col>
+          <Col span={5} >
+            <Switch checked={this.state.video.isPublic} onChange={checked => {
+              this.updateVideoField("isPublic", checked);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
