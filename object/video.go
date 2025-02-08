@@ -107,6 +107,11 @@ func getVideo(owner string, name string) (*Video, error) {
 
 	if existed {
 		if v.VideoId != "" {
+			err = SetDefaultVodClient()
+			if err != nil {
+				return nil, err
+			}
+
 			v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
 		}
 		return &v, nil
@@ -197,10 +202,15 @@ func (v *Video) UpdateCoverUrl() error {
 		return nil
 	}
 
+	err := SetDefaultVodClient()
+	if err != nil {
+		return err
+	}
+
 	coverUrl := video.GetVideoCoverUrl(v.VideoId)
 	v.CoverUrl = coverUrl
 
-	_, err := UpdateVideo(v.GetId(), v)
+	_, err = UpdateVideo(v.GetId(), v)
 	if err != nil {
 		return err
 	}

@@ -28,7 +28,7 @@ func GetVideoPlayAuth(videoId string) string {
 	r.VideoId = videoId
 	r.AcceptFormat = "JSON"
 
-	resp, err := vodClient.GetVideoPlayAuth(r)
+	resp, err := VodClient.GetVideoPlayAuth(r)
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()
@@ -60,7 +60,7 @@ func UploadVideo(fileId string, filename string, fileBuffer *bytes.Buffer) (stri
 	r.Scheme = "https"
 	r.FileName = filename
 	r.Title = fileId
-	resp, err := vodClient.CreateUploadVideo(r)
+	resp, err := VodClient.CreateUploadVideo(r)
 	if err != nil {
 		return "", nil
 	}
@@ -102,7 +102,7 @@ func GetVideoCoverUrl(videoId string) string {
 	r.VideoId = videoId
 	r.AcceptFormat = "JSON"
 
-	resp, err := vodClient.GetVideoInfo(r)
+	resp, err := VodClient.GetVideoInfo(r)
 	if err != nil {
 		fmt.Println(err)
 		return err.Error()

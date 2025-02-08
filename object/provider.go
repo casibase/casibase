@@ -35,6 +35,7 @@ type Provider struct {
 	SubType            string `xorm:"varchar(100)" json:"subType"`
 	ClientId           string `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret       string `xorm:"varchar(2000)" json:"clientSecret"`
+	Region             string `xorm:"varchar(100)" json:"region"`
 	ProviderUrl        string `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string `xorm:"varchar(100)" json:"apiVersion"`
 	CompitableProvider string `xorm:"varchar(100)" json:"compitableProvider"`
@@ -158,6 +159,20 @@ func GetProvider(id string) (*Provider, error) {
 
 func GetDefaultStorageProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Storage"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
+func GetDefaultVideoProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Video"}
 	existed, err := adapter.engine.Get(&provider)
 	if err != nil {
 		return &provider, err

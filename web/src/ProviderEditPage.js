@@ -149,6 +149,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Embedding") {
                 this.updateProviderField("type", "OpenAI");
                 this.updateProviderField("subType", "AdaSimilarity");
+              } else if (value === "Video") {
+                this.updateProviderField("type", "AWS");
               }
             })}>
               {
@@ -156,6 +158,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
+                  {id: "Video", name: "Video"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -241,7 +244,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          this.state.provider.category === "Storage" ? null : (
+          (this.state.provider.category !== "Model" && this.state.provider.category !== "Embedding") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -254,6 +257,20 @@ class ProviderEditPage extends React.Component {
                       .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                   }
                 </Select>
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.state.provider.category !== "Video" ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Region")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.region} onChange={e => {
+                  this.updateProviderField("region", e.target.value);
+                }} />
               </Col>
             </Row>
           )
@@ -292,6 +309,20 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
+          (this.state.provider.category !== "Video") ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("provider:Client ID")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.clientId} onChange={e => {
+                  this.updateProviderField("clientId", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
+        {
           (this.state.provider.type === "Local") ? (
             <>
               <Row style={{marginTop: "20px"}}>
@@ -317,7 +348,8 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Secret key")}:
+                {(this.state.provider.category !== "Video") ? i18next.t("provider:Secret key") :
+                  i18next.t("provider:Client secret")}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientSecret} onChange={e => {

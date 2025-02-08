@@ -758,6 +758,14 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
       ]
     );
+  } else if (category === "Video") {
+    return (
+      [
+        {id: "AWS", name: "AWS"},
+        {id: "Azure", name: "Azure"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+      ]
+    );
   } else {
     return [];
   }
