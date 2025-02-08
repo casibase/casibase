@@ -123,11 +123,11 @@ class RemarkTable extends React.Component {
             })}>
               {
                 [
-                  {id: "Excellent", name: i18next.t("video:Excellent")},
-                  {id: "Good", name: i18next.t("article:Good")},
-                  {id: "Pass", name: i18next.t("article:Pass")},
-                  {id: "Fail", name: i18next.t("article:Fail")},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  {id: "Excellent"},
+                  {id: "Good"},
+                  {id: "Pass"},
+                  {id: "Fail"},
+                ].map((item, index) => <Option key={index} value={item.id}>{Setting.getRemarkTag(item.id)}</Option>)
               }
             </Select>
           );

@@ -216,7 +216,7 @@ class VideoListPage extends BaseListPage {
                   <List.Item>
                     <div style={{display: "inline"}}>
                       {
-                        Setting.getRemarkTag(remark)
+                        Setting.getRemarkTag(remark.score)
                       }
                       <Tooltip placement="left" title={remark.text}>
                         {Setting.getShortText(remark.text, 25)}
@@ -240,19 +240,40 @@ class VideoListPage extends BaseListPage {
       //   },
       // },
       {
-        title: i18next.t("video:Label count"),
-        dataIndex: "labelCount",
-        key: "labelCount",
-        width: "90px",
-        sorter: (a, b) => a.labelCount - b.labelCount,
+        title: i18next.t("video:State"),
+        dataIndex: "state",
+        key: "state",
+        width: "80px",
+        sorter: (a, b) => a.state.localeCompare(b.state),
       },
       {
-        title: i18next.t("video:Segment count"),
-        dataIndex: "segmentCount",
-        key: "segmentCount",
-        width: "110px",
-        sorter: (a, b) => a.segmentCount - b.segmentCount,
+        title: i18next.t("video:Is public"),
+        dataIndex: "isPublic",
+        key: "isPublic",
+        width: "90px",
+        sorter: (a, b) => a.isPublic.localeCompare(b.isPublic),
+        render: (text, record, index) => {
+          if (text === true) {
+            return i18next.t("video:Public");
+          } else {
+            return i18next.t("video:Hidden");
+          }
+        },
       },
+      // {
+      //   title: i18next.t("video:Label count"),
+      //   dataIndex: "labelCount",
+      //   key: "labelCount",
+      //   width: "90px",
+      //   sorter: (a, b) => a.labelCount - b.labelCount,
+      // },
+      // {
+      //   title: i18next.t("video:Segment count"),
+      //   dataIndex: "segmentCount",
+      //   key: "segmentCount",
+      //   width: "110px",
+      //   sorter: (a, b) => a.segmentCount - b.segmentCount,
+      // },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",

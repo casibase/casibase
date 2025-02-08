@@ -360,21 +360,29 @@ function getUserTag(users) {
   return res;
 }
 
-export function getRemarkTag(remark) {
+export function getRemarkTag(score) {
   let color;
-  if (remark.score === "Excellent") {
+  let text;
+  if (score === "Excellent") {
     color = "success";
-  } else if (remark.score === "Good") {
-    color = "info";
-  } else if (remark.score === "Pass") {
+    text = i18next.t("video:Excellent");
+  } else if (score === "Good") {
+    color = "processing";
+    text = i18next.t("video:Good");
+  } else if (score === "Pass") {
     color = "warning";
-  } else if (remark.score === "Fail") {
+    text = i18next.t("video:Pass");
+  } else if (score === "Fail") {
     color = "error";
+    text = i18next.t("video:Fail");
+  } else {
+    color = "default";
+    text = `Unknown score: ${score}`;
   }
 
   return (
     <Tag style={{width: "60px", textAlign: "center"}} color={color}>
-      {remark.score}
+      {text}
     </Tag>
   );
 }
