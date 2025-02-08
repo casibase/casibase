@@ -102,7 +102,7 @@ class VideoEditPage extends React.Component {
   }
 
   onPause() {
-    if (this.state.video.editMode === "Labeling" && this.state.video.tagOnPause) {
+    if (this.state.video.editMode === "Labeling" && this.state.video.tagOnPause && this.labelTable.current) {
       this.labelTable.current.addRow(this.state.video.labels);
     }
   }
