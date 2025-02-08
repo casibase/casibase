@@ -25,7 +25,9 @@ const PublicVideoListPage = (props) => {
     }
     VideoBackend.getGlobalVideos()
       .then((res) => {
-        setVideos(res.data || []);
+        let videos = res.data || [];
+        videos = videos.filter((video) => video.isPublic === true);
+        setVideos(videos);
       });
   }, [props.account]);
 

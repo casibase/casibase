@@ -374,6 +374,7 @@ func (c *ApiController) UploadVideo() {
 		DataUrl:     "",
 		TagOnPause:  true,
 		Remarks:     []*object.Remark{},
+		State:       "Draft",
 		Keywords:    []string{},
 	}
 	_, err = object.AddVideo(v)
