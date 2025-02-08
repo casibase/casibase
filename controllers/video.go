@@ -66,6 +66,8 @@ func (c *ApiController) GetVideos() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	owner = ""
+
 	if limit == "" || page == "" {
 		videos, err := object.GetVideos(owner)
 		if err != nil {

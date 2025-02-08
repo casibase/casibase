@@ -113,7 +113,8 @@ class VideoListPage extends BaseListPage {
         dataIndex: "owner",
         key: "owner",
         width: "90px",
-        sorter: (a, b) => a.owner.localeCompare(b.owner),
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
         render: (text, record, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
@@ -127,7 +128,8 @@ class VideoListPage extends BaseListPage {
         dataIndex: "name",
         key: "name",
         width: "180px",
-        sorter: (a, b) => a.name.localeCompare(b.name),
+        sorter: true,
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           text = text.replace(".MP4", ".mp4");
           return (
@@ -142,14 +144,14 @@ class VideoListPage extends BaseListPage {
       //   dataIndex: "displayName",
       //   key: "displayName",
       //   width: "200px",
-      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      //   sorter: true,
       // },
       {
         title: i18next.t("general:Description"),
         dataIndex: "description",
         key: "description",
         width: "120px",
-        sorter: (a, b) => a.description.localeCompare(b.description),
+        sorter: true,
         render: (text, record, index) => {
           return Setting.getShortText(text, 50);
         },
@@ -159,21 +161,24 @@ class VideoListPage extends BaseListPage {
         dataIndex: "grade",
         key: "grade",
         width: "80px",
-        sorter: (a, b) => a.grade.localeCompare(b.grade),
+        sorter: true,
+        ...this.getColumnSearchProps("grade"),
       },
       {
         title: i18next.t("video:Unit"),
         dataIndex: "unit",
         key: "unit",
         width: "80px",
-        sorter: (a, b) => a.unit.localeCompare(b.unit),
+        sorter: true,
+        ...this.getColumnSearchProps("unit"),
       },
       {
         title: i18next.t("video:Lesson"),
         dataIndex: "lesson",
         key: "lesson",
         width: "80px",
-        sorter: (a, b) => a.lesson.localeCompare(b.lesson),
+        sorter: true,
+        ...this.getColumnSearchProps("lesson"),
       },
       // {
       //   title: i18next.t("video:Video ID"),
@@ -244,14 +249,16 @@ class VideoListPage extends BaseListPage {
         dataIndex: "state",
         key: "state",
         width: "80px",
-        sorter: (a, b) => a.state.localeCompare(b.state),
+        sorter: true,
+        ...this.getColumnSearchProps("state"),
       },
       {
         title: i18next.t("video:Is public"),
         dataIndex: "isPublic",
         key: "isPublic",
-        width: "90px",
-        sorter: (a, b) => a.isPublic.localeCompare(b.isPublic),
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("isPublic"),
         render: (text, record, index) => {
           if (text === true) {
             return i18next.t("video:Public");
@@ -265,14 +272,14 @@ class VideoListPage extends BaseListPage {
       //   dataIndex: "labelCount",
       //   key: "labelCount",
       //   width: "90px",
-      //   sorter: (a, b) => a.labelCount - b.labelCount,
+      //   sorter: true,
       // },
       // {
       //   title: i18next.t("video:Segment count"),
       //   dataIndex: "segmentCount",
       //   key: "segmentCount",
       //   width: "110px",
-      //   sorter: (a, b) => a.segmentCount - b.segmentCount,
+      //   sorter: true,
       // },
       {
         title: i18next.t("general:Action"),
