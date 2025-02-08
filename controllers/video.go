@@ -242,6 +242,11 @@ func getSpeaker(s string) string {
 }
 
 func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer) (string, []*object.Label, error) {
+	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
+	if audioStorageProviderName == "" {
+		return "", []*object.Label{}, nil
+	}
+
 	fileBuffer2 := copyBuffer(fileBuffer)
 
 	audioBuffer, err := audio.GetAudioFromVideo(fileBuffer2)
@@ -249,7 +254,6 @@ func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer
 		return "", nil, err
 	}
 
-	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
 	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName)
 	if err != nil {
 		return "", nil, err
