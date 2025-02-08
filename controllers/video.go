@@ -194,6 +194,11 @@ func (c *ApiController) DeleteVideo() {
 }
 
 func startCoverUrlJob(id string, videoId string) {
+	err := object.SetDefaultVodClient()
+	if err != nil {
+		panic(err)
+	}
+
 	go func(id string, videoId string) {
 		for i := 0; i < 20; i++ {
 			coverUrl := video.GetVideoCoverUrl(videoId)
@@ -274,6 +279,12 @@ func (c *ApiController) UploadVideo() {
 	fileType, _ = util.GetOwnerAndNameFromId(contentType)
 	if fileType != "video" {
 		c.ResponseError(fmt.Sprintf("contentType: %s is not video", contentType))
+		return
+	}
+
+	err = object.SetDefaultVodClient()
+	if err != nil {
+		c.ResponseError(err.Error())
 		return
 	}
 
