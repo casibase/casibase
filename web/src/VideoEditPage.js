@@ -28,6 +28,7 @@ import TagTable from "./TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as VideoConf from "./VideoConf";
 
+const {TextArea} = Input;
 const {Option} = Select;
 
 class VideoEditPage extends React.Component {
@@ -493,7 +494,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Description")}:
           </Col>
           <Col span={22} >
-            <Input value={this.state.video.description} onChange={e => {
+            <TextArea showCount maxLength={200} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
               this.updateVideoField("description", e.target.value);
             }} />
           </Col>
