@@ -116,9 +116,11 @@ class VideoListPage extends BaseListPage {
       },
     };
 
+    const isUploadDisabled = this.state.data.filter((video) => video.owner === this.props.account.name).length >= 2;
+
     return (
       <Upload {...props}>
-        <Button type="primary" size="small">
+        <Button type="primary" size="small" disabled={isUploadDisabled}>
           <UploadOutlined /> {i18next.t("video:Upload Video")} (.mp4)
         </Button>
       </Upload>
