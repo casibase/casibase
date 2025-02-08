@@ -65,7 +65,7 @@ class VideoEditPage extends React.Component {
             currentTime: 0,
           });
 
-          if (res.data.dataUrl !== "") {
+          if (res.data?.dataUrl) {
             this.getDataAndParse(res.data.dataUrl);
           }
         } else {
