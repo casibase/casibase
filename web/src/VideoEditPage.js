@@ -27,6 +27,7 @@ import ChatPage from "./ChatPage";
 import TagTable from "./TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
 import * as VideoConf from "./VideoConf";
+import RemarkTable from "./RemarkTable";
 
 const {TextArea} = Input;
 const {Option} = Select;
@@ -548,7 +549,7 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:State")}:
+            {i18next.t("video:State")}:
           </Col>
           <Col span={5} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
@@ -556,12 +557,25 @@ class VideoEditPage extends React.Component {
             })}>
               {
                 [
-                  {id: "Draft", name: i18next.t("provider:Draft")},
-                  {id: "In Review", name: i18next.t("provider:In Review")},
-                  {id: "Published", name: i18next.t("provider:Published")},
+                  {id: "Draft", name: i18next.t("video:Draft")},
+                  {id: "In Review", name: i18next.t("video:In Review")},
+                  {id: "Published", name: i18next.t("video:Published")},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Remarks")}:
+          </Col>
+          <Col span={22} >
+            <RemarkTable
+              title={i18next.t("video:Remarks")}
+              account={this.props.account}
+              table={this.state.video.remarks}
+              onUpdateTable={(value) => {this.updateVideoField("remarks", value);}}
+            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
