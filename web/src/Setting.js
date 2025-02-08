@@ -22,6 +22,7 @@ import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
+import React from "react";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -357,6 +358,25 @@ function getUserTag(users) {
     }
   });
   return res;
+}
+
+export function getRemarkTag(remark) {
+  let color;
+  if (remark.score === "Excellent") {
+    color = "success";
+  } else if (remark.score === "Good") {
+    color = "info";
+  } else if (remark.score === "Pass") {
+    color = "warning";
+  } else if (remark.score === "Fail") {
+    color = "error";
+  }
+
+  return (
+    <Tag style={{width: "60px", textAlign: "center"}} color={color}>
+      {remark.score}
+    </Tag>
+  );
 }
 
 export function getLabelTags(labels) {

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Upload} from "antd";
+import {Button, List, Popconfirm, Table, Tooltip, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
@@ -26,27 +26,6 @@ import * as Conf from "./Conf";
 class VideoListPage extends BaseListPage {
   constructor(props) {
     super(props);
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getVideos();
-  }
-
-  getVideos() {
-    VideoBackend.getVideos(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            data: res.data,
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get videos: ${res.msg}`);
-        }
-      });
   }
 
   newVideo() {
@@ -196,13 +175,13 @@ class VideoListPage extends BaseListPage {
         width: "80px",
         sorter: (a, b) => a.lesson.localeCompare(b.lesson),
       },
-      {
-        title: i18next.t("video:Video ID"),
-        dataIndex: "videoId",
-        key: "videoId",
-        width: "250px",
-        sorter: (a, b) => a.videoId.localeCompare(b.videoId),
-      },
+      // {
+      //   title: i18next.t("video:Video ID"),
+      //   dataIndex: "videoId",
+      //   key: "videoId",
+      //   width: "250px",
+      //   sorter: (a, b) => a.videoId.localeCompare(b.videoId),
+      // },
       {
         title: i18next.t("video:Cover"),
         dataIndex: "coverUrl",
@@ -213,6 +192,40 @@ class VideoListPage extends BaseListPage {
             <a target="_blank" rel="noreferrer" href={text}>
               <img src={text} alt={text} width={150} />
             </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("video:Remarks"),
+        dataIndex: "remarks",
+        key: "remarks",
+        // width: "210px",
+        render: (text, record, index) => {
+          const remarks = text;
+          if (remarks === null || remarks.length === 0) {
+            return `(${i18next.t("general:empty")})`;
+          }
+
+          return (
+            <List
+              size="small"
+              locale={{emptyText: " "}}
+              dataSource={remarks}
+              renderItem={(remark, i) => {
+                return (
+                  <List.Item>
+                    <div style={{display: "inline"}}>
+                      {
+                        Setting.getRemarkTag(remark)
+                      }
+                      <Tooltip placement="left" title={remark.text}>
+                        {Setting.getShortText(remark.text, 25)}
+                      </Tooltip>
+                    </div>
+                  </List.Item>
+                );
+              }}
+            />
           );
         },
       },
@@ -244,7 +257,7 @@ class VideoListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "220px",
+        width: "150px",
         render: (text, record, index) => {
           return (
             <div>
