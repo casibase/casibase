@@ -111,10 +111,12 @@ func (c *ApiController) GetVideo() {
 		return
 	}
 
-	err = video.Populate()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if video != nil {
+		err = video.Populate()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(video)
