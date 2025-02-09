@@ -44,14 +44,15 @@
 
 ## Online Demo
 
-### Chat Bot
+### Read-only site (any modification operation will fail)
 
-- Demo site: https://demo.casibase.com
+- Chat bot: https://ai.casibase.com
+- Admin UI: https://ai-admin.casibase.com
 
-### Admin UI
+### Writable site (original data will be restored for every 5 minutes)
 
-- Read-only site: https://demo-admin.casibase.com (any modification operation will fail)
-- Writable site: https://demo-admin-w.casibase.com (original data will be restored for every 5 minutes)
+- Chat bot: https://demo.casibase.com
+- Admin UI: https://demo-admin.casibase.com
 
 ## Documentation
 
