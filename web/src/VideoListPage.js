@@ -152,6 +152,7 @@ class VideoListPage extends BaseListPage {
         key: "description",
         width: "120px",
         sorter: true,
+        ...this.getColumnSearchProps("description"),
         render: (text, record, index) => {
           return Setting.getShortText(text, 50);
         },
