@@ -485,6 +485,14 @@ class VideoEditPage extends React.Component {
     return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
+  requireReviewer1OrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user");
+  }
+
+  requireReviewer2OrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
   requireAdmin() {
     return !(this.props.account.type === "video-admin-user");
   }
@@ -598,20 +606,20 @@ class VideoEditPage extends React.Component {
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Remarks")}:
+                  {i18next.t("video:Remarks1")}:
                 </Col>
                 <Col span={22} >
                   <RemarkTable
-                    title={i18next.t("video:Remarks")}
+                    title={i18next.t("video:Remarks1")}
                     account={this.props.account}
                     maxRowCount={-1}
-                    disabled={this.requireReviewerOrAdmin(this.state.video)}
+                    disabled={this.requireReviewer1OrAdmin(this.state.video)}
                     table={this.state.video.remarks}
                     onUpdateTable={(value) => {
                       this.updateVideoField("remarks", value);
                       if (value.length > 0 && this.state.video.state === "Draft") {
-                        this.updateVideoField("state", "In Review");
-                      } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state === "In Review") {
+                        this.updateVideoField("state", "In Review 1");
+                      } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state.startsWith("In Review")) {
                         this.updateVideoField("state", "Draft");
                       }
                     }}
@@ -627,13 +635,13 @@ class VideoEditPage extends React.Component {
                     title={i18next.t("video:Remarks2")}
                     account={this.props.account}
                     maxRowCount={1}
-                    disabled={this.requireReviewerOrAdmin(this.state.video)}
+                    disabled={this.requireReviewer2OrAdmin(this.state.video)}
                     table={this.state.video.remarks2}
                     onUpdateTable={(value) => {
                       this.updateVideoField("remarks2", value);
                       if (value.length > 0 && this.state.video.state === "Draft") {
-                        this.updateVideoField("state", "In Review");
-                      } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state === "In Review") {
+                        this.updateVideoField("state", "In Review 2");
+                      } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state.startsWith("In Review")) {
                         this.updateVideoField("state", "Draft");
                       }
                     }}
@@ -654,7 +662,8 @@ class VideoEditPage extends React.Component {
               {
                 [
                   {id: "Draft", name: i18next.t("video:Draft")},
-                  {id: "In Review", name: i18next.t("video:In Review")},
+                  {id: "In Review 1", name: i18next.t("video:In Review 1")},
+                  {id: "In Review 2", name: i18next.t("video:In Review 2")},
                   {id: "Published", name: i18next.t("video:Published")},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
