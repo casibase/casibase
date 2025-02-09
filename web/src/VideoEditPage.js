@@ -707,67 +707,71 @@ class VideoEditPage extends React.Component {
             </Row>
           </Col>
         </Row>
-        <Segmented
-          options={[
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Labeling</span>
-                </div>
-              ),
-              value: "Labeling",
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Text Recognition</span>
-                </div>
-              ),
-              value: "Text Recognition",
-              disabled: this.isSegmentsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Text Tagging</span>
-                </div>
-              ),
-              value: "Text Tagging",
-              disabled: this.isSegmentsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Word Cloud</span>
-                </div>
-              ),
-              value: "Word Cloud",
-              disabled: this.isWordsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>AI Assistant</span>
-                </div>
-              ),
-              value: "AI Assistant",
-              disabled: this.props.account.type.startsWith("video-"),
-            },
-          ]}
-          block value={this.state.video.editMode} onChange={checked => {
-            this.updateVideoField("editMode", checked);
-          }}
-        />
+        {
+          this.props.account.type.startsWith("video-") ? null : (
+            <Segmented
+              options={[
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Labeling</span>
+                    </div>
+                  ),
+                  value: "Labeling",
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Text Recognition</span>
+                    </div>
+                  ),
+                  value: "Text Recognition",
+                  disabled: this.isSegmentsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Text Tagging</span>
+                    </div>
+                  ),
+                  value: "Text Tagging",
+                  disabled: this.isSegmentsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Word Cloud</span>
+                    </div>
+                  ),
+                  value: "Word Cloud",
+                  disabled: this.isWordsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>AI Assistant</span>
+                    </div>
+                  ),
+                  value: "AI Assistant",
+                  disabled: this.props.account.type.startsWith("video-"),
+                },
+              ]}
+              block value={this.state.video.editMode} onChange={checked => {
+                this.updateVideoField("editMode", checked);
+              }}
+            />
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           {
             (this.state.video.editMode === "Text Tagging" || this.state.video.editMode === "AI Assistant") ? null : (
