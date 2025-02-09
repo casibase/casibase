@@ -336,8 +336,9 @@ class VideoListPage extends BaseListPage {
         dataIndex: "excellentCount",
         key: "excellentCount",
         width: "110px",
-        sorter: true,
-        ...this.getColumnSearchProps("excellentCount"),
+        sorter: (a, b) => a.excellentCount - b.excellentCount,
+        // sorter: true,
+        // ...this.getColumnSearchProps("excellentCount"),
       },
       {
         title: i18next.t("general:Action"),
