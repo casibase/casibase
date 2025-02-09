@@ -65,7 +65,7 @@ type Video struct {
 	TagOnPause     bool           `json:"tagOnPause"`
 	Remarks        []*Remark      `xorm:"mediumtext" json:"remarks"`
 	Remarks2       []*Remark      `xorm:"mediumtext" json:"remarks2"`
-	ExcellentCount int            `xorm:"-" json:"excellentCount"`
+	ExcellentCount int            `json:"excellentCount"`
 	State          string         `xorm:"varchar(100)" json:"state"`
 	IsPublic       bool           `json:"isPublic"`
 
