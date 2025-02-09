@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Tag, Timeline, Tooltip} from "antd";
+import {Affix, Avatar, Button, Card, Col, Input, Row, Segmented, Select, Switch, Tag, Timeline, Tooltip} from "antd";
 import * as VideoBackend from "./backend/VideoBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
@@ -26,7 +26,10 @@ import WordCloudChart from "./WordCloudChart";
 import ChatPage from "./ChatPage";
 import TagTable from "./TagTable";
 import * as TaskBackend from "./backend/TaskBackend";
+import * as VideoConf from "./VideoConf";
+import RemarkTable from "./RemarkTable";
 
+const {TextArea} = Input;
 const {Option} = Select;
 
 class VideoEditPage extends React.Component {
@@ -34,6 +37,7 @@ class VideoEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      owner: props.match.params.owner,
       videoName: props.match.params.videoName,
       video: null,
       tasks: null,
@@ -54,15 +58,20 @@ class VideoEditPage extends React.Component {
   }
 
   getVideo() {
-    VideoBackend.getVideo(this.props.account.name, this.state.videoName)
+    VideoBackend.getVideo(this.state.owner, this.state.videoName)
       .then((res) => {
+        if (res.data === null) {
+          this.props.history.push("/404");
+          return;
+        }
+
         if (res.status === "ok") {
           this.setState({
             video: res.data,
             currentTime: 0,
           });
 
-          if (res.data.dataUrl !== "") {
+          if (res.data?.dataUrl) {
             this.getDataAndParse(res.data.dataUrl);
           }
         } else {
@@ -85,7 +94,7 @@ class VideoEditPage extends React.Component {
   }
 
   parseVideoField(key, value) {
-    if (["score"].includes(key)) {
+    if ([""].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -102,7 +111,7 @@ class VideoEditPage extends React.Component {
   }
 
   onPause() {
-    if (this.state.video.editMode === "Labeling" && this.state.video.tagOnPause) {
+    if (this.state.video.editMode === "Labeling" && this.state.video.tagOnPause && this.labelTable.current) {
       this.labelTable.current.addRow(this.state.video.labels);
     }
   }
@@ -450,13 +459,61 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  requireUserOrAdmin(video) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    } else if (this.props.account.type !== "video-normal-user") {
+      return true;
+    }
+
+    if (!video) {
+      return false;
+    } else {
+      return video.remarks && video.remarks.length > 0 || video.remarks2 && video.remarks2.length > 0 || video.state !== "Draft";
+    }
+  }
+
+  requireUserOrReviewerOrAdmin(video) {
+    if (this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user") {
+      return false;
+    } else {
+      return this.requireUserOrAdmin(video);
+    }
+  }
+
+  requireReviewerOrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
+  requireReviewer1OrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user");
+  }
+
+  requireReviewer2OrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
+  requireAdmin() {
+    return !(this.props.account.type === "video-admin-user");
+  }
+
   renderVideo() {
     return (
       <Card size="small" title={
         <div>
           {i18next.t("video:Edit Video")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {
+            this.requireUserOrReviewerOrAdmin(this.state.video) ? (
+              <>
+                <Button onClick={() => this.exit()}>{i18next.t("general:Exit")}</Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+                <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              </>
+            )
+          }
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -464,7 +521,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Name")}:
           </Col>
           <Col span={5} >
-            <Input value={this.state.video.name} onChange={e => {
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.name} onChange={e => {
               this.updateVideoField("name", e.target.value);
             }} />
           </Col>
@@ -472,37 +529,154 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Display name")}:
           </Col>
-          <Col span={5} >
-            <Input value={this.state.video.displayName} onChange={e => {
+          <Col span={6} >
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.displayName} onChange={e => {
               this.updateVideoField("displayName", e.target.value);
-            }} />
-          </Col>
-          <Col span={1} />
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Tag")}:
-          </Col>
-          <Col span={5} >
-            <Input value={this.state.video.tag} onChange={e => {
-              this.updateVideoField("tag", e.target.value);
-            }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Audio URL")}:
-          </Col>
-          <Col span={9} >
-            <Input value={this.state.video.audioUrl} onChange={e => {
-              this.updateVideoField("audioUrl", e.target.value);
             }} />
           </Col>
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Video ID")}:
           </Col>
-          <Col span={9} >
-            <Input disabled={true} value={this.state.video.videoId} onChange={e => {
+          <Col span={5} >
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.videoId} onChange={e => {
               this.updateVideoField("videoId", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Description")}:
+          </Col>
+          <Col span={22} >
+            <TextArea disabled={this.requireUserOrAdmin(this.state.video)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
+              this.updateVideoField("description", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Grade")}:
+          </Col>
+          <Col span={5} >
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
+              this.updateVideoField("grade", value);
+              this.updateVideoField("unit", "");
+              this.updateVideoField("lesson", "");
+            })}>
+              {
+                VideoConf.GradeOptions
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Unit")}:
+          </Col>
+          <Col span={6} >
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
+              this.updateVideoField("unit", value);
+              this.updateVideoField("lesson", "");
+            })}>
+              {
+                VideoConf.getUnitOptions(this.state.video.grade)
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{item.id}</Option>)
+              }
+            </Select>
+          </Col>
+          <Col span={1} />
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Lesson")}:
+          </Col>
+          <Col span={5} >
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.lesson} onChange={(value => {this.updateVideoField("lesson", value);})}>
+              {
+                VideoConf.getLessonOptions(this.state.video.grade, this.state.video.unit)
+                // .sort((a, b) => a.name.localeCompare(b.name))
+                  .map((item, index) => <Option key={index} value={item.id}>{`${item.id} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        {
+          this.requireReviewerOrAdmin() ? null : (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Remarks1")}:
+                </Col>
+                <Col span={22} >
+                  <RemarkTable
+                    title={i18next.t("video:Remarks1")}
+                    account={this.props.account}
+                    maxRowCount={-1}
+                    disabled={this.requireReviewer1OrAdmin(this.state.video)}
+                    table={this.state.video.remarks}
+                    onUpdateTable={(value) => {
+                      this.updateVideoField("remarks", value);
+                      if (value.length > 0 && this.state.video.state === "Draft") {
+                        this.updateVideoField("state", "In Review 1");
+                      } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state.startsWith("In Review")) {
+                        this.updateVideoField("state", "Draft");
+                      }
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Remarks2")}:
+                </Col>
+                <Col span={22} >
+                  <RemarkTable
+                    title={i18next.t("video:Remarks2")}
+                    account={this.props.account}
+                    maxRowCount={1}
+                    disabled={this.requireReviewer2OrAdmin(this.state.video)}
+                    table={this.state.video.remarks2}
+                    onUpdateTable={(value) => {
+                      this.updateVideoField("remarks2", value);
+                      if (value.length > 0 && this.state.video.state === "Draft") {
+                        this.updateVideoField("state", "In Review 2");
+                      } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state.startsWith("In Review")) {
+                        this.updateVideoField("state", "Draft");
+                      }
+                    }}
+                  />
+                </Col>
+              </Row>
+            </>
+          )
+        }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:State")}:
+          </Col>
+          <Col span={5} >
+            <Select disabled={this.requireAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
+              this.updateVideoField("state", value);
+            })}>
+              {
+                [
+                  {id: "Draft", name: i18next.t("video:Draft")},
+                  {id: "In Review 1", name: i18next.t("video:In Review 1")},
+                  {id: "In Review 2", name: i18next.t("video:In Review 2")},
+                  {id: "Published", name: i18next.t("video:Published")},
+                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Is public")}:
+          </Col>
+          <Col span={5} >
+            <Switch disabled={this.requireAdmin()} checked={this.state.video.isPublic} onChange={checked => {
+              this.updateVideoField("isPublic", checked);
             }} />
           </Col>
         </Row>
@@ -533,66 +707,71 @@ class VideoEditPage extends React.Component {
             </Row>
           </Col>
         </Row>
-        <Segmented
-          options={[
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Labeling</span>
-                </div>
-              ),
-              value: "Labeling",
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Text Recognition</span>
-                </div>
-              ),
-              value: "Text Recognition",
-              disabled: this.isSegmentsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Text Tagging</span>
-                </div>
-              ),
-              value: "Text Tagging",
-              disabled: this.isSegmentsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>Word Cloud</span>
-                </div>
-              ),
-              value: "Word Cloud",
-              disabled: this.isWordsDisabled(),
-            },
-            {
-              label: (
-                <div style={{padding: 4}}>
-                  <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
-                  &nbsp;
-                  <span style={{fontWeight: "bold"}}>AI Assistant</span>
-                </div>
-              ),
-              value: "AI Assistant",
-            },
-          ]}
-          block value={this.state.video.editMode} onChange={checked => {
-            this.updateVideoField("editMode", checked);
-          }}
-        />
+        {
+          this.props.account.type.startsWith("video-") ? null : (
+            <Segmented
+              options={[
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Labeling</span>
+                    </div>
+                  ),
+                  value: "Labeling",
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Text Recognition</span>
+                    </div>
+                  ),
+                  value: "Text Recognition",
+                  disabled: this.isSegmentsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Text Tagging</span>
+                    </div>
+                  ),
+                  value: "Text Tagging",
+                  disabled: this.isSegmentsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>Word Cloud</span>
+                    </div>
+                  ),
+                  value: "Word Cloud",
+                  disabled: this.isWordsDisabled(),
+                },
+                {
+                  label: (
+                    <div style={{padding: 4}}>
+                      <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                            &nbsp;
+                      <span style={{fontWeight: "bold"}}>AI Assistant</span>
+                    </div>
+                  ),
+                  value: "AI Assistant",
+                  disabled: this.props.account.type.startsWith("video-"),
+                },
+              ]}
+              block value={this.state.video.editMode} onChange={checked => {
+                this.updateVideoField("editMode", checked);
+              }}
+            />
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           {
             (this.state.video.editMode === "Text Tagging" || this.state.video.editMode === "AI Assistant") ? null : (
@@ -631,6 +810,10 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  exit() {
+    this.props.history.push("/videos");
+  }
+
   submitVideoEdit(exitAfterSave) {
     const video = Setting.deepCopy(this.state.video);
     VideoBackend.updateVideo(this.state.video.owner, this.state.videoName, video)
@@ -644,7 +827,7 @@ class VideoEditPage extends React.Component {
             if (exitAfterSave) {
               this.props.history.push("/videos");
             } else {
-              this.props.history.push(`/videos/${this.state.video.name}`);
+              this.props.history.push(`/videos/${this.state.video.owner}/${this.state.video.name}`);
             }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
@@ -666,8 +849,18 @@ class VideoEditPage extends React.Component {
           this.state.video !== null ? this.renderVideo() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {
+            this.requireUserOrReviewerOrAdmin(this.state.video) ? (
+              <>
+                <Button size="large" onClick={() => this.exit()}>{i18next.t("general:Exit")}</Button>
+              </>
+            ) : (
+              <>
+                <Button size="large" onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+                <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              </>
+            )
+          }
         </div>
       </div>
     );

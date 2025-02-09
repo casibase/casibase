@@ -15,7 +15,7 @@
 import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
-import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu} from "antd";
+import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
 import {BarsOutlined, CommentOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
@@ -34,6 +34,8 @@ import FactorsetListPage from "./FactorsetListPage";
 import FactorsetEditPage from "./FactorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
+import VideoPage from "./VideoPage";
+import PublicVideoListPage from "./basic/PublicVideoListPage";
 import ProviderListPage from "./ProviderListPage";
 import ProviderEditPage from "./ProviderEditPage";
 import VectorListPage from "./VectorListPage";
@@ -130,6 +132,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/wordsets"});
     } else if (uri.includes("/factorsets")) {
       this.setState({selectedMenuKey: "/factorsets"});
+    } else if (uri.includes("/public-videos")) {
+      this.setState({selectedMenuKey: "/public-videos"});
     } else if (uri.includes("/videos")) {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/chat")) {
@@ -316,6 +320,16 @@ class App extends Component {
       return [];
     }
 
+    if (this.state.account.type.startsWith("video-")) {
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+
+      if (window.location.pathname === "/") {
+        Setting.goToLinkSoft(this, "/public-videos");
+      }
+      return res;
+    }
+
     if (!this.state.account.isAdmin) {
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
@@ -388,9 +402,10 @@ class App extends Component {
       }
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
+        res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+        res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
         res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
         res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
-        res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       }
 
       if (window.location.pathname === "/") {
@@ -404,14 +419,16 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
       res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
 
       res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
       res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
       res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
-
-      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
 
       res.push(Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>{i18next.t("general:Swagger")}</a>, "/swagger"));
 
@@ -485,7 +502,9 @@ class App extends Component {
         <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
         <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/videos/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />
+        <Route exact path="/public-videos/:owner/:videoName" render={(props) => <VideoPage account={this.state.account} {...props} />} />
         <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
         <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
@@ -501,6 +520,7 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );
   }

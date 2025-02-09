@@ -14,38 +14,18 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Upload} from "antd";
+import {Button, List, Popconfirm, Table, Tooltip, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VideoBackend from "./backend/VideoBackend";
 import i18next from "i18next";
+import * as Conf from "./Conf";
 
 class VideoListPage extends BaseListPage {
   constructor(props) {
     super(props);
-  }
-
-  UNSAFE_componentWillMount() {
-    this.getVideos();
-  }
-
-  getVideos() {
-    VideoBackend.getVideos(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            data: res.data,
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get videos: ${res.msg}`);
-        }
-      });
   }
 
   newVideo() {
@@ -94,7 +74,7 @@ class VideoListPage extends BaseListPage {
       if (res.status === "ok") {
         Setting.showMessage("success", "Video uploaded successfully");
         const videoName = res.data;
-        this.props.history.push(`/videos/${videoName}`);
+        this.props.history.push(`/videos/${this.props.account.name}/${videoName}`);
       } else {
         Setting.showMessage("error", `Video failed to upload: ${res.msg}`);
       }
@@ -115,27 +95,71 @@ class VideoListPage extends BaseListPage {
       },
     };
 
+    const isUploadDisabled = this.state.data.filter((video) => video.owner === this.props.account.name).length >= 2;
+
     return (
       <Upload {...props}>
-        <Button type="primary" size="small">
+        <Button type="primary" size="small" disabled={isUploadDisabled || this.requireUserOrAdmin()}>
           <UploadOutlined /> {i18next.t("video:Upload Video")} (.mp4)
         </Button>
       </Upload>
     );
   }
 
+  requireUserOrAdmin(video) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    } else if (this.props.account.type !== "video-normal-user") {
+      return true;
+    }
+
+    if (!video) {
+      return false;
+    } else {
+      return video.remarks && video.remarks.length > 0 || video.remarks2 && video.remarks2.length > 0 || video.state !== "Draft";
+    }
+  }
+
+  requireReviewerOrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
   renderTable(videos) {
-    const columns = [
+    if (this.props.account.type === "video-normal-user") {
+      videos = videos.filter((video) => video.owner === this.props.account.name);
+    } else if (this.props.account.type === "video-reviewer1-user") {
+      videos = videos.filter((video) => (video.state === "Draft" || video.state === "In Review 1"));
+    } else if (this.props.account.type === "video-reviewer2-user") {
+      videos = videos.filter((video) => (video.state === "In Review 2"));
+    }
+
+    let columns = [
+      {
+        title: i18next.t("general:User"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
         width: "180px",
-        sorter: (a, b) => a.name.localeCompare(b.name),
+        sorter: true,
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           text = text.replace(".MP4", ".mp4");
           return (
-            <Link to={`/videos/${text}`}>
+            <Link to={`/videos/${record.owner}/${record.name}`}>
               {text}
             </Link>
           );
@@ -146,43 +170,50 @@ class VideoListPage extends BaseListPage {
       //   dataIndex: "displayName",
       //   key: "displayName",
       //   width: "200px",
-      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      //   sorter: true,
       // },
       {
-        title: i18next.t("video:Tag"),
-        dataIndex: "tag",
-        key: "tag",
+        title: i18next.t("general:Description"),
+        dataIndex: "description",
+        key: "description",
         width: "120px",
-        sorter: (a, b) => a.tag.localeCompare(b.tag),
-      },
-      {
-        title: i18next.t("video:School"),
-        dataIndex: "school",
-        key: "school",
-        width: "80px",
-        sorter: (a, b) => a.school.localeCompare(b.school),
+        sorter: true,
+        ...this.getColumnSearchProps("description"),
+        render: (text, record, index) => {
+          return Setting.getShortText(text, 50);
+        },
       },
       {
         title: i18next.t("video:Grade"),
         dataIndex: "grade",
         key: "grade",
-        width: "80px",
-        sorter: (a, b) => a.grade.localeCompare(b.grade),
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("grade"),
       },
       {
-        title: i18next.t("video:Subject"),
-        dataIndex: "subject",
-        key: "subject",
-        width: "80px",
-        sorter: (a, b) => a.subject.localeCompare(b.subject),
+        title: i18next.t("video:Unit"),
+        dataIndex: "unit",
+        key: "unit",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("unit"),
       },
       {
-        title: i18next.t("video:Video ID"),
-        dataIndex: "videoId",
-        key: "videoId",
-        width: "250px",
-        sorter: (a, b) => a.videoId.localeCompare(b.videoId),
+        title: i18next.t("video:Lesson"),
+        dataIndex: "lesson",
+        key: "lesson",
+        width: "90px",
+        sorter: true,
+        ...this.getColumnSearchProps("lesson"),
       },
+      // {
+      //   title: i18next.t("video:Video ID"),
+      //   dataIndex: "videoId",
+      //   key: "videoId",
+      //   width: "250px",
+      //   sorter: (a, b) => a.videoId.localeCompare(b.videoId),
+      // },
       {
         title: i18next.t("video:Cover"),
         dataIndex: "coverUrl",
@@ -193,6 +224,63 @@ class VideoListPage extends BaseListPage {
             <a target="_blank" rel="noreferrer" href={text}>
               <img src={text} alt={text} width={150} />
             </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("video:Remarks"),
+        dataIndex: "remarks",
+        key: "remarks",
+        // width: "210px",
+        render: (text, record, index) => {
+          if ((record.remarks === null || record.remarks.length === 0) && (record.remarks2 === null || record.remarks2.length === 0)) {
+            return `(${i18next.t("general:empty")})`;
+          }
+
+          return (
+            <div>
+              {i18next.t("video:Remarks1")}:
+              <List
+                size="small"
+                locale={{emptyText: " "}}
+                dataSource={record.remarks}
+                renderItem={(remark, i) => {
+                  return (
+                    <List.Item>
+                      <div style={{display: "inline"}}>
+                        {
+                          Setting.getRemarkTag(remark.score)
+                        }
+                        <Tooltip placement="left" title={remark.text}>
+                          {Setting.getShortText(remark.text, 25)}
+                        </Tooltip>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+              <br />
+              {i18next.t("video:Remarks2")}:
+              <List
+                size="small"
+                locale={{emptyText: " "}}
+                dataSource={record.remarks2}
+                renderItem={(remark, i) => {
+                  return (
+                    <List.Item>
+                      <div style={{display: "inline"}}>
+                        {
+                          Setting.getRemarkTag(remark.score)
+                        }
+                        <Tooltip placement="left" title={remark.text}>
+                          {Setting.getShortText(remark.text, 25)}
+                        </Tooltip>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           );
         },
       },
@@ -207,36 +295,86 @@ class VideoListPage extends BaseListPage {
       //   },
       // },
       {
-        title: i18next.t("video:Label count"),
-        dataIndex: "labelCount",
-        key: "labelCount",
+        title: i18next.t("video:State"),
+        dataIndex: "state",
+        key: "state",
         width: "90px",
-        sorter: (a, b) => a.labelCount - b.labelCount,
+        sorter: true,
+        ...this.getColumnSearchProps("state"),
+        render: (text, record, index) => {
+          if (text === "Draft") {
+            return i18next.t("video:Draft");
+          } else if (text === "In Review 1") {
+            return i18next.t("video:In Review 1");
+          } else if (text === "In Review 2") {
+            return i18next.t("video:In Review 2");
+          } else if (text === "Published") {
+            return i18next.t("video:Published");
+          }
+        },
       },
       {
-        title: i18next.t("video:Segment count"),
-        dataIndex: "segmentCount",
-        key: "segmentCount",
+        title: i18next.t("video:Is public"),
+        dataIndex: "isPublic",
+        key: "isPublic",
         width: "110px",
-        sorter: (a, b) => a.segmentCount - b.segmentCount,
+        sorter: true,
+        ...this.getColumnSearchProps("isPublic"),
+        render: (text, record, index) => {
+          if (text === true) {
+            return i18next.t("video:Public");
+          } else {
+            return i18next.t("video:Hidden");
+          }
+        },
+      },
+      // {
+      //   title: i18next.t("video:Label count"),
+      //   dataIndex: "labelCount",
+      //   key: "labelCount",
+      //   width: "90px",
+      //   sorter: true,
+      // },
+      // {
+      //   title: i18next.t("video:Segment count"),
+      //   dataIndex: "segmentCount",
+      //   key: "segmentCount",
+      //   width: "110px",
+      //   sorter: true,
+      // },
+      {
+        title: i18next.t("video:Excellent count"),
+        dataIndex: "excellentCount",
+        key: "excellentCount",
+        width: "110px",
+        sorter: (a, b) => a.excellentCount - b.excellentCount,
+        // sorter: true,
+        // ...this.getColumnSearchProps("excellentCount"),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "220px",
+        width: "150px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.name}`)}>{i18next.t("general:Open")}</Button>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.owner}/${record.name}`)}>{i18next.t("general:Open")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.owner}/${record.name}`)}>
+                {
+                  (this.requireUserOrAdmin(record)) ? i18next.t("general:View") :
+                    i18next.t("general:Edit")
+                }
+              </Button>
               <Popconfirm
+                disabled={this.requireUserOrAdmin(record)}
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteVideo(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                <Button disabled={this.requireUserOrAdmin(record)} style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -250,6 +388,10 @@ class VideoListPage extends BaseListPage {
       showSizeChanger: true,
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
+
+    if (this.requireReviewerOrAdmin()) {
+      columns = columns.filter(column => column.key !== "remarks" && column.key !== "excellentCount");
+    }
 
     return (
       <div>

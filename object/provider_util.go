@@ -20,6 +20,7 @@ import (
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/util"
+	"github.com/casibase/casibase/video"
 )
 
 func getModelProviderFromName(owner string, providerName string) (*Provider, model.ModelProvider, error) {
@@ -90,4 +91,21 @@ func getEmbeddingProviderFromName(owner string, providerName string) (*Provider,
 	}
 
 	return provider, providerObj, err
+}
+
+func SetDefaultVodClient() error {
+	if video.VodClient != nil {
+		return nil
+	}
+
+	provider, err := GetDefaultVideoProvider()
+	if err != nil {
+		return err
+	}
+	if provider == nil {
+		return fmt.Errorf("The default video provider should not be empty")
+	}
+
+	err = video.SetVodClient(provider.Region, provider.ClientId, provider.ClientSecret)
+	return err
 }

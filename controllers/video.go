@@ -66,6 +66,8 @@ func (c *ApiController) GetVideos() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	owner = ""
+
 	if limit == "" || page == "" {
 		videos, err := object.GetVideos(owner)
 		if err != nil {
@@ -109,10 +111,12 @@ func (c *ApiController) GetVideo() {
 		return
 	}
 
-	err = video.Populate()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
+	if video != nil {
+		err = video.Populate()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(video)
@@ -127,6 +131,11 @@ func (c *ApiController) GetVideo() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-video [post]
 func (c *ApiController) UpdateVideo() {
+	user, ok := c.RequireSignedInUser()
+	if !ok {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	var video object.Video
@@ -134,6 +143,13 @@ func (c *ApiController) UpdateVideo() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if user.Type == "video-normal-user" {
+		if len(video.Remarks) > 0 || len(video.Remarks2) > 0 || video.State != "Draft" {
+			c.ResponseError("The video can only be updated when there are no remarks and the state is \"Draft\"")
+			return
+		}
 	}
 
 	success, err := object.UpdateVideo(id, &video)
@@ -194,6 +210,11 @@ func (c *ApiController) DeleteVideo() {
 }
 
 func startCoverUrlJob(id string, videoId string) {
+	err := object.SetDefaultVodClient()
+	if err != nil {
+		panic(err)
+	}
+
 	go func(id string, videoId string) {
 		for i := 0; i < 20; i++ {
 			coverUrl := video.GetVideoCoverUrl(videoId)
@@ -236,6 +257,62 @@ func getSpeaker(s string) string {
 	}
 }
 
+func getAudioSegments(userName string, filename string, fileBuffer *bytes.Buffer) (string, []*object.Label, error) {
+	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
+	if audioStorageProviderName == "" {
+		return "", []*object.Label{}, nil
+	}
+
+	fileBuffer2 := copyBuffer(fileBuffer)
+
+	audioBuffer, err := audio.GetAudioFromVideo(fileBuffer2)
+	if err != nil {
+		return "", nil, err
+	}
+
+	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName)
+	if err != nil {
+		return "", nil, err
+	}
+
+	audioFilename := strings.Replace(filename, ".mp4", ".mp3", 1)
+	audioUrl, err := audioStorageProvider.PutObject(userName, "Uploaded-Audio", audioFilename, audioBuffer)
+	if err != nil {
+		return "", nil, err
+	}
+
+	tmpInputFile, err := os.CreateTemp("", "casibase-audio-*.mp3")
+	if err != nil {
+		return "", nil, err
+	}
+	defer os.Remove(tmpInputFile.Name())
+
+	_, err = io.Copy(tmpInputFile, audioBuffer)
+	if err != nil {
+		return "", nil, err
+	}
+	tmpInputFile.Close()
+
+	segments := []*object.Label{}
+	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name())
+	if err != nil {
+		return "", nil, err
+	}
+
+	for i, item := range oSegments {
+		segment := &object.Label{
+			Id:        strconv.Itoa(i),
+			StartTime: util.ParseFloat(item.Bg) / 1000,
+			EndTime:   util.ParseFloat(item.Ed) / 1000,
+			Text:      item.Onebest,
+			Speaker:   getSpeaker(item.Speaker),
+		}
+		segments = append(segments, segment)
+	}
+
+	return audioUrl, segments, nil
+}
+
 // UploadVideo
 // @Title UploadVideo
 // @Tag Video API
@@ -267,13 +344,17 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
-	fileBuffer2 := copyBuffer(fileBuffer)
-
 	fileType := "unknown"
 	contentType := header.Header.Get("Content-Type")
 	fileType, _ = util.GetOwnerAndNameFromId(contentType)
 	if fileType != "video" {
 		c.ResponseError(fmt.Sprintf("contentType: %s is not video", contentType))
+		return
+	}
+
+	err = object.SetDefaultVodClient()
+	if err != nil {
+		c.ResponseError(err.Error())
 		return
 	}
 
@@ -287,56 +368,10 @@ func (c *ApiController) UploadVideo() {
 		return
 	}
 
-	audioBuffer, err := audio.GetAudioFromVideo(fileBuffer2)
+	audioUrl, segments, err := getAudioSegments(userName, filename, fileBuffer)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
-	}
-
-	audioStorageProviderName := beego.AppConfig.String("audioStorageProvider")
-	audioStorageProvider, err := storage.NewCasdoorProvider(audioStorageProviderName)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	audioFilename := strings.Replace(filename, ".mp4", ".mp3", 1)
-	audioUrl, err := audioStorageProvider.PutObject(userName, "Uploaded-Audio", audioFilename, audioBuffer)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	tmpInputFile, err := os.CreateTemp("", "casibase-audio-*.mp3")
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	defer os.Remove(tmpInputFile.Name())
-
-	_, err = io.Copy(tmpInputFile, audioBuffer)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	tmpInputFile.Close()
-
-	segments := []*object.Label{}
-	oSegments, err := audio.GetSegmentsFromAudio(tmpInputFile.Name())
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	for i, item := range oSegments {
-		segment := &object.Label{
-			Id:        strconv.Itoa(i),
-			StartTime: util.ParseFloat(item.Bg) / 1000,
-			EndTime:   util.ParseFloat(item.Ed) / 1000,
-			Text:      item.Onebest,
-			Speaker:   getSpeaker(item.Speaker),
-		}
-		segments = append(segments, segment)
 	}
 
 	v := &object.Video{
@@ -354,6 +389,9 @@ func (c *ApiController) UploadVideo() {
 		DataUrls:    []string{},
 		DataUrl:     "",
 		TagOnPause:  true,
+		Remarks:     []*object.Remark{},
+		Remarks2:    []*object.Remark{},
+		State:       "Draft",
 		Keywords:    []string{},
 	}
 	_, err = object.AddVideo(v)

@@ -76,6 +76,8 @@ func parseVideoFile(filePath string) (*Video, error) {
 		Labels:       []*Label{},
 		Segments:     []*Label{},
 		WordCountMap: map[string]int{},
+		Remarks:      []*Remark{},
+		Remarks2:     []*Remark{},
 		DataUrls:     []string{},
 		Keywords:     []string{},
 	}

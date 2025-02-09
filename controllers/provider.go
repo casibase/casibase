@@ -60,6 +60,7 @@ func (c *ApiController) GetProviders() {
 			return
 		}
 
+		providers = object.GetMaskedProviders(providers, true)
 		c.ResponseOk(providers)
 	} else {
 		limit := util.ParseInt(limit)
@@ -76,6 +77,7 @@ func (c *ApiController) GetProviders() {
 			return
 		}
 
+		providers = object.GetMaskedProviders(providers, true)
 		c.ResponseOk(providers, paginator.Nums())
 	}
 }

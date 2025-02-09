@@ -33,31 +33,47 @@ type Label struct {
 	Tag3      string  `xorm:"varchar(100)" json:"tag3"`
 }
 
+type Remark struct {
+	Timestamp string `xorm:"varchar(100)" json:"timestamp"`
+	User      string `xorm:"varchar(100)" json:"user"`
+	Score     string `xorm:"varchar(100)" json:"score"`
+	Text      string `xorm:"varchar(100)" json:"text"`
+	IsPublic  bool   `json:"isPublic"`
+}
+
 type Video struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
-	Tag          string         `xorm:"varchar(100)" json:"tag"`
-	Type         string         `xorm:"varchar(100)" json:"type"`
-	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
-	VideoLength  string         `xorm:"varchar(100)" json:"videoLength"`
-	CoverUrl     string         `xorm:"varchar(200)" json:"coverUrl"`
-	AudioUrl     string         `xorm:"varchar(200)" json:"audioUrl"`
-	EditMode     string         `xorm:"varchar(100)" json:"editMode"`
-	Labels       []*Label       `xorm:"mediumtext" json:"labels"`
-	Segments     []*Label       `xorm:"mediumtext" json:"segments"`
-	LabelCount   int            `xorm:"-" json:"labelCount"`
-	SegmentCount int            `xorm:"-" json:"segmentCount"`
-	WordCountMap map[string]int `xorm:"mediumtext" json:"wordCountMap"`
-	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
-	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
-	TagOnPause   bool           `json:"tagOnPause"`
+	Description    string         `xorm:"mediumtext" json:"description"`
+	Tag            string         `xorm:"varchar(100)" json:"tag"`
+	Type           string         `xorm:"varchar(100)" json:"type"`
+	VideoId        string         `xorm:"varchar(100)" json:"videoId"`
+	VideoLength    string         `xorm:"varchar(100)" json:"videoLength"`
+	CoverUrl       string         `xorm:"varchar(200)" json:"coverUrl"`
+	AudioUrl       string         `xorm:"varchar(200)" json:"audioUrl"`
+	EditMode       string         `xorm:"varchar(100)" json:"editMode"`
+	Labels         []*Label       `xorm:"mediumtext" json:"labels"`
+	Segments       []*Label       `xorm:"mediumtext" json:"segments"`
+	LabelCount     int            `xorm:"-" json:"labelCount"`
+	SegmentCount   int            `xorm:"-" json:"segmentCount"`
+	WordCountMap   map[string]int `xorm:"mediumtext" json:"wordCountMap"`
+	DataUrls       []string       `xorm:"mediumtext" json:"dataUrls"`
+	DataUrl        string         `xorm:"varchar(200)" json:"dataUrl"`
+	TagOnPause     bool           `json:"tagOnPause"`
+	Remarks        []*Remark      `xorm:"mediumtext" json:"remarks"`
+	Remarks2       []*Remark      `xorm:"mediumtext" json:"remarks2"`
+	ExcellentCount int            `json:"excellentCount"`
+	State          string         `xorm:"varchar(100)" json:"state"`
+	IsPublic       bool           `json:"isPublic"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
 	Stage    string   `xorm:"varchar(100)" json:"stage"`
 	Grade    string   `xorm:"varchar(100)" json:"grade"`
+	Unit     string   `xorm:"varchar(100)" json:"unit"`
+	Lesson   string   `xorm:"varchar(100)" json:"lesson"`
 	Class    string   `xorm:"varchar(100)" json:"class"`
 	Subject  string   `xorm:"varchar(100)" json:"subject"`
 	Topic    string   `xorm:"varchar(100)" json:"topic"`
@@ -89,7 +105,7 @@ func GetVideos(owner string) ([]*Video, error) {
 	}
 
 	for _, v := range videos {
-		err = v.UpdateCoverUrl()
+		err = v.refineVideoAndCoverUrl()
 		if err != nil {
 			return videos, err
 		}
@@ -107,6 +123,11 @@ func getVideo(owner string, name string) (*Video, error) {
 
 	if existed {
 		if v.VideoId != "" {
+			err = SetDefaultVodClient()
+			if err != nil {
+				return nil, err
+			}
+
 			v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
 		}
 		return &v, nil
@@ -192,15 +213,28 @@ func (video *Video) Populate() error {
 	return nil
 }
 
-func (v *Video) UpdateCoverUrl() error {
+func (v *Video) refineVideoAndCoverUrl() error {
+	excellentCount := 0
+	for _, remark := range v.Remarks {
+		if remark.Score == "Excellent" {
+			excellentCount++
+		}
+	}
+	v.ExcellentCount = excellentCount
+
 	if v.VideoId == "" || v.CoverUrl != "" {
 		return nil
+	}
+
+	err := SetDefaultVodClient()
+	if err != nil {
+		return err
 	}
 
 	coverUrl := video.GetVideoCoverUrl(v.VideoId)
 	v.CoverUrl = coverUrl
 
-	_, err := UpdateVideo(v.GetId(), v)
+	_, err = UpdateVideo(v.GetId(), v)
 	if err != nil {
 		return err
 	}
@@ -210,7 +244,7 @@ func (v *Video) UpdateCoverUrl() error {
 
 func GetVideoCount(owner string, field string, value string) (int64, error) {
 	session := GetSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&Vector{})
+	return session.Count(&Video{})
 }
 
 func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string) ([]*Video, error) {
@@ -222,7 +256,7 @@ func GetPaginationVideos(owner string, offset int, limit int, field string, valu
 	}
 
 	for _, v := range videos {
-		err = v.UpdateCoverUrl()
+		err = v.refineVideoAndCoverUrl()
 		if err != nil {
 			return videos, err
 		}

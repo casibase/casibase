@@ -16,6 +16,7 @@ import React from "react";
 import {Card, Col} from "antd";
 import * as Setting from "../Setting";
 import {withRouter} from "react-router-dom";
+import i18next from "i18next";
 
 const {Meta} = Card;
 
@@ -44,13 +45,17 @@ class SingleCard extends React.Component {
     const silentSigninLink = this.wrappedAsSilentSigninLink(link);
 
     return (
-      <Card.Grid style={gridStyle} onClick={() => Setting.goToLink(silentSigninLink)}>
+      <Card.Grid style={gridStyle} onClick={() => Setting.goToLinkSoft(this, silentSigninLink)}>
         <img src={logo} alt="logo" width={"100%"} style={{marginBottom: "20px"}} />
         <Meta
           title={title}
           description={desc}
           style={{justifyContent: "center"}}
         />
+        <br />
+        {i18next.t("video:Comment")}
+        <br />
+        {time}
       </Card.Grid>
     );
   }
@@ -65,13 +70,14 @@ class SingleCard extends React.Component {
           cover={
             <img alt="logo" src={logo} style={{width: "100%", height: "200px", objectFit: "scale-down"}} />
           }
-          onClick={() => Setting.goToLink(silentSigninLink)}
+          onClick={() => Setting.goToLinkSoft(this, silentSigninLink)}
           style={isSingle ? {width: "320px", height: "100%"} : {width: "100%", height: "100%"}}
         >
           <Meta title={title} description={desc} />
           <br />
+          {i18next.t("video:Comment")}
           <br />
-          <Meta title={""} description={Setting.getFormattedDateShort(time)} />
+          {time}
         </Card>
       </Col>
     );

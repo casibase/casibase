@@ -22,6 +22,7 @@ import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
+import React from "react";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -357,6 +358,33 @@ function getUserTag(users) {
     }
   });
   return res;
+}
+
+export function getRemarkTag(score) {
+  let color;
+  let text;
+  if (score === "Excellent") {
+    color = "success";
+    text = i18next.t("video:Excellent");
+  } else if (score === "Good") {
+    color = "processing";
+    text = i18next.t("video:Good");
+  } else if (score === "Pass") {
+    color = "warning";
+    text = i18next.t("video:Pass");
+  } else if (score === "Fail") {
+    color = "error";
+    text = i18next.t("video:Fail");
+  } else {
+    color = "default";
+    text = `Unknown score: ${score}`;
+  }
+
+  return (
+    <Tag style={{width: "60px", textAlign: "center"}} color={color}>
+      {text}
+    </Tag>
+  );
 }
 
 export function getLabelTags(labels) {
@@ -759,6 +787,14 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
       ]
     );
+  } else if (category === "Video") {
+    return (
+      [
+        {id: "AWS", name: "AWS"},
+        {id: "Azure", name: "Azure"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+      ]
+    );
   } else {
     return [];
   }
@@ -1072,6 +1108,20 @@ export function getProviderSubTypeOptions(category, type) {
         ]
       );
     }
+  } else if (type === "Mistral") {
+    return ([
+      {id: "mistral-large-latest", name: "mistral-large-latest"},
+      {id: "pixtral-large-latest", name: "pixtral-large-latest"},
+      {id: "mistral-small-latest", name: "mistral-small-latest"},
+      {id: "codestral-latest", name: "codestral-latest"},
+      {id: "ministral-8b-latest", name: "ministral-8b-latest"},
+      {id: "ministral-3b-latest", name: "ministral-3b-latest"},
+      {id: "pixtral-12b", name: "pixtral-12b"},
+      {id: "mistral-nemo", name: "mistral-nemo"},
+      {id: "open-mistral-7b", name: "open-mistral-7b"},
+      {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
+      {id: "open-mixtral-8x22b", name: "open-mixtral-8x22b"},
+    ]);
   } else if (type === "Yi") {
     return ([
       {id: "yi-lightning", name: "yi-lightning"},

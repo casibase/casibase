@@ -16,17 +16,14 @@ package video
 
 import "github.com/aliyun/alibaba-cloud-sdk-go/services/vod"
 
-var vodClient *vod.Client
+var VodClient *vod.Client
 
-func init() {
-	vodClient = InitVodClient()
-}
-
-func InitVodClient() *vod.Client {
-	vodClient, err := vod.NewClientWithAccessKey(regionId, accessKeyId, accessKeySecret)
+func SetVodClient(region string, clientId string, clientSecret string) error {
+	client, err := vod.NewClientWithAccessKey(region, clientId, clientSecret)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
-	return vodClient
+	VodClient = client
+	return nil
 }
