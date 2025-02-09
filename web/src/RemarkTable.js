@@ -153,7 +153,7 @@ class RemarkTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea showCount maxLength={200} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
+            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );

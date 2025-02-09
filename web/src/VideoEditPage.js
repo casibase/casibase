@@ -94,7 +94,7 @@ class VideoEditPage extends React.Component {
   }
 
   parseVideoField(key, value) {
-    if (["score"].includes(key)) {
+    if ([""].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -501,7 +501,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Description")}:
           </Col>
           <Col span={22} >
-            <TextArea showCount maxLength={200} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
+            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
               this.updateVideoField("description", e.target.value);
             }} />
           </Col>
@@ -555,6 +555,48 @@ class VideoEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Remarks")}:
+          </Col>
+          <Col span={22} >
+            <RemarkTable
+              title={i18next.t("video:Remarks")}
+              account={this.props.account}
+              table={this.state.video.remarks}
+              onUpdateTable={(value) => {this.updateVideoField("remarks", value);}}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Score")}:
+          </Col>
+          <Col span={5} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.video.score} onChange={(value => {
+              this.updateVideoField("score", value);
+            })}>
+              {
+                [
+                  {id: "Excellent"},
+                  {id: "Good"},
+                  {id: "Pass"},
+                  {id: "Fail"},
+                ].map((item, index) => <Option key={index} value={item.id}>{Setting.getRemarkTag(item.id)}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("video:Remark")}:
+          </Col>
+          <Col span={22} >
+            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.remark} onChange={(e) => {
+              this.updateVideoField("remark", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:State")}:
           </Col>
           <Col span={5} >
@@ -579,19 +621,6 @@ class VideoEditPage extends React.Component {
             <Switch checked={this.state.video.isPublic} onChange={checked => {
               this.updateVideoField("isPublic", checked);
             }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Remarks")}:
-          </Col>
-          <Col span={22} >
-            <RemarkTable
-              title={i18next.t("video:Remarks")}
-              account={this.props.account}
-              table={this.state.video.remarks}
-              onUpdateTable={(value) => {this.updateVideoField("remarks", value);}}
-            />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
