@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/astaxie/beego/context"
+	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
@@ -75,6 +76,15 @@ func (c *ApiController) RequireSignedIn() (string, bool) {
 		return "", false
 	}
 	return userId, true
+}
+
+func (c *ApiController) RequireSignedInUser() (*casdoorsdk.User, bool) {
+	user := c.GetSessionUser()
+	if user == nil {
+		c.ResponseError("Please sign in first")
+		return nil, false
+	}
+	return user, true
 }
 
 func (c *ApiController) CheckSignedIn() (string, bool) {

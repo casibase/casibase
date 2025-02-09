@@ -99,15 +99,37 @@ class VideoListPage extends BaseListPage {
 
     return (
       <Upload {...props}>
-        <Button type="primary" size="small" disabled={isUploadDisabled}>
+        <Button type="primary" size="small" disabled={isUploadDisabled || this.requireUserOrAdmin()}>
           <UploadOutlined /> {i18next.t("video:Upload Video")} (.mp4)
         </Button>
       </Upload>
     );
   }
 
+  requireUserOrAdmin(video) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    } else if (this.props.account.type !== "video-normal-user") {
+      return true;
+    }
+
+    if (!video) {
+      return false;
+    } else {
+      return video.remarks && video.remarks.length > 0 || video.remarks2 && video.remarks2.length > 0 || video.state !== "Draft";
+    }
+  }
+
+  requireReviewerOrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
   renderTable(videos) {
-    const columns = [
+    if (this.props.account.type === "video-normal-user") {
+      videos = videos.filter((video) => video.owner === this.props.account.name);
+    }
+
+    let columns = [
       {
         title: i18next.t("general:User"),
         dataIndex: "owner",
@@ -207,31 +229,54 @@ class VideoListPage extends BaseListPage {
         key: "remarks",
         // width: "210px",
         render: (text, record, index) => {
-          const remarks = text;
-          if (remarks === null || remarks.length === 0) {
+          if ((record.remarks === null || record.remarks.length === 0) && (record.remarks2 === null || record.remarks2.length === 0)) {
             return `(${i18next.t("general:empty")})`;
           }
 
           return (
-            <List
-              size="small"
-              locale={{emptyText: " "}}
-              dataSource={remarks}
-              renderItem={(remark, i) => {
-                return (
-                  <List.Item>
-                    <div style={{display: "inline"}}>
-                      {
-                        Setting.getRemarkTag(remark.score)
-                      }
-                      <Tooltip placement="left" title={remark.text}>
-                        {Setting.getShortText(remark.text, 25)}
-                      </Tooltip>
-                    </div>
-                  </List.Item>
-                );
-              }}
-            />
+            <div>
+              {i18next.t("video:Remarks1")}:
+              <List
+                size="small"
+                locale={{emptyText: " "}}
+                dataSource={record.remarks}
+                renderItem={(remark, i) => {
+                  return (
+                    <List.Item>
+                      <div style={{display: "inline"}}>
+                        {
+                          Setting.getRemarkTag(remark.score)
+                        }
+                        <Tooltip placement="left" title={remark.text}>
+                          {Setting.getShortText(remark.text, 25)}
+                        </Tooltip>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+              <br />
+              {i18next.t("video:Remarks2")}:
+              <List
+                size="small"
+                locale={{emptyText: " "}}
+                dataSource={record.remarks2}
+                renderItem={(remark, i) => {
+                  return (
+                    <List.Item>
+                      <div style={{display: "inline"}}>
+                        {
+                          Setting.getRemarkTag(remark.score)
+                        }
+                        <Tooltip placement="left" title={remark.text}>
+                          {Setting.getShortText(remark.text, 25)}
+                        </Tooltip>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           );
         },
       },
@@ -300,14 +345,20 @@ class VideoListPage extends BaseListPage {
           return (
             <div>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.owner}/${record.name}`)}>{i18next.t("general:Open")}</Button>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.owner}/${record.name}`)}>
+                {
+                  (this.requireUserOrAdmin(record)) ? i18next.t("general:View") :
+                    i18next.t("general:Edit")
+                }
+              </Button>
               <Popconfirm
+                disabled={this.requireUserOrAdmin(record)}
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteVideo(record)}
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
+                <Button disabled={this.requireUserOrAdmin(record)} style={{marginBottom: "10px"}} type="primary" danger>{i18next.t("general:Delete")}</Button>
               </Popconfirm>
             </div>
           );
@@ -321,6 +372,10 @@ class VideoListPage extends BaseListPage {
       showSizeChanger: true,
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
+
+    if (this.requireReviewerOrAdmin()) {
+      columns = columns.filter(column => column.key !== "remarks" && column.key !== "excellentCount");
+    }
 
     return (
       <div>

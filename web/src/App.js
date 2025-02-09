@@ -320,6 +320,16 @@ class App extends Component {
       return [];
     }
 
+    if (this.state.account.type.startsWith("video-")) {
+      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+
+      if (window.location.pathname === "/") {
+        Setting.goToLinkSoft(this, "/public-videos");
+      }
+      return res;
+    }
+
     if (!this.state.account.isAdmin) {
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
