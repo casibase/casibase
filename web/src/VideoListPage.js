@@ -301,6 +301,17 @@ class VideoListPage extends BaseListPage {
         width: "90px",
         sorter: true,
         ...this.getColumnSearchProps("state"),
+        render: (text, record, index) => {
+          if (text === "Draft") {
+            return i18next.t("video:Draft");
+          } else if (text === "In Review 1") {
+            return i18next.t("video:In Review 1");
+          } else if (text === "In Review 2") {
+            return i18next.t("video:In Review 2");
+          } else if (text === "Published") {
+            return i18next.t("video:Published");
+          }
+        },
       },
       {
         title: i18next.t("video:Is public"),
