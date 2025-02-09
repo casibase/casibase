@@ -47,25 +47,26 @@ type Video struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(500)" json:"displayName"`
 
-	Description  string         `xorm:"mediumtext" json:"description"`
-	Tag          string         `xorm:"varchar(100)" json:"tag"`
-	Type         string         `xorm:"varchar(100)" json:"type"`
-	VideoId      string         `xorm:"varchar(100)" json:"videoId"`
-	VideoLength  string         `xorm:"varchar(100)" json:"videoLength"`
-	CoverUrl     string         `xorm:"varchar(200)" json:"coverUrl"`
-	AudioUrl     string         `xorm:"varchar(200)" json:"audioUrl"`
-	EditMode     string         `xorm:"varchar(100)" json:"editMode"`
-	Labels       []*Label       `xorm:"mediumtext" json:"labels"`
-	Segments     []*Label       `xorm:"mediumtext" json:"segments"`
-	LabelCount   int            `xorm:"-" json:"labelCount"`
-	SegmentCount int            `xorm:"-" json:"segmentCount"`
-	WordCountMap map[string]int `xorm:"mediumtext" json:"wordCountMap"`
-	DataUrls     []string       `xorm:"mediumtext" json:"dataUrls"`
-	DataUrl      string         `xorm:"varchar(200)" json:"dataUrl"`
-	TagOnPause   bool           `json:"tagOnPause"`
-	Remarks      []*Remark      `xorm:"mediumtext" json:"remarks"`
-	State        string         `xorm:"varchar(100)" json:"state"`
-	IsPublic     bool           `json:"isPublic"`
+	Description    string         `xorm:"mediumtext" json:"description"`
+	Tag            string         `xorm:"varchar(100)" json:"tag"`
+	Type           string         `xorm:"varchar(100)" json:"type"`
+	VideoId        string         `xorm:"varchar(100)" json:"videoId"`
+	VideoLength    string         `xorm:"varchar(100)" json:"videoLength"`
+	CoverUrl       string         `xorm:"varchar(200)" json:"coverUrl"`
+	AudioUrl       string         `xorm:"varchar(200)" json:"audioUrl"`
+	EditMode       string         `xorm:"varchar(100)" json:"editMode"`
+	Labels         []*Label       `xorm:"mediumtext" json:"labels"`
+	Segments       []*Label       `xorm:"mediumtext" json:"segments"`
+	LabelCount     int            `xorm:"-" json:"labelCount"`
+	SegmentCount   int            `xorm:"-" json:"segmentCount"`
+	WordCountMap   map[string]int `xorm:"mediumtext" json:"wordCountMap"`
+	DataUrls       []string       `xorm:"mediumtext" json:"dataUrls"`
+	DataUrl        string         `xorm:"varchar(200)" json:"dataUrl"`
+	TagOnPause     bool           `json:"tagOnPause"`
+	Remarks        []*Remark      `xorm:"mediumtext" json:"remarks"`
+	ExcellentCount int            `xorm:"-" json:"excellentCount"`
+	State          string         `xorm:"varchar(100)" json:"state"`
+	IsPublic       bool           `json:"isPublic"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
 	Stage    string   `xorm:"varchar(100)" json:"stage"`
@@ -103,7 +104,7 @@ func GetVideos(owner string) ([]*Video, error) {
 	}
 
 	for _, v := range videos {
-		err = v.UpdateCoverUrl()
+		err = v.refineVideoAndCoverUrl()
 		if err != nil {
 			return videos, err
 		}
@@ -211,7 +212,15 @@ func (video *Video) Populate() error {
 	return nil
 }
 
-func (v *Video) UpdateCoverUrl() error {
+func (v *Video) refineVideoAndCoverUrl() error {
+	excellentCount := 0
+	for _, remark := range v.Remarks {
+		if remark.Score == "Excellent" {
+			excellentCount++
+		}
+	}
+	v.ExcellentCount = excellentCount
+
 	if v.VideoId == "" || v.CoverUrl != "" {
 		return nil
 	}
@@ -246,7 +255,7 @@ func GetPaginationVideos(owner string, offset int, limit int, field string, valu
 	}
 
 	for _, v := range videos {
-		err = v.UpdateCoverUrl()
+		err = v.refineVideoAndCoverUrl()
 		if err != nil {
 			return videos, err
 		}

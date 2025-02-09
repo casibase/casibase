@@ -74,7 +74,7 @@ class VideoListPage extends BaseListPage {
       if (res.status === "ok") {
         Setting.showMessage("success", "Video uploaded successfully");
         const videoName = res.data;
-        this.props.history.push(`/videos/${videoName}`);
+        this.props.history.push(`/videos/${this.props.account.name}/${videoName}`);
       } else {
         Setting.showMessage("error", `Video failed to upload: ${res.msg}`);
       }
@@ -133,7 +133,7 @@ class VideoListPage extends BaseListPage {
         render: (text, record, index) => {
           text = text.replace(".MP4", ".mp4");
           return (
-            <Link to={`/videos/${text}`}>
+            <Link to={`/videos/${record.owner}/${record.name}`}>
               {text}
             </Link>
           );
@@ -282,15 +282,24 @@ class VideoListPage extends BaseListPage {
       //   sorter: true,
       // },
       {
+        title: i18next.t("video:Excellent count"),
+        dataIndex: "excellentCount",
+        key: "excellentCount",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("excellentCount"),
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
         width: "150px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.name}`)}>{i18next.t("general:Open")}</Button>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.name}`)}>{i18next.t("general:Edit")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => Setting.openLink(`/videos/${record.owner}/${record.name}`)}>{i18next.t("general:Open")}</Button>
+              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/videos/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteVideo(record)}

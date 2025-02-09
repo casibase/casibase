@@ -37,6 +37,7 @@ class VideoEditPage extends React.Component {
     super(props);
     this.state = {
       classes: props,
+      owner: props.match.params.owner,
       videoName: props.match.params.videoName,
       video: null,
       tasks: null,
@@ -57,8 +58,13 @@ class VideoEditPage extends React.Component {
   }
 
   getVideo() {
-    VideoBackend.getVideo(this.props.account.name, this.state.videoName)
+    VideoBackend.getVideo(this.state.owner, this.state.videoName)
       .then((res) => {
+        if (res.data === null) {
+          this.props.history.push("/404");
+          return;
+        }
+
         if (res.status === "ok") {
           this.setState({
             video: res.data,
@@ -726,7 +732,7 @@ class VideoEditPage extends React.Component {
             if (exitAfterSave) {
               this.props.history.push("/videos");
             } else {
-              this.props.history.push(`/videos/${this.state.video.name}`);
+              this.props.history.push(`/videos/${this.state.video.owner}/${this.state.video.name}`);
             }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
