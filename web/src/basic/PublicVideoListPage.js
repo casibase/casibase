@@ -37,13 +37,8 @@ const PublicVideoListPage = (props) => {
     }
 
     return videos.map(video => {
-      let homepageUrl = video.homepageUrl;
-      if (homepageUrl === "<custom-url>") {
-        homepageUrl = props.account.homepage;
-      }
-
       return {
-        link: homepageUrl,
+        link: `/public-videos/${video.owner}/${video.name}`,
         name: video.displayName,
         description: video.description,
         logo: video.coverUrl,
