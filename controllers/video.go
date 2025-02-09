@@ -131,6 +131,11 @@ func (c *ApiController) GetVideo() {
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-video [post]
 func (c *ApiController) UpdateVideo() {
+	user, ok := c.RequireSignedInUser()
+	if !ok {
+		return
+	}
+
 	id := c.Input().Get("id")
 
 	var video object.Video
@@ -138,6 +143,13 @@ func (c *ApiController) UpdateVideo() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if user.Type == "video-normal-user" {
+		if len(video.Remarks) > 0 || len(video.Remarks2) > 0 || video.State != "Draft" {
+			c.ResponseError("The video can only be updated when there are no remarks and the state is \"Draft\"")
+			return
+		}
 	}
 
 	success, err := object.UpdateVideo(id, &video)

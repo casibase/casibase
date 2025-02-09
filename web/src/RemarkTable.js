@@ -78,6 +78,18 @@ class RemarkTable extends React.Component {
     this.updateTable(table);
   }
 
+  requireReviewerOrAdmin(row) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    }
+
+    return !(row.user === this.props.account.name);
+  }
+
+  requireAdmin() {
+    return !(this.props.account.type === "video-admin-user");
+  }
+
   renderTable(table) {
     const columns = [
       {
@@ -118,7 +130,7 @@ class RemarkTable extends React.Component {
         width: "130px",
         render: (text, record, index) => {
           return (
-            <Select virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
+            <Select disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
               this.updateField(table, index, "score", value);
             })}>
               {
@@ -140,7 +152,7 @@ class RemarkTable extends React.Component {
         width: "110px",
         render: (text, record, index) => {
           return (
-            <Switch checked={text} onChange={checked => {
+            <Switch disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} checked={text} onChange={checked => {
               this.updateField(table, index, "isPublic", checked);
             }} />
           );
@@ -153,7 +165,7 @@ class RemarkTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
+            <TextArea disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
@@ -167,13 +179,13 @@ class RemarkTable extends React.Component {
           return (
             <div>
               <Tooltip placement="bottomLeft" title={"Up"}>
-                <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
+                <Button style={{marginRight: "5px"}} disabled={index === 0 || this.props.disabled || this.requireAdmin()} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
               </Tooltip>
               <Tooltip placement="topLeft" title={"Down"}>
-                <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
+                <Button style={{marginRight: "5px"}} disabled={index === table.length - 1 || this.props.disabled || this.requireAdmin()} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
               </Tooltip>
               <Tooltip placement="topLeft" title={"Delete"}>
-                <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
+                <Button icon={<DeleteOutlined />} size="small" disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
           );
@@ -181,17 +193,14 @@ class RemarkTable extends React.Component {
       },
     ];
 
+    const myRowCount = table.filter((row) => row.user === this.props.account.name).length;
+
     return (
       <Table rowKey="index" columns={columns} dataSource={table} size="middle" bordered pagination={false}
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={this.props.maxRowCount > 0 && table.length >= this.props.maxRowCount} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
-            {
-              this.props.wordset === undefined ? null : (
-                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadXlsx(this.props.wordset)}>{i18next.t("general:Download")}</Button>
-              )
-            }
+            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={this.props.maxRowCount > 0 && table.length >= this.props.maxRowCount || myRowCount >= 1 || this.props.disabled} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
           </div>
         )}
       />

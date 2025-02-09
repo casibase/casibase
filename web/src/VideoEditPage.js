@@ -459,13 +459,53 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  requireUserOrAdmin(video) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    } else if (this.props.account.type !== "video-normal-user") {
+      return true;
+    }
+
+    if (!video) {
+      return false;
+    } else {
+      return video.remarks && video.remarks.length > 0 || video.remarks2 && video.remarks2.length > 0 || video.state !== "Draft";
+    }
+  }
+
+  requireUserOrReviewerOrAdmin(video) {
+    if (this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user") {
+      return false;
+    } else {
+      return this.requireUserOrAdmin(video);
+    }
+  }
+
+  requireReviewerOrAdmin() {
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
+  requireAdmin() {
+    return !(this.props.account.type === "video-admin-user");
+  }
+
   renderVideo() {
     return (
       <Card size="small" title={
         <div>
           {i18next.t("video:Edit Video")}&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {
+            this.requireUserOrReviewerOrAdmin(this.state.video) ? (
+              <>
+                <Button onClick={() => this.exit()}>{i18next.t("general:Exit")}</Button>
+              </>
+            ) : (
+              <>
+                <Button onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+                <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              </>
+            )
+          }
         </div>
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
@@ -473,7 +513,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Name")}:
           </Col>
           <Col span={5} >
-            <Input value={this.state.video.name} onChange={e => {
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.name} onChange={e => {
               this.updateVideoField("name", e.target.value);
             }} />
           </Col>
@@ -482,7 +522,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Display name")}:
           </Col>
           <Col span={6} >
-            <Input value={this.state.video.displayName} onChange={e => {
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.displayName} onChange={e => {
               this.updateVideoField("displayName", e.target.value);
             }} />
           </Col>
@@ -491,7 +531,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Video ID")}:
           </Col>
           <Col span={5} >
-            <Input value={this.state.video.videoId} onChange={e => {
+            <Input disabled={this.requireUserOrAdmin(this.state.video)} value={this.state.video.videoId} onChange={e => {
               this.updateVideoField("videoId", e.target.value);
             }} />
           </Col>
@@ -501,7 +541,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("general:Description")}:
           </Col>
           <Col span={22} >
-            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
+            <TextArea disabled={this.requireUserOrAdmin(this.state.video)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.state.video.description} onChange={(e) => {
               this.updateVideoField("description", e.target.value);
             }} />
           </Col>
@@ -511,7 +551,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Grade")}:
           </Col>
           <Col span={5} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
               this.updateVideoField("grade", value);
               this.updateVideoField("unit", "");
               this.updateVideoField("lesson", "");
@@ -528,7 +568,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Unit")}:
           </Col>
           <Col span={6} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
               this.updateVideoField("unit", value);
               this.updateVideoField("lesson", "");
             })}>
@@ -544,7 +584,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Lesson")}:
           </Col>
           <Col span={5} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.video.lesson} onChange={(value => {this.updateVideoField("lesson", value);})}>
+            <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.lesson} onChange={(value => {this.updateVideoField("lesson", value);})}>
               {
                 VideoConf.getLessonOptions(this.state.video.grade, this.state.video.unit)
                 // .sort((a, b) => a.name.localeCompare(b.name))
@@ -553,40 +593,62 @@ class VideoEditPage extends React.Component {
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Remarks")}:
-          </Col>
-          <Col span={22} >
-            <RemarkTable
-              title={i18next.t("video:Remarks")}
-              account={this.props.account}
-              maxRowCount={-1}
-              table={this.state.video.remarks}
-              onUpdateTable={(value) => {this.updateVideoField("remarks", value);}}
-            />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("video:Remarks2")}:
-          </Col>
-          <Col span={22} >
-            <RemarkTable
-              title={i18next.t("video:Remarks2")}
-              account={this.props.account}
-              maxRowCount={1}
-              table={this.state.video.remarks2}
-              onUpdateTable={(value) => {this.updateVideoField("remarks2", value);}}
-            />
-          </Col>
-        </Row>
+        {
+          this.requireReviewerOrAdmin() ? null : (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Remarks")}:
+                </Col>
+                <Col span={22} >
+                  <RemarkTable
+                    title={i18next.t("video:Remarks")}
+                    account={this.props.account}
+                    maxRowCount={-1}
+                    disabled={this.requireReviewerOrAdmin(this.state.video)}
+                    table={this.state.video.remarks}
+                    onUpdateTable={(value) => {
+                      this.updateVideoField("remarks", value);
+                      if (value.length > 0 && this.state.video.state === "Draft") {
+                        this.updateVideoField("state", "In Review");
+                      } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state === "In Review") {
+                        this.updateVideoField("state", "Draft");
+                      }
+                    }}
+                  />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("video:Remarks2")}:
+                </Col>
+                <Col span={22} >
+                  <RemarkTable
+                    title={i18next.t("video:Remarks2")}
+                    account={this.props.account}
+                    maxRowCount={1}
+                    disabled={this.requireReviewerOrAdmin(this.state.video)}
+                    table={this.state.video.remarks2}
+                    onUpdateTable={(value) => {
+                      this.updateVideoField("remarks2", value);
+                      if (value.length > 0 && this.state.video.state === "Draft") {
+                        this.updateVideoField("state", "In Review");
+                      } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state === "In Review") {
+                        this.updateVideoField("state", "Draft");
+                      }
+                    }}
+                  />
+                </Col>
+              </Row>
+            </>
+          )
+        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:State")}:
           </Col>
           <Col span={5} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
+            <Select disabled={this.requireAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.state} onChange={(value => {
               this.updateVideoField("state", value);
             })}>
               {
@@ -604,7 +666,7 @@ class VideoEditPage extends React.Component {
             {i18next.t("video:Is public")}:
           </Col>
           <Col span={5} >
-            <Switch checked={this.state.video.isPublic} onChange={checked => {
+            <Switch disabled={this.requireAdmin()} checked={this.state.video.isPublic} onChange={checked => {
               this.updateVideoField("isPublic", checked);
             }} />
           </Col>
@@ -690,6 +752,7 @@ class VideoEditPage extends React.Component {
                 </div>
               ),
               value: "AI Assistant",
+              disabled: this.props.account.type.startsWith("video-"),
             },
           ]}
           block value={this.state.video.editMode} onChange={checked => {
@@ -734,6 +797,10 @@ class VideoEditPage extends React.Component {
     );
   }
 
+  exit() {
+    this.props.history.push("/videos");
+  }
+
   submitVideoEdit(exitAfterSave) {
     const video = Setting.deepCopy(this.state.video);
     VideoBackend.updateVideo(this.state.video.owner, this.state.videoName, video)
@@ -769,8 +836,18 @@ class VideoEditPage extends React.Component {
           this.state.video !== null ? this.renderVideo() : null
         }
         <div style={{marginTop: "20px", marginLeft: "40px"}}>
-          <Button size="large" onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
-          <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+          {
+            this.requireUserOrReviewerOrAdmin(this.state.video) ? (
+              <>
+                <Button size="large" onClick={() => this.exit()}>{i18next.t("general:Exit")}</Button>
+              </>
+            ) : (
+              <>
+                <Button size="large" onClick={() => this.submitVideoEdit(false)}>{i18next.t("general:Save")}</Button>
+                <Button style={{marginLeft: "20px"}} type="primary" size="large" onClick={() => this.submitVideoEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
+              </>
+            )
+          }
         </div>
       </div>
     );

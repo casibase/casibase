@@ -66,8 +66,10 @@ func (c *ApiController) Signin() {
 		return
 	}
 
-	if !claims.IsAdmin && claims.Type != "chat-admin" {
-		claims.Type = "chat-user"
+	if strings.Count(claims.Type, "-") <= 1 {
+		if !claims.IsAdmin && claims.Type != "chat-admin" {
+			claims.Type = "chat-user"
+		}
 	}
 
 	err = c.addInitialChatAndMessage(&claims.User)
