@@ -186,7 +186,7 @@ class RemarkTable extends React.Component {
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={this.props.maxRowCount > 0 && table.length >= this.props.maxRowCount} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
             {
               this.props.wordset === undefined ? null : (
                 <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => Setting.downloadXlsx(this.props.wordset)}>{i18next.t("general:Download")}</Button>
