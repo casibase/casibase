@@ -245,7 +245,7 @@ func (v *Video) refineVideoAndCoverUrl() error {
 
 func GetVideoCount(owner string, field string, value string) (int64, error) {
 	session := GetSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&Vector{})
+	return session.Count(&Video{})
 }
 
 func GetPaginationVideos(owner string, offset int, limit int, field string, value string, sortField string, sortOrder string) ([]*Video, error) {
