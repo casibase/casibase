@@ -527,7 +527,7 @@ class VideoEditPage extends React.Component {
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("video:Unit")}:
           </Col>
-          <Col span={5} >
+          <Col span={6} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.video.unit} onChange={(value => {
               this.updateVideoField("unit", value);
               this.updateVideoField("lesson", "");
