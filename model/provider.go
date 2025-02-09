@@ -81,10 +81,10 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewStepFunModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Hunyuan" {
 		p, err = NewTencentHunyuanProvider(clientId, clientSecret, providerUrl, subType)
-	} else if typ == "Dummy" {
-		p, err = NewDummyModelProvider(subType)
 	} else if typ == "Yi" {
 		p, err = NewYiProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Dummy" {
+		p, err = NewDummyModelProvider(subType)
 	} else {
 		return nil, nil
 	}
