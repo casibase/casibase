@@ -37,12 +37,17 @@ const PublicVideoListPage = (props) => {
     }
 
     return videos.map(video => {
+      let comment = "";
+      if (video.remarks2 && video.remarks2.length > 0) {
+        comment = video.remarks2[0].text;
+      }
+
       return {
         link: `/public-videos/${video.owner}/${video.name}`,
         name: video.displayName,
         description: video.description,
         logo: video.coverUrl,
-        createdTime: "",
+        createdTime: comment,
       };
     });
 

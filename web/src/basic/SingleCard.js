@@ -16,6 +16,7 @@ import React from "react";
 import {Card, Col} from "antd";
 import * as Setting from "../Setting";
 import {withRouter} from "react-router-dom";
+import i18next from "i18next";
 
 const {Meta} = Card;
 
@@ -51,6 +52,10 @@ class SingleCard extends React.Component {
           description={desc}
           style={{justifyContent: "center"}}
         />
+        <br />
+        {i18next.t("video:Comment")}
+        <br />
+        {time}
       </Card.Grid>
     );
   }
@@ -70,8 +75,9 @@ class SingleCard extends React.Component {
         >
           <Meta title={title} description={desc} />
           <br />
+          {i18next.t("video:Comment")}
           <br />
-          <Meta title={""} description={Setting.getFormattedDateShort(time)} />
+          {time}
         </Card>
       </Col>
     );

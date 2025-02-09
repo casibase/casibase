@@ -127,6 +127,10 @@ class VideoListPage extends BaseListPage {
   renderTable(videos) {
     if (this.props.account.type === "video-normal-user") {
       videos = videos.filter((video) => video.owner === this.props.account.name);
+    } else if (this.props.account.type === "video-reviewer1-user") {
+      videos = videos.filter((video) => (video.state === "Draft" || video.state === "In Review 1"));
+    } else if (this.props.account.type === "video-reviewer2-user") {
+      videos = videos.filter((video) => (video.state === "In Review 2"));
     }
 
     let columns = [
