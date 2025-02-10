@@ -607,7 +607,7 @@ class App extends Component {
             height: "67px",
           }
         }>
-          Powered by <a target="_blank" href="https://github.com/casibase/casibase" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casibase"} src={`${Setting.StaticBaseUrl}/img/casbin_logo_1024x256.png`} /></a>
+          Powered by <a target="_blank" href="https://github.com/casibase/casibase" rel="noreferrer"><img style={{paddingBottom: "3px"}} height={"20px"} alt={"Casibase"} src={`${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png`} /></a>
         </Footer>
       </React.Fragment>
     );
