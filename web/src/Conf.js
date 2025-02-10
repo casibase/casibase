@@ -30,7 +30,6 @@ export const ShortcutPageItems = [];
 
 export const UsageEndpoints = [];
 
-export const AiName = "AI";
 export const AiAvatar = "https://cdn.casbin.org/img/casibase.png";
 
 export const IframeUrl = "";
