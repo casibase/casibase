@@ -62,5 +62,11 @@ func main() {
 	beego.BConfig.WebConfig.Session.SessionGCMaxLifetime = 3600 * 24 * 365
 
 	port := beego.AppConfig.DefaultInt("httpport", 14000)
+
+	err := util.StopOldInstance(port)
+	if err != nil {
+		panic(err)
+	}
+
 	beego.Run(fmt.Sprintf(":%v", port))
 }
