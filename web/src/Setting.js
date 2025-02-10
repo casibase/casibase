@@ -767,6 +767,7 @@ export function getProviderTypeOptions(category) {
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
         {id: "Hunyuan", name: "Hunyuan"},
+        {id: "Yi", name: "Yi"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1120,6 +1121,11 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "open-mistral-7b", name: "open-mistral-7b"},
       {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
       {id: "open-mixtral-8x22b", name: "open-mixtral-8x22b"},
+    ]);
+  } else if (type === "Yi") {
+    return ([
+      {id: "yi-lightning", name: "yi-lightning"},
+      {id: "yi-vision-v2", name: "yi-vision-v2"},
     ]);
   } else if (type === "Dummy") {
     return ([
