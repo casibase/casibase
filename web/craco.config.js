@@ -13,6 +13,7 @@
 // limitations under the License.
 
 const CracoLessPlugin = require("craco-less");
+const path = require("path");
 
 module.exports = {
   devServer: {
@@ -40,4 +41,12 @@ module.exports = {
       },
     },
   ],
+  webpack: {
+    configure: (webpackConfig, {env, paths}) => {
+      paths.appBuild = path.resolve(__dirname, "build-temp");
+      webpackConfig.output.path = path.resolve(__dirname, "build-temp");
+
+      return webpackConfig;
+    },
+  },
 };
