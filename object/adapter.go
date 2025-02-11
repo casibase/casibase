@@ -185,6 +185,15 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(HostNode))
+	if err != nil {
+		panic(err)
+	}
+	err = a.engine.Sync2(new(Node))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Chat))
 	if err != nil {
 		panic(err)
