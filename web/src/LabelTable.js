@@ -21,6 +21,8 @@ import XLSX from "xlsx";
 import {sheet2blob, showMessage} from "./Setting";
 import FileSaver from "file-saver";
 
+const {TextArea} = Input;
+
 class LabelTable extends React.Component {
   constructor(props) {
     super(props);
@@ -185,13 +187,9 @@ class LabelTable extends React.Component {
         render: (text, record, index) => {
           const isNewRow = index === table.length - 1;
           return (
-            <Input
-              value={text}
-              ref={isNewRow ? this.newInputRef : null}
-              onChange={e => {
-                this.updateField(table, index, "text", e.target.value);
-              }}
-            />
+            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} ref={isNewRow ? this.newInputRef : null} onChange={(e) => {
+              this.updateField(table, index, "text", e.target.value);
+            }} />
           );
         },
       },
