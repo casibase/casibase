@@ -78,12 +78,16 @@ class RemarkTable extends React.Component {
     this.updateTable(table);
   }
 
-  requireReviewerOrAdmin(row) {
+  requireSelfOrAdmin(row) {
     if (this.props.account.type === "video-admin-user") {
       return false;
     }
 
     return !(row.user === this.props.account.name);
+  }
+
+  requireReviewer() {
+    return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
   requireAdmin() {
@@ -130,7 +134,7 @@ class RemarkTable extends React.Component {
         width: "130px",
         render: (text, record, index) => {
           return (
-            <Select disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
+            <Select disabled={this.props.disabled || this.requireSelfOrAdmin(record)} virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
               this.updateField(table, index, "score", value);
             })}>
               {
@@ -152,7 +156,7 @@ class RemarkTable extends React.Component {
         width: "110px",
         render: (text, record, index) => {
           return (
-            <Switch disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} checked={text} onChange={checked => {
+            <Switch disabled={this.props.disabled || this.requireSelfOrAdmin(record)} checked={text} onChange={checked => {
               this.updateField(table, index, "isPublic", checked);
             }} />
           );
@@ -165,7 +169,7 @@ class RemarkTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
+            <TextArea disabled={this.props.disabled || this.requireSelfOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
@@ -185,7 +189,7 @@ class RemarkTable extends React.Component {
                 <Button style={{marginRight: "5px"}} disabled={index === table.length - 1 || this.props.disabled || this.requireAdmin()} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
               </Tooltip>
               <Tooltip placement="topLeft" title={"Delete"}>
-                <Button icon={<DeleteOutlined />} size="small" disabled={this.props.disabled || this.requireReviewerOrAdmin(record)} onClick={() => this.deleteRow(table, index)} />
+                <Button icon={<DeleteOutlined />} size="small" disabled={this.props.disabled || this.requireSelfOrAdmin(record)} onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
           );
@@ -200,7 +204,7 @@ class RemarkTable extends React.Component {
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={this.props.maxRowCount > 0 && table.length >= this.props.maxRowCount || myRowCount >= 1 || this.props.disabled} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={this.props.maxRowCount > 0 && table.length >= this.props.maxRowCount || myRowCount >= 1 || this.props.disabled || this.requireReviewer()} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
           </div>
         )}
       />

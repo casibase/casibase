@@ -603,52 +603,54 @@ class VideoEditPage extends React.Component {
         </Row>
         {
           this.requireReviewerOrAdmin() ? null : (
-            <>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Remarks1")}:
-                </Col>
-                <Col span={22} >
-                  <RemarkTable
-                    title={i18next.t("video:Remarks1")}
-                    account={this.props.account}
-                    maxRowCount={-1}
-                    disabled={this.requireReviewer1OrAdmin(this.state.video)}
-                    table={this.state.video.remarks}
-                    onUpdateTable={(value) => {
-                      this.updateVideoField("remarks", value);
-                      if (value.length > 0 && this.state.video.state === "Draft") {
-                        this.updateVideoField("state", "In Review 1");
-                      } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state.startsWith("In Review")) {
-                        this.updateVideoField("state", "Draft");
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("video:Remarks2")}:
-                </Col>
-                <Col span={22} >
-                  <RemarkTable
-                    title={i18next.t("video:Remarks2")}
-                    account={this.props.account}
-                    maxRowCount={1}
-                    disabled={this.requireReviewer2OrAdmin(this.state.video)}
-                    table={this.state.video.remarks2}
-                    onUpdateTable={(value) => {
-                      this.updateVideoField("remarks2", value);
-                      if (value.length > 0 && this.state.video.state === "Draft") {
-                        this.updateVideoField("state", "In Review 2");
-                      } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state.startsWith("In Review")) {
-                        this.updateVideoField("state", "Draft");
-                      }
-                    }}
-                  />
-                </Col>
-              </Row>
-            </>
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("video:Remarks1")}:
+              </Col>
+              <Col span={22} >
+                <RemarkTable
+                  title={i18next.t("video:Remarks1")}
+                  account={this.props.account}
+                  maxRowCount={-1}
+                  disabled={this.requireReviewer1OrAdmin(this.state.video)}
+                  table={this.state.video.remarks}
+                  onUpdateTable={(value) => {
+                    this.updateVideoField("remarks", value);
+                    if (value.length > 0 && this.state.video.state === "Draft") {
+                      this.updateVideoField("state", "In Review 1");
+                    } else if (value.length === 0 && this.state.video.remarks2.length === 0 && this.state.video.state.startsWith("In Review")) {
+                      this.updateVideoField("state", "Draft");
+                    }
+                  }}
+                />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          this.requireReviewer2OrAdmin() ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("video:Remarks2")}:
+              </Col>
+              <Col span={22} >
+                <RemarkTable
+                  title={i18next.t("video:Remarks2")}
+                  account={this.props.account}
+                  maxRowCount={1}
+                  disabled={this.requireReviewer2OrAdmin(this.state.video)}
+                  table={this.state.video.remarks2}
+                  onUpdateTable={(value) => {
+                    this.updateVideoField("remarks2", value);
+                    if (value.length > 0 && this.state.video.state === "Draft") {
+                      this.updateVideoField("state", "In Review 2");
+                    } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state.startsWith("In Review")) {
+                      this.updateVideoField("state", "Draft");
+                    }
+                  }}
+                />
+              </Col>
+            </Row>
           )
         }
         <Row style={{marginTop: "20px"}} >
