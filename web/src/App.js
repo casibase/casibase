@@ -324,6 +324,22 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
 
+      if (this.state.account.type === "video-admin-user") {
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("general:Users")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "#"));
+
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+            {i18next.t("general:Logs")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "####"));
+      }
+
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/public-videos");
       }
