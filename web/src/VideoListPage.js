@@ -84,22 +84,24 @@ class VideoListPage extends BaseListPage {
   }
 
   renderUpload() {
+    const isUploadDisabled = this.state.data.filter((video) => video.owner === this.props.account.name).length >= 2;
+    const isDisabled = isUploadDisabled || this.requireUserOrAdmin();
+
     const props = {
       name: "file",
       accept: ".mp4",
       method: "post",
       action: `${Setting.ServerUrl}/api/upload-video`,
+      disabled: isDisabled,
       withCredentials: true,
       onChange: (info) => {
         this.uploadFile(info);
       },
     };
 
-    const isUploadDisabled = this.state.data.filter((video) => video.owner === this.props.account.name).length >= 2;
-
     return (
       <Upload {...props}>
-        <Button type="primary" size="small" disabled={isUploadDisabled || this.requireUserOrAdmin()}>
+        <Button type="primary" size="small" disabled={isDisabled}>
           <UploadOutlined /> {i18next.t("video:Upload Video")} (.mp4)
         </Button>
       </Upload>
