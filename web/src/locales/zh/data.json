@@ -101,11 +101,26 @@
     "Menu": "菜单",
     "Messages": "消息",
     "Name": "名称",
+    "Name - Tooltip": "名称 - 工具提示",
     "No.": "序号",
     "OK": "确定",
     "Open": "打开",
     "Organization": "组织",
     "Organization - Tooltip": "组织 - 工具提示",
+    "Password": "密码",
+    "Password - Tooltip": "密码 - 工具提示",
+    "Port": "端口",
+    "Port - Tooltip": "端口 - 工具提示",
+    "Protocol": "协议",
+    "Protocol - Tooltip": "协议 - 工具提示",
+    "IP": "IP",
+    "IP - Tooltip": "IP - 工具提示",
+    "Username": "用户名",
+    "Username - Tooltip": "用户名 - 工具提示",
+    "Language": "语言",
+    "Language - Tooltip": "语言 - 工具提示",
+    "Tag": "标签",
+    "Tag - Tooltip": "标签 - 工具提示",
     "Owner": "租户",
     "Permissions": "权限",
     "Preview": "预览",
@@ -142,7 +157,8 @@
     "View": "查看",
     "Wordsets": "词汇集",
     "empty": "空",
-    "{total} in total": "{total} 总计"
+    "{total} in total": "{total} 总计",
+    "Nodes": "节点管理"
   },
   "login": {
     "Loading": "加载中"
@@ -326,5 +342,23 @@
     "Match": "匹配",
     "Matched": "已匹配",
     "Words": "词汇"
+  },
+  "node": {
+    "Cannot enable Remote App when Remote Apps are empty. Please add at least one Remote App in below table first, then enable again": "当远程应用为空时不能启用远程应用。请先在下表中添加至少一个远程应用，然后再次启用",
+    "Edit Node": "编辑节点",
+    "New Node": "新建节点",
+    "OS": "操作系统",
+    "OS - Tooltip": "操作系统 - 工具提示",
+    "Please select a node": "请选择一个节点",
+    "Remote Apps": "远程应用",
+    "Remote Apps - Tooltip": "远程应用 - 工具提示",
+    "Services": "服务",
+    "Services - Tooltip": "服务 - 工具提示",
+    "Auto query": "自动查询",
+    "Auto query - Tooltip": "自动查询 - 工具提示",
+    "Is Permanent": "是否永久",
+    "Is permanent - Tooltip": "是否永久",
+    "Enable Remote App": "启用远程应用",
+    "Enable Remote App - Tooltip": "启用远程应用 - 工具提示"
   }
 }

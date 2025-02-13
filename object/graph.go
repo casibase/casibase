@@ -14,7 +14,7 @@
 
 package object
 
-type Node struct {
+type GraphNode struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
 	Value  int    `json:"val"`
@@ -23,8 +23,8 @@ type Node struct {
 	Weight int    `json:"weight"`
 }
 
-func newNode(id string, name string, value int, color string, tag string, weight int) *Node {
-	n := Node{}
+func newNode(id string, name string, value int, color string, tag string, weight int) *GraphNode {
+	n := GraphNode{}
 	n.Id = id
 	n.Name = name
 	n.Value = value
@@ -55,8 +55,8 @@ func newLink(name string, source string, target string, value int, color string,
 }
 
 type Graph struct {
-	Nodes []*Node `json:"nodes"`
-	Links []*Link `json:"links"`
+	Nodes []*GraphNode `json:"nodes"`
+	Links []*Link      `json:"links"`
 }
 
 func newGraph() *Graph {
