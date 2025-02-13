@@ -102,7 +102,7 @@ func generateGraph(factors []*Factor, distanceLimit int) *Graph {
 	// factors = factors[:100]
 
 	g := newGraph()
-	g.Nodes = []*Node{}
+	g.Nodes = []*GraphNode{}
 	g.Links = []*Link{}
 
 	nodeWeightMap := map[string]int{}

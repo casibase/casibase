@@ -23,6 +23,7 @@ import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
 import React from "react";
+import {QuestionCircleTwoTone} from "@ant-design/icons";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -1392,4 +1393,15 @@ export function formatSuggestion(suggestionText) {
     suggestionText += "?";
   }
   return suggestionText;
+}
+
+export function getLabel(text, tooltip) {
+  return (
+    <React.Fragment>
+      <span style={{marginRight: 4}}>{text}</span>
+      <Tooltip placement="top" title={tooltip}>
+        <QuestionCircleTwoTone twoToneColor="rgb(45,120,213)" />
+      </Tooltip>
+    </React.Fragment>
+  );
 }
