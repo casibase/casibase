@@ -19,6 +19,9 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/astaxie/beego"
@@ -88,12 +91,45 @@ func (w gzipResponseWriter) Write(b []byte) (int, error) {
 
 func makeGzipResponse(w http.ResponseWriter, r *http.Request, path string) {
 	if !strings.Contains(r.Header.Get("Accept-Encoding"), "gzip") {
-		http.ServeFile(w, r, path)
+		serveFileWithReplace(w, r, path)
 		return
 	}
 	w.Header().Set("Content-Encoding", "gzip")
 	gz := gzip.NewWriter(w)
 	defer gz.Close()
 	gzw := gzipResponseWriter{Writer: gz, ResponseWriter: w}
-	http.ServeFile(gzw, r, path)
+	serveFileWithReplace(gzw, r, path)
+}
+
+func serveFileWithReplace(w http.ResponseWriter, r *http.Request, path string) {
+	if !regexp.MustCompile(`/static/js/main\.[a-f0-9]+\.js$`).MatchString(path) {
+		http.ServeFile(w, r, path)
+		return
+	}
+
+	f, err := os.Open(filepath.Clean(path))
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	d, err := f.Stat()
+	if err != nil {
+		panic(err)
+	}
+
+	oldContent := util.ReadStringFromPath(path)
+	newContent := oldContent
+
+	serverUrl := beego.AppConfig.String("casdoorEndpoint")
+	clientId := beego.AppConfig.String("clientId")
+	appName := beego.AppConfig.String("casdoorApplication")
+	organizationName := beego.AppConfig.String("casdoorOrganization")
+
+	newContent = regexp.MustCompile(`serverUrl:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`serverUrl:"%s"`, serverUrl))
+	newContent = regexp.MustCompile(`clientId:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`clientId:"%s"`, clientId))
+	newContent = regexp.MustCompile(`appName:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`appName:"%s"`, appName))
+	newContent = regexp.MustCompile(`organizationName:"[^"]*"`).ReplaceAllString(newContent, fmt.Sprintf(`organizationName:"%s"`, organizationName))
+
+	http.ServeContent(w, r, d.Name(), d.ModTime(), strings.NewReader(newContent))
 }
