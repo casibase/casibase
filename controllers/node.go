@@ -1,4 +1,4 @@
-// Copyright 2024 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ import (
 // @Description get all nodes
 // @Param   pageSize     query    string  true        "The size of each page"
 // @Param   p     query    string  true        "The number of the page"
-// @Success 200 {object} object.HostNode The Response object
+// @Success 200 {object} object.Node The Response object
 // @router /get-nodes [get]
 func (c *ApiController) GetNodes() {
 	owner := c.Input().Get("owner")
@@ -71,7 +71,7 @@ func (c *ApiController) GetNodes() {
 // @Tag Node API
 // @Description get node
 // @Param   id     query    string  true        "The id ( owner/name ) of the node"
-// @Success 200 {object} object.HostNode The Response object
+// @Success 200 {object} object.Node The Response object
 // @router /get-node [get]
 func (c *ApiController) GetNode() {
 	id := c.Input().Get("id")
@@ -90,13 +90,13 @@ func (c *ApiController) GetNode() {
 // @Tag Node API
 // @Description update node
 // @Param   id     query    string  true        "The id ( owner/name ) of the node"
-// @Param   body    body   object.HostNode  true        "The details of the node"
+// @Param   body    body   object.Node  true        "The details of the node"
 // @Success 200 {object} controllers.Response The Response object
 // @router /update-node [post]
 func (c *ApiController) UpdateNode() {
 	id := c.Input().Get("id")
 
-	var node object.HostNode
+	var node object.Node
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -111,11 +111,11 @@ func (c *ApiController) UpdateNode() {
 // @Title AddNode
 // @Tag Node API
 // @Description add a node
-// @Param   body    body   object.HostNode  true        "The details of the node"
+// @Param   body    body   object.Node  true        "The details of the node"
 // @Success 200 {object} controllers.Response The Response object
 // @router /add-node [post]
 func (c *ApiController) AddNode() {
-	var node object.HostNode
+	var node object.Node
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -130,11 +130,11 @@ func (c *ApiController) AddNode() {
 // @Title DeleteNode
 // @Tag Node API
 // @Description delete a node
-// @Param   body    body   object.HostNode  true        "The details of the node"
+// @Param   body    body   object.Node  true        "The details of the node"
 // @Success 200 {object} controllers.Response The Response object
 // @router /delete-node [post]
 func (c *ApiController) DeleteNode() {
-	var node object.HostNode
+	var node object.Node
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &node)
 	if err != nil {
 		c.ResponseError(err.Error())

@@ -1,4 +1,4 @@
-// Copyright 2023 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ const ConnectModal = (props) => {
   const owner = props.owner;
   const name = props.name;
   const category = props.category;
-  const machine = props.machine;
+  const node = props.node || {};
 
   const handleUsernameAndPassword = (username, password) => {
     setUsername(username || "");
@@ -43,8 +43,8 @@ const ConnectModal = (props) => {
 
   const showModal = () => {
     initStatus();
-    handleUsernameAndPassword(machine.remoteUsername, machine.remotePassword);
-    // getAsset(owner, name)
+    handleUsernameAndPassword(node.remoteUsername, node.remotePassword);
+    // getNode(owner, name)
     //   .then(res => {
     //     if (res.status === "ok") {
     //       setUsername(res.data.username || "");
@@ -65,7 +65,7 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "Machine") {
+    if (category === "Node") {
       const link = (username === "" || password === "") ? `access/${owner}/${name}` : `access/${owner}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else if (category === "Database") {

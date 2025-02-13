@@ -52,7 +52,7 @@ type RemoteApp struct {
 	RemoteAppArgs string `xorm:"varchar(100)" json:"remoteAppArgs"`
 }
 
-type HostNode struct {
+type Node struct {
 	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
 	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
@@ -92,12 +92,12 @@ type HostNode struct {
 
 func GetNodeCount(owner, field, value string) (int64, error) {
 	session := GetSession(owner, -1, -1, field, value, "", "")
-	return session.Count(&HostNode{})
+	return session.Count(&Node{})
 }
 
-func GetNodes(owner string) ([]*HostNode, error) {
-	nodes := []*HostNode{}
-	err := adapter.engine.Desc("created_time").Find(&nodes, &HostNode{Owner: owner})
+func GetNodes(owner string) ([]*Node, error) {
+	nodes := []*Node{}
+	err := adapter.engine.Desc("created_time").Find(&nodes, &Node{Owner: owner})
 	if err != nil {
 		return nodes, err
 	}
@@ -105,8 +105,8 @@ func GetNodes(owner string) ([]*HostNode, error) {
 	return nodes, nil
 }
 
-func GetPaginationNodes(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*HostNode, error) {
-	nodes := []*HostNode{}
+func GetPaginationNodes(owner string, offset, limit int, field, value, sortField, sortOrder string) ([]*Node, error) {
+	nodes := []*Node{}
 	session := GetSession(owner, offset, limit, field, value, sortField, sortOrder)
 	err := session.Find(&nodes)
 	if err != nil {
@@ -116,12 +116,12 @@ func GetPaginationNodes(owner string, offset, limit int, field, value, sortField
 	return nodes, nil
 }
 
-func getNode(owner string, name string) (*HostNode, error) {
+func getNode(owner string, name string) (*Node, error) {
 	if owner == "" || name == "" {
 		return nil, nil
 	}
 
-	node := HostNode{Owner: owner, Name: name}
+	node := Node{Owner: owner, Name: name}
 	existed, err := adapter.engine.Get(&node)
 	if err != nil {
 		return &node, err
@@ -134,12 +134,12 @@ func getNode(owner string, name string) (*HostNode, error) {
 	}
 }
 
-func GetNode(id string) (*HostNode, error) {
+func GetNode(id string) (*Node, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	return getNode(owner, name)
 }
 
-func GetMaskedNode(node *HostNode, errs ...error) (*HostNode, error) {
+func GetMaskedNode(node *Node, errs ...error) (*Node, error) {
 	if len(errs) > 0 && errs[0] != nil {
 		return nil, errs[0]
 	}
@@ -154,7 +154,7 @@ func GetMaskedNode(node *HostNode, errs ...error) (*HostNode, error) {
 	return node, nil
 }
 
-func GetMaskedNodes(nodes []*HostNode, errs ...error) ([]*HostNode, error) {
+func GetMaskedNodes(nodes []*Node, errs ...error) ([]*Node, error) {
 	if len(errs) > 0 && errs[0] != nil {
 		return nil, errs[0]
 	}
@@ -170,7 +170,7 @@ func GetMaskedNodes(nodes []*HostNode, errs ...error) ([]*HostNode, error) {
 	return nodes, nil
 }
 
-func UpdateNode(id string, node *HostNode) (bool, error) {
+func UpdateNode(id string, node *Node) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
 	p, err := getNode(owner, name)
 	if err != nil {
@@ -191,7 +191,7 @@ func UpdateNode(id string, node *HostNode) (bool, error) {
 	return affected != 0, nil
 }
 
-func AddNode(node *HostNode) (bool, error) {
+func AddNode(node *Node) (bool, error) {
 	affected, err := adapter.engine.Insert(node)
 	if err != nil {
 		return false, err
@@ -200,8 +200,8 @@ func AddNode(node *HostNode) (bool, error) {
 	return affected != 0, nil
 }
 
-func DeleteNode(node *HostNode) (bool, error) {
-	affected, err := adapter.engine.ID(core.PK{node.Owner, node.Name}).Delete(&HostNode{})
+func DeleteNode(node *Node) (bool, error) {
+	affected, err := adapter.engine.ID(core.PK{node.Owner, node.Name}).Delete(&Node{})
 	if err != nil {
 		return false, err
 	}
@@ -209,6 +209,6 @@ func DeleteNode(node *HostNode) (bool, error) {
 	return affected != 0, nil
 }
 
-func (node *HostNode) getId() string {
+func (node *Node) getId() string {
 	return fmt.Sprintf("%s/%s", node.Owner, node.Name)
 }

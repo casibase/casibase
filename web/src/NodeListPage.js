@@ -1,4 +1,4 @@
-// Copyright 2024 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ class NodeListPage extends BaseListPage {
         width: "110px",
         sorter: true,
         ...this.getColumnSearchProps("owner"),
-        render: (text, asset, index) => {
+        render: (text, node, index) => {
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
               {text}
@@ -124,7 +124,7 @@ class NodeListPage extends BaseListPage {
         width: "160px",
         // sorter: true,
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, asset, index) => {
+        render: (text, node, index) => {
           return Setting.getFormattedDate(text);
         },
       },
@@ -178,7 +178,7 @@ class NodeListPage extends BaseListPage {
         sorter: (a, b) => a.language.localeCompare(b.language),
       },
       {
-        title: i18next.t("general:Auto query"),
+        title: i18next.t("node:Auto query"),
         dataIndex: "autoQuery",
         key: "autoQuery",
         width: "100px",
@@ -189,7 +189,7 @@ class NodeListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Is permanent"),
+        title: i18next.t("node:Is permanent"),
         dataIndex: "isPermanent",
         key: "isPermanent",
         width: "110px",
@@ -200,7 +200,7 @@ class NodeListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Enable Remote App"),
+        title: i18next.t("node:Enable Remote App"),
         dataIndex: "enableRemoteApp",
         key: "enableRemoteApp",
         width: "150px",
@@ -211,7 +211,7 @@ class NodeListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Remote Apps"),
+        title: i18next.t("node:Remote Apps"),
         dataIndex: "remoteApps",
         key: "remoteApps",
         width: "120px",
@@ -221,7 +221,7 @@ class NodeListPage extends BaseListPage {
         },
       },
       // {
-      //   title: i18next.t("general:Services"),
+      //   title: i18next.t("node:Services"),
       //   dataIndex: "services",
       //   key: "services",
       //   width: "90px",
@@ -236,23 +236,23 @@ class NodeListPage extends BaseListPage {
         key: "action",
         width: "260px",
         fixed: (Setting.isMobile()) ? "false" : "right",
-        render: (text, asset, index) => {
+        render: (text, node, index) => {
           return (
             <div>
               <ConnectModal
-                disabled={asset.owner !== this.props.account.owner}
-                owner = {asset.owner}
-                name = {asset.name}
-                category = {asset.category}
+                disabled={node.owner !== this.props.account.owner}
+                owner = {node.owner}
+                name = {node.name}
+                category = {node.category}
               />
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => this.props.history.push(`/nodes/${asset.name}`)}
+                onClick={() => this.props.history.push(`/nodes/${node.name}`)}
               >{i18next.t("general:Edit")}
               </Button>
               <PopconfirmModal
-                disabled={asset.owner !== this.props.account.owner}
-                title={i18next.t("general:Sure to delete") + `: ${asset.name} ?`}
+                disabled={node.owner !== this.props.account.owner}
+                title={i18next.t("general:Sure to delete") + `: ${node.name} ?`}
                 onConfirm={() => this.deleteNode(index)}
               >
               </PopconfirmModal>

@@ -1,4 +1,4 @@
-// Copyright 2024 The casbin Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -289,7 +289,7 @@ class NodeEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Auto query"), i18next.t("general:Auto query - Tooltip"))} :
+            {Setting.getLabel(i18next.t("node:Auto query"), i18next.t("node:Auto query - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Switch checked={this.state.node.autoQuery} onChange={checked => {
@@ -299,7 +299,7 @@ class NodeEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Is Permanent"), i18next.t("application:Is Permanent - Tooltip"))} :
+            {Setting.getLabel(i18next.t("node:Is Permanent"), i18next.t("node:Is Permanent - Tooltip"))} :
           </Col>
           <Col span={1} >
             <Switch checked={this.state.node.isPermanent} onChange={checked => {
@@ -311,7 +311,7 @@ class NodeEditPage extends React.Component {
           <div>
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {Setting.getLabel(i18next.t("general:Enable Remote App"), i18next.t("general:Enable Remote App - Tooltip"))} :
+                {Setting.getLabel(i18next.t("node:Enable Remote App"), i18next.t("node:Enable Remote App - Tooltip"))} :
               </Col>
               <Col span={22}>
                 <Switch checked={this.state.node.enableRemoteApp} onChange={checked => {
@@ -326,7 +326,7 @@ class NodeEditPage extends React.Component {
             {this.state.node.enableRemoteApp && (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} >
-                  {Setting.getLabel(i18next.t("general:Remote Apps"), i18next.t("general:Remote Apps - Tooltip"))} :
+                  {Setting.getLabel(i18next.t("node:Remote Apps"), i18next.t("node:Remote Apps - Tooltip"))} :
                 </Col>
                 <Col span={22} >
                   <RemoteAppTable title={"Remote Apps"} table={this.state.node.remoteApps} onUpdateTable={(value) => {
@@ -343,7 +343,7 @@ class NodeEditPage extends React.Component {
         )}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Services"), i18next.t("general:Services - Tooltip"))} :
+            {Setting.getLabel(i18next.t("node:Services"), i18next.t("node:Services - Tooltip"))} :
           </Col>
           <Col span={22} >
             <ServiceTable title={"Services"} table={this.state.node.services} onUpdateTable={(value) => {
