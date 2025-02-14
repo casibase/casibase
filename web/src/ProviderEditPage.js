@@ -149,6 +149,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Embedding") {
                 this.updateProviderField("type", "OpenAI");
                 this.updateProviderField("subType", "AdaSimilarity");
+              } else if (value === "Machine") {  
+                this.updateProviderField("type", "Aliyun");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
               }
@@ -158,6 +160,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
+                  {id: "Machine", name: "Machine"},
                   {id: "Video", name: "Video"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
@@ -506,6 +509,60 @@ class ProviderEditPage extends React.Component {
                     options={Setting.getProviderAzureApiVersionOptions().map((item) => Setting.getOption(item.name, item.id))}
                     onChange={(value) => {this.updateProviderField("apiVersion", value);}}
                   />
+                </Col>
+              </Row>
+            </>
+          ) : null
+        }
+        {
+          (this.state.provider.category === "Machine") ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Type")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
+                    this.updateProviderField("type", value);
+                  })}>
+                    {
+                      [
+                        {id: "Aliyun", name: "Aliyun"},
+                        {id: "AWS", name: "AWS"},
+                        {id: "Azure", name: "Azure"},
+                        {id: "Google Cloud", name: "Google Cloud"},
+                        {id: "KVM", name: "KVM"},
+                        {id: "VMware", name: "VMware"},
+                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Browser URL")}:
+                </Col>
+                <Col span={22} >
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
+                    this.updateProviderField("browserUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:State")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={(value => {
+                    this.updateProviderField("state", value);
+                  })}>
+                    {
+                      [
+                        {id: "Active", name: "Active"},
+                        {id: "Inactive", name: "Inactive"}, 
+                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
                 </Col>
               </Row>
             </>

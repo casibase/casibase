@@ -204,6 +204,28 @@ class ProviderListPage extends BaseListPage {
           );
         },
       },
+      {
+        title: i18next.t("general:Region"),
+        dataIndex: "region",
+        key: "region",
+        width: "120px",
+        sorter: (a, b) => a.region !== undefined ? a.region.localeCompare(b.region) : "",
+      },
+      {
+        title: i18next.t("provider:Browser URL"),
+        dataIndex: "browserUrl",
+        key: "browserUrl", 
+        width: "150px",
+        sorter: true,
+        ...this.getColumnSearchProps("browserUrl"),
+        render: (text, record, index) => {
+          return text ? (
+            <a target="_blank" rel="noreferrer" href={text}>
+              {Setting.getShortText(text)}
+            </a>
+          ) : "";
+        },
+      },
     ];
 
     const paginationProps = {
