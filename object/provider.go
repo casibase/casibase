@@ -45,6 +45,11 @@ type Provider struct {
 	TopK             int     `xorm:"int" json:"topK"`
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
+
+	Network    string `xorm:"varchar(100)" json:"network"`
+	Chain      string `xorm:"varchar(100)" json:"chain"`
+	State      string `xorm:"varchar(100)" json:"state"`
+	BrowserUrl string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {
@@ -218,6 +223,20 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 		if err != nil {
 			return &provider, err
 		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
+func GetDefaultMachineProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Machine"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
 	}
 
 	if !existed {
