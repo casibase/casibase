@@ -139,4 +139,12 @@ func initAPI() {
 	beego.Router("/api/update-permission", &controllers.ApiController{}, "POST:UpdatePermission")
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
+
+	// Machine API routes
+	beego.Router("/api/get-global-machines", &controllers.ApiController{}, "GET:GetGlobalMachines")
+	beego.Router("/api/get-machines", &controllers.ApiController{}, "GET:GetMachines")
+	beego.Router("/api/get-machine", &controllers.ApiController{}, "GET:GetMachine")
+	beego.Router("/api/update-machine", &controllers.ApiController{}, "POST:UpdateMachine")
+	beego.Router("/api/add-machine", &controllers.ApiController{}, "POST:AddMachine")
+	beego.Router("/api/delete-machine", &controllers.ApiController{}, "POST:DeleteMachine")
 }
