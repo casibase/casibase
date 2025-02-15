@@ -149,8 +149,12 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Embedding") {
                 this.updateProviderField("type", "OpenAI");
                 this.updateProviderField("subType", "AdaSimilarity");
-              } else if (value === "Machine") {  
-                this.updateProviderField("type", "Aliyun");
+              } else if (value === "Public Cloud") {
+                this.updateProviderField("type", "Amazon Web Services");
+              } else if (value === "Private Cloud") {
+                this.updateProviderField("type", "KVM");
+              } else if (value === "Blockchain") {
+                this.updateProviderField("type", "Hyperledger Fabric");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
               }
@@ -160,94 +164,209 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
-                  {id: "Machine", name: "Machine"},
+                  {id: "Public Cloud", name: "Public Cloud"},
+                  {id: "Private Cloud", name: "Private Cloud"},
+                  {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
           </Col>
         </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Type")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
-              this.updateProviderField("type", value);
-              if (this.state.provider.category === "Model") {
-                if (value === "OpenAI") {
-                  this.updateProviderField("subType", "gpt-4");
-                } else if (value === "Gemini") {
-                  this.updateProviderField("subType", "gemini-pro");
-                } else if (value === "OpenRouter") {
-                  this.updateProviderField("subType", "openai/gpt-4");
-                } else if (value === "iFlytek") {
-                  this.updateProviderField("subType", "spark-v2.0");
-                } else if (value === "Ernie") {
-                  this.updateProviderField("subType", "ERNIE-Bot");
-                } else if (value === "MiniMax") {
-                  this.updateProviderField("subType", "abab5-chat");
-                } else if (value === "Claude") {
-                  this.updateProviderField("subType", "claude-2");
-                } else if (value === "Hugging Face") {
-                  this.updateProviderField("subType", "gpt2");
-                } else if (value === "ChatGLM") {
-                  this.updateProviderField("subType", "chatglm2-6b");
-                } else if (value === "Local") {
-                  this.updateProviderField("subType", "custom-model");
-                } else if (value === "Azure") {
-                  this.updateProviderField("subType", "gpt-4");
-                } else if (value === "Cohere") {
-                  this.updateProviderField("subType", "command");
-                } else if (value === "Dummy") {
-                  this.updateProviderField("subType", "Dummy");
-                } else if (value === "Qwen") {
-                  this.updateProviderField("subType", "qwen-long");
-                } else if (value === "Moonshot") {
-                  this.updateProviderField("subType", "Moonshot-v1-8k");
-                } else if (value === "Amazon Bedrock") {
-                  this.updateProviderField("subType", "Claude");
-                } else if (value === "Baichuan") {
-                  this.updateProviderField("subType", "Baichuan2-Turbo");
-                } else if (value === "Doubao") {
-                  this.updateProviderField("subType", "Doubao-lite-4k");
-                } else if (value === "DeepSeek") {
-                  this.updateProviderField("subType", "deepseek-chat");
-                } else if (value === "StepFun") {
-                  this.updateProviderField("subType", "step-1-8k");
-                } else if (value === "Hunyuan") {
-                  this.updateProviderField("subType", "hunyuan-turbo");
-                } else if (value === "Yi") {
-                  this.updateProviderField("subType", "yi-lightning");
-                }
-              } else if (this.state.provider.category === "Embedding") {
-                if (value === "OpenAI") {
-                  this.updateProviderField("subType", "AdaSimilarity");
-                } else if (value === "Gemini") {
-                  this.updateProviderField("subType", "embedding-001");
-                } else if (value === "Hugging Face") {
-                  this.updateProviderField("subType", "sentence-transformers/all-MiniLM-L6-v2");
-                } else if (value === "Cohere") {
-                  this.updateProviderField("subType", "embed-english-v2.0");
-                } else if (value === "Ernie") {
-                  this.updateProviderField("subType", "default");
-                } else if (value === "Local") {
-                  this.updateProviderField("subType", "custom-embedding");
-                } else if (value === "Azure") {
-                  this.updateProviderField("subType", "AdaSimilarity");
-                } else if (value === "Dummy") {
-                  this.updateProviderField("subType", "Dummy");
-                }
-              }
-            })}>
+        {
+          ["Public Cloud", "Private Cloud", "Blockchain"].includes(this.state.provider.category) && (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Type"), i18next.t("provider:Type - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={value => {
+                    this.updateProviderField("type", value);
+                  }}
+                  options={Setting.getProviderTypeOptions(this.state.provider.category).map(item => Setting.getOption(item.label, item.value))} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Client ID"), i18next.t("general:Client ID - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Client secret"), i18next.t("general:Client secret - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.clientSecret} onChange={e => {
+                    this.updateProviderField("clientSecret", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.region} onChange={e => {
+                    this.updateProviderField("region", e.target.value);
+                  }} />
+                </Col>
+              </Row>
               {
-                Setting.getProviderTypeOptions(this.state.provider.category)
-                  // .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                this.state.provider.category === "Blockchain" && (
+                  <>
+                    <Row style={{marginTop: "20px"}}>
+                      <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                        {Setting.getLabel(i18next.t("general:Network"), i18next.t("general:Network - Tooltip"))} :
+                      </Col>
+                      <Col span={22}>
+                        <Input value={this.state.provider.network} onChange={e => {
+                          this.updateProviderField("network", e.target.value);
+                        }} />
+                      </Col>
+                    </Row>
+                    <Row style={{marginTop: "20px"}}>
+                      <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                        {Setting.getLabel(i18next.t("general:Chain"), i18next.t("general:Chain - Tooltip"))} :
+                      </Col>
+                      <Col span={22}>
+                        <Input value={this.state.provider.chain} onChange={e => {
+                          this.updateProviderField("chain", e.target.value);
+                        }} />
+                      </Col>
+                    </Row>
+                  </>
+                )
               }
-            </Select>
-          </Col>
-        </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Browser URL"), i18next.t("provider:Browser URL - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
+                    this.updateProviderField("browserUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:Provider URL"), i18next.t("provider:Provider URL - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
+                    this.updateProviderField("providerUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {Setting.getLabel(i18next.t("provider:State"), i18next.t("provider:State - Tooltip"))} :
+                </Col>
+                <Col span={22}>
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={value => {
+                    this.updateProviderField("state", value);
+                  }}
+                  options={[
+                    {value: "Active", label: "Active"},
+                    {value: "Inactive", label: "Inactive"},
+                  ].map(item => Setting.getOption(item.label, item.value))} />
+                </Col>
+              </Row>
+            </>
+          )
+        }
+        {
+          !["Public Cloud", "Private Cloud", "Blockchain"].includes(this.state.provider.category) && (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Type")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
+                    this.updateProviderField("type", value);
+                    if (this.state.provider.category === "Model") {
+                      if (value === "OpenAI") {
+                        this.updateProviderField("subType", "gpt-4");
+                      } else if (value === "Gemini") {
+                        this.updateProviderField("subType", "gemini-pro");
+                      } else if (value === "OpenRouter") {
+                        this.updateProviderField("subType", "openai/gpt-4");
+                      } else if (value === "iFlytek") {
+                        this.updateProviderField("subType", "spark-v2.0");
+                      } else if (value === "Ernie") {
+                        this.updateProviderField("subType", "ERNIE-Bot");
+                      } else if (value === "MiniMax") {
+                        this.updateProviderField("subType", "abab5-chat");
+                      } else if (value === "Claude") {
+                        this.updateProviderField("subType", "claude-2");
+                      } else if (value === "Hugging Face") {
+                        this.updateProviderField("subType", "gpt2");
+                      } else if (value === "ChatGLM") {
+                        this.updateProviderField("subType", "chatglm2-6b");
+                      } else if (value === "Local") {
+                        this.updateProviderField("subType", "custom-model");
+                      } else if (value === "Azure") {
+                        this.updateProviderField("subType", "gpt-4");
+                      } else if (value === "Cohere") {
+                        this.updateProviderField("subType", "command");
+                      } else if (value === "Dummy") {
+                        this.updateProviderField("subType", "Dummy");
+                      } else if (value === "Qwen") {
+                        this.updateProviderField("subType", "qwen-long");
+                      } else if (value === "Moonshot") {
+                        this.updateProviderField("subType", "Moonshot-v1-8k");
+                      } else if (value === "Amazon Bedrock") {
+                        this.updateProviderField("subType", "Claude");
+                      } else if (value === "Baichuan") {
+                        this.updateProviderField("subType", "Baichuan2-Turbo");
+                      } else if (value === "Doubao") {
+                        this.updateProviderField("subType", "Doubao-lite-4k");
+                      } else if (value === "DeepSeek") {
+                        this.updateProviderField("subType", "deepseek-chat");
+                      } else if (value === "StepFun") {
+                        this.updateProviderField("subType", "step-1-8k");
+                      } else if (value === "Hunyuan") {
+                        this.updateProviderField("subType", "hunyuan-turbo");
+                      } else if (value === "Yi") {
+                        this.updateProviderField("subType", "yi-lightning");
+                      }
+                    } else if (this.state.provider.category === "Embedding") {
+                      if (value === "OpenAI") {
+                        this.updateProviderField("subType", "AdaSimilarity");
+                      } else if (value === "Gemini") {
+                        this.updateProviderField("subType", "embedding-001");
+                      } else if (value === "Hugging Face") {
+                        this.updateProviderField("subType", "sentence-transformers/all-MiniLM-L6-v2");
+                      } else if (value === "Cohere") {
+                        this.updateProviderField("subType", "embed-english-v2.0");
+                      } else if (value === "Ernie") {
+                        this.updateProviderField("subType", "default");
+                      } else if (value === "Local") {
+                        this.updateProviderField("subType", "custom-embedding");
+                      } else if (value === "Azure") {
+                        this.updateProviderField("subType", "AdaSimilarity");
+                      } else if (value === "Dummy") {
+                        this.updateProviderField("subType", "Dummy");
+                      }
+                    }
+                  })}>
+                    {
+                      Setting.getProviderTypeOptions(this.state.provider.category)
+                        // .sort((a, b) => a.name.localeCompare(b.name))
+                        .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+            </>
+          )
+        }
         {
           (this.state.provider.category !== "Model" && this.state.provider.category !== "Embedding") ? null : (
             <Row style={{marginTop: "20px"}} >
@@ -350,7 +469,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
+          (["Storage", "Public Cloud", "Private Cloud", "Blockchain"].includes(this.state.provider.category) || this.state.provider.type === "Dummy") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {(this.state.provider.category !== "Video") ? i18next.t("provider:Secret key") :
@@ -515,69 +634,21 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Machine") ? (
+          !["Public Cloud", "Private Cloud", "Blockchain"].includes(this.state.provider.category) && (
             <>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Type")}:
+                  {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
                 </Col>
                 <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
-                    this.updateProviderField("type", value);
-                  })}>
-                    {
-                      [
-                        {id: "Aliyun", name: "Aliyun"},
-                        {id: "AWS", name: "AWS"},
-                        {id: "Azure", name: "Azure"},
-                        {id: "Google Cloud", name: "Google Cloud"},
-                        {id: "KVM", name: "KVM"},
-                        {id: "VMware", name: "VMware"},
-                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Browser URL")}:
-                </Col>
-                <Col span={22} >
-                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
-                    this.updateProviderField("browserUrl", e.target.value);
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
+                    this.updateProviderField("providerUrl", e.target.value);
                   }} />
                 </Col>
               </Row>
-              <Row style={{marginTop: "20px"}} >
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:State")}:
-                </Col>
-                <Col span={22} >
-                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={(value => {
-                    this.updateProviderField("state", value);
-                  })}>
-                    {
-                      [
-                        {id: "Active", name: "Active"},
-                        {id: "Inactive", name: "Inactive"}, 
-                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                    }
-                  </Select>
-                </Col>
-              </Row>
             </>
-          ) : null
+          )
         }
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
-          </Col>
-          <Col span={22} >
-            <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
-              this.updateProviderField("providerUrl", e.target.value);
-            }} />
-          </Col>
-        </Row>
       </Card>
     );
   }
