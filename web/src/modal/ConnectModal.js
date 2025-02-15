@@ -27,7 +27,7 @@ const ConnectModal = (props) => {
   const owner = props.owner;
   const name = props.name;
   const category = props.category;
-  const node = props.node || {};
+  const machine = props.machine || {};
 
   const handleUsernameAndPassword = (username, password) => {
     setUsername(username || "");
@@ -43,7 +43,8 @@ const ConnectModal = (props) => {
 
   const showModal = () => {
     initStatus();
-    handleUsernameAndPassword(node.remoteUsername, node.remotePassword);
+    handleUsernameAndPassword(machine.remoteUsername, machine.remotePassword);
+    handleOk();
     // getNode(owner, name)
     //   .then(res => {
     //     if (res.status === "ok") {
@@ -65,12 +66,14 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "Node") {
+    if (category === "Machine") {
       const link = (username === "" || password === "") ? `access/${owner}/${name}` : `access/${owner}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else if (category === "Database") {
       const link = "databases";
       Setting.openLink(link);
+    } else {
+      Setting.showMessage("error", `Unknown category: ${category}`);
     }
   };
 
@@ -88,7 +91,7 @@ const ConnectModal = (props) => {
     <>
       <Button
         disabled={props.disabled}
-        type="primary"
+        type={machine.remoteUsername && machine.remotePassword ? "primary" : "default"}
         onClick={showModal}
         style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
       >
