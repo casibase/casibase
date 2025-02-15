@@ -209,7 +209,7 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "region",
         key: "region",
         width: "120px",
-        sorter: (a, b) => a.region !== undefined ? a.region.localeCompare(b.region) : "",
+        sorter: (a, b) => a.region.localeCompare(b.region),
       },
       {
         title: i18next.t("provider:Browser URL"),
