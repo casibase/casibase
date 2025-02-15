@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 	"github.com/casibase/casibase/conf"
 	_ "github.com/denisenkom/go-mssqldb" // mssql
 	_ "github.com/go-sql-driver/mysql"   // mysql
@@ -185,17 +185,22 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
-	err = a.engine.Sync2(new(Node))
-	if err != nil {
-		panic(err)
-	}
-
 	err = a.engine.Sync2(new(Chat))
 	if err != nil {
 		panic(err)
 	}
 
 	err = a.engine.Sync2(new(Message))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Node))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Machine))
 	if err != nil {
 		panic(err)
 	}

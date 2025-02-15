@@ -25,8 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/utils/pagination"
+	"github.com/beego/beego"
+	"github.com/beego/beego/utils/pagination"
 	"github.com/casibase/casibase/audio"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/storage"

@@ -20,8 +20,7 @@ import * as Setting from "./Setting";
 import * as MachineBackend from "./backend/MachineBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
-import PopconfirmModal from "./common/modal/PopconfirmModal";
-import ConnectModal from "./common/modal/ConnectModal";
+import PopconfirmModal from "./modal/PopconfirmModal";
 
 class MachineListPage extends BaseListPage {
   constructor(props) {
@@ -200,7 +199,7 @@ class MachineListPage extends BaseListPage {
 
     return (
       <div>
-        <Table columns={columns} 
+        <Table columns={columns}
           dataSource={machines}
           rowKey="name"
           size="middle"
