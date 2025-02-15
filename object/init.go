@@ -76,7 +76,13 @@ func initBuiltInProvider() {
 	if err != nil {
 		panic(err)
 	}
-	if storageProvider != nil || modelProvider != nil || embeddingProvider != nil {
+
+	machineProvider, err := GetDefaultMachineProvider()
+	if err != nil {
+		panic(err)
+	}
+
+	if storageProvider != nil || modelProvider != nil || embeddingProvider != nil || machineProvider != nil {
 		return
 	}
 
@@ -123,6 +129,21 @@ func initBuiltInProvider() {
 		SubType:     "Dummy",
 	}
 	_, err = AddProvider(embeddingProvider)
+	if err != nil {
+		panic(err)
+	}
+
+	machineProvider = &Provider{
+		Owner:       "admin",
+		Name:        "provider-machine-built-in",
+		CreatedTime: util.GetCurrentTime(),
+		DisplayName: "Built-in Machine Provider",
+		Category:    "Machine",
+		Type:        "Aliyun",
+		Region:      "cn-hangzhou",
+		State:       "Active",
+	}
+	_, err = AddProvider(machineProvider)
 	if err != nil {
 		panic(err)
 	}
