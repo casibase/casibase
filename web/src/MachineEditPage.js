@@ -18,6 +18,8 @@ import * as MachineBackend from "./backend/MachineBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 
+const {Option} = Select;
+
 class MachineEditPage extends React.Component {
   constructor(props) {
     super(props);

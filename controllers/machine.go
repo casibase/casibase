@@ -39,6 +39,12 @@ func (c *ApiController) GetMachines() {
 	sortField := c.Input().Get("sortField")
 	sortOrder := c.Input().Get("sortOrder")
 
+	_, err := object.SyncMachinesCloud(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
 	if limit == "" || page == "" {
 		machines, err := object.GetMaskedMachines(object.GetMachines(owner))
 		if err != nil {
@@ -75,6 +81,13 @@ func (c *ApiController) GetMachines() {
 // @router /get-machine [get]
 func (c *ApiController) GetMachine() {
 	id := c.Input().Get("id")
+
+	owner, _ := util.GetOwnerAndNameFromId(id)
+	_, err := object.SyncMachinesCloud(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
 
 	machine, err := object.GetMaskedMachine(object.GetMachine(id))
 	if err != nil {
