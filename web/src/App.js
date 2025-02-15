@@ -48,6 +48,8 @@ import ChatEditPage from "./ChatEditPage";
 import ChatListPage from "./ChatListPage";
 import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
+import NodeListPage from "./NodeListPage";
+import NodeEditPage from "./NodeEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
 import ArticleListPage from "./ArticleListPage";
@@ -110,6 +112,8 @@ class App extends Component {
     });
     if (uri === "/" || uri === "/home") {
       this.setState({selectedMenuKey: "/"});
+    } else if (uri.includes("/nodes")) {
+      this.setState({selectedMenuKey: "/nodes"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/providers")) {
@@ -324,6 +328,22 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
 
+      if (this.state.account.type === "video-admin-user") {
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("general:Users")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "#"));
+
+        res.push(Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
+            {i18next.t("general:Logs")}
+            {Setting.renderExternalLink()}
+          </a>,
+          "####"));
+      }
+
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/public-videos");
       }
@@ -343,10 +363,12 @@ class App extends Component {
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
@@ -418,6 +440,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
+      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
 
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
@@ -492,6 +515,8 @@ class App extends Component {
         <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
         <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
         <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />

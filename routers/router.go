@@ -75,7 +75,6 @@ func initAPI() {
 	beego.Router("/api/add-store", &controllers.ApiController{}, "POST:AddStore")
 	beego.Router("/api/delete-store", &controllers.ApiController{}, "POST:DeleteStore")
 	beego.Router("/api/refresh-store-vectors", &controllers.ApiController{}, "POST:RefreshStoreVectors")
-
 	beego.Router("/api/get-storage-providers", &controllers.ApiController{}, "GET:GetStorageProviders")
 
 	beego.Router("/api/get-global-providers", &controllers.ApiController{}, "GET:GetGlobalProviders")
@@ -140,7 +139,12 @@ func initAPI() {
 	beego.Router("/api/add-permission", &controllers.ApiController{}, "POST:AddPermission")
 	beego.Router("/api/delete-permission", &controllers.ApiController{}, "POST:DeletePermission")
 
-	// Machine API routes
+	beego.Router("/api/get-nodes", &controllers.ApiController{}, "GET:GetNodes")
+	beego.Router("/api/get-node", &controllers.ApiController{}, "GET:GetNode")
+	beego.Router("/api/update-node", &controllers.ApiController{}, "POST:UpdateNode")
+	beego.Router("/api/add-node", &controllers.ApiController{}, "POST:AddNode")
+	beego.Router("/api/delete-node", &controllers.ApiController{}, "POST:DeleteNode")
+
 	beego.Router("/api/get-global-machines", &controllers.ApiController{}, "GET:GetGlobalMachines")
 	beego.Router("/api/get-machines", &controllers.ApiController{}, "GET:GetMachines")
 	beego.Router("/api/get-machine", &controllers.ApiController{}, "GET:GetMachine")
