@@ -111,7 +111,7 @@ func SetDefaultVodClient() error {
 }
 
 func getActiveCloudProviders(owner string) ([]*Provider, error) {
-	providers, err := GetProviders(owner)
+	providers, err := GetProviders("admin")
 	if err != nil {
 		return nil, err
 	}

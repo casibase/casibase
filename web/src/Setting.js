@@ -790,24 +790,24 @@ export function getProviderTypeOptions(category) {
     );
   } else if (category === "Public Cloud") {
     return ([
-      {value: "Amazon Web Services", label: "Amazon Web Services"},
-      {value: "Azure", label: "Azure"},
-      {value: "Google Cloud", label: "Google Cloud"},
-      {value: "Aliyun", label: "Aliyun"},
+      {value: "Amazon Web Services", name: "Amazon Web Services"},
+      {value: "Azure", name: "Azure"},
+      {value: "Google Cloud", name: "Google Cloud"},
+      {value: "Aliyun", name: "Aliyun"},
     ]);
   } else if (category === "Private Cloud") {
     return ([
-      {value: "KVM", label: "KVM"},
-      {value: "Xen", label: "Xen"},
-      {value: "VMware", label: "VMware"},
-      {value: "PVE", label: "PVE"},
+      {value: "KVM", name: "KVM"},
+      {value: "Xen", name: "Xen"},
+      {value: "VMware", name: "VMware"},
+      {value: "PVE", name: "PVE"},
     ]);
   } else if (category === "Blockchain") {
     return ([
-      {value: "Hyperledger Fabric", label: "Hyperledger Fabric"},
-      {value: "ChainMaker", label: "ChainMaker"},
-      {value: "Tencent ChainMaker", label: "Tencent ChainMaker"},
-      {value: "Tencent ChainMaker (Demo Network)", label: "Tencent ChainMaker (Demo Network)"},
+      {value: "Hyperledger Fabric", name: "Hyperledger Fabric"},
+      {value: "ChainMaker", name: "ChainMaker"},
+      {value: "Tencent ChainMaker", name: "Tencent ChainMaker"},
+      {value: "Tencent ChainMaker (Demo Network)", name: "Tencent ChainMaker (Demo Network)"},
     ]);
   } else if (category === "Video") {
     return (

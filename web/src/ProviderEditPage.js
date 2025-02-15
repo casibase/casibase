@@ -158,6 +158,9 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
+                  {id: "Public Cloud", name: "Public Cloud"},
+                  {id: "Private Cloud", name: "Private Cloud"},
+                  {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
@@ -240,7 +243,7 @@ class ProviderEditPage extends React.Component {
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
                   // .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                  .map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)
               }
             </Select>
           </Col>
@@ -264,17 +267,39 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          this.state.provider.category !== "Video" ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Region")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.region} onChange={e => {
-                  this.updateProviderField("region", e.target.value);
-                }} />
-              </Col>
-            </Row>
+          this.state.provider.category === "Blockchain" && (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("general:Network")} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.network} onChange={e => {
+                    this.updateProviderField("network", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("general:Chain")} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.chain} onChange={e => {
+                    this.updateProviderField("chain", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Browser URL")} :
+                </Col>
+                <Col span={22}>
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
+                    this.updateProviderField("browserUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            </>
           )
         }
         {
@@ -311,7 +336,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category !== "Video") ? null : (
+          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Client ID")}:
@@ -350,12 +375,26 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {(this.state.provider.category !== "Video") ? i18next.t("provider:Secret key") :
+                {["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
                   i18next.t("provider:Client secret")}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientSecret} onChange={e => {
                   this.updateProviderField("clientSecret", e.target.value);
+                }} />
+              </Col>
+            </Row>
+          )
+        }
+        {
+          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("general:Region")}:
+              </Col>
+              <Col span={22} >
+                <Input value={this.state.provider.region} onChange={e => {
+                  this.updateProviderField("region", e.target.value);
                 }} />
               </Col>
             </Row>
@@ -511,6 +550,20 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("provider:State")} :
+          </Col>
+          <Col span={22}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={value => {
+              this.updateProviderField("state", value);
+            }}
+            options={[
+              {value: "Active", label: "Active"},
+              {value: "Inactive", label: "Inactive"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
