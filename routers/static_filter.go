@@ -24,8 +24,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/context"
+	"github.com/beego/beego"
+	"github.com/beego/beego/context"
 	"github.com/casibase/casibase/util"
 )
 

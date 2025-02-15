@@ -17,7 +17,7 @@ package controllers
 import (
 	"encoding/gob"
 
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 )
 

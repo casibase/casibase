@@ -24,7 +24,7 @@
 package routers
 
 import (
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 	"github.com/casibase/casibase/controllers"
 )
 
