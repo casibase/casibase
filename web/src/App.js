@@ -50,6 +50,8 @@ import MessageListPage from "./MessageListPage";
 import MessageEditPage from "./MessageEditPage";
 import NodeListPage from "./NodeListPage";
 import NodeEditPage from "./NodeEditPage";
+import MachineListPage from "./MachineListPage";
+import MachineEditPage from "./MachineEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
 import ArticleListPage from "./ArticleListPage";
@@ -112,8 +114,6 @@ class App extends Component {
     });
     if (uri === "/" || uri === "/home") {
       this.setState({selectedMenuKey: "/"});
-    } else if (uri.includes("/nodes")) {
-      this.setState({selectedMenuKey: "/nodes"});
     } else if (uri.includes("/stores")) {
       this.setState({selectedMenuKey: "/stores"});
     } else if (uri.includes("/providers")) {
@@ -126,6 +126,10 @@ class App extends Component {
       this.setState({selectedMenuKey: "/messages"});
     } else if (uri.includes("/usages")) {
       this.setState({selectedMenuKey: "/usages"});
+    } else if (uri.includes("/nodes")) {
+      this.setState({selectedMenuKey: "/nodes"});
+    } else if (uri.includes("/machines")) {
+      this.setState({selectedMenuKey: "/machines"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/articles")) {
@@ -440,8 +444,10 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+
+      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
+      res.push(Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"));
 
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
@@ -515,8 +521,6 @@ class App extends Component {
         <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
         <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
         <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-        <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
@@ -539,6 +543,10 @@ class App extends Component {
         <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
+        <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/machines/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />

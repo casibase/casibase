@@ -1169,6 +1169,18 @@ export function getProviderAzureApiVersionOptions() {
   ]);
 }
 
+export function getOrganization() {
+  const organization = localStorage.getItem("organization");
+  return organization !== null ? organization : "All";
+}
+
+export function getRequestOrganization(account) {
+  if (isAdminUser(account)) {
+    return getOrganization() === "All" ? account.owner : getOrganization();
+  }
+  return account.owner;
+}
+
 export function getBoolValue(key, defaultValue) {
   const value = localStorage.getItem(key);
   if (value === null) {
