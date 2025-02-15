@@ -1,6 +1,6 @@
 module github.com/casibase/casibase
 
-go 1.23
+go 1.20
 
 require (
 	cloud.google.com/go/compute v1.23.1
