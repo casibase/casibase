@@ -133,32 +133,31 @@ func GetMaskedMachines(machines []*Machine, errs ...error) ([]*Machine, error) {
 	return machines, nil
 }
 
-// 部分功能依赖于云服务的集成，暂时注释
-// func UpdateMachine(id string, machine *Machine) (bool, error) {
-// 	owner, name := util.GetOwnerAndNameFromId(id)
-// 	oldMachine, err := getMachine(owner, name)
-// 	if err != nil {
-// 		return false, err
-// 	} else if oldMachine == nil {
-// 		return false, nil
-// 	}
+func UpdateMachine(id string, machine *Machine) (bool, error) {
+	owner, name := util.GetOwnerAndNameFromId(id)
+	oldMachine, err := getMachine(owner, name)
+	if err != nil {
+		return false, err
+	} else if oldMachine == nil {
+		return false, nil
+	}
 
-// 	if machine.RemotePassword == "***" {
-// 		machine.RemotePassword = oldMachine.RemotePassword
-// 	}
+	if machine.RemotePassword == "***" {
+		machine.RemotePassword = oldMachine.RemotePassword
+	}
 
-// 	_, err = updateMachineCloud(oldMachine, machine)
-// 	if err != nil {
-// 		return false, err
-// 	}
+	_, err = updateMachineCloud(oldMachine, machine)
+	if err != nil {
+		return false, err
+	}
 
-// 	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(machine)
-// 	if err != nil {
-// 		return false, err
-// 	}
+	affected, err := adapter.engine.ID(core.PK{owner, name}).AllCols().Update(machine)
+	if err != nil {
+		return false, err
+	}
 
-// 	return affected != 0, nil
-// }
+	return affected != 0, nil
+}
 
 func AddMachine(machine *Machine) (bool, error) {
 	affected, err := adapter.engine.Insert(machine)
