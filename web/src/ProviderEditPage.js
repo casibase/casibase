@@ -149,12 +149,6 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Embedding") {
                 this.updateProviderField("type", "OpenAI");
                 this.updateProviderField("subType", "AdaSimilarity");
-              } else if (value === "Public Cloud") {
-                this.updateProviderField("type", "Amazon Web Services");
-              } else if (value === "Private Cloud") {
-                this.updateProviderField("type", "KVM");
-              } else if (value === "Blockchain") {
-                this.updateProviderField("type", "Hyperledger Fabric");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
               }
@@ -164,9 +158,6 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
-                  {id: "Public Cloud", name: "Public Cloud"},
-                  {id: "Private Cloud", name: "Private Cloud"},
-                  {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
@@ -436,7 +427,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (["Storage", "Public Cloud", "Private Cloud", "Blockchain"].includes(this.state.provider.category) || this.state.provider.type === "Dummy") ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {(this.state.provider.category !== "Video") ? i18next.t("provider:Secret key") :

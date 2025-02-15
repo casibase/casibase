@@ -77,14 +77,14 @@ func initBuiltInProvider() {
 		panic(err)
 	}
 
-	machineProvider, err := GetDefaultMachineProvider()  
-    if err != nil {
-        panic(err)
-    }
+	machineProvider, err := GetDefaultMachineProvider()
+	if err != nil {
+		panic(err)
+	}
 
-    if storageProvider != nil || modelProvider != nil || embeddingProvider != nil || machineProvider != nil {
-        return
-    }
+	if storageProvider != nil || modelProvider != nil || embeddingProvider != nil || machineProvider != nil {
+		return
+	}
 
 	path := "/storage_casibase"
 	if runtime.GOOS == "windows" {
@@ -134,17 +134,17 @@ func initBuiltInProvider() {
 	}
 
 	machineProvider = &Provider{
-        Owner:       "admin", 
-        Name:        "provider-machine-built-in",
-        CreatedTime: util.GetCurrentTime(),
-        DisplayName: "Built-in Machine Provider",
-        Category:    "Machine",
-        Type:        "Aliyun",     
-        Region:      "cn-hangzhou",
-        State:       "Active",
-    }
-    _, err = AddProvider(machineProvider)
-    if err != nil {
-        panic(err)
-    }
+		Owner:       "admin",
+		Name:        "provider-machine-built-in",
+		CreatedTime: util.GetCurrentTime(),
+		DisplayName: "Built-in Machine Provider",
+		Category:    "Machine",
+		Type:        "Aliyun",
+		Region:      "cn-hangzhou",
+		State:       "Active",
+	}
+	_, err = AddProvider(machineProvider)
+	if err != nil {
+		panic(err)
+	}
 }
