@@ -193,7 +193,7 @@ class NodeEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Protocol"), i18next.t("general:Protocol - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.node.protocol} onChange={value => {
+            <Select virtual={false} style={{width: "100%"}} value={this.state.node.remoteProtocol} onChange={value => {
               this.updateNodeField("remoteProtocol", value);
               this.updateNodeField("remotePort", this.getDefaultPort(value));
             }}>
@@ -213,7 +213,7 @@ class NodeEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:IP"), i18next.t("general:IP - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.node.ip} onChange={e => {
+            <Input value={this.state.node.privateIp} onChange={e => {
               this.updateNodeField("privateIp", e.target.value);
             }} />
           </Col>
@@ -224,8 +224,8 @@ class NodeEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Input
-              value={this.state.node.port}
-              defaultValue={this.getDefaultPort(this.state.node.protocol)}
+              value={this.state.node.remotePort}
+              defaultValue={this.getDefaultPort(this.state.node.remoteProtocol)}
               onChange={e => {
                 this.updateNodeField("privateIp", e.target.value);
               }}
@@ -237,7 +237,7 @@ class NodeEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Username"), i18next.t("general:Username - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.node.username} onChange={e => {
+            <Input value={this.state.node.remoteUsername} onChange={e => {
               this.updateNodeField("remoteUsername", e.target.value);
             }} />
           </Col>
@@ -247,7 +247,7 @@ class NodeEditPage extends React.Component {
             {Setting.getLabel(i18next.t("general:Password"), i18next.t("general:Password - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Input value={this.state.node.password} onChange={e => {
+            <Input value={this.state.node.remotePassword} onChange={e => {
               this.updateNodeField("remotePassword", e.target.value);
             }} />
           </Col>
@@ -299,7 +299,7 @@ class NodeEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("node:Is Permanent"), i18next.t("node:Is Permanent - Tooltip"))} :
+            {Setting.getLabel(i18next.t("node:Is permanent"), i18next.t("node:Is permanent - Tooltip"))} :
           </Col>
           <Col span={1} >
             <Switch checked={this.state.node.isPermanent} onChange={checked => {

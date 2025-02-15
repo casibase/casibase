@@ -109,7 +109,7 @@ const ConnectModal = (props) => {
             size="large"
             block
           >
-            login
+            {i18next.t("account:Sign In")}
           </Button>
         }
       >
