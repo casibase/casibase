@@ -1,8 +1,13 @@
 module github.com/casibase/casibase
 
-go 1.20
+go 1.22.0
+
+toolchain go1.23.5
 
 require (
+	cloud.google.com/go/compute v1.23.1
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.8.2
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/compute/armcompute v1.0.0
 	github.com/ConnectAI-E/go-minimax v0.0.1
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.1585
 	github.com/aliyun/aliyun-oss-go-sdk v2.2.2+incompatible
@@ -11,12 +16,15 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.26.1
 	github.com/aws/aws-sdk-go-v2/config v1.27.11
 	github.com/aws/aws-sdk-go-v2/service/bedrockruntime v1.8.0
+	github.com/aws/aws-sdk-go-v2/service/ec2 v1.203.0
 	github.com/casdoor/casdoor-go-sdk v0.37.0
 	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
 	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
+	github.com/digitalocean/go-libvirt v0.0.0-20250207191401-950a7b2d7eaf
+	github.com/gage-technologies/mistral-go v1.1.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.4.0
 	github.com/henomis/lingoose v0.1.0
@@ -24,13 +32,16 @@ require (
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
 	github.com/leverly/ChatGLM v1.2.0
 	github.com/lib/pq v1.10.2
+	github.com/luthermonson/go-proxmox v0.2.1
 	github.com/madebywelch/anthropic-go/v2 v2.2.0
 	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
 	github.com/muesli/kmeans v0.3.0
 	github.com/northes/go-moonshot v0.3.0
+	github.com/pkg/errors v0.9.1
 	github.com/pkoukk/tiktoken-go v0.1.7
 	github.com/sashabaranov/go-openai v1.27.1
 	github.com/tealeg/xlsx v1.0.5
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1074
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.31.0
@@ -41,6 +52,7 @@ require (
 	golang.org/x/time v0.3.0
 	gonum.org/v1/gonum v0.11.0
 	google.golang.org/api v0.149.0
+	google.golang.org/grpc v1.59.0
 	modernc.org/sqlite v1.18.1
 	xorm.io/core v0.7.3
 	xorm.io/xorm v1.2.5
@@ -51,6 +63,9 @@ require (
 	cloud.google.com/go/compute v1.23.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/longrunning v0.5.2 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.17.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.10.0 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v1.3.3 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.6.2 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.17.11 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.16.1 // indirect
@@ -67,12 +82,14 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
+	github.com/diskfs/go-diskfs v1.2.0 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gage-technologies/mistral-go v1.1.0 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/golang-jwt/jwt/v5 v5.2.1 // indirect
 	github.com/golang-sql/civil v0.0.0-20190719163853-cb61b32ac6fe // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -89,9 +106,12 @@ require (
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/imroc/req/v3 v3.35.1 // indirect
+	github.com/jinzhu/copier v0.3.4 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
+	github.com/kylelemons/godebug v1.1.0 // indirect
+	github.com/magefile/mage v1.14.0 // indirect
 	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
@@ -99,6 +119,7 @@ require (
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.5 // indirect
+	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect
 	github.com/prometheus/client_model v0.3.0 // indirect
 	github.com/prometheus/common v0.37.0 // indirect
@@ -129,6 +150,7 @@ require (
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/grpc v1.59.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
+	gopkg.in/djherbis/times.v1 v1.2.0 // indirect
 	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	lukechampine.com/uint128 v1.2.0 // indirect
