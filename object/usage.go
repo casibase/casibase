@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/model"
 )

@@ -20,7 +20,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 )
 
 func init() {

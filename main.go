@@ -17,9 +17,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/astaxie/beego"
-	"github.com/astaxie/beego/plugins/cors"
-	_ "github.com/astaxie/beego/session/redis"
+	"github.com/beego/beego"
+	"github.com/beego/beego/plugins/cors"
+	_ "github.com/beego/beego/session/redis"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/proxy"
 	"github.com/casibase/casibase/routers"

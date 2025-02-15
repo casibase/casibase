@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"runtime"
 
-	"github.com/astaxie/beego"
+	"github.com/beego/beego"
 	"github.com/casibase/casibase/conf"
 	_ "github.com/denisenkom/go-mssqldb" // mssql
 	_ "github.com/go-sql-driver/mysql"   // mysql
