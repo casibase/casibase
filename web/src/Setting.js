@@ -1062,6 +1062,7 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "qwen-plus", name: "qwen-plus"},
           {id: "qwen-max", name: "qwen-max"},
           {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+          {id: "deepseek-r1", name: "deepseek-r1"},
         ]);
     } else if (category === "Embedding") {
       return (
