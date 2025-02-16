@@ -45,6 +45,7 @@ class ProviderListPage extends BaseListPage {
       presencePenalty: 0,
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
+      state: "Active",
     };
   }
 
@@ -60,6 +61,7 @@ class ProviderListPage extends BaseListPage {
       subType: "",
       clientId: "C:/storage_casibase",
       providerUrl: "",
+      state: "Active",
     };
   }
 

@@ -40,6 +40,9 @@ class MessageListPage extends BaseListPage {
       replyTo: "",
       author: this.props.account.name,
       text: "",
+      tokenCount: 0,
+      textTokenCount: 0,
+      price: 0.0,
     };
   }
 
