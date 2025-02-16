@@ -201,7 +201,7 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "command");
                 } else if (value === "Dummy") {
                   this.updateProviderField("subType", "Dummy");
-                } else if (value === "Qwen") {
+                } else if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "qwen-long");
                 } else if (value === "Moonshot") {
                   this.updateProviderField("subType", "Moonshot-v1-8k");
@@ -401,7 +401,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -409,7 +409,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Qwen", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -422,7 +422,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Qwen", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

@@ -762,7 +762,7 @@ export function getProviderTypeOptions(category) {
         {id: "Moonshot", name: "Moonshot"},
         {id: "Amazon Bedrock", name: "Amazon Bedrock"},
         {id: "Dummy", name: "Dummy"},
-        {id: "Qwen", name: "Qwen"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Baichuan", name: "Baichuan"},
         {id: "Doubao", name: "Doubao"},
         {id: "DeepSeek", name: "DeepSeek"},
@@ -782,7 +782,7 @@ export function getProviderTypeOptions(category) {
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
-        {id: "Qwen", name: "Qwen"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Hunyuan", name: "Hunyuan"},
         {id: "Jina", name: "Jina"},
         {id: "Dummy", name: "Dummy"},
@@ -1053,7 +1053,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-embeddings", name: "Titan Embeddings"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
     ]);
-  } else if (type === "Qwen") {
+  } else if (type === "Alibaba Cloud") {
     if (category === "Model") {
       return (
         [

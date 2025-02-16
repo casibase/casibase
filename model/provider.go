@@ -69,8 +69,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewMoonshotModelProvider(subType, clientSecret, float64(temperature))
 	} else if typ == "Amazon Bedrock" {
 		p, err = NewAmazonBedrockModelProvider(subType, clientSecret, float64(temperature))
-	} else if typ == "Qwen" {
-		p, err = NewQwenModelProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Alibaba Cloud" {
+		p, err = NewAlibabacloudModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baichuan" {
 		p, err = NewBaichuanModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Doubao" {
