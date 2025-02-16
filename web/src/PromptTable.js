@@ -41,7 +41,7 @@ class PromptTable extends React.Component {
 
     const promptsColumn = [
       {
-        title: i18next.t("store:Title"),
+        title: i18next.t("general:Title"),
         dataIndex: "title",
         key: "title",
         width: "30%",
@@ -50,7 +50,7 @@ class PromptTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("store:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         width: "30%",
@@ -69,7 +69,7 @@ class PromptTable extends React.Component {
         ),
       },
       {
-        title: i18next.t("store:Action"),
+        title: i18next.t("general:Action"),
         key: "action",
         render: (text, record, index) => (
           <Button type="primary" size="small" onClick={() => {

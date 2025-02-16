@@ -169,7 +169,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Type")}:
+            {i18next.t("general:Type")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.provider.type} onChange={(value => {
@@ -281,7 +281,7 @@ class ProviderEditPage extends React.Component {
               </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Chain")} :
+                  {i18next.t("provider:Chain")} :
                 </Col>
                 <Col span={22}>
                   <Input value={this.state.provider.chain} onChange={e => {

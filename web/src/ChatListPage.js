@@ -179,7 +179,7 @@ class ChatListPage extends BaseListPage {
       //   // ...this.getColumnSearchProps("displayName"),
       // },
       // {
-      //   title: i18next.t("chat:Type"),
+      //   title: i18next.t("general:Type"),
       //   dataIndex: "type",
       //   key: "type",
       //   width: "110px",
@@ -195,7 +195,7 @@ class ChatListPage extends BaseListPage {
       //   },
       // },
       // {
-      //   title: i18next.t("chat:Category"),
+      //   title: i18next.t("provider:Category"),
       //   dataIndex: "category",
       //   key: "category",
       //   width: "100px",

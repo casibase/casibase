@@ -297,7 +297,7 @@ class VideoListPage extends BaseListPage {
       //   },
       // },
       {
-        title: i18next.t("video:State"),
+        title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
         width: "90px",

@@ -125,7 +125,7 @@ class TaskListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("chat:Type"),
+        title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
         width: "90px",
@@ -174,14 +174,14 @@ class TaskListPage extends BaseListPage {
       //   sorter: (a, b) => a.application.localeCompare(b.application),
       // },
       // {
-      //   title: i18next.t("task:Path"),
+      //   title: i18next.t("provider:Path"),
       //   dataIndex: "path",
       //   key: "path",
       //   // width: "160px",
       //   sorter: (a, b) => a.path.localeCompare(b.path),
       // },
       {
-        title: i18next.t("task:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         // width: "160px",

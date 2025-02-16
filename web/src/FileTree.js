@@ -450,7 +450,7 @@ class FileTree extends React.Component {
                 <div>
                   {
                     !isReadable ? null : (
-                      <Tooltip title={i18next.t("store:Download")}>
+                      <Tooltip title={i18next.t("general:Download")}>
                         <Button style={{marginRight: "5px"}} icon={<DownloadOutlined />} size="small" onClick={(e) => {
                           Setting.showMessage("success", "Successfully downloaded");
                           Setting.openLink(file.url);
@@ -474,7 +474,7 @@ class FileTree extends React.Component {
                         {/*    e.stopPropagation();*/}
                         {/*  }} />*/}
                         {/* </Tooltip>*/}
-                        <Tooltip title={i18next.t("store:Delete")}>
+                        <Tooltip title={i18next.t("general:Delete")}>
                           <span onClick={(e) => e.stopPropagation()}>
                             <Popconfirm
                               title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
@@ -564,7 +564,7 @@ class FileTree extends React.Component {
                         </Tooltip>
                         {
                           file.key === "/" ? null : (
-                            <Tooltip title={i18next.t("store:Delete")}>
+                            <Tooltip title={i18next.t("general:Delete")}>
                               <span onClick={(e) => e.stopPropagation()}>
                                 <Popconfirm
                                   title={`${i18next.t("general:Sure to delete")}: ${file.title} ?`}
