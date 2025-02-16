@@ -112,7 +112,7 @@ class VectorListPage extends BaseListPage {
       //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
       // },
       {
-        title: i18next.t("vector:Store"),
+        title: i18next.t("general:Store"),
         dataIndex: "store",
         key: "store",
         width: "130px",
@@ -140,7 +140,7 @@ class VectorListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("vector:File"),
+        title: i18next.t("store:File"),
         dataIndex: "file",
         key: "file",
         width: "200px",
@@ -154,7 +154,7 @@ class VectorListPage extends BaseListPage {
         sorter: (a, b) => a.index - b.index,
       },
       {
-        title: i18next.t("vector:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         width: "200px",
@@ -177,7 +177,7 @@ class VectorListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("vector:Size"),
+        title: i18next.t("general:Size"),
         dataIndex: "size",
         key: "size",
         width: "80px",
@@ -210,10 +210,11 @@ class VectorListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "150px",
+        width: "210px",
         render: (text, record, index) => {
           return (
             <div>
+              <Button style={{marginBottom: "10px", marginRight: "10px"}} disabled={this.state.generating} onClick={() => Setting.showMessage("error", "Not implemented")}>{i18next.t("store:Refresh")}</Button>
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/vectors/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}

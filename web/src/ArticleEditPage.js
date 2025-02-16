@@ -374,7 +374,7 @@ class ArticleEditPage extends React.Component {
           }
           <Col span={1} />
           <Col style={{marginTop: "5px"}} span={2}>
-            {i18next.t("message:Text")}:
+            {i18next.t("general:Text")}:
           </Col>
           <Col span={4}>
             <Popover placement="left" content={

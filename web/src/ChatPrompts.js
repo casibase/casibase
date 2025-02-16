@@ -151,7 +151,7 @@ class ChatPrompts extends React.Component {
               height: "40px",
               width: "100%",
             }}>
-              <Button type="primary" onClick={this.selectPrompts}>{i18next.t("general:Refresh")}</Button>
+              <Button type="primary" onClick={this.selectPrompts}>{i18next.t("store:Refresh")}</Button>
             </div>
           )
         }

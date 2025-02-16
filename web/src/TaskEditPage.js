@@ -207,7 +207,7 @@ class TaskEditPage extends React.Component {
         {/* </Row>*/}
         {/* <Row style={{marginTop: "20px"}} >*/}
         {/*  <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>*/}
-        {/*    {i18next.t("task:Path")}:*/}
+        {/*    {i18next.t("provider:Path")}:*/}
         {/*  </Col>*/}
         {/*  <Col span={22} >*/}
         {/*    <Input value={this.state.task.path} onChange={e => {*/}
@@ -217,7 +217,7 @@ class TaskEditPage extends React.Component {
         {/* </Row>*/}
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("chat:Type")}:
+            {i18next.t("general:Type")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.task.type} onChange={(value => {this.updateTaskField("type", value);})}>
@@ -296,7 +296,7 @@ class TaskEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("task:Text")}:
+            {i18next.t("general:Text")}:
           </Col>
           <Col span={22} >
             <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.task.text} onChange={(e) => {

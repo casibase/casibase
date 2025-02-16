@@ -142,7 +142,7 @@ class ProviderListPage extends BaseListPage {
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
-        title: i18next.t("provider:Type"),
+        title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
         width: "150px",

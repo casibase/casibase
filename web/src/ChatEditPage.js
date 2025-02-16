@@ -124,7 +124,7 @@ class ChatEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("chat:Type")}:
+            {i18next.t("general:Type")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.chat.type} onChange={(value => {
@@ -142,7 +142,7 @@ class ChatEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("chat:Store")}:
+            {i18next.t("general:Store")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.chat.store} onChange={e => {
@@ -152,7 +152,7 @@ class ChatEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("chat:Category")}:
+            {i18next.t("provider:Category")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.chat.category} onChange={e => {
@@ -192,7 +192,7 @@ class ChatEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("chat:Users")}:
+            {i18next.t("general:Users")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} mode="multiple" style={{width: "100%"}} value={this.state.chat.users}

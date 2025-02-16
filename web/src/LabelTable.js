@@ -180,7 +180,7 @@ class LabelTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         // width: '200px',

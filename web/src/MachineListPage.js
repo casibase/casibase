@@ -107,7 +107,7 @@ class MachineListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("machine:Region"),
+        title: i18next.t("general:Region"),
         dataIndex: "region",
         key: "region",
         width: "120px",
@@ -121,14 +121,14 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.zone.localeCompare(b.zone),
       },
       {
-        title: i18next.t("machine:Category"),
+        title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
         width: "120px",
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
-        title: i18next.t("machine:Type"),
+        title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
         width: "120px",
@@ -163,7 +163,7 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.privateIp.localeCompare(b.privateIp),
       },
       {
-        title: i18next.t("machine:State"),
+        title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
         width: "100px",
@@ -207,7 +207,7 @@ class MachineListPage extends BaseListPage {
           pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("machine:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={() => this.addMachine()}>{i18next.t("general:Add")}</Button>
             </div>
           )}

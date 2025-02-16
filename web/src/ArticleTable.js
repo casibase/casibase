@@ -227,12 +227,12 @@ class ArticleTable extends React.Component {
               })}>
                 {
                   [
-                    {id: "Title", name: i18next.t("article:Title")},
+                    {id: "Title", name: i18next.t("general:Title")},
                     {id: "Abstract", name: i18next.t("article:Abstract")},
                     {id: "Header 1", name: i18next.t("article:Header 1")},
                     {id: "Header 2", name: i18next.t("article:Header 2")},
                     {id: "Header 3", name: i18next.t("article:Header 3")},
-                    {id: "Text", name: i18next.t("article:Text")},
+                    {id: "Text", name: i18next.t("general:Text")},
                   ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                 }
               </Select>
@@ -244,7 +244,7 @@ class ArticleTable extends React.Component {
         },
       },
       {
-        title: i18next.t("article:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         // width: '300px',
@@ -270,7 +270,7 @@ class ArticleTable extends React.Component {
         },
       },
       {
-        title: i18next.t("article:Prompt"),
+        title: i18next.t("store:Prompt"),
         dataIndex: "prompt",
         key: "prompt",
         // width: '300px',

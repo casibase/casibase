@@ -121,7 +121,7 @@ class ArticleListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("chat:Type"),
+        title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
         width: "90px",
