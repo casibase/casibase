@@ -42,15 +42,16 @@ func NewAlibabacloudModelProvider(subType string, apiKey string, temperature flo
 
 func (p *AlibabacloudModelProvider) GetPricing() string {
 	return `URL:
-https://help.aliyun.com/zh/dashscope/developer-reference/tongyi-thousand-questions-metering-and-billing
+https://help.aliyun.com/zh/model-studio/billing-for-model-studio
 
-| Model      | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
-|------------|----------------------|----------------------------------|--------------------------------|
-| Qwen-Long  | qwen-long            | 0.0005yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
-| Qwen-Turbo | qwen-turbo           | 0.002yuan/1,000 tokens           | 0.006yuan/1,000 tokens         |
-| Qwen-Plus  | qwen-plus            | 0.004yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
-| Qwen-Max   | qwen-max             | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
-| Qwen-Max   | qwen-max-longcontext | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| Model       | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
+|-------------|----------------------|----------------------------------|--------------------------------|
+| Qwen-Long   | qwen-long            | 0.0005yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
+| Qwen-Turbo  | qwen-turbo           | 0.002yuan/1,000 tokens           | 0.006yuan/1,000 tokens         |
+| Qwen-Plus   | qwen-plus            | 0.004yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
+| Qwen-Max    | qwen-max             | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| Qwen-Max    | qwen-max-longcontext | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| DeepSeek-R1 | deepseek-r1          | 0.002yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
 `
 }
 
@@ -62,6 +63,7 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) err
 		"qwen-plus":            {0.004, 0.012},
 		"qwen-max":             {0.040, 0.120},
 		"qwen-max-longcontext": {0.040, 0.120},
+		"deepseek-r1":          {0.002, 0.008},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
