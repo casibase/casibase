@@ -80,6 +80,7 @@ type Store struct {
 	Avatar          string   `xorm:"varchar(200)" json:"avatar"`
 	Title           string   `xorm:"varchar(100)" json:"title"`
 	CanSelectStore  bool     `json:"canSelectStore"`
+	State           string   `xorm:"varchar(100)" json:"state"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
@@ -112,7 +113,7 @@ func GetDefaultStore(owner string) (*Store, error) {
 	}
 
 	for _, store := range stores {
-		if store.StorageProvider != "" && store.ModelProvider != "" && store.EmbeddingProvider != "" {
+		if store.State != "Inactive" && store.StorageProvider != "" && store.ModelProvider != "" && store.EmbeddingProvider != "" {
 			return store, nil
 		}
 	}

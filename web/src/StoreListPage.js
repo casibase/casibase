@@ -217,6 +217,13 @@ class StoreListPage extends BaseListPage {
         sorter: (a, b) => a.memoryLimit - b.memoryLimit,
       },
       {
+        title: i18next.t("general:State"),
+        dataIndex: "state",
+        key: "state",
+        width: "90px",
+        sorter: (a, b) => a.state.localeCompare(b.state),
+      },
+      {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
