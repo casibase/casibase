@@ -464,6 +464,11 @@ class ChatBox extends React.Component {
                       avatar={{
                         src: message.author === "AI" ? avatar : this.props.account.avatar,
                       }}
+                      styles={{
+                        content: {
+                          backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
+                        },
+                      }}
                     />
                     {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
                       <Space
