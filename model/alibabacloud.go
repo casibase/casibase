@@ -44,26 +44,39 @@ func (p *AlibabacloudModelProvider) GetPricing() string {
 	return `URL:
 https://help.aliyun.com/zh/model-studio/billing-for-model-studio
 
-| Model       | sub-type             | Input Price per 1K characters    | Output Price per 1K characters |
-|-------------|----------------------|----------------------------------|--------------------------------|
-| Qwen-Long   | qwen-long            | 0.0005yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
-| Qwen-Turbo  | qwen-turbo           | 0.002yuan/1,000 tokens           | 0.006yuan/1,000 tokens         |
-| Qwen-Plus   | qwen-plus            | 0.004yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
-| Qwen-Max    | qwen-max             | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
-| Qwen-Max    | qwen-max-longcontext | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
-| DeepSeek-R1 | deepseek-r1          | 0.002yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
+| Model               | sub-type                        | Input Price per 1K characters    | Output Price per 1K characters |
+|---------------------|---------------------------------|----------------------------------|--------------------------------|
+| Qwen-Long           | qwen-long                       | 0.0005yuan/1,000 tokens          | 0.002yuan/1,000 tokens         |
+| Qwen-Turbo          | qwen-turbo                      | 0.002yuan/1,000 tokens           | 0.006yuan/1,000 tokens         |
+| Qwen-Plus           | qwen-plus                       | 0.004yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
+| Qwen-Max            | qwen-max                        | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| Qwen-Max            | qwen-max-longcontext            | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| DeepSeek-R1         | deepseek-r1                     | 0.002yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
+| DeepSeek-V3         | deepseek-v3                     | 0.001yuan/1,000 tokens           | 0.004yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-qwen-1.5b   | 0.000yuan/1,000 tokens           | 0.000yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-qwen-7b     | 0.0005yuan/1,000 tokens          | 0.001yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-qwen-14b    | 0.001yuan/1,000 tokens           | 0.003yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-qwen-32b    | 0.002yuan/1,000 tokens           | 0.006yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-llama-8b    | 0.000yuan/1,000 tokens           | 0.000yuan/1,000 tokens         |
+| DeepSeek-R1-Distill | deepseek-r1-distill-llama-70b   | 0.000yuan/1,000 tokens           | 0.000yuan/1,000 tokens         |
 `
 }
 
 func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"qwen-long":            {0.0005, 0.002},
-		"qwen-turbo":           {0.002, 0.006},
-		"qwen-plus":            {0.004, 0.012},
-		"qwen-max":             {0.040, 0.120},
-		"qwen-max-longcontext": {0.040, 0.120},
-		"deepseek-r1":          {0.002, 0.008},
+		"qwen-long":                     {0.0005, 0.002},
+		"qwen-turbo":                    {0.002, 0.006},
+		"qwen-plus":                     {0.004, 0.012},
+		"qwen-max":                      {0.040, 0.120},
+		"qwen-max-longcontext":          {0.040, 0.120},
+		"deepseek-r1":                   {0.002, 0.008},
+		"deepseek-v3":                   {0.001, 0.004},
+		"deepseek-r1-distill-qwen-1.5b": {0.000, 0.000},
+		"deepseek-r1-distill-qwen-7b":   {0.001, 0.003},
+		"deepseek-r1-distill-qwen-14b ": {0.002, 0.006},
+		"deepseek-r1-distill-qwen-32b":  {0.000, 0.000},
+		"deepseek-r1-distill-llama-8b":  {0.000, 0.000},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
