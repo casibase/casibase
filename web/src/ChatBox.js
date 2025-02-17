@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Alert, Button} from "antd";
-import {Avatar, ChatContainer, ConversationHeader, MainContainer, Message, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
+import {Alert, Button, Flex, Space} from "antd";
+import {ChatContainer, ConversationHeader, MainContainer, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
@@ -26,6 +26,7 @@ import moment from "moment";
 import {ThemeDefault} from "./Conf";
 import {AudioFilled, AudioOutlined, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
+import {Bubble} from "@ant-design/x";
 
 // store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -445,45 +446,71 @@ class ChatBox extends React.Component {
               )
             }
             <MessageList style={{marginTop: "10px"}}>
-              {messages.filter(message => message.isHidden === false).map((message, index) => (
-                <div key={index}>
-                  <div style={{
-                    textAlign: message.author === "AI" ? "left" : "right",
-                    color: "#999",
-                    fontSize: "12px",
-                    marginBottom: "4px",
-                    padding: "0 12px",
-                  }}>
-                    {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+              <Flex vertical>
+                {messages.filter(message => message.isHidden === false).map((message, index) => (
+                  <div key={index}>
+                    <div style={{
+                      textAlign: message.author === "AI" ? "left" : "right",
+                      color: "#999",
+                      fontSize: "12px",
+                      marginBottom: "4px",
+                      padding: "0 12px",
+                    }}>
+                      {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+                    </div>
+                    <Bubble
+                      placement={message.author === "AI" ? "start" : "end"}
+                      content={this.renderMessageContent(message, index === messages.length - 1)}
+                      avatar={{
+                        src: message.author === "AI" ? avatar : this.props.account.avatar,
+                      }}
+                    />
+                    {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
+                      <Space
+                        size="small"
+                        style={{
+                          marginTop: "4px",
+                          marginLeft: "48px",
+                        }}
+                      >
+                        <Button
+                          className="cs-button"
+                          icon={<CopyOutlined />}
+                          style={{border: "none", color: ThemeDefault.colorPrimary}}
+                          onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}
+                        />
+                        {index !== messages.length - 1 ? null :
+                          <Button
+                            className="cs-button"
+                            icon={<ReloadOutlined />}
+                            style={{border: "none", color: ThemeDefault.colorPrimary}}
+                            onClick={() => this.handleRegenerate()}
+                          />
+                        }
+                        <Button
+                          className="cs-button"
+                          icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />}
+                          style={{border: "none", color: ThemeDefault.colorPrimary}}
+                          onClick={() => this.handleMessageLike(message, "like")}
+                        />
+                        <Button
+                          className="cs-button"
+                          icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />}
+                          style={{border: "none", color: ThemeDefault.colorPrimary}}
+                          onClick={() => this.handleMessageLike(message, "dislike")}
+                        />
+                        <Button
+                          className="cs-button"
+                          icon={(this.state.readingMessage === message.name) && this.state.isReading ?
+                            <PauseCircleOutlined /> : <PlayCircleOutlined />}
+                          style={{border: "none", color: ThemeDefault.colorPrimary}}
+                          onClick={() => this.toggleMessageReadState(message)}
+                        />
+                      </Space>
+                    )}
                   </div>
-                  <Message model={{
-                    type: "custom",
-                    sender: message.name,
-                    direction: message.author === "AI" ? "incoming" : "outgoing",
-                  }} avatarPosition={message.author === "AI" ? "tl" : "tr"}>
-                    <Avatar src={message.author === "AI" ? avatar : (this.props.hideInput === true ? "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png" : this.props.account.avatar)} name="GPT" />
-                    <Message.CustomContent>
-                      {this.renderMessageContent(message, index === messages.length - 1)}
-                    </Message.CustomContent>
-                    {
-                      (message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) ? (
-                        <Message.Footer>
-                          <div>
-                            {<Button className={"cs-button"} icon={<CopyOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}></Button>}
-                            {index !== messages.length - 1 ? null : <Button className={"cs-button"} icon={<ReloadOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleRegenerate()}></Button>}
-                            {<Button className={"cs-button"} icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "like")}></Button>}
-                            {<Button className={"cs-button"} icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.handleMessageLike(message, "dislike")}></Button>}
-                            {<Button className={"cs-button"} icon={(this.state.readingMessage === message.name) && this.state.isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />} style={{border: "none", color: ThemeDefault.colorPrimary}} onClick={() => this.toggleMessageReadState(message)}></Button>}
-                            <div>
-                              {index !== messages.length - 1 ? null : this.renderSuggestions(message)}
-                            </div>
-                          </div>
-                        </Message.Footer>
-                      ) : null
-                    }
-                  </Message>
-                </div>
-              ))}
+                ))}
+              </Flex>
             </MessageList>
             {
               this.props.disableInput ? null : (
