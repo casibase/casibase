@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Alert, Button, Flex, Space} from "antd";
-import {ChatContainer, ConversationHeader, MainContainer, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
+import {ChatContainer, MainContainer, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
 import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
 import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
@@ -24,9 +24,9 @@ import i18next from "i18next";
 import copy from "copy-to-clipboard";
 import moment from "moment";
 import {ThemeDefault} from "./Conf";
-import {AudioFilled, AudioOutlined, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
+import {AudioFilled, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, LinkOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
-import {Bubble} from "@ant-design/x";
+import {Bubble, Sender} from "@ant-design/x";
 
 // store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -346,52 +346,6 @@ class ChatBox extends React.Component {
     };
   }
 
-  renderVoiceInput() {
-    if (!(window["SpeechRecognition"] || window["webkitSpeechRecognition"])) {
-      return null;
-    }
-    if (!this.recognition) {
-      this.recognition = new (window["SpeechRecognition"] || window["webkitSpeechRecognition"])();
-      this.recognition.continuous = true;
-      this.recognition.interimResults = true;
-      this.recognition.onend = () => {
-        this.setState({isVoiceInput: false});
-      };
-    }
-
-    const onStart = () => {
-      const constraints = {
-        audio: true,
-      };
-      navigator.mediaDevices.getUserMedia(constraints)
-        .then(stream => {
-          this.setState({isVoiceInput: true});
-          this.recognition.onresult = this.insertVoiceMessage.call(this);
-          this.recognition.start();
-        }).catch((error) => {
-          if (error.name === "NotAllowedError") {
-            Setting.showMessage("error", i18next.t("chat:Please enable microphone permission in your browser settings"));
-          } else {
-            Setting.showMessage("error", error.message);
-          }
-        });
-    };
-
-    const onStop = () => {
-      this.recognition.abort();
-    };
-
-    return (
-      <div className={"cs-message-input__tools"} style={{height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingBottom: "1em"}}>
-        {
-          this.state.isVoiceInput
-            ? <AudioFilled className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStop} />
-            : <AudioOutlined className={"cs-button--attachment"} style={{color: ThemeDefault.colorPrimary, backgroundColor: "transparent", fontSize: "1.2em", paddingRight: "10px", height: "1em"}} onClick={onStart} />
-        }
-      </div>
-    );
-  }
-
   renderVoiceInputHint() {
     const baseUnit = Setting.isMobile() ? "vw" : "vh";
     return (
@@ -411,18 +365,25 @@ class ChatBox extends React.Component {
     );
   }
 
-  render() {
-    const getStoreTitle = (store) => {
-      let title = Setting.getUrlParam("title");
-      if (title === null) {
-        title = (!store?.title) ? this.props.displayName : store.title;
-      }
-      return title;
-    };
+  handleFileUploadClick = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx";
+    input.multiple = false;
+    input.style.display = "none";
 
+    input.onchange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        this.handleInputChange(file);
+      }
+    };
+    input.click();
+  };
+
+  render() {
     const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
 
-    const title = getStoreTitle(this.props.store);
     const avatar = getStoreAvatar(this.props.store);
 
     let prompts = this.props.store?.prompts;
@@ -434,17 +395,11 @@ class ChatBox extends React.Component {
     if (messages === null) {
       messages = [];
     }
+
     return (
       <React.Fragment>
         <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid " + ThemeDefault.colorBackground, borderRadius: "6px"}} >
           <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
-            {
-              (title === "") ? null : (
-                <ConversationHeader style={{backgroundColor: ThemeDefault.colorBackground, height: "42px"}}>
-                  <ConversationHeader.Content userName={title} />
-                </ConversationHeader>
-              )
-            }
             <MessageList style={{marginTop: "10px"}}>
               <Flex vertical>
                 {messages.filter(message => message.isHidden === false).map((message, index) => (
@@ -523,34 +478,30 @@ class ChatBox extends React.Component {
                 // eslint-disable-next-line react/no-unknown-property
                 <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
                   {
-                    <MessageInput disabled={false}
+                    <Sender
+                      ref={this.senderRef}
+                      prefix={
+                        <Button
+                          type="text"
+                          icon={<LinkOutlined />}
+                          onClick={this.handleFileUploadClick}
+                        />
+                      }
+                      disabled={false}
                       style={{flex: 1, border: "none"}}
                       sendDisabled={this.state.value === "" || this.props.disableInput}
                       placeholder={i18next.t("chat:Type message here")}
-                      onSend={this.handleSend}
                       value={this.state.value}
-                      onChange={(val) => {
-                        this.setState({value: val});
+                      onChange={(val) => this.setState({value: val})}
+                      onPasteFile={(file) => {
+                        this.handleInputChange(file);
                       }}
-                      onAttachClick={() => {
-                        this.handleImageClick();
+                      onSubmit={() => {
+                        this.handleSend(this.state.value);
+                        this.setState({value: ""});
                       }}
-                      onPaste={(event) => {
-                        const items = event.clipboardData.items;
-                        const item = items[0];
-                        if (item.kind === "file") {
-                          event.preventDefault();
-                          const file = item.getAsFile();
-                          this.copyFileName = file.name;
-                          this.handleInputChange(file);
-                        }
-                      }}
-                      onDragOver={this.handleDragOver}
-                      onDrop={this.handleDrop}
+                      allowSpeech
                     />
-                  }
-                  {
-                    this.renderVoiceInput()
                   }
                 </div>
               )
@@ -560,14 +511,6 @@ class ChatBox extends React.Component {
             !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} prompts={prompts} /> : this.renderVoiceInputHint()
           }
         </MainContainer>
-        <input
-          ref={e => this.inputImage = e}
-          type="file"
-          accept="image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx"
-          multiple={false}
-          onChange={() => this.handleInputChange(this.inputImage.files[0])}
-          style={{display: "none"}}
-        />
       </React.Fragment>
     );
   }
