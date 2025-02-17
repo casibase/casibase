@@ -1063,6 +1063,13 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "qwen-max", name: "qwen-max"},
           {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
           {id: "deepseek-r1", name: "deepseek-r1"},
+          {id: "deepseek-v3", name: "deepseek-v3"},
+          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+          {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
+          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
         ]);
     } else if (category === "Embedding") {
       return (
