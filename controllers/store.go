@@ -103,18 +103,15 @@ func (c *ApiController) GetStore() {
 		c.ResponseError(err.Error())
 		return
 	}
-	if store == nil {
-		c.ResponseError("store should not be empty")
-		return
-	}
 
-	host := c.Ctx.Request.Host
-	origin := getOriginFromHost(host)
-	err = store.Populate(origin)
-	if err != nil {
-		// gentle error
-		c.ResponseOk(store, err.Error())
-		return
+	if store != nil {
+		host := c.Ctx.Request.Host
+		origin := getOriginFromHost(host)
+		err = store.Populate(origin)
+		if err != nil {
+			c.ResponseOk(store, err.Error())
+			return
+		}
 	}
 
 	c.ResponseOk(store)

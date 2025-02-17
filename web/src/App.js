@@ -88,7 +88,7 @@ class App extends Component {
 
   setTheme() {
     StoreBackend.getStore("admin", "store-built-in").then((res) => {
-      if (res.status === "ok") {
+      if (res.status === "ok" && res.data) {
         const color = res.data.themeColor ? res.data.themeColor : Conf.ThemeDefault.colorPrimary;
         Setting.setThemeColor(color);
       } else {
