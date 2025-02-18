@@ -13,9 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Alert, Button, Flex, Space} from "antd";
-import {ChatContainer, MainContainer, MessageInput, MessageList} from "@chatscope/chat-ui-kit-react";
-import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
+import {Alert, Button, Card, Layout, List, Space} from "antd";
 import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
 import * as Conf from "./Conf";
@@ -46,6 +44,7 @@ class ChatBox extends React.Component {
     this.recognition = undefined;
     this.cursorPosition = undefined;
     this.copyFileName = null;
+    this.messageListRef = React.createRef();
   }
 
   componentDidMount() {
@@ -64,6 +63,9 @@ class ChatBox extends React.Component {
     if (inputStore.has(this.props.name)) {
       this.setState({value: inputStore.get(this.props.name)});
       inputStore.delete(this.props.name);
+    }
+    if (prevProps.messages?.length !== this.props.messages?.length) {
+      this.scrollToBottom();
     }
   }
 
@@ -381,6 +383,13 @@ class ChatBox extends React.Component {
     input.click();
   };
 
+  scrollToBottom = () => {
+    if (this.messageListRef.current) {
+      const scrollElement = this.messageListRef.current;
+      scrollElement.scrollTop = scrollElement.scrollHeight;
+    }
+  };
+
   render() {
     const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
 
@@ -398,119 +407,157 @@ class ChatBox extends React.Component {
 
     return (
       <React.Fragment>
-        <MainContainer style={{display: "flex", width: "100%", height: "100%", border: "1px solid " + ThemeDefault.colorBackground, borderRadius: "6px"}} >
-          <ChatContainer style={{display: "flex", width: "100%", height: "100%"}}>
-            <MessageList style={{marginTop: "10px"}}>
-              <Flex vertical>
-                {messages.filter(message => message.isHidden === false).map((message, index) => (
-                  <div key={index}>
-                    <div style={{
-                      textAlign: message.author === "AI" ? "left" : "right",
-                      color: "#999",
-                      fontSize: "12px",
-                      marginBottom: "4px",
-                      padding: "0 12px",
-                    }}>
-                      {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
-                    </div>
-                    <Bubble
-                      placement={message.author === "AI" ? "start" : "end"}
-                      content={this.renderMessageContent(message, index === messages.length - 1)}
-                      avatar={{
-                        src: message.author === "AI" ? avatar : this.props.account.avatar,
-                      }}
-                      styles={{
-                        content: {
-                          backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
-                        },
-                      }}
-                    />
-                    {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
-                      <Space
-                        size="small"
-                        style={{
-                          marginTop: "4px",
-                          marginLeft: "48px",
-                        }}
-                      >
-                        <Button
-                          className="cs-button"
-                          icon={<CopyOutlined />}
-                          style={{border: "none", color: ThemeDefault.colorPrimary}}
-                          onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}
-                        />
-                        {index !== messages.length - 1 ? null :
-                          <Button
-                            className="cs-button"
-                            icon={<ReloadOutlined />}
-                            style={{border: "none", color: ThemeDefault.colorPrimary}}
-                            onClick={() => this.handleRegenerate()}
-                          />
-                        }
-                        <Button
-                          className="cs-button"
-                          icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />}
-                          style={{border: "none", color: ThemeDefault.colorPrimary}}
-                          onClick={() => this.handleMessageLike(message, "like")}
-                        />
-                        <Button
-                          className="cs-button"
-                          icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />}
-                          style={{border: "none", color: ThemeDefault.colorPrimary}}
-                          onClick={() => this.handleMessageLike(message, "dislike")}
-                        />
-                        <Button
-                          className="cs-button"
-                          icon={(this.state.readingMessage === message.name) && this.state.isReading ?
-                            <PauseCircleOutlined /> : <PlayCircleOutlined />}
-                          style={{border: "none", color: ThemeDefault.colorPrimary}}
-                          onClick={() => this.toggleMessageReadState(message)}
-                        />
-                      </Space>
-                    )}
+        <Layout style={{
+          display: "flex",
+          width: "100%",
+          height: "100%",
+          borderRadius: "6px",
+        }}>
+          <Card style={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            flexDirection: "column",
+            position: "relative",
+            padding: "24px",
+          }}>
+            <List
+              ref={this.messageListRef}
+              style={{
+                flex: 1,
+                overflow: "auto",
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: "100px",
+                padding: "24px",
+                paddingBottom: "40px",
+                scrollBehavior: "smooth",
+              }}
+              dataSource={messages.filter(message => message.isHidden === false)}
+              renderItem={(message, index) => (
+                <div key={index} style={{
+                  maxWidth: "90%",
+                  margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+                }}>
+                  <div style={{
+                    textAlign: message.author === "AI" ? "left" : "right",
+                    color: "#999",
+                    fontSize: "12px",
+                    marginBottom: "8px",
+                    padding: "0 12px",
+                  }}>
+                    {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
                   </div>
-                ))}
-              </Flex>
-            </MessageList>
-            {
-              this.props.disableInput ? null : (
-                // the "as" property make div could be played in ChatContainer
-                // eslint-disable-next-line react/no-unknown-property
-                <div as={MessageInput} style={{width: "100%", display: "flex", borderTop: "1px solid #d1dbe3"}}>
-                  {
-                    <Sender
-                      ref={this.senderRef}
-                      prefix={
+                  <Bubble
+                    placement={message.author === "AI" ? "start" : "end"}
+                    content={this.renderMessageContent(message, index === messages.length - 1)}
+                    avatar={{
+                      src: message.author === "AI" ? avatar : this.props.account.avatar,
+                    }}
+                    styles={{
+                      content: {
+                        backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
+                        borderRadius: "16px",
+                        padding: "12px 16px",
+                      },
+                    }}
+                  />
+                  {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
+                    <Space
+                      size="small"
+                      style={{
+                        marginTop: "8px",
+                        marginLeft: "48px",
+                        opacity: 0.8,
+                      }}
+                    >
+                      <Button
+                        className="cs-button"
+                        icon={<CopyOutlined />}
+                        style={{border: "none", color: ThemeDefault.colorPrimary}}
+                        onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}
+                      />
+                      {index !== messages.length - 1 ? null :
                         <Button
-                          type="text"
-                          icon={<LinkOutlined />}
-                          onClick={this.handleFileUploadClick}
+                          className="cs-button"
+                          icon={<ReloadOutlined />}
+                          style={{border: "none", color: ThemeDefault.colorPrimary}}
+                          onClick={() => this.handleRegenerate()}
                         />
                       }
-                      disabled={false}
-                      style={{flex: 1, border: "none"}}
-                      sendDisabled={this.state.value === "" || this.props.disableInput}
-                      placeholder={i18next.t("chat:Type message here")}
-                      value={this.state.value}
-                      onChange={(val) => this.setState({value: val})}
-                      onPasteFile={(file) => {
-                        this.handleInputChange(file);
-                      }}
-                      onSubmit={() => {
-                        this.handleSend(this.state.value);
-                        this.setState({value: ""});
-                      }}
-                      allowSpeech
-                    />
-                  }
+                      <Button
+                        className="cs-button"
+                        icon={message.likeUsers?.includes(this.props.account.name) ? <LikeFilled /> : <LikeOutlined />}
+                        style={{border: "none", color: ThemeDefault.colorPrimary}}
+                        onClick={() => this.handleMessageLike(message, "like")}
+                      />
+                      <Button
+                        className="cs-button"
+                        icon={message.dislikeUsers?.includes(this.props.account.name) ? <DislikeFilled /> : <DislikeOutlined />}
+                        style={{border: "none", color: ThemeDefault.colorPrimary}}
+                        onClick={() => this.handleMessageLike(message, "dislike")}
+                      />
+                      <Button
+                        className="cs-button"
+                        icon={(this.state.readingMessage === message.name) && this.state.isReading ?
+                          <PauseCircleOutlined /> : <PlayCircleOutlined />}
+                        style={{border: "none", color: ThemeDefault.colorPrimary}}
+                        onClick={() => this.toggleMessageReadState(message)}
+                      />
+                    </Space>
+                  )}
                 </div>
-              )
-            }
-          </ChatContainer>
+              )}
+            />
+            {!this.props.disableInput && (
+              <div style={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                padding: "16px 24px",
+                zIndex: 1,
+              }}>
+                <div style={{
+                  maxWidth: "700px",
+                  margin: "0 auto",
+                }}>
+                  <Sender
+                    ref={this.senderRef}
+                    prefix={
+                      <Button
+                        type="text"
+                        icon={<LinkOutlined />}
+                        onClick={this.handleFileUploadClick}
+                      />
+                    }
+                    disabled={false}
+                    style={{
+                      flex: 1,
+                      borderRadius: "8px",
+                      background: "#f5f5f5",
+                    }}
+                    sendDisabled={this.state.value === "" || this.props.disableInput}
+                    placeholder={i18next.t("chat:Type message here")}
+                    value={this.state.value}
+                    onChange={(val) => this.setState({value: val})}
+                    onPasteFile={this.handleInputChange}
+                    onSubmit={() => {
+                      this.handleSend(this.state.value);
+                      this.setState({value: ""});
+                    }}
+                    allowSpeech
+                  />
+                </div>
+              </div>
+            )}
+          </Card>
           {
             !this.state.isVoiceInput ? messages.length !== 0 ? null : <ChatPrompts sendMessage={this.props.sendMessage} prompts={prompts} /> : this.renderVoiceInputHint()
           }
-        </MainContainer>
+        </Layout>
       </React.Fragment>
     );
   }
