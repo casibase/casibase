@@ -24,7 +24,7 @@ import moment from "moment";
 import {ThemeDefault} from "./Conf";
 import {AudioFilled, CopyOutlined, DislikeFilled, DislikeOutlined, LikeFilled, LikeOutlined, LinkOutlined, PauseCircleOutlined, PlayCircleOutlined, ReloadOutlined} from "@ant-design/icons";
 import ChatPrompts from "./ChatPrompts";
-import {Bubble, Sender} from "@ant-design/x";
+import {Bubble, Sender, Welcome} from "@ant-design/x";
 
 // store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -390,6 +390,17 @@ class ChatBox extends React.Component {
     }
   };
 
+  renderWelcomeHeader() {
+    return (
+      <Welcome
+        variant="borderless"
+        icon={this.props.store?.avatar || Conf.AiAvatar}
+        title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
+        description={i18next.t("chat:I'm here to help answer your questions")}
+      />
+    );
+  }
+
   render() {
     const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
 
@@ -421,8 +432,10 @@ class ChatBox extends React.Component {
             position: "relative",
             padding: "24px",
           }}>
+            {messages.length === 0 && this.renderWelcomeHeader()}
             <List
               ref={this.messageListRef}
+              locale={{emptyText: " "}}
               style={{
                 flex: 1,
                 overflow: "auto",
