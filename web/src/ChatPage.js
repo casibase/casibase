@@ -556,7 +556,7 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.stores?.find(store => store.name === this.state.chat.store)} />
+          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null} />
         </div>
       </div>
     );
