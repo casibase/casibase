@@ -19,7 +19,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import * as Setting from "../Setting";
 
 const ConnectModal = (props) => {
-  const text = props.text ? props.text : i18next.t("general:Connect");
+  const text = props.text ? props.text : i18next.t("machine:Connect");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [username, setUsername] = useState("");

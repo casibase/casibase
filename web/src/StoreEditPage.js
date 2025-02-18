@@ -52,7 +52,7 @@ class StoreEditPage extends React.Component {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((res) => {
         if (res.status === "ok") {
-          if (typeof res.data2 === "string" && res.data2 !== "") {
+          if (res.data && typeof res.data2 === "string" && res.data2 !== "") {
             res.data.error = res.data2;
           }
 
@@ -371,6 +371,20 @@ class StoreEditPage extends React.Component {
             </Row>
           )
         }
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:State")} :
+          </Col>
+          <Col span={5}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.state} onChange={value => {
+              this.updateStoreField("state", value);
+            }}
+            options={[
+              {value: "Active", label: "Active"},
+              {value: "Inactive", label: "Inactive"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:File tree")}:

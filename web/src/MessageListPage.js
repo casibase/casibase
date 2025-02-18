@@ -40,6 +40,9 @@ class MessageListPage extends BaseListPage {
       replyTo: "",
       author: this.props.account.name,
       text: "",
+      tokenCount: 0,
+      textTokenCount: 0,
+      price: 0.0,
     };
   }
 
@@ -220,7 +223,7 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("message:Text"),
+        title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
         width: "400px",
@@ -371,7 +374,7 @@ class MessageListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("message:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;

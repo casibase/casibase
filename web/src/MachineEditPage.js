@@ -97,7 +97,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Region")}:
+            {i18next.t("general:Region")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.region} onChange={e => {
@@ -117,7 +117,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Category")}:
+            {i18next.t("provider:Category")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.category} onChange={e => {
@@ -127,7 +127,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Type")}:
+            {i18next.t("general:Type")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.machine.type} onChange={(value => {
@@ -144,7 +144,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Size")}:
+            {i18next.t("general:Size")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.size} onChange={e => {
@@ -201,7 +201,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:State")}:
+            {i18next.t("general:State")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.machine.state} onChange={(value => {

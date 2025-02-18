@@ -20,15 +20,15 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-type QwenEmbeddingProvider struct {
+type AlibabacloudEmbeddingProvider struct {
 	typ         string
 	subType     string
 	secretKey   string
 	providerUrl string
 }
 
-func NewQwenEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string) (*QwenEmbeddingProvider, error) {
-	return &QwenEmbeddingProvider{
+func NewAlibabacloudEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string) (*AlibabacloudEmbeddingProvider, error) {
+	return &AlibabacloudEmbeddingProvider{
 		typ:         typ,
 		subType:     subType,
 		secretKey:   secretKey,
@@ -45,7 +45,7 @@ func getQwenClientFromUrl(authToken string, url string) *openai.Client {
 	return c
 }
 
-func (p *QwenEmbeddingProvider) GetPricing() string {
+func (p *AlibabacloudEmbeddingProvider) GetPricing() string {
 	return `URL:
 https://help.aliyun.com/zh/model-studio/user-guide/embedding?spm=a2c4g.11186623.help-menu-search-2400256.d_0
 
@@ -59,14 +59,14 @@ Embedding models:
 `
 }
 
-func (p *QwenEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	pricePerThousandTokens := 0.0007
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
 	res.Currency = "yuan"
 	return nil
 }
 
-func (p *QwenEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	var client *openai.Client = getQwenClientFromUrl(p.secretKey, p.providerUrl)
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{

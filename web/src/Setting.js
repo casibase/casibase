@@ -762,7 +762,7 @@ export function getProviderTypeOptions(category) {
         {id: "Moonshot", name: "Moonshot"},
         {id: "Amazon Bedrock", name: "Amazon Bedrock"},
         {id: "Dummy", name: "Dummy"},
-        {id: "Qwen", name: "Qwen"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Baichuan", name: "Baichuan"},
         {id: "Doubao", name: "Doubao"},
         {id: "DeepSeek", name: "DeepSeek"},
@@ -782,7 +782,7 @@ export function getProviderTypeOptions(category) {
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
-        {id: "Qwen", name: "Qwen"},
+        {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Hunyuan", name: "Hunyuan"},
         {id: "Jina", name: "Jina"},
         {id: "Dummy", name: "Dummy"},
@@ -1053,7 +1053,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-embeddings", name: "Titan Embeddings"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
     ]);
-  } else if (type === "Qwen") {
+  } else if (type === "Alibaba Cloud") {
     if (category === "Model") {
       return (
         [
@@ -1062,6 +1062,14 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "qwen-plus", name: "qwen-plus"},
           {id: "qwen-max", name: "qwen-max"},
           {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+          {id: "deepseek-r1", name: "deepseek-r1"},
+          {id: "deepseek-v3", name: "deepseek-v3"},
+          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+          {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
+          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
         ]);
     } else if (category === "Embedding") {
       return (

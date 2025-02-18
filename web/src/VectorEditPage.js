@@ -100,7 +100,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Store")}:
+            {i18next.t("general:Store")}:
           </Col>
           <Col span={22} >
             <Input disabled={true} value={this.state.vector.store} onChange={e => {
@@ -120,7 +120,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:File")}:
+            {i18next.t("store:File")}:
           </Col>
           <Col span={22} >
             <Input value={this.state.vector.file} onChange={e => {
@@ -130,7 +130,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Text")}:
+            {i18next.t("general:Text")}:
           </Col>
           <Col span={22} >
             <CodeMirror value={this.state.vector.text}
@@ -143,7 +143,7 @@ class VectorEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("vector:Size")}:
+            {i18next.t("general:Size")}:
           </Col>
           <Col span={22} >
             <InputNumber disabled={true} value={this.state.vector.size} onChange={value => {

@@ -139,7 +139,7 @@ class FactorsetListPage extends BaseListPage {
         sorter: (a, b) => a.fileSize.localeCompare(b.fileSize),
       },
       {
-        title: i18next.t("factorset:Dimension"),
+        title: i18next.t("vector:Dimension"),
         dataIndex: "dimension",
         key: "dimension",
         width: "110px",

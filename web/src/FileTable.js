@@ -108,7 +108,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("store:Category"),
+        title: i18next.t("provider:Category"),
         dataIndex: "isLeaf",
         key: "isLeaf",
         width: "110px",
@@ -184,7 +184,7 @@ class FileTable extends React.Component {
         },
       },
       // {
-      //   title: i18next.t("store:Path"),
+      //   title: i18next.t("provider:Path"),
       //   dataIndex: 'key',
       //   key: 'key',
       //   width: '100px',
@@ -209,7 +209,7 @@ class FileTable extends React.Component {
                 files.filter(file => file.isLeaf).forEach((file, index) => {
                   Setting.openLink(file.url);
                 });
-              }}>{i18next.t("store:Download")}</Button>
+              }}>{i18next.t("general:Download")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")} all ${fileCount} files and ${folderCount} folders ?`}
                 onConfirm={(e) => {
@@ -220,7 +220,7 @@ class FileTable extends React.Component {
                 okText={i18next.t("general:OK")}
                 cancelText={i18next.t("general:Cancel")}
               >
-                <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small">{i18next.t("store:Delete")}</Button>
+                <Button icon={<DeleteOutlined />} style={{marginRight: "10px"}} type="primary" danger size="small">{i18next.t("general:Delete")}</Button>
               </Popconfirm>
               <Button icon={<FileDoneOutlined />} size="small" onClick={() => {
                 const fileKeys = [];
