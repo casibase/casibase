@@ -264,7 +264,7 @@ class ChatPage extends BaseListPage {
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1 && message.author === "AI") {
-                  message.html = renderText(message.text + " " + this.state.dots);
+                  message.html = renderText(message.text);
                 } else {
                   message.html = renderText(message.text);
                 }
@@ -537,7 +537,6 @@ class ChatPage extends BaseListPage {
               this.sendMessage(text, fileName, false, regenerate);
             }}
             account={this.props.account}
-            dots={this.state.dots}
             name={this.state.chat?.name}
             displayName={this.state.chat?.displayName}
             store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
