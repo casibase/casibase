@@ -261,6 +261,9 @@ class ChatPage extends BaseListPage {
             });
 
             if (lastMessage.errorText !== "") {
+              this.setState({
+                disableInput: false,
+              });
               return;
             }
 
@@ -305,7 +308,7 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                disableInput: true,
+                disableInput: false,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
