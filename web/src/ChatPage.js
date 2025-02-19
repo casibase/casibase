@@ -39,12 +39,10 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
-      dots: "",
       messageLoading: false,
     });
 
     this.fetch();
-    this.timer = null;
   }
 
   componentDidMount() {
@@ -168,21 +166,7 @@ class ChatPage extends BaseListPage {
           const chat = res.data;
           this.setState({
             chat: chat,
-            // messages: null,
           });
-
-          this.timer = setInterval(() => {
-            this.setState(prevState => {
-              switch (prevState.dots) {
-              case "⚫":
-                return {dots: " "};
-              case " ":
-                return {dots: "⚫"};
-              default:
-                return {dots: "⚫"};
-              }
-            });
-          }, 500);
 
           const field = "user";
           const value = this.props.account.name;
@@ -273,12 +257,6 @@ class ChatPage extends BaseListPage {
 
               if (jsonData.text === "") {
                 jsonData.text = "\n";
-                if (this.timer !== null) {
-                  clearInterval(this.timer);
-                  this.setState({
-                    dots: "",
-                  });
-                }
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
@@ -329,12 +307,6 @@ class ChatPage extends BaseListPage {
                 messages: res.data,
                 messageLoading: false,
               });
-              if (this.timer !== null) {
-                clearInterval(this.timer);
-                this.setState({
-                  dots: "",
-                });
-              }
             });
           } else {
             this.setState({

@@ -205,11 +205,11 @@ class ChatBox extends React.Component {
     }
 
     if (message.text === "" && message.author === "AI") {
-      return this.props.dots;
+      return null;
     }
 
     if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
-      return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"] + this.props.dots);
+      return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"]);
     }
 
     return message.html;
@@ -466,6 +466,11 @@ class ChatBox extends React.Component {
                   <Bubble
                     placement={message.author === "AI" ? "start" : "end"}
                     content={this.renderMessageContent(message, index === messages.length - 1)}
+                    loading={message.text === "" && message.author === "AI"}
+                    typing={message.author === "AI" ? {
+                      step: 2,
+                      interval: 50,
+                    } : undefined}
                     avatar={{
                       src: message.author === "AI" ? avatar : this.props.account.avatar,
                     }}
