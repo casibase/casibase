@@ -546,6 +546,7 @@ class ChatBox extends React.Component {
                         onClick={this.handleFileUploadClick}
                       />
                     }
+                    loading={this.props.loading}
                     disabled={false}
                     style={{
                       flex: 1,
@@ -560,6 +561,9 @@ class ChatBox extends React.Component {
                     onSubmit={() => {
                       this.handleSend(this.state.value);
                       this.setState({value: ""});
+                    }}
+                    onCancel={() => {
+                      this.props.onCancelMessage && this.props.onCancelMessage();
                     }}
                     allowSpeech
                   />

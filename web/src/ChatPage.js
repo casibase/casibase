@@ -40,6 +40,7 @@ class ChatPage extends BaseListPage {
       disableInput: false,
       isModalOpen: false,
       dots: "",
+      messageLoading: false,
     });
 
     this.fetch();
@@ -257,13 +258,10 @@ class ChatPage extends BaseListPage {
           if (lastMessage.author === "AI" && lastMessage.replyTo !== "" && lastMessage.text === "") {
             let text = "";
             this.setState({
-              disableInput: true,
+              messageLoading: true,
             });
 
             if (lastMessage.errorText !== "") {
-              this.setState({
-                disableInput: false,
-              });
               return;
             }
 
@@ -295,7 +293,7 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                disableInput: false,
+                messageLoading: false,
               });
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -308,7 +306,7 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                disableInput: false,
+                messageLoading: false,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -329,7 +327,7 @@ class ChatPage extends BaseListPage {
 
               this.setState({
                 messages: res.data,
-                disableInput: false,
+                messageLoading: false,
               });
               if (this.timer !== null) {
                 clearInterval(this.timer);
@@ -340,7 +338,7 @@ class ChatPage extends BaseListPage {
             });
           } else {
             this.setState({
-              disableInput: false,
+              messageLoading: false,
             });
           }
         }
@@ -559,7 +557,19 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null} />
+          <ChatBox
+            disableInput={this.state.disableInput}
+            loading={this.state.messageLoading}
+            messages={this.state.messages}
+            sendMessage={(text, fileName, regenerate = false) => {
+              this.sendMessage(text, fileName, false, regenerate);
+            }}
+            account={this.props.account}
+            dots={this.state.dots}
+            name={this.state.chat?.name}
+            displayName={this.state.chat?.displayName}
+            store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
+          />
         </div>
       </div>
     );
