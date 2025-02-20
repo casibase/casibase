@@ -39,11 +39,10 @@ class ChatPage extends BaseListPage {
       loading: true,
       disableInput: false,
       isModalOpen: false,
-      dots: "",
+      messageLoading: false,
     });
 
     this.fetch();
-    this.timer = null;
   }
 
   componentDidMount() {
@@ -167,21 +166,7 @@ class ChatPage extends BaseListPage {
           const chat = res.data;
           this.setState({
             chat: chat,
-            // messages: null,
           });
-
-          this.timer = setInterval(() => {
-            this.setState(prevState => {
-              switch (prevState.dots) {
-              case "⚫":
-                return {dots: " "};
-              case " ":
-                return {dots: "⚫"};
-              default:
-                return {dots: "⚫"};
-              }
-            });
-          }, 500);
 
           const field = "user";
           const value = this.props.account.name;
@@ -257,7 +242,7 @@ class ChatPage extends BaseListPage {
           if (lastMessage.author === "AI" && lastMessage.replyTo !== "" && lastMessage.text === "") {
             let text = "";
             this.setState({
-              disableInput: true,
+              messageLoading: true,
             });
 
             if (lastMessage.errorText !== "") {
@@ -272,12 +257,6 @@ class ChatPage extends BaseListPage {
 
               if (jsonData.text === "") {
                 jsonData.text = "\n";
-                if (this.timer !== null) {
-                  clearInterval(this.timer);
-                  this.setState({
-                    dots: "",
-                  });
-                }
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
@@ -285,14 +264,14 @@ class ChatPage extends BaseListPage {
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1 && message.author === "AI") {
-                  message.html = renderText(message.text + " " + this.state.dots);
+                  message.html = renderText(message.text);
                 } else {
                   message.html = renderText(message.text);
                 }
               });
               this.setState({
                 messages: res.data,
-                disableInput: false,
+                messageLoading: false,
               });
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -305,7 +284,7 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                disableInput: true,
+                messageLoading: false,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -326,18 +305,12 @@ class ChatPage extends BaseListPage {
 
               this.setState({
                 messages: res.data,
-                disableInput: false,
+                messageLoading: false,
               });
-              if (this.timer !== null) {
-                clearInterval(this.timer);
-                this.setState({
-                  dots: "",
-                });
-              }
             });
           } else {
             this.setState({
-              disableInput: false,
+              messageLoading: false,
             });
           }
         }
@@ -556,7 +529,18 @@ class ChatPage extends BaseListPage {
               </div>
             )
           }
-          <ChatBox disableInput={this.state.disableInput} messages={this.state.messages} sendMessage={(text, fileName, regenerate = false) => {this.sendMessage(text, fileName, false, regenerate);}} account={this.props.account} dots={this.state.dots} name={this.state.chat?.name} displayName={this.state.chat?.displayName} store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null} />
+          <ChatBox
+            disableInput={this.state.disableInput}
+            loading={this.state.messageLoading}
+            messages={this.state.messages}
+            sendMessage={(text, fileName, regenerate = false) => {
+              this.sendMessage(text, fileName, false, regenerate);
+            }}
+            account={this.props.account}
+            name={this.state.chat?.name}
+            displayName={this.state.chat?.displayName}
+            store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
+          />
         </div>
       </div>
     );
