@@ -85,6 +85,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewMistralProvider(clientSecret, subType)
 	} else if typ == "Yi" {
 		p, err = NewYiProvider(subType, clientSecret, temperature, topP)
+	} else if typ == "Silicon Flow" {
+		p, err = NewSiliconFlowProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Dummy" {
 		p, err = NewDummyModelProvider(subType)
 	} else {
