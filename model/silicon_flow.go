@@ -17,11 +17,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/sashabaranov/go-openai"
-	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 	"io"
 	"net/http"
 	"strings"
+
+	"github.com/sashabaranov/go-openai"
+	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 )
 
 type SiliconFlowProvider struct {
