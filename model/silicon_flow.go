@@ -22,7 +22,6 @@ import (
 	"strings"
 
 	"github.com/sashabaranov/go-openai"
-	"github.com/volcengine/volcengine-go-sdk/service/arkruntime/model"
 )
 
 type SiliconFlowProvider struct {
@@ -124,7 +123,7 @@ func (p *SiliconFlowProvider) QueryText(question string, writer io.Writer, histo
 	// request params
 	messages := []openai.ChatCompletionMessage{
 		{
-			Role:    model.ChatMessageRoleUser,
+			Role:    "user",
 			Content: question,
 		},
 	}
