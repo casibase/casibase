@@ -246,6 +246,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
 		flushData = flushDataOpenai
+	} else if p.typ == "Custom" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	}
 
 	ctx := context.Background()
@@ -301,7 +304,16 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return modelResult, nil
 		}
 
-		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		const DefaultTokenModel = "gpt-4"
+		var (
+			rawMessages []*RawMessage
+			err         error
+		)
+		if p.subType == "custom-model" {
+			rawMessages, err = OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, DefaultTokenModel, maxTokens)
+		} else {
+			rawMessages, err = OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -317,7 +329,12 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, model)
+		var promptTokenCount int
+		if p.subType == "custom-model" {
+			promptTokenCount, err = OpenaiNumTokensFromMessages(messages, DefaultTokenModel)
+		} else {
+			promptTokenCount, err = OpenaiNumTokensFromMessages(messages, model)
+		}
 		if err != nil {
 			return nil, err
 		}
@@ -380,7 +397,11 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
 		var responseTokenCount int
-		responseTokenCount, err = GetTokenSize(model, answerData.String())
+		if p.subType == "custom-model" {
+			responseTokenCount, err = GetTokenSize(DefaultTokenModel, answerData.String())
+		} else {
+			responseTokenCount, err = GetTokenSize(model, answerData.String())
+		}
 		if err != nil {
 			return nil, err
 		}
