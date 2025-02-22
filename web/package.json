@@ -21,6 +21,7 @@
     "echarts-wordcloud": "^2.1.0",
     "eslint-plugin-unused-imports": "^2.0.0",
     "file-saver": "^2.0.2",
+    "guacamole-common-js": "^1.5.0",
     "highlight.js": "^11.9.0",
     "i18next": "^19.8.9",
     "katex": "^0.16.9",
