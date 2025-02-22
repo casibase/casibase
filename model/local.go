@@ -258,10 +258,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
+	tokenModel := model
 	if model == "custom-model" && p.compitableProvider != "" {
 		model = p.compitableProvider
+		tokenModel = "gpt-4"
 	} else if model == "custom-model" && p.compitableProvider == "" {
 		model = "gpt-3.5-turbo"
+		tokenModel = "gpt-3.5-turbo"
 	}
 
 	temperature := p.temperature
@@ -304,16 +307,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return modelResult, nil
 		}
 
-		const DefaultTokenModel = "gpt-4"
-		var (
-			rawMessages []*RawMessage
-			err         error
-		)
-		if p.subType == "custom-model" {
-			rawMessages, err = OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, DefaultTokenModel, maxTokens)
-		} else {
-			rawMessages, err = OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
-		}
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, tokenModel, maxTokens)
 		if err != nil {
 			return nil, err
 		}
@@ -329,12 +323,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		var promptTokenCount int
-		if p.subType == "custom-model" {
-			promptTokenCount, err = OpenaiNumTokensFromMessages(messages, DefaultTokenModel)
-		} else {
-			promptTokenCount, err = OpenaiNumTokensFromMessages(messages, model)
-		}
+		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, tokenModel)
 		if err != nil {
 			return nil, err
 		}
@@ -396,12 +385,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		var responseTokenCount int
-		if p.subType == "custom-model" {
-			responseTokenCount, err = GetTokenSize(DefaultTokenModel, answerData.String())
-		} else {
-			responseTokenCount, err = GetTokenSize(model, answerData.String())
-		}
+		responseTokenCount, err := GetTokenSize(tokenModel, answerData.String())
 		if err != nil {
 			return nil, err
 		}
