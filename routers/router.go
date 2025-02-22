@@ -90,6 +90,7 @@ func initAPI() {
 	beego.Router("/api/update-vector", &controllers.ApiController{}, "POST:UpdateVector")
 	beego.Router("/api/add-vector", &controllers.ApiController{}, "POST:AddVector")
 	beego.Router("/api/delete-vector", &controllers.ApiController{}, "POST:DeleteVector")
+	beego.Router("/api/delete-all-vectors", &controllers.ApiController{}, "POST:DeleteAllVectors")
 
 	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")
 	beego.Router("/api/get-chats", &controllers.ApiController{}, "GET:GetChats")
