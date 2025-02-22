@@ -88,6 +88,28 @@ class VectorListPage extends BaseListPage {
       });
   }
 
+  deleteAllVectors() {
+    VectorBackend.deleteAllVectors()
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", "All vectors deleted successfully");
+          this.setState({
+            data: [],
+            pagination: {
+              ...this.state.pagination,
+              current: 1,
+              total: 0,
+            },
+          });
+        } else {
+          Setting.showMessage("error", `Vectors failed to delete: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Vectors failed to delete: ${error}`);
+      });
+  }
+
   renderTable(vectors) {
     const columns = [
       {
@@ -244,6 +266,14 @@ class VectorListPage extends BaseListPage {
             <div>
               {i18next.t("general:Vectors")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addVector.bind(this)}>{i18next.t("general:Add")}</Button>
+              <Popconfirm
+                title={`${i18next.t("general:Sure to delete all")} ${i18next.t("general:Vectors")}`}
+                onConfirm={() => this.deleteAllVectors()}
+                okText={i18next.t("general:OK")}
+                cancelText={i18next.t("general:Cancel")}
+              >
+                <Button style={{marginLeft: "10px"}} type="primary" size="small" danger>{i18next.t("general:Delete All")}</Button>
+              </Popconfirm>
             </div>
           )}
           loading={vectors === null}
