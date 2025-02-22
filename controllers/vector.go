@@ -166,3 +166,33 @@ func (c *ApiController) DeleteVector() {
 
 	c.ResponseOk(success)
 }
+
+// DeleteAllVectors
+// @Title DeleteAllVectors
+// @Tag Vector API
+// @Description delete all vectors
+// @Success 200 {object} controllers.Response The Response object
+// @router /delete-all-vectors [post]
+func (c *ApiController) DeleteAllVectors() {
+	owner := "admin"
+
+	vectors, err := object.GetVectors(owner)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	allSuccess := true
+	for i := range vectors {
+		success, err := object.DeleteVector(vectors[i])
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		if !success {
+			allSuccess = false
+		}
+	}
+
+	c.ResponseOk(allSuccess)
+}
