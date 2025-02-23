@@ -15,9 +15,6 @@
 package model
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
 )
@@ -137,38 +134,19 @@ func ChatCompletionRequest(model string, messages []openai.ChatCompletionMessage
 // https://github.com/pkoukk/tiktoken-go?tab=readme-ov-file#counting-tokens-for-chat-api-calls
 // https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1608689882
 func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model string) (int, error) {
-	tkm, err := tiktoken.EncodingForModel(model)
+	modelToUse := getCompatibleModel(model)
+	// Get model-specific token counts
+	tokensPerMessage, tokensPerName := getModelTokenCounts(modelToUse)
+
+	// Get tiktoken encoding using the compatibility layer
+	tkm, err := tiktoken.EncodingForModel(modelToUse)
 	if err != nil {
 		return 0, err
 	}
 
-	var tokensPerMessage, tokensPerName int
-	switch model {
-	case "gpt-3.5-turbo-0613",
-		"gpt-3.5-turbo-16k-0613",
-		"gpt-4-0314",
-		"gpt-4-32k-0314",
-		"gpt-4-0613",
-		"gpt-4-32k-0613":
-		tokensPerMessage = 3
-		tokensPerName = 1
-	case "gpt-3.5-turbo-0301":
-		tokensPerMessage = 4 // every message follows <|start|>{role/name}\n{content}<|end|>\n
-		tokensPerName = -1   // if there's a name, the role is omitted
-	default:
-		if strings.Contains(model, "gpt-3.5-turbo") {
-			// warning: gpt-3.5-turbo may update over time. Returning num tokens assuming gpt-3.5-turbo-0613
-			return OpenaiNumTokensFromMessages(messages, "gpt-3.5-turbo-0613")
-		} else if strings.Contains(model, "gpt-4") {
-			// warning: gpt-4 may update over time. Returning num tokens assuming gpt-4-0613
-			return OpenaiNumTokensFromMessages(messages, "gpt-4-0613")
-		} else {
-			return 0, fmt.Errorf("OpenaiNumTokensFromMessages() error: unknown model type: %s", model)
-		}
-	}
-
 	numTokens := 0
 	for _, message := range messages {
+		// Calculate tokens for the message content
 		content := message.Content
 		for _, multiContentPart := range message.MultiContent {
 			if multiContentPart.Type == "text" {
@@ -187,4 +165,19 @@ func OpenaiNumTokensFromMessages(messages []openai.ChatCompletionMessage, model 
 
 	numTokens += 3 // every reply is primed with <|start|>assistant<|message|>
 	return numTokens, nil
+}
+
+func getModelTokenCounts(model string) (tokensPerMessage, tokensPerName int) {
+	// Default values for most models
+	defaultTokensPerMessage := 3
+	defaultTokensPerName := 1
+
+	// Special cases for specific model versions
+	switch model {
+	case openai.GPT3Dot5Turbo0301:
+		return 4, -1 // special case: if there's a name, the role is omitted
+	}
+
+	// Default values for unknown models
+	return defaultTokensPerMessage, defaultTokensPerName
 }
