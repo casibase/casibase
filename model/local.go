@@ -246,6 +246,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
 		flushData = flushDataOpenai
+	} else if p.typ == "Custom" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	}
 
 	ctx := context.Background()
@@ -255,10 +258,13 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	}
 
 	model := p.subType
+	tokenModel := model
 	if model == "custom-model" && p.compitableProvider != "" {
 		model = p.compitableProvider
+		tokenModel = "gpt-4"
 	} else if model == "custom-model" && p.compitableProvider == "" {
 		model = "gpt-3.5-turbo"
+		tokenModel = "gpt-3.5-turbo"
 	}
 
 	temperature := p.temperature
@@ -301,7 +307,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 			return modelResult, nil
 		}
 
-		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, model, maxTokens)
+		rawMessages, err := OpenaiGenerateMessages(prompt, question, history, knowledgeMessages, tokenModel, maxTokens)
 		if err != nil {
 			return nil, err
 		}
@@ -317,7 +323,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, model)
+		promptTokenCount, err := OpenaiNumTokensFromMessages(messages, tokenModel)
 		if err != nil {
 			return nil, err
 		}
@@ -379,8 +385,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		var responseTokenCount int
-		responseTokenCount, err = GetTokenSize(model, answerData.String())
+		responseTokenCount, err := GetTokenSize(tokenModel, answerData.String())
 		if err != nil {
 			return nil, err
 		}
