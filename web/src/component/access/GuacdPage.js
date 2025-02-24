@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ const STATE_DISCONNECTING = 4;
 const STATE_DISCONNECTED = 5;
 
 const GuacdPage = (props) => {
-  const {assetId, activeKey, addClient, closePane, username, password} = props;
+  const {nodeId, activeKey, addClient, closePane, username, password} = props;
 
   const [box, setBox] = useState({width: 0, height: 0});
   const [guacd, setGuacd] = useState({});
@@ -61,15 +61,15 @@ const GuacdPage = (props) => {
 
   useEffect(() => {
     if (!activeKey) {
-      document.title = assetId.split("/")[1];
+      document.title = nodeId.split("/")[1];
     }
     if (box && box.width && box.height && !guacd.client) {
-      addAssetTunnel();
+      addNodeTunnel();
     }
-  }, [assetId, box]);
+  }, [nodeId, box]);
 
-  const addAssetTunnel = () => {
-    SessionBackend.addAssetTunnel(assetId).then((res) => {
+  const addNodeTunnel = () => {
+    SessionBackend.addNodeTunnel(nodeId).then((res) => {
       if (res.status === "ok") {
         const session = res.data;
         setSession(session);
@@ -82,7 +82,7 @@ const GuacdPage = (props) => {
 
   const renderDisplay = (sessionId, protocol, width, height) => {
     const wsEndpoint = Setting.ServerUrl.replace("http://", "ws://");
-    const wsUrl = `${wsEndpoint}/api/get-asset-tunnel`;
+    const wsUrl = `${wsEndpoint}/api/get-node-tunnel`;
     const tunnel = new Guacamole.WebSocketTunnel(wsUrl);
     const client = new Guacamole.Client(tunnel);
 
@@ -339,7 +339,7 @@ const GuacdPage = (props) => {
       cancelText: "Close this page",
       cancelButtonProps: {"danger": true},
       onOk() {
-        addAssetTunnel();
+        addNodeTunnel();
       },
       onCancel() {
         if (activeKey) {
@@ -423,7 +423,7 @@ const GuacdPage = (props) => {
       showMessage("Check that the parameters (width,height) are in the correct format: " + status.message);
       break;
     case 805:
-      showMessage("Failed to find the asset: " + status.message);
+      showMessage("Failed to find the node: " + status.message);
       break;
     case 806:
       showMessage("Failed to update session status: " + status.message);

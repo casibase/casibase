@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,9 +33,9 @@ const (
 	SessionNotFound    int = 800
 	NewTunnelError     int = 801
 	ForcedDisconnect   int = 802
-	AssetNotActive     int = 803
+	NodeNotActive      int = 803
 	ParametersError    int = 804
-	AssetNotFound      int = 805
+	NodeNotFound       int = 805
 	SessionUpdateError int = 806
 )
 
@@ -48,15 +48,15 @@ var UpGrader = websocket.Upgrader{
 	Subprotocols: []string{"guacamole"},
 }
 
-// AddAssetTunnel
-// @Title AddAssetTunnel
+// AddNodeTunnel
+// @Title AddNodeTunnel
 // @Tag Session API
 // @Description add session
-// @Param   assetId    query   string  true        "The id of asset"
+// @Param   nodeId    query   string  true        "The id of node"
 // @Success 200 {object} Response
-// @router /add-asset-tunnel [get]
-func (c *ApiController) AddAssetTunnel() {
-	assetId := c.Input().Get("assetId")
+// @router /add-node-tunnel [get]
+func (c *ApiController) AddNodeTunnel() {
+	nodeId := c.Input().Get("nodeId")
 	mode := c.Input().Get("mode")
 
 	user := c.GetSessionUser()
@@ -74,7 +74,7 @@ func (c *ApiController) AddAssetTunnel() {
 	}
 
 	var err error
-	session, err = object.CreateSession(session, assetId, mode)
+	session, err = object.CreateSession(session, nodeId, mode)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -83,7 +83,7 @@ func (c *ApiController) AddAssetTunnel() {
 	c.ResponseOk(session)
 }
 
-func (c *ApiController) GetAssetTunnel() {
+func (c *ApiController) GetNodeTunnel() {
 	c.EnableRender = false
 	ctx := c.Ctx
 	ws, err := UpGrader.Upgrade(ctx.ResponseWriter, ctx.Request, nil)
@@ -117,25 +117,25 @@ func (c *ApiController) GetAssetTunnel() {
 		return
 	}
 
-	machine, err := object.GetMachine(session.Asset)
-	if err != nil || machine == nil {
-		guacamole.Disconnect(ws, AssetNotFound, err.Error())
+	node, err := object.GetNode(session.Node)
+	if err != nil || node == nil {
+		guacamole.Disconnect(ws, NodeNotFound, err.Error())
 		return
 	}
 
-	if machine.RemoteUsername == "" {
-		machine.RemoteUsername = username
-		machine.RemotePassword = password
+	if node.RemoteUsername == "" {
+		node.RemoteUsername = username
+		node.RemotePassword = password
 	} else {
-		if machine.RemotePassword == "" {
-			machine.RemotePassword = password
+		if node.RemotePassword == "" {
+			node.RemotePassword = password
 		}
 	}
 
 	configuration := guacamole.NewConfiguration()
 	propertyMap := configuration.LoadConfig()
 
-	setConfig(propertyMap, machine, configuration)
+	setConfig(propertyMap, node, configuration)
 	configuration.SetParameter("width", width)
 	configuration.SetParameter("height", height)
 	configuration.SetParameter("dpi", dpi)
@@ -181,23 +181,23 @@ func (c *ApiController) GetAssetTunnel() {
 	for {
 		_, message, err := ws.ReadMessage()
 		if err != nil {
-			logs.Error(fmt.Sprintf("GetAssetTunnel():ws.ReadMessage() error: %s", err.Error()))
+			logs.Error(fmt.Sprintf("GetNodeTunnel():ws.ReadMessage() error: %s", err.Error()))
 
 			_ = tunnel.Close()
 			err2 := object.CloseSession(sessionId, Normal, "Normal user exit")
 			if err2 != nil {
-				logs.Error(fmt.Sprintf("GetAssetTunnel():object.CloseSession() error: %s", err.Error()))
+				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseSession() error: %s", err.Error()))
 			}
 			return
 		}
 
 		_, err = tunnel.WriteAndFlush(message)
 		if err != nil {
-			logs.Error(fmt.Sprintf("GetAssetTunnel():tunnel.WriteAndFlush() error: %s", err.Error()))
+			logs.Error(fmt.Sprintf("GetNodeTunnel():tunnel.WriteAndFlush() error: %s", err.Error()))
 
 			err2 := object.CloseSession(sessionId, Normal, "Normal user exit")
 			if err2 != nil {
-				logs.Error(fmt.Sprintf("GetAssetTunnel():object.CloseSession() (2nd) error: %s", err.Error()))
+				logs.Error(fmt.Sprintf("GetNodeTunnel():object.CloseSession() (2nd) error: %s", err.Error()))
 			}
 			return
 		}
@@ -220,7 +220,7 @@ func (c *ApiController) TunnelMonitor() {
 	}
 
 	if s.Status != object.Connected {
-		guacamole.Disconnect(ws, AssetNotActive, "Session offline")
+		guacamole.Disconnect(ws, NodeNotActive, "Session offline")
 		return
 	}
 
@@ -280,8 +280,8 @@ func (c *ApiController) TunnelMonitor() {
 	}
 }
 
-func setConfig(propertyMap map[string]string, machine *object.Machine, configuration *guacamole.Configuration) {
-	switch machine.RemoteProtocol {
+func setConfig(propertyMap map[string]string, node *object.Node, configuration *guacamole.Configuration) {
+	switch node.RemoteProtocol {
 	case "SSH":
 		configuration.Protocol = "ssh"
 	case "RDP":
@@ -292,12 +292,12 @@ func setConfig(propertyMap map[string]string, machine *object.Machine, configura
 		configuration.Protocol = "vnc"
 	}
 
-	configuration.SetParameter("hostname", machine.Name)
-	configuration.SetParameter("port", strconv.Itoa(machine.RemotePort))
-	configuration.SetParameter("username", machine.RemoteUsername)
-	configuration.SetParameter("password", machine.RemotePassword)
+	configuration.SetParameter("hostname", node.Name)
+	configuration.SetParameter("port", strconv.Itoa(node.RemotePort))
+	configuration.SetParameter("username", node.RemoteUsername)
+	configuration.SetParameter("password", node.RemotePassword)
 
-	switch machine.RemoteProtocol {
+	switch node.RemoteProtocol {
 	case "RDP":
 		configuration.SetParameter("security", "any")
 		configuration.SetParameter("ignore-cert", "true")
@@ -316,8 +316,8 @@ func setConfig(propertyMap map[string]string, machine *object.Machine, configura
 		configuration.SetParameter(guacamole.PreConnectionId, propertyMap[guacamole.PreConnectionId])
 		configuration.SetParameter(guacamole.PreConnectionBlob, propertyMap[guacamole.PreConnectionBlob])
 
-		// if asset.EnableRemoteApp {
-		//	remoteApp := asset.RemoteApps[0]
+		// if node.EnableRemoteApp {
+		//	remoteApp := node.RemoteApps[0]
 		//	configuration.SetParameter("remote-app", "||"+remoteApp.RemoteAppName)
 		//	configuration.SetParameter("remote-app-dir", remoteApp.RemoteAppDir)
 		//	configuration.SetParameter("remote-app-args", remoteApp.RemoteAppArgs)

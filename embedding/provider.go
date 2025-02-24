@@ -52,8 +52,8 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		p, err = NewMiniMaxEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Alibaba Cloud" {
 		p, err = NewAlibabacloudEmbeddingProvider(typ, subType, clientSecret, providerUrl)
-	} else if typ == "Hunyuan" {
-		p, err = NewTencentEmbeddingProvider(clientId, clientSecret)
+	} else if typ == "Tencent Cloud" {
+		p, err = NewTencentCloudEmbeddingProvider(clientId, clientSecret)
 	} else if typ == "Jina" {
 		p, err = NewJinaEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Dummy" {

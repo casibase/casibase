@@ -13,13 +13,14 @@
 // limitations under the License.
 
 import React from "react";
-import {DeleteOutlined} from "@ant-design/icons";
+import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import {Button, Col, Input, InputNumber, Row, Switch, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import XLSX from "xlsx";
 import {sheet2blob, showMessage} from "./Setting";
 import FileSaver from "file-saver";
+import * as Conf from "./Conf";
 
 const {TextArea} = Input;
 
@@ -73,10 +74,10 @@ class LabelTable extends React.Component {
   addRow(table) {
     const currentTime = this.props.currentTime;
 
-    if (table.filter(row => row.startTime === currentTime).length !== 0) {
-      Setting.showMessage("error", `Label with startTime: ${currentTime} already exists`);
-      return;
-    }
+    // if (table.filter(row => row.startTime === currentTime).length !== 0) {
+    //   Setting.showMessage("error", `Label with startTime: ${currentTime} already exists`);
+    //   return;
+    // }
 
     let lastEndTime = 0;
     if (table.length > 0) {
@@ -84,7 +85,7 @@ class LabelTable extends React.Component {
       lastEndTime = lastRow.endTime;
     }
 
-    const row = {id: Setting.getRandomName(), startTime: lastEndTime, endTime: currentTime, text: ""};
+    const row = {id: Setting.getRandomName(), user: this.props.account.name, type: this.props.account.type, startTime: lastEndTime, endTime: currentTime, text: ""};
     if (table === undefined) {
       table = [];
     }
@@ -129,6 +130,22 @@ class LabelTable extends React.Component {
     }
   }
 
+  requireSelfOrAdmin(row) {
+    if (this.props.account.type === "video-admin-user") {
+      return false;
+    }
+
+    return !(row.user === this.props.account.name);
+  }
+
+  requireReviewer() {
+    return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
+  requireAdmin() {
+    return !(this.props.account.type === "video-admin-user");
+  }
+
   renderTable(table) {
     const columns = [
       {
@@ -149,13 +166,32 @@ class LabelTable extends React.Component {
         },
       },
       {
+        title: i18next.t("general:User"),
+        dataIndex: "user",
+        key: "user",
+        width: "110px",
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      // {
+      //   title: i18next.t("general:Type"),
+      //   dataIndex: "type",
+      //   key: "type",
+      //   width: "110px",
+      // },
+      {
         title: i18next.t("video:Start time (s)"),
         dataIndex: "startTime",
         key: "startTime",
         width: "120px",
         render: (text, record, index) => {
           return (
-            <InputNumber style={{width: "100%"}} min={0} value={text} onChange={value => {
+            <InputNumber disabled={this.props.disabled || this.requireSelfOrAdmin(record)} style={{width: "100%"}} min={0} value={text} onChange={value => {
               this.updateField(table, index, "startTime", value);
               if (record.endTime <= value) {
                 this.updateField(table, index, "endTime", Setting.toFixed(value + 1, 3));
@@ -172,7 +208,7 @@ class LabelTable extends React.Component {
         width: "120px",
         render: (text, record, index) => {
           return (
-            <InputNumber style={{width: "100%"}} min={record.startTime} value={text} onChange={value => {
+            <InputNumber disabled={this.props.disabled || this.requireSelfOrAdmin(record)} style={{width: "100%"}} min={record.startTime} value={text} onChange={value => {
               this.updateField(table, index, "endTime", value);
               this.reorderTable(table);
             }} />
@@ -180,14 +216,14 @@ class LabelTable extends React.Component {
         },
       },
       {
-        title: i18next.t("general:Text"),
+        title: i18next.t("video:Comment"),
         dataIndex: "text",
         key: "text",
         // width: '200px',
         render: (text, record, index) => {
           const isNewRow = index === table.length - 1;
           return (
-            <TextArea showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} ref={isNewRow ? this.newInputRef : null} onChange={(e) => {
+            <TextArea disabled={this.props.disabled || this.requireSelfOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} ref={isNewRow ? this.newInputRef : null} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
@@ -196,18 +232,18 @@ class LabelTable extends React.Component {
       {
         title: i18next.t("general:Action"),
         key: "action",
-        width: "50px",
+        width: "100px",
         render: (text, record, index) => {
           return (
             <div>
-              {/* <Tooltip placement="bottomLeft" title={"Up"}>*/}
-              {/*  <Button style={{marginRight: "5px"}} disabled={index === 0} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />*/}
-              {/* </Tooltip>*/}
-              {/* <Tooltip placement="topLeft" title={"Down"}>*/}
-              {/*  <Button style={{marginRight: "5px"}} disabled={index === table.length - 1} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />*/}
-              {/* </Tooltip>*/}
+              <Tooltip placement="bottomLeft" title={"Up"}>
+                <Button style={{marginRight: "5px"}} disabled={index === 0 || this.props.disabled || this.requireAdmin()} icon={<UpOutlined />} size="small" onClick={() => this.upRow(table, index)} />
+              </Tooltip>
+              <Tooltip placement="topLeft" title={"Down"}>
+                <Button style={{marginRight: "5px"}} disabled={index === table.length - 1 || this.props.disabled || this.requireAdmin()} icon={<DownOutlined />} size="small" onClick={() => this.downRow(table, index)} />
+              </Tooltip>
               <Tooltip placement="right" title={"Delete"}>
-                <Button icon={<DeleteOutlined />} size="small" onClick={() => this.deleteRow(table, index)} />
+                <Button icon={<DeleteOutlined />} size="small" disabled={this.props.disabled || this.requireSelfOrAdmin(record)} onClick={() => this.deleteRow(table, index)} />
               </Tooltip>
             </div>
           );
@@ -226,29 +262,31 @@ class LabelTable extends React.Component {
       }
     });
 
+    const myRowCount = table.filter((row) => row.user === this.props.account.name).length;
+
     return (
       <Table rowKey={"id"} columns={columns} dataSource={table} size="middle" bordered pagination={false}
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
-            &nbsp;&nbsp;
-            {
-              table.length === 0 ? null : (
-                <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>
-              )
-            }
+            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={myRowCount >= 1 || this.props.disabled || this.requireReviewer()} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            {/* &nbsp;&nbsp;*/}
+            {/* {*/}
+            {/*  table.length === 0 ? null : (*/}
+            {/*    <Button style={{marginLeft: "5px", marginRight: "5px"}} size="small" onClick={() => this.downloadLabels(table)}>{i18next.t("general:Download")}</Button>*/}
+            {/*  )*/}
+            {/* }*/}
             &nbsp;&nbsp;&nbsp;&nbsp;
             {i18next.t("video:Tag on pause")}:
             &nbsp;&nbsp;
-            <Switch checked={this.props.video.tagOnPause} onChange={checked => {
+            <Switch disabled={true} checked={this.props.video.tagOnPause} onChange={checked => {
               this.updateTagOnPause(checked);
             }} />
           </div>
         )}
-        rowClassName={(record, index) => {
-          return (highlightIndex === index) ? "alert-row" : "";
-        }}
+        // rowClassName={(record, index) => {
+        //   return (highlightIndex === index) ? "alert-row" : "";
+        // }}
       />
     );
   }

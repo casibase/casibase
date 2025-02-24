@@ -24,6 +24,8 @@ import (
 
 type Label struct {
 	Id        string  `xorm:"varchar(100)" json:"id"`
+	User      string  `xorm:"varchar(100)" json:"user"`
+	Type      string  `xorm:"varchar(100)" json:"type"`
 	StartTime float64 `json:"startTime"`
 	EndTime   float64 `json:"endTime"`
 	Text      string  `xorm:"varchar(100)" json:"text"`
@@ -67,6 +69,7 @@ type Video struct {
 	Remarks2       []*Remark      `xorm:"mediumtext" json:"remarks2"`
 	ExcellentCount int            `json:"excellentCount"`
 	State          string         `xorm:"varchar(100)" json:"state"`
+	ReviewState    string         `xorm:"varchar(100)" json:"reviewState"`
 	IsPublic       bool           `json:"isPublic"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
@@ -77,6 +80,7 @@ type Video struct {
 	Class    string   `xorm:"varchar(100)" json:"class"`
 	Subject  string   `xorm:"varchar(100)" json:"subject"`
 	Topic    string   `xorm:"varchar(100)" json:"topic"`
+	Grade2   string   `xorm:"varchar(100)" json:"grade2"`
 	Keywords []string `xorm:"varchar(200)" json:"keywords"`
 	Template string   `xorm:"varchar(200)" json:"template"`
 

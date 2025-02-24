@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,8 +38,8 @@ export function updateSession(owner, name, session) {
   }).then(res => res.json());
 }
 
-export function addAssetTunnel(assetId, mode = "guacd") {
-  return fetch(`${Setting.ServerUrl}/api/add-asset-tunnel?assetId=${assetId}&mode=${mode}`, {
+export function addNodeTunnel(nodeId, mode = "guacd") {
+  return fetch(`${Setting.ServerUrl}/api/add-node-tunnel?nodeId=${nodeId}&mode=${mode}`, {
     method: "POST",
     credentials: "include",
   }).then(res => res.json());

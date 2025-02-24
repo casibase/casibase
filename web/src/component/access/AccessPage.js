@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ const AccessPage = () => {
   const query = new URLSearchParams(useLocation().search);
   const username = query.get("username") || "";
   const password = query.get("password") || "";
-  return <GuacdPage assetId={`${owner}/${name}`} username={`${username}`} password={`${password}`} />;
+  return <GuacdPage nodeId={`${owner}/${name}`} username={`${username}`} password={`${password}`} />;
 };
 
 export default AccessPage;
