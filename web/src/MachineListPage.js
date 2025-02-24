@@ -30,7 +30,7 @@ class MachineListPage extends BaseListPage {
 
   newMachine() {
     return {
-      owner: this.props.account.owner,
+      owner: "admin",
       name: `machine_${Setting.getRandomName()}`,
       provider: "provider_1",
       createdTime: moment().format(),
@@ -280,7 +280,7 @@ class MachineListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    MachineBackend.getMachines(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    MachineBackend.getMachines("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

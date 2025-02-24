@@ -35,7 +35,7 @@ class MachineEditPage extends React.Component {
   }
 
   getMachine() {
-    MachineBackend.getMachine(this.props.account.owner, this.state.machineName)
+    MachineBackend.getMachine("admin", this.state.machineName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({
