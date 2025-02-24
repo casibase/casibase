@@ -1,4 +1,4 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
+// Copyright 2024 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,10 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, Row, Select} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
 import * as MachineBackend from "./backend/MachineBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-
-const {Option} = Select;
 
 class MachineEditPage extends React.Component {
   constructor(props) {
@@ -50,7 +48,7 @@ class MachineEditPage extends React.Component {
   }
 
   parseMachineField(key, value) {
-    if (["port"].includes(key)) {
+    if ([].includes(key)) {
       value = Setting.myParseInt(value);
     }
     return value;
@@ -58,6 +56,7 @@ class MachineEditPage extends React.Component {
 
   updateMachineField(key, value) {
     value = this.parseMachineField(key, value);
+
     const machine = this.state.machine;
     machine[key] = value;
     this.setState({
@@ -77,7 +76,17 @@ class MachineEditPage extends React.Component {
       } style={{marginLeft: "5px"}} type="inner">
         <Row style={{marginTop: "10px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Name")}:
+            {Setting.getLabel(i18next.t("general:Organization"), i18next.t("general:Organization - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.machine.owner} onChange={e => {
+              this.updateMachineField("owner", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Name"), i18next.t("general:Name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.name} onChange={e => {
@@ -87,7 +96,17 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Display name")}:
+            {Setting.getLabel(i18next.t("general:Provider"), i18next.t("general:Provider - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.machine.provider} onChange={e => {
+              this.updateMachineField("provider", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Display name"), i18next.t("general:Display name - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.displayName} onChange={e => {
@@ -97,7 +116,27 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Region")}:
+            {Setting.getLabel(i18next.t("general:Created time"), i18next.t("general:Created time - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={Setting.getFormattedDate(this.state.machine.createdTime)} onChange={e => {
+              this.updateMachineField("createdTime", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Expire time"), i18next.t("general:Expire time - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={Setting.getFormattedDate(this.state.machine.expireTime)} onChange={e => {
+              this.updateMachineField("expireTime", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Region"), i18next.t("general:Region - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.region} onChange={e => {
@@ -107,7 +146,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Zone")}:
+            {Setting.getLabel(i18next.t("general:Zone"), i18next.t("general:Zone - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.zone} onChange={e => {
@@ -117,7 +156,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("provider:Category")}:
+            {Setting.getLabel(i18next.t("general:Category"), i18next.t("general:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.category} onChange={e => {
@@ -127,24 +166,17 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Type")}:
+            {Setting.getLabel(i18next.t("general:Type"), i18next.t("general:Type - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.machine.type} onChange={(value => {
-              this.updateMachineField("type", value);
-            })}>
-              {
-                [
-                  {id: "Pay As You Go", name: "Pay As You Go"},
-                  {id: "Reserved", name: "Reserved"},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
+            <Input value={this.state.machine.type} onChange={e => {
+              this.updateMachineField("type", e.target.value);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:Size")}:
+            {Setting.getLabel(i18next.t("general:Size"), i18next.t("general:Size - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.size} onChange={e => {
@@ -154,7 +186,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Image")}:
+            {Setting.getLabel(i18next.t("general:Image"), i18next.t("general:Image - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.image} onChange={e => {
@@ -164,24 +196,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:OS")}:
-          </Col>
-          <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.machine.os} onChange={(value => {
-              this.updateMachineField("os", value);
-            })}>
-              {
-                [
-                  {id: "Linux", name: "Linux"},
-                  {id: "Windows", name: "Windows"},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Public IP")}:
+            {Setting.getLabel(i18next.t("general:Public IP"), i18next.t("general:Public IP - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.publicIp} onChange={e => {
@@ -191,7 +206,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:Private IP")}:
+            {Setting.getLabel(i18next.t("general:Private IP"), i18next.t("general:Private IP - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.privateIp} onChange={e => {
@@ -201,20 +216,62 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("general:State")}:
+            {Setting.getLabel(i18next.t("general:Remote protocol"), i18next.t("general:Remote protocol - Tooltip"))} :
           </Col>
           <Col span={22} >
-            <Select virtual={false} style={{width: "100%"}} value={this.state.machine.state} onChange={(value => {
+            <Select virtual={false} style={{width: "100%"}} value={this.state.machine.remoteProtocol} onChange={value => {
+              this.updateMachineField("remoteProtocol", value);
+            }}
+            options={[
+              {value: "SSH", label: "SSH"},
+              {value: "RDP", label: "RDP"},
+              {value: "Telnet", label: "Telnet"},
+              {value: "VNC", label: "VNC"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Remote port"), i18next.t("general:Remote port - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <InputNumber value={this.state.machine.remotePort} min={0} max={65535} step={1} onChange={value => {
+              this.updateMachineField("remotePort", value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Remote username"), i18next.t("general:Remote username - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.machine.remoteUsername} onChange={e => {
+              this.updateMachineField("remoteUsername", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:Remote password"), i18next.t("general:Remote password - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.machine.remotePassword} onChange={e => {
+              this.updateMachineField("remotePassword", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {Setting.getLabel(i18next.t("general:State"), i18next.t("general:State - Tooltip"))} :
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.machine.state} onChange={value => {
               this.updateMachineField("state", value);
-            })}>
-              {
-                [
-                  {id: "Active", name: "Active"},
-                  {id: "Stopped", name: "Stopped"},
-                  {id: "Terminated", name: "Terminated"},
-                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-              }
-            </Select>
+            }}
+            options={[
+              {value: "Running", label: "Running"},
+              {value: "Stopped", label: "Stopped"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
       </Card>
@@ -227,7 +284,7 @@ class MachineEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", i18next.t("general:Successfully saved"));
+            Setting.showMessage("success", "Successfully saved");
             this.setState({
               machineName: this.state.machine.name,
             });
@@ -236,21 +293,32 @@ class MachineEditPage extends React.Component {
             } else {
               this.props.history.push(`/machines/${this.state.machine.owner}/${encodeURIComponent(this.state.machine.name)}`);
             }
+            // this.getMachine(true);
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to save: server side failure"));
+            Setting.showMessage("error", "failed to save: server side failure");
             this.updateMachineField("name", this.state.machineName);
           }
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+          Setting.showMessage("error", `failed to save: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `failed to save: ${error}`);
+      });
+  }
+
+  deleteMachine() {
+    MachineBackend.deleteMachine(this.state.machine)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.props.history.push("/machines");
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
-  }
-
-  deleteMachine() {
-    this.props.history.push("/machines");
   }
 
   render() {
