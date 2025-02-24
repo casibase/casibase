@@ -1480,3 +1480,10 @@ export function getLabel(text, tooltip) {
     </React.Fragment>
   );
 }
+
+export function GetIdFromObject(obj) {
+  if (obj === undefined || obj === null) {
+    return "";
+  }
+  return `${obj.owner}/${obj.name}`;
+}

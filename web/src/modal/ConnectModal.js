@@ -19,7 +19,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import * as Setting from "../Setting";
 
 const ConnectModal = (props) => {
-  const text = props.text ? props.text : i18next.t("machine:Connect");
+  const text = props.text ? props.text : i18next.t("node:Connect");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [username, setUsername] = useState("");
@@ -27,7 +27,7 @@ const ConnectModal = (props) => {
   const owner = props.owner;
   const name = props.name;
   const category = props.category;
-  const machine = props.machine || {};
+  const node = props.node || {};
 
   const handleUsernameAndPassword = (username, password) => {
     setUsername(username || "");
@@ -43,8 +43,8 @@ const ConnectModal = (props) => {
 
   const showModal = () => {
     initStatus();
-    handleUsernameAndPassword(machine.remoteUsername, machine.remotePassword);
-    handleOk();
+    handleUsernameAndPassword(node.remoteUsername, node.remotePassword);
+    // handleOk();
     // getNode(owner, name)
     //   .then(res => {
     //     if (res.status === "ok") {
@@ -66,7 +66,7 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "Machine") {
+    if (category === "Node") {
       const link = (username === "" || password === "") ? `access/${owner}/${name}` : `access/${owner}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else if (category === "Database") {
@@ -91,7 +91,7 @@ const ConnectModal = (props) => {
     <>
       <Button
         disabled={props.disabled}
-        type={machine.remoteUsername && machine.remotePassword ? "primary" : "default"}
+        type="primary"
         onClick={showModal}
         style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
       >
@@ -112,7 +112,7 @@ const ConnectModal = (props) => {
             size="large"
             block
           >
-            {i18next.t("account:Sign In")}
+            login
           </Button>
         }
       >
