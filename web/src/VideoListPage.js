@@ -126,13 +126,29 @@ class VideoListPage extends BaseListPage {
     return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
+  requireReviewer() {
+    return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
   renderTable(videos) {
     if (this.props.account.type === "video-normal-user") {
       videos = videos.filter((video) => video.owner === this.props.account.name);
     } else if (this.props.account.type === "video-reviewer1-user") {
       videos = videos.filter((video) => (video.state === "Draft" || video.state === "In Review 1"));
+
+      videos = videos.map(video => {
+        video.reviewState = video.remarks.filter((row) => row.user === this.props.account.name).length > 0 ? "Reviewed" : "Unreviewed";
+        return video;
+      });
+      videos = videos.sort((a, b) => b.reviewState.localeCompare(a.reviewState));
     } else if (this.props.account.type === "video-reviewer2-user") {
       videos = videos.filter((video) => (video.state === "In Review 2"));
+
+      videos = videos.map(video => {
+        video.reviewState = video.remarks2.filter((row) => row.user === this.props.account.name).length > 0 ? "Reviewed" : "Unreviewed";
+        return video;
+      });
+      videos = videos.sort((a, b) => b.reviewState.localeCompare(a.reviewState));
     }
 
     let columns = [
@@ -316,6 +332,23 @@ class VideoListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("video:Review state"),
+        dataIndex: "reviewState",
+        key: "reviewState",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("reviewState"),
+        render: (text, record, index) => {
+          if (text === "Reviewed") {
+            return i18next.t("video:Reviewed");
+          } else if (text === "Unreviewed") {
+            return i18next.t("video:Unreviewed");
+          } else {
+            return "";
+          }
+        },
+      },
+      {
         title: i18next.t("video:Is public"),
         dataIndex: "isPublic",
         key: "isPublic",
@@ -393,6 +426,10 @@ class VideoListPage extends BaseListPage {
 
     if (this.requireReviewerOrAdmin()) {
       columns = columns.filter(column => column.key !== "remarks" && column.key !== "excellentCount");
+    }
+
+    if (this.requireReviewer()) {
+      columns = columns.filter(column => column.key !== "reviewState");
     }
 
     return (

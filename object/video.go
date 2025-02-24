@@ -69,6 +69,7 @@ type Video struct {
 	Remarks2       []*Remark      `xorm:"mediumtext" json:"remarks2"`
 	ExcellentCount int            `json:"excellentCount"`
 	State          string         `xorm:"varchar(100)" json:"state"`
+	ReviewState    string         `xorm:"varchar(100)" json:"reviewState"`
 	IsPublic       bool           `json:"isPublic"`
 
 	School   string   `xorm:"varchar(100)" json:"school"`
