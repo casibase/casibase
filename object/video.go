@@ -24,6 +24,8 @@ import (
 
 type Label struct {
 	Id        string  `xorm:"varchar(100)" json:"id"`
+	User      string  `xorm:"varchar(100)" json:"user"`
+	Type      string  `xorm:"varchar(100)" json:"type"`
 	StartTime float64 `json:"startTime"`
 	EndTime   float64 `json:"endTime"`
 	Text      string  `xorm:"varchar(100)" json:"text"`
