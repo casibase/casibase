@@ -36,7 +36,7 @@ class ProviderEditPage extends React.Component {
   }
 
   getProvider() {
-    ProviderBackend.getProvider(this.props.account.owner, this.state.providerName)
+    ProviderBackend.getProvider("admin", this.state.providerName)
       .then((res) => {
         if (res.status === "ok") {
           this.setState({

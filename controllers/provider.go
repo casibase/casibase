@@ -45,7 +45,7 @@ func (c *ApiController) GetGlobalProviders() {
 // @Success 200 {array} object.Provider The Response object
 // @router /get-providers [get]
 func (c *ApiController) GetProviders() {
-	owner := c.Input().Get("owner")
+	owner := "admin"
 	limit := c.Input().Get("pageSize")
 	page := c.Input().Get("p")
 	field := c.Input().Get("field")
@@ -143,6 +143,7 @@ func (c *ApiController) AddProvider() {
 		return
 	}
 
+	provider.Owner = "admin"
 	success, err := object.AddProvider(&provider)
 	if err != nil {
 		c.ResponseError(err.Error())
