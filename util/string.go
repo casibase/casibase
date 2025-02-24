@@ -68,11 +68,6 @@ func ParseFloat(s string) float64 {
 	return f
 }
 
-func GetOwnerAndNameFromIdNoCheck(id string) (string, string) {
-	tokens := strings.SplitN(id, "/", 2)
-	return tokens[0], tokens[1]
-}
-
 func GetOwnerAndNameFromId(id string) (string, string) {
 	tokens := strings.Split(id, "/")
 	if len(tokens) != 2 {
