@@ -395,8 +395,8 @@ class ChatBox extends React.Component {
       <Welcome
         variant="borderless"
         icon={this.props.store?.avatar || Conf.AiAvatar}
-        title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
-        description={i18next.t("chat:I'm here to help answer your questions")}
+        title={this.props.store?.welcomeTitle || i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
+        description={this.props.store?.welcomeDescription || i18next.t("chat:I'm here to help answer your questions")}
       />
     );
   }
