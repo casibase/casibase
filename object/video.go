@@ -80,6 +80,7 @@ type Video struct {
 	Class    string   `xorm:"varchar(100)" json:"class"`
 	Subject  string   `xorm:"varchar(100)" json:"subject"`
 	Topic    string   `xorm:"varchar(100)" json:"topic"`
+	Grade2   string   `xorm:"varchar(100)" json:"grade2"`
 	Keywords []string `xorm:"varchar(200)" json:"keywords"`
 	Template string   `xorm:"varchar(200)" json:"template"`
 

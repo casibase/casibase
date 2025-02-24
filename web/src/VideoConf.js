@@ -14,6 +14,10 @@
 
 export const GradeOptions = [];
 
+export function getGrade2(value) {
+  return "";
+}
+
 export function getUnitOptions(grade) {
   return [];
 }
