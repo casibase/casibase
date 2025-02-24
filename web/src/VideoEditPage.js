@@ -575,6 +575,7 @@ class VideoEditPage extends React.Component {
           <Col span={5} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
               this.updateVideoField("grade", value);
+              this.updateVideoField("grade2", VideoConf.getGrade2(value));
               this.updateVideoField("unit", "");
               this.updateVideoField("lesson", "");
             })}>

@@ -306,6 +306,7 @@
     "Provider": "Provider"
   },
   "video": {
+    "All": "All",
     "Class": "Class",
     "Comment": "Comment",
     "Cover": "Прикрытие",
@@ -320,6 +321,9 @@
     "Generate Plan": "Generate Plan",
     "Good": "Good",
     "Grade": "Grade",
+    "Grade 1": "Grade 1",
+    "Grade 2": "Grade 2",
+    "Grade 3": "Grade 3",
     "Hidden": "Hidden",
     "In Review 1": "In Review 1",
     "In Review 2": "In Review 2",

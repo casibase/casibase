@@ -306,6 +306,7 @@
     "Provider": "提供商"
   },
   "video": {
+    "All": "全部",
     "Class": "类别",
     "Comment": "评语",
     "Cover": "封面图片",
@@ -320,6 +321,9 @@
     "Generate Plan": "生成教学计划",
     "Good": "良好",
     "Grade": "年级",
+    "Grade 1": "一年级",
+    "Grade 2": "二年级",
+    "Grade 3": "三年级",
     "Hidden": "隐藏",
     "In Review 1": "正在初审中",
     "In Review 2": "正在复审中",
