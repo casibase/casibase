@@ -23,11 +23,11 @@ import (
 	hunyuan "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan/v20230901"
 )
 
-type TencentEmbeddingProvider struct {
+type TencentCloudEmbeddingProvider struct {
 	client *hunyuan.Client
 }
 
-func NewTencentEmbeddingProvider(clientId, clientSecret string) (*TencentEmbeddingProvider, error) {
+func NewTencentCloudEmbeddingProvider(clientId, clientSecret string) (*TencentCloudEmbeddingProvider, error) {
 	credential := common.NewCredential(clientId, clientSecret)
 	region := "ap-guangzhou"
 	cpf := profile.NewClientProfile()
@@ -35,12 +35,12 @@ func NewTencentEmbeddingProvider(clientId, clientSecret string) (*TencentEmbeddi
 	if err != nil {
 		return nil, fmt.Errorf("failed to create client: %v", err)
 	}
-	return &TencentEmbeddingProvider{
+	return &TencentCloudEmbeddingProvider{
 		client: client,
 	}, nil
 }
 
-func (p *TencentEmbeddingProvider) GetPricing() string {
+func (p *TencentCloudEmbeddingProvider) GetPricing() string {
 	return `URL:
 https://cloud.tencent.com/document/product/1729/97731
 
@@ -52,7 +52,7 @@ Embedding models:
 `
 }
 
-func (p *TencentEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
+func (p *TencentCloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	// Example placeholder logic for price calculation, real logic may vary.
 	pricePerThousandTokens := 0.0007 // Hypothetical price in CNY
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
@@ -60,7 +60,7 @@ func (p *TencentEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	return nil
 }
 
-func (p *TencentEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
+func (p *TencentCloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	request := hunyuan.NewGetEmbeddingRequest()
 	request.Input = common.StringPtr(text)
 
