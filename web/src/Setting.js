@@ -774,7 +774,7 @@ export function getProviderTypeOptions(category) {
         {id: "Doubao", name: "Doubao"},
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
-        {id: "Tencent Cloud", name: "Tencent Cloud"},
+        {id: "Hunyuan", name: "Hunyuan"},
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
       ]
@@ -791,7 +791,7 @@ export function getProviderTypeOptions(category) {
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
-        {id: "Tencent Cloud", name: "Tencent Cloud"},
+        {id: "Hunyuan", name: "Hunyuan"},
         {id: "Jina", name: "Jina"},
         {id: "Dummy", name: "Dummy"},
       ]
@@ -1116,7 +1116,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "step-1-flash", name: "step-1-flash"},
       {id: "step-2-16k", name: "step-2-16k"},
     ]);
-  } else if (type === "Tencent Cloud") {
+  } else if (type === "Hunyuan") {
     if (category === "Model") {
       return (
         [
@@ -1127,15 +1127,6 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "hunyuan-code", name: " hunyuan-code"},
           {id: "hunyuan-role", name: "hunyuan-role"},
           {id: "hunyuan-turbo", name: "hunyuan-turbo"},
-          {id: "deepseek-r1", name: "deepseek-r1"},
-          {id: "deepseek-v3", name: "deepseek-v3"},
-          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
-          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
-          {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
-          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
-          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
-          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-
         ]);
     } else if (category === "Embedding") {
       return (

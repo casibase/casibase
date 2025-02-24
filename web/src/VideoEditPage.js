@@ -105,19 +105,6 @@ class VideoEditPage extends React.Component {
 
     const video = this.state.video;
     video[key] = value;
-
-    if (key === "remarks") {
-      if (value.filter((row) => (["Excellent", "Good"].includes(row.score))).length >= 2) {
-        if (this.state.video.state === "In Review 1") {
-          video.state = "In Review 2";
-        }
-      } else {
-        if (this.state.video.state === "In Review 2") {
-          video.state = "In Review 1";
-        }
-      }
-    }
-
     this.setState({
       video: video,
     });
@@ -459,7 +446,6 @@ class VideoEditPage extends React.Component {
         <LabelTable
           ref={this.labelTable}
           title={i18next.t("video:Labels")}
-          account={this.props.account}
           table={this.state.video.labels}
           currentTime={this.state.currentTime}
           video={this.state.video}
@@ -575,7 +561,6 @@ class VideoEditPage extends React.Component {
           <Col span={5} >
             <Select disabled={this.requireUserOrAdmin(this.state.video)} virtual={false} style={{width: "100%"}} value={this.state.video.grade} onChange={(value => {
               this.updateVideoField("grade", value);
-              this.updateVideoField("grade2", VideoConf.getGrade2(value));
               this.updateVideoField("unit", "");
               this.updateVideoField("lesson", "");
             })}>
@@ -832,14 +817,6 @@ class VideoEditPage extends React.Component {
   }
 
   submitVideoEdit(exitAfterSave) {
-    if ((this.state.video.remarks.filter((row) => (row.user === this.props.account.name && ["Excellent", "Good"].includes(row.score))).length > 0) ||
-        (this.state.video.remarks2.filter((row) => (row.user === this.props.account.name && ["Excellent", "Good"].includes(row.score))).length > 0)) {
-      if (this.state.video.labels.filter((row) => (row.user === this.props.account.name)).length === 0) {
-        Setting.showMessage("error", "Please add a new label first before saving!");
-        return;
-      }
-    }
-
     const video = Setting.deepCopy(this.state.video);
     VideoBackend.updateVideo(this.state.video.owner, this.state.videoName, video)
       .then((res) => {

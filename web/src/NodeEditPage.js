@@ -227,7 +227,7 @@ class NodeEditPage extends React.Component {
               value={this.state.node.remotePort}
               defaultValue={this.getDefaultPort(this.state.node.remoteProtocol)}
               onChange={e => {
-                this.updateNodeField("remotePort", e.target.value);
+                this.updateNodeField("privateIp", e.target.value);
               }}
             />
           </Col>

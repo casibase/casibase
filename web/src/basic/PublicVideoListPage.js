@@ -13,14 +13,11 @@
 // limitations under the License.
 
 import React from "react";
-import {Radio} from "antd";
 import * as VideoBackend from "../backend/VideoBackend";
 import GridCards from "./GridCards";
-import i18next from "i18next";
 
 const PublicVideoListPage = (props) => {
   const [videos, setVideos] = React.useState(null);
-  const [grade, setGrade] = React.useState("All");
 
   React.useEffect(() => {
     if (props.account === null) {
@@ -39,12 +36,7 @@ const PublicVideoListPage = (props) => {
       return null;
     }
 
-    let filteredVideos = videos;
-    if (grade !== "All") {
-      filteredVideos = videos.filter((video) => video.grade2 === grade);
-    }
-
-    return filteredVideos.map(video => {
+    return videos.map(video => {
       let comment = "";
       if (video.remarks2 && video.remarks2.length > 0) {
         comment = video.remarks2[0].text;
@@ -58,26 +50,11 @@ const PublicVideoListPage = (props) => {
         createdTime: comment,
       };
     });
-  };
 
-  const renderRadio = () => {
-    return (
-      <Radio.Group block style={{marginBottom: "10px", width: "100%"}} buttonStyle="solid" value={grade} onChange={e => {
-        setGrade(e.target.value);
-      }}>
-        <Radio.Button value={"All"}>{i18next.t("video:All")}</Radio.Button>
-        <Radio.Button value={"Grade 1"}>{i18next.t("video:Grade 1")}</Radio.Button>
-        <Radio.Button value={"Grade 2"}>{i18next.t("video:Grade 2")}</Radio.Button>
-        <Radio.Button value={"Grade 3"}>{i18next.t("video:Grade 3")}</Radio.Button>
-      </Radio.Group>
-    );
   };
 
   return (
     <div style={{display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center"}}>
-      {
-        renderRadio()
-      }
       <GridCards items={getItems()} />
     </div>
   );

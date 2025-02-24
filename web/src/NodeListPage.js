@@ -243,8 +243,8 @@ class NodeListPage extends BaseListPage {
                 disabled={node.owner !== this.props.account.owner}
                 owner={node.owner}
                 name={node.name}
-                category={"Node"}
-                node={node}
+                category={"Machine"}
+                machine={node}
               />
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
