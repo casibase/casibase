@@ -29,7 +29,7 @@ class ProviderListPage extends BaseListPage {
   newProvider() {
     const randomName = Setting.getRandomName();
     return {
-      owner: "admin",
+      owner: this.props.account.owner,
       name: `provider_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
@@ -52,7 +52,7 @@ class ProviderListPage extends BaseListPage {
   newStorageProvider() {
     const randomName = Setting.getRandomName();
     return {
-      owner: "admin",
+      owner: this.props.account.owner,
       name: `provider_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
@@ -113,6 +113,21 @@ class ProviderListPage extends BaseListPage {
 
   renderTable(providers) {
     const columns = [
+      {
+        title: i18next.t("general:Owner"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, provider, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
@@ -263,7 +278,7 @@ class ProviderListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    ProviderBackend.getProviders(this.props.account.name, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    ProviderBackend.getProviders(this.props.account.owner, params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
