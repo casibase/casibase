@@ -268,6 +268,13 @@ export function getUrlParam(name) {
   return params.get(name);
 }
 
+export function GetIdFromObject(obj) {
+  if (obj === undefined || obj === null) {
+    return "";
+  }
+  return `${obj.owner}/${obj.name}`;
+}
+
 export function getTag(text, type, state) {
   let icon = null;
   let style = {};
