@@ -41,6 +41,7 @@ class VideoListPage extends BaseListPage {
       dataUrls: [],
       dataUrl: "",
       playAuth: "",
+      tableTitleHeight: "100%",
     };
   }
 
@@ -66,6 +67,10 @@ class VideoListPage extends BaseListPage {
   }
 
   uploadFile(info) {
+    this.setState({
+      tableTitleHeight: "80px",
+    });
+
     const {status, response: res} = info.file;
     // if (status !== "uploading") {
     //   console.log(info.file, info.fileList);
@@ -75,6 +80,9 @@ class VideoListPage extends BaseListPage {
         Setting.showMessage("success", "Video uploaded successfully");
         const videoName = res.data;
         this.props.history.push(`/videos/${this.props.account.name}/${videoName}`);
+        this.setState({
+          tableTitleHeight: "100%",
+        });
       } else {
         Setting.showMessage("error", `Video failed to upload: ${res.msg}`);
       }
@@ -94,6 +102,14 @@ class VideoListPage extends BaseListPage {
       action: `${Setting.ServerUrl}/api/upload-video`,
       disabled: isDisabled,
       withCredentials: true,
+      progress: {
+        strokeColor: {
+          "0%": "#108ee9",
+          "100%": "#87d068",
+        },
+        strokeWidth: 3,
+        format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
+      },
       onChange: (info) => {
         this.uploadFile(info);
       },
@@ -436,7 +452,7 @@ class VideoListPage extends BaseListPage {
       <div>
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={videos} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
-            <div>
+            <div style={{height: this.state.tableTitleHeight}}>
               {i18next.t("general:Videos")}
               {/* &nbsp;&nbsp;&nbsp;&nbsp;*/}
               {/* <Button type="primary" size="small" onClick={this.addVideo.bind(this)}>{i18next.t("general:Add")}</Button>*/}
