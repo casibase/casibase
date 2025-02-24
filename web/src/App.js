@@ -330,7 +330,7 @@ class App extends Component {
 
     if (this.state.account.type.startsWith("video-")) {
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-      res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+      // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
 
       if (this.state.account.type === "video-admin-user") {
         res.push(Setting.getItem(
@@ -348,9 +348,9 @@ class App extends Component {
           "####"));
       }
 
-      if (window.location.pathname === "/") {
-        Setting.goToLinkSoft(this, "/public-videos");
-      }
+      // if (window.location.pathname === "/") {
+      //   Setting.goToLinkSoft(this, "/public-videos");
+      // }
       return res;
     }
 
@@ -429,7 +429,7 @@ class App extends Component {
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-        res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+        // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
         res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
         res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
       }
@@ -450,7 +450,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"));
 
       res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-      res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
+      // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
 
       res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
       res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
@@ -515,6 +515,14 @@ class App extends Component {
   }
 
   renderRouter() {
+    if (this.state.account?.type.startsWith("video-")) {
+      if (window.location.pathname === "/") {
+        return (
+          <PublicVideoListPage account={this.state.account} />
+        );
+      }
+    }
+
     return (
       <Switch>
         <Route exact path="/callback" component={AuthCallback} />
