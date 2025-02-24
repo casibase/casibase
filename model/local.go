@@ -246,6 +246,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
 		flushData = flushDataOpenai
+	} else if p.typ == "Custom" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	}
 
 	ctx := context.Background()
@@ -379,8 +382,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
-		var responseTokenCount int
-		responseTokenCount, err = GetTokenSize(model, answerData.String())
+		responseTokenCount, err := GetTokenSize(model, answerData.String())
 		if err != nil {
 			return nil, err
 		}

@@ -79,3 +79,14 @@ export function deleteVector(vector) {
     body: JSON.stringify(newVector),
   }).then(res => res.json());
 }
+
+export function deleteAllVectors() {
+  return fetch(`${Setting.ServerUrl}/api/delete-all-vectors`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: null,
+  }).then(res => res.json());
+}

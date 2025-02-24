@@ -18,6 +18,7 @@ import (
 	"fmt"
 	"math"
 	"regexp"
+	"strings"
 
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
@@ -54,8 +55,51 @@ func RefinePrice(price float64) float64 {
 	return res
 }
 
+func getCompatibleModel(model string) string {
+	openaiModels := map[string]bool{
+		openai.GPT3Dot5Turbo:        true,
+		openai.GPT3Dot5Turbo0301:    true,
+		openai.GPT3Dot5Turbo0613:    true,
+		openai.GPT3Dot5Turbo1106:    true,
+		openai.GPT3Dot5Turbo0125:    true,
+		openai.GPT3Dot5Turbo16K:     true,
+		openai.GPT3Dot5Turbo16K0613: true,
+		openai.GPT4:                 true,
+		openai.GPT4o:                true,
+		openai.GPT4o20240513:        true,
+		openai.GPT4oMini:            true,
+		openai.GPT4oMini20240718:    true,
+		openai.GPT4TurboPreview:     true,
+		openai.GPT4VisionPreview:    true,
+		openai.GPT4Turbo1106:        true,
+		openai.GPT4Turbo0125:        true,
+		openai.GPT4Turbo:            true,
+		openai.GPT4Turbo20240409:    true,
+		openai.GPT40314:             true,
+		openai.GPT40613:             true,
+		openai.GPT432K:              true,
+		openai.GPT432K0314:          true,
+		openai.GPT432K0613:          true,
+	}
+
+	if openaiModels[model] {
+		return model
+	}
+
+	// Handle generic model families
+	if strings.Contains(model, "gpt-3.5-turbo") {
+		return openai.GPT3Dot5Turbo
+	} else if strings.Contains(model, "gpt-4") {
+		return openai.GPT4
+	}
+
+	// Default to GPT-4
+	return openai.GPT4
+}
+
 func GetTokenSize(model string, prompt string) (int, error) {
-	tkm, err := tiktoken.EncodingForModel(model)
+	modelToUse := getCompatibleModel(model)
+	tkm, err := tiktoken.EncodingForModel(modelToUse)
 	if err != nil {
 		return 0, err
 	}
