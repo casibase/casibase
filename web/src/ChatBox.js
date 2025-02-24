@@ -439,7 +439,7 @@ class ChatBox extends React.Component {
               style={{
                 flex: 1,
                 overflow: "auto",
-                position: "absolute",
+                position: this.props.previewMode ? "relative" : "absolute",
                 top: 0,
                 left: 0,
                 right: 0,

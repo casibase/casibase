@@ -360,7 +360,7 @@ class ChatListPage extends BaseListPage {
                 overflowY: "auto",
                 width: "100%",
               }}>
-                <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} />
+                <ChatBox disableInput={true} hideInput={true} messages={messages} sendMessage={null} account={this.props.account} previewMode={true} />
               </div>
             </div>
 
