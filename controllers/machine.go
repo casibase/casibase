@@ -116,7 +116,8 @@ func (c *ApiController) UpdateMachine() {
 		return
 	}
 
-	c.ResponseOk(object.UpdateMachine(id, &machine))
+	c.Data["json"] = wrapActionResponse(object.UpdateMachine(id, &machine))
+	c.ServeJSON()
 }
 
 // AddMachine
@@ -134,7 +135,8 @@ func (c *ApiController) AddMachine() {
 		return
 	}
 
-	c.ResponseOk(object.AddMachine(&machine))
+	c.Data["json"] = wrapActionResponse(object.AddMachine(&machine))
+	c.ServeJSON()
 }
 
 // DeleteMachine
@@ -152,5 +154,6 @@ func (c *ApiController) DeleteMachine() {
 		return
 	}
 
-	c.ResponseOk(object.DeleteMachine(&machine))
+	c.Data["json"] = wrapActionResponse(object.DeleteMachine(&machine))
+	c.ServeJSON()
 }
