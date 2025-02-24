@@ -388,7 +388,7 @@ func (c *ApiController) UploadVideo() {
 		Segments:    segments,
 		DataUrls:    []string{},
 		DataUrl:     "",
-		TagOnPause:  true,
+		TagOnPause:  false,
 		Remarks:     []*object.Remark{},
 		Remarks2:    []*object.Remark{},
 		State:       "Draft",
