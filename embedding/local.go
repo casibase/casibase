@@ -92,6 +92,8 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 		client = getAzureClientFromToken(p.deploymentName, p.secretKey, p.providerUrl, p.apiVersion)
 	} else if p.typ == "OpenAI" {
 		client = getProxyClientFromToken(p.secretKey)
+	} else if p.typ == "Custom" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	}
 
 	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
