@@ -246,6 +246,9 @@ class ChatPage extends BaseListPage {
             });
 
             if (lastMessage.errorText !== "") {
+              this.setState({
+                messageLoading: false,
+              });
               return;
             }
 
@@ -278,15 +281,7 @@ class ChatPage extends BaseListPage {
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.errorText = error;
-              lastMessage2.text = error;
               res.data[res.data.length - 1] = lastMessage2;
-
-              MessageBackend.updateMessage(lastMessage2.owner, lastMessage2.name, lastMessage2)
-                .then((result) => {
-                  if (result.status !== "ok") {
-                    Setting.showMessage("error", `Failed to save error message: ${result.msg}`);
-                  }
-                });
 
               res.data.map((message) => {
                 message.html = renderText(message.text);

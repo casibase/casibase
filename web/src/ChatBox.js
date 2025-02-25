@@ -188,20 +188,31 @@ class ChatBox extends React.Component {
 
   renderMessageContent = (message, isLastMessage) => {
     if (message.errorText !== "") {
-      const refinedErrorText = Setting.getRefinedErrorText(message.errorText);
-      return (
-        <Alert
-          message={refinedErrorText}
-          description={message.errorText}
-          type="error"
-          showIcon
-          action={
-            <Button type={"primary"} onClick={this.handleRegenerate}>
-              {i18next.t("general:Regenerate Answer")}
-            </Button>
-          }
-        />
-      );
+      // 首先使用简单文本确保内容立即显示
+      message.text = "Error occurred";
+
+      // 然后在组件挂载后替换为Ant Design组件
+      setTimeout(() => {
+        this.setState({rerenderErrorMessage: true});
+      }, 10);
+
+      if (this.state.rerenderErrorMessage) {
+        return (
+          <Alert
+            message={Setting.getRefinedErrorText(message.errorText)}
+            description={message.errorText}
+            type="error"
+            showIcon
+            action={
+              <Button danger type="primary" onClick={this.handleRegenerate}>
+                {i18next.t("general:Regenerate Answer")}
+              </Button>
+            }
+          />
+        );
+      } else {
+        return <div>Loading error message...</div>;
+      }
     }
 
     if (message.text === "" && message.author === "AI") {
