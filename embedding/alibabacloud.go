@@ -16,8 +16,6 @@ package embedding
 
 import (
 	"context"
-
-	"github.com/sashabaranov/go-openai"
 )
 
 type AlibabacloudEmbeddingProvider struct {
@@ -34,15 +32,6 @@ func NewAlibabacloudEmbeddingProvider(typ string, subType string, secretKey stri
 		secretKey:   secretKey,
 		providerUrl: providerUrl,
 	}, nil
-}
-
-func getQwenClientFromUrl(authToken string, url string) *openai.Client {
-	config := openai.DefaultConfig(authToken)
-	// config.BaseURL = "https://dashscope-intl.aliyuncs.com/compatible-mode/v1"
-	config.BaseURL = url
-
-	c := openai.NewClientWithConfig(config)
-	return c
 }
 
 func (p *AlibabacloudEmbeddingProvider) GetPricing() string {
@@ -67,23 +56,13 @@ func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) err
 }
 
 func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
-	var client *openai.Client = getQwenClientFromUrl(p.secretKey, p.providerUrl)
-
-	resp, err := client.CreateEmbeddings(ctx, openai.EmbeddingRequest{
-		Input: []string{text},
-		Model: openai.EmbeddingModel(p.subType),
-	})
+	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", p.subType, p.secretKey, p.providerUrl)
 	if err != nil {
 		return nil, nil, err
 	}
-	tokenCount := resp.Usage.PromptTokens
-	embeddingResult := &EmbeddingResult{TokenCount: tokenCount}
-
-	err = p.calculatePrice(embeddingResult)
+	vector, embeddingResult, err := localEmbeddingProvider.QueryVector(text, ctx)
 	if err != nil {
 		return nil, nil, err
 	}
-
-	vector := resp.Data[0].Embedding
 	return vector, embeddingResult, nil
 }
