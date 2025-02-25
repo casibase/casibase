@@ -188,10 +188,10 @@ class ChatBox extends React.Component {
 
   renderMessageContent = (message, isLastMessage) => {
     if (message.errorText !== "") {
-      // 首先使用简单文本确保内容立即显示
+      // Use simple text to ensure the content is displayed immediately
       message.text = "Error occurred";
 
-      // 然后在组件挂载后替换为Ant Design组件
+      // Then replace it with Ant Design components after the component is mounted.
       setTimeout(() => {
         this.setState({rerenderErrorMessage: true});
       }, 10);
