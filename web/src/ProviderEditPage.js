@@ -193,6 +193,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "gpt2");
                 } else if (value === "ChatGLM") {
                   this.updateProviderField("subType", "chatglm2-6b");
+                } else if (value === "Ollama") {
+                  this.updateProviderField("subType", "llama3.3:70b");
                 } else if (value === "Local") {
                   this.updateProviderField("subType", "custom-model");
                 } else if (value === "Azure") {
@@ -221,8 +223,6 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "yi-lightning");
                 } else if (value === "Silicon Flow") {
                   this.updateProviderField("subType", "deepseek-ai/DeepSeek-R1");
-                } else if (value === "Ollama") {
-                  this.updateProviderField("subType", "llama3.3:70b");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
