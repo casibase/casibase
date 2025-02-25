@@ -15,12 +15,13 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Table} from "antd";
+import BaseListPage from "./BaseListPage";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as MachineBackend from "./backend/MachineBackend";
 import i18next from "i18next";
-import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import ConnectModal from "./modal/ConnectModal";
 
 class MachineListPage extends BaseListPage {
   constructor(props) {
@@ -29,21 +30,23 @@ class MachineListPage extends BaseListPage {
 
   newMachine() {
     return {
-      owner: this.props.account.owner,
+      owner: "admin",
       name: `machine_${Setting.getRandomName()}`,
+      provider: "provider_1",
       createdTime: moment().format(),
       updatedTime: moment().format(),
+      expireTime: "",
       displayName: `New Machine - ${Setting.getRandomName()}`,
-      region: "us-west",
+      region: "West US 2",
       zone: "Zone 1",
       category: "Standard",
       type: "Pay As You Go",
       size: "Standard_D4ls_v5",
+      tag: "",
+      state: "Active",
       image: "Ubuntu 24.04",
-      os: "Linux",
       publicIp: "",
       privateIp: "",
-      state: "Active",
     };
   }
 
@@ -53,13 +56,13 @@ class MachineListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.props.history.push({pathname: `/machines/${newMachine.owner}/${newMachine.name}`, mode: "add"});
-          Setting.showMessage("success", i18next.t("general:Successfully added"));
+          Setting.showMessage("success", "Machine added successfully");
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+          Setting.showMessage("error", `Failed to add Machine: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        Setting.showMessage("error", `Machine failed to add: ${error}`);
       });
   }
 
@@ -67,22 +70,47 @@ class MachineListPage extends BaseListPage {
     MachineBackend.deleteMachine(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
+          Setting.showMessage("success", "Machine deleted successfully");
           this.setState({
             data: Setting.deleteRow(this.state.data, i),
-            pagination: {total: this.state.pagination.total - 1},
+            pagination: {
+              ...this.state.pagination,
+              total: this.state.pagination.total - 1,
+            },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `Failed to delete Machine: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        Setting.showMessage("error", `Machine failed to delete: ${error}`);
       });
   }
 
   renderTable(machines) {
     const columns = [
+      {
+        title: i18next.t("general:Organization"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, machine, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Provider"),
+        dataIndex: "provider",
+        key: "provider",
+        width: "120px",
+        sorter: (a, b) => a.provider.localeCompare(b.provider),
+      },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
@@ -96,13 +124,32 @@ class MachineListPage extends BaseListPage {
           );
         },
       },
+      // {
+      //   title: i18next.t("general:Display name"),
+      //   dataIndex: "displayName",
+      //   key: "displayName",
+      //   width: "120px",
+      //   sorter: (a, b) => a.displayName.localeCompare(b.displayName),
+      // },
       {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
         width: "160px",
+        // sorter: true,
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
-        render: (text, record, index) => {
+        render: (text, machine, index) => {
+          return Setting.getFormattedDate(text);
+        },
+      },
+      {
+        title: i18next.t("general:Expire time"),
+        dataIndex: "expireTime",
+        key: "expireTime",
+        width: "160px",
+        // sorter: true,
+        sorter: (a, b) => a.expireTime.localeCompare(b.expireTime),
+        render: (text, machine, index) => {
           return Setting.getFormattedDate(text);
         },
       },
@@ -114,19 +161,19 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.region.localeCompare(b.region),
       },
       {
-        title: i18next.t("machine:Zone"),
+        title: i18next.t("general:Zone"),
         dataIndex: "zone",
         key: "zone",
         width: "120px",
         sorter: (a, b) => a.zone.localeCompare(b.zone),
       },
-      {
-        title: i18next.t("provider:Category"),
-        dataIndex: "category",
-        key: "category",
-        width: "120px",
-        sorter: (a, b) => a.category.localeCompare(b.category),
-      },
+      // {
+      //   title: i18next.t("general:Category"),
+      //   dataIndex: "category",
+      //   key: "category",
+      //   width: "120px",
+      //   sorter: (a, b) => a.category.localeCompare(b.category),
+      // },
       {
         title: i18next.t("general:Type"),
         dataIndex: "type",
@@ -135,28 +182,28 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("machine:Image"),
+        title: i18next.t("general:Size"),
+        dataIndex: "size",
+        key: "size",
+        width: "120px",
+        sorter: (a, b) => a.size.localeCompare(b.size),
+      },
+      {
+        title: i18next.t("general:Image"),
         dataIndex: "image",
         key: "image",
         width: "120px",
         sorter: (a, b) => a.image.localeCompare(b.image),
       },
       {
-        title: i18next.t("machine:OS"),
-        dataIndex: "os",
-        key: "os",
-        width: "120px",
-        sorter: (a, b) => a.os.localeCompare(b.os),
-      },
-      {
-        title: i18next.t("machine:Public IP"),
+        title: i18next.t("general:Public IP"),
         dataIndex: "publicIp",
         key: "publicIp",
         width: "120px",
         sorter: (a, b) => a.publicIp.localeCompare(b.publicIp),
       },
       {
-        title: i18next.t("machine:Private IP"),
+        title: i18next.t("general:Private IP"),
         dataIndex: "privateIp",
         key: "privateIp",
         width: "120px",
@@ -166,23 +213,35 @@ class MachineListPage extends BaseListPage {
         title: i18next.t("general:State"),
         dataIndex: "state",
         key: "state",
-        width: "100px",
+        width: "90px",
         sorter: (a, b) => a.state.localeCompare(b.state),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "260px",
         fixed: (Setting.isMobile()) ? "false" : "right",
-        render: (text, record, index) => {
+        render: (text, machine, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/machines/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
-              <PopconfirmModal
-                title={i18next.t("general:Sure to delete") + `: ${record.name} ?`}
-                onConfirm={() => this.deleteMachine(index)}
+              <ConnectModal
+                owner={machine.owner}
+                name={machine.name}
+                category={"Machine"}
+                machine={machine}
               />
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                onClick={() => this.props.history.push(`/machines/${machine.owner}/${machine.name}`)}
+              >{i18next.t("general:Edit")}
+              </Button>
+              <PopconfirmModal
+                disabled={machine.owner !== this.props.account.owner}
+                title={i18next.t("general:Sure to delete") + `: ${machine.name} ?`}
+                onConfirm={() => this.deleteMachine(index)}
+              >
+              </PopconfirmModal>
             </div>
           );
         },
@@ -190,8 +249,8 @@ class MachineListPage extends BaseListPage {
     ];
 
     const paginationProps = {
-      total: this.state.pagination.total,
       pageSize: this.state.pagination.pageSize,
+      total: this.state.pagination.total,
       showQuickJumper: true,
       showSizeChanger: true,
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
@@ -199,23 +258,15 @@ class MachineListPage extends BaseListPage {
 
     return (
       <div>
-        <Table columns={columns}
-          dataSource={machines}
-          rowKey="name"
-          size="middle"
-          bordered
-          pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={machines} rowKey={(machine) => `${machine.owner}/${machine.name}`} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={() => this.addMachine()}>{i18next.t("general:Add")}</Button>
+              <Button type="primary" size="small" onClick={this.addMachine.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={machines === null}
-          onChange={(pagination, filters, sorter) => {
-            this.handleTableChange(pagination, filters, sorter);
-          }}
-          scroll={{x: "max-content"}}
+          loading={this.state.loading}
+          onChange={this.handleTableChange}
         />
       </div>
     );
@@ -229,7 +280,7 @@ class MachineListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    MachineBackend.getMachines(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    MachineBackend.getMachines("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,

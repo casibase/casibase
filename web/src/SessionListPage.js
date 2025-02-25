@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -87,14 +87,14 @@ class SessionListPage extends BaseListPage {
   renderTable(sessions) {
     const columns = [
       {
-        title: i18next.t("general:Node"),
-        dataIndex: "node",
-        key: "node",
+        title: i18next.t("general:Asset"),
+        dataIndex: "asset",
+        key: "asset",
         width: "200px",
         sorter: (a, b) => a.name.localeCompare(b.name),
         render: (text, record, index) => {
           return (
-            <Link to={`/nodes/${text}`}>
+            <Link to={`/assets/${text}`}>
               {text}
             </Link>
           );
@@ -182,7 +182,7 @@ class SessionListPage extends BaseListPage {
         key: "startTime",
         width: "220px",
         sorter: (a, b) => a.startTime.localeCompare(b.startTime),
-        render: (text, node, index) => {
+        render: (text, asset, index) => {
           return Setting.getFormattedDate(text);
         },
       },

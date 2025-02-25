@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -68,11 +68,6 @@ func ParseFloat(s string) float64 {
 	return f
 }
 
-func GetOwnerAndNameFromIdNoCheck(id string) (string, string) {
-	tokens := strings.SplitN(id, "/", 2)
-	return tokens[0], tokens[1]
-}
-
 func GetOwnerAndNameFromId(id string) (string, string) {
 	tokens := strings.Split(id, "/")
 	if len(tokens) != 2 {
@@ -98,6 +93,11 @@ func GetOwnerAndNameFromId3New(id string) (string, string, string) {
 	}
 
 	return tokens[0], tokens[1], tokens[2]
+}
+
+func GetOwnerAndNameFromIdNoCheck(id string) (string, string) {
+	tokens := strings.SplitN(id, "/", 2)
+	return tokens[0], tokens[1]
 }
 
 func GetIdFromOwnerAndName(owner string, name string) string {
