@@ -221,6 +221,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "yi-lightning");
                 } else if (value === "Silicon Flow") {
                   this.updateProviderField("subType", "deepseek-ai/DeepSeek-R1");
+                } else if (value === "Ollama") {
+                  this.updateProviderField("subType", "llama3.3:70b");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
@@ -257,13 +259,32 @@ class ProviderEditPage extends React.Component {
                 {i18next.t("provider:Sub type")}:
               </Col>
               <Col span={22} >
-                <Select virtual={false} style={{width: "100%"}} value={this.state.provider.subType} onChange={(value => {this.updateProviderField("subType", value);})}>
-                  {
-                    Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
-                      // .sort((a, b) => a.name.localeCompare(b.name))
-                      .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
-                  }
-                </Select>
+                {this.state.provider.type === "Ollama" ? (
+                  <AutoComplete
+                    style={{width: "100%"}}
+                    value={this.state.provider.subType}
+                    onChange={(value) => {
+                      this.updateProviderField("subType", value);
+                    }}
+                    options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)}
+                    placeholder="Please select or enter the model name"
+                  />
+                ) : (
+                  <Select
+                    virtual={false}
+                    style={{width: "100%"}}
+                    value={this.state.provider.subType}
+                    onChange={(value) => {
+                      this.updateProviderField("subType", value);
+                    }}
+                  >
+                    {Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)
+                      .map((item, index) => (
+                        <Option key={index} value={item.id}>{item.name}</Option>
+                      ))
+                    }
+                  </Select>
+                )}
               </Col>
             </Row>
           )
@@ -403,7 +424,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -411,7 +432,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Ollama"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -424,7 +445,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>

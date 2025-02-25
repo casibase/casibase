@@ -756,6 +756,7 @@ export function getProviderTypeOptions(category) {
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
         {id: "MiniMax", name: "MiniMax"},
+        {id: "Ollama", name: "Ollama"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "Cohere", name: "Cohere"},
@@ -780,6 +781,7 @@ export function getProviderTypeOptions(category) {
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Cohere", name: "Cohere"},
         {id: "Ernie", name: "Ernie"},
+        {id: "Ollama", name: "Ollama"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
@@ -1003,6 +1005,43 @@ export function getProviderSubTypeOptions(category, type) {
         ]
       );
     }
+  } else if (type === "Ollama") {
+      if (category === "Model") {
+          return (
+              [
+                  {id: "deepseek-r1:671b", name: "deepseek-r1:671b"},
+                  {id: "deepseek-r1:1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+                  {id: "deepseek-r1:7b", name: "deepseek-r1-distill-qwen-7b"},
+                  {id: "deepseek-r1:14b", name: "deepseek-r1-distill-qwen-14b"},
+                  {id: "deepseek-r1:32b", name: "deepseek-r1-distill-qwen-32b"},
+                  {id: "deepseek-r1:8b", name: "deepseek-r1-distill-llama-8b"},
+                  {id: "deepseek-r1:70b", name: "deepseek-r1-distill-llama-70b"},
+                  {id: "llama3.3:70b", name: "llama3.3:70b"},
+                  {id: "qwen2.5:7b", name: "qwen2.5:7b"},
+                  {id: "qwen2.5:14b", name: "qwen2.5:14b"},
+                  {id: "qwen2.5:32b", name: "qwen2.5:32b"},
+                  {id: "qwen2.5:72b", name: "qwen2.5:72b"},
+                  {id: "deepseek-v3:671b", name: "deepseek-v3:671b"},
+                  {id: "llama3.2:1b", name: "llama3.2:1b"},
+                  {id: "llama3.2:3b", name: "llama3.2:3b"},
+                  {id: "llama3:8b", name: "llama3:8b"},
+                  {id: "llama3:70b", name: "llama3:70b"},
+              ]
+          );
+      } else if (category === "Embedding") {
+          return (
+              [
+                  {id: "nomic-embed-text", name: "nomic-embed-text"},
+                  {id: "mxbai-embed-large", name: "mxbai-embed-large"},
+                  {id: "snowflake-arctic-embed:335m", name: "snowflake-arctic-embed:335m"},
+                  {id: "snowflake-arctic-embed:137m", name: "snowflake-arctic-embed:137m"},
+                  {id: "snowflake-arctic-embed:110m", name: "snowflake-arctic-embed:110m"},
+                  {id: "snowflake-arctic-embed:33m", name: "snowflake-arctic-embed:33m"},
+                  {id: "snowflake-arctic-embed:22m", name: "snowflake-arctic-embed:22m"},
+                  {id: "bge-m3", name: "bge-m3"},
+              ]
+          );
+      }
   } else if (type === "Local") {
     if (category === "Model") {
       return (
@@ -1128,7 +1167,6 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
           {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
           {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-
         ]);
     } else if (category === "Embedding") {
       return (
