@@ -188,20 +188,31 @@ class ChatBox extends React.Component {
 
   renderMessageContent = (message, isLastMessage) => {
     if (message.errorText !== "") {
-      const refinedErrorText = Setting.getRefinedErrorText(message.errorText);
-      return (
-        <Alert
-          message={refinedErrorText}
-          description={message.errorText}
-          type="error"
-          showIcon
-          action={
-            <Button type={"primary"} onClick={this.handleRegenerate}>
-              {i18next.t("general:Regenerate Answer")}
-            </Button>
-          }
-        />
-      );
+      // Use simple text to ensure the content is displayed immediately
+      message.text = "Error occurred";
+
+      // Then replace it with Ant Design components after the component is mounted.
+      setTimeout(() => {
+        this.setState({rerenderErrorMessage: true});
+      }, 10);
+
+      if (this.state.rerenderErrorMessage) {
+        return (
+          <Alert
+            message={Setting.getRefinedErrorText(message.errorText)}
+            description={message.errorText}
+            type="error"
+            showIcon
+            action={
+              <Button danger type="primary" onClick={this.handleRegenerate}>
+                {i18next.t("general:Regenerate Answer")}
+              </Button>
+            }
+          />
+        );
+      } else {
+        return <div>Loading error message...</div>;
+      }
     }
 
     if (message.text === "" && message.author === "AI") {
