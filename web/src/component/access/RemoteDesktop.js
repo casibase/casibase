@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,10 +23,10 @@ const RemoteDesktop = (props) => {
   const [clients, setClients] = useState(new Map());
 
   useEffect(() => {
-    if (props.node) {
-      addPane(props.node);
+    if (props.asset) {
+      addPane(props.asset);
     }
-  }, [props.node]);
+  }, [props.asset]);
 
   const handleTabChange = (key) => {
     setActiveKey(key);
@@ -34,26 +34,26 @@ const RemoteDesktop = (props) => {
 
   const handleTabEdit = (targetKey, action) => {
     if (action === "add") {
-      addPane(props.node);
+      addPane(props.asset);
     } else {
       removePane(targetKey);
     }
   };
 
-  const addPane = (node) => {
-    const activeKey = `node-${Date.now()}`;
+  const addPane = (asset) => {
+    const activeKey = `asset-${Date.now()}`;
 
     for (const pane of panes) {
-      if (pane.title === node.name) {
+      if (pane.title === asset.name) {
         setActiveKey(pane.key);
         return;
       }
     }
 
     const newPane = {
-      label: node.name,
+      label: asset.name,
       children: <GuacdPage
-        nodeId={`${node.owner}/${node.name}`}
+        assetId={`${asset.owner}/${asset.name}`}
         activeKey={activeKey}
         closePane={removePane}
         toggleFullscreen={props.toggleFullscreen}
@@ -94,9 +94,9 @@ const RemoteDesktop = (props) => {
     setPanes(updatedPanes);
   };
 
-  if (!props.node) {
+  if (!props.asset) {
     return <div className="remote-desktop">
-      <p style={{fontSize: 18}}>{i18next.t("node:Please select a node")}</p>
+      <p style={{fontSize: 18}}>{i18next.t("asset:Please select a asset")}</p>
     </div>;
   }
 

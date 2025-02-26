@@ -19,7 +19,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import * as Setting from "../Setting";
 
 const ConnectModal = (props) => {
-  const text = props.text ? props.text : i18next.t("node:Connect");
+  const text = props.text ? props.text : i18next.t("machine:Connect");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [inputDisabled, setInputDisabled] = useState(false);
   const [username, setUsername] = useState("");
@@ -27,7 +27,7 @@ const ConnectModal = (props) => {
   const owner = props.owner;
   const name = props.name;
   const category = props.category;
-  const node = props.node || {};
+  const machine = props.machine || {};
 
   const handleUsernameAndPassword = (username, password) => {
     setUsername(username || "");
@@ -43,8 +43,8 @@ const ConnectModal = (props) => {
 
   const showModal = () => {
     initStatus();
-    handleUsernameAndPassword(node.remoteUsername, node.remotePassword);
-    // handleOk();
+    handleUsernameAndPassword(machine.remoteUsername, machine.remotePassword);
+    handleOk();
     // getNode(owner, name)
     //   .then(res => {
     //     if (res.status === "ok") {
@@ -66,7 +66,7 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "Node") {
+    if (category === "Machine") {
       const link = (username === "" || password === "") ? `access/${owner}/${name}` : `access/${owner}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else if (category === "Database") {
@@ -91,7 +91,7 @@ const ConnectModal = (props) => {
     <>
       <Button
         disabled={props.disabled}
-        type="primary"
+        type={machine.remoteUsername && machine.remotePassword ? "primary" : "default"}
         onClick={showModal}
         style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
       >
@@ -112,7 +112,7 @@ const ConnectModal = (props) => {
             size="large"
             block
           >
-            login
+            {i18next.t("account:Sign In")}
           </Button>
         }
       >

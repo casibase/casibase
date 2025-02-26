@@ -215,7 +215,7 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "deepseek-chat");
                 } else if (value === "StepFun") {
                   this.updateProviderField("subType", "step-1-8k");
-                } else if (value === "Tencent Cloud") {
+                } else if (value === "Hunyuan") {
                   this.updateProviderField("subType", "hunyuan-turbo");
                 } else if (value === "Yi") {
                   this.updateProviderField("subType", "yi-lightning");
@@ -248,6 +248,60 @@ class ProviderEditPage extends React.Component {
                   .map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)
               }
             </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Client ID")} :
+          </Col>
+          <Col span={22}>
+            <Input value={this.state.provider.clientId} onChange={e => {
+              this.updateProviderField("clientId", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Client secret")} :
+          </Col>
+          <Col span={22}>
+            <Input value={this.state.provider.clientSecret} onChange={e => {
+              this.updateProviderField("clientSecret", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Region")} :
+          </Col>
+          <Col span={22}>
+            <Input value={this.state.provider.region} onChange={e => {
+              this.updateProviderField("region", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("provider:Browser URL")} :
+          </Col>
+          <Col span={22}>
+            <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
+              this.updateProviderField("browserUrl", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("provider:State")} :
+          </Col>
+          <Col span={22}>
+            <Select virtual={false} style={{width: "100%"}} value={this.state.provider.state} onChange={value => {
+              this.updateProviderField("state", value);
+            }}
+            options={[
+              {value: "Active", label: "Active"},
+              {value: "Inactive", label: "Inactive"},
+            ].map(item => Setting.getOption(item.label, item.value))} />
           </Col>
         </Row>
         {
@@ -403,7 +457,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -411,7 +465,7 @@ class ProviderEditPage extends React.Component {
                 </Col>
                 <this.InputSlider
                   min={0}
-                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi"].includes(this.state.provider.type) ? 2 : 1}
+                  max={["Alibaba Cloud", "Gemini", "OpenAI", "OpenRouter", "Baichuan", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi"].includes(this.state.provider.type) ? 2 : 1}
                   step={0.01}
                   value={this.state.provider.temperature}
                   onChange={(value) => {
@@ -424,7 +478,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Hunyuan", "Mistral", "Yi", "Silicon Flow"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -568,7 +622,7 @@ class ProviderEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
+            {i18next.t("general:Provider URL")}:
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {

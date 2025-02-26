@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -40,7 +40,7 @@ type Session struct {
 
 	Protocol      string `xorm:"varchar(20)" json:"protocol"`
 	ConnectionId  string `xorm:"varchar(50)" json:"connectionId"`
-	Node          string `xorm:"varchar(200) index" json:"node"`
+	Asset         string `xorm:"varchar(200) index" json:"asset"`
 	Creator       string `xorm:"varchar(36) index" json:"creator"`
 	ClientIp      string `xorm:"varchar(200)" json:"clientIp"`
 	UserAgent     string `xorm:"varchar(200)" json:"userAgent"`
@@ -168,21 +168,21 @@ func AddSession(session *Session) (bool, error) {
 	return affected != 0, nil
 }
 
-func CreateSession(session *Session, nodeId string, mode string) (*Session, error) {
-	node, err := GetNode(nodeId)
+func CreateSession(session *Session, machineId string, mode string) (*Session, error) {
+	machine, err := GetMachine(machineId)
 	if err != nil {
 		return nil, err
 	}
 
-	if node == nil {
+	if machine == nil {
 		return nil, nil
 	}
 
-	session.Owner = node.Owner
+	session.Owner = machine.Owner
 	session.Name = util.GenerateId()
 	session.CreatedTime = util.GetCurrentTime()
-	session.Protocol = node.RemoteProtocol
-	session.Node = nodeId
+	session.Protocol = machine.RemoteProtocol
+	session.Asset = machineId
 	session.Status = NoConnect
 	session.Mode = mode
 	session.Reviewed = false
@@ -196,7 +196,7 @@ func CreateSession(session *Session, nodeId string, mode string) (*Session, erro
 	respSession := &Session{
 		Owner:      session.Owner,
 		Name:       session.Name,
-		Protocol:   node.RemoteProtocol,
+		Protocol:   machine.RemoteProtocol,
 		Operations: session.Operations,
 	}
 	return respSession, nil
