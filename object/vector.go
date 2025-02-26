@@ -15,9 +15,7 @@
 package object
 
 import (
-	"encoding/json"
 	"fmt"
-	"sort"
 
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -43,10 +41,9 @@ type Vector struct {
 	Dimension int       `json:"dimension"`
 }
 
-var vectorCache map[string][]*Vector
-
 func GetGlobalVectors() ([]*Vector, error) {
-	vectors, err := getVectorCache(&Vector{})
+	vectors := []*Vector{}
+	err := adapter.engine.Asc("owner").Desc("created_time").Find(&vectors)
 	if err != nil {
 		return vectors, err
 	}
@@ -55,16 +52,8 @@ func GetGlobalVectors() ([]*Vector, error) {
 }
 
 func GetVectors(owner string) ([]*Vector, error) {
-	vectors, err := getVectorCache(&Vector{Owner: owner})
-
-	sort.Slice(vectors, func(i, j int) bool {
-		return vectors[i].File < vectors[j].File
-	})
-
-	sort.Slice(vectors, func(i, j int) bool {
-		return vectors[i].Index < vectors[j].Index
-	})
-
+	vectors := []*Vector{}
+	err := adapter.engine.Asc("file").Asc("index").Find(&vectors, &Vector{Owner: owner})
 	if err != nil {
 		return vectors, err
 	}
@@ -73,7 +62,8 @@ func GetVectors(owner string) ([]*Vector, error) {
 }
 
 func getVectorsByProvider(provider string) ([]*Vector, error) {
-	vectors, err := getVectorCache(&Vector{Provider: provider})
+	vectors := []*Vector{}
+	err := adapter.engine.Find(&vectors, &Vector{Provider: provider})
 	if err != nil {
 		return vectors, err
 	}
@@ -82,18 +72,28 @@ func getVectorsByProvider(provider string) ([]*Vector, error) {
 }
 
 func getVector(owner string, name string) (*Vector, error) {
-	vector, existed := getFirstVectorCache(&Vector{Owner: owner, Name: name})
+	vector := Vector{Owner: owner, Name: name}
+	existed, err := adapter.engine.Get(&vector)
+	if err != nil {
+		return &vector, err
+	}
+
 	if existed {
-		return vector, nil
+		return &vector, nil
 	} else {
 		return nil, nil
 	}
 }
 
 func getVectorByIndex(owner string, store string, file string, index int) (*Vector, error) {
-	vector, existed := getFirstVectorCache(&Vector{Owner: owner, Store: store, File: file, Index: index})
+	vector := Vector{Owner: owner, Store: store, File: file, Index: index}
+	existed, err := adapter.engine.Get(&vector)
+	if err != nil {
+		return &vector, err
+	}
+
 	if existed {
-		return vector, nil
+		return &vector, nil
 	} else {
 		return nil, nil
 	}
@@ -118,7 +118,6 @@ func UpdateVector(id string, vector *Vector) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	updateVectorCache(owner, name, vector)
 
 	// return affected != 0
 	return true, nil
@@ -134,9 +133,6 @@ func AddVector(vector *Vector) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if affected != 0 {
-		addVectorCache(vector)
-	}
 
 	return affected != 0, nil
 }
@@ -146,176 +142,12 @@ func DeleteVector(vector *Vector) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	deleteVectorCache(vector)
 
 	return affected != 0, nil
 }
 
 func (vector *Vector) GetId() string {
 	return fmt.Sprintf("%s/%s", vector.Owner, vector.Name)
-}
-
-func (vector *Vector) getVectorCacheKey() (string, error) {
-	marshal, err := json.Marshal(vector)
-	if err != nil {
-		return "", err
-	}
-	return string(marshal), nil
-}
-
-func getVectorCache(vector *Vector) ([]*Vector, error) {
-	if vectorCache == nil || vectorCache["all"] == nil || len(vectorCache) == 0 {
-		vectorCache = make(map[string][]*Vector)
-		err := syncVectorCache("")
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	key, err := vector.getVectorCacheKey()
-	if err != nil {
-		return nil, err
-	}
-
-	result := []*Vector{}
-	if vectorCache[key] == nil || len(vectorCache) == 0 {
-		err := syncSpecialVectorCache(vector)
-		if err != nil {
-			return nil, err
-		}
-	}
-	result = vectorCache[key]
-
-	return result, nil
-}
-
-func getFirstVectorCache(vector *Vector) (*Vector, bool) {
-	allVectors := vectorCache["all"]
-	for _, v := range allVectors {
-		if vector.Owner != "" && vector.Owner != v.Owner {
-			continue
-		}
-		if vector.Name != "" && vector.Name != v.Name {
-			continue
-		}
-		if vector.Store != "" && vector.Store != v.Store {
-			continue
-		}
-		if vector.File != "" && vector.File != v.File {
-			continue
-		}
-		if vector.Index != 0 && vector.Index != v.Index {
-			continue
-		}
-		if vector.Provider != "" && vector.Provider != v.Provider {
-			continue
-		}
-		return v, true
-	}
-	return nil, false
-}
-
-func filterCacheMap() {
-	filteredMap := map[string][]*Vector{}
-	for key, value := range vectorCache {
-		if key == "all" {
-			filteredMap[key] = value
-		}
-	}
-	vectorCache = filteredMap
-}
-
-func addVectorCache(vector *Vector) {
-	filterCacheMap()
-	vectorCache["all"] = append(vectorCache["all"], vector)
-}
-
-func deleteVectorCache(vector *Vector) {
-	filterCacheMap()
-	for i, v := range vectorCache["all"] {
-		if v.Owner == vector.Owner && v.Name == vector.Name {
-			vectorCache["all"] = append(vectorCache["all"][:i], vectorCache["all"][i+1:]...)
-			break
-		}
-	}
-}
-
-func updateVectorCache(owner string, name string, vector *Vector) {
-	filterCacheMap()
-	for i, v := range vectorCache["all"] {
-		if v.Owner == owner && v.Name == name {
-			vectorCache["all"][i] = vector
-			break
-		}
-	}
-}
-
-func syncVectorCache(storeName string) error {
-	if vectorCache == nil {
-		vectorCache = make(map[string][]*Vector)
-	}
-	var vectors []*Vector
-	var err error
-	if storeName == "" {
-		err = adapter.engine.Asc("owner").Desc("created_time").Find(&vectors)
-	} else {
-		err = adapter.engine.Asc("owner").Desc("created_time").Where("store = ?", storeName).Find(&vectors)
-	}
-	if err != nil {
-		return err
-	}
-	if storeName == "" {
-		vectorCache["all"] = vectors
-	} else {
-		for i := range vectorCache["all"] {
-			if vectorCache["all"][i].Store != storeName {
-				vectors = append(vectors, vectorCache["all"][i])
-			}
-		}
-		vectorCache["all"] = vectors
-	}
-	// clear other cache
-	filterCacheMap()
-	return nil
-}
-
-func syncSpecialVectorCache(vector *Vector) error {
-	allVectors := vectorCache["all"]
-	if allVectors == nil {
-		err := syncVectorCache("")
-		if err != nil {
-			return err
-		}
-	}
-
-	key, err := vector.getVectorCacheKey()
-	if err != nil {
-		return err
-	}
-
-	for _, v := range allVectors {
-		if vector.Owner != "" && vector.Owner != v.Owner {
-			continue
-		}
-		if vector.Name != "" && vector.Name != v.Name {
-			continue
-		}
-		if vector.Store != "" && vector.Store != v.Store {
-			continue
-		}
-		if vector.File != "" && vector.File != v.File {
-			continue
-		}
-		if vector.Index != 0 && vector.Index != v.Index {
-			continue
-		}
-		if vector.Provider != "" && vector.Provider != v.Provider {
-			continue
-		}
-		vectorCache[key] = append(vectorCache[key], v)
-	}
-
-	return nil
 }
 
 func GetVectorCount(owner string, field string, value string) (int64, error) {
