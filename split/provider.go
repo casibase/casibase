@@ -27,6 +27,8 @@ func GetSplitProvider(typ string) (SplitProvider, error) {
 		p, err = NewQaSplitProvider()
 	} else if typ == "Basic" {
 		p, err = NewBasicSplitProvider()
+	} else if typ == "JSON" {
+		p, err = NewJsonSplitProvider()
 	} else {
 		p, err = NewDefaultSplitProvider()
 	}

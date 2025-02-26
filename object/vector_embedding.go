@@ -129,6 +129,10 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			splitProviderType = "QA"
 		}
 
+		if strings.HasPrefix(file.Key, "JSON") && fileExt == ".json" {
+			splitProviderType = "JSON"
+		}
+
 		var splitProvider split.SplitProvider
 		splitProvider, err = split.GetSplitProvider(splitProviderType)
 		if err != nil {

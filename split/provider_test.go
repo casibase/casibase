@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2023 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -109,6 +109,71 @@ func TestSplit3(t *testing.T) {
 	}
 
 	for i, s := range textSections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+}
+
+func TestJsonSplit(t *testing.T) {
+	p, err := split.NewJsonSplitProvider()
+	if err != nil {
+		t.Fatalf("Failed to create JsonSplitProvider: %v", err)
+	}
+
+	jsonObject := `{
+		"name": "Alice",
+		"age": 30,
+		"address": {
+			"street": "123 Main St",
+			"city": "New York",
+			"country": "USA"
+		},
+		"hobbies": ["reading", "swimming", "coding"],
+		"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+		"contacts": {
+			"email": "alice@example.com",
+			"phone": "+1234567890",
+			"social": {
+				"twitter": "@alice",
+				"linkedin": "linkedin.com/alice"
+			}
+		}
+	}`
+
+	sections, err := p.SplitText(jsonObject)
+	if err != nil {
+		t.Errorf("Failed to split JSON object: %v", err)
+	}
+
+	fmt.Println("JSON Object split results:")
+	for i, s := range sections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+
+	jsonArray := `[
+		{
+			"id": 1,
+			"title": "First Item",
+			"description": "This is a long description for the first item that should be split due to length"
+		},
+		{
+			"id": 2,
+			"title": "Second Item",
+			"description": "Another long description that might cause the text to be split into multiple sections"
+		},
+		{
+			"id": 3,
+			"title": "Third Item",
+			"description": "Yet another lengthy description to test the splitting functionality of our JSON splitter"
+		}
+	]`
+
+	sections, err = p.SplitText(jsonArray)
+	if err != nil {
+		t.Errorf("Failed to split JSON array: %v", err)
+	}
+
+	fmt.Println("JSON Array split results:")
+	for i, s := range sections {
 		fmt.Printf("[%d] %s\n\n", i, s)
 	}
 }
