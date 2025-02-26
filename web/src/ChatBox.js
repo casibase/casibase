@@ -454,9 +454,9 @@ class ChatBox extends React.Component {
                 top: 0,
                 left: 0,
                 right: 0,
-                bottom: "100px",
+                bottom: this.props.hideInput ? "0px" : "100px",
                 padding: "24px",
-                paddingBottom: "40px",
+                paddingBottom: this.props.hideInput ? "24px" : "40px",
                 scrollBehavior: "smooth",
               }}
               dataSource={messages.filter(message => message.isHidden === false)}
