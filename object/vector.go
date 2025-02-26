@@ -106,12 +106,23 @@ func GetVector(id string) (*Vector, error) {
 
 func UpdateVector(id string, vector *Vector) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getVector(owner, name)
+	oldVector, err := getVector(owner, name)
 	if err != nil {
 		return false, err
 	}
 	if vector == nil {
 		return false, nil
+	}
+
+	if oldVector.Text != vector.Text {
+		if vector.Text == "" {
+			vector.Data = []float32{}
+		} else {
+			_, err = refreshVector(vector)
+			if err != nil {
+				return false, err
+			}
+		}
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(vector)

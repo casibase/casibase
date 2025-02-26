@@ -53,6 +53,10 @@ class VectorEditPage extends React.Component {
   }
 
   parseVectorField(key, value) {
+    if (key === "data") {
+      value = value.split(",").map(Number);
+    }
+
     if ([""].includes(key)) {
       value = Setting.myParseInt(value);
     }
@@ -190,6 +194,7 @@ class VectorEditPage extends React.Component {
               this.props.history.push("/vectors");
             } else {
               this.props.history.push(`/vectors/${this.state.vector.name}`);
+              this.getVector();
             }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");

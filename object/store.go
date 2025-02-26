@@ -267,6 +267,22 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 	return ok, err
 }
 
+func refreshVector(vector *Vector) (bool, error) {
+	_, embeddingProviderObj, err := getEmbeddingProviderFromName("admin", vector.Provider)
+	if err != nil {
+		return false, err
+	}
+
+	data, _, err := queryVectorSafe(embeddingProviderObj, vector.Text)
+	if err != nil {
+		return false, err
+	}
+
+	vector.Data = data
+
+	return true, nil
+}
+
 func GetStoreCount(field, value string) (int64, error) {
 	session := GetSession("", -1, -1, field, value, "", "")
 	return session.Count(&Store{})
