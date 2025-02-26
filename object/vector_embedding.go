@@ -167,11 +167,6 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			}
 		}
 	}
-	// after add vector, sync
-	err = syncVectorCache(storeName)
-	if err != nil {
-		return false, err
-	}
 
 	return affected, err
 }
