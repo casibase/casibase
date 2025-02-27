@@ -16,6 +16,7 @@ package service
 
 import (
 	"fmt"
+	
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 )
 
@@ -66,7 +67,6 @@ func newImageAliyunClient(accessKeyId string, accessKeySecret string, region str
 		accessKeyId,
 		accessKeySecret,
 	)
-
 	if err != nil {
 		return ImageAliyunClient{}, err
 	}
