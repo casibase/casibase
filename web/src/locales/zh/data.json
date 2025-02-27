@@ -190,10 +190,10 @@
     "Comment": "批注",
     "Edit Message": "编辑消息",
     "Error text": "错误信息",
-    "Knowledge": "知识",
+    "Knowledge": "向量",
     "Need notify": "启用邮件通知",
     "Reply to": "父消息",
-    "Suggestions": "建议回复"
+    "Suggestions": "建议"
   },
   "node": {
     "Auto query": "自动查询",

@@ -38,15 +38,16 @@ class StoreListPage extends BaseListPage {
     return {
       owner: "admin",
       name: `store_${randomName}`,
-      avatar: Conf.AiAvatar,
-      createdTime: moment().format(),
       displayName: `New Store - ${randomName}`,
+      createdTime: moment().format(),
+      title: `Title - ${randomName}`,
+      avatar: Conf.AiAvatar,
       storageProvider: "provider-storage-built-in",
       imageProvider: "",
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
-      memoryLimit: 20,
+      memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
       welcome: "Hello",
@@ -54,6 +55,7 @@ class StoreListPage extends BaseListPage {
       themeColor: ThemeDefault.colorPrimary,
       propertiesMap: {},
       suggestionCount: 3,
+      state: "Active",
     };
   }
 
