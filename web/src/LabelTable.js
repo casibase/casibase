@@ -138,8 +138,8 @@ class LabelTable extends React.Component {
     return !(row.user === this.props.account.name);
   }
 
-  requireReviewer() {
-    return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
+  requireSelfOrReviewer() {
+    return !(this.props.account.type === "video-normal-user" || this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
   requireAdmin() {
@@ -269,7 +269,7 @@ class LabelTable extends React.Component {
         title={() => (
           <div>
             {this.props.title}&nbsp;&nbsp;&nbsp;&nbsp;
-            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={myRowCount >= 1 || this.props.disabled || this.requireReviewer()} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
+            <Button style={{marginRight: "5px"}} type="primary" size="small" disabled={myRowCount >= 1 || this.props.disabled || this.requireSelfOrReviewer()} onClick={() => this.addRow(table)}>{i18next.t("general:Add")}</Button>
             {/* &nbsp;&nbsp;*/}
             {/* {*/}
             {/*  table.length === 0 ? null : (*/}
