@@ -20,7 +20,7 @@ import moment from "moment";
 import * as Setting from "./Setting";
 import * as ImageBackend from "./backend/ImageBackend";
 import i18next from "i18next";
-import PopconfirmModal from "./common/modal/PopconfirmModal";
+import PopconfirmModal from "./modal/PopconfirmModal";
 import * as MachineBackend from "./backend/MachineBackend";
 
 class ImageListPage extends BaseListPage {
