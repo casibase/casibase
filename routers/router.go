@@ -151,6 +151,12 @@ func initAPI() {
 	beego.Router("/api/update-machine", &controllers.ApiController{}, "POST:UpdateMachine")
 	beego.Router("/api/add-machine", &controllers.ApiController{}, "POST:AddMachine")
 	beego.Router("/api/delete-machine", &controllers.ApiController{}, "POST:DeleteMachine")
+	
+	beego.Router("/api/get-images", &controllers.ApiController{}, "GET:GetImages")
+	beego.Router("/api/get-image", &controllers.ApiController{}, "GET:GetImage")
+	beego.Router("/api/update-image", &controllers.ApiController{}, "POST:UpdateImage")
+	beego.Router("/api/add-image", &controllers.ApiController{}, "POST:AddImage")
+	beego.Router("/api/delete-image", &controllers.ApiController{}, "POST:DeleteImage")
 
 	beego.Router("/api/add-node-tunnel", &controllers.ApiController{}, "POST:AddNodeTunnel")
 	beego.Router("/api/get-node-tunnel", &controllers.ApiController{}, "GET:GetNodeTunnel")
