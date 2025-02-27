@@ -214,14 +214,14 @@ class SessionListPage extends BaseListPage {
                 <PopconfirmModal
                   style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                   text={i18next.t("general:Stop")}
-                  title={i18next.t("general:Sure to disconnect?")}
+                  title={`${i18next.t("general:Sure to disconnect from")}: ${record.name} ?`}
                   onConfirm={() => this.stopSession(index)}
                 />
               </div>
             ) : (
               <PopconfirmModal
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                title={i18next.t("general:Sure to delete?")}
+                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
                 onConfirm={() => this.deleteSession(index)}
               />
             );

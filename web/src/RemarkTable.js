@@ -150,7 +150,7 @@ class RemarkTable extends React.Component {
         },
       },
       {
-        title: i18next.t("video:Is public"),
+        title: i18next.t("video:Is recommended"),
         dataIndex: "isPublic",
         key: "isPublic",
         width: "110px",
