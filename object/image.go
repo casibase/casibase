@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -54,10 +55,10 @@ type Image struct {
 	Status                  string `xorm:"varchar(100)" json:"state" xml:"state"`
 	ImageOwnerId            int64  `json:"ImageOwnerId" xml:"ImageOwnerId"`
 	IsPublic                bool   `json:"IsPublic" xml:"IsPublic"`
-	//DetectionOptions        DetectionOptions                            `json:"DetectionOptions" xml:"DetectionOptions"`
-	//Features                Features                                    `json:"Features" xml:"Features"`
-	//Tags                    TagsInDescribeImageFromFamily               `json:"Tags" xml:"Tags"`
-	//DiskDeviceMappings      DiskDeviceMappingsInDescribeImageFromFamily `json:"DiskDeviceMappings" xml:"DiskDeviceMappings"`
+	// DetectionOptions        DetectionOptions                            `json:"DetectionOptions" xml:"DetectionOptions"`
+	// Features                Features                                    `json:"Features" xml:"Features"`
+	// Tags                    TagsInDescribeImageFromFamily               `json:"Tags" xml:"Tags"`
+	// DiskDeviceMappings      DiskDeviceMappingsInDescribeImageFromFamily `json:"DiskDeviceMappings" xml:"DiskDeviceMappings"`
 
 	// DB info
 	RemoteProtocol string `xorm:"varchar(100)" json:"remoteProtocol"`
