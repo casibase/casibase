@@ -115,7 +115,7 @@ func SyncImagesCloud(owner string) (bool, error) {
 	if len(images) == 0 {
 		return false, nil
 	}
-	
+
 	affected, err := addImages(images)
 	return affected, err
 }
