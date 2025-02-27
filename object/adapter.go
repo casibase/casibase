@@ -141,7 +141,7 @@ func (a *Adapter) CreateDatabase() error {
 }
 
 func (a *Adapter) open() {
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.DbName)
+	engine, err := xorm.NewEngine(a.driverName, conf.GetConfigRealDataSourceName(a.driverName))
 	if err != nil {
 		panic(err)
 	}
