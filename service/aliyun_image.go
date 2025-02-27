@@ -16,7 +16,7 @@ package service
 
 import (
 	"fmt"
-	
+
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 )
 
@@ -76,7 +76,7 @@ func newImageAliyunClient(accessKeyId string, accessKeySecret string, region str
 func getImageFromAliyunImage(aliyunImage ecs.Image) *Image {
 	image := &Image{
 		Name:                    aliyunImage.ImageId,
-		BootMode:                aliyunImage.BootMode,
+		// BootMode:                aliyunImage.BootMode,
 		ImageId:                 aliyunImage.ImageId,
 		ImageOwnerAlias:         aliyunImage.ImageOwnerAlias,
 		OSName:                  aliyunImage.OSName,
