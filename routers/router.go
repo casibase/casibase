@@ -16,7 +16,7 @@
 // @APIVersion 1.70.0
 // @Title Casibase RESTful API
 // @Description Swagger Docs of Casibase Backend API
-// @Contact admin@casbin.org
+// @Contact admin@casibase.org
 // @SecurityDefinition AccessToken apiKey Authorization header
 // @Schemes https,http
 // @ExternalDocs Find out more about Casibase
