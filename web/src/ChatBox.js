@@ -297,49 +297,71 @@ class ChatBox extends React.Component {
     if (message.author !== "AI" || !message.suggestions || !Array.isArray(message.suggestions)) {
       return null;
     }
-    const fontSize = Setting.isMobile() ? "10px" : "12px";
-    return (
-      <div style={{
-        position: "absolute",
-        marginRight: "10%",
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "column",
-        justifyContent: "start",
-        alignItems: "start",
-        zIndex: "10000",
-        maxWidth: "80%",
-      }}>
-        {
-          message?.suggestions?.map((suggestion, index) => {
-            let suggestionText = suggestion.text;
-            if (suggestionText.trim() === "") {
-              return null;
-            }
-            suggestionText = Setting.formatSuggestion(suggestionText);
 
-            return (
-              <Button
-                className={"suggestions-item"}
-                key={index} type="primary" style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                  border: "1px solid " + ThemeDefault.colorPrimary,
-                  color: ThemeDefault.colorPrimary,
-                  borderRadius: "4px",
-                  fontSize: fontSize,
-                  margin: "3px",
-                  textAlign: "start",
-                  whiteSpace: "pre-wrap",
-                  height: "auto",
-                }} onClick={() => {
-                  this.props.sendMessage(suggestionText, "");
-                  message.suggestions[index].isHit = true;
-                  updateMessage(message.owner, message.name, message, true);
-                }}
-              >{suggestionText}</Button>
-            );
-          })
-        }
+    const fontSize = Setting.isMobile() ? "10px" : "12px";
+
+    const containerStyle = {
+      position: "absolute",
+      left: "48px",
+      top: "calc(100% + 10px)",
+      display: "flex",
+      flexWrap: "wrap",
+      flexDirection: "column",
+      justifyContent: "start",
+      alignItems: "start",
+      zIndex: "10",
+      maxWidth: "80%",
+      gap: "8px",
+      padding: "8px 0",
+    };
+
+    const buttonStyle = {
+      backgroundColor: "rgba(255, 255, 255, 0.8)",
+      border: "1px solid " + ThemeDefault.colorPrimary,
+      color: ThemeDefault.colorPrimary,
+      borderRadius: "4px",
+      fontSize: fontSize,
+      margin: "3px",
+      textAlign: "start",
+      whiteSpace: "pre-wrap",
+      height: "auto",
+      transition: "all 0.3s",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    };
+
+    return (
+      <div style={containerStyle}>
+        {message?.suggestions?.map((suggestion, index) => {
+          let suggestionText = suggestion.text;
+          if (suggestionText.trim() === "") {
+            return null;
+          }
+          suggestionText = Setting.formatSuggestion(suggestionText);
+
+          return (
+            <Button
+              className="suggestions-item"
+              key={index}
+              type="primary"
+              style={buttonStyle}
+              onClick={() => {
+                this.props.sendMessage(suggestionText, "");
+                message.suggestions[index].isHit = true;
+                updateMessage(message.owner, message.name, message, true);
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "translateY(-2px)";
+                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "none";
+                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+              }}
+            >
+              {suggestionText}
+            </Button>
+          );
+        })}
       </div>
     );
   }
@@ -478,7 +500,6 @@ class ChatBox extends React.Component {
                     content={
                       <div>
                         {this.renderMessageContent(message, index === messages.length - 1)}
-                        {message.author === "AI" && index === messages.length - 1 && this.renderSuggestions(message)}
                       </div>
                     }
                     loading={message.text === "" && message.author === "AI"}
@@ -541,6 +562,7 @@ class ChatBox extends React.Component {
                       />
                     </Space>
                   )}
+                  {message.author === "AI" && index === messages.length - 1 && this.renderSuggestions(message)}
                 </div>
               )}
             />
