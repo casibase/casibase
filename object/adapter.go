@@ -160,17 +160,7 @@ func (a *Adapter) close() {
 }
 
 func (a *Adapter) createTable() {
-	err := a.engine.Sync2(new(Wordset))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(Factorset))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(Video))
+	err := a.engine.Sync2(new(Video))
 	if err != nil {
 		panic(err)
 	}

@@ -52,13 +52,6 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
     "click to stop...": "click to stop..."
   },
-  "factorset": {
-    "Count": "Количество",
-    "Edit Factorset": "Редактировать Factorset",
-    "Example factors": "Примеры факторов",
-    "File name": "Название файла",
-    "File size": "Размер файла"
-  },
   "general": {
     "Action": "Действие",
     "Add": "Добавить",
@@ -70,7 +63,6 @@
     "Chats": "Чаты",
     "Client IP": "Client IP",
     "Close": "Закрыть",
-    "Clustering": "Группирование",
     "Connection duration": "Connection duration",
     "Connection start time": "Connection start time",
     "Created time": "Время создания",
@@ -83,7 +75,6 @@
     "Download": "Скачать",
     "Edit": "Редактировать",
     "Exit": "Exit",
-    "Factorsets": "Factorsets",
     "Failed to add": "Не удалось добавить",
     "Failed to connect to server": "Не удалось подключиться к серверу",
     "Failed to delete": "Не удалось удалить",
@@ -168,7 +159,6 @@
     "Vectors": "Векторы",
     "Videos": "Видео",
     "View": "Просмотр",
-    "Wordsets": "Wordsets",
     "empty": "empty",
     "{total} in total": "{total} in total"
   },
@@ -372,13 +362,5 @@
     "Upload Video": "Upload Video",
     "Video": "Видео",
     "Video ID": "ID Видео"
-  },
-  "wordset": {
-    "Distance limit": "Ограничение расстояния",
-    "Edit Wordset": "Редактировать словарь",
-    "Factorset": "Factorset",
-    "Match": "Соответствие",
-    "Matched": "Соответствует",
-    "Words": "Слова"
   }
 }
