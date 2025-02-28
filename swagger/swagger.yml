@@ -68,24 +68,6 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /add-factorset:
-    post:
-      tags:
-      - Factorset API
-      description: add factorset
-      operationId: ApiController.AddFactorset
-      parameters:
-      - in: body
-        name: body
-        description: The details of the factorset
-        required: true
-        schema:
-          $ref: '#/definitions/object.Factorset'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
   /add-file:
     post:
       tags:
@@ -244,24 +226,6 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /add-wordset:
-    post:
-      tags:
-      - Wordset API
-      description: add wordset
-      operationId: ApiController.AddWordset
-      parameters:
-      - in: body
-        name: body
-        description: The details of the wordset
-        required: true
-        schema:
-          $ref: '#/definitions/object.Wordset'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
   /delete-article:
     post:
       tags:
@@ -293,24 +257,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/object.Chat'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-factorset:
-    post:
-      tags:
-      - Factorset API
-      description: delete factorset
-      operationId: ApiController.DeleteFactorset
-      parameters:
-      - in: body
-        name: body
-        description: The details of the factorset
-        required: true
-        schema:
-          $ref: '#/definitions/object.Factorset'
       responses:
         "200":
           description: The Response object
@@ -464,24 +410,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/object.Video'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /delete-wordset:
-    post:
-      tags:
-      - Wordset API
-      description: delete wordset
-      operationId: ApiController.DeleteWordset
-      parameters:
-      - in: body
-        name: body
-        description: The details of the wordset
-        required: true
-        schema:
-          $ref: '#/definitions/object.Wordset'
       responses:
         "200":
           description: The Response object
@@ -647,42 +575,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Chat'
-  /get-factorset:
-    get:
-      tags:
-      - Factorset API
-      description: get factorset
-      operationId: ApiController.GetFactorset
-      parameters:
-      - in: query
-        name: id
-        description: The id of factorset
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.Factorset'
-  /get-factorsets:
-    get:
-      tags:
-      - Factorset API
-      description: get factorsets
-      operationId: ApiController.GetFactorsets
-      parameters:
-      - in: query
-        name: owner
-        description: The owner of factorsets
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/object.Factorset'
   /get-global-articles:
     get:
       tags:
@@ -709,19 +601,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Chat'
-  /get-global-factorsets:
-    get:
-      tags:
-      - Factorset API
-      description: get global factorsets
-      operationId: ApiController.GetGlobalFactorSets
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/object.Factorset'
   /get-global-messages:
     get:
       tags:
@@ -800,19 +679,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Video'
-  /get-global-wordsets:
-    get:
-      tags:
-      - Wordset API
-      description: get global wordsets
-      operationId: ApiController.GetGlobalWordsets
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/object.Wordset'
   /get-message:
     get:
       tags:
@@ -1077,86 +943,6 @@ paths:
             type: array
             items:
               $ref: '#/definitions/object.Video'
-  /get-wordset:
-    get:
-      tags:
-      - Wordset API
-      description: get wordset
-      operationId: ApiController.GetWordset
-      parameters:
-      - in: query
-        name: id
-        description: The id of wordset
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.Wordset'
-  /get-wordset-graph:
-    get:
-      tags:
-      - Wordset API
-      description: get wordset graph
-      operationId: ApiController.GetWordsetGraph
-      parameters:
-      - in: query
-        name: id
-        description: The id of wordset
-        required: true
-        type: string
-      - in: query
-        name: clusterNumber
-        description: The clusterNumber of wordset
-        required: true
-        type: string
-      - in: query
-        name: distanceLimit
-        description: The distanceLimit of wordset
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.Graph'
-  /get-wordset-match:
-    get:
-      tags:
-      - Wordset API
-      description: get wordset match
-      operationId: ApiController.GetWordsetMatch
-      parameters:
-      - in: query
-        name: id
-        description: The id of wordset
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/object.Wordset'
-  /get-wordsets:
-    get:
-      tags:
-      - Wordset API
-      description: get wordsets
-      operationId: ApiController.GetWordsets
-      parameters:
-      - in: query
-        name: owner
-        description: The owner of wordsets
-        required: true
-        type: string
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/object.Wordset'
   /refresh-store-vectors:
     post:
       tags:
@@ -1247,29 +1033,6 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/object.Chat'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
-  /update-factorset:
-    post:
-      tags:
-      - Factorset API
-      description: update factorset
-      operationId: ApiController.UpdateFactorset
-      parameters:
-      - in: query
-        name: id
-        description: The id (owner/name) of the factorset
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: The details of the factorset
-        required: true
-        schema:
-          $ref: '#/definitions/object.Factorset'
       responses:
         "200":
           description: The Response object
@@ -1459,29 +1222,6 @@ paths:
           description: The Response object
           schema:
             $ref: '#/definitions/controllers.Response'
-  /update-wordset:
-    post:
-      tags:
-      - Wordset API
-      description: update wordset
-      operationId: ApiController.UpdateWordset
-      parameters:
-      - in: query
-        name: id
-        description: The id (owner/name) of the wordset
-        required: true
-        type: string
-      - in: body
-        name: body
-        description: The details of the role
-        required: true
-        schema:
-          $ref: '#/definitions/object.Wordset'
-      responses:
-        "200":
-          description: The Response object
-          schema:
-            $ref: '#/definitions/controllers.Response'
   /upload-video:
     post:
       tags:
@@ -1500,9 +1240,6 @@ paths:
           schema:
             type: string
 definitions:
-  17838.Factor:
-    title: Factor
-    type: object
   81136.File:
     title: File
     type: object
@@ -1616,55 +1353,6 @@ definitions:
         type: array
         items:
           type: string
-  object.Factor:
-    title: Factor
-    type: object
-    properties:
-      category:
-        type: string
-      color:
-        type: string
-      data:
-        type: array
-        items:
-          type: number
-          format: double
-      name:
-        type: string
-  object.Factorset:
-    title: Factorset
-    type: object
-    properties:
-      allFactors:
-        type: array
-        items:
-          $ref: '#/definitions/object.Factor'
-      count:
-        type: integer
-        format: int64
-      createdTime:
-        type: string
-      dimension:
-        type: integer
-        format: int64
-      displayName:
-        type: string
-      factorMap:
-        $ref: '#/definitions/17838.Factor'
-      factors:
-        type: array
-        items:
-          $ref: '#/definitions/object.Factor'
-      fileName:
-        type: string
-      fileSize:
-        type: string
-      name:
-        type: string
-      owner:
-        type: string
-      url:
-        type: string
   object.File:
     title: File
     type: object
@@ -2075,27 +1763,6 @@ definitions:
         additionalProperties:
           type: integer
           format: int64
-  object.Wordset:
-    title: Wordset
-    type: object
-    properties:
-      createdTime:
-        type: string
-      displayName:
-        type: string
-      distanceLimit:
-        type: integer
-        format: int64
-      factors:
-        type: array
-        items:
-          $ref: '#/definitions/object.Factor'
-      factorset:
-        type: string
-      name:
-        type: string
-      owner:
-        type: string
 securityDefinitions:
   AccessToken:
     type: apiKey

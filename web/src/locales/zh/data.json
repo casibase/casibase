@@ -52,13 +52,6 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "您的聊天信息涉及敏感内容。此会话已被强制终止。",
     "click to stop...": "点击停止..."
   },
-  "factorset": {
-    "Count": "数量",
-    "Edit Factorset": "编辑向量集",
-    "Example factors": "示例向量",
-    "File name": "文件名",
-    "File size": "文件大小"
-  },
   "general": {
     "Action": "操作",
     "Add": "添加",
@@ -70,7 +63,6 @@
     "Chats": "会话",
     "Client IP": "客户端IP",
     "Close": "关闭",
-    "Clustering": "聚类分析",
     "Connection duration": "Connection duration",
     "Connection start time": "Connection start time",
     "Created time": "上传时间",
@@ -83,7 +75,6 @@
     "Download": "下载",
     "Edit": "编辑",
     "Exit": "退出",
-    "Factorsets": "向量集",
     "Failed to add": "添加失败",
     "Failed to connect to server": "连接服务器失败",
     "Failed to delete": "删除失败",
@@ -168,7 +159,6 @@
     "Vectors": "向量",
     "Videos": "我的录像",
     "View": "查看",
-    "Wordsets": "词汇集",
     "empty": "空",
     "{total} in total": "{total} 总计"
   },
@@ -372,13 +362,5 @@
     "Upload Video": "上传录像",
     "Video": "录像",
     "Video ID": "录像ID"
-  },
-  "wordset": {
-    "Distance limit": "距离限制",
-    "Edit Wordset": "编辑词汇集",
-    "Factorset": "向量集",
-    "Match": "匹配",
-    "Matched": "已匹配",
-    "Words": "词汇"
   }
 }

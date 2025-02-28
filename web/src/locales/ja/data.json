@@ -52,13 +52,6 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
     "click to stop...": "click to stop..."
   },
-  "factorset": {
-    "Count": "Count",
-    "Edit Factorset": "Edit Factorset",
-    "Example factors": "Example factors",
-    "File name": "File name",
-    "File size": "File size"
-  },
   "general": {
     "Action": "Action",
     "Add": "Add",
@@ -70,7 +63,6 @@
     "Chats": "Chats",
     "Client IP": "Client IP",
     "Close": "Close",
-    "Clustering": "Clustering",
     "Connection duration": "Connection duration",
     "Connection start time": "Connection start time",
     "Created time": "Created time",
@@ -83,7 +75,6 @@
     "Download": "Download",
     "Edit": "Edit",
     "Exit": "Exit",
-    "Factorsets": "Factorsets",
     "Failed to add": "Failed to add",
     "Failed to connect to server": "Failed to connect to server",
     "Failed to delete": "Failed to delete",
@@ -168,7 +159,6 @@
     "Vectors": "Vectors",
     "Videos": "Videos",
     "View": "View",
-    "Wordsets": "Wordsets",
     "empty": "empty",
     "{total} in total": "{total} in total"
   },
@@ -372,13 +362,5 @@
     "Upload Video": "Upload Video",
     "Video": "Video",
     "Video ID": "Video ID"
-  },
-  "wordset": {
-    "Distance limit": "Distance limit",
-    "Edit Wordset": "Edit Wordset",
-    "Factorset": "Factorset",
-    "Match": "Match",
-    "Matched": "Matched",
-    "Words": "Words"
   }
 }
