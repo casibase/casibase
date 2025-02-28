@@ -44,7 +44,7 @@ func GetConfigString(key string) string {
 	res := beego.AppConfig.String(key)
 	if res == "" {
 		if key == "staticBaseUrl" {
-			res = "https://cdn.casbin.org"
+			res = "https://cdn.casibase.org"
 		} else if key == "logConfig" {
 			res = "{\"filename\": \"logs/casibase.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
 		}

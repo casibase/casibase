@@ -5,7 +5,7 @@
         "description": "Swagger Docs of Casibase Backend API",
         "version": "1.70.0",
         "contact": {
-            "email": "admin@casbin.org"
+            "email": "admin@casibase.org"
         }
     },
     "basePath": "/api",
