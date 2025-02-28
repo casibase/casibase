@@ -29,8 +29,6 @@ export const ShortcutPageItems = [];
 
 export const UsageEndpoints = [];
 
-export const AiAvatar = "https://cdn.casbin.org/img/casibase.png";
-
 export const IframeUrl = "";
 
 export const ForceLanguage = "";
