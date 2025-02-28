@@ -475,7 +475,12 @@ class ChatBox extends React.Component {
                   </div>
                   <Bubble
                     placement={message.author === "AI" ? "start" : "end"}
-                    content={this.renderMessageContent(message, index === messages.length - 1)}
+                    content={
+                      <div>
+                        {this.renderMessageContent(message, index === messages.length - 1)}
+                        {message.author === "AI" && index === messages.length - 1 && this.renderSuggestions(message)}
+                      </div>
+                    }
                     loading={message.text === "" && message.author === "AI"}
                     typing={message.author === "AI" ? {
                       step: 2,
