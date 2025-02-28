@@ -322,12 +322,17 @@ class ChatBox extends React.Component {
       borderRadius: "4px",
       fontSize: fontSize,
       margin: "3px",
+      padding: "8px 16px",
       textAlign: "start",
       whiteSpace: "pre-wrap",
       height: "auto",
       transition: "all 0.3s",
       boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
     };
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 100);
 
     return (
       <div style={containerStyle}>
@@ -348,14 +353,7 @@ class ChatBox extends React.Component {
                 this.props.sendMessage(suggestionText, "");
                 message.suggestions[index].isHit = true;
                 updateMessage(message.owner, message.name, message, true);
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 4px 8px rgba(0,0,0,0.15)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "none";
-                e.currentTarget.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
+                this.scrollToBottom();
               }}
             >
               {suggestionText}
