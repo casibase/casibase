@@ -70,7 +70,7 @@ func newImageAliyunClient(accessKeyId string, accessKeySecret string, region str
 	if err != nil {
 		return ImageAliyunClient{}, err
 	}
-	return ImageAliyunClient{Client: client}, nil
+	return ImageAliyunClient{Client: client, Region: region}, nil
 }
 
 func getImageFromAliyunImage(aliyunImage ecs.Image) *Image {
