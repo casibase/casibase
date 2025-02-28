@@ -123,7 +123,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("store:File type"),
+        title: i18next.t("factorset:File type"),
         dataIndex: "fileType",
         key: "fileType",
         width: "140px",
@@ -139,7 +139,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("factorset:File size"),
+        title: i18next.t("store:File size"),
         dataIndex: "size",
         key: "size",
         width: "120px",

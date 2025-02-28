@@ -44,22 +44,6 @@ func initAPI() {
 	beego.Router("/api/signout", &controllers.ApiController{}, "POST:Signout")
 	beego.Router("/api/get-account", &controllers.ApiController{}, "GET:GetAccount")
 
-	beego.Router("/api/get-global-wordsets", &controllers.ApiController{}, "GET:GetGlobalWordsets")
-	beego.Router("/api/get-wordsets", &controllers.ApiController{}, "GET:GetWordsets")
-	beego.Router("/api/get-wordset", &controllers.ApiController{}, "GET:GetWordset")
-	beego.Router("/api/get-wordset-graph", &controllers.ApiController{}, "GET:GetWordsetGraph")
-	beego.Router("/api/get-wordset-match", &controllers.ApiController{}, "GET:GetWordsetMatch")
-	beego.Router("/api/update-wordset", &controllers.ApiController{}, "POST:UpdateWordset")
-	beego.Router("/api/add-wordset", &controllers.ApiController{}, "POST:AddWordset")
-	beego.Router("/api/delete-wordset", &controllers.ApiController{}, "POST:DeleteWordset")
-
-	beego.Router("/api/get-global-factorsets", &controllers.ApiController{}, "GET:GetGlobalFactorsets")
-	beego.Router("/api/get-factorsets", &controllers.ApiController{}, "GET:GetFactorsets")
-	beego.Router("/api/get-factorset", &controllers.ApiController{}, "GET:GetFactorset")
-	beego.Router("/api/update-factorset", &controllers.ApiController{}, "POST:UpdateFactorset")
-	beego.Router("/api/add-factorset", &controllers.ApiController{}, "POST:AddFactorset")
-	beego.Router("/api/delete-factorset", &controllers.ApiController{}, "POST:DeleteFactorset")
-
 	beego.Router("/api/get-global-videos", &controllers.ApiController{}, "GET:GetGlobalVideos")
 	beego.Router("/api/get-videos", &controllers.ApiController{}, "GET:GetVideos")
 	beego.Router("/api/get-video", &controllers.ApiController{}, "GET:GetVideo")
