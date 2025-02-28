@@ -25,9 +25,6 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-//go:embed token_jwt_key.pem
-var JwtPublicKey string
-
 func init() {
 	InitAuthConfig()
 }
@@ -39,7 +36,24 @@ func InitAuthConfig() {
 	casdoorOrganization := beego.AppConfig.String("casdoorOrganization")
 	casdoorApplication := beego.AppConfig.String("casdoorApplication")
 
-	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, JwtPublicKey, casdoorOrganization, casdoorApplication)
+	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, "", casdoorOrganization, casdoorApplication)
+	application, err := casdoorsdk.GetApplication(casdoorApplication)
+	if err != nil {
+		panic(err)
+	}
+	if application == nil {
+		panic(fmt.Errorf("The application: %s does not exist", casdoorApplication))
+	}
+
+	cert, err := casdoorsdk.GetCert(application.Cert)
+	if err != nil {
+		panic(err)
+	}
+	if cert == nil {
+		panic(fmt.Errorf("The cert: %s does not exist", application.Cert))
+	}
+
+	casdoorsdk.InitConfig(casdoorEndpoint, clientId, clientSecret, cert.Certificate, casdoorOrganization, casdoorApplication)
 }
 
 // Signin
