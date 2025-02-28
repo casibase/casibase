@@ -21,8 +21,6 @@ export const AuthConfig = {
   redirectPath: "/callback",
 };
 
-export const DefaultOwner = "admin";
-
 export const EnableExtraPages = false;
 
 export const ShortcutPageItems = [];

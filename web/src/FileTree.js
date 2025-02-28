@@ -837,7 +837,7 @@ class FileTree extends React.Component {
           size="small"
           // extra={<Button type="primary">Edit</Button>}
         >
-          <Descriptions.Item label={i18next.t("factorset:File name")}>
+          <Descriptions.Item label={i18next.t("store:File name")}>
             {file.title}
           </Descriptions.Item>
           {
@@ -847,7 +847,7 @@ class FileTree extends React.Component {
               </Descriptions.Item>
             )
           }
-          <Descriptions.Item label={i18next.t("factorset:File size")}>
+          <Descriptions.Item label={i18next.t("store:File size")}>
             {Setting.getFriendlyFileSize(file.size)}
           </Descriptions.Item>
           <Descriptions.Item label={i18next.t("general:Created time")}>
