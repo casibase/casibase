@@ -17,7 +17,6 @@ import {SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
-import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
@@ -305,62 +304,6 @@ export function getTag(text, type, state) {
   }
 }
 
-export function getTags(factors, type) {
-  if (!factors) {
-    return [];
-  }
-
-  if (type === "factors") {
-    return getFactorTag(factors);
-  } else if (type === "users") {
-    return getUserTag(factors);
-  }
-}
-
-function getFactorTag(factors) {
-  const res = [];
-  factors.forEach((factor, i) => {
-    if (factor.data.length !== 0) {
-      res.push(
-        <Tooltip placement="top" title={getShortText(JSON.stringify(factor.data), 500)}>
-          <Tag color={"success"}>
-            {factor.name}
-          </Tag>
-        </Tooltip>
-      );
-    } else {
-      res.push(
-        <Tag color={"warning"}>
-          {factor.name}
-        </Tag>
-      );
-    }
-  });
-  return res;
-}
-
-function getUserTag(users) {
-  const res = [];
-  users.forEach((user, i) => {
-    if (user.length !== 0) {
-      res.push(
-        <Tooltip placement="top" title={getShortText(JSON.stringify(user), 500)}>
-          <Tag color={"success"}>
-            {user}
-          </Tag>
-        </Tooltip>
-      );
-    } else {
-      res.push(
-        <Tag color={"warning"}>
-          {user}
-        </Tag>
-      );
-    }
-  });
-  return res;
-}
-
 export function getRemarkTag(score) {
   let color;
   let text;
@@ -440,34 +383,6 @@ export function workbook2blob(workbook) {
   };
   const wbout = XLSX.write(workbook, wopts);
   return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
-}
-
-export function downloadXlsx(wordset) {
-  const data = [];
-  wordset.factors.forEach((factor, i) => {
-    const row = {};
-
-    row[0] = factor.name;
-    factor.data.forEach((dataItem, i) => {
-      row[i + 1] = dataItem;
-    });
-
-    data.push(row);
-  });
-
-  const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
-  // sheet["!cols"] = [
-  //   { wch: 18 },
-  //   { wch: 7 },
-  // ];
-
-  try {
-    const blob = sheet2blob(sheet, "factors");
-    const fileName = `factors-${wordset.name}.xlsx`;
-    FileSaver.saveAs(blob, fileName);
-  } catch (error) {
-    showMessage("error", `failed to download: ${error.message}`);
-  }
 }
 
 export function toggleElementFromSet(array, element) {
@@ -649,7 +564,9 @@ export function submitStoreEdit(storeObj) {
     });
 }
 
-export const StaticBaseUrl = "https://cdn.casbin.org";
+export const StaticBaseUrl = "https://cdn.casibase.org";
+
+export const AiAvatar = `${StaticBaseUrl}/img/casibase.png`;
 
 export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},

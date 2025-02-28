@@ -507,8 +507,24 @@ class VideoEditPage extends React.Component {
     return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
   }
 
+  requireReviewer2OrAdminOrPublic() {
+    if (this.props.account.type === "video-normal-user" && this.state.video?.state === "Published") {
+      return false;
+    }
+
+    return !(this.props.account.type === "video-admin-user" || this.props.account.type === "video-reviewer2-user");
+  }
+
   requireAdmin() {
     return !(this.props.account.type === "video-admin-user");
+  }
+
+  filterReviewer1(remarks) {
+    if (this.props.account.type === "video-reviewer1-user") {
+      return remarks.filter(remark => remark.user === this.props.account.name);
+    } else {
+      return remarks;
+    }
   }
 
   renderVideo() {
@@ -628,7 +644,7 @@ class VideoEditPage extends React.Component {
                   account={this.props.account}
                   maxRowCount={-1}
                   disabled={this.requireReviewer1OrAdmin(this.state.video)}
-                  table={this.state.video.remarks}
+                  table={this.filterReviewer1(this.state.video.remarks)}
                   onUpdateTable={(value) => {
                     this.updateVideoField("remarks", value);
                     if (value.length > 0 && this.state.video.state === "Draft") {
@@ -643,7 +659,7 @@ class VideoEditPage extends React.Component {
           )
         }
         {
-          this.requireReviewer2OrAdmin() ? null : (
+          this.requireReviewer2OrAdminOrPublic() ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("video:Remarks2")}:
@@ -661,6 +677,13 @@ class VideoEditPage extends React.Component {
                       this.updateVideoField("state", "In Review 2");
                     } else if (value.length === 0 && this.state.video.remarks.length === 0 && this.state.video.state.startsWith("In Review")) {
                       this.updateVideoField("state", "Draft");
+                    }
+
+                    if (this.state.video.remarks2.filter((row) => (row.user === this.props.account.name)).length > 0) {
+                      const isPublic = this.state.video.remarks2.filter((row) => (row.user === this.props.account.name))[0].isPublic;
+                      this.updateVideoField("isPublic", isPublic);
+                    } else {
+                      this.updateVideoField("isPublic", false);
                     }
                   }}
                 />
@@ -731,7 +754,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/email_mailtrap.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Labeling</span>
                     </div>
@@ -741,7 +764,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_slack.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Recognition</span>
                     </div>
@@ -752,7 +775,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_yandex.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Tagging</span>
                     </div>
@@ -763,7 +786,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_cloudflare.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Word Cloud</span>
                     </div>
@@ -774,7 +797,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_openai.svg`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>AI Assistant</span>
                     </div>
@@ -833,9 +856,10 @@ class VideoEditPage extends React.Component {
 
   submitVideoEdit(exitAfterSave) {
     if ((this.state.video.remarks.filter((row) => (row.user === this.props.account.name && ["Excellent", "Good"].includes(row.score))).length > 0) ||
-        (this.state.video.remarks2.filter((row) => (row.user === this.props.account.name && ["Excellent", "Good"].includes(row.score))).length > 0)) {
+        (this.state.video.remarks2.filter((row) => (row.user === this.props.account.name && ["Excellent", "Good"].includes(row.score))).length > 0) ||
+        this.props.account.type === "video-normal-user") {
       if (this.state.video.labels.filter((row) => (row.user === this.props.account.name)).length === 0) {
-        Setting.showMessage("error", "Please add a new label first before saving!");
+        Setting.showMessage("error", i18next.t("video:Please add a new label first before saving!"));
         return;
       }
     }

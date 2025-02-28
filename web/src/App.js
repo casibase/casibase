@@ -23,15 +23,9 @@ import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
 import * as Conf from "./Conf";
 import HomePage from "./HomePage";
-import ClusteringPage from "./ClusteringPage";
 import StoreListPage from "./StoreListPage";
 import StoreEditPage from "./StoreEditPage";
 import FileTreePage from "./FileTreePage";
-import WordsetListPage from "./WordsetListPage";
-import WordsetEditPage from "./WordsetEditPage";
-import WordsetGraphPage from "./WordsetGraphPage";
-import FactorsetListPage from "./FactorsetListPage";
-import FactorsetEditPage from "./FactorsetEditPage";
 import VideoListPage from "./VideoListPage";
 import VideoEditPage from "./VideoEditPage";
 import VideoPage from "./VideoPage";
@@ -139,12 +133,6 @@ class App extends Component {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/articles")) {
       this.setState({selectedMenuKey: "/articles"});
-    } else if (uri.includes("/clustering")) {
-      this.setState({selectedMenuKey: "/clustering"});
-    } else if (uri.includes("/wordsets")) {
-      this.setState({selectedMenuKey: "/wordsets"});
-    } else if (uri.includes("/factorsets")) {
-      this.setState({selectedMenuKey: "/factorsets"});
     } else if (uri.includes("/public-videos")) {
       this.setState({selectedMenuKey: "/public-videos"});
     } else if (uri.includes("/videos")) {
@@ -378,16 +366,16 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "sessions"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
-      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
-      res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
+      // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
+      // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
     } else if (Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
+      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
@@ -423,22 +411,12 @@ class App extends Component {
           {Setting.renderExternalLink()}
         </a>,
         "####"));
-    } else if (Conf.ShortcutPageItems.length > 0 && domain === "emo") {
-      if (Conf.EnableExtraPages) {
-        res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
-        res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
-        res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
-
-        if (window.location.pathname === "/") {
-          Setting.goToLinkSoft(this, "/wordsets");
-        }
-      }
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
         // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
-        res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
-        res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
+        // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
+        // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
       }
 
       if (window.location.pathname === "/") {
@@ -454,19 +432,15 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
 
       res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "sessions"));
       res.push(Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"));
-      res.push(Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "images"));
+      res.push(Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
 
-      res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
+      // res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
 
-      res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
-      res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
-
-      res.push(Setting.getItem(<Link to="/clustering">{i18next.t("general:Clustering")}</Link>, "/clustering"));
-      res.push(Setting.getItem(<Link to="/wordsets">{i18next.t("general:Wordsets")}</Link>, "/wordsets"));
-      res.push(Setting.getItem(<Link to="/factorsets">{i18next.t("general:Factorsets")}</Link>, "/factorsets"));
+      // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
+      // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
 
       res.push(Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>{i18next.t("general:Swagger")}</a>, "/swagger"));
 
@@ -542,12 +516,6 @@ class App extends Component {
         <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
-        <Route exact path="/clustering" render={(props) => this.renderSigninIfNotSignedIn(<ClusteringPage account={this.state.account} {...props} />)} />
-        <Route exact path="/wordsets" render={(props) => this.renderSigninIfNotSignedIn(<WordsetListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/wordsets/:wordsetName" render={(props) => this.renderSigninIfNotSignedIn(<WordsetEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/wordsets/:wordsetName/graph" render={(props) => this.renderSigninIfNotSignedIn(<WordsetGraphPage account={this.state.account} {...props} />)} />
-        <Route exact path="/factorsets" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/factorsets/:factorsetName" render={(props) => this.renderSigninIfNotSignedIn(<FactorsetEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />

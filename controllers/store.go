@@ -159,6 +159,32 @@ func (c *ApiController) AddStore() {
 		return
 	}
 
+	if store.ModelProvider == "" {
+		var modelProvider *object.Provider
+		modelProvider, err = object.GetDefaultModelProvider()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		if modelProvider != nil {
+			store.ModelProvider = modelProvider.Name
+		}
+	}
+
+	if store.EmbeddingProvider == "" {
+		var embeddingProvider *object.Provider
+		embeddingProvider, err = object.GetDefaultEmbeddingProvider()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		if embeddingProvider != nil {
+			store.EmbeddingProvider = embeddingProvider.Name
+		}
+	}
+
 	success, err := object.AddStore(&store)
 	if err != nil {
 		c.ResponseError(err.Error())
