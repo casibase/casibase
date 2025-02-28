@@ -16,7 +16,6 @@ import React from "react";
 import {Alert, Button, Card, Layout, List, Space} from "antd";
 import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
-import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
@@ -405,7 +404,7 @@ class ChatBox extends React.Component {
     return (
       <Welcome
         variant="borderless"
-        icon={this.props.store?.avatar || Conf.AiAvatar}
+        icon={this.props.store?.avatar || Setting.AiAvatar}
         title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
         description={i18next.t("chat:I'm here to help answer your questions")}
       />
@@ -413,7 +412,7 @@ class ChatBox extends React.Component {
   }
 
   render() {
-    const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
+    const getStoreAvatar = (store) => (!store?.avatar) ? Setting.AiAvatar : store.avatar;
 
     const avatar = getStoreAvatar(this.props.store);
 

@@ -17,7 +17,6 @@ import {Link} from "react-router-dom";
 import {Button, Popconfirm, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
-import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
@@ -41,7 +40,7 @@ class StoreListPage extends BaseListPage {
       displayName: `New Store - ${randomName}`,
       createdTime: moment().format(),
       title: `Title - ${randomName}`,
-      avatar: Conf.AiAvatar,
+      avatar: Setting.AiAvatar,
       storageProvider: "provider-storage-built-in",
       imageProvider: "",
       splitProvider: "Default",

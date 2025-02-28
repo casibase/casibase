@@ -566,6 +566,8 @@ export function submitStoreEdit(storeObj) {
 
 export const StaticBaseUrl = "https://cdn.casibase.org";
 
+export const AiAvatar = `${StaticBaseUrl}/img/casibase.png`;
+
 export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
   {label: "Español", key: "es", country: "ES", alt: "Español"},
