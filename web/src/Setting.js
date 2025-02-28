@@ -564,7 +564,7 @@ export function submitStoreEdit(storeObj) {
     });
 }
 
-export const StaticBaseUrl = "https://cdn.casbin.org";
+export const StaticBaseUrl = "https://cdn.casibase.org";
 
 export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
