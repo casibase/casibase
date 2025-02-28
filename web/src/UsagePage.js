@@ -323,9 +323,6 @@ class UsagePage extends BaseListPage {
                     <Col span={3}>
                       <Statistic title={i18next.t("chat:CPrice")} value={parseFloat((lastUsage.price * 7.2).toFixed(2))} prefix={"￥"} />
                     </Col>
-                    <Col span={3}>
-                      <Statistic title={i18next.t("chat:FPrice")} value={parseFloat((lastUsage.price * 7.2 * 5).toFixed(2))} prefix={"￥"} />
-                    </Col>
                   </React.Fragment>
                 )
               }
