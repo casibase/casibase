@@ -200,6 +200,11 @@ func (a *Adapter) createTable() {
 		panic(err)
 	}
 
+	err = a.engine.Sync2(new(Image))
+	if err != nil {
+		panic(err)
+	}
+
 	err = a.engine.Sync2(new(Task))
 	if err != nil {
 		panic(err)
