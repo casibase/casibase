@@ -194,7 +194,7 @@ class UsagePage extends BaseListPage {
       ],
     };
 
-    return <ReactEcharts option={leftOption} style={{height: "400px", width: "48%", display: "inline-block"}} />;
+    return <ReactEcharts option={leftOption} style={{height: "400px", width: "100%", display: "inline-block"}} />;
   }
 
   renderRightChart(usages) {
@@ -271,7 +271,7 @@ class UsagePage extends BaseListPage {
       rightOption.series = rightOption.series.filter(series => series.name !== i18next.t("chat:Price"));
     }
 
-    return <ReactEcharts option={rightOption} style={{height: "400px", width: "48%", display: "inline-block"}} />;
+    return <ReactEcharts option={rightOption} style={{height: "400px", width: "100%", display: "inline-block"}} />;
   }
 
   renderStatistic(usages) {
@@ -441,7 +441,7 @@ class UsagePage extends BaseListPage {
           virtual={true}
           value={this.state.selectedUser}
           onChange={(value => handleChange(value))}
-          style={{padding: "5px", width: "200px"}}
+          style={{width: "100%"}}
         >
           {users_options}
         </Select>
@@ -622,8 +622,16 @@ class UsagePage extends BaseListPage {
 
       return (
         <React.Fragment>
-          {this.renderLeftChart(this.state.usages)}
-          {this.renderRightChart(this.state.usages)}
+          <Row style={{marginTop: "20px"}} >
+            <Col span={1} />
+            <Col span={11} >
+              {this.renderLeftChart(this.state.usages)}
+            </Col>
+            <Col span={11} >
+              {this.renderRightChart(this.state.usages)}
+            </Col>
+            <Col span={1} />
+          </Row>
         </React.Fragment>
       );
     } else {
@@ -646,11 +654,26 @@ class UsagePage extends BaseListPage {
   render() {
     return (
       <div>
-        {this.renderRadio()}
-        {this.renderStatistic(this.state.usages)}
-        <br />
-        {this.renderChart()}
-        <UsageTable account={this.props.account} data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
+        <Row style={{marginTop: "20px"}} >
+          <Col span={1} />
+          <Col span={17} >
+            {this.renderStatistic(this.state.usages)}
+          </Col>
+          <Col span={5} >
+            {this.renderRadio()}
+          </Col>
+          <Col span={1} />
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col span={24} >
+            {this.renderChart()}
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col span={24} >
+            <UsageTable account={this.props.account} data={this.state.selectedTableInfo === null ? this.state.userTableInfo : this.state.selectedTableInfo} />
+          </Col>
+        </Row>
       </div>
     );
   }
