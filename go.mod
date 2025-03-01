@@ -35,8 +35,6 @@ require (
 	github.com/lib/pq v1.10.2
 	github.com/luthermonson/go-proxmox v0.2.1
 	github.com/madebywelch/anthropic-go/v2 v2.2.0
-	github.com/muesli/clusters v0.0.0-20200529215643-2700303c1762
-	github.com/muesli/kmeans v0.3.0
 	github.com/northes/go-moonshot v0.3.0
 	github.com/pkg/errors v0.9.1
 	github.com/pkoukk/tiktoken-go v0.1.7

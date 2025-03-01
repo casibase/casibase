@@ -754,7 +754,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/email_mailtrap.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/email_mailtrap.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Labeling</span>
                     </div>
@@ -764,7 +764,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_slack.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_slack.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Recognition</span>
                     </div>
@@ -775,7 +775,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_yandex.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_yandex.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Text Tagging</span>
                     </div>
@@ -786,7 +786,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_cloudflare.png"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_cloudflare.png`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>Word Cloud</span>
                     </div>
@@ -797,7 +797,7 @@ class VideoEditPage extends React.Component {
                 {
                   label: (
                     <div style={{padding: 4}}>
-                      <Avatar src={"https://cdn.casbin.org/img/social_openai.svg"} />
+                      <Avatar src={`${Setting.StaticBaseUrl}/img/social_openai.svg`} />
                             &nbsp;
                       <span style={{fontWeight: "bold"}}>AI Assistant</span>
                     </div>

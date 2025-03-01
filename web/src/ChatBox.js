@@ -16,7 +16,6 @@ import React from "react";
 import {Alert, Button, Card, Layout, List, Space} from "antd";
 import {updateMessage} from "./backend/MessageBackend";
 import {renderText} from "./ChatMessageRender";
-import * as Conf from "./Conf";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import copy from "copy-to-clipboard";
@@ -333,49 +332,69 @@ class ChatBox extends React.Component {
     if (message.author !== "AI" || !message.suggestions || !Array.isArray(message.suggestions)) {
       return null;
     }
-    const fontSize = Setting.isMobile() ? "10px" : "12px";
-    return (
-      <div style={{
-        position: "absolute",
-        marginRight: "10%",
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "column",
-        justifyContent: "start",
-        alignItems: "start",
-        zIndex: "10000",
-        maxWidth: "80%",
-      }}>
-        {
-          message?.suggestions?.map((suggestion, index) => {
-            let suggestionText = suggestion.text;
-            if (suggestionText.trim() === "") {
-              return null;
-            }
-            suggestionText = Setting.formatSuggestion(suggestionText);
 
-            return (
-              <Button
-                className={"suggestions-item"}
-                key={index} type="primary" style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.8)",
-                  border: "1px solid " + ThemeDefault.colorPrimary,
-                  color: ThemeDefault.colorPrimary,
-                  borderRadius: "4px",
-                  fontSize: fontSize,
-                  margin: "3px",
-                  textAlign: "start",
-                  whiteSpace: "pre-wrap",
-                  height: "auto",
-                }} onClick={() => {
-                  this.props.sendMessage(suggestionText, "");
-                  message.suggestions[index].isHit = true;
-                  updateMessage(message.owner, message.name, message, true);
-                }}
-              >{suggestionText}</Button>
-            );
-          })
-        }
+    const fontSize = Setting.isMobile() ? "10px" : "12px";
+
+    const containerStyle = {
+      position: "absolute",
+      left: "48px",
+      top: "calc(100% + 10px)",
+      display: "flex",
+      flexWrap: "wrap",
+      flexDirection: "column",
+      justifyContent: "start",
+      alignItems: "start",
+      zIndex: "10",
+      maxWidth: "80%",
+      gap: "8px",
+      padding: "8px 0",
+    };
+
+    const buttonStyle = {
+      backgroundColor: "rgba(255, 255, 255, 0.8)",
+      border: "1px solid " + ThemeDefault.colorPrimary,
+      color: ThemeDefault.colorPrimary,
+      borderRadius: "4px",
+      fontSize: fontSize,
+      margin: "3px",
+      padding: "8px 16px",
+      textAlign: "start",
+      whiteSpace: "pre-wrap",
+      height: "auto",
+      transition: "all 0.3s",
+      boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+    };
+
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 100);
+
+    return (
+      <div style={containerStyle}>
+        {message?.suggestions?.map((suggestion, index) => {
+          let suggestionText = suggestion.text;
+          if (suggestionText.trim() === "") {
+            return null;
+          }
+          suggestionText = Setting.formatSuggestion(suggestionText);
+
+          return (
+            <Button
+              className="suggestions-item"
+              key={index}
+              type="primary"
+              style={buttonStyle}
+              onClick={() => {
+                this.props.sendMessage(suggestionText, "");
+                message.suggestions[index].isHit = true;
+                updateMessage(message.owner, message.name, message, true);
+                this.scrollToBottom();
+              }}
+            >
+              {suggestionText}
+            </Button>
+          );
+        })}
       </div>
     );
   }
@@ -440,7 +459,7 @@ class ChatBox extends React.Component {
     return (
       <Welcome
         variant="borderless"
-        icon={this.props.store?.avatar || Conf.AiAvatar}
+        icon={this.props.store?.avatar || Setting.AiAvatar}
         title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
         description={i18next.t("chat:I'm here to help answer your questions")}
       />
@@ -448,7 +467,7 @@ class ChatBox extends React.Component {
   }
 
   render() {
-    const getStoreAvatar = (store) => (!store?.avatar) ? Conf.AiAvatar : store.avatar;
+    const getStoreAvatar = (store) => (!store?.avatar) ? Setting.AiAvatar : store.avatar;
 
     const avatar = getStoreAvatar(this.props.store);
 
@@ -509,6 +528,7 @@ class ChatBox extends React.Component {
                   }}>
                     {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
                   </div>
+
                   {message.isReasoningPhase && message.author === "AI" && message.reasonText && (
                     <div style={{marginBottom: "8px"}}>
                       <Bubble
@@ -571,7 +591,7 @@ class ChatBox extends React.Component {
                       }}
                     />
                   )}
-
+                  
                   {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
                     <Space
                       size="small"
@@ -616,6 +636,7 @@ class ChatBox extends React.Component {
                       />
                     </Space>
                   )}
+                  {message.author === "AI" && index === messages.length - 1 && this.renderSuggestions(message)}
                 </div>
               )}
             />

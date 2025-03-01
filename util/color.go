@@ -15,10 +15,8 @@
 package util
 
 import (
-	"fmt"
 	"image/color"
 	"math"
-	"math/rand"
 )
 
 func mixChannel(a uint8, b uint8, t float64) uint8 {
@@ -33,8 +31,4 @@ func MixColor(c1 color.RGBA, c2 color.RGBA, t float64) color.RGBA {
 		B: mixChannel(c1.B, c2.B, t),
 	}
 	return res
-}
-
-func GetRandomColor() string {
-	return fmt.Sprintf("rgb(%d,%d,%d)", rand.Intn(256), rand.Intn(256), rand.Intn(256))
 }

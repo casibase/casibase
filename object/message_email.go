@@ -76,7 +76,7 @@ func (message *Message) SendEmail() error {
 <div class="email-container">
   <div class="header">
         <h3>%s</h3>
-        <img src="https://cdn.casbin.org/img/casbin_logo_1024x256.png" alt="Casibase Logo" width="300">
+        <img src="https://cdn.casibase.org/img/casibase-logo_1200x256.png" alt="Casibase Logo" width="300">
     </div>
     <p>Hi <strong>%s</strong>, your AI reply has been updated by the administrator! </p>
     <p>Question:</p>
@@ -95,7 +95,7 @@ func (message *Message) SendEmail() error {
     <p>%s</p>
     <hr>
     <div class="footer">
-        <p>Copyright © 2024 Casibase Organization</p>
+        <p>Copyright © 2025 Casibase Organization</p>
     </div>
 </div>
 </body>
@@ -171,7 +171,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 <div class="email-container">
   <div class="header">
         <h3>%s</h3>
-        <img src="https://cdn.casbin.org/img/casbin_logo_1024x256.png" alt="Casibase Logo" width="300">
+        <img src="https://cdn.casibase.org/img/casibase-logo_1200x256.png" alt="Casibase Logo" width="300">
     </div>
     <p>The message for user: <strong>%s</strong> has encountered error! </p>
     <p>Question:</p>
@@ -186,7 +186,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
     <p>%s</p>
     <hr>
     <div class="footer">
-        <p>Copyright © 2024 Casibase Organization</p>
+        <p>Copyright © 2025 Casibase Organization</p>
     </div>
 </div>
 </body>

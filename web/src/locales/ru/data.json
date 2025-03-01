@@ -35,7 +35,6 @@
     "Count": "Count",
     "Default Category": "Default Category",
     "Edit Chat": "Редактировать чат",
-    "FPrice": "FPrice",
     "Group": "Группа",
     "Hello, I'm": "Hello, I'm",
     "I'm here to help answer your questions": "I'm here to help answer your questions",
@@ -52,13 +51,6 @@
     "Your chat text involves sensitive content. This chat has been forcibly terminated.": "Your chat text involves sensitive content. This chat has been forcibly terminated.",
     "click to stop...": "click to stop..."
   },
-  "factorset": {
-    "Count": "Количество",
-    "Edit Factorset": "Редактировать Factorset",
-    "Example factors": "Примеры факторов",
-    "File name": "Название файла",
-    "File size": "Размер файла"
-  },
   "general": {
     "Action": "Действие",
     "Add": "Добавить",
@@ -70,9 +62,6 @@
     "Chats": "Чаты",
     "Client IP": "Client IP",
     "Close": "Закрыть",
-    "Clustering": "Группирование",
-    "Connection duration": "Connection duration",
-    "Connection start time": "Connection start time",
     "Created time": "Время создания",
     "Data": "Данные",
     "Delete": "Удалить",
@@ -83,7 +72,6 @@
     "Download": "Скачать",
     "Edit": "Редактировать",
     "Exit": "Exit",
-    "Factorsets": "Factorsets",
     "Failed to add": "Не удалось добавить",
     "Failed to connect to server": "Не удалось подключиться к серверу",
     "Failed to delete": "Не удалось удалить",
@@ -93,8 +81,11 @@
     "Frameworks": "Frameworks",
     "Go to writable demo site?": "Go to writable demo site?",
     "Home": "Главная",
+    "ID": "ID",
+    "ID - Tooltip": "ID - Tooltip",
     "IP": "IP",
     "IP - Tooltip": "IP - Tooltip",
+    "Images": "Images",
     "Is alerted": "Is alerted",
     "Is deleted": "Is deleted",
     "Language": "Language",
@@ -121,6 +112,8 @@
     "Port": "Port",
     "Port - Tooltip": "Port - Tooltip",
     "Preview": "Предварительный просмотр",
+    "Progress": "Progress",
+    "Progress - Tooltip": "Progress - Tooltip",
     "Protocol": "Protocol",
     "Protocol - Tooltip": "Protocol - Tooltip",
     "Provider URL": "URL Провайдера",
@@ -135,9 +128,11 @@
     "Save \u0026 Exit": "Save \u0026 Exit",
     "Sessions": "Sessions",
     "Size": "Size",
+    "Size - Tooltip": "Size - Tooltip",
     "Sorry, the page you visited does not exist.": "Sorry, the page you visited does not exist.",
     "Sorry, you do not have permission to access this page or logged in status invalid.": "Извините, у вас нет разрешения на доступ к этой странице или статус входа недействителен.",
     "State": "State",
+    "State - Tooltip": "State - Tooltip",
     "Stop": "Stop",
     "Store": "Store",
     "Stores": "Магазины",
@@ -168,9 +163,19 @@
     "Vectors": "Векторы",
     "Videos": "Видео",
     "View": "Просмотр",
-    "Wordsets": "Wordsets",
     "empty": "empty",
     "{total} in total": "{total} in total"
+  },
+  "image": {
+    "Arch": "Arch",
+    "Arch - Tooltip": "Arch - Tooltip",
+    "Boot mode": "Boot mode",
+    "Boot mode - Tooltip": "Boot mode - Tooltip",
+    "Create machine": "Create machine",
+    "Edit Image": "Edit Image",
+    "New Image": "New Image",
+    "Platform": "Platform",
+    "Platform - Tooltip": "Platform - Tooltip"
   },
   "login": {
     "Loading": "Загрузка"
@@ -179,7 +184,6 @@
     "Edit Machine": "Edit Machine",
     "Image": "Image",
     "New Machine": "New Machine",
-    "OS": "OS",
     "Private IP": "Private IP",
     "Public IP": "Public IP",
     "Zone": "Zone"
@@ -220,6 +224,7 @@
     "Add Storage Provider": "Add Storage Provider",
     "Browser URL": "Browser URL",
     "Category": "Категория",
+    "Category - Tooltip": "Category - Tooltip",
     "Chain": "Chain",
     "Client ID": "Client ID",
     "Client secret": "Client secret",
@@ -231,14 +236,12 @@
     "Input type": "Input type",
     "Path": "Path",
     "Presence penalty": "Presence penalty",
-    "Provider": "Provider",
     "Provider URL": "URL Провайдера",
     "Secret key": "Секретный ключ",
     "Sub type": "Sub type",
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "Usage (tokens/min)": "Usage (tokens/min)",
     "groupID": "groupID"
   },
   "session": {
@@ -255,9 +258,10 @@
     "Collected time": "Полученное время",
     "Edit Store": "Редактировать магазин",
     "Embedding provider": "Embedding provider",
-    "Embedding providers": "Embedding providers",
     "English": "Английский",
     "File": "Файл",
+    "File name": "File name",
+    "File size": "File size",
     "File tree": "Дерево файлов",
     "File type": "Тип файла",
     "Folder": "Папка",
@@ -372,13 +376,5 @@
     "Upload Video": "Upload Video",
     "Video": "Видео",
     "Video ID": "ID Видео"
-  },
-  "wordset": {
-    "Distance limit": "Ограничение расстояния",
-    "Edit Wordset": "Редактировать словарь",
-    "Factorset": "Factorset",
-    "Match": "Соответствие",
-    "Matched": "Соответствует",
-    "Words": "Слова"
   }
 }

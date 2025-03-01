@@ -44,7 +44,7 @@ func GetConfigString(key string) string {
 	res := beego.AppConfig.String(key)
 	if res == "" {
 		if key == "staticBaseUrl" {
-			res = "https://cdn.casbin.org"
+			res = "https://cdn.casibase.org"
 		} else if key == "logConfig" {
 			res = "{\"filename\": \"logs/casibase.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
 		}
@@ -106,14 +106,4 @@ func GetConfigBatchSize() int {
 		res = 100
 	}
 	return res
-}
-
-func GetConfigRealDataSourceName(driverName string) string {
-	var dataSourceName string
-	if driverName != "mysql" {
-		dataSourceName = GetConfigDataSourceName()
-	} else {
-		dataSourceName = GetConfigDataSourceName() + GetConfigString("dbName")
-	}
-	return dataSourceName
 }
