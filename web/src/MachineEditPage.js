@@ -164,7 +164,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("machine:OS")}:
+            {i18next.t("node:OS")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.machine.os} onChange={(value => {

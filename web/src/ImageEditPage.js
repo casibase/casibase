@@ -96,7 +96,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("image:Category"), i18next.t("image:Category - Tooltip"))} :
+            {Setting.getLabel(i18next.t("provider:Category"), i18next.t("provider:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.image.category} onChange={value => {
@@ -112,7 +112,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:ImageId"), i18next.t("general:ImageId - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:ID"), i18next.t("general:ID - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input
@@ -164,7 +164,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Os"), i18next.t("general:Os - Tooltip"))} :
+            {Setting.getLabel(i18next.t("node:OS"), i18next.t("node:OS - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input
@@ -177,7 +177,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Platform"), i18next.t("general:Platform - Tooltip"))} :
+            {Setting.getLabel(i18next.t("image:Platform"), i18next.t("image:Platform - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input
@@ -190,7 +190,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:SystemArchitecture"), i18next.t("general:SystemArchitecture - Tooltip"))} :
+            {Setting.getLabel(i18next.t("image:Arch"), i18next.t("image:Arch - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input
@@ -216,7 +216,7 @@ class ImageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={Setting.isMobile() ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:StartupMode"), i18next.t("general:StartupMode - Tooltip"))} :
+            {Setting.getLabel(i18next.t("image:Boot mode"), i18next.t("image:Boot mode - Tooltip"))} :
           </Col>
           <Col span={22}>
             <Input

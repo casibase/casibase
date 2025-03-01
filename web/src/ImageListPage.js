@@ -150,14 +150,14 @@ class ImageListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Category"),
+        title: i18next.t("provider:Category"),
         dataIndex: "category",
         key: "category",
         width: "120px",
         sorter: (a, b) => a.category.localeCompare(b.category),
       },
       {
-        title: i18next.t("general:ImageId"),
+        title: i18next.t("general:ID"),
         dataIndex: "imageId",
         key: "imageId",
         width: "120px",
@@ -185,21 +185,21 @@ class ImageListPage extends BaseListPage {
         sorter: (a, b) => a.description.localeCompare(b.description),
       },
       {
-        title: i18next.t("general:Os"),
+        title: i18next.t("node:OS"),
         dataIndex: "os",
         key: "os",
         width: "90px",
         sorter: (a, b) => a.os.localeCompare(b.os),
       },
       {
-        title: i18next.t("general:Platform"),
+        title: i18next.t("image:Platform"),
         dataIndex: "platform",
         key: "platform",
         width: "90px",
         sorter: (a, b) => a.platform.localeCompare(b.platform),
       },
       {
-        title: i18next.t("general:SystemArchitecture"),
+        title: i18next.t("image:Arch"),
         dataIndex: "systemArchitecture",
         key: "systemArchitecture",
         width: "90px",
@@ -213,7 +213,7 @@ class ImageListPage extends BaseListPage {
         sorter: (a, b) => a.size.localeCompare(b.size),
       },
       {
-        title: i18next.t("general:StartupMode"),
+        title: i18next.t("image:Boot mode"),
         dataIndex: "bootMode",
         key: "bootMode",
         width: "90px",
@@ -254,7 +254,7 @@ class ImageListPage extends BaseListPage {
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
                 onClick={() => this.createMachine(image)}
-              >{i18next.t("general:CreateMachine")}
+              >{i18next.t("image:Create machine")}
               </Button>
               <PopconfirmModal
                 disabled={image.owner !== this.props.account.owner}
