@@ -22,8 +22,11 @@ import (
 )
 
 type Image struct {
-	Owner    string `xorm:"varchar(100) notnull pk" json:"owner"`
-	Name     string `xorm:"varchar(100) notnull pk" json:"name"`
+	Owner       string `xorm:"varchar(100) notnull pk" json:"owner"`
+	Name        string `xorm:"varchar(100) notnull pk" json:"name"`
+	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
+	DisplayName string `xorm:"varchar(100)" json:"displayName"`
+
 	Provider string `xorm:"varchar(100)" json:"provider"`
 	Category string `xorm:"varchar(100)" json:"category"`
 

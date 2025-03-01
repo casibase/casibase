@@ -246,22 +246,14 @@ class ImageListPage extends BaseListPage {
         render: (text, image, index) => {
           return (
             <div>
-              <Button
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => this.props.history.push(`/images/${image.owner}/${image.name}`)}
-              >{i18next.t("general:Edit")}
+              <Button style={{marginTop: "10px", marginRight: "10px"}} onClick={() => this.props.history.push(`/images/${image.owner}/${image.name}`)}>
+                {i18next.t("general:Edit")}
               </Button>
-              <Button
-                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                onClick={() => this.createMachine(image)}
-              >{i18next.t("image:Create machine")}
+              <Button type="primary" style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} onClick={() => this.createMachine(image)}>
+                {i18next.t("image:Create machine")}
               </Button>
-              <PopconfirmModal
-                disabled={image.owner !== this.props.account.owner}
-                style={{marginBottom: "10px"}}
-                title={i18next.t("general:Sure to delete") + `: ${image.name} ?`}
-                onConfirm={() => this.deleteImage(index)}
-              >
+              <PopconfirmModal disabled={image.owner !== this.props.account.owner} style={{marginBottom: "10px"}}
+                title={i18next.t("general:Sure to delete") + `: ${image.name} ?`} onConfirm={() => this.deleteImage(index)}>
               </PopconfirmModal>
             </div>
           );
