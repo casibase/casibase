@@ -183,8 +183,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "openai/gpt-4");
                 } else if (value === "iFlytek") {
                   this.updateProviderField("subType", "spark-v2.0");
-                } else if (value === "Ernie") {
-                  this.updateProviderField("subType", "ERNIE-Bot");
+                } else if (value === "Baidu Cloud") {
+                  this.updateProviderField("subType", "ernie-4.0-8k");
                 } else if (value === "MiniMax") {
                   this.updateProviderField("subType", "abab5-chat");
                 } else if (value === "Claude") {
@@ -233,8 +233,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "sentence-transformers/all-MiniLM-L6-v2");
                 } else if (value === "Cohere") {
                   this.updateProviderField("subType", "embed-english-v2.0");
-                } else if (value === "Ernie") {
-                  this.updateProviderField("subType", "default");
+                } else if (value === "Baidu Cloud") {
+                  this.updateProviderField("subType", "Embedding-V1");
                 } else if (value === "Local") {
                   this.updateProviderField("subType", "custom-embedding");
                 } else if (value === "Azure") {
@@ -343,7 +343,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type !== "Ernie" && this.state.provider.type !== "Hunyuan" && this.state.provider.category !== "Storage") ? null : (
+          (this.state.provider.type !== "Baidu Cloud" && this.state.provider.type !== "Hunyuan" && this.state.provider.category !== "Storage") ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {
@@ -395,7 +395,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy") ? null : (
+          (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
@@ -424,7 +424,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Ernie", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -445,7 +445,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Ernie", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -487,7 +487,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "Ernie"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
