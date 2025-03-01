@@ -194,7 +194,7 @@ class ChatBox extends React.Component {
     tempElement.innerHTML = message;
     const text = tempElement.innerText;
     copy(text);
-    Setting.showMessage("success", i18next.t("general:Message copied successfully"));
+    Setting.showMessage("success", i18next.t("general:Successfully copied"));
   }
 
   handleMessageLike = (message, reactionType) => {
@@ -213,10 +213,14 @@ class ChatBox extends React.Component {
     this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
     updateMessage(message.owner, message.name, message).then((result) => {
       if (result.status === "ok") {
-        Setting.showMessage("success", `${isCancel ? i18next.t("general:Cancel") + " " : ""}${reactionType}d ${i18next.t("general:successfully")}`);
-        return;
+        if (isCancel) {
+          Setting.showMessage("success", i18next.t("general:Successfully liked"));
+        } else {
+          Setting.showMessage("success", i18next.t("general:Successfully unliked"));
+        }
+      } else {
+        Setting.showMessage("error", result.msg);
       }
-      Setting.showMessage("error", result.msg);
     });
   };
 

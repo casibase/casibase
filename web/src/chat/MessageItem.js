@@ -95,7 +95,7 @@ const MessageItem = ({
               marginBottom: "5px",
               color: "#1890ff",
             }}>
-              {i18next.t("chat:Reasoning Process")}:
+              {i18next.t("chat:Reasoning process")}:
             </div>
             <div className="reason-content">
               {renderText(message.reasonText)}
@@ -134,7 +134,7 @@ const MessageItem = ({
                   marginBottom: "5px",
                   color: "#1890ff",
                 }}>
-                  {i18next.t("chat:Reasoning Process")}:
+                  {i18next.t("chat:Reasoning process")}:
                 </div>
                 <div className="reason-content">
                   {renderText(message.reasonText)}
