@@ -129,6 +129,10 @@ class App extends Component {
       this.setState({selectedMenuKey: "/nodes"});
     } else if (uri.includes("/machines")) {
       this.setState({selectedMenuKey: "/machines"});
+    } else if (uri.includes("/images")) {
+      this.setState({selectedMenuKey: "/images"});
+    } else if (uri.includes("/sessions")) {
+      this.setState({selectedMenuKey: "/sessions"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/articles")) {
@@ -442,7 +446,12 @@ class App extends Component {
       // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
       // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
 
-      res.push(Setting.getItem(<a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>{i18next.t("general:Swagger")}</a>, "/swagger"));
+      res.push(Setting.getItem(
+        <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+          {i18next.t("general:Swagger")}
+          {Setting.renderExternalLink()}
+        </a>,
+        "#0"));
 
       res.push(Setting.getItem(
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
