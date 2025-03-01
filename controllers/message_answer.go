@@ -17,10 +17,8 @@ package controllers
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/beego/beego"
-	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -136,7 +134,13 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	embeddingProvider, embeddingProviderObj, err := GetIdleEmbeddingProvider(store.EmbeddingUsageMap, chat.User2, true)
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", chat.User2)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -144,20 +148,6 @@ func (c *ApiController) GetMessageAnswer() {
 
 	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
 	if err != nil && err.Error() != "no knowledge vectors found" {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-
-	modelProvider, modelProviderObj, err := GetIdleModelProvider(store.ModelUsageMap, chat.User2, question, writer, knowledge, history, true)
-	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
@@ -172,6 +162,13 @@ func (c *ApiController) GetMessageAnswer() {
 			c.ResponseErrorStream(message, err.Error())
 			return
 		}
+	}
+
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
 	}
 
 	fmt.Printf("Question: [%s]\n", question)
@@ -228,6 +225,7 @@ func (c *ApiController) GetMessageAnswer() {
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
+
 	textAnswer := answer
 	textSuggestions := []object.Suggestion{}
 	if store.SuggestionCount != 0 {
@@ -237,8 +235,8 @@ func (c *ApiController) GetMessageAnswer() {
 			return
 		}
 	}
-	message.Text = textAnswer
 
+	message.Text = textAnswer
 	if message.Text != "" {
 		message.ErrorText = ""
 		message.IsAlerted = false
@@ -246,61 +244,8 @@ func (c *ApiController) GetMessageAnswer() {
 
 	message.Suggestions = textSuggestions
 
-	message.ModelProvider = modelProvider
 	message.VectorScores = vectorScores
 	_, err = object.UpdateMessage(message.GetId(), message, false)
-	if err != nil {
-		c.ResponseErrorStream(message, err.Error())
-		return
-	}
-
-	if modelProvider == "dall-e-3" {
-		host := c.Ctx.Request.Host
-		origin := getOriginFromHost(host)
-		err := storeImage(message, origin)
-		if err != nil {
-			c.ResponseErrorStream(message, err.Error())
-			return
-		}
-	}
-
-	for key, usageInfo := range store.ModelUsageMap {
-		if time.Since(usageInfo.StartTime) >= time.Minute {
-			usageInfo.TokenCount = 0
-			usageInfo.StartTime = time.Time{}
-
-			store.ModelUsageMap[key] = usageInfo
-		}
-	}
-
-	for key, usageInfo := range store.EmbeddingUsageMap {
-		if time.Since(usageInfo.StartTime) >= time.Minute {
-			usageInfo.TokenCount = 0
-			usageInfo.StartTime = time.Time{}
-
-			store.EmbeddingUsageMap[key] = usageInfo
-		}
-	}
-
-	if store.ModelUsageMap != nil {
-		tokenCount := store.ModelUsageMap[message.ModelProvider].TokenCount + message.TokenCount
-		store.ModelUsageMap[message.ModelProvider] = object.UsageInfo{
-			Provider:   message.ModelProvider,
-			TokenCount: tokenCount,
-			StartTime:  time.Now(),
-		}
-	}
-
-	if store.EmbeddingUsageMap != nil {
-		tokenCount := store.EmbeddingUsageMap[message.EmbeddingProvider].TokenCount + message.TokenCount
-		store.EmbeddingUsageMap[embeddingProvider.Name] = object.UsageInfo{
-			Provider:   embeddingProvider.Name,
-			TokenCount: tokenCount,
-			StartTime:  time.Now(),
-		}
-	}
-
-	_, err = object.UpdateStore(store.GetId(), store)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -342,15 +287,9 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	framework := c.Input().Get("framework")
-	id := util.GetId("admin", framework)
-	task, err := object.GetTask(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
+	provider := c.Input().Get("provider")
 	question := c.Input().Get("question")
+	framework := c.Input().Get("framework")
 	video := c.Input().Get("video")
 
 	category := "Custom"
@@ -363,6 +302,12 @@ func (c *ApiController) GetAnswer() {
 			category = "FrameworkVideoRun"
 			chatName = fmt.Sprintf("%s - %s", video, framework)
 		}
+	}
+
+	answer, modelResult, err := object.GetAnswer(provider, question)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
 	}
 
 	chat, err := object.GetChat(util.GetId("admin", chatName))
@@ -400,19 +345,6 @@ func (c *ApiController) GetAnswer() {
 			c.ResponseError(err.Error())
 			return
 		}
-	}
-
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
-	provider, _, err := GetIdleModelProvider(task.ModelUsageMap, chat.User2, question, writer, []*model.RawMessage{}, []*model.RawMessage{}, false)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	answer, modelResult, err := object.GetAnswer(provider, question)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
 	}
 
 	questionMessage := &object.Message{
@@ -472,24 +404,5 @@ func (c *ApiController) GetAnswer() {
 		return
 	}
 
-	for _, usageInfo := range task.ModelUsageMap {
-		if time.Since(usageInfo.StartTime) >= time.Minute {
-			usageInfo.TokenCount = 0
-			usageInfo.StartTime = time.Time{}
-		}
-	}
-
-	if task.ModelUsageMap != nil {
-		task.ModelUsageMap[provider] = object.UsageInfo{
-			Provider:   provider,
-			TokenCount: modelResult.TotalTokenCount,
-			StartTime:  time.Now(),
-		}
-	}
-	_, err = object.UpdateTask(id, task)
-	if err != nil {
-		c.ResponseOk(err.Error())
-		return
-	}
 	c.ResponseOk(answer)
 }
