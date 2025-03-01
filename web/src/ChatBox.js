@@ -591,7 +591,7 @@ class ChatBox extends React.Component {
                       }}
                     />
                   )}
-                  
+
                   {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
                     <Space
                       size="small"
