@@ -669,7 +669,7 @@ export function getProviderTypeOptions(category) {
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
         {id: "OpenRouter", name: "OpenRouter"},
-        {id: "Ernie", name: "Ernie"},
+        {id: "Baidu Cloud", name: "Baidu Cloud"},
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
         {id: "MiniMax", name: "MiniMax"},
@@ -697,7 +697,7 @@ export function getProviderTypeOptions(category) {
         {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Cohere", name: "Cohere"},
-        {id: "Ernie", name: "Ernie"},
+        {id: "Baidu Cloud", name: "Baidu Cloud"},
         {id: "Ollama", name: "Ollama"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
@@ -856,20 +856,48 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "llama-2-70b-chat", name: "llama-2-70b-chat"},
       ]
     );
-  } else if (type === "Ernie") {
+  } else if (type === "Baidu Cloud") {
     if (category === "Model") {
       return (
         [
-          {id: "ERNIE-Bot", name: "ERNIE-Bot"},
-          {id: "ERNIE-Bot-turbo", name: "ERNIE-Bot-turbo"},
-          {id: "BLOOMZ-7B", name: "BLOOMZ-7B"},
-          {id: "Llama-2", name: "Llama-2"},
+          {id: "ernie-4.0-8k", name: "ernie-4.0-8k"},
+          {id: "ernie-4.0-8k-latest", name: "ernie-4.0-8k-latest"},
+          {id: "ernie-4.0-8k-preview", name: "ernie-4.0-8k-preview"},
+          {id: "ernie-4.0-turbo-8k", name: "ernie-4.0-turbo-8k"},
+          {id: "ernie-4.0-turbo-128k", name: "ernie-4.0-turbo-128k"},
+          {id: "ernie-4.0-turbo-8k-preview", name: "ernie-4.0-turbo-8k-preview"},
+          {id: "ernie-4.0-turbo-8k-latest", name: "ernie-4.0-turbo-8k-latest"},
+          {id: "ernie-3.5-8k", name: "ernie-3.5-8k"},
+          {id: "ernie-3.5-128k", name: "ernie-3.5-128k"},
+          {id: "ernie-3.5-8k-preview", name: "ernie-3.5-8k-preview"},
+          {id: "ernie-speed-8k", name: "ernie-speed-8k"},
+          {id: "ernie-speed-128k", name: "ernie-speed-128k"},
+          {id: "ernie-speed-pro-128k", name: "ernie-speed-pro-128k"},
+          {id: "ernie-lite-8k", name: "ernie-lite-8k"},
+          {id: "ernie-lite-pro-128k", name: "ernie-lite-pro-128k"},
+          {id: "ernie-tiny-8k", name: "ernie-tiny-8k"},
+          {id: "ernie-character-8k", name: "ernie-character-8k"},
+          {id: "ernie-character-fiction-8k", name: "ernie-character-fiction-8k"},
+          {id: "ernie-novel-8k", name: "ernie-novel-8k"},
+          {id: "deepseek-v3", name: "deepseek-v3"},
+          {id: "deepseek-r1", name: "deepseek-r1"},
+          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+          {id: "deepseek-r1-distill-qwen-14b", name: "deepseek-r1-distill-qwen-14b"},
+          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
+          {id: "deepseek-r1-distill-qianfan-llama-8b", name: "deepseek-r1-distill-qianfan-llama-8b"},
+          {id: "deepseek-r1-distill-qianfan-llama-70b", name: "deepseek-r1-distill-qianfan-llama-70b"},
         ]
       );
     } else if (category === "Embedding") {
       return (
         [
-          {id: "default", name: "default"},
+          {id: "Embedding-V1", name: "Embedding-V1"},
+          {id: "bge-large-zh", name: "bge-large-zh"},
+          {id: "bge-large-en", name: "bge-large-en"},
+          {id: "tao-8k", name: "tao-8k"},
         ]
       );
     } else {
