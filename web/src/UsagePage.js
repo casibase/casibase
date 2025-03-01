@@ -436,7 +436,7 @@ class UsagePage extends BaseListPage {
 
     return (
       <div style={{display: "flex", alignItems: "center", marginBottom: "10px"}}>
-        <span style={{marginRight: "10px"}}>{i18next.t("general:User")}:</span>
+        <span style={{width: "50px", marginRight: "10px"}}>{i18next.t("general:User")}:</span>
         <Select
           virtual={true}
           value={this.state.selectedUser}
