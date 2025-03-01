@@ -19,23 +19,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"math"
 	"net/http"
 	"path/filepath"
 	"regexp"
 	"strings"
 
-	"github.com/casibase/casibase/embedding"
-	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
 )
-
-var reImage *regexp.Regexp
-
-func init() {
-	reImage, _ = regexp.Compile(`<img[^>]+src="([^"]+)"[^>]*>`)
-}
 
 func (c *ApiController) ResponseErrorStream(message *object.Message, errorText string) {
 	var err error
@@ -93,132 +84,6 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 	return jsonBytes, nil
 }
 
-func getMinFromUsageMap(usageMap map[string]object.UsageInfo) string {
-	min := math.MaxInt
-	res := ""
-	for provider, usageInfo := range usageMap {
-		if min > usageInfo.TokenCount {
-			min = usageInfo.TokenCount
-			res = provider
-		}
-	}
-	return res
-}
-
-func isImageQuestion(question string) bool {
-	res := reImage.MatchString(question)
-	return res
-}
-
-func getFilteredModelUsageMap(modelUsageMap map[string]object.UsageInfo, modelProviderMap map[string]*object.Provider, modelProviderObjMap map[string]model.ModelProvider, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage) (map[string]object.UsageInfo, error) {
-	nonDALLEModelUsageMap := map[string]object.UsageInfo{}
-	for providerName, usageInfo := range modelUsageMap {
-		providerObj := modelProviderMap[providerName]
-		if providerObj.SubType == "dall-e-3" {
-			continue
-		}
-		nonDALLEModelUsageMap[providerName] = usageInfo
-	}
-	visionModelUsageMap := map[string]object.UsageInfo{}
-	if isImageQuestion(question) {
-		for providerName, usageInfo := range nonDALLEModelUsageMap {
-			providerObj := modelProviderMap[providerName]
-			if strings.HasSuffix(providerObj.SubType, "-vision-preview") || strings.Contains(providerObj.SubType, "4o") {
-				visionModelUsageMap[providerName] = usageInfo
-			}
-		}
-	} else {
-		visionModelUsageMap = nonDALLEModelUsageMap
-	}
-
-	filteredModelUsageMap := map[string]object.UsageInfo{}
-	for providerName, usageInfo := range visionModelUsageMap {
-		providerObj := modelProviderObjMap[providerName]
-		dryRunQuestion := "$CasibaseDryRun$" + question
-		_, err := providerObj.QueryText(dryRunQuestion, writer, history, "", knowledge)
-		if err == nil {
-			filteredModelUsageMap[providerName] = usageInfo
-		}
-	}
-	return filteredModelUsageMap, nil
-}
-
-func GetIdleModelProvider(modelUsageMap map[string]object.UsageInfo, name string, question string, writer io.Writer, knowledge []*model.RawMessage, history []*model.RawMessage, isFromStore bool) (string, model.ModelProvider, error) {
-	if len(modelUsageMap) <= 1 {
-		defaultModelProvider, defaultModelProviderObj, err := object.GetModelProviderFromContext("admin", name)
-		if err != nil {
-			return "", nil, err
-		}
-
-		return defaultModelProvider.Name, defaultModelProviderObj, nil
-	}
-
-	modelProviderMap, modelProviderObjMap, err := object.GetModelProvidersFromContext("admin", name, isFromStore)
-	if err != nil {
-		return "", nil, err
-	}
-
-	intention, err := getPromptIntention(question, name)
-	if err != nil {
-		return "", nil, err
-	}
-	if intention == "image" {
-		for providerName := range modelUsageMap {
-			providerObj := modelProviderMap[providerName]
-			if providerObj.SubType == "dall-e-3" {
-				return providerName, modelProviderObjMap[providerName], nil
-			}
-		}
-		return "", nil, fmt.Errorf("please config a DALL-E-3 model provider firstly")
-	}
-
-	modelUsageMap, err = getFilteredModelUsageMap(modelUsageMap, modelProviderMap, modelProviderObjMap, question, writer, knowledge, history)
-	if err != nil {
-		return "", nil, err
-	}
-
-	minProvider := getMinFromUsageMap(modelUsageMap)
-	modelProvider, ok := modelProviderMap[minProvider]
-	if !ok {
-		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
-	}
-	modelProviderObj, ok := modelProviderObjMap[minProvider]
-	if !ok {
-		return "", nil, fmt.Errorf("No idle model provider found: %s", minProvider)
-	}
-
-	return modelProvider.Name, modelProviderObj, nil
-}
-
-func GetIdleEmbeddingProvider(embeddingUsageMap map[string]object.UsageInfo, name string, isFromStore bool) (*object.Provider, embedding.EmbeddingProvider, error) {
-	if len(embeddingUsageMap) <= 1 {
-		defaultEmbeddingProvider, defaultEmbeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", name)
-		if err != nil {
-			return &object.Provider{}, nil, err
-		}
-
-		return defaultEmbeddingProvider, defaultEmbeddingProviderObj, nil
-	}
-
-	embeddingProviderMap, embeddingProviderObjMap, err := object.GetEmbeddingProvidersFromContext("admin", name, isFromStore)
-	if err != nil {
-		return &object.Provider{}, nil, err
-	}
-
-	minProvider := getMinFromUsageMap(embeddingUsageMap)
-
-	embeddingProvider, ok := embeddingProviderMap[minProvider]
-	if !ok {
-		return &object.Provider{}, nil, fmt.Errorf("No idle model provider found: %s", minProvider)
-	}
-	embeddingProviderObj, ok := embeddingProviderObjMap[minProvider]
-	if !ok {
-		return &object.Provider{}, nil, fmt.Errorf("No idle model provider found: %s", minProvider)
-	}
-
-	return embeddingProvider, embeddingProviderObj, nil
-}
-
 var divider = "|||"
 
 func getQuestionWithSuggestions(question string, count int) (string, error) {
@@ -272,22 +137,6 @@ func formatSuggestion(suggestionText string) string {
 		suggestionText += "?"
 	}
 	return suggestionText
-}
-
-func getPromptIntention(prompt string, name string) (string, error) {
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", name)
-	if err != nil {
-		return "", err
-	}
-	prompt = reImage.ReplaceAllString(prompt, "")
-	getIntentionPrompt := "Is the following user prompt asking for an image or a text response? Your answer should only be 'image' or 'text' Just use one word, do not add other words: [" + prompt + "]"
-	var writer object.MyWriter
-	_, err = modelProviderObj.QueryText(getIntentionPrompt, &writer, []*model.RawMessage{}, "", []*model.RawMessage{})
-	if err != nil {
-		return "", err
-	}
-	intention := writer.String()
-	return intention, nil
 }
 
 func RefineMessageImage(message *object.Message) error {
