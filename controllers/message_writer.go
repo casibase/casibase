@@ -51,7 +51,7 @@ func (w *RefinedWriter) Write(p []byte) (n int, err error) {
 		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
 	}
 
-	// 将数据添加到对应的缓冲区
+	// Add data to the buffer
 	w.buf = append(w.buf, []byte(data)...)
 	if eventType == "message" {
 		w.messageBuf = append(w.messageBuf, []byte(data)...)
