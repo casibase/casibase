@@ -89,3 +89,27 @@ export function renderText(text) {
     <div dangerouslySetInnerHTML={{__html: html}} style={{display: "flex", flexDirection: "column", gap: "0px"}} />
   );
 }
+
+export function renderReason(text) {
+  if (!text) {return null;}
+
+  // Apply the same markdown, LaTeX, and code highlighting as renderText
+  let html = renderMarkdown(text);
+  html = renderLatex(html);
+  html = renderCode(html);
+
+  return (
+    <div
+      dangerouslySetInnerHTML={{__html: html}}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "0px",
+        backgroundColor: "#f8f9fa",
+        borderRadius: "4px",
+        fontStyle: "italic",
+        color: "#505050",
+      }}
+    />
+  );
+}

@@ -19,7 +19,7 @@ import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
-import {renderText} from "./ChatMessageRender";
+import {renderReason, renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as MessageBackend from "./backend/MessageBackend";
@@ -241,6 +241,7 @@ class ChatPage extends BaseListPage {
           const lastMessage = res.data[res.data.length - 1];
           if (lastMessage.author === "AI" && lastMessage.replyTo !== "" && lastMessage.text === "") {
             let text = "";
+            let reasonText = "";
             this.setState({
               messageLoading: true,
             });
@@ -264,6 +265,13 @@ class ChatPage extends BaseListPage {
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
               lastMessage2.text = Setting.parseAnswerAndSuggestions(text)["answer"];
+
+              // Preserve reasoning if it exists
+              if (res.data[res.data.length - 1].reasonText) {
+                lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
+                lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
+              }
+
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
                 if (index === res.data.length - 1 && message.author === "AI") {
@@ -272,6 +280,30 @@ class ChatPage extends BaseListPage {
                   message.html = renderText(message.text);
                 }
               });
+              this.setState({
+                messages: res.data,
+                messageLoading: false,
+              });
+            }, (data) => {
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              const jsonData = JSON.parse(data);
+
+              if (jsonData.text === "") {
+                jsonData.text = "\n";
+              }
+
+              // Add the new text to the existing text
+              reasonText += jsonData.text;
+
+              const lastMessage2 = Setting.deepCopy(lastMessage);
+              lastMessage2.reasonText = reasonText;
+              lastMessage2.isReasoningPhase = true;
+
+              lastMessage2.text = "";
+              res.data[res.data.length - 1] = lastMessage2;
+
               this.setState({
                 messages: res.data,
                 messageLoading: false,
@@ -297,6 +329,14 @@ class ChatPage extends BaseListPage {
               const lastMessage2 = Setting.deepCopy(lastMessage);
               lastMessage2.text = text;
 
+              // Preserve reasoning when finalizing the message
+              if (res.data[res.data.length - 1].reasonText) {
+                lastMessage2.reasonText = res.data[res.data.length - 1].reasonText;
+                lastMessage2.reasonHtml = res.data[res.data.length - 1].reasonHtml;
+              }
+
+              // We're no longer in reasoning phase
+              lastMessage2.isReasoningPhase = false;
               // If there are suggestions, split them from the text
               const parseResult = Setting.parseAnswerAndSuggestions(text);
               lastMessage2.text = parseResult["answer"];
@@ -304,7 +344,13 @@ class ChatPage extends BaseListPage {
 
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
+                // Ensure the main HTML is rendered properly
                 message.html = renderText(message.text);
+
+                // Make sure the reason HTML is still there if we have reason text
+                if (message.reasonText) {
+                  message.reasonHtml = renderReason(message.reasonText);
+                }
               });
 
               this.setState({
