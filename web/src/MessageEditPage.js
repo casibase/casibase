@@ -220,6 +220,16 @@ class MessageEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={2}>
+            {i18next.t("general:Reasoning text")}:
+          </Col>
+          <Col span={22}>
+            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.message.reasonText} onChange={(e) => {
+              this.updateMessageField("reasonText", e.target.value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={2}>
             {i18next.t("general:Text")}:
           </Col>
           <Col span={22}>

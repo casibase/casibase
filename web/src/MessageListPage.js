@@ -223,10 +223,22 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Reasoning text"),
+        dataIndex: "reasonText",
+        key: "reasonText",
+        width: "300px",
+        sorter: (a, b) => a.reasonText.localeCompare(b.reasonText),
+        render: (text, record, index) => {
+          return (
+            <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
-        width: "400px",
+        width: "300px",
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
