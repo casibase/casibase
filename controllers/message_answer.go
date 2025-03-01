@@ -154,7 +154,7 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
 
 	modelProvider, modelProviderObj, err := GetIdleModelProvider(store.ModelUsageMap, chat.User2, question, writer, knowledge, history, true)
 	if err != nil {
@@ -223,8 +223,8 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	answer := writer.String()
-
+	answer := writer.MessageString()
+	message.ReasonText = writer.ReasonString()
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
@@ -402,7 +402,7 @@ func (c *ApiController) GetAnswer() {
 		}
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
 	provider, _, err := GetIdleModelProvider(task.ModelUsageMap, chat.User2, question, writer, []*model.RawMessage{}, []*model.RawMessage{}, false)
 	if err != nil {
 		c.ResponseError(err.Error())

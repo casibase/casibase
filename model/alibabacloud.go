@@ -120,8 +120,8 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 		Stream:      true,
 	}
 
-	flushData := func(data string) error {
-		if _, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", data); err != nil {
+	flushData := func(data string, eventType string) error {
+		if _, err := fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", eventType, data); err != nil {
 			return err
 		}
 		flusher.Flush()
@@ -162,10 +162,23 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 			continue
 		}
 
-		data := response.Choices[0].Delta.Content
-		err = flushData(data)
-		if err != nil {
-			return nil, err
+		var data string
+
+		if response.Choices[0].Delta.ReasoningContent != "" {
+			data = response.Choices[0].Delta.ReasoningContent
+			err = flushData(data, "reason")
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		// Check if we have regular content
+		if response.Choices[0].Delta.Content != "" {
+			data = response.Choices[0].Delta.Content
+			err = flushData(data, "message")
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		responseTokenCount, err := GetTokenSize("gpt-4", data)

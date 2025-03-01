@@ -215,8 +215,43 @@ class ChatBox extends React.Component {
       }
     }
 
-    if (message.text === "" && message.author === "AI") {
+    if (message.text === "" && message.author === "AI" && !message.reasonText) {
       return null;
+    }
+
+    if (message.isReasoningPhase && message.author === "AI") {
+      return null;
+    }
+
+    if (!message.isReasoningPhase && message.reasonText && message.author === "AI") {
+      return (
+        <div className="message-content">
+          {}
+          <div className="message-reason" style={{
+            marginBottom: "15px",
+            padding: "10px",
+            backgroundColor: "#f8f9fa",
+            borderRadius: "5px",
+            borderLeft: "3px solid #1890ff",
+          }}>
+            <div className="reason-label" style={{
+              fontWeight: "bold",
+              marginBottom: "5px",
+              color: "#1890ff",
+            }}>
+              {i18next.t("chat:Reasoning Process")}:
+            </div>
+            <div className="reason-content">
+              {renderText(message.reasonText)}
+            </div>
+          </div>
+
+          {/* main content */}
+          <div className="message-answer">
+            {message.html || renderText(message.text)}
+          </div>
+        </div>
+      );
     }
 
     if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
@@ -474,25 +509,69 @@ class ChatBox extends React.Component {
                   }}>
                     {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
                   </div>
-                  <Bubble
-                    placement={message.author === "AI" ? "start" : "end"}
-                    content={this.renderMessageContent(message, index === messages.length - 1)}
-                    loading={message.text === "" && message.author === "AI"}
-                    typing={message.author === "AI" ? {
-                      step: 2,
-                      interval: 50,
-                    } : undefined}
-                    avatar={{
-                      src: message.author === "AI" ? avatar : this.props.account.avatar,
-                    }}
-                    styles={{
-                      content: {
-                        backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
-                        borderRadius: "16px",
-                        padding: "12px 16px",
-                      },
-                    }}
-                  />
+                  {message.isReasoningPhase && message.author === "AI" && message.reasonText && (
+                    <div style={{marginBottom: "8px"}}>
+                      <Bubble
+                        placement="start"
+                        content={
+                          <div className="message-reason" style={{
+                            padding: "10px",
+                            backgroundColor: "#f8f9fa",
+                            borderRadius: "5px",
+                            borderLeft: "3px solid #1890ff",
+                          }}>
+                            <div className="reason-label" style={{
+                              fontWeight: "bold",
+                              marginBottom: "5px",
+                              color: "#1890ff",
+                            }}>
+                              {i18next.t("chat:Reasoning Process")}:
+                            </div>
+                            <div className="reason-content">
+                              {renderText(message.reasonText)}
+                            </div>
+                          </div>
+                        }
+                        typing={{
+                          step: 2,
+                          interval: 50,
+                        }}
+                        avatar={{
+                          src: message.author === "AI" ? avatar : this.props.account.avatar,
+                        }}
+                        styles={{
+                          content: {
+                            backgroundColor: ThemeDefault.colorBackground,
+                            borderRadius: "16px",
+                            padding: "12px 16px",
+                          },
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  {(!message.isReasoningPhase || message.author !== "AI") && (
+                    <Bubble
+                      placement={message.author === "AI" ? "start" : "end"}
+                      content={this.renderMessageContent(message, index === messages.length - 1)}
+                      loading={message.text === "" && message.author === "AI" && !message.reasonText}
+                      typing={message.author === "AI" && !message.isReasoningPhase ? {
+                        step: 2,
+                        interval: 50,
+                      } : undefined}
+                      avatar={{
+                        src: message.author === "AI" ? avatar : this.props.account.avatar,
+                      }}
+                      styles={{
+                        content: {
+                          backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
+                          borderRadius: "16px",
+                          padding: "12px 16px",
+                        },
+                      }}
+                    />
+                  )}
+
                   {(message.author === "AI" && (this.props.disableInput === false || index !== messages.length - 1)) && (
                     <Space
                       size="small"
@@ -506,7 +585,7 @@ class ChatBox extends React.Component {
                         className="cs-button"
                         icon={<CopyOutlined />}
                         style={{border: "none", color: ThemeDefault.colorPrimary}}
-                        onClick={() => this.copyMessageFromHTML(message.html.props.dangerouslySetInnerHTML.__html)}
+                        onClick={() => this.copyMessageFromHTML(message.html?.props?.dangerouslySetInnerHTML?.__html || "")}
                       />
                       {index !== messages.length - 1 ? null :
                         <Button

@@ -27,42 +27,70 @@ type RefinedWriter struct {
 	context.Response
 	writerCleaner Cleaner
 	buf           []byte
+	messageBuf    []byte
+	reasonBuf     []byte
 }
 
 func newRefinedWriter(w context.Response) *RefinedWriter {
-	return &RefinedWriter{w, *NewCleaner(6), []byte{}}
+	return &RefinedWriter{w, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
 }
 
 func (w *RefinedWriter) Write(p []byte) (n int, err error) {
-	prefix := []byte("event: message\ndata: ")
-	suffix := []byte("\n\n")
-	data := string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	var eventType string
+	var data string
+
+	if bytes.HasPrefix(p, []byte("event: reason")) {
+		eventType = "reason"
+		prefix := []byte("event: reason\ndata: ")
+		suffix := []byte("\n\n")
+		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	} else {
+		eventType = "message"
+		prefix := []byte("event: message\ndata: ")
+		suffix := []byte("\n\n")
+		data = string(bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix))
+	}
+
+	// 将数据添加到对应的缓冲区
+	w.buf = append(w.buf, []byte(data)...)
+	if eventType == "message" {
+		w.messageBuf = append(w.messageBuf, []byte(data)...)
+	} else if eventType == "reason" {
+		w.reasonBuf = append(w.reasonBuf, []byte(data)...)
+	}
+
 	if w.writerCleaner.cleaned == false && w.writerCleaner.dataTimes < w.writerCleaner.bufferSize {
 		w.writerCleaner.AddData(data)
 		if w.writerCleaner.dataTimes == w.writerCleaner.bufferSize {
 			cleanedData := w.writerCleaner.GetCleanedData()
-			w.buf = append(w.buf, []byte(cleanedData)...)
 			fmt.Print(cleanedData)
 			jsonData, err := ConvertMessageDataToJSON(cleanedData)
 			if err != nil {
 				return 0, err
 			}
-			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
+			return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: %s\ndata: %s\n\n", eventType, jsonData)))
 		}
 		return 0, nil
 	}
 
-	w.buf = append(w.buf, []byte(data)...)
 	fmt.Print(data)
 	jsonData, err := ConvertMessageDataToJSON(data)
 	if err != nil {
 		return 0, err
 	}
-	return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
+	return w.ResponseWriter.Write([]byte(fmt.Sprintf("event: %s\ndata: %s\n\n", eventType, jsonData)))
 }
 
 func (w *RefinedWriter) String() string {
 	return string(w.buf)
+}
+
+func (w *RefinedWriter) MessageString() string {
+	return string(w.messageBuf)
+}
+
+func (w *RefinedWriter) ReasonString() string {
+	return string(w.reasonBuf)
 }
 
 type Cleaner struct {
