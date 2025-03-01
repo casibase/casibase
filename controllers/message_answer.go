@@ -152,6 +152,8 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
+	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
+
 	if questionMessage != nil {
 		questionMessage.TokenCount = embeddingResult.TokenCount
 		questionMessage.Price = embeddingResult.Price
@@ -164,7 +166,6 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}}
 	history, err := object.GetRecentRawMessages(chat.Name, message.CreatedTime, store.MemoryLimit)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
@@ -220,8 +221,8 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	answer := writer.String()
-
+	answer := writer.MessageString()
+	message.ReasonText = writer.ReasonString()
 	message.TokenCount = modelResult.TotalTokenCount
 	message.Price = modelResult.TotalPrice
 	message.Currency = modelResult.Currency
@@ -345,6 +346,12 @@ func (c *ApiController) GetAnswer() {
 			c.ResponseError(err.Error())
 			return
 		}
+	}
+
+	answer, modelResult, err = object.GetAnswer(provider, question)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
 	}
 
 	questionMessage := &object.Message{

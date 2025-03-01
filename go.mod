@@ -21,12 +21,12 @@ require (
 	github.com/casibase/generative-ai-go v0.5.1
 	github.com/casibase/go-openrouter v1.0.0
 	github.com/cohere-ai/cohere-go/v2 v2.5.2
-	github.com/danaugrs/go-tsne/tsne v0.0.0-20220306155740-2250969e057f
 	github.com/denisenkom/go-mssqldb v0.10.0
 	github.com/digitalocean/go-libvirt v0.0.0-20250207191401-950a7b2d7eaf
 	github.com/gage-technologies/mistral-go v1.1.0
 	github.com/go-sql-driver/mysql v1.6.0
 	github.com/google/uuid v1.6.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/henomis/lingoose v0.1.0
 	github.com/hupe1980/go-huggingface v0.0.15
 	github.com/ledongthuc/pdf v0.0.0-20220302134840-0c2507a12d80
@@ -48,7 +48,6 @@ require (
 	github.com/wangbin/jiebago v0.3.2
 	golang.org/x/net v0.35.0
 	golang.org/x/time v0.3.0
-	gonum.org/v1/gonum v0.11.0
 	google.golang.org/api v0.149.0
 	google.golang.org/grpc v1.59.0
 	modernc.org/sqlite v1.18.1
@@ -97,7 +96,6 @@ require (
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
@@ -159,3 +157,5 @@ require (
 	modernc.org/token v1.0.0 // indirect
 	xorm.io/builder v0.3.9 // indirect
 )
+
+replace github.com/sashabaranov/go-openai => github.com/casibase/go-openai v1.39.0
