@@ -179,7 +179,9 @@ class ChatPage extends BaseListPage {
                 });
 
                 const chats = res.data;
-                this.menu.current.setSelectedKeyToNewChat(chats);
+                if (this.menu && this.menu.current) {
+                  this.menu.current.setSelectedKeyToNewChat(chats);
+                }
               }
             });
 
@@ -555,9 +557,13 @@ class ChatPage extends BaseListPage {
         {
           this.renderUnsafePasswordModal()
         }
-        <div style={{width: (Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) ? "0px" : "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
-          <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={!this.state.canSelectStore ? [] : this.state.stores} />
-        </div>
+        {
+          !(Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) && (
+            <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
+              <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={!this.state.canSelectStore ? [] : this.state.stores} />
+            </div>
+          )
+        }
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
           {
             (this.state.messages === undefined || this.state.messages === null) ? null : (
@@ -633,7 +639,9 @@ class ChatPage extends BaseListPage {
           this.getGlobalStores();
 
           if (!setLoading) {
-            this.menu.current.setSelectedKeyToNewChat(chats);
+            if (this.menu && this.menu.current) {
+              this.menu.current.setSelectedKeyToNewChat(chats);
+            }
           }
         }
       });
