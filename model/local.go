@@ -246,6 +246,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
 		flushData = flushDataOpenai
+	} else if p.typ == "GitHub" {
+		client = getGitHubClientFromToken(p.secretKey, p.providerUrl)
+		flushData = flushDataOpenai
 	} else if p.typ == "Custom" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai

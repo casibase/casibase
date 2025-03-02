@@ -223,6 +223,8 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "yi-lightning");
                 } else if (value === "Silicon Flow") {
                   this.updateProviderField("subType", "deepseek-ai/DeepSeek-R1");
+                } else if (value === "GitHub") {
+                  this.updateProviderField("subType", "gpt-4o");
                 }
               } else if (this.state.provider.category === "Embedding") {
                 if (value === "OpenAI") {
