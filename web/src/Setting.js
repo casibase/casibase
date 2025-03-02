@@ -688,6 +688,7 @@ export function getProviderTypeOptions(category) {
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
+        {id: "GitHub", name: "GitHub"},
       ]
     );
   } else if (category === "Embedding") {
@@ -801,6 +802,13 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (type === "GitHub") {
+    return (
+      [
+        {id: "gpt-4o", name: "GPT-4o"},
+        {id: "gpt-4o-mini", name: "GPT-4o-mini"},
+      ]
+    );
   } else if (type === "Hugging Face") {
     if (category === "Model") {
       return (
