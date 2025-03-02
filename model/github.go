@@ -26,14 +26,15 @@ type GitHubModelProvider struct {
 func NewGitHubModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (*GitHubModelProvider, error) {
 	p := &GitHubModelProvider{
 		LocalModelProvider: &LocalModelProvider{
-			typ:              typ,
-			subType:          subType,
-			secretKey:        secretKey,
-			temperature:      temperature,
-			topP:             topP,
-			frequencyPenalty: frequencyPenalty,
-			presencePenalty:  presencePenalty,
-			providerUrl:      "https://models.inference.ai.azure.com",
+			typ:                "Custom",
+			subType:            "custom-model",
+			secretKey:          secretKey,
+			temperature:        temperature,
+			topP:               topP,
+			frequencyPenalty:   frequencyPenalty,
+			presencePenalty:    presencePenalty,
+			providerUrl:        "https://models.github.ai/inference",
+			compitableProvider: subType,
 		},
 	}
 	return p, nil
@@ -49,7 +50,7 @@ func getGitHubClientFromToken(authToken string, providerUrl string) *openai.Clie
 }
 
 func (p *GitHubModelProvider) GetPricing() string {
-	return `API usage are rate limited by requests per minute, requests per day, tokens per request, and concurrent requests.
+	return `GitHub model API usage are free but rate limited by requests per minute, requests per day, tokens per request, and concurrent requests.
 URL:
 https://docs.github.com/en/github-models/prototyping-with-ai-models#rate-limits
 `
