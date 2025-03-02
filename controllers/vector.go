@@ -134,6 +134,19 @@ func (c *ApiController) AddVector() {
 		return
 	}
 
+	if vector.Provider == "" {
+		var embeddingProvider *object.Provider
+		embeddingProvider, err = object.GetDefaultEmbeddingProvider()
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		if embeddingProvider != nil {
+			vector.Provider = embeddingProvider.Name
+		}
+	}
+
 	success, err := object.AddVector(&vector)
 	if err != nil {
 		c.ResponseError(err.Error())

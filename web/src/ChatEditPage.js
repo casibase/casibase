@@ -216,7 +216,7 @@ class ChatEditPage extends React.Component {
             {i18next.t("general:Messages")}:
           </Col>
           <Col span={22} >
-            <div style={{width: "50%"}}>
+            <div style={{width: "50%", height: "800px"}}>
               <ChatBox disableInput={true} hideInput={true} messages={this.state.messages} sendMessage={null} account={this.props.account} />
             </div>
           </Col>

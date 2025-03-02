@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2024 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package object
+package service
 
 import (
 	"fmt"
-	"strings"
 )
 
-type Factor struct {
-	Name     string    `xorm:"varchar(100)" json:"name"`
-	Category string    `xorm:"varchar(100)" json:"category"`
-	Color    string    `xorm:"varchar(100)" json:"color"`
-	Data     []float64 `xorm:"varchar(1000)" json:"data"`
+type ImageClientInterface interface {
+	GetImages() ([]*Image, error)
 }
 
-func (factor *Factor) GetDataKey() string {
-	sData := []string{}
-	for _, f := range factor.Data {
-		sData = append(sData, fmt.Sprintf("%f", f))
+func NewImageClient(providerType string, accessKeyId string, accessKeySecret string, region string) (ImageClientInterface, error) {
+	var res ImageClientInterface
+	var err error
+	if providerType == "Aliyun" {
+		res, err = newImageAliyunClient(accessKeyId, accessKeySecret, region)
+	} else {
+		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
 	}
-	return strings.Join(sData, "|")
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

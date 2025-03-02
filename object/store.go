@@ -64,11 +64,6 @@ type Store struct {
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
 
-	ModelProviders     []string             `xorm:"mediumtext" json:"modelProviders" xorm:"json"`
-	EmbeddingProviders []string             `xorm:"mediumtext" json:"embeddingProviders" xorm:"json"`
-	ModelUsageMap      map[string]UsageInfo `xorm:"mediumtext" json:"modelUsageMap" xorm:"json"`
-	EmbeddingUsageMap  map[string]UsageInfo `xorm:"mediumtext" json:"embeddingUsageMap" xorm:"json"`
-
 	MemoryLimit     int      `json:"memoryLimit"`
 	Frequency       int      `json:"frequency"`
 	LimitMinutes    int      `json:"limitMinutes"`

@@ -22,7 +22,6 @@ import i18next from "i18next";
 import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./PromptTable";
-import ProvidersUsageTable from "./ProvidersUsageTable";
 
 const {TextArea} = Input;
 
@@ -108,32 +107,6 @@ class StoreEditPage extends React.Component {
     this.setState({
       store: store,
     });
-  }
-
-  updateModelUsageMapForStore(value) {
-    const modelUsageMap = {};
-
-    value.forEach(provider => {
-      modelUsageMap[provider] = {
-        tokenCount: 0,
-        startTime: new Date().toISOString(),
-      };
-    });
-
-    this.updateStoreField("modelUsageMap", modelUsageMap);
-  }
-
-  updateEmbeddingUsageMapForStore(value) {
-    const embeddingUsageMap = {};
-
-    value.forEach(provider => {
-      embeddingUsageMap[provider] = {
-        tokenCount: 0,
-        startTime: new Date().toISOString(),
-      };
-    });
-
-    this.updateStoreField("embeddingUsageMap", embeddingUsageMap);
   }
 
   renderStore() {
@@ -227,50 +200,12 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Model providers")}:
-          </Col>
-          <Col span={22} >
-            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.modelProviders ?? []} onChange={(value => {
-              this.updateStoreField("modelProviders", value);
-              this.updateModelUsageMapForStore(value);
-            })}
-            options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-            } />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
-          <Col span={22} >
-            <ProvidersUsageTable usageMap={this.state.store.modelUsageMap} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Embedding provider")}:
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
               options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Embedding providers")}:
-          </Col>
-          <Col span={22} >
-            <Select mode={"multiple"} virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProviders ?? []} onChange={(value => {
-              this.updateStoreField("embeddingProviders", value);
-              this.updateEmbeddingUsageMapForStore(value);
-            })}
-            options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-            } />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2} />
-          <Col span={22} >
-            <ProvidersUsageTable usageMap={this.state.store.embeddingUsageMap} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -343,20 +278,16 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        {
-          this.state.store.name !== "store-built-in" ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Theme color")}:
-              </Col>
-              <Col span={22} >
-                <input type="color" value={this.state.store.themeColor} onChange={(e) => {
-                  this.updateStoreField("themeColor", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
-        }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Theme color")}:
+          </Col>
+          <Col span={22} >
+            <input type="color" value={this.state.store.themeColor} onChange={(e) => {
+              this.updateStoreField("themeColor", e.target.value);
+            }} />
+          </Col>
+        </Row>
         {
           this.state.store.name !== "store-built-in" ? null : (
             <Row style={{marginTop: "20px"}} >

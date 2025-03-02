@@ -98,7 +98,7 @@ class FileTable extends React.Component {
   renderTable(table) {
     const columns = [
       {
-        title: i18next.t("factorset:File name"),
+        title: i18next.t("store:File name"),
         dataIndex: "title",
         key: "title",
         // width: '200px',
@@ -139,7 +139,7 @@ class FileTable extends React.Component {
         },
       },
       {
-        title: i18next.t("factorset:File size"),
+        title: i18next.t("store:File size"),
         dataIndex: "size",
         key: "size",
         width: "120px",

@@ -21,16 +21,11 @@ export const AuthConfig = {
   redirectPath: "/callback",
 };
 
-export const DefaultOwner = "admin";
-export const DefaultWordsetName = "word";
-
 export const EnableExtraPages = false;
 
 export const ShortcutPageItems = [];
 
 export const UsageEndpoints = [];
-
-export const AiAvatar = "https://cdn.casbin.org/img/casibase.png";
 
 export const IframeUrl = "";
 

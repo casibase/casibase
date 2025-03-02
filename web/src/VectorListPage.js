@@ -38,8 +38,8 @@ class VectorListPage extends BaseListPage {
       name: `vector_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Vector - ${randomName}`,
-      store: "default-store",
-      file: "/aaa/casbin.txt",
+      store: "store-built-in",
+      file: "/aaa/casibase.txt",
       text: "The text of vector",
       data: [0.1, 0.2, 0.3],
     };

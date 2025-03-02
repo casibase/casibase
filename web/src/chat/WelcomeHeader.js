@@ -12,15 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package object
+import React from "react";
+import {Welcome} from "@ant-design/x";
+import * as Setting from "../Setting";
+import i18next from "i18next";
 
-import "testing"
+const WelcomeHeader = ({store}) => {
+  const avatar = store?.avatar || Setting.AiAvatar;
 
-func TestUpdateFactorsetFactors(t *testing.T) {
-	InitConfig()
+  return (
+    <Welcome
+      variant="borderless"
+      icon={avatar}
+      title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
+      description={i18next.t("chat:I'm here to help answer your questions")}
+    />
+  );
+};
 
-	// factorset := getFactorset("admin", "wikipedia")
-	factorset, _ := getFactorset("admin", "wordFactor_utf-8")
-	factorset.LoadFactors("../../tmpFiles/")
-	UpdateFactorset(factorset.GetId(), factorset)
-}
+export default WelcomeHeader;

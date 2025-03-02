@@ -36,8 +36,6 @@
     "react-dom": "^18.2.0",
     "react-draggable": "^4.4.6",
     "react-file-viewer": "^1.2.1",
-    "react-force-graph-2d": "^1.23.8",
-    "react-force-graph-3d": "^1.21.10",
     "react-github-corner": "^2.5.0",
     "react-highlight-words": "^0.18.0",
     "react-i18next": "^11.8.7",

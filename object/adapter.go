@@ -141,7 +141,12 @@ func (a *Adapter) CreateDatabase() error {
 }
 
 func (a *Adapter) open() {
-	engine, err := xorm.NewEngine(a.driverName, a.dataSourceName+a.DbName)
+	dataSourceName := a.dataSourceName + a.DbName
+	if a.driverName != "mysql" {
+		dataSourceName = a.dataSourceName + a.DbName
+	}
+
+	engine, err := xorm.NewEngine(a.driverName, dataSourceName)
 	if err != nil {
 		panic(err)
 	}
@@ -155,17 +160,7 @@ func (a *Adapter) close() {
 }
 
 func (a *Adapter) createTable() {
-	err := a.engine.Sync2(new(Wordset))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(Factorset))
-	if err != nil {
-		panic(err)
-	}
-
-	err = a.engine.Sync2(new(Video))
+	err := a.engine.Sync2(new(Video))
 	if err != nil {
 		panic(err)
 	}
@@ -201,6 +196,11 @@ func (a *Adapter) createTable() {
 	}
 
 	err = a.engine.Sync2(new(Machine))
+	if err != nil {
+		panic(err)
+	}
+
+	err = a.engine.Sync2(new(Image))
 	if err != nil {
 		panic(err)
 	}

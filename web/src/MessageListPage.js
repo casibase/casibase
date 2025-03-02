@@ -207,7 +207,7 @@ class MessageListPage extends BaseListPage {
         title: i18next.t("chat:Text token count"),
         dataIndex: "textTokenCount",
         key: "textTokenCount",
-        width: "90px",
+        width: "100px",
         sorter: (a, b) => a.textTokenCount - b.textTokenCount,
         // ...this.getColumnSearchProps("tokenCount"),
       },
@@ -223,15 +223,45 @@ class MessageListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Reasoning text"),
+        dataIndex: "reasonText",
+        key: "reasonText",
+        width: "300px",
+        sorter: (a, b) => a.reasonText.localeCompare(b.reasonText),
+        render: (text, record, index) => {
+          return (
+            <div dangerouslySetInnerHTML={{__html: text}} />
+          );
+        },
+      },
+      {
         title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
-        width: "400px",
+        width: "300px",
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
             <div dangerouslySetInnerHTML={{__html: text}} />
           );
+        },
+      },
+      {
+        title: i18next.t("message:Knowledge"),
+        dataIndex: "knowledge",
+        key: "knowledge",
+        width: "100px",
+        sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
+        render: (text, record, index) => {
+          return record.vectorScores?.map(vectorScore => {
+            return (
+              <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
+                <Tag style={{marginTop: "5px"}} color={"processing"}>
+                  {vectorScore.score}
+                </Tag>
+              </Link>
+            );
+          });
         },
       },
       {
@@ -299,24 +329,6 @@ class MessageListPage extends BaseListPage {
           );
         },
       },
-      // {
-      //   title: i18next.t("message:Knowledge"),
-      //   dataIndex: "knowledge",
-      //   key: "knowledge",
-      //   width: "100px",
-      //   sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
-      //   render: (text, record, index) => {
-      //     return record.vectorScores?.map(vectorScore => {
-      //       return (
-      //         <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
-      //           <Tag style={{marginTop: "5px"}} color={"processing"}>
-      //             {vectorScore.score}
-      //           </Tag>
-      //         </Link>
-      //       );
-      //     });
-      //   },
-      // },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",

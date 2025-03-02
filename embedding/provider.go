@@ -42,8 +42,10 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		p, err = NewHuggingFaceEmbeddingProvider(subType, clientSecret)
 	} else if typ == "Cohere" {
 		p, err = NewCohereEmbeddingProvider(subType, clientId, clientSecret)
-	} else if typ == "Ernie" {
-		p, err = NewErnieEmbeddingProvider(subType, clientId, clientSecret)
+	} else if typ == "Baidu Cloud" {
+		p, err = NewBaiduCloudEmbeddingProvider(subType, clientId, clientSecret)
+	} else if typ == "Ollama" {
+		p, err = NewLocalEmbeddingProvider("Local", subType, clientSecret, providerUrl)
 	} else if typ == "Local" {
 		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Azure" {

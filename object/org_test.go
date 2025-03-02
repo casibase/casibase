@@ -25,7 +25,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-var organization = "casbin"
+var organization = "casibase"
 
 func TestUpdateMessagesForOrg(t *testing.T) {
 	InitConfig()
@@ -51,7 +51,7 @@ func TestUpdateMessagesForOrg(t *testing.T) {
 
 		fmt.Printf("[%d/%d] message: %s, organization: %s, user: %s, author: %s\n", i+1, len(messages), message.Name, message.Organization, message.User, message.Author)
 
-		_, err = UpdateMessage(message.GetId(), message)
+		_, err = UpdateMessage(message.GetId(), message, false)
 		if err != nil {
 			panic(err)
 		}

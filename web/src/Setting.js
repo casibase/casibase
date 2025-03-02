@@ -17,7 +17,6 @@ import {SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
-import FileSaver from "file-saver";
 import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
@@ -305,62 +304,6 @@ export function getTag(text, type, state) {
   }
 }
 
-export function getTags(factors, type) {
-  if (!factors) {
-    return [];
-  }
-
-  if (type === "factors") {
-    return getFactorTag(factors);
-  } else if (type === "users") {
-    return getUserTag(factors);
-  }
-}
-
-function getFactorTag(factors) {
-  const res = [];
-  factors.forEach((factor, i) => {
-    if (factor.data.length !== 0) {
-      res.push(
-        <Tooltip placement="top" title={getShortText(JSON.stringify(factor.data), 500)}>
-          <Tag color={"success"}>
-            {factor.name}
-          </Tag>
-        </Tooltip>
-      );
-    } else {
-      res.push(
-        <Tag color={"warning"}>
-          {factor.name}
-        </Tag>
-      );
-    }
-  });
-  return res;
-}
-
-function getUserTag(users) {
-  const res = [];
-  users.forEach((user, i) => {
-    if (user.length !== 0) {
-      res.push(
-        <Tooltip placement="top" title={getShortText(JSON.stringify(user), 500)}>
-          <Tag color={"success"}>
-            {user}
-          </Tag>
-        </Tooltip>
-      );
-    } else {
-      res.push(
-        <Tag color={"warning"}>
-          {user}
-        </Tag>
-      );
-    }
-  });
-  return res;
-}
-
 export function getRemarkTag(score) {
   let color;
   let text;
@@ -440,34 +383,6 @@ export function workbook2blob(workbook) {
   };
   const wbout = XLSX.write(workbook, wopts);
   return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
-}
-
-export function downloadXlsx(wordset) {
-  const data = [];
-  wordset.factors.forEach((factor, i) => {
-    const row = {};
-
-    row[0] = factor.name;
-    factor.data.forEach((dataItem, i) => {
-      row[i + 1] = dataItem;
-    });
-
-    data.push(row);
-  });
-
-  const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
-  // sheet["!cols"] = [
-  //   { wch: 18 },
-  //   { wch: 7 },
-  // ];
-
-  try {
-    const blob = sheet2blob(sheet, "factors");
-    const fileName = `factors-${wordset.name}.xlsx`;
-    FileSaver.saveAs(blob, fileName);
-  } catch (error) {
-    showMessage("error", `failed to download: ${error.message}`);
-  }
 }
 
 export function toggleElementFromSet(array, element) {
@@ -649,7 +564,9 @@ export function submitStoreEdit(storeObj) {
     });
 }
 
-export const StaticBaseUrl = "https://cdn.casbin.org";
+export const StaticBaseUrl = "https://cdn.casibase.org";
+
+export const AiAvatar = `${StaticBaseUrl}/img/casibase.png`;
 
 export const Countries = [{label: "English", key: "en", country: "US", alt: "English"},
   {label: "中文", key: "zh", country: "CN", alt: "中文"},
@@ -752,10 +669,11 @@ export function getProviderTypeOptions(category) {
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Claude", name: "Claude"},
         {id: "OpenRouter", name: "OpenRouter"},
-        {id: "Ernie", name: "Ernie"},
+        {id: "Baidu Cloud", name: "Baidu Cloud"},
         {id: "iFlytek", name: "iFlytek"},
         {id: "ChatGLM", name: "ChatGLM"},
         {id: "MiniMax", name: "MiniMax"},
+        {id: "Ollama", name: "Ollama"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "Cohere", name: "Cohere"},
@@ -779,7 +697,8 @@ export function getProviderTypeOptions(category) {
         {id: "Gemini", name: "Gemini"},
         {id: "Hugging Face", name: "Hugging Face"},
         {id: "Cohere", name: "Cohere"},
-        {id: "Ernie", name: "Ernie"},
+        {id: "Baidu Cloud", name: "Baidu Cloud"},
+        {id: "Ollama", name: "Ollama"},
         {id: "Local", name: "Local"},
         {id: "Azure", name: "Azure"},
         {id: "MiniMax", name: "MiniMax"},
@@ -937,20 +856,48 @@ export function getProviderSubTypeOptions(category, type) {
         {id: "llama-2-70b-chat", name: "llama-2-70b-chat"},
       ]
     );
-  } else if (type === "Ernie") {
+  } else if (type === "Baidu Cloud") {
     if (category === "Model") {
       return (
         [
-          {id: "ERNIE-Bot", name: "ERNIE-Bot"},
-          {id: "ERNIE-Bot-turbo", name: "ERNIE-Bot-turbo"},
-          {id: "BLOOMZ-7B", name: "BLOOMZ-7B"},
-          {id: "Llama-2", name: "Llama-2"},
+          {id: "ernie-4.0-8k", name: "ernie-4.0-8k"},
+          {id: "ernie-4.0-8k-latest", name: "ernie-4.0-8k-latest"},
+          {id: "ernie-4.0-8k-preview", name: "ernie-4.0-8k-preview"},
+          {id: "ernie-4.0-turbo-8k", name: "ernie-4.0-turbo-8k"},
+          {id: "ernie-4.0-turbo-128k", name: "ernie-4.0-turbo-128k"},
+          {id: "ernie-4.0-turbo-8k-preview", name: "ernie-4.0-turbo-8k-preview"},
+          {id: "ernie-4.0-turbo-8k-latest", name: "ernie-4.0-turbo-8k-latest"},
+          {id: "ernie-3.5-8k", name: "ernie-3.5-8k"},
+          {id: "ernie-3.5-128k", name: "ernie-3.5-128k"},
+          {id: "ernie-3.5-8k-preview", name: "ernie-3.5-8k-preview"},
+          {id: "ernie-speed-8k", name: "ernie-speed-8k"},
+          {id: "ernie-speed-128k", name: "ernie-speed-128k"},
+          {id: "ernie-speed-pro-128k", name: "ernie-speed-pro-128k"},
+          {id: "ernie-lite-8k", name: "ernie-lite-8k"},
+          {id: "ernie-lite-pro-128k", name: "ernie-lite-pro-128k"},
+          {id: "ernie-tiny-8k", name: "ernie-tiny-8k"},
+          {id: "ernie-character-8k", name: "ernie-character-8k"},
+          {id: "ernie-character-fiction-8k", name: "ernie-character-fiction-8k"},
+          {id: "ernie-novel-8k", name: "ernie-novel-8k"},
+          {id: "deepseek-v3", name: "deepseek-v3"},
+          {id: "deepseek-r1", name: "deepseek-r1"},
+          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+          {id: "deepseek-r1-distill-qwen-14b", name: "deepseek-r1-distill-qwen-14b"},
+          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
+          {id: "deepseek-r1-distill-qianfan-llama-8b", name: "deepseek-r1-distill-qianfan-llama-8b"},
+          {id: "deepseek-r1-distill-qianfan-llama-70b", name: "deepseek-r1-distill-qianfan-llama-70b"},
         ]
       );
     } else if (category === "Embedding") {
       return (
         [
-          {id: "default", name: "default"},
+          {id: "Embedding-V1", name: "Embedding-V1"},
+          {id: "bge-large-zh", name: "bge-large-zh"},
+          {id: "bge-large-en", name: "bge-large-en"},
+          {id: "tao-8k", name: "tao-8k"},
         ]
       );
     } else {
@@ -1002,6 +949,39 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "embo-01", name: "embo-01"},
         ]
       );
+    }
+  } else if (type === "Ollama") {
+    if (category === "Model") {
+      return [
+        {id: "deepseek-r1:671b", name: "deepseek-r1:671b"},
+        {id: "deepseek-r1:1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+        {id: "deepseek-r1:7b", name: "deepseek-r1-distill-qwen-7b"},
+        {id: "deepseek-r1:14b", name: "deepseek-r1-distill-qwen-14b"},
+        {id: "deepseek-r1:32b", name: "deepseek-r1-distill-qwen-32b"},
+        {id: "deepseek-r1:8b", name: "deepseek-r1-distill-llama-8b"},
+        {id: "deepseek-r1:70b", name: "deepseek-r1-distill-llama-70b"},
+        {id: "llama3.3:70b", name: "llama3.3:70b"},
+        {id: "qwen2.5:7b", name: "qwen2.5:7b"},
+        {id: "qwen2.5:14b", name: "qwen2.5:14b"},
+        {id: "qwen2.5:32b", name: "qwen2.5:32b"},
+        {id: "qwen2.5:72b", name: "qwen2.5:72b"},
+        {id: "deepseek-v3:671b", name: "deepseek-v3:671b"},
+        {id: "llama3.2:1b", name: "llama3.2:1b"},
+        {id: "llama3.2:3b", name: "llama3.2:3b"},
+        {id: "llama3:8b", name: "llama3:8b"},
+        {id: "llama3:70b", name: "llama3:70b"},
+      ];
+    } else if (category === "Embedding") {
+      return [
+        {id: "nomic-embed-text", name: "nomic-embed-text"},
+        {id: "mxbai-embed-large", name: "mxbai-embed-large"},
+        {id: "snowflake-arctic-embed:335m", name: "snowflake-arctic-embed:335m"},
+        {id: "snowflake-arctic-embed:137m", name: "snowflake-arctic-embed:137m"},
+        {id: "snowflake-arctic-embed:110m", name: "snowflake-arctic-embed:110m"},
+        {id: "snowflake-arctic-embed:33m", name: "snowflake-arctic-embed:33m"},
+        {id: "snowflake-arctic-embed:22m", name: "snowflake-arctic-embed:22m"},
+        {id: "bge-m3", name: "bge-m3"},
+      ];
     }
   } else if (type === "Local") {
     if (category === "Model") {
@@ -1128,7 +1108,6 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
           {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
           {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-
         ]);
     } else if (category === "Embedding") {
       return (

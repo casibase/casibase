@@ -146,6 +146,14 @@ class VideoListPage extends BaseListPage {
     return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
 
+  filterReviewer1(remarks) {
+    if (this.props.account.type === "video-reviewer1-user") {
+      return remarks.filter(remark => remark.user === this.props.account.name);
+    } else {
+      return remarks;
+    }
+  }
+
   renderTable(videos) {
     if (this.props.account.type === "video-normal-user") {
       videos = videos.filter((video) => video.owner === this.props.account.name);
@@ -199,13 +207,13 @@ class VideoListPage extends BaseListPage {
           );
         },
       },
-      // {
-      //   title: i18next.t("general:Display name"),
-      //   dataIndex: "displayName",
-      //   key: "displayName",
-      //   width: "200px",
-      //   sorter: true,
-      // },
+      {
+        title: i18next.t("general:Display name"),
+        dataIndex: "displayName",
+        key: "displayName",
+        width: "180px",
+        sorter: true,
+      },
       {
         title: i18next.t("general:Description"),
         dataIndex: "description",
@@ -271,13 +279,44 @@ class VideoListPage extends BaseListPage {
             return `(${i18next.t("general:empty")})`;
           }
 
+          if (this.requireReviewerOrAdmin()) {
+            if (record.state === "Published") {
+              return (
+                <div>
+                  {i18next.t("video:Remarks2")}:
+                  <List
+                    size="small"
+                    locale={{emptyText: " "}}
+                    dataSource={record.remarks2}
+                    renderItem={(remark, i) => {
+                      return (
+                        <List.Item>
+                          <div style={{display: "inline"}}>
+                            {
+                              Setting.getRemarkTag(remark.score)
+                            }
+                            <Tooltip placement="left" title={remark.text}>
+                              {Setting.getShortText(remark.text, 25)}
+                            </Tooltip>
+                          </div>
+                        </List.Item>
+                      );
+                    }}
+                  />
+                </div>
+              );
+            } else {
+              return null;
+            }
+          }
+
           return (
             <div>
               {i18next.t("video:Remarks1")}:
               <List
                 size="small"
                 locale={{emptyText: " "}}
-                dataSource={record.remarks}
+                dataSource={this.filterReviewer1(record.remarks)}
                 renderItem={(remark, i) => {
                   return (
                     <List.Item>
@@ -339,8 +378,16 @@ class VideoListPage extends BaseListPage {
           if (text === "Draft") {
             return i18next.t("video:Draft");
           } else if (text === "In Review 1") {
+            if (this.props.account.type === "video-normal-user") {
+              return i18next.t("video:In Review");
+            }
+
             return i18next.t("video:In Review 1");
           } else if (text === "In Review 2") {
+            if (this.props.account.type === "video-normal-user") {
+              return i18next.t("video:In Review");
+            }
+
             return i18next.t("video:In Review 2");
           } else if (text === "Published") {
             return i18next.t("video:Published");
@@ -441,7 +488,7 @@ class VideoListPage extends BaseListPage {
     };
 
     if (this.requireReviewerOrAdmin()) {
-      columns = columns.filter(column => column.key !== "remarks" && column.key !== "excellentCount");
+      columns = columns.filter(column => column.key !== "excellentCount");
     }
 
     if (this.requireReviewer()) {

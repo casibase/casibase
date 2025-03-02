@@ -41,7 +41,9 @@ type ModelProvider interface {
 func GetModelProvider(typ string, subType string, clientId string, clientSecret string, temperature float32, topP float32, topK int, frequencyPenalty float32, presencePenalty float32, providerUrl string, apiVersion string, compitableProvider string) (ModelProvider, error) {
 	var p ModelProvider
 	var err error
-	if typ == "Local" {
+	if typ == "Ollama" {
+		p, err = NewLocalModelProvider("Local", "custom-model", clientSecret, temperature, topP, 0, 0, providerUrl, subType)
+	} else if typ == "Local" {
 		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compitableProvider)
 	} else if typ == "OpenAI" {
 		p, err = NewOpenAiModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
@@ -55,8 +57,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewClaudeModelProvider(subType, clientSecret)
 	} else if typ == "OpenRouter" {
 		p, err = NewOpenRouterModelProvider(subType, clientSecret, temperature, topP)
-	} else if typ == "Ernie" {
-		p, err = NewErnieModelProvider(subType, clientId, clientSecret, temperature, topP, presencePenalty)
+	} else if typ == "Baidu Cloud" {
+		p, err = NewBaiduCloudModelProvider(subType, clientId, temperature, topP)
 	} else if typ == "iFlytek" {
 		p, err = NewiFlytekModelProvider(subType, clientSecret, temperature, topK)
 	} else if typ == "ChatGLM" {
