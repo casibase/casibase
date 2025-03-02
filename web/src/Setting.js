@@ -23,6 +23,7 @@ import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
 import React from "react";
 import {QuestionCircleTwoTone} from "@ant-design/icons";
+import {v4 as uuidv4} from "uuid";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -1465,4 +1466,34 @@ export function GetIdFromObject(obj) {
     return "";
   }
   return `${obj.owner}/${obj.name}`;
+}
+
+export function GenerateId() {
+  return uuidv4();
+}
+
+export function getBlockBrowserUrl(providerMap, providerName, block) {
+  const provider = providerMap[providerName];
+  if (!provider || provider.browserUrl === "") {
+    return block;
+  }
+
+  const url = provider.browserUrl.replace("{bh}", block).replace("{chainId}", 1).replace("{clusterId}", provider.network);
+  return (
+    <a target="_blank" rel="noreferrer" href={url}>
+      {block}
+    </a>
+  );
+}
+
+export function formatJsonString(s) {
+  if (s === "") {
+    return "";
+  }
+
+  try {
+    return JSON.stringify(JSON.parse(s), null, 2);
+  } catch (error) {
+    return s;
+  }
 }
