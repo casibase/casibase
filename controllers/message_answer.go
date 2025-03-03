@@ -115,6 +115,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
+	object.DeleteEmptyTextMessagesInChat(chat.Name)
 	if question == "" {
 		c.ResponseErrorStream(message, fmt.Sprintf("The question should not be empty"))
 		return

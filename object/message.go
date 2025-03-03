@@ -269,6 +269,41 @@ func (message *Message) GetId() string {
 	return fmt.Sprintf("%s/%s", message.Owner, message.Name)
 }
 
+func DeleteEmptyTextMessagesInChat(chat string) (int64, error) {
+	// find empty text messages created by user in chat
+	emptyMessages := make([]*Message, 0)
+	err := adapter.engine.Where("chat = ? AND (text = '' OR text IS NULL) AND author != 'AI'", chat).Find(&emptyMessages)
+	if err != nil {
+		return 0, err
+	}
+	if len(emptyMessages) == 0 {
+		return 0, nil
+	}
+
+	// collect empty message names
+	emptyMessageNames := make([]string, len(emptyMessages))
+	for i, msg := range emptyMessages {
+		emptyMessageNames[i] = msg.Name
+	}
+
+	// delete empty text messages
+	affectedEmptyMsg, err := adapter.engine.Where("chat = ? AND (text = '' OR text IS NULL) AND author != 'AI'", chat).Delete(&Message{})
+	if err != nil {
+		return 0, err
+	}
+
+	// delete reply messages
+	var affectedReplyMsg int64 = 0
+	if len(emptyMessageNames) > 0 {
+		affectedReplyMsg, err = adapter.engine.Where("chat = ?", chat).In("reply_to", emptyMessageNames).Delete(&Message{})
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return affectedEmptyMsg + affectedReplyMsg, nil
+}
+
 func GetRecentRawMessages(chat string, createdTime string, memoryLimit int) ([]*model.RawMessage, error) {
 	res := []*model.RawMessage{}
 	if memoryLimit == 0 {
