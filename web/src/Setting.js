@@ -1291,6 +1291,10 @@ export function getSpeakerTag(speaker) {
 }
 
 export function getDisplayPrice(price, currency) {
+  if (!price) {
+    return "";
+  }
+
   const tmp = price.toFixed(7);
   let numberStr = tmp.toString();
   if (numberStr.includes(".")) {
