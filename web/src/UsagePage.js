@@ -659,7 +659,6 @@ class UsagePage extends BaseListPage {
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
-                  text: i18next.t("general:Loading"),
                   color: "#4b0082",
                   textColor: "#000",
                   maskColor: "rgba(255, 255, 255, 0.8)",
@@ -667,6 +666,7 @@ class UsagePage extends BaseListPage {
                   spinnerRadius: 6,
                   lineWidth: 3,
                   fontWeight: "bold",
+                  text: "",
                 }}
               />
             </Col>
@@ -681,7 +681,6 @@ class UsagePage extends BaseListPage {
                 }}
                 showLoading={this.state.usages === null}
                 loadingOption={{
-                  text: i18next.t("general:Loading"),
                   color: "#4b0082",
                   textColor: "#000",
                   maskColor: "rgba(255, 255, 255, 0.8)",
@@ -689,6 +688,7 @@ class UsagePage extends BaseListPage {
                   spinnerRadius: 6,
                   lineWidth: 3,
                   fontWeight: "bold",
+                  text: "",
                 }}
               />
             </Col>
@@ -712,7 +712,6 @@ class UsagePage extends BaseListPage {
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
-              text: i18next.t("general:Loading"),
               color: "#4b0082",
               textColor: "#000",
               maskColor: "rgba(255, 255, 255, 0.8)",
@@ -720,6 +719,7 @@ class UsagePage extends BaseListPage {
               spinnerRadius: 6,
               lineWidth: 3,
               fontWeight: "bold",
+              text: "",
             }}
           />
           <ReactEcharts
@@ -732,7 +732,6 @@ class UsagePage extends BaseListPage {
             }}
             showLoading={rangeUsages === null}
             loadingOption={{
-              text: i18next.t("general:Loading"),
               color: "#4b0082",
               textColor: "#000",
               maskColor: "rgba(255, 255, 255, 0.8)",
@@ -740,6 +739,7 @@ class UsagePage extends BaseListPage {
               spinnerRadius: 6,
               lineWidth: 3,
               fontWeight: "bold",
+              text: "",
             }}
           />
         </React.Fragment>
