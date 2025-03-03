@@ -291,7 +291,7 @@ func (c *ApiController) AddMessage() {
 				Chat:         message.Chat,
 				ReplyTo:      message.Name,
 				Author:       "AI",
-				Text:         "This is the answer",
+				Text:         "",
 				FileName:     message.FileName,
 				VectorScores: []object.VectorScore{},
 			}
