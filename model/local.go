@@ -138,6 +138,16 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 			outputPricePerThousandTokens = 0.0015
 		}
 
+	// gpt 4.5 model
+	case strings.Contains(model, "gpt-4.5"):
+		if strings.Contains(model, "preview") {
+			inputPricePerThousandTokens = 0.0375
+			outputPricePerThousandTokens = 0.075
+		} else {
+			inputPricePerThousandTokens = 0.03
+			outputPricePerThousandTokens = 0.06
+		}
+
 	// gpt 4.0 model
 	case strings.Contains(model, "gpt-4"):
 		if strings.Contains(model, "preview") {
