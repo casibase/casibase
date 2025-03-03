@@ -293,6 +293,11 @@ func (c *ApiController) GetAnswer() {
 	framework := c.Input().Get("framework")
 	video := c.Input().Get("video")
 
+	if question == "" {
+		c.ResponseError(fmt.Sprintf("The question should not be empty"))
+		return
+	}
+
 	category := "Custom"
 	chatName := fmt.Sprintf("chat_%s", util.GetRandomName())
 	if framework != "" {

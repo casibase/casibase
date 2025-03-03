@@ -263,6 +263,11 @@ func (c *ApiController) AddMessage() {
 
 	message.CreatedTime = util.GetCurrentTimeWithMilli()
 
+	if message.Text == "" {
+		c.ResponseError(fmt.Sprintf("The question should not be empty for message: %v", message))
+		return
+	}
+
 	success, err := object.AddMessage(&message)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -286,7 +291,7 @@ func (c *ApiController) AddMessage() {
 				Chat:         message.Chat,
 				ReplyTo:      message.Name,
 				Author:       "AI",
-				Text:         "",
+				Text:         "This is the answer",
 				FileName:     message.FileName,
 				VectorScores: []object.VectorScore{},
 			}
