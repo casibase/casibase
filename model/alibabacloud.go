@@ -15,13 +15,8 @@
 package model
 
 import (
-	"context"
 	"fmt"
 	"io"
-	"net/http"
-	"strings"
-
-	"github.com/sashabaranov/go-openai"
 )
 
 type AlibabacloudModelProvider struct {
@@ -93,105 +88,16 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) err
 }
 
 func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
-	ctx := context.Background()
-	flusher, ok := writer.(http.Flusher)
-	if !ok {
-		return nil, fmt.Errorf("writer does not implement http.Flusher")
-	}
-
 	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-	config := openai.DefaultConfig(p.apiKey)
-	config.BaseURL = BaseUrl
-	client := openai.NewClientWithConfig(config)
-
-	// set request params
-	messages := []openai.ChatCompletionMessage{
-		{
-			Role:    "user",
-			Content: question,
-		},
-	}
-
-	request := openai.ChatCompletionRequest{
-		Model:       p.subType,
-		Messages:    messages,
-		Temperature: p.temperature,
-		TopP:        p.topP,
-		Stream:      true,
-	}
-
-	flushData := func(data string, eventType string) error {
-		if _, err := fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", eventType, data); err != nil {
-			return err
-		}
-		flusher.Flush()
-		return nil
-	}
-	modelResult := &ModelResult{}
-
-	promptTokenCount, err := OpenaiNumTokensFromMessages(messages, "gpt-4") // calculate token
+	// Create a new LocalModelProvider to handle the request
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType)
 	if err != nil {
 		return nil, err
 	}
-	modelResult.PromptTokenCount = promptTokenCount
-	modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
 
-	if strings.HasPrefix(question, "$CasibaseDryRun$") {
-		if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
-			return modelResult, nil
-		} else {
-			return nil, fmt.Errorf("exceed max tokens")
-		}
-	}
-
-	stream, err := client.CreateChatCompletionStream(ctx, request)
+	modelResult, err := localProvider.QueryText(question, writer, history, prompt, knowledgeMessages)
 	if err != nil {
 		return nil, err
-	}
-	defer stream.Close()
-	for {
-		response, err := stream.Recv()
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
-			return nil, err
-		}
-
-		if len(response.Choices) == 0 {
-			continue
-		}
-
-		var data string
-
-		if response.Choices[0].Delta.ReasoningContent != "" {
-			data = response.Choices[0].Delta.ReasoningContent
-			err = flushData(data, "reason")
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		// Check if we have regular content
-		if response.Choices[0].Delta.Content != "" {
-			data = response.Choices[0].Delta.Content
-			err = flushData(data, "message")
-			if err != nil {
-				return nil, err
-			}
-		}
-
-		responseTokenCount, err := GetTokenSize("gpt-4", data)
-		if err != nil {
-			return nil, err
-		}
-		modelResult.ResponseTokenCount += responseTokenCount
-		modelResult.TotalTokenCount = modelResult.PromptTokenCount + modelResult.ResponseTokenCount
-
-		err = p.calculatePrice(modelResult)
-		if err != nil {
-			return nil, err
-		}
 	}
 	return modelResult, nil
 }

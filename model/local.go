@@ -234,9 +234,22 @@ func flushDataOpenai(data string, writer io.Writer) error {
 	return nil
 }
 
+func flushDataThink(data string, eventType string, writer io.Writer) error {
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return fmt.Errorf("writer does not implement http.Flusher")
+	}
+	if _, err := fmt.Fprintf(writer, "event: %s\ndata: %s\n\n", eventType, data); err != nil {
+		return err
+	}
+	flusher.Flush()
+	return nil
+}
+
 func (p *LocalModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	var client *openai.Client
-	var flushData func(string, io.Writer) error
+	var flushData interface{} // Can be either flushData or flushDataThink
+
 	if p.typ == "Local" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai
@@ -252,6 +265,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	} else if p.typ == "Custom" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai
+	} else if p.typ == "Custom-think" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+		flushData = flushDataThink
 	}
 
 	ctx := context.Background()
@@ -367,21 +383,58 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				continue
 			}
 
-			data := completion.Choices[0].Delta.Content
-			if isLeadingReturn && len(data) != 0 {
-				if strings.Count(data, "\n") == len(data) {
-					continue
-				} else {
-					isLeadingReturn = false
+			// Handle both regular content and reasoning content
+			if p.typ == "Custom-think" {
+				// For Custom-think type, we'll handle both reasoning and regular content
+				flushThink := flushData.(func(string, string, io.Writer) error)
+
+				// Check if we have reasoning content (think_content)
+				if completion.Choices[0].Delta.ReasoningContent != "" {
+					reasoningData := completion.Choices[0].Delta.ReasoningContent
+					err = flushThink(reasoningData, "reason", writer)
+					if err != nil {
+						return nil, err
+					}
 				}
-			}
 
-			err = flushData(data, writer)
-			if err != nil {
-				return nil, err
-			}
+				// Handle regular content
+				if completion.Choices[0].Delta.Content != "" {
+					data := completion.Choices[0].Delta.Content
+					if isLeadingReturn && len(data) != 0 {
+						if strings.Count(data, "\n") == len(data) {
+							continue
+						} else {
+							isLeadingReturn = false
+						}
+					}
 
-			answerData.WriteString(data)
+					err = flushThink(data, "message", writer)
+					if err != nil {
+						return nil, err
+					}
+
+					answerData.WriteString(data)
+				}
+			} else {
+				// For all other provider types, use the standard flush function
+				flushStandard := flushData.(func(string, io.Writer) error)
+
+				data := completion.Choices[0].Delta.Content
+				if isLeadingReturn && len(data) != 0 {
+					if strings.Count(data, "\n") == len(data) {
+						continue
+					} else {
+						isLeadingReturn = false
+					}
+				}
+
+				err = flushStandard(data, writer)
+				if err != nil {
+					return nil, err
+				}
+
+				answerData.WriteString(data)
+			}
 		}
 
 		// https://github.com/sashabaranov/go-openai/pull/223#issuecomment-1494372875
@@ -435,7 +488,15 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 				}
 			}
 
-			err = flushData(data, writer)
+			// Here we also need to handle the different flush functions
+			if p.typ == "Custom-think" {
+				flushThink := flushData.(func(string, string, io.Writer) error)
+				err = flushThink(data, "message", writer)
+			} else {
+				flushStandard := flushData.(func(string, io.Writer) error)
+				err = flushStandard(data, writer)
+			}
+
 			if err != nil {
 				return nil, err
 			}
