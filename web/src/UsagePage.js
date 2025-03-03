@@ -1,5 +1,3 @@
-/* eslint-disable sort-imports, object-curly-spacing, quotes */
-/* eslint-disable no-trailing-spaces, comma-dangle */
 // Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -196,7 +194,7 @@ class UsagePage extends BaseListPage {
       ],
     };
 
-    return <ReactEcharts option={leftOption} style={{height: "400px", width: "100%", display: "inline-block"}} />;
+    return leftOption;
   }
 
   renderRightChart(usages) {
@@ -273,7 +271,7 @@ class UsagePage extends BaseListPage {
       rightOption.series = rightOption.series.filter(series => series.name !== i18next.t("chat:Price"));
     }
 
-    return <ReactEcharts option={rightOption} style={{height: "400px", width: "100%", display: "inline-block"}} />;
+    return rightOption;
   }
 
   renderStatistic(usages) {
@@ -294,63 +292,63 @@ class UsagePage extends BaseListPage {
           this.props.account.name !== "admin" ? <Col span={6} /> : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic 
+                <Statistic
                   loading={isLoading}
-                  title={i18next.t("task:Application")} 
-                  value={this.state.usageMetadata?.application} 
+                  title={i18next.t("task:Application")}
+                  value={this.state.usageMetadata?.application}
                 />
               </Col>
             </React.Fragment>
           )
         }
         <Col span={3}>
-          <Statistic 
+          <Statistic
             loading={isLoading}
-            title={i18next.t("general:Users")} 
-            value={lastUsage.userCount} 
+            title={i18next.t("general:Users")}
+            value={lastUsage.userCount}
           />
         </Col>
         <Col span={3}>
-          <Statistic 
+          <Statistic
             loading={isLoading}
-            title={i18next.t("general:Chats")} 
-            value={lastUsage.chatCount} 
+            title={i18next.t("general:Chats")}
+            value={lastUsage.chatCount}
           />
         </Col>
         <Col span={3}>
-          <Statistic 
+          <Statistic
             loading={isLoading}
-            title={i18next.t("general:Messages")} 
-            value={lastUsage.messageCount} 
+            title={i18next.t("general:Messages")}
+            value={lastUsage.messageCount}
           />
         </Col>
         <Col span={3}>
-          <Statistic 
+          <Statistic
             loading={isLoading}
-            title={i18next.t("general:Tokens")} 
-            value={lastUsage.tokenCount} 
+            title={i18next.t("general:Tokens")}
+            value={lastUsage.tokenCount}
           />
         </Col>
         {
           this.props.account.name !== "admin" ? null : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic 
+                <Statistic
                   loading={isLoading}
-                  title={i18next.t("chat:Price")} 
-                  value={lastUsage.price} 
-                  prefix={lastUsage.currency && "$"} 
+                  title={i18next.t("chat:Price")}
+                  value={lastUsage.price}
+                  prefix={lastUsage.currency && "$"}
                 />
               </Col>
               {
                 Conf.DefaultLanguage === "en" ? null : (
                   <React.Fragment>
                     <Col span={3}>
-                      <Statistic 
+                      <Statistic
                         loading={isLoading}
-                        title={i18next.t("chat:CPrice")} 
-                        value={parseFloat((lastUsage.price * 7.2).toFixed(2))} 
-                        prefix={"￥"} 
+                        title={i18next.t("chat:CPrice")}
+                        value={parseFloat((lastUsage.price * 7.2).toFixed(2))}
+                        prefix={"￥"}
                       />
                     </Col>
                   </React.Fragment>
@@ -564,7 +562,7 @@ class UsagePage extends BaseListPage {
       ],
     };
 
-    return <ReactEcharts option={options} style={{height: "400px", width: "48%", display: "inline-block"}} />;
+    return options;
   }
 
   renderRightRangeChart(usages) {
@@ -641,24 +639,58 @@ class UsagePage extends BaseListPage {
       options.series = options.series.filter(series => series.name !== i18next.t("chat:Price"));
     }
 
-    return <ReactEcharts option={options} style={{height: "400px", width: "48%", display: "inline-block"}} />;
+    return options;
   }
 
   renderChart() {
     if (this.state.rangeType === "All") {
-      if (this.state.usages === null) {
-        return null;
-      }
-
       return (
         <React.Fragment>
           <Row style={{marginTop: "20px"}} >
             <Col span={1} />
             <Col span={11} >
-              {this.renderLeftChart(this.state.usages)}
+              <ReactEcharts
+                option={this.renderLeftChart(this.state.usages || [])}
+                style={{
+                  height: "400px",
+                  width: "100%",
+                  display: "inline-block",
+                  backgroundColor: "#fff",
+                }}
+                showLoading={this.state.usages === null}
+                loadingOption={{
+                  text: i18next.t("general:Loading"),
+                  color: "#4b0082",
+                  textColor: "#000",
+                  maskColor: "rgba(255, 255, 255, 0.8)",
+                  fontSize: "16px",
+                  spinnerRadius: 6,
+                  lineWidth: 3,
+                  fontWeight: "bold",
+                }}
+              />
             </Col>
             <Col span={11} >
-              {this.renderRightChart(this.state.usages)}
+              <ReactEcharts
+                option={this.renderRightChart(this.state.usages || [])}
+                style={{
+                  height: "400px",
+                  width: "100%",
+                  display: "inline-block",
+                  backgroundColor: "#fff",
+                }}
+                showLoading={this.state.usages === null}
+                loadingOption={{
+                  text: i18next.t("general:Loading"),
+                  color: "#4b0082",
+                  textColor: "#000",
+                  maskColor: "rgba(255, 255, 255, 0.8)",
+                  fontSize: "16px",
+                  spinnerRadius: 6,
+                  lineWidth: 3,
+                  fontWeight: "bold",
+                }}
+              />
             </Col>
             <Col span={1} />
           </Row>
@@ -668,14 +700,48 @@ class UsagePage extends BaseListPage {
       const fieldName = `rangeUsages${this.state.rangeType}`;
       const rangeUsages = this.state[fieldName];
 
-      if (rangeUsages === null) {
-        return null;
-      }
-
       return (
         <React.Fragment>
-          {this.renderLeftRangeChart(rangeUsages)}
-          {this.renderRightRangeChart(rangeUsages)}
+          <ReactEcharts
+            option={this.renderLeftRangeChart(rangeUsages || [])}
+            style={{
+              height: "400px",
+              width: "48%",
+              display: "inline-block",
+              backgroundColor: "#fff",
+            }}
+            showLoading={rangeUsages === null}
+            loadingOption={{
+              text: i18next.t("general:Loading"),
+              color: "#4b0082",
+              textColor: "#000",
+              maskColor: "rgba(255, 255, 255, 0.8)",
+              fontSize: "16px",
+              spinnerRadius: 6,
+              lineWidth: 3,
+              fontWeight: "bold",
+            }}
+          />
+          <ReactEcharts
+            option={this.renderRightRangeChart(rangeUsages || [])}
+            style={{
+              height: "400px",
+              width: "48%",
+              display: "inline-block",
+              backgroundColor: "#fff",
+            }}
+            showLoading={rangeUsages === null}
+            loadingOption={{
+              text: i18next.t("general:Loading"),
+              color: "#4b0082",
+              textColor: "#000",
+              maskColor: "rgba(255, 255, 255, 0.8)",
+              fontSize: "16px",
+              spinnerRadius: 6,
+              lineWidth: 3,
+              fontWeight: "bold",
+            }}
+          />
         </React.Fragment>
       );
     }
