@@ -107,9 +107,11 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 	tokenCount := resp.Usage.PromptTokens
 	embeddingResult := &EmbeddingResult{TokenCount: tokenCount}
 
-	err = p.calculatePrice(embeddingResult)
-	if err != nil {
-		return nil, nil, err
+	if p.typ != "Custom" {
+		err = p.calculatePrice(embeddingResult)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
 	vector := resp.Data[0].Embedding

@@ -99,5 +99,10 @@ func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer,
 	if err != nil {
 		return nil, err
 	}
+
+	err = p.calculatePrice(modelResult)
+	if err != nil {
+		return nil, err
+	}
 	return modelResult, nil
 }
