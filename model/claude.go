@@ -58,11 +58,12 @@ func GetClaudeMaxTokens(model string) int {
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
 	var inputPricePerThousandTokens, outputPricePerThousandTokens float64
 	priceTable := map[string][]float64{
-		"claude-instant-1.2":       {0.0008, 0.0024},
-		"claude-2.0":               {0.008, 0.024},
-		"claude-2.1":               {0.008, 0.024},
-		"claude-3-sonnet-20240229": {0.003, 0.015},
-		"claude-3-opus-20240229":   {0.015, 0.075},
+		"claude-instant-1.2":         {0.0008, 0.0024},
+		"claude-2.0":                 {0.008, 0.024},
+		"claude-2.1":                 {0.008, 0.024},
+		"claude-3-sonnet-20240229":   {0.003, 0.015},
+		"claude-3-opus-20240229":     {0.015, 0.075},
+		"claude-3-7-sonnet-20250219": {0.003, 0.015},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {

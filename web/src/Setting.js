@@ -764,6 +764,8 @@ const openaiModels = [
   {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
   {id: "gpt-4o-mini", name: "gpt-4o-mini"},
   {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
+  {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
+  {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
 ];
 
 const openaiEmbeddings = [
@@ -851,6 +853,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
       {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
       {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
+      {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
     ];
   } else if (type === "OpenRouter") {
     return (
