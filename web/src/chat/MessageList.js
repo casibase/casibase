@@ -43,14 +43,14 @@ class MessageList extends React.Component {
         locale={{emptyText: " "}}
         style={{
           flex: 1,
-          overflow: "auto",
+          overflow: previewMode ? "hidden" : "auto",
           position: previewMode ? "relative" : "absolute",
           top: 0,
           left: 0,
           right: 0,
           bottom: hideInput ? "0px" : "100px",
           padding: "24px",
-          paddingBottom: hideInput ? "24px" : "40px",
+          paddingBottom: hideInput ? "0px" : "40px",
           scrollBehavior: "smooth",
         }}
         dataSource={messages.filter(message => message.isHidden === false)}

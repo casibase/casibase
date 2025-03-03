@@ -689,6 +689,7 @@ export function getProviderTypeOptions(category) {
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
+        {id: "GitHub", name: "GitHub"},
       ]
     );
   } else if (category === "Embedding") {
@@ -764,6 +765,8 @@ const openaiModels = [
   {id: "gpt-4o-2024-05-13", name: "gpt-4o-2024-05-13"},
   {id: "gpt-4o-mini", name: "gpt-4o-mini"},
   {id: "gpt-4o-mini-2024-07-18", name: "gpt-4o-mini-2024-07-18"},
+  {id: "gpt-4.5-preview", name: "gpt-4.5-preview"},
+  {id: "gpt-4.5-preview-2025-02-27", name: "gpt-4.5-preview-2025-02-27"},
 ];
 
 const openaiEmbeddings = [
@@ -802,6 +805,26 @@ export function getProviderSubTypeOptions(category, type) {
     } else {
       return [];
     }
+  } else if (type === "GitHub") {
+    if (category === "Model") {
+      return (
+        [
+          {id: "gpt-4o", name: "GPT-4o"},
+          {id: "gpt-4o-mini", name: "GPT-4o-mini"},
+          {id: "Phi-4-multimodal-instruct", name: "Phi-4-multimodal-instruct"},
+          {id: "Phi-4-mini-instruct", name: "Phi-4-mini-instruct"},
+          {id: "Phi-4", name: "Phi-4"},
+          {id: "Mistral-Large-2411", name: "Mistral-Large-2411"},
+          {id: "AI21-Jamba-1.5-Large", name: "AI21-Jamba-1.5-Large"},
+          {id: "AI21-Jamba-1.5-Mini", name: "AI21-Jamba-1.5-Mini"},
+          {id: "Cohere-command-r-08-2024", name: "Cohere-command-r-08-2024"},
+          {id: "Cohere-command-r-plus-08-2024", name: "Cohere-command-r-plus-08-2024"},
+          {id: "Llama-3.3-70B-Instruct", name: "Llama-3.3-70B-Instruct"},
+        ]
+      );
+    } else {
+      return [];
+    }
   } else if (type === "Hugging Face") {
     if (category === "Model") {
       return (
@@ -831,6 +854,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "claude-3-sonnet-20240229", name: "claude-3-sonnet-20240229"},
       {id: "claude-3-opus-20240229", name: "claude-3-opus-20240229"},
       {id: "claude-3-haiku-20240307", name: "claude-3-haiku-20240307"},
+      {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
     ];
   } else if (type === "OpenRouter") {
     return (
