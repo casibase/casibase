@@ -1,3 +1,5 @@
+/* eslint-disable sort-imports, object-curly-spacing, quotes */
+/* eslint-disable no-trailing-spaces, comma-dangle */
 // Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -275,10 +277,6 @@ class UsagePage extends BaseListPage {
   }
 
   renderStatistic(usages) {
-    if (this.state.usages === null) {
-      return null;
-    }
-
     const lastUsage = usages && usages.length > 0 ? usages[usages.length - 1] : {
       userCount: 0,
       chatCount: 0,
@@ -288,40 +286,72 @@ class UsagePage extends BaseListPage {
       currency: "USD",
     };
 
+    const isLoading = this.state.usages === null;
+
     return (
       <Row gutter={16}>
         {
           this.props.account.name !== "admin" ? <Col span={6} /> : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic title={i18next.t("task:Application")} value={this.state.usageMetadata.application} />
+                <Statistic 
+                  loading={isLoading}
+                  title={i18next.t("task:Application")} 
+                  value={this.state.usageMetadata?.application} 
+                />
               </Col>
             </React.Fragment>
           )
         }
         <Col span={3}>
-          <Statistic title={i18next.t("general:Users")} value={lastUsage.userCount} />
+          <Statistic 
+            loading={isLoading}
+            title={i18next.t("general:Users")} 
+            value={lastUsage.userCount} 
+          />
         </Col>
         <Col span={3}>
-          <Statistic title={i18next.t("general:Chats")} value={lastUsage.chatCount} />
+          <Statistic 
+            loading={isLoading}
+            title={i18next.t("general:Chats")} 
+            value={lastUsage.chatCount} 
+          />
         </Col>
         <Col span={3}>
-          <Statistic title={i18next.t("general:Messages")} value={lastUsage.messageCount} />
+          <Statistic 
+            loading={isLoading}
+            title={i18next.t("general:Messages")} 
+            value={lastUsage.messageCount} 
+          />
         </Col>
         <Col span={3}>
-          <Statistic title={i18next.t("general:Tokens")} value={lastUsage.tokenCount} />
+          <Statistic 
+            loading={isLoading}
+            title={i18next.t("general:Tokens")} 
+            value={lastUsage.tokenCount} 
+          />
         </Col>
         {
           this.props.account.name !== "admin" ? null : (
             <React.Fragment>
               <Col span={3}>
-                <Statistic title={i18next.t("chat:Price")} value={lastUsage.price} prefix={lastUsage.currency && "$"} />
+                <Statistic 
+                  loading={isLoading}
+                  title={i18next.t("chat:Price")} 
+                  value={lastUsage.price} 
+                  prefix={lastUsage.currency && "$"} 
+                />
               </Col>
               {
                 Conf.DefaultLanguage === "en" ? null : (
                   <React.Fragment>
                     <Col span={3}>
-                      <Statistic title={i18next.t("chat:CPrice")} value={parseFloat((lastUsage.price * 7.2).toFixed(2))} prefix={"￥"} />
+                      <Statistic 
+                        loading={isLoading}
+                        title={i18next.t("chat:CPrice")} 
+                        value={parseFloat((lastUsage.price * 7.2).toFixed(2))} 
+                        prefix={"￥"} 
+                      />
                     </Col>
                   </React.Fragment>
                 )
