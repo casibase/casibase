@@ -16,6 +16,7 @@ package embedding
 
 import (
 	"context"
+	"fmt"
 )
 
 type AlibabacloudEmbeddingProvider struct {
@@ -36,7 +37,7 @@ func NewAlibabacloudEmbeddingProvider(typ string, subType string, secretKey stri
 
 func (p *AlibabacloudEmbeddingProvider) GetPricing() string {
 	return `URL:
-https://help.aliyun.com/zh/model-studio/user-guide/embedding?spm=a2c4g.11186623.help-menu-search-2400256.d_0
+https://help.aliyun.com/zh/model-studio/user-guide/embedding?spm=a2c4g.11186623.help-menu-2400256.d_1_0_7.5a06b0a85SQYXz
 
 Embedding models:
 
@@ -44,23 +45,36 @@ Embedding models:
 |-------------------|----------------------- |
 | text-embedding-v1 |  0.0007 yuan/1k token  |
 | text-embedding-v2 |  0.0007 yuan/1k token  |  
-| text-embedding-v3 |  0.0007 yuan/1k token  |                  
+| text-embedding-v3 |  0.0005 yuan/1k token  |                  
 `
 }
 
 func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
-	pricePerThousandTokens := 0.0007
-	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
-	res.Currency = "yuan"
-	return nil
+	priceTable := map[string]float64{
+		"text-embedding-v1": 0.0007,
+		"text-embedding-v2": 0.0007,
+		"text-embedding-v3": 0.0005,
+	}
+	if priceItem, ok := priceTable[p.subType]; ok {
+		res.Price = getPrice(res.TokenCount, priceItem)
+		res.Currency = "CNY"
+		return nil
+	} else {
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
+	}
 }
 
 func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
-	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", p.subType, p.secretKey, p.providerUrl)
+	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", p.subType, p.secretKey, BaseUrl)
 	if err != nil {
 		return nil, nil, err
 	}
 	vector, embeddingResult, err := localEmbeddingProvider.QueryVector(text, ctx)
+	if err != nil {
+		return nil, nil, err
+	}
+	err = p.calculatePrice(embeddingResult)
 	if err != nil {
 		return nil, nil, err
 	}
