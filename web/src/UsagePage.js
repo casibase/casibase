@@ -241,7 +241,10 @@ class UsagePage extends BaseListPage {
           type: "value",
           name: i18next.t("chat:Price"),
           position: "right",
-          offset: 100,
+          offset: 60,
+          axisLabel: {
+            margin: 2,
+          },
         },
       ],
       series: [
@@ -609,7 +612,10 @@ class UsagePage extends BaseListPage {
           type: "value",
           name: i18next.t("chat:Price"),
           position: "right",
-          offset: 100,
+          offset: 60,
+          axisLabel: {
+            margin: 2,
+          },
         },
       ],
       series: [
