@@ -152,4 +152,13 @@ func initAPI() {
 	beego.Router("/api/delete-session", &controllers.ApiController{}, "POST:DeleteSession")
 	beego.Router("/api/start-session", &controllers.ApiController{}, "POST:StartSession")
 	beego.Router("/api/stop-session", &controllers.ApiController{}, "POST:StopSession")
+
+	beego.Router("/api/get-records", &controllers.ApiController{}, "GET:GetRecords")
+	beego.Router("/api/get-record", &controllers.ApiController{}, "GET:GetRecord")
+	beego.Router("/api/update-record", &controllers.ApiController{}, "POST:UpdateRecord")
+	beego.Router("/api/add-record", &controllers.ApiController{}, "POST:AddRecord")
+	beego.Router("/api/delete-record", &controllers.ApiController{}, "POST:DeleteRecord")
+
+	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
+	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")
 }

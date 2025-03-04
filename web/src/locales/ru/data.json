@@ -121,6 +121,7 @@
     "Providers": "Провайдеры",
     "Public Videos": "Public Videos",
     "Reasoning text": "Reasoning text",
+    "Records": "Records",
     "Regenerate Answer": "Regenerate Answer",
     "Region": "Region",
     "Resources": "Resources",
@@ -381,5 +382,13 @@
     "Upload Video": "Upload Video",
     "Video": "Видео",
     "Video ID": "ID Видео"
+  },
+  "record": {
+    "Commit": "Commit",
+    "New Record": "New Record",
+    "Object": "Object",
+    "Query": "Query",
+    "Response": "Response",
+    "View Record": "View Record"
   }
 }

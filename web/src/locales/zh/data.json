@@ -121,6 +121,7 @@
     "Providers": "提供商",
     "Public Videos": "公开录像",
     "Reasoning text": "思维链",
+    "Records": "日志",
     "Regenerate Answer": "重新生成回答",
     "Region": "地域",
     "Resources": "资源",
@@ -381,5 +382,13 @@
     "Upload Video": "上传录像",
     "Video": "录像",
     "Video ID": "录像ID"
+  },
+  "record": {
+    "Commit": "上链",
+    "New Record": "新建日志",
+    "Object": "对象",
+    "Query": "查询",
+    "Response": "响应",
+    "View Record": "查看日志"
   }
 }
