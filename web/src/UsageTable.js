@@ -88,8 +88,14 @@ const UsageTable = ({data, account}) => {
       <Table
         columns={columns}
         dataSource={data}
-        size="middle" bordered pagination={{pageSize: 100}}
+        size="middle"
+        bordered
+        pagination={{pageSize: 100}}
         showSorterTooltip={{target: "sorter-icon"}}
+        loading={{
+          spinning: !data,
+          size: "large",
+        }}
       />
     </div>
   );
