@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {Tag, Tooltip, message} from "antd";
-import {SyncOutlined} from "@ant-design/icons";
+import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
@@ -21,8 +21,9 @@ import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
+import Identicon from "identicon.js";
+import md5 from "md5";
 import React from "react";
-import {QuestionCircleTwoTone} from "@ant-design/icons";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -65,6 +66,32 @@ export function getUserProfileUrl(userName, account) {
 
 export function getMyProfileUrl(account) {
   return getUrlWithLanguage(CasdoorSdk.getMyProfileUrl(account));
+}
+
+export function getUserAvatar(message, account) {
+  if (message.author === "AI") {
+    return AiAvatar;
+  }
+
+  // If account exists and has an avatar, construct URL for other users
+  if (account && account.avatar) {
+    // Find the last slash position
+    const lastSlashIndex = account.avatar.lastIndexOf("/");
+    if (lastSlashIndex !== -1) {
+      // Get the base URL
+      const baseUrl = account.avatar.substring(0, lastSlashIndex + 1);
+      // Get the original filename
+      const originalFilename = account.avatar.substring(lastSlashIndex + 1);
+
+      const extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+      return `${baseUrl}${message.author}${extension}`;
+    }
+  }
+
+  // If message author does not have an avatar, generate an Identicon
+  const identicon = new Identicon(md5(message.author), 420);
+  return "data:image/png;base64," + identicon;
 }
 
 export function signin() {
