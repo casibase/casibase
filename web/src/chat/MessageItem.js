@@ -22,6 +22,7 @@ import {ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
+import {getUserAvatar} from "../Setting";
 
 const MessageItem = ({
   message,
@@ -189,7 +190,7 @@ const MessageItem = ({
             interval: 50,
           } : undefined}
           avatar={{
-            src: message.author === "AI" ? avatar : account.avatar,
+            src: message.author === "AI" ? avatar : getUserAvatar(message, account),
           }}
           styles={{
             content: {
