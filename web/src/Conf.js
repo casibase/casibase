@@ -44,4 +44,4 @@ export const ThemeDefault = {
   isCompact: false,
 };
 
-export const AvatarErrorUrl = "https://cdn.casbin.com/avatar-pool/error.png";
+export const AvatarErrorUrl = "https://cdn.casibase.org/gravatar/error.png";

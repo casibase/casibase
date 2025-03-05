@@ -20,7 +20,7 @@ import Sdk from "casdoor-js-sdk";
 import XLSX from "xlsx";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
-import {AvatarErrorUrl, ThemeDefault} from "./Conf";
+import {ThemeDefault} from "./Conf";
 import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
@@ -73,11 +73,6 @@ export function getUserAvatar(message, account) {
     return AiAvatar;
   }
 
-  // For current user messages, use their avatar
-  if (message.author === account.name && message.organization === account.owner) {
-    return account.avatar;
-  }
-
   // If account exists and has an avatar, construct URL for other users
   if (account && account.avatar) {
     // Find the last slash position
@@ -85,17 +80,18 @@ export function getUserAvatar(message, account) {
     if (lastSlashIndex !== -1) {
       // Get the base URL
       const baseUrl = account.avatar.substring(0, lastSlashIndex + 1);
-      return `${baseUrl}${message.author}.png`;
+      // Get the original filename
+      const originalFilename = account.avatar.substring(lastSlashIndex + 1);
+
+      const extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+
+      return `${baseUrl}${message.author}${extension}`;
     }
   }
 
-  try {
-    // If message author does not have an avatar, generate an Identicon
-    const identicon = new Identicon(md5(message.author), 420);
-    return "data:image/png;base64," + identicon;
-  } catch (error) {
-    return AvatarErrorUrl;
-  }
+  // If message author does not have an avatar, generate an Identicon
+  const identicon = new Identicon(md5(message.author), 420);
+  return "data:image/png;base64," + identicon;
 }
 
 export function signin() {
