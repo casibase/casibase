@@ -18,7 +18,7 @@ import {Alert, Button} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
-import {ThemeDefault} from "../Conf";
+import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
@@ -39,6 +39,7 @@ const MessageItem = ({
   sendMessage,
 }) => {
   const [rerenderErrorMessage, setRerenderErrorMessage] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(null);
 
   useEffect(() => {
     if (message.errorText !== "") {
@@ -47,6 +48,16 @@ const MessageItem = ({
       }, 10);
     }
   }, [message.errorText]);
+
+  useEffect(() => {
+    // Set the initial avatar source
+    setAvatarSrc(message.author === "AI" ? avatar : Setting.getUserAvatar(message, account));
+  }, [message.author, avatar, account, message]);
+
+  const handleAvatarError = () => {
+    // Set fallback URL when avatar fails to load
+    setAvatarSrc(AvatarErrorUrl);
+  };
 
   const renderMessageContent = () => {
     if (message.errorText !== "") {
@@ -146,7 +157,8 @@ const MessageItem = ({
               interval: 50,
             }}
             avatar={{
-              src: message.author === "AI" ? avatar : account.avatar,
+              src: avatarSrc,
+              onError: handleAvatarError,
             }}
             styles={{
               content: {
@@ -189,7 +201,8 @@ const MessageItem = ({
             interval: 50,
           } : undefined}
           avatar={{
-            src: message.author === "AI" ? avatar : account.avatar,
+            src: avatarSrc,
+            onError: handleAvatarError,
           }}
           styles={{
             content: {
