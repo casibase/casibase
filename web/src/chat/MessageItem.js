@@ -38,16 +38,7 @@ const MessageItem = ({
   readingMessage,
   sendMessage,
 }) => {
-  const [rerenderErrorMessage, setRerenderErrorMessage] = useState(false);
   const [avatarSrc, setAvatarSrc] = useState(null);
-
-  useEffect(() => {
-    if (message.errorText !== "") {
-      setTimeout(() => {
-        setRerenderErrorMessage(true);
-      }, 10);
-    }
-  }, [message.errorText]);
 
   useEffect(() => {
     // Set the initial avatar source
@@ -61,26 +52,19 @@ const MessageItem = ({
 
   const renderMessageContent = () => {
     if (message.errorText !== "") {
-      // Use simple text to ensure the content is displayed immediately
-      message.text = "Error occurred";
-
-      if (rerenderErrorMessage) {
-        return (
-          <Alert
-            message={Setting.getRefinedErrorText(message.errorText)}
-            description={message.errorText}
-            type="error"
-            showIcon
-            action={
-              <Button danger type="primary" onClick={onRegenerate}>
-                {i18next.t("general:Regenerate Answer")}
-              </Button>
-            }
-          />
-        );
-      } else {
-        return <div>Loading error message...</div>;
-      }
+      return (
+        <Alert
+          message={Setting.getRefinedErrorText(message.errorText)}
+          description={message.errorText}
+          type="error"
+          showIcon
+          action={
+            <Button danger type="primary" onClick={onRegenerate}>
+              {i18next.t("general:Regenerate Answer")}
+            </Button>
+          }
+        />
+      );
     }
 
     if (message.text === "" && message.author === "AI" && !message.reasonText) {
@@ -195,7 +179,7 @@ const MessageItem = ({
         <Bubble
           placement={message.author === "AI" ? "start" : "end"}
           content={renderMessageContent()}
-          loading={message.text === "" && message.author === "AI" && !message.reasonText}
+          loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
             interval: 50,
