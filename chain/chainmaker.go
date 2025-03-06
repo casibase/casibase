@@ -64,7 +64,7 @@ func (client *ChainTencentChainmakerClient) Commit(data string) (string, string,
 	}
 	request.FuncName = common.StringPtr("save")
 	request.GroupName = common.StringPtr("orgbeijing.chainmaker-demo")
-	//request.Args = []*string{common.StringPtr(data["arg1"]), common.StringPtr(data["arg2"])}
+	// request.Args = []*string{common.StringPtr(data["arg1"]), common.StringPtr(data["arg2"])}
 	request.Args = []*string{common.StringPtr(data)}
 
 	response, err := client.Client.Invoke(request)
