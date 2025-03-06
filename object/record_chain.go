@@ -17,8 +17,8 @@ package object
 import (
 	"fmt"
 
-	"github.com/casvisor/casvisor/chain"
-	"github.com/casvisor/casvisor/util"
+	"github.com/casibase/casibase/chain"
+	"github.com/casibase/casibase/util"
 )
 
 type Param struct {

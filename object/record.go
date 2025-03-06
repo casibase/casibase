@@ -20,8 +20,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/context"
-	"github.com/casvisor/casvisor/conf"
-	"github.com/casvisor/casvisor/util"
+	"github.com/casibase/casibase/conf"
+	"github.com/casibase/casibase/util"
 )
 
 var logPostOnly bool
