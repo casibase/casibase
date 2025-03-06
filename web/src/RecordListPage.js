@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors.. All Rights Reserved.
+// Copyright 2023 The casbin Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import * as RecordBackend from "./backend/RecordBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
-import PopconfirmModal from "./modal/PopconfirmModal";
+import PopconfirmModal from "./common/modal/PopconfirmModal";
 
 class RecordListPage extends BaseListPage {
   constructor(props) {
@@ -187,6 +187,17 @@ class RecordListPage extends BaseListPage {
           );
         },
       },
+      // {
+      //   title: i18next.t("general:User agent"),
+      //   dataIndex: "userAgent",
+      //   key: "userAgent",
+      //   width: "150px",
+      //   sorter: true,
+      //   ...this.getColumnSearchProps("userAgent"),
+      //   render: (text, record, index) => {
+      //     return text;
+      //   },
+      // },
       {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",

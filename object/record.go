@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors.. All Rights Reserved.
+// Copyright 2023 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import (
 	"strings"
 
 	"github.com/beego/beego/context"
-	"github.com/casibase/casibase/conf"
-	"github.com/casibase/casibase/util"
+	"github.com/casvisor/casvisor/conf"
+	"github.com/casvisor/casvisor/util"
 )
 
 var logPostOnly bool
@@ -39,6 +39,7 @@ type Record struct {
 
 	Organization string `xorm:"varchar(100)" json:"organization"`
 	ClientIp     string `xorm:"varchar(100)" json:"clientIp"`
+	UserAgent    string `xorm:"varchar(100)" json:"userAgent"`
 	User         string `xorm:"varchar(100)" json:"user"`
 	Method       string `xorm:"varchar(100)" json:"method"`
 	RequestUri   string `xorm:"varchar(1000)" json:"requestUri"`
@@ -51,6 +52,7 @@ type Record struct {
 
 	Provider    string `xorm:"varchar(100)" json:"provider"`
 	Block       string `xorm:"varchar(100)" json:"block"`
+	Transaction string `xorm:"varchar(500)" json:"transaction"`
 	IsTriggered bool   `json:"isTriggered"`
 }
 

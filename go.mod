@@ -2,7 +2,7 @@ module github.com/casibase/casibase
 
 go 1.22.0
 
-// toolchain go1.23.6
+toolchain go1.23.6
 
 require (
 	cloud.google.com/go/compute v1.23.3

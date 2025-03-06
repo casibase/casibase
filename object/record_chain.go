@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors.. All Rights Reserved.
+// Copyright 2024 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,15 @@ package object
 import (
 	"fmt"
 
-	"github.com/casibase/casibase/chain"
+	"github.com/casvisor/casvisor/chain"
+	"github.com/casvisor/casvisor/util"
 )
+
+type Param struct {
+	Key   string `json:"key"`
+	Field string `json:"field"`
+	Value string `json:"value"`
+}
 
 func (record *Record) getRecordProvider() (*Provider, error) {
 	if record.Provider != "" {
@@ -83,6 +90,19 @@ func (record *Record) toMap() map[string]string {
 	return result
 }
 
+func (record *Record) toParam() string {
+	record2 := *record
+	record2.Block = ""
+	record2.Transaction = ""
+
+	res := Param{
+		Key:   record2.getId(),
+		Field: "Record",
+		Value: util.StructToJson(record2),
+	}
+	return util.StructToJson(res)
+}
+
 func CommitRecord(record *Record) (bool, error) {
 	if record.Block != "" {
 		return false, fmt.Errorf("the record: %s has already been committed, blockId = %s", record.getId(), record.Block)
@@ -93,12 +113,13 @@ func CommitRecord(record *Record) (bool, error) {
 		return false, err
 	}
 
-	blockId, err := client.Commit(record.toMap())
+	blockId, transactionId, err := client.Commit(record.toParam())
 	if err != nil {
 		return false, err
 	}
 
 	record.Block = blockId
+	record.Transaction = transactionId
 	return UpdateRecord(record.getId(), record)
 }
 
@@ -120,7 +141,7 @@ func QueryRecord(id string) (string, error) {
 		return "", err
 	}
 
-	res, err := client.Query(record.Block, record.toMap())
+	res, err := client.Query(record.Transaction, record.toParam())
 	if err != nil {
 		return "", err
 	}

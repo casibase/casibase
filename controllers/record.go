@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors.. All Rights Reserved.
+// Copyright 2023 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,8 +18,8 @@ import (
 	"encoding/json"
 
 	"github.com/beego/beego/utils/pagination"
-	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
+	"github.com/casvisor/casvisor/object"
+	"github.com/casvisor/casvisor/util"
 )
 
 // GetRecords
@@ -121,6 +121,13 @@ func (c *ApiController) AddRecord() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	if record.ClientIp == "" {
+		record.ClientIp = c.getClientIp()
+	}
+	if record.UserAgent == "" {
+		record.UserAgent = c.getUserAgent()
 	}
 
 	c.Data["json"] = wrapActionResponse(object.AddRecord(&record))
