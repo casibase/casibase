@@ -1494,3 +1494,45 @@ export function GetIdFromObject(obj) {
   }
   return `${obj.owner}/${obj.name}`;
 }
+
+export const getProviderLogoURL = (provider) => {
+  if (provider.type === "Custom" && provider.customLogo) {
+    return provider.customLogo;
+  }
+  if (provider.category === "OAuth") {
+    return `${StaticBaseUrl}/img/social_${provider.type.toLowerCase()}.png`;
+  } else {
+    return `${StaticBaseUrl}/img/social_${provider.type.toLowerCase()}.png`;
+  }
+};
+
+export const getProviderUrl = (provider) => {
+  if (provider.category === "OAuth") {
+    return "";
+  } else {
+    return provider.providerUrl || "";
+  }
+};
+
+export const getProviderLogoWidget = (provider) => {
+  if (provider === undefined) {
+    return null;
+  }
+
+  const url = getProviderUrl(provider);
+  if (url !== "") {
+    return (
+      <Tooltip title={provider.type}>
+        <a target="_blank" rel="noreferrer" href={url}>
+          <img width={36} height={36} src={getProviderLogoURL(provider)} alt={provider.displayName} />
+        </a>
+      </Tooltip>
+    );
+  } else {
+    return (
+      <Tooltip title={provider.type}>
+        <img width={36} height={36} src={getProviderLogoURL(provider)} alt={provider.displayName} />
+      </Tooltip>
+    );
+  }
+};
