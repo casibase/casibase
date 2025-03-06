@@ -14,17 +14,14 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Popover, Table, Tooltip} from "antd";
+import {Button, Input, Popconfirm, Popover, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as VectorBackend from "./backend/VectorBackend";
 import i18next from "i18next";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
-import "codemirror/lib/codemirror.css";
-require("codemirror/theme/material-darker.css");
-require("codemirror/mode/markdown/markdown");
+const {TextArea} = Input;
 
 class VectorListPage extends BaseListPage {
   constructor(props) {
@@ -184,15 +181,10 @@ class VectorListPage extends BaseListPage {
         render: (text, record, index) => {
           return (
             <Popover placement="left" content={
-              <div style={{width: "600px"}}>
-                <CodeMirror value={text}
-                  options={{mode: "markdown", theme: "material-darker", lineWrapping: true}}
-                  onBeforeChange={(editor, data, value) => {}}
-                />
-              </div>
+              <TextArea style={{width: "800px", backgroundColor: "black", color: "white"}} autoSize={{minRows: 1, maxRows: 100}} value={text} onChange={e => {}} />
             } title="" trigger="hover">
               <div style={{maxWidth: "200px"}}>
-                {Setting.getShortText(text)}
+                {Setting.getShortText(text, 60)}
               </div>
             </Popover>
           );
@@ -215,7 +207,7 @@ class VectorListPage extends BaseListPage {
           return (
             <Tooltip placement="left" title={Setting.getShortText(JSON.stringify(text), 1000)}>
               <div style={{maxWidth: "200px"}}>
-                {Setting.getShortText(JSON.stringify(text))}
+                {Setting.getShortText(JSON.stringify(text), 50)}
               </div>
             </Tooltip>
           );
@@ -232,11 +224,11 @@ class VectorListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "210px",
+        width: "150px",
         render: (text, record, index) => {
           return (
             <div>
-              <Button style={{marginBottom: "10px", marginRight: "10px"}} disabled={this.state.generating} onClick={() => Setting.showMessage("error", "Not implemented")}>{i18next.t("store:Refresh")}</Button>
+              {/* <Button style={{marginBottom: "10px", marginRight: "10px"}} disabled={this.state.generating} onClick={() => Setting.showMessage("error", "Not implemented")}>{i18next.t("store:Refresh")}</Button>*/}
               <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/vectors/${record.name}`)}>{i18next.t("general:Edit")}</Button>
               <Popconfirm
                 title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}

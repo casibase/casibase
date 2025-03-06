@@ -43,3 +43,5 @@ export const ThemeDefault = {
   borderRadius: 6,
   isCompact: false,
 };
+
+export const AvatarErrorUrl = "https://cdn.casibase.org/gravatar/error.png";

@@ -64,7 +64,10 @@ class ChatListPage extends BaseListPage {
       user1: "",
       user2: "",
       users: [],
+      clientIp: "",
+      userAgent: "",
       messageCount: 0,
+      tokenCount: 0,
     };
   }
 
@@ -115,7 +118,7 @@ class ChatListPage extends BaseListPage {
     if (record.userAgentDesc === "") {
       return record.userAgent;
     } else {
-      return record.userAgentDesc.split("|").map(text => {
+      return record.userAgentDesc?.split("|").map(text => {
         if (text.includes("Other") || text.includes("Generic Smartphone")) {
           return null;
         }

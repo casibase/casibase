@@ -39,7 +39,7 @@ class MessageListPage extends BaseListPage {
       chat: "",
       replyTo: "",
       author: this.props.account.name,
-      text: "",
+      text: "Hello",
       tokenCount: 0,
       textTokenCount: 0,
       price: 0.0,
