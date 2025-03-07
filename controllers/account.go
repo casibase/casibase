@@ -94,6 +94,8 @@ func (c *ApiController) Signin() {
 
 	claims.AccessToken = token.AccessToken
 	c.SetSessionClaims(claims)
+	userId := claims.User.Owner + "/" + claims.User.Name
+	c.Ctx.Input.SetParam("recordUserId", userId)
 
 	c.ResponseOk(claims)
 }
