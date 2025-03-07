@@ -209,15 +209,15 @@ class RecordListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Provider"),
+        title: i18next.t("vector:Provider"),
         dataIndex: "provider",
         key: "provider",
-        width: "90px",
+        width: "100px",
         sorter: true,
         ...this.getColumnSearchProps("provider"),
         render: (text, record, index) => {
           return (
-            <Link to={`/providers/${record.owner}/${text}`}>
+            <Link to={`/providers/${text}`}>
               {
                 Setting.getShortText(text, 25)
               }
@@ -268,7 +268,7 @@ class RecordListPage extends BaseListPage {
         ...this.getColumnSearchProps("requestUri"),
       },
       {
-        title: i18next.t("user:Language"),
+        title: i18next.t("general:Language"),
         dataIndex: "language",
         key: "language",
         width: "90px",

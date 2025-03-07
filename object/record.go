@@ -184,7 +184,7 @@ func AddRecord(record *Record) bool {
 	}
 
 	if record.Provider == "" {
-		provider, err := getActiveBlockchainProvider(record.Organization)
+		provider, err := getActiveBlockchainProvider("admin")
 		if err != nil {
 			panic(err)
 		}

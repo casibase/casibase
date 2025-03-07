@@ -340,13 +340,6 @@ class App extends Component {
             {Setting.renderExternalLink()}
           </a>,
           "#"));
-
-        res.push(Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-            {i18next.t("general:Logs")}
-            {Setting.renderExternalLink()}
-          </a>,
-          "####"));
       }
 
       // if (window.location.pathname === "/") {
@@ -369,8 +362,8 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
       res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
-      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "sessions"));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "records"));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
+      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "ai") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
@@ -413,13 +406,6 @@ class App extends Component {
           {Setting.renderExternalLink()}
         </a>,
         "###"));
-
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-          {i18next.t("general:Logs")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "####"));
     } else if (Conf.ShortcutPageItems.length > 0 && domain === "video") {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
@@ -444,7 +430,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"));
       res.push(Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
-      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "records"));
+      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
 
       // res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
@@ -480,13 +466,6 @@ class App extends Component {
             {Setting.renderExternalLink()}
           </a>,
           "###"));
-
-        res.push(Setting.getItem(
-          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/records")}>
-            {i18next.t("general:Logs")}
-            {Setting.renderExternalLink()}
-          </a>,
-          "####"));
       }
     }
 
