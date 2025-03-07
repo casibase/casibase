@@ -29,7 +29,7 @@ type Param struct {
 
 func (record *Record) getRecordProvider() (*Provider, error) {
 	if record.Provider != "" {
-		provider, err := getProvider(record.Owner, record.Provider)
+		provider, err := getProvider("admin", record.Provider)
 		if err != nil {
 			return nil, err
 		}
@@ -39,7 +39,7 @@ func (record *Record) getRecordProvider() (*Provider, error) {
 		}
 	}
 
-	provider, err := getActiveBlockchainProvider(record.Owner)
+	provider, err := getActiveBlockchainProvider("admin")
 	if err != nil {
 		return nil, err
 	}
