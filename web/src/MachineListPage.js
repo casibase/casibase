@@ -21,6 +21,7 @@ import * as MachineBackend from "./backend/MachineBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import PopconfirmModal from "./modal/PopconfirmModal";
+import ConnectModal from "./modal/ConnectModal";
 
 class MachineListPage extends BaseListPage {
   constructor(props) {
@@ -30,9 +31,11 @@ class MachineListPage extends BaseListPage {
   newMachine() {
     return {
       owner: this.props.account.owner,
+      provider: "provider_1",
       name: `machine_${Setting.getRandomName()}`,
       createdTime: moment().format(),
       updatedTime: moment().format(),
+      expireTime: "",
       displayName: `New Machine - ${Setting.getRandomName()}`,
       region: "us-west",
       zone: "Zone 1",
@@ -84,6 +87,28 @@ class MachineListPage extends BaseListPage {
   renderTable(machines) {
     const columns = [
       {
+        title: i18next.t("general:Organization"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, machine, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Provider"),
+        dataIndex: "provider",
+        key: "provider",
+        width: "120px",
+        sorter: (a, b) => a.provider.localeCompare(b.provider),
+      },
+      {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
@@ -107,6 +132,17 @@ class MachineListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("general:Expire time"),
+        dataIndex: "expireTime",
+        key: "expireTime",
+        width: "160px",
+        // sorter: true,
+        sorter: (a, b) => a.expireTime.localeCompare(b.expireTime),
+        render: (text, machine, index) => {
+          return Setting.getFormattedDate(text);
+        },
+      },
+      {
         title: i18next.t("general:Region"),
         dataIndex: "region",
         key: "region",
@@ -121,13 +157,6 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.zone.localeCompare(b.zone),
       },
       {
-        title: i18next.t("provider:Category"),
-        dataIndex: "category",
-        key: "category",
-        width: "120px",
-        sorter: (a, b) => a.category.localeCompare(b.category),
-      },
-      {
         title: i18next.t("general:Type"),
         dataIndex: "type",
         key: "type",
@@ -135,18 +164,18 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
+        title: i18next.t("general:Size"),
+        dataIndex: "size",
+        key: "size",
+        width: "120px",
+        sorter: (a, b) => a.size.localeCompare(b.size),
+      },
+      {
         title: i18next.t("machine:Image"),
         dataIndex: "image",
         key: "image",
         width: "120px",
         sorter: (a, b) => a.image.localeCompare(b.image),
-      },
-      {
-        title: i18next.t("node:OS"),
-        dataIndex: "os",
-        key: "os",
-        width: "120px",
-        sorter: (a, b) => a.os.localeCompare(b.os),
       },
       {
         title: i18next.t("machine:Public IP"),
@@ -173,16 +202,28 @@ class MachineListPage extends BaseListPage {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "180px",
+        width: "260px",
         fixed: (Setting.isMobile()) ? "false" : "right",
-        render: (text, record, index) => {
+        render: (text, machine, index) => {
           return (
             <div>
-              <Button style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}} type="primary" onClick={() => this.props.history.push(`/machines/${record.owner}/${record.name}`)}>{i18next.t("general:Edit")}</Button>
-              <PopconfirmModal
-                title={i18next.t("general:Sure to delete") + `: ${record.name} ?`}
-                onConfirm={() => this.deleteMachine(index)}
+              <ConnectModal
+                owner={machine.owner}
+                name={machine.name}
+                category={"Node"}
+                node={machine}
               />
+              <Button
+                style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
+                onClick={() => this.props.history.push(`/machines/${machine.owner}/${machine.name}`)}
+              >{i18next.t("general:Edit")}
+              </Button>
+              <PopconfirmModal
+                disabled={machine.owner !== this.props.account.owner}
+                title={i18next.t("general:Sure to delete") + `: ${machine.name} ?`}
+                onConfirm={() => this.deleteMachine(index)}
+              >
+              </PopconfirmModal>
             </div>
           );
         },
