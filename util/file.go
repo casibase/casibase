@@ -16,8 +16,12 @@ package util
 
 import (
 	"bufio"
+	"bytes"
+	"io"
 	"os"
 	"strings"
+
+	"github.com/casibase/casibase/proxy"
 )
 
 func parseJsonToFloats(s string) []float64 {
@@ -125,4 +129,22 @@ func LoadFactorFileBySpace(path string) ([]string, [][]float64) {
 	}
 
 	return nameArray, dataArray
+}
+
+func DownloadFile(url string) (*bytes.Buffer, error) {
+	httpClient := proxy.GetHttpClient(url)
+
+	resp, err := httpClient.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	fileBuffer := bytes.NewBuffer(nil)
+	_, err = io.Copy(fileBuffer, resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	return fileBuffer, nil
 }
