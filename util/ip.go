@@ -92,8 +92,8 @@ func GetIPInfo(clientIP string) string {
 	res := ""
 	for i := range ips {
 		ip := strings.TrimSpace(ips[i])
-		desc := GetDescFromIP(ip)
-		ipstr := fmt.Sprintf("%s: %s", ip, desc)
+		//desc := GetDescFromIP(ip)
+		ipstr := fmt.Sprintf("%s: %s", ip, "")
 		if i != len(ips)-1 {
 			res += ipstr + " -> "
 		} else {
