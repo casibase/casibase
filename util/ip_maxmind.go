@@ -2,8 +2,9 @@ package util
 
 import (
 	"fmt"
-	"github.com/oschwald/geoip2-golang"
 	"net"
+
+	"github.com/oschwald/geoip2-golang"
 )
 
 var (

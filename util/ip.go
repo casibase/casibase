@@ -16,10 +16,11 @@ package util
 
 import (
 	"fmt"
-	"github.com/beego/beego"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/beego/beego"
 )
 
 // IPProvider defines the type of IP geolocation provider to use
