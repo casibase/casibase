@@ -8,11 +8,9 @@ import (
 )
 
 var (
-	// Global database readers
 	maxmindCityDB *geoip2.Reader
 	maxmindASNDB  *geoip2.Reader
 
-	// Download status flags
 	MaxmindDownloadInProgress bool
 )
 
@@ -23,20 +21,19 @@ func InitMaxmindDb() error {
 	// Try to open the City database file
 	maxmindCityDB, cityErr = geoip2.Open("data/GeoLite2-City.mmdb")
 	if cityErr != nil {
-		// Try parent directory
 		maxmindCityDB, cityErr = geoip2.Open("../data/GeoLite2-City.mmdb")
+		if cityErr != nil {
+			fmt.Println("MaxMind City database not found")
+		}
 	}
 
 	// Try to open the ASN database file
 	maxmindASNDB, asnErr = geoip2.Open("data/GeoLite2-ASN.mmdb")
 	if asnErr != nil {
-		// Try parent directory
 		maxmindASNDB, asnErr = geoip2.Open("../data/GeoLite2-ASN.mmdb")
-	}
-
-	// Ensure at least one database is available
-	if maxmindCityDB == nil && maxmindASNDB == nil {
-		return fmt.Errorf("failed to open any MaxMind database: City: %v, ASN: %v", cityErr, asnErr)
+		if asnErr != nil {
+			fmt.Println("MaxMind ASN database not found")
+		}
 	}
 
 	return nil
@@ -44,7 +41,6 @@ func InitMaxmindDb() error {
 
 // FindMaxmind looks up IP information using MaxMind GeoIP2
 func FindMaxmind(ipstr string) (*LocationInfo, error) {
-	// If download is in progress and databases aren't initialized yet, return empty result
 	if MaxmindDownloadInProgress && maxmindCityDB == nil && maxmindASNDB == nil {
 		return &LocationInfo{
 			Country: Null,
@@ -68,34 +64,32 @@ func FindMaxmind(ipstr string) (*LocationInfo, error) {
 		Isp:     Null,
 	}
 
-	// Look up geo information if city database is available
-	if maxmindCityDB != nil {
-		record, err := maxmindCityDB.City(ip)
-		if err == nil {
-			// Get country, region, city in English
-			if val, ok := record.Country.Names["en"]; ok && val != "" {
-				info.Country = val
-			}
+	// Look up geo information
+	record, err := maxmindCityDB.City(ip)
+	if err != nil {
+		panic("Get location info failed " + err.Error())
+	}
+	// Get country, region, city in English
+	if val, ok := record.Country.Names["en"]; ok && val != "" {
+		info.Country = val
+	}
 
-			if len(record.Subdivisions) > 0 {
-				if val, ok := record.Subdivisions[0].Names["en"]; ok && val != "" {
-					info.Region = val
-				}
-			}
-
-			if val, ok := record.City.Names["en"]; ok && val != "" {
-				info.City = val
-			}
+	if len(record.Subdivisions) > 0 {
+		if val, ok := record.Subdivisions[0].Names["en"]; ok && val != "" {
+			info.Region = val
 		}
 	}
 
-	// Look up ASN/ISP information if ASN database is available
-	if maxmindASNDB != nil {
-		asnRecord, err := maxmindASNDB.ASN(ip)
-		if err == nil && asnRecord.AutonomousSystemOrganization != "" {
-			info.Isp = asnRecord.AutonomousSystemOrganization
-		}
+	if val, ok := record.City.Names["en"]; ok && val != "" {
+		info.City = val
 	}
+
+	// Look up ASN/ISP information
+	asnRecord, err := maxmindASNDB.ASN(ip)
+	if err != nil {
+		panic("Get ASN info failed " + err.Error())
+	}
+	info.Isp = asnRecord.AutonomousSystemOrganization
 
 	return info, nil
 }

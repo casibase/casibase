@@ -15,6 +15,7 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -23,43 +24,34 @@ import (
 	"github.com/beego/beego"
 )
 
-// IPProvider defines the type of IP geolocation provider to use
-type IPProvider string
+var IsMaxmindIpDb bool
 
-const (
-	IP17MonProvider IPProvider = "17monip"
-	MaxMindProvider IPProvider = "maxmind"
-)
-
-// activeProvider stores the currently active IP provider
-var activeProvider IPProvider
+// tryInitLocalDb tries to initialize the local IP database from different paths
+func tryInitLocalDb() error {
+	err := Init("data/17monipdb.dat")
+	var pathError *os.PathError
+	if errors.As(err, &pathError) {
+		err = Init("../data/17monipdb.dat")
+	}
+	return err
+}
 
 // InitIpDb initializes the IP database based on configuration
 func InitIpDb() {
-	isLocalIpDb := beego.AppConfig.DefaultBool("isLocalIpDb", false)
+	IsMaxmindIpDb = beego.AppConfig.DefaultBool("isLocalIpDb", false)
 
-	if isLocalIpDb {
-		activeProvider = IP17MonProvider
-		err := Init("data/17monipdb.dat")
-		if _, ok := err.(*os.PathError); ok {
-			err = Init("../data/17monipdb.dat")
-		}
+	if IsMaxmindIpDb {
+		// Use local IP database
+		err := tryInitLocalDb()
 		if err != nil {
 			panic(err)
 		}
 	} else {
-		activeProvider = MaxMindProvider
+		// Try MaxMind first
 		if err := InitMaxmindDb(); err != nil {
-			// If MaxMind fails and not currently downloading
 			if !MaxmindDownloadInProgress {
 				// Try 17monipdb as fallback
-				fmt.Printf("Failed to initialize MaxMind database: %v, falling back to local IP database\n", err)
-				activeProvider = IP17MonProvider
-
-				err = Init("data/17monipdb.dat")
-				if _, ok := err.(*os.PathError); ok {
-					err = Init("../data/17monipdb.dat")
-				}
+				err = tryInitLocalDb()
 				if err != nil {
 					panic(err)
 				}
@@ -73,11 +65,9 @@ func GetDescFromIP(ip string) string {
 	var info *LocationInfo
 	var err error
 
-	// Use the active provider to look up IP
-	switch activeProvider {
-	case IP17MonProvider:
+	if IsMaxmindIpDb {
 		info, err = Find(ip)
-	case MaxMindProvider:
+	} else {
 		info, err = FindMaxmind(ip)
 	}
 

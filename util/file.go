@@ -16,12 +16,13 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
-	"net/http"
 	"os"
 	"strings"
-	"time"
+
+	"github.com/casibase/casibase/proxy"
 )
 
 func parseJsonToFloats(s string) []float64 {
@@ -131,69 +132,23 @@ func LoadFactorFileBySpace(path string) ([]string, [][]float64) {
 	return nameArray, dataArray
 }
 
-// downloadFile downloads a file from a URL to a local path with progress reporting
-func downloadFile(url, filepath string) error {
-	out, err := os.Create(filepath)
-	if err != nil {
-		return err
-	}
-	defer out.Close()
+// DownloadFile downloads a file from a URL to a local path with progress reporting
+func DownloadFile(url string) (*bytes.Buffer, error) {
+	httpClient := proxy.GetHttpClient(url)
 
-	resp, err := http.Get(url)
+	resp, err := httpClient.Get(url)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("bad status: %s", resp.Status)
-	}
-
-	totalSize := resp.ContentLength
-
-	// Create a progress tracking reader
-	counter := &progressCounter{
-		total:     totalSize,
-		filename:  filepath,
-		lastPrint: time.Now(),
-	}
-	reader := io.TeeReader(resp.Body, counter)
-
-	// Write the body to file
-	_, err = io.Copy(out, reader)
+	fileBuffer := bytes.NewBuffer(nil)
+	_, err = io.Copy(fileBuffer, resp.Body)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
-}
-
-// progressCounter is used to track download progress
-type progressCounter struct {
-	current   int64
-	total     int64
-	filename  string
-	lastPrint time.Time
-}
-
-// Write implements the io.Writer interface
-func (pc *progressCounter) Write(p []byte) (int, error) {
-	n := len(p)
-	pc.current += int64(n)
-
-	// Print progress every 10 second
-	if time.Since(pc.lastPrint) > 10*time.Second {
-		if pc.total > 0 {
-			progress := float64(pc.current) / float64(pc.total) * 100
-			fmt.Printf("Downloading %s: %.2f%% (%d/%d bytes)\n",
-				pc.filename, progress, pc.current, pc.total)
-		} else {
-			fmt.Printf("Downloading %s: %d bytes\n", pc.filename, pc.current)
-		}
-		pc.lastPrint = time.Now()
-	}
-
-	return n, nil
+	return fileBuffer, nil
 }
 
 // downloadMaxmindFiles downloads MaxMind database files from GitHub
@@ -201,63 +156,70 @@ func downloadMaxmindFiles() {
 	// GitHub repo for the data files
 	repoURL := "https://github.com/casibase/data"
 
-	// Ensure data directory exists
-	if err := os.MkdirAll("data", os.ModePerm); err != nil {
-		fmt.Printf("Error creating data directory: %v\n", err)
+	// Helper function to download and save a file
+	downloadAndSave := func(filename string) error {
+		filePath := fmt.Sprintf("data/%s.mmdb", filename)
+		fileUrl := fmt.Sprintf("%s/raw/master/%s.mmdb", repoURL, filename)
+
+		EnsureFileFolderExists(filePath)
+
+		fmt.Printf("Downloading %s database...\n", filename)
+		buffer, err := DownloadFile(fileUrl)
+		if err != nil {
+			return err
+		}
+
+		// Write buffer to file
+		file, err := os.Create(filePath)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		_, err = io.Copy(file, buffer)
+		if err != nil {
+			return err
+		}
+
+		return nil
 	}
 
-	// Download City database
-	fmt.Println("Downloading GeoLite2-City database...")
-	cityErr := downloadFile(fmt.Sprintf("%s/raw/master/GeoLite2-City.mmdb", repoURL), "data/GeoLite2-City.mmdb")
+	cityErr := downloadAndSave("GeoLite2-City")
 	if cityErr != nil {
-		fmt.Printf("Failed to download GeoLite2-City database: %v\n", cityErr)
+		panic(cityErr)
 	}
 
-	// Download ASN database
-	fmt.Println("Downloading GeoLite2-ASN database...")
-	asnErr := downloadFile(fmt.Sprintf("%s/raw/master/GeoLite2-ASN.mmdb", repoURL), "data/GeoLite2-ASN.mmdb")
+	asnErr := downloadAndSave("GeoLite2-ASN")
 	if asnErr != nil {
-		fmt.Printf("Failed to download GeoLite2-ASN database: %v\n", asnErr)
+		panic(asnErr)
 	}
 
 	// Update status in util package
 	MaxmindDownloadInProgress = false
 
-	// Try to initialize the database if at least one download was successful
-	if cityErr == nil || asnErr == nil {
-		if err := InitMaxmindDb(); err != nil {
-			fmt.Printf("Failed to initialize MaxMind databases after download: %v\n", err)
-		}
-	} else {
-		fmt.Println("Failed to download any MaxMind database files, initialization skipped")
+	if err := InitMaxmindDb(); err != nil {
+		panic("Failed to initialize MaxMind database")
 	}
 }
 
 // InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
+// InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
 func InitMaxmindFiles() {
-	// Paths to check
 	cityDbPath := "data/GeoLite2-City.mmdb"
 	asnDbPath := "data/GeoLite2-ASN.mmdb"
 
-	// Also check parent directory
 	cityDbPathAlt := "../data/GeoLite2-City.mmdb"
 	asnDbPathAlt := "../data/GeoLite2-ASN.mmdb"
 
 	// Check if files exist in either location
-	_, cityErr := os.Stat(cityDbPath)
-	_, cityErrAlt := os.Stat(cityDbPathAlt)
-	_, asnErr := os.Stat(asnDbPath)
-	_, asnErrAlt := os.Stat(asnDbPathAlt)
-
-	cityExists := cityErr == nil || cityErrAlt == nil
-	asnExists := asnErr == nil || asnErrAlt == nil
+	cityExists := FileExist(cityDbPath) || FileExist(cityDbPathAlt)
+	asnExists := FileExist(asnDbPath) || FileExist(asnDbPathAlt)
 
 	// If both files exist, we're done
 	if cityExists && asnExists {
 		return
 	}
 
-	// Set download in progress flag in util package
 	MaxmindDownloadInProgress = true
 
 	go downloadMaxmindFiles()
