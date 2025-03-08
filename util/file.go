@@ -17,6 +17,7 @@ package util
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -147,4 +148,77 @@ func DownloadFile(url string) (*bytes.Buffer, error) {
 	}
 
 	return fileBuffer, nil
+}
+
+// downloadMaxmindFiles downloads MaxMind database files from GitHub
+func downloadMaxmindFiles() {
+	// GitHub repo for the data files
+	repoURL := "https://github.com/casibase/data"
+
+	// Helper function to download and save a file
+	downloadAndSave := func(filename string) error {
+		filePath := fmt.Sprintf("data/%s.mmdb", filename)
+		fileUrl := fmt.Sprintf("%s/raw/master/%s.mmdb", repoURL, filename)
+
+		EnsureFileFolderExists(filePath)
+
+		fmt.Printf("Downloading %s database...\n", filename)
+		buffer, err := DownloadFile(fileUrl)
+		if err != nil {
+			return err
+		}
+
+		// Write buffer to file
+		file, err := os.Create(filePath)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		_, err = io.Copy(file, buffer)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	cityErr := downloadAndSave("GeoLite2-City")
+	if cityErr != nil {
+		panic(cityErr)
+	}
+
+	asnErr := downloadAndSave("GeoLite2-ASN")
+	if asnErr != nil {
+		panic(asnErr)
+	}
+
+	// Update status in util package
+	MaxmindDownloadInProgress = false
+
+	if err := InitMaxmindDb(); err != nil {
+		panic("Failed to initialize MaxMind database")
+	}
+}
+
+// InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
+func InitMaxmindFiles() {
+	cityDbPath := "data/GeoLite2-City.mmdb"
+	asnDbPath := "data/GeoLite2-ASN.mmdb"
+
+	cityDbPathAlt := "../data/GeoLite2-City.mmdb"
+	asnDbPathAlt := "../data/GeoLite2-ASN.mmdb"
+
+	// Check if files exist in either location
+	cityExists := FileExist(cityDbPath) || FileExist(cityDbPathAlt)
+	asnExists := FileExist(asnDbPath) || FileExist(asnDbPathAlt)
+
+	// If both files exist, we're done
+	if cityExists && asnExists {
+		return
+	}
+
+	MaxmindDownloadInProgress = true
+
+	go downloadMaxmindFiles()
 }
