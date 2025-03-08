@@ -16,23 +16,70 @@ package util
 
 import (
 	"fmt"
+	"github.com/beego/beego"
 	"net/http"
 	"os"
 	"strings"
 )
 
+// IPProvider defines the type of IP geolocation provider to use
+type IPProvider string
+
+const (
+	IP17MonProvider IPProvider = "17monip"
+	MaxMindProvider IPProvider = "maxmind"
+)
+
+// activeProvider stores the currently active IP provider
+var activeProvider IPProvider
+
+// InitIpDb initializes the IP database based on configuration
 func InitIpDb() {
-	err := Init("data/17monipdb.dat")
-	if _, ok := err.(*os.PathError); ok {
-		err = Init("../data/17monipdb.dat")
-	}
-	if err != nil {
-		panic(err)
+	isLocalIpDb := beego.AppConfig.DefaultBool("isLocalIpDb", false)
+
+	if isLocalIpDb {
+		activeProvider = IP17MonProvider
+		err := Init("data/17monipdb.dat")
+		if _, ok := err.(*os.PathError); ok {
+			err = Init("../data/17monipdb.dat")
+		}
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		activeProvider = MaxMindProvider
+		if err := InitMaxmindDb(); err != nil {
+			// If MaxMind fails and not currently downloading
+			if !MaxmindDownloadInProgress {
+				// Try 17monipdb as fallback
+				fmt.Printf("Failed to initialize MaxMind database: %v, falling back to local IP database\n", err)
+				activeProvider = IP17MonProvider
+
+				err = Init("data/17monipdb.dat")
+				if _, ok := err.(*os.PathError); ok {
+					err = Init("../data/17monipdb.dat")
+				}
+				if err != nil {
+					panic(err)
+				}
+			}
+		}
 	}
 }
 
+// GetDescFromIP returns a string description of an IP address
 func GetDescFromIP(ip string) string {
-	info, err := Find(ip)
+	var info *LocationInfo
+	var err error
+
+	// Use the active provider to look up IP
+	switch activeProvider {
+	case IP17MonProvider:
+		info, err = Find(ip)
+	case MaxMindProvider:
+		info, err = FindMaxmind(ip)
+	}
+
 	if err != nil {
 		return ""
 	}
@@ -54,8 +101,8 @@ func GetIPInfo(clientIP string) string {
 	res := ""
 	for i := range ips {
 		ip := strings.TrimSpace(ips[i])
-		// desc := GetDescFromIP(ip)
-		ipstr := fmt.Sprintf("%s: %s", ip, "")
+		desc := GetDescFromIP(ip)
+		ipstr := fmt.Sprintf("%s: %s", ip, desc)
 		if i != len(ips)-1 {
 			res += ipstr + " -> "
 		} else {

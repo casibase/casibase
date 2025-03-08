@@ -33,6 +33,7 @@ func main() {
 
 	object.InitDb()
 	proxy.InitHttpClient()
+	util.InitMaxmindFiles()
 	util.InitIpDb()
 	util.InitParser()
 
