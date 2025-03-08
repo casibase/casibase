@@ -15,34 +15,15 @@
 package txt
 
 import (
-	"bytes"
 	"io"
 	"io/ioutil"
 	"path/filepath"
 
-	"github.com/casibase/casibase/proxy"
+	"github.com/casibase/casibase/util"
 )
 
-func downloadFile(url string) (*bytes.Buffer, error) {
-	httpClient := proxy.GetHttpClient(url)
-
-	resp, err := httpClient.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	fileBuffer := bytes.NewBuffer(nil)
-	_, err = io.Copy(fileBuffer, resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	return fileBuffer, nil
-}
-
 func getTempFilePathFromUrl(url string) (string, error) {
-	buffer, err := downloadFile(url)
+	buffer, err := util.DownloadFile(url)
 	if err != nil {
 		return "", err
 	}

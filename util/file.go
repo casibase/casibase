@@ -17,7 +17,6 @@ package util
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -132,7 +131,6 @@ func LoadFactorFileBySpace(path string) ([]string, [][]float64) {
 	return nameArray, dataArray
 }
 
-// DownloadFile downloads a file from a URL to a local path with progress reporting
 func DownloadFile(url string) (*bytes.Buffer, error) {
 	httpClient := proxy.GetHttpClient(url)
 
@@ -202,7 +200,6 @@ func downloadMaxmindFiles() {
 	}
 }
 
-// InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
 // InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
 func InitMaxmindFiles() {
 	cityDbPath := "data/GeoLite2-City.mmdb"
