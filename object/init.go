@@ -24,7 +24,7 @@ const defaultPrompt = "You are an expert in your field and you specialize in usi
 
 func InitDb() {
 	initBuiltInStore()
-	initBuiltInProvider()
+	initBuiltInProviders()
 }
 
 func initBuiltInStore() {
@@ -61,7 +61,7 @@ func initBuiltInStore() {
 	}
 }
 
-func initBuiltInProvider() {
+func initBuiltInProviders() {
 	storageProvider, err := GetDefaultStorageProvider()
 	if err != nil {
 		panic(err)
@@ -77,74 +77,56 @@ func initBuiltInProvider() {
 		panic(err)
 	}
 
-	machineProvider, err := GetDefaultMachineProvider()
-	if err != nil {
-		panic(err)
+	if storageProvider == nil {
+		path := "/storage_casibase"
+		if runtime.GOOS == "windows" {
+			path = "C:/storage_casibase"
+		}
+
+		storageProvider = &Provider{
+			Owner:       "admin",
+			Name:        "provider-storage-built-in",
+			CreatedTime: util.GetCurrentTime(),
+			DisplayName: "Built-in Storage Provider",
+			Category:    "Storage",
+			Type:        "Local File System",
+			ClientId:    path,
+		}
+		_, err = AddProvider(storageProvider)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	if storageProvider != nil || modelProvider != nil || embeddingProvider != nil || machineProvider != nil {
-		return
+	if modelProvider == nil {
+		modelProvider = &Provider{
+			Owner:       "admin",
+			Name:        "dummy-model-provider",
+			CreatedTime: util.GetCurrentTime(),
+			DisplayName: "Dummy Model Provider",
+			Category:    "Model",
+			Type:        "Dummy",
+			SubType:     "Dummy",
+		}
+		_, err = AddProvider(modelProvider)
+		if err != nil {
+			panic(err)
+		}
 	}
 
-	path := "/storage_casibase"
-	if runtime.GOOS == "windows" {
-		path = "C:/storage_casibase"
-	}
-
-	storageProvider = &Provider{
-		Owner:       "admin",
-		Name:        "provider-storage-built-in",
-		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "Built-in Storage Provider",
-		Category:    "Storage",
-		Type:        "Local File System",
-		ClientId:    path,
-	}
-	_, err = AddProvider(storageProvider)
-	if err != nil {
-		panic(err)
-	}
-
-	modelProvider = &Provider{
-		Owner:       "admin",
-		Name:        "dummy-model-provider",
-		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "Dummy Model Provider",
-		Category:    "Model",
-		Type:        "Dummy",
-		SubType:     "Dummy",
-	}
-	_, err = AddProvider(modelProvider)
-	if err != nil {
-		panic(err)
-	}
-
-	embeddingProvider = &Provider{
-		Owner:       "admin",
-		Name:        "dummy-embedding-provider",
-		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "Dummy Embedding Provider",
-		Category:    "Embedding",
-		Type:        "Dummy",
-		SubType:     "Dummy",
-	}
-	_, err = AddProvider(embeddingProvider)
-	if err != nil {
-		panic(err)
-	}
-
-	machineProvider = &Provider{
-		Owner:       "admin",
-		Name:        "provider-machine-built-in",
-		CreatedTime: util.GetCurrentTime(),
-		DisplayName: "Built-in Machine Provider",
-		Category:    "Machine",
-		Type:        "Aliyun",
-		Region:      "cn-hangzhou",
-		State:       "Active",
-	}
-	_, err = AddProvider(machineProvider)
-	if err != nil {
-		panic(err)
+	if embeddingProvider == nil {
+		embeddingProvider = &Provider{
+			Owner:       "admin",
+			Name:        "dummy-embedding-provider",
+			CreatedTime: util.GetCurrentTime(),
+			DisplayName: "Dummy Embedding Provider",
+			Category:    "Embedding",
+			Type:        "Dummy",
+			SubType:     "Dummy",
+		}
+		_, err = AddProvider(embeddingProvider)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
