@@ -235,7 +235,6 @@ func downloadMaxmindFiles() {
 
 // InitMaxmindFiles checks if MaxMind database files exist and downloads them if needed
 func InitMaxmindFiles() {
-
 	// Paths to check
 	cityDbPath := "data/GeoLite2-City.mmdb"
 	asnDbPath := "data/GeoLite2-ASN.mmdb"
