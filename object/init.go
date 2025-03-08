@@ -15,7 +15,8 @@
 package object
 
 import (
-	"runtime"
+	"os"
+	"path/filepath"
 
 	"github.com/casibase/casibase/util"
 )
@@ -61,6 +62,16 @@ func initBuiltInStore() {
 	}
 }
 
+func getDefaultStoragePath(storeName string) (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
+	res := filepath.Join(cwd, "files", storeName)
+	return res, nil
+}
+
 func initBuiltInProviders() {
 	storageProvider, err := GetDefaultStorageProvider()
 	if err != nil {
@@ -78,10 +89,13 @@ func initBuiltInProviders() {
 	}
 
 	if storageProvider == nil {
-		path := "/storage_casibase"
-		if runtime.GOOS == "windows" {
-			path = "C:/storage_casibase"
+		var path string
+		path, err = getDefaultStoragePath("store-built-in")
+		if err != nil {
+			panic(err)
 		}
+
+		util.EnsureFileFolderExists(path)
 
 		storageProvider = &Provider{
 			Owner:       "admin",

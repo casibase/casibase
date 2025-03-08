@@ -16,6 +16,7 @@ casibase
 # vendor/
 
 data/
+files/
 
 .idea/
 *.iml
