@@ -159,6 +159,7 @@ class ChatPage extends BaseListPage {
   }
 
   sendMessage(text, fileName, isHidden, isRegenerated) {
+    this.setState({disableInput: true});
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     MessageBackend.addMessage(newMessage)
       .then((res) => {
@@ -358,13 +359,19 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
+                disableInput: false,
               });
             });
           } else {
             this.setState({
               messageLoading: false,
+              disableInput: false,
             });
           }
+        } else {
+          this.setState({
+            disableInput: false,
+          });
         }
 
         Setting.scrollToDiv(`chatbox-list-item-${res.data.length}`);
