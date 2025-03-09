@@ -16,6 +16,8 @@ package object
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/casibase/casibase/util"
 	"github.com/casibase/casibase/video"
@@ -132,7 +134,21 @@ func getVideo(owner string, name string) (*Video, error) {
 				return nil, err
 			}
 
-			v.PlayAuth = video.GetVideoPlayAuth(v.VideoId)
+			maxRetries := 30
+			for i := 0; i < maxRetries; i++ {
+				v.PlayAuth, err = video.GetVideoPlayAuth(v.VideoId)
+				if err == nil {
+					return &v, nil
+				}
+
+				if !strings.Contains(err.Error(), "Currently Video Status is UploadSucc and AuditStatus is Init.") {
+					return nil, err
+				}
+
+				time.Sleep(2 * time.Second)
+			}
+
+			return nil, err
 		}
 		return &v, nil
 	} else {

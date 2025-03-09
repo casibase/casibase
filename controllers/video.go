@@ -209,6 +209,33 @@ func (c *ApiController) DeleteVideo() {
 	c.ResponseOk(success)
 }
 
+func updateVideoCoverUrl(id string, videoId string) error {
+	for i := 0; i < 30; i++ {
+		coverUrl := video.GetVideoCoverUrl(videoId)
+		if coverUrl != "" {
+			v, err := object.GetVideo(id)
+			if err != nil {
+				return err
+			}
+			if v.CoverUrl != "" {
+				break
+			}
+
+			v.CoverUrl = coverUrl
+			_, err = object.UpdateVideo(id, v)
+			if err != nil {
+				return err
+			}
+
+			break
+		}
+
+		time.Sleep(time.Second * 2)
+	}
+
+	return nil
+}
+
 func startCoverUrlJob(id string, videoId string) {
 	err := object.SetDefaultVodClient()
 	if err != nil {
@@ -216,27 +243,9 @@ func startCoverUrlJob(id string, videoId string) {
 	}
 
 	go func(id string, videoId string) {
-		for i := 0; i < 20; i++ {
-			coverUrl := video.GetVideoCoverUrl(videoId)
-			if coverUrl != "" {
-				v, err := object.GetVideo(id)
-				if err != nil {
-					panic(err)
-				}
-				if v.CoverUrl != "" {
-					break
-				}
-
-				v.CoverUrl = coverUrl
-				_, err = object.UpdateVideo(id, v)
-				if err != nil {
-					panic(err)
-				}
-
-				break
-			}
-
-			time.Sleep(time.Second * 5)
+		err = updateVideoCoverUrl(id, videoId)
+		if err != nil {
+			panic(err)
 		}
 	}(id, videoId)
 }
@@ -401,7 +410,14 @@ func (c *ApiController) UploadVideo() {
 	}
 
 	id := util.GetIdFromOwnerAndName(userName, fileId)
-	startCoverUrlJob(id, videoId)
+
+	err = updateVideoCoverUrl(id, videoId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// startCoverUrlJob(id, videoId)
 
 	c.ResponseOk(fileId)
 }
