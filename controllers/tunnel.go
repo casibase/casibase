@@ -141,6 +141,11 @@ func (c *ApiController) GetNodeTunnel() {
 	configuration.SetParameter("dpi", dpi)
 
 	addr := beego.AppConfig.String("guacamoleEndpoint")
+	if addr == "" {
+		guacamole.Disconnect(ws, NewTunnelError, "guacamoleEndpoint in app.conf should not be empty")
+		return
+	}
+
 	tunnel, err := guacamole.NewTunnel(addr, configuration)
 	if err != nil {
 		guacamole.Disconnect(ws, NewTunnelError, err.Error())
@@ -233,6 +238,11 @@ func (c *ApiController) TunnelMonitor() {
 	configuration.SetReadOnlyMode()
 
 	addr := beego.AppConfig.String("guacamoleEndpoint")
+	if addr == "" {
+		guacamole.Disconnect(ws, NewTunnelError, "guacamoleEndpoint in app.conf should not be empty")
+		return
+	}
+
 	tunnel, err := guacamole.NewTunnel(addr, configuration)
 	if err != nil {
 		guacamole.Disconnect(ws, NewTunnelError, err.Error())
