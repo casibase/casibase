@@ -717,6 +717,7 @@ export function getProviderTypeOptions(category) {
         {id: "Yi", name: "Yi"},
         {id: "Silicon Flow", name: "Silicon Flow"},
         {id: "GitHub", name: "GitHub"},
+        {id: "Qwen", name: "Qwen"},
       ]
     );
   } else if (category === "Embedding") {
@@ -1225,6 +1226,13 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
+    ]);
+  } else if (type === "Qwen") {
+    return ([
+      {id: "qwen-long", name: "qwen-long"},
+      {id: "qwen-turbo", name: "qwen-turbo"},
+      {id: "qwen-plus", name: "qwen-plus"},
+      {id: "qwen-max", name: "qwen-max"},
     ]);
   } else {
     return [];

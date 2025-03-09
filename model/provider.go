@@ -93,6 +93,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewDummyModelProvider(subType)
 	} else if typ == "GitHub" {
 		p, err = NewGitHubModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty)
+	} else if typ == "Qwen" {
+		p, err = NewQwenModelProvider(subType, clientSecret, temperature, topP)
 	} else {
 		return nil, nil
 	}
