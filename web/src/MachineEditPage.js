@@ -275,11 +275,14 @@ class MachineEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.machine.state} onChange={value => {
               this.updateMachineField("state", value);
-            }}
-            options={[
-              {value: "Running", label: "Running"},
-              {value: "Stopped", label: "Stopped"},
-            ].map(item => Setting.getOption(item.label, item.value))} />
+            }}>
+              {
+                [
+                  {id: "Running", name: "Running"},
+                  {id: "Stopped", name: "Stopped"},
+                ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+              }
+            </Select>
           </Col>
         </Row>
       </Card>
