@@ -151,7 +151,7 @@ func DownloadFile(url string) (*bytes.Buffer, error) {
 }
 
 // downloadMaxmindFiles downloads MaxMind database files from GitHub
-func downloadMaxmindFiles() {
+func downloadMaxmindFiles(cityExists, asnExists bool) {
 	// GitHub repo for the data files
 	repoURL := "https://github.com/casibase/data"
 
@@ -183,16 +183,19 @@ func downloadMaxmindFiles() {
 		return nil
 	}
 
-	cityErr := downloadAndSave("GeoLite2-City")
-	if cityErr != nil {
-		panic(cityErr)
+	if !cityExists {
+		cityErr := downloadAndSave("GeoLite2-City")
+		if cityErr != nil {
+			fmt.Println("Failed to download GeoLite2-City database")
+		}
 	}
 
-	asnErr := downloadAndSave("GeoLite2-ASN")
-	if asnErr != nil {
-		panic(asnErr)
+	if !asnExists {
+		asnErr := downloadAndSave("GeoLite2-ASN")
+		if asnErr != nil {
+			fmt.Println("Failed to download GeoLite2-ASN database")
+		}
 	}
-
 	// Update status in util package
 	MaxmindDownloadInProgress = false
 
@@ -220,5 +223,5 @@ func InitMaxmindFiles() {
 
 	MaxmindDownloadInProgress = true
 
-	go downloadMaxmindFiles()
+	go downloadMaxmindFiles(cityExists, asnExists)
 }
