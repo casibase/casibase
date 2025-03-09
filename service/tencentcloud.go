@@ -16,6 +16,7 @@ package service
 
 import (
 	"fmt"
+
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
@@ -27,7 +28,6 @@ type MachineTencentClient struct {
 }
 
 func newMachineTencentClient(accessKeyId string, accessKeySecret string, region string) (MachineTencentClient, error) {
-
 	credential := common.NewCredential(accessKeyId, accessKeySecret)
 
 	cpf := profile.NewClientProfile()
@@ -132,7 +132,6 @@ func (client MachineTencentClient) GetMachine(name string) (*Machine, error) {
 }
 
 func (client MachineTencentClient) UpdateMachineState(name string, state string) (bool, string, error) {
-
 	machine, err := client.GetMachine(name)
 	if err != nil {
 		return false, "", err
