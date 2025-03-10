@@ -288,9 +288,9 @@ class ChatBox extends React.Component {
   };
 
   handleEditMessage = (message) => {
-    const {editMessage} = require("./backend/MessageBackend");
+    const {updateMessage} = require("./backend/MessageBackend");
 
-    editMessage(message.owner, message.name, message)
+    updateMessage(message.owner, message.name, message)
       .then((result) => {
         if (result.status === "ok") {
           Setting.showMessage("success", i18next.t("general:Successfully updated message"));

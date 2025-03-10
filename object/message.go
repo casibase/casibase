@@ -256,75 +256,34 @@ func DeleteMessage(message *Message) (bool, error) {
 	return affected != 0, nil
 }
 
-// EditMessage edit a message
-func EditMessage(id string, message *Message) (bool, error) {
-	owner, name := util.GetOwnerAndNameFromId(id)
-	originMessage, err := getMessage(owner, name)
+func GetChatMessagesAfter(chat string, createdTime string) ([]*Message, error) {
+	allMessages, err := GetChatMessages(chat)
 	if err != nil {
-		return false, err
+		return nil, err
 	}
-
-	if originMessage == nil {
-		return false, fmt.Errorf("Message not found: %s", id)
-	}
-
-	// We only allow editing the text content, not other fields
-	if originMessage.Text != message.Text {
-		size, err := getMessageTextTokenCount(originMessage.ModelProvider, message.Text)
-		if err != nil {
-			return false, err
-		}
-
-		// Prepare update with only the fields that can be edited
-		updateMessage := &Message{
-			Text:           message.Text,
-			TextTokenCount: size,
-		}
-
-		// Only update specific fields
-		_, err = adapter.engine.ID(core.PK{owner, name}).Cols("text", "text_token_count").Update(updateMessage)
-		if err != nil {
-			return false, err
-		}
-
-		// Delete all subsequent messages in the chat
-		err = DeleteMessagesAfter(originMessage.Chat, originMessage.CreatedTime)
-		if err != nil {
-			return false, err
+	var messagesAfter []*Message
+	for _, msg := range allMessages {
+		if msg.CreatedTime > createdTime {
+			messagesAfter = append(messagesAfter, msg)
 		}
 	}
 
-	return true, nil
+	return messagesAfter, nil
 }
 
-// DeleteMessagesAfter delete messages created after a specific message
-func DeleteMessagesAfter(chatId string, createdTime string) error {
-	// Find all messages in the chat that were created after the specified time
-	messages := []*Message{}
-	err := adapter.engine.Where("chat = ? AND created_time > ?", chatId, createdTime).Find(&messages)
+func DeleteMessagesAfter(chat string, createdTime string) error {
+	messagesAfter, err := GetChatMessagesAfter(chat, createdTime)
 	if err != nil {
 		return err
 	}
 
-	// Delete each message
-	for _, msg := range messages {
-		_, err = adapter.engine.ID(core.PK{msg.Owner, msg.Name}).Delete(&Message{})
+	for _, msg := range messagesAfter {
+		success, err := DeleteMessage(msg)
 		if err != nil {
 			return err
 		}
-
-		// Decrement the message count in the chat
-		chat, err := getChat(msg.Owner, msg.Chat)
-		if err != nil {
-			return err
-		}
-
-		if chat != nil && chat.MessageCount > 0 {
-			chat.MessageCount -= 1
-			_, err = UpdateChat(chat.GetId(), chat)
-			if err != nil {
-				return err
-			}
+		if !success {
+			return fmt.Errorf("failed to delete message: %s/%s", msg.Owner, msg.Name)
 		}
 	}
 

@@ -139,12 +139,26 @@ func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 	isHitOnly := c.Input().Get("isHitOnly")
 
-	var message object.Message
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
+	originalMessage, err := object.GetMessage(id)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+
+	var message object.Message
+	err = json.Unmarshal(c.Ctx.Input.RequestBody, &message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	user := c.GetSessionUsername()
+	if !c.IsAdmin() && user != originalMessage.User {
+		c.ResponseError("No permission to update this message")
+		return
+	}
+
+	textChanged := originalMessage.Text != message.Text
 
 	if message.NeedNotify {
 		err = message.SendEmail()
@@ -152,7 +166,6 @@ func (c *ApiController) UpdateMessage() {
 			c.ResponseError(err.Error())
 			return
 		}
-
 		message.NeedNotify = false
 	}
 
@@ -162,60 +175,14 @@ func (c *ApiController) UpdateMessage() {
 		return
 	}
 
-	c.ResponseOk(success)
-}
+	// if textChanged , delete the following messages and trigger AI to generate new responses
+	if textChanged && success {
+		err = object.DeleteMessagesAfter(originalMessage.Chat, originalMessage.CreatedTime)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
 
-// EditMessage
-// @Title EditMessage
-// @Tag Message API
-// @Description edit message content
-// @Param id query string true "The id (owner/name) of the message"
-// @Param body object.Message true "The details of the edited message"
-// @Success 200 {object} controllers.Response The Response object
-// @router /edit-message [post]
-func (c *ApiController) EditMessage() {
-	id := c.Input().Get("id")
-
-	var message object.Message
-	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	// Get original message to check permissions
-	originalMessage, err := object.GetMessage(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	if originalMessage == nil {
-		c.ResponseError("Message not found")
-		return
-	}
-
-	// Permission check
-	user := c.GetSessionUsername()
-	if !c.IsAdmin() && user != originalMessage.User {
-		c.ResponseError("No permission to edit this message")
-		return
-	}
-
-	// Only edit messages from the user, not AI
-	if originalMessage.Author == "AI" && !c.IsAdmin() {
-		c.ResponseError("Cannot edit AI messages")
-		return
-	}
-
-	success, err := object.EditMessage(id, &message)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
-	// After successfully editing the message, create a new AI response
-	if success && originalMessage.Text != message.Text {
 		_, err = object.CreateAIResponse(originalMessage)
 		if err != nil {
 			c.ResponseError(err.Error())
