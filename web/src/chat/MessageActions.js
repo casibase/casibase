@@ -19,7 +19,6 @@ import {
   CopyOutlined,
   DislikeFilled,
   DislikeOutlined,
-  EditOutlined,
   LikeFilled,
   LikeOutlined,
   PauseCircleOutlined,
@@ -39,6 +38,7 @@ const MessageActions = ({
   isReading,
   readingMessage,
   account,
+  isHovering,
 }) => {
   // Styles for AI message actions (bottom)
   const aiActionStyle = {
@@ -47,15 +47,6 @@ const MessageActions = ({
     display: "flex",
     justifyContent: "flex-start",
     marginLeft: "48px",
-  };
-
-  // Styles for user message actions (top-right corner of bubble)
-  const userActionStyle = {
-    position: "absolute",
-    right: "-20px",
-    top: "-22px",
-    opacity: 0.8,
-    zIndex: 2,
   };
 
   if (message.author === "AI") {
@@ -100,17 +91,8 @@ const MessageActions = ({
       </Space>
     );
   } else {
-    return (
-      <div style={userActionStyle}>
-        <Button
-          className="cs-button"
-          icon={<EditOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary, background: "transparent"}}
-          onClick={() => onEdit(message)}
-          size="small"
-        />
-      </div>
-    );
+    // For user messages, we return null as the edit button is now handled inside MessageItem component
+    return null;
   }
 };
 

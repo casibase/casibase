@@ -22,7 +22,7 @@ import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
-import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
+import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
 
 const MessageItem = ({
   message,
@@ -43,6 +43,7 @@ const MessageItem = ({
   const [avatarSrc, setAvatarSrc] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [editedText, setEditedText] = useState("");
+  const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
     // Set the initial avatar source
@@ -80,6 +81,14 @@ const MessageItem = ({
       e.preventDefault(); // Prevent default Enter behavior (new line)
       handleSaveEdit();
     }
+  };
+
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovering(false);
   };
 
   const renderMessageContent = () => {
@@ -222,19 +231,27 @@ const MessageItem = ({
     return null;
   };
 
+  const containerStyle = {
+    maxWidth: "90%",
+    margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+    position: "relative",
+  };
+
+  const timeStyle = {
+    textAlign: message.author === "AI" ? "left" : "right",
+    color: "#999",
+    fontSize: "12px",
+    marginBottom: "8px",
+    padding: "0 12px",
+  };
+
   return (
-    <div style={{
-      maxWidth: "90%",
-      margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
-      position: "relative", // Added to support absolute positioning of user action buttons
-    }}>
-      <div style={{
-        textAlign: message.author === "AI" ? "left" : "right",
-        color: "#999",
-        fontSize: "12px",
-        marginBottom: "8px",
-        padding: "0 12px",
-      }}>
+    <div
+      style={containerStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div style={timeStyle}>
         {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
         {message.updatedTime && message.updatedTime !== message.createdTime &&
               ` (${i18next.t("general:Edited")})`}
@@ -242,48 +259,91 @@ const MessageItem = ({
 
       {renderReasoningBubble()}
 
-      {(!message.isReasoningPhase || message.author !== "AI") && (
-        <Bubble
-          placement={message.author === "AI" ? "start" : "end"}
-          content={
-            <div style={{position: "relative", width: "100%"}}>
-              {renderMessageContent()}
-
-              {!isEditing && message.author !== "AI" && (disableInput === false || index !== isLastMessage) && (
-                <MessageActions
-                  message={message}
-                  isLastMessage={isLastMessage}
-                  index={index}
-                  onCopy={onCopy}
-                  onRegenerate={onRegenerate}
-                  onLike={onLike}
-                  onToggleRead={onToggleRead}
-                  onEdit={handleEdit}
-                  isReading={isReading}
-                  readingMessage={readingMessage}
-                  account={account}
-                />
-              )}
+      {/* For user messages, add a flex container to position edit button */}
+      {message.author !== "AI" && !message.isReasoningPhase ? (
+        <div style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
+          position: "relative",
+        }}>
+          {/* Edit button container - positioned to the left of the message */}
+          {!isEditing && (disableInput === false || index !== isLastMessage) && (
+            <div style={{
+              marginRight: "8px",
+              opacity: isHovering ? 0.8 : 0,
+              transition: "opacity 0.2s ease-in-out",
+            }}>
+              <Button
+                className="cs-button"
+                icon={<EditOutlined />}
+                style={{
+                  border: "none",
+                  color: ThemeDefault.colorPrimary,
+                  background: "rgba(255, 255, 255, 0.8)",
+                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                  borderRadius: "50%",
+                  width: "32px",
+                  height: "32px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onClick={handleEdit}
+                size="small"
+              />
             </div>
-          }
-          loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
-          typing={message.author === "AI" && !message.isReasoningPhase ? {
-            step: 2,
-            interval: 50,
-          } : undefined}
-          avatar={{
-            src: avatarSrc,
-            onError: handleAvatarError,
-          }}
-          styles={{
-            content: {
-              backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
-              borderRadius: "16px",
-              padding: "12px 16px",
-              minWidth: isEditing ? "300px" : "auto",
-            },
-          }}
-        />
+          )}
+          <Bubble
+            placement="end"
+            content={
+              <div style={{position: "relative", width: "100%"}}>
+                {renderMessageContent()}
+              </div>
+            }
+            avatar={{
+              src: avatarSrc,
+              onError: handleAvatarError,
+            }}
+            styles={{
+              content: {
+                backgroundColor: undefined,
+                borderRadius: "16px",
+                padding: "12px 16px",
+                minWidth: isEditing ? "300px" : "auto",
+              },
+            }}
+          />
+        </div>
+      ) : (
+      // AI message or reasoning message
+        (!message.isReasoningPhase || message.author !== "AI") && (
+          <Bubble
+            placement="start"
+            content={
+              <div style={{position: "relative", width: "100%"}}>
+                {renderMessageContent()}
+              </div>
+            }
+            loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
+            typing={message.author === "AI" && !message.isReasoningPhase ? {
+              step: 2,
+              interval: 50,
+            } : undefined}
+            avatar={{
+              src: avatarSrc,
+              onError: handleAvatarError,
+            }}
+            styles={{
+              content: {
+                backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
+                borderRadius: "16px",
+                padding: "12px 16px",
+                minWidth: isEditing ? "300px" : "auto",
+              },
+            }}
+          />
+        )
       )}
 
       {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
