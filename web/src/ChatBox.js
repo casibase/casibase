@@ -23,6 +23,7 @@ import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
+import * as MessageBackend from "./backend/MessageBackend";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -287,6 +288,30 @@ class ChatBox extends React.Component {
     }
   };
 
+  handleEditMessage = (message) => {
+    const editedMessage = {
+      ...message,
+      createdTime: moment().format(),
+    };
+    MessageBackend.addMessage(editedMessage)
+      .then((res) => {
+        if (res.status === "ok") {
+          const chat = res.data;
+
+          if (this.props.onMessageEdit) {
+            this.props.onMessageEdit(chat.name);
+          }
+
+          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  };
+
   render() {
     let messages = this.props.messages;
     if (messages === null) {
@@ -324,6 +349,7 @@ class ChatBox extends React.Component {
             onMessageLike={this.handleMessageLike}
             onCopyMessage={this.copyMessageFromHTML}
             onToggleRead={this.toggleMessageReadState}
+            onEditMessage={this.handleEditMessage}
             previewMode={this.props.previewMode}
             hideInput={this.props.hideInput}
             disableInput={this.props.disableInput}

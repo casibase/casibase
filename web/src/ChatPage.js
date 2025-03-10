@@ -451,6 +451,14 @@ class ChatPage extends BaseListPage {
       });
   }
 
+  handleMessageEdit = (chatName) => {
+    const chat = this.state.data.find(c => c.name === chatName);
+    if (chat) {
+      // get new messages
+      this.getMessages(chat);
+    }
+  };
+
   getCurrentChat() {
     return this.state.data.filter(chat => chat.name === this.state.chat?.name)[0];
   }
@@ -599,6 +607,7 @@ class ChatPage extends BaseListPage {
             sendMessage={(text, fileName, regenerate = false) => {
               this.sendMessage(text, fileName, false, regenerate);
             }}
+            onMessageEdit={this.handleMessageEdit}
             account={this.props.account}
             name={this.state.chat?.name}
             displayName={this.state.chat?.displayName}

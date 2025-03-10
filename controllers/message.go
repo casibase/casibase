@@ -180,6 +180,37 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
+	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
+	originMessage, _ := object.GetMessage(id)
+	if originMessage != nil {
+		originalMessage, err := object.GetMessage(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		// Get all messages for this chat
+		allMessages, err := object.GetChatMessages(message.Chat)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Find and delete messages created after the original message
+		for _, msg := range allMessages {
+			if msg.CreatedTime >= originalMessage.CreatedTime {
+				success, err := object.DeleteMessage(msg)
+				if err != nil {
+					c.ResponseError(err.Error())
+					return
+				}
+				if !success {
+					c.ResponseError(fmt.Sprintf("failed to delete message: %s/%s", msg.Owner, msg.Name))
+					return
+				}
+			}
+		}
+	}
+
 	addMessageAfterSuccess := true
 	if message.IsRegenerated {
 		messages, err := object.GetChatMessages(message.Chat)
