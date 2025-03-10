@@ -141,10 +141,11 @@ func getVideo(owner string, name string) (*Video, error) {
 					return &v, nil
 				}
 
-				if !strings.Contains(err.Error(), "Currently Video Status is UploadSucc and AuditStatus is Init.") {
+				if !strings.Contains(err.Error(), "and AuditStatus is Init.") {
 					return nil, err
 				}
 
+				fmt.Printf("GetVideoPlayAuth() error, video: %s, try time: %d, error: %v\n", name, i, err)
 				time.Sleep(2 * time.Second)
 			}
 
