@@ -256,40 +256,6 @@ func DeleteMessage(message *Message) (bool, error) {
 	return affected != 0, nil
 }
 
-func GetChatMessagesAfter(chat string, createdTime string) ([]*Message, error) {
-	allMessages, err := GetChatMessages(chat)
-	if err != nil {
-		return nil, err
-	}
-	var messagesAfter []*Message
-	for _, msg := range allMessages {
-		if msg.CreatedTime > createdTime {
-			messagesAfter = append(messagesAfter, msg)
-		}
-	}
-
-	return messagesAfter, nil
-}
-
-func DeleteMessagesAfter(chat string, createdTime string) error {
-	messagesAfter, err := GetChatMessagesAfter(chat, createdTime)
-	if err != nil {
-		return err
-	}
-
-	for _, msg := range messagesAfter {
-		success, err := DeleteMessage(msg)
-		if err != nil {
-			return err
-		}
-		if !success {
-			return fmt.Errorf("failed to delete message: %s/%s", msg.Owner, msg.Name)
-		}
-	}
-
-	return nil
-}
-
 func CreateAIResponse(sourceMessage *Message) (*Message, error) {
 	chatId := util.GetId(sourceMessage.Owner, sourceMessage.Chat)
 	chat, err := GetChat(chatId)

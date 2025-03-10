@@ -175,12 +175,28 @@ func (c *ApiController) UpdateMessage() {
 		return
 	}
 
-	// if textChanged , delete the following messages and trigger AI to generate new responses
+	// if text changed, delete the following messages and trigger AI to generate new responses
 	if textChanged && success {
-		err = object.DeleteMessagesAfter(originalMessage.Chat, originalMessage.CreatedTime)
+		// Get all messages for this chat
+		allMessages, err := object.GetChatMessages(originalMessage.Chat)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
+		}
+
+		// Find and delete messages created after the original message
+		for _, msg := range allMessages {
+			if msg.CreatedTime > originalMessage.CreatedTime {
+				success, err := object.DeleteMessage(msg)
+				if err != nil {
+					c.ResponseError(err.Error())
+					return
+				}
+				if !success {
+					c.ResponseError(fmt.Sprintf("failed to delete message: %s/%s", msg.Owner, msg.Name))
+					return
+				}
+			}
 		}
 
 		_, err = object.CreateAIResponse(originalMessage)
