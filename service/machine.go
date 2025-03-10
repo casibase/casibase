@@ -38,6 +38,8 @@ func NewMachineClient(providerType string, accessKeyId string, accessKeySecret s
 		res, err = newMachineGcpClient(accessKeyId, accessKeySecret, region)
 	case "AWS":
 		res, err = newMachineAwsClient(accessKeyId, accessKeySecret, region)
+	case "Tencent Cloud":
+		res, err = newMachineTencentClient(accessKeyId, accessKeySecret, region)
 	default:
 		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
 	}

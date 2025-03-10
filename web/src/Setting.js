@@ -743,6 +743,7 @@ export function getProviderTypeOptions(category) {
       {value: "Azure", name: "Azure"},
       {value: "Google Cloud", name: "Google Cloud"},
       {value: "Aliyun", name: "Aliyun"},
+      {value: "Tencent Cloud", name: "Tencent Cloud"},
     ]);
   } else if (category === "Private Cloud") {
     return ([

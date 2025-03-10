@@ -114,7 +114,7 @@ func SyncMachinesCloud(owner string) (bool, error) {
 }
 
 func updateMachineCloud(oldMachine *Machine, machine *Machine) (bool, error) {
-	provider, err := getProvider(oldMachine.Owner, oldMachine.Provider)
+	provider, err := getProvider("admin", oldMachine.Provider)
 	if err != nil {
 		return false, err
 	}
