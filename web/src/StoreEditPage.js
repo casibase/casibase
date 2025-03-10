@@ -250,6 +250,30 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Welcome title")}:
+          </Col>
+          <Col span={22} >
+            <Input
+              value={this.state.store.welcomeTitle} onChange={e => {
+                this.updateStoreField("welcomeTitle", e.target.value);
+              }}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Welcome text")}:
+          </Col>
+          <Col span={22} >
+            <Input
+              value={this.state.store.welcomeText} onChange={e => {
+                this.updateStoreField("welcomeText", e.target.value);
+              }}
+            />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Prompt")}:
           </Col>
           <Col span={22} >

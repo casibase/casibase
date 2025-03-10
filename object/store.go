@@ -69,6 +69,8 @@ type Store struct {
 	LimitMinutes    int      `json:"limitMinutes"`
 	SuggestionCount int      `json:"suggestionCount"`
 	Welcome         string   `xorm:"varchar(100)" json:"welcome"`
+	WelcomeTitle    string   `xorm:"varchar(100)" json:"welcomeTitle"`
+	WelcomeText     string   `xorm:"varchar(100)" json:"welcomeText"`
 	Prompt          string   `xorm:"mediumtext" json:"prompt"`
 	Prompts         []Prompt `xorm:"mediumtext" json:"prompts"`
 	ThemeColor      string   `xorm:"varchar(100)" json:"themeColor"`

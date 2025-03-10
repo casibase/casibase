@@ -157,7 +157,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Category"), i18next.t("general:Category - Tooltip"))} :
+            {Setting.getLabel(i18next.t("provider:Category"), i18next.t("provider:Category - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.category} onChange={e => {
@@ -194,7 +194,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Image"), i18next.t("general:Image - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Image"), i18next.t("machine:Image - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.image} onChange={e => {
@@ -204,7 +204,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Public IP"), i18next.t("general:Public IP - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Public IP"), i18next.t("machine:Public IP - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.publicIp} onChange={e => {
@@ -214,7 +214,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Private IP"), i18next.t("general:Private IP - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Private IP"), i18next.t("machine:Private IP - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.privateIp} onChange={e => {
@@ -224,7 +224,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Remote protocol"), i18next.t("general:Remote protocol - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Protocol"), i18next.t("machine:Protocol - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.machine.remoteProtocol} onChange={value => {
@@ -240,7 +240,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Remote port"), i18next.t("general:Remote port - Tooltip"))} :
+            {Setting.getLabel(i18next.t("machine:Port"), i18next.t("machine:Port - Tooltip"))} :
           </Col>
           <Col span={22} >
             <InputNumber value={this.state.machine.remotePort} min={0} max={65535} step={1} onChange={value => {
@@ -250,7 +250,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Remote username"), i18next.t("general:Remote username - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Username"), i18next.t("general:Username - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.remoteUsername} onChange={e => {
@@ -260,7 +260,7 @@ class MachineEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {Setting.getLabel(i18next.t("general:Remote password"), i18next.t("general:Remote password - Tooltip"))} :
+            {Setting.getLabel(i18next.t("general:Password"), i18next.t("general:Password - Tooltip"))} :
           </Col>
           <Col span={22} >
             <Input value={this.state.machine.remotePassword} onChange={e => {
