@@ -287,6 +287,38 @@ class ChatBox extends React.Component {
     }
   };
 
+  handleEditMessage = (message) => {
+    const {editMessage} = require("./backend/MessageBackend");
+
+    editMessage(message.owner, message.name, message)
+      .then((result) => {
+        if (result.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
+          // Call onMessageEdit callback if provided
+          if (this.props.onMessageEdit && this.props.name) {
+            this.props.onMessageEdit(this.props.name);
+          }
+        } else {
+          Setting.showMessage("error", result.msg);
+          // Revert local state if server update fails
+          this.setState({
+            messages: this.state.messages.map(m =>
+              m.name === message.name ? this.props.messages.find(original => original.name === message.name) : m
+            ),
+          });
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", "Failed to update message: " + error.message);
+        // Revert local state if server update fails
+        this.setState({
+          messages: this.state.messages.map(m =>
+            m.name === message.name ? this.props.messages.find(original => original.name === message.name) : m
+          ),
+        });
+      });
+  };
+
   render() {
     let messages = this.props.messages;
     if (messages === null) {
@@ -324,6 +356,7 @@ class ChatBox extends React.Component {
             onMessageLike={this.handleMessageLike}
             onCopyMessage={this.copyMessageFromHTML}
             onToggleRead={this.toggleMessageReadState}
+            onEditMessage={this.handleEditMessage}
             previewMode={this.props.previewMode}
             hideInput={this.props.hideInput}
             disableInput={this.props.disableInput}

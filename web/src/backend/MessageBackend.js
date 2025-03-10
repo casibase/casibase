@@ -118,6 +118,18 @@ export function updateMessage(owner, name, message, isHitOnly = false) {
   }).then(res => res.json());
 }
 
+export function editMessage(owner, name, message) {
+  const newMessage = Setting.deepCopy(message);
+  return fetch(`${Setting.ServerUrl}/api/edit-message?id=${owner}/${encodeURIComponent(name)}`, {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      "Accept-Language": Setting.getAcceptLanguage(),
+    },
+    body: JSON.stringify(newMessage),
+  }).then(res => res.json());
+}
+
 export function addMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/add-message`, {

@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button} from "antd";
+import {Alert, Button, Input, Space} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -22,6 +22,7 @@ import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
+import {CheckOutlined, CloseOutlined} from "@ant-design/icons";
 
 const MessageItem = ({
   message,
@@ -33,12 +34,15 @@ const MessageItem = ({
   onRegenerate,
   onLike,
   onToggleRead,
+  onEditMessage,
   disableInput,
   isReading,
   readingMessage,
   sendMessage,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedText, setEditedText] = useState("");
 
   useEffect(() => {
     // Set the initial avatar source
@@ -50,7 +54,59 @@ const MessageItem = ({
     setAvatarSrc(AvatarErrorUrl);
   };
 
+  const handleEdit = () => {
+    setIsEditing(true);
+    setEditedText(message.text);
+  };
+
+  const handleSaveEdit = () => {
+    const editMessage = {
+      ...message,
+      text: editedText,
+      updatedTime: new Date().toISOString(),
+    };
+
+    onEditMessage(editMessage);
+    setIsEditing(false);
+  };
+
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditedText("");
+  };
+
   const renderMessageContent = () => {
+    if (isEditing && message.author !== "AI") {
+      return (
+        <div style={{width: "100%"}}>
+          <Input.TextArea
+            value={editedText}
+            onChange={e => setEditedText(e.target.value)}
+            autoSize={{minRows: 1, maxRows: 6}}
+            style={{marginBottom: "8px"}}
+            autoFocus
+          />
+          <Space style={{display: "flex", justifyContent: "flex-end"}}>
+            <Button
+              icon={<CloseOutlined />}
+              onClick={handleCancelEdit}
+              size="small"
+            >
+              {i18next.t("general:Cancel")}
+            </Button>
+            <Button
+              type="primary"
+              icon={<CheckOutlined />}
+              onClick={handleSaveEdit}
+              size="small"
+            >
+              {i18next.t("general:Save")}
+            </Button>
+          </Space>
+        </div>
+      );
+    }
+
     if (message.errorText !== "") {
       return (
         <Alert
@@ -108,7 +164,7 @@ const MessageItem = ({
       return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"]);
     }
 
-    return message.html;
+    return message.html || renderText(message.text);
   };
 
   const renderReasoningBubble = () => {
@@ -171,6 +227,8 @@ const MessageItem = ({
         padding: "0 12px",
       }}>
         {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+        {message.updatedTime && message.updatedTime !== message.createdTime &&
+              ` (${i18next.t("general:Edited")})`}
       </div>
 
       {renderReasoningBubble()}
@@ -193,12 +251,13 @@ const MessageItem = ({
               backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
               borderRadius: "16px",
               padding: "12px 16px",
+              minWidth: isEditing ? "300px" : "auto",
             },
           }}
         />
       )}
 
-      {message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
+      {!isEditing && (disableInput === false || index !== isLastMessage) && (
         <MessageActions
           message={message}
           isLastMessage={isLastMessage}
@@ -207,6 +266,7 @@ const MessageItem = ({
           onRegenerate={onRegenerate}
           onLike={onLike}
           onToggleRead={onToggleRead}
+          onEdit={handleEdit}
           isReading={isReading}
           readingMessage={readingMessage}
           account={account}

@@ -165,6 +165,67 @@ func (c *ApiController) UpdateMessage() {
 	c.ResponseOk(success)
 }
 
+// EditMessage
+// @Title EditMessage
+// @Tag Message API
+// @Description edit message content
+// @Param id query string true "The id (owner/name) of the message"
+// @Param body object.Message true "The details of the edited message"
+// @Success 200 {object} controllers.Response The Response object
+// @router /edit-message [post]
+func (c *ApiController) EditMessage() {
+	id := c.Input().Get("id")
+
+	var message object.Message
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// Get original message to check permissions
+	originalMessage, err := object.GetMessage(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	if originalMessage == nil {
+		c.ResponseError("Message not found")
+		return
+	}
+
+	// Permission check
+	user := c.GetSessionUsername()
+	if !c.IsAdmin() && user != originalMessage.User {
+		c.ResponseError("No permission to edit this message")
+		return
+	}
+
+	// Only edit messages from the user, not AI
+	if originalMessage.Author == "AI" && !c.IsAdmin() {
+		c.ResponseError("Cannot edit AI messages")
+		return
+	}
+
+	success, err := object.EditMessage(id, &message)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+
+	// After successfully editing the message, create a new AI response
+	if success && originalMessage.Text != message.Text {
+		_, err = object.CreateAIResponse(originalMessage)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
+	c.ResponseOk(success)
+}
+
 // AddMessage
 // @Title AddMessage
 // @Tag Message API
@@ -275,31 +336,10 @@ func (c *ApiController) AddMessage() {
 	}
 
 	if success && addMessageAfterSuccess {
-		chatId := util.GetId(message.Owner, message.Chat)
-		chat, err = object.GetChat(chatId)
+		_, err = object.CreateAIResponse(&message)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
-		}
-		if chat != nil && chat.Type == "AI" {
-			answerMessage := &object.Message{
-				Owner:        message.Owner,
-				Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-				CreatedTime:  util.GetCurrentTimeEx(message.CreatedTime),
-				Organization: message.Organization,
-				User:         message.User,
-				Chat:         message.Chat,
-				ReplyTo:      message.Name,
-				Author:       "AI",
-				Text:         "",
-				FileName:     message.FileName,
-				VectorScores: []object.VectorScore{},
-			}
-			_, err = object.AddMessage(answerMessage)
-			if err != nil {
-				c.ResponseError(err.Error())
-				return
-			}
 		}
 	}
 

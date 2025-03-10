@@ -19,6 +19,7 @@ import {
   CopyOutlined,
   DislikeFilled,
   DislikeOutlined,
+  EditOutlined,
   LikeFilled,
   LikeOutlined,
   PauseCircleOutlined,
@@ -34,57 +35,73 @@ const MessageActions = ({
   onRegenerate,
   onLike,
   onToggleRead,
+  onEdit,
   isReading,
   readingMessage,
   account,
 }) => {
-  return (
-    <Space
-      size="small"
-      style={{
-        marginTop: "8px",
-        marginLeft: "48px",
-        opacity: 0.8,
-      }}
-    >
-      <Button
-        className="cs-button"
-        icon={<CopyOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
-      />
+  const actionStyle = {
+    marginTop: "8px",
+    opacity: 0.8,
+    display: "flex",
+    justifyContent: message.author === "AI" ? "flex-start" : "flex-end",
+    marginLeft: message.author === "AI" ? "48px" : "auto",
+    marginRight: message.author !== "AI" ? "48px" : "auto",
+  };
 
-      {!isLastMessage ? null : (
+  if (message.author === "AI") {
+    return (
+      <Space size="small" style={actionStyle}>
         <Button
           className="cs-button"
-          icon={<ReloadOutlined />}
+          icon={<CopyOutlined />}
           style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={onRegenerate}
+          onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
         />
-      )}
 
-      <Button
-        className="cs-button"
-        icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onLike(message, "like")}
-      />
+        {!isLastMessage ? null : (
+          <Button
+            className="cs-button"
+            icon={<ReloadOutlined />}
+            style={{border: "none", color: ThemeDefault.colorPrimary}}
+            onClick={onRegenerate}
+          />
+        )}
 
-      <Button
-        className="cs-button"
-        icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onLike(message, "dislike")}
-      />
+        <Button
+          className="cs-button"
+          icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
+          style={{border: "none", color: ThemeDefault.colorPrimary}}
+          onClick={() => onLike(message, "like")}
+        />
 
-      <Button
-        className="cs-button"
-        icon={(readingMessage === message.name) && isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onToggleRead(message)}
-      />
-    </Space>
-  );
+        <Button
+          className="cs-button"
+          icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
+          style={{border: "none", color: ThemeDefault.colorPrimary}}
+          onClick={() => onLike(message, "dislike")}
+        />
+
+        <Button
+          className="cs-button"
+          icon={(readingMessage === message.name) && isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+          style={{border: "none", color: ThemeDefault.colorPrimary}}
+          onClick={() => onToggleRead(message)}
+        />
+      </Space>
+    );
+  } else {
+    return (
+      <Space size="small" style={actionStyle}>
+        <Button
+          className="cs-button"
+          icon={<EditOutlined />}
+          style={{border: "none", color: ThemeDefault.colorPrimary}}
+          onClick={() => onEdit(message)}
+        />
+      </Space>
+    );
+  }
 };
 
 export default MessageActions;
