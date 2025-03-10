@@ -16,11 +16,14 @@ package service
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/errors"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	cvm "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm/v20170312"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 )
 
 type MachineTencentClient struct {
@@ -58,7 +61,7 @@ func getMachineFromTencentInstance(instance *cvm.Instance) *Machine {
 		Category: "",
 		Type:     getString(instance.InstanceChargeType),
 		Size:     getString(instance.InstanceType),
-		State:    getString(instance.InstanceState),
+		State:    cases.Title(language.English).String(strings.ToLower(getString(instance.InstanceState))),
 
 		Image: getString(instance.ImageId),
 		Os:    getString(instance.OsName),
