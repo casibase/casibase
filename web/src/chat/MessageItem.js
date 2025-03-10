@@ -75,6 +75,13 @@ const MessageItem = ({
     setEditedText("");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault(); // Prevent default Enter behavior (new line)
+      handleSaveEdit();
+    }
+  };
+
   const renderMessageContent = () => {
     if (isEditing && message.author !== "AI") {
       return (
@@ -82,6 +89,7 @@ const MessageItem = ({
           <Input.TextArea
             value={editedText}
             onChange={e => setEditedText(e.target.value)}
+            onKeyDown={handleKeyDown}
             autoSize={{minRows: 1, maxRows: 6}}
             style={{marginBottom: "8px"}}
             autoFocus
@@ -218,6 +226,7 @@ const MessageItem = ({
     <div style={{
       maxWidth: "90%",
       margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+      position: "relative", // Added to support absolute positioning of user action buttons
     }}>
       <div style={{
         textAlign: message.author === "AI" ? "left" : "right",
@@ -236,7 +245,27 @@ const MessageItem = ({
       {(!message.isReasoningPhase || message.author !== "AI") && (
         <Bubble
           placement={message.author === "AI" ? "start" : "end"}
-          content={renderMessageContent()}
+          content={
+            <div style={{position: "relative", width: "100%"}}>
+              {renderMessageContent()}
+
+              {!isEditing && message.author !== "AI" && (disableInput === false || index !== isLastMessage) && (
+                <MessageActions
+                  message={message}
+                  isLastMessage={isLastMessage}
+                  index={index}
+                  onCopy={onCopy}
+                  onRegenerate={onRegenerate}
+                  onLike={onLike}
+                  onToggleRead={onToggleRead}
+                  onEdit={handleEdit}
+                  isReading={isReading}
+                  readingMessage={readingMessage}
+                  account={account}
+                />
+              )}
+            </div>
+          }
           loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
@@ -257,7 +286,7 @@ const MessageItem = ({
         />
       )}
 
-      {!isEditing && (disableInput === false || index !== isLastMessage) && (
+      {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
         <MessageActions
           message={message}
           isLastMessage={isLastMessage}

@@ -40,18 +40,27 @@ const MessageActions = ({
   readingMessage,
   account,
 }) => {
-  const actionStyle = {
+  // Styles for AI message actions (bottom)
+  const aiActionStyle = {
     marginTop: "8px",
     opacity: 0.8,
     display: "flex",
-    justifyContent: message.author === "AI" ? "flex-start" : "flex-end",
-    marginLeft: message.author === "AI" ? "48px" : "auto",
-    marginRight: message.author !== "AI" ? "48px" : "auto",
+    justifyContent: "flex-start",
+    marginLeft: "48px",
+  };
+
+  // Styles for user message actions (top-right corner of bubble)
+  const userActionStyle = {
+    position: "absolute",
+    right: "-20px",
+    top: "-22px",
+    opacity: 0.8,
+    zIndex: 2,
   };
 
   if (message.author === "AI") {
     return (
-      <Space size="small" style={actionStyle}>
+      <Space size="small" style={aiActionStyle}>
         <Button
           className="cs-button"
           icon={<CopyOutlined />}
@@ -92,14 +101,15 @@ const MessageActions = ({
     );
   } else {
     return (
-      <Space size="small" style={actionStyle}>
+      <div style={userActionStyle}>
         <Button
           className="cs-button"
           icon={<EditOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary}}
+          style={{border: "none", color: ThemeDefault.colorPrimary, background: "transparent"}}
           onClick={() => onEdit(message)}
+          size="small"
         />
-      </Space>
+      </div>
     );
   }
 };
