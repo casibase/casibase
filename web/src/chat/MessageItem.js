@@ -1,17 +1,3 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
 import {Alert, Button, Input, Space} from "antd";
@@ -46,82 +32,65 @@ const MessageItem = ({
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
-    // Set the initial avatar source
     setAvatarSrc(message.author === "AI" ? avatar : Setting.getUserAvatar(message, account));
   }, [message.author, avatar, account, message]);
 
-  const handleAvatarError = () => {
-    // Set fallback URL when avatar fails to load
-    setAvatarSrc(AvatarErrorUrl);
+  const handleEditActions = {
+    start: () => {
+      setIsEditing(true);
+      setEditedText(message.text);
+    },
+    save: () => {
+      onEditMessage({...message, text: editedText, updatedTime: new Date().toISOString()});
+      setIsEditing(false);
+    },
+    cancel: () => {
+      setIsEditing(false);
+      setEditedText("");
+    },
+    keyDown: (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleEditActions.save();
+      }
+    },
   };
 
-  const handleEdit = () => {
-    setIsEditing(true);
-    setEditedText(message.text);
-  };
+  const handleAvatarError = () => setAvatarSrc(AvatarErrorUrl);
 
-  const handleSaveEdit = () => {
-    const editMessage = {
-      ...message,
-      text: editedText,
-      updatedTime: new Date().toISOString(),
-    };
-
-    onEditMessage(editMessage);
-    setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditedText("");
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault(); // Prevent default Enter behavior (new line)
-      handleSaveEdit();
-    }
-  };
-
-  const handleMouseEnter = () => {
-    setIsHovering(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovering(false);
-  };
+  const renderEditForm = () => (
+    <div style={{width: "100%"}}>
+      <Input.TextArea
+        value={editedText}
+        onChange={e => setEditedText(e.target.value)}
+        onKeyDown={handleEditActions.keyDown}
+        autoSize={{minRows: 1, maxRows: 6}}
+        style={{marginBottom: "8px"}}
+        autoFocus
+      />
+      <Space style={{display: "flex", justifyContent: "flex-end"}}>
+        <Button
+          icon={<CloseOutlined />}
+          onClick={handleEditActions.cancel}
+          size="small"
+        >
+          {i18next.t("general:Cancel")}
+        </Button>
+        <Button
+          type="primary"
+          icon={<CheckOutlined />}
+          onClick={handleEditActions.save}
+          size="small"
+        >
+          {i18next.t("general:Save")}
+        </Button>
+      </Space>
+    </div>
+  );
 
   const renderMessageContent = () => {
     if (isEditing && message.author !== "AI") {
-      return (
-        <div style={{width: "100%"}}>
-          <Input.TextArea
-            value={editedText}
-            onChange={e => setEditedText(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoSize={{minRows: 1, maxRows: 6}}
-            style={{marginBottom: "8px"}}
-            autoFocus
-          />
-          <Space style={{display: "flex", justifyContent: "flex-end"}}>
-            <Button
-              icon={<CloseOutlined />}
-              onClick={handleCancelEdit}
-              size="small"
-            >
-              {i18next.t("general:Cancel")}
-            </Button>
-            <Button
-              type="primary"
-              icon={<CheckOutlined />}
-              onClick={handleSaveEdit}
-              size="small"
-            >
-              {i18next.t("general:Save")}
-            </Button>
-          </Space>
-        </div>
-      );
+      return renderEditForm();
     }
 
     if (message.errorText !== "") {
@@ -231,27 +200,100 @@ const MessageItem = ({
     return null;
   };
 
-  const containerStyle = {
-    maxWidth: "90%",
-    margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
-    position: "relative",
+  const renderEditButton = () => {
+    if (message.author !== "AI" && !isEditing && (disableInput === false || index !== isLastMessage)) {
+      return (
+        <div style={{
+          marginRight: "8px",
+          opacity: isHovering ? 0.8 : 0,
+          transition: "opacity 0.2s ease-in-out",
+        }}>
+          <Button
+            className="cs-button"
+            icon={<EditOutlined />}
+            style={{
+              border: "none",
+              color: ThemeDefault.colorPrimary,
+              background: "rgba(255, 255, 255, 0.8)",
+              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+              borderRadius: "50%",
+              width: "32px",
+              height: "32px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+            onClick={handleEditActions.start}
+            size="small"
+          />
+        </div>
+      );
+    }
+    return null;
   };
 
-  const timeStyle = {
-    textAlign: message.author === "AI" ? "left" : "right",
-    color: "#999",
-    fontSize: "12px",
-    marginBottom: "8px",
-    padding: "0 12px",
+  const renderMessageBubble = () => {
+    if (message.isReasoningPhase && message.author === "AI") {
+      return null;
+    }
+
+    const isUserMessage = message.author !== "AI";
+
+    return (
+      <div style={{
+        display: "flex",
+        justifyContent: isUserMessage ? "flex-end" : "flex-start",
+        alignItems: "center",
+        position: "relative",
+      }}>
+        {isUserMessage && renderEditButton()}
+
+        <Bubble
+          placement={isUserMessage ? "end" : "start"}
+          content={
+            <div style={{position: "relative", width: "100%"}}>
+              {renderMessageContent()}
+            </div>
+          }
+          loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
+          typing={message.author === "AI" && !message.isReasoningPhase ? {
+            step: 2,
+            interval: 50,
+          } : undefined}
+          avatar={{
+            src: avatarSrc,
+            onError: handleAvatarError,
+          }}
+          styles={{
+            content: {
+              backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
+              borderRadius: "16px",
+              padding: "12px 16px",
+              minWidth: isEditing ? "300px" : "auto",
+            },
+          }}
+        />
+      </div>
+    );
   };
 
   return (
     <div
-      style={containerStyle}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      style={{
+        maxWidth: "90%",
+        margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+        position: "relative",
+      }}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
     >
-      <div style={timeStyle}>
+      <div style={{
+        textAlign: message.author === "AI" ? "left" : "right",
+        color: "#999",
+        fontSize: "12px",
+        marginBottom: "8px",
+        padding: "0 12px",
+      }}>
         {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
         {message.updatedTime && message.updatedTime !== message.createdTime &&
               ` (${i18next.t("general:Edited")})`}
@@ -259,92 +301,7 @@ const MessageItem = ({
 
       {renderReasoningBubble()}
 
-      {/* For user messages, add a flex container to position edit button */}
-      {message.author !== "AI" && !message.isReasoningPhase ? (
-        <div style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          position: "relative",
-        }}>
-          {/* Edit button container - positioned to the left of the message */}
-          {!isEditing && (disableInput === false || index !== isLastMessage) && (
-            <div style={{
-              marginRight: "8px",
-              opacity: isHovering ? 0.8 : 0,
-              transition: "opacity 0.2s ease-in-out",
-            }}>
-              <Button
-                className="cs-button"
-                icon={<EditOutlined />}
-                style={{
-                  border: "none",
-                  color: ThemeDefault.colorPrimary,
-                  background: "rgba(255, 255, 255, 0.8)",
-                  boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-                  borderRadius: "50%",
-                  width: "32px",
-                  height: "32px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onClick={handleEdit}
-                size="small"
-              />
-            </div>
-          )}
-          <Bubble
-            placement="end"
-            content={
-              <div style={{position: "relative", width: "100%"}}>
-                {renderMessageContent()}
-              </div>
-            }
-            avatar={{
-              src: avatarSrc,
-              onError: handleAvatarError,
-            }}
-            styles={{
-              content: {
-                backgroundColor: undefined,
-                borderRadius: "16px",
-                padding: "12px 16px",
-                minWidth: isEditing ? "300px" : "auto",
-              },
-            }}
-          />
-        </div>
-      ) : (
-      // AI message or reasoning message
-        (!message.isReasoningPhase || message.author !== "AI") && (
-          <Bubble
-            placement="start"
-            content={
-              <div style={{position: "relative", width: "100%"}}>
-                {renderMessageContent()}
-              </div>
-            }
-            loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
-            typing={message.author === "AI" && !message.isReasoningPhase ? {
-              step: 2,
-              interval: 50,
-            } : undefined}
-            avatar={{
-              src: avatarSrc,
-              onError: handleAvatarError,
-            }}
-            styles={{
-              content: {
-                backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
-                borderRadius: "16px",
-                padding: "12px 16px",
-                minWidth: isEditing ? "300px" : "auto",
-              },
-            }}
-          />
-        )
-      )}
+      {renderMessageBubble()}
 
       {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
         <MessageActions
@@ -355,7 +312,7 @@ const MessageItem = ({
           onRegenerate={onRegenerate}
           onLike={onLike}
           onToggleRead={onToggleRead}
-          onEdit={handleEdit}
+          onEdit={handleEditActions.start}
           isReading={isReading}
           readingMessage={readingMessage}
           account={account}

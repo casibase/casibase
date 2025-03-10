@@ -34,66 +34,57 @@ const MessageActions = ({
   onRegenerate,
   onLike,
   onToggleRead,
-  onEdit,
   isReading,
   readingMessage,
   account,
-  isHovering,
 }) => {
-  // Styles for AI message actions (bottom)
-  const aiActionStyle = {
-    marginTop: "8px",
-    opacity: 0.8,
-    display: "flex",
-    justifyContent: "flex-start",
-    marginLeft: "48px",
-  };
+  return (
+    <Space
+      size="small"
+      style={{
+        marginTop: "8px",
+        marginLeft: "48px",
+        opacity: 0.8,
+      }}
+    >
+      <Button
+        className="cs-button"
+        icon={<CopyOutlined />}
+        style={{border: "none", color: ThemeDefault.colorPrimary}}
+        onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
+      />
 
-  if (message.author === "AI") {
-    return (
-      <Space size="small" style={aiActionStyle}>
+      {!isLastMessage ? null : (
         <Button
           className="cs-button"
-          icon={<CopyOutlined />}
+          icon={<ReloadOutlined />}
           style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
+          onClick={onRegenerate}
         />
+      )}
 
-        {!isLastMessage ? null : (
-          <Button
-            className="cs-button"
-            icon={<ReloadOutlined />}
-            style={{border: "none", color: ThemeDefault.colorPrimary}}
-            onClick={onRegenerate}
-          />
-        )}
+      <Button
+        className="cs-button"
+        icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
+        style={{border: "none", color: ThemeDefault.colorPrimary}}
+        onClick={() => onLike(message, "like")}
+      />
 
-        <Button
-          className="cs-button"
-          icon={message.likeUsers?.includes(account.name) ? <LikeFilled /> : <LikeOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={() => onLike(message, "like")}
-        />
+      <Button
+        className="cs-button"
+        icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
+        style={{border: "none", color: ThemeDefault.colorPrimary}}
+        onClick={() => onLike(message, "dislike")}
+      />
 
-        <Button
-          className="cs-button"
-          icon={message.dislikeUsers?.includes(account.name) ? <DislikeFilled /> : <DislikeOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={() => onLike(message, "dislike")}
-        />
-
-        <Button
-          className="cs-button"
-          icon={(readingMessage === message.name) && isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-          style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={() => onToggleRead(message)}
-        />
-      </Space>
-    );
-  } else {
-    // For user messages, we return null as the edit button is now handled inside MessageItem component
-    return null;
-  }
+      <Button
+        className="cs-button"
+        icon={(readingMessage === message.name) && isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
+        style={{border: "none", color: ThemeDefault.colorPrimary}}
+        onClick={() => onToggleRead(message)}
+      />
+    </Space>
+  );
 };
 
 export default MessageActions;
