@@ -256,45 +256,6 @@ func DeleteMessage(message *Message) (bool, error) {
 	return affected != 0, nil
 }
 
-func CreateAIResponse(sourceMessage *Message) (*Message, error) {
-	chatId := util.GetId(sourceMessage.Owner, sourceMessage.Chat)
-	chat, err := GetChat(chatId)
-	if err != nil {
-		return nil, err
-	}
-
-	if chat == nil || chat.Type != "AI" {
-		return nil, nil
-	}
-
-	// Create a new message
-	answerMessage := &Message{
-		Owner:         sourceMessage.Owner,
-		Name:          fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:   util.GetCurrentTimeEx(sourceMessage.CreatedTime),
-		Organization:  sourceMessage.Organization,
-		User:          sourceMessage.User,
-		Chat:          sourceMessage.Chat,
-		ReplyTo:       sourceMessage.Name,
-		Author:        "AI",
-		Text:          "",
-		FileName:      sourceMessage.FileName,
-		ModelProvider: sourceMessage.ModelProvider,
-		VectorScores:  []VectorScore{},
-	}
-
-	success, err := AddMessage(answerMessage)
-	if err != nil {
-		return nil, err
-	}
-
-	if !success {
-		return nil, fmt.Errorf("failed to add AI response message")
-	}
-
-	return answerMessage, nil
-}
-
 func DeleteMessagesByChat(message *Message) (bool, error) {
 	affected, err := adapter.engine.Delete(&Message{Owner: message.Owner, Chat: message.Chat})
 	if err != nil {

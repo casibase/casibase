@@ -23,6 +23,7 @@ import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
 import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
+import * as MessageBackend from "./backend/MessageBackend";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -288,34 +289,26 @@ class ChatBox extends React.Component {
   };
 
   handleEditMessage = (message) => {
-    const {updateMessage} = require("./backend/MessageBackend");
+    const editedMessage = {
+      ...message,
+      createdTime: moment().format(),
+    };
+    MessageBackend.addMessage(editedMessage)
+      .then((res) => {
+        if (res.status === "ok") {
+          const chat = res.data;
 
-    updateMessage(message.owner, message.name, message)
-      .then((result) => {
-        if (result.status === "ok") {
-          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
-          // Call onMessageEdit callback if provided
-          if (this.props.onMessageEdit && this.props.name) {
-            this.props.onMessageEdit(this.props.name);
+          if (this.props.onMessageEdit) {
+            this.props.onMessageEdit(chat.name);
           }
+
+          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
         } else {
-          Setting.showMessage("error", result.msg);
-          // Revert local state if server update fails
-          this.setState({
-            messages: this.state.messages.map(m =>
-              m.name === message.name ? this.props.messages.find(original => original.name === message.name) : m
-            ),
-          });
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", "Failed to update message: " + error.message);
-        // Revert local state if server update fails
-        this.setState({
-          messages: this.state.messages.map(m =>
-            m.name === message.name ? this.props.messages.find(original => original.name === message.name) : m
-          ),
-        });
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   };
 

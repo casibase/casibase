@@ -139,26 +139,12 @@ func (c *ApiController) UpdateMessage() {
 	id := c.Input().Get("id")
 	isHitOnly := c.Input().Get("isHitOnly")
 
-	originalMessage, err := object.GetMessage(id)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-
 	var message object.Message
-	err = json.Unmarshal(c.Ctx.Input.RequestBody, &message)
+	err := json.Unmarshal(c.Ctx.Input.RequestBody, &message)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
-
-	user := c.GetSessionUsername()
-	if !c.IsAdmin() && user != originalMessage.User {
-		c.ResponseError("No permission to update this message")
-		return
-	}
-
-	textChanged := originalMessage.Text != message.Text
 
 	if message.NeedNotify {
 		err = message.SendEmail()
@@ -166,6 +152,7 @@ func (c *ApiController) UpdateMessage() {
 			c.ResponseError(err.Error())
 			return
 		}
+
 		message.NeedNotify = false
 	}
 
@@ -173,37 +160,6 @@ func (c *ApiController) UpdateMessage() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
-	}
-
-	// if text changed, delete the following messages and trigger AI to generate new responses
-	if textChanged && success {
-		// Get all messages for this chat
-		allMessages, err := object.GetChatMessages(originalMessage.Chat)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Find and delete messages created after the original message
-		for _, msg := range allMessages {
-			if msg.CreatedTime > originalMessage.CreatedTime {
-				success, err := object.DeleteMessage(msg)
-				if err != nil {
-					c.ResponseError(err.Error())
-					return
-				}
-				if !success {
-					c.ResponseError(fmt.Sprintf("failed to delete message: %s/%s", msg.Owner, msg.Name))
-					return
-				}
-			}
-		}
-
-		_, err = object.CreateAIResponse(originalMessage)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
 	}
 
 	c.ResponseOk(success)
@@ -222,6 +178,37 @@ func (c *ApiController) AddMessage() {
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
+	}
+
+	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
+	originMessage, _ := object.GetMessage(id)
+	if originMessage != nil {
+		originalMessage, err := object.GetMessage(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+		// Get all messages for this chat
+		allMessages, err := object.GetChatMessages(message.Chat)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+
+		// Find and delete messages created after the original message
+		for _, msg := range allMessages {
+			if msg.CreatedTime >= originalMessage.CreatedTime {
+				success, err := object.DeleteMessage(msg)
+				if err != nil {
+					c.ResponseError(err.Error())
+					return
+				}
+				if !success {
+					c.ResponseError(fmt.Sprintf("failed to delete message: %s/%s", msg.Owner, msg.Name))
+					return
+				}
+			}
+		}
 	}
 
 	addMessageAfterSuccess := true
@@ -319,10 +306,31 @@ func (c *ApiController) AddMessage() {
 	}
 
 	if success && addMessageAfterSuccess {
-		_, err = object.CreateAIResponse(&message)
+		chatId := util.GetId(message.Owner, message.Chat)
+		chat, err = object.GetChat(chatId)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
+		}
+		if chat != nil && chat.Type == "AI" {
+			answerMessage := &object.Message{
+				Owner:        message.Owner,
+				Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+				CreatedTime:  util.GetCurrentTimeEx(message.CreatedTime),
+				Organization: message.Organization,
+				User:         message.User,
+				Chat:         message.Chat,
+				ReplyTo:      message.Name,
+				Author:       "AI",
+				Text:         "",
+				FileName:     message.FileName,
+				VectorScores: []object.VectorScore{},
+			}
+			_, err = object.AddMessage(answerMessage)
+			if err != nil {
+				c.ResponseError(err.Error())
+				return
+			}
 		}
 	}
 
