@@ -192,6 +192,10 @@ class ChatPage extends BaseListPage {
         }
       })
       .catch(error => {
+        this.setState({
+          messageError: error,
+          disableInput: true,
+        });
         Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   }
@@ -312,6 +316,11 @@ class ChatPage extends BaseListPage {
                 messageLoading: false,
               });
             }, (error) => {
+              this.setState({
+                messageError: error,
+                disableInput: true,
+                messageLoading: false,
+              });
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
@@ -375,6 +384,14 @@ class ChatPage extends BaseListPage {
         }
 
         Setting.scrollToDiv(`chatbox-list-item-${res.data.length}`);
+      })
+      .catch(error => {
+        this.setState({
+          messageError: error,
+          disableInput: true,
+          messageLoading: false,
+        });
+        Setting.showMessage("error", `${i18next.t("general:Failed to get messages")}: ${error}`);
       });
   }
 
@@ -596,6 +613,7 @@ class ChatPage extends BaseListPage {
             disableInput={this.state.disableInput}
             loading={this.state.messageLoading}
             messages={this.state.messages}
+            messageError={this.state.messageError}
             sendMessage={(text, fileName, regenerate = false) => {
               this.sendMessage(text, fileName, false, regenerate);
             }}
