@@ -136,7 +136,7 @@ class NodeListPage extends BaseListPage {
         sorter: (a, b) => a.description.localeCompare(b.description),
       },
       {
-        title: i18next.t("general:Protocol"),
+        title: i18next.t("machine:Protocol"),
         dataIndex: "remoteProtocol",
         key: "protocol",
         width: "50px",
@@ -150,14 +150,14 @@ class NodeListPage extends BaseListPage {
         ],
       },
       {
-        title: i18next.t("general:IP"),
+        title: i18next.t("machine:Private IP"),
         dataIndex: "privateIp",
         key: "ip",
         width: "120px",
         sorter: (a, b) => a.ip.localeCompare(b.ip),
       },
       {
-        title: i18next.t("general:Port"),
+        title: i18next.t("machine:Port"),
         dataIndex: "remotePort",
         key: "port",
         width: "90px",

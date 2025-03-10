@@ -24,8 +24,8 @@ const WelcomeHeader = ({store}) => {
     <Welcome
       variant="borderless"
       icon={avatar}
-      title={i18next.t("chat:Hello, I'm") + " " + "AI Assistant"}
-      description={i18next.t("chat:I'm here to help answer your questions")}
+      title={store?.welcomeTitle || i18next.t("chat:Hello, I'm Casibase AI Assistant")}
+      description={store?.welcomeText || i18next.t("chat:I'm here to help answer your questions")}
     />
   );
 };

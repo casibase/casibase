@@ -52,6 +52,8 @@ func initBuiltInStore() {
 		Frequency:         10000,
 		LimitMinutes:      10,
 		Welcome:           "Hello",
+		WelcomeTitle:      "Hello, I'm Casibase AI Assistant",
+		WelcomeText:       "I'm here to help answer your questions",
 		Prompt:            defaultPrompt,
 		ThemeColor:        "#5734d3",
 		PropertiesMap:     map[string]*Properties{},

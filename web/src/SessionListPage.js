@@ -101,7 +101,7 @@ class SessionListPage extends BaseListPage {
         },
       },
       {
-        title: i18next.t("general:Protocol"),
+        title: i18next.t("machine:Protocol"),
         dataIndex: "protocol",
         key: "protocol",
         width: "120px",
