@@ -32,6 +32,7 @@ const MessageItem = ({
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
+    // Set the initial avatar source
     setAvatarSrc(message.author === "AI" ? avatar : Setting.getUserAvatar(message, account));
   }, [message.author, avatar, account, message]);
 
@@ -56,7 +57,10 @@ const MessageItem = ({
     },
   };
 
-  const handleAvatarError = () => setAvatarSrc(AvatarErrorUrl);
+  const handleAvatarError = () => {
+    // Set fallback URL when avatar fails to load
+    setAvatarSrc(AvatarErrorUrl);
+  };
 
   const renderEditForm = () => (
     <div style={{width: "100%"}}>
@@ -150,7 +154,7 @@ const MessageItem = ({
       return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"]);
     }
 
-    return message.html || renderText(message.text);
+    return message.html;
   };
 
   const renderReasoningBubble = () => {
