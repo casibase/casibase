@@ -332,17 +332,18 @@ class ChatBox extends React.Component {
             sendMessage={this.props.sendMessage}
           />
 
-          <ChatInput
-            value={this.state.value}
-            onChange={(value) => this.setState({value})}
-            onSend={this.handleSend}
-            onFileUpload={this.handleFileUploadClick}
-            loading={this.props.loading}
-            disableInput={this.props.disableInput}
-            onCancelMessage={this.props.onCancelMessage}
-            onVoiceInputStart={() => this.setState({isVoiceInput: true})}
-            onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
-          />
+          {(this.props.disableInput && this.props.messageError) ? null : (
+            <ChatInput
+              value={this.state.value}
+              onChange={(value) => this.setState({value})}
+              onSend={this.handleSend}
+              onFileUpload={this.handleFileUploadClick}
+              loading={this.props.loading}
+              onCancelMessage={this.props.onCancelMessage}
+              onVoiceInputStart={() => this.setState({isVoiceInput: true})}
+              onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
+            />
+          )}
         </Card>
 
         {this.state.isVoiceInput ? (
