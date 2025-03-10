@@ -49,6 +49,8 @@ class StoreListPage extends BaseListPage {
       memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
+      chatWelcomeTitle: "Hello，I am Casibase AI Assistant",
+      chatWelcomeText: "I can help answer your question",
       welcome: "Hello",
       prompt: defaultPrompt,
       themeColor: ThemeDefault.colorPrimary,

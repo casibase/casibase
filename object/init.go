@@ -51,6 +51,8 @@ func initBuiltInStore() {
 		MemoryLimit:       20,
 		Frequency:         10000,
 		LimitMinutes:      10,
+		ChatWelcomeTitle:  "Hello，I am Casibase AI Assistant",
+		ChatWelcomeText:   "I can help answer your question",
 		Welcome:           "Hello",
 		Prompt:            defaultPrompt,
 		ThemeColor:        "#5734d3",
