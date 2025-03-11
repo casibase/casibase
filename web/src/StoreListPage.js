@@ -50,6 +50,8 @@ class StoreListPage extends BaseListPage {
       frequency: 10000,
       limitMinutes: 10,
       welcome: "Hello",
+      welcomeTitle: i18next.t("chat:Hello, I'm Casibase AI Assistant"),
+      welcomeText: i18next.t("chat:I'm here to help answer your questions"),
       prompt: defaultPrompt,
       themeColor: ThemeDefault.colorPrimary,
       propertiesMap: {},

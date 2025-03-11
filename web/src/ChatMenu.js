@@ -205,7 +205,8 @@ class ChatMenu extends React.Component {
     }
     // get usable store for select
     stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
-    const hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
+    let hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
+    hasEmptyChat = false;
 
     const items = stores.map((store, index) => {
       return {

@@ -292,42 +292,6 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          this.state.provider.category === "Blockchain" && (
-            <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("general:Network")} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.network} onChange={e => {
-                    this.updateProviderField("network", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Chain")} :
-                </Col>
-                <Col span={22}>
-                  <Input value={this.state.provider.chain} onChange={e => {
-                    this.updateProviderField("chain", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Browser URL")} :
-                </Col>
-                <Col span={22}>
-                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
-                    this.updateProviderField("browserUrl", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-            </>
-          )
-        }
-        {
           (this.state.provider.type === "Cohere" && this.state.provider.category === "Embedding") && (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -423,6 +387,42 @@ class ProviderEditPage extends React.Component {
                 }} />
               </Col>
             </Row>
+          )
+        }
+        {
+          this.state.provider.category === "Blockchain" && (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("general:Network")} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.network} onChange={e => {
+                    this.updateProviderField("network", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Chain")} :
+                </Col>
+                <Col span={22}>
+                  <Input value={this.state.provider.chain} onChange={e => {
+                    this.updateProviderField("chain", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Browser URL")} :
+                </Col>
+                <Col span={22}>
+                  <Input prefix={<LinkOutlined />} value={this.state.provider.browserUrl} onChange={e => {
+                    this.updateProviderField("browserUrl", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            </>
           )
         }
         {
@@ -575,6 +575,16 @@ class ProviderEditPage extends React.Component {
             </>
           ) : null
         }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
+          </Col>
+          <Col span={22} >
+            <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
+              this.updateProviderField("providerUrl", e.target.value);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:State")} :
@@ -587,16 +597,6 @@ class ProviderEditPage extends React.Component {
               {value: "Active", label: "Active"},
               {value: "Inactive", label: "Inactive"},
             ].map(item => Setting.getOption(item.label, item.value))} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}} >
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
-          </Col>
-          <Col span={22} >
-            <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
-              this.updateProviderField("providerUrl", e.target.value);
-            }} />
           </Col>
         </Row>
       </Card>

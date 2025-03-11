@@ -15,24 +15,62 @@
 package util
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/beego/beego"
 )
 
-func InitIpDb() {
+var IsMaxmindIpDb bool
+
+// tryInitLocalDb tries to initialize the local IP database from different paths
+func tryInitLocalDb() error {
 	err := Init("data/17monipdb.dat")
-	if _, ok := err.(*os.PathError); ok {
+	var pathError *os.PathError
+	if errors.As(err, &pathError) {
 		err = Init("../data/17monipdb.dat")
 	}
-	if err != nil {
-		panic(err)
+	return err
+}
+
+// InitIpDb initializes the IP database based on configuration
+func InitIpDb() {
+	IsMaxmindIpDb = beego.AppConfig.DefaultBool("isLocalIpDb", false)
+
+	if IsMaxmindIpDb {
+		// Use local IP database
+		err := tryInitLocalDb()
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		// Try MaxMind first
+		if err := InitMaxmindDb(); err != nil {
+			if !MaxmindDownloadInProgress {
+				// Try 17monipdb as fallback
+				err = tryInitLocalDb()
+				if err != nil {
+					panic(err)
+				}
+			}
+		}
 	}
 }
 
+// GetDescFromIP returns a string description of an IP address
 func GetDescFromIP(ip string) string {
-	info, err := Find(ip)
+	var info *LocationInfo
+	var err error
+
+	if IsMaxmindIpDb {
+		info, err = Find(ip)
+	} else {
+		info, err = FindMaxmind(ip)
+	}
+
 	if err != nil {
 		return ""
 	}

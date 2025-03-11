@@ -180,6 +180,21 @@ func (c *ApiController) AddMessage() {
 		return
 	}
 
+	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
+	originMessage, err := object.GetMessage(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	// if originMessage not nil, means edit message, delete all later messages
+	if originMessage != nil {
+		err = object.DeleteAllLaterMessages(id)
+		if err != nil {
+			c.ResponseError(err.Error())
+			return
+		}
+	}
+
 	addMessageAfterSuccess := true
 	if message.IsRegenerated {
 		messages, err := object.GetChatMessages(message.Chat)

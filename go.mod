@@ -35,12 +35,15 @@ require (
 	github.com/luthermonson/go-proxmox v0.2.1
 	github.com/madebywelch/anthropic-go/v2 v2.2.0
 	github.com/northes/go-moonshot v0.3.0
+	github.com/oschwald/geoip2-golang v1.11.0
 	github.com/pkg/errors v0.9.1
 	github.com/pkoukk/tiktoken-go v0.1.7
 	github.com/sashabaranov/go-openai v1.27.1
 	github.com/tealeg/xlsx v1.0.5
-	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1074
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common v1.0.1116
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/cvm v1.0.1116
 	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/hunyuan v1.0.1074
+	github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/tbaas v1.0.1115
 	github.com/ua-parser/uap-go v0.0.0-20230823213814-f77b3e91e9dc
 	github.com/unidoc/unioffice v1.31.0
 	github.com/vogo/xfspark v0.1.2
@@ -118,6 +121,7 @@ require (
 	github.com/moul/http2curl v1.0.0 // indirect
 	github.com/onsi/ginkgo v1.16.5 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.5 // indirect
+	github.com/oschwald/maxminddb-golang v1.13.0 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c // indirect
 	github.com/prometheus/client_golang v1.14.0 // indirect

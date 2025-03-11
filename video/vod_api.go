@@ -23,19 +23,18 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-func GetVideoPlayAuth(videoId string) string {
+func GetVideoPlayAuth(videoId string) (string, error) {
 	r := vod.CreateGetVideoPlayAuthRequest()
 	r.VideoId = videoId
 	r.AcceptFormat = "JSON"
 
 	resp, err := VodClient.GetVideoPlayAuth(r)
 	if err != nil {
-		fmt.Println(err)
-		return err.Error()
+		return "", err
 	}
 
 	playAuth := resp.PlayAuth
-	return playAuth
+	return playAuth, nil
 }
 
 type UploadAddress struct {
