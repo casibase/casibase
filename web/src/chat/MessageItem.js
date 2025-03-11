@@ -22,7 +22,7 @@ import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
-import MessageEdit from "./MessageEdit"; // Import our new MessageEdit component
+import MessageEdit from "./MessageEdit";
 
 const MessageItem = ({
   message,
@@ -42,7 +42,6 @@ const MessageItem = ({
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
 
-  // Get edit functionality from our MessageEdit component
   const {isEditing,
     setIsHovering,
     renderEditForm,
