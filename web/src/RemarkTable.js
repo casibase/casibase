@@ -86,6 +86,26 @@ class RemarkTable extends React.Component {
     return !(row.user === this.props.account.name);
   }
 
+  requireSelfOrAdminForView(row) {
+    if (this.props.title !== i18next.t("video:Remarks1") || this.props.account.type !== "video-reviewer1-user") {
+      return false;
+    }
+
+    return !(row.user === this.props.account.name);
+  }
+
+  filterRemark1Value(row, value) {
+    if (this.requireSelfOrAdminForView(row)) {
+      if (typeof value === "boolean") {
+        return false;
+      } else {
+        return "***";
+      }
+    } else {
+      return value;
+    }
+  }
+
   requireReviewer() {
     return !(this.props.account.type === "video-reviewer1-user" || this.props.account.type === "video-reviewer2-user");
   }
@@ -120,6 +140,10 @@ class RemarkTable extends React.Component {
         key: "user",
         width: "110px",
         render: (text, record, index) => {
+          if (this.requireSelfOrAdminForView(record)) {
+            return "***";
+          }
+
           return (
             <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
               {text}
@@ -134,7 +158,7 @@ class RemarkTable extends React.Component {
         width: "130px",
         render: (text, record, index) => {
           return (
-            <Select disabled={this.props.disabled || this.requireSelfOrAdmin(record)} virtual={false} style={{width: "100%"}} value={text} onChange={(value => {
+            <Select disabled={this.props.disabled || this.requireSelfOrAdmin(record)} virtual={false} style={{width: "100%"}} value={this.filterRemark1Value(record, text)} onChange={(value => {
               this.updateField(table, index, "score", value);
             })}>
               {
@@ -156,7 +180,7 @@ class RemarkTable extends React.Component {
         width: "110px",
         render: (text, record, index) => {
           return (
-            <Switch disabled={this.props.disabled || this.requireSelfOrAdmin(record)} checked={text} onChange={checked => {
+            <Switch disabled={this.props.disabled || this.requireSelfOrAdmin(record)} checked={this.filterRemark1Value(record, text)} onChange={checked => {
               this.updateField(table, index, "isPublic", checked);
             }} />
           );
@@ -169,7 +193,7 @@ class RemarkTable extends React.Component {
         // width: '300px',
         render: (text, record, index) => {
           return (
-            <TextArea disabled={this.props.disabled || this.requireSelfOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {
+            <TextArea disabled={this.props.disabled || this.requireSelfOrAdmin(record)} showCount maxLength={250} autoSize={{minRows: 1, maxRows: 15}} value={this.filterRemark1Value(record, text)} onChange={(e) => {
               this.updateField(table, index, "text", e.target.value);
             }} />
           );
