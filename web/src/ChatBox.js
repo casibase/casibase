@@ -309,7 +309,7 @@ class ChatBox extends React.Component {
             this.props.onMessageEdit(chat.name);
           }
 
-          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
+          Setting.showMessage("success", i18next.t("general:Successfully update"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
