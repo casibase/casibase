@@ -519,14 +519,6 @@ class VideoEditPage extends React.Component {
     return !(this.props.account.type === "video-admin-user");
   }
 
-  filterReviewer1(remarks) {
-    if (this.props.account.type === "video-reviewer1-user") {
-      return remarks.filter(remark => remark.user === this.props.account.name);
-    } else {
-      return remarks;
-    }
-  }
-
   renderVideo() {
     return (
       <Card size="small" title={
@@ -644,7 +636,7 @@ class VideoEditPage extends React.Component {
                   account={this.props.account}
                   maxRowCount={-1}
                   disabled={this.requireReviewer1OrAdmin(this.state.video)}
-                  table={this.filterReviewer1(this.state.video.remarks)}
+                  table={this.state.video.remarks}
                   onUpdateTable={(value) => {
                     this.updateVideoField("remarks", value);
                     if (value.length > 0 && this.state.video.state === "Draft") {
