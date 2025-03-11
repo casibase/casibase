@@ -256,6 +256,29 @@ func DeleteMessage(message *Message) (bool, error) {
 	return affected != 0, nil
 }
 
+func DeleteAllLaterMessages(messageId string) error {
+	originMessage, err := GetMessage(messageId)
+	if err != nil {
+		return err
+	}
+	// Get all messages for this chat
+	allMessages, err := GetChatMessages(originMessage.Chat)
+	if err != nil {
+		return err
+	}
+
+	// Find and delete messages created after the original message
+	for _, msg := range allMessages {
+		if msg.CreatedTime >= originMessage.CreatedTime {
+			_, err := DeleteMessage(msg)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 func DeleteMessagesByChat(message *Message) (bool, error) {
 	affected, err := adapter.engine.Delete(&Message{Owner: message.Owner, Chat: message.Chat})
 	if err != nil {
