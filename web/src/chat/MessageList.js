@@ -27,6 +27,7 @@ class MessageList extends React.Component {
       onMessageLike,
       onCopyMessage,
       onToggleRead,
+      onEditMessage,
       previewMode,
       hideInput,
       disableInput,
@@ -66,6 +67,7 @@ class MessageList extends React.Component {
             onRegenerate={onRegenerate}
             onLike={onMessageLike}
             onToggleRead={onToggleRead}
+            onEditMessage={onEditMessage}
             disableInput={disableInput}
             isReading={isReading}
             readingMessage={readingMessage}

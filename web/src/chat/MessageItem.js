@@ -22,6 +22,7 @@ import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
+import MessageEdit from "./MessageEdit";
 
 const MessageItem = ({
   message,
@@ -33,12 +34,27 @@ const MessageItem = ({
   onRegenerate,
   onLike,
   onToggleRead,
+  onEditMessage,
   disableInput,
   isReading,
   readingMessage,
   sendMessage,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
+
+  const {isEditing,
+    setIsHovering,
+    renderEditForm,
+    renderEditButton,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = MessageEdit({
+    message,
+    isLastMessage,
+    disableInput,
+    index,
+    onEditMessage,
+  });
 
   useEffect(() => {
     // Set the initial avatar source
@@ -51,6 +67,10 @@ const MessageItem = ({
   };
 
   const renderMessageContent = () => {
+    if (isEditing && message.author !== "AI") {
+      return renderEditForm();
+    }
+
     if (message.errorText !== "") {
       return (
         <Alert
@@ -158,27 +178,29 @@ const MessageItem = ({
     return null;
   };
 
-  return (
-    <div style={{
-      maxWidth: "90%",
-      margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
-    }}>
+  const renderMessageBubble = () => {
+    if (message.isReasoningPhase && message.author === "AI") {
+      return null;
+    }
+
+    const isUserMessage = message.author !== "AI";
+
+    return (
       <div style={{
-        textAlign: message.author === "AI" ? "left" : "right",
-        color: "#999",
-        fontSize: "12px",
-        marginBottom: "8px",
-        padding: "0 12px",
+        display: "flex",
+        justifyContent: isUserMessage ? "flex-end" : "flex-start",
+        alignItems: "center",
+        position: "relative",
       }}>
-        {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
-      </div>
+        {isUserMessage && renderEditButton()}
 
-      {renderReasoningBubble()}
-
-      {(!message.isReasoningPhase || message.author !== "AI") && (
         <Bubble
-          placement={message.author === "AI" ? "start" : "end"}
-          content={renderMessageContent()}
+          placement={isUserMessage ? "end" : "start"}
+          content={
+            <div style={{position: "relative", width: "100%"}}>
+              {renderMessageContent()}
+            </div>
+          }
           loading={message.text === "" && message.author === "AI" && !message.reasonText && !message.errorText}
           typing={message.author === "AI" && !message.isReasoningPhase ? {
             step: 2,
@@ -193,12 +215,41 @@ const MessageItem = ({
               backgroundColor: message.author === "AI" ? ThemeDefault.colorBackground : undefined,
               borderRadius: "16px",
               padding: "12px 16px",
+              minWidth: isEditing ? "300px" : "auto",
             },
           }}
         />
-      )}
+      </div>
+    );
+  };
 
-      {message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
+  return (
+    <div
+      style={{
+        maxWidth: "90%",
+        margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
+        position: "relative",
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div style={{
+        textAlign: message.author === "AI" ? "left" : "right",
+        color: "#999",
+        fontSize: "12px",
+        marginBottom: "8px",
+        padding: "0 12px",
+      }}>
+        {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
+        {message.updatedTime && message.updatedTime !== message.createdTime &&
+              ` (${i18next.t("general:Edited")})`}
+      </div>
+
+      {renderReasoningBubble()}
+
+      {renderMessageBubble()}
+
+      {!isEditing && message.author === "AI" && (disableInput === false || index !== isLastMessage) && (
         <MessageActions
           message={message}
           isLastMessage={isLastMessage}
@@ -207,6 +258,7 @@ const MessageItem = ({
           onRegenerate={onRegenerate}
           onLike={onLike}
           onToggleRead={onToggleRead}
+          onEdit={() => setIsHovering(true)}
           isReading={isReading}
           readingMessage={readingMessage}
           account={account}
