@@ -213,12 +213,18 @@ class ChatBox extends React.Component {
     this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
     MessageBackend.updateMessage(message.owner, message.name, message).then((result) => {
       if (result.status === "ok") {
-        if (isCancel) {
-          const action = reactionType === "like" ? "unliked" : "undisliked";
-          Setting.showMessage("success", i18next.t(`general:Successfully ${action}`));
+        if (reactionType === "like") {
+          if (isCancel) {
+            Setting.showMessage("success", i18next.t("general:Successfully unliked"));
+          } else {
+            Setting.showMessage("success", i18next.t("general:Successfully liked"));
+          }
         } else {
-          const action = reactionType === "like" ? "liked" : "disliked";
-          Setting.showMessage("success", i18next.t(`general:Successfully ${action}`));
+          if (isCancel) {
+            Setting.showMessage("success", i18next.t("general:Successfully undisliked"));
+          } else {
+            Setting.showMessage("success", i18next.t("general:Successfully disliked"));
+          }
         }
       } else {
         Setting.showMessage("error", result.msg);
