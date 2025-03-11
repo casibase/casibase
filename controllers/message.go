@@ -181,33 +181,17 @@ func (c *ApiController) AddMessage() {
 	}
 
 	id := util.GetIdFromOwnerAndName(message.Owner, message.Name)
-	originMessage, _ := object.GetMessage(id)
+	originMessage, err := object.GetMessage(id)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	// if originMessage not nil, means edit message, delete all later messages
 	if originMessage != nil {
-		originalMessage, err := object.GetMessage(id)
+		err = object.DeleteAllLaterMessages(id)
 		if err != nil {
 			c.ResponseError(err.Error())
 			return
-		}
-		// Get all messages for this chat
-		allMessages, err := object.GetChatMessages(message.Chat)
-		if err != nil {
-			c.ResponseError(err.Error())
-			return
-		}
-
-		// Find and delete messages created after the original message
-		for _, msg := range allMessages {
-			if msg.CreatedTime >= originalMessage.CreatedTime {
-				success, err := object.DeleteMessage(msg)
-				if err != nil {
-					c.ResponseError(err.Error())
-					return
-				}
-				if !success {
-					c.ResponseError(fmt.Sprintf("failed to delete message: %s/%s", msg.Owner, msg.Name))
-					return
-				}
-			}
 		}
 	}
 

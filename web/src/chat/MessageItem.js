@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button, Input, Space} from "antd";
+import {Alert, Button} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -22,7 +22,7 @@ import {AvatarErrorUrl, ThemeDefault} from "../Conf";
 import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
-import {CheckOutlined, CloseOutlined, EditOutlined} from "@ant-design/icons";
+import MessageEdit from "./MessageEdit"; // Import our new MessageEdit component
 
 const MessageItem = ({
   message,
@@ -41,70 +41,31 @@ const MessageItem = ({
   sendMessage,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedText, setEditedText] = useState("");
-  const [isHovering, setIsHovering] = useState(false);
+
+  // Get edit functionality from our MessageEdit component
+  const {isEditing,
+    setIsHovering,
+    renderEditForm,
+    renderEditButton,
+    handleMouseEnter,
+    handleMouseLeave,
+  } = MessageEdit({
+    message,
+    isLastMessage,
+    disableInput,
+    index,
+    onEditMessage,
+  });
 
   useEffect(() => {
     // Set the initial avatar source
     setAvatarSrc(message.author === "AI" ? avatar : Setting.getUserAvatar(message, account));
   }, [message.author, avatar, account, message]);
 
-  const handleEditActions = {
-    start: () => {
-      setIsEditing(true);
-      setEditedText(message.text);
-    },
-    save: () => {
-      onEditMessage({...message, text: editedText, updatedTime: new Date().toISOString()});
-      setIsEditing(false);
-    },
-    cancel: () => {
-      setIsEditing(false);
-      setEditedText("");
-    },
-    keyDown: (e) => {
-      if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        handleEditActions.save();
-      }
-    },
-  };
-
   const handleAvatarError = () => {
     // Set fallback URL when avatar fails to load
     setAvatarSrc(AvatarErrorUrl);
   };
-
-  const renderEditForm = () => (
-    <div style={{width: "100%"}}>
-      <Input.TextArea
-        value={editedText}
-        onChange={e => setEditedText(e.target.value)}
-        onKeyDown={handleEditActions.keyDown}
-        autoSize={{minRows: 1, maxRows: 6}}
-        style={{marginBottom: "8px"}}
-        autoFocus
-      />
-      <Space style={{display: "flex", justifyContent: "flex-end"}}>
-        <Button
-          icon={<CloseOutlined />}
-          onClick={handleEditActions.cancel}
-          size="small"
-        >
-          {i18next.t("general:Cancel")}
-        </Button>
-        <Button
-          type="primary"
-          icon={<CheckOutlined />}
-          onClick={handleEditActions.save}
-          size="small"
-        >
-          {i18next.t("general:Save")}
-        </Button>
-      </Space>
-    </div>
-  );
 
   const renderMessageContent = () => {
     if (isEditing && message.author !== "AI") {
@@ -218,38 +179,6 @@ const MessageItem = ({
     return null;
   };
 
-  const renderEditButton = () => {
-    if (message.author !== "AI" && !isEditing && (disableInput === false || index !== isLastMessage)) {
-      return (
-        <div style={{
-          marginRight: "8px",
-          opacity: isHovering ? 0.8 : 0,
-          transition: "opacity 0.2s ease-in-out",
-        }}>
-          <Button
-            className="cs-button"
-            icon={<EditOutlined />}
-            style={{
-              border: "none",
-              color: ThemeDefault.colorPrimary,
-              background: "rgba(255, 255, 255, 0.8)",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
-              borderRadius: "50%",
-              width: "32px",
-              height: "32px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-            onClick={handleEditActions.start}
-            size="small"
-          />
-        </div>
-      );
-    }
-    return null;
-  };
-
   const renderMessageBubble = () => {
     if (message.isReasoningPhase && message.author === "AI") {
       return null;
@@ -302,8 +231,8 @@ const MessageItem = ({
         margin: message.author === "AI" ? "0 auto 0 0" : "0 0 0 auto",
         position: "relative",
       }}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={() => setIsHovering(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <div style={{
         textAlign: message.author === "AI" ? "left" : "right",
@@ -330,7 +259,7 @@ const MessageItem = ({
           onRegenerate={onRegenerate}
           onLike={onLike}
           onToggleRead={onToggleRead}
-          onEdit={handleEditActions.start}
+          onEdit={() => setIsHovering(true)}
           isReading={isReading}
           readingMessage={readingMessage}
           account={account}
