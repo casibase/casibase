@@ -549,6 +549,7 @@ class App extends Component {
   }
 
   renderContent() {
+    const currentPath = this.props.location.pathname;
     if (Setting.getUrlParam("isRaw") !== null) {
       return (
         <HomePage account={this.state.account} />
@@ -557,6 +558,10 @@ class App extends Component {
       return (
         <ShortcutsPage account={this.state.account} />
       );
+    }
+
+    if (currentPath.startsWith("/access/")) {
+      return this.renderRouter();
     }
 
     const onClick = ({key}) => {

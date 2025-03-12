@@ -117,25 +117,25 @@ func (c *ApiController) GetNodeTunnel() {
 		return
 	}
 
-	node, err := object.GetNode(session.Node)
-	if err != nil || node == nil {
+	machine, err := object.GetMachine(session.Node)
+	if err != nil || machine == nil {
 		guacamole.Disconnect(ws, NodeNotFound, err.Error())
 		return
 	}
 
-	if node.RemoteUsername == "" {
-		node.RemoteUsername = username
-		node.RemotePassword = password
+	if machine.RemoteUsername == "" {
+		machine.RemoteUsername = username
+		machine.RemotePassword = password
 	} else {
-		if node.RemotePassword == "" {
-			node.RemotePassword = password
+		if machine.RemotePassword == "" {
+			machine.RemotePassword = password
 		}
 	}
 
 	configuration := guacamole.NewConfiguration()
 	propertyMap := configuration.LoadConfig()
 
-	setConfig(propertyMap, node, configuration)
+	setConfig(propertyMap, machine, configuration)
 	configuration.SetParameter("width", width)
 	configuration.SetParameter("height", height)
 	configuration.SetParameter("dpi", dpi)
@@ -290,8 +290,8 @@ func (c *ApiController) TunnelMonitor() {
 	}
 }
 
-func setConfig(propertyMap map[string]string, node *object.Node, configuration *guacamole.Configuration) {
-	switch node.RemoteProtocol {
+func setConfig(propertyMap map[string]string, machine *object.Machine, configuration *guacamole.Configuration) {
+	switch machine.RemoteProtocol {
 	case "SSH":
 		configuration.Protocol = "ssh"
 	case "RDP":
@@ -302,12 +302,13 @@ func setConfig(propertyMap map[string]string, node *object.Node, configuration *
 		configuration.Protocol = "vnc"
 	}
 
-	configuration.SetParameter("hostname", node.Name)
-	configuration.SetParameter("port", strconv.Itoa(node.RemotePort))
-	configuration.SetParameter("username", node.RemoteUsername)
-	configuration.SetParameter("password", node.RemotePassword)
+	//configuration.SetParameter("hostname", machine.Name)
+	configuration.SetParameter("hostname", "123.56.135.122")
+	configuration.SetParameter("port", strconv.Itoa(machine.RemotePort))
+	configuration.SetParameter("username", machine.RemoteUsername)
+	configuration.SetParameter("password", machine.RemotePassword)
 
-	switch node.RemoteProtocol {
+	switch machine.RemoteProtocol {
 	case "RDP":
 		configuration.SetParameter("security", "any")
 		configuration.SetParameter("ignore-cert", "true")
@@ -326,8 +327,8 @@ func setConfig(propertyMap map[string]string, node *object.Node, configuration *
 		configuration.SetParameter(guacamole.PreConnectionId, propertyMap[guacamole.PreConnectionId])
 		configuration.SetParameter(guacamole.PreConnectionBlob, propertyMap[guacamole.PreConnectionBlob])
 
-		// if node.EnableRemoteApp {
-		//	remoteApp := node.RemoteApps[0]
+		// if asset.EnableRemoteApp {
+		//	remoteApp := asset.RemoteApps[0]
 		//	configuration.SetParameter("remote-app", "||"+remoteApp.RemoteAppName)
 		//	configuration.SetParameter("remote-app-dir", remoteApp.RemoteAppDir)
 		//	configuration.SetParameter("remote-app-args", remoteApp.RemoteAppArgs)
