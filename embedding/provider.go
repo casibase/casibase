@@ -45,7 +45,7 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 	} else if typ == "Baidu Cloud" {
 		p, err = NewBaiduCloudEmbeddingProvider(subType, clientId, clientSecret)
 	} else if typ == "Ollama" {
-		p, err = NewLocalEmbeddingProvider("Local", subType, clientSecret, providerUrl)
+		p, err = NewLocalEmbeddingProvider("Local", subType, "ollama", providerUrl)
 	} else if typ == "Local" {
 		p, err = NewLocalEmbeddingProvider(typ, subType, clientSecret, providerUrl)
 	} else if typ == "Azure" {
