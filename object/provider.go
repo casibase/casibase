@@ -16,6 +16,7 @@ package object
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
@@ -258,6 +259,10 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 
 	if provider.ClientSecret == "***" {
 		provider.ClientSecret = p.ClientSecret
+	}
+
+	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
+		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
 
 	if providerAdapter != nil && provider.Category != "Storage" {
