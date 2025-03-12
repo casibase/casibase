@@ -277,7 +277,11 @@
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "groupID": "groupID"
+    "groupID": "groupID",
+    "PricePer ThousandTokens": "1000토큰당 가격",
+    "OutputPricePer ThousandTokens": "1000토큰당 출력 가격",
+    "InputPricePer ThousandTokens": "1000토큰당 입력 가격",
+    "Currency": "통화"
   },
   "record": {
     "Commit": "Commit",

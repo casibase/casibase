@@ -277,7 +277,11 @@
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "groupID": "组ID"
+    "groupID": "组ID",
+    "OutputPricePer ThousandTokens": "输出价格/千Tokens",
+    "PricePer ThousandTokens": "价格/千Tokens",
+    "InputPricePer ThousandTokens": "输入价格/千Tokens",
+    "Currency": "币种"
   },
   "record": {
     "Commit": "上链",

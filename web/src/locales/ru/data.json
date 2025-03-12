@@ -192,7 +192,11 @@
     "Zone": "Zone",
     "Zone - Tooltip": "Zone - Tooltip",
     "empty": "empty",
-    "{total} in total": "{total} in total"
+    "{total} in total": "{total} in total",
+    "PricePer ThousandTokens": "1000 токенов",
+    "OutputPricePer ThousandTokens": "Цена за 1000 выходных токенов",
+    "InputPricePer ThousandTokens": "Цена за 1000 входных токенов",
+    "Currency": "Валюта"
   },
   "image": {
     "Arch": "Arch",

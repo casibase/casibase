@@ -277,7 +277,11 @@
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "groupID": "groupID"
+    "groupID": "groupID",
+    "PricePer ThousandTokens": "Harga per seribu token",
+    "OutputPricePer ThousandTokens": "Harga output per seribu token",
+    "InputPricePer ThousandTokens": "Harga input per seribu token",
+    "Currency": "Mata uang"
   },
   "record": {
     "Commit": "Commit",

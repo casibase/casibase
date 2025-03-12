@@ -277,7 +277,11 @@
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "groupID": "groupID"
+    "groupID": "groupID",
+    "PricePer ThousandTokens": "1000トークンあたりの価格",
+    "OutputPricePer ThousandTokens": "1000トークンあたりの出力価格",
+    "InputPricePer ThousandTokens": "1000トークンあたりの入力価格",
+    "Currency": "通貨"
   },
   "record": {
     "Commit": "Commit",

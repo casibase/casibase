@@ -277,7 +277,11 @@
     "Temperature": "Temperature",
     "Top K": "Top K",
     "Top P": "Top P",
-    "groupID": "groupID"
+    "groupID": "groupID",
+    "PricePer ThousandTokens": "Preis pro tausend Token",
+    "OutputPricePer ThousandTokens": "Ausgabepreis pro tausend Token",
+    "InputPricePer ThousandTokens": "Eingabepreis pro tausend Token",
+    "Currency": "Währung"
   },
   "record": {
     "Commit": "Commit",
