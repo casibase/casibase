@@ -42,7 +42,7 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 	var p ModelProvider
 	var err error
 	if typ == "Ollama" {
-		p, err = NewLocalModelProvider("Local", "custom-model", "ollama", temperature, topP, 0, 0, providerUrl, subType)
+		p, err = NewLocalModelProvider("Local", "custom-model", clientSecret, temperature, topP, 0, 0, providerUrl, subType)
 	} else if typ == "Local" {
 		p, err = NewLocalModelProvider(typ, subType, clientSecret, temperature, topP, frequencyPenalty, presencePenalty, providerUrl, compitableProvider)
 	} else if typ == "OpenAI" {
