@@ -302,8 +302,7 @@ func setConfig(propertyMap map[string]string, machine *object.Machine, configura
 		configuration.Protocol = "vnc"
 	}
 
-	//configuration.SetParameter("hostname", machine.Name)
-	configuration.SetParameter("hostname", "123.56.135.122")
+	configuration.SetParameter("hostname", machine.Name)
 	configuration.SetParameter("port", strconv.Itoa(machine.RemotePort))
 	configuration.SetParameter("username", machine.RemoteUsername)
 	configuration.SetParameter("password", machine.RemotePassword)
