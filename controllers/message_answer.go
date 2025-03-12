@@ -188,17 +188,7 @@ func (c *ApiController) GetMessageAnswer() {
 	}
 
 	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
-	if err != nil {
-		if strings.Contains(err.Error(), "write tcp") {
-			_, err := object.DeleteMessage(message)
-			if err != nil {
-				fmt.Println("object.DeleteMessage error:", err)
-			}
-			event := fmt.Sprintf("event: error\ndata: %s\n\n", "The connection was interrupted")
-			c.Ctx.ResponseWriter.Write([]byte(event))
-			c.Ctx.Output.SetStatus(200)
-			return
-		}
+	if err != nil && !strings.Contains(err.Error(), "write tcp") {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
