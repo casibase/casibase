@@ -241,8 +241,6 @@ const MessageItem = ({
         padding: "0 12px",
       }}>
         {moment(message.createdTime).format("YYYY/M/D HH:mm:ss")}
-        {message.updatedTime && message.updatedTime !== message.createdTime &&
-              ` (${i18next.t("general:Edited")})`}
       </div>
 
       {renderReasoningBubble()}

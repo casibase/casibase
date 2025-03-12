@@ -16,7 +16,7 @@ package object
 
 import (
 	"fmt"
-	"regexp"
+	"strings"
 
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
@@ -271,13 +271,9 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		return true, nil
 	}
 
-	//modify url for ollama type
-	if provider.Type == "Ollama" {
-		pattern := `^((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$`
-		re := regexp.MustCompile(pattern)
-		if re.MatchString(provider.ProviderUrl) {
-			provider.ProviderUrl = "http://" + provider.ProviderUrl
-		}
+	// modify url for ollama type
+	if provider.Type == "Ollama" && !strings.HasPrefix(provider.ProviderUrl, "http") {
+		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
