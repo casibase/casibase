@@ -261,6 +261,10 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.ClientSecret = p.ClientSecret
 	}
 
+	if provider.Type == "Ollama" && provider.ProviderUrl != "" && !strings.HasPrefix(provider.ProviderUrl, "http") {
+		provider.ProviderUrl = "http://" + provider.ProviderUrl
+	}
+
 	if providerAdapter != nil && provider.Category != "Storage" {
 		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
 		if err != nil {
@@ -269,11 +273,6 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 
 		// return affected != 0
 		return true, nil
-	}
-
-	// modify url for ollama type
-	if provider.Type == "Ollama" && !strings.HasPrefix(provider.ProviderUrl, "http") {
-		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
