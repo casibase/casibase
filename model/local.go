@@ -177,7 +177,9 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
 		return nil
 	default:
-		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
+		inputPricePerThousandTokens = 0
+		outputPricePerThousandTokens = 0
+		// return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)

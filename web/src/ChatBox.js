@@ -199,7 +199,6 @@ class ChatBox extends React.Component {
   }
 
   handleMessageLike = (message, reactionType) => {
-    const {updateMessage} = require("./backend/MessageBackend");
     const oppositeReaction = reactionType === "like" ? "dislike" : "like";
     const isCancel = !!message[`${reactionType}Users`]?.includes(this.props.account.name);
 
@@ -212,12 +211,20 @@ class ChatBox extends React.Component {
     message[`${oppositeReaction}Users`] = Setting.deleteElementFromSet(message[`${oppositeReaction}Users`], this.props.account.name);
 
     this.setState({messages: this.state.messages.map(m => m.name === message.name ? message : m)});
-    updateMessage(message.owner, message.name, message).then((result) => {
+    MessageBackend.updateMessage(message.owner, message.name, message).then((result) => {
       if (result.status === "ok") {
-        if (isCancel) {
-          Setting.showMessage("success", i18next.t("general:Successfully liked"));
+        if (reactionType === "like") {
+          if (isCancel) {
+            Setting.showMessage("success", i18next.t("general:Successfully unliked"));
+          } else {
+            Setting.showMessage("success", i18next.t("general:Successfully liked"));
+          }
         } else {
-          Setting.showMessage("success", i18next.t("general:Successfully unliked"));
+          if (isCancel) {
+            Setting.showMessage("success", i18next.t("general:Successfully undisliked"));
+          } else {
+            Setting.showMessage("success", i18next.t("general:Successfully disliked"));
+          }
         }
       } else {
         Setting.showMessage("error", result.msg);
@@ -302,7 +309,7 @@ class ChatBox extends React.Component {
             this.props.onMessageEdit(chat.name);
           }
 
-          Setting.showMessage("success", i18next.t("general:Successfully updated message"));
+          Setting.showMessage("success", i18next.t("general:Successfully update"));
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
