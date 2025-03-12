@@ -268,7 +268,7 @@ class ProviderEditPage extends React.Component {
                     onChange={(value) => {
                       this.updateProviderField("subType", value);
                     }}
-                    options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type)}
+                    options={Setting.getProviderSubTypeOptions(this.state.provider.category, this.state.provider.type).map((item) => Setting.getOption(item.name, item.id))}
                     placeholder="Please select or enter the model name"
                   />
                 ) : (
