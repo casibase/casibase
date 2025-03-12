@@ -21,7 +21,7 @@ import (
 )
 
 func GetSupportedFileTypes() []string {
-	return []string{".txt", ".md", ".csv", ".yaml", ".docx", ".pdf"}
+	return []string{".txt", ".md", ".yaml", ".csv", ".pdf", ".docx", ".xlsx", ".pptx"}
 }
 
 func GetParsedTextFromUrl(url string, ext string) (string, error) {
@@ -47,10 +47,10 @@ func GetParsedTextFromUrl(url string, ext string) (string, error) {
 		res, err = getTextFromPlain(path)
 	} else if ext == ".csv" {
 		res, err = getTextFromCsv(path)
-	} else if ext == ".docx" {
-		res, err = GetTextFromDocx(path)
 	} else if ext == ".pdf" {
 		res, err = getTextFromPdf(path)
+	} else if ext == ".docx" {
+		res, err = GetTextFromDocx(path)
 	} else if ext == ".xlsx" {
 		res, err = getTextFromXlsx(path)
 	} else if ext == ".pptx" {
