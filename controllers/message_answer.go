@@ -31,7 +31,6 @@ import (
 // @Success 200 {stream} string "An event stream of message answers in JSON format"
 // @router /get-message-answer [get]
 func (c *ApiController) GetMessageAnswer() {
-	c.EnableRender = false
 	id := c.Input().Get("id")
 
 	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
@@ -191,6 +190,7 @@ func (c *ApiController) GetMessageAnswer() {
 	modelResult, err := modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge)
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
+			c.ResponseError(err.Error())
 			return
 		}
 		c.ResponseErrorStream(message, err.Error())
