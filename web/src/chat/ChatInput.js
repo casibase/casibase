@@ -25,10 +25,13 @@ const ChatInput = ({
   onFileUpload,
   loading,
   disableInput,
+  messageError,
   onCancelMessage,
   onVoiceInputStart,
   onVoiceInputEnd,
 }) => {
+  const sendButtonDisabled = messageError || value === "" || disableInput;
+
   return (
     <div style={{
       position: "absolute",
@@ -48,6 +51,10 @@ const ChatInput = ({
               type="text"
               icon={<LinkOutlined />}
               onClick={onFileUpload}
+              disabled={disableInput || messageError}
+              style={{
+                color: (disableInput || messageError) ? "#d9d9d9" : undefined,
+              }}
             />
           }
           loading={loading}
@@ -57,13 +64,32 @@ const ChatInput = ({
             borderRadius: "8px",
             background: "#f5f5f5",
           }}
-          sendDisabled={value === "" || disableInput}
-          placeholder={i18next.t("chat:Type message here")}
+          actions={(ori, {components}) => {
+            const {SendButton} = components;
+            if (loading) {
+              return ori;
+            }
+            return (
+              <SendButton
+                disabled={sendButtonDisabled}
+                style={{
+                  backgroundColor: sendButtonDisabled ? "#f5f5f5" : "#1890ff",
+                  color: sendButtonDisabled ? "#d9d9d9" : "#ffffff",
+                  borderColor: sendButtonDisabled ? "#d9d9d9" : "#1890ff",
+                  cursor: sendButtonDisabled ? "not-allowed" : "pointer",
+                  opacity: sendButtonDisabled ? 0.6 : 1,
+                }}
+              />
+            );
+          }}
+          placeholder={messageError ? "" : i18next.t("chat:Type message here")}
           value={value}
           onChange={onChange}
           onSubmit={() => {
-            onSend(value);
-            onChange("");
+            if (!sendButtonDisabled) {
+              onSend(value);
+              onChange("");
+            }
           }}
           onCancel={() => {
             onCancelMessage && onCancelMessage();

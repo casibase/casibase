@@ -40,6 +40,7 @@ class ChatPage extends BaseListPage {
       disableInput: false,
       isModalOpen: false,
       messageLoading: false,
+      messageError: false,
     });
 
     this.fetch();
@@ -158,6 +159,29 @@ class ChatPage extends BaseListPage {
     };
   }
 
+  cancelMessage = () => {
+    if (this.state.messages && this.state.messages.length > 0) {
+      const lastMessage = this.state.messages[this.state.messages.length - 1];
+      if (lastMessage.author === "AI" && this.state.messageLoading) {
+        MessageBackend.closeMessageEventSource(lastMessage.owner, lastMessage.name);
+
+        MessageBackend.updateMessage(lastMessage.owner, lastMessage.name, lastMessage)
+          .then((res) => {
+            if (res.status === "ok") {
+              this.setState({
+                messageLoading: false,
+              });
+            } else {
+              Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${res.msg}`);
+            }
+          })
+          .catch(error => {
+            Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+          });
+      }
+    }
+  };
+
   sendMessage(text, fileName, isHidden, isRegenerated) {
     const newMessage = this.newMessage(text, fileName, isHidden, isRegenerated);
     MessageBackend.addMessage(newMessage)
@@ -251,7 +275,7 @@ class ChatPage extends BaseListPage {
             if (lastMessage.errorText !== "") {
               this.setState({
                 messageLoading: false,
-                disableInput: true,
+                messageError: true,
               });
               return;
             }
@@ -285,7 +309,7 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                messageLoading: false,
+                messageError: false,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -297,7 +321,6 @@ class ChatPage extends BaseListPage {
                 jsonData.text = "\n";
               }
 
-              // Add the new text to the existing text
               reasonText += jsonData.text;
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
@@ -309,7 +332,6 @@ class ChatPage extends BaseListPage {
 
               this.setState({
                 messages: res.data,
-                messageLoading: false,
               });
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
@@ -324,7 +346,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
-                disableInput: true,
+                messageError: true,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -360,7 +382,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
-                disableInput: false,
+                messageError: false,
               });
             });
           } else {
@@ -600,10 +622,12 @@ class ChatPage extends BaseListPage {
             disableInput={this.state.disableInput}
             loading={this.state.messageLoading}
             messages={this.state.messages}
+            messageError={this.state.messageError}
             sendMessage={(text, fileName, regenerate = false) => {
               this.sendMessage(text, fileName, false, regenerate);
             }}
             onMessageEdit={this.handleMessageEdit}
+            onCancelMessage={this.cancelMessage}
             account={this.props.account}
             name={this.state.chat?.name}
             displayName={this.state.chat?.displayName}

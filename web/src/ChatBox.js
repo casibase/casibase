@@ -373,6 +373,7 @@ class ChatBox extends React.Component {
               onFileUpload={this.handleFileUploadClick}
               loading={this.props.loading}
               disableInput={this.props.disableInput}
+              messageError={this.props.messageError}
               onCancelMessage={this.props.onCancelMessage}
               onVoiceInputStart={() => this.setState({isVoiceInput: true})}
               onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
