@@ -47,6 +47,10 @@ type Provider struct {
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
 
+	InputPricePerThousandTokens  float64 `xorm:"float" json:"inputPricePerThousandTokens"`
+	OutputPricePerThousandTokens float64 `xorm:"float" json:"outputPricePerThousandTokens"`
+	Currency                     string  `xorm:"varchar(100)" json:"currency"`
+
 	Network    string `xorm:"varchar(100)" json:"network"`
 	Chain      string `xorm:"varchar(100)" json:"chain"`
 	State      string `xorm:"varchar(100)" json:"state"`
@@ -338,7 +342,7 @@ func (p *Provider) GetStorageProviderObj() (storage.StorageProvider, error) {
 }
 
 func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
-	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider)
+	pProvider, err := model.GetModelProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.Temperature, p.TopP, p.TopK, p.FrequencyPenalty, p.PresencePenalty, p.ProviderUrl, p.ApiVersion, p.CompitableProvider, p.InputPricePerThousandTokens, p.OutputPricePerThousandTokens, p.Currency)
 	if err != nil {
 		return nil, err
 	}
@@ -351,7 +355,7 @@ func (p *Provider) GetModelProvider() (model.ModelProvider, error) {
 }
 
 func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
-	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion)
+	pProvider, err := embedding.GetEmbeddingProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency)
 	if err != nil {
 		return nil, err
 	}

@@ -55,7 +55,7 @@ func (c *TencentCloudClient) QueryText(question string, writer io.Writer, histor
 		model = modelSplit[len(modelSplit)-1]
 	}
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", c.apiKey, c.temperature, c.topP, 0, 0, baseUrl, model)
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", c.apiKey, c.temperature, c.topP, 0, 0, baseUrl, model, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}

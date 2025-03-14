@@ -361,6 +361,79 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
+          !(this.state.provider.category === "Model" && (this.state.provider.type === "Local" || this.state.provider.type === "Ollama")) ? null : (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Input price / 1k tokens")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.inputPricePerThousandTokens} onChange={e => {
+                    this.updateProviderField("inputPricePerThousandTokens", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Output price / 1k tokens")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.outputPricePerThousandTokens} onChange={e => {
+                    this.updateProviderField("outputPricePerThousandTokens", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            </>
+          )
+        }
+        {
+          !(this.state.provider.category === "Embedding" && (this.state.provider.type === "Local" || this.state.provider.type === "Ollama")) ? null : (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Input price / 1k tokens")}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.inputPricePerThousandTokens} onChange={e => {
+                    this.updateProviderField("inputPricePerThousandTokens", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            </>
+          )
+        }
+        {
+          (this.state.provider.type === "Local" || this.state.provider.type === "Ollama") ? (
+            <>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Currency")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.currency} onChange={(value => {
+                    this.updateProviderField("currency", value);
+                  })}>
+                    {
+                      [
+                        {id: "USD", name: "USD"},
+                        {id: "CNY", name: "CNY"},
+                        {id: "EUR", name: "EUR"},
+                        {id: "JPY", name: "JPY"},
+                        {id: "GBP", name: "GBP"},
+                        {id: "AUD", name: "AUD"},
+                        {id: "CAD", name: "CAD"},
+                        {id: "CHF", name: "CHF"},
+                        {id: "HKD", name: "HKD"},
+                        {id: "SGD", name: "SGD"},
+                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+            </>
+          ) : null
+        }
+        {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -605,6 +678,28 @@ class ProviderEditPage extends React.Component {
 
   submitProviderEdit(exitAfterSave) {
     const provider = Setting.deepCopy(this.state.provider);
+
+    const validatePrice = (price) => {
+      const num = Number(price);
+      return !isNaN(num) && num >= 0;
+    };
+    if (provider.type === "Ollama" || provider.type === "Local") {
+      if (provider.category === "Embedding") {
+        if (!validatePrice(provider.pricePerThousandTokens)) {
+          Setting.showMessage("error", "Price format is invalid, please enter a valid currency amount");
+          return;
+        }
+        provider.pricePerThousandTokens = Number(provider.pricePerThousandTokens);
+      } else if (provider.category === "Model") {
+        if (!validatePrice(provider.inputPricePerThousandTokens) || !validatePrice(provider.outputPricePerThousandTokens)) {
+          Setting.showMessage("error", "Price format is invalid, please enter a valid currency amount");
+          return;
+        }
+        provider.inputPricePerThousandTokens = Number(provider.inputPricePerThousandTokens);
+        provider.outputPricePerThousandTokens = Number(provider.outputPricePerThousandTokens);
+      }
+    }
+
     ProviderBackend.updateProvider(this.state.provider.owner, this.state.providerName, provider)
       .then((res) => {
         if (res.status === "ok") {
