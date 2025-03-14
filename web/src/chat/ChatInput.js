@@ -66,6 +66,9 @@ const ChatInput = ({
           }}
           actions={(ori, {components}) => {
             const {SendButton} = components;
+            if (loading) {
+              return ori;
+            }
             return (
               <SendButton
                 disabled={sendButtonDisabled}

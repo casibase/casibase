@@ -286,7 +286,6 @@ class ChatPage extends BaseListPage {
               });
               this.setState({
                 messages: res.data,
-                messageLoading: false,
                 messageError: false,
               });
             }, (data) => {
@@ -299,7 +298,6 @@ class ChatPage extends BaseListPage {
                 jsonData.text = "\n";
               }
 
-              // Add the new text to the existing text
               reasonText += jsonData.text;
 
               const lastMessage2 = Setting.deepCopy(lastMessage);
@@ -311,7 +309,6 @@ class ChatPage extends BaseListPage {
 
               this.setState({
                 messages: res.data,
-                messageLoading: false,
               });
             }, (error) => {
               Setting.showMessage("error", Setting.getRefinedErrorText(error));
