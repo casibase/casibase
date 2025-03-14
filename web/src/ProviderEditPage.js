@@ -368,8 +368,8 @@ class ProviderEditPage extends React.Component {
                   {i18next.t("provider:Input price / 1k tokens")}:
                 </Col>
                 <Col span={22} >
-                  <Input value={this.state.provider.inputPricePerThousandTokens} onChange={e => {
-                    this.updateProviderField("inputPricePerThousandTokens", e.target.value);
+                  <InputNumber min={0} value={this.state.provider.inputPricePerThousandTokens} onChange={value => {
+                    this.updateProviderField("inputPricePerThousandTokens", value);
                   }} />
                 </Col>
               </Row>
@@ -378,8 +378,8 @@ class ProviderEditPage extends React.Component {
                   {i18next.t("provider:Output price / 1k tokens")}:
                 </Col>
                 <Col span={22} >
-                  <Input value={this.state.provider.outputPricePerThousandTokens} onChange={e => {
-                    this.updateProviderField("outputPricePerThousandTokens", e.target.value);
+                  <InputNumber min={0} value={this.state.provider.outputPricePerThousandTokens} onChange={value => {
+                    this.updateProviderField("outputPricePerThousandTokens", value);
                   }} />
                 </Col>
               </Row>
@@ -394,8 +394,8 @@ class ProviderEditPage extends React.Component {
                   {i18next.t("provider:Input price / 1k tokens")}:
                 </Col>
                 <Col span={22} >
-                  <Input value={this.state.provider.inputPricePerThousandTokens} onChange={e => {
-                    this.updateProviderField("inputPricePerThousandTokens", e.target.value);
+                  <InputNumber min={0} value={this.state.provider.inputPricePerThousandTokens} onChange={value => {
+                    this.updateProviderField("inputPricePerThousandTokens", value);
                   }} />
                 </Col>
               </Row>
@@ -678,28 +678,6 @@ class ProviderEditPage extends React.Component {
 
   submitProviderEdit(exitAfterSave) {
     const provider = Setting.deepCopy(this.state.provider);
-
-    const validatePrice = (price) => {
-      const num = Number(price);
-      return !isNaN(num) && num >= 0;
-    };
-    if (provider.type === "Ollama" || provider.type === "Local") {
-      if (provider.category === "Embedding") {
-        if (!validatePrice(provider.pricePerThousandTokens)) {
-          Setting.showMessage("error", "Price format is invalid, please enter a valid currency amount");
-          return;
-        }
-        provider.pricePerThousandTokens = Number(provider.pricePerThousandTokens);
-      } else if (provider.category === "Model") {
-        if (!validatePrice(provider.inputPricePerThousandTokens) || !validatePrice(provider.outputPricePerThousandTokens)) {
-          Setting.showMessage("error", "Price format is invalid, please enter a valid currency amount");
-          return;
-        }
-        provider.inputPricePerThousandTokens = Number(provider.inputPricePerThousandTokens);
-        provider.outputPricePerThousandTokens = Number(provider.outputPricePerThousandTokens);
-      }
-    }
-
     ProviderBackend.updateProvider(this.state.provider.owner, this.state.providerName, provider)
       .then((res) => {
         if (res.status === "ok") {
