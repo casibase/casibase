@@ -40,6 +40,7 @@ class ChatPage extends BaseListPage {
       disableInput: false,
       isModalOpen: false,
       messageLoading: false,
+      messageError: false,
     });
 
     this.fetch();
@@ -251,7 +252,7 @@ class ChatPage extends BaseListPage {
             if (lastMessage.errorText !== "") {
               this.setState({
                 messageLoading: false,
-                disableInput: true,
+                messageError: true,
               });
               return;
             }
@@ -286,6 +287,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
+                messageError: false,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -324,7 +326,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
-                disableInput: true,
+                messageError: true,
               });
             }, (data) => {
               if (!chat || (this.state.chat.name !== chat.name)) {
@@ -360,7 +362,7 @@ class ChatPage extends BaseListPage {
               this.setState({
                 messages: res.data,
                 messageLoading: false,
-                disableInput: false,
+                messageError: false,
               });
             });
           } else {
@@ -600,6 +602,7 @@ class ChatPage extends BaseListPage {
             disableInput={this.state.disableInput}
             loading={this.state.messageLoading}
             messages={this.state.messages}
+            messageError={this.state.messageError}
             sendMessage={(text, fileName, regenerate = false) => {
               this.sendMessage(text, fileName, false, regenerate);
             }}
