@@ -118,6 +118,17 @@ export function updateMessage(owner, name, message, isHitOnly = false) {
   }).then(res => res.json());
 }
 
+export function closeMessageEventSource(owner, name) {
+  const key = `${owner}/${name}`;
+  if (eventSourceMap.has(key)) {
+    const eventSource = eventSourceMap.get(key);
+    eventSource.close();
+    eventSourceMap.delete(key);
+    return true;
+  }
+  return false;
+}
+
 export function addMessage(message) {
   const newMessage = Setting.deepCopy(message);
   return fetch(`${Setting.ServerUrl}/api/add-message`, {
