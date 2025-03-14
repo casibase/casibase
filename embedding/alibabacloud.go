@@ -66,7 +66,7 @@ func (p *AlibabacloudEmbeddingProvider) calculatePrice(res *EmbeddingResult) err
 
 func (p *AlibabacloudEmbeddingProvider) QueryVector(text string, ctx context.Context) ([]float32, *EmbeddingResult, error) {
 	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
-	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", p.subType, p.secretKey, BaseUrl)
+	localEmbeddingProvider, err := NewLocalEmbeddingProvider("Custom", p.subType, p.secretKey, BaseUrl, 0, "CNY")
 	if err != nil {
 		return nil, nil, err
 	}

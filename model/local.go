@@ -28,30 +28,36 @@ import (
 )
 
 type LocalModelProvider struct {
-	typ                string
-	subType            string
-	deploymentName     string
-	secretKey          string
-	temperature        float32
-	topP               float32
-	frequencyPenalty   float32
-	presencePenalty    float32
-	providerUrl        string
-	apiVersion         string
-	compitableProvider string
+	typ                          string
+	subType                      string
+	deploymentName               string
+	secretKey                    string
+	temperature                  float32
+	topP                         float32
+	frequencyPenalty             float32
+	presencePenalty              float32
+	providerUrl                  string
+	apiVersion                   string
+	compitableProvider           string
+	inputPricePerThousandTokens  float64
+	outputPricePerThousandTokens float64
+	currency                     string
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
-		typ:                typ,
-		subType:            subType,
-		secretKey:          secretKey,
-		temperature:        temperature,
-		topP:               topP,
-		frequencyPenalty:   frequencyPenalty,
-		presencePenalty:    presencePenalty,
-		providerUrl:        providerUrl,
-		compitableProvider: compitableProvider,
+		typ:                          typ,
+		subType:                      subType,
+		secretKey:                    secretKey,
+		temperature:                  temperature,
+		topP:                         topP,
+		frequencyPenalty:             frequencyPenalty,
+		presencePenalty:              presencePenalty,
+		providerUrl:                  providerUrl,
+		compitableProvider:           compitableProvider,
+		inputPricePerThousandTokens:  inputPricePerThousandTokens,
+		outputPricePerThousandTokens: outputPricePerThousandTokens,
+		currency:                     Currency,
 	}
 	return p, nil
 }
@@ -137,6 +143,7 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 			inputPricePerThousandTokens = 0.0005
 			outputPricePerThousandTokens = 0.0015
 		}
+		modelResult.Currency = "USD"
 
 	// gpt 4.5 model
 	case strings.Contains(model, "gpt-4.5"):
@@ -147,6 +154,7 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 			inputPricePerThousandTokens = 0.03
 			outputPricePerThousandTokens = 0.06
 		}
+		modelResult.Currency = "USD"
 
 	// gpt 4.0 model
 	case strings.Contains(model, "gpt-4"):
@@ -166,26 +174,28 @@ func (p *LocalModelProvider) calculatePrice(modelResult *ModelResult) error {
 			inputPricePerThousandTokens = 0.03
 			outputPricePerThousandTokens = 0.06
 		}
+		modelResult.Currency = "USD"
 
 	// local custom model:
 	case model == "custom-model":
-		inputPricePerThousandTokens = 0.001
-		outputPricePerThousandTokens = 0.002
+		inputPricePerThousandTokens = p.inputPricePerThousandTokens
+		outputPricePerThousandTokens = p.outputPricePerThousandTokens
+		modelResult.Currency = p.currency
 
 	// dall-e model
 	case strings.Contains(model, "dall-e-3"):
 		modelResult.TotalPrice = float64(modelResult.ImageCount) * 0.08
+		modelResult.Currency = "USD"
 		return nil
 	default:
-		inputPricePerThousandTokens = 0
-		outputPricePerThousandTokens = 0
-		// return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
+		// inputPricePerThousandTokens = 0
+		// outputPricePerThousandTokens = 0
+		return fmt.Errorf("calculatePrice() error: unknown model type: %s", model)
 	}
 
 	inputPrice := getPrice(modelResult.PromptTokenCount, inputPricePerThousandTokens)
 	outputPrice := getPrice(modelResult.ResponseTokenCount, outputPricePerThousandTokens)
 	modelResult.TotalPrice = AddPrices(inputPrice, outputPrice)
-	modelResult.Currency = "USD"
 	return nil
 }
 

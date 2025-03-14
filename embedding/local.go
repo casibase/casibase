@@ -23,20 +23,24 @@ import (
 )
 
 type LocalEmbeddingProvider struct {
-	typ            string
-	subType        string
-	deploymentName string
-	secretKey      string
-	providerUrl    string
-	apiVersion     string
+	typ                    string
+	subType                string
+	deploymentName         string
+	secretKey              string
+	providerUrl            string
+	apiVersion             string
+	pricePerThousandTokens float64
+	currency               string
 }
 
-func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string) (*LocalEmbeddingProvider, error) {
+func NewLocalEmbeddingProvider(typ string, subType string, secretKey string, providerUrl string, pricePerThousandTokens float64, currency string) (*LocalEmbeddingProvider, error) {
 	p := &LocalEmbeddingProvider{
-		typ:         typ,
-		subType:     subType,
-		secretKey:   secretKey,
-		providerUrl: providerUrl,
+		typ:                    typ,
+		subType:                subType,
+		secretKey:              secretKey,
+		providerUrl:            providerUrl,
+		pricePerThousandTokens: pricePerThousandTokens,
+		currency:               currency,
 	}
 	return p, nil
 }
@@ -66,6 +70,7 @@ Embedding models:
 func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 	embeddingModel := p.subType
 	var pricePerThousandTokens float64
+	res.Currency = "USD"
 	switch {
 	case strings.Contains(embeddingModel, "text-embedding-ada-002"):
 		pricePerThousandTokens = 0.0001
@@ -73,14 +78,14 @@ func (p *LocalEmbeddingProvider) calculatePrice(res *EmbeddingResult) error {
 		pricePerThousandTokens = 0.00002
 	case strings.Contains(embeddingModel, "text-embedding-3-large"):
 		pricePerThousandTokens = 0.00013
-	case embeddingModel == "custom-embedding":
-		pricePerThousandTokens = 0.0001
+	case embeddingModel == "custom-embedding" || p.typ == "Ollama":
+		pricePerThousandTokens = p.pricePerThousandTokens
+		res.Currency = p.currency
 	default:
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", embeddingModel)
 	}
 
 	res.Price = getPrice(res.TokenCount, pricePerThousandTokens)
-	res.Currency = "USD"
 	return nil
 }
 
@@ -93,6 +98,8 @@ func (p *LocalEmbeddingProvider) QueryVector(text string, ctx context.Context) (
 	} else if p.typ == "OpenAI" {
 		client = getProxyClientFromToken(p.secretKey)
 	} else if p.typ == "Custom" {
+		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
+	} else if p.typ == "Ollama" {
 		client = getLocalClientFromUrl(p.secretKey, p.providerUrl)
 	}
 

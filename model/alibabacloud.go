@@ -90,7 +90,7 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) err
 func (p *AlibabacloudModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	const BaseUrl = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType)
+	localProvider, err := NewLocalModelProvider("Custom-think", "custom-model", p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
 	if err != nil {
 		return nil, err
 	}
