@@ -302,7 +302,15 @@ func setConfig(propertyMap map[string]string, node *object.Node, configuration *
 		configuration.Protocol = "vnc"
 	}
 
-	configuration.SetParameter("hostname", node.Name)
+	hostname := node.PublicIp
+	if hostname == "" {
+		hostname = node.PrivateIp
+	}
+	if hostname == "" {
+		hostname = node.Name
+	}
+
+	configuration.SetParameter("hostname", hostname)
 	configuration.SetParameter("port", strconv.Itoa(node.RemotePort))
 	configuration.SetParameter("username", node.RemoteUsername)
 	configuration.SetParameter("password", node.RemotePassword)
