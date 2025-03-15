@@ -27,6 +27,8 @@ func GetSplitProvider(typ string) (SplitProvider, error) {
 		p, err = NewQaSplitProvider()
 	} else if typ == "Basic" {
 		p, err = NewBasicSplitProvider()
+	} else if typ == "Markdown" {
+		p, err = NewMarkdownSplitProvider()
 	} else {
 		p, err = NewDefaultSplitProvider()
 	}

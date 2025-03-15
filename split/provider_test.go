@@ -20,6 +20,7 @@ package split_test
 import (
 	"fmt"
 	"path/filepath"
+	"reflect"
 	"testing"
 
 	"github.com/casibase/casibase/object"
@@ -106,6 +107,66 @@ func TestSplit3(t *testing.T) {
 	textSections, err := p.SplitText(text)
 	if err != nil {
 		panic(err)
+	}
+
+	for i, s := range textSections {
+		fmt.Printf("[%d] %s\n\n", i, s)
+	}
+}
+
+func TestSplit4(t *testing.T) {
+	object.InitConfig()
+
+	p, err := split.GetSplitProvider("Markdown")
+	if err != nil {
+		panic(err)
+	}
+
+	storageProvider, err := object.GetProvider("admin/provider-storage-built-in")
+	if err != nil {
+		panic(err)
+	}
+
+	path := filepath.Join(storageProvider.ClientId, "MarkdownText.md")
+
+	text, err := txt.GetParsedTextFromUrl(path, ".md")
+	if err != nil {
+		panic(err)
+	}
+
+	chunks := []string{
+		"# Sample",
+		"Document",
+		"## Section",
+		"This is the",
+		"content of the",
+		"section.",
+		"## Lists",
+		"- Item 1",
+		"- Item 2",
+		"- Item 3",
+		"### Horizontal",
+		"lines",
+		"***********",
+		"____________",
+		"---------------",
+		"----",
+		"#### Code",
+		"blocks",
+		"```",
+		"This is a code",
+		"block",
+		"# sample code",
+		"a = 1\nb = 2",
+		"```",
+	}
+	textSections, err := p.SplitText(text)
+	if err != nil {
+		panic(err)
+	}
+
+	if !reflect.DeepEqual(textSections, chunks) {
+		panic(fmt.Errorf("markdown split provider result error"))
 	}
 
 	for i, s := range textSections {
