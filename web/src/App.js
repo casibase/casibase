@@ -431,6 +431,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
+      res.push(Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"));
 
       // res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
       // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
@@ -528,6 +529,7 @@ class App extends Component {
         <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
         <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
@@ -545,7 +547,19 @@ class App extends Component {
   }
 
   isWithoutCard() {
-    return Setting.isMobile() || window.location.pathname.startsWith("/chat");
+    return Setting.isMobile() || this.isHiddenHeaderAndFooter() || window.location.pathname.startsWith("/chat");
+  }
+
+  isHiddenHeaderAndFooter(uri) {
+    if (uri === undefined) {
+      uri = this.state.uri;
+    }
+    const hiddenPaths = ["/workbench", "/access"];
+    for (const path of hiddenPaths) {
+      if (uri.startsWith(path)) {
+        return true;
+      }
+    }
   }
 
   renderContent() {
@@ -559,46 +573,9 @@ class App extends Component {
       );
     }
 
-    const onClick = ({key}) => {
-      this.props.history.push(key);
-    };
-    const menuStyleRight = Setting.isAdminUser(this.state.account) && !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
     return (
       <Layout id="parent-area">
-        <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
-          {Setting.isMobile() ? null : (
-            <Link to={"/"}>
-              <div className="logo" />
-            </Link>
-          )}
-          {(Setting.isMobile() ?
-            <React.Fragment>
-              <Drawer title={i18next.t("general:Close")} placement="left" visible={this.state.menuVisible} onClose={this.onClose}>
-                <Menu
-                  items={this.getMenuItems()}
-                  mode={"inline"}
-                  selectedKeys={[this.state.selectedMenuKey]}
-                  style={{lineHeight: "64px"}}
-                  onClick={this.onClose}
-                >
-                </Menu>
-              </Drawer>
-              <Button icon={<BarsOutlined />} onClick={this.showMenu} type="text">
-                {i18next.t("general:Menu")}
-              </Button>
-            </React.Fragment> :
-            <Menu
-              onClick={onClick}
-              items={this.getMenuItems()}
-              mode={"horizontal"}
-              selectedKeys={[this.state.selectedMenuKey]}
-              style={{position: "absolute", left: "145px", right: menuStyleRight}}
-            />
-          )}
-          {
-            this.renderAccountMenu()
-          }
-        </Header>
+        {this.renderHeader()}
         <Content style={{display: "flex", flexDirection: "column"}}>
           {this.isWithoutCard() ?
             this.renderRouter() :
@@ -612,7 +589,73 @@ class App extends Component {
     );
   }
 
+  renderHeader() {
+    if (this.isHiddenHeaderAndFooter()) {
+      return null;
+    }
+
+    const showMenu = () => {
+      this.setState({
+        menuVisible: true,
+      });
+    };
+
+    const onClick = ({key}) => {
+      if (Setting.isMobile()) {
+        this.setState({
+          menuVisible: false,
+        });
+      }
+
+      this.setState({
+        uri: location.pathname,
+        selectedMenuKey: key,
+      });
+    };
+
+    const menuStyleRight = !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
+
+    return (
+      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
+        {Setting.isMobile() ? null : (
+          <Link to={"/"}>
+            <div className="logo" />
+          </Link>
+        )}
+        {Setting.isMobile() ? (
+          <React.Fragment>
+            <Drawer title={i18next.t("general:Close")} placement="left" visible={this.state.menuVisible} onClose={this.onClose}>
+              <Menu
+                items={this.getMenuItems()}
+                mode={"inline"}
+                selectedKeys={[this.state.selectedMenuKey]}
+                style={{lineHeight: "64px"}}
+                onClick={onClick}
+              >
+              </Menu>
+            </Drawer>
+            <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
+              {i18next.t("general:Menu")}
+            </Button>
+          </React.Fragment>
+        ) : (
+          <Menu
+            onClick={onClick}
+            items={this.getMenuItems()}
+            mode={"horizontal"}
+            selectedKeys={[this.state.selectedMenuKey]}
+            style={{position: "absolute", left: "145px", right: menuStyleRight}}
+          />
+        )}
+        {this.renderAccountMenu()}
+      </Header>
+    );
+  }
+
   renderFooter() {
+    if (this.isHiddenHeaderAndFooter()) {
+      return null;
+    }
     // How to keep your footer where it belongs ?
     // https://www.freecodecamp.org/news/how-to-keep-your-footer-where-it-belongs-59c6aa05c59c
 

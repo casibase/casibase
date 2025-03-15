@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import i18next from "i18next";
 
 export const AuthConfig = {
   serverUrl: "https://door.casdoor.com",
@@ -23,7 +24,12 @@ export const AuthConfig = {
 
 export const EnableExtraPages = false;
 
-export const ShortcutPageItems = [];
+export const ShortcutPageItems = [
+  {link: "/nodes", image: "/organizations", name: i18next.t("general:Nodes"), description: i18next.t("general:Machines can be connected via RDP, VNC or SSH")},
+  {link: "/sessions", image: "/users", name: i18next.t("general:Sessions"), description: i18next.t("general:Active or history connection sessions")},
+  {link: "/records", image: "/providers", name: i18next.t("general:Records"), description: i18next.t("general:Audit logs")},
+  {link: "/workbench", image: "/applications", name: i18next.t("general:Workbench"), description: i18next.t("general:Remote desktop management all in one screen")},
+];
 
 export const UsageEndpoints = [];
 
