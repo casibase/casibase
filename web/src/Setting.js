@@ -1132,6 +1132,7 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "DeepSeek") {
     return ([
       {id: "deepseek-chat", name: "deepseek-chat"},
+      {id: "deepseek-reasoner", name: "deepseek-reasoner"},
     ]);
   } else if (type === "StepFun") {
     return ([
