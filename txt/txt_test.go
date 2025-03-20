@@ -28,7 +28,7 @@ func TestProcessFiles(t *testing.T) {
 	outputDir := "outputdir" // 指定输出目录
 
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
-		err := os.Mkdir(outputDir, 0755)
+		err := os.Mkdir(outputDir, 0o755)
 		if err != nil {
 			t.Fatalf("创建输出目录失败: %v\n", err)
 		}
@@ -71,7 +71,7 @@ func TestProcessFiles(t *testing.T) {
 					return
 				}
 
-				err = ioutil.WriteFile(outputFilePath, []byte(parsedText), 0644)
+				err = ioutil.WriteFile(outputFilePath, []byte(parsedText), 0o644)
 				if err != nil {
 					mu.Lock()
 					t.Logf("写入文件 %s 失败: %v\n", outputFilePath, err)
