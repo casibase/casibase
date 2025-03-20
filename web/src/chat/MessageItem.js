@@ -82,7 +82,7 @@ const MessageItem = ({
           action={
             <Button danger type="primary" onClick={() => {
               setIsRegenerating(true);
-              onRegenerate();
+              onRegenerate(index);
             }} disabled={isRegenerating}>
               {
                 isRegenerating ? i18next.t("general:Regenerating...") :
