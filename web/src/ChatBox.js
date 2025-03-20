@@ -239,6 +239,7 @@ class ChatBox extends React.Component {
     } else {
       this.synth.cancel();
       const utterThis = new SpeechSynthesisUtterance(message.text);
+      utterThis.lang = Setting.getLanguage();
       utterThis.addEventListener("end", () => {
         this.synth.cancel();
         this.setState({isReading: false, readingMessage: null});
