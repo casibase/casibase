@@ -18,7 +18,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/unidoc/unioffice/document"
+	"github.com/carmel/gooxml/document"
 )
 
 func GetTextFromDocx(path string) (string, error) {
