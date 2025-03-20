@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,13 +24,13 @@ import (
 )
 
 func TestProcessFiles(t *testing.T) {
-	inputDir := "inputdir"   // 指定输入文件目录
-	outputDir := "outputdir" // 指定输出目录
+	inputDir := "inputdir"   // Specify input file directory
+	outputDir := "outputdir" // Specify output directory
 
 	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
 		err := os.Mkdir(outputDir, 0o755)
 		if err != nil {
-			t.Fatalf("创建输出目录失败: %v\n", err)
+			t.Fatalf("Failed to create output directory: %v\n", err)
 		}
 	}
 
@@ -38,7 +38,7 @@ func TestProcessFiles(t *testing.T) {
 
 	files, err := ioutil.ReadDir(inputDir)
 	if err != nil {
-		t.Fatalf("读取输入目录失败: %v\n", err)
+		t.Fatalf("Failed to read input directory: %v\n", err)
 	}
 
 	var wg sync.WaitGroup
@@ -66,7 +66,7 @@ func TestProcessFiles(t *testing.T) {
 				parsedText, err := GetParsedTextFromUrl(inputFilePath, fileExt)
 				if err != nil {
 					mu.Lock()
-					t.Logf("处理文件 %s 失败: %v\n", inputFilePath, err)
+					t.Logf("Failed to process file %s: %v\n", inputFilePath, err)
 					mu.Unlock()
 					return
 				}
@@ -74,21 +74,21 @@ func TestProcessFiles(t *testing.T) {
 				err = ioutil.WriteFile(outputFilePath, []byte(parsedText), 0o644)
 				if err != nil {
 					mu.Lock()
-					t.Logf("写入文件 %s 失败: %v\n", outputFilePath, err)
+					t.Logf("Failed to write file %s: %v\n", outputFilePath, err)
 					mu.Unlock()
 					return
 				}
 
 				mu.Lock()
 				processedFiles++
-				t.Logf("成功处理文件: %s (%d/%d)\n", inputFilePath, processedFiles, totalFiles)
+				t.Logf("Successfully processed file: %s (%d/%d)\n", inputFilePath, processedFiles, totalFiles)
 				mu.Unlock()
 			}(fileName, fileExt)
 		}
 	}
 
 	wg.Wait()
-	t.Log("所有文件处理完毕")
+	t.Log("All files processed")
 }
 
 func contains(slice []string, item string) bool {
