@@ -62,8 +62,8 @@ const MessageActions = ({
           icon={<ReloadOutlined />}
           style={{border: "none", color: ThemeDefault.colorPrimary}}
           onClick={() => {
-            onRegenerate();
             setIsRegenerating(true);
+            onRegenerate(index);
           }}
           disabled={isRegenerating}
         />
