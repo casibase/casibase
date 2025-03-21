@@ -55,6 +55,7 @@ class StoreListPage extends BaseListPage {
       prompt: defaultPrompt,
       themeColor: ThemeDefault.colorPrimary,
       propertiesMap: {},
+      knowledgeCount: 5,
       suggestionCount: 3,
       state: "Active",
     };
