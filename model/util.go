@@ -19,6 +19,7 @@ import (
 	"math"
 	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/pkoukk/tiktoken-go"
 	"github.com/sashabaranov/go-openai"
@@ -135,25 +136,31 @@ func getDefaultModelResult(modelSubType string, prompt string, response string) 
 	return modelResult, nil
 }
 
+func containsZh(str string) bool {
+	for _, r := range str {
+		if unicode.Is(unicode.Han, r) {
+			return true
+		}
+	}
+	return false
+}
+
 func getSystemMessages(prompt string, knowledgeMessages []*RawMessage) []*RawMessage {
 	if prompt == "" {
 		prompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems."
 	}
-	res := []*RawMessage{
-		{
-			Text:   prompt,
-			Author: "System",
-		},
+
+	res := []*RawMessage{{Text: prompt, Author: "System"}}
+	for i, message := range knowledgeMessages {
+		knowledgeTag := "Knowledge"
+		if containsZh(prompt) {
+			knowledgeTag = "知识"
+		}
+
+		newMessage := &RawMessage{Text: fmt.Sprintf("%s %d: %s", knowledgeTag, i+1, message.Text), Author: "System"}
+		res = append(res, newMessage)
 	}
 
-	for i, message := range knowledgeMessages {
-		res = append(
-			res,
-			&RawMessage{
-				Text:   fmt.Sprintf("Knowledge %d: %s", i+1, message.Text),
-				Author: "System",
-			})
-	}
 	return res
 }
 
