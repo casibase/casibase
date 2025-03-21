@@ -21,7 +21,8 @@ const AccessPage = () => {
   const query = new URLSearchParams(useLocation().search);
   const username = query.get("username") || "";
   const password = query.get("password") || "";
-  return <GuacdPage nodeId={`${owner}/${name}`} username={`${username}`} password={`${password}`} />;
+  const category = query.get("category");
+  return <GuacdPage nodeId={`${owner}/${name}`} username={`${username}`} password={`${password}`} category={`${category}`} />;
 };
 
 export default AccessPage;

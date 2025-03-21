@@ -67,10 +67,10 @@ const ConnectModal = (props) => {
   const handleOk = () => {
     setIsModalOpen(false);
     if (category === "Node") {
-      const link = (username === "" || password === "") ? `access/${owner}/${name}` : `access/${owner}/${name}?username=${username}&password=${password}`;
+      const link = (username === "" || password === "") ? `access/${owner}/${name}?category=${category}` : `access/${owner}/${name}?username=${username}&password=${password}&category=${category}`;
       Setting.openLink(link);
-    } else if (category === "Database") {
-      const link = "databases";
+    } else if (category === "Machine") {
+      const link = (username === "" || password === "") ? `access/${owner}/${name}?category=${category}` : `access/${owner}/${name}?username=${username}&password=${password}&category=${category}`;
       Setting.openLink(link);
     } else {
       Setting.showMessage("error", `Unknown category: ${category}`);
