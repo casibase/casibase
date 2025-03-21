@@ -99,6 +99,7 @@ func (c *ApiController) GetNodeTunnel() {
 
 	username := c.Input().Get("username")
 	password := c.Input().Get("password")
+	category := c.Input().Get("category")
 
 	intWidth, err := strconv.Atoi(width)
 	if err != nil {
@@ -117,25 +118,49 @@ func (c *ApiController) GetNodeTunnel() {
 		return
 	}
 
-	node, err := object.GetNode(session.Node)
-	if err != nil || node == nil {
-		guacamole.Disconnect(ws, NodeNotFound, err.Error())
+	var remoteTarget interface{}
+	var targetType string
+
+	fmt.Println("hhhhhhhhhhhhhhhhhhhhhhhhhhh")
+	fmt.Println(category)
+	switch category {
+	case "Node":
+		remoteTarget, err = object.GetNode(session.Node)
+		targetType = "Node"
+	case "Machine":
+		remoteTarget, err = object.GetMachine(session.Node)
+		targetType = "Machine"
+	default:
+		guacamole.Disconnect(ws, ParametersError, "Unknown category type")
 		return
 	}
 
-	if node.RemoteUsername == "" {
-		node.RemoteUsername = username
-		node.RemotePassword = password
-	} else {
-		if node.RemotePassword == "" {
-			node.RemotePassword = password
+	if err != nil || remoteTarget == nil {
+		guacamole.Disconnect(ws, NodeNotFound, fmt.Sprintf("%s not found", targetType))
+		return
+	}
+
+	switch target := remoteTarget.(type) {
+	case *object.Node:
+		if target.RemoteUsername == "" {
+			target.RemoteUsername = username
+			target.RemotePassword = password
+		} else if target.RemotePassword == "" {
+			target.RemotePassword = password
+		}
+	case *object.Machine:
+		if target.RemoteUsername == "" {
+			target.RemoteUsername = username
+			target.RemotePassword = password
+		} else if target.RemotePassword == "" {
+			target.RemotePassword = password
 		}
 	}
 
 	configuration := guacamole.NewConfiguration()
 	propertyMap := configuration.LoadConfig()
 
-	setConfig(propertyMap, node, configuration)
+	setConfig(propertyMap, remoteTarget, configuration)
 	configuration.SetParameter("width", width)
 	configuration.SetParameter("height", height)
 	configuration.SetParameter("dpi", dpi)
@@ -290,8 +315,29 @@ func (c *ApiController) TunnelMonitor() {
 	}
 }
 
-func setConfig(propertyMap map[string]string, node *object.Node, configuration *guacamole.Configuration) {
-	switch node.RemoteProtocol {
+func setConfig(propertyMap map[string]string, target interface{}, configuration *guacamole.Configuration) {
+	var remoteProtocol, hostname, username, password string
+	var remotePort int
+
+	switch t := target.(type) {
+	case *object.Node:
+		remoteProtocol = t.RemoteProtocol
+		hostname = getHostname(t.PublicIp, t.PrivateIp, t.Name)
+		remotePort = t.RemotePort
+		username = t.RemoteUsername
+		password = t.RemotePassword
+	case *object.Machine:
+		remoteProtocol = t.RemoteProtocol
+		hostname = getHostname(t.PublicIp, t.PrivateIp, t.Name)
+		remotePort = t.RemotePort
+		username = t.RemoteUsername
+		password = t.RemotePassword
+	default:
+		logs.Error("setConfig: unknown target type")
+		return
+	}
+
+	switch remoteProtocol {
 	case "SSH":
 		configuration.Protocol = "ssh"
 	case "RDP":
@@ -302,20 +348,12 @@ func setConfig(propertyMap map[string]string, node *object.Node, configuration *
 		configuration.Protocol = "vnc"
 	}
 
-	hostname := node.PublicIp
-	if hostname == "" {
-		hostname = node.PrivateIp
-	}
-	if hostname == "" {
-		hostname = node.Name
-	}
-
 	configuration.SetParameter("hostname", hostname)
-	configuration.SetParameter("port", strconv.Itoa(node.RemotePort))
-	configuration.SetParameter("username", node.RemoteUsername)
-	configuration.SetParameter("password", node.RemotePassword)
+	configuration.SetParameter("port", strconv.Itoa(remotePort))
+	configuration.SetParameter("username", username)
+	configuration.SetParameter("password", password)
 
-	switch node.RemoteProtocol {
+	switch remoteProtocol {
 	case "RDP":
 		configuration.SetParameter("security", "any")
 		configuration.SetParameter("ignore-cert", "true")
@@ -333,25 +371,21 @@ func setConfig(propertyMap map[string]string, node *object.Node, configuration *
 		configuration.SetParameter(guacamole.ForceLossless, propertyMap[guacamole.ForceLossless])
 		configuration.SetParameter(guacamole.PreConnectionId, propertyMap[guacamole.PreConnectionId])
 		configuration.SetParameter(guacamole.PreConnectionBlob, propertyMap[guacamole.PreConnectionBlob])
-
-		// if node.EnableRemoteApp {
-		//	remoteApp := node.RemoteApps[0]
-		//	configuration.SetParameter("remote-app", "||"+remoteApp.RemoteAppName)
-		//	configuration.SetParameter("remote-app-dir", remoteApp.RemoteAppDir)
-		//	configuration.SetParameter("remote-app-args", remoteApp.RemoteAppArgs)
-		// }
-	case "SSH":
+	case "SSH", "Telnet":
 		configuration.SetParameter(guacamole.FontSize, propertyMap[guacamole.FontSize])
-		// configuration.SetParameter(guacamole.FontName, propertyMap[guacamole.FontName])
 		configuration.SetParameter(guacamole.ColorScheme, propertyMap[guacamole.ColorScheme])
 		configuration.SetParameter(guacamole.Backspace, propertyMap[guacamole.Backspace])
 		configuration.SetParameter(guacamole.TerminalType, propertyMap[guacamole.TerminalType])
-	case "Telnet":
-		configuration.SetParameter(guacamole.FontSize, propertyMap[guacamole.FontSize])
-		// configuration.SetParameter(guacamole.FontName, propertyMap[guacamole.FontName])
-		configuration.SetParameter(guacamole.ColorScheme, propertyMap[guacamole.ColorScheme])
-		configuration.SetParameter(guacamole.Backspace, propertyMap[guacamole.Backspace])
-		configuration.SetParameter(guacamole.TerminalType, propertyMap[guacamole.TerminalType])
-	default:
 	}
+}
+
+// PublicIp > PrivateIp > Name
+func getHostname(publicIp, privateIp, name string) string {
+	if publicIp != "" {
+		return publicIp
+	}
+	if privateIp != "" {
+		return privateIp
+	}
+	return name
 }

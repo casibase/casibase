@@ -210,7 +210,7 @@ class MachineListPage extends BaseListPage {
               <ConnectModal
                 owner={machine.owner}
                 name={machine.name}
-                category={"Node"}
+                category={"Machine"}
                 node={machine}
               />
               <Button

@@ -32,7 +32,7 @@ const STATE_DISCONNECTING = 4;
 const STATE_DISCONNECTED = 5;
 
 const GuacdPage = (props) => {
-  const {nodeId, activeKey, addClient, closePane, username, password} = props;
+  const {nodeId, activeKey, addClient, closePane, username, password, category} = props;
 
   const [box, setBox] = useState({width: 0, height: 0});
   const [guacd, setGuacd] = useState({});
@@ -108,6 +108,7 @@ const GuacdPage = (props) => {
       "width": width,
       "height": height,
       "dpi": dpi,
+      "category": category,
     };
 
     if (username || password) {
