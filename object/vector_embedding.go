@@ -212,7 +212,7 @@ func queryVectorSafe(embeddingProvider embedding.EmbeddingProvider, text string)
 	}
 }
 
-func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
+func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embedding.EmbeddingProvider, owner string, text string, knowledgeCount int) ([]*model.RawMessage, []VectorScore, *embedding.EmbeddingResult, error) {
 	qVector, embeddingResult, err := queryVectorSafe(embeddingProviderObj, text)
 	if err != nil {
 		return nil, nil, nil, err
@@ -226,7 +226,7 @@ func GetNearestKnowledge(embeddingProvider *Provider, embeddingProviderObj embed
 		return nil, nil, nil, err
 	}
 
-	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector)
+	vectors, err := searchProvider.Search(embeddingProvider.Name, qVector, knowledgeCount)
 	if err != nil {
 		if err.Error() == "no knowledge vectors found" {
 			return nil, nil, embeddingResult, err

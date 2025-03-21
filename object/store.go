@@ -67,6 +67,7 @@ type Store struct {
 	MemoryLimit     int      `json:"memoryLimit"`
 	Frequency       int      `json:"frequency"`
 	LimitMinutes    int      `json:"limitMinutes"`
+	KnowledgeCount  int      `json:"knowledgeCount"`
 	SuggestionCount int      `json:"suggestionCount"`
 	Welcome         string   `xorm:"varchar(100)" json:"welcome"`
 	WelcomeTitle    string   `xorm:"varchar(100)" json:"welcomeTitle"`

@@ -17,9 +17,28 @@ package txt
 import (
 	"archive/zip"
 	"encoding/xml"
+	"fmt"
 	"io"
+	"regexp"
+	"strconv"
 	"strings"
 )
+
+func getPageNumberFromSlideFilename(filename string) int {
+	slideRegex := regexp.MustCompile(`ppt/slides/slide(\d+)\.xml`)
+	matches := slideRegex.FindStringSubmatch(filename)
+
+	if len(matches) < 2 {
+		return -1
+	}
+
+	pageNum, err := strconv.Atoi(matches[1])
+	if err != nil {
+		return -1
+	}
+
+	return pageNum
+}
 
 func getTextFromPptx(path string) (string, error) {
 	r, err := zip.OpenReader(path)
@@ -29,12 +48,18 @@ func getTextFromPptx(path string) (string, error) {
 	defer r.Close()
 
 	var text strings.Builder
+
 	for _, f := range r.File {
 		if strings.HasPrefix(f.Name, "ppt/slides/slide") && strings.HasSuffix(f.Name, ".xml") {
+			pageNum := getPageNumberFromSlideFilename(f.Name)
+
+			var slideText strings.Builder
+
 			rc, err := f.Open()
 			if err != nil {
 				return "", err
 			}
+
 			decoder := xml.NewDecoder(rc)
 			for {
 				token, err := decoder.Token()
@@ -42,19 +67,32 @@ func getTextFromPptx(path string) (string, error) {
 					break
 				}
 				if err != nil {
+					rc.Close()
 					return "", err
 				}
+
 				if startElement, ok := token.(xml.StartElement); ok && startElement.Name.Local == "t" {
 					var content string
 					if err := decoder.DecodeElement(&content, &startElement); err != nil {
+						rc.Close()
 						return "", err
 					}
-					text.WriteString(content)
-					text.WriteString(" ")
+					slideText.WriteString(content)
+					slideText.WriteString(" ")
 				}
 			}
 			rc.Close()
+
+			if slideText.Len() > 0 {
+				if pageNum != -1 {
+					text.WriteString(fmt.Sprintf("Page %d content is: [%s]", pageNum, slideText.String()))
+				} else {
+					text.WriteString(fmt.Sprintf("Unknown page content is: [%s]", slideText.String()))
+				}
+			}
+
 		}
 	}
+
 	return text.String(), nil
 }

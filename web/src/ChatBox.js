@@ -137,19 +137,12 @@ class ChatBox extends React.Component {
     this.setState({value: "", files: []});
   };
 
-  handleRegenerate = () => {
+  handleRegenerate = (index) => {
+    // can only regenerate after sending the message
     const messages = this.state.messages || [];
-    const isSingleWelcomeMessage = (
-      messages.length === 1 &&
-        messages[0].replyTo === "Welcome" &&
-        messages[0].author === "AI"
-    );
+    const message = [...messages.slice(0, index)].reverse().find(message => message.author !== "AI");
 
-    const text = isSingleWelcomeMessage
-      ? ""
-      : [...messages].reverse().find(message => message.author !== "AI")?.text || "";
-
-    this.props.sendMessage(text, "", true);
+    this.handleEditMessage({...message, text: message.text, updatedTime: new Date().toISOString()});
   };
 
   handleInputChange = async(file) => {
@@ -246,6 +239,7 @@ class ChatBox extends React.Component {
     } else {
       this.synth.cancel();
       const utterThis = new SpeechSynthesisUtterance(message.text);
+      utterThis.lang = Setting.getLanguage();
       utterThis.addEventListener("end", () => {
         this.synth.cancel();
         this.setState({isReading: false, readingMessage: null});

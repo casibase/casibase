@@ -294,6 +294,16 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Knowledge count")}:
+          </Col>
+          <Col span={22} >
+            <InputNumber min={0} max={100} value={this.state.store.knowledgeCount} onChange={value => {
+              this.updateStoreField("knowledgeCount", value);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Suggestion count")}:
           </Col>
           <Col span={22} >
