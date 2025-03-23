@@ -14,11 +14,9 @@
 
 package object
 
-import (
-	"github.com/casibase/casibase/service"
-)
+import "github.com/casibase/casibase/pkgimage"
 
-func getImageFromService(owner string, provider string, clientImage *service.Image) *Image {
+func getImageFromService(owner string, provider string, clientImage *pkgimage.Image) *Image {
 	return &Image{
 		Owner:                   owner,
 		Provider:                provider,
@@ -63,7 +61,7 @@ func getImagesCloud(owner string) ([]*Image, error) {
 	}
 
 	for _, provider := range providers {
-		client, err2 := service.NewImageClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
+		client, err2 := pkgimage.NewImageClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
 		if len(images) > 0 && err2 != nil {
 			continue
 		}
