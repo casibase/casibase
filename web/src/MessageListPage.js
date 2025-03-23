@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,101 +14,110 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Switch, Table, Tag} from "antd";
-import BaseListPage from "./BaseListPage";
-import {ThemeDefault} from "./Conf";
-import * as Setting from "./Setting";
-import * as MessageBackend from "./backend/MessageBackend";
+import {Button, Table} from "antd";
 import moment from "moment";
+import * as Setting from "./Setting";
+import * as MachineBackend from "./backend/MachineBackend";
 import i18next from "i18next";
-import * as Conf from "./Conf";
+import BaseListPage from "./BaseListPage";
+import PopconfirmModal from "./modal/PopconfirmModal";
+import ConnectModal from "./modal/ConnectModal";
 
-class MessageListPage extends BaseListPage {
+class MachineListPage extends BaseListPage {
   constructor(props) {
     super(props);
   }
 
-  newMessage() {
-    const randomName = Setting.getRandomName();
+  newMachine() {
     return {
-      owner: "admin",
-      name: `message_${randomName}`,
+      owner: this.props.account.owner,
+      provider: "provider_1",
+      name: `machine_${Setting.getRandomName()}`,
       createdTime: moment().format(),
-      organization: this.props.account.owner,
-      user: this.props.account.name,
-      chat: "",
-      replyTo: "",
-      author: this.props.account.name,
-      text: "Hello",
-      tokenCount: 0,
-      textTokenCount: 0,
-      price: 0.0,
+      updatedTime: moment().format(),
+      expireTime: "",
+      displayName: `New Machine - ${Setting.getRandomName()}`,
+      region: "us-west",
+      zone: "Zone 1",
+      category: "Standard",
+      type: "Pay As You Go",
+      size: "Standard_D4ls_v5",
+      image: "Ubuntu 24.04",
+      os: "Linux",
+      publicIp: "",
+      privateIp: "",
+      state: "Active",
     };
   }
 
-  addMessage() {
-    const newMessage = this.newMessage();
-    MessageBackend.addMessage(newMessage)
+  addMachine() {
+    const newMachine = this.newMachine();
+    MachineBackend.addMachine(newMachine)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Message added successfully");
-          this.setState({
-            data: Setting.prependRow(this.state.data, newMessage),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total + 1,
-            },
-          });
+          this.props.history.push({pathname: `/machines/${newMachine.owner}/${newMachine.name}`, mode: "add"});
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
-          Setting.showMessage("error", `Failed to add Message: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Message failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   }
 
-  deleteMessage(record) {
-    MessageBackend.deleteMessage(record)
+  deleteMachine(i) {
+    MachineBackend.deleteMachine(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Message deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
-            data: this.state.data.filter((item) => item.name !== record.name),
-            pagination: {
-              ...this.state.pagination,
-              total: this.state.pagination.total - 1,
-            },
+            data: Setting.deleteRow(this.state.data, i),
+            pagination: {total: this.state.pagination.total - 1},
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Message failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
       });
   }
 
-  renderTable(messages) {
-    let columns = [
-      // {
-      //   title: i18next.t("general:Owner"),
-      //   dataIndex: "owner",
-      //   key: "owner",
-      //   width: "90px",
-      //   sorter: (a, b) => a.owner.localeCompare(b.owner),
-      // },
+  renderTable(machines) {
+    const columns = [
+      {
+        title: i18next.t("general:Organization"),
+        dataIndex: "owner",
+        key: "owner",
+        width: "110px",
+        sorter: true,
+        ...this.getColumnSearchProps("owner"),
+        render: (text, machine, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/organizations/${text}`)}>
+              {text}
+            </a>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Provider"),
+        dataIndex: "provider",
+        key: "provider",
+        width: "120px",
+        sorter: (a, b) => a.provider.localeCompare(b.provider),
+      },
       {
         title: i18next.t("general:Name"),
         dataIndex: "name",
         key: "name",
-        width: "100px",
-        sorter: (a, b) => a.name.localeCompare(b.name),
+        width: "120px",
+        sorter: true,
+        ...this.getColumnSearchProps("name"),
         render: (text, record, index) => {
           return (
-            <Link to={`/messages/${text}`}>
-              {text}
-            </Link>
+            <Link to={`/machines/${record.owner}/${record.name}`}>{text}</Link>
           );
         },
       },
@@ -116,266 +125,114 @@ class MessageListPage extends BaseListPage {
         title: i18next.t("general:Created time"),
         dataIndex: "createdTime",
         key: "createdTime",
-        width: "110px",
+        width: "160px",
         sorter: (a, b) => a.createdTime.localeCompare(b.createdTime),
         render: (text, record, index) => {
           return Setting.getFormattedDate(text);
         },
       },
       {
-        title: i18next.t("general:User"),
-        dataIndex: "user",
-        key: "user",
-        width: "90px",
-        sorter: (a, b) => a.user.localeCompare(b.user),
-        render: (text, record, index) => {
-          if (text.startsWith("u-")) {
-            return text;
-          }
-
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${Conf.AuthConfig.organizationName}/${text}`)}>
-              {text}
-            </a>
-          );
+        title: i18next.t("general:Expire time"),
+        dataIndex: "expireTime",
+        key: "expireTime",
+        width: "160px",
+        // sorter: true,
+        sorter: (a, b) => a.expireTime.localeCompare(b.expireTime),
+        render: (text, machine, index) => {
+          return Setting.getFormattedDate(text);
         },
       },
       {
-        title: i18next.t("message:Chat"),
-        dataIndex: "chat",
-        key: "chat",
-        width: "90px",
-        sorter: (a, b) => a.chat.localeCompare(b.chat),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/chats/${text}`}>
-              {text}
-            </Link>
-          );
-        },
+        title: i18next.t("general:Region"),
+        dataIndex: "region",
+        key: "region",
+        width: "120px",
+        sorter: (a, b) => a.region.localeCompare(b.region),
       },
       {
-        title: i18next.t("message:Reply to"),
-        dataIndex: "replyTo",
-        key: "replyTo",
-        width: "90px",
-        sorter: (a, b) => a.replyTo.localeCompare(b.replyTo),
-        render: (text, record, index) => {
-          return (
-            <Link to={`/messages/${text}`}>
-              {text}
-            </Link>
-          );
-        },
+        title: i18next.t("machine:Zone"),
+        dataIndex: "zone",
+        key: "zone",
+        width: "120px",
+        sorter: (a, b) => a.zone.localeCompare(b.zone),
       },
       {
-        title: i18next.t("message:Author"),
-        dataIndex: "author",
-        key: "author",
-        width: "90px",
-        sorter: (a, b) => a.author.localeCompare(b.author),
-        render: (text, record, index) => {
-          if (text === "AI") {
-            return text;
-          }
-
-          if (text.startsWith("u-")) {
-            return text;
-          }
-
-          let userId = text;
-          if (!userId.includes("/")) {
-            userId = `${record.organization}/${userId}`;
-          }
-
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/users/${userId}`)}>
-              {text}
-            </a>
-          );
-        },
+        title: i18next.t("general:Type"),
+        dataIndex: "type",
+        key: "type",
+        width: "120px",
+        sorter: (a, b) => a.type.localeCompare(b.type),
       },
       {
-        title: i18next.t("chat:Token count"),
-        dataIndex: "tokenCount",
-        key: "tokenCount",
-        width: "90px",
-        sorter: (a, b) => a.tokenCount - b.tokenCount,
-        // ...this.getColumnSearchProps("tokenCount"),
+        title: i18next.t("general:Size"),
+        dataIndex: "size",
+        key: "size",
+        width: "120px",
+        sorter: (a, b) => a.size.localeCompare(b.size),
       },
       {
-        title: i18next.t("chat:Text token count"),
-        dataIndex: "textTokenCount",
-        key: "textTokenCount",
+        title: i18next.t("machine:Image"),
+        dataIndex: "image",
+        key: "image",
+        width: "120px",
+        sorter: (a, b) => a.image.localeCompare(b.image),
+      },
+      {
+        title: i18next.t("machine:Public IP"),
+        dataIndex: "publicIp",
+        key: "publicIp",
+        width: "120px",
+        sorter: (a, b) => a.publicIp.localeCompare(b.publicIp),
+      },
+      {
+        title: i18next.t("machine:Private IP"),
+        dataIndex: "privateIp",
+        key: "privateIp",
+        width: "120px",
+        sorter: (a, b) => a.privateIp.localeCompare(b.privateIp),
+      },
+      {
+        title: i18next.t("general:State"),
+        dataIndex: "state",
+        key: "state",
         width: "100px",
-        sorter: (a, b) => a.textTokenCount - b.textTokenCount,
-        // ...this.getColumnSearchProps("tokenCount"),
-      },
-      {
-        title: i18next.t("chat:Price"),
-        dataIndex: "price",
-        key: "price",
-        width: "120px",
-        sorter: (a, b) => a.price - b.price,
-        // ...this.getColumnSearchProps("price"),
-        render: (text, record, index) => {
-          return Setting.getDisplayPrice(text, record.currency);
-        },
-      },
-      {
-        title: i18next.t("general:Reasoning text"),
-        dataIndex: "reasonText",
-        key: "reasonText",
-        width: "300px",
-        sorter: (a, b) => a.reasonText.localeCompare(b.reasonText),
-        render: (text, record, index) => {
-          return (
-            <div dangerouslySetInnerHTML={{__html: text}} />
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Text"),
-        dataIndex: "text",
-        key: "text",
-        width: "300px",
-        sorter: (a, b) => a.text.localeCompare(b.text),
-        render: (text, record, index) => {
-          return (
-            <div dangerouslySetInnerHTML={{__html: text}} />
-          );
-        },
-      },
-      {
-        title: i18next.t("message:Knowledge"),
-        dataIndex: "knowledge",
-        key: "knowledge",
-        width: "100px",
-        sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
-        render: (text, record, index) => {
-          return record.vectorScores?.map(vectorScore => {
-            return (
-              <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
-                <Tag style={{marginTop: "5px"}} color={"processing"}>
-                  {vectorScore.score}
-                </Tag>
-              </Link>
-            );
-          });
-        },
-      },
-      {
-        title: i18next.t("message:Suggestions"),
-        dataIndex: "suggestions",
-        key: "suggestions",
-        width: "400px",
-        render: (text, record, index) => {
-          return (
-            text?.map(suggestion => {
-              return (
-                <Tag key={suggestion.text} color={suggestion.isHit ? ThemeDefault.colorPrimary : ""}>{suggestion.text}</Tag>
-              );
-            })
-          );
-        },
-      },
-      {
-        title: i18next.t("message:Error text"),
-        dataIndex: "errorText",
-        key: "errorText",
-        width: "200px",
-        sorter: (a, b) => a.errorText.localeCompare(b.errorText),
-        render: (text, record, index) => {
-          return (
-            <div dangerouslySetInnerHTML={{__html: text}} />
-          );
-        },
-      },
-      {
-        title: i18next.t("message:Comment"),
-        dataIndex: "comment",
-        key: "comment",
-        width: "200px",
-        sorter: (a, b) => a.comment.localeCompare(b.comment),
-        render: (text, record, index) => {
-          return (
-            <div dangerouslySetInnerHTML={{__html: text}} />
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Is deleted"),
-        dataIndex: "isDeleted",
-        key: "isDeleted",
-        width: "120px",
-        sorter: (a, b) => a.isDeleted - b.isDeleted,
-        // ...this.getColumnSearchProps("isDeleted"),
-        render: (text, record, index) => {
-          return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
-          );
-        },
-      },
-      {
-        title: i18next.t("general:Is alerted"),
-        dataIndex: "isAlerted",
-        key: "isAlerted",
-        width: "120px",
-        sorter: (a, b) => a.isAlerted - b.isAlerted,
-        // ...this.getColumnSearchProps("isAlerted"),
-        render: (text, record, index) => {
-          return (
-            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
-          );
-        },
+        sorter: (a, b) => a.state.localeCompare(b.state),
       },
       {
         title: i18next.t("general:Action"),
         dataIndex: "action",
         key: "action",
-        width: "90px",
-        fixed: "right",
-        render: (text, record, index) => {
+        width: "260px",
+        fixed: (Setting.isMobile()) ? "false" : "right",
+        render: (text, machine, index) => {
           return (
             <div>
+              <ConnectModal
+                owner={machine.owner}
+                name={machine.name}
+                category={"machine"}
+                node={machine}
+              />
               <Button
                 style={{marginTop: "10px", marginBottom: "10px", marginRight: "10px"}}
-                type="primary"
-                onClick={() => this.props.history.push(`/messages/${record.name}`)}
-              >
-                {i18next.t("general:Edit")}
+                onClick={() => this.props.history.push(`/machines/${machine.owner}/${machine.name}`)}
+              >{i18next.t("general:Edit")}
               </Button>
-              <Popconfirm
-                title={`${i18next.t("general:Sure to delete")}: ${record.name} ?`}
-                onConfirm={() => this.deleteMessage(record)}
-                okText={i18next.t("general:OK")}
-                cancelText={i18next.t("general:Cancel")}
+              <PopconfirmModal
+                disabled={machine.owner !== this.props.account.owner}
+                title={i18next.t("general:Sure to delete") + `: ${machine.name} ?`}
+                onConfirm={() => this.deleteMachine(index)}
               >
-                <Button disabled={!Setting.isLocalAdminUser(this.props.account)} style={{marginBottom: "10px"}} type="primary" danger>
-                  {i18next.t("general:Delete")}
-                </Button>
-              </Popconfirm>
+              </PopconfirmModal>
             </div>
           );
         },
       },
     ];
 
-    if (!this.props.account || this.props.account.name !== "admin") {
-      columns = columns.filter(column => column.key !== "name" && column.key !== "tokenCount" && column.key !== "price");
-
-      const tokenCountIndex = columns.findIndex(column => column.key === "tokenCount");
-      if (tokenCountIndex !== -1) {
-        const [tokenCountElement] = columns.splice(tokenCountIndex, 1);
-
-        const actionIndex = columns.findIndex(column => column.key === "action");
-        const insertIndex = actionIndex !== -1 ? actionIndex : columns.length;
-        columns.splice(insertIndex, 0, tokenCountElement);
-      }
-    }
-
     const paginationProps = {
       total: this.state.pagination.total,
+      pageSize: this.state.pagination.pageSize,
       showQuickJumper: true,
       showSizeChanger: true,
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
@@ -383,44 +240,14 @@ class MessageListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={machines} rowKey={"name"} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Users")}:
-              &nbsp;
-              {Setting.getDisplayTag(Setting.uniqueFields(messages, "user"))}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Chats")}:
-              &nbsp;
-              {Setting.getDisplayTag(Setting.uniqueFields(messages, "chat"))}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              {i18next.t("general:Messages")}:
-              &nbsp;
-              {Setting.getDisplayTag(this.state.pagination.total)}
-              {
-                (!this.props.account || this.props.account.name !== "admin") ? null : (
-                  <React.Fragment>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("general:Tokens")}:
-                    &nbsp;
-                    {Setting.getDisplayTag(Setting.sumFields(messages, "tokenCount"))}
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {i18next.t("chat:Price")}:
-                    &nbsp;
-                    {Setting.getDisplayPrice(Setting.sumFields(messages, "price"))}
-                  </React.Fragment>
-                )
-              }
+              {i18next.t("general:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button type="primary" size="small" onClick={this.addMachine.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={messages === null}
-          rowClassName={(record, index) => {
-            return record.isDeleted ? "highlight-row" : "";
-          }}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>
@@ -435,7 +262,7 @@ class MessageListPage extends BaseListPage {
       value = params.type;
     }
     this.setState({loading: true});
-    MessageBackend.getGlobalMessages(params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    MachineBackend.getMachines(Setting.getRequestOrganization(this.props.account), params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
@@ -463,4 +290,4 @@ class MessageListPage extends BaseListPage {
   };
 }
 
-export default MessageListPage;
+export default MachineListPage;
