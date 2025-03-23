@@ -121,13 +121,11 @@ func (c *ApiController) GetNodeTunnel() {
 	var remoteTarget interface{}
 	var targetType string
 
-	fmt.Println("hhhhhhhhhhhhhhhhhhhhhhhhhhh")
-	fmt.Println(category)
 	switch category {
-	case "Node":
+	case "node":
 		remoteTarget, err = object.GetNode(session.Node)
 		targetType = "Node"
-	case "Machine":
+	case "machine":
 		remoteTarget, err = object.GetMachine(session.Node)
 		targetType = "Machine"
 	default:

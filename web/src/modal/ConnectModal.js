@@ -66,11 +66,11 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "Node") {
-      const link = (username === "" || password === "") ? `access/${owner}/${name}?category=${category}` : `access/${owner}/${name}?username=${username}&password=${password}&category=${category}`;
+    if (category === "node") {
+      const link = (username === "" || password === "") ? `access/${owner}/${category}/${name}` : `access/${owner}/${category}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
-    } else if (category === "Machine") {
-      const link = (username === "" || password === "") ? `access/${owner}/${name}?category=${category}` : `access/${owner}/${name}?username=${username}&password=${password}&category=${category}`;
+    } else if (category === "machine") {
+      const link = (username === "" || password === "") ? `access/${owner}/${category}/${name}` : `access/${owner}/${category}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else {
       Setting.showMessage("error", `Unknown category: ${category}`);

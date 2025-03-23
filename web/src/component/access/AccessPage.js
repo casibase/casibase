@@ -17,11 +17,10 @@ import GuacdPage from "./GuacdPage";
 import {useLocation, useParams} from "react-router-dom";
 
 const AccessPage = () => {
-  const {owner, name} = useParams();
+  const {owner, name, category} = useParams();
   const query = new URLSearchParams(useLocation().search);
   const username = query.get("username") || "";
   const password = query.get("password") || "";
-  const category = query.get("category");
   return <GuacdPage nodeId={`${owner}/${name}`} username={`${username}`} password={`${password}`} category={`${category}`} />;
 };
 
