@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package service
+package pkgimage
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type ImageClientInterface interface {
 	GetImages() ([]*Image, error)
