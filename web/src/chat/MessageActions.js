@@ -37,6 +37,8 @@ const MessageActions = ({
   isReading,
   readingMessage,
   account,
+  setIsRegenerating,
+  isRegenerating,
 }) => {
   return (
     <Space
@@ -59,7 +61,11 @@ const MessageActions = ({
           className="cs-button"
           icon={<ReloadOutlined />}
           style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={onRegenerate}
+          onClick={() => {
+            setIsRegenerating(true);
+            onRegenerate(index);
+          }}
+          disabled={isRegenerating}
         />
       )}
 

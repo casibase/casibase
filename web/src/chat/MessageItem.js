@@ -41,6 +41,7 @@ const MessageItem = ({
   sendMessage,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   const {isEditing,
     setIsHovering,
@@ -79,8 +80,13 @@ const MessageItem = ({
           type="error"
           showIcon
           action={
-            <Button danger type="primary" onClick={onRegenerate}>
-              {i18next.t("general:Regenerate Answer")}
+            <Button danger type="primary" onClick={() => {
+              setIsRegenerating(true);
+              onRegenerate(index);
+            }} disabled={isRegenerating}>
+              {
+                isRegenerating ? i18next.t("general:Regenerating...") :
+                  i18next.t("general:Regenerate Answer")}
             </Button>
           }
         />
@@ -260,6 +266,8 @@ const MessageItem = ({
           isReading={isReading}
           readingMessage={readingMessage}
           account={account}
+          setIsRegenerating={setIsRegenerating}
+          isRegenerating={isRegenerating}
         />
       )}
 
