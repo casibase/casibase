@@ -107,7 +107,7 @@ class VectorEditPage extends React.Component {
             {i18next.t("general:Store")}:
           </Col>
           <Col span={22} >
-            <Input disabled={true} value={this.state.vector.store} onChange={e => {
+            <Input value={this.state.vector.store} onChange={e => {
               this.updateVectorField("store", e.target.value);
             }} />
           </Col>
@@ -117,7 +117,7 @@ class VectorEditPage extends React.Component {
             {i18next.t("vector:Provider")}:
           </Col>
           <Col span={22} >
-            <Input disabled={true} value={this.state.vector.provider} onChange={e => {
+            <Input value={this.state.vector.provider} onChange={e => {
               this.updateVectorField("provider", e.target.value);
             }} />
           </Col>
