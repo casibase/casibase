@@ -255,11 +255,11 @@ class MessageListPage extends BaseListPage {
         render: (text, record, index) => {
           return record.vectorScores?.map(vectorScore => {
             return (
-              <Link key={vectorScore.vector} to={`/vectors/${vectorScore.vector}`}>
+              <a key={vectorScore.vector} target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
                 <Tag style={{marginTop: "5px"}} color={"processing"}>
                   {vectorScore.score}
                 </Tag>
-              </Link>
+              </a>
             );
           });
         },
