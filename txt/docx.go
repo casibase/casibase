@@ -15,13 +15,34 @@
 package txt
 
 import (
+	"bytes"
 	"fmt"
+	"os/exec"
+	"runtime"
 	"strings"
 
 	"github.com/carmel/gooxml/document"
 )
 
 func GetTextFromDocx(path string) (string, error) {
+	// Check if the markitdown tool exists
+	if _, err := exec.LookPath("markitdown"); err == nil {
+		// If the markitdown tool exists, use it to process the .docx file
+		var cmd *exec.Cmd
+		if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+			cmd = exec.Command("cmd", "/C", fmt.Sprintf("type %s | markitdown", path))
+		} else {
+			cmd = exec.Command("sh", "-c", fmt.Sprintf("cat %s | markitdown", path))
+		}
+		var out bytes.Buffer
+		cmd.Stdout = &out
+		if err := cmd.Run(); err != nil {
+			return "", err
+		}
+		return out.String(), nil
+	}
+
+	// If the markitdown tool does not exist, continue using the existing logic to process the .docx file
 	docx, err := document.Open(path)
 	if err != nil {
 		return "", err
