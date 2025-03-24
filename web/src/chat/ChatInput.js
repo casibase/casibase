@@ -20,6 +20,7 @@ import i18next from "i18next";
 
 const ChatInput = ({
   value,
+  store,
   onChange,
   onSend,
   onFileUpload,
@@ -51,7 +52,7 @@ const ChatInput = ({
               type="text"
               icon={<LinkOutlined />}
               onClick={onFileUpload}
-              disabled={disableInput || messageError}
+              disabled={disableInput || messageError || store?.disableFileUpload}
               style={{
                 color: (disableInput || messageError) ? "#d9d9d9" : undefined,
               }}
