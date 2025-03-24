@@ -362,6 +362,7 @@ class ChatBox extends React.Component {
           {!this.props.disableInput && (
             <ChatInput
               value={this.state.value}
+              store={this.props.store}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
               onFileUpload={this.handleFileUploadClick}

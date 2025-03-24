@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row, Select, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -325,17 +325,27 @@ class StoreEditPage extends React.Component {
         {
           this.state.store.name !== "store-built-in" ? null : (
             <Row style={{marginTop: "20px"}} >
-              <Col style={{}} span={(Setting.isMobile()) ? 22 : 2}>
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("store:Can Select Store")}:
               </Col>
-              <Col span={22} style={{display: "flex", alignItems: "center"}}>
-                <input type="checkbox" checked={this.state.store.canSelectStore} onClick={(e) => {
-                  this.updateStoreField("canSelectStore", e.target.checked);
+              <Col span={1}>
+                <Switch checked={this.state.store.canSelectStore} onChange={checked => {
+                  this.updateStoreField("canSelectStore", checked);
                 }} />
               </Col>
             </Row>
           )
         }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Disable file upload")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
+              this.updateStoreField("disableFileUpload", checked);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:State")} :
