@@ -20,16 +20,36 @@ import (
 	"os/exec"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/carmel/gooxml/document"
 )
 
+var (
+	markitdownExists bool
+	isWindows        bool
+	once             sync.Once
+)
+
+func init() {
+	once.Do(func() {
+		// Check if the markitdown tool exists
+		if _, err := exec.LookPath("markitdown"); err == nil {
+			markitdownExists = true
+		} else {
+			markitdownExists = false
+		}
+
+		// Check if the OS is Windows
+		isWindows = strings.Contains(strings.ToLower(runtime.GOOS), "windows")
+	})
+}
+
 func GetTextFromDocx(path string) (string, error) {
-	// Check if the markitdown tool exists
-	if _, err := exec.LookPath("markitdown"); err == nil {
+	if markitdownExists {
 		// If the markitdown tool exists, use it to process the .docx file
 		var cmd *exec.Cmd
-		if strings.Contains(strings.ToLower(runtime.GOOS), "windows") {
+		if isWindows {
 			cmd = exec.Command("cmd", "/C", fmt.Sprintf("type %s | markitdown", path))
 		} else {
 			cmd = exec.Command("sh", "-c", fmt.Sprintf("cat %s | markitdown", path))
