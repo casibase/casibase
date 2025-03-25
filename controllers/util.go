@@ -61,6 +61,19 @@ func (c *ApiController) ResponseError(error string, data ...interface{}) {
 	c.ServeJSON()
 }
 
+func (c *ApiController) ResponseAudio(audioData []byte, contentType string, filename string) {
+	if contentType == "" {
+		contentType = "audio/mp3"
+	}
+	if filename == "" {
+		filename = "audio.mp3"
+	}
+
+	c.Ctx.Output.Header("Content-Type", contentType)
+	c.Ctx.Output.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
+	c.Ctx.Output.Body(audioData)
+}
+
 func (c *ApiController) GetAcceptLanguage() string {
 	language := c.Ctx.Request.Header.Get("Accept-Language")
 	if len(language) > 2 {

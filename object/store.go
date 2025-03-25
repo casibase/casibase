@@ -63,6 +63,7 @@ type Store struct {
 	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
 	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
+	TTSProvider       string `xorm:"varchar(100)" json:"textToSpeechProvider"`
 
 	MemoryLimit     int      `json:"memoryLimit"`
 	Frequency       int      `json:"frequency"`
@@ -220,6 +221,15 @@ func (store *Store) GetModelProvider() (*Provider, error) {
 	return GetProvider(providerId)
 }
 
+func (store *Store) GetTTSProvider() (*Provider, error) {
+	if store.TTSProvider == "" {
+		return GetDefaultTTSProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TTSProvider)
+	return GetProvider(providerId)
+}
+
 func (store *Store) GetEmbeddingProvider() (*Provider, error) {
 	if store.EmbeddingProvider == "" {
 		return GetDefaultEmbeddingProvider()
@@ -249,6 +259,14 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 	}
 	if embeddingProvider == nil {
 		return false, fmt.Errorf("The embedding provider for store: %s is not found", store.GetId())
+	}
+
+	ttsProvider, err := store.GetTTSProvider()
+	if err != nil {
+		return false, err
+	}
+	if ttsProvider == nil {
+		return false, fmt.Errorf("The TTS provider for store: %s is not found", store.GetId())
 	}
 
 	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider()

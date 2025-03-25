@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casibase/casibase/text_to_speech"
+
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
@@ -40,6 +42,8 @@ type Provider struct {
 	ProviderUrl        string `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string `xorm:"varchar(100)" json:"apiVersion"`
 	CompitableProvider string `xorm:"varchar(100)" json:"compitableProvider"`
+
+	Flavor string `xorm:"varchar(100)" json:"flavor"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`
@@ -237,6 +241,27 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 	return &provider, nil
 }
 
+func GetDefaultTTSProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Text-to-Speech"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func GetDefaultMachineProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Machine"}
 	existed, err := adapter.engine.Get(&provider)
@@ -362,6 +387,19 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 
 	if pProvider == nil {
 		return nil, fmt.Errorf("the embedding provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetTTSProvider() (tts.TTSProvider, error) {
+	pProvider, err := tts.GetTTSProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, p.Flavor)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the TTS provider type: %s is not supported", p.Type)
 	}
 
 	return pProvider, nil
