@@ -21,10 +21,18 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-type DefaultSplitProvider struct{}
+type DefaultSplitProvider struct {
+	TextType string
+}
 
-func NewDefaultSplitProvider() (*DefaultSplitProvider, error) {
-	return &DefaultSplitProvider{}, nil
+func NewDefaultSplitProvider(textType string) (*DefaultSplitProvider, error) {
+	typ := "default"
+	if textType != "" {
+		typ = textType
+	}
+	return &DefaultSplitProvider{
+		TextType: typ,
+	}, nil
 }
 
 func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
@@ -87,7 +95,7 @@ func (p *DefaultSplitProvider) SplitText(text string) ([]string, error) {
 			continue
 		}
 
-		if isSectionSeparator(line) {
+		if p.isSeparator(line) {
 			if currentSection.Len() > 0 {
 				sections = append(sections, currentSection.String())
 				currentSection.Reset()
@@ -130,4 +138,24 @@ func isSectionSeparator(line string) bool {
 	// Check for numeric bullet points (e.g., "1. ", "2. ")
 	matched, _ := regexp.MatchString(`^\d+\.\s`, line)
 	return matched
+}
+
+func isMarkdownSeparator(line string) bool {
+	// Check Markdown titles (1-6 '#' followed by spaces)
+	if matched, _ := regexp.MatchString(`^#{1,6}\s+`, line); matched {
+		return true
+	}
+	// Check the numerical sequence number (e.g. "1.", "2. "）
+	if matched, _ := regexp.MatchString(`^\d+\.\s`, line); matched {
+		return true
+	}
+	return false
+}
+
+func (p *DefaultSplitProvider) isSeparator(line string) bool {
+	if p.TextType == "markdown" {
+		return isMarkdownSeparator(line)
+	} else {
+		return isSectionSeparator(line)
+	}
 }
