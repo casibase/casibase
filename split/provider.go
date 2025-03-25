@@ -22,13 +22,15 @@ func GetSplitProvider(typ string) (SplitProvider, error) {
 	var p SplitProvider
 	var err error
 	if typ == "Default" {
-		p, err = NewDefaultSplitProvider()
+		p, err = NewDefaultSplitProvider("default")
 	} else if typ == "QA" {
 		p, err = NewQaSplitProvider()
 	} else if typ == "Basic" {
 		p, err = NewBasicSplitProvider()
+	} else if typ == "Markdown" {
+		p, err = NewMarkdownSplitProvider()
 	} else {
-		p, err = NewDefaultSplitProvider()
+		p, err = NewDefaultSplitProvider("default")
 	}
 
 	if err != nil {
