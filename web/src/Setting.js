@@ -767,6 +767,10 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
       ]
     );
+  } else if (category === "Text-to-Speech") {
+    return [
+      {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+    ];
   } else {
     return [];
   }
@@ -1111,6 +1115,12 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "text-embedding-v1", name: "text-embedding-v1"},
           {id: "text-embedding-v2", name: "text-embedding-v2"},
           {id: "text-embedding-v3", name: "text-embedding-v3"},
+        ]
+      );
+    } else if (category === "Text-to-Speech") {
+      return (
+        [
+          {id: "cosyvoice-v1", name: "cosyvoice-v1"},
         ]
       );
     }

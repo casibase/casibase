@@ -36,6 +36,7 @@ class StoreEditPage extends React.Component {
       storageProviders: [],
       modelProviders: [],
       embeddingProviders: [],
+      textToSpeechProviders: [],
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
@@ -85,6 +86,7 @@ class StoreEditPage extends React.Component {
             storageProviders: res.data.filter(provider => provider.category === "Storage"),
             modelProviders: res.data.filter(provider => provider.category === "Model"),
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
+            textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
@@ -205,6 +207,16 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
               options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+              } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Text-to-Speech provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
+              options={this.state.textToSpeechProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
           </Col>
         </Row>
