@@ -17,11 +17,15 @@ package txt
 import (
 	"bytes"
 	"fmt"
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
+	"io/ioutil"
 	"log"
 	"os/exec"
 	"runtime"
 	"strings"
 	"sync"
+	"unicode/utf8"
 
 	"github.com/carmel/gooxml/document"
 )
@@ -63,7 +67,19 @@ func GetTextFromDocx(path string) (string, error) {
 			log.Printf("Error running markitdown command: %v, stderr: %s", err, stderr.String())
 			return "", err
 		}
-		return out.String(), nil
+
+		outputBytes := out.Bytes()
+		if isUTF8(outputBytes) {
+			return string(outputBytes), nil
+		}
+
+		utf8Output, err := gbkToUtf8(outputBytes)
+		if err != nil {
+			log.Printf("Failed to convert GBK to UTF-8: %v", err)
+			return "", err
+		}
+
+		return utf8Output, nil
 	}
 
 	log.Printf("Processing file: %s with gooxml", path)
@@ -96,4 +112,17 @@ func GetTextFromDocx(path string) (string, error) {
 
 	text := strings.Join(paragraphs, "")
 	return text, nil
+}
+
+func gbkToUtf8(gbkData []byte) (string, error) {
+	reader := transform.NewReader(bytes.NewReader(gbkData), simplifiedchinese.GBK.NewDecoder())
+	utf8Data, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return "", err
+	}
+	return string(utf8Data), nil
+}
+
+func isUTF8(data []byte) bool {
+	return utf8.Valid(data)
 }
