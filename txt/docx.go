@@ -17,15 +17,15 @@ package txt
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/text/encoding/simplifiedchinese"
-	"golang.org/x/text/transform"
 	"io/ioutil"
-	"log"
 	"os/exec"
 	"runtime"
 	"strings"
 	"sync"
 	"unicode/utf8"
+
+	"golang.org/x/text/encoding/simplifiedchinese"
+	"golang.org/x/text/transform"
 
 	"github.com/carmel/gooxml/document"
 )
@@ -55,16 +55,13 @@ func GetTextFromDocx(path string) (string, error) {
 		var cmd *exec.Cmd
 		if isWindows {
 			cmd = exec.Command("cmd", "/C", fmt.Sprintf("markitdown < %s", path))
-			log.Printf("Processing file: %s with markitdown in windows", path)
 		} else {
 			cmd = exec.Command("sh", "-c", fmt.Sprintf("markitdown < %s", path))
-			log.Printf("Processing file: %s with markitdown in linux", path)
 		}
 		var out, stderr bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Stderr = &stderr
 		if err := cmd.Run(); err != nil {
-			log.Printf("Error running markitdown command: %v, stderr: %s", err, stderr.String())
 			return "", err
 		}
 
@@ -75,17 +72,14 @@ func GetTextFromDocx(path string) (string, error) {
 
 		utf8Output, err := gbkToUtf8(outputBytes)
 		if err != nil {
-			log.Printf("Failed to convert GBK to UTF-8: %v", err)
 			return "", err
 		}
 
 		return utf8Output, nil
 	}
 
-	log.Printf("Processing file: %s with gooxml", path)
 	docx, err := document.Open(path)
 	if err != nil {
-		log.Printf("Error opening .docx file: %v", err)
 		return "", err
 	}
 
@@ -106,7 +100,6 @@ func GetTextFromDocx(path string) (string, error) {
 
 	if len(paragraphs) == 0 {
 		err := fmt.Errorf(".docx file is empty")
-		log.Printf("Error: %v", err)
 		return "", err
 	}
 
