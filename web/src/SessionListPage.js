@@ -43,6 +43,9 @@ class SessionListPage extends BaseListPage {
   }
 
   deleteSession(i) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     SessionBackend.deleteSession(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {

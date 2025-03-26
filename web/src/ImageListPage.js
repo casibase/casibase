@@ -49,6 +49,9 @@ class ImageListPage extends BaseListPage {
   }
 
   addImage() {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     const newImage = this.newImage();
     ImageBackend.addImage(newImage)
       .then((res) => {
@@ -65,6 +68,9 @@ class ImageListPage extends BaseListPage {
   }
 
   deleteImage(i) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     ImageBackend.deleteImage(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {

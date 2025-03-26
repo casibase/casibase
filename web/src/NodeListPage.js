@@ -51,6 +51,9 @@ class NodeListPage extends BaseListPage {
   }
 
   addNode() {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     const newNode = this.newNode();
     NodeBackend.addNode(newNode)
       .then((res) => {
@@ -67,6 +70,9 @@ class NodeListPage extends BaseListPage {
   }
 
   deleteNode(i) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     NodeBackend.deleteNode(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {

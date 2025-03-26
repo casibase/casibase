@@ -45,3 +45,5 @@ export const ThemeDefault = {
 };
 
 export const AvatarErrorUrl = "https://cdn.casibase.org/gravatar/error.png";
+
+export const DisablePreviewMode = false;

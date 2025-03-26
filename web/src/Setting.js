@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Tag, Tooltip, message} from "antd";
+import {Tag, Tooltip, message, notification} from "antd";
 import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
@@ -774,6 +774,41 @@ export function getProviderTypeOptions(category) {
   } else {
     return [];
   }
+}
+
+export function redirectIfAnonymous(account) {
+  if (this.isAnonymousUser(account)) {
+    showLoginRequirement();
+    return true;
+  } else {
+    return false;
+  }
+}
+
+export function showLoginRequirement() {
+  notification.open({
+    message: (
+      <div style={{display: "flex", alignItems: "center"}}>
+        <img
+          className="notification-icon" style={{width: 36, marginLeft: "-8px", marginRight: "10px"}} src={`${StaticBaseUrl}/img/hushed-face.svg`}
+        />
+        <span>Login Required</span>
+      </div>
+    ),
+    description: "You are currently an anonymous user. You need to log in to proceed.\nClick here to log in.",
+    duration: 5,
+    showProgress: true,
+    pauseOnHover: true,
+    onClick: () => {
+      return redirectToLogin();
+    },
+  });
+}
+
+export function redirectToLogin() {
+  sessionStorage.setItem("from", window.location.pathname);
+  window.location.replace(getSigninUrl());
+  return null;
 }
 
 const openaiModels = [
