@@ -93,7 +93,7 @@ class NodeEditPage extends React.Component {
             node: newNode,
           });
         } else {
-          Setting.showMessage("error", `Failed to get node: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to get node")}: ${res.msg}`);
         }
       });
   }
@@ -361,7 +361,7 @@ class NodeEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("node:Successfully saved"));
             this.setState({
               nodeName: this.state.node.name,
             });
@@ -372,15 +372,15 @@ class NodeEditPage extends React.Component {
             }
             // this.getNode(true);
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("node:failed to save: server side failure"));
             this.updateNodeField("name", this.state.nodeName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("node:failed to save")}: ${error}`);
       });
   }
 
@@ -390,11 +390,11 @@ class NodeEditPage extends React.Component {
         if (res.status === "ok") {
           this.props.history.push("/nodes");
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("node:Failed to connect to server")}: ${error}`);
       });
   }
 

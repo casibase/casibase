@@ -46,7 +46,7 @@ class FileTreePage extends React.Component {
             store: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get store")}: ${res.msg}`);
         }
       });
   }

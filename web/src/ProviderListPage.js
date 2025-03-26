@@ -76,7 +76,7 @@ class ProviderListPage extends BaseListPage {
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Provider added successfully");
+          Setting.showMessage("success", i18next.t("provider:Provider added successfully"));
           this.setState({
             data: Setting.prependRow(this.state.data, newProvider),
             pagination: {
@@ -85,11 +85,11 @@ class ProviderListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to add provider: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("provider:Failed to add provider")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Provider failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("provider:Provider failed to add")}: ${error}`);
       });
   }
 
@@ -97,7 +97,7 @@ class ProviderListPage extends BaseListPage {
     ProviderBackend.deleteProvider(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Provider deleted successfully");
+          Setting.showMessage("success", i18next.t("provider:Provider deleted successfully"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -106,11 +106,11 @@ class ProviderListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Provider failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("provider:Provider failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Provider failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("provider:Provider failed to delete")}: ${error}`);
       });
   }
 

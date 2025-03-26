@@ -49,7 +49,7 @@ class TaskListPage extends BaseListPage {
     TaskBackend.addTask(newTask)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Task added successfully");
+          Setting.showMessage("success", i18next.t("task:Task added successfully"));
           this.setState({
             data: Setting.prependRow(this.state.data, newTask),
             pagination: {
@@ -58,11 +58,11 @@ class TaskListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to add task: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("task:Failed to add task")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Task failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("task:Task failed to add")}: ${error}`);
       });
   }
 
@@ -70,7 +70,7 @@ class TaskListPage extends BaseListPage {
     TaskBackend.deleteTask(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Task deleted successfully");
+          Setting.showMessage("success", i18next.t("task:Task deleted successfully"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -79,11 +79,11 @@ class TaskListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Task failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("task:Task failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Task failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("task:Task failed to delete")}: ${error}`);
       });
   }
 

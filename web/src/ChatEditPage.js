@@ -49,7 +49,7 @@ class ChatEditPage extends React.Component {
             chat: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get chat")}: ${res.msg}`);
         }
       });
   }
@@ -231,7 +231,7 @@ class ChatEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               chatName: this.state.chat.name,
             });
@@ -242,15 +242,15 @@ class ChatEditPage extends React.Component {
               this.props.history.push(`/chats/${this.state.chat.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:failed to save: server side failure"));
             this.updateChatField("name", this.state.chatName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:failed to save")}: ${error}`);
       });
   }
 

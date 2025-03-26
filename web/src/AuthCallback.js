@@ -16,6 +16,7 @@ import React from "react";
 import {Button, Result, Spin} from "antd";
 import {withRouter} from "react-router-dom";
 import * as Setting from "./Setting";
+import i18next from "i18next";
 
 class AuthCallback extends React.Component {
   constructor(props) {
@@ -41,7 +42,7 @@ class AuthCallback extends React.Component {
   login() {
     Setting.signin().then((res) => {
       if (res.status === "ok") {
-        Setting.showMessage("success", "Logged in successfully");
+        Setting.showMessage("success", i18next.t("general:Logged in successfully"));
 
         const link = this.getFromLink();
         Setting.goToLink(link);

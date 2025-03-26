@@ -47,7 +47,7 @@ class VectorEditPage extends React.Component {
             vector: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get vector: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get vector")}: ${res.msg}`);
         }
       });
   }
@@ -185,7 +185,7 @@ class VectorEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               vectorName: this.state.vector.name,
             });
@@ -197,15 +197,15 @@ class VectorEditPage extends React.Component {
               this.getVector();
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:failed to save: server side failure"));
             this.updateVectorField("name", this.state.vectorName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:failed to save")}: ${error}`);
       });
   }
 
