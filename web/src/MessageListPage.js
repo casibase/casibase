@@ -51,7 +51,7 @@ class MessageListPage extends BaseListPage {
     MessageBackend.addMessage(newMessage)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Message added successfully");
+          Setting.showMessage("success", i18next.t("message:Message added successfully"));
           this.setState({
             data: Setting.prependRow(this.state.data, newMessage),
             pagination: {
@@ -60,11 +60,11 @@ class MessageListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to add Message: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to add Message")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Message failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("message:Message failed to add")}: ${error}`);
       });
   }
 
@@ -72,7 +72,7 @@ class MessageListPage extends BaseListPage {
     MessageBackend.deleteMessage(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Message deleted successfully");
+          Setting.showMessage("success", i18next.t("message:Message deleted successfully"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -81,11 +81,11 @@ class MessageListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Message: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to delete Message")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Message failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("message:Message failed to delete")}: ${error}`);
       });
   }
 

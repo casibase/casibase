@@ -44,7 +44,7 @@ class MachineEditPage extends React.Component {
             machine: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get machine: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("machine:Failed to get machine")}: ${res.msg}`);
         }
       });
   }
@@ -292,7 +292,7 @@ class MachineEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", i18next.t("general:Successfully saved"));
+            Setting.showMessage("success", i18next.t("machine:Successfully saved"));
             this.setState({
               machineName: this.state.machine.name,
             });
@@ -302,15 +302,15 @@ class MachineEditPage extends React.Component {
               this.props.history.push(`/machines/${this.state.machine.owner}/${encodeURIComponent(this.state.machine.name)}`);
             }
           } else {
-            Setting.showMessage("error", i18next.t("general:Failed to save: server side failure"));
+            Setting.showMessage("error", i18next.t("machine:Failed to save: server side failure"));
             this.updateMachineField("name", this.state.machineName);
           }
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("machine:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("machine:Failed to connect to server")}: ${error}`);
       });
   }
 
@@ -320,11 +320,11 @@ class MachineEditPage extends React.Component {
         if (res.status === "ok") {
           this.props.history.push("/machines");
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("machine:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("machine:Failed to connect to server")}: ${error}`);
       });
   }
 

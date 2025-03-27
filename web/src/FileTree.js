@@ -93,7 +93,7 @@ class FileTree extends React.Component {
             permissionMap: this.getPermissionMap(permissions),
           });
         } else {
-          Setting.showMessage("error", `Failed to get permissions: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get permissions")}: ${res.msg}`);
         }
       });
   }
@@ -178,14 +178,14 @@ class FileTree extends React.Component {
       .then((values) => {
         const res = values[0];
         if (res.status === "ok") {
-          Setting.showMessage("success", "File added successfully");
+          Setting.showMessage("success", i18next.t("general:File added successfully"));
           this.props.onRefresh();
         } else {
-          Setting.showMessage("error", `File failed to add: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:File failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `File failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:File failed to add")}: ${error}`);
       });
   }
 
@@ -194,14 +194,14 @@ class FileTree extends React.Component {
     FileBackend.addFile(storeId, file.key, false, newFolder, null)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "File added successfully");
+          Setting.showMessage("success", i18next.t("general:File added successfully"));
           this.props.onRefresh();
         } else {
-          Setting.showMessage("error", `File failed to add: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:File failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `File failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:File failed to add")}: ${error}`);
       });
   }
 
@@ -211,17 +211,17 @@ class FileTree extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {
-            Setting.showMessage("success", "File deleted successfully");
+            Setting.showMessage("success", i18next.t("general:File deleted successfully"));
             this.props.onRefresh();
           } else {
-            Setting.showMessage("error", "File failed to delete：server side failure");
+            Setting.showMessage("error", i18next.t("general:File failed to delete: server side failure"));
           }
         } else {
-          Setting.showMessage("error", `File failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:File failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `File failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:File failed to delete")}: ${error}`);
       });
   }
 
@@ -380,14 +380,14 @@ class FileTree extends React.Component {
                   // Setting.showMessage("success", `File activated successfully`);
                   fetchFile();
                 } else {
-                  Setting.showMessage("error", "File failed to activate: server side failure");
+                  Setting.showMessage("error", i18next.t("store:File failed to activate: server side failure"));
                 }
               } else {
-                Setting.showMessage("error", `File failed to activate: ${res.msg}`);
+                Setting.showMessage("error", `${i18next.t("error:File failed to activate")}: ${res.msg}`);
               }
             })
             .catch(error => {
-              Setting.showMessage("error", `File failed to activate: ${error}`);
+              Setting.showMessage("error", `${i18next.t("error:File failed to activate")}: ${error}`);
             });
         } else {
           fetchFile();

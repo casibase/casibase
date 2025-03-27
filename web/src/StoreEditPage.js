@@ -59,7 +59,7 @@ class StoreEditPage extends React.Component {
             store: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:Failed to get store")}: ${res.msg}`);
         }
       });
   }
@@ -72,7 +72,7 @@ class StoreEditPage extends React.Component {
             casdoorStorageProviders: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:Failed to get storage providers")}: ${res.msg}`);
         }
       });
   }
@@ -87,7 +87,7 @@ class StoreEditPage extends React.Component {
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
           });
         } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:Failed to get providers")}: ${res.msg}`);
         }
       });
   }
@@ -389,7 +389,7 @@ class StoreEditPage extends React.Component {
         if (res.status === "ok") {
           if (res.data) {
             Setting.setThemeColor(this.state.store.themeColor);
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("store:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
             });
@@ -399,15 +399,15 @@ class StoreEditPage extends React.Component {
               this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("store:failed to save: server side failure"));
             this.updateStoreField("name", this.state.storeName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("store:failed to save")}: ${error}`);
       });
   }
 

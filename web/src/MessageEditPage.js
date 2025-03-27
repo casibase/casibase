@@ -49,7 +49,7 @@ class MessageEditPage extends React.Component {
             chats: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get chat")}: ${res.msg}`);
         }
       });
   }
@@ -62,7 +62,7 @@ class MessageEditPage extends React.Component {
             chat: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get chat: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get chat")}: ${res.msg}`);
         }
       });
   }
@@ -75,7 +75,7 @@ class MessageEditPage extends React.Component {
             message: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get message: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get message")}: ${res.msg}`);
         }
       });
   }
@@ -88,7 +88,7 @@ class MessageEditPage extends React.Component {
             messages: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get messages: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get messages")}: ${res.msg}`);
         }
       });
   }
@@ -304,7 +304,7 @@ class MessageEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("message:Successfully saved"));
             this.setState({
               messageName: this.state.message.name,
             });
@@ -314,15 +314,15 @@ class MessageEditPage extends React.Component {
               this.props.history.push(`/messages/${this.state.message.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("message:failed to save: server side failure"));
             this.updateMessageField("name", this.state.messageName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:failed to save")}: ${res.msg}`);
         }
       })
       .catch((error) => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("message:failed to save")}: ${error}`);
       });
   }
 
