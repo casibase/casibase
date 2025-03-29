@@ -32,7 +32,7 @@ type TextToSpeechRequest struct {
 // @Title GenerateTextToSpeechAudio
 // @Tag TTS API
 // @Description convert text to speech
-// @Param body body controllers.TextToSpeechRequest true "The text to convert to speech"
+// @Param body controllers.TextToSpeechRequest true "The text to convert to speech"
 // @Success 200 {object} []byte The audio data
 // @router /generate-text-to-speech-audio [post]
 func (c *ApiController) GenerateTextToSpeechAudio() {
@@ -40,6 +40,27 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+
+	message, err := object.GetMessage(req.MessageId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if message == nil {
+		c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", req.MessageId))
+		return
+	}
+
+	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
+	chat, err := object.GetChat(chatId)
+	if err != nil {
+		c.ResponseError(err.Error())
+		return
+	}
+	if chat == nil {
+		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
 		return
 	}
 
@@ -69,16 +90,6 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	message, err := object.GetMessage(req.MessageId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if message == nil {
-		c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", req.MessageId))
-		return
-	}
-
 	ctx := context.Background()
 	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx)
 	if err != nil {
@@ -90,17 +101,6 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
-	chat, err := object.GetChat(chatId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if chat == nil {
-		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
-		return
-	}
-
 	chat.TokenCount += ttsResult.TokenCount
 	chat.Price += ttsResult.Price
 	if chat.Currency == "" {
@@ -108,7 +108,6 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 	}
 
 	chat.UpdatedTime = util.GetCurrentTime()
-
 	_, err = object.UpdateChat(chat.GetId(), chat)
 	if err != nil {
 		c.ResponseError(err.Error())
