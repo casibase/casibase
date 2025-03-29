@@ -66,7 +66,7 @@ class TtsHelper {
       const storeId = `${store.owner}/${store.name}`;
       const messageId = `${message.owner}/${message.name}`;
 
-      TTSBackend.getTextToSpeechAudio(storeId, messageId)
+      TTSBackend.generateTextToSpeechAudio(storeId, messageId)
         .then(blob => {
           const audioUrl = URL.createObjectURL(blob);
 
