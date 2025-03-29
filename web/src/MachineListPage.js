@@ -51,6 +51,9 @@ class MachineListPage extends BaseListPage {
   }
 
   addMachine() {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     const newMachine = this.newMachine();
     MachineBackend.addMachine(newMachine)
       .then((res) => {
@@ -67,6 +70,9 @@ class MachineListPage extends BaseListPage {
   }
 
   deleteMachine(i) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     MachineBackend.deleteMachine(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {

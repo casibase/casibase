@@ -69,6 +69,9 @@ class ProviderListPage extends BaseListPage {
   }
 
   addProvider(needStorage = false) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     let newProvider = this.newProvider();
     if (needStorage) {
       newProvider = this.newStorageProvider();
@@ -94,6 +97,9 @@ class ProviderListPage extends BaseListPage {
   }
 
   deleteProvider(record) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     ProviderBackend.deleteProvider(record)
       .then((res) => {
         if (res.status === "ok") {

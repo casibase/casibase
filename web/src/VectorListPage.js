@@ -43,6 +43,9 @@ class VectorListPage extends BaseListPage {
   }
 
   addVector() {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     const newVector = this.newVector();
     VectorBackend.addVector(newVector)
       .then((res) => {
@@ -65,6 +68,9 @@ class VectorListPage extends BaseListPage {
   }
 
   deleteVector(record) {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     VectorBackend.deleteVector(record)
       .then((res) => {
         if (res.status === "ok") {
@@ -86,6 +92,9 @@ class VectorListPage extends BaseListPage {
   }
 
   deleteAllVectors() {
+    if (Setting.redirectIfAnonymous(this.props.account)) {
+      return null;
+    }
     VectorBackend.deleteAllVectors()
       .then((res) => {
         if (res.status === "ok") {

@@ -348,7 +348,7 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin) {
+    if (!this.state.account.isAdmin && Conf.DisablePreviewMode) {
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
@@ -482,11 +482,19 @@ class App extends Component {
   }
 
   renderSigninIfNotSignedIn(component) {
-    if (this.state.account === null) {
-      sessionStorage.setItem("from", window.location.pathname);
-      window.location.replace(Setting.getSigninUrl());
+    if (this.state.account === null || this.state.account.type === "anonymous-user") {
+      Setting.redirectToLogin();
+      return;
     } else if (this.state.account === undefined) {
       return null;
+    } else {
+      return component;
+    }
+  }
+
+  renderSigninIfDisabledPreviewMode(component) {
+    if (Conf.DisablePreviewMode) {
+      this.renderSigninIfNotSignedIn(component);
     } else {
       return component;
     }
@@ -506,42 +514,42 @@ class App extends Component {
         <Route exact path="/access/:owner/:name" render={(props) => this.renderSigninIfNotSignedIn(<AccessPage account={this.state.account} {...props} />)} />
         <Route exact path="/callback" component={AuthCallback} />
         <Route exact path="/signin" render={(props) => this.renderHomeIfSignedIn(<SigninPage {...props} />)} />
-        <Route exact path="/" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-        <Route exact path="/home" render={(props) => this.renderSigninIfNotSignedIn(<HomePage account={this.state.account} {...props} />)} />
-        <Route exact path="/stores" render={(props) => this.renderSigninIfNotSignedIn(<StoreListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/" render={(props) => this.renderSigninIfDisabledPreviewMode(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/home" render={(props) => this.renderSigninIfDisabledPreviewMode(<HomePage account={this.state.account} {...props} />)} />
+        <Route exact path="/stores" render={(props) => this.renderSigninIfDisabledPreviewMode(<StoreListPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName" render={(props) => this.renderSigninIfNotSignedIn(<StoreEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/stores/:owner/:storeName/view" render={(props) => this.renderSigninIfNotSignedIn(<FileTreePage account={this.state.account} {...props} />)} />
         <Route exact path="/videos" render={(props) => this.renderSigninIfNotSignedIn(<VideoListPage account={this.state.account} {...props} />)} />
         <Route exact path="/videos/:owner/:videoName" render={(props) => this.renderSigninIfNotSignedIn(<VideoEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/public-videos" render={(props) => <PublicVideoListPage {...props} />} />
-        <Route exact path="/public-videos/:owner/:videoName" render={(props) => <VideoPage account={this.state.account} {...props} />} />
-        <Route exact path="/providers" render={(props) => this.renderSigninIfNotSignedIn(<ProviderListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/public-videos" render={(props) => this.renderSigninIfDisabledPreviewMode(<PublicVideoListPage {...props} />)} />
+        <Route exact path="/public-videos/:owner/:videoName" render={(props) => this.renderSigninIfDisabledPreviewMode(<VideoPage account={this.state.account} {...props} />)} />
+        <Route exact path="/providers" render={(props) => this.renderSigninIfDisabledPreviewMode(<ProviderListPage account={this.state.account} {...props} />)} />
         <Route exact path="/providers/:providerName" render={(props) => this.renderSigninIfNotSignedIn(<ProviderEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/vectors" render={(props) => this.renderSigninIfNotSignedIn(<VectorListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/vectors" render={(props) => this.renderSigninIfDisabledPreviewMode(<VectorListPage account={this.state.account} {...props} />)} />
         <Route exact path="/vectors/:vectorName" render={(props) => this.renderSigninIfNotSignedIn(<VectorEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/chats" render={(props) => this.renderSigninIfNotSignedIn(<ChatListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chats" render={(props) => this.renderSigninIfDisabledPreviewMode(<ChatListPage account={this.state.account} {...props} />)} />
         <Route exact path="/chats/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/messages" render={(props) => this.renderSigninIfNotSignedIn(<MessageListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/messages" render={(props) => this.renderSigninIfDisabledPreviewMode(<MessageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/messages/:messageName" render={(props) => this.renderSigninIfNotSignedIn(<MessageEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/usages" render={(props) => this.renderSigninIfNotSignedIn(<UsagePage account={this.state.account} {...props} />)} />
-        <Route exact path="/nodes" render={(props) => this.renderSigninIfNotSignedIn(<NodeListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/usages" render={(props) => this.renderSigninIfDisabledPreviewMode(<UsagePage account={this.state.account} {...props} />)} />
+        <Route exact path="/nodes" render={(props) => this.renderSigninIfDisabledPreviewMode(<NodeListPage account={this.state.account} {...props} />)} />
         <Route exact path="/nodes/:nodeName" render={(props) => this.renderSigninIfNotSignedIn(<NodeEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/sessions" render={(props) => this.renderSigninIfNotSignedIn(<SessionListPage account={this.state.account} {...props} />)} />
-        <Route exact path="/records" render={(props) => this.renderSigninIfNotSignedIn(<RecordListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/sessions" render={(props) => this.renderSigninIfDisabledPreviewMode(<SessionListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/records" render={(props) => this.renderSigninIfDisabledPreviewMode(<RecordListPage account={this.state.account} {...props} />)} />
         <Route exact path="/records/:organizationName/:recordName" render={(props) => this.renderSigninIfNotSignedIn(<RecordEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
-        <Route exact path="/machines" render={(props) => this.renderSigninIfNotSignedIn(<MachineListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/workbench" render={(props) => this.renderSigninIfDisabledPreviewMode(<NodeWorkbench account={this.state.account} {...props} />)} />
+        <Route exact path="/machines" render={(props) => this.renderSigninIfDisabledPreviewMode(<MachineListPage account={this.state.account} {...props} />)} />
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/images" render={(props) => this.renderSigninIfDisabledPreviewMode(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
-        <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
+        <Route exact path="/chat" render={(props) => this.renderSigninIfDisabledPreviewMode(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
-        <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
+        <Route exact path="/workbench" render={(props) => this.renderSigninIfDisabledPreviewMode(<NodeWorkbench account={this.state.account} {...props} />)} />
       </Switch>
     );
   }
@@ -691,6 +699,10 @@ class App extends Component {
   }
 
   render() {
+    if (this.state.account === undefined) {
+      return null; // render only after the account is obtained
+    }
+
     return (
       <React.Fragment>
         <ConfigProvider theme={{
