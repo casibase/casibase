@@ -43,7 +43,7 @@ func NewAlibabacloudTextToSpeechProvider(typ string, subType string, secretKey s
 
 func (p *AlibabacloudTextToSpeechProvider) GetPricing() string {
 	return `URL:
-https://help.aliyun.com/zh/model-studio/developer-reference/cosyvoice-large-model-for-speech-synthesis/?spm=a2c4g.11186623.help-menu-2400256.d_3_3_7_0.49156474ZB4TlP
+https://help.aliyun.com/zh/model-studio/developer-reference/cosyvoice-large-model-for-speech-synthesis/
 TTS models:
 
 |    Models         |    Per 1,000 tokens  |
