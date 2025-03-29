@@ -151,6 +151,9 @@ class ProviderEditPage extends React.Component {
                 this.updateProviderField("subType", "AdaSimilarity");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
+              } else if (value === "Text-to-Speech") {
+                this.updateProviderField("type", "Alibaba Cloud");
+                this.updateProviderField("subType", "cosyvoice-v1");
               }
             })}>
               {
@@ -162,6 +165,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Private Cloud", name: "Private Cloud"},
                   {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
+                  {id: "Text-to-Speech", name: "Text-to-Speech"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -244,18 +248,22 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Dummy") {
                   this.updateProviderField("subType", "Dummy");
                 }
+              } else if (this.state.provider.category === "Text-to-Speech") {
+                if (value === "Alibaba Cloud") {
+                  this.updateProviderField("subType", "cosyvoice-v1");
+                }
               }
             })}>
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
-                  // .sort((a, b) => a.name.localeCompare(b.name))
+                // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)
               }
             </Select>
           </Col>
         </Row>
         {
-          (this.state.provider.category !== "Model" && this.state.provider.category !== "Embedding") ? null : (
+          !["Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -325,7 +333,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Client ID")}:
@@ -434,10 +442,31 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
+          (this.state.provider.category === "Text-to-Speech" && this.state.provider.type === "Alibaba Cloud" && this.state.provider.subType === "cosyvoice-v1") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Flavor")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.flavor} onChange={(value => {
+                    this.updateProviderField("flavor", value);
+                  })}>
+                    {
+                      Setting.getTtsFlavorOptions(this.state.provider.type, this.state.provider.subType)
+                        .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+            </>
+          ) : null
+        }
+        {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
+                {["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
                   i18next.t("provider:Client secret")}:
               </Col>
               <Col span={22} >
@@ -449,7 +478,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("general:Region")}:

@@ -58,11 +58,12 @@ type Store struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	StorageProvider   string `xorm:"varchar(100)" json:"storageProvider"`
-	ImageProvider     string `xorm:"varchar(100)" json:"imageProvider"`
-	SplitProvider     string `xorm:"varchar(100)" json:"splitProvider"`
-	ModelProvider     string `xorm:"varchar(100)" json:"modelProvider"`
-	EmbeddingProvider string `xorm:"varchar(100)" json:"embeddingProvider"`
+	StorageProvider      string `xorm:"varchar(100)" json:"storageProvider"`
+	ImageProvider        string `xorm:"varchar(100)" json:"imageProvider"`
+	SplitProvider        string `xorm:"varchar(100)" json:"splitProvider"`
+	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
+	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
+	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
 
 	MemoryLimit       int      `json:"memoryLimit"`
 	Frequency         int      `json:"frequency"`
@@ -218,6 +219,15 @@ func (store *Store) GetModelProvider() (*Provider, error) {
 	}
 
 	providerId := util.GetIdFromOwnerAndName(store.Owner, store.ModelProvider)
+	return GetProvider(providerId)
+}
+
+func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
+	if store.TextToSpeechProvider == "" {
+		return GetDefaultTextToSpeechProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TextToSpeechProvider)
 	return GetProvider(providerId)
 }
 

@@ -767,6 +767,10 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
       ]
     );
+  } else if (category === "Text-to-Speech") {
+    return [
+      {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+    ];
   } else {
     return [];
   }
@@ -802,6 +806,35 @@ const openaiEmbeddings = [
   {id: "text-embedding-3-small", name: "text-embedding-3-small"},
   {id: "text-embedding-3-large", name: "text-embedding-3-large"},
 ];
+
+export function getTtsFlavorOptions(type, subType) {
+  if (type === "Alibaba Cloud" && subType === "cosyvoice-v1") {
+    return [
+      {id: "longwan", name: "longwan"},
+      {id: "longcheng", name: "longcheng"},
+      {id: "longhua", name: "longhua"},
+      {id: "longxiaochun", name: "longxiaochun"},
+      {id: "longxiaoxia", name: "longxiaoxia"},
+      {id: "longxiaocheng", name: "longxiaocheng"},
+      {id: "longxiaobai", name: "longxiaobai"},
+      {id: "longlaotie", name: "longlaotie"},
+      {id: "longshu", name: "longshu"},
+      {id: "longjing", name: "longjing"},
+      {id: "longmiao", name: "longmiao"},
+      {id: "longyue", name: "longyue"},
+      {id: "longyuan", name: "longyuan"},
+      {id: "longfei", name: "longfei"},
+      {id: "longjielidou", name: "longjielidou"},
+      {id: "longshuo", name: "longshuo"},
+      {id: "longtong", name: "longtong"},
+      {id: "longxiang", name: "longxiang"},
+      {id: "loongstella", name: "loongstella"},
+      {id: "loongbella", name: "loongbella"},
+    ];
+  }
+
+  return [];
+}
 
 export function getProviderSubTypeOptions(category, type) {
   if (type === "OpenAI") {
@@ -1111,6 +1144,12 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "text-embedding-v1", name: "text-embedding-v1"},
           {id: "text-embedding-v2", name: "text-embedding-v2"},
           {id: "text-embedding-v3", name: "text-embedding-v3"},
+        ]
+      );
+    } else if (category === "Text-to-Speech") {
+      return (
+        [
+          {id: "cosyvoice-v1", name: "cosyvoice-v1"},
         ]
       );
     }
