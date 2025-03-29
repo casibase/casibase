@@ -47,31 +47,55 @@ func (p *VolcengineModelProvider) GetPricing() string {
 	return `URL:
 https://www.volcengine.com/docs/82379/1099320
 
-| Model            | Input Price per 1K characters  | Output Price per 1K characters  |
-|------------------|--------------------------------|---------------------------------|
-| Doubao-lite-4k   | 0.0003 yuan/1,000 tokens       | 0.0006 yuan/1,000 tokens        |
-| Doubao-lite-32k  | 0.0003 yuan/1,000 tokens       | 0.0006 yuan/1,000 tokens        |
-| Doubao-lite-128k | 0.0008 yuan/1,000 tokens       | 0.0010 yuan/1,000 tokens        |
-| Doubao-pro-4k    | 0.0008 yuan/1,000 tokens       | 0.0020 yuan/1,000 tokens        |
-| Doubao-pro-32k   | 0.0008 yuan/1,000 tokens       | 0.0020 yuan/1,000 tokens        |
-| Doubao-pro-128k  | 0.0050 yuan/1,000 tokens       | 0.0090 yuan/1,000 tokens        |
+| Model                          | Input Price per 1K tokens (yuan) | Output Price per 1K tokens (yuan) |
+|--------------------------------|----------------------------------|-----------------------------------|
+| Doubao-lite-4k                 | 0.0003                          | 0.0006                            |
+| Doubao-1.5-pro-32k             | 0.0008                          | 0.0020                            |
+| Doubao-1.5-pro-256k            | 0.0050                          | 0.0090                            |
+| Doubao-1.5-lite-32k            | 0.0003                          | 0.0006                            |
+| Doubao-lite-32k                | 0.0003                          | 0.0006                            |
+| Doubao-lite-128k               | 0.0008                          | 0.0010                            |
+| Doubao-pro-4k                  | 0.0008                          | 0.0020                            |
+| Doubao-pro-32k                 | 0.0008                          | 0.0020                            |
+| Doubao-pro-128k                | 0.0050                          | 0.0090                            |
+| Doubao-pro-256k                | 0.0050                          | 0.0090                            |
+| Deepseek-r1                    | 0.0040                          | 0.0160                            |
+| Deepseek-r1-distill-qwen-32b   | 0.0015                          | 0.0060                            |
+| Deepseek-r1-distill-qwen-7b    | 0.0006                          | 0.0024                            |
+| Deepseek-v3                    | 0.0020                          | 0.0080                            |
+| GLM3-130B                      | 0.0010                          | 0.0010                            |
+| Moonshot-v1-8K                 | 0.0120                          | 0.0120                            |
+| Moonshot-v1-32K                | 0.0240                          | 0.0240                            |
+| Moonshot-v1-128K               | 0.0600                          | 0.0600                            |
 `
 }
 
 func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
-		"Doubao-lite-4k":   {0.0003, 0.0006},
-		"Doubao-lite-32k":  {0.0003, 0.0006},
-		"Doubao-lite-128k": {0.0008, 0.0010},
-		"Doubao-pro-4k":    {0.0008, 0.0020},
-		"Doubao-pro-32k":   {0.0008, 0.0020},
-		"Doubao-pro-128k":  {0.0050, 0.0090},
+		"Doubao-lite-4k":               {0.0003, 0.0006},
+		"Doubao-1.5-pro-32k":           {0.0008, 0.0020},
+		"Doubao-1.5-pro-256k":          {0.0050, 0.0090},
+		"Doubao-1.5-lite-32k":          {0.0003, 0.0006},
+		"Doubao-lite-32k":              {0.0003, 0.0006},
+		"Doubao-lite-128k":             {0.0008, 0.0010},
+		"Doubao-pro-4k":                {0.0008, 0.0020},
+		"Doubao-pro-32k":               {0.0008, 0.0020},
+		"Doubao-pro-128k":              {0.0050, 0.0090},
+		"Doubao-pro-256k":              {0.0050, 0.0090},
+		"Deepseek-r1":                  {0.0040, 0.0160},
+		"Deepseek-r1-distill-qwen-32b": {0.0015, 0.0060},
+		"Deepseek-r1-distill-qwen-7b":  {0.0006, 0.0024},
+		"Deepseek-v3":                  {0.0020, 0.0080},
+		"GLM3-130B":                    {0.0010, 0.0010},
+		"Moonshot-v1-8K":               {0.0120, 0.0120},
+		"Moonshot-v1-32K":              {0.0240, 0.0240},
+		"Moonshot-v1-128K":             {0.0600, 0.0600},
 	}
 
 	if priceItem, ok := priceTable[p.subType]; ok {
-		inputPrice := getPrice(modelResult.TotalTokenCount, priceItem[0])
-		outputPrice := getPrice(modelResult.TotalTokenCount, priceItem[1])
+		inputPrice := getPrice(modelResult.PromptTokenCount, priceItem[0])
+		outputPrice := getPrice(modelResult.ResponseTokenCount, priceItem[1])
 		price = inputPrice + outputPrice
 	} else {
 		return fmt.Errorf("calculatePrice() error: unknown model type: %s", p.subType)
