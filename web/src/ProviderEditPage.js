@@ -682,7 +682,7 @@ class ProviderEditPage extends React.Component {
             {this.state.provider.type === "Volcano Engine" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
           </Col>
           <Col span={22} >
-            <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {
+            <Input value={this.state.provider.providerUrl} onChange={e => {
               this.updateProviderField("providerUrl", e.target.value);
             }} />
           </Col>
