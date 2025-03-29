@@ -15,10 +15,8 @@
 package tts
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-
 	"github.com/WqyJh/go-cosyvoice"
 )
 
@@ -44,7 +42,7 @@ func NewAlibabacloudTextToSpeechProvider(typ string, subType string, secretKey s
 
 func (p *AlibabacloudTextToSpeechProvider) GetPricing() string {
 	return `URL:
-https://help.aliyun.com/zh/model-studio/developer-reference/cosyvoice-large-model-for-speech-synthesis/
+https://help.aliyun.com/zh/model-studio/developer-reference/cosyvoice-large-model-for-speech-synthesis/?spm=a2c4g.11186623.help-menu-2400256.d_3_3_7_0.49156474ZB4TlP
 TTS models:
 
 |    Models         |    Per 1,000 tokens  |
@@ -97,6 +95,23 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		return nil, res, fmt.Errorf("error running task: %v", err)
 	}
 
+	// Create a channel to collect audio data
+	audioChannel := make(chan []byte, 1)
+	errorChannel := make(chan error, 1)
+
+	// Launch a goroutine to continuously read from the output channel
+	go func() {
+		var allAudio []byte
+		for outputResult := range output {
+			if outputResult.Err != nil {
+				errorChannel <- fmt.Errorf("output error: %v", outputResult.Err)
+				return
+			}
+			allAudio = append(allAudio, outputResult.Data...)
+		}
+		audioChannel <- allAudio
+	}()
+
 	err = asyncSynthesizer.SendText(ctx, text)
 	if err != nil {
 		return nil, res, fmt.Errorf("error sending text: %v", err)
@@ -108,22 +123,16 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		return nil, res, fmt.Errorf("error finishing task: %v", err)
 	}
 
-	// Collect all audio data
-	var buffer bytes.Buffer
-
-	for outputResult := range output {
-		if outputResult.Err != nil {
-			return nil, res, fmt.Errorf("result error: %v", outputResult.Err)
+	// Wait for either audio data or an error
+	select {
+	case audioBytes := <-audioChannel:
+		if err := p.calculatePrice(res); err != nil {
+			return audioBytes, res, err
 		}
-
-		buffer.Write(outputResult.Data)
+		return audioBytes, res, nil
+	case err := <-errorChannel:
+		return nil, res, err
+	case <-ctx.Done():
+		return nil, res, ctx.Err()
 	}
-
-	audioData := buffer.Bytes()
-
-	if err := p.calculatePrice(res); err != nil {
-		return audioData, res, err
-	}
-
-	return audioData, res, nil
 }
