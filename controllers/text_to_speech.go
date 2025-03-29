@@ -27,14 +27,14 @@ type TextToSpeechRequest struct {
 	MessageId string `json:"messageId"`
 }
 
-// GetTextToSpeech
-// @Title GetTextToSpeech
+// GetTextToSpeechAudio
+// @Title GetTextToSpeechAudio
 // @Tag TTS API
 // @Description convert text to speech
 // @Param body body controllers.TextToSpeechRequest true "The text to convert to speech"
 // @Success 200 {object} []byte The audio data
-// @router /get-text-to-speech [post]
-func (c *ApiController) GetTextToSpeech() {
+// @router /get-text-to-speech-audio [post]
+func (c *ApiController) GetTextToSpeechAudio() {
 	var req TextToSpeechRequest
 	err := json.Unmarshal(c.Ctx.Input.RequestBody, &req)
 	if err != nil {

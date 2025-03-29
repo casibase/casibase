@@ -76,7 +76,7 @@ func initAPI() {
 	beego.Router("/api/delete-vector", &controllers.ApiController{}, "POST:DeleteVector")
 	beego.Router("/api/delete-all-vectors", &controllers.ApiController{}, "POST:DeleteAllVectors")
 
-	beego.Router("/api/get-text-to-speech-audio", &controllers.ApiController{}, "POST:GetTextToSpeech")
+	beego.Router("/api/get-text-to-speech-audio", &controllers.ApiController{}, "POST:GetTextToSpeechAudio")
 
 	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")
 	beego.Router("/api/get-chats", &controllers.ApiController{}, "GET:GetChats")
