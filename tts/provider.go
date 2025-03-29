@@ -20,23 +20,23 @@ import (
 	"github.com/casibase/casibase/model"
 )
 
-type TTSResult struct {
+type TextToSpeechResult struct {
 	TokenCount int
 	Price      float64
 	Currency   string
 }
 
-type TTSProvider interface {
+type TextToSpeechProvider interface {
 	GetPricing() string
-	QuerySpeech(text string, ctx context.Context) ([]byte, *TTSResult, error)
+	QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error)
 }
 
-func GetTTSProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string) (TTSProvider, error) {
-	var p TTSProvider
+func GetTextToSpeechProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string) (TextToSpeechProvider, error) {
+	var p TextToSpeechProvider
 	var err error
 
 	if typ == "Alibaba Cloud" {
-		p, err = NewAlibabacloudTTSProvider(typ, subType, clientSecret, flavor)
+		p, err = NewAlibabacloudTextToSpeechProvider(typ, subType, clientSecret, flavor)
 	}
 
 	if err != nil {
@@ -45,7 +45,7 @@ func GetTTSProvider(typ string, subType string, clientId string, clientSecret st
 	return p, nil
 }
 
-func GetDefaultTTSResult(modelSubType string, text string) (*TTSResult, error) {
+func GetDefaultTextToSpeechResult(modelSubType string, text string) (*TextToSpeechResult, error) {
 	tokenCount, err := model.GetTokenSize(modelSubType, text)
 	if err != nil {
 		tokenCount, err = model.GetTokenSize("text-embedding-ada-002", text)
@@ -56,7 +56,7 @@ func GetDefaultTTSResult(modelSubType string, text string) (*TTSResult, error) {
 	price := getPrice(tokenCount, 0.0006)
 	currency := "CNY"
 
-	res := &TTSResult{
+	res := &TextToSpeechResult{
 		TokenCount: tokenCount,
 		Price:      price,
 		Currency:   currency,

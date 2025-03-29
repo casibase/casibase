@@ -24,7 +24,7 @@ import ChatInput from "./chat/ChatInput";
 import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
-import * as TTSBackend from "./backend/TTSBackend";
+import TTSHelper from "./TextToSpeech"; // Import the new TTSHelper
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -46,6 +46,7 @@ class ChatBox extends React.Component {
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
+    this.ttsHelper = new TTSHelper(this); // Initialize the TTSHelper
   }
 
   componentDidMount() {
@@ -78,7 +79,7 @@ class ChatBox extends React.Component {
 
   clearOldStatus() {
     this.recognition?.abort();
-    this.synth.cancel();
+    this.ttsHelper.cleanup();
     this.setState({
       value: "",
       files: [],
@@ -228,88 +229,18 @@ class ChatBox extends React.Component {
 
   toggleMessageReadState = (message) => {
     const shouldPause = (this.state.readingMessage === message.name && this.state.isReading);
+
     if (shouldPause) {
-      if (this.audioPlayer) {
-        this.audioPlayer.pause();
-      } else {
-        this.synth.pause();
-      }
-      this.setState({isReading: false});
+      this.ttsHelper.pauseReading();
       return;
     }
 
     if (this.state.readingMessage === message.name && this.state.isReading === false) {
-      if (this.audioPlayer) {
-        this.audioPlayer.play();
-      } else {
-        this.synth.resume();
-      }
-      this.setState({isReading: true});
+      this.ttsHelper.resumeReading();
       return;
     }
 
-    this.synth.cancel();
-    if (this.audioPlayer) {
-      this.audioPlayer.pause();
-      this.audioPlayer = null;
-    }
-
-    const useCloudTTS = this.props.store &&
-        this.props.store.textToSpeechProvider &&
-        this.props.store.textToSpeechProvider !== "";
-
-    if (useCloudTTS) {
-      this.setState({
-        readingMessage: message.name,
-        isReading: true,
-      });
-
-      const storeId = `${this.props.store.owner}/${this.props.store.name}`;
-      const messageId = `${message.owner}/${message.name}`;
-      TTSBackend.getTextToSpeech(storeId, messageId)
-        .then(blob => {
-          const audioUrl = URL.createObjectURL(blob);
-
-          // Create a new audio player
-          this.audioPlayer = new Audio(audioUrl);
-
-          // set the onended callback to revoke the object URL
-          this.audioPlayer.onended = () => {
-            URL.revokeObjectURL(audioUrl);
-            this.audioPlayer = null;
-            this.setState({
-              isReading: false,
-              readingMessage: null,
-            });
-          };
-
-          this.audioPlayer.play();
-        })
-        .catch(error => {
-          Setting.showMessage("error", `TTS failed: ${error.message}. Falling back to browser TTS.`);
-
-          const utterThis = new SpeechSynthesisUtterance(message.text);
-          utterThis.lang = Setting.getLanguage();
-          utterThis.addEventListener("end", () => {
-            this.synth.cancel();
-            this.setState({isReading: false, readingMessage: null});
-          });
-          this.synth.speak(utterThis);
-        });
-    } else {
-      this.synth.cancel();
-      const utterThis = new SpeechSynthesisUtterance(message.text);
-      utterThis.lang = Setting.getLanguage();
-      utterThis.addEventListener("end", () => {
-        this.synth.cancel();
-        this.setState({isReading: false, readingMessage: null});
-      });
-      this.synth.speak(utterThis);
-      this.setState({
-        readingMessage: message.name,
-        isReading: true,
-      });
-    }
+    this.ttsHelper.readMessage(message, this.props.store);
   };
 
   insertVoiceMessage = () => {

@@ -54,7 +54,7 @@ func (c *ApiController) GetTextToSpeech() {
 		return
 	}
 
-	ttsProviderObj, err := ttsProvider.GetTTSProvider()
+	ttsProviderObj, err := ttsProvider.GetTextToSpeechProvider()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -67,7 +67,7 @@ func (c *ApiController) GetTextToSpeech() {
 	}
 
 	ctx := context.Background()
-	audioData, ttsResult, err := ttsProviderObj.QuerySpeech(message.Text, ctx)
+	audioData, ttsResult, err := ttsProviderObj.QueryAudio(message.Text, ctx)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return

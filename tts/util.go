@@ -25,11 +25,10 @@ func getPrice(tokenCount int, pricePerThousandTokens float64) float64 {
 func countCharacters(text string) int {
 	count := 0
 	for _, r := range text {
-		// 中文字符范围判断（简化版）
 		if r >= 0x4E00 && r <= 0x9FFF {
-			count += 2 // 中文字符算2个
+			count += 2
 		} else {
-			count += 1 // 英文字母、标点、空格算1个
+			count += 1
 		}
 	}
 	return count

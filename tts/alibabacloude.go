@@ -22,7 +22,7 @@ import (
 	"github.com/WqyJh/go-cosyvoice"
 )
 
-type AlibabacloudTTSProvider struct {
+type AlibabacloudTextToSpeechProvider struct {
 	typ        string
 	subType    string
 	secretKey  string
@@ -31,8 +31,8 @@ type AlibabacloudTTSProvider struct {
 	sampleRate cosyvoice.SampleRate
 }
 
-func NewAlibabacloudTTSProvider(typ string, subType string, secretKey string, voice string) (*AlibabacloudTTSProvider, error) {
-	return &AlibabacloudTTSProvider{
+func NewAlibabacloudTextToSpeechProvider(typ string, subType string, secretKey string, voice string) (*AlibabacloudTextToSpeechProvider, error) {
+	return &AlibabacloudTextToSpeechProvider{
 		typ:        typ,
 		subType:    subType,
 		secretKey:  secretKey,
@@ -42,7 +42,7 @@ func NewAlibabacloudTTSProvider(typ string, subType string, secretKey string, vo
 	}, nil
 }
 
-func (p *AlibabacloudTTSProvider) GetPricing() string {
+func (p *AlibabacloudTextToSpeechProvider) GetPricing() string {
 	return `URL:
 https://help.aliyun.com/zh/model-studio/developer-reference/cosyvoice-large-model-for-speech-synthesis/?spm=a2c4g.11186623.help-menu-2400256.d_3_3_7_0.49156474ZB4TlP
 TTS models:
@@ -53,7 +53,7 @@ TTS models:
 `
 }
 
-func (p *AlibabacloudTTSProvider) calculatePrice(res *TTSResult) error {
+func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResult) error {
 	priceTable := map[string]float64{
 		"cosyvoice-v1": 0.00024,
 	}
@@ -66,8 +66,8 @@ func (p *AlibabacloudTTSProvider) calculatePrice(res *TTSResult) error {
 	}
 }
 
-func (p *AlibabacloudTTSProvider) QuerySpeech(text string, ctx context.Context) ([]byte, *TTSResult, error) {
-	res := &TTSResult{
+func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error) {
+	res := &TextToSpeechResult{
 		TokenCount: countCharacters(text),
 		Price:      0.0,
 		Currency:   "",

@@ -263,7 +263,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          (this.state.provider.category !== "Model" && this.state.provider.category !== "Embedding" && this.state.provider.category !== "Text-to-Speech") ? null : (
+          !["Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -453,28 +453,8 @@ class ProviderEditPage extends React.Component {
                     this.updateProviderField("flavor", value);
                   })}>
                     {
-                      [
-                        {id: "longwan", name: "Longwan"},
-                        {id: "longcheng", name: "Longcheng"},
-                        {id: "longhua", name: "Longhua"},
-                        {id: "longxiaochun", name: "Longxiaochun"},
-                        {id: "longxiaoxia", name: "Longxiaoxia"},
-                        {id: "longxiaocheng", name: "Longxiaocheng"},
-                        {id: "longxiaobai", name: "Longxiaobai"},
-                        {id: "longlaotie", name: "Longlaotie"},
-                        {id: "longshu", name: "Longshu"},
-                        {id: "longjing", name: "Longjing"},
-                        {id: "longmiao", name: "Longmiao"},
-                        {id: "longyue", name: "Longyue"},
-                        {id: "longyuan", name: "Longyuan"},
-                        {id: "longfei", name: "Longfei"},
-                        {id: "longjielidou", name: "Longjielidou"},
-                        {id: "longshuo", name: "Longshuo"},
-                        {id: "longtong", name: "Longtong"},
-                        {id: "longxiang", name: "Longxiang"},
-                        {id: "loongstella", name: "Loongstella"},
-                        {id: "loongbella", name: "Loongbella"},
-                      ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                      Setting.getTtsFlavorOptions(this.state.provider.type, this.state.provider.subType)
+                        .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
                     }
                   </Select>
                 </Col>
