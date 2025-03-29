@@ -55,7 +55,7 @@ TTS models:
 
 func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResult) error {
 	priceTable := map[string]float64{
-		"cosyvoice-v1": 0.00024,
+		"cosyvoice-v1": 0.2,
 	}
 	if priceItem, ok := priceTable[p.subType]; ok {
 		res.Price = getPrice(res.TokenCount, priceItem)
