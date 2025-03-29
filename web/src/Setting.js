@@ -1162,11 +1162,23 @@ export function getProviderSubTypeOptions(category, type) {
   } else if (type === "Volcano Engine") {
     return ([
       {id: "Doubao-lite-4k", name: "Doubao-lite-4k"},
+      {id: "Doubao-1.5-pro-32k", name: "Doubao-1.5-pro-32k"},
+      {id: "Doubao-1.5-pro-256k", name: "Doubao-1.5-pro-256k"},
+      {id: "Doubao-1.5-lite-32k", name: "Doubao-1.5-lite-32k"},
       {id: "Doubao-lite-32k", name: "Doubao-lite-32k"},
       {id: "Doubao-lite-128k", name: "Doubao-lite-128k"},
       {id: "Doubao-pro-4k", name: "Doubao-pro-4k"},
       {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
       {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
+      {id: "Doubao-pro-256k", name: "Doubao-pro-256k"},
+      {id: "Deepseek-R1", name: "Deepseek-R1"},
+      {id: "Deepseek-R1-Distill-Qwen-32B", name: "Deepseek-R1-Distill-Qwen-32B"},
+      {id: "Deepseek-R1-Distill-Qwen-7B", name: "Deepseek-R1-Distill-Qwen-7B"},
+      {id: "Deepseek-v3", name: "Deepseek-v3"},
+      {id: "GLM3-130B", name: "GLM3-130B"},
+      {id: "Moonshot-v1-8K", name: "Moonshot-v1-8K"},
+      {id: "Moonshot-v1-32K", name: "Moonshot-v1-32K"},
+      {id: "Moonshot-v1-128K", name: "Moonshot-v1-128K"},
     ]);
   } else if (type === "DeepSeek") {
     return ([
