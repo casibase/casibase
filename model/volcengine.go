@@ -25,7 +25,7 @@ import (
 	"github.com/volcengine/volcengine-go-sdk/volcengine"
 )
 
-type DoubaoModelProvider struct {
+type VolcengineModelProvider struct {
 	subType     string
 	endpointID  string
 	apiKey      string
@@ -33,8 +33,8 @@ type DoubaoModelProvider struct {
 	topP        float32
 }
 
-func NewDoubaoModelProvider(subType string, endpointID string, apiKey string, temperature float32, topP float32) (*DoubaoModelProvider, error) {
-	return &DoubaoModelProvider{
+func NewVolcengineModelProvider(subType string, endpointID string, apiKey string, temperature float32, topP float32) (*VolcengineModelProvider, error) {
+	return &VolcengineModelProvider{
 		subType:     subType,
 		endpointID:  endpointID,
 		apiKey:      apiKey,
@@ -43,7 +43,7 @@ func NewDoubaoModelProvider(subType string, endpointID string, apiKey string, te
 	}, nil
 }
 
-func (p *DoubaoModelProvider) GetPricing() string {
+func (p *VolcengineModelProvider) GetPricing() string {
 	return `URL:
 https://www.volcengine.com/docs/82379/1099320
 
@@ -58,7 +58,7 @@ https://www.volcengine.com/docs/82379/1099320
 `
 }
 
-func (p *DoubaoModelProvider) calculatePrice(modelResult *ModelResult) error {
+func (p *VolcengineModelProvider) calculatePrice(modelResult *ModelResult) error {
 	price := 0.0
 	priceTable := map[string][2]float64{
 		"Doubao-lite-4k":   {0.0003, 0.0006},
@@ -82,7 +82,7 @@ func (p *DoubaoModelProvider) calculatePrice(modelResult *ModelResult) error {
 	return nil
 }
 
-func (p *DoubaoModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
+func (p *VolcengineModelProvider) QueryText(question string, writer io.Writer, history []*RawMessage, prompt string, knowledgeMessages []*RawMessage) (*ModelResult, error) {
 	ctx := context.Background()
 	flusher, ok := writer.(http.Flusher)
 	if !ok {

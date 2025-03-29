@@ -710,7 +710,7 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Baichuan", name: "Baichuan"},
-        {id: "Doubao", name: "Doubao"},
+        {id: "Volcano Engine", name: "Volcano Engine"},
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
         {id: "Tencent Cloud", name: "Tencent Cloud"},
@@ -1159,7 +1159,7 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
       {id: "Baichuan4", name: "Baichuan4"},
     ]);
-  } else if (type === "Doubao") {
+  } else if (type === "Volcano Engine") {
     return ([
       {id: "Doubao-lite-4k", name: "Doubao-lite-4k"},
       {id: "Doubao-lite-32k", name: "Doubao-lite-32k"},
