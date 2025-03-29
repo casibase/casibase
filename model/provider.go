@@ -75,8 +75,8 @@ func GetModelProvider(typ string, subType string, clientId string, clientSecret 
 		p, err = NewAlibabacloudModelProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "Baichuan" {
 		p, err = NewBaichuanModelProvider(subType, clientSecret, temperature, topP)
-	} else if typ == "Doubao" {
-		p, err = NewDoubaoModelProvider(subType, providerUrl, clientSecret, temperature, topP)
+	} else if typ == "Volcano Engine" {
+		p, err = NewVolcengineModelProvider(subType, providerUrl, clientSecret, temperature, topP)
 	} else if typ == "DeepSeek" {
 		p, err = NewDeepSeekProvider(subType, clientSecret, temperature, topP)
 	} else if typ == "StepFun" {
