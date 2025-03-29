@@ -65,24 +65,6 @@ const ChatInput = ({
             borderRadius: "8px",
             background: "#f5f5f5",
           }}
-          actions={(ori, {components}) => {
-            const {SendButton} = components;
-            if (loading) {
-              return ori;
-            }
-            return (
-              <SendButton
-                disabled={sendButtonDisabled}
-                style={{
-                  backgroundColor: sendButtonDisabled ? "#f5f5f5" : "#1890ff",
-                  color: sendButtonDisabled ? "#d9d9d9" : "#ffffff",
-                  borderColor: sendButtonDisabled ? "#d9d9d9" : "#1890ff",
-                  cursor: sendButtonDisabled ? "not-allowed" : "pointer",
-                  opacity: sendButtonDisabled ? 0.6 : 1,
-                }}
-              />
-            );
-          }}
           placeholder={messageError ? "" : i18next.t("chat:Type message here")}
           value={value}
           onChange={onChange}
