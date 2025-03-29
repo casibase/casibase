@@ -71,7 +71,10 @@ func (c *ApiController) ResponseAudio(audioData []byte, contentType string, file
 
 	c.Ctx.Output.Header("Content-Type", contentType)
 	c.Ctx.Output.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", filename))
-	c.Ctx.Output.Body(audioData)
+	err := c.Ctx.Output.Body(audioData)
+	if err != nil {
+		responseError(c.Ctx, err.Error())
+	}
 }
 
 func (c *ApiController) GetAcceptLanguage() string {
