@@ -21,6 +21,7 @@ import (
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
+	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -34,6 +35,7 @@ type Provider struct {
 	Category           string `xorm:"varchar(100)" json:"category"`
 	Type               string `xorm:"varchar(100)" json:"type"`
 	SubType            string `xorm:"varchar(100)" json:"subType"`
+	Flavor             string `xorm:"varchar(100)" json:"flavor"`
 	ClientId           string `xorm:"varchar(100)" json:"clientId"`
 	ClientSecret       string `xorm:"varchar(2000)" json:"clientSecret"`
 	Region             string `xorm:"varchar(100)" json:"region"`
@@ -237,6 +239,27 @@ func GetDefaultEmbeddingProvider() (*Provider, error) {
 	return &provider, nil
 }
 
+func GetDefaultTextToSpeechProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Text-to-Speech"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func GetDefaultMachineProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Machine"}
 	existed, err := adapter.engine.Get(&provider)
@@ -362,6 +385,19 @@ func (p *Provider) GetEmbeddingProvider() (embedding.EmbeddingProvider, error) {
 
 	if pProvider == nil {
 		return nil, fmt.Errorf("the embedding provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetTextToSpeechProvider() (tts.TextToSpeechProvider, error) {
+	pProvider, err := tts.GetTextToSpeechProvider(p.Type, p.SubType, p.ClientId, p.ClientSecret, p.ProviderUrl, p.ApiVersion, p.InputPricePerThousandTokens, p.Currency, p.Flavor)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the TTS provider type: %s is not supported", p.Type)
 	}
 
 	return pProvider, nil
