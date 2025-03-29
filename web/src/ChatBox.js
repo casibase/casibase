@@ -24,7 +24,7 @@ import ChatInput from "./chat/ChatInput";
 import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
-import TTSHelper from "./TextToSpeech"; // Import the new TTSHelper
+import TtsHelper from "./TextToSpeech"; // Import the new TTSHelper
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -46,7 +46,7 @@ class ChatBox extends React.Component {
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
-    this.ttsHelper = new TTSHelper(this); // Initialize the TTSHelper
+    this.ttsHelper = new TtsHelper(this); // Initialize the TTSHelper
   }
 
   componentDidMount() {

@@ -266,7 +266,7 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, err
 	}
 	if ttsProvider == nil {
-		return false, fmt.Errorf("The TTS provider for store: %s is not found", store.GetId())
+		return false, fmt.Errorf("The text-to-speech provider for store: %s is not found", store.GetId())
 	}
 
 	embeddingProviderObj, err := embeddingProvider.GetEmbeddingProvider()

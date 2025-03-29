@@ -17,7 +17,7 @@ package controllers
 import (
 	"context"
 	"encoding/json"
-
+	"fmt"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
 )
@@ -47,14 +47,22 @@ func (c *ApiController) GetTextToSpeechAudio() {
 		c.ResponseError(err.Error())
 		return
 	}
+	if store == nil {
+		c.ResponseError("The store: %s is not found", req.StoreId)
+		return
+	}
 
-	ttsProvider, err := store.GetTextToSpeechProvider()
+	provider, err := store.GetTextToSpeechProvider()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
+	if provider == nil {
+		c.ResponseError("The text-to-speech provider for store: %s is not found", store.GetId())
+		return
+	}
 
-	ttsProviderObj, err := ttsProvider.GetTextToSpeechProvider()
+	providerObj, err := provider.GetTextToSpeechProvider()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -65,11 +73,19 @@ func (c *ApiController) GetTextToSpeechAudio() {
 		c.ResponseError(err.Error())
 		return
 	}
+	if message == nil {
+		c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", req.MessageId))
+		return
+	}
 
 	ctx := context.Background()
-	audioData, ttsResult, err := ttsProviderObj.QueryAudio(message.Text, ctx)
+	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+	if audioData == nil {
+		c.ResponseError("The audio data is nil")
 		return
 	}
 
@@ -77,6 +93,10 @@ func (c *ApiController) GetTextToSpeechAudio() {
 	chat, err := object.GetChat(chatId)
 	if err != nil {
 		c.ResponseError(err.Error())
+		return
+	}
+	if chat == nil {
+		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
 		return
 	}
 

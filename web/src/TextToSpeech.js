@@ -13,9 +13,9 @@
 // limitations under the License.
 
 import * as Setting from "./Setting";
-import * as TTSBackend from "./backend/TTSBackend";
+import * as TTSBackend from "./backend/TtsBackend";
 
-class TTSHelper {
+class TtsHelper {
   constructor(component) {
     this.component = component;
     this.synth = window.speechSynthesis;
@@ -118,4 +118,4 @@ class TTSHelper {
   }
 }
 
-export default TTSHelper;
+export default TtsHelper;
