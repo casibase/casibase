@@ -221,7 +221,7 @@ func (store *Store) GetModelProvider() (*Provider, error) {
 	return GetProvider(providerId)
 }
 
-func (store *Store) GetTTSProvider() (*Provider, error) {
+func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
 	if store.TextToSpeechProvider == "" {
 		return GetDefaultTextToSpeechProvider()
 	}
@@ -261,7 +261,7 @@ func RefreshStoreVectors(store *Store) (bool, error) {
 		return false, fmt.Errorf("The embedding provider for store: %s is not found", store.GetId())
 	}
 
-	ttsProvider, err := store.GetTTSProvider()
+	ttsProvider, err := store.GetTextToSpeechProvider()
 	if err != nil {
 		return false, err
 	}

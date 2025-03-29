@@ -48,7 +48,7 @@ func (c *ApiController) GetTextToSpeechAudio() {
 		return
 	}
 
-	ttsProvider, err := store.GetTTSProvider()
+	ttsProvider, err := store.GetTextToSpeechProvider()
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
