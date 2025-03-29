@@ -50,6 +50,7 @@ require (
 	github.com/volcengine/volcengine-go-sdk v1.0.141
 	github.com/wangbin/jiebago v0.3.2
 	golang.org/x/net v0.35.0
+	golang.org/x/text v0.22.0
 	golang.org/x/time v0.5.0
 	google.golang.org/api v0.153.0
 	google.golang.org/grpc v1.59.0
@@ -155,7 +156,6 @@ require (
 	golang.org/x/oauth2 v0.15.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/tools v0.29.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20231106174013-bbf56f31fb17 // indirect
