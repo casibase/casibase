@@ -602,8 +602,8 @@ export const Countries = [{label: "English", key: "en", country: "US", alt: "Eng
   {label: "Français", key: "fr", country: "FR", alt: "Français"},
   {label: "Deutsch", key: "de", country: "DE", alt: "Deutsch"},
   {label: "Indonesia", key: "id", country: "ID", alt: "Indonesia"},
-  {label: "日本語", key: "ja", country: "JP", alt: "日本語"},
-  {label: "한국어", key: "ko", country: "KR", alt: "한국어"},
+  {label: "日本�?", key: "ja", country: "JP", alt: "日本�?"},
+  {label: "한국�?", key: "ko", country: "KR", alt: "한국�?"},
   {label: "Русский", key: "ru", country: "RU", alt: "Русский"},
 ];
 
@@ -734,6 +734,7 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Jina", name: "Jina"},
+        {id: "Word2Vec", name: "Word2Vec"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -1275,6 +1276,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "google/gemma-2-27b-it", name: "google/gemma-2-27b-it"},
       {id: "google/gemma-2-9b-it", name: "google/gemma-2-9b-it"},
     ]);
+  } else if (type === "Word2Vec") {
+    return ([
+      {id: "Word2Vec", name: "Word2Vec"},
+    ]);
   } else if (type === "Dummy") {
     return ([
       {id: "Dummy", name: "Dummy"},
@@ -1389,7 +1394,7 @@ export function getDisplayPrice(price, currency) {
 
   let prefix = "$";
   if (currency === "CNY") {
-    prefix = "￥";
+    prefix = "�?";
   }
 
   return (
@@ -1552,7 +1557,7 @@ export function parseAnswerAndSuggestions(answer) {
 
 export function formatSuggestion(suggestionText) {
   suggestionText = suggestionText.trim().replace(/^</, "").replace(/>$/, "");
-  if (!suggestionText.endsWith("?") && !suggestionText.endsWith("？")) {
+  if (!suggestionText.endsWith("?") && !suggestionText.endsWith("�?")) {
     suggestionText += "?";
   }
   return suggestionText;
