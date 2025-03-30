@@ -23,6 +23,7 @@ import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/xml/xml");
+require("codemirror/mode/htmlmixed/htmlmixed");
 
 class WorkflowEditPage extends React.Component {
   constructor(props) {
@@ -105,13 +106,15 @@ class WorkflowEditPage extends React.Component {
             {i18next.t("general:Text")}:
           </Col>
           <Col span={10} >
-            <CodeMirror
-              value={this.state.workflow.text}
-              options={{mode: "xml", theme: "material-darker"}}
-              onBeforeChange={(editor, data, value) => {
-                this.updateWorkflowField("text", value);
-              }}
-            />
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.workflow.text}
+                options={{mode: "xml", theme: "material-darker"}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateWorkflowField("text", value);
+                }}
+              />
+            </div>
           </Col>
           <Col span={1} />
           <Col span={11} >
@@ -123,6 +126,52 @@ class WorkflowEditPage extends React.Component {
                 }}
                 onError={(err) => {
                   Setting.showMessage("error", err);
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Text2")}:
+          </Col>
+          <Col span={10} >
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.workflow.text2}
+                options={{mode: "xml", theme: "material-darker"}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateWorkflowField("text2", value);
+                }}
+              />
+            </div>
+          </Col>
+          <Col span={1} />
+          <Col span={11} >
+            <div>
+              <Bpmn
+                diagramXML={this.state.workflow.text2}
+                onLoading={(info) => {
+                  Setting.showMessage("success", info);
+                }}
+                onError={(err) => {
+                  Setting.showMessage("error", err);
+                }}
+              />
+            </div>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Message")}:
+          </Col>
+          <Col span={22} >
+            <div style={{height: "500px"}}>
+              <CodeMirror
+                value={this.state.workflow.message}
+                options={{mode: "html", theme: "material-darker"}}
+                onBeforeChange={(editor, data, value) => {
+                  this.updateWorkflowField("message", value);
                 }}
               />
             </div>
@@ -146,6 +195,7 @@ class WorkflowEditPage extends React.Component {
               this.props.history.push("/workflows");
             } else {
               this.props.history.push(`/workflows/${this.state.workflow.name}`);
+              this.getWorkflow();
             }
           } else {
             Setting.showMessage("error", "failed to save: server side failure");
