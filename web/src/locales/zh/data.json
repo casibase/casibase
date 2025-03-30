@@ -108,6 +108,7 @@
     "Logging & Auditing": "日志 & 审计",
     "Machines": "主机",
     "Menu": "菜单",
+    "Message": "消息",
     "Messages": "消息",
     "Method": "方法",
     "Method - Tooltip": "方法 - 工具提示",
@@ -180,6 +181,7 @@
     "Tag - Tooltip": "标签 - 工具提示",
     "Tasks": "任务",
     "Text": "文本",
+    "Text2": "文本2",
     "This is a read-only demo site!": "这是一个只读的演示站点！",
     "Title": "标题",
     "Tokens": "Tokens",
@@ -198,6 +200,7 @@
     "Videos": "我的录像",
     "View": "查看",
     "Workbench": "工作台",
+    "Workflows": "工作流",
     "Zone": "Zone",
     "Zone - Tooltip": "Zone - Tooltip",
     "empty": "空",
@@ -437,5 +440,8 @@
     "Upload Video": "上传录像",
     "Video": "录像",
     "Video ID": "录像ID"
+  },
+  "workflow": {
+    "Edit Workflow": "编辑工作流"
   }
 }
