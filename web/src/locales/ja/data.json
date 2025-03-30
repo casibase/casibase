@@ -108,6 +108,7 @@
     "Logging & Auditing": "Logging & Auditing",
     "Machines": "Machines",
     "Menu": "Menu",
+    "Message": "Message",
     "Messages": "Messages",
     "Method": "Method",
     "Method - Tooltip": "Method - Tooltip",
@@ -180,6 +181,7 @@
     "Tag - Tooltip": "Tag - Tooltip",
     "Tasks": "Tasks",
     "Text": "Text",
+    "Text2": "Text2",
     "This is a read-only demo site!": "This is a read-only demo site!",
     "Title": "Title",
     "Tokens": "Tokens",
@@ -198,6 +200,7 @@
     "Videos": "Videos",
     "View": "View",
     "Workbench": "Workbench",
+    "Workflows": "Workflows",
     "Zone": "Zone",
     "Zone - Tooltip": "Zone - Tooltip",
     "empty": "empty",
@@ -437,5 +440,8 @@
     "Upload Video": "Upload Video",
     "Video": "Video",
     "Video ID": "Video ID"
+  },
+  "workflow": {
+    "Edit Workflow": "Edit Workflow"
   }
 }

@@ -14,12 +14,15 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Input, Popconfirm, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
+import Bpmn from "react-bpmn";
+
+const {TextArea} = Input;
 
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
@@ -110,7 +113,67 @@ class WorkflowListPage extends BaseListPage {
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
           return (
-            <Tooltip placement="left" title={Setting.getShortText(text, 1000)}>
+            <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
+              <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
+                <Bpmn
+                  diagramXML={text}
+                  onLoading={(info) => {
+                    Setting.showMessage("success", info);
+                  }}
+                  onError={(err) => {
+                    Setting.showMessage("error", err);
+                  }}
+                />
+              </div>
+            }>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Text2"),
+        dataIndex: "text2",
+        key: "text2",
+        // width: "160px",
+        sorter: (a, b) => a.text2.localeCompare(b.text2),
+        render: (text, record, index) => {
+          return (
+            <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
+              <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
+                <Bpmn
+                  diagramXML={text}
+                  onLoading={(info) => {
+                    Setting.showMessage("success", info);
+                  }}
+                  onError={(err) => {
+                    Setting.showMessage("error", err);
+                  }}
+                />
+              </div>
+            }>
+              <div style={{maxWidth: "300px"}}>
+                {Setting.getShortText(text, 100)}
+              </div>
+            </Tooltip>
+          );
+        },
+      },
+      {
+        title: i18next.t("general:Message"),
+        dataIndex: "message",
+        key: "message",
+        // width: "160px",
+        sorter: (a, b) => a.text.localeCompare(b.text),
+        render: (text, record, index) => {
+          return (
+            <Tooltip placement="left" overlayInnerStyle={{width: "815px", height: "355px"}} title={
+              <div style={{width: "800px", height: "600px"}}>
+                <TextArea autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {}} />
+              </div>
+            }>
               <div style={{maxWidth: "300px"}}>
                 {Setting.getShortText(text, 100)}
               </div>
