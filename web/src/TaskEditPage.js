@@ -131,7 +131,7 @@ class TaskEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {i18next.t("task:Edit Framework")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {i18next.t("task:Edit Task")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitTaskEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitTaskEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>
