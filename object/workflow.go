@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/casibase/casibase/bpmn"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -27,7 +28,9 @@ type Workflow struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 	DisplayName string `xorm:"varchar(100)" json:"displayName"`
 
-	Text string `xorm:"mediumtext" json:"text"`
+	Text    string `xorm:"mediumtext" json:"text"`
+	Text2   string `xorm:"mediumtext" json:"text2"`
+	Message string `xorm:"mediumtext" json:"message"`
 }
 
 func GetMaskedWorkflow(workflow *Workflow, isMaskEnabled bool) *Workflow {
@@ -100,6 +103,13 @@ func UpdateWorkflow(id string, workflow *Workflow) (bool, error) {
 	}
 	if workflow == nil {
 		return false, nil
+	}
+
+	if workflow.Text != "" && workflow.Text2 != "" {
+		message := bpmn.ComparePath(workflow.Text, workflow.Text2)
+		workflow.Message = message
+	} else {
+		workflow.Message = ""
 	}
 
 	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(workflow)
