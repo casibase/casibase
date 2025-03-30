@@ -17,13 +17,12 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
+import Bpmn from "react-bpmn";
 
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
 require("codemirror/mode/xml/xml");
-
-const {TextArea} = Input;
 
 class WorkflowEditPage extends React.Component {
   constructor(props) {
@@ -91,28 +90,21 @@ class WorkflowEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        {
-          this.state.workflow.type !== "Labeling" ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("general:Display name")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.workflow.displayName} onChange={e => {
-                  this.updateWorkflowField("displayName", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
-        }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("general:Display name")}:
+          </Col>
+          <Col span={22} >
+            <Input value={this.state.workflow.displayName} onChange={e => {
+              this.updateWorkflowField("displayName", e.target.value);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:Text")}:
           </Col>
-          <Col span={22} >
-            <TextArea autoSize={{minRows: 1, maxRows: 15}} value={this.state.workflow.text} onChange={(e) => {
-              this.updateWorkflowField("text", e.target.value);
-            }} />
+          <Col span={10} >
             <CodeMirror
               value={this.state.workflow.text}
               options={{mode: "xml", theme: "material-darker"}}
@@ -120,6 +112,20 @@ class WorkflowEditPage extends React.Component {
                 this.updateWorkflowField("text", value);
               }}
             />
+          </Col>
+          <Col span={1} />
+          <Col span={11} >
+            <div>
+              <Bpmn
+                diagramXML={this.state.workflow.text}
+                onLoading={(info) => {
+                  Setting.showMessage("success", info);
+                }}
+                onError={(err) => {
+                  Setting.showMessage("error", err);
+                }}
+              />
+            </div>
           </Col>
         </Row>
       </Card>
