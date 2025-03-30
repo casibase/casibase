@@ -274,7 +274,7 @@ class TaskListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={tasks} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Frameworks")}&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Tasks")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button type="primary" size="small" onClick={this.addTask.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
