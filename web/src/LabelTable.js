@@ -17,8 +17,7 @@ import {DeleteOutlined, DownOutlined, UpOutlined} from "@ant-design/icons";
 import {Button, Col, Input, InputNumber, Row, Switch, Table, Tooltip} from "antd";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import XLSX from "xlsx";
-import {sheet2blob, showMessage} from "./Setting";
+import xlsx from "xlsx";
 import FileSaver from "file-saver";
 import * as Conf from "./Conf";
 
@@ -120,13 +119,13 @@ class LabelTable extends React.Component {
       data.push(row);
     });
 
-    const sheet = XLSX.utils.json_to_sheet(data, {skipHeader: true});
+    const sheet = xlsx.utils.json_to_sheet(data, {skipHeader: true});
     try {
-      const blob = sheet2blob(sheet, "labels");
+      const blob = Setting.sheet2blob(sheet, "labels");
       const fileName = `labels-${this.props.video.name}-${table.length}.xlsx`;
       FileSaver.saveAs(blob, fileName);
     } catch (error) {
-      showMessage("error", `failed to download: ${error.message}`);
+      Setting.showMessage("error", `failed to download: ${error.message}`);
     }
   }
 

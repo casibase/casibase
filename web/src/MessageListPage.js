@@ -89,6 +89,36 @@ class MessageListPage extends BaseListPage {
       });
   }
 
+  renderDownloadXlsxButton() {
+    return (
+      <Button size="small" style={{marginRight: "10px"}} onClick={() => {
+        const data = [];
+        this.state.data.filter(item => item.author !== "AI").forEach((item, i) => {
+          const row = {};
+          row[i18next.t("message:Chat")] = item.chat;
+          row[i18next.t("general:Message")] = item.name;
+          row[i18next.t("general:Created time")] = Setting.getFormattedDate(item.createdTime);
+          row[i18next.t("general:User")] = item.user;
+          row[i18next.t("general:Text")] = item.text;
+          row[i18next.t("message:Error text")] = item.errorText;
+          data.push(row);
+        });
+
+        const sheet = Setting.json2sheet(data);
+        sheet["!cols"] = [
+          {wch: 15},
+          {wch: 15},
+          {wch: 30},
+          {wch: 15},
+          {wch: 50},
+          {wch: 50},
+        ];
+
+        Setting.saveSheetToFile(sheet, i18next.t("general:Messages"), `${i18next.t("general:Messages")}-${Setting.getFormattedDate(moment().format())}.xlsx`);
+      }}>{i18next.t("general:Download")}</Button>
+    );
+  }
+
   renderTable(messages) {
     let columns = [
       // {
@@ -388,6 +418,10 @@ class MessageListPage extends BaseListPage {
             <div>
               {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
               <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {
+                this.renderDownloadXlsxButton()
+              }
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               &nbsp;&nbsp;&nbsp;&nbsp;
               {i18next.t("general:Users")}:
