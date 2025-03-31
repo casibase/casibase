@@ -193,7 +193,7 @@ func evaluateCondition(condition string, variables map[string]float64) bool {
 
 		actualValue, exists := variables[varName]
 		if !exists {
-			//fmt.Printf("Variable %s not found in provided data.\n", varName)
+			// fmt.Printf("Variable %s not found in provided data.\n", varName)
 			return false
 		}
 
@@ -235,36 +235,36 @@ func buildPaths(currentTask string, tasks map[string]Task, sequenceFlows map[str
 
 func buildPathsHelper(currentTask string, tasks map[string]Task, sequenceFlows map[string][]SequenceFlow, exclusiveGateways map[string]bool, parallelGateways map[string]bool, timerEvents map[string]int, variables map[string]float64, visited map[string]bool) []*PathNode {
 	if visited[currentTask] {
-		//fmt.Printf("Task %s already visited, skipping to avoid loop\n", currentTask)
+		// fmt.Printf("Task %s already visited, skipping to avoid loop\n", currentTask)
 		return nil
 	}
 
 	visited[currentTask] = true
 	task, exists := tasks[currentTask]
 	if !exists {
-		//fmt.Printf("Task %s not found in task list\n", currentTask)
+		// fmt.Printf("Task %s not found in task list\n", currentTask)
 		return nil
 	}
 
-	//fmt.Printf("Building paths for task: %s (Name: %s)\n", task.ID, task.Name)
+	// fmt.Printf("Building paths for task: %s (Name: %s)\n", task.ID, task.Name)
 
 	delay := timerEvents[currentTask]
 	currentNode := NewPathNode(task, true, delay)
 
 	nextFlows, hasNext := sequenceFlows[currentTask]
 	if !hasNext {
-		//fmt.Printf("No outgoing sequence flows for task %s\n", task.Name)
+		// fmt.Printf("No outgoing sequence flows for task %s\n", task.Name)
 		return []*PathNode{currentNode}
 	}
 
 	var allPaths []*PathNode
 
 	if _, isExclusiveGateway := exclusiveGateways[currentTask]; isExclusiveGateway {
-		//fmt.Printf("Evaluating exclusive gateway for task: %s (Name: %s)\n", task.ID, task.Name)
+		// fmt.Printf("Evaluating exclusive gateway for task: %s (Name: %s)\n", task.ID, task.Name)
 		for _, flow := range nextFlows {
-			//	fmt.Printf("Evaluating condition: %s for flow to %s\n", flow.ConditionExpression, flow.TargetRef)
+			// fmt.Printf("Evaluating condition: %s for flow to %s\n", flow.ConditionExpression, flow.TargetRef)
 			if evaluateCondition(flow.ConditionExpression, variables) {
-				//		fmt.Printf("Condition met, choosing path to %s (Condition: %s)\n", flow.TargetRef, flow.ConditionExpression)
+				// fmt.Printf("Condition met, choosing path to %s (Condition: %s)\n", flow.TargetRef, flow.ConditionExpression)
 				newVisited := make(map[string]bool)
 				newPath := buildPathsHelper(flow.TargetRef, tasks, sequenceFlows, exclusiveGateways, parallelGateways, timerEvents, variables, newVisited)
 				for _, path := range newPath {
@@ -273,11 +273,11 @@ func buildPathsHelper(currentTask string, tasks map[string]Task, sequenceFlows m
 					allPaths = append(allPaths, pathWithStart)
 				}
 			} else {
-				//		fmt.Printf("Condition not met: %s (Condition: %s)\n", flow.TargetRef, flow.ConditionExpression)
+				// fmt.Printf("Condition not met: %s (Condition: %s)\n", flow.TargetRef, flow.ConditionExpression)
 			}
 		}
 	} else if _, isParallelGateway := parallelGateways[currentTask]; isParallelGateway {
-		//fmt.Printf("Evaluating parallel gateway for task: %s (Name: %s)\n", task.ID, task.Name)
+		// fmt.Printf("Evaluating parallel gateway for task: %s (Name: %s)\n", task.ID, task.Name)
 		var concurrentPaths []*PathNode
 		for _, flow := range nextFlows {
 			nextNode := buildPathsHelper(flow.TargetRef, tasks, sequenceFlows, exclusiveGateways, parallelGateways, timerEvents, variables, visited)
@@ -288,7 +288,7 @@ func buildPathsHelper(currentTask string, tasks map[string]Task, sequenceFlows m
 		currentNode.Concurrent = concurrentPaths
 		allPaths = append(allPaths, currentNode)
 	} else {
-		//fmt.Printf("Following sequence flow for task: %s (Name: %s)\n", task.ID, task.Name)
+		// fmt.Printf("Following sequence flow for task: %s (Name: %s)\n", task.ID, task.Name)
 		for _, flow := range nextFlows {
 			nextNodes := buildPathsHelper(flow.TargetRef, tasks, sequenceFlows, exclusiveGateways, parallelGateways, timerEvents, variables, visited)
 			for _, nextNode := range nextNodes {
