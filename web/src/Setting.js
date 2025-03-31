@@ -17,7 +17,8 @@ import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
-import XLSX from "xlsx";
+import xlsx from "xlsx";
+import FileSaver from "file-saver";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import {ThemeDefault} from "./Conf";
@@ -394,6 +395,16 @@ function s2ab(s) {
   return buf;
 }
 
+export function workbook2blob(workbook) {
+  const wopts = {
+    bookType: "xlsx",
+    bookSST: false,
+    type: "binary",
+  };
+  const wbout = xlsx.write(workbook, wopts);
+  return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+}
+
 export function sheet2blob(sheet, sheetName) {
   const workbook = {
     SheetNames: [sheetName],
@@ -403,14 +414,17 @@ export function sheet2blob(sheet, sheetName) {
   return workbook2blob(workbook);
 }
 
-export function workbook2blob(workbook) {
-  const wopts = {
-    bookType: "xlsx",
-    bookSST: false,
-    type: "binary",
-  };
-  const wbout = XLSX.write(workbook, wopts);
-  return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+export function saveSheetToFile(sheet, sheetName, filename) {
+  try {
+    const blob = sheet2blob(sheet, sheetName);
+    FileSaver.saveAs(blob, filename);
+  } catch (error) {
+    showMessage("error", `failed to save: ${error.message}`);
+  }
+}
+
+export function json2sheet(data) {
+  return xlsx.utils.json_to_sheet(data);
 }
 
 export function toggleElementFromSet(array, element) {
