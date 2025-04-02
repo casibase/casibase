@@ -64,6 +64,7 @@ type Store struct {
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
+	TtsStreamingEnabled  bool   `xorm:"bool" json:"ttsStreamingEnabled"`
 
 	MemoryLimit       int      `json:"memoryLimit"`
 	Frequency         int      `json:"frequency"`

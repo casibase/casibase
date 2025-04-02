@@ -37,6 +37,7 @@ class StoreEditPage extends React.Component {
       modelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
+      ttsStreamingEnabled: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
@@ -218,6 +219,16 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
               options={this.state.textToSpeechProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Enable TTS streaming")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.ttsStreamingEnabled} onChange={checked => {
+              this.updateStoreField("ttsStreamingEnabled", checked);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
