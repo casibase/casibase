@@ -132,7 +132,22 @@ func (a *Adapter) CreateDatabase() error {
 	}
 	defer engine.Close()
 
-	_, err = engine.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8mb4 COLLATE utf8mb4_general_ci", a.DbName))
+	var stmt string
+	switch a.driverName {
+	case "postgres":
+		stmt = fmt.Sprintf(`
+			DO $$
+			BEGIN
+				IF NOT EXISTS (SELECT FROM pg_database WHERE datname = '%s') THEN
+					CREATE DATABASE %s WITH ENCODING='UTF8' LC_COLLATE='en_US.utf8' LC_CTYPE='en_US.utf8' TEMPLATE=template0;
+				END IF;
+			END
+			$$`,
+			a.DbName, a.DbName)
+	default:
+		stmt = fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s default charset utf8mb4 COLLATE utf8mb4_general_ci", a.DbName)
+	}
+	_, err = engine.Exec(stmt)
 	if err != nil {
 		return err
 	}
@@ -141,9 +156,9 @@ func (a *Adapter) CreateDatabase() error {
 }
 
 func (a *Adapter) open() {
-	dataSourceName := a.dataSourceName + a.DbName
-	if a.driverName != "mysql" {
-		dataSourceName = a.dataSourceName + a.DbName
+	dataSourceName := a.dataSourceName
+	if a.driverName == "mysql" {
+		dataSourceName += a.DbName
 	}
 
 	engine, err := xorm.NewEngine(a.driverName, dataSourceName)
