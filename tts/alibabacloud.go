@@ -103,6 +103,11 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 	var streamErr error
 	var audioBytes []byte
 
+	// Setup communication channels based on mode
+	var errChan chan error
+	var audioChannel chan []byte
+	var errorChannel chan error
+
 	if mode == ModeStream {
 		// Check if writer supports Flush
 		flusher, ok := writer.(http.Flusher)
@@ -111,7 +116,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		}
 
 		// Error channel for streaming mode
-		errChan := make(chan error, 1)
+		errChan = make(chan error, 1)
 
 		// Launch goroutine to handle streaming
 		go func() {
@@ -163,25 +168,10 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 
 			errChan <- nil
 		}()
-
-		// Send text to synthesizer
-		if err = asyncSynthesizer.SendText(ctx, text); err != nil {
-			return nil, res, fmt.Errorf("error sending text: %v", err)
-		}
-
-		// Finish task
-		if err = asyncSynthesizer.FinishTask(ctx); err != nil {
-			return nil, res, fmt.Errorf("error finishing task: %v", err)
-		}
-
-		// Wait for processing to complete
-		if streamErr = <-errChan; streamErr != nil {
-			return nil, nil, streamErr
-		}
 	} else { // ModeBuffer
 		// Channel to collect audio data
-		audioChannel := make(chan []byte, 1)
-		errorChannel := make(chan error, 1)
+		audioChannel = make(chan []byte, 1)
+		errorChannel = make(chan error, 1)
 
 		// Launch goroutine to collect audio data
 		go func() {
@@ -195,17 +185,25 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 			}
 			audioChannel <- allAudio
 		}()
+	}
 
-		// Send text to synthesizer
-		if err = asyncSynthesizer.SendText(ctx, text); err != nil {
-			return nil, res, fmt.Errorf("error sending text: %v", err)
+	// Send text to synthesizer
+	if err = asyncSynthesizer.SendText(ctx, text); err != nil {
+		return nil, res, fmt.Errorf("error sending text: %v", err)
+	}
+
+	// Finish task
+	if err = asyncSynthesizer.FinishTask(ctx); err != nil {
+		return nil, res, fmt.Errorf("error finishing task: %v", err)
+	}
+
+	// Process results based on mode
+	if mode == ModeStream {
+		// Wait for processing to complete
+		if streamErr = <-errChan; streamErr != nil {
+			return nil, nil, streamErr
 		}
-
-		// Finish task
-		if err = asyncSynthesizer.FinishTask(ctx); err != nil {
-			return nil, res, fmt.Errorf("error finishing task: %v", err)
-		}
-
+	} else { // ModeBuffer
 		// Wait for either audio data or an error
 		select {
 		case audioBytes = <-audioChannel:
