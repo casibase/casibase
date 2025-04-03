@@ -15,12 +15,10 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/util"
 )
 
 type TextToSpeechRequest struct {
@@ -43,54 +41,12 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	message, err := object.GetMessage(req.MessageId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if message == nil {
-		c.ResponseErrorStream(message, fmt.Sprintf("The message: %s is not found", req.MessageId))
-		return
-	}
-
-	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
-	chat, err := object.GetChat(chatId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if chat == nil {
-		c.ResponseError(fmt.Sprintf("chat:The chat: %s is not found", chatId))
-		return
-	}
-
-	store, err := object.GetStore(req.StoreId)
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if store == nil {
-		c.ResponseError("The store: %s is not found", req.StoreId)
-		return
-	}
-
-	provider, err := store.GetTextToSpeechProvider()
-	if err != nil {
-		c.ResponseError(err.Error())
-		return
-	}
-	if provider == nil {
-		c.ResponseError("The text-to-speech provider for store: %s is not found", store.GetId())
-		return
-	}
-
-	providerObj, err := provider.GetTextToSpeechProvider()
+	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.MessageId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	ctx := context.Background()
 	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx)
 	if err != nil {
 		c.ResponseError(err.Error())
@@ -101,18 +57,45 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	chat.TokenCount += ttsResult.TokenCount
-	chat.Price += ttsResult.Price
-	if chat.Currency == "" {
-		chat.Currency = ttsResult.Currency
-	}
-
-	chat.UpdatedTime = util.GetCurrentTime()
-	_, err = object.UpdateChat(chat.GetId(), chat)
+	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
 	c.ResponseAudio(audioData, "audio/mp3", "speech.mp3")
+}
+
+// GenerateTextToSpeechAudioStream
+// @Title GenerateTextToSpeechAudioStream
+// @Tag TTS API
+// @Description convert text to speech with streaming
+// @Param storeId query string true "The store ID"
+// @Param messageId query string true "The message ID"
+// @Success 200 {stream} string "An event stream of audio chunks in base64 format"
+// @router /generate-text-to-speech-audio-stream [get]
+func (c *ApiController) GenerateTextToSpeechAudioStream() {
+	storeId := c.Input().Get("storeId")
+	messageId := c.Input().Get("messageId")
+
+	c.Ctx.ResponseWriter.Header().Set("Content-Type", "text/event-stream")
+	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
+	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
+
+	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, messageId)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	ttsResult, err := providerObj.QueryAudioStream(message.Text, ctx, c.Ctx.ResponseWriter)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
+	}
+
+	err = object.UpdateChatStats(chat, ttsResult)
+	if err != nil {
+		fmt.Printf("Error updating chat: %s\n", err.Error())
+	}
 }

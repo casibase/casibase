@@ -16,7 +16,11 @@ package tts
 
 import (
 	"context"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
 
 	"github.com/WqyJh/go-cosyvoice"
 )
@@ -65,7 +69,7 @@ func (p *AlibabacloudTextToSpeechProvider) calculatePrice(res *TextToSpeechResul
 	}
 }
 
-func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error) {
+func (p *AlibabacloudTextToSpeechProvider) prepareRequest(text string) (*TextToSpeechResult, cosyvoice.SynthesizerConfig, *cosyvoice.Client) {
 	res := &TextToSpeechResult{
 		TokenCount: countCharacters(text),
 		Price:      0.0,
@@ -80,6 +84,12 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 	}
 
 	client := cosyvoice.NewClient(p.secretKey)
+
+	return res, synthConfig, client
+}
+
+func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error) {
+	res, synthConfig, client := p.prepareRequest(text)
 
 	// Create AsyncSynthesizer with custom config
 	asyncSynthesizer, err := client.AsyncSynthesizer(ctx,
@@ -113,6 +123,7 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 		audioChannel <- allAudio
 	}()
 
+	// Send text to synthesizer
 	err = asyncSynthesizer.SendText(ctx, text)
 	if err != nil {
 		return nil, res, fmt.Errorf("error sending text: %v", err)
@@ -136,4 +147,109 @@ func (p *AlibabacloudTextToSpeechProvider) QueryAudio(text string, ctx context.C
 	case <-ctx.Done():
 		return nil, res, ctx.Err()
 	}
+}
+
+func (p *AlibabacloudTextToSpeechProvider) QueryAudioStream(text string, ctx context.Context, writer io.Writer) (*TextToSpeechResult, error) {
+	res, synthConfig, client := p.prepareRequest(text)
+
+	// Create AsyncSynthesizer with custom config
+	asyncSynthesizer, err := client.AsyncSynthesizer(ctx,
+		cosyvoice.WithSynthesizerConfig(synthConfig),
+	)
+	if err != nil {
+		return res, fmt.Errorf("error creating synthesizer: %v", err)
+	}
+	defer asyncSynthesizer.Close()
+
+	// Run task
+	output, err := asyncSynthesizer.RunTask(ctx)
+	if err != nil {
+		return res, fmt.Errorf("error running task: %v", err)
+	}
+
+	var streamErr error
+	// Setup communication channels based on mode
+	var errChan chan error
+
+	// Check if writer supports Flush
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return nil, fmt.Errorf("writer does not implement http.Flusher")
+	}
+
+	// Error channel for streaming mode
+	errChan = make(chan error, 1)
+
+	// Launch goroutine to handle streaming
+	go func() {
+		for outputResult := range output {
+			if outputResult.Err != nil {
+				errChan <- outputResult.Err
+				return
+			}
+
+			// Encode audio data to base64
+			base64Data := base64.StdEncoding.EncodeToString(outputResult.Data)
+
+			// Create event data JSON
+			event := map[string]interface{}{
+				"type": "audio",
+				"data": base64Data,
+			}
+
+			jsonData, err := json.Marshal(event)
+			if err != nil {
+				errChan <- err
+				return
+			}
+
+			// Send event to client
+			_, err = fmt.Fprintf(writer, "event: chunk\ndata: %s\n\n", jsonData)
+			if err != nil {
+				errChan <- err
+				return
+			}
+
+			flusher.Flush()
+		}
+
+		// Send end event
+		endEvent := map[string]string{"type": "end"}
+		jsonEnd, err := json.Marshal(endEvent)
+		if err != nil {
+			errChan <- err
+			return
+		}
+
+		_, err = fmt.Fprintf(writer, "event: end\ndata: %s\n\n", string(jsonEnd))
+		if err != nil {
+			errChan <- err
+			return
+		}
+		flusher.Flush()
+
+		errChan <- nil
+	}()
+
+	// Launch goroutine to collect audio data
+	if err = asyncSynthesizer.SendText(ctx, text); err != nil {
+		return res, fmt.Errorf("error sending text: %v", err)
+	}
+
+	// Finish task
+	if err = asyncSynthesizer.FinishTask(ctx); err != nil {
+		return res, fmt.Errorf("error finishing task: %v", err)
+	}
+
+	// Wait for streaming to finish
+	if streamErr = <-errChan; streamErr != nil {
+		return nil, streamErr
+	}
+
+	// Calculate price
+	if err := p.calculatePrice(res); err != nil {
+		return res, err
+	}
+
+	return res, nil
 }

@@ -32,6 +32,7 @@ class MessageList extends React.Component {
       hideInput,
       disableInput,
       isReading,
+      isLoadingTTS,
       readingMessage,
       sendMessage,
     } = this.props;
@@ -70,6 +71,7 @@ class MessageList extends React.Component {
             onEditMessage={onEditMessage}
             disableInput={disableInput}
             isReading={isReading}
+            isLoadingTTS={isLoadingTTS}
             readingMessage={readingMessage}
             sendMessage={sendMessage}
           />
