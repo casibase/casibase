@@ -18,6 +18,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
+import * as setting from "./Setting";
 
 const {Option} = Select;
 
@@ -46,6 +47,37 @@ class ProviderEditPage extends React.Component {
           Setting.showMessage("error", `Failed to get provider: ${res.msg}`);
         }
       });
+  }
+
+  getClientIdLabel(provider) {
+    if (["Model", "Embedding"].includes(provider.category)) {
+      if (provider.type === "Tencent Cloud") {
+        return Setting.getLabel(i18next.t("provider:Secret Id"), i18next.t("provider:tencent cloud personal SecretId"));
+      } else if (provider.type === "Baidu Cloud") {
+        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path"));
+      } else if (provider.type === "Azure") {
+        return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name"));
+      } else if (provider.type === "MiniMax") {
+        return setting.getLabel(i18next.t("provider:groupID"), i18next.t("provider:groupID"));
+      }
+    }
+    if (provider.category === "Storage") {
+      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key"));
+    }
+    return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID"));
+  }
+
+  getClientSecretLabel(provider) {
+    if (["Storage", "Embedding", "Text-to-Speech"].includes(provider.category)) {
+      return Setting.getLabel(i18next.t("provider:Secret key"), i18next.t("provider:Secret key"));
+    } else if (provider.category === "Model") {
+      if (provider.type === "Tencent Cloud") {
+        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:OpenAI_API_KEY of tencent cloud"));
+      } else {
+        return Setting.getLabel(i18next.t("provider:Secret secret"), i18next.t("provider:Secret secret"));
+      }
+    }
+    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret"));
   }
 
   parseProviderField(key, value) {
@@ -317,34 +349,21 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type !== "Baidu Cloud" && this.state.provider.type !== "Hunyuan" && this.state.provider.category !== "Storage") ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {
-                  (this.state.provider.category !== "Storage") ? i18next.t("provider:API key") :
-                    i18next.t("provider:Path")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientId} onChange={e => {
-                  this.updateProviderField("clientId", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
-        }
-        {
-          ["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Client ID")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientId} onChange={e => {
-                  this.updateProviderField("clientId", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
+          (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+          (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+          ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+          (!(["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category))) ? (
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getClientIdLabel(this.state.provider)}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            ) : null
         }
         {
           (this.state.provider.type === "Local") ? (
@@ -466,8 +485,7 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
-                  i18next.t("provider:Client secret")}:
+                {this.getClientSecretLabel(this.state.provider)}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientSecret} onChange={e => {
@@ -635,34 +653,8 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ? (
-            <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:groupID")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.clientId} onChange={e => {
-                    this.updateProviderField("clientId", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-            </>
-          ) : null
-        }
-        {
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ? (
             <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Deployment name")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.clientId} onChange={e => {
-                    this.updateProviderField("clientId", e.target.value);
-                  }} />
-                </Col>
-              </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {i18next.t("provider:API version")}:
