@@ -15,74 +15,15 @@
 package controllers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/casibase/casibase/object"
-	"github.com/casibase/casibase/tts"
-	"github.com/casibase/casibase/util"
 )
 
 type TextToSpeechRequest struct {
 	StoreId   string `json:"storeId"`
 	MessageId string `json:"messageId"`
-}
-
-// prepareTextToSpeech prepares the text-to-speech conversion
-func (c *ApiController) prepareTextToSpeech(storeId, messageId string) (*object.Message, *object.Chat, *object.Store, tts.TextToSpeechProvider, context.Context, error) {
-	message, err := object.GetMessage(messageId)
-	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-	if message == nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("The message: %s is not found", messageId)
-	}
-
-	chatId := util.GetIdFromOwnerAndName(message.Owner, message.Chat)
-	chat, err := object.GetChat(chatId)
-	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-	if chat == nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("The chat: %s is not found", chatId)
-	}
-
-	store, err := object.GetStore(storeId)
-	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-	if store == nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("The store: %s is not found", storeId)
-	}
-
-	provider, err := store.GetTextToSpeechProvider()
-	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-	if provider == nil {
-		return nil, nil, nil, nil, nil, fmt.Errorf("The text-to-speech provider for store: %s is not found", store.GetId())
-	}
-
-	providerObj, err := provider.GetTextToSpeechProvider()
-	if err != nil {
-		return nil, nil, nil, nil, nil, err
-	}
-
-	ctx := context.Background()
-	return message, chat, store, providerObj, ctx, nil
-}
-
-func (c *ApiController) updateChatStats(chat *object.Chat, ttsResult *tts.TextToSpeechResult) error {
-	chat.TokenCount += ttsResult.TokenCount
-	chat.Price += ttsResult.Price
-	if chat.Currency == "" {
-		chat.Currency = ttsResult.Currency
-	}
-
-	chat.UpdatedTime = util.GetCurrentTime()
-	_, err := object.UpdateChat(chat.GetId(), chat)
-	return err
 }
 
 // GenerateTextToSpeechAudio
@@ -100,13 +41,13 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	message, chat, _, providerObj, ctx, err := c.prepareTextToSpeech(req.StoreId, req.MessageId)
+	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.MessageId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
 	}
 
-	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx, tts.ModeBuffer, nil)
+	audioData, ttsResult, err := providerObj.QueryAudio(message.Text, ctx)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -116,7 +57,7 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		return
 	}
 
-	err = c.updateChatStats(chat, ttsResult)
+	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -141,19 +82,19 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	message, chat, _, providerObj, ctx, err := c.prepareTextToSpeech(storeId, messageId)
+	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, messageId)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	_, ttsResult, err := providerObj.QueryAudio(message.Text, ctx, tts.ModeStream, c.Ctx.ResponseWriter)
+	ttsResult, err := providerObj.QueryAudioStream(message.Text, ctx, c.Ctx.ResponseWriter)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
 
-	err = c.updateChatStats(chat, ttsResult)
+	err = object.UpdateChatStats(chat, ttsResult)
 	if err != nil {
 		fmt.Printf("Error updating chat: %s\n", err.Error())
 	}

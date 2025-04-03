@@ -69,6 +69,11 @@ class TtsHelper {
 
     this.audioQueue = [];
     this.isProcessingQueue = false;
+
+    // Reset loading state when canceling
+    this.component.setState({
+      isLoadingTTS: false,
+    });
   }
 
   // Main method to handle TTS functionality
@@ -77,8 +82,8 @@ class TtsHelper {
     this.cancelReading();
 
     const useCloudTTS = store &&
-            store.textToSpeechProvider &&
-            store.textToSpeechProvider !== "";
+        store.textToSpeechProvider &&
+        store.textToSpeechProvider !== "";
 
     if (useCloudTTS) {
       this.component.setState({
@@ -89,9 +94,13 @@ class TtsHelper {
       const storeId = `${store.owner}/${store.name}`;
       const messageId = `${message.owner}/${message.name}`;
 
-      if (store.ttsStreamingEnabled) {
+      if (store.enableTtsStreaming) {
         this.useStreamingTTS(message, storeId, messageId);
       } else {
+        // Set loading state before starting non-streaming TTS
+        this.component.setState({
+          isLoadingTTS: true,
+        });
         this.useNonStreamingTTS(message, storeId, messageId);
       }
     } else {
@@ -166,6 +175,11 @@ class TtsHelper {
   useNonStreamingTTS(message, storeId, messageId) {
     TTSBackend.generateTextToSpeechAudio(storeId, messageId)
       .then(blob => {
+        // Reset loading state when data is received
+        this.component.setState({
+          isLoadingTTS: false,
+        });
+
         const audioUrl = URL.createObjectURL(blob);
 
         // Create a new audio player
@@ -184,6 +198,11 @@ class TtsHelper {
         this.audioPlayer.play();
       })
       .catch(error => {
+        // Reset loading state on error
+        this.component.setState({
+          isLoadingTTS: false,
+        });
+
         Setting.showMessage("error", `TTS failed: ${error.message}. Falling back to browser TTS.`);
         this.useBrowserTTS(message);
       });
@@ -244,6 +263,10 @@ class TtsHelper {
       this.audioContext.close();
       this.audioContext = null;
     }
+
+    this.component.setState({
+      isLoadingTTS: false,
+    });
   }
 }
 

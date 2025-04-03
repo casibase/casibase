@@ -37,7 +37,7 @@ class StoreEditPage extends React.Component {
       modelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
-      ttsStreamingEnabled: false,
+      enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
@@ -226,8 +226,8 @@ class StoreEditPage extends React.Component {
             {i18next.t("store:Enable TTS streaming")}:
           </Col>
           <Col span={1}>
-            <Switch checked={this.state.store.ttsStreamingEnabled} onChange={checked => {
-              this.updateStoreField("ttsStreamingEnabled", checked);
+            <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
+              this.updateStoreField("enableTtsStreaming", checked);
             }} />
           </Col>
         </Row>

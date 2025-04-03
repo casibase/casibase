@@ -25,14 +25,10 @@ type TextToSpeechResult struct {
 	Currency   string
 }
 
-const (
-	ModeStream = iota // For streaming mode
-	ModeBuffer        // For buffered mode
-)
-
 type TextToSpeechProvider interface {
 	GetPricing() string
-	QueryAudio(text string, ctx context.Context, mode int, writer io.Writer) ([]byte, *TextToSpeechResult, error)
+	QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error)
+	QueryAudioStream(text string, ctx context.Context, writer io.Writer) (*TextToSpeechResult, error)
 }
 
 func GetTextToSpeechProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string) (TextToSpeechProvider, error) {
