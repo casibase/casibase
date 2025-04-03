@@ -38,6 +38,7 @@ class ChatBox extends React.Component {
       messages: this.props.messages,
       currentReadingMessage: null,
       isReading: false,
+      isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
     };
@@ -86,6 +87,7 @@ class ChatBox extends React.Component {
       messages: this.props.messages,
       currentReadingMessage: null,
       isReading: false,
+      isLoadingTTS: false,
       isVoiceInput: false,
     });
     this.cursorPosition = undefined;
@@ -345,6 +347,7 @@ class ChatBox extends React.Component {
             hideInput={this.props.hideInput}
             disableInput={this.props.disableInput}
             isReading={this.state.isReading}
+            isLoadingTTS={this.state.isLoadingTTS}
             readingMessage={this.state.readingMessage}
             sendMessage={this.props.sendMessage}
           />

@@ -14,7 +14,10 @@
 
 package tts
 
-import "context"
+import (
+	"context"
+	"io"
+)
 
 type TextToSpeechResult struct {
 	TokenCount int
@@ -25,6 +28,7 @@ type TextToSpeechResult struct {
 type TextToSpeechProvider interface {
 	GetPricing() string
 	QueryAudio(text string, ctx context.Context) ([]byte, *TextToSpeechResult, error)
+	QueryAudioStream(text string, ctx context.Context, writer io.Writer) (*TextToSpeechResult, error)
 }
 
 func GetTextToSpeechProvider(typ string, subType string, clientId string, clientSecret string, providerUrl string, apiVersion string, pricePerThousandChars float64, currency string, flavor string) (TextToSpeechProvider, error) {

@@ -37,6 +37,7 @@ const MessageItem = ({
   onEditMessage,
   disableInput,
   isReading,
+  isLoadingTTS, // Added new prop for TTS loading state
   readingMessage,
   sendMessage,
 }) => {
@@ -264,6 +265,7 @@ const MessageItem = ({
           onToggleRead={onToggleRead}
           onEdit={() => setIsHovering(true)}
           isReading={isReading}
+          isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
           readingMessage={readingMessage}
           account={account}
           setIsRegenerating={setIsRegenerating}

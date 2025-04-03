@@ -37,3 +37,11 @@ export function generateTextToSpeechAudio(storeId, messageId) {
     return response.blob();
   });
 }
+
+export function generateTextToSpeechAudioStream(storeId, messageId) {
+  const url = `${Setting.ServerUrl}/api/generate-text-to-speech-audio-stream?storeId=${encodeURIComponent(storeId)}&messageId=${encodeURIComponent(messageId)}`;
+
+  return new EventSource(url, {
+    withCredentials: true,
+  });
+}
