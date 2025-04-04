@@ -225,6 +225,7 @@ class VectorListPage extends BaseListPage {
         dataIndex: "action",
         key: "action",
         width: "150px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>

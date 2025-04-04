@@ -369,6 +369,16 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Is default")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.isDefault} onChange={checked => {
+              this.updateStoreField("isDefault", checked);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:State")} :
