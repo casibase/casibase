@@ -64,6 +64,7 @@ import UsagePage from "./UsagePage";
 import * as StoreBackend from "./backend/StoreBackend";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
+import {PreviewInterceptor} from "./PreviewInterceptor";
 
 const {Header, Footer, Content} = Layout;
 
@@ -81,6 +82,7 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
+    this.previewInterceptor = new PreviewInterceptor(() => this.state.account); // add interceptor
   }
 
   UNSAFE_componentWillMount() {
@@ -352,7 +354,7 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin) {
+    if (!this.state.account.isAdmin && Conf.DisablePreviewMode) { // show complete menu in preview mode even not login
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
