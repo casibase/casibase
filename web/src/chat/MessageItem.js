@@ -73,56 +73,43 @@ const MessageItem = ({
     }
 
     if (message.errorText !== "") {
-      const isMobile = window.innerWidth < 768;
-      if (!isMobile) {
-        return (
+      const regenerateButton = (
+        <Button
+          danger
+          type="primary"
+          onClick={() => {
+            setIsRegenerating(true);
+            onRegenerate(index);
+          }}
+          disabled={isRegenerating}
+        >
+          {isRegenerating
+            ? i18next.t("general:Regenerating...")
+            : i18next.t("general:Regenerate Answer")}
+        </Button>
+      );
+      return Setting.isMobile() ? (
+        <div>
           <Alert
             message={Setting.getRefinedErrorText(message.errorText)}
             description={message.errorText}
             type="error"
             showIcon
-            action={
-              <Button danger type="primary" onClick={() => {
-                setIsRegenerating(true);
-                onRegenerate(index);
-              }} disabled={isRegenerating}>
-                {
-                  isRegenerating ? i18next.t("general:Regenerating...") :
-                    i18next.t("general:Regenerate Answer")}
-              </Button>
-            }
+            style={{whiteSpace: "normal", wordWrap: "break-word"}}
           />
-        );
-      } else {
-        return (
-          <div>
-            <Alert
-              message={Setting.getRefinedErrorText(message.errorText)}
-              description={message.errorText}
-              type="error"
-              showIcon
-              style={{whiteSpace: "normal", wordWrap: "break-word"}}
-            />
-            <Row justify="center" style={{marginTop: 16}}>
-              <Col>
-                <Button
-                  danger
-                  type="primary"
-                  onClick={() => {
-                    setIsRegenerating(true);
-                    onRegenerate(index);
-                  }}
-                  disabled={isRegenerating}
-                >
-                  {isRegenerating
-                    ? i18next.t("general:Regenerating...")
-                    : i18next.t("general:Regenerate Answer")}
-                </Button>
-              </Col>
-            </Row>
-          </div>
-        );
-      }
+          <Row justify="center" style={{marginTop: 16}}>
+            <Col>{regenerateButton}</Col>
+          </Row>
+        </div>
+      ) : (
+        <Alert
+          message={Setting.getRefinedErrorText(message.errorText)}
+          description={message.errorText}
+          type="error"
+          showIcon
+          action={regenerateButton}
+        />
+      );
     }
 
     if (message.text === "" && message.author === "AI" && !message.reasonText) {
