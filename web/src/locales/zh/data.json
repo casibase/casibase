@@ -218,7 +218,9 @@
     "Platform - Tooltip": "平台 - 工具提示"
   },
   "login": {
-    "Loading": "加载中"
+    "Loading": "加载中",
+    "Login Required": "需要登录",
+    "Please log in first before using this function. It will then redirect you to the login interface.": "在使用此功能之前，请先登录。即将帮您跳转至登录界面。"
   },
   "machine": {
     "Edit Machine": "编辑主机",
