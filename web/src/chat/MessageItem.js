@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button} from "antd";
+import {Alert, Button, Col, Row} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -73,24 +73,56 @@ const MessageItem = ({
     }
 
     if (message.errorText !== "") {
-      return (
-        <Alert
-          message={Setting.getRefinedErrorText(message.errorText)}
-          description={message.errorText}
-          type="error"
-          showIcon
-          action={
-            <Button danger type="primary" onClick={() => {
-              setIsRegenerating(true);
-              onRegenerate(index);
-            }} disabled={isRegenerating}>
-              {
-                isRegenerating ? i18next.t("general:Regenerating...") :
-                  i18next.t("general:Regenerate Answer")}
-            </Button>
-          }
-        />
-      );
+      const isMobile = window.innerWidth < 768;
+      if (!isMobile) {
+        return (
+          <Alert
+            message={Setting.getRefinedErrorText(message.errorText)}
+            description={message.errorText}
+            type="error"
+            showIcon
+            action={
+              <Button danger type="primary" onClick={() => {
+                setIsRegenerating(true);
+                onRegenerate(index);
+              }} disabled={isRegenerating}>
+                {
+                  isRegenerating ? i18next.t("general:Regenerating...") :
+                    i18next.t("general:Regenerate Answer")}
+              </Button>
+            }
+          />
+        );
+      } else {
+        return (
+          <div>
+            <Alert
+              message={Setting.getRefinedErrorText(message.errorText)}
+              description={message.errorText}
+              type="error"
+              showIcon
+              style={{whiteSpace: "normal", wordWrap: "break-word"}}
+            />
+            <Row justify="center" style={{marginTop: 16}}>
+              <Col>
+                <Button
+                  danger
+                  type="primary"
+                  onClick={() => {
+                    setIsRegenerating(true);
+                    onRegenerate(index);
+                  }}
+                  disabled={isRegenerating}
+                >
+                  {isRegenerating
+                    ? i18next.t("general:Regenerating...")
+                    : i18next.t("general:Regenerate Answer")}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      }
     }
 
     if (message.text === "" && message.author === "AI" && !message.reasonText) {
