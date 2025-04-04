@@ -84,7 +84,6 @@ const MessageActions = ({
         icon={<CopyOutlined />}
         style={{border: "none", color: ThemeDefault.colorPrimary}}
         onClick={() => onCopy(message.html.props.dangerouslySetInnerHTML.__html)}
-        preview-clickable="true"
       />
 
       {!isLastMessage ? null : (
@@ -124,7 +123,6 @@ const MessageActions = ({
           }}
           onClick={() => onToggleRead(message)}
           disabled={isCurrentMessageBeingLoaded}
-          preview-clickable="true"
         />
       </Tooltip>
     </Space>
