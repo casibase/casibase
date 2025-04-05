@@ -21,7 +21,7 @@ import xlsx from "xlsx";
 import FileSaver from "file-saver";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
-import {ThemeDefault} from "./Conf";
+import {DisablePreviewMode, ThemeDefault} from "./Conf";
 import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
@@ -153,6 +153,11 @@ export function isLocalAdminUser(account) {
   if (account === undefined || account === null) {
     return false;
   }
+
+  if (!DisablePreviewMode && isAnonymousUser(account)) {
+    return true;
+  }
+
   return account.isAdmin === true || isAdminUser(account);
 }
 
