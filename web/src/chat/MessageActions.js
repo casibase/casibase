@@ -59,15 +59,15 @@ const MessageActions = ({
   // Get appropriate tooltip text for TTS button
   const getTtsTooltip = () => {
     if (isCurrentMessageBeingLoaded) {
-      return i18next.t("chat:Loading text-to-speech");
+      return i18next.t("general:Loading...");
     }
     if (isCurrentMessageBeingRead && isReading) {
-      return i18next.t("chat:Pause reading");
+      return i18next.t("general:Pause");
     }
     if (isCurrentMessageBeingRead && !isReading) {
-      return i18next.t("chat:Resume reading");
+      return i18next.t("general:Resume");
     }
-    return i18next.t("chat:Read aloud");
+    return i18next.t("chat:Read it out");
   };
 
   return (
