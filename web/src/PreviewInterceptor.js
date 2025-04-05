@@ -24,11 +24,7 @@ class PreviewInterceptor {
     document.addEventListener("click", this.handleButtonClick, true);
     this.allowedButtonTexts = [i18next.t("general:Edit"), i18next.t("general:View"), i18next.t("general:Close")];
     this.allowedMessageActions = ["copy", "play-circle"];
-    this.allowedSwitch = [i18next.t("general:Is deleted"), i18next.t("general:Need notify"), i18next.t("general:Is alerted"), i18next.t("message:Chat")];
-    const observer = new MutationObserver(() => {
-      this.enableButtonsIfAnonymousinPreview();
-    });
-    observer.observe(document.body, {childList: true, subtree: true});
+    this.allowedSwitch = [i18next.t("general:Is deleted"), i18next.t("general:Need notify"), i18next.t("general:Is alerted"), i18next.t("message:Chat"), i18next.t("store:Enable TTS streaming"), i18next.t("store:Disable file upload"), i18next.t("store:Is default")];
   }
 
   handleButtonClick(event) {
