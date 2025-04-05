@@ -190,7 +190,7 @@ const StoreInfoTitle = (props) => {
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
         <div style={{marginRight: "20px"}}>
-          <span style={{marginRight: "5px"}}><strong>Store:</strong></span>
+          <span style={{marginRight: "5px"}}>Store:</span>
           <Select
             value={selectedStore?.name || storeInfo?.name || "Default Store"}
             style={{width: 150}}
@@ -206,7 +206,7 @@ const StoreInfoTitle = (props) => {
         </div>
 
         <div>
-          <span style={{marginRight: "5px"}}><strong>Model:</strong></span>
+          <span style={{marginRight: "5px"}}>Model:</span>
           <Select
             value={selectedProvider || storeInfo?.modelProvider || "Default"}
             style={{width: 180}}
