@@ -52,13 +52,13 @@ class ProviderEditPage extends React.Component {
   getClientIdLabel(provider) {
     if (["Model", "Embedding"].includes(provider.category)) {
       if (provider.type === "Tencent Cloud") {
-        return Setting.getLabel(i18next.t("provider:Secret Id"), i18next.t("provider:tencent cloud personal SecretId"));
+        return Setting.getLabel("Secret ID", "Secret ID");
       } else if (provider.type === "Baidu Cloud") {
         return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path"));
       } else if (provider.type === "Azure") {
         return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name"));
       } else if (provider.type === "MiniMax") {
-        return setting.getLabel(i18next.t("provider:groupID"), i18next.t("provider:groupID"));
+        return setting.getLabel(i18next.t("provider:Group ID"), i18next.t("provider:Group ID"));
       }
     }
     if (provider.category === "Storage") {
@@ -69,12 +69,10 @@ class ProviderEditPage extends React.Component {
 
   getClientSecretLabel(provider) {
     if (["Storage", "Embedding", "Text-to-Speech"].includes(provider.category)) {
-      return Setting.getLabel(i18next.t("provider:Secret key"), i18next.t("provider:Secret key"));
+      return Setting.getLabel("Secret key", "Secret key");
     } else if (provider.category === "Model") {
       if (provider.type === "Tencent Cloud") {
-        return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:OpenAI_API_KEY of tencent cloud"));
-      } else {
-        return Setting.getLabel(i18next.t("provider:Secret secret"), i18next.t("provider:Secret secret"));
+        return Setting.getLabel("API key", "API key");
       }
     }
     return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret"));

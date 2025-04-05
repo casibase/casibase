@@ -40,6 +40,7 @@
     "I'm listening...": "正在倾听...",
     "New Chat": "新会话",
     "Price": "价格",
+    "Read it out": "朗读出来",
     "Reasoning process": "思维链",
     "Single": "单聊",
     "Text token count": "文本Token数量",
@@ -115,6 +116,7 @@
     "Multimedia": "多媒体",
     "Name": "名称",
     "Name - Tooltip": "名称 - 工具提示",
+    "Need notify": "需要通知",
     "Network": "网络",
     "No.": "序号",
     "Node": "节点",
@@ -128,6 +130,7 @@
     "Owner": "租户",
     "Password": "密码",
     "Password - Tooltip": "密码 - 工具提示",
+    "Pause": "暂停",
     "Permissions": "权限",
     "Preview": "预览",
     "Progress": "进度",
@@ -149,6 +152,7 @@
     "Response": "响应",
     "Response - Tooltip": "响应 - 工具提示",
     "Result": "最终成果",
+    "Resume": "恢复",
     "Run": "运行",
     "Save": "保存",
     "Save & Exit": "保存并退出",
@@ -237,6 +241,11 @@
     "Public IP - Tooltip": "Public IP - 工具提示",
     "Zone": "区域"
   },
+  "med": {
+    "Audit": "审计",
+    "Medical Image Analysis": "医学影像分析",
+    "Super Resolution": "图像超分"
+  },
   "message": {
     "Author": "作者",
     "Chat": "会话",
@@ -284,6 +293,7 @@
     "EndpointID": "终端ID",
     "Flavor": "风味",
     "Frequency penalty": "Frequency penalty",
+    "Group ID": "组ID",
     "Input price / 1k tokens": "输入价格 / 千tokens",
     "Input type": "输入类型",
     "Output price / 1k tokens": "输出价格 / 千tokens",
@@ -294,8 +304,7 @@
     "Sub type": "子类型",
     "Temperature": "Temperature",
     "Top K": "Top K",
-    "Top P": "Top P",
-    "groupID": "组ID"
+    "Top P": "Top P"
   },
   "record": {
     "Commit": "上链",
@@ -320,6 +329,7 @@
     "Disable file upload": "禁止文件上传",
     "Edit Store": "编辑数据仓库",
     "Embedding provider": "嵌入提供商",
+    "Enable TTS streaming": "开启TTS流式传输",
     "English": "英语",
     "File": "文件",
     "File name": "文件名",
@@ -331,6 +341,7 @@
     "History": "历史",
     "Icon": "图标",
     "Image provider": "图片提供商",
+    "Is default": "是否默认",
     "Knowledge count": "知识数量",
     "Limit minutes": "分钟限制",
     "Math": "数学",
