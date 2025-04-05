@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
-import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
+import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -242,7 +242,7 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    if (Setting.isAnonymousUser(this.state.account) || Setting.getUrlParam("isRaw") !== null) {
+    if ((Setting.isAnonymousUser(this.state.account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown">
           {
@@ -259,15 +259,21 @@ class App extends Component {
     }
 
     const items = [];
-    items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
-      "/account"
-    ));
-    items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
-      "/chat"
-    ));
-    items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
-      "/logout"
-    ));
+    if (!Setting.isAnonymousUser(this.state.account)) {
+      items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
+        "/account"
+      ));
+      items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
+        "/chat"
+      ));
+      items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
+        "/logout"
+      ));
+    } else {
+      items.push(Setting.getItem(<><LoginOutlined />&nbsp;&nbsp;{i18next.t("account:Sign In")}</>,
+        "/login"
+      ));
+    }
     const onClick = (e) => {
       if (e.key === "/account") {
         Setting.openLink(Setting.getMyProfileUrl(this.state.account));
@@ -275,6 +281,8 @@ class App extends Component {
         this.signout();
       } else if (e.key === "/chat") {
         this.props.history.push("/chat");
+      } else if (e.key === "/login") {
+        Setting.redirectToLogin();
       }
     };
 
@@ -354,7 +362,7 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin && Conf.DisablePreviewMode) { // show complete menu in preview mode even not login
+    if (!this.state.account.isAdmin && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {Button, Tag, Tooltip, message, notification} from "antd";
+import {Tag, Tooltip, message} from "antd";
 import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
@@ -788,42 +788,6 @@ export function getProviderTypeOptions(category) {
   } else {
     return [];
   }
-}
-
-export function redirectIfAnonymous(account) {
-  if (this.isAnonymousUser(account)) {
-    this.showLoginRequirement();
-    return true;
-  } else {
-    return false;
-  }
-}
-
-export function showLoginRequirement() {
-  const onClose = () => {
-    return redirectToLogin();
-  };
-  notification.open({
-    message: (
-      <div style={{display: "flex", alignItems: "center"}}>
-        <img
-          className="notification-icon" style={{width: 36, marginLeft: "-8px", marginRight: "10px"}} src={`${StaticBaseUrl}/img/hushed-face.svg`}
-        />
-        <span>{i18next.t("login:Login Required")}</span>
-      </div>
-    ),
-    closeIcon: null,
-    onClose,
-    actions: [
-      <Button type="link" size="small" key="dismiss" onClick={() => notification.destroy()} preview-clickable="true">
-        {i18next.t("general:Close")}
-      </Button>,
-    ],
-    description: i18next.t("login:Please log in first before using this function. It will then redirect you to the login interface."),
-    duration: 5,
-    showProgress: true,
-    pauseOnHover: true,
-  });
 }
 
 export function redirectToLogin() {
