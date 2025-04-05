@@ -19,6 +19,7 @@ import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
 import ChatBox from "./ChatBox";
+import StoreInfoTitle from "./StoreInfoTitle";
 import {renderReason, renderText} from "./ChatMessageRender";
 import * as Setting from "./Setting";
 import * as ChatBackend from "./backend/ChatBackend";
@@ -597,42 +598,46 @@ class ChatPage extends BaseListPage {
             </div>
           )
         }
-        <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative"}}>
-          {
-            (this.state.messages === undefined || this.state.messages === null) ? null : (
-              <div style={{
-                position: "absolute",
-                top: -50,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundImage: `url(${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "200px auto",
-                backgroundBlendMode: "luminosity",
-                filter: "grayscale(80%) brightness(140%) contrast(90%)",
-                opacity: 0.5,
-                pointerEvents: "none",
-              }}>
-              </div>
-            )
-          }
-          <ChatBox
-            disableInput={this.state.disableInput}
-            loading={this.state.messageLoading}
-            messages={this.state.messages}
-            messageError={this.state.messageError}
-            sendMessage={(text, fileName, regenerate = false) => {
-              this.sendMessage(text, fileName, false, regenerate);
-            }}
-            onMessageEdit={this.handleMessageEdit}
-            onCancelMessage={this.cancelMessage}
-            account={this.props.account}
-            name={this.state.chat?.name}
-            displayName={this.state.chat?.displayName}
-            store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
-          />
+        <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
+          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} />}
+
+          <div style={{flex: 1, position: "relative", overflow: "auto"}}>
+            {
+              (this.state.messages === undefined || this.state.messages === null) ? null : (
+                <div style={{
+                  position: "absolute",
+                  top: -50,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backgroundImage: `url(${Setting.StaticBaseUrl}/img/casibase-logo_1200x256.png)`,
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "200px auto",
+                  backgroundBlendMode: "luminosity",
+                  filter: "grayscale(80%) brightness(140%) contrast(90%)",
+                  opacity: 0.5,
+                  pointerEvents: "none",
+                }}>
+                </div>
+              )
+            }
+            <ChatBox
+              disableInput={this.state.disableInput}
+              loading={this.state.messageLoading}
+              messages={this.state.messages}
+              messageError={this.state.messageError}
+              sendMessage={(text, fileName, regenerate = false) => {
+                this.sendMessage(text, fileName, false, regenerate);
+              }}
+              onMessageEdit={this.handleMessageEdit}
+              onCancelMessage={this.cancelMessage}
+              account={this.props.account}
+              name={this.state.chat?.name}
+              displayName={this.state.chat?.displayName}
+              store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
+            />
+          </div>
         </div>
       </div>
     );
