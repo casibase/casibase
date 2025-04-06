@@ -83,7 +83,8 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	store, err := object.GetDefaultStore("admin")
+	storeId := util.GetIdFromOwnerAndName(chat.Owner, chat.Store)
+	store, err := object.GetStore(storeId)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -134,7 +135,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", store.ModelProvider)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
