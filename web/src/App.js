@@ -85,7 +85,7 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
-    this.previewInterceptor = new PreviewInterceptor(() => this.state.account); // add interceptor
+    this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history); // add interceptor
   }
 
   UNSAFE_componentWillMount() {
@@ -291,6 +291,7 @@ class App extends Component {
       } else if (e.key === "/chat") {
         this.props.history.push("/chat");
       } else if (e.key === "/login") {
+        this.props.history.push(window.location.pathname);
         Setting.redirectToLogin();
       }
     };

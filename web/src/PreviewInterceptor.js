@@ -15,11 +15,13 @@
 import i18next from "i18next";
 import * as Setting from "./Setting";
 import * as Conf from "./Conf";
-import {Button, notification} from "antd";
+import {notification} from "antd";
+import {CloseOutlined} from "@ant-design/icons";
 
 class PreviewInterceptor {
-  constructor(getAccount) {
+  constructor(getAccount, history) {
     this.getAccount = getAccount;
+    this.history = history;
     this.handleButtonClick = this.handleButtonClick.bind(this);
     document.addEventListener("click", this.handleButtonClick, true);
     this.allowedButtonTexts = [i18next.t("general:Edit"), i18next.t("general:View"), i18next.t("general:Close")];
@@ -70,26 +72,33 @@ class PreviewInterceptor {
 
   showLoginRequirement() {
     const onClose = () => {
+      this.history.push(window.location.pathname);
       return Setting.redirectToLogin();
     };
     notification.open({
       message: (
         <div style={{display: "flex", alignItems: "center"}}>
           <img
-            className="notification-icon" style={{width: 36, marginLeft: "-8px", marginRight: "10px"}} src={`${Setting.StaticBaseUrl}/img/hushed-face.svg`}
+            className="notification-icon" style={{width: "15%", height: "15%", marginRight: "5%"}} src={`${Setting.StaticBaseUrl}/img/hushed-face.svg`}
           />
-          <span>{i18next.t("login:Login Required")}</span>
+          <div style={{display: "flex", flexDirection: "column"}}>
+            {/* 右上文本 */}
+            <span style={{fontSize: "18px", fontWeight: "bold", marginBottom: "10px"}}>
+              {i18next.t("login:Please log in to use this feature")}
+            </span>
+            {/* 右下文本 */}
+            <span style={{fontSize: "14px", color: "#555"}}>
+              {i18next.t("login:You will be redirected to the login page shortly")}
+            </span>
+          </div>
         </div>
       ),
-      closeIcon: null,
       onClose,
-      actions: [
-        <Button type="link" size="small" key="dismiss" onClick={() => notification.destroy()}>
-          {i18next.t("general:Close")}
-        </Button>,
-      ],
-      description: i18next.t("login:Please log in first before using this function. It will then redirect you to the login interface."),
-      duration: 5,
+      closeIcon: <CloseOutlined style={{fontSize: 16}} onClick={(e) => {
+        e.stopPropagation();
+        notification.destroy();
+      }} />,
+      duration: 3,
       showProgress: true,
       pauseOnHover: true,
     });
