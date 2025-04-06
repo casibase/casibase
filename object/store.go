@@ -64,6 +64,7 @@ type Store struct {
 	ModelProvider        string `xorm:"varchar(100)" json:"modelProvider"`
 	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
+	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
 
 	MemoryLimit       int      `json:"memoryLimit"`
 	Frequency         int      `json:"frequency"`
@@ -80,6 +81,7 @@ type Store struct {
 	Title             string   `xorm:"varchar(100)" json:"title"`
 	CanSelectStore    bool     `json:"canSelectStore"`
 	DisableFileUpload bool     `json:"disableFileUpload"`
+	IsDefault         bool     `json:"isDefault"`
 	State             string   `xorm:"varchar(100)" json:"state"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
@@ -110,6 +112,12 @@ func GetDefaultStore(owner string) (*Store, error) {
 	stores, err := GetStores(owner)
 	if err != nil {
 		return nil, err
+	}
+
+	for _, store := range stores {
+		if store.IsDefault {
+			return store, nil
+		}
 	}
 
 	for _, store := range stores {

@@ -37,6 +37,7 @@ class StoreEditPage extends React.Component {
       modelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
+      enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
@@ -222,6 +223,16 @@ class StoreEditPage extends React.Component {
         </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Enable TTS streaming")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
+              this.updateStoreField("enableTtsStreaming", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Frequency")}:
           </Col>
           <Col span={22} >
@@ -355,6 +366,16 @@ class StoreEditPage extends React.Component {
           <Col span={1}>
             <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
               this.updateStoreField("disableFileUpload", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Is default")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.isDefault} onChange={checked => {
+              this.updateStoreField("isDefault", checked);
             }} />
           </Col>
         </Row>

@@ -40,6 +40,7 @@
     "I'm listening...": "I'm listening...",
     "New Chat": "New Chat",
     "Price": "Price",
+    "Read it out": "Read it out",
     "Reasoning process": "Reasoning process",
     "Single": "Один",
     "Text token count": "Text token count",
@@ -115,6 +116,7 @@
     "Multimedia": "Multimedia",
     "Name": "Название",
     "Name - Tooltip": "Name - Tooltip",
+    "Need notify": "Need notify",
     "Network": "Network",
     "No.": "Нет.",
     "Node": "Node",
@@ -128,6 +130,7 @@
     "Owner": "Owner",
     "Password": "Password",
     "Password - Tooltip": "Password - Tooltip",
+    "Pause": "Pause",
     "Permissions": "Разрешения",
     "Preview": "Предварительный просмотр",
     "Progress": "Progress",
@@ -149,6 +152,7 @@
     "Response": "Response",
     "Response - Tooltip": "Response - Tooltip",
     "Result": "Результат",
+    "Resume": "Resume",
     "Run": "Run",
     "Save": "Сохранить",
     "Save & Exit": "Save & Exit",
@@ -218,7 +222,9 @@
     "Platform - Tooltip": "Platform - Tooltip"
   },
   "login": {
-    "Loading": "Загрузка"
+    "Loading": "Загрузка",
+    "Login Required": "Login Required",
+    "Please log in first before using this function. It will then redirect you to the login interface.": "Please log in first before using this function. It will then redirect you to the login interface."
   },
   "machine": {
     "Edit Machine": "Edit Machine",
@@ -234,6 +240,11 @@
     "Public IP": "Public IP",
     "Public IP - Tooltip": "Public IP - Tooltip",
     "Zone": "Zone"
+  },
+  "med": {
+    "Audit": "Audit",
+    "Medical Image Analysis": "Medical Image Analysis",
+    "Super Resolution": "Super Resolution"
   },
   "message": {
     "Author": "Автор",
@@ -282,6 +293,7 @@
     "EndpointID": "EndpointID",
     "Flavor": "Flavor",
     "Frequency penalty": "Frequency penalty",
+    "Group ID": "Group ID",
     "Input price / 1k tokens": "Input price / 1k tokens",
     "Input type": "Input type",
     "Output price / 1k tokens": "Output price / 1k tokens",
@@ -292,8 +304,7 @@
     "Sub type": "Sub type",
     "Temperature": "Temperature",
     "Top K": "Top K",
-    "Top P": "Top P",
-    "groupID": "groupID"
+    "Top P": "Top P"
   },
   "record": {
     "Commit": "Commit",
@@ -318,6 +329,7 @@
     "Disable file upload": "Disable file upload",
     "Edit Store": "Редактировать магазин",
     "Embedding provider": "Embedding provider",
+    "Enable TTS streaming": "Enable TTS streaming",
     "English": "Английский",
     "File": "Файл",
     "File name": "File name",
@@ -329,6 +341,7 @@
     "History": "История",
     "Icon": "Icon",
     "Image provider": "Image provider",
+    "Is default": "Is default",
     "Knowledge count": "Knowledge count",
     "Limit minutes": "Limit minutes",
     "Math": "Математика",

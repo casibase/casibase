@@ -1,4 +1,4 @@
-// Copyright 2024 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const TaskMode = "Labeling";
+import React from "react";
 
-export const SubjectOptions = [];
+class AuditPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-export const TopicOptions = [];
+  render() {
+    return (
+      <iframe id="iframe" title={"iframe"} src={`https://47.113.204.64:23554/?userId=${this.props.account.name}`} width="100%" height={window.innerHeight - 195} scrolling="no" frameBorder="no" />
+    );
+  }
+}
 
-export const GradeOptions = [];
-
-export const ResultOptions = [];
-
-export const ActivityOptions = [];
-
-export const TaskText = "";
+export default AuditPage;

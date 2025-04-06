@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
-import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
+import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -64,6 +64,10 @@ import UsagePage from "./UsagePage";
 import * as StoreBackend from "./backend/StoreBackend";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
+import {PreviewInterceptor} from "./PreviewInterceptor";
+import AuditPage from "./frame/AuditPage";
+import PythonYolov8miPage from "./frame/PythonYolov8miPage";
+import PythonSrPage from "./frame/PythonSrPage";
 
 const {Header, Footer, Content} = Layout;
 
@@ -81,6 +85,7 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
+    this.previewInterceptor = new PreviewInterceptor(() => this.state.account); // add interceptor
   }
 
   UNSAFE_componentWillMount() {
@@ -141,6 +146,12 @@ class App extends Component {
       this.setState({selectedMenuKey: "/records"});
     } else if (uri.includes("/workflows")) {
       this.setState({selectedMenuKey: "/workflows"});
+    } else if (uri.includes("/audit")) {
+      this.setState({selectedMenuKey: "/audit"});
+    } else if (uri.includes("/yolov8mi")) {
+      this.setState({selectedMenuKey: "/yolov8mi"});
+    } else if (uri.includes("/sr")) {
+      this.setState({selectedMenuKey: "/sr"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/articles")) {
@@ -240,7 +251,7 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    if (Setting.isAnonymousUser(this.state.account) || Setting.getUrlParam("isRaw") !== null) {
+    if ((Setting.isAnonymousUser(this.state.account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown">
           {
@@ -257,15 +268,21 @@ class App extends Component {
     }
 
     const items = [];
-    items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
-      "/account"
-    ));
-    items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
-      "/chat"
-    ));
-    items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
-      "/logout"
-    ));
+    if (!Setting.isAnonymousUser(this.state.account)) {
+      items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
+        "/account"
+      ));
+      items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
+        "/chat"
+      ));
+      items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
+        "/logout"
+      ));
+    } else {
+      items.push(Setting.getItem(<><LoginOutlined />&nbsp;&nbsp;{i18next.t("account:Sign In")}</>,
+        "/login"
+      ));
+    }
     const onClick = (e) => {
       if (e.key === "/account") {
         Setting.openLink(Setting.getMyProfileUrl(this.state.account));
@@ -273,6 +290,8 @@ class App extends Component {
         this.signout();
       } else if (e.key === "/chat") {
         this.props.history.push("/chat");
+      } else if (e.key === "/login") {
+        Setting.redirectToLogin();
       }
     };
 
@@ -352,7 +371,7 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin) {
+    if (!this.state.account.isAdmin && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
@@ -360,7 +379,7 @@ class App extends Component {
     }
 
     const domain = Setting.getSubdomain();
-    // const domain = "data";
+    // const domain = "med";
 
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
@@ -421,6 +440,42 @@ class App extends Component {
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/videos");
       }
+    } else if (domain === "med") {
+      res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
+      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"));
+      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
+      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"));
+      res.push(Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"));
+      res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
+      res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
+
+      const textColor = "black";
+      const twoToneColor = "rgb(89,54,213)";
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("general:Users")}
+            {Setting.renderExternalLink()}
+          </a>, "/users"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+            {i18next.t("general:Resources")}
+            {Setting.renderExternalLink()}
+          </a>, "/resources"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+            {i18next.t("general:Permissions")}
+            {Setting.renderExternalLink()}
+          </a>, "/permissions"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+            {i18next.t("general:Swagger")}
+            {Setting.renderExternalLink()}
+          </a>, "/swagger")]));
     } else {
       const textColor = "black";
       const twoToneColor = "rgb(89,54,213)";
@@ -556,6 +611,9 @@ class App extends Component {
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workflows" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowListPage account={this.state.account} {...props} />)} />
         <Route exact path="/workflows/:workflowName" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/audit" render={(props) => this.renderSigninIfNotSignedIn(<AuditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/yolov8mi" render={(props) => this.renderSigninIfNotSignedIn(<PythonYolov8miPage account={this.state.account} {...props} />)} />
+        <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
