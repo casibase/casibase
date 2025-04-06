@@ -1,17 +1,3 @@
-// Copyright 2025 The Casibase Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 import React, {useEffect, useRef, useState} from "react";
 import {Select} from "antd";
 import * as Setting from "./Setting";
@@ -25,11 +11,28 @@ const StoreInfoTitle = (props) => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Use refs to track the latest state values
   const storeRef = useRef();
   const providerRef = useRef();
   const chatRef = useRef();
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Common breakpoint for mobile devices
+    };
+
+    // Initial check
+    checkIsMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIsMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
 
   // Update refs when props change
   useEffect(() => {
@@ -122,14 +125,12 @@ const StoreInfoTitle = (props) => {
 
         // Update was successful
         if (providerChanged) {
-          Setting.showMessage("success", "Model updated successfully");
           if (onStoreUpdated) {
             onStoreUpdated(updatedStore);
           }
         }
 
         if (storeChanged) {
-          Setting.showMessage("success", "Store updated successfully");
           if (onChatUpdated) {
             onChatUpdated(updatedChat);
           }
@@ -190,7 +191,7 @@ const StoreInfoTitle = (props) => {
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
         <div style={{marginRight: "20px"}}>
-          <span style={{marginRight: "5px"}}>Store:</span>
+          {!isMobile && <span style={{marginRight: "5px"}}>Store:</span>}
           <Select
             value={selectedStore?.name || storeInfo?.name || "Default Store"}
             style={{width: 150}}
@@ -206,7 +207,7 @@ const StoreInfoTitle = (props) => {
         </div>
 
         <div>
-          <span style={{marginRight: "5px"}}>Model:</span>
+          {!isMobile && <span style={{marginRight: "5px"}}>Model:</span>}
           <Select
             value={selectedProvider || storeInfo?.modelProvider || "Default"}
             style={{width: 180}}

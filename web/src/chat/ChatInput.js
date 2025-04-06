@@ -1,18 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
 import {LinkOutlined} from "@ant-design/icons";
@@ -31,19 +17,36 @@ const ChatInput = ({
   onVoiceInputStart,
   onVoiceInputEnd,
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
   const sendButtonDisabled = messageError || value === "" || disableInput;
+
+  // Check if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth <= 768); // Common breakpoint for mobile devices
+    };
+
+    // Initial check
+    checkIsMobile();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", checkIsMobile);
+
+    // Cleanup
+    return () => window.removeEventListener("resize", checkIsMobile);
+  }, []);
 
   return (
     <div style={{
       position: "absolute",
-      bottom: 0,
+      bottom: isMobile ? "-10px" : 0, // Move chat input lower on mobile
       left: 0,
       right: 0,
-      padding: "16px 24px",
+      padding: isMobile ? "8px 12px" : "16px 24px", // Reduced padding on mobile
       zIndex: 1,
     }}>
       <div style={{
-        maxWidth: "700px",
+        maxWidth: isMobile ? "100%" : "700px", // Full width on mobile
         margin: "0 auto",
       }}>
         <Sender
@@ -55,7 +58,10 @@ const ChatInput = ({
               disabled={disableInput || messageError || store?.disableFileUpload}
               style={{
                 color: (disableInput || messageError) ? "#d9d9d9" : undefined,
+                padding: isMobile ? "0 3px" : undefined, // Reduce button padding on mobile
+                fontSize: isMobile ? "10px" : undefined, // Smaller icon size on mobile
               }}
+              size={isMobile ? "small" : "middle"} // Use smaller button on mobile
             />
           }
           loading={loading}
@@ -64,6 +70,18 @@ const ChatInput = ({
             flex: 1,
             borderRadius: "8px",
             background: "#f5f5f5",
+            fontSize: isMobile ? "14px" : undefined, // Smaller font size on mobile
+            height: isMobile ? "45px" : undefined, // Custom height on mobile
+          }}
+          buttonProps={{
+            // Customize send and voice button styles
+            size: isMobile ? "small" : "middle", // Make buttons smaller on mobile
+            style: isMobile ? {
+              fontSize: "14px",
+              padding: "0 6px",
+              height: "24px",
+              minWidth: "24px",
+            } : undefined,
           }}
           placeholder={messageError ? "" : i18next.t("chat:Type message here")}
           value={value}
