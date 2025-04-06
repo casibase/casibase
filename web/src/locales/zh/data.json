@@ -223,8 +223,8 @@
   },
   "login": {
     "Loading": "加载中",
-    "Please log in to use this feature": "使用该功能前请先登录",
-    "You will be redirected to the login page shortly": "即将重定向至登录页面"
+    "Login Required": "需要登录",
+    "Please log in first before using this function. It will then redirect you to the login interface.": "在使用此功能之前，请先登录。即将帮您跳转至登录界面。"
   },
   "machine": {
     "Edit Machine": "编辑主机",

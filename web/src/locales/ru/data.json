@@ -222,9 +222,9 @@
     "Platform - Tooltip": "Platform - Tooltip"
   },
   "login": {
-    "Loading": "Загрузка",
-    "Please log in to use this feature": "Please log in to use this feature",
-    "You will be redirected to the login page shortly": "You will be redirected to the login page shortly"
+    "Loading": "Loading",
+    "Login Required": "Login Required",
+    "Please log in first before using this function. It will then redirect you to the login interface.": "Please log in first before using this function. It will then redirect you to the login interface."
   },
   "machine": {
     "Edit Machine": "Edit Machine",
