@@ -42,7 +42,7 @@
     "New Chat": "New Chat",
     "Pause reading": "Pause reading",
     "Price": "Price",
-    "Read aloud": "Read aloud",
+    "Read it out": "Read it out",
     "Reasoning process": "Reasoning process",
     "Resume reading": "Resume reading",
     "Single": "Один",
@@ -119,6 +119,7 @@
     "Multimedia": "Multimedia",
     "Name": "Название",
     "Name - Tooltip": "Name - Tooltip",
+    "Need notify": "Need notify",
     "Network": "Network",
     "No.": "Нет.",
     "Node": "Node",
@@ -132,6 +133,7 @@
     "Owner": "Owner",
     "Password": "Password",
     "Password - Tooltip": "Password - Tooltip",
+    "Pause": "Pause",
     "Permissions": "Разрешения",
     "Preview": "Предварительный просмотр",
     "Progress": "Progress",
@@ -153,6 +155,7 @@
     "Response": "Response",
     "Response - Tooltip": "Response - Tooltip",
     "Result": "Результат",
+    "Resume": "Resume",
     "Run": "Run",
     "Save": "Сохранить",
     "Save \u0026 Exit": "Save \u0026 Exit",
@@ -241,6 +244,11 @@
     "Public IP - Tooltip": "Public IP - Tooltip",
     "Zone": "Zone"
   },
+  "med": {
+    "Audit": "Audit",
+    "Medical Image Analysis": "Medical Image Analysis",
+    "Super Resolution": "Super Resolution"
+  },
   "message": {
     "Author": "Автор",
     "Chat": "Чат",
@@ -288,6 +296,7 @@
     "EndpointID": "EndpointID",
     "Flavor": "Flavor",
     "Frequency penalty": "Frequency penalty",
+    "Group ID": "Group ID",
     "Input price / 1k tokens": "Input price / 1k tokens",
     "Input type": "Input type",
     "OpenAI_API_KEY of tencent cloud": "OpenAI_API_KEY of tencent cloud",
@@ -301,9 +310,7 @@
     "Sub type": "Sub type",
     "Temperature": "Temperature",
     "Top K": "Top K",
-    "Top P": "Top P",
-    "groupID": "groupID",
-    "tencent cloud personal SecretId": "tencent cloud personal SecretId"
+    "Top P": "Top P"
   },
   "record": {
     "Commit": "Commit",

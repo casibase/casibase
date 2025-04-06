@@ -12,45 +12,87 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import i18next from "i18next";
 import * as Setting from "./Setting";
+import * as Conf from "./Conf";
+import {Button, notification} from "antd";
 
 class PreviewInterceptor {
   constructor(getAccount) {
     this.getAccount = getAccount;
     this.handleButtonClick = this.handleButtonClick.bind(this);
-    this.handleLinkClick = this.handleLinkClick.bind(this);
-    document.addEventListener("click", this.handleLinkClick, true);
     document.addEventListener("click", this.handleButtonClick, true);
+    this.allowedButtonTexts = [i18next.t("general:Edit"), i18next.t("general:View"), i18next.t("general:Close")];
+    this.allowedMessageActions = ["copy", "play-circle"];
+    this.allowedSwitch = [i18next.t("general:Is deleted"), i18next.t("general:Need notify"), i18next.t("general:Is alerted"), i18next.t("message:Chat"), i18next.t("store:Enable TTS streaming"), i18next.t("store:Disable file upload"), i18next.t("store:Is default")];
   }
 
   handleButtonClick(event) {
     const button = event.target.closest("button");
     if (button) {
-      let isClickable = false;
-      if (button.getAttribute("preview-clickable") && button.getAttribute("preview-clickable") === "true") {
-        isClickable = true;
+      if (this.allowedButtonTexts.includes(button.innerText.replace(/\s+/g, ""))) {
+        return;
       }
-      if (!isClickable && Setting.redirectIfAnonymous(this.getAccount())) {
-        event.preventDefault();
+      const buttonSpan = button.querySelector("span span[aria-label]");
+      if (buttonSpan && this.allowedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
+        return;
+      }
+      const buttonDiv = button.closest("div");
+      const silbingDiv = buttonDiv ? buttonDiv.previousElementSibling : null;
+      if (silbingDiv && this.allowedSwitch.includes(silbingDiv.innerText.replace(/[:]/g, ""))) {
+        return;
+      }
+      if (this.redirectIfAnonymous(this.getAccount())) {
         event.stopPropagation();
+        event.preventDefault();
         return;
       }
     }
   }
 
-  handleLinkClick(event) {
-    const link = event.target.closest("a");
-    if (link && link.tagName === "A") {
-      const pathPattern = /^\/[^/]+$/; // match /pathLeve1  ,   block all /pathleve1/**/**
-      const path = link.getAttribute("href");
-      if (!pathPattern.test(path)) {
-        if (Setting.redirectIfAnonymous(this.getAccount())) {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-      }
+  enableButtonsIfAnonymousinPreview() {
+    if (Setting.isAnonymousUser(this.getAccount()) && !Conf.DisablePreviewMode) {
+      const buttons = document.querySelectorAll("button");
+      buttons.forEach(button => {
+        button.disabled = false;
+      });
     }
+  }
+
+  redirectIfAnonymous(account) {
+    if (Setting.isAnonymousUser(account)) {
+      this.showLoginRequirement();
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  showLoginRequirement() {
+    const onClose = () => {
+      return Setting.redirectToLogin();
+    };
+    notification.open({
+      message: (
+        <div style={{display: "flex", alignItems: "center"}}>
+          <img
+            className="notification-icon" style={{width: 36, marginLeft: "-8px", marginRight: "10px"}} src={`${Setting.StaticBaseUrl}/img/hushed-face.svg`}
+          />
+          <span>{i18next.t("login:Login Required")}</span>
+        </div>
+      ),
+      closeIcon: null,
+      onClose,
+      actions: [
+        <Button type="link" size="small" key="dismiss" onClick={() => notification.destroy()}>
+          {i18next.t("general:Close")}
+        </Button>,
+      ],
+      description: i18next.t("login:Please log in first before using this function. It will then redirect you to the login interface."),
+      duration: 5,
+      showProgress: true,
+      pauseOnHover: true,
+    });
   }
 }
 
