@@ -753,7 +753,7 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Jina", name: "Jina"},
-        {id: "Word2Vec", name: "Word2Vec"},
+        {id: "Word2Vec, name: "Word2Vec"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
