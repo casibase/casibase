@@ -223,8 +223,8 @@
   },
   "login": {
     "Loading": "Загрузка",
-    "Login Required": "Login Required",
-    "Please log in first before using this function. It will then redirect you to the login interface.": "Please log in first before using this function. It will then redirect you to the login interface."
+    "Please log in to use this feature": "Please log in to use this feature",
+    "You will be redirected to the login page shortly": "You will be redirected to the login page shortly"
   },
   "machine": {
     "Edit Machine": "Edit Machine",
