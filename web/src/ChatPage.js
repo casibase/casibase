@@ -465,7 +465,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.goToLinkSoft(`/chat/${focusedChat.name}`);
+            this.goToLinkSoft(`/chat/${focusedChat.store}/${focusedChat.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
