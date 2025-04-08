@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {Select} from "antd";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -17,6 +17,23 @@ const StoreInfoTitle = (props) => {
   const storeRef = useRef();
   const providerRef = useRef();
   const chatRef = useRef();
+
+  // Filter stores to show default store and its child stores
+  const filteredStores = useMemo(() => {
+    if (!stores) {return [];}
+
+    // Find the default store
+    const defaultStore = stores.find(store => store.isDefault);
+
+    // If a default store exists with child stores, filter the list
+    if (defaultStore && defaultStore.childStores && defaultStore.childStores.length > 0) {
+      return stores.filter(store => defaultStore.childStores.includes(store.name)
+      );
+    }
+
+    // Otherwise return all stores
+    return stores;
+  }, [stores]);
 
   // Check if device is mobile
   useEffect(() => {
@@ -198,7 +215,7 @@ const StoreInfoTitle = (props) => {
             onChange={handleStoreChange}
             disabled={isUpdating}
           >
-            {stores?.map(store => (
+            {filteredStores.map(store => (
               <Select.Option key={store.name} value={store.name}>
                 {store.displayName || store.name}
               </Select.Option>

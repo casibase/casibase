@@ -39,6 +39,7 @@ class StoreEditPage extends React.Component {
       textToSpeechProviders: [],
       enableTtsStreaming: false,
       store: null,
+      childStores: [],
       themeColor: ThemeDefault.colorPrimary,
     };
   }
@@ -47,6 +48,7 @@ class StoreEditPage extends React.Component {
     this.getStore();
     this.getStorageProviders();
     this.getProviders();
+    this.getStores();
   }
 
   getStore() {
@@ -91,6 +93,19 @@ class StoreEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+        }
+      });
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            childStores: res.data || [],
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
         }
       });
   }
@@ -229,6 +244,26 @@ class StoreEditPage extends React.Component {
             <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
               this.updateStoreField("enableTtsStreaming", checked);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}}>
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Child stores")}:
+          </Col>
+          <Col span={22} >
+            <Select
+              virtual={false}
+              mode="multiple"
+              style={{width: "100%"}}
+              options={this.state.childStores
+                .filter(store => store.name !== this.state.store?.name) // Filter out current store
+                .map((store) => Setting.getOption(`${store.displayName} (${store.name})`, store.name))
+              }
+              value={this.state.store?.childStores ?? []}
+              onChange={(value => {
+                this.updateStoreField("childStores", value);
+              })} >
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

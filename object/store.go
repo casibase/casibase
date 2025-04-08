@@ -83,6 +83,7 @@ type Store struct {
 	DisableFileUpload bool     `json:"disableFileUpload"`
 	IsDefault         bool     `json:"isDefault"`
 	State             string   `xorm:"varchar(100)" json:"state"`
+	ChildStores       []string `xorm:"varchar(100)" json:"childStores"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
