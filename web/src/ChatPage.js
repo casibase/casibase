@@ -92,6 +92,19 @@ class ChatPage extends BaseListPage {
     }
   }
 
+  updateStoreAndUrl = (newStore) => {
+    if (!this.state.chat) {
+      return null;
+    }
+
+    const chat = {...this.state.chat, store: newStore.name};
+    this.goToLinkSoft(`/chat/${newStore.name}/${chat.name}`);
+    this.setState({
+      chat: chat,
+    });
+    return chat;
+  };
+
   goToLinkSoft(path) {
     if (this.props.history) {
       this.props.history.push(path);
@@ -399,7 +412,7 @@ class ChatPage extends BaseListPage {
 
   addChat(chat, selectStore) {
     const newChat = this.newChat(chat, selectStore);
-    this.goToLinkSoft(`/chat/${newChat.name}`);
+    this.goToLinkSoft(`/chat/${newChat.store}/${newChat.name}`);
     ChatBackend.addChat(newChat)
       .then((res) => {
         if (res.status === "ok") {
@@ -443,7 +456,7 @@ class ChatPage extends BaseListPage {
               data: data,
             });
             this.getMessages(focusedChat);
-            this.goToLinkSoft(`/chat/${focusedChat.name}`);
+            this.goToLinkSoft(`/chat/${focusedChat.store}/${focusedChat.name}`);
           }
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
@@ -557,7 +570,7 @@ class ChatPage extends BaseListPage {
         // messages: null,
       });
       this.getMessages(chat);
-      this.goToLinkSoft(`/chat/${chat.name}`);
+      this.goToLinkSoft(`/chat/${chat.store}/${chat.name}`);
     };
 
     const onAddChat = (selectStore = {}) => {
@@ -599,7 +612,7 @@ class ChatPage extends BaseListPage {
           )
         }
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
-          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} />}
+          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} onStoreChange={this.updateStoreAndUrl} />}
 
           <div style={{flex: 1, position: "relative", overflow: "auto"}}>
             {
