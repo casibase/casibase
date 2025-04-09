@@ -392,6 +392,23 @@
     "Month": "Month",
     "Week": "Week"
   },
+  "system": {
+    "API Latency": "Retraso API",
+    "API Throughput": "Rendimiento API",
+    "About Casibase": "Sobre Casibase",
+    "CPU Usage": "Uso de la CPU",
+    "Community": "Comunidad",
+    "Count": "Contar",
+    "Failed to get CPU usage": "No se pudo obtener el uso de la CPU",
+    "Failed to get memory usage": "No se pudo obtener el uso de la memoria",
+    "Latency": "Retraso",
+    "Memory Usage": "Uso de memoria",
+    "Official website": "Sitio web oficial",
+    "Throughput": "Rendimiento",
+    "Total Throughput": "Rendimiento total",
+    "Unknown version": "Versión desconocida",
+    "Version": "Versión"
+  },
   "vector": {
     "Data": "Data",
     "Dimension": "Dimension",
