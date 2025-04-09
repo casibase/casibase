@@ -6,7 +6,7 @@ import * as ChatBackend from "./backend/ChatBackend";
 import * as StoreBackend from "./backend/StoreBackend";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreUpdated, onStoreChange} = props;
+  const {chat, stores, onChatUpdated, onStoreUpdated} = props;
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
@@ -185,13 +185,6 @@ const StoreInfoTitle = (props) => {
       // Also update the provider if the new store has one
       if (newStore.modelProvider) {
         setSelectedProvider(newStore.modelProvider);
-      }
-
-      if (onStoreChange) {
-        const updatedChat = onStoreChange(newStore);
-        if (updatedChat) {
-          chatRef.current = updatedChat;
-        }
       }
 
       // Trigger the combined update
