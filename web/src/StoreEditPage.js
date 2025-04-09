@@ -303,8 +303,6 @@ class StoreEditPage extends React.Component {
               }
               value={this.state.store?.modelProviders ?? []} onChange={(value => {
                 this.updateStoreField("modelProviders", value);
-                // eslint-disable-next-line no-console
-                console.log("modelProviders", value);
               })} >
             </Select>
           </Col>
