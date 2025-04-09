@@ -1,4 +1,4 @@
-// Copyright 2023 The Casibase Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,68 +28,68 @@ class SystemInfo extends React.Component {
       versionInfo: {},
       prometheusInfo: {apiThroughput: [], apiLatency: [], totalThroughput: 0},
       intervalId: null,
-      loadingSystemInfo: true,
-      loadingPrometheusInfo: true,
+      loading: true,
     };
   }
 
   UNSAFE_componentWillMount() {
     SystemBackend.getSystemInfo("").then(res => {
-      if (res.status === "error") {
-        Setting.showMessage("error", res.msg);
-        if (Setting.isResponseDenied(res)) {
-          this.setState({
-            systemInfo: {cpuUsage: [], memoryUsed: -1, memoryTotal: -1},
-            loadingSystemInfo: false,
-            loadingPrometheusInfo: false,
-          });
-          return;
-        }
-      } else {
+      this.setState({
+        loading: false,
+      });
+
+      if (res.status === "ok") {
         this.setState({
           systemInfo: res.data,
-          loadingSystemInfo: false,
         });
+      } else {
+        Setting.showMessage("error", res.msg);
+        this.stopTimer();
       }
+
       const id = setInterval(() => {
         SystemBackend.getSystemInfo("").then(res => {
-          if (res.status === "error") {
-            Setting.showMessage("error", res.msg);
-            return;
-          }
           this.setState({
-            systemInfo: res.data,
-            loadingSystemInfo: false,
+            loading: false,
           });
+
+          if (res.status === "ok") {
+            this.setState({
+              systemInfo: res.data,
+            });
+          } else {
+            Setting.showMessage("error", res.msg);
+            this.stopTimer();
+          }
         }).catch(error => {
           Setting.showMessage("error", `System info failed to get: ${error}`);
+          this.stopTimer();
         });
         SystemBackend.getPrometheusInfo().then(res => {
-          if (res.status === "error") {
-            Setting.showMessage("error", res.msg);
-            return;
-          }
           this.setState({
             prometheusInfo: res.data,
-            loadingPrometheusInfo: false,
           });
         });
       }, 1000 * 2);
+
       this.setState({intervalId: id});
     }).catch(error => {
       Setting.showMessage("error", `System info failed to get: ${error}`);
+      this.stopTimer();
     });
 
     SystemBackend.getVersionInfo().then(res => {
-      if (res.status === "error") {
+      if (res.status === "ok") {
+        this.setState({
+          versionInfo: res.data,
+        });
+      } else {
         Setting.showMessage("error", res.msg);
-        return;
+        this.stopTimer();
       }
-      this.setState({
-        versionInfo: res.data,
-      });
     }).catch(err => {
       Setting.showMessage("error", `Version info failed to get: ${err}`);
+      this.stopTimer();
     });
   }
 
@@ -97,10 +97,14 @@ class SystemInfo extends React.Component {
     window.addEventListener("storageTourChanged", this.handleTourChange);
   }
 
-  componentWillUnmount() {
+  stopTimer() {
     if (this.state.intervalId !== null) {
       clearInterval(this.state.intervalId);
     }
+  }
+
+  componentWillUnmount() {
+    this.stopTimer();
     window.removeEventListener("storageTourChanged", this.handleTourChange);
   }
 
@@ -111,15 +115,16 @@ class SystemInfo extends React.Component {
           <Progress key={i} percent={Number(usage.toFixed(1))} />
         );
       });
+
     const memUi = this.state.systemInfo.memoryUsed && this.state.systemInfo.memoryTotal && this.state.systemInfo.memoryTotal <= 0 ? i18next.t("system:Failed to get memory usage") :
       <div>
         {Setting.getFriendlyFileSize(this.state.systemInfo.memoryUsed)} / {Setting.getFriendlyFileSize(this.state.systemInfo.memoryTotal)}
         <br /> <br />
         <Progress type="circle" percent={Number((Number(this.state.systemInfo.memoryUsed) / Number(this.state.systemInfo.memoryTotal) * 100).toFixed(2))} />
       </div>;
-    const latencyUi = this.state.prometheusInfo.apiLatency === null || this.state.prometheusInfo.apiLatency?.length <= 0 ? i18next.t("system:Failed to get API latency") :
+    const latencyUi = this.state.prometheusInfo?.apiLatency === null || this.state.prometheusInfo?.apiLatency?.length <= 0 ? <Spin size="large" /> :
       <PrometheusInfoTable prometheusInfo={this.state.prometheusInfo} table={"latency"} />;
-    const throughputUi = this.state.prometheusInfo.apiThroughput === null || this.state.prometheusInfo.apiThroughput?.length <= 0 ? i18next.t("system:Failed to get API throughput") :
+    const throughputUi = this.state.prometheusInfo?.apiThroughput === null || this.state.prometheusInfo?.apiThroughput?.length <= 0 ? <Spin size="large" /> :
       <PrometheusInfoTable prometheusInfo={this.state.prometheusInfo} table={"throughput"} />;
     const link = this.state.versionInfo?.version !== "" ? `https://github.com/casdoor/casdoor/releases/tag/${this.state.versionInfo?.version}` : "";
     let versionText = this.state.versionInfo?.version !== "" ? this.state.versionInfo?.version : i18next.t("system:Unknown version");
@@ -136,22 +141,22 @@ class SystemInfo extends React.Component {
               <Row gutter={[10, 10]}>
                 <Col span={12}>
                   <Card id="cpu-card" title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loadingSystemInfo ? <Spin size="large" /> : cpuUi}
+                    {this.state.loading ? <Spin size="large" /> : cpuUi}
                   </Card>
                 </Col>
                 <Col span={12}>
                   <Card id="memory-card" title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loadingSystemInfo ? <Spin size="large" /> : memUi}
+                    {this.state.loading ? <Spin size="large" /> : memUi}
                   </Card>
                 </Col>
                 <Col span={24}>
                   <Card id="latency-card" title={i18next.t("system:API Latency")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loadingPrometheusInfo ? <Spin size="large" /> : latencyUi}
+                    {this.state.loading ? <Spin size="large" /> : latencyUi}
                   </Card>
                 </Col>
                 <Col span={24}>
                   <Card id="throughput-card" title={i18next.t("system:API Throughput")} bordered={true} style={{textAlign: "center", height: "100%"}}>
-                    {this.state.loadingPrometheusInfo ? <Spin size="large" /> : throughputUi}
+                    {this.state.loading ? <Spin size="large" /> : throughputUi}
                   </Card>
                 </Col>
               </Row>
@@ -176,12 +181,12 @@ class SystemInfo extends React.Component {
         <Row gutter={[16, 0]}>
           <Col span={24}>
             <Card title={i18next.t("system:CPU Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
-              {this.state.loadingSystemInfo ? <Spin size="large" /> : cpuUi}
+              {this.state.loading ? <Spin size="large" /> : cpuUi}
             </Card>
           </Col>
           <Col span={24}>
             <Card title={i18next.t("system:Memory Usage")} bordered={true} style={{textAlign: "center", width: "100%"}}>
-              {this.state.loadingSystemInfo ? <Spin size="large" /> : memUi}
+              {this.state.loading ? <Spin size="large" /> : memUi}
             </Card>
           </Col>
           <Col span={24}>

@@ -16,12 +16,12 @@ package controllers
 
 import (
 	"encoding/gob"
-	"github.com/casibase/casibase/object"
 	"strings"
 	"time"
 
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/object"
 )
 
 type ApiController struct {
