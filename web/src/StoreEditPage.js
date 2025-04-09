@@ -91,18 +91,12 @@ class StoreEditPage extends React.Component {
           const embeddingProviders = res.data.filter(provider => provider.category === "Embedding");
           const textToSpeechProviders = res.data.filter(provider => provider.category === "Text-to-Speech");
 
-          // eslint-disable-next-line no-console
-          console.log("store:", this.state.store);
-
-          let modelProviders = allModelProviders;
+          let modelProviders = [];
           if (this.state.store?.modelProviders?.length > 0) {
             modelProviders = allModelProviders.filter(provider =>
               this.state.store.modelProviders.includes(provider.name)
             );
           }
-
-          // eslint-disable-next-line no-console
-          console.log("modelProvider:", modelProviders);
 
           this.setState({
             storageProviders,
