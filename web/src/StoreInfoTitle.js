@@ -31,8 +31,7 @@ const StoreInfoTitle = (props) => {
       );
     }
 
-    // Otherwise return all stores
-    return stores;
+    return [];
   }, [stores]);
 
   // Check if device is mobile
@@ -73,16 +72,21 @@ const StoreInfoTitle = (props) => {
 
   // Get model providers when component mounts
   useEffect(() => {
-    if (chat) {
+    if (!chat || !storeInfo || !storeInfo.modelProviders || storeInfo.modelProviders.length === 0) {
+      setModelProviders([]);
+    } else {
       ProviderBackend.getProviders(chat.owner)
         .then((res) => {
           if (res.status === "ok") {
-            const providers = res.data.filter(provider => provider.category === "Model");
+            const providers = res.data.filter(provider =>
+              provider.category === "Model" &&
+                  storeInfo.modelProviders.includes(provider.name)
+            );
             setModelProviders(providers);
           }
         });
     }
-  }, [chat]);
+  }, [chat, storeInfo]);
 
   // Combined update function to handle both store and provider updates
   const updateStoreAndChat = async(newStore, newProvider) => {
@@ -205,6 +209,12 @@ const StoreInfoTitle = (props) => {
     }
   };
 
+  const shouldShowTitleBar = filteredStores.length > 0 || modelProviders.length > 0;
+
+  if (!shouldShowTitleBar) {
+    return null;
+  }
+
   return (
     <div style={{
       padding: "10px 15px",
@@ -214,42 +224,44 @@ const StoreInfoTitle = (props) => {
       justifyContent: "space-between",
     }}>
       <div style={{display: "flex", alignItems: "center"}}>
-        <div style={{marginRight: "20px"}}>
-          {!isMobile && <span style={{marginRight: "5px"}}>Store:</span>}
-          <Select
-            value={selectedStore?.name || storeInfo?.name || "Default Store"}
-            style={{width: 150}}
-            onChange={handleStoreChange}
-            disabled={isUpdating}
-          >
-            {filteredStores.map(store => (
-              <Select.Option key={store.name} value={store.name}>
-                {store.displayName || store.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
+        {filteredStores.length > 0 && (
+          <div style={{marginRight: "20px"}}>
+            {!isMobile && <span style={{marginRight: "5px"}}>Store:</span>}
+            <Select
+              value={selectedStore?.name || storeInfo?.name || "Default Store"}
+              style={{width: 150}}
+              onChange={handleStoreChange}
+              disabled={isUpdating}
+            >
+              {filteredStores.map(store => (
+                <Select.Option key={store.name} value={store.name}>
+                  {store.displayName || store.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>)}
 
-        <div>
-          {!isMobile && <span style={{marginRight: "5px"}}>Model:</span>}
-          <Select
-            value={selectedProvider || storeInfo?.modelProvider || "Default"}
-            style={{width: 180}}
-            onChange={handleProviderChange}
-            disabled={isUpdating}
-          >
-            {modelProviders.map(provider => (
-              <Select.Option key={provider.name} value={provider.name}>
-                {provider.displayName || provider.name}
-              </Select.Option>
-            ))}
-            {modelProviders.length === 0 && (
-              <Select.Option key="default" value="Default">
+        {modelProviders.length > 0 && (
+          <div>
+            {!isMobile && <span style={{marginRight: "5px"}}>Model:</span>}
+            <Select
+              value={selectedProvider || storeInfo?.modelProvider || "Default"}
+              style={{width: 180}}
+              onChange={handleProviderChange}
+              disabled={isUpdating}
+            >
+              {modelProviders.map(provider => (
+                <Select.Option key={provider.name} value={provider.name}>
+                  {provider.displayName || provider.name}
+                </Select.Option>
+              ))}
+              {modelProviders.length === 0 && (
+                <Select.Option key="default" value="Default">
                     Default
-              </Select.Option>
-            )}
-          </Select>
-        </div>
+                </Select.Option>
+              )}
+            </Select>
+          </div>)}
       </div>
 
       {storeInfo && (

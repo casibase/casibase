@@ -92,26 +92,17 @@ class ChatPage extends BaseListPage {
     }
   }
 
-  getStore() {
-    if (this.props.match) {
-      return this.props.match.params.storeName;
-    } else {
-      return undefined;
-    }
-  }
-
   updateStoreAndUrl = (newStore) => {
-    if (this.state.chat) {
-      const chat = {...this.state.chat, store: newStore.name};
-
-      this.goToLinkSoft(`/chat/${newStore.name}/${chat.name}`);
-
-      this.setState({
-        chat: chat,
-      });
-      return chat;
+    if (!this.state.chat) {
+      return null;
     }
-    return null;
+
+    const chat = {...this.state.chat, store: newStore.name};
+    this.goToLinkSoft(`/chat/${newStore.name}/${chat.name}`);
+    this.setState({
+      chat: chat,
+    });
+    return chat;
   };
 
   goToLinkSoft(path) {
