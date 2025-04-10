@@ -1557,9 +1557,16 @@ export function updateTheme(color) {
 }
 
 export const suggestionsDivider = "|||";
+export const titleDivider = "=====";
 
 export function parseAnswerAndSuggestions(answer) {
-  const parts = answer.split(suggestionsDivider);
+  let parts = answer.split(titleDivider);
+  let title = "";
+  if (parts.length > 1) {
+    title = parts[0].trim();
+    answer = parts[1];
+  }
+  parts = answer.split(suggestionsDivider);
   const suggestionTexts = parts.slice(1);
 
   const suggestions = suggestionTexts.map(text => {
@@ -1572,6 +1579,7 @@ export function parseAnswerAndSuggestions(answer) {
   return {
     answer: parts[0],
     suggestions: suggestions,
+    title: title,
   };
 }
 

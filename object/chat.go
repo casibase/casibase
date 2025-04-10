@@ -45,6 +45,7 @@ type Chat struct {
 	Price         float64  `json:"price"`
 	Currency      string   `xorm:"varchar(100)" json:"currency"`
 	IsDeleted     bool     `json:"isDeleted"`
+	HasTitle      bool     `json:"hasTitle"`
 }
 
 func GetGlobalChats() ([]*Chat, error) {
