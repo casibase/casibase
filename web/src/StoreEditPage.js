@@ -23,6 +23,7 @@ import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./PromptTable";
 
+const {Option} = Select;
 const {TextArea} = Input;
 
 class StoreEditPage extends React.Component {
@@ -32,6 +33,7 @@ class StoreEditPage extends React.Component {
       classes: props,
       owner: props.match.params.owner,
       storeName: props.match.params.storeName,
+      stores: [],
       casdoorStorageProviders: [],
       storageProviders: [],
       modelProviders: [],
@@ -45,6 +47,7 @@ class StoreEditPage extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.getStore();
+    this.getStores();
     this.getStorageProviders();
     this.getProviders();
   }
@@ -62,6 +65,19 @@ class StoreEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+        }
+      });
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            stores: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
         }
       });
   }
@@ -359,6 +375,30 @@ class StoreEditPage extends React.Component {
             </Row>
           )
         }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Child stores")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
+              {
+                this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Child model providers")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
+              {
+                this.state.modelProviders?.map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Disable file upload")}:
