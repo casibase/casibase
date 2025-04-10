@@ -66,23 +66,25 @@ type Store struct {
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
 	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
 
-	MemoryLimit       int      `json:"memoryLimit"`
-	Frequency         int      `json:"frequency"`
-	LimitMinutes      int      `json:"limitMinutes"`
-	KnowledgeCount    int      `json:"knowledgeCount"`
-	SuggestionCount   int      `json:"suggestionCount"`
-	Welcome           string   `xorm:"varchar(100)" json:"welcome"`
-	WelcomeTitle      string   `xorm:"varchar(100)" json:"welcomeTitle"`
-	WelcomeText       string   `xorm:"varchar(100)" json:"welcomeText"`
-	Prompt            string   `xorm:"mediumtext" json:"prompt"`
-	Prompts           []Prompt `xorm:"mediumtext" json:"prompts"`
-	ThemeColor        string   `xorm:"varchar(100)" json:"themeColor"`
-	Avatar            string   `xorm:"varchar(200)" json:"avatar"`
-	Title             string   `xorm:"varchar(100)" json:"title"`
-	CanSelectStore    bool     `json:"canSelectStore"`
-	DisableFileUpload bool     `json:"disableFileUpload"`
-	IsDefault         bool     `json:"isDefault"`
-	State             string   `xorm:"varchar(100)" json:"state"`
+	MemoryLimit         int      `json:"memoryLimit"`
+	Frequency           int      `json:"frequency"`
+	LimitMinutes        int      `json:"limitMinutes"`
+	KnowledgeCount      int      `json:"knowledgeCount"`
+	SuggestionCount     int      `json:"suggestionCount"`
+	Welcome             string   `xorm:"varchar(100)" json:"welcome"`
+	WelcomeTitle        string   `xorm:"varchar(100)" json:"welcomeTitle"`
+	WelcomeText         string   `xorm:"varchar(100)" json:"welcomeText"`
+	Prompt              string   `xorm:"mediumtext" json:"prompt"`
+	Prompts             []Prompt `xorm:"mediumtext" json:"prompts"`
+	ThemeColor          string   `xorm:"varchar(100)" json:"themeColor"`
+	Avatar              string   `xorm:"varchar(200)" json:"avatar"`
+	Title               string   `xorm:"varchar(100)" json:"title"`
+	ChildStores         []string `xorm:"varchar(200)" json:"childStores"`
+	ChildModelProviders []string `xorm:"varchar(200)" json:"childModelProviders"`
+	CanSelectStore      bool     `json:"canSelectStore"`
+	DisableFileUpload   bool     `json:"disableFileUpload"`
+	IsDefault           bool     `json:"isDefault"`
+	State               string   `xorm:"varchar(100)" json:"state"`
 
 	FileTree      *File                  `xorm:"mediumtext" json:"fileTree"`
 	PropertiesMap map[string]*Properties `xorm:"mediumtext" json:"propertiesMap"`
