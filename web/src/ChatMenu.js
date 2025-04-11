@@ -203,15 +203,9 @@ class ChatMenu extends React.Component {
     if (!stores) {
       stores = [];
     }
-    // Get usable store for select (those with required providers configured)
-    stores = stores.filter(store => store.storageProvider !== "" &&
-        store.modelProvider !== "" &&
-        store.embeddingProvider !== "");
+    stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
 
-    // Find the default store
     const defaultStore = stores.find(store => store.isDefault);
-
-    // If a default store exists, check if it has child stores
     if (defaultStore) {
       if (!defaultStore.childStores || defaultStore.childStores.length === 0) {
         stores = [];
