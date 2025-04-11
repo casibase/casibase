@@ -350,6 +350,17 @@ class ChatPage extends BaseListPage {
                 messageError: true,
               });
             }, (data) => {
+              // If there are suggestions, split them from the text
+              const parseResult = Setting.parseAnswerAndSuggestions(text);
+              if (parseResult["title"] !== "") {
+                const updatedChats = [...this.state.data];
+                const index = updatedChats.findIndex(c => c.name === chat.name);
+                if (index !== -1) {
+                  updatedChats[index].hasTitle = true;
+                  updatedChats[index].displayName = parseResult["title"];
+                  this.setState({data: updatedChats});
+                }
+              }
               if (!chat || (this.state.chat.name !== chat.name)) {
                 return;
               }
@@ -364,8 +375,6 @@ class ChatPage extends BaseListPage {
 
               // We're no longer in reasoning phase
               lastMessage2.isReasoningPhase = false;
-              // If there are suggestions, split them from the text
-              const parseResult = Setting.parseAnswerAndSuggestions(text);
               lastMessage2.text = parseResult["answer"];
               lastMessage2.suggestions = parseResult["suggestions"];
 

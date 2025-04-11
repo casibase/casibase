@@ -187,7 +187,9 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	question, err = getQuestionWithSuggestions(question, store.SuggestionCount)
+	var genTitle bool = !chat.HasTitle // that means the chat has no title
+
+	question, err = getQuestionWithSuggestions(question, store.SuggestionCount, genTitle)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -238,9 +240,10 @@ func (c *ApiController) GetMessageAnswer() {
 	message.Currency = modelResult.Currency
 
 	textAnswer := answer
+	var title string
 	textSuggestions := []object.Suggestion{}
 	if store.SuggestionCount != 0 {
-		textAnswer, textSuggestions, err = parseAnswerAndSuggestions(answer)
+		textAnswer, textSuggestions, title, err = parseAnswerAndSuggestions(answer)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
@@ -260,6 +263,10 @@ func (c *ApiController) GetMessageAnswer() {
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
+	}
+	if title != "" && genTitle {
+		chat.DisplayName = title
+		chat.HasTitle = true
 	}
 
 	chat.TokenCount += message.TokenCount
