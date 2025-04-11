@@ -753,6 +753,7 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Tencent Cloud", name: "Tencent Cloud"},
         {id: "Jina", name: "Jina"},
+        {id: "Word2Vec", name: "Word2Vec"},
         {id: "Dummy", name: "Dummy"},
       ]
     );
@@ -1299,6 +1300,10 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "01-ai/Yi-1.5-9B-Chat-16K", name: "01-ai/Yi-1.5-9B-Chat-16K"},
       {id: "google/gemma-2-27b-it", name: "google/gemma-2-27b-it"},
       {id: "google/gemma-2-9b-it", name: "google/gemma-2-9b-it"},
+    ]);
+  } else if (type === "Word2Vec") {
+    return ([
+      {id: "Word2Vec", name: "Word2Vec"},
     ]);
   } else if (type === "Dummy") {
     return ([
