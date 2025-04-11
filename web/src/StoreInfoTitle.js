@@ -23,6 +23,8 @@ const StoreInfoTitle = (props) => {
     if (stores) {
       const foundDefaultStore = stores.find(store => store.isDefault);
       setDefaultStore(foundDefaultStore);
+      // eslint-disable-next-line no-console
+      console.log("Default store found:", foundDefaultStore);
     }
   }, [stores]);
   // Filter stores to show default store and its child stores
@@ -75,14 +77,14 @@ const StoreInfoTitle = (props) => {
 
   // Get model providers when component mounts
   useEffect(() => {
-    if (!chat || !defaultStore || !defaultStore.modelProviders || defaultStore.modelProviders.length === 0) {
+    if (!chat || !defaultStore || !defaultStore.childModelProviders || defaultStore.childModelProviders.length === 0) {
       setModelProviders([]);
     } else {
       ProviderBackend.getProviders(chat.owner)
         .then((res) => {
           if (res.status === "ok") {
             const providers = res.data.filter(provider =>
-              provider.category === "Model" && defaultStore.modelProviders.includes(provider.name)
+              provider.category === "Model" && defaultStore.childModelProviders.includes(provider.name)
             );
             setModelProviders(providers);
           }

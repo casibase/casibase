@@ -211,11 +211,16 @@ class ChatMenu extends React.Component {
     // Find the default store
     const defaultStore = stores.find(store => store.isDefault);
 
-    // If a default store exists, filter to show default store AND its child stores
-    if (defaultStore && defaultStore.childStores && defaultStore.childStores.length > 0) {
-      stores = stores.filter(store => defaultStore.childStores.includes(store.name)
-      );
+    // If a default store exists, check if it has child stores
+    if (defaultStore) {
+      if (!defaultStore.childStores || defaultStore.childStores.length === 0) {
+        stores = [];
+      } else {
+        // Otherwise filter to show only the child stores
+        stores = stores.filter(store => defaultStore.childStores.includes(store.name));
+      }
     }
+
     let hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
     hasEmptyChat = false;
 

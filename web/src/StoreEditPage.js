@@ -37,12 +37,10 @@ class StoreEditPage extends React.Component {
       casdoorStorageProviders: [],
       storageProviders: [],
       modelProviders: [],
-      allModelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
       enableTtsStreaming: false,
       store: null,
-      stores: [],
       themeColor: ThemeDefault.colorPrimary,
     };
   }
@@ -51,7 +49,7 @@ class StoreEditPage extends React.Component {
     this.getStore();
     this.getStores();
     this.getStorageProviders();
-    this.getStores();
+    this.getProviders();
   }
 
   getStore() {
@@ -65,7 +63,6 @@ class StoreEditPage extends React.Component {
           this.setState({
             store: res.data,
           });
-          this.getProviders();
         } else {
           Setting.showMessage("error", `Failed to get store: ${res.msg}`);
         }
@@ -102,40 +99,14 @@ class StoreEditPage extends React.Component {
     ProviderBackend.getProviders(this.props.account.name)
       .then((res) => {
         if (res.status === "ok") {
-          const storageProviders = res.data.filter(provider => provider.category === "Storage");
-          const allModelProviders = res.data.filter(provider => provider.category === "Model");
-          const embeddingProviders = res.data.filter(provider => provider.category === "Embedding");
-          const textToSpeechProviders = res.data.filter(provider => provider.category === "Text-to-Speech");
-
-          let modelProviders = [];
-          if (this.state.store?.modelProviders?.length > 0) {
-            modelProviders = allModelProviders.filter(provider =>
-              this.state.store.modelProviders.includes(provider.name)
-            );
-          }
-
           this.setState({
-            storageProviders,
-            modelProviders,
-            allModelProviders,
-            embeddingProviders,
-            textToSpeechProviders,
+            storageProviders: res.data.filter(provider => provider.category === "Storage"),
+            modelProviders: res.data.filter(provider => provider.category === "Model"),
+            embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
+            textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
-        }
-      });
-  }
-
-  getStores() {
-    StoreBackend.getStores(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          this.setState({
-            stores: res.data || [],
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
         }
       });
   }
@@ -274,37 +245,6 @@ class StoreEditPage extends React.Component {
             <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
               this.updateStoreField("enableTtsStreaming", checked);
             }} />
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Child stores")}:
-          </Col>
-          <Col span={22} >
-            <Select
-              virtual={false} mode="multiple" style={{width: "100%"}} options={this.state.stores
-                .filter(store => store.name !== this.state.store?.name) // Filter out current store
-                .map((store) => Setting.getOption(`${store.displayName} (${store.name})`, store.name))
-              }
-              value={this.state.store?.childStores ?? []} onChange={(value => {
-                this.updateStoreField("childStores", value);
-              })} >
-            </Select>
-          </Col>
-        </Row>
-        <Row style={{marginTop: "20px"}}>
-          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {i18next.t("store:Child model providers")}:
-          </Col>
-          <Col span={22} >
-            <Select
-              virtual={false} mode="multiple" style={{width: "100%"}} options={this.state.allModelProviders
-                .map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              }
-              value={this.state.store?.modelProviders ?? []} onChange={(value => {
-                this.updateStoreField("modelProviders", value);
-              })} >
-            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
