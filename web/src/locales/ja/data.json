@@ -392,6 +392,23 @@
     "Month": "Month",
     "Week": "Week"
   },
+  "system": {
+    "API Latency": "API遅延",
+    "API Throughput": "APIスループット",
+    "About Casibase": "Casibaseについて",
+    "CPU Usage": "CPU使用率",
+    "Community": "コミュニティ",
+    "Count": "カウント",
+    "Failed to get CPU usage": "CPU使用率を取得できませんでした",
+    "Failed to get memory usage": "メモリ使用量を取得できませんでした",
+    "Latency": "遅延",
+    "Memory Usage": "メモリ使用量",
+    "Official website": "公式ウェブサイト",
+    "Throughput": "スループット",
+    "Total Throughput": "総スループット",
+    "Unknown version": "不明なバージョン",
+    "Version": "バージョン"
+  },
   "vector": {
     "Data": "Data",
     "Dimension": "Dimension",

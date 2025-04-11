@@ -16,9 +16,12 @@ package controllers
 
 import (
 	"encoding/gob"
+	"strings"
+	"time"
 
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
+	"github.com/casibase/casibase/object"
 )
 
 type ApiController struct {
@@ -95,4 +98,15 @@ func wrapActionResponse(affected bool, e ...error) *Response {
 	} else {
 		return &Response{Status: "ok", Msg: "", Data: "Unaffected"}
 	}
+}
+
+func (c *ApiController) Finish() {
+	if strings.HasPrefix(c.Ctx.Input.URL(), "/api") {
+		startTime := c.Ctx.Input.GetData("startTime")
+		if startTime != nil {
+			latency := time.Since(startTime.(time.Time)).Milliseconds()
+			object.ApiLatency.WithLabelValues(c.Ctx.Input.URL(), c.Ctx.Input.Method()).Observe(float64(latency))
+		}
+	}
+	c.Controller.Finish()
 }

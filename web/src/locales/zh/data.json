@@ -392,6 +392,23 @@
     "Month": "每月",
     "Week": "每周"
   },
+  "system": {
+    "API Latency": "API 延迟",
+    "API Throughput": "API 吞吐量",
+    "About Casibase": "关于Casibase",
+    "CPU Usage": "CPU使用率",
+    "Community": "社区",
+    "Count": "次数",
+    "Failed to get CPU usage": "获取CPU使用率失败",
+    "Failed to get memory usage": "获取内存使用率失败",
+    "Latency": "延迟",
+    "Memory Usage": "内存使用率",
+    "Official website": "官方网站",
+    "Throughput": "吞吐量",
+    "Total Throughput": "总吞吐量",
+    "Unknown version": "未知版本",
+    "Version": "版本"
+  },
   "vector": {
     "Data": "数据",
     "Dimension": "维度",

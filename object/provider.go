@@ -49,8 +49,8 @@ type Provider struct {
 	FrequencyPenalty float32 `xorm:"float" json:"frequencyPenalty"`
 	PresencePenalty  float32 `xorm:"float" json:"presencePenalty"`
 
-	InputPricePerThousandTokens  float64 `xorm:"float" json:"inputPricePerThousandTokens"`
-	OutputPricePerThousandTokens float64 `xorm:"float" json:"outputPricePerThousandTokens"`
+	InputPricePerThousandTokens  float64 `xorm:"DECIMAL(10, 4)" json:"inputPricePerThousandTokens"`
+	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
 	Currency                     string  `xorm:"varchar(100)" json:"currency"`
 
 	Network    string `xorm:"varchar(100)" json:"network"`

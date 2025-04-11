@@ -68,6 +68,7 @@ import {PreviewInterceptor} from "./PreviewInterceptor";
 import AuditPage from "./frame/AuditPage";
 import PythonYolov8miPage from "./frame/PythonYolov8miPage";
 import PythonSrPage from "./frame/PythonSrPage";
+import SystemInfo from "./SystemInfo";
 
 const {Header, Footer, Content} = Layout;
 
@@ -162,6 +163,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
+    } else if (uri.includes("/sysinfo")) {
+      this.setState({selectedMenuKey: "/sysinfo"});
     } else if (uri.includes("/swagger")) {
       this.setState({selectedMenuKey: "/swagger"});
     } else {
@@ -381,7 +384,6 @@ class App extends Component {
 
     const domain = Setting.getSubdomain();
     // const domain = "med";
-
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
@@ -621,8 +623,9 @@ class App extends Component {
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
-        <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
+        <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
+        <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );
   }

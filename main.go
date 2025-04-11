@@ -48,6 +48,7 @@ func main() {
 	beego.SetStaticPath("/swagger", "swagger")
 	beego.InsertFilter("*", beego.BeforeRouter, routers.StaticFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.AuthzFilter)
+	beego.InsertFilter("*", beego.BeforeRouter, routers.PrometheusFilter)
 	beego.InsertFilter("*", beego.BeforeRouter, routers.RecordMessage)
 	beego.InsertFilter("*", beego.AfterExec, routers.AfterRecordMessage, false)
 
@@ -68,6 +69,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	go object.ClearThroughputPerSecond()
 
 	beego.Run(fmt.Sprintf(":%v", port))
 }
