@@ -392,6 +392,23 @@
     "Month": "Month",
     "Week": "Week"
   },
+  "system": {
+    "API Latency": "Задержка API",
+    "API Throughput": "Пропускная способность API",
+    "About Casibase": "Об Casibase",
+    "CPU Usage": "Использование ЦПУ",
+    "Community": "Сообщество",
+    "Count": "Количество",
+    "Failed to get CPU usage": "Не удалось получить использование процессора",
+    "Failed to get memory usage": "Не удалось получить использование памяти",
+    "Latency": "Задержка",
+    "Memory Usage": "Использование памяти",
+    "Official website": "Официальный веб-сайт",
+    "Throughput": "Пропускная способность",
+    "Total Throughput": "Общая пропускная способность",
+    "Unknown version": "Неизвестная версия",
+    "Version": "Версия"
+  },
   "vector": {
     "Data": "Данные",
     "Dimension": "Dimension",

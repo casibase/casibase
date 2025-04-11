@@ -392,6 +392,23 @@
     "Month": "Month",
     "Week": "Week"
   },
+  "system": {
+    "API Latency": "API Latency",
+    "API Throughput": "API Throughput",
+    "About Casibase": "Tentang Casibase",
+    "CPU Usage": "Penggunaan CPU",
+    "Community": "Komunitas",
+    "Count": "Kiraan",
+    "Failed to get CPU usage": "Gagal mendapatkan penggunaan CPU",
+    "Failed to get memory usage": "Gagal mendapatkan penggunaan memori",
+    "Latency": "Latency",
+    "Memory Usage": "Penggunaan Memori",
+    "Official website": "Situs web resmi",
+    "Throughput": "Melalui",
+    "Total Throughput": "Jumlah Keluaran",
+    "Unknown version": "Versi tidak diketahui",
+    "Version": "Versi"
+  },
   "vector": {
     "Data": "Data",
     "Dimension": "Dimension",
