@@ -384,6 +384,7 @@ class App extends Component {
 
     const domain = Setting.getSubdomain();
     // const domain = "med";
+
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
