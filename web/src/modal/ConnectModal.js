@@ -66,10 +66,7 @@ const ConnectModal = (props) => {
 
   const handleOk = () => {
     setIsModalOpen(false);
-    if (category === "node") {
-      const link = (username === "" || password === "") ? `access/${owner}/${category}/${name}` : `access/${owner}/${category}/${name}?username=${username}&password=${password}`;
-      Setting.openLink(link);
-    } else if (category === "machine") {
+    if (category === "node" || category === "machine") {
       const link = (username === "" || password === "") ? `access/${owner}/${category}/${name}` : `access/${owner}/${category}/${name}?username=${username}&password=${password}`;
       Setting.openLink(link);
     } else {

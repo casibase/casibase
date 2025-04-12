@@ -369,12 +369,25 @@ func setConfig(propertyMap map[string]string, target interface{}, configuration 
 		configuration.SetParameter(guacamole.ForceLossless, propertyMap[guacamole.ForceLossless])
 		configuration.SetParameter(guacamole.PreConnectionId, propertyMap[guacamole.PreConnectionId])
 		configuration.SetParameter(guacamole.PreConnectionBlob, propertyMap[guacamole.PreConnectionBlob])
-	case "SSH", "Telnet":
+		// if node.EnableRemoteApp {
+		//	remoteApp := node.RemoteApps[0]
+		//	configuration.SetParameter("remote-app", "||"+remoteApp.RemoteAppName)
+		//	configuration.SetParameter("remote-app-dir", remoteApp.RemoteAppDir)
+		//	configuration.SetParameter("remote-app-args", remoteApp.RemoteAppArgs)
+		// }
+	case "SSH":
 		configuration.SetParameter(guacamole.FontSize, propertyMap[guacamole.FontSize])
+		// configuration.SetParameter(guacamole.FontName, propertyMap[guacamole.FontName])
 		configuration.SetParameter(guacamole.ColorScheme, propertyMap[guacamole.ColorScheme])
 		configuration.SetParameter(guacamole.Backspace, propertyMap[guacamole.Backspace])
 		configuration.SetParameter(guacamole.TerminalType, propertyMap[guacamole.TerminalType])
-	}
+	case "Telnet":
+		configuration.SetParameter(guacamole.FontSize, propertyMap[guacamole.FontSize])
+		// configuration.SetParameter(guacamole.FontName, propertyMap[guacamole.FontName])
+		configuration.SetParameter(guacamole.ColorScheme, propertyMap[guacamole.ColorScheme])
+		configuration.SetParameter(guacamole.Backspace, propertyMap[guacamole.Backspace])
+		configuration.SetParameter(guacamole.TerminalType, propertyMap[guacamole.TerminalType])
+	default:
 }
 
 // PublicIp > PrivateIp > Name
