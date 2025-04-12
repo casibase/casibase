@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/txt"
@@ -82,61 +81,6 @@ func ConvertMessageDataToJSON(data string) ([]byte, error) {
 		return nil, err
 	}
 	return jsonBytes, nil
-}
-
-var divider = "|||"
-
-func getQuestionWithSuggestions(question string, count int) (string, error) {
-	if count <= 0 {
-		return question, nil
-	}
-
-	format := "<Your answer>"
-	for i := 0; i < count; i++ {
-		format += divider + "<Predicted question " + string(rune(i+1)) + ">"
-	}
-
-	question = "Please follow the steps below to optimize your answer:\n\n" +
-		"1. **Generate an answer**: Provide a clear, accurate, and helpful answer to the user's question.\n\n" +
-		"2. **Predict possible follow-up questions from the user**: Based on the current question and answer, think and predict three questions that the user might ask further.\n\n" +
-		"3. **Format the answer and predicted questions**: Use a specific format to connect the answer and the predicted questions. The format is as follows:\n" +
-		"   - Follow the answer with a separator `" + divider + "`\n" +
-		"   - Then there are the predicted " + string(rune(count)) + " questions, each separated by `" + divider + "`, do not add any other symbols.\n\n" +
-		"Your answer should be replied in the following format: " + format + "\n\n" +
-		"The '<>' is to tell you to put something in here, your answer does not need to include '<>'.\n" +
-		"The language of suggestions should be the same as the language of answer" +
-		"Every Predicted question should end with a question mark '?'.\n\n" +
-		"Please note, the separator for each part is `" + divider + "`, make sure not to use this separator in the answer or question.\n\n" +
-		"Examples of generated predicted questions:\n1. Do you know the weather today?\n2. Do you have any news to share?\n\n" +
-		"Here is the user's question: " + question
-
-	return question, nil
-}
-
-func parseAnswerAndSuggestions(answer string) (string, []object.Suggestion, error) {
-	parts := strings.Split(answer, divider)
-
-	suggestions := []object.Suggestion{}
-
-	if len(parts) < 2 {
-		return answer, suggestions, nil
-	}
-
-	for i := 1; i < len(parts); i++ {
-		suggestions = append(suggestions, object.Suggestion{Text: formatSuggestion(parts[i]), IsHit: false})
-	}
-
-	return parts[0], suggestions, nil
-}
-
-func formatSuggestion(suggestionText string) string {
-	suggestionText = strings.TrimSpace(suggestionText)
-	suggestionText = strings.TrimPrefix(suggestionText, "<")
-	suggestionText = strings.TrimSuffix(suggestionText, `>`)
-	if !(strings.HasSuffix(suggestionText, "?") || strings.HasSuffix(suggestionText, "？")) {
-		suggestionText += "?"
-	}
-	return suggestionText
 }
 
 func RefineMessageImage(message *object.Message) error {

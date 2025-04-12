@@ -187,7 +187,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	question, err = getQuestionWithSuggestions(question, store.SuggestionCount)
+	question, err = getQuestionWithCarriers(question, store.SuggestionCount)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -240,7 +240,7 @@ func (c *ApiController) GetMessageAnswer() {
 	textAnswer := answer
 	textSuggestions := []object.Suggestion{}
 	if store.SuggestionCount != 0 {
-		textAnswer, textSuggestions, err = parseAnswerAndSuggestions(answer)
+		textAnswer, textSuggestions, err = parseAnswerWithCarriers(answer, store.SuggestionCount)
 		if err != nil {
 			c.ResponseErrorStream(message, err.Error())
 			return
