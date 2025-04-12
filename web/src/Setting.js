@@ -662,7 +662,7 @@ export function renderExternalLink() {
 }
 
 export function isResponseDenied(data) {
-  return data.msg === "Unauthorized operation" || "this operation requires admin privilege";
+  return data.msg === "Unauthorized operation" || data.msg === "this operation requires admin privilege";
 }
 
 export function getCompitableProviderOptions(category) {
