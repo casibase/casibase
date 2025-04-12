@@ -20,6 +20,7 @@ import i18next from "i18next";
 
 const ChatInput = ({
   value,
+  store,
   onChange,
   onSend,
   onFileUpload,
@@ -51,7 +52,7 @@ const ChatInput = ({
               type="text"
               icon={<LinkOutlined />}
               onClick={onFileUpload}
-              disabled={disableInput || messageError}
+              disabled={disableInput || messageError || store?.disableFileUpload}
               style={{
                 color: (disableInput || messageError) ? "#d9d9d9" : undefined,
               }}
@@ -63,24 +64,6 @@ const ChatInput = ({
             flex: 1,
             borderRadius: "8px",
             background: "#f5f5f5",
-          }}
-          actions={(ori, {components}) => {
-            const {SendButton} = components;
-            if (loading) {
-              return ori;
-            }
-            return (
-              <SendButton
-                disabled={sendButtonDisabled}
-                style={{
-                  backgroundColor: sendButtonDisabled ? "#f5f5f5" : "#1890ff",
-                  color: sendButtonDisabled ? "#d9d9d9" : "#ffffff",
-                  borderColor: sendButtonDisabled ? "#d9d9d9" : "#1890ff",
-                  cursor: sendButtonDisabled ? "not-allowed" : "pointer",
-                  opacity: sendButtonDisabled ? 0.6 : 1,
-                }}
-              />
-            );
           }}
           placeholder={messageError ? "" : i18next.t("chat:Type message here")}
           value={value}

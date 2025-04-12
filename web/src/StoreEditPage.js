@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Card, Col, Input, InputNumber, Row, Select} from "antd";
+import {Button, Card, Col, Input, InputNumber, Row, Select, Switch} from "antd";
 import * as StoreBackend from "./backend/StoreBackend";
 import * as StorageProviderBackend from "./backend/StorageProviderBackend";
 import * as ProviderBackend from "./backend/ProviderBackend";
@@ -23,6 +23,7 @@ import FileTree from "./FileTree";
 import {ThemeDefault} from "./Conf";
 import PromptTable from "./PromptTable";
 
+const {Option} = Select;
 const {TextArea} = Input;
 
 class StoreEditPage extends React.Component {
@@ -32,10 +33,13 @@ class StoreEditPage extends React.Component {
       classes: props,
       owner: props.match.params.owner,
       storeName: props.match.params.storeName,
+      stores: [],
       casdoorStorageProviders: [],
       storageProviders: [],
       modelProviders: [],
       embeddingProviders: [],
+      textToSpeechProviders: [],
+      enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
     };
@@ -43,6 +47,7 @@ class StoreEditPage extends React.Component {
 
   UNSAFE_componentWillMount() {
     this.getStore();
+    this.getStores();
     this.getStorageProviders();
     this.getProviders();
   }
@@ -60,6 +65,19 @@ class StoreEditPage extends React.Component {
           });
         } else {
           Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+        }
+      });
+  }
+
+  getStores() {
+    StoreBackend.getStores(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({
+            stores: res.data,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
         }
       });
   }
@@ -85,6 +103,7 @@ class StoreEditPage extends React.Component {
             storageProviders: res.data.filter(provider => provider.category === "Storage"),
             modelProviders: res.data.filter(provider => provider.category === "Model"),
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
+            textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
@@ -184,7 +203,7 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.splitProvider} onChange={(value => {this.updateStoreField("splitProvider", value);})}
-              options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}].map((provider) => Setting.getOption(provider.name, provider.name))
+              options={[{name: "Default"}, {name: "Basic"}, {name: "QA"}, {name: "Markdown"}].map((provider) => Setting.getOption(provider.name, provider.name))
               } />
           </Col>
         </Row>
@@ -206,6 +225,26 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
               options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
               } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Text-to-Speech provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
+              options={this.state.textToSpeechProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
+              } />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Enable TTS streaming")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
+              this.updateStoreField("enableTtsStreaming", checked);
+            }} />
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -325,17 +364,61 @@ class StoreEditPage extends React.Component {
         {
           this.state.store.name !== "store-built-in" ? null : (
             <Row style={{marginTop: "20px"}} >
-              <Col style={{}} span={(Setting.isMobile()) ? 22 : 2}>
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("store:Can Select Store")}:
               </Col>
-              <Col span={22} style={{display: "flex", alignItems: "center"}}>
-                <input type="checkbox" checked={this.state.store.canSelectStore} onClick={(e) => {
-                  this.updateStoreField("canSelectStore", e.target.checked);
+              <Col span={1}>
+                <Switch checked={this.state.store.canSelectStore} onChange={checked => {
+                  this.updateStoreField("canSelectStore", checked);
                 }} />
               </Col>
             </Row>
           )
         }
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Child stores")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childStores} onChange={(value => {this.updateStoreField("childStores", value);})}>
+              {
+                this.state.stores?.filter(item => item.name !== this.state.store.name).map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Child model providers")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
+              {
+                this.state.modelProviders?.map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+              }
+            </Select>
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Disable file upload")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.disableFileUpload} onChange={checked => {
+              this.updateStoreField("disableFileUpload", checked);
+            }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Is default")}:
+          </Col>
+          <Col span={1}>
+            <Switch checked={this.state.store.isDefault} onChange={checked => {
+              this.updateStoreField("isDefault", checked);
+            }} />
+          </Col>
+        </Row>
         <Row style={{marginTop: "20px"}}>
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("general:State")} :

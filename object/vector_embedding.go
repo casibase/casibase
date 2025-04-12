@@ -129,6 +129,9 @@ func addVectorsForStore(storageProviderObj storage.StorageProvider, embeddingPro
 			splitProviderType = "QA"
 		}
 
+		if fileExt == ".md" {
+			splitProviderType = "Markdown"
+		}
 		var splitProvider split.SplitProvider
 		splitProvider, err = split.GetSplitProvider(splitProviderType)
 		if err != nil {

@@ -200,6 +200,7 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "action",
         key: "action",
         width: "180px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>

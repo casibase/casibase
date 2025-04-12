@@ -106,6 +106,12 @@ func OpenaiRawMessagesToMessages(messages []*RawMessage) []openai.ChatCompletion
 			Role:    role,
 			Content: message.Text,
 		}
+
+		// Set non-empty message text due to that some AI models report error for empty message
+		if item.Content == "" {
+			item.Content = " "
+		}
+
 		res = append(res, item)
 	}
 	return res

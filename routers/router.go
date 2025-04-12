@@ -26,6 +26,7 @@ package routers
 import (
 	"github.com/beego/beego"
 	"github.com/casibase/casibase/controllers"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func init() {
@@ -76,6 +77,9 @@ func initAPI() {
 	beego.Router("/api/delete-vector", &controllers.ApiController{}, "POST:DeleteVector")
 	beego.Router("/api/delete-all-vectors", &controllers.ApiController{}, "POST:DeleteAllVectors")
 
+	beego.Router("/api/generate-text-to-speech-audio", &controllers.ApiController{}, "POST:GenerateTextToSpeechAudio")
+	beego.Router("/api/generate-text-to-speech-audio-stream", &controllers.ApiController{}, "GET:GenerateTextToSpeechAudioStream")
+
 	beego.Router("/api/get-global-chats", &controllers.ApiController{}, "GET:GetGlobalChats")
 	beego.Router("/api/get-chats", &controllers.ApiController{}, "GET:GetChats")
 	beego.Router("/api/get-chat", &controllers.ApiController{}, "GET:GetChat")
@@ -97,6 +101,13 @@ func initAPI() {
 	beego.Router("/api/get-range-usages", &controllers.ApiController{}, "GET:GetRangeUsages")
 	beego.Router("/api/get-users", &controllers.ApiController{}, "GET:GetUsers")
 	beego.Router("/api/get-user-table-infos", &controllers.ApiController{}, "GET:GetUserTableInfos")
+
+	beego.Router("/api/get-global-workflows", &controllers.ApiController{}, "GET:GetGlobalWorkflows")
+	beego.Router("/api/get-workflows", &controllers.ApiController{}, "GET:GetWorkflows")
+	beego.Router("/api/get-workflow", &controllers.ApiController{}, "GET:GetWorkflow")
+	beego.Router("/api/update-workflow", &controllers.ApiController{}, "POST:UpdateWorkflow")
+	beego.Router("/api/add-workflow", &controllers.ApiController{}, "POST:AddWorkflow")
+	beego.Router("/api/delete-workflow", &controllers.ApiController{}, "POST:DeleteWorkflow")
 
 	beego.Router("/api/get-global-tasks", &controllers.ApiController{}, "GET:GetGlobalTasks")
 	beego.Router("/api/get-tasks", &controllers.ApiController{}, "GET:GetTasks")
@@ -161,4 +172,10 @@ func initAPI() {
 
 	beego.Router("/api/commit-record", &controllers.ApiController{}, "POST:CommitRecord")
 	beego.Router("/api/query-record", &controllers.ApiController{}, "GET:QueryRecord")
+
+	beego.Router("/api/get-system-info", &controllers.ApiController{}, "GET:GetSystemInfo")
+	beego.Router("/api/get-version-info", &controllers.ApiController{}, "GET:GetVersionInfo")
+	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")
+	beego.Router("/api/get-prometheus-info", &controllers.ApiController{}, "GET:GetPrometheusInfo")
+	beego.Handler("/api/metrics", promhttp.Handler())
 }

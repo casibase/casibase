@@ -84,8 +84,45 @@ class MachineListPage extends BaseListPage {
       });
   }
 
-  renderTable(machines) {
-    const columns = [
+  renderDownloadXlsxButton() {
+    return (
+      <Button size="small" style={{marginRight: "10px"}} onClick={() => {
+        const data = [];
+        this.state.data.filter(item => item.author !== "AI").forEach((item, i) => {
+          const row = {};
+          row[i18next.t("message:Chat")] = item.chat;
+          row[i18next.t("general:Message")] = item.name;
+          row[i18next.t("general:Created time")] = Setting.getFormattedDate(item.createdTime);
+          row[i18next.t("general:User")] = item.user;
+          row[i18next.t("general:Text")] = item.text;
+          row[i18next.t("message:Error text")] = item.errorText;
+          data.push(row);
+        });
+
+        const sheet = Setting.json2sheet(data);
+        sheet["!cols"] = [
+          {wch: 15},
+          {wch: 15},
+          {wch: 30},
+          {wch: 15},
+          {wch: 50},
+          {wch: 50},
+        ];
+
+        Setting.saveSheetToFile(sheet, i18next.t("general:Messages"), `${i18next.t("general:Messages")}-${Setting.getFormattedDate(moment().format())}.xlsx`);
+      }}>{i18next.t("general:Download")}</Button>
+    );
+  }
+
+  renderTable(messages) {
+    let columns = [
+      // {
+      //   title: i18next.t("general:Owner"),
+      //   dataIndex: "owner",
+      //   key: "owner",
+      //   width: "90px",
+      //   sorter: (a, b) => a.owner.localeCompare(b.owner),
+      // },
       {
         title: i18next.t("general:Organization"),
         dataIndex: "owner",
@@ -157,11 +194,22 @@ class MachineListPage extends BaseListPage {
         sorter: (a, b) => a.zone.localeCompare(b.zone),
       },
       {
-        title: i18next.t("general:Type"),
-        dataIndex: "type",
-        key: "type",
-        width: "120px",
-        sorter: (a, b) => a.type.localeCompare(b.type),
+        title: i18next.t("message:Knowledge"),
+        dataIndex: "knowledge",
+        key: "knowledge",
+        width: "100px",
+        sorter: (a, b) => a.knowledge.localeCompare(b.knowledge),
+        render: (text, record, index) => {
+          return record.vectorScores?.map(vectorScore => {
+            return (
+              <a key={vectorScore.vector} target="_blank" rel="noreferrer" href={`/vectors/${vectorScore.vector}`}>
+                <Tag style={{marginTop: "5px"}} color={"processing"}>
+                  {vectorScore.score}
+                </Tag>
+              </a>
+            );
+          });
+        },
       },
       {
         title: i18next.t("general:Size"),
@@ -243,8 +291,39 @@ class MachineListPage extends BaseListPage {
         <Table scroll={{x: "max-content"}} columns={columns} dataSource={machines} rowKey={"name"} size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
-              {i18next.t("general:Machines")}&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button type="primary" size="small" onClick={this.addMachine.bind(this)}>{i18next.t("general:Add")}</Button>
+              {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
+              <Button disabled={!Setting.isLocalAdminUser(this.props.account)} type="primary" size="small" onClick={this.addMessage.bind(this)}>{i18next.t("general:Add")}</Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {
+                this.renderDownloadXlsxButton()
+              }
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Users")}:
+              &nbsp;
+              {Setting.getDisplayTag(Setting.uniqueFields(messages, "user"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Chats")}:
+              &nbsp;
+              {Setting.getDisplayTag(Setting.uniqueFields(messages, "chat"))}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              {i18next.t("general:Messages")}:
+              &nbsp;
+              {Setting.getDisplayTag(this.state.pagination.total)}
+              {
+                (!this.props.account || this.props.account.name !== "admin") ? null : (
+                  <React.Fragment>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("general:Tokens")}:
+                    &nbsp;
+                    {Setting.getDisplayTag(Setting.sumFields(messages, "tokenCount"))}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    {i18next.t("chat:Price")}:
+                    &nbsp;
+                    {Setting.getDisplayPrice(Setting.sumFields(messages, "price"))}
+                  </React.Fragment>
+                )
+              }
             </div>
           )}
           loading={this.state.loading}

@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table} from "antd";
+import {Button, Popconfirm, Switch, Table} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
@@ -46,6 +46,7 @@ class StoreListPage extends BaseListPage {
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
+      textToSpeechProvider: "",
       memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
@@ -57,6 +58,7 @@ class StoreListPage extends BaseListPage {
       propertiesMap: {},
       knowledgeCount: 5,
       suggestionCount: 3,
+      isDefault: false,
       state: "Active",
     };
   }
@@ -184,6 +186,13 @@ class StoreListPage extends BaseListPage {
         key: "imageProvider",
         width: "200px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
+        render: (text, record, index) => {
+          return (
+            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", `/providers/admin/${text}`)}>
+              {text}
+            </a>
+          );
+        },
       },
       {
         title: i18next.t("store:Model provider"),
@@ -214,11 +223,38 @@ class StoreListPage extends BaseListPage {
         },
       },
       {
+        title: i18next.t("store:Text-to-Speech provider"),
+        dataIndex: "textToSpeechProvider",
+        key: "textToSpeechProvider",
+        width: "200px",
+        sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
+        render: (text) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
+        },
+      },
+      {
         title: i18next.t("store:Memory limit"),
         dataIndex: "memoryLimit",
         key: "memoryLimit",
         width: "120px",
         sorter: (a, b) => a.memoryLimit - b.memoryLimit,
+      },
+      {
+        title: i18next.t("store:Is default"),
+        dataIndex: "isDefault",
+        key: "isDefault",
+        width: "120px",
+        sorter: (a, b) => a.isDefault - b.isDefault,
+        // ...this.getColumnSearchProps("isDefault"),
+        render: (text, record, index) => {
+          return (
+            <Switch disabled checkedChildren="ON" unCheckedChildren="OFF" checked={text} />
+          );
+        },
       },
       {
         title: i18next.t("general:State"),
@@ -232,6 +268,7 @@ class StoreListPage extends BaseListPage {
         dataIndex: "action",
         key: "action",
         width: "380px",
+        fixed: "right",
         render: (text, record, index) => {
           return (
             <div>

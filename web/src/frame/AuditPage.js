@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package service
+import React from "react";
 
-import "time"
+class AuditPage extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      classes: props,
+    };
+  }
 
-func getLocalTimestamp(input string) string {
-	if input == "" {
-		return ""
-	}
-
-	const inputFormat = "2006-01-02T15:04Z"
-	utcTime, err := time.Parse(inputFormat, input)
-	if err != nil {
-		panic(err)
-	}
-
-	res := utcTime.Local().Format(time.RFC3339)
-	return res
+  render() {
+    return (
+      <iframe id="iframe" title={"iframe"} src={`https://47.113.204.64:23554/?userId=${this.props.account.name}`} width="100%" height={window.innerHeight - 195} scrolling="no" frameBorder="no" />
+    );
+  }
 }
+
+export default AuditPage;
