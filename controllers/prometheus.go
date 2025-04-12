@@ -1,4 +1,4 @@
-// Copyright 2024 The casbin Authors. All Rights Reserved.
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,28 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package service
+package controllers
 
 import (
-	"fmt"
+	"github.com/casibase/casibase/object"
 )
 
-type ImageClientInterface interface {
-	GetImages() ([]*Image, error)
-}
-
-func NewImageClient(providerType string, accessKeyId string, accessKeySecret string, region string) (ImageClientInterface, error) {
-	var res ImageClientInterface
-	var err error
-	if providerType == "Aliyun" {
-		res, err = newImageAliyunClient(accessKeyId, accessKeySecret, region)
-	} else {
-		return nil, fmt.Errorf("unsupported provider type: %s", providerType)
+// GetPrometheusInfo
+// @Title GetPrometheusInfo
+// @Tag System API
+// @Description get Prometheus Info
+// @Success 200 {object} object.PrometheusInfo The Response object
+// @router /get-prometheus-info [get]
+func (c *ApiController) GetPrometheusInfo() {
+	ok := c.RequireAdmin()
+	if !ok {
+		return
 	}
-
+	prometheusInfo, err := object.GetPrometheusInfo()
 	if err != nil {
-		return nil, err
+		c.ResponseError(err.Error())
+		return
 	}
 
-	return res, nil
+	c.ResponseOk(prometheusInfo)
 }

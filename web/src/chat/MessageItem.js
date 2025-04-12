@@ -14,7 +14,7 @@
 
 import React, {useEffect, useState} from "react";
 import {Bubble} from "@ant-design/x";
-import {Alert, Button} from "antd";
+import {Alert, Button, Col, Row} from "antd";
 import moment from "moment";
 import * as Setting from "../Setting";
 import i18next from "i18next";
@@ -37,10 +37,12 @@ const MessageItem = ({
   onEditMessage,
   disableInput,
   isReading,
+  isLoadingTTS, // Added new prop for TTS loading state
   readingMessage,
   sendMessage,
 }) => {
   const [avatarSrc, setAvatarSrc] = useState(null);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   const {isEditing,
     setIsHovering,
@@ -72,17 +74,41 @@ const MessageItem = ({
     }
 
     if (message.errorText !== "") {
-      return (
+      const regenerateButton = (
+        <Button
+          danger
+          type="primary"
+          onClick={() => {
+            setIsRegenerating(true);
+            onRegenerate(index);
+          }}
+          disabled={isRegenerating}
+        >
+          {isRegenerating
+            ? i18next.t("general:Regenerating...")
+            : i18next.t("general:Regenerate Answer")}
+        </Button>
+      );
+      return Setting.isMobile() ? (
+        <div>
+          <Alert
+            message={Setting.getRefinedErrorText(message.errorText)}
+            description={message.errorText}
+            type="error"
+            showIcon
+            style={{whiteSpace: "normal", wordWrap: "break-word"}}
+          />
+          <Row justify="center" style={{marginTop: 16}}>
+            <Col>{regenerateButton}</Col>
+          </Row>
+        </div>
+      ) : (
         <Alert
           message={Setting.getRefinedErrorText(message.errorText)}
           description={message.errorText}
           type="error"
           showIcon
-          action={
-            <Button danger type="primary" onClick={onRegenerate}>
-              {i18next.t("general:Regenerate Answer")}
-            </Button>
-          }
+          action={regenerateButton}
         />
       );
     }
@@ -258,8 +284,11 @@ const MessageItem = ({
           onToggleRead={onToggleRead}
           onEdit={() => setIsHovering(true)}
           isReading={isReading}
+          isLoadingTTS={isLoadingTTS} // Pass loading state to MessageActions
           readingMessage={readingMessage}
           account={account}
+          setIsRegenerating={setIsRegenerating}
+          isRegenerating={isRegenerating}
         />
       )}
 

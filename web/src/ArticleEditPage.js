@@ -334,7 +334,7 @@ class ArticleEditPage extends React.Component {
     return (
       <Card size="small" title={
         <div>
-          {i18next.t("article:Edit Framework")}&nbsp;&nbsp;&nbsp;&nbsp;
+          {i18next.t("article:Edit Article")}&nbsp;&nbsp;&nbsp;&nbsp;
           <Button onClick={() => this.submitArticleEdit(false)}>{i18next.t("general:Save")}</Button>
           <Button style={{marginLeft: "20px"}} type="primary" onClick={() => this.submitArticleEdit(true)}>{i18next.t("general:Save & Exit")}</Button>
         </div>

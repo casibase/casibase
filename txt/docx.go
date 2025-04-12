@@ -18,10 +18,14 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/unidoc/unioffice/document"
+	"github.com/carmel/gooxml/document"
 )
 
 func GetTextFromDocx(path string) (string, error) {
+	if markitdownExists {
+		return GetTextFromMarkitdown(path)
+	}
+
 	docx, err := document.Open(path)
 	if err != nil {
 		return "", err

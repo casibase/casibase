@@ -22,7 +22,7 @@ func NewDefaultSearchProvider(owner string) (*DefaultSearchProvider, error) {
 	return &DefaultSearchProvider{owner: owner}, nil
 }
 
-func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []float32) ([]Vector, error) {
+func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []float32, knowledgeCount int) ([]Vector, error) {
 	vectors, err := getRelatedVectors(embeddingProviderName)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func (p *DefaultSearchProvider) Search(embeddingProviderName string, qVector []f
 		vectorData = append(vectorData, candidate.Data)
 	}
 
-	similarities, err := getNearestVectors(qVector, vectorData, 5)
+	similarities, err := getNearestVectors(qVector, vectorData, knowledgeCount)
 	if err != nil {
 		return nil, err
 	}

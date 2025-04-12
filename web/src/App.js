@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import {Link, Redirect, Route, Switch, withRouter} from "react-router-dom";
 import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/cssinjs";
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
-import {BarsOutlined, CommentOutlined, DownOutlined, LogoutOutlined, SettingOutlined} from "@ant-design/icons";
+import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
 import "./App.less";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
@@ -51,6 +51,8 @@ import ImageEditPage from "./ImageEditPage";
 import SessionListPage from "./SessionListPage";
 import RecordListPage from "./RecordListPage";
 import RecordEditPage from "./RecordEditPage";
+import WorkflowListPage from "./WorkflowListPage";
+import WorkflowEditPage from "./WorkflowEditPage";
 import TaskListPage from "./TaskListPage";
 import TaskEditPage from "./TaskEditPage";
 import ArticleListPage from "./ArticleListPage";
@@ -62,6 +64,11 @@ import UsagePage from "./UsagePage";
 import * as StoreBackend from "./backend/StoreBackend";
 import NodeWorkbench from "./NodeWorkbench";
 import AccessPage from "./component/access/AccessPage";
+import {PreviewInterceptor} from "./PreviewInterceptor";
+import AuditPage from "./frame/AuditPage";
+import PythonYolov8miPage from "./frame/PythonYolov8miPage";
+import PythonSrPage from "./frame/PythonSrPage";
+import SystemInfo from "./SystemInfo";
 
 const {Header, Footer, Content} = Layout;
 
@@ -79,6 +86,7 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
+    this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history); // add interceptor
   }
 
   UNSAFE_componentWillMount() {
@@ -137,6 +145,14 @@ class App extends Component {
       this.setState({selectedMenuKey: "/sessions"});
     } else if (uri.includes("/records")) {
       this.setState({selectedMenuKey: "/records"});
+    } else if (uri.includes("/workflows")) {
+      this.setState({selectedMenuKey: "/workflows"});
+    } else if (uri.includes("/audit")) {
+      this.setState({selectedMenuKey: "/audit"});
+    } else if (uri.includes("/yolov8mi")) {
+      this.setState({selectedMenuKey: "/yolov8mi"});
+    } else if (uri.includes("/sr")) {
+      this.setState({selectedMenuKey: "/sr"});
     } else if (uri.includes("/tasks")) {
       this.setState({selectedMenuKey: "/tasks"});
     } else if (uri.includes("/articles")) {
@@ -147,6 +163,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/videos"});
     } else if (uri.includes("/chat")) {
       this.setState({selectedMenuKey: "/chat"});
+    } else if (uri.includes("/sysinfo")) {
+      this.setState({selectedMenuKey: "/sysinfo"});
     } else if (uri.includes("/swagger")) {
       this.setState({selectedMenuKey: "/swagger"});
     } else {
@@ -236,7 +254,7 @@ class App extends Component {
   }
 
   renderRightDropdown() {
-    if (Setting.isAnonymousUser(this.state.account) || Setting.getUrlParam("isRaw") !== null) {
+    if ((Setting.isAnonymousUser(this.state.account) && Conf.DisablePreviewMode) || Setting.getUrlParam("isRaw") !== null) {
       return (
         <div className="rightDropDown">
           {
@@ -253,15 +271,21 @@ class App extends Component {
     }
 
     const items = [];
-    items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
-      "/account"
-    ));
-    items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("account:Chats & Messages")}</>,
-      "/chat"
-    ));
-    items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
-      "/logout"
-    ));
+    if (!Setting.isAnonymousUser(this.state.account)) {
+      items.push(Setting.getItem(<><SettingOutlined />&nbsp;&nbsp;{i18next.t("account:My Account")}</>,
+        "/account"
+      ));
+      items.push(Setting.getItem(<><CommentOutlined />&nbsp;&nbsp;{i18next.t("general:Chats & Messages")}</>,
+        "/chat"
+      ));
+      items.push(Setting.getItem(<><LogoutOutlined />&nbsp;&nbsp;{i18next.t("account:Sign Out")}</>,
+        "/logout"
+      ));
+    } else {
+      items.push(Setting.getItem(<><LoginOutlined />&nbsp;&nbsp;{i18next.t("account:Sign In")}</>,
+        "/login"
+      ));
+    }
     const onClick = (e) => {
       if (e.key === "/account") {
         Setting.openLink(Setting.getMyProfileUrl(this.state.account));
@@ -269,6 +293,9 @@ class App extends Component {
         this.signout();
       } else if (e.key === "/chat") {
         this.props.history.push("/chat");
+      } else if (e.key === "/login") {
+        this.props.history.push(window.location.pathname);
+        Setting.redirectToLogin();
       }
     };
 
@@ -348,15 +375,15 @@ class App extends Component {
       return res;
     }
 
-    if (!this.state.account.isAdmin) {
+    if (!this.state.account.isAdmin && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
       if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
-        res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
+        // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
       }
     }
 
     const domain = Setting.getSubdomain();
-    // const domain = "data";
+    // const domain = "med";
 
     if (Conf.ShortcutPageItems.length > 0 && domain === "data") {
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
@@ -372,7 +399,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
       res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
-      // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
+      // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
       // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
     } else if (Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
@@ -410,64 +437,116 @@ class App extends Component {
       if (Conf.EnableExtraPages) {
         res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
         // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
-        // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
+        // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
         // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
       }
 
       if (window.location.pathname === "/") {
         Setting.goToLinkSoft(this, "/videos");
       }
-    } else {
-      res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
-      res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
+    } else if (domain === "med") {
       res.push(Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"));
-      res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
-      res.push(Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"));
-      res.push(Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"));
-      res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
-
-      res.push(Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"));
-      res.push(Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"));
-      res.push(Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"));
+      res.push(Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"));
+      res.push(Setting.getItem(<Link to="/audit">{i18next.t("med:Audit")}</Link>, "/audit"));
+      res.push(Setting.getItem(<Link to="/yolov8mi">{i18next.t("med:Medical Image Analysis")}</Link>, "/yolov8mi"));
+      res.push(Setting.getItem(<Link to="/sr">{i18next.t("med:Super Resolution")}</Link>, "/sr"));
       res.push(Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"));
       res.push(Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"));
-      res.push(Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"));
 
-      // res.push(Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"));
-      // res.push(Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"));
-
-      // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Frameworks")}</Link>, "/tasks"));
-      // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
-
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
-          {i18next.t("general:Swagger")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "#0"));
-
-      res.push(Setting.getItem(
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
-          {i18next.t("general:Users")}
-          {Setting.renderExternalLink()}
-        </a>,
-        "#"));
-
-      if (Setting.isLocalAdminUser(this.state.account)) {
-        res.push(Setting.getItem(
+      const textColor = "black";
+      const twoToneColor = "rgb(89,54,213)";
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("general:Users")}
+            {Setting.renderExternalLink()}
+          </a>, "/users"),
+        Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
             {i18next.t("general:Resources")}
             {Setting.renderExternalLink()}
-          </a>,
-          "##"));
-
-        res.push(Setting.getItem(
+          </a>, "/resources"),
+        Setting.getItem(
           <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
             {i18next.t("general:Permissions")}
             {Setting.renderExternalLink()}
-          </a>,
-          "###"));
-      }
+          </a>, "/permissions"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+            {i18next.t("general:Swagger")}
+            {Setting.renderExternalLink()}
+          </a>, "/swagger")]));
+    } else {
+      const textColor = "black";
+      const twoToneColor = "rgb(89,54,213)";
+
+      res.pop();
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chat">{i18next.t("general:Home")}</Link>, "/home", <HomeTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/Chat"),
+        Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/chats">{i18next.t("general:Chats & Messages")}</Link>, "/ai-chat", <BulbTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/chats">{i18next.t("general:Chats")}</Link>, "/chats"),
+        Setting.getItem(<Link to="/messages">{i18next.t("general:Messages")}</Link>, "/messages"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/stores">{i18next.t("general:AI Setting")}</Link>, "/ai-setting", <AppstoreTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"),
+        Setting.getItem(<Link to="/providers">{i18next.t("general:Providers")}</Link>, "/providers"),
+        Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/nodes">{i18next.t("general:Cloud Resources")}</Link>, "/cloud", <CloudTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
+        Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
+        Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"),
+        Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/videos">{i18next.t("general:Multimedia")}</Link>, "/multimedia", <VideoCameraTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/videos">{i18next.t("general:Videos")}</Link>, "/videos"),
+        Setting.getItem(<Link to="/public-videos">{i18next.t("general:Public Videos")}</Link>, "/public-videos"),
+        Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"),
+        Setting.getItem(<Link to="/workflows">{i18next.t("general:Workflows")}</Link>, "/workflows"),
+        Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sessions">{i18next.t("general:Logging & Auditing")}</Link>, "/logs", <WalletTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sessions">{i18next.t("general:Sessions")}</Link>, "/sessions"),
+        Setting.getItem(<Link to="/records">{i18next.t("general:Records")}</Link>, "/records"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="#">{i18next.t("general:Identity & Access Management")}</Link>, "/identity", <LockTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/users")}>
+            {i18next.t("general:Users")}
+            {Setting.renderExternalLink()}
+          </a>, "/users"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/resources")}>
+            {i18next.t("general:Resources")}
+            {Setting.renderExternalLink()}
+          </a>, "/resources"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", "/permissions")}>
+            {i18next.t("general:Permissions")}
+            {Setting.renderExternalLink()}
+          </a>, "/permissions"),
+      ]));
+
+      res.push(Setting.getItem(<Link style={{color: textColor}} to="/sysinfo">{i18next.t("general:Admin")}</Link>, "/admin", <SettingTwoTone twoToneColor={twoToneColor} />, [
+        Setting.getItem(<Link to="/sysinfo">{i18next.t("general:System Info")}</Link>, "/sysinfo"),
+        Setting.getItem(
+          <a target="_blank" rel="noreferrer" href={Setting.isLocalhost() ? `${Setting.ServerUrl}/swagger/index.html` : "/swagger/index.html"}>
+            {i18next.t("general:Swagger")}
+            {Setting.renderExternalLink()}
+          </a>, "/swagger")]));
     }
 
     return res;
@@ -534,14 +613,20 @@ class App extends Component {
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/workflows" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/workflows/:workflowName" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/audit" render={(props) => this.renderSigninIfNotSignedIn(<AuditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/yolov8mi" render={(props) => this.renderSigninIfNotSignedIn(<PythonYolov8miPage account={this.state.account} {...props} />)} />
+        <Route exact path="/sr" render={(props) => this.renderSigninIfNotSignedIn(<PythonSrPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks" render={(props) => this.renderSigninIfNotSignedIn(<TaskListPage account={this.state.account} {...props} />)} />
         <Route exact path="/tasks/:taskName" render={(props) => this.renderSigninIfNotSignedIn(<TaskEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles" render={(props) => this.renderSigninIfNotSignedIn(<ArticleListPage account={this.state.account} {...props} />)} />
         <Route exact path="/articles/:articleName" render={(props) => this.renderSigninIfNotSignedIn(<ArticleEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
         <Route exact path="/chat/:chatName" render={(props) => this.renderSigninIfNotSignedIn(<ChatPage account={this.state.account} {...props} />)} />
-        <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
         <Route exact path="/workbench" render={(props) => this.renderSigninIfNotSignedIn(<NodeWorkbench account={this.state.account} {...props} />)} />
+        <Route exact path="/sysinfo" render={(props) => this.renderSigninIfNotSignedIn(<SystemInfo account={this.state.account} {...props} />)} />
+        <Route path="" render={() => <Result status="404" title="404 NOT FOUND" subTitle={i18next.t("general:Sorry, the page you visited does not exist.")} extra={<a href="/"><Button type="primary">{i18next.t("general:Back Home")}</Button></a>} />} />
       </Switch>
     );
   }

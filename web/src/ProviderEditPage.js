@@ -18,6 +18,7 @@ import * as ProviderBackend from "./backend/ProviderBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
+import * as setting from "./Setting";
 
 const {Option} = Select;
 
@@ -46,6 +47,35 @@ class ProviderEditPage extends React.Component {
           Setting.showMessage("error", `Failed to get provider: ${res.msg}`);
         }
       });
+  }
+
+  getClientIdLabel(provider) {
+    if (["Model", "Embedding"].includes(provider.category)) {
+      if (provider.type === "Tencent Cloud") {
+        return Setting.getLabel("Secret ID", "Secret ID");
+      } else if (provider.type === "Baidu Cloud") {
+        return Setting.getLabel(i18next.t("provider:Path"), i18next.t("provider:Path"));
+      } else if (provider.type === "Azure") {
+        return Setting.getLabel(i18next.t("provider:Deployment name"), i18next.t("provider:Deployment name"));
+      } else if (provider.type === "MiniMax") {
+        return setting.getLabel(i18next.t("provider:Group ID"), i18next.t("provider:Group ID"));
+      }
+    }
+    if (provider.category === "Storage") {
+      return Setting.getLabel(i18next.t("provider:API key"), i18next.t("provider:API key"));
+    }
+    return Setting.getLabel(i18next.t("provider:Client ID"), i18next.t("provider:Client ID"));
+  }
+
+  getClientSecretLabel(provider) {
+    if (["Storage", "Embedding", "Text-to-Speech"].includes(provider.category)) {
+      return Setting.getLabel("Secret key", "Secret key");
+    } else if (provider.category === "Model") {
+      if (provider.type === "Tencent Cloud") {
+        return Setting.getLabel("API key", "API key");
+      }
+    }
+    return Setting.getLabel(i18next.t("provider:Client secret"), i18next.t("provider:Client secret"));
   }
 
   parseProviderField(key, value) {
@@ -151,6 +181,9 @@ class ProviderEditPage extends React.Component {
                 this.updateProviderField("subType", "AdaSimilarity");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
+              } else if (value === "Text-to-Speech") {
+                this.updateProviderField("type", "Alibaba Cloud");
+                this.updateProviderField("subType", "cosyvoice-v1");
               }
             })}>
               {
@@ -162,6 +195,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Private Cloud", name: "Private Cloud"},
                   {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
+                  {id: "Text-to-Speech", name: "Text-to-Speech"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -211,7 +245,7 @@ class ProviderEditPage extends React.Component {
                   this.updateProviderField("subType", "Claude");
                 } else if (value === "Baichuan") {
                   this.updateProviderField("subType", "Baichuan2-Turbo");
-                } else if (value === "Doubao") {
+                } else if (value === "Volcano Engine") {
                   this.updateProviderField("subType", "Doubao-lite-4k");
                 } else if (value === "DeepSeek") {
                   this.updateProviderField("subType", "deepseek-chat");
@@ -244,18 +278,22 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Dummy") {
                   this.updateProviderField("subType", "Dummy");
                 }
+              } else if (this.state.provider.category === "Text-to-Speech") {
+                if (value === "Alibaba Cloud") {
+                  this.updateProviderField("subType", "cosyvoice-v1");
+                }
               }
             })}>
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
-                  // .sort((a, b) => a.name.localeCompare(b.name))
+                // .sort((a, b) => a.name.localeCompare(b.name))
                   .map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)
               }
             </Select>
           </Col>
         </Row>
         {
-          (this.state.provider.category !== "Model" && this.state.provider.category !== "Embedding") ? null : (
+          !["Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -309,34 +347,21 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.type !== "Baidu Cloud" && this.state.provider.type !== "Hunyuan" && this.state.provider.category !== "Storage") ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {
-                  (this.state.provider.category !== "Storage") ? i18next.t("provider:API key") :
-                    i18next.t("provider:Path")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientId} onChange={e => {
-                  this.updateProviderField("clientId", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
-        }
-        {
-          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("provider:Client ID")}:
-              </Col>
-              <Col span={22} >
-                <Input value={this.state.provider.clientId} onChange={e => {
-                  this.updateProviderField("clientId", e.target.value);
-                }} />
-              </Col>
-            </Row>
-          )
+          (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
+          (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
+          ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
+          (!(["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category))) ? (
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {this.getClientIdLabel(this.state.provider)}:
+                </Col>
+                <Col span={22} >
+                  <Input value={this.state.provider.clientId} onChange={e => {
+                    this.updateProviderField("clientId", e.target.value);
+                  }} />
+                </Col>
+              </Row>
+            ) : null
         }
         {
           (this.state.provider.type === "Local") ? (
@@ -434,11 +459,31 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
+          (this.state.provider.category === "Text-to-Speech" && this.state.provider.type === "Alibaba Cloud" && this.state.provider.subType === "cosyvoice-v1") ? (
+            <>
+              <Row style={{marginTop: "20px"}}>
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("provider:Flavor")}:
+                </Col>
+                <Col span={22} >
+                  <Select virtual={false} style={{width: "100%"}} value={this.state.provider.flavor} onChange={(value => {
+                    this.updateProviderField("flavor", value);
+                  })}>
+                    {
+                      Setting.getTtsFlavorOptions(this.state.provider.type, this.state.provider.subType)
+                        .map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
+                    }
+                  </Select>
+                </Col>
+              </Row>
+            </>
+          ) : null
+        }
+        {
           (this.state.provider.category === "Storage" || this.state.provider.type === "Dummy" || (this.state.provider.category === "Model" && this.state.provider.type === "Baidu Cloud")) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? i18next.t("provider:Secret key") :
-                  i18next.t("provider:Client secret")}:
+                {this.getClientSecretLabel(this.state.provider)}:
               </Col>
               <Col span={22} >
                 <Input value={this.state.provider.clientSecret} onChange={e => {
@@ -449,7 +494,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("general:Region")}:
@@ -499,7 +544,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "iFlytek", "Hugging Face", "Baidu Cloud", "MiniMax", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -520,7 +565,7 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Doubao", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
+          (this.state.provider.category === "Model" && ["OpenAI", "OpenRouter", "Baidu Cloud", "Gemini", "Alibaba Cloud", "Baichuan", "Volcano Engine", "DeepSeek", "StepFun", "Tencent Cloud", "Mistral", "Yi", "Silicon Flow", "Ollama"].includes(this.state.provider.type)) ? (
             <>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
@@ -606,34 +651,8 @@ class ProviderEditPage extends React.Component {
           ) : null
         }
         {
-          (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ? (
-            <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:groupID")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.clientId} onChange={e => {
-                    this.updateProviderField("clientId", e.target.value);
-                  }} />
-                </Col>
-              </Row>
-            </>
-          ) : null
-        }
-        {
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ? (
             <>
-              <Row style={{marginTop: "20px"}}>
-                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("provider:Deployment name")}:
-                </Col>
-                <Col span={22} >
-                  <Input value={this.state.provider.clientId} onChange={e => {
-                    this.updateProviderField("clientId", e.target.value);
-                  }} />
-                </Col>
-              </Row>
               <Row style={{marginTop: "20px"}}>
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {i18next.t("provider:API version")}:
@@ -650,7 +669,7 @@ class ProviderEditPage extends React.Component {
         }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-            {this.state.provider.type === "Doubao" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
+            {this.state.provider.type === "Volcano Engine" ? i18next.t("provider:EndpointID") : i18next.t("general:Provider URL")}:
           </Col>
           <Col span={22} >
             <Input prefix={<LinkOutlined />} value={this.state.provider.providerUrl} onChange={e => {

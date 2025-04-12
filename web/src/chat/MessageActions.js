@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Space} from "antd";
+import {Button, Space, Tooltip} from "antd";
 import {ThemeDefault} from "../Conf";
 import {
   CopyOutlined,
@@ -21,10 +21,12 @@ import {
   DislikeOutlined,
   LikeFilled,
   LikeOutlined,
+  LoadingOutlined,
   PauseCircleOutlined,
   PlayCircleOutlined,
   ReloadOutlined
 } from "@ant-design/icons";
+import i18next from "i18next";
 
 const MessageActions = ({
   message,
@@ -35,9 +37,39 @@ const MessageActions = ({
   onLike,
   onToggleRead,
   isReading,
+  isLoadingTTS,
   readingMessage,
   account,
+  setIsRegenerating,
+  isRegenerating,
 }) => {
+  const isCurrentMessageBeingRead = readingMessage === message.name;
+  const isCurrentMessageBeingLoaded = isLoadingTTS && isCurrentMessageBeingRead;
+
+  const getTtsIcon = () => {
+    if (isCurrentMessageBeingLoaded) {
+      return <LoadingOutlined />;
+    }
+    if (isCurrentMessageBeingRead && isReading) {
+      return <PauseCircleOutlined />;
+    }
+    return <PlayCircleOutlined />;
+  };
+
+  // Get appropriate tooltip text for TTS button
+  const getTtsTooltip = () => {
+    if (isCurrentMessageBeingLoaded) {
+      return i18next.t("general:Loading...");
+    }
+    if (isCurrentMessageBeingRead && isReading) {
+      return i18next.t("general:Pause");
+    }
+    if (isCurrentMessageBeingRead && !isReading) {
+      return i18next.t("general:Resume");
+    }
+    return i18next.t("chat:Read it out");
+  };
+
   return (
     <Space
       size="small"
@@ -59,7 +91,11 @@ const MessageActions = ({
           className="cs-button"
           icon={<ReloadOutlined />}
           style={{border: "none", color: ThemeDefault.colorPrimary}}
-          onClick={onRegenerate}
+          onClick={() => {
+            setIsRegenerating(true);
+            onRegenerate(index);
+          }}
+          disabled={isRegenerating}
         />
       )}
 
@@ -77,12 +113,18 @@ const MessageActions = ({
         onClick={() => onLike(message, "dislike")}
       />
 
-      <Button
-        className="cs-button"
-        icon={(readingMessage === message.name) && isReading ? <PauseCircleOutlined /> : <PlayCircleOutlined />}
-        style={{border: "none", color: ThemeDefault.colorPrimary}}
-        onClick={() => onToggleRead(message)}
-      />
+      <Tooltip title={getTtsTooltip()}>
+        <Button
+          className="cs-button"
+          icon={getTtsIcon()}
+          style={{
+            border: "none",
+            color: isCurrentMessageBeingLoaded ? "#1890ff" : ThemeDefault.colorPrimary,
+          }}
+          onClick={() => onToggleRead(message)}
+          disabled={isCurrentMessageBeingLoaded}
+        />
+      </Tooltip>
     </Space>
   );
 };

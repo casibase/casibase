@@ -17,10 +17,11 @@ import {QuestionCircleTwoTone, SyncOutlined} from "@ant-design/icons";
 import {isMobile as isMobileDevice} from "react-device-detect";
 import i18next from "i18next";
 import Sdk from "casdoor-js-sdk";
-import XLSX from "xlsx";
+import xlsx from "xlsx";
+import FileSaver from "file-saver";
 import moment from "moment/moment";
 import * as StoreBackend from "./backend/StoreBackend";
-import {ThemeDefault} from "./Conf";
+import {DisablePreviewMode, ThemeDefault} from "./Conf";
 import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
@@ -152,6 +153,11 @@ export function isLocalAdminUser(account) {
   if (account === undefined || account === null) {
     return false;
   }
+
+  if (!DisablePreviewMode && isAnonymousUser(account)) {
+    return true;
+  }
+
   return account.isAdmin === true || isAdminUser(account);
 }
 
@@ -394,6 +400,16 @@ function s2ab(s) {
   return buf;
 }
 
+export function workbook2blob(workbook) {
+  const wopts = {
+    bookType: "xlsx",
+    bookSST: false,
+    type: "binary",
+  };
+  const wbout = xlsx.write(workbook, wopts);
+  return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+}
+
 export function sheet2blob(sheet, sheetName) {
   const workbook = {
     SheetNames: [sheetName],
@@ -403,14 +419,17 @@ export function sheet2blob(sheet, sheetName) {
   return workbook2blob(workbook);
 }
 
-export function workbook2blob(workbook) {
-  const wopts = {
-    bookType: "xlsx",
-    bookSST: false,
-    type: "binary",
-  };
-  const wbout = XLSX.write(workbook, wopts);
-  return new Blob([s2ab(wbout)], {type: "application/octet-stream"});
+export function saveSheetToFile(sheet, sheetName, filename) {
+  try {
+    const blob = sheet2blob(sheet, sheetName);
+    FileSaver.saveAs(blob, filename);
+  } catch (error) {
+    showMessage("error", `failed to save: ${error.message}`);
+  }
+}
+
+export function json2sheet(data) {
+  return xlsx.utils.json_to_sheet(data);
 }
 
 export function toggleElementFromSet(array, element) {
@@ -643,7 +662,7 @@ export function renderExternalLink() {
 }
 
 export function isResponseDenied(data) {
-  return data.msg === "Unauthorized operation";
+  return data.msg === "Unauthorized operation" || data.msg === "this operation requires admin privilege";
 }
 
 export function getCompitableProviderOptions(category) {
@@ -710,7 +729,7 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
         {id: "Baichuan", name: "Baichuan"},
-        {id: "Doubao", name: "Doubao"},
+        {id: "Volcano Engine", name: "Volcano Engine"},
         {id: "DeepSeek", name: "DeepSeek"},
         {id: "StepFun", name: "StepFun"},
         {id: "Tencent Cloud", name: "Tencent Cloud"},
@@ -767,9 +786,19 @@ export function getProviderTypeOptions(category) {
         {id: "Alibaba Cloud", name: "Alibaba Cloud"},
       ]
     );
+  } else if (category === "Text-to-Speech") {
+    return [
+      {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+    ];
   } else {
     return [];
   }
+}
+
+export function redirectToLogin() {
+  sessionStorage.setItem("from", window.location.pathname);
+  window.location.replace(getSigninUrl());
+  return null;
 }
 
 const openaiModels = [
@@ -802,6 +831,35 @@ const openaiEmbeddings = [
   {id: "text-embedding-3-small", name: "text-embedding-3-small"},
   {id: "text-embedding-3-large", name: "text-embedding-3-large"},
 ];
+
+export function getTtsFlavorOptions(type, subType) {
+  if (type === "Alibaba Cloud" && subType === "cosyvoice-v1") {
+    return [
+      {id: "longwan", name: "longwan"},
+      {id: "longcheng", name: "longcheng"},
+      {id: "longhua", name: "longhua"},
+      {id: "longxiaochun", name: "longxiaochun"},
+      {id: "longxiaoxia", name: "longxiaoxia"},
+      {id: "longxiaocheng", name: "longxiaocheng"},
+      {id: "longxiaobai", name: "longxiaobai"},
+      {id: "longlaotie", name: "longlaotie"},
+      {id: "longshu", name: "longshu"},
+      {id: "longjing", name: "longjing"},
+      {id: "longmiao", name: "longmiao"},
+      {id: "longyue", name: "longyue"},
+      {id: "longyuan", name: "longyuan"},
+      {id: "longfei", name: "longfei"},
+      {id: "longjielidou", name: "longjielidou"},
+      {id: "longshuo", name: "longshuo"},
+      {id: "longtong", name: "longtong"},
+      {id: "longxiang", name: "longxiang"},
+      {id: "loongstella", name: "loongstella"},
+      {id: "loongbella", name: "loongbella"},
+    ];
+  }
+
+  return [];
+}
 
 export function getProviderSubTypeOptions(category, type) {
   if (type === "OpenAI") {
@@ -1113,6 +1171,12 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "text-embedding-v3", name: "text-embedding-v3"},
         ]
       );
+    } else if (category === "Text-to-Speech") {
+      return (
+        [
+          {id: "cosyvoice-v1", name: "cosyvoice-v1"},
+        ]
+      );
     }
   } else if (type === "Baichuan") {
     return ([
@@ -1120,18 +1184,31 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
       {id: "Baichuan4", name: "Baichuan4"},
     ]);
-  } else if (type === "Doubao") {
+  } else if (type === "Volcano Engine") {
     return ([
       {id: "Doubao-lite-4k", name: "Doubao-lite-4k"},
+      {id: "Doubao-1.5-pro-32k", name: "Doubao-1.5-pro-32k"},
+      {id: "Doubao-1.5-pro-256k", name: "Doubao-1.5-pro-256k"},
+      {id: "Doubao-1.5-lite-32k", name: "Doubao-1.5-lite-32k"},
       {id: "Doubao-lite-32k", name: "Doubao-lite-32k"},
       {id: "Doubao-lite-128k", name: "Doubao-lite-128k"},
       {id: "Doubao-pro-4k", name: "Doubao-pro-4k"},
       {id: "Doubao-pro-32k", name: "Doubao-pro-32k"},
       {id: "Doubao-pro-128k", name: "Doubao-pro-128k"},
+      {id: "Doubao-pro-256k", name: "Doubao-pro-256k"},
+      {id: "Deepseek-R1", name: "Deepseek-R1"},
+      {id: "Deepseek-R1-Distill-Qwen-32B", name: "Deepseek-R1-Distill-Qwen-32B"},
+      {id: "Deepseek-R1-Distill-Qwen-7B", name: "Deepseek-R1-Distill-Qwen-7B"},
+      {id: "Deepseek-v3", name: "Deepseek-v3"},
+      {id: "GLM3-130B", name: "GLM3-130B"},
+      {id: "Moonshot-v1-8K", name: "Moonshot-v1-8K"},
+      {id: "Moonshot-v1-32K", name: "Moonshot-v1-32K"},
+      {id: "Moonshot-v1-128K", name: "Moonshot-v1-128K"},
     ]);
   } else if (type === "DeepSeek") {
     return ([
       {id: "deepseek-chat", name: "deepseek-chat"},
+      {id: "deepseek-reasoner", name: "deepseek-reasoner"},
     ]);
   } else if (type === "StepFun") {
     return ([

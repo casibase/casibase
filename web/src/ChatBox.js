@@ -24,6 +24,7 @@ import ChatInput from "./chat/ChatInput";
 import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
+import TtsHelper from "./TextToSpeech";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -37,6 +38,7 @@ class ChatBox extends React.Component {
       messages: this.props.messages,
       currentReadingMessage: null,
       isReading: false,
+      isLoadingTTS: false,
       isVoiceInput: false,
       rerenderErrorMessage: false,
     };
@@ -45,6 +47,7 @@ class ChatBox extends React.Component {
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
+    this.ttsHelper = new TtsHelper(this);
   }
 
   componentDidMount() {
@@ -77,13 +80,14 @@ class ChatBox extends React.Component {
 
   clearOldStatus() {
     this.recognition?.abort();
-    this.synth.cancel();
+    this.ttsHelper.cleanup();
     this.setState({
       value: "",
       files: [],
       messages: this.props.messages,
       currentReadingMessage: null,
       isReading: false,
+      isLoadingTTS: false,
       isVoiceInput: false,
     });
     this.cursorPosition = undefined;
@@ -137,19 +141,12 @@ class ChatBox extends React.Component {
     this.setState({value: "", files: []});
   };
 
-  handleRegenerate = () => {
+  handleRegenerate = (index) => {
+    // can only regenerate after sending the message
     const messages = this.state.messages || [];
-    const isSingleWelcomeMessage = (
-      messages.length === 1 &&
-        messages[0].replyTo === "Welcome" &&
-        messages[0].author === "AI"
-    );
+    const message = [...messages.slice(0, index)].reverse().find(message => message.author !== "AI");
 
-    const text = isSingleWelcomeMessage
-      ? ""
-      : [...messages].reverse().find(message => message.author !== "AI")?.text || "";
-
-    this.props.sendMessage(text, "", true);
+    this.handleEditMessage({...message, text: message.text, updatedTime: new Date().toISOString()});
   };
 
   handleInputChange = async(file) => {
@@ -235,27 +232,16 @@ class ChatBox extends React.Component {
   toggleMessageReadState = (message) => {
     const shouldPause = (this.state.readingMessage === message.name && this.state.isReading);
     if (shouldPause) {
-      this.synth.pause();
-      this.setState({isReading: false});
+      this.ttsHelper.pauseReading();
       return;
     }
 
     if (this.state.readingMessage === message.name && this.state.isReading === false) {
-      this.synth.resume();
-      this.setState({isReading: true});
-    } else {
-      this.synth.cancel();
-      const utterThis = new SpeechSynthesisUtterance(message.text);
-      utterThis.addEventListener("end", () => {
-        this.synth.cancel();
-        this.setState({isReading: false, readingMessage: null});
-      });
-      this.synth.speak(utterThis);
-      this.setState({
-        readingMessage: message.name,
-        isReading: true,
-      });
+      this.ttsHelper.resumeReading();
+      return;
     }
+
+    this.ttsHelper.readMessage(message, this.props.store);
   };
 
   insertVoiceMessage = () => {
@@ -361,6 +347,7 @@ class ChatBox extends React.Component {
             hideInput={this.props.hideInput}
             disableInput={this.props.disableInput}
             isReading={this.state.isReading}
+            isLoadingTTS={this.state.isLoadingTTS}
             readingMessage={this.state.readingMessage}
             sendMessage={this.props.sendMessage}
           />
@@ -368,6 +355,7 @@ class ChatBox extends React.Component {
           {!this.props.disableInput && (
             <ChatInput
               value={this.state.value}
+              store={this.props.store}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
               onFileUpload={this.handleFileUploadClick}

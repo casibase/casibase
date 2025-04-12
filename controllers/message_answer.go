@@ -83,7 +83,8 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	store, err := object.GetDefaultStore("admin")
+	storeId := util.GetIdFromOwnerAndName(chat.Owner, chat.Store)
+	store, err := object.GetStore(storeId)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -134,7 +135,7 @@ func (c *ApiController) GetMessageAnswer() {
 		}
 	}
 
-	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", chat.User2)
+	_, modelProviderObj, err := object.GetModelProviderFromContext("admin", store.ModelProvider)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -146,7 +147,12 @@ func (c *ApiController) GetMessageAnswer() {
 		return
 	}
 
-	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question)
+	knowledgeCount := store.KnowledgeCount
+	if knowledgeCount <= 0 {
+		knowledgeCount = 5
+	}
+
+	knowledge, vectorScores, embeddingResult, err := object.GetNearestKnowledge(embeddingProvider, embeddingProviderObj, "admin", question, knowledgeCount)
 	if err != nil && err.Error() != "no knowledge vectors found" {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -181,7 +187,8 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	question, err = getQuestionWithSuggestions(question, store.SuggestionCount)
+	hasTitle := false
+	question, err = getQuestionWithCarriers(question, store.SuggestionCount, hasTitle)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -233,12 +240,11 @@ func (c *ApiController) GetMessageAnswer() {
 
 	textAnswer := answer
 	textSuggestions := []object.Suggestion{}
-	if store.SuggestionCount != 0 {
-		textAnswer, textSuggestions, err = parseAnswerAndSuggestions(answer)
-		if err != nil {
-			c.ResponseErrorStream(message, err.Error())
-			return
-		}
+	needTitle := false
+	textAnswer, textSuggestions, _, err = parseAnswerWithCarriers(answer, store.SuggestionCount, needTitle)
+	if err != nil {
+		c.ResponseErrorStream(message, err.Error())
+		return
 	}
 
 	message.Text = textAnswer

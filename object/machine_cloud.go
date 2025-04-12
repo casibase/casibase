@@ -17,10 +17,10 @@ package object
 import (
 	"fmt"
 
-	"github.com/casibase/casibase/service"
+	"github.com/casibase/casibase/pkgmachine"
 )
 
-func getMachineFromService(owner string, provider string, clientMachine *service.Machine) *Machine {
+func getMachineFromService(owner string, provider string, clientMachine *pkgmachine.Machine) *Machine {
 	return &Machine{
 		Owner:       owner,
 		Name:        clientMachine.Name,
@@ -54,7 +54,7 @@ func getMachinesCloud(owner string) ([]*Machine, error) {
 	}
 
 	for _, provider := range providers {
-		client, err2 := service.NewMachineClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
+		client, err2 := pkgmachine.NewMachineClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
 		if err2 != nil {
 			return nil, err2
 		}
@@ -122,7 +122,7 @@ func updateMachineCloud(oldMachine *Machine, machine *Machine) (bool, error) {
 		return false, fmt.Errorf("The provider: %s does not exist", machine.Provider)
 	}
 
-	client, err := service.NewMachineClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
+	client, err := pkgmachine.NewMachineClient(provider.Type, provider.ClientId, provider.ClientSecret, provider.Region)
 	if err != nil {
 		return false, err
 	}

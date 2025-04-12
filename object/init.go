@@ -56,6 +56,8 @@ func initBuiltInStore() {
 		WelcomeText:       "I'm here to help answer your questions",
 		Prompt:            defaultPrompt,
 		ThemeColor:        "#5734d3",
+		IsDefault:         true,
+		State:             "Active",
 		PropertiesMap:     map[string]*Properties{},
 	}
 	_, err = AddStore(store)

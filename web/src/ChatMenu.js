@@ -203,8 +203,18 @@ class ChatMenu extends React.Component {
     if (!stores) {
       stores = [];
     }
-    // get usable store for select
     stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
+
+    const defaultStore = stores.find(store => store.isDefault);
+    if (defaultStore) {
+      if (!defaultStore.childStores || defaultStore.childStores.length === 0) {
+        stores = [];
+      } else {
+        // Otherwise filter to show only the child stores
+        stores = stores.filter(store => defaultStore.childStores.includes(store.name));
+      }
+    }
+
     let hasEmptyChat = this.props.chats.some(chat => chat.messageCount === 0);
     hasEmptyChat = false;
 
@@ -214,7 +224,7 @@ class ChatMenu extends React.Component {
         label: <p onClick={() => {
           this.props.onAddChat(store);
         }}>
-          {store.name}
+          {store.displayName || store.name}
         </p>,
       };
     });
