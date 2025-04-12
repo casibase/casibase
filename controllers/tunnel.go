@@ -388,6 +388,7 @@ func setConfig(propertyMap map[string]string, target interface{}, configuration 
 		configuration.SetParameter(guacamole.Backspace, propertyMap[guacamole.Backspace])
 		configuration.SetParameter(guacamole.TerminalType, propertyMap[guacamole.TerminalType])
 	default:
+	}
 }
 
 // PublicIp > PrivateIp > Name
