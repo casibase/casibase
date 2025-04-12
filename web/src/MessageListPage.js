@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Table} from "antd";
+import {Button, Table, Tag} from "antd";
 import moment from "moment";
 import * as Setting from "./Setting";
 import * as MachineBackend from "./backend/MachineBackend";
@@ -278,6 +278,19 @@ class MachineListPage extends BaseListPage {
       },
     ];
 
+    if (!this.props.account || this.props.account.name !== "admin") {
+      columns = columns.filter(column => column.key !== "name" && column.key !== "tokenCount" && column.key !== "price");
+
+      const tokenCountIndex = columns.findIndex(column => column.key === "tokenCount");
+      if (tokenCountIndex !== -1) {
+        const [tokenCountElement] = columns.splice(tokenCountIndex, 1);
+
+        const actionIndex = columns.findIndex(column => column.key === "action");
+        const insertIndex = actionIndex !== -1 ? actionIndex : columns.length;
+        columns.splice(insertIndex, 0, tokenCountElement);
+      }
+    }
+
     const paginationProps = {
       total: this.state.pagination.total,
       pageSize: this.state.pagination.pageSize,
@@ -288,7 +301,7 @@ class MachineListPage extends BaseListPage {
 
     return (
       <div>
-        <Table scroll={{x: "max-content"}} columns={columns} dataSource={machines} rowKey={"name"} size="middle" bordered pagination={paginationProps}
+        <Table scroll={{x: "max-content"}} columns={columns} dataSource={messages} rowKey="name" size="middle" bordered pagination={paginationProps}
           title={() => (
             <div>
               {i18next.t("general:Messages")}&nbsp;&nbsp;&nbsp;&nbsp;
