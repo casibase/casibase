@@ -19,32 +19,56 @@ import (
 	"github.com/casibase/casibase/object"
 )
 
-func getQuestionWithCarriers(question string, suggestionCount int) (string, error) {
+func getQuestionWithCarriers(question string, suggestionCount int, needTitle bool) (string, error) {
+	carriedQuestion := question
+
 	suggestionCarrier, err := carrier.NewSuggestionCarrier(suggestionCount)
 	if err != nil {
 		return "", err
 	}
 
-	var res string
-	res, err = suggestionCarrier.GetQuestion(question)
-	return res, err
-}
+	carriedQuestion, err = suggestionCarrier.GetQuestion(carriedQuestion)
 
-func parseAnswerWithCarriers(answer string, suggestionCount int) (string, []object.Suggestion, error) {
-	suggestionCarrier, err := carrier.NewSuggestionCarrier(suggestionCount)
+	titleCarrier, err := carrier.NewTitleCarrier(needTitle)
 	if err != nil {
-		return "", nil, err
+		return "", err
 	}
 
-	parsedAnswer, suggestionTexts, err := suggestionCarrier.ParseAnswer(answer)
+	carriedQuestion, err = titleCarrier.GetQuestion(carriedQuestion)
 	if err != nil {
-		return "", nil, err
+		return "", err
+	}
+
+	return carriedQuestion, err
+}
+
+func parseAnswerWithCarriers(answer string, suggestionCount int, needTitle bool) (string, []object.Suggestion, string, error) {
+	suggestionCarrier, err := carrier.NewSuggestionCarrier(suggestionCount)
+	if err != nil {
+		return "", nil, "", err
+	}
+
+	parsedAnswer, textArray, err := suggestionCarrier.ParseAnswer(answer)
+	if err != nil {
+		return "", nil, "", err
 	}
 
 	suggestions := []object.Suggestion{}
-	for _, suggestionText := range suggestionTexts {
+	for _, suggestionText := range textArray {
 		suggestions = append(suggestions, object.Suggestion{Text: suggestionText, IsHit: false})
 	}
 
-	return parsedAnswer, suggestions, nil
+	titleCarrier, err := carrier.NewTitleCarrier(needTitle)
+	if err != nil {
+		return "", nil, "", err
+	}
+
+	parsedAnswer, textArray, err = titleCarrier.ParseAnswer(parsedAnswer)
+	if err != nil {
+		return "", nil, "", err
+	}
+
+	title := textArray[0]
+
+	return parsedAnswer, suggestions, title, nil
 }
