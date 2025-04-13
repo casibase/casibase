@@ -361,20 +361,6 @@ class StoreEditPage extends React.Component {
             }} />
           </Col>
         </Row>
-        {
-          this.state.store.name !== "store-built-in" ? null : (
-            <Row style={{marginTop: "20px"}} >
-              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                {i18next.t("store:Can Select Store")}:
-              </Col>
-              <Col span={1}>
-                <Switch checked={this.state.store.canSelectStore} onChange={checked => {
-                  this.updateStoreField("canSelectStore", checked);
-                }} />
-              </Col>
-            </Row>
-          )
-        }
         <Row style={{marginTop: "20px"}} >
           <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
             {i18next.t("store:Child stores")}:
