@@ -585,7 +585,7 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         {
-          !(Setting.isMobile() || Setting.isAnonymousUser(this.props.account) || Setting.getUrlParam("isRaw") !== null) && (
+          !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
             <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
             </div>
