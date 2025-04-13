@@ -27,15 +27,12 @@ import * as MessageBackend from "./backend/MessageBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import * as Conf from "./Conf";
-import {PreviewInterceptor} from "./PreviewInterceptor";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
     super(props);
 
     this.menu = React.createRef();
-    // Initialize PreviewInterceptor for anonymous user access control with history access via props
-    this.previewInterceptor = new PreviewInterceptor(() => this.props.account, () => this.props.history);
   }
 
   UNSAFE_componentWillMount() {
@@ -394,11 +391,6 @@ class ChatPage extends BaseListPage {
   }
 
   addChat(chat, selectStore) {
-    if (Setting.isAnonymousUser(this.props.account)) {
-      this.previewInterceptor.showLoginRequirement();
-      return null;
-    }
-
     const newChat = this.newChat(chat, selectStore);
     this.goToLinkSoft(`/chat/${newChat.name}`);
     ChatBackend.addChat(newChat)
@@ -423,11 +415,6 @@ class ChatPage extends BaseListPage {
   }
 
   deleteChat(chats, i, chat) {
-    if (Setting.isAnonymousUser(this.props.account)) {
-      this.previewInterceptor.showLoginRequirement();
-      return;
-    }
-
     ChatBackend.deleteChat(chat)
       .then((res) => {
         if (res.status === "ok") {
@@ -461,11 +448,6 @@ class ChatPage extends BaseListPage {
   }
 
   updateChatName(chats, i, chat, newName) {
-    if (Setting.isAnonymousUser(this.props.account)) {
-      this.previewInterceptor.showLoginRequirement();
-      return;
-    }
-
     const name = chat.name;
     chat.displayName = newName;
     ChatBackend.updateChat("admin", name, chat)
@@ -562,11 +544,6 @@ class ChatPage extends BaseListPage {
 
   renderTable(chats) {
     const onSelectChat = (i) => {
-      if (Setting.isAnonymousUser(this.props.account)) {
-        this.previewInterceptor.showLoginRequirement();
-        return;
-      }
-
       const chat = chats[i];
       this.setState({
         chat: chat,
@@ -577,31 +554,16 @@ class ChatPage extends BaseListPage {
     };
 
     const onAddChat = (selectStore = {}) => {
-      if (Setting.isAnonymousUser(this.props.account)) {
-        this.previewInterceptor.showLoginRequirement();
-        return;
-      }
-
       const chat = this.getCurrentChat();
       this.addChat(chat, selectStore);
     };
 
     const onDeleteChat = (i) => {
-      if (Setting.isAnonymousUser(this.props.account)) {
-        this.previewInterceptor.showLoginRequirement();
-        return;
-      }
-
       const chat = chats[i];
       this.deleteChat(chats, i, chat);
     };
 
     const onUpdateChatName = (i, newName) => {
-      if (Setting.isAnonymousUser(this.props.account)) {
-        this.previewInterceptor.showLoginRequirement();
-        return;
-      }
-
       const chat = chats[i];
       this.updateChatName(chats, i, chat, newName);
     };
