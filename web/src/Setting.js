@@ -158,6 +158,10 @@ export function isLocalAdminUser(account) {
     return true;
   }
 
+  if (account.type === "chat-admin") {
+    return true;
+  }
+
   return account.isAdmin === true || isAdminUser(account);
 }
 
