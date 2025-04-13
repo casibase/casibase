@@ -17,6 +17,7 @@ package object
 import (
 	"fmt"
 
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
 )
@@ -160,12 +161,93 @@ func UpdateMachine(id string, machine *Machine) (bool, error) {
 }
 
 func AddMachine(machine *Machine) (bool, error) {
+	if len(machine.DisplayName) > 0 {
+		res, err := createMachineByImage(machine)
+		if err != nil || res == false {
+			return false, err
+		}
+	}
+
 	affected, err := adapter.engine.Insert(machine)
 	if err != nil {
 		return false, err
 	}
 
 	return affected != 0, nil
+}
+
+func createMachineByImage(machine *Machine) (bool, error) {
+	providers, err := getActiveCloudProviders(machine.Owner)
+	if err != nil {
+		return false, err
+	}
+	for _, provider := range providers {
+		if provider.Type == "Aliyun" {
+			client, err2 := ecs.NewClientWithAccessKey(
+				provider.Region,
+				provider.ClientId,
+				provider.ClientSecret,
+			)
+			if err2 != nil {
+				return false, err2
+			}
+
+			request0 := ecs.CreateDescribeAvailableResourceRequest()
+			request0.RegionId = provider.Region
+			request0.DestinationResource = "InstanceType"
+			response0, err2 := client.DescribeAvailableResource(request0)
+			if err2 != nil {
+				return false, err2
+			}
+			supportedResource := response0.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource
+
+			var instanceType string
+			for _, resource := range supportedResource {
+				if resource.Status == "Available" {
+					instanceType = resource.Value
+					break
+				}
+			}
+
+			request1 := ecs.CreateDescribeSecurityGroupsRequest()
+			response1, err2 := client.DescribeSecurityGroups(request1)
+			if err2 != nil {
+				return false, err2
+			}
+			securityGroupId := response1.SecurityGroups.SecurityGroup[0].SecurityGroupId
+			vpcId := response1.SecurityGroups.SecurityGroup[0].VpcId
+
+			request2 := ecs.CreateDescribeVSwitchesRequest()
+			request2.VpcId = vpcId
+			request2.RegionId = provider.Region
+			response2, err2 := client.DescribeVSwitches(request2)
+			vSwitchId := response2.VSwitches.VSwitch[0].VSwitchId
+
+			request3 := ecs.CreateDescribeAvailableResourceRequest()
+			request3.RegionId = provider.Region
+			request3.DestinationResource = "SystemDisk"
+			request3.InstanceType = instanceType
+			response3, err3 := client.DescribeAvailableResource(request3)
+			if err3 != nil {
+				return false, err3
+			}
+			systemDiskCategory := response3.AvailableZones.AvailableZone[0].AvailableResources.AvailableResource[0].SupportedResources.SupportedResource[0].Value
+
+			request := ecs.CreateRunInstancesRequest()
+			request.InstanceType = instanceType
+			request.RegionId = provider.Region
+			request.ImageId = machine.DisplayName
+			request.SecurityGroupId = securityGroupId
+			request.VSwitchId = vSwitchId
+			request.SystemDiskCategory = systemDiskCategory
+			_, err := client.RunInstances(request)
+			if err != nil {
+				return false, err
+			}
+			return true, nil
+		}
+	}
+	return false, nil
 }
 
 func addMachines(machines []*Machine) (bool, error) {
