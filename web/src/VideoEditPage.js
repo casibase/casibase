@@ -106,17 +106,17 @@ class VideoEditPage extends React.Component {
     const video = this.state.video;
     video[key] = value;
 
-    if (key === "remarks") {
-      if (value.filter((row) => (["Excellent", "Good"].includes(row.score))).length >= 2) {
-        if (this.state.video.state === "In Review 1") {
-          video.state = "In Review 2";
-        }
-      } else {
-        if (this.state.video.state === "In Review 2") {
-          video.state = "In Review 1";
-        }
-      }
-    }
+    // if (key === "remarks") {
+    //   if (value.filter((row) => (["Excellent", "Good"].includes(row.score))).length >= 2) {
+    //     if (this.state.video.state === "In Review 1") {
+    //       video.state = "In Review 2";
+    //     }
+    //   } else {
+    //     if (this.state.video.state === "In Review 2") {
+    //       video.state = "In Review 1";
+    //     }
+    //   }
+    // }
 
     this.setState({
       video: video,
