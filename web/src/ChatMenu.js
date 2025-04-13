@@ -242,7 +242,7 @@ class ChatMenu extends React.Component {
             margin: "4px",
             borderColor: "rgb(229,229,229)",
           }}
-          disabled={hasEmptyChat || hasChildStores}
+          disabled={hasEmptyChat}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
