@@ -25,11 +25,6 @@ import (
 // @Success 200 {object} util.SystemInfo The Response object
 // @router /get-system-info [get]
 func (c *ApiController) GetSystemInfo() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
-
 	systemInfo, err := util.GetSystemInfo()
 	if err != nil {
 		c.ResponseError(err.Error())
