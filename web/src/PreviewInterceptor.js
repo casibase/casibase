@@ -19,9 +19,10 @@ import {notification} from "antd";
 import {CloseOutlined} from "@ant-design/icons";
 
 class PreviewInterceptor {
-  constructor(getAccount, history) {
+  constructor(getAccount, getHistory) {
+    // Store getAccount and getHistory as functions to ensure we always get the latest values
     this.getAccount = getAccount;
-    this.history = history;
+    this.getHistory = typeof getHistory === "function" ? getHistory : () => getHistory;
     this.handleButtonClick = this.handleButtonClick.bind(this);
     document.addEventListener("click", this.handleButtonClick, true);
     this.allowedButtonTexts = [i18next.t("general:Edit"), i18next.t("general:View"), i18next.t("general:Close")];
@@ -72,7 +73,10 @@ class PreviewInterceptor {
 
   showLoginRequirement() {
     const onClose = () => {
-      this.history.push(window.location.pathname);
+      const history = this.getHistory();
+      if (history && typeof history.push === "function") {
+        history.push(window.location.pathname);
+      }
       return Setting.redirectToLogin();
     };
     notification.open({
