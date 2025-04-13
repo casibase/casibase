@@ -206,12 +206,15 @@ class ChatMenu extends React.Component {
     stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
 
     const defaultStore = stores.find(store => store.isDefault);
+    let hasChildStores = false;
+
     if (defaultStore) {
       if (!defaultStore.childStores || defaultStore.childStores.length === 0) {
         stores = [];
       } else {
         // Otherwise filter to show only the child stores
         stores = stores.filter(store => defaultStore.childStores.includes(store.name));
+        hasChildStores = true;
       }
     }
 
@@ -239,7 +242,7 @@ class ChatMenu extends React.Component {
             margin: "4px",
             borderColor: "rgb(229,229,229)",
           }}
-          disabled={hasEmptyChat}
+          disabled={hasEmptyChat || hasChildStores}
           onMouseEnter={(e) => {
             e.currentTarget.style.borderColor = ThemeDefault.colorPrimary;
             e.currentTarget.style.opacity = 0.6;
@@ -256,7 +259,9 @@ class ChatMenu extends React.Component {
             e.currentTarget.style.opacity = 0.6;
           }}
           onClick={() => {
-            this.props.onAddChat("");
+            if (!hasChildStores) {
+              this.props.onAddChat("");
+            }
           }}
         >
           {i18next.t("chat:New Chat")}
