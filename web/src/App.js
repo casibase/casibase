@@ -376,7 +376,7 @@ class App extends Component {
     }
 
     if (!this.state.account.isAdmin && (!Setting.isAnonymousUser(this.state.account) || Conf.DisablePreviewMode)) { // show complete menu for anonymous user in preview mode even not login
-      if (!(Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin")) {
+      if (this.state.account.type !== "chat-admin") {
         // res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
         return res;
       }
@@ -401,7 +401,7 @@ class App extends Component {
       res.push(Setting.getItem(<Link to="/usages">{i18next.t("general:Usages")}</Link>, "/usages"));
       // res.push(Setting.getItem(<Link to="/tasks">{i18next.t("general:Tasks")}</Link>, "/tasks"));
       // res.push(Setting.getItem(<Link to="/articles">{i18next.t("general:Articles")}</Link>, "/articles"));
-    } else if (Conf.ShortcutPageItems.length > 0 && this.state.account.type === "chat-admin") {
+    } else if (this.state.account.type === "chat-admin") {
       res.push(Setting.getItem(<Link to="/chat">{i18next.t("general:Chat")}</Link>, "/chat"));
       res.push(Setting.getItem(<Link to="/stores">{i18next.t("general:Stores")}</Link>, "/stores"));
       res.push(Setting.getItem(<Link to="/vectors">{i18next.t("general:Vectors")}</Link>, "/vectors"));
