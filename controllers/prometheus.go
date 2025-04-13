@@ -25,10 +25,6 @@ import (
 // @Success 200 {object} object.PrometheusInfo The Response object
 // @router /get-prometheus-info [get]
 func (c *ApiController) GetPrometheusInfo() {
-	ok := c.RequireAdmin()
-	if !ok {
-		return
-	}
 	prometheusInfo, err := object.GetPrometheusInfo()
 	if err != nil {
 		c.ResponseError(err.Error())
