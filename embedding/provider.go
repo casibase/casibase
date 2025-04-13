@@ -58,6 +58,8 @@ func GetEmbeddingProvider(typ string, subType string, clientId string, clientSec
 		p, err = NewTencentCloudEmbeddingProvider(clientId, clientSecret)
 	} else if typ == "Jina" {
 		p, err = NewJinaEmbeddingProvider(subType, clientSecret)
+	} else if typ == "Word2Vec" {
+		p, err = NewWord2VecEmbeddingProvider(typ, subType)
 	} else if typ == "Dummy" {
 		p, err = NewDummyEmbeddingProvider(subType)
 	}
