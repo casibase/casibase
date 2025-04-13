@@ -48,7 +48,19 @@ func parseAnswerWithCarriers(answer string, suggestionCount int, needTitle bool)
 		return "", nil, "", err
 	}
 
-	parsedAnswer, textArray, err := suggestionCarrier.ParseAnswer(answer)
+	titleCarrier, err := carrier.NewTitleCarrier(needTitle)
+	if err != nil {
+		return "", nil, "", err
+	}
+
+	parsedAnswer, textArray, err := titleCarrier.ParseAnswer(answer)
+	if err != nil {
+		return "", nil, "", err
+	}
+
+	title := textArray[0]
+
+	parsedAnswer, textArray, err = suggestionCarrier.ParseAnswer(parsedAnswer)
 	if err != nil {
 		return "", nil, "", err
 	}
@@ -57,18 +69,6 @@ func parseAnswerWithCarriers(answer string, suggestionCount int, needTitle bool)
 	for _, suggestionText := range textArray {
 		suggestions = append(suggestions, object.Suggestion{Text: suggestionText, IsHit: false})
 	}
-
-	titleCarrier, err := carrier.NewTitleCarrier(needTitle)
-	if err != nil {
-		return "", nil, "", err
-	}
-
-	parsedAnswer, textArray, err = titleCarrier.ParseAnswer(parsedAnswer)
-	if err != nil {
-		return "", nil, "", err
-	}
-
-	title := textArray[0]
 
 	return parsedAnswer, suggestions, title, nil
 }

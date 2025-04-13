@@ -27,6 +27,7 @@ import * as MessageBackend from "./backend/MessageBackend";
 import i18next from "i18next";
 import BaseListPage from "./BaseListPage";
 import * as Conf from "./Conf";
+import {MessageCarrier} from "./chat/MessageCarrier";
 
 class ChatPage extends BaseListPage {
   constructor(props) {
@@ -130,6 +131,7 @@ class ChatPage extends BaseListPage {
       clientIp: this.props.account.createdIp,
       userAgent: this.props.account.education,
       messageCount: 0,
+      needTitle: true,
     };
   }
 
@@ -273,11 +275,8 @@ class ChatPage extends BaseListPage {
               });
               return;
             }
-
+            const mssageCarrier = new MessageCarrier(chat.needTitle);
             MessageBackend.getMessageAnswer(lastMessage.owner, lastMessage.name, (data) => {
-              if (!chat || (this.state.chat.name !== chat.name)) {
-                return;
-              }
               const jsonData = JSON.parse(data);
 
               if (jsonData.text === "") {
@@ -285,7 +284,12 @@ class ChatPage extends BaseListPage {
               }
               const lastMessage2 = Setting.deepCopy(lastMessage);
               text += jsonData.text;
-              lastMessage2.text = Setting.parseAnswerAndSuggestions(text)["answer"];
+              const parsedResult = mssageCarrier.parseAnswerWithCarriers(text);
+              this.updateChatDisplayName(parsedResult.title, chat);
+              if (!chat || (this.state.chat.name !== chat.name)) {
+                return;
+              }
+              lastMessage2.text = parsedResult.finalAnswer;
 
               // Preserve reasoning if it exists
               if (res.data[res.data.length - 1].reasonText) {
@@ -357,10 +361,15 @@ class ChatPage extends BaseListPage {
 
               // We're no longer in reasoning phase
               lastMessage2.isReasoningPhase = false;
-              // If there are suggestions, split them from the text
-              const parseResult = Setting.parseAnswerAndSuggestions(text);
-              lastMessage2.text = parseResult["answer"];
-              lastMessage2.suggestions = parseResult["suggestions"];
+              // If there are suggestions or title , split them from the text
+              const parsedResult = mssageCarrier.parseAnswerWithCarriers(text);
+              text = parsedResult.finalAnswer;
+              if (parsedResult.title !== "") {
+                chat.displayName = parsedResult.title;
+                chat.needTitle = false;
+              }
+              lastMessage2.text = parsedResult.finalAnswer;
+              lastMessage2.suggestions = parsedResult.suggestionArray;
 
               res.data[res.data.length - 1] = lastMessage2;
               res.data.map((message, index) => {
@@ -388,6 +397,17 @@ class ChatPage extends BaseListPage {
 
         Setting.scrollToDiv(`chatbox-list-item-${res.data.length}`);
       });
+  }
+
+  updateChatDisplayName(title, chat) {
+    if (title !== "") {
+      const updatedChats = [...this.state.data];
+      const index = updatedChats.findIndex(c => c.name === chat.name);
+      if (index !== -1) {
+        updatedChats[index].displayName = title;
+        this.setState({data: updatedChats});
+      }
+    }
   }
 
   addChat(chat, selectStore) {

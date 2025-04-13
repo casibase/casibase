@@ -23,6 +23,7 @@ import {renderText} from "../ChatMessageRender";
 import MessageActions from "./MessageActions";
 import MessageSuggestions from "./MessageSuggestions";
 import MessageEdit from "./MessageEdit";
+import {MessageCarrier} from "./MessageCarrier";
 
 const MessageItem = ({
   message,
@@ -151,7 +152,8 @@ const MessageItem = ({
     }
 
     if (isLastMessage && message.author === "AI" && message.TokenCount === 0) {
-      return renderText(Setting.parseAnswerAndSuggestions(message.text)["answer"]);
+      const mssageCarrier = new MessageCarrier(false); // we only use final answer blow so no need to parse title
+      return renderText(mssageCarrier.parseAnswerWithCarriers(message.text).finalAnswer);
     }
 
     return message.html;

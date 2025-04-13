@@ -187,8 +187,7 @@ func (c *ApiController) GetMessageAnswer() {
 	// fmt.Printf("Refined Question: [%s]\n", realQuestion)
 	fmt.Printf("Answer: [")
 
-	hasTitle := false
-	question, err = getQuestionWithCarriers(question, store.SuggestionCount, hasTitle)
+	question, err = getQuestionWithCarriers(question, store.SuggestionCount, chat.NeedTitle)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -240,8 +239,8 @@ func (c *ApiController) GetMessageAnswer() {
 
 	textAnswer := answer
 	textSuggestions := []object.Suggestion{}
-	needTitle := false
-	textAnswer, textSuggestions, _, err = parseAnswerWithCarriers(answer, store.SuggestionCount, needTitle)
+	textTitle := ""
+	textAnswer, textSuggestions, textTitle, err = parseAnswerWithCarriers(answer, store.SuggestionCount, chat.NeedTitle)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
@@ -266,6 +265,11 @@ func (c *ApiController) GetMessageAnswer() {
 	chat.Price += message.Price
 	if chat.Currency == "" {
 		chat.Currency = message.Currency
+	}
+
+	if chat.NeedTitle && textTitle != "" {
+		chat.DisplayName = textTitle
+		chat.NeedTitle = false
 	}
 
 	if questionMessage != nil {

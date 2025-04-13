@@ -68,6 +68,7 @@ class ChatListPage extends BaseListPage {
       userAgent: "",
       messageCount: 0,
       tokenCount: 0,
+      needTitle: true,
     };
   }
 
