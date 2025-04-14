@@ -1,9 +1,10 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {Select} from "antd";
+import {Select, Switch} from "antd";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import * as ChatBackend from "./backend/ChatBackend";
 import * as StoreBackend from "./backend/StoreBackend";
+import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
   const {chat, stores, onChatUpdated, onStoreUpdated} = props;
@@ -12,6 +13,7 @@ const StoreInfoTitle = (props) => {
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [autoRead, setAutoRead] = useState(false);
   const [defaultStore, setDefaultStore] = useState(null);
 
   // Use refs to track the latest state values
@@ -206,7 +208,7 @@ const StoreInfoTitle = (props) => {
     }
   };
 
-  const shouldShowTitleBar = filteredStores.length > 0 || modelProviders.length > 0;
+  const shouldShowTitleBar = filteredStores.length > 0 || modelProviders.length > 0 || storeInfo?.showAutoRead;
 
   if (!shouldShowTitleBar) {
     return null;
@@ -223,7 +225,7 @@ const StoreInfoTitle = (props) => {
       <div style={{display: "flex", alignItems: "center"}}>
         {filteredStores.length > 0 && (
           <div style={{marginRight: "20px"}}>
-            {!isMobile && <span style={{marginRight: "5px"}}>Store:</span>}
+            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
             <Select
               value={selectedStore?.name || storeInfo?.name || "Default Store"}
               style={{width: 150}}
@@ -240,7 +242,7 @@ const StoreInfoTitle = (props) => {
 
         {modelProviders.length > 0 && (
           <div>
-            {!isMobile && <span style={{marginRight: "5px"}}>Model:</span>}
+            {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             <Select
               value={selectedProvider || storeInfo?.modelProvider || "Default"}
               style={{width: 180}}
@@ -259,6 +261,17 @@ const StoreInfoTitle = (props) => {
               )}
             </Select>
           </div>)}
+
+        {
+          storeInfo?.showAutoRead && (
+            <div>
+              <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("store:Auto read")}:</span>
+              <Switch checked={autoRead} onChange={checked => {
+                setAutoRead(checked);
+              }} />
+            </div>
+          )
+        }
       </div>
 
       {storeInfo && (
