@@ -33,6 +33,7 @@ class ChatPage extends BaseListPage {
     super(props);
 
     this.menu = React.createRef();
+    this.chatBox = React.createRef();
   }
 
   UNSAFE_componentWillMount() {
@@ -378,6 +379,10 @@ class ChatPage extends BaseListPage {
                 messageLoading: false,
                 messageError: false,
               });
+
+              if (this.chatBox?.current?.toggleMessageReadState) {
+                this.chatBox.current.toggleMessageReadState(lastMessage2);
+              }
             });
           } else {
             this.setState({
@@ -616,6 +621,7 @@ class ChatPage extends BaseListPage {
               )
             }
             <ChatBox
+              ref={this.chatBox}
               disableInput={this.state.disableInput}
               loading={this.state.messageLoading}
               messages={this.state.messages}
