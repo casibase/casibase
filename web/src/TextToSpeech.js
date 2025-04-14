@@ -50,7 +50,9 @@ class TtsHelper {
   }
 
   cancelReading() {
-    this.synth.cancel();
+    if (this.synth) {
+      this.synth.cancel();
+    }
 
     if (this.eventSource) {
       this.eventSource.close();
