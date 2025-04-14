@@ -81,6 +81,7 @@ type Store struct {
 	Title               string   `xorm:"varchar(100)" json:"title"`
 	ChildStores         []string `xorm:"varchar(200)" json:"childStores"`
 	ChildModelProviders []string `xorm:"varchar(200)" json:"childModelProviders"`
+	ShowAutoRead        bool     `json:"showAutoRead"`
 	DisableFileUpload   bool     `json:"disableFileUpload"`
 	IsDefault           bool     `json:"isDefault"`
 	State               string   `xorm:"varchar(100)" json:"state"`
