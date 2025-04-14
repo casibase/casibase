@@ -14,6 +14,8 @@
 
 package carrier
 
+import "strings"
+
 type TitleCarrier struct {
 	divider   string
 	needTitle bool
@@ -28,6 +30,13 @@ func (p *TitleCarrier) GetQuestion(question string) (string, error) {
 		return question, nil
 	}
 
+	format := "<title>"
+	question = question +
+		"  **Generate a concise and meaningful title summarizing the content of the answer.**\n\n" +
+		"The title should appear at the very end of the response, prefixed by " + p.divider + "\n" +
+		"Only include the title and divider if a meaningful title can be generated.\n" +
+		"Format your response as: <Your answer and generated suggestion(if any)>" + p.divider + format + "\n\n"
+
 	return question, nil
 }
 
@@ -36,6 +45,13 @@ func (p *TitleCarrier) ParseAnswer(answer string) (string, []string, error) {
 		return answer, []string{""}, nil
 	}
 
-	parsedAnswer := answer
-	return parsedAnswer, []string{"title"}, nil
+	parts := strings.Split(answer, p.divider)
+	if len(parts) < 2 {
+		return answer, []string{""}, nil
+	}
+
+	parsedAnswer := parts[0]
+	title := strings.TrimSpace(parts[1])
+
+	return parsedAnswer, []string{title}, nil
 }
