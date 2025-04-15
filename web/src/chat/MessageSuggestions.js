@@ -50,7 +50,7 @@ const MessageSuggestions = ({message, sendMessage}) => {
     padding: "8px 16px",
     textAlign: "start",
     whiteSpace: "pre-wrap",
-    height: "auto",
+    height: "28px",
     transition: "all 0.3s",
     boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
   };

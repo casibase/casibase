@@ -44,6 +44,7 @@ class ChatPage extends BaseListPage {
       isModalOpen: false,
       messageLoading: false,
       messageError: false,
+      autoRead: false,
     });
 
     this.fetch();
@@ -389,8 +390,10 @@ class ChatPage extends BaseListPage {
                 messageError: false,
               });
 
-              if (this.chatBox?.current?.toggleMessageReadState) {
-                this.chatBox.current.toggleMessageReadState(lastMessage2);
+              if (this.state.autoRead) {
+                if (this.chatBox?.current?.toggleMessageReadState) {
+                  this.chatBox.current.toggleMessageReadState(lastMessage2);
+                }
               }
             });
           } else {
@@ -617,7 +620,7 @@ class ChatPage extends BaseListPage {
           )
         }
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
-          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} />}
+          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} />}
 
           <div style={{flex: 1, position: "relative", overflow: "auto"}}>
             {
