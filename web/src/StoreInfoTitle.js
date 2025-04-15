@@ -7,13 +7,12 @@ import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 
 const StoreInfoTitle = (props) => {
-  const {chat, stores, onChatUpdated, onStoreUpdated} = props;
+  const {chat, stores, onChatUpdated, onStoreUpdated, autoRead, onUpdateAutoRead} = props;
   const [modelProviders, setModelProviders] = useState([]);
   const [selectedStore, setSelectedStore] = useState(null);
   const [selectedProvider, setSelectedProvider] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const [autoRead, setAutoRead] = useState(false);
   const [defaultStore, setDefaultStore] = useState(null);
 
   // Use refs to track the latest state values
@@ -267,7 +266,7 @@ const StoreInfoTitle = (props) => {
             <div>
               <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("store:Auto read")}:</span>
               <Switch checked={autoRead} onChange={checked => {
-                setAutoRead(checked);
+                onUpdateAutoRead(checked);
               }} />
             </div>
           )
