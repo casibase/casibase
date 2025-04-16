@@ -287,7 +287,10 @@ class ProviderEditPage extends React.Component {
               {
                 Setting.getProviderTypeOptions(this.state.provider.category)
                 // .sort((a, b) => a.name.localeCompare(b.name))
-                  .map((item, index) => <Option key={index} value={item.name}>{item.name}</Option>)
+                  .map((item, index) => <Option key={index} value={item.name}>
+                    <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}} src={Setting.getProviderLogoURL({category: this.state.provider.category, type: item.name})} alt={item.name} />
+                    {item.name}
+                  </Option>)
               }
             </Select>
           </Col>
