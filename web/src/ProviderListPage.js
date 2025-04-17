@@ -20,6 +20,7 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
 import i18next from "i18next";
+import * as Provider from "./Provider";
 
 class ProviderListPage extends BaseListPage {
   constructor(props) {
@@ -149,7 +150,12 @@ class ProviderListPage extends BaseListPage {
         dataIndex: "type",
         key: "type",
         width: "150px",
+        align: "center",
+        filterMultiple: false,
         sorter: (a, b) => a.type.localeCompare(b.type),
+        render: (text, record, index) => {
+          return Provider.getProviderLogoWidget(record);
+        },
       },
       {
         title: i18next.t("provider:Sub type"),
