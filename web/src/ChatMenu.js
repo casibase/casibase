@@ -14,7 +14,7 @@
 
 import React from "react";
 import {Button, Dropdown, Input, Menu, Popconfirm} from "antd";
-import {DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
+import {CloseOutlined, DeleteOutlined, EditOutlined, LayoutOutlined, PlusOutlined, SaveOutlined} from "@ant-design/icons";
 import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
 
@@ -95,9 +95,19 @@ class ChatMenu extends React.Component {
                     onMouseUp={handleIconMouseUp}
                     onClick={onSave}
                   />
+                  <CloseOutlined className="menu-item-icon"
+                    onMouseEnter={handleIconMouseEnter}
+                    onMouseLeave={handleIconMouseLeave}
+                    onMouseDown={handleIconMouseDown}
+                    onMouseUp={handleIconMouseUp}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      this.setState({editChat: false});
+                    }}
+                  />
                 </div>) : (
                 <div className="menu-item-container">
-                  <div>{chat.displayName}</div>
+                  <div style={{width: "70%", overflow: "hidden"}}>{chat.displayName}</div>
                   {isSelected && (
                     <div>
                       <EditOutlined className="menu-item-icon"
