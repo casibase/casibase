@@ -86,7 +86,9 @@ class App extends Component {
 
     Setting.initServerUrl();
     Setting.initCasdoorSdk(Conf.AuthConfig);
-    this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history); // add interceptor
+    if (!Conf.DisablePreviewMode) {
+      this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history); // add interceptor
+    }
   }
 
   UNSAFE_componentWillMount() {

@@ -24,30 +24,48 @@ class PreviewInterceptor {
     this.history = history;
     this.handleButtonClick = this.handleButtonClick.bind(this);
     document.addEventListener("click", this.handleButtonClick, true);
-    this.allowedButtonTexts = [i18next.t("general:Edit"), i18next.t("general:View"), i18next.t("general:Close")];
-    this.allowedMessageActions = ["copy", "play-circle"];
-    this.allowedSwitch = [i18next.t("general:Is deleted"), i18next.t("general:Need notify"), i18next.t("general:Is alerted"), i18next.t("message:Chat"), i18next.t("store:Enable TTS streaming"), i18next.t("store:Disable file upload"), i18next.t("store:Is default")];
+    this.bannededButtonTexts = [i18next.t("general:OK"), i18next.t("general:Save"), i18next.t("general:Save & Exit"), i18next.t("store:Refresh Vectors"), i18next.t("general:Add"), i18next.t("provider:Add Storage Provider")];
+    this.bannedMessageActions = ["like", "dislike"];
+    this.handleSpanClick = this.handleSpanClick.bind(this);
+    document.addEventListener("click", this.handleSpanClick, true);
+    this.bannedSpanLabels = ["save"];
   }
 
   handleButtonClick(event) {
     const button = event.target.closest("button");
     if (button) {
-      if (this.allowedButtonTexts.includes(button.innerText.replace(/\s+/g, ""))) {
-        return;
-      }
       const buttonSpan = button.querySelector("span span[aria-label]");
-      if (buttonSpan && this.allowedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
+      if (buttonSpan && !this.bannedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
         return;
       }
-      const buttonDiv = button.closest("div");
-      const silbingDiv = buttonDiv ? buttonDiv.previousElementSibling : null;
-      if (silbingDiv && this.allowedSwitch.includes(silbingDiv.innerText.replace(/[:]/g, ""))) {
+      if (button.getAttribute("role") === "switch") {
+        return;
+      }
+      const titleEl = button.querySelector("title");
+      const titleText = titleEl?.textContent;
+      if (titleText === "Stop Loading") {
+        return;
+      }
+      if (button.innerText !== "" && !this.bannededButtonTexts.includes(button.innerText.replace(/\s+/g, ""))) {
         return;
       }
       if (this.redirectIfAnonymous(this.getAccount())) {
         event.stopPropagation();
         event.preventDefault();
         return;
+      }
+    }
+  }
+
+  handleSpanClick(event) {
+    const span = event.target.closest("span");
+    if (span) {
+      if (span.hasAttribute("aria-label") && this.bannedSpanLabels.includes(span.getAttribute("aria-label"))) {
+        if (this.redirectIfAnonymous(this.getAccount())) {
+          event.stopPropagation();
+          event.preventDefault();
+          return;
+        }
       }
     }
   }
