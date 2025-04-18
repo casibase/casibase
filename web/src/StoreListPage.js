@@ -21,6 +21,8 @@ import * as Setting from "./Setting";
 import * as StoreBackend from "./backend/StoreBackend";
 import i18next from "i18next";
 import {ThemeDefault} from "./Conf";
+import * as StorageProviderBackend from "./backend/StorageProviderBackend";
+import * as ProviderBackend from "./backend/ProviderBackend";
 
 const defaultPrompt = "You are an expert in your field and you specialize in using your knowledge to answer or solve people's problems.";
 
@@ -30,8 +32,72 @@ class StoreListPage extends BaseListPage {
     this.state = {
       ...this.state,
       generating: false,
+      providers: {},
     };
   }
+
+  UNSAFE_componentWillMount() {
+    super.UNSAFE_componentWillMount();
+    this.getCasdoorStorageProviders();
+    this.getProviders();
+  }
+
+  getCasdoorStorageProviders() {
+    StorageProviderBackend.getStorageProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const newProviders = {...this.state.providers};
+          res.data.forEach(provider => {
+            newProviders[provider.name] = provider;
+          });
+          this.setState({
+            providers: newProviders,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
+        }
+      });
+  }
+
+  getProviders() {
+    ProviderBackend.getProviders(this.props.account.name)
+      .then((res) => {
+        if (res.status === "ok") {
+          const newProviders = {...this.state.providers};
+          res.data.forEach(provider => {
+            newProviders[provider.name] = provider;
+          });
+          this.setState({
+            providers: newProviders,
+          });
+        } else {
+          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+        }
+      });
+  }
+  renderProviderInfo(text, isExternal = false) {
+    if (!text) {
+      return null;
+    }
+    const providerLogo = (
+      <img width={20} height={20} src={Setting.getProviderLogoURL(this.state.providers[text])} alt={text} />
+    );
+    if (isExternal || (!text.includes("local") && !text.includes("built-in"))) {
+      return (
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
+          {text && providerLogo} {text}
+          {Setting.renderExternalLink()}
+        </a>
+      );
+    } else {
+      return (
+        <Link to={`/providers/${text}`}>
+          {text && providerLogo} {text}
+        </Link>
+      );
+    }
+  }
+
   newStore() {
     const randomName = Setting.getRandomName();
     return {
@@ -150,27 +216,14 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
-        width: "250px",
+        width: "300px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         render: (text, record, index) => {
           if (text === "") {
             return null;
           }
 
-          if (text.includes("local") || text.includes("built-in")) {
-            return (
-              <Link to={`/providers/${text}`}>
-                {text}
-              </Link>
-            );
-          }
-
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
-              {text}
-              {Setting.renderExternalLink()}
-            </a>
-          );
+          return this.renderProviderInfo(text);
         },
       },
       // {
@@ -187,11 +240,7 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
         render: (text, record, index) => {
-          return (
-            <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.state.account).replace("/account", `/providers/admin/${text}`)}>
-              {text}
-            </a>
-          );
+          return this.renderProviderInfo(text, true);
         },
       },
       {
@@ -201,11 +250,7 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
         render: (text, record, index) => {
-          return (
-            <Link to={`/providers/${text}`}>
-              {text}
-            </Link>
-          );
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -215,11 +260,7 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
-          return (
-            <Link to={`/providers/${text}`}>
-              {text}
-            </Link>
-          );
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -228,12 +269,8 @@ class StoreListPage extends BaseListPage {
         key: "textToSpeechProvider",
         width: "200px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
-        render: (text) => {
-          return (
-            <Link to={`/providers/${text}`}>
-              {text}
-            </Link>
-          );
+        render: (text, record, index) => {
+          return this.renderProviderInfo(text);
         },
       },
       {
