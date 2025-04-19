@@ -196,6 +196,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
+                  {id: "Docker", name: "Docker"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
