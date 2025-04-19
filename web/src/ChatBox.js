@@ -116,14 +116,16 @@ class ChatBox extends React.Component {
   handleSend = (innerHtml) => {
     // abort because the remaining recognition results are useless
     this.recognition?.abort();
-    if (this.state.value === "" || this.props.disableInput) {
+
+    let newValue = this.state.value;
+
+    this.state.files.forEach(uploadedFile => {
+      newValue = uploadedFile.value + "\n" + newValue;
+    });
+
+    if (newValue === "" || this.props.disableInput) {
       return;
     }
-
-    const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g,
-      (match, src, alt, width, height, scaledWidth, scaledHeight) => {
-        return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
-      });
 
     const date = moment();
     const dateString = date.format("YYYYMMDD_HHmmss");
@@ -163,29 +165,37 @@ class ChatBox extends React.Component {
           if (originalWidth > inputMaxWidth) {
             Ratio = inputMaxWidth / originalWidth;
           }
-          const scaledWidth = Math.round(originalWidth * Ratio);
-          const scaledHeight = Math.round(originalHeight * Ratio);
           if (originalWidth > chatMaxWidth) {
             Ratio = chatMaxWidth / originalWidth;
           }
           const chatScaledWidth = Math.round(originalWidth * Ratio);
           const chatScaledHeight = Math.round(originalHeight * Ratio);
-          this.setState(prevState => ({
-            value: prevState.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
-            files: [...prevState.files, file],
-          }));
+          const value = `<img src="${img.src}" alt="${img.alt}" width="${chatScaledWidth}" height="${chatScaledHeight}">`;
+          this.updateFileList(file, img.src, value);
         };
         img.src = e.target.result;
       };
     } else {
       reader.onload = (e) => {
-        this.setState({
-          value: this.state.value + `<a href="${e.target.result}" target="_blank">${file.name}</a>`,
-        });
+        const content = `<a href="${e.target.result}" target="_blank">${file.name}</a>`;
+        const value = e.target.result;
+        this.updateFileList(file, content, value);
       };
     }
     reader.readAsDataURL(file);
   };
+
+  updateFileList(file, content, value) {
+    const uploadedFile = {
+      uid: Date.now() + Math.random(),
+      file: file,
+      content: content,
+      value: value,
+    };
+    this.setState(prevState => ({
+      files: [...prevState.files, uploadedFile],
+    }));
+  }
 
   copyMessageFromHTML(message) {
     const tempElement = document.createElement("div");
@@ -305,6 +315,12 @@ class ChatBox extends React.Component {
       });
   };
 
+  handleRemoveFile = (uid) => {
+    this.setState(prevState => ({
+      files: prevState.files.filter(file => file.uid !== uid),
+    }));
+  };
+
   render() {
     let messages = this.props.messages;
     if (messages === null) {
@@ -356,6 +372,7 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              files={this.state.files}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
               onFileUpload={this.handleFileUploadClick}
@@ -365,6 +382,7 @@ class ChatBox extends React.Component {
               onCancelMessage={this.props.onCancelMessage}
               onVoiceInputStart={() => this.setState({isVoiceInput: true})}
               onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
+              onRemoveFile={(uid) => this.handleRemoveFile(uid)}
             />
           )}
         </Card>
