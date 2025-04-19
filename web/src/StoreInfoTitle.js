@@ -24,8 +24,6 @@ const StoreInfoTitle = (props) => {
     if (stores) {
       const foundDefaultStore = stores.find(store => store.isDefault);
       setDefaultStore(foundDefaultStore);
-      // eslint-disable-next-line no-console
-      console.log("Default store found:", foundDefaultStore);
     }
   }, [stores]);
   // Filter stores to show default store and its child stores
@@ -247,12 +245,28 @@ const StoreInfoTitle = (props) => {
               style={{width: 180}}
               onChange={handleProviderChange}
               disabled={isUpdating}
+              popupMatchSelectWidth ={false}
+              optionLabelProp="children"
+              suffixIcon={<div />}
             >
-              {modelProviders.map(provider => (
-                <Select.Option key={provider.name} value={provider.name}>
-                  {provider.displayName || provider.name}
-                </Select.Option>
-              ))}
+              {modelProviders.map(provider => {
+                const displayName = provider.displayName || provider.name;
+                return (
+                  <Select.Option
+                    key={provider.name}
+                    value={provider.name}
+                  >
+                    <div style={{display: "flex", alignItems: "center"}}>
+                      <img
+                        src={Setting.getProviderLogoURL(provider)}
+                        alt={provider.name}
+                        style={{width: 20, height: 20, marginRight: 8}}
+                      />
+                      <span>{displayName || provider.name}</span>
+                    </div>
+                  </Select.Option>
+                );
+              })}
               {modelProviders.length === 0 && (
                 <Select.Option key="default" value="Default">
                         Default

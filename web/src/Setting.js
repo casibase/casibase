@@ -796,6 +796,46 @@ export const OtherProviderInfo = {
       logo: `${StaticBaseUrl}/img/social_file.png`,
       url: "",
     },
+    "AWS S3": {
+      logo: `${StaticBaseUrl}/img/social_aws.png`,
+      url: "https://aws.amazon.com/s3",
+    },
+    "MinIO": {
+      logo: "https://min.io/resources/img/logo.svg",
+      url: "https://min.io/",
+    },
+    "Aliyun OSS": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://aliyun.com/product/oss",
+    },
+    "Tencent Cloud COS": {
+      logo: `${StaticBaseUrl}/img/social_tencent_cloud.jpg`,
+      url: "https://cloud.tencent.com/product/cos",
+    },
+    "Azure Blob": {
+      logo: `${StaticBaseUrl}/img/social_azure.png`,
+      url: "https://azure.microsoft.com/en-us/services/storage/blobs/",
+    },
+    "Qiniu Cloud Kodo": {
+      logo: `${StaticBaseUrl}/img/social_qiniu_cloud.png`,
+      url: "https://www.qiniu.com/solutions/storage",
+    },
+    "Google Cloud Storage": {
+      logo: `${StaticBaseUrl}/img/social_google_cloud.png`,
+      url: "https://cloud.google.com/storage",
+    },
+    "Synology": {
+      logo: `${StaticBaseUrl}/img/social_synology.png`,
+      url: "https://www.synology.com/en-global/dsm/feature/file_sharing",
+    },
+    "Casdoor": {
+      logo: `${StaticBaseUrl}/img/casdoor.png`,
+      url: "https://casdoor.org/docs/provider/storage/overview",
+    },
+    "CUCloud OSS": {
+      logo: `${StaticBaseUrl}/img/social_cucloud.png`,
+      url: "https://www.cucloud.cn/product/oss.html",
+    },
   },
   Blockchain: {
     "Hyperledger Fabric": {
@@ -953,6 +993,9 @@ export function getCompitableProviderOptions(category) {
 }
 
 export function getProviderLogoURL(provider) {
+  if (provider === undefined || provider === null) {
+    return "";
+  }
   const info = OtherProviderInfo[provider.category][provider.type];
   // avoid crash when provider is not found
   if (info) {

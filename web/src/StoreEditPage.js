@@ -52,6 +52,17 @@ class StoreEditPage extends React.Component {
     this.getProviders();
   }
 
+  renderProviderOption(provider, index) {
+    return (
+      <Option key={index} value={provider.name}>
+        <img width={20} height={20} style={{marginBottom: "3px", marginRight: "10px"}}
+          src={Setting.getProviderLogoURL({category: provider.category, type: provider.type})}
+          alt={provider.name} />
+        {provider.displayName} ({provider.name})
+      </Option>
+    );
+  }
+
   getStore() {
     StoreBackend.getStore(this.state.owner, this.state.storeName)
       .then((res) => {
@@ -183,8 +194,13 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.storageProvider} onChange={(value => {this.updateStoreField("storageProvider", value);})}
-              options={this.state.storageProviders.concat(this.state.casdoorStorageProviders).map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            >
+              {
+                this.state.storageProviders.concat(this.state.casdoorStorageProviders).map((provider, index) =>
+                  this.renderProviderOption(provider, index)
+                )
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -193,8 +209,13 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
-              options={this.state.casdoorStorageProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            >
+              {
+                this.state.casdoorStorageProviders.map((provider, index) =>
+                  this.renderProviderOption(provider, index)
+                )
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -213,8 +234,13 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.modelProvider} onChange={(value => {this.updateStoreField("modelProvider", value);})}
-              options={this.state.modelProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            >
+              {
+                this.state.modelProviders.map((provider, index) =>
+                  this.renderProviderOption(provider, index)
+                )
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -223,8 +249,13 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
-              options={this.state.embeddingProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            >
+              {
+                this.state.embeddingProviders.map((provider, index) =>
+                  this.renderProviderOption(provider, index)
+                )
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -233,8 +264,13 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
-              options={this.state.textToSpeechProviders.map((provider) => Setting.getOption(`${provider.displayName} (${provider.name})`, provider.name))
-              } />
+            >
+              {
+                this.state.textToSpeechProviders.map((provider, index) =>
+                  this.renderProviderOption(provider, index)
+                )
+              }
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >
@@ -380,7 +416,9 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} mode="tags" style={{width: "100%"}} value={this.state.store.childModelProviders} onChange={(value => {this.updateStoreField("childModelProviders", value);})}>
               {
-                this.state.modelProviders?.map((item, index) => <Option key={item.name} value={item.name}>{`${item.displayName} (${item.name})`}</Option>)
+                this.state.modelProviders?.map((item, index) =>
+                  this.renderProviderOption(item, index)
+                )
               }
             </Select>
           </Col>
