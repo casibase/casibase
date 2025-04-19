@@ -30,9 +30,7 @@ type MachineGcpClient struct {
 
 // hostname is the IP address of the target host and the configured port format is {IP}:{port}
 func newMachineGcpClient(hostname string, projectID string, zone string) (MachineGcpClient, error) {
-	conn, err := grpc.Dial(
-		hostname,
-	)
+	conn, err := grpc.NewClient(hostname)
 	if err != nil {
 		return MachineGcpClient{}, err
 	}
