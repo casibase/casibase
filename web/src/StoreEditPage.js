@@ -211,7 +211,7 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.imageProvider} onChange={(value => {this.updateStoreField("imageProvider", value);})}
             >
               <Option key="none" value="">
-                {i18next.t("general:None")}
+                {i18next.t("general:empty")}
               </Option>
               {
                 this.state.casdoorStorageProviders.map((provider, index) =>
@@ -254,7 +254,7 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.embeddingProvider} onChange={(value => {this.updateStoreField("embeddingProvider", value);})}
             >
               <Option key="none" value="">
-                {i18next.t("general:None")}
+                {i18next.t("general:empty")}
               </Option>
               {
                 this.state.embeddingProviders.map((provider, index) =>
@@ -272,7 +272,7 @@ class StoreEditPage extends React.Component {
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
             >
               <Option key="none" value="">
-                {i18next.t("general:None")}
+                {i18next.t("general:empty")}
               </Option>
               {
                 this.state.textToSpeechProviders.map((provider, index) =>
