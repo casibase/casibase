@@ -216,7 +216,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Storage provider"),
         dataIndex: "storageProvider",
         key: "storageProvider",
-        width: "300px",
+        width: "250px",
         sorter: (a, b) => a.storageProvider.localeCompare(b.storageProvider),
         render: (text, record, index) => {
           if (text === "") {
@@ -237,7 +237,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Image provider"),
         dataIndex: "imageProvider",
         key: "imageProvider",
-        width: "200px",
+        width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
         render: (text, record, index) => {
           return this.renderProviderInfo(text, true);
@@ -247,7 +247,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Model provider"),
         dataIndex: "modelProvider",
         key: "modelProvider",
-        width: "200px",
+        width: "330px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
@@ -257,7 +257,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Embedding provider"),
         dataIndex: "embeddingProvider",
         key: "embeddingProvider",
-        width: "200px",
+        width: "300px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
@@ -267,7 +267,7 @@ class StoreListPage extends BaseListPage {
         title: i18next.t("store:Text-to-Speech provider"),
         dataIndex: "textToSpeechProvider",
         key: "textToSpeechProvider",
-        width: "200px",
+        width: "300px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
