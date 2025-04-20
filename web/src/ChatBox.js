@@ -21,10 +21,10 @@ import moment from "moment";
 import ChatPrompts from "./ChatPrompts";
 import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
-import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
 import TtsHelper from "./TextToSpeech";
+import SpeechToTextHelper from "./SpeechToText";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -43,11 +43,11 @@ class ChatBox extends React.Component {
       rerenderErrorMessage: false,
     };
     this.synth = window.speechSynthesis;
-    this.recognition = undefined;
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
     this.ttsHelper = new TtsHelper(this);
+    this.sttHelper = new SpeechToTextHelper(this);
   }
 
   componentDidMount() {
@@ -79,7 +79,7 @@ class ChatBox extends React.Component {
   }
 
   clearOldStatus() {
-    this.recognition?.abort();
+    this.sttHelper.cleanup();
     this.ttsHelper.cleanup();
     this.setState({
       value: "",
@@ -104,7 +104,7 @@ class ChatBox extends React.Component {
         preSelectionRange.setEnd(range.startContainer, range.startOffset);
         this.cursorPosition = preSelectionRange.toString().length;
         if (this.state.isVoiceInput) {
-          this.recognition.abort();
+          this.sttHelper.stopRecognition();
         }
       }
     };
@@ -115,7 +115,7 @@ class ChatBox extends React.Component {
 
   handleSend = (innerHtml) => {
     // abort because the remaining recognition results are useless
-    this.recognition?.abort();
+    this.sttHelper.stopRecognition();
     if (this.state.value === "" || this.props.disableInput) {
       return;
     }
@@ -244,16 +244,79 @@ class ChatBox extends React.Component {
     this.ttsHelper.readMessage(message, this.props.store);
   };
 
-  insertVoiceMessage = () => {
-    const oldValue = this.state.value;
+  // Updated startVoiceInput method for ChatBox component
+  startVoiceInput = () => {
+    this.setState({isVoiceInput: true});
 
+    // Check if using browser builtin or cloud provider
+    const providerValue = this.props.store?.speechToTextProvider || "";
+    const useCloudProvider = providerValue !== "" && providerValue !== "Browser Built-In";
+
+    if (useCloudProvider) {
+      this.sttHelper.startRecording()
+        .catch(error => {
+          Setting.showMessage("error", `Failed to start recording: ${error.message}`);
+          this.setState({isVoiceInput: false});
+        });
+    } else {
+      // Using browser builtin recognition
+      const recognition = this.sttHelper.initBrowserRecognition(this.processVoiceResult());
+
+      if (!recognition) {
+        Setting.showMessage("error", i18next.t("chat:Speech recognition not supported in this browser"));
+        this.setState({isVoiceInput: false});
+      }
+    }
+  };
+
+  // Updated stopVoiceInput method for ChatBox component
+  stopVoiceInput = () => {
+    const providerValue = this.props.store?.speechToTextProvider || "";
+    const useCloudProvider = providerValue !== "" && providerValue !== "Browser Built-In";
+
+    if (useCloudProvider) {
+      if (this.sttHelper.stopRecording()) {
+        const audioBlob = new Blob(this.sttHelper.audioChunks, {type: "audio/webm"});
+        this.sttHelper.processAudioFile(audioBlob, this.props.store, this.processVoiceResult(true));
+      }
+    } else {
+      this.sttHelper.stopRecognition();
+
+      setTimeout(() => {
+        // Send the message after speech recognition is complete
+        if (this.state.value && this.state.value.trim() !== "") {
+          this.handleSend();
+        }
+      }, 300);
+    }
+
+    this.setState({isVoiceInput: false});
+  };
+
+  // Updated to handle both updating UI and to know when to send
+  processVoiceResult = (shouldSendAfterProcessing = false) => {
     return (event) => {
-      const result = Array.from(event?.results)?.map((result) => result[0].transcript).join(",");
+      const transcript = Array.from(event?.results)?.map((result) => result[0].transcript).join(" ");
+
+      if (!transcript || transcript.trim() === "") {
+        return; // Skip empty transcripts
+      }
+
+      // Update the input field with the transcript
       if (this.cursorPosition === undefined) {
-        this.setState({value: oldValue + result});
+        this.setState({value: transcript}, () => {
+          if (shouldSendAfterProcessing && this.state.value && this.state.value.trim() !== "") {
+            this.handleSend();
+          }
+        });
       } else {
-        const newValue = oldValue.slice(0, this.cursorPosition) + result + oldValue.slice(this.cursorPosition);
-        this.setState({value: newValue});
+        const oldValue = this.state.value || "";
+        const newValue = oldValue.slice(0, this.cursorPosition) + transcript + oldValue.slice(this.cursorPosition);
+        this.setState({value: newValue}, () => {
+          if (shouldSendAfterProcessing && this.state.value && this.state.value.trim() !== "") {
+            this.handleSend();
+          }
+        });
       }
     };
   };
@@ -363,27 +426,19 @@ class ChatBox extends React.Component {
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}
               onCancelMessage={this.props.onCancelMessage}
-              onVoiceInputStart={() => this.setState({isVoiceInput: true})}
-              onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
+              onVoiceInputStart={this.startVoiceInput}
+              onVoiceInputEnd={this.stopVoiceInput}
+              isVoiceInput={this.state.isVoiceInput}
             />
           )}
         </Card>
 
-        {this.state.isVoiceInput ? (
-          <VoiceInputOverlay
-            onStop={() => {
-              this.recognition?.abort();
-              this.setState({isVoiceInput: false});
-            }}
+        {messages.length === 0 ? (
+          <ChatPrompts
+            sendMessage={this.props.sendMessage}
+            prompts={prompts}
           />
-        ) : (
-          messages.length === 0 ? (
-            <ChatPrompts
-              sendMessage={this.props.sendMessage}
-              prompts={prompts}
-            />
-          ) : null
-        )}
+        ) : null}
       </Layout>
     );
   }
