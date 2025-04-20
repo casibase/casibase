@@ -65,6 +65,7 @@ type Store struct {
 	EmbeddingProvider    string `xorm:"varchar(100)" json:"embeddingProvider"`
 	TextToSpeechProvider string `xorm:"varchar(100)" json:"textToSpeechProvider"`
 	EnableTtsStreaming   bool   `xorm:"bool" json:"enableTtsStreaming"`
+	SpeechToTextProvider string `xorm:"varchar(100)" json:"speechToTextProvider"`
 
 	MemoryLimit         int      `json:"memoryLimit"`
 	Frequency           int      `json:"frequency"`
@@ -238,6 +239,15 @@ func (store *Store) GetTextToSpeechProvider() (*Provider, error) {
 	}
 
 	providerId := util.GetIdFromOwnerAndName(store.Owner, store.TextToSpeechProvider)
+	return GetProvider(providerId)
+}
+
+func (store *Store) GetSpeechToTextProvider() (*Provider, error) {
+	if store.SpeechToTextProvider == "" {
+		return GetDefaultSpeechToTextProvider()
+	}
+
+	providerId := util.GetIdFromOwnerAndName(store.Owner, store.SpeechToTextProvider)
 	return GetProvider(providerId)
 }
 

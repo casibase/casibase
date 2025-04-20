@@ -68,7 +68,7 @@ class ProviderEditPage extends React.Component {
   }
 
   getClientSecretLabel(provider) {
-    if (["Storage", "Embedding", "Text-to-Speech"].includes(provider.category)) {
+    if (["Storage", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(provider.category)) {
       return Setting.getLabel("Secret key", "Secret key");
     } else if (provider.category === "Model") {
       if (provider.type === "Tencent Cloud") {
@@ -184,6 +184,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Text-to-Speech") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "cosyvoice-v1");
+              } else if (value === "Speech-to-Text") {
+                this.updateProviderField("type", "Alibaba Cloud");
+                this.updateProviderField("subType", "paraformer-realtime-v1");
               }
             })}>
               {
@@ -196,6 +199,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Blockchain", name: "Blockchain"},
                   {id: "Video", name: "Video"},
                   {id: "Text-to-Speech", name: "Text-to-Speech"},
+                  {id: "Speech-to-Text", name: "Speech-to-Text"},
                 ].map((item, index) => <Option key={index} value={item.id}>{item.name}</Option>)
               }
             </Select>
@@ -282,6 +286,10 @@ class ProviderEditPage extends React.Component {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "cosyvoice-v1");
                 }
+              } else if (this.state.provider.category === "Speech-to-Text") {
+                if (value === "Alibaba Cloud") {
+                  this.updateProviderField("subType", "paraformer-realtime-v1");
+                }
               }
             })}>
               {
@@ -296,7 +304,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          !["Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
+          !["Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -353,7 +361,7 @@ class ProviderEditPage extends React.Component {
           (this.state.provider.type === "Baidu Cloud" || (this.state.provider.category === "Embedding" && this.state.provider.type === "Tencent Cloud") || this.state.provider.category === "Storage") ||
           (this.state.provider.category === "Model" && this.state.provider.type === "MiniMax") ||
           ((this.state.provider.category === "Model" || this.state.provider.category === "Embedding") && this.state.provider.type === "Azure") ||
-          (!(["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category))) ? (
+          (!(["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category))) ? (
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                   {this.getClientIdLabel(this.state.provider)}:
@@ -497,7 +505,7 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Text-to-Speech"].includes(this.state.provider.category) ? null : (
+          ["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("general:Region")}:
