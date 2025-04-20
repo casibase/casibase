@@ -915,6 +915,12 @@ export const OtherProviderInfo = {
       url: "https://www.alibabacloud.com/",
     },
   },
+  "Speech-to-Text": {
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+  },
 };
 
 export function getItem(label, key, icon, children, type) {
@@ -993,15 +999,11 @@ export function getCompitableProviderOptions(category) {
 }
 
 export function getProviderLogoURL(provider) {
-  if (provider === undefined || provider === null) {
+  if (!provider || !OtherProviderInfo[provider.category] || !OtherProviderInfo[provider.category][provider.type]) {
     return "";
   }
-  const info = OtherProviderInfo[provider.category][provider.type];
-  // avoid crash when provider is not found
-  if (info) {
-    return info.logo;
-  }
-  return "";
+
+  return OtherProviderInfo[provider.category][provider.type].logo;
 }
 
 export function getProviderTypeOptions(category) {
