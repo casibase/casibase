@@ -451,7 +451,7 @@ class MessageListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={messages === null}
+          loading={this.state.loading}
           rowClassName={(record, index) => {
             return record.isDeleted ? "highlight-row" : "";
           }}

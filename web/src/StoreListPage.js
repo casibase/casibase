@@ -367,7 +367,7 @@ class StoreListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={stores === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>

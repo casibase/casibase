@@ -468,7 +468,7 @@ class ChatListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={chats === null}
+          loading={this.state.loading}
           rowClassName={(record, index) => {
             return record.isDeleted ? "highlight-row" : "";
           }}

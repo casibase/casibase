@@ -509,7 +509,7 @@ class VideoListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={videos === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>

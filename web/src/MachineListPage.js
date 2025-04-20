@@ -252,7 +252,7 @@ class MachineListPage extends BaseListPage {
               <Button type="primary" size="small" onClick={() => this.addMachine()}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={machines === null}
+          loading={this.state.loading}
           onChange={(pagination, filters, sorter) => {
             this.handleTableChange(pagination, filters, sorter);
           }}
