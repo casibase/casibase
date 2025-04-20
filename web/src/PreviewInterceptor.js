@@ -34,7 +34,7 @@ class PreviewInterceptor {
   handleButtonClick(event) {
     const button = event.target.closest("button");
     if (button) {
-      const buttonSpan = button.querySelector("span span[aria-label]");
+      const buttonSpan = button.querySelector("span[aria-label]");
       if (buttonSpan && !this.bannedMessageActions.includes(buttonSpan.getAttribute("aria-label"))) {
         return;
       }

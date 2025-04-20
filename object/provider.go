@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/casibase/casibase/stt"
+
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
@@ -260,6 +262,27 @@ func GetDefaultTextToSpeechProvider() (*Provider, error) {
 	return &provider, nil
 }
 
+func GetDefaultSpeechToTextProvider() (*Provider, error) {
+	provider := Provider{Owner: "admin", Category: "Speech-to-Text"}
+	existed, err := adapter.engine.Get(&provider)
+	if err != nil {
+		return &provider, err
+	}
+
+	if providerAdapter != nil && !existed {
+		existed, err = providerAdapter.engine.Get(&provider)
+		if err != nil {
+			return &provider, err
+		}
+	}
+
+	if !existed {
+		return nil, nil
+	}
+
+	return &provider, nil
+}
+
 func GetDefaultMachineProvider() (*Provider, error) {
 	provider := Provider{Owner: "admin", Category: "Machine"}
 	existed, err := adapter.engine.Get(&provider)
@@ -398,6 +421,19 @@ func (p *Provider) GetTextToSpeechProvider() (tts.TextToSpeechProvider, error) {
 
 	if pProvider == nil {
 		return nil, fmt.Errorf("the TTS provider type: %s is not supported", p.Type)
+	}
+
+	return pProvider, nil
+}
+
+func (p *Provider) GetSpeechToTextProvider() (stt.SpeechToTextProvider, error) {
+	pProvider, err := stt.GetSpeechToTextProvider(p.Type, p.SubType, p.ClientSecret, p.ProviderUrl)
+	if err != nil {
+		return nil, err
+	}
+
+	if pProvider == nil {
+		return nil, fmt.Errorf("the STT provider type: %s is not supported", p.Type)
 	}
 
 	return pProvider, nil
