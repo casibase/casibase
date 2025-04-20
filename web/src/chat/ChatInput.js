@@ -30,8 +30,11 @@ const ChatInput = ({
   onCancelMessage,
   onVoiceInputStart,
   onVoiceInputEnd,
+  isVoiceInput,
 }) => {
   const sendButtonDisabled = messageError || value === "" || disableInput;
+
+  const isSpeechDisabled = store?.speechToTextProvider === "";
 
   return (
     <div style={{
@@ -77,9 +80,19 @@ const ChatInput = ({
           onCancel={() => {
             onCancelMessage && onCancelMessage();
           }}
-          allowSpeech
-          onSpeechStart={onVoiceInputStart}
-          onSpeechEnd={onVoiceInputEnd}
+          // Only provide allowSpeech if speech is not disabled
+          {...(!isSpeechDisabled ? {
+            allowSpeech: {
+              recording: isVoiceInput,
+              onRecordingChange: (nextRecording) => {
+                if (nextRecording) {
+                  onVoiceInputStart();
+                } else {
+                  onVoiceInputEnd();
+                }
+              },
+            },
+          } : {})}
         />
       </div>
     </div>

@@ -1094,6 +1094,10 @@ export function getProviderTypeOptions(category) {
     return [
       {id: "Alibaba Cloud", name: "Alibaba Cloud"},
     ];
+  } else if (category === "Speech-to-Text") {
+    return [
+      {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+    ];
   } else {
     return [];
   }
@@ -1479,6 +1483,12 @@ export function getProviderSubTypeOptions(category, type) {
       return (
         [
           {id: "cosyvoice-v1", name: "cosyvoice-v1"},
+        ]
+      );
+    } else if (category === "Speech-to-Text") {
+      return (
+        [
+          {id: "paraformer-realtime-v1", name: "paraformer-realtime-v1"},
         ]
       );
     }

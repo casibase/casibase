@@ -39,6 +39,7 @@ class StoreEditPage extends React.Component {
       modelProviders: [],
       embeddingProviders: [],
       textToSpeechProviders: [],
+      speechToTextProviders: [],
       enableTtsStreaming: false,
       store: null,
       themeColor: ThemeDefault.colorPrimary,
@@ -115,6 +116,7 @@ class StoreEditPage extends React.Component {
             modelProviders: res.data.filter(provider => provider.category === "Model"),
             embeddingProviders: res.data.filter(provider => provider.category === "Embedding"),
             textToSpeechProviders: res.data.filter(provider => provider.category === "Text-to-Speech"),
+            speechToTextProviders: res.data.filter(provider => provider.category === "Speech-to-Text"),
           });
         } else {
           Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
@@ -290,6 +292,19 @@ class StoreEditPage extends React.Component {
             <Switch checked={this.state.store.enableTtsStreaming} onChange={checked => {
               this.updateStoreField("enableTtsStreaming", checked);
             }} />
+          </Col>
+        </Row>
+        <Row style={{marginTop: "20px"}} >
+          <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+            {i18next.t("store:Speech-to-Text provider")}:
+          </Col>
+          <Col span={22} >
+            <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
+              <Option key="none" value="">{i18next.t("general:empty")}</Option>
+              <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
+              {this.state.speechToTextProviders.map((provider) => (<Option key={provider.name} value={provider.name}>{`${provider.displayName} (${provider.name})`}</Option>
+              ))}
+            </Select>
           </Col>
         </Row>
         <Row style={{marginTop: "20px"}} >

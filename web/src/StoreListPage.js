@@ -113,6 +113,7 @@ class StoreListPage extends BaseListPage {
       modelProvider: "",
       embeddingProvider: "",
       textToSpeechProvider: "",
+      speechToTextProvider: "",
       memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
@@ -271,6 +272,20 @@ class StoreListPage extends BaseListPage {
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
         render: (text, record, index) => {
           return this.renderProviderInfo(text);
+        },
+      },
+      {
+        title: i18next.t("store:Speech-to-Text provider"),
+        dataIndex: "speechToTextProvider",
+        key: "speechToTextProvider",
+        width: "200px",
+        sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
+        render: (text) => {
+          return (
+            <Link to={`/providers/${text}`}>
+              {text}
+            </Link>
+          );
         },
       },
       {
