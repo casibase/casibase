@@ -116,14 +116,16 @@ class ChatBox extends React.Component {
   handleSend = (innerHtml) => {
     // abort because the remaining recognition results are useless
     this.sttHelper.stopRecognition();
-    if (this.state.value === "" || this.props.disableInput) {
+
+    let newValue = this.state.value;
+
+    this.state.files.forEach(uploadedFile => {
+      newValue = uploadedFile.value + "\n" + newValue;
+    });
+
+    if (newValue === "" || this.props.disableInput) {
       return;
     }
-
-    const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g,
-      (match, src, alt, width, height, scaledWidth, scaledHeight) => {
-        return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
-      });
 
     const date = moment();
     const dateString = date.format("YYYYMMDD_HHmmss");
@@ -147,44 +149,6 @@ class ChatBox extends React.Component {
     const message = [...messages.slice(0, index)].reverse().find(message => message.author !== "AI");
 
     this.handleEditMessage({...message, text: message.text, updatedTime: new Date().toISOString()});
-  };
-
-  handleInputChange = async(file) => {
-    const reader = new FileReader();
-    if (file.type.startsWith("image/")) {
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const originalWidth = img.width;
-          const originalHeight = img.height;
-          const inputMaxWidth = 70;
-          const chatMaxWidth = 600;
-          let Ratio = 1;
-          if (originalWidth > inputMaxWidth) {
-            Ratio = inputMaxWidth / originalWidth;
-          }
-          const scaledWidth = Math.round(originalWidth * Ratio);
-          const scaledHeight = Math.round(originalHeight * Ratio);
-          if (originalWidth > chatMaxWidth) {
-            Ratio = chatMaxWidth / originalWidth;
-          }
-          const chatScaledWidth = Math.round(originalWidth * Ratio);
-          const chatScaledHeight = Math.round(originalHeight * Ratio);
-          this.setState(prevState => ({
-            value: prevState.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
-            files: [...prevState.files, file],
-          }));
-        };
-        img.src = e.target.result;
-      };
-    } else {
-      reader.onload = (e) => {
-        this.setState({
-          value: this.state.value + `<a href="${e.target.result}" target="_blank">${file.name}</a>`,
-        });
-      };
-    }
-    reader.readAsDataURL(file);
   };
 
   copyMessageFromHTML(message) {
@@ -321,22 +285,6 @@ class ChatBox extends React.Component {
     };
   };
 
-  handleFileUploadClick = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx";
-    input.multiple = false;
-    input.style.display = "none";
-
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        this.handleInputChange(file);
-      }
-    };
-    input.click();
-  };
-
   scrollToBottom = () => {
     if (this.messageListRef.current) {
       const scrollElement = this.messageListRef.current;
@@ -380,20 +328,8 @@ class ChatBox extends React.Component {
     }
 
     return (
-      <Layout style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        borderRadius: "6px",
-      }}>
-        <Card style={{
-          display: "flex",
-          width: "100%",
-          height: "100%",
-          flexDirection: "column",
-          position: "relative",
-          padding: "24px",
-        }}>
+      <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
+        <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
 
           <MessageList
@@ -419,9 +355,10 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              files={this.state.files}
+              onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
-              onFileUpload={this.handleFileUploadClick}
               loading={this.props.loading}
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}
