@@ -191,7 +191,7 @@ class ArticleListPage extends BaseListPage {
               <Button type="primary" size="small" onClick={this.addArticle.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={articles === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>

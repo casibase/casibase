@@ -221,7 +221,7 @@ class WorkflowListPage extends BaseListPage {
               <Button type="primary" size="small" onClick={this.addWorkflow.bind(this)}>{i18next.t("general:Add")}</Button>
             </div>
           )}
-          loading={workflows === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>
