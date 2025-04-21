@@ -112,8 +112,8 @@ class StoreListPage extends BaseListPage {
       splitProvider: "Default",
       modelProvider: "",
       embeddingProvider: "",
-      textToSpeechProvider: "",
-      speechToTextProvider: "",
+      textToSpeechProvider: "Browser Built-In",
+      speechToTextProvider: "Browser Built-In",
       memoryLimit: 5,
       frequency: 10000,
       limitMinutes: 10,
@@ -367,7 +367,7 @@ class StoreListPage extends BaseListPage {
               }
             </div>
           )}
-          loading={stores === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>

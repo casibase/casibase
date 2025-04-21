@@ -132,7 +132,7 @@ class ChatBox extends React.Component {
 
     let fileName = "";
     if (this.state.files[0]) {
-      fileName = this.state.files[0].name;
+      fileName = this.state.files[0].file.name;
     } else if (this.copyFileName) {
       const fileExtension = this.copyFileName.match(/\..+$/)[0];
       fileName = dateString + fileExtension;
