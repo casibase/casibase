@@ -915,6 +915,12 @@ export const OtherProviderInfo = {
       url: "https://www.alibabacloud.com/",
     },
   },
+  "Speech-to-Text": {
+    "Alibaba Cloud": {
+      logo: `${StaticBaseUrl}/img/social_aliyun.png`,
+      url: "https://www.alibabacloud.com/",
+    },
+  },
 };
 
 export function getItem(label, key, icon, children, type) {
@@ -993,15 +999,11 @@ export function getCompitableProviderOptions(category) {
 }
 
 export function getProviderLogoURL(provider) {
-  if (provider === undefined || provider === null) {
+  if (!provider || !OtherProviderInfo[provider.category] || !OtherProviderInfo[provider.category][provider.type]) {
     return "";
   }
-  const info = OtherProviderInfo[provider.category][provider.type];
-  // avoid crash when provider is not found
-  if (info) {
-    return info.logo;
-  }
-  return "";
+
+  return OtherProviderInfo[provider.category][provider.type].logo;
 }
 
 export function getProviderTypeOptions(category) {
@@ -1091,6 +1093,10 @@ export function getProviderTypeOptions(category) {
       ]
     );
   } else if (category === "Text-to-Speech") {
+    return [
+      {id: "Alibaba Cloud", name: "Alibaba Cloud"},
+    ];
+  } else if (category === "Speech-to-Text") {
     return [
       {id: "Alibaba Cloud", name: "Alibaba Cloud"},
     ];
@@ -1479,6 +1485,12 @@ export function getProviderSubTypeOptions(category, type) {
       return (
         [
           {id: "cosyvoice-v1", name: "cosyvoice-v1"},
+        ]
+      );
+    } else if (category === "Speech-to-Text") {
+      return (
+        [
+          {id: "paraformer-realtime-v1", name: "paraformer-realtime-v1"},
         ]
       );
     }

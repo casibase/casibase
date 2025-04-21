@@ -21,10 +21,10 @@ import moment from "moment";
 import ChatPrompts from "./ChatPrompts";
 import MessageList from "./chat/MessageList";
 import ChatInput from "./chat/ChatInput";
-import VoiceInputOverlay from "./chat/VoiceInputOverlay";
 import WelcomeHeader from "./chat/WelcomeHeader";
 import * as MessageBackend from "./backend/MessageBackend";
 import TtsHelper from "./TextToSpeech";
+import SpeechToTextHelper from "./SpeechToText";
 
 // Store the input value when the name(chat) leaves
 const inputStore = new Map();
@@ -43,11 +43,11 @@ class ChatBox extends React.Component {
       rerenderErrorMessage: false,
     };
     this.synth = window.speechSynthesis;
-    this.recognition = undefined;
     this.cursorPosition = undefined;
     this.copyFileName = null;
     this.messageListRef = React.createRef();
     this.ttsHelper = new TtsHelper(this);
+    this.sttHelper = new SpeechToTextHelper(this);
   }
 
   componentDidMount() {
@@ -79,7 +79,7 @@ class ChatBox extends React.Component {
   }
 
   clearOldStatus() {
-    this.recognition?.abort();
+    this.sttHelper.cleanup();
     this.ttsHelper.cleanup();
     this.setState({
       value: "",
@@ -104,7 +104,7 @@ class ChatBox extends React.Component {
         preSelectionRange.setEnd(range.startContainer, range.startOffset);
         this.cursorPosition = preSelectionRange.toString().length;
         if (this.state.isVoiceInput) {
-          this.recognition.abort();
+          this.sttHelper.stopRecognition();
         }
       }
     };
@@ -115,15 +115,17 @@ class ChatBox extends React.Component {
 
   handleSend = (innerHtml) => {
     // abort because the remaining recognition results are useless
-    this.recognition?.abort();
-    if (this.state.value === "" || this.props.disableInput) {
+    this.sttHelper.stopRecognition();
+
+    let newValue = this.state.value;
+
+    this.state.files.forEach(uploadedFile => {
+      newValue = uploadedFile.value + "\n" + newValue;
+    });
+
+    if (newValue === "" || this.props.disableInput) {
       return;
     }
-
-    const newValue = this.state.value.replace(/<img src="([^"]*)" alt="([^"]*)" width="(\d+)" height="(\d+)" data-original-width="(\d+)" data-original-height="(\d+)">/g,
-      (match, src, alt, width, height, scaledWidth, scaledHeight) => {
-        return `<img src="${src}" alt="${alt}" width="${scaledWidth}" height="${scaledHeight}">`;
-      });
 
     const date = moment();
     const dateString = date.format("YYYYMMDD_HHmmss");
@@ -147,44 +149,6 @@ class ChatBox extends React.Component {
     const message = [...messages.slice(0, index)].reverse().find(message => message.author !== "AI");
 
     this.handleEditMessage({...message, text: message.text, updatedTime: new Date().toISOString()});
-  };
-
-  handleInputChange = async(file) => {
-    const reader = new FileReader();
-    if (file.type.startsWith("image/")) {
-      reader.onload = (e) => {
-        const img = new Image();
-        img.onload = () => {
-          const originalWidth = img.width;
-          const originalHeight = img.height;
-          const inputMaxWidth = 70;
-          const chatMaxWidth = 600;
-          let Ratio = 1;
-          if (originalWidth > inputMaxWidth) {
-            Ratio = inputMaxWidth / originalWidth;
-          }
-          const scaledWidth = Math.round(originalWidth * Ratio);
-          const scaledHeight = Math.round(originalHeight * Ratio);
-          if (originalWidth > chatMaxWidth) {
-            Ratio = chatMaxWidth / originalWidth;
-          }
-          const chatScaledWidth = Math.round(originalWidth * Ratio);
-          const chatScaledHeight = Math.round(originalHeight * Ratio);
-          this.setState(prevState => ({
-            value: prevState.value + `<img src="${img.src}" alt="${img.alt}" width="${scaledWidth}" height="${scaledHeight}" data-original-width="${chatScaledWidth}" data-original-height="${chatScaledHeight}">`,
-            files: [...prevState.files, file],
-          }));
-        };
-        img.src = e.target.result;
-      };
-    } else {
-      reader.onload = (e) => {
-        this.setState({
-          value: this.state.value + `<a href="${e.target.result}" target="_blank">${file.name}</a>`,
-        });
-      };
-    }
-    reader.readAsDataURL(file);
   };
 
   copyMessageFromHTML(message) {
@@ -244,34 +208,81 @@ class ChatBox extends React.Component {
     this.ttsHelper.readMessage(message, this.props.store);
   };
 
-  insertVoiceMessage = () => {
-    const oldValue = this.state.value;
+  // Updated startVoiceInput method for ChatBox component
+  startVoiceInput = () => {
+    this.setState({isVoiceInput: true});
 
-    return (event) => {
-      const result = Array.from(event?.results)?.map((result) => result[0].transcript).join(",");
-      if (this.cursorPosition === undefined) {
-        this.setState({value: oldValue + result});
-      } else {
-        const newValue = oldValue.slice(0, this.cursorPosition) + result + oldValue.slice(this.cursorPosition);
-        this.setState({value: newValue});
+    // Check if using browser builtin or cloud provider
+    const providerValue = this.props.store?.speechToTextProvider || "";
+    const useCloudProvider = providerValue !== "" && providerValue !== "Browser Built-In";
+
+    if (useCloudProvider) {
+      this.sttHelper.startRecording()
+        .catch(error => {
+          Setting.showMessage("error", `Failed to start recording: ${error.message}`);
+          this.setState({isVoiceInput: false});
+        });
+    } else {
+      // Using browser builtin recognition
+      const recognition = this.sttHelper.initBrowserRecognition(this.processVoiceResult());
+
+      if (!recognition) {
+        Setting.showMessage("error", i18next.t("chat:Speech recognition not supported in this browser"));
+        this.setState({isVoiceInput: false});
       }
-    };
+    }
   };
 
-  handleFileUploadClick = () => {
-    const input = document.createElement("input");
-    input.type = "file";
-    input.accept = "image/*, .txt, .md, .yaml, .csv, .docx, .pdf, .xlsx";
-    input.multiple = false;
-    input.style.display = "none";
+  // Updated stopVoiceInput method for ChatBox component
+  stopVoiceInput = () => {
+    const providerValue = this.props.store?.speechToTextProvider || "";
+    const useCloudProvider = providerValue !== "" && providerValue !== "Browser Built-In";
 
-    input.onchange = (e) => {
-      const file = e.target.files[0];
-      if (file) {
-        this.handleInputChange(file);
+    if (useCloudProvider) {
+      if (this.sttHelper.stopRecording()) {
+        const audioBlob = new Blob(this.sttHelper.audioChunks, {type: "audio/webm"});
+        this.sttHelper.processAudioFile(audioBlob, this.props.store, this.processVoiceResult(true));
+      }
+    } else {
+      this.sttHelper.stopRecognition();
+
+      setTimeout(() => {
+        // Send the message after speech recognition is complete
+        if (this.state.value && this.state.value.trim() !== "") {
+          this.handleSend();
+        }
+      }, 300);
+    }
+
+    this.setState({isVoiceInput: false});
+  };
+
+  // Updated to handle both updating UI and to know when to send
+  processVoiceResult = (shouldSendAfterProcessing = false) => {
+    return (event) => {
+      const transcript = Array.from(event?.results)?.map((result) => result[0].transcript).join(" ");
+
+      if (!transcript || transcript.trim() === "") {
+        return; // Skip empty transcripts
+      }
+
+      // Update the input field with the transcript
+      if (this.cursorPosition === undefined) {
+        this.setState({value: transcript}, () => {
+          if (shouldSendAfterProcessing && this.state.value && this.state.value.trim() !== "") {
+            this.handleSend();
+          }
+        });
+      } else {
+        const oldValue = this.state.value || "";
+        const newValue = oldValue.slice(0, this.cursorPosition) + transcript + oldValue.slice(this.cursorPosition);
+        this.setState({value: newValue}, () => {
+          if (shouldSendAfterProcessing && this.state.value && this.state.value.trim() !== "") {
+            this.handleSend();
+          }
+        });
       }
     };
-    input.click();
   };
 
   scrollToBottom = () => {
@@ -317,20 +328,8 @@ class ChatBox extends React.Component {
     }
 
     return (
-      <Layout style={{
-        display: "flex",
-        width: "100%",
-        height: "100%",
-        borderRadius: "6px",
-      }}>
-        <Card style={{
-          display: "flex",
-          width: "100%",
-          height: "100%",
-          flexDirection: "column",
-          position: "relative",
-          padding: "24px",
-        }}>
+      <Layout style={{display: "flex", width: "100%", height: "100%", borderRadius: "6px"}}>
+        <Card style={{display: "flex", width: "100%", height: "100%", flexDirection: "column", position: "relative", padding: "24px"}}>
           {messages.length === 0 && <WelcomeHeader store={this.props.store} />}
 
           <MessageList
@@ -356,34 +355,27 @@ class ChatBox extends React.Component {
             <ChatInput
               value={this.state.value}
               store={this.props.store}
+              files={this.state.files}
+              onFileChange={(files) => this.setState({files})}
               onChange={(value) => this.setState({value})}
               onSend={this.handleSend}
-              onFileUpload={this.handleFileUploadClick}
               loading={this.props.loading}
               disableInput={this.props.disableInput}
               messageError={this.props.messageError}
               onCancelMessage={this.props.onCancelMessage}
-              onVoiceInputStart={() => this.setState({isVoiceInput: true})}
-              onVoiceInputEnd={() => this.setState({isVoiceInput: false})}
+              onVoiceInputStart={this.startVoiceInput}
+              onVoiceInputEnd={this.stopVoiceInput}
+              isVoiceInput={this.state.isVoiceInput}
             />
           )}
         </Card>
 
-        {this.state.isVoiceInput ? (
-          <VoiceInputOverlay
-            onStop={() => {
-              this.recognition?.abort();
-              this.setState({isVoiceInput: false});
-            }}
+        {messages.length === 0 ? (
+          <ChatPrompts
+            sendMessage={this.props.sendMessage}
+            prompts={prompts}
           />
-        ) : (
-          messages.length === 0 ? (
-            <ChatPrompts
-              sendMessage={this.props.sendMessage}
-              prompts={prompts}
-            />
-          ) : null
-        )}
+        ) : null}
       </Layout>
     );
   }
