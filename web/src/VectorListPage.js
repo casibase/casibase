@@ -269,7 +269,7 @@ class VectorListPage extends BaseListPage {
               </Popconfirm>
             </div>
           )}
-          loading={vectors === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>
