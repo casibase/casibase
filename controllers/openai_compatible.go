@@ -1,10 +1,11 @@
 package controllers
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
-	"time"
 
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
@@ -51,18 +52,16 @@ func (c *ApiController) OpenAICompatibleChat() {
 		c.ResponseErrorStream(nil, fmt.Sprintf("Failed to get model provider: %v", err))
 		return
 	}
-	fmt.Println("0哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈")
-	fmt.Println(modelProviderObj)
 
 	// check type
 	if req.Model != "" {
-        if req.Model != provider.SubType {
-            c.ResponseErrorStream(nil, fmt.Sprintf("Model mismatch: store uses %s but request specified %s", provider.SubType, req.Model))
-            return
-        }
-    } else {
-        req.Model = provider.SubType
-    }
+		if req.Model != provider.SubType {
+			c.ResponseErrorStream(nil, fmt.Sprintf("Model mismatch: store uses %s but request specified %s", provider.SubType, req.Model))
+			return
+		}
+	} else {
+		req.Model = provider.SubType
+	}
 
 	embeddingProvider, embeddingProviderObj, err := object.GetEmbeddingProviderFromContext("admin", "")
 	if err != nil {
@@ -85,7 +84,7 @@ func (c *ApiController) OpenAICompatibleChat() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	writer := &RefinedWriter{*c.Ctx.ResponseWriter, *NewCleaner(6), []byte{}, []byte{}, []byte{}}
+	writer := &OpenAICompatibleWriter{writer: c.Ctx.ResponseWriter.ResponseWriter}
 
 	knowledgeCount := store.KnowledgeCount
 	if knowledgeCount <= 0 {
@@ -106,7 +105,7 @@ func (c *ApiController) OpenAICompatibleChat() {
 	fmt.Printf("]\n")
 	fmt.Printf("Answer: [")
 
-	modelResult, err := modelProviderObj.QueryText(question, writer, nil, store.Prompt, knowledge)
+	_, err = modelProviderObj.QueryText(question, writer, nil, store.Prompt, knowledge)
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
 			c.ResponseErrorStream(nil, err.Error())
@@ -116,66 +115,34 @@ func (c *ApiController) OpenAICompatibleChat() {
 		return
 	}
 
-	if writer.writerCleaner.cleaned == false {
-		cleanedData := writer.writerCleaner.GetCleanedData()
-		writer.buf = append(writer.buf, []byte(cleanedData)...)
-		jsonData, err := ConvertMessageDataToJSON(cleanedData)
-		if err != nil {
-			c.ResponseErrorStream(nil, err.Error())
-			return
-		}
-
-		_, err = writer.ResponseWriter.Write([]byte(fmt.Sprintf("event: message\ndata: %s\n\n", jsonData)))
-		if err != nil {
-			c.ResponseErrorStream(nil, err.Error())
-			return
-		}
-
-		writer.Flush()
-		fmt.Print(cleanedData)
-	}
-
 	fmt.Printf("]\n")
 
 	// Send end event
-	event := fmt.Sprintf("event: end\ndata: %s\n\n", "end")
-	_, err = c.Ctx.ResponseWriter.Write([]byte(event))
+	_, err = c.Ctx.ResponseWriter.Write([]byte("data: [DONE]\n\n"))
 	if err != nil {
 		c.ResponseErrorStream(nil, err.Error())
 		return
 	}
+	writer.Flush()
+}
 
-	response := openai.ChatCompletionResponse{
-		ID:      util.GenerateId(),
-		Object:  "chat.completion",
-		Created: time.Now().Unix(),
-		Model:   store.ModelProvider,
-		Choices: []openai.ChatCompletionChoice{
-			{
-				Message: openai.ChatCompletionMessage{
-					Role:    "assistant",
-					Content: writer.MessageString(),
-				},
-				FinishReason: "stop",
-			},
-		},
-		Usage: openai.Usage{
-			PromptTokens:     modelResult.PromptTokenCount,
-			CompletionTokens: modelResult.ResponseTokenCount,
-			TotalTokens:      modelResult.TotalTokenCount,
-		},
+// writer for openai compatible
+type OpenAICompatibleWriter struct {
+	writer http.ResponseWriter
+}
+
+func (w *OpenAICompatibleWriter) Write(p []byte) (n int, err error) {
+	prefix := []byte("event: message\ndata: ")
+	suffix := []byte("\n\n")
+	if bytes.HasPrefix(p, prefix) {
+		data := bytes.TrimSuffix(bytes.TrimPrefix(p, prefix), suffix)
+		return w.writer.Write([]byte(fmt.Sprintf("data: %s\n\n", data)))
 	}
+	return w.writer.Write(p)
+}
 
-	// Send final response
-	jsonResponse, err := json.Marshal(response)
-	if err != nil {
-		c.ResponseErrorStream(nil, err.Error())
-		return
-	}
-
-	_, err = c.Ctx.ResponseWriter.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonResponse)))
-	if err != nil {
-		c.ResponseErrorStream(nil, err.Error())
-		return
+func (w *OpenAICompatibleWriter) Flush() {
+	if f, ok := w.writer.(http.Flusher); ok {
+		f.Flush()
 	}
 }
