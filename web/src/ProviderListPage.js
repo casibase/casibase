@@ -243,7 +243,7 @@ class ProviderListPage extends BaseListPage {
               <Button size="small" onClick={() => this.addProvider(true)}>{i18next.t("provider:Add Storage Provider")}</Button>
             </div>
           )}
-          loading={providers === null}
+          loading={this.state.loading}
           onChange={this.handleTableChange}
         />
       </div>

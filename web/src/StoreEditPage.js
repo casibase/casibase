@@ -273,13 +273,10 @@ class StoreEditPage extends React.Component {
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.textToSpeechProvider} onChange={(value => {this.updateStoreField("textToSpeechProvider", value);})}
             >
-              <Option key="none" value="">
-                {i18next.t("general:empty")}
-              </Option>
+              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
+              <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
               {
-                this.state.textToSpeechProviders.map((provider, index) =>
-                  this.renderProviderOption(provider, index)
-                )
+                this.state.textToSpeechProviders.map((provider, index) => this.renderProviderOption(provider, index))
               }
             </Select>
           </Col>
@@ -300,10 +297,11 @@ class StoreEditPage extends React.Component {
           </Col>
           <Col span={22} >
             <Select virtual={false} style={{width: "100%"}} value={this.state.store.speechToTextProvider} onChange={(value => {this.updateStoreField("speechToTextProvider", value);})}>
-              <Option key="none" value="">{i18next.t("general:empty")}</Option>
+              <Option key="Empty" value="">{i18next.t("general:empty")}</Option>
               <Option key="Browser Built-In" value="Browser Built-In">Browser Built-In</Option>
-              {this.state.speechToTextProviders.map((provider) => (<Option key={provider.name} value={provider.name}>{`${provider.displayName} (${provider.name})`}</Option>
-              ))}
+              {
+                this.state.speechToTextProviders.map((provider, index) => this.renderProviderOption(provider, index))
+              }
             </Select>
           </Col>
         </Row>
