@@ -703,38 +703,43 @@ class App extends Component {
     const menuStyleRight = !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
 
     return (
-      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white"}}>
-        {Setting.isMobile() ? null : (
-          <Link to={"/"}>
-            <div className="logo" />
-          </Link>
-        )}
-        {Setting.isMobile() ? (
-          <React.Fragment>
-            <Drawer title={i18next.t("general:Close")} placement="left" visible={this.state.menuVisible} onClose={this.onClose}>
-              <Menu
-                items={this.getMenuItems()}
-                mode={"inline"}
-                selectedKeys={[this.state.selectedMenuKey]}
-                style={{lineHeight: "64px"}}
-                onClick={onClick}
-              >
-              </Menu>
-            </Drawer>
-            <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
-              {i18next.t("general:Menu")}
-            </Button>
-          </React.Fragment>
-        ) : (
-          <Menu
-            onClick={onClick}
-            items={this.getMenuItems()}
-            mode={"horizontal"}
-            selectedKeys={[this.state.selectedMenuKey]}
-            style={{position: "absolute", left: "145px", right: menuStyleRight}}
-          />
-        )}
-        {this.renderAccountMenu()}
+      <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between"}}>
+        <div style={{display: "flex", alignItems: "center"}}>
+          {Setting.isMobile() ? null : (
+            <Link to={"/"}>
+              <div className="logo" />
+            </Link>
+          )}
+
+          {Setting.isMobile() ? (
+            <React.Fragment>
+              <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
+                <Menu
+                  items={this.getMenuItems()}
+                  mode={"inline"}
+                  selectedKeys={[this.state.selectedMenuKey]}
+                  style={{lineHeight: "64px"}}
+                  onClick={onClick}
+                >
+                </Menu>
+              </Drawer>
+              <Button icon={<BarsOutlined />} onClick={showMenu} type="text">
+                {i18next.t("general:Menu")}
+              </Button>
+            </React.Fragment>
+          ) : (
+            <Menu
+              onClick={onClick}
+              items={this.getMenuItems()}
+              mode={"horizontal"}
+              selectedKeys={[this.state.selectedMenuKey]}
+              style={{position: "relative", left: "145px", right: menuStyleRight}}
+            />
+          )}
+        </div>
+        <div>
+          {this.renderAccountMenu()}
+        </div>
       </Header>
     );
   }
