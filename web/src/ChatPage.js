@@ -627,7 +627,6 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         {
-          // For desktop view, show chat menu as sidebar
           !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
             <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
@@ -636,22 +635,9 @@ class ChatPage extends BaseListPage {
         }
 
         {Setting.isMobile() && (
-          <Drawer
-            title={i18next.t("chat:Chats")}
-            placement="left"
-            open={this.state.chatMenuVisible}
-            onClose={this.closeChatMenu}
-            width={250}
+          <Drawer title={i18next.t("chat:Chats")} placement="left" open={this.state.chatMenuVisible} onClose={this.closeChatMenu} width={250}
           >
-            <ChatMenu
-              ref={this.menu}
-              chats={chats}
-              chatName={this.getChat()}
-              onSelectChat={onSelectChat}
-              onAddChat={onAddChat}
-              onDeleteChat={onDeleteChat}
-              onUpdateChatName={onUpdateChatName}
-              stores={this.state.stores}
+            <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores}
             />
           </Drawer>
         )}
