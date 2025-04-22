@@ -13,8 +13,8 @@
 // limitations under the License.
 
 import React from "react";
-import {Button, Modal, Spin} from "antd";
-import {CloseCircleFilled} from "@ant-design/icons";
+import {Button, Drawer, Modal, Spin} from "antd";
+import {BarsOutlined, CloseCircleFilled} from "@ant-design/icons";
 import moment from "moment";
 import * as StoreBackend from "./backend/StoreBackend";
 import ChatMenu from "./ChatMenu";
@@ -45,6 +45,7 @@ class ChatPage extends BaseListPage {
       messageLoading: false,
       messageError: false,
       autoRead: false,
+      chatMenuVisible: false,
     });
 
     this.fetch();
@@ -67,6 +68,18 @@ class ChatPage extends BaseListPage {
       this.props.onCreateChatPage(this);
     }
   }
+
+  toggleChatMenu = () => {
+    this.setState({
+      chatMenuVisible: !this.state.chatMenuVisible,
+    });
+  };
+
+  closeChatMenu = () => {
+    this.setState({
+      chatMenuVisible: false,
+    });
+  };
 
   getGlobalStores() {
     StoreBackend.getGlobalStores("", "", "", "", "", "").then((res) => {
@@ -576,6 +589,7 @@ class ChatPage extends BaseListPage {
       this.setState({
         chat: chat,
         // messages: null,
+        chatMenuVisible: false,
       });
       this.getMessages(chat);
       this.goToLinkSoft(`/chat/${chat.name}`);
@@ -613,14 +627,56 @@ class ChatPage extends BaseListPage {
           this.renderUnsafePasswordModal()
         }
         {
+          // For desktop view, show chat menu as sidebar
           !(Setting.isMobile() || Setting.getUrlParam("isRaw") !== null) && (
             <div style={{width: "250px", height: "100%", backgroundColor: "white", marginRight: "2px"}}>
               <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
             </div>
           )
         }
+
+        {Setting.isMobile() && (
+          <Drawer
+            title={i18next.t("chat:Chats")}
+            placement="left"
+            open={this.state.chatMenuVisible}
+            onClose={this.closeChatMenu}
+            width={250}
+          >
+            <ChatMenu
+              ref={this.menu}
+              chats={chats}
+              chatName={this.getChat()}
+              onSelectChat={onSelectChat}
+              onAddChat={onAddChat}
+              onDeleteChat={onDeleteChat}
+              onUpdateChatName={onUpdateChatName}
+              stores={this.state.stores}
+            />
+          </Drawer>
+        )}
+
         <div style={{flex: 1, height: "100%", backgroundColor: "white", position: "relative", display: "flex", flexDirection: "column"}}>
-          {this.state.chat && <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} />}
+          {this.state.chat && (
+            <div style={{display: "flex", alignItems: "center"}}>
+              {Setting.isMobile() && (
+                <Button
+                  type="text"
+                  icon={<BarsOutlined />}
+                  onClick={this.toggleChatMenu}
+                  style={{marginRight: "8px"}}
+                />
+              )}
+              <div style={{flex: 1}}>
+                <StoreInfoTitle
+                  chat={this.state.chat}
+                  stores={this.state.stores}
+                  autoRead={this.state.autoRead}
+                  onUpdateAutoRead={(checked) => this.setState({autoRead: checked})}
+                />
+              </div>
+            </div>
+          )}
 
           <div style={{flex: 1, position: "relative", overflow: "auto"}}>
             {
