@@ -637,8 +637,7 @@ class ChatPage extends BaseListPage {
         {Setting.isMobile() && (
           <Drawer title={i18next.t("chat:Chats")} placement="left" open={this.state.chatMenuVisible} onClose={this.closeChatMenu} width={250}
           >
-            <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores}
-            />
+            <ChatMenu ref={this.menu} chats={chats} chatName={this.getChat()} onSelectChat={onSelectChat} onAddChat={onAddChat} onDeleteChat={onDeleteChat} onUpdateChatName={onUpdateChatName} stores={this.state.stores} />
           </Drawer>
         )}
 
@@ -646,20 +645,10 @@ class ChatPage extends BaseListPage {
           {this.state.chat && (
             <div style={{display: "flex", alignItems: "center"}}>
               {Setting.isMobile() && (
-                <Button
-                  type="text"
-                  icon={<BarsOutlined />}
-                  onClick={this.toggleChatMenu}
-                  style={{marginRight: "8px"}}
-                />
+                <Button type="text" icon={<BarsOutlined />} onClick={this.toggleChatMenu} style={{marginRight: "8px"}} />
               )}
               <div style={{flex: 1}}>
-                <StoreInfoTitle
-                  chat={this.state.chat}
-                  stores={this.state.stores}
-                  autoRead={this.state.autoRead}
-                  onUpdateAutoRead={(checked) => this.setState({autoRead: checked})}
-                />
+                <StoreInfoTitle chat={this.state.chat} stores={this.state.stores} autoRead={this.state.autoRead} onUpdateAutoRead={(checked) => this.setState({autoRead: checked})} />
               </div>
             </div>
           )}
