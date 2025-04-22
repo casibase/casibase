@@ -242,7 +242,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             <Select
               value={selectedProvider || storeInfo?.modelProvider || "Default"}
-              style={{width: isMobile ? 120 : 180}} // Reduce width on mobile
+              style={{width: isMobile ? 120 : 180}}
               onChange={handleProviderChange}
               disabled={isUpdating}
               popupMatchSelectWidth ={false}
