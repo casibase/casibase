@@ -225,7 +225,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
             <Select
               value={selectedStore?.name || storeInfo?.name || "Default Store"}
-              style={{width: isMobile ? 120 : 150}}
+              style={{width: isMobile ? "35vw" : "12rem"}}
               onChange={handleStoreChange}
               disabled={isUpdating}
             >
@@ -242,7 +242,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             <Select
               value={selectedProvider || storeInfo?.modelProvider || "Default"}
-              style={{width: isMobile ? 120 : 180}}
+              style={{width: isMobile ? "35vw" : "15rem"}}
               onChange={handleProviderChange}
               disabled={isUpdating}
               popupMatchSelectWidth ={false}
@@ -277,8 +277,8 @@ const StoreInfoTitle = (props) => {
 
         {
           storeInfo?.showAutoRead && (
-            <div style={{marginLeft: isMobile ? "5px" : "20px"}}>
-              <span style={{marginRight: isMobile ? "5px" : "10px"}}>{i18next.t("store:Auto read")}:</span>
+            <div>
+              <span style={{marginLeft: "20px", marginRight: "10px"}}>{i18next.t("store:Auto read")}:</span>
               <Switch checked={autoRead} onChange={checked => {
                 onUpdateAutoRead(checked);
               }} />
