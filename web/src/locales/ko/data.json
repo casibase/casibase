@@ -84,7 +84,7 @@
     "Cancel": "Cancel",
     "Chat": "Chat",
     "Chats": "Chats",
-    "Chats & Messages": "Chats & Messages",
+    "Chats \u0026 Messages": "Chats \u0026 Messages",
     "Client IP": "Client IP",
     "Client IP - Tooltip": "Client IP - Tooltip",
     "Close": "Close",
@@ -120,7 +120,7 @@
     "ID - Tooltip": "ID - Tooltip",
     "IP": "IP",
     "IP - Tooltip": "IP - Tooltip",
-    "Identity & Access Management": "Identity & Access Management",
+    "Identity \u0026 Access Management": "Identity \u0026 Access Management",
     "Images": "Images",
     "Is alerted": "Is alerted",
     "Is deleted": "Is deleted",
@@ -130,7 +130,7 @@
     "Language": "Language",
     "Language - Tooltip": "Language - Tooltip",
     "Loading...": "Loading...",
-    "Logging & Auditing": "Logging & Auditing",
+    "Logging \u0026 Auditing": "Logging \u0026 Auditing",
     "Machines": "Machines",
     "Menu": "Menu",
     "Message": "Message",
@@ -179,7 +179,7 @@
     "Resume": "Resume",
     "Run": "Run",
     "Save": "Save",
-    "Save & Exit": "Save & Exit",
+    "Save \u0026 Exit": "Save \u0026 Exit",
     "Sessions": "Sessions",
     "Size": "Size",
     "Size - Tooltip": "Size - Tooltip",
@@ -305,7 +305,8 @@
     "Remote Apps": "Remote Apps",
     "Remote Apps - Tooltip": "Remote Apps - Tooltip",
     "Services": "Services",
-    "Services - Tooltip": "Services - Tooltip"
+    "Services - Tooltip": "Services - Tooltip",
+    "Successfully deleted": "Successfully deleted"
   },
   "provider": {
     "API key": "API key",
@@ -433,7 +434,7 @@
     "Total Throughput": "총 처리량",
     "Unknown version": "알 수 없는 버전",
     "Version": "버전",
-    "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Open-Source LangChain-like AI Knowledge Database & Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
+    "🚀⚡️Open-Source LangChain-like AI Knowledge Database \u0026 Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)": "🚀⚡️Open-Source LangChain-like AI Knowledge Database \u0026 Chat Bot with Admin UI and multi-model support (ChatGPT, Claude, Llama 3, DeepSeek R1, HuggingFace, etc.)"
   },
   "task": {
     "Activity": "Activity",
