@@ -48,19 +48,25 @@ class StoreListPage extends BaseListPage {
       StorageProviderBackend.getStorageProviders(this.props.account.name),
       ProviderBackend.getProviders(this.props.account.name),
     ]).then(([storageRes, providersRes]) => {
+      if (storageRes.status !== "ok") {
+        Setting.showMessage("error", `Failed to get storage providers: ${storageRes.msg}`);
+        return;
+      }
+
+      if (providersRes.status !== "ok") {
+        Setting.showMessage("error", `Failed to get providers: ${providersRes.msg}`);
+        return;
+      }
+
       const newProviders = {};
 
-      if (storageRes.status === "ok") {
-        storageRes.data.forEach(provider => {
-          newProviders[provider.name] = provider;
-        });
-      }
+      storageRes.data.forEach(provider => {
+        newProviders[provider.name] = provider;
+      });
 
-      if (providersRes.status === "ok") {
-        providersRes.data.forEach(provider => {
-          newProviders[provider.name] = provider;
-        });
-      }
+      providersRes.data.forEach(provider => {
+        newProviders[provider.name] = provider;
+      });
 
       this.setState({
         providers: newProviders,
