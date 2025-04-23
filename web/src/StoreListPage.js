@@ -75,28 +75,29 @@ class StoreListPage extends BaseListPage {
         }
       });
   }
-  renderProviderInfo(text, providerType = "") {
-    if (!text) {
+  renderProviderInfo(provider) {
+    if (!provider) {
       return null;
     }
+
     const providerLogo = (
-      <img width={20} height={20} src={Setting.getProviderLogoURL(this.state.providers[text])} alt={text} />
+      <img width={20} height={20} src={Setting.getProviderLogoURL(provider)} alt={provider.name} />
     );
 
-    const provider = this.state.providers[text];
-    const isLocalStorage = provider && provider.type === "Local File System";
+    const isLocalStorage = provider.type === "Local File System";
+    const providerType = provider.category;
 
-    if (providerType === "image" || (providerType === "storage" && !isLocalStorage)) {
+    if (providerType === "Image" || (providerType === "Storage" && !isLocalStorage)) {
       return (
-        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
-          {text && providerLogo} {text}
+        <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${provider.name}`)}>
+          {provider.name && providerLogo} {provider.name}
           {Setting.renderExternalLink()}
         </a>
       );
     } else {
       return (
-        <Link to={`/providers/${text}`}>
-          {text && providerLogo} {text}
+        <Link to={`/providers/${provider.name}`}>
+          {provider.name && providerLogo} {provider.name}
         </Link>
       );
     }
@@ -227,8 +228,8 @@ class StoreListPage extends BaseListPage {
           if (text === "") {
             return null;
           }
-
-          return this.renderProviderInfo(text, "storage");
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       // {
@@ -245,7 +246,8 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
         render: (text, record, index) => {
-          return this.renderProviderInfo(text, "image");
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       {
@@ -255,7 +257,8 @@ class StoreListPage extends BaseListPage {
         width: "330px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
         render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       {
@@ -265,7 +268,8 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       {
@@ -275,7 +279,8 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
         render: (text, record, index) => {
-          return this.renderProviderInfo(text);
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       {
@@ -285,7 +290,8 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
         render: (text) => {
-          return this.renderProviderInfo(text);
+          const provider = this.state.providers[text];
+          return this.renderProviderInfo(provider);
         },
       },
       {
