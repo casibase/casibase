@@ -42,7 +42,7 @@ class ImageEditPage extends React.Component {
             image: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get image: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -250,7 +250,7 @@ class ImageEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               imageName: this.state.image.name,
             });
@@ -261,15 +261,15 @@ class ImageEditPage extends React.Component {
             }
             // this.getImage(true);
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
             this.updateImageField("name", this.state.imageName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

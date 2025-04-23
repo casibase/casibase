@@ -44,7 +44,7 @@ class ProviderEditPage extends React.Component {
             provider: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get provider: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -712,7 +712,7 @@ class ProviderEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               providerName: this.state.provider.name,
             });
@@ -723,15 +723,15 @@ class ProviderEditPage extends React.Component {
               this.props.history.push(`/providers/${this.state.provider.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
             this.updateProviderField("name", this.state.providerName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `f${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

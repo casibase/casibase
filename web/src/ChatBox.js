@@ -219,7 +219,7 @@ class ChatBox extends React.Component {
     if (useCloudProvider) {
       this.sttHelper.startRecording()
         .catch(error => {
-          Setting.showMessage("error", `Failed to start recording: ${error.message}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to start recording")}: ${error.message}`);
           this.setState({isVoiceInput: false});
         });
     } else {

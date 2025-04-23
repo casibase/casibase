@@ -76,7 +76,7 @@ class StoreEditPage extends React.Component {
             store: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get store: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -89,7 +89,7 @@ class StoreEditPage extends React.Component {
             stores: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get stores: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -102,7 +102,7 @@ class StoreEditPage extends React.Component {
             casdoorStorageProviders: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -119,7 +119,7 @@ class StoreEditPage extends React.Component {
             speechToTextProviders: res.data.filter(provider => provider.category === "Speech-to-Text"),
           });
         } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -518,7 +518,7 @@ class StoreEditPage extends React.Component {
         if (res.status === "ok") {
           if (res.data) {
             Setting.setThemeColor(this.state.store.themeColor);
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               storeName: this.state.store.name,
             });
@@ -528,15 +528,15 @@ class StoreEditPage extends React.Component {
               this.props.history.push(`/stores/${this.state.store.owner}/${this.state.store.name}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
             this.updateStoreField("name", this.state.storeName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 
