@@ -45,7 +45,7 @@ class ArticleListPage extends BaseListPage {
     ArticleBackend.addArticle(newArticle)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("article:Article added successfully"));
+          Setting.showMessage("success", i18next.t("article:Successfully added"));
           this.setState({
             data: Setting.prependRow(this.state.data, newArticle),
             pagination: {
@@ -54,11 +54,11 @@ class ArticleListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("article:Failed to add article")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("article:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("article:Article failed to add")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("article:Failed to add")}: ${error}`);
       });
   }
 
@@ -66,7 +66,7 @@ class ArticleListPage extends BaseListPage {
     ArticleBackend.deleteArticle(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("article:Article deleted successfully"));
+          Setting.showMessage("success", i18next.t("article:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -75,11 +75,11 @@ class ArticleListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("article:Article failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("article:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("article:Article failed to delete")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("article:Failed to delete")}: ${error}`);
       });
   }
 

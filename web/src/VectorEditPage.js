@@ -47,7 +47,7 @@ class VectorEditPage extends React.Component {
             vector: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get vector")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

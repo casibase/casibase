@@ -66,7 +66,7 @@ class StoreListPage extends BaseListPage {
     StoreBackend.addStore(newStore)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("store:Store added successfully"));
+          Setting.showMessage("success", i18next.t("store:Successfully added"));
           this.setState({
             data: Setting.prependRow(this.state.data, newStore),
             pagination: {
@@ -75,11 +75,11 @@ class StoreListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("store:Store failed to add")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("store:Store failed to add")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("store:Failed to add")}: ${error}`);
       });
   }
 
@@ -87,7 +87,7 @@ class StoreListPage extends BaseListPage {
     StoreBackend.deleteStore(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("store:Store deleted successfully"));
+          Setting.showMessage("success", i18next.t("store:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -96,11 +96,11 @@ class StoreListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("store:Store failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("store:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("store:Store failed to delete")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("store:Failed to delete")}: ${error}`);
       });
   }
 

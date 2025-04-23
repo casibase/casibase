@@ -52,7 +52,7 @@ class VideoPage extends React.Component {
             video: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get video")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

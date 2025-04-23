@@ -53,10 +53,10 @@ export function addPermission(account, store, file = null, fileKeys = null) {
       if (res.status === "ok") {
         Setting.openLink(Setting.getMyProfileUrl(account).replace("/account", `/permissions/${newPermission.owner}/${newPermission.name}`));
       } else {
-        Setting.showMessage("error", `${i18next.t("general:Permission failed to add")}: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
       }
     })
     .catch(error => {
-      Setting.showMessage("error", `${i18next.t("general:Permission failed to add")}: ${error}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
     });
 }

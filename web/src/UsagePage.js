@@ -61,7 +61,7 @@ class UsagePage extends BaseListPage {
             usageMetadata: res.data2,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get usages")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }

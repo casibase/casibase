@@ -94,7 +94,7 @@ class App extends Component {
         Setting.setThemeColor(color);
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
-        Setting.showMessage("error", `${i18next.t("general:Failed to get theme")}: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });
   }

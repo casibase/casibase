@@ -81,17 +81,17 @@ class FileTable extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data === true) {
-            Setting.showMessage("success", i18next.t("general:File deleted successfully"));
+            Setting.showMessage("success", i18next.t("general:Successfully deleted"));
             this.props.onRefresh();
           } else {
-            Setting.showMessage("error", `${i18next.t("general:File failed to delete")}: ${res.msg}`);
+            Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
           }
         } else {
-          Setting.showMessage("error", `${i18next.t("general:File failed to delete")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("general:File failed to delete")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 

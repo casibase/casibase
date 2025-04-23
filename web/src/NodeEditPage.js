@@ -93,7 +93,7 @@ class NodeEditPage extends React.Component {
             node: newNode,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("node:Failed to get node")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -372,15 +372,15 @@ class NodeEditPage extends React.Component {
             }
             // this.getNode(true);
           } else {
-            Setting.showMessage("error", i18next.t("node:failed to save: server side failure"));
+            Setting.showMessage("error", i18next.t("node:Failed to save: server side failure"));
             this.updateNodeField("name", this.state.nodeName);
           }
         } else {
-          Setting.showMessage("error", `${i18next.t("node:failed to save")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("node:failed to save")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("node:Failed to save")}: ${error}`);
       });
   }
 

@@ -56,13 +56,13 @@ class NodeListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.props.history.push({pathname: `/nodes/${newNode.name}`, mode: "add"});
-          Setting.showMessage("success", i18next.t("node:Node added successfully"));
+          Setting.showMessage("success", i18next.t("node:Successfully added"));
         } else {
-          Setting.showMessage("error", `${i18next.t("node:Failed to add Node")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("node:Node failed to add")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("node:Failed to add")}: ${error}`);
       });
   }
 
@@ -70,7 +70,7 @@ class NodeListPage extends BaseListPage {
     NodeBackend.deleteNode(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", i18next.t("node:Node deleted successfully"));
+          Setting.showMessage("success", i18next.t("node:Successfully deleted"));
           this.setState({
             data: Setting.deleteRow(this.state.data, i),
             pagination: {
@@ -79,11 +79,11 @@ class NodeListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("node:Failed to delete Node")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("node:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `${i18next.t("node:Node failed to delete")}: ${error}`);
+        Setting.showMessage("error", `${i18next.t("node:Failed to delete")}: ${error}`);
       });
   }
 

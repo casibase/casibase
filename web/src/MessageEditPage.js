@@ -49,7 +49,7 @@ class MessageEditPage extends React.Component {
             chats: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("message:Failed to get chat")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -62,7 +62,7 @@ class MessageEditPage extends React.Component {
             chat: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("message:Failed to get chat")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -75,7 +75,7 @@ class MessageEditPage extends React.Component {
             message: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("message:Failed to get message")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -88,7 +88,7 @@ class MessageEditPage extends React.Component {
             messages: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("message:Failed to get messages")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("message:Failed to get")}: ${res.msg}`);
         }
       });
   }

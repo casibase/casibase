@@ -78,7 +78,7 @@ class ChatPage extends BaseListPage {
           canSelectStore: canSelectStore,
         });
       } else {
-        Setting.showMessage("error", `${i18next.t("general:Failed to get stores")}: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });
   }
@@ -231,11 +231,11 @@ class ChatPage extends BaseListPage {
         MessageBackend.deleteWelcomeMessage(messages[0])
           .then((res) => {
             if (res.status !== "ok") {
-              Setting.showMessage("error", `${i18next.t("general:Failed to delete Message")}: ${res.msg}`);
+              Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
             }
           })
           .catch(error => {
-            Setting.showMessage("error", `${i18next.t("general:Message failed to delete")}: ${error}`);
+            Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
           });
       }
       this.sendMessage(newMessage);

@@ -44,7 +44,7 @@ class MachineEditPage extends React.Component {
             machine: res.data,
           });
         } else {
-          Setting.showMessage("error", `${i18next.t("machine:Failed to get machine")}: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("machine:Failed to get")}: ${res.msg}`);
         }
       });
   }
