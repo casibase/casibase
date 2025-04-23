@@ -38,42 +38,38 @@ class StoreListPage extends BaseListPage {
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();
-    this.getCasdoorStorageProviders();
-    this.getProviders();
+    this.loadAllProviders();
   }
 
-  getCasdoorStorageProviders() {
-    StorageProviderBackend.getStorageProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          const newProviders = {...this.state.providers};
-          res.data.forEach(provider => {
-            newProviders[provider.name] = provider;
-          });
-          this.setState({
-            providers: newProviders,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
-        }
-      });
-  }
+  loadAllProviders() {
+    this.setState({loading: true});
 
-  getProviders() {
-    ProviderBackend.getProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          const newProviders = {...this.state.providers};
-          res.data.forEach(provider => {
-            newProviders[provider.name] = provider;
-          });
-          this.setState({
-            providers: newProviders,
-          });
-        } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
-        }
+    Promise.all([
+      StorageProviderBackend.getStorageProviders(this.props.account.name),
+      ProviderBackend.getProviders(this.props.account.name),
+    ]).then(([storageRes, providersRes]) => {
+      const newProviders = {};
+
+      if (storageRes.status === "ok") {
+        storageRes.data.forEach(provider => {
+          newProviders[provider.name] = provider;
+        });
+      }
+
+      if (providersRes.status === "ok") {
+        providersRes.data.forEach(provider => {
+          newProviders[provider.name] = provider;
+        });
+      }
+
+      this.setState({
+        providers: newProviders,
+        loading: false,
       });
+    }).catch(error => {
+      Setting.showMessage("error", `Failed to load providers: ${error}`);
+      this.setState({loading: false});
+    });
   }
   renderProviderInfo(provider) {
     if (!provider) {
