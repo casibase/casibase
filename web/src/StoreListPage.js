@@ -75,14 +75,18 @@ class StoreListPage extends BaseListPage {
         }
       });
   }
-  renderProviderInfo(text, isExternal = false) {
+  renderProviderInfo(text, providerType = "") {
     if (!text) {
       return null;
     }
     const providerLogo = (
       <img width={20} height={20} src={Setting.getProviderLogoURL(this.state.providers[text])} alt={text} />
     );
-    if (isExternal || (!text.includes("local") && !text.includes("built-in"))) {
+
+    const provider = this.state.providers[text];
+    const isLocalStorage = provider && provider.type === "Local File System";
+
+    if (providerType === "image" || (providerType === "storage" && !isLocalStorage)) {
       return (
         <a target="_blank" rel="noreferrer" href={Setting.getMyProfileUrl(this.props.account).replace("/account", `/providers/admin/${text}`)}>
           {text && providerLogo} {text}
@@ -224,7 +228,7 @@ class StoreListPage extends BaseListPage {
             return null;
           }
 
-          return this.renderProviderInfo(text);
+          return this.renderProviderInfo(text, "storage");
         },
       },
       // {
@@ -241,7 +245,7 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
         render: (text, record, index) => {
-          return this.renderProviderInfo(text, true);
+          return this.renderProviderInfo(text, "image");
         },
       },
       {
@@ -281,11 +285,7 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
         render: (text) => {
-          return (
-            <Link to={`/providers/${text}`}>
-              {text}
-            </Link>
-          );
+          return this.renderProviderInfo(text);
         },
       },
       {
