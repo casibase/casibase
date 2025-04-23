@@ -50,7 +50,7 @@ class MessageList extends React.Component {
           top: 0,
           left: 0,
           right: 0,
-          bottom: hideInput ? "0px" : "150px",
+          bottom: hideInput ? "0px" : "100px",
           padding: "24px",
           paddingBottom: hideInput ? "0px" : "40px",
           scrollBehavior: "smooth",

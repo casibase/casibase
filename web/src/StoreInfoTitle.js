@@ -225,7 +225,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Store")}:</span>}
             <Select
               value={selectedStore?.name || storeInfo?.name || "Default Store"}
-              style={{width: 150}}
+              style={{width: isMobile ? "35vw" : "12rem"}}
               onChange={handleStoreChange}
               disabled={isUpdating}
             >
@@ -242,7 +242,7 @@ const StoreInfoTitle = (props) => {
             {!isMobile && <span style={{marginRight: "10px"}}>{i18next.t("general:Model")}:</span>}
             <Select
               value={selectedProvider || storeInfo?.modelProvider || "Default"}
-              style={{width: 180}}
+              style={{width: isMobile ? "35vw" : "15rem"}}
               onChange={handleProviderChange}
               disabled={isUpdating}
               popupMatchSelectWidth ={false}
