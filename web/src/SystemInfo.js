@@ -62,7 +62,7 @@ class SystemInfo extends React.Component {
             this.stopTimer();
           }
         }).catch(error => {
-          Setting.showMessage("error", `System info failed to get: ${error}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
           this.stopTimer();
         });
         SystemBackend.getPrometheusInfo().then(res => {
@@ -74,7 +74,7 @@ class SystemInfo extends React.Component {
 
       this.setState({intervalId: id});
     }).catch(error => {
-      Setting.showMessage("error", `System info failed to get: ${error}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
       this.stopTimer();
     });
 
@@ -88,7 +88,7 @@ class SystemInfo extends React.Component {
         this.stopTimer();
       }
     }).catch(err => {
-      Setting.showMessage("error", `Version info failed to get: ${err}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${err}`);
       this.stopTimer();
     });
   }

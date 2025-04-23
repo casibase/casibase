@@ -152,7 +152,7 @@ class ArticleTable extends React.Component {
           this.updateField(this.props.table, i, "text", res.data);
           this.submitArticleEdit();
         } else {
-          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -172,7 +172,7 @@ class ArticleTable extends React.Component {
           this.updateField(this.props.table, i, "textEn", res.data);
           this.submitArticleEdit();
         } else {
-          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -190,7 +190,7 @@ class ArticleTable extends React.Component {
         if (res.status === "ok") {
           this.updateField(this.props.table, i, "text", res.data);
         } else {
-          Setting.showMessage("error", `Failed to get answer: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
