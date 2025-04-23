@@ -6,13 +6,15 @@
     "@ant-design/cssinjs": "^1.12.0",
     "@ant-design/icons": "4.6.2",
     "@ant-design/x": "^1.0.5",
+    "@bpmn-io/cm-theme": "0.1.0-alpha.2",
+    "@bpmn-io/properties-panel": "^3.26.4",
     "@craco/craco": "6.4.5",
     "@cyntler/react-doc-viewer": "^1.5.2",
     "aliplayer-react": "^0.7.0",
     "antd": "5.24.0",
+    "bpmn-font": "^0.12.1",
     "bpmn-js": "^18.4.0",
     "bpmn-js-properties-panel": "^5.35.0",
-    "@bpmn-io/properties-panel": "^3.26.4",
     "camunda-bpmn-moddle": "^7.0.1",
     "casdoor-js-sdk": "^0.2.7",
     "codemirror": "^5.61.1",
@@ -95,10 +97,7 @@
     "lint-staged": "^13.0.3",
     "stylelint": "^14.11.0",
     "stylelint-config-recommended-less": "^1.0.4",
-    "stylelint-config-standard": "^28.0.0",
-    "bpmn-js-properties-panel": "^5.35.0",
-    "@bpmn-io/properties-panel": "^3.26.4",
-    "camunda-bpmn-moddle": "^7.0.1"
+    "stylelint-config-standard": "^28.0.0"
   },
   "lint-staged": {
     "src/**/*.{css,less}": [

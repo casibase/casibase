@@ -16,9 +16,8 @@ import BpmnModeler from "bpmn-js/lib/Modeler";
 import {BpmnPropertiesPanelModule, BpmnPropertiesProviderModule, CamundaPlatformPropertiesProviderModule} from "bpmn-js-properties-panel";
 import camundaModdle from "camunda-bpmn-moddle/resources/camunda";
 import "@bpmn-io/properties-panel/assets/properties-panel.css";
-import "bpmn-js/dist/assets/diagram-js.css";
-import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
-import "bpmn-js/dist/assets/diagram-js.css";
+import "diagram-js/assets/diagram-js.css";
+import "bpmn-font/dist/css/bpmn.css";
 import {Button} from "antd";
 
 const DegaultDiagram = `<?xml version="1.0" encoding="UTF-8"?>

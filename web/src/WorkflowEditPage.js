@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import React from "react";
 import {Button, Card, Col, Input, Row} from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
@@ -62,6 +63,7 @@ class WorkflowEditPage extends React.Component {
 
   updateWorkflowField(key, value) {
     value = this.parseWorkflowField(key, value);
+
     const workflow = this.state.workflow;
     workflow[key] = value;
     this.setState({
@@ -122,7 +124,6 @@ class WorkflowEditPage extends React.Component {
                   Setting.showMessage("success", info);
                 }}
                 onError={(err) => {
-                  // console.error("BPMN rendering error:", err);
                   Setting.showMessage("error", err);
                 }}
                 onXMLChange={(xml) => {

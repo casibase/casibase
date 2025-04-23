@@ -246,6 +246,9 @@ export function getShortName(s) {
 }
 
 export function getShortText(s, maxLength = 35) {
+  if (!s) {
+    return "";
+  }
   if (s.length > maxLength) {
     return `${s.slice(0, maxLength)}...`;
   } else {

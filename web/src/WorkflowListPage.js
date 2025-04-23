@@ -11,29 +11,17 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 import React from "react";
 import {Link} from "react-router-dom";
-import {Button, Popconfirm, Table, Tooltip} from "antd";
+import {Button, Input, Popconfirm, Table, Tooltip} from "antd";
 import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
 import BpmnComponent from "./BpmnComponent";
-
-const DefaultDiagram = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1ihw2m0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="bpmn-js (https://demo.bpmn.io)" exporterVersion="18.3.1">
-  <bpmn:process id="Process_0ytc8h8" isExecutable="false">
-    <bpmn:startEvent id="StartEvent_1di279l" />
-    <bpmn:intermediateThrowEvent id="Event_1qj6rzv" />
-    <bpmn:intermediateThrowEvent id="Event_04smgb6" />
-  </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_0ytc8h8">
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-</bpmn:definitions>`;
-
+const {TextArea} = Input;
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
     super(props);
@@ -61,8 +49,6 @@ class WorkflowListPage extends BaseListPage {
               ...this.state.pagination,
               total: this.state.pagination.total + 1,
             },
-          }, () => {
-            this.props.history.push(`/workflows/${newWorkflow.name}`);
           });
         } else {
           Setting.showMessage("error", `Failed to add workflow: ${res.msg}`);
@@ -121,9 +107,9 @@ class WorkflowListPage extends BaseListPage {
         title: i18next.t("general:Text"),
         dataIndex: "text",
         key: "text",
+        // width: "160px",
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
-          const diagramXML = text || DefaultDiagram;
           return (
             <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
@@ -139,7 +125,7 @@ class WorkflowListPage extends BaseListPage {
               </div>
             }>
               <div style={{maxWidth: "300px"}}>
-                {Setting.getShortText(diagramXML, 100)}
+                {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
           );
@@ -149,9 +135,9 @@ class WorkflowListPage extends BaseListPage {
         title: i18next.t("general:Text2"),
         dataIndex: "text2",
         key: "text2",
+        // width: "160px",
         sorter: (a, b) => a.text2.localeCompare(b.text2),
         render: (text, record, index) => {
-          const diagramXML = text || DefaultDiagram;
           return (
             <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
@@ -167,7 +153,7 @@ class WorkflowListPage extends BaseListPage {
               </div>
             }>
               <div style={{maxWidth: "300px"}}>
-                {Setting.getShortText(diagramXML, 100)}
+                {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
           );
@@ -177,25 +163,17 @@ class WorkflowListPage extends BaseListPage {
         title: i18next.t("general:Message"),
         dataIndex: "message",
         key: "message",
+        // width: "160px",
         sorter: (a, b) => a.text.localeCompare(b.text),
         render: (text, record, index) => {
-          const diagramXML = text || DefaultDiagram;
           return (
-            <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
-              <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
-                <BpmnComponent
-                  diagramXML={text}
-                  onLoading={(info) => {
-                    Setting.showMessage("success", info);
-                  }}
-                  onError={(err) => {
-                    Setting.showMessage("error", err);
-                  }}
-                />
+            <Tooltip placement="left" overlayInnerStyle={{width: "815px", height: "355px"}} title={
+              <div style={{width: "800px", height: "600px"}}>
+                <TextArea autoSize={{minRows: 1, maxRows: 15}} value={text} onChange={(e) => {}} />
               </div>
             }>
               <div style={{maxWidth: "300px"}}>
-                {Setting.getShortText(diagramXML, 100)}
+                {Setting.getShortText(text, 100)}
               </div>
             </Tooltip>
           );
