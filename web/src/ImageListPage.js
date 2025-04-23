@@ -54,13 +54,13 @@ class ImageListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.props.history.push({pathname: `/images/${newImage.owner}/${newImage.name}`, mode: "add"});
-          Setting.showMessage("success", "Image added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
-          Setting.showMessage("error", `Failed to add Image: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Image failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -68,7 +68,7 @@ class ImageListPage extends BaseListPage {
     ImageBackend.deleteImage(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Image deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: Setting.deleteRow(this.state.data, i),
             pagination: {
@@ -77,11 +77,11 @@ class ImageListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Image: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Image failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 
@@ -109,13 +109,13 @@ class ImageListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.props.history.push({pathname: `/machines/${newMachine.owner}/${newMachine.name}`, mode: "add"});
-          Setting.showMessage("success", "Machine added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
-          Setting.showMessage("error", `Failed to add Machine: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Machine failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 

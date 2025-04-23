@@ -49,7 +49,7 @@ class RecordEditPage extends React.Component {
             record: res.data,
           });
         } else {
-          Setting.showMessage("error", `Failed to get record: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -252,7 +252,7 @@ class RecordEditPage extends React.Component {
       .then((res) => {
         if (res.status === "ok") {
           if (res.data) {
-            Setting.showMessage("success", "Successfully saved");
+            Setting.showMessage("success", i18next.t("general:Successfully saved"));
             this.setState({
               recordName: this.state.record.name,
             });
@@ -262,15 +262,15 @@ class RecordEditPage extends React.Component {
               this.props.history.push(`/records/${this.state.record.owner}/${encodeURIComponent(this.state.record.name)}`);
             }
           } else {
-            Setting.showMessage("error", "failed to save: server side failure");
+            Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
             this.updateRecordField("name", this.state.recordName);
           }
         } else {
-          Setting.showMessage("error", `failed to save: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `failed to save: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${error}`);
       });
   }
 

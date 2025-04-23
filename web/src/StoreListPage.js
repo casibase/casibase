@@ -54,7 +54,7 @@ class StoreListPage extends BaseListPage {
             providers: newProviders,
           });
         } else {
-          Setting.showMessage("error", `Failed to get storage providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -71,7 +71,7 @@ class StoreListPage extends BaseListPage {
             providers: newProviders,
           });
         } else {
-          Setting.showMessage("error", `Failed to get providers: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
         }
       });
   }
@@ -135,7 +135,7 @@ class StoreListPage extends BaseListPage {
     StoreBackend.addStore(newStore)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Store added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
           this.setState({
             data: Setting.prependRow(this.state.data, newStore),
             pagination: {
@@ -144,11 +144,11 @@ class StoreListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Store failed to add: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Store failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -156,7 +156,7 @@ class StoreListPage extends BaseListPage {
     StoreBackend.deleteStore(record)
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Store deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: this.state.data.filter((item) => item.name !== record.name),
             pagination: {
@@ -165,11 +165,11 @@ class StoreListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Store failed to delete: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Store failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 
@@ -178,14 +178,14 @@ class StoreListPage extends BaseListPage {
     StoreBackend.refreshStoreVectors(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Vectors generated successfully");
+          Setting.showMessage("success", i18next.t("general:Vectors generated successfully"));
         } else {
-          Setting.showMessage("error", `Vectors failed to generate: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${res.msg}`);
         }
         this.setState({generating: false});
       })
       .catch(error => {
-        Setting.showMessage("error", `Vectors failed to generate: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Vectors failed to generate")}: ${error}`);
         this.setState({generating: false});
       });
   }
