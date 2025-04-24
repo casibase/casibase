@@ -38,32 +38,30 @@ class StoreListPage extends BaseListPage {
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();
-    this.loadAllProviders();
+    this.getAllProviders();
   }
 
-  loadAllProviders() {
+  getAllProviders() {
     this.setState({loading: true});
-
     Promise.all([
       StorageProviderBackend.getStorageProviders(this.props.account.name),
       ProviderBackend.getProviders(this.props.account.name),
-    ]).then(([storageRes, providersRes]) => {
-      if (storageRes.status !== "ok") {
-        Setting.showMessage("error", `Failed to get storage providers: ${storageRes.msg}`);
+    ]).then(([res1, res2]) => {
+      if (res1.status !== "ok") {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res1.msg}`);
         return;
       }
 
-      if (providersRes.status !== "ok") {
-        Setting.showMessage("error", `Failed to get providers: ${providersRes.msg}`);
+      if (res2.status !== "ok") {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res2.msg}`);
         return;
       }
 
       const newProviders = {};
-
-      storageRes.data.forEach(provider => {
+      res1.data.forEach(provider => {
         newProviders[provider.name] = provider;
       });
-      providersRes.data.forEach(provider => {
+      res2.data.forEach(provider => {
         newProviders[provider.name] = provider;
       });
 
@@ -72,10 +70,11 @@ class StoreListPage extends BaseListPage {
         loading: false,
       });
     }).catch(error => {
-      Setting.showMessage("error", `Failed to load providers: ${error}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
       this.setState({loading: false});
     });
   }
+
   renderProviderInfo(provider) {
     if (!provider) {
       return null;
