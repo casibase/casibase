@@ -733,7 +733,7 @@ class App extends Component {
               items={this.getMenuItems()}
               mode={"horizontal"}
               selectedKeys={[this.state.selectedMenuKey]}
-              style={{position: "relative", left: "145px", right: menuStyleRight}}
+              style={{position: "relative", left: "0px", right: menuStyleRight}}
             />
           )}
         </div>
