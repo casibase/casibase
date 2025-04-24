@@ -38,43 +38,45 @@ class StoreListPage extends BaseListPage {
 
   UNSAFE_componentWillMount() {
     super.UNSAFE_componentWillMount();
-    this.getCasdoorStorageProviders();
-    this.getProviders();
+    this.getAllProviders();
   }
 
-  getCasdoorStorageProviders() {
-    StorageProviderBackend.getStorageProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          const newProviders = {...this.state.providers};
-          res.data.forEach(provider => {
-            newProviders[provider.name] = provider;
-          });
-          this.setState({
-            providers: newProviders,
-          });
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
+  getAllProviders() {
+    this.setState({loading: true});
+    Promise.all([
+      StorageProviderBackend.getStorageProviders(this.props.account.name),
+      ProviderBackend.getProviders(this.props.account.name),
+    ]).then(([res1, res2]) => {
+      if (res1.status !== "ok") {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res1.msg}`);
+        this.setState({loading: false});
+        return;
+      }
+
+      if (res2.status !== "ok") {
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res2.msg}`);
+        this.setState({loading: false});
+        return;
+      }
+
+      const newProviders = {};
+      res1.data.forEach(provider => {
+        newProviders[provider.name] = provider;
       });
+      res2.data.forEach(provider => {
+        newProviders[provider.name] = provider;
+      });
+
+      this.setState({
+        providers: newProviders,
+        loading: false,
+      });
+    }).catch(error => {
+      Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${error}`);
+      this.setState({loading: false});
+    });
   }
 
-  getProviders() {
-    ProviderBackend.getProviders(this.props.account.name)
-      .then((res) => {
-        if (res.status === "ok") {
-          const newProviders = {...this.state.providers};
-          res.data.forEach(provider => {
-            newProviders[provider.name] = provider;
-          });
-          this.setState({
-            providers: newProviders,
-          });
-        } else {
-          Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
-        }
-      });
-  }
   renderProviderInfo(provider) {
     if (!provider) {
       return null;
