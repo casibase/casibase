@@ -62,6 +62,7 @@ class StoreListPage extends BaseListPage {
 
       storageRes.data.forEach(provider => {
         newProviders[provider.name] = provider;
+      });
       providersRes.data.forEach(provider => {
         newProviders[provider.name] = provider;
       });
