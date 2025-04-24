@@ -104,7 +104,7 @@ class App extends Component {
         Setting.setThemeColor(color);
       } else {
         Setting.setThemeColor(Conf.ThemeDefault.colorPrimary);
-        Setting.showMessage("error", `Failed to get theme: ${res.msg}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
       }
     });
   }
@@ -210,11 +210,11 @@ class App extends Component {
             account: null,
           });
 
-          Setting.showMessage("success", "Successfully signed out, redirected to homepage");
+          Setting.showMessage("success", i18next.t("account:Successfully signed out, redirected to homepage"));
           Setting.goToLink("/");
           // this.props.history.push("/");
         } else {
-          Setting.showMessage("error", `Signout failed: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("account:Signout failed")}: ${res.msg}`);
         }
       });
   }

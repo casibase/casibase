@@ -75,13 +75,13 @@ class RecordListPage extends BaseListPage {
       .then((res) => {
         if (res.status === "ok") {
           this.props.history.push({pathname: `/records/${newRecord.owner}/${newRecord.name}`, mode: "add"});
-          Setting.showMessage("success", "Record added successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
         } else {
-          Setting.showMessage("error", `Failed to add Record: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Record failed to add: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to add")}: ${error}`);
       });
   }
 
@@ -89,7 +89,7 @@ class RecordListPage extends BaseListPage {
     RecordBackend.deleteRecord(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Record deleted successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully deleted"));
           this.setState({
             data: Setting.deleteRow(this.state.data, i),
             pagination: {
@@ -98,11 +98,11 @@ class RecordListPage extends BaseListPage {
             },
           });
         } else {
-          Setting.showMessage("error", `Failed to delete Record: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Record failed to delete: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to delete")}: ${error}`);
       });
   }
 
@@ -110,16 +110,16 @@ class RecordListPage extends BaseListPage {
     RecordBackend.commitRecord(this.state.data[i])
       .then((res) => {
         if (res.status === "ok") {
-          Setting.showMessage("success", "Record committed successfully");
+          Setting.showMessage("success", i18next.t("general:Successfully committed"));
           this.fetch({
             pagination: this.state.pagination,
           });
         } else {
-          Setting.showMessage("error", `Failed to commit Record: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to commit")}: ${res.msg}`);
         }
       })
       .catch(error => {
-        Setting.showMessage("error", `Record failed to commit: ${error}`);
+        Setting.showMessage("error", `${i18next.t("general:Failed to commit")}: ${error}`);
       });
   }
 
@@ -129,7 +129,7 @@ class RecordListPage extends BaseListPage {
         if (res.status === "ok") {
           Setting.showMessage(res.data.includes("Mismatched") ? "error" : "success", `${res.data}`);
         } else {
-          Setting.showMessage("error", `Failed to query record: ${res.msg}`);
+          Setting.showMessage("error", `${i18next.t("general:Failed to query record")}: ${res.msg}`);
         }
       });
   }

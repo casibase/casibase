@@ -166,7 +166,7 @@ const StoreInfoTitle = (props) => {
         chatRef.current = updatedChat;
       }
     } catch (error) {
-      Setting.showMessage("error", `Update failed: ${error.message}`);
+      Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${error.message}`);
 
       // Revert UI state on error
       setSelectedStore(storeRef.current);
