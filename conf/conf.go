@@ -15,6 +15,7 @@
 package conf
 
 import (
+	"encoding/json"
 	"os"
 	"runtime"
 	"strconv"
@@ -22,6 +23,33 @@ import (
 
 	"github.com/beego/beego"
 )
+
+type WebConfig struct {
+	AuthConfig struct {
+		ServerUrl        string `json:"serverUrl"`
+		ClientId         string `json:"clientId"`
+		AppName          string `json:"appName"`
+		OrganizationName string `json:"organizationName"`
+		RedirectPath     string `json:"redirectPath"`
+	} `json:"authConfig"`
+	EnableExtraPages   bool     `json:"enableExtraPages"`
+	ShortcutPageItems  []string `json:"shortcutPageItems"`
+	UsageEndpoints     []string `json:"usageEndpoints"`
+	IframeUrl          string   `json:"iframeUrl"`
+	ForceLanguage      string   `json:"forceLanguage"`
+	DefaultLanguage    string   `json:"defaultLanguage"`
+	AppUrl             string   `json:"appUrl"`
+	ShowGithubCorner   bool     `json:"showGithubCorner"`
+	IsDemoMode         bool     `json:"isDemoMode"`
+	DisablePreviewMode bool     `json:"disablePreviewMode"`
+	ThemeDefault       struct {
+		ThemeType    string `json:"themeType"`
+		ColorPrimary string `json:"colorPrimary"`
+		BorderRadius int    `json:"borderRadius"`
+		IsCompact    bool   `json:"isCompact"`
+	} `json:"themeDefault"`
+	AvatarErrorUrl string `json:"avatarErrorUrl"`
+}
 
 func init() {
 	// this array contains the beego configuration items that may be modified via env
@@ -47,6 +75,8 @@ func GetConfigString(key string) string {
 			res = "https://cdn.casibase.org"
 		} else if key == "logConfig" {
 			res = "{\"filename\": \"logs/casibase.log\", \"maxdays\":99999, \"perm\":\"0770\"}"
+		} else if key == "avatarErrorUrl" {
+			res = "https://cdn.casibase.org/gravatar/error.png"
 		}
 	}
 
@@ -62,10 +92,13 @@ func GetConfigBool(key string) bool {
 	}
 }
 
-func GetConfigInt64(key string) (int64, error) {
+func GetConfigInt(key string) int {
 	value := GetConfigString(key)
-	num, err := strconv.ParseInt(value, 10, 64)
-	return num, err
+	num, err := strconv.Atoi(value)
+	if err != nil {
+		return 0
+	}
+	return num
 }
 
 func GetConfigDataSourceName() string {
@@ -106,4 +139,48 @@ func GetConfigBatchSize() int {
 		res = 100
 	}
 	return res
+}
+
+func GetStringArray(key string) []string {
+	strValue := GetConfigString(key)
+	if strValue == "" {
+		return []string{}
+	}
+
+	var strArray []string
+	if err := json.Unmarshal([]byte(strValue), &strArray); err == nil {
+		return strArray
+	}
+
+	return strings.Split(strValue, ",")
+}
+
+func GetWebConfig() *WebConfig {
+	config := &WebConfig{}
+
+	config.AuthConfig.ServerUrl = GetConfigString("casdoorEndpoint")
+	config.AuthConfig.ClientId = GetConfigString("clientId")
+	config.AuthConfig.AppName = GetConfigString("casdoorApplication")
+	config.AuthConfig.OrganizationName = GetConfigString("casdoorOrganization")
+	config.AuthConfig.RedirectPath = GetConfigString("redirectPath")
+
+	config.EnableExtraPages = GetConfigBool("enableExtraPages")
+	config.ShortcutPageItems = GetStringArray("shortcutPageItems")
+	config.UsageEndpoints = GetStringArray("usageEndpoints")
+	config.IframeUrl = GetConfigString("iframeUrl")
+	config.ForceLanguage = GetConfigString("forceLanguage")
+	config.DefaultLanguage = GetLanguage(GetConfigString("defaultLanguage"))
+	config.AppUrl = GetConfigString("appUrl")
+	config.ShowGithubCorner = GetConfigBool("showGithubCorner")
+	config.IsDemoMode = GetConfigBool("isDemoMode")
+	config.DisablePreviewMode = GetConfigBool("disablePreviewMode")
+
+	config.ThemeDefault.ThemeType = GetConfigString("defaultThemeType")
+	config.ThemeDefault.ColorPrimary = GetConfigString("defaultColorPrimary")
+	config.ThemeDefault.BorderRadius = GetConfigInt("defaultBorderRadius")
+	config.ThemeDefault.IsCompact = GetConfigBool("defaultIsCompact")
+
+	config.AvatarErrorUrl = GetConfigString("avatarErrorUrl")
+
+	return config
 }

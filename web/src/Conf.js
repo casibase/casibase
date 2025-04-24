@@ -12,37 +12,46 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const AuthConfig = {
-  serverUrl: "https://door.casdoor.com",
-  // serverUrl: "http://localhost:7001",
-  clientId: "af6b5aa958822fb9dc33",
-  appName: "app-casibase",
-  organizationName: "casbin",
-  redirectPath: "/callback",
-};
+export const AuthConfig = {};
+export let EnableExtraPages = false;
+export let ShortcutPageItems = [];
+export let UsageEndpoints = [];
+export let IframeUrl = "";
+export let ForceLanguage = "";
+export let DefaultLanguage = "";
+export let AppUrl = "";
+export let ShowGithubCorner = false;
+export let DisablePreviewMode = false;
+export let IsDemoMode = false;
+export const ThemeDefault = {};
+export let AvatarErrorUrl = "";
 
-export const EnableExtraPages = false;
+export function setConfig(config) {
+  if (config === null || config === undefined) {
+    return;
+  }
 
-export const ShortcutPageItems = [];
+  if (config.authConfig) {
+    Object.assign(AuthConfig, config.authConfig);
+  }
 
-export const UsageEndpoints = [];
+  if (config.enableExtraPages !== undefined) {EnableExtraPages = config.enableExtraPages;}
+  if (config.shortcutPageItems) {ShortcutPageItems = config.shortcutPageItems;}
+  if (config.usageEndpoints) {UsageEndpoints = config.usageEndpoints;}
+  if (config.iframeUrl !== undefined) {IframeUrl = config.iframeUrl;}
+  if (config.forceLanguage !== undefined) {ForceLanguage = config.forceLanguage;}
+  if (config.defaultLanguage !== undefined) {DefaultLanguage = config.defaultLanguage;}
+  if (config.appUrl !== undefined) {AppUrl = config.appUrl;}
+  if (config.showGithubCorner !== undefined) {ShowGithubCorner = config.showGithubCorner;}
 
-export const IframeUrl = "";
+  if (config.isDemoMode !== undefined) {
+    IsDemoMode = config.isDemoMode;
+  }
+  if (config.disablePreviewMode !== undefined) {DisablePreviewMode = config.disablePreviewMode;}
 
-export const ForceLanguage = "";
-export const DefaultLanguage = "en";
+  if (config.themeDefault) {
+    Object.assign(ThemeDefault, config.themeDefault);
+  }
 
-export const AppUrl = "";
-
-export const ShowGithubCorner = false;
-export const IsDemoMode = false;
-export const DisablePreviewMode = false;
-
-export const ThemeDefault = {
-  themeType: "default",
-  colorPrimary: "#5734d3",
-  borderRadius: 6,
-  isCompact: false,
-};
-
-export const AvatarErrorUrl = "https://cdn.casibase.org/gravatar/error.png";
+  if (config.avatarErrorUrl !== undefined) {AvatarErrorUrl = config.avatarErrorUrl;}
+}

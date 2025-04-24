@@ -69,6 +69,7 @@ import AuditPage from "./frame/AuditPage";
 import PythonYolov8miPage from "./frame/PythonYolov8miPage";
 import PythonSrPage from "./frame/PythonSrPage";
 import SystemInfo from "./SystemInfo";
+import * as FetchFilter from "./backend/FetchFilter";
 
 const {Header, Footer, Content} = Layout;
 
@@ -83,8 +84,13 @@ class App extends Component {
       themeData: Conf.ThemeDefault,
       menuVisible: false,
     };
+    this.initConfig();
+  }
 
+  initConfig() {
     Setting.initServerUrl();
+    Setting.initWebConfig();
+    FetchFilter.initDemoMode();
     Setting.initCasdoorSdk(Conf.AuthConfig);
     if (!Conf.DisablePreviewMode) {
       this.previewInterceptor = new PreviewInterceptor(() => this.state.account, this.props.history); // add interceptor
@@ -191,6 +197,7 @@ class App extends Component {
   getAccount() {
     AccountBackend.getAccount()
       .then((res) => {
+        this.initConfig();
         const account = res.data;
         if (account !== null) {
           this.setLanguage(account);

@@ -26,6 +26,8 @@ import Identicon from "identicon.js";
 import md5 from "md5";
 import React from "react";
 import {v4 as uuidv4} from "uuid";
+import * as Conf from "./Conf";
+import * as Cookie from "cookie";
 
 export let ServerUrl = "";
 export let CasdoorSdk;
@@ -44,6 +46,14 @@ export function isLocalhost() {
 
 export function initCasdoorSdk(config) {
   CasdoorSdk = new Sdk(config);
+}
+
+export function initWebConfig() {
+  const curCookie = Cookie.parse(document.cookie);
+  if (curCookie["jsonWebConfig"] && curCookie["jsonWebConfig"] !== "null") {
+    const config = JSON.parse(curCookie["jsonWebConfig"]);
+    Conf.setConfig(config);
+  }
 }
 
 function getUrlWithLanguage(url) {
