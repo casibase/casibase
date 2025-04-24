@@ -77,9 +77,10 @@ class StoreListPage extends BaseListPage {
     });
   }
 
-  renderProviderInfo(provider) {
+  renderProviderInfo(text) {
+    const provider = this.state.providers[text];
     if (!provider) {
-      return null;
+      return (<a> {text} </a>);
     }
 
     const providerLogo = (
@@ -230,8 +231,7 @@ class StoreListPage extends BaseListPage {
           if (text === "") {
             return null;
           }
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       // {
@@ -248,8 +248,7 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.imageProvider.localeCompare(b.imageProvider),
         render: (text, record, index) => {
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -259,8 +258,7 @@ class StoreListPage extends BaseListPage {
         width: "330px",
         sorter: (a, b) => a.modelProvider.localeCompare(b.modelProvider),
         render: (text, record, index) => {
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -270,8 +268,7 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.embeddingProvider.localeCompare(b.embeddingProvider),
         render: (text, record, index) => {
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -281,8 +278,7 @@ class StoreListPage extends BaseListPage {
         width: "300px",
         sorter: (a, b) => a.textToSpeechProvider.localeCompare(b.textToSpeechProvider),
         render: (text, record, index) => {
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       {
@@ -292,8 +288,7 @@ class StoreListPage extends BaseListPage {
         width: "200px",
         sorter: (a, b) => a.speechToTextProvider.localeCompare(b.speechToTextProvider),
         render: (text) => {
-          const provider = this.state.providers[text];
-          return this.renderProviderInfo(provider);
+          return this.renderProviderInfo(text);
         },
       },
       {
