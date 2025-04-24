@@ -49,11 +49,13 @@ class StoreListPage extends BaseListPage {
     ]).then(([res1, res2]) => {
       if (res1.status !== "ok") {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res1.msg}`);
+        this.setState({loading: false});
         return;
       }
 
       if (res2.status !== "ok") {
         Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res2.msg}`);
+        this.setState({loading: false});
         return;
       }
 
