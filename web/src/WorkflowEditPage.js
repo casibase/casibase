@@ -17,8 +17,7 @@ import {Button, Card, Col, Input, Row} from "antd";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import * as Setting from "./Setting";
 import i18next from "i18next";
-import Bpmn from "react-bpmn";
-
+import BpmnComponent from "./BpmnComponent";
 import {Controlled as CodeMirror} from "react-codemirror2";
 import "codemirror/lib/codemirror.css";
 require("codemirror/theme/material-darker.css");
@@ -119,13 +118,16 @@ class WorkflowEditPage extends React.Component {
           <Col span={1} />
           <Col span={11} >
             <div>
-              <Bpmn
+              <BpmnComponent
                 diagramXML={this.state.workflow.text}
                 onLoading={(info) => {
                   Setting.showMessage("success", info);
                 }}
                 onError={(err) => {
                   Setting.showMessage("error", err);
+                }}
+                onXMLChange={(xml) => {
+                  this.updateWorkflowField("text", xml);
                 }}
               />
             </div>
@@ -149,13 +151,16 @@ class WorkflowEditPage extends React.Component {
           <Col span={1} />
           <Col span={11} >
             <div>
-              <Bpmn
+              <BpmnComponent
                 diagramXML={this.state.workflow.text2}
                 onLoading={(info) => {
                   Setting.showMessage("success", info);
                 }}
                 onError={(err) => {
                   Setting.showMessage("error", err);
+                }}
+                onXMLChange={(xml) => {
+                  this.updateWorkflowField("text2", xml);
                 }}
               />
             </div>
