@@ -20,10 +20,8 @@ import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as WorkflowBackend from "./backend/WorkflowBackend";
 import i18next from "i18next";
-import Bpmn from "react-bpmn";
-
+import BpmnComponent from "./BpmnComponent";
 const {TextArea} = Input;
-
 class WorkflowListPage extends BaseListPage {
   constructor(props) {
     super(props);
@@ -115,7 +113,7 @@ class WorkflowListPage extends BaseListPage {
           return (
             <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
-                <Bpmn
+                <BpmnComponent
                   diagramXML={text}
                   onLoading={(info) => {
                     Setting.showMessage("success", info);
@@ -143,7 +141,7 @@ class WorkflowListPage extends BaseListPage {
           return (
             <Tooltip placement="left" overlayInnerStyle={{width: "515px", height: "615px"}} title={
               <div style={{width: "500px", height: "600px", backgroundColor: "white"}}>
-                <Bpmn
+                <BpmnComponent
                   diagramXML={text}
                   onLoading={(info) => {
                     Setting.showMessage("success", info);
