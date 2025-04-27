@@ -44,6 +44,7 @@ type Chat struct {
 	TokenCount    int      `json:"tokenCount"`
 	Price         float64  `json:"price"`
 	Currency      string   `xorm:"varchar(100)" json:"currency"`
+	IsHidden      bool     `json:"isHidden"`
 	IsDeleted     bool     `json:"isDeleted"`
 	NeedTitle     bool     `json:"needTitle"`
 }
