@@ -300,8 +300,6 @@ class ProviderListPage extends BaseListPage {
           loading: false,
         });
         if (res.status === "ok") {
-          // eslint-disable-next-line no-console
-          console.log("res data", res.data);
           this.setState({
             data: res.data,
             pagination: {
