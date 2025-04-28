@@ -705,7 +705,7 @@ class ProviderEditPage extends React.Component {
                       const testText = this.testTextArea?.resizableTextArea?.textArea.value || "Hello, this is a test for text to speech conversion.";
                       ProviderEditTestTts.sendTestTts(this.state.provider, testText);
                     }}>
-                    {i18next.t("provider:Generate Speech")}
+                    {i18next.t("chat:Read it out")}
                   </Button>
                 </Col>
               </Row>
