@@ -19,6 +19,7 @@ import * as Setting from "./Setting";
 import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import * as setting from "./Setting";
+import * as ProviderEditTestTts from "./common/TestTtsWidget";
 
 const {Option} = Select;
 
@@ -676,6 +677,39 @@ class ProviderEditPage extends React.Component {
                 </Col>
               </Row>
             </>
+          ) : null
+        }
+        {
+          this.state.provider.category === "Text-to-Speech" ? (
+            <React.Fragment>
+              <Row style={{marginTop: "20px"}} >
+                <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                  {i18next.t("Provider Test")}:
+                </Col>
+                <Col span={10} >
+                  <Input.TextArea
+                    rows={1}
+                    autoSize={{minRows: 1, maxRows: 5}}
+                    defaultValue="Hello, this is a test for text to speech conversion."
+                    placeholder={i18next.t("Enter text to test provider")}
+                    ref={ele => this.testTextArea = ele}
+                    onChange={(e) => this.setState({testText: e.target.value})}
+                  />
+                </Col>
+                <Col span={6} >
+                  <Button
+                    style={{marginLeft: "10px", marginBottom: "5px"}}
+                    type="primary"
+                    disabled={this.testTextArea?.resizableTextArea?.textArea.value === ""}
+                    onClick={() => {
+                      const testText = this.testTextArea?.resizableTextArea?.textArea.value || "Hello, this is a test for text to speech conversion.";
+                      ProviderEditTestTts.sendTestTts(this.state.provider, testText);
+                    }}>
+                    {i18next.t("provider:Generate Speech")}
+                  </Button>
+                </Col>
+              </Row>
+            </React.Fragment>
           ) : null
         }
         <Row style={{marginTop: "20px"}} >

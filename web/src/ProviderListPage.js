@@ -19,6 +19,7 @@ import moment from "moment";
 import BaseListPage from "./BaseListPage";
 import * as Setting from "./Setting";
 import * as ProviderBackend from "./backend/ProviderBackend";
+import * as ChatBackend from "./backend/ChatBackend";
 import i18next from "i18next";
 import * as Provider from "./Provider";
 
@@ -27,13 +28,14 @@ class ProviderListPage extends BaseListPage {
     super(props);
   }
 
-  newProvider() {
+  newProvider(chatName) {
     const randomName = Setting.getRandomName();
     return {
       owner: "admin",
       name: `provider_${randomName}`,
       createdTime: moment().format(),
       displayName: `New Provider - ${randomName}`,
+      chatName: chatName,
       category: "Model",
       type: "OpenAI",
       subType: "text-davinci-003",
@@ -69,11 +71,45 @@ class ProviderListPage extends BaseListPage {
     };
   }
 
+  newChat() {
+    const randomName = Setting.getRandomName();
+    return {
+      owner: "admin",
+      name: `chat_${randomName}`,
+      createdTime: moment().format(),
+      updatedTime: moment().format(),
+      organization: this.props.account.owner,
+      displayName: `${i18next.t("chat:New Chat")} - ${randomName}`,
+      category: i18next.t("chat:Default Category"),
+      type: "provider",
+      user: this.props.account.name,
+      user1: "",
+      user2: "",
+      users: [],
+      clientIp: "",
+      userAgent: "",
+      messageCount: 0,
+      tokenCount: 0,
+      needTitle: true,
+      isHidden: true,
+    };
+  }
+
   addProvider(needStorage = false) {
-    let newProvider = this.newProvider();
+    const newChat = this.newChat();
+    let newProvider = this.newProvider(newChat.name);
     if (needStorage) {
       newProvider = this.newStorageProvider();
     }
+    ChatBackend.addChat(newChat)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully added"));
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `Chat failed to add: ${error}`);
+      });
     ProviderBackend.addProvider(newProvider)
       .then((res) => {
         if (res.status === "ok") {
@@ -264,6 +300,8 @@ class ProviderListPage extends BaseListPage {
           loading: false,
         });
         if (res.status === "ok") {
+          // eslint-disable-next-line no-console
+          console.log("res data", res.data);
           this.setState({
             data: res.data,
             pagination: {
