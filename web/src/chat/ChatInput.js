@@ -17,6 +17,7 @@ import {Button} from "antd";
 import {Sender} from "@ant-design/x";
 import {LinkOutlined} from "@ant-design/icons";
 import ChatFileInput from "./ChatFileInput";
+import UploadFileArea from "./UploadFileArea";
 import i18next from "i18next";
 
 const ChatInput = ({
@@ -104,6 +105,7 @@ const ChatInput = ({
 
   return (
     <div style={{position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 24px", zIndex: 1}}>
+      <UploadFileArea onFileChange={handleInputChange} />
       <div style={{maxWidth: "700px", margin: "0 auto"}}>
         {files.length > 0 && (
           <ChatFileInput
