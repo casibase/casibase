@@ -22,8 +22,9 @@ import (
 )
 
 type TextToSpeechRequest struct {
-	StoreId   string `json:"storeId"`
-	MessageId string `json:"messageId"`
+	StoreId    string `json:"storeId"`
+	ProviderId string `json:"providerId"`
+	MessageId  string `json:"messageId"`
 }
 
 // GenerateTextToSpeechAudio
@@ -40,8 +41,7 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		c.ResponseError(err.Error())
 		return
 	}
-
-	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.MessageId)
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.ProviderId, req.MessageId)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -82,7 +82,7 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	message, chat, _, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, messageId)
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, "", messageId)
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
