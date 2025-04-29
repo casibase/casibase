@@ -18,6 +18,7 @@ import moment from "moment/moment";
 import * as MessageBackend from "../backend/MessageBackend";
 import * as TtsBackend from "../backend/TtsBackend";
 import * as ChatBackend from "../backend/ChatBackend";
+import * as ProviderBackend from "../backend/ProviderBackend";
 
 // Global audio player for TTS playback
 let audioPlayer = null;
@@ -66,7 +67,21 @@ function NewMessage(chatName, text) {
   };
 }
 
-export async function sendTestTts(provider, text, owner, user, setLoading = null) {
+async function checkProvider(provider, originalProvider) {
+  const hasChanges = JSON.stringify(originalProvider) !== JSON.stringify(provider);
+  if (hasChanges) {
+    const saveRes = await ProviderBackend.updateProvider(provider.owner, provider.name, provider);
+
+    if (saveRes.status === "ok") {
+      Setting.showMessage("success", i18next.t("general:Successfully saved"));
+    } else {
+      Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${saveRes.msg}`);
+    }
+  }
+}
+
+export async function sendTestTts(provider, originalProvider, text, owner, user, setLoading = null) {
+  await checkProvider(provider, originalProvider);
   if (setLoading) {
     setLoading(true);
   }

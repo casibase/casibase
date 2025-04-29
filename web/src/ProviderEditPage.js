@@ -20,6 +20,7 @@ import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import * as setting from "./Setting";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
+import {deepCopy} from "./Setting";
 
 const {Option} = Select;
 
@@ -30,6 +31,7 @@ class ProviderEditPage extends React.Component {
       classes: props,
       providerName: props.match.params.providerName,
       provider: null,
+      originalProvider: null,
       testButtonLoading: false,
     };
   }
@@ -44,6 +46,7 @@ class ProviderEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             provider: res.data,
+            originalProvider: deepCopy(res.data),
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
@@ -706,7 +709,7 @@ class ProviderEditPage extends React.Component {
                     type="primary"
                     loading={this.state.testButtonLoading}
                     disabled={!this.state.provider.testContent}
-                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.provider.testContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({testButtonLoading: loading}))} >
+                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.originalProvider, this.state.provider.testContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({testButtonLoading: loading}))} >
                     {i18next.t("chat:Read it out")}
                   </Button>
                 </Col>
