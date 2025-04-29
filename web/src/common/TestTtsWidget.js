@@ -17,53 +17,36 @@ import i18next from "i18next";
 import moment from "moment/moment";
 import * as MessageBackend from "../backend/MessageBackend";
 import * as TtsBackend from "../backend/TtsBackend";
+import * as ChatBackend from "../backend/ChatBackend";
 
 // Global audio player for TTS playback
 let audioPlayer = null;
 
-export function sendTestTts(provider, text) {
-  if (audioPlayer) {
-    audioPlayer.pause();
-    audioPlayer = null;
-  }
-
-  createMessageAndGenerateAudio(provider, text)
-    .then(audioBlob => {
-      if (audioBlob) {
-        const audioUrl = URL.createObjectURL(audioBlob);
-
-        audioPlayer = new Audio(audioUrl);
-
-        audioPlayer.onended = () => {
-          URL.revokeObjectURL(audioUrl);
-          audioPlayer = null;
-        };
-
-        audioPlayer.play();
-      }
-    })
-    .catch(error => {
-      Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error.message}`);
-    });
+function newChat(owner, user) {
+  const randomName = Setting.getRandomName();
+  return {
+    owner: "admin",
+    name: `chat_${randomName}`,
+    createdTime: moment().format(),
+    updatedTime: moment().format(),
+    organization: owner, // Default to admin if props.account not available
+    displayName: `${i18next.t("chat:New Chat")} - ${randomName}`,
+    category: i18next.t("chat:Default Category"),
+    type: "provider",
+    user: user,
+    user1: "",
+    user2: "",
+    users: [],
+    clientIp: "",
+    userAgent: "",
+    messageCount: 0,
+    tokenCount: 0,
+    needTitle: true,
+    isHidden: true,
+  };
 }
 
-async function createMessageAndGenerateAudio(provider, text) {
-  const message = createNewMessage(provider.chatName, text);
-
-  const res = await MessageBackend.addMessage(message);
-
-  if (res.status !== "ok") {
-    throw new Error(`Failed to create message: ${res.msg}`);
-  }
-
-  // Get the message ID from the response
-  const storeId = `${res.data.owner}/${res.data.store}`;
-  const messageId = `${message.owner}/${message.name}`;
-
-  return await TtsBackend.generateTextToSpeechAudio(storeId, messageId);
-}
-
-function createNewMessage(chatName, text) {
+function NewMessage(chatName, text) {
   const randomName = Setting.getRandomName();
   return {
     owner: "admin",
@@ -81,4 +64,71 @@ function createNewMessage(chatName, text) {
     isRegenerated: false,
     fileName: "",
   };
+}
+
+export async function sendTestTts(provider, text, owner, user, setLoading = null) {
+  if (setLoading) {
+    setLoading(true);
+  }
+
+  if (audioPlayer) {
+    audioPlayer.pause();
+    audioPlayer = null;
+  }
+
+  try {
+    if (provider.chatName === "") {
+      const chat = newChat(owner, user);
+      provider.chatName = chat.name;
+
+      const chatRes = await ChatBackend.addChat(chat);
+      if (chatRes.status !== "ok") {
+        Setting.showMessage("error", `Chat failed to add: ${chatRes.msg}`);
+        if (setLoading) {setLoading(false);}
+        return;
+      }
+    }
+
+    const audioBlob = await createMessageAndGenerateAudio(provider, text);
+
+    if (audioBlob) {
+      const audioUrl = URL.createObjectURL(audioBlob);
+      audioPlayer = new Audio(audioUrl);
+
+      audioPlayer.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        audioPlayer = null;
+      };
+
+      audioPlayer.onerror = (e) => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to play audio")}: ${e.target.error?.message || "Unknown error"}`);
+        URL.revokeObjectURL(audioUrl);
+        if (setLoading) {setLoading(false);}
+      };
+
+      await audioPlayer.play();
+    }
+  } catch (error) {
+    Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error.message}`);
+  } finally {
+    if (setLoading) {
+      setLoading(false);
+    }
+  }
+}
+
+async function createMessageAndGenerateAudio(provider, text) {
+  const message = NewMessage(provider.chatName, text);
+
+  const res = await MessageBackend.addMessage(message);
+
+  if (res.status !== "ok") {
+    throw new Error(`Failed to create message: ${res.msg}`);
+  }
+
+  // Get the message ID from the response
+  const providerId = `${provider.owner}/${provider.name}`;
+  const messageId = `${message.owner}/${message.name}`;
+
+  return await TtsBackend.generateTextToSpeechAudio("", providerId, messageId);
 }

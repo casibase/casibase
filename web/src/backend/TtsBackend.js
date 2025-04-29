@@ -14,10 +14,11 @@
 
 import * as Setting from "../Setting";
 
-export function generateTextToSpeechAudio(storeId, messageId) {
+export function generateTextToSpeechAudio(storeId, providerId, messageId) {
   // Create a payload object
   const payload = {
     storeId: storeId,
+    providerId: providerId,
     messageId: messageId,
   };
 

@@ -34,7 +34,6 @@ type Provider struct {
 	CreatedTime string `xorm:"varchar(100)" json:"createdTime"`
 
 	DisplayName        string `xorm:"varchar(100)" json:"displayName"`
-	ChatName           string `xorm:"varchar(100)" json:"chatName"`
 	Category           string `xorm:"varchar(100)" json:"category"`
 	Type               string `xorm:"varchar(100)" json:"type"`
 	SubType            string `xorm:"varchar(100)" json:"subType"`
@@ -56,10 +55,12 @@ type Provider struct {
 	OutputPricePerThousandTokens float64 `xorm:"DECIMAL(10, 4)" json:"outputPricePerThousandTokens"`
 	Currency                     string  `xorm:"varchar(100)" json:"currency"`
 
-	Network    string `xorm:"varchar(100)" json:"network"`
-	Chain      string `xorm:"varchar(100)" json:"chain"`
-	State      string `xorm:"varchar(100)" json:"state"`
-	BrowserUrl string `xorm:"varchar(200)" json:"browserUrl"`
+	Network        string `xorm:"varchar(100)" json:"network"`
+	Chain          string `xorm:"varchar(100)" json:"chain"`
+	ChatName       string `xorm:"varchar(100)" json:"chatName"`
+	TtsTestContent string `xorm:"varchar(100)" json:"ttsTestContent"`
+	State          string `xorm:"varchar(100)" json:"state"`
+	BrowserUrl     string `xorm:"varchar(200)" json:"browserUrl"`
 }
 
 func GetMaskedProvider(provider *Provider, isMaskEnabled bool) *Provider {

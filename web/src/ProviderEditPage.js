@@ -30,6 +30,7 @@ class ProviderEditPage extends React.Component {
       classes: props,
       providerName: props.match.params.providerName,
       provider: null,
+      ttsLoading: false,
     };
   }
 
@@ -684,27 +685,25 @@ class ProviderEditPage extends React.Component {
             <React.Fragment>
               <Row style={{marginTop: "20px"}} >
                 <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
-                  {i18next.t("Provider Test")}:
+                  {i18next.t("Provider test")}:
                 </Col>
                 <Col span={10} >
                   <Input.TextArea
                     rows={1}
                     autoSize={{minRows: 1, maxRows: 5}}
-                    defaultValue="Hello, this is a test for text to speech conversion."
-                    placeholder={i18next.t("Enter text to test provider")}
-                    ref={ele => this.testTextArea = ele}
-                    onChange={(e) => this.setState({testText: e.target.value})}
+                    value={this.state.provider.ttsTestContent}
+                    onChange={e => {
+                      this.updateProviderField("ttsTestContent", e.target.value);
+                    }}
                   />
                 </Col>
                 <Col span={6} >
                   <Button
                     style={{marginLeft: "10px", marginBottom: "5px"}}
                     type="primary"
-                    disabled={this.testTextArea?.resizableTextArea?.textArea.value === ""}
-                    onClick={() => {
-                      const testText = this.testTextArea?.resizableTextArea?.textArea.value || "Hello, this is a test for text to speech conversion.";
-                      ProviderEditTestTts.sendTestTts(this.state.provider, testText);
-                    }}>
+                    loading={this.state.ttsLoading}
+                    disabled={!this.state.provider.ttsTestContent}
+                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.provider.ttsTestContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({ttsLoading: loading}))} >
                     {i18next.t("chat:Read it out")}
                   </Button>
                 </Col>
