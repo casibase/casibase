@@ -71,10 +71,7 @@ async function checkProvider(provider, originalProvider) {
   const hasChanges = JSON.stringify(originalProvider) !== JSON.stringify(provider);
   if (hasChanges) {
     const saveRes = await ProviderBackend.updateProvider(provider.owner, provider.name, provider);
-
-    if (saveRes.status === "ok") {
-      Setting.showMessage("success", i18next.t("general:Successfully saved"));
-    } else {
+    if (saveRes.status !== "ok") {
       Setting.showMessage("error", `${i18next.t("general:Failed to save")}: ${saveRes.msg}`);
     }
   }
