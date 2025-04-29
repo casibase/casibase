@@ -37,6 +37,9 @@ class ChatMenu extends React.Component {
   chatsToItems(chats) {
     const categories = {};
     chats.forEach((chat) => {
+      if (chat.isHidden === true) {
+        return;
+      }
       if (!categories[chat.category]) {
         categories[chat.category] = [];
       }
