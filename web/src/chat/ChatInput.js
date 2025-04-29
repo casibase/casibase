@@ -108,10 +108,12 @@ const ChatInput = ({
       <UploadFileArea onFileChange={handleInputChange} />
       <div style={{maxWidth: "700px", margin: "0 auto"}}>
         {files.length > 0 && (
-          <ChatFileInput
-            files={files}
-            onFileChange={onFileChange}
-          />
+          <div style={{marginBottom: "12px", marginLeft: "12px", marginRight: "12px"}}>
+            <ChatFileInput
+              files={files}
+              onFileChange={onFileChange}
+            />
+          </div>
         )}
         <Sender
           prefix={
