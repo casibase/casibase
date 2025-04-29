@@ -16,6 +16,7 @@ package model
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -24,6 +25,7 @@ import (
 	"time"
 	"unicode"
 
+	"github.com/casibase/casibase/util"
 	"github.com/sashabaranov/go-openai"
 )
 
@@ -210,7 +212,7 @@ func flushDataAzure(data string, writer io.Writer) error {
 	}
 	for _, runeValue := range data {
 		char := string(runeValue)
-		_, err := fmt.Fprintf(writer, "event: message\ndata: %s\n\n", char)
+		_, err := fmt.Fprintf(writer, "data: %s\n\n", char)
 		if err != nil {
 			return err
 		}
@@ -256,6 +258,78 @@ func flushDataOpenai(data string, writer io.Writer) error {
 	return nil
 }
 
+type OpenAICompatibleResponse struct {
+	ID                string                   `json:"id"`
+	Object            string                   `json:"object"`
+	Created           int64                    `json:"created"`
+	Model             string                   `json:"model"`
+	ServiceTier       string                   `json:"service_tier"`
+	SystemFingerprint string                   `json:"system_fingerprint"`
+	Choices           []OpenAICompatibleChoice `json:"choices"`
+}
+
+type OpenAICompatibleChoice struct {
+	Index        int                   `json:"index"`
+	Delta        OpenAICompatibleDelta `json:"delta"`
+	LogProbs     interface{}           `json:"logprobs"`
+	FinishReason interface{}           `json:"finish_reason"`
+}
+
+type OpenAICompatibleDelta struct {
+	Role    string `json:"role,omitempty"`
+	Content string `json:"content,omitempty"`
+	Refusal *bool  `json:"refusal,omitempty"`
+}
+
+func generateOpenAICompatibleResponse(data string, model string, isFirst bool, isDone bool) string {
+	if isDone {
+		return "[DONE]"
+	}
+
+	resp := OpenAICompatibleResponse{
+		ID:                fmt.Sprintf("chatcmpl-%s", util.GetRandomName()),
+		Object:            "chat.completion.chunk",
+		Created:           time.Now().Unix(),
+		Model:             model,
+		ServiceTier:       "default",
+		SystemFingerprint: "fp_f7d56a8a2c",
+		Choices: []OpenAICompatibleChoice{
+			{
+				Index:        0,
+				Delta:        OpenAICompatibleDelta{},
+				LogProbs:     nil,
+				FinishReason: nil,
+			},
+		},
+	}
+
+	if isFirst {
+		resp.Choices[0].Delta.Role = "assistant"
+		resp.Choices[0].Delta.Content = ""
+	} else if data != "" {
+		resp.Choices[0].Delta.Content = data
+	} else {
+		resp.Choices[0].FinishReason = "stop"
+	}
+
+	jsonData, _ := json.Marshal(resp)
+	return string(jsonData)
+}
+
+func flushDataOpenaiCompatible(data string, writer io.Writer, model string, isFirst bool, isDone bool) error {
+	flusher, ok := writer.(http.Flusher)
+	if !ok {
+		return fmt.Errorf("writer does not implement http.Flusher")
+	}
+
+	jsonStr := generateOpenAICompatibleResponse(data, model, isFirst, isDone)
+	if _, err := fmt.Fprintf(writer, "data: %s\n\n", jsonStr); err != nil {
+		return err
+	}
+	flusher.Flush()
+	return nil
+}
+
 func flushDataThink(data string, eventType string, writer io.Writer) error {
 	flusher, ok := writer.(http.Flusher)
 	if !ok {
@@ -280,7 +354,9 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		flushData = flushDataAzure
 	} else if p.typ == "OpenAI" {
 		client = getOpenAiClientFromToken(p.secretKey)
-		flushData = flushDataOpenai
+		flushData = func(data string, writer io.Writer) error {
+			return flushDataOpenaiCompatible(data, writer, p.subType, false, false)
+		}
 	} else if p.typ == "GitHub" {
 		client = getGitHubClientFromToken(p.secretKey, p.providerUrl)
 		flushData = flushDataOpenai

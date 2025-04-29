@@ -179,4 +179,7 @@ func initAPI() {
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")
 	beego.Router("/api/get-prometheus-info", &controllers.ApiController{}, "GET:GetPrometheusInfo")
 	beego.Handler("/api/metrics", promhttp.Handler())
+
+	beego.Router("/api/openai/:store/v1/chat/completions", &controllers.ApiController{}, "POST:OpenAICompatibleChat")
+	beego.Router("/api/openai/:store/v1/chat/completions", &controllers.ApiController{}, "OPTIONS:OpenAICompatibleChat")
 }
