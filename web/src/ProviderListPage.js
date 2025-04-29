@@ -49,7 +49,6 @@ class ProviderListPage extends BaseListPage {
       currency: "USD",
       providerUrl: "https://platform.openai.com/account/api-keys",
       apiVersion: "",
-      ttsTestContent: "Hello, this is a test for text to speech conversion.",
       state: "Active",
     };
   }

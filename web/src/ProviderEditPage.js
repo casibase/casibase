@@ -186,6 +186,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Text-to-Speech") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "cosyvoice-v1");
+                if (this.state.provider.ttsTestContent === "") {
+                  this.updateProviderField("ttsTestContent", "Hello, this is a test for text to speech conversion.");
+                }
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "paraformer-realtime-v1");
