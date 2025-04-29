@@ -30,7 +30,7 @@ class ProviderEditPage extends React.Component {
       classes: props,
       providerName: props.match.params.providerName,
       provider: null,
-      ttsLoading: false,
+      testButtonLoading: false,
     };
   }
 
@@ -186,8 +186,8 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Text-to-Speech") {
                 this.updateProviderField("type", "Alibaba Cloud");
                 this.updateProviderField("subType", "cosyvoice-v1");
-                if (this.state.provider.ttsTestContent === "") {
-                  this.updateProviderField("ttsTestContent", "Hello, this is a test for text to speech conversion.");
+                if (this.state.provider.testContent === "") {
+                  this.updateProviderField("testContent", "Hello, this is a test for text to speech conversion.");
                 }
               } else if (value === "Speech-to-Text") {
                 this.updateProviderField("type", "Alibaba Cloud");
@@ -694,9 +694,9 @@ class ProviderEditPage extends React.Component {
                   <Input.TextArea
                     rows={1}
                     autoSize={{minRows: 1, maxRows: 5}}
-                    value={this.state.provider.ttsTestContent}
+                    value={this.state.provider.testContent}
                     onChange={e => {
-                      this.updateProviderField("ttsTestContent", e.target.value);
+                      this.updateProviderField("testContent", e.target.value);
                     }}
                   />
                 </Col>
@@ -704,9 +704,9 @@ class ProviderEditPage extends React.Component {
                   <Button
                     style={{marginLeft: "10px", marginBottom: "5px"}}
                     type="primary"
-                    loading={this.state.ttsLoading}
-                    disabled={!this.state.provider.ttsTestContent}
-                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.provider.ttsTestContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({ttsLoading: loading}))} >
+                    loading={this.state.testButtonLoading}
+                    disabled={!this.state.provider.testContent}
+                    onClick={() => ProviderEditTestTts.sendTestTts(this.state.provider, this.state.provider.testContent, this.props.account.owner, this.props.account.name, (loading) => this.setState({testButtonLoading: loading}))} >
                     {i18next.t("chat:Read it out")}
                   </Button>
                 </Col>

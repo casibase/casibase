@@ -94,6 +94,11 @@ export async function sendTestTts(provider, text, owner, user, setLoading = null
     if (audioBlob) {
       const audioUrl = URL.createObjectURL(audioBlob);
       audioPlayer = new Audio(audioUrl);
+      if (audioBlob.type === "application/json") {
+        Setting.showMessage("error", i18next.t("general:Failed to connect to server"));
+        if (setLoading) {setLoading(false);}
+        return;
+      }
 
       audioPlayer.onended = () => {
         URL.revokeObjectURL(audioUrl);
