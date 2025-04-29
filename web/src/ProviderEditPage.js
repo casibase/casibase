@@ -20,7 +20,6 @@ import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import * as setting from "./Setting";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
-import {deepCopy} from "./Setting";
 
 const {Option} = Select;
 
@@ -46,7 +45,7 @@ class ProviderEditPage extends React.Component {
         if (res.status === "ok") {
           this.setState({
             provider: res.data,
-            originalProvider: deepCopy(res.data),
+            originalProvider: Setting.deepCopy(res.data),
           });
         } else {
           Setting.showMessage("error", `${i18next.t("general:Failed to get")}: ${res.msg}`);
