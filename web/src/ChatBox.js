@@ -349,6 +349,7 @@ class ChatBox extends React.Component {
             isLoadingTTS={this.state.isLoadingTTS}
             readingMessage={this.state.readingMessage}
             sendMessage={this.props.sendMessage}
+            files={this.state.files}
           />
 
           {!this.props.disableInput && (

@@ -35,6 +35,7 @@ class MessageList extends React.Component {
       isLoadingTTS,
       readingMessage,
       sendMessage,
+      files,
     } = this.props;
 
     const avatarSrc = store?.avatar || Setting.AiAvatar;
@@ -50,7 +51,7 @@ class MessageList extends React.Component {
           top: 0,
           left: 0,
           right: 0,
-          bottom: hideInput ? "0px" : "100px",
+          bottom: hideInput ? "0px" : files.length > 0 ? "150px" : "100px",
           padding: "24px",
           paddingBottom: hideInput ? "0px" : "40px",
           scrollBehavior: "smooth",
