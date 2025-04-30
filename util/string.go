@@ -185,3 +185,7 @@ func SnakeString(s string) string {
 	result := strings.ToLower(string(data[:]))
 	return strings.ReplaceAll(result, " ", "")
 }
+
+func GetChatFromProvider(owner, name string) string {
+	return GetIdFromOwnerAndName(owner, fmt.Sprintf("chat_%s", name))
+}
