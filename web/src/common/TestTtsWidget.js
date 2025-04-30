@@ -14,58 +14,11 @@
 
 import * as Setting from "../Setting";
 import i18next from "i18next";
-import moment from "moment/moment";
-import * as MessageBackend from "../backend/MessageBackend";
 import * as TtsBackend from "../backend/TtsBackend";
-import * as ChatBackend from "../backend/ChatBackend";
 import * as ProviderBackend from "../backend/ProviderBackend";
 
 // Global audio player for TTS playback
 let audioPlayer = null;
-
-function newChat(owner, user) {
-  const randomName = Setting.getRandomName();
-  return {
-    owner: "admin",
-    name: `chat_${randomName}`,
-    createdTime: moment().format(),
-    updatedTime: moment().format(),
-    organization: owner, // Default to admin if props.account not available
-    displayName: `${i18next.t("chat:New Chat")} - ${randomName}`,
-    category: i18next.t("chat:Default Category"),
-    type: "provider",
-    user: user,
-    user1: "",
-    user2: "",
-    users: [],
-    clientIp: "",
-    userAgent: "",
-    messageCount: 0,
-    tokenCount: 0,
-    needTitle: true,
-    isHidden: true,
-  };
-}
-
-function NewMessage(chatName, text) {
-  const randomName = Setting.getRandomName();
-  return {
-    owner: "admin",
-    name: `message_${randomName}`,
-    createdTime: moment().format(),
-    organization: "admin",
-    user: "admin",
-    chat: chatName,
-    replyTo: "",
-    author: "AI",
-    text: text,
-    isHidden: true,
-    isDeleted: false,
-    isAlerted: false,
-    isRegenerated: false,
-    fileName: "",
-  };
-}
 
 async function checkProvider(provider, originalProvider) {
   const hasChanges = JSON.stringify(originalProvider) !== JSON.stringify(provider);
@@ -89,19 +42,8 @@ export async function sendTestTts(provider, originalProvider, text, owner, user,
   }
 
   try {
-    if (provider.chatName === "") {
-      const chat = newChat(owner, user);
-      provider.chatName = chat.name;
-
-      const chatRes = await ChatBackend.addChat(chat);
-      if (chatRes.status !== "ok") {
-        Setting.showMessage("error", `Chat failed to add: ${chatRes.msg}`);
-        if (setLoading) {setLoading(false);}
-        return;
-      }
-    }
-
-    const audioBlob = await createMessageAndGenerateAudio(provider, text);
+    const providerId = `${provider.owner}/${provider.name}`;
+    const audioBlob = await TtsBackend.generateTextToSpeechAudio("", providerId, "", text);
 
     if (audioBlob) {
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -132,20 +74,4 @@ export async function sendTestTts(provider, originalProvider, text, owner, user,
       setLoading(false);
     }
   }
-}
-
-async function createMessageAndGenerateAudio(provider, text) {
-  const message = NewMessage(provider.chatName, text);
-
-  const res = await MessageBackend.addMessage(message);
-
-  if (res.status !== "ok") {
-    throw new Error(`Failed to create message: ${res.msg}`);
-  }
-
-  // Get the message ID from the response
-  const providerId = `${provider.owner}/${provider.name}`;
-  const messageId = `${message.owner}/${message.name}`;
-
-  return await TtsBackend.generateTextToSpeechAudio("", providerId, messageId);
 }
