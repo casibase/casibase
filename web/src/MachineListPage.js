@@ -235,6 +235,7 @@ class MachineListPage extends BaseListPage {
       pageSize: this.state.pagination.pageSize,
       showQuickJumper: true,
       showSizeChanger: true,
+      pageSizeOptions: ["10", "20", "50", "100", "1000", "10000", "100000"],
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
 
