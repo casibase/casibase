@@ -14,12 +14,13 @@
 
 import * as Setting from "../Setting";
 
-export function generateTextToSpeechAudio(storeId, providerId, messageId) {
+export function generateTextToSpeechAudio(storeId, providerId, messageId, text) {
   // Create a payload object
   const payload = {
     storeId: storeId,
     providerId: providerId,
     messageId: messageId,
+    text: text,
   };
 
   return fetch(`${Setting.ServerUrl}/api/generate-text-to-speech-audio`, {

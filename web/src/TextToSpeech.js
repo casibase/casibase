@@ -175,7 +175,7 @@ class TtsHelper {
   }
 
   useNonStreamingTTS(message, storeId, messageId) {
-    TTSBackend.generateTextToSpeechAudio(storeId, "", messageId)
+    TTSBackend.generateTextToSpeechAudio(storeId, "", messageId, "")
       .then(blob => {
         // Reset loading state when data is received
         this.component.setState({

@@ -25,6 +25,7 @@ type TextToSpeechRequest struct {
 	StoreId    string `json:"storeId"`
 	ProviderId string `json:"providerId"`
 	MessageId  string `json:"messageId"`
+	Text       string `json:"text"`
 }
 
 // GenerateTextToSpeechAudio
@@ -41,7 +42,7 @@ func (c *ApiController) GenerateTextToSpeechAudio() {
 		c.ResponseError(err.Error())
 		return
 	}
-	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.ProviderId, req.MessageId)
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(req.StoreId, req.ProviderId, req.MessageId, req.Text)
 	if err != nil {
 		c.ResponseError(err.Error())
 		return
@@ -82,7 +83,7 @@ func (c *ApiController) GenerateTextToSpeechAudioStream() {
 	c.Ctx.ResponseWriter.Header().Set("Cache-Control", "no-cache")
 	c.Ctx.ResponseWriter.Header().Set("Connection", "keep-alive")
 
-	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, "", messageId)
+	message, chat, providerObj, ctx, err := object.PrepareTextToSpeech(storeId, "", messageId, "")
 	if err != nil {
 		c.ResponseErrorStream(message, err.Error())
 		return
