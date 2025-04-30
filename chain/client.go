@@ -24,7 +24,9 @@ type ChainClientInterface interface {
 func NewChainClient(providerType string, clientId string, clientSecret string, region string, networkId string, chainId string) (ChainClientInterface, error) {
 	var res ChainClientInterface
 	var err error
-	if providerType == "ChainMaker" || providerType == "Tencent ChainMaker" {
+	if providerType == "ChainMaker" {
+		res, err = newChainChainmakerClient(clientId, clientSecret, region, networkId, chainId)
+	} else if providerType == "Tencent ChainMaker" {
 		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId)
 	} else if providerType == "Tencent ChainMaker (Demo Network)" {
 		res, err = newChainTencentChainmakerDemoClient(clientId, clientSecret, region, networkId, chainId)
