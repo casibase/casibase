@@ -42,8 +42,10 @@ const demoModeCallback = (res) => {
 const requestFilters = [];
 const responseFilters = [];
 
-if (Conf.IsDemoMode) {
-  responseFilters.push(demoModeCallback);
+export function initDemoMode() {
+  if (Conf.IsDemoMode && !responseFilters.includes(demoModeCallback)) {
+    responseFilters.push(demoModeCallback);
+  }
 }
 
 window.fetch = async(url, option = {}) => {

@@ -76,6 +76,10 @@ func StaticFilter(ctx *context.Context) {
 	if util.FileExist(path) {
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, path)
 	} else {
+		err := util.AppendWebConfigCookie(ctx)
+		if err != nil {
+			fmt.Println(err)
+		}
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, "web/build/index.html")
 	}
 }
