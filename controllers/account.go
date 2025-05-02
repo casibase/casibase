@@ -280,6 +280,11 @@ func (c *ApiController) isSafePassword() (bool, error) {
 // @router /get-account [get]
 func (c *ApiController) GetAccount() {
 	disablePreviewMode, _ := beego.AppConfig.Bool("disablePreviewMode")
+	err := util.AppendWebConfigCookie(c.Ctx)
+	if err != nil {
+		fmt.Println(err)
+	}
+
 	if !c.isPublicDomain() && disablePreviewMode {
 		_, ok := c.RequireSignedIn()
 		if !ok {
