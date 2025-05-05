@@ -26,14 +26,27 @@ import (
 
 	"github.com/beego/beego"
 	"github.com/beego/beego/context"
+	"github.com/casibase/casibase/conf"
 	"github.com/casibase/casibase/util"
 )
 
-const (
-	headerAllowOrigin  = "Access-Control-Allow-Origin"
-	headerAllowMethods = "Access-Control-Allow-Methods"
-	headerAllowHeaders = "Access-Control-Allow-Headers"
+var (
+	frontendBaseDir = conf.GetConfigString("frontendBaseDir")
 )
+
+func getWebBuildFolder() string {
+	path := "web/build"
+	if util.FileExist(filepath.Join(path, "index.html")) || frontendBaseDir == "" {
+		return path
+	}
+
+	if util.FileExist(filepath.Join(frontendBaseDir, "index.html")) {
+		return frontendBaseDir
+	}
+
+	path = filepath.Join(frontendBaseDir, "web/build")
+	return path
+}
 
 func StaticFilter(ctx *context.Context) {
 	urlPath := ctx.Request.URL.Path
@@ -56,9 +69,9 @@ func StaticFilter(ctx *context.Context) {
 	}
 
 	if strings.HasPrefix(urlPath, "/storage") {
-		ctx.Output.Header(headerAllowOrigin, "*")
-		ctx.Output.Header(headerAllowMethods, "POST, GET, OPTIONS, DELETE")
-		ctx.Output.Header(headerAllowHeaders, "Content-Type, Authorization")
+		ctx.Output.Header("Access-Control-Allow-Origin", "*")
+		ctx.Output.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE")
+		ctx.Output.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
 
 		urlPath = strings.TrimPrefix(urlPath, "/storage/")
 		urlPath = strings.Replace(urlPath, "|", ":", 1)
@@ -66,13 +79,17 @@ func StaticFilter(ctx *context.Context) {
 		return
 	}
 
-	path := "web/build"
+	webBuildFolder := getWebBuildFolder()
+	path := webBuildFolder
 	if urlPath == "/" {
 		path += "/index.html"
 	} else {
 		path += urlPath
 	}
 
+	if strings.Contains(path, "/../") || !util.FileExist(path) {
+		path = webBuildFolder + "/index.html"
+	}
 	if util.FileExist(path) {
 		makeGzipResponse(ctx.ResponseWriter, ctx.Request, path)
 	} else {
