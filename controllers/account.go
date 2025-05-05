@@ -205,7 +205,7 @@ func (c *ApiController) anonymousSignin() {
 		Id:              username,
 		Type:            "anonymous-user",
 		DisplayName:     "User",
-		Avatar:          "https://cdn.casdoor.com/casdoor/resource/built-in/admin/casibase-user.png",
+		Avatar:          "https://cdn.casibase.org/img/casibase-user.png",
 		AvatarType:      "",
 		PermanentAvatar: "",
 		Email:           "",
