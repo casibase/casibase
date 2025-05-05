@@ -352,6 +352,9 @@ class App extends Component {
         <React.Fragment>
           {this.renderRightDropdown()}
           <LanguageSelect />
+          <div style={{float: "right", marginRight: "20px", padding: "0px"}}>
+            <div dangerouslySetInnerHTML={{__html: Conf.NavbarHtml}} />
+          </div>
         </React.Fragment>
       );
     }

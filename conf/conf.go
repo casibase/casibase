@@ -41,6 +41,7 @@ type WebConfig struct {
 	HtmlTitle          string   `json:"htmlTitle"`
 	FaviconUrl         string   `json:"faviconUrl"`
 	LogoUrl            string   `json:"logoUrl"`
+	NavbarHtml         string   `json:"navbarHtml"`
 	FooterHtml         string   `json:"footerHtml"`
 	AppUrl             string   `json:"appUrl"`
 	ShowGithubCorner   bool     `json:"showGithubCorner"`
@@ -177,6 +178,7 @@ func GetWebConfig() *WebConfig {
 	config.HtmlTitle = GetConfigString("htmlTitle")
 	config.FaviconUrl = GetConfigString("faviconUrl")
 	config.LogoUrl = GetConfigString("logoUrl")
+	config.NavbarHtml = GetConfigString("navbarHtml")
 	config.FooterHtml = GetConfigString("footerHtml")
 	config.AppUrl = GetConfigString("appUrl")
 	config.ShowGithubCorner = GetConfigBool("showGithubCorner")

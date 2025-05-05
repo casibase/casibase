@@ -23,6 +23,7 @@ export let DefaultLanguage = "";
 export let HtmlTitle = "";
 export let FaviconUrl = "";
 export let LogoUrl = "";
+export let NavbarHtml = "";
 export let FooterHtml = "";
 export let AppUrl = "";
 export let ShowGithubCorner = false;
@@ -50,6 +51,7 @@ export function setConfig(config) {
   if (config.htmlTitle !== undefined) {HtmlTitle = config.htmlTitle;}
   if (config.faviconUrl !== undefined) {FaviconUrl = config.faviconUrl;}
   if (config.logoUrl !== undefined) {LogoUrl = config.logoUrl;}
+  if (config.navbarHtml !== undefined) {NavbarHtml = config.navbarHtml;}
   if (config.footerHtml !== undefined) {FooterHtml = config.footerHtml;}
   if (config.appUrl !== undefined) {AppUrl = config.appUrl;}
   if (config.showGithubCorner !== undefined) {ShowGithubCorner = config.showGithubCorner;}
