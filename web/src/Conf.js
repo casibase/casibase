@@ -12,18 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export const AuthConfig = {};
+// eslint-disable-next-line
+export let AuthConfig = {};
 export let EnableExtraPages = false;
 export let ShortcutPageItems = [];
 export let UsageEndpoints = [];
 export let IframeUrl = "";
 export let ForceLanguage = "";
 export let DefaultLanguage = "";
+export let LogoUrl = "";
+export let FooterHtml = "";
 export let AppUrl = "";
 export let ShowGithubCorner = false;
 export let DisablePreviewMode = false;
 export let IsDemoMode = false;
-export const ThemeDefault = {};
+// eslint-disable-next-line
+export let ThemeDefault = {};
 export let AvatarErrorUrl = "";
 
 export function setConfig(config) {
@@ -41,6 +45,8 @@ export function setConfig(config) {
   if (config.iframeUrl !== undefined) {IframeUrl = config.iframeUrl;}
   if (config.forceLanguage !== undefined) {ForceLanguage = config.forceLanguage;}
   if (config.defaultLanguage !== undefined) {DefaultLanguage = config.defaultLanguage;}
+  if (config.logoUrl !== undefined) {LogoUrl = config.logoUrl;}
+  if (config.footerHtml !== undefined) {FooterHtml = config.footerHtml;}
   if (config.appUrl !== undefined) {AppUrl = config.appUrl;}
   if (config.showGithubCorner !== undefined) {ShowGithubCorner = config.showGithubCorner;}
 

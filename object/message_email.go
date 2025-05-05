@@ -44,6 +44,8 @@ func (message *Message) SendEmail() error {
 	}
 	title := application.DisplayName
 
+	logoUrl := beego.AppConfig.String("logoUrl")
+
 	user, err := casdoorsdk.GetUser(message.User)
 	if err != nil {
 		return err
@@ -76,7 +78,7 @@ func (message *Message) SendEmail() error {
 <div class="email-container">
   <div class="header">
         <h3>%s</h3>
-        <img src="https://cdn.casibase.org/img/casibase-logo_1200x256.png" alt="Casibase Logo" width="300">
+        <img src="%s" alt="Casibase Logo" width="300">
     </div>
     <p>Hi <strong>%s</strong>, your AI reply has been updated by the administrator! </p>
     <p>Question:</p>
@@ -100,7 +102,7 @@ func (message *Message) SendEmail() error {
 </div>
 </body>
 </html>
-`, title, username, question, message.Text, message.Comment, title)
+`, title, logoUrl, username, question, message.Text, message.Comment, title)
 
 	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {
@@ -142,6 +144,8 @@ func (message *Message) SendErrorEmail(errorText string) error {
 
 	title := fmt.Sprintf("AI-Error: %s - %s - %s - %s", sender, username, message.Chat, message.Name)
 
+	logoUrl := beego.AppConfig.String("logoUrl")
+
 	questionMessage, err := GetMessage(util.GetId("admin", message.ReplyTo))
 	if err != nil {
 		return err
@@ -171,7 +175,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 <div class="email-container">
   <div class="header">
         <h3>%s</h3>
-        <img src="https://cdn.casibase.org/img/casibase-logo_1200x256.png" alt="Casibase Logo" width="300">
+        <img src="%s" alt="Casibase Logo" width="300">
     </div>
     <p>The message for user: <strong>%s</strong> has encountered error! </p>
     <p>Question:</p>
@@ -191,7 +195,7 @@ func (message *Message) SendErrorEmail(errorText string) error {
 </div>
 </body>
 </html>
-`, title, username, question, errorText, sender)
+`, title, logoUrl, username, question, errorText, sender)
 
 	err = casdoorsdk.SendEmail(title, content, sender, receiverEmail)
 	if err != nil {

@@ -13,12 +13,8 @@ code {
 }
 
 .logo {
-  background: url("https://cdn.casibase.org/img/casibase-logo_1200x256.png");
-  background-size: 130px, 30px;
-  width: 130px;
-  height: 28px;
-  /* background: rgba(0, 0, 0, 0.2); */
-  margin: 17px 10px 16px 10px;
+  height: 30px;
+  margin: 17px 0 16px 15px;
   float: left;
 }
 
