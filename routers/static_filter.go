@@ -30,9 +30,7 @@ import (
 	"github.com/casibase/casibase/util"
 )
 
-var (
-	frontendBaseDir = conf.GetConfigString("frontendBaseDir")
-)
+var frontendBaseDir = conf.GetConfigString("frontendBaseDir")
 
 func getWebBuildFolder() string {
 	path := "web/build"
