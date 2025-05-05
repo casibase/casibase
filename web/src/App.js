@@ -707,17 +707,14 @@ class App extends Component {
       });
     };
 
-    const menuStyleRight = !Setting.isMobile() ? "calc(180px + 260px)" : "260px";
-
     return (
       <Header style={{padding: "0", marginBottom: "3px", backgroundColor: "white", display: "flex", justifyContent: "space-between"}}>
-        <div style={{display: "flex", alignItems: "center"}}>
+        <div style={{display: "flex", alignItems: "center", flex: 1, overflow: "hidden"}}>
           {Setting.isMobile() ? null : (
             <Link to={"/"}>
               <div className="logo" />
             </Link>
           )}
-
           {Setting.isMobile() ? (
             <React.Fragment>
               <Drawer title={i18next.t("general:Close")} placement="left" open={this.state.menuVisible} onClose={this.onClose}>
@@ -735,16 +732,12 @@ class App extends Component {
               </Button>
             </React.Fragment>
           ) : (
-            <Menu
-              onClick={onClick}
-              items={this.getMenuItems()}
-              mode={"horizontal"}
-              selectedKeys={[this.state.selectedMenuKey]}
-              style={{position: "absolute", left: "145px", right: menuStyleRight}}
-            />
+            <div style={{display: "flex", marginLeft: "10px", flex: 1, minWidth: 0, overflow: "auto", paddingRight: "20px"}}>
+              <Menu style={{minWidth: 0, width: "100%"}} onClick={onClick} items={this.getMenuItems()} mode={"horizontal"} selectedKeys={[this.state.selectedMenuKey]} />
+            </div>
           )}
         </div>
-        <div>
+        <div style={{flexShrink: 0}}>
           {this.renderAccountMenu()}
         </div>
       </Header>
