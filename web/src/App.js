@@ -18,6 +18,7 @@ import {StyleProvider, legacyLogicalPropertiesTransformer} from "@ant-design/css
 import {Avatar, Button, Card, ConfigProvider, Drawer, Dropdown, FloatButton, Layout, Menu, Result} from "antd";
 import {AppstoreTwoTone, BarsOutlined, BulbTwoTone, CloudTwoTone, CommentOutlined, DownOutlined, HomeTwoTone, LockTwoTone, LoginOutlined, LogoutOutlined, SettingOutlined, SettingTwoTone, VideoCameraTwoTone, WalletTwoTone} from "@ant-design/icons";
 import "./App.less";
+import {Helmet} from "react-helmet";
 import * as Setting from "./Setting";
 import * as AccountBackend from "./backend/AccountBackend";
 import AuthCallback from "./AuthCallback";
@@ -785,6 +786,13 @@ class App extends Component {
   render() {
     return (
       <React.Fragment>
+        <Helmet>
+          <link rel="icon" href={"https://cdn.casibase.com/static/favicon.png"} />
+        </Helmet>
+        <Helmet>
+          <title>{Conf.HtmlTitle}</title>
+          <link rel="icon" href={Conf.FaviconUrl} />
+        </Helmet>
         <ConfigProvider theme={{
           token: {
             colorPrimary: this.state.themeData.colorPrimary,

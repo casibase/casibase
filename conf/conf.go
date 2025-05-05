@@ -38,6 +38,8 @@ type WebConfig struct {
 	IframeUrl          string   `json:"iframeUrl"`
 	ForceLanguage      string   `json:"forceLanguage"`
 	DefaultLanguage    string   `json:"defaultLanguage"`
+	HtmlTitle          string   `json:"htmlTitle"`
+	FaviconUrl         string   `json:"faviconUrl"`
 	LogoUrl            string   `json:"logoUrl"`
 	FooterHtml         string   `json:"footerHtml"`
 	AppUrl             string   `json:"appUrl"`
@@ -172,6 +174,8 @@ func GetWebConfig() *WebConfig {
 	config.IframeUrl = GetConfigString("iframeUrl")
 	config.ForceLanguage = GetConfigString("forceLanguage")
 	config.DefaultLanguage = GetLanguage(GetConfigString("defaultLanguage"))
+	config.HtmlTitle = GetConfigString("htmlTitle")
+	config.FaviconUrl = GetConfigString("faviconUrl")
 	config.LogoUrl = GetConfigString("logoUrl")
 	config.FooterHtml = GetConfigString("footerHtml")
 	config.AppUrl = GetConfigString("appUrl")
