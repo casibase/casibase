@@ -787,9 +787,6 @@ class App extends Component {
     return (
       <React.Fragment>
         <Helmet>
-          <link rel="icon" href={"https://cdn.casibase.com/static/favicon.png"} />
-        </Helmet>
-        <Helmet>
           <title>{Conf.HtmlTitle}</title>
           <link rel="icon" href={Conf.FaviconUrl} />
         </Helmet>
