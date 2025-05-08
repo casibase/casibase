@@ -46,6 +46,8 @@ https://help.aliyun.com/zh/model-studio/billing-for-model-studio
 | Qwen-Plus           | qwen-plus                       | 0.004yuan/1,000 tokens           | 0.012yuan/1,000 tokens         |
 | Qwen-Max            | qwen-max                        | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
 | Qwen-Max            | qwen-max-longcontext            | 0.04yuan/1,000 tokens            | 0.12yuan/1,000 tokens          |
+| Qwen3-235B-a22B     | qwen3-235b-a22b                 | 0.004yuan/1,000 tokens            | 0.04yuan/1,000 tokens         |
+| Qwen3-32B           | qwen3-32b            			| 0.002yuan/1,000 tokens            | 0.02yuan/1,000 tokens         |
 | DeepSeek-R1         | deepseek-r1                     | 0.002yuan/1,000 tokens           | 0.008yuan/1,000 tokens         |
 | DeepSeek-V3         | deepseek-v3                     | 0.001yuan/1,000 tokens           | 0.004yuan/1,000 tokens         |
 | DeepSeek-R1-Distill | deepseek-r1-distill-qwen-1.5b   | 0.000yuan/1,000 tokens           | 0.000yuan/1,000 tokens         |
@@ -65,6 +67,8 @@ func (p *AlibabacloudModelProvider) calculatePrice(modelResult *ModelResult) err
 		"qwen-plus":                     {0.004, 0.012},
 		"qwen-max":                      {0.040, 0.120},
 		"qwen-max-longcontext":          {0.040, 0.120},
+		"qwen3-235b-a22b":               {0.004, 0.04},
+		"qwen3-32b":                     {0.002, 0.02},
 		"deepseek-r1":                   {0.002, 0.008},
 		"deepseek-v3":                   {0.001, 0.004},
 		"deepseek-r1-distill-qwen-1.5b": {0.000, 0.000},
