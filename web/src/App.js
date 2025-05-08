@@ -49,6 +49,8 @@ import MachineListPage from "./MachineListPage";
 import MachineEditPage from "./MachineEditPage";
 import ImageListPage from "./ImageListPage";
 import ImageEditPage from "./ImageEditPage";
+import ContainerListPage from "./ContainerListPage";
+import ContainerEditPage from "./ContainerEditPage";
 import SessionListPage from "./SessionListPage";
 import RecordListPage from "./RecordListPage";
 import RecordEditPage from "./RecordEditPage";
@@ -150,6 +152,8 @@ class App extends Component {
       this.setState({selectedMenuKey: "/machines"});
     } else if (uri.includes("/images")) {
       this.setState({selectedMenuKey: "/images"});
+    } else if (uri.includes("/containers")) {
+      this.setState({selectedMenuKey: "/containers"});
     } else if (uri.includes("/sessions")) {
       this.setState({selectedMenuKey: "/sessions"});
     } else if (uri.includes("/records")) {
@@ -519,6 +523,7 @@ class App extends Component {
         Setting.getItem(<Link to="/nodes">{i18next.t("general:Nodes")}</Link>, "/nodes"),
         Setting.getItem(<Link to="/machines">{i18next.t("general:Machines")}</Link>, "/machines"),
         Setting.getItem(<Link to="/images">{i18next.t("general:Images")}</Link>, "/images"),
+        Setting.getItem(<Link to="/containers">{i18next.t("general:Containers")}</Link>, "/containers"),
         Setting.getItem(<Link to="/workbench" target="_blank">{i18next.t("general:Workbench")}</Link>, "workbench"),
       ]));
 
@@ -626,6 +631,8 @@ class App extends Component {
         <Route exact path="/machines/:organizationName/:machineName" render={(props) => this.renderSigninIfNotSignedIn(<MachineEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/images" render={(props) => this.renderSigninIfNotSignedIn(<ImageListPage account={this.state.account} {...props} />)} />
         <Route exact path="/images/:organizationName/:imageName" render={(props) => this.renderSigninIfNotSignedIn(<ImageEditPage account={this.state.account} {...props} />)} />
+        <Route exact path="/containers" render={(props) => this.renderSigninIfNotSignedIn(<ContainerListPage account={this.state.account} {...props} />)} />
+        <Route exact path="/containers/:organizationName/:containerName" render={(props) => this.renderSigninIfNotSignedIn(<ContainerEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/workflows" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowListPage account={this.state.account} {...props} />)} />
         <Route exact path="/workflows/:workflowName" render={(props) => this.renderSigninIfNotSignedIn(<WorkflowEditPage account={this.state.account} {...props} />)} />
         <Route exact path="/audit" render={(props) => this.renderSigninIfNotSignedIn(<AuditPage account={this.state.account} {...props} />)} />
