@@ -1477,6 +1477,8 @@ export function getProviderSubTypeOptions(category, type) {
           {id: "qwen-plus", name: "qwen-plus"},
           {id: "qwen-max", name: "qwen-max"},
           {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+          {id: "qwen3-235b-a22b", name: "qwen3-235b-a22b"},
+          {id: "qwen3-32b", name: "qwen3-32b"},
           {id: "deepseek-r1", name: "deepseek-r1"},
           {id: "deepseek-v3", name: "deepseek-v3"},
           {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
