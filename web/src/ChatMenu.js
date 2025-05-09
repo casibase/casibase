@@ -216,7 +216,6 @@ class ChatMenu extends React.Component {
     if (!stores) {
       stores = [];
     }
-    stores = stores.filter(store => store.storageProvider !== "" && store.modelProvider !== "" && store.embeddingProvider !== "");
 
     const defaultStore = stores.find(store => store.isDefault);
     let hasChildStores = false;
