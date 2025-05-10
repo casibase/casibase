@@ -1075,6 +1075,11 @@ export function getProviderTypeOptions(category) {
         {id: "Dummy", name: "Dummy"},
       ]
     );
+  } else if (category === "Agent") {
+    return ([
+      {id: "MCP", name: "MCP"},
+      {id: "A2A", name: "A2A"},
+    ]);
   } else if (category === "Public Cloud") {
     return ([
       {id: "Amazon Web Services", name: "Amazon Web Services"},
@@ -1551,6 +1556,16 @@ export function getProviderSubTypeOptions(category, type) {
     return getModelSubTypeOptions(type);
   } else if (category === "Embedding") {
     return getEmbeddingSubTypeOptions(type);
+  } else if (category === "Agent") {
+    if (type === "MCP") {
+      return [
+        {id: "Default", name: "Default"},
+      ];
+    } else if (type === "A2A") {
+      return [
+        {id: "Default", name: "Default"},
+      ];
+    }
   } else if (category === "Text-to-Speech") {
     if (type === "Alibaba Cloud") {
       return [

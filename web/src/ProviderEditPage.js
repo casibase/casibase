@@ -20,6 +20,10 @@ import i18next from "i18next";
 import {LinkOutlined} from "@ant-design/icons";
 import * as setting from "./Setting";
 import * as ProviderEditTestTts from "./common/TestTtsWidget";
+import {Controlled as CodeMirror} from "react-codemirror2";
+import "codemirror/lib/codemirror.css";
+require("codemirror/theme/material-darker.css");
+require("codemirror/mode/javascript/javascript");
 
 const {Option} = Select;
 
@@ -183,6 +187,9 @@ class ProviderEditPage extends React.Component {
               } else if (value === "Embedding") {
                 this.updateProviderField("type", "OpenAI");
                 this.updateProviderField("subType", "AdaSimilarity");
+              } else if (value === "Agent") {
+                this.updateProviderField("type", "MCP");
+                this.updateProviderField("subType", "Default");
               } else if (value === "Video") {
                 this.updateProviderField("type", "AWS");
               } else if (value === "Text-to-Speech") {
@@ -201,6 +208,7 @@ class ProviderEditPage extends React.Component {
                   {id: "Storage", name: "Storage"},
                   {id: "Model", name: "Model"},
                   {id: "Embedding", name: "Embedding"},
+                  {id: "Agent", name: "Agent"},
                   {id: "Public Cloud", name: "Public Cloud"},
                   {id: "Private Cloud", name: "Private Cloud"},
                   {id: "Blockchain", name: "Blockchain"},
@@ -290,6 +298,12 @@ class ProviderEditPage extends React.Component {
                 } else if (value === "Dummy") {
                   this.updateProviderField("subType", "Dummy");
                 }
+              } else if (this.state.provider.category === "Agent") {
+                if (value === "MCP") {
+                  this.updateProviderField("subType", "Default");
+                } else if (value === "A2A") {
+                  this.updateProviderField("subType", "Default");
+                }
               } else if (this.state.provider.category === "Text-to-Speech") {
                 if (value === "Alibaba Cloud") {
                   this.updateProviderField("subType", "cosyvoice-v1");
@@ -312,7 +326,7 @@ class ProviderEditPage extends React.Component {
           </Col>
         </Row>
         {
-          !["Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
+          !["Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("provider:Sub type")}:
@@ -513,7 +527,27 @@ class ProviderEditPage extends React.Component {
           )
         }
         {
-          ["Storage", "Model", "Embedding", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
+          !["Agent"].includes(this.state.provider.category) ? null : (
+            <Row style={{marginTop: "20px"}} >
+              <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
+                {i18next.t("general:Text")}:
+              </Col>
+              <Col span={10} >
+                <div style={{height: "500px"}}>
+                  <CodeMirror
+                    value={this.state.provider.text}
+                    options={{mode: "application/json", theme: "material-darker"}}
+                    onBeforeChange={(editor, data, value) => {
+                      this.updateProviderField("text", value);
+                    }}
+                  />
+                </div>
+              </Col>
+            </Row>
+          )
+        }
+        {
+          ["Storage", "Model", "Embedding", "Agent", "Text-to-Speech", "Speech-to-Text"].includes(this.state.provider.category) ? null : (
             <Row style={{marginTop: "20px"}} >
               <Col style={{marginTop: "5px"}} span={(Setting.isMobile()) ? 22 : 2}>
                 {i18next.t("general:Region")}:

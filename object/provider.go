@@ -18,11 +18,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/casibase/casibase/stt"
-
 	"github.com/casibase/casibase/embedding"
 	"github.com/casibase/casibase/model"
 	"github.com/casibase/casibase/storage"
+	"github.com/casibase/casibase/stt"
 	"github.com/casibase/casibase/tts"
 	"github.com/casibase/casibase/util"
 	"xorm.io/core"
@@ -44,6 +43,7 @@ type Provider struct {
 	ProviderUrl        string `xorm:"varchar(200)" json:"providerUrl"`
 	ApiVersion         string `xorm:"varchar(100)" json:"apiVersion"`
 	CompitableProvider string `xorm:"varchar(100)" json:"compitableProvider"`
+	Text               string `xorm:"mediumtext" json:"text"`
 
 	Temperature      float32 `xorm:"float" json:"temperature"`
 	TopP             float32 `xorm:"float" json:"topP"`

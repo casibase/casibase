@@ -17,6 +17,10 @@ import {Tooltip} from "antd";
 import * as Setting from "./Setting";
 
 export function getProviderUrl(provider) {
+  if (!Setting.OtherProviderInfo[provider.category]) {
+    return "";
+  }
+
   const info = Setting.OtherProviderInfo[provider.category][provider.type];
   // avoid crash when provider is not found
   if (info) {
@@ -35,14 +39,14 @@ export function getProviderLogoWidget(provider) {
     return (
       <Tooltip title={provider.type}>
         <a target="_blank" rel="noreferrer" href={getProviderUrl(provider)}>
-          <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.displayName} />
+          <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.type} />
         </a>
       </Tooltip>
     );
   } else {
     return (
       <Tooltip title={provider.type}>
-        <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.displayName} />
+        <img width={36} height={36} src={Setting.getProviderLogoURL(provider)} alt={provider.type} />
       </Tooltip>
     );
   }
