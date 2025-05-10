@@ -1077,25 +1077,25 @@ export function getProviderTypeOptions(category) {
     );
   } else if (category === "Public Cloud") {
     return ([
-      {value: "Amazon Web Services", name: "Amazon Web Services"},
-      {value: "Azure", name: "Azure"},
-      {value: "Google Cloud", name: "Google Cloud"},
-      {value: "Aliyun", name: "Aliyun"},
-      {value: "Tencent Cloud", name: "Tencent Cloud"},
+      {id: "Amazon Web Services", name: "Amazon Web Services"},
+      {id: "Azure", name: "Azure"},
+      {id: "Google Cloud", name: "Google Cloud"},
+      {id: "Aliyun", name: "Aliyun"},
+      {id: "Tencent Cloud", name: "Tencent Cloud"},
     ]);
   } else if (category === "Private Cloud") {
     return ([
-      {value: "KVM", name: "KVM"},
-      {value: "Xen", name: "Xen"},
-      {value: "VMware", name: "VMware"},
-      {value: "PVE", name: "PVE"},
+      {id: "KVM", name: "KVM"},
+      {id: "Xen", name: "Xen"},
+      {id: "VMware", name: "VMware"},
+      {id: "PVE", name: "PVE"},
     ]);
   } else if (category === "Blockchain") {
     return ([
-      {value: "Hyperledger Fabric", name: "Hyperledger Fabric"},
-      {value: "ChainMaker", name: "ChainMaker"},
-      {value: "Tencent ChainMaker", name: "Tencent ChainMaker"},
-      {value: "Tencent ChainMaker (Demo Network)", name: "Tencent ChainMaker (Demo Network)"},
+      {id: "Hyperledger Fabric", name: "Hyperledger Fabric"},
+      {id: "ChainMaker", name: "ChainMaker"},
+      {id: "Tencent ChainMaker", name: "Tencent ChainMaker"},
+      {id: "Tencent ChainMaker (Demo Network)", name: "Tencent ChainMaker (Demo Network)"},
     ]);
   } else if (category === "Video") {
     return (
@@ -1184,77 +1184,37 @@ export function getTtsFlavorOptions(type, subType) {
   return [];
 }
 
-export function getProviderSubTypeOptions(category, type) {
-  if (type === "OpenAI") {
-    if (category === "Model") {
-      return (
-        openaiModels
-      );
-    } else if (category === "Embedding") {
-      return (
-        openaiEmbeddings
-      );
-    } else {
-      return [];
-    }
+export function getModelSubTypeOptions(type) {
+  if (type === "OpenAI" || type === "Azure") {
+    return openaiModels;
   } else if (type === "Gemini") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "gemini-pro", name: "Gemini Pro"},
-          {id: "gemini-pro-vision", name: "Gemini Pro Vision"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "embedding-001", name: "embedding-001"},
-        ]
-      );
-    } else {
-      return [];
-    }
+    return [
+      {id: "gemini-pro", name: "Gemini Pro"},
+      {id: "gemini-pro-vision", name: "Gemini Pro Vision"},
+    ];
   } else if (type === "GitHub") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "gpt-4o", name: "GPT-4o"},
-          {id: "gpt-4o-mini", name: "GPT-4o-mini"},
-          {id: "Phi-4-multimodal-instruct", name: "Phi-4-multimodal-instruct"},
-          {id: "Phi-4-mini-instruct", name: "Phi-4-mini-instruct"},
-          {id: "Phi-4", name: "Phi-4"},
-          {id: "Mistral-Large-2411", name: "Mistral-Large-2411"},
-          {id: "AI21-Jamba-1.5-Large", name: "AI21-Jamba-1.5-Large"},
-          {id: "AI21-Jamba-1.5-Mini", name: "AI21-Jamba-1.5-Mini"},
-          {id: "Cohere-command-r-08-2024", name: "Cohere-command-r-08-2024"},
-          {id: "Cohere-command-r-plus-08-2024", name: "Cohere-command-r-plus-08-2024"},
-          {id: "Llama-3.3-70B-Instruct", name: "Llama-3.3-70B-Instruct"},
-        ]
-      );
-    } else {
-      return [];
-    }
+    return [
+      {id: "gpt-4o", name: "GPT-4o"},
+      {id: "gpt-4o-mini", name: "GPT-4o-mini"},
+      {id: "Phi-4-multimodal-instruct", name: "Phi-4-multimodal-instruct"},
+      {id: "Phi-4-mini-instruct", name: "Phi-4-mini-instruct"},
+      {id: "Phi-4", name: "Phi-4"},
+      {id: "Mistral-Large-2411", name: "Mistral-Large-2411"},
+      {id: "AI21-Jamba-1.5-Large", name: "AI21-Jamba-1.5-Large"},
+      {id: "AI21-Jamba-1.5-Mini", name: "AI21-Jamba-1.5-Mini"},
+      {id: "Cohere-command-r-08-2024", name: "Cohere-command-r-08-2024"},
+      {id: "Cohere-command-r-plus-08-2024", name: "Cohere-command-r-plus-08-2024"},
+      {id: "Llama-3.3-70B-Instruct", name: "Llama-3.3-70B-Instruct"},
+    ];
   } else if (type === "Hugging Face") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "meta-llama/Llama-2-7b", name: "meta-llama/Llama-2-7b"},
-          {id: "tiiuae/falcon-180B", name: "tiiuae/falcon-180B"},
-          {id: "bigscience/bloom", name: "bigscience/bloom"},
-          {id: "gpt2", name: "gpt2"},
-          {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
-          {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "sentence-transformers/all-MiniLM-L6-v2", name: "sentence-transformers/all-MiniLM-L6-v2"},
-        ]
-      );
-    } else {
-      return [];
-    }
+    return [
+      {id: "meta-llama/Llama-2-7b", name: "meta-llama/Llama-2-7b"},
+      {id: "tiiuae/falcon-180B", name: "tiiuae/falcon-180B"},
+      {id: "bigscience/bloom", name: "bigscience/bloom"},
+      {id: "gpt2", name: "gpt2"},
+      {id: "baichuan-inc/Baichuan2-13B-Chat", name: "baichuan-inc/Baichuan2-13B-Chat"},
+      {id: "THUDM/chatglm2-6b", name: "THUDM/chatglm2-6b"},
+    ];
   } else if (type === "Claude") {
     return [
       {id: "claude-2.0", name: "claude-2.0"},
@@ -1266,193 +1226,112 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "claude-3-7-sonnet-20250219", name: "claude-3-7-sonnet-20250219"},
     ];
   } else if (type === "OpenRouter") {
-    return (
-      [
-        {id: "google/palm-2-codechat-bison", name: "google/palm-2-codechat-bison"},
-        {id: "google/palm-2-chat-bison", name: "google/palm-2-chat-bison"},
-        {id: "openai/gpt-3.5-turbo", name: "openai/gpt-3.5-turbo"},
-        {id: "openai/gpt-3.5-turbo-16k", name: "openai/gpt-3.5-turbo-16k"},
-        {id: "openai/gpt-4", name: "openai/gpt-4"},
-        {id: "openai/gpt-4-32k", name: "openai/gpt-4-32k"},
-        {id: "anthropic/claude-2", name: "anthropic/claude-2"},
-        {id: "anthropic/claude-instant-v1", name: "anthropic/claude-instant-v1"},
-        {id: "meta-llama/llama-2-13b-chat", name: "meta-llama/llama-2-13b-chat"},
-        {id: "meta-llama/llama-2-70b-chat", name: "meta-llama/llama-2-70b-chat"},
-        {id: "palm-2-codechat-bison", name: "palm-2-codechat-bison"},
-        {id: "palm-2-chat-bison", name: "palm-2-chat-bison"},
-        {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
-        {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
-        {id: "gpt-4", name: "gpt-4"},
-        {id: "gpt-4-32k", name: "gpt-4-32k"},
-        {id: "claude-2", name: "claude-2"},
-        {id: "claude-instant-v1", name: "claude-instant-v1"},
-        {id: "llama-2-13b-chat", name: "llama-2-13b-chat"},
-        {id: "llama-2-70b-chat", name: "llama-2-70b-chat"},
-      ]
-    );
+    return [
+      {id: "google/palm-2-codechat-bison", name: "google/palm-2-codechat-bison"},
+      {id: "google/palm-2-chat-bison", name: "google/palm-2-chat-bison"},
+      {id: "openai/gpt-3.5-turbo", name: "openai/gpt-3.5-turbo"},
+      {id: "openai/gpt-3.5-turbo-16k", name: "openai/gpt-3.5-turbo-16k"},
+      {id: "openai/gpt-4", name: "openai/gpt-4"},
+      {id: "openai/gpt-4-32k", name: "openai/gpt-4-32k"},
+      {id: "anthropic/claude-2", name: "anthropic/claude-2"},
+      {id: "anthropic/claude-instant-v1", name: "anthropic/claude-instant-v1"},
+      {id: "meta-llama/llama-2-13b-chat", name: "meta-llama/llama-2-13b-chat"},
+      {id: "meta-llama/llama-2-70b-chat", name: "meta-llama/llama-2-70b-chat"},
+      {id: "palm-2-codechat-bison", name: "palm-2-codechat-bison"},
+      {id: "palm-2-chat-bison", name: "palm-2-chat-bison"},
+      {id: "gpt-3.5-turbo", name: "gpt-3.5-turbo"},
+      {id: "gpt-3.5-turbo-16k", name: "gpt-3.5-turbo-16k"},
+      {id: "gpt-4", name: "gpt-4"},
+      {id: "gpt-4-32k", name: "gpt-4-32k"},
+      {id: "claude-2", name: "claude-2"},
+      {id: "claude-instant-v1", name: "claude-instant-v1"},
+      {id: "llama-2-13b-chat", name: "llama-2-13b-chat"},
+      {id: "llama-2-70b-chat", name: "llama-2-70b-chat"},
+    ];
   } else if (type === "Baidu Cloud") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "ernie-4.0-8k", name: "ernie-4.0-8k"},
-          {id: "ernie-4.0-8k-latest", name: "ernie-4.0-8k-latest"},
-          {id: "ernie-4.0-8k-preview", name: "ernie-4.0-8k-preview"},
-          {id: "ernie-4.0-turbo-8k", name: "ernie-4.0-turbo-8k"},
-          {id: "ernie-4.0-turbo-128k", name: "ernie-4.0-turbo-128k"},
-          {id: "ernie-4.0-turbo-8k-preview", name: "ernie-4.0-turbo-8k-preview"},
-          {id: "ernie-4.0-turbo-8k-latest", name: "ernie-4.0-turbo-8k-latest"},
-          {id: "ernie-3.5-8k", name: "ernie-3.5-8k"},
-          {id: "ernie-3.5-128k", name: "ernie-3.5-128k"},
-          {id: "ernie-3.5-8k-preview", name: "ernie-3.5-8k-preview"},
-          {id: "ernie-speed-8k", name: "ernie-speed-8k"},
-          {id: "ernie-speed-128k", name: "ernie-speed-128k"},
-          {id: "ernie-speed-pro-128k", name: "ernie-speed-pro-128k"},
-          {id: "ernie-lite-8k", name: "ernie-lite-8k"},
-          {id: "ernie-lite-pro-128k", name: "ernie-lite-pro-128k"},
-          {id: "ernie-tiny-8k", name: "ernie-tiny-8k"},
-          {id: "ernie-character-8k", name: "ernie-character-8k"},
-          {id: "ernie-character-fiction-8k", name: "ernie-character-fiction-8k"},
-          {id: "ernie-novel-8k", name: "ernie-novel-8k"},
-          {id: "deepseek-v3", name: "deepseek-v3"},
-          {id: "deepseek-r1", name: "deepseek-r1"},
-          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
-          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
-          {id: "deepseek-r1-distill-qwen-14b", name: "deepseek-r1-distill-qwen-14b"},
-          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
-          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
-          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-          {id: "deepseek-r1-distill-qianfan-llama-8b", name: "deepseek-r1-distill-qianfan-llama-8b"},
-          {id: "deepseek-r1-distill-qianfan-llama-70b", name: "deepseek-r1-distill-qianfan-llama-70b"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "Embedding-V1", name: "Embedding-V1"},
-          {id: "bge-large-zh", name: "bge-large-zh"},
-          {id: "bge-large-en", name: "bge-large-en"},
-          {id: "tao-8k", name: "tao-8k"},
-        ]
-      );
-    } else {
-      return [];
-    }
+    return [
+      {id: "ernie-4.0-8k", name: "ernie-4.0-8k"},
+      {id: "ernie-4.0-8k-latest", name: "ernie-4.0-8k-latest"},
+      {id: "ernie-4.0-8k-preview", name: "ernie-4.0-8k-preview"},
+      {id: "ernie-4.0-turbo-8k", name: "ernie-4.0-turbo-8k"},
+      {id: "ernie-4.0-turbo-128k", name: "ernie-4.0-turbo-128k"},
+      {id: "ernie-4.0-turbo-8k-preview", name: "ernie-4.0-turbo-8k-preview"},
+      {id: "ernie-4.0-turbo-8k-latest", name: "ernie-4.0-turbo-8k-latest"},
+      {id: "ernie-3.5-8k", name: "ernie-3.5-8k"},
+      {id: "ernie-3.5-128k", name: "ernie-3.5-128k"},
+      {id: "ernie-3.5-8k-preview", name: "ernie-3.5-8k-preview"},
+      {id: "ernie-speed-8k", name: "ernie-speed-8k"},
+      {id: "ernie-speed-128k", name: "ernie-speed-128k"},
+      {id: "ernie-speed-pro-128k", name: "ernie-speed-pro-128k"},
+      {id: "ernie-lite-8k", name: "ernie-lite-8k"},
+      {id: "ernie-lite-pro-128k", name: "ernie-lite-pro-128k"},
+      {id: "ernie-tiny-8k", name: "ernie-tiny-8k"},
+      {id: "ernie-character-8k", name: "ernie-character-8k"},
+      {id: "ernie-character-fiction-8k", name: "ernie-character-fiction-8k"},
+      {id: "ernie-novel-8k", name: "ernie-novel-8k"},
+      {id: "deepseek-v3", name: "deepseek-v3"},
+      {id: "deepseek-r1", name: "deepseek-r1"},
+      {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+      {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+      {id: "deepseek-r1-distill-qwen-14b", name: "deepseek-r1-distill-qwen-14b"},
+      {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+      {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+      {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
+      {id: "deepseek-r1-distill-qianfan-llama-8b", name: "deepseek-r1-distill-qianfan-llama-8b"},
+      {id: "deepseek-r1-distill-qianfan-llama-70b", name: "deepseek-r1-distill-qianfan-llama-70b"},
+    ];
   } else if (type === "Cohere") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "command-light", name: "command-light"},
-          {id: "command", name: "command"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "embed-english-v2.0", name: "embed-english-v2.0"},
-          {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
-          {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
-          {id: "embed-english-v3.0", name: "embed-english-v3.0"},
-        ]
-      );
-    }
+    return [
+      {id: "command-light", name: "command-light"},
+      {id: "command", name: "command"},
+    ];
   } else if (type === "iFlytek") {
-    return (
-      [
-        {id: "spark-v1.5", name: "spark-v1.5"},
-        {id: "spark-v2.0", name: "spark-v2.0"},
-      ]
-    );
+    return [
+      {id: "spark-v1.5", name: "spark-v1.5"},
+      {id: "spark-v2.0", name: "spark-v2.0"},
+    ];
   } else if (type === "ChatGLM") {
-    return (
-      [
-        {id: "glm-3-turbo", name: "glm-3-turbo"},
-        {id: "glm-4", name: "glm-4"},
-        {id: "glm-4V", name: "glm-4V"},
-      ]
-    );
+    return [
+      {id: "glm-3-turbo", name: "glm-3-turbo"},
+      {id: "glm-4", name: "glm-4"},
+      {id: "glm-4V", name: "glm-4V"},
+    ];
   } else if (type === "MiniMax") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "abab5-chat", name: "abab5-chat"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "embo-01", name: "embo-01"},
-        ]
-      );
-    }
+    return [
+      {id: "abab5-chat", name: "abab5-chat"},
+    ];
   } else if (type === "Ollama") {
-    if (category === "Model") {
-      return [
-        {id: "deepseek-r1:671b", name: "deepseek-r1:671b"},
-        {id: "deepseek-r1:1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
-        {id: "deepseek-r1:7b", name: "deepseek-r1-distill-qwen-7b"},
-        {id: "deepseek-r1:14b", name: "deepseek-r1-distill-qwen-14b"},
-        {id: "deepseek-r1:32b", name: "deepseek-r1-distill-qwen-32b"},
-        {id: "deepseek-r1:8b", name: "deepseek-r1-distill-llama-8b"},
-        {id: "deepseek-r1:70b", name: "deepseek-r1-distill-llama-70b"},
-        {id: "llama3.3:70b", name: "llama3.3:70b"},
-        {id: "qwen2.5:7b", name: "qwen2.5:7b"},
-        {id: "qwen2.5:14b", name: "qwen2.5:14b"},
-        {id: "qwen2.5:32b", name: "qwen2.5:32b"},
-        {id: "qwen2.5:72b", name: "qwen2.5:72b"},
-        {id: "deepseek-v3:671b", name: "deepseek-v3:671b"},
-        {id: "llama3.2:1b", name: "llama3.2:1b"},
-        {id: "llama3.2:3b", name: "llama3.2:3b"},
-        {id: "llama3:8b", name: "llama3:8b"},
-        {id: "llama3:70b", name: "llama3:70b"},
-      ];
-    } else if (category === "Embedding") {
-      return [
-        {id: "nomic-embed-text", name: "nomic-embed-text"},
-        {id: "mxbai-embed-large", name: "mxbai-embed-large"},
-        {id: "snowflake-arctic-embed:335m", name: "snowflake-arctic-embed:335m"},
-        {id: "snowflake-arctic-embed:137m", name: "snowflake-arctic-embed:137m"},
-        {id: "snowflake-arctic-embed:110m", name: "snowflake-arctic-embed:110m"},
-        {id: "snowflake-arctic-embed:33m", name: "snowflake-arctic-embed:33m"},
-        {id: "snowflake-arctic-embed:22m", name: "snowflake-arctic-embed:22m"},
-        {id: "bge-m3", name: "bge-m3"},
-      ];
-    }
+    return [
+      {id: "deepseek-r1:671b", name: "deepseek-r1:671b"},
+      {id: "deepseek-r1:1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+      {id: "deepseek-r1:7b", name: "deepseek-r1-distill-qwen-7b"},
+      {id: "deepseek-r1:14b", name: "deepseek-r1-distill-qwen-14b"},
+      {id: "deepseek-r1:32b", name: "deepseek-r1-distill-qwen-32b"},
+      {id: "deepseek-r1:8b", name: "deepseek-r1-distill-llama-8b"},
+      {id: "deepseek-r1:70b", name: "deepseek-r1-distill-llama-70b"},
+      {id: "llama3.3:70b", name: "llama3.3:70b"},
+      {id: "qwen2.5:7b", name: "qwen2.5:7b"},
+      {id: "qwen2.5:14b", name: "qwen2.5:14b"},
+      {id: "qwen2.5:32b", name: "qwen2.5:32b"},
+      {id: "qwen2.5:72b", name: "qwen2.5:72b"},
+      {id: "deepseek-v3:671b", name: "deepseek-v3:671b"},
+      {id: "llama3.2:1b", name: "llama3.2:1b"},
+      {id: "llama3.2:3b", name: "llama3.2:3b"},
+      {id: "llama3:8b", name: "llama3:8b"},
+      {id: "llama3:70b", name: "llama3:70b"},
+    ];
   } else if (type === "Local") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "custom-model", name: "custom-model"},
-        ]
-      );
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "custom-embedding", name: "custom-embedding"},
-        ]
-      );
-    } else {
-      return [];
-    }
-  } else if (type === "Azure") {
-    if (category === "Model") {
-      return (
-        openaiModels
-      );
-    } else if (category === "Embedding") {
-      return (
-        openaiEmbeddings
-      );
-    }
+    return [
+      {id: "custom-model", name: "custom-model"},
+    ];
   } else if (type === "Moonshot") {
-    return (
-      [
-        {id: "moonshot-v1-8k", name: "moonshot-v1-8k"},
-        {id: "moonshot-v1-32k", name: "moonshot-v1-32k"},
-        {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
-      ]
-    );
+    return [
+      {id: "moonshot-v1-8k", name: "moonshot-v1-8k"},
+      {id: "moonshot-v1-32k", name: "moonshot-v1-32k"},
+      {id: "moonshot-v1-128k", name: "moonshot-v1-128k"},
+    ];
   } else if (type === "Amazon Bedrock") {
-    return ([
+    return [
       {id: "claude", name: "Claude"},
       {id: "claude-instant", name: "Claude Instant"},
       {id: "command", name: "Command"},
@@ -1467,56 +1346,33 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "titan-text-express", name: "Titan Text Express"},
       {id: "titan-embeddings", name: "Titan Embeddings"},
       {id: "titan-multimodal-embeddings", name: "Titan Multimodal Embeddings"},
-    ]);
+    ];
   } else if (type === "Alibaba Cloud") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "qwen-long", name: "qwen-long"},
-          {id: "qwen-turbo", name: "qwen-turbo"},
-          {id: "qwen-plus", name: "qwen-plus"},
-          {id: "qwen-max", name: "qwen-max"},
-          {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
-          {id: "qwen3-235b-a22b", name: "qwen3-235b-a22b"},
-          {id: "qwen3-32b", name: "qwen3-32b"},
-          {id: "deepseek-r1", name: "deepseek-r1"},
-          {id: "deepseek-v3", name: "deepseek-v3"},
-          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
-          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
-          {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
-          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
-          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
-          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-        ]);
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "text-embedding-v1", name: "text-embedding-v1"},
-          {id: "text-embedding-v2", name: "text-embedding-v2"},
-          {id: "text-embedding-v3", name: "text-embedding-v3"},
-        ]
-      );
-    } else if (category === "Text-to-Speech") {
-      return (
-        [
-          {id: "cosyvoice-v1", name: "cosyvoice-v1"},
-        ]
-      );
-    } else if (category === "Speech-to-Text") {
-      return (
-        [
-          {id: "paraformer-realtime-v1", name: "paraformer-realtime-v1"},
-        ]
-      );
-    }
+    return [
+      {id: "qwen-long", name: "qwen-long"},
+      {id: "qwen-turbo", name: "qwen-turbo"},
+      {id: "qwen-plus", name: "qwen-plus"},
+      {id: "qwen-max", name: "qwen-max"},
+      {id: "qwen-max-longcontext", name: "qwen-max-longcontext"},
+      {id: "qwen3-235b-a22b", name: "qwen3-235b-a22b"},
+      {id: "qwen3-32b", name: "qwen3-32b"},
+      {id: "deepseek-r1", name: "deepseek-r1"},
+      {id: "deepseek-v3", name: "deepseek-v3"},
+      {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+      {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+      {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
+      {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+      {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+      {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
+    ];
   } else if (type === "Baichuan") {
-    return ([
+    return [
       {id: "Baichuan2-Turbo", name: "Baichuan2-Turbo"},
       {id: "Baichuan3-Turbo", name: "Baichuan3-Turbo"},
       {id: "Baichuan4", name: "Baichuan4"},
-    ]);
+    ];
   } else if (type === "Volcano Engine") {
-    return ([
+    return [
       {id: "Doubao-lite-4k", name: "Doubao-lite-4k"},
       {id: "Doubao-1.5-pro-32k", name: "Doubao-1.5-pro-32k"},
       {id: "Doubao-1.5-pro-256k", name: "Doubao-1.5-pro-256k"},
@@ -1535,61 +1391,41 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "Moonshot-v1-8K", name: "Moonshot-v1-8K"},
       {id: "Moonshot-v1-32K", name: "Moonshot-v1-32K"},
       {id: "Moonshot-v1-128K", name: "Moonshot-v1-128K"},
-    ]);
+    ];
   } else if (type === "DeepSeek") {
-    return ([
+    return [
       {id: "deepseek-chat", name: "deepseek-chat"},
       {id: "deepseek-reasoner", name: "deepseek-reasoner"},
-    ]);
+    ];
   } else if (type === "StepFun") {
-    return ([
+    return [
       {id: "step-1-8k", name: "step-1-8k"},
       {id: "step-1-32k", name: "step-1-32k"},
       {id: "step-1-128k", name: "step-1-128k"},
       {id: "step-1-256k", name: "step-1-256k"},
       {id: "step-1-flash", name: "step-1-flash"},
       {id: "step-2-16k", name: "step-2-16k"},
-    ]);
+    ];
   } else if (type === "Tencent Cloud") {
-    if (category === "Model") {
-      return (
-        [
-          {id: "hunyuan-lite", name: "hunyuan-lite"},
-          {id: "hunyuan-standard", name: "hunyuan-standard"},
-          {id: "hunyuan-standard-256K", name: "hunyuan-standard-256K"},
-          {id: "hunyuan-pro", name: "hunyuan-pro"},
-          {id: "hunyuan-code", name: " hunyuan-code"},
-          {id: "hunyuan-role", name: "hunyuan-role"},
-          {id: "hunyuan-turbo", name: "hunyuan-turbo"},
-          {id: "deepseek-r1", name: "deepseek-r1"},
-          {id: "deepseek-v3", name: "deepseek-v3"},
-          {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
-          {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
-          {id: "deepseek-r1-distill-qwen-14b ", name: "deepseek-r1-distill-qwen-14b "},
-          {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
-          {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
-          {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
-        ]);
-    } else if (category === "Embedding") {
-      return (
-        [
-          {id: "hunyuan-embedding", name: "hunyuan-embedding"},
-        ]
-      );
-    }
-  } else if (type === "Jina") {
-    if (category === "Embedding") {
-      return (
-        [
-          {id: "jina-embeddings-v2-base-zh", name: "jina-embeddings-v2-base-zh"},
-          {id: "jina-embeddings-v2-base-en", name: "jina-embeddings-v2-base-en"},
-          {id: "jina-embeddings-v2-base-de", name: "jina-embeddings-v2-base-de"},
-          {id: "jina-embeddings-v2-base-code", name: "jina-embeddings-v2-base-code"},
-        ]
-      );
-    }
+    return [
+      {id: "hunyuan-lite", name: "hunyuan-lite"},
+      {id: "hunyuan-standard", name: "hunyuan-standard"},
+      {id: "hunyuan-standard-256K", name: "hunyuan-standard-256K"},
+      {id: "hunyuan-pro", name: "hunyuan-pro"},
+      {id: "hunyuan-code", name: " hunyuan-code"},
+      {id: "hunyuan-role", name: "hunyuan-role"},
+      {id: "hunyuan-turbo", name: "hunyuan-turbo"},
+      {id: "deepseek-r1", name: "deepseek-r1"},
+      {id: "deepseek-v3", name: "deepseek-v3"},
+      {id: "deepseek-r1-distill-qwen-1.5b", name: "deepseek-r1-distill-qwen-1.5b"},
+      {id: "deepseek-r1-distill-qwen-7b", name: "deepseek-r1-distill-qwen-7b"},
+      {id: "deepseek-r1-distill-qwen-14b", name: "deepseek-r1-distill-qwen-14b"},
+      {id: "deepseek-r1-distill-qwen-32b", name: "deepseek-r1-distill-qwen-32b"},
+      {id: "deepseek-r1-distill-llama-8b", name: "deepseek-r1-distill-llama-8b"},
+      {id: "deepseek-r1-distill-llama-70b", name: "deepseek-r1-distill-llama-70b"},
+    ];
   } else if (type === "Mistral") {
-    return ([
+    return [
       {id: "mistral-large-latest", name: "mistral-large-latest"},
       {id: "pixtral-large-latest", name: "pixtral-large-latest"},
       {id: "mistral-small-latest", name: "mistral-small-latest"},
@@ -1601,14 +1437,14 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "open-mistral-7b", name: "open-mistral-7b"},
       {id: "open-mixtral-8x7b", name: "open-mixtral-8x7b"},
       {id: "open-mixtral-8x22b", name: "open-mixtral-8x22b"},
-    ]);
+    ];
   } else if (type === "Yi") {
-    return ([
+    return [
       {id: "yi-lightning", name: "yi-lightning"},
       {id: "yi-vision-v2", name: "yi-vision-v2"},
-    ]);
+    ];
   } else if (type === "Silicon Flow") {
-    return ([
+    return [
       {id: "deepseek-ai/DeepSeek-R1", name: "deepseek-ai/DeepSeek-R1"},
       {id: "deepseek-ai/DeepSeek-V3", name: "deepseek-ai/DeepSeek-V3"},
       {id: "deepseek-ai/DeepSeek-R1-Distill-Llama-70B", name: "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"},
@@ -1630,17 +1466,107 @@ export function getProviderSubTypeOptions(category, type) {
       {id: "01-ai/Yi-1.5-9B-Chat-16K", name: "01-ai/Yi-1.5-9B-Chat-16K"},
       {id: "google/gemma-2-27b-it", name: "google/gemma-2-27b-it"},
       {id: "google/gemma-2-9b-it", name: "google/gemma-2-9b-it"},
-    ]);
-  } else if (type === "Word2Vec") {
-    return ([
-      {id: "Word2Vec", name: "Word2Vec"},
-    ]);
+    ];
   } else if (type === "Dummy") {
-    return ([
+    return [
       {id: "Dummy", name: "Dummy"},
-    ]);
+    ];
   } else {
     return [];
+  }
+}
+
+export function getEmbeddingSubTypeOptions(type) {
+  if (type === "OpenAI" || type === "Azure") {
+    return openaiEmbeddings;
+  } else if (type === "Gemini") {
+    return [
+      {id: "embedding-001", name: "embedding-001"},
+    ];
+  } else if (type === "Hugging Face") {
+    return [
+      {id: "sentence-transformers/all-MiniLM-L6-v2", name: "sentence-transformers/all-MiniLM-L6-v2"},
+    ];
+  } else if (type === "Cohere") {
+    return [
+      {id: "embed-english-v2.0", name: "embed-english-v2.0"},
+      {id: "embed-english-light-v2.0", name: "embed-english-light-v2.0"},
+      {id: "embed-multilingual-v2.0", name: "embed-multilingual-v2.0"},
+      {id: "embed-english-v3.0", name: "embed-english-v3.0"},
+    ];
+  } else if (type === "MiniMax") {
+    return [
+      {id: "embo-01", name: "embo-01"},
+    ];
+  } else if (type === "Ollama") {
+    return [
+      {id: "nomic-embed-text", name: "nomic-embed-text"},
+      {id: "mxbai-embed-large", name: "mxbai-embed-large"},
+      {id: "snowflake-arctic-embed:335m", name: "snowflake-arctic-embed:335m"},
+      {id: "snowflake-arctic-embed:137m", name: "snowflake-arctic-embed:137m"},
+      {id: "snowflake-arctic-embed:110m", name: "snowflake-arctic-embed:110m"},
+      {id: "snowflake-arctic-embed:33m", name: "snowflake-arctic-embed:33m"},
+      {id: "snowflake-arctic-embed:22m", name: "snowflake-arctic-embed:22m"},
+      {id: "bge-m3", name: "bge-m3"},
+    ];
+  } else if (type === "Local") {
+    return [
+      {id: "custom-embedding", name: "custom-embedding"},
+    ];
+  } else if (type === "Baidu Cloud") {
+    return [
+      {id: "Embedding-V1", name: "Embedding-V1"},
+      {id: "bge-large-zh", name: "bge-large-zh"},
+      {id: "bge-large-en", name: "bge-large-en"},
+      {id: "tao-8k", name: "tao-8k"},
+    ];
+  } else if (type === "Alibaba Cloud") {
+    return [
+      {id: "text-embedding-v1", name: "text-embedding-v1"},
+      {id: "text-embedding-v2", name: "text-embedding-v2"},
+      {id: "text-embedding-v3", name: "text-embedding-v3"},
+    ];
+  } else if (type === "Tencent Cloud") {
+    return [
+      {id: "hunyuan-embedding", name: "hunyuan-embedding"},
+    ];
+  } else if (type === "Jina") {
+    return [
+      {id: "jina-embeddings-v2-base-zh", name: "jina-embeddings-v2-base-zh"},
+      {id: "jina-embeddings-v2-base-en", name: "jina-embeddings-v2-base-en"},
+      {id: "jina-embeddings-v2-base-de", name: "jina-embeddings-v2-base-de"},
+      {id: "jina-embeddings-v2-base-code", name: "jina-embeddings-v2-base-code"},
+    ];
+  } else if (type === "Word2Vec") {
+    return [
+      {id: "Word2Vec", name: "Word2Vec"},
+    ];
+  } else {
+    return [];
+  }
+}
+
+export function getProviderSubTypeOptions(category, type) {
+  if (category === "Model") {
+    return getModelSubTypeOptions(type);
+  } else if (category === "Embedding") {
+    return getEmbeddingSubTypeOptions(type);
+  } else if (category === "Text-to-Speech") {
+    if (type === "Alibaba Cloud") {
+      return [
+        {id: "cosyvoice-v1", name: "cosyvoice-v1"},
+      ];
+    } else {
+      return [];
+    }
+  } else if (category === "Speech-to-Text") {
+    if (type === "Alibaba Cloud") {
+      return [
+        {id: "paraformer-realtime-v1", name: "paraformer-realtime-v1"},
+      ];
+    } else {
+      return [];
+    }
   }
 }
 
