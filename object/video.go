@@ -128,29 +128,6 @@ func getVideo(owner string, name string) (*Video, error) {
 	}
 
 	if existed {
-		if v.VideoId != "" {
-			err = SetDefaultVodClient()
-			if err != nil {
-				return nil, err
-			}
-
-			maxRetries := 30
-			for i := 0; i < maxRetries; i++ {
-				v.PlayAuth, err = video.GetVideoPlayAuth(v.VideoId)
-				if err == nil {
-					return &v, nil
-				}
-
-				if !strings.Contains(err.Error(), "and AuditStatus is Init.") {
-					return nil, err
-				}
-
-				fmt.Printf("GetVideoPlayAuth() error, video: %s, try time: %d, error: %v\n", name, i, err)
-				time.Sleep(2 * time.Second)
-			}
-
-			return nil, err
-		}
 		return &v, nil
 	} else {
 		return nil, nil
@@ -159,7 +136,34 @@ func getVideo(owner string, name string) (*Video, error) {
 
 func GetVideo(id string) (*Video, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	return getVideo(owner, name)
+	v, err := getVideo(owner, name)
+	if err != nil {
+		return nil, err
+	}
+
+	if v != nil && v.VideoId != "" {
+		err = SetDefaultVodClient()
+		if err != nil {
+			return nil, err
+		}
+
+		maxRetries := 30
+		for i := 0; i < maxRetries; i++ {
+			v.PlayAuth, err = video.GetVideoPlayAuth(v.VideoId)
+			if err == nil {
+				return v, nil
+			}
+
+			if !strings.Contains(err.Error(), "and AuditStatus is Init.") {
+				return nil, err
+			}
+
+			fmt.Printf("GetVideoPlayAuth() error, video: %s, try time: %d, error: %v\n", name, i, err)
+			time.Sleep(2 * time.Second)
+		}
+	}
+
+	return v, nil
 }
 
 func UpdateVideo(id string, video *Video) (bool, error) {

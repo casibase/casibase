@@ -521,7 +521,8 @@ class VideoListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    VideoBackend.getVideos("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    // VideoBackend.getVideos("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    VideoBackend.getVideos("admin", "", "", field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
