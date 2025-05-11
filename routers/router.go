@@ -88,6 +88,8 @@ func initAPI() {
 	beego.Router("/api/update-chat", &controllers.ApiController{}, "POST:UpdateChat")
 	beego.Router("/api/add-chat", &controllers.ApiController{}, "POST:AddChat")
 	beego.Router("/api/delete-chat", &controllers.ApiController{}, "POST:DeleteChat")
+	beego.Router("/api/set-chat-prompt", &controllers.ApiController{}, "post:SetChatPrompt")
+	beego.Router("/api/get-chat-prompt", &controllers.ApiController{}, "get:GetChatPrompt")
 
 	beego.Router("/api/get-global-messages", &controllers.ApiController{}, "GET:GetGlobalMessages")
 	beego.Router("/api/get-messages", &controllers.ApiController{}, "GET:GetMessages")
