@@ -15,7 +15,7 @@
 import React from "react";
 import {Button} from "antd";
 import {Sender} from "@ant-design/x";
-import {LinkOutlined} from "@ant-design/icons";
+import {LinkOutlined, SettingOutlined} from "@ant-design/icons";
 import ChatFileInput from "./ChatFileInput";
 import UploadFileArea from "./UploadFileArea";
 import i18next from "i18next";
@@ -27,6 +27,8 @@ const ChatInput = ({
   onFileChange,
   onChange,
   onSend,
+  onPromptClick,
+  promptValue,
   loading,
   disableInput,
   messageError,
@@ -106,7 +108,7 @@ const ChatInput = ({
   return (
     <div style={{position: "absolute", bottom: 0, left: 0, right: 0, padding: "16px 24px", zIndex: 1}}>
       <UploadFileArea onFileChange={handleInputChange} />
-      <div style={{maxWidth: "700px", margin: "0 auto"}}>
+      <div style={{maxWidth: "700px", margin: "0 auto", display: "flex", alignItems: "center", gap: "8px"}}>
         {files.length > 0 && (
           <div style={{marginBottom: "12px", marginLeft: "12px", marginRight: "12px"}}>
             <ChatFileInput
@@ -157,6 +159,20 @@ const ChatInput = ({
             },
           } : {})}
         />
+
+        <Button
+          icon={<SettingOutlined />}
+          onClick={onPromptClick}
+          disabled={disableInput}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "36px",
+          }}
+        >
+          {promptValue ? i18next.t("chat:Edit Prompt") : i18next.t("chat:Set Prompt")}
+        </Button>
       </div>
     </div>
   );

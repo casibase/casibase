@@ -210,6 +210,11 @@ func (c *ApiController) GetMessageAnswer() {
 		c.ResponseErrorStream(message, err.Error())
 		return
 	}
+
+	customPrompt := ""
+	if questionMessage != nil {
+		customPrompt = questionMessage.CustomPrompt
+	}
 	var modelResult *model.ModelResult
 	if agentClients != nil {
 		messages := &model.AgentMessages{
@@ -220,10 +225,11 @@ func (c *ApiController) GetMessageAnswer() {
 			AgentClients:  agentClients,
 			AgentMessages: messages,
 		}
-		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt, knowledge, agentInfo)
+		modelResult, err = model.QueryTextWithTools(modelProviderObj, question, writer, history, store.Prompt+customPrompt, knowledge, agentInfo)
 	} else {
-		modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt, knowledge, nil)
+		modelResult, err = modelProviderObj.QueryText(question, writer, history, store.Prompt+customPrompt, knowledge, nil)
 	}
+
 	if err != nil {
 		if strings.Contains(err.Error(), "write tcp") {
 			c.ResponseError(err.Error())
