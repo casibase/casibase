@@ -26,6 +26,10 @@ import * as Conf from "./Conf";
 class VideoListPage extends BaseListPage {
   constructor(props) {
     super(props);
+    this.state.pagination = {
+      current: 1,
+      pageSize: 1000,
+    };
   }
 
   newVideo() {
@@ -484,6 +488,7 @@ class VideoListPage extends BaseListPage {
       total: this.state.pagination.total,
       showQuickJumper: true,
       showSizeChanger: true,
+      pageSize: "1000",
       pageSizeOptions: ["10", "20", "50", "100", "1000", "10000", "100000"],
       showTotal: () => i18next.t("general:{total} in total").replace("{total}", this.state.pagination.total),
     };
@@ -521,8 +526,8 @@ class VideoListPage extends BaseListPage {
     const field = params.searchedColumn, value = params.searchText;
     const sortField = params.sortField, sortOrder = params.sortOrder;
     this.setState({loading: true});
-    // VideoBackend.getVideos("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
-    VideoBackend.getVideos("admin", "", "", field, value, sortField, sortOrder)
+    VideoBackend.getVideos("admin", params.pagination.current, params.pagination.pageSize, field, value, sortField, sortOrder)
+    // VideoBackend.getVideos("admin", "", "", field, value, sortField, sortOrder)
       .then((res) => {
         this.setState({
           loading: false,
