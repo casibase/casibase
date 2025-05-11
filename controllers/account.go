@@ -18,6 +18,7 @@ import (
 	_ "embed"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
@@ -175,6 +176,30 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		return err
 	}
 
+	store, err := object.GetStore(util.GetId("admin", chat.Store))
+	if err != nil {
+		return err
+	}
+
+	userMessage := &object.Message{
+		Owner:        "admin",
+		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:  chat.CreatedTime,
+		Organization: chat.Organization,
+		User:         userName,
+		Chat:         chat.Name,
+		ReplyTo:      "",
+		Author:       userName,
+		Text:         store.Welcome,
+		IsHidden:     true,
+		VectorScores: []object.VectorScore{},
+	}
+	_, err = object.AddMessage(userMessage)
+	if err != nil {
+		return err
+	}
+	time.Sleep(1000 * time.Millisecond)
+
 	answerMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
@@ -182,7 +207,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		Organization: chat.Organization,
 		User:         userName,
 		Chat:         chat.Name,
-		ReplyTo:      "Welcome",
+		ReplyTo:      userMessage.Name,
 		Author:       "AI",
 		Text:         "",
 		VectorScores: []object.VectorScore{},
