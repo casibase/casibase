@@ -47,6 +47,7 @@ type Chat struct {
 	IsHidden      bool     `json:"isHidden"`
 	IsDeleted     bool     `json:"isDeleted"`
 	NeedTitle     bool     `json:"needTitle"`
+	CustomPrompt  string   `xorm:"varchar(5000)" json:"customPrompt"`
 }
 
 func GetGlobalChats() ([]*Chat, error) {
