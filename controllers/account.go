@@ -17,11 +17,12 @@ package controllers
 import (
 	_ "embed"
 	"fmt"
+	"strings"
+
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
-	"strings"
 )
 
 func init() {
