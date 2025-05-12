@@ -316,21 +316,35 @@ func UpdateProvider(id string, provider *Provider) (bool, error) {
 		provider.ProviderUrl = "http://" + provider.ProviderUrl
 	}
 
-	if providerAdapter != nil && provider.Category != "Storage" {
-		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
-		if err != nil {
-			return false, err
-		}
+	session := adapter.engine.NewSession()
+	defer session.Close()
 
-		// return affected != 0
-		return true, nil
-	}
-
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
-	if err != nil {
+	if err := session.Begin(); err != nil {
 		return false, err
 	}
 
+	if providerAdapter != nil && provider.Category != "Storage" {
+		_, err = providerAdapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
+	} else {
+		_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(provider)
+	}
+	if err != nil {
+		session.Rollback()
+		return false, err
+	}
+
+	if p.Name != provider.Name && provider.Name != "" {
+		_, err = updateStoresWithProvider(owner, name, provider.Name)
+		if err != nil {
+			session.Rollback()
+			return false, err
+		}
+	}
+
+	if err := session.Commit(); err != nil {
+		session.Rollback()
+		return false, err
+	}
 	// return affected != 0
 	return true, nil
 }
@@ -490,4 +504,62 @@ func GetPaginationProviders(owner string, offset, limit int, field, value, sortF
 	}
 
 	return providers, nil
+}
+
+func updateStoresWithProvider(owner string, oldName string, newName string) (bool, error) {
+	if oldName == newName {
+		return true, nil
+	}
+
+	stores, err := GetStores(owner)
+	if err != nil {
+		return false, err
+	}
+
+	for _, store := range stores {
+		needUpdate := false
+
+		if store.StorageProvider == oldName {
+			store.StorageProvider = newName
+			needUpdate = true
+		}
+		if store.ImageProvider == oldName {
+			store.ImageProvider = newName
+			needUpdate = true
+		}
+		if store.SplitProvider == oldName {
+			store.SplitProvider = newName
+			needUpdate = true
+		}
+		if store.ModelProvider == oldName {
+			store.ModelProvider = newName
+			needUpdate = true
+		}
+		if store.EmbeddingProvider == oldName {
+			store.EmbeddingProvider = newName
+			needUpdate = true
+		}
+		if store.TextToSpeechProvider == oldName {
+			store.TextToSpeechProvider = newName
+			needUpdate = true
+		}
+		if store.SpeechToTextProvider == oldName {
+			store.SpeechToTextProvider = newName
+			needUpdate = true
+		}
+		for i, providerName := range store.ChildModelProviders {
+			if providerName == oldName {
+				store.ChildModelProviders[i] = newName
+				needUpdate = true
+			}
+		}
+
+		if needUpdate {
+			_, err := UpdateStore(store.GetId(), store)
+			if err != nil {
+				return false, err
+			}
+		}
+	}
+	return true, nil
 }

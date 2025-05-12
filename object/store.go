@@ -157,7 +157,7 @@ func GetStore(id string) (*Store, error) {
 
 func UpdateStore(id string, store *Store) (bool, error) {
 	owner, name := util.GetOwnerAndNameFromId(id)
-	_, err := getStore(owner, name)
+	oldStore, err := getStore(owner, name)
 	if err != nil {
 		return false, err
 	}
@@ -165,11 +165,50 @@ func UpdateStore(id string, store *Store) (bool, error) {
 		return false, nil
 	}
 
-	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
-	if err != nil {
+	session := adapter.engine.NewSession()
+	defer session.Close()
+
+	if err := session.Begin(); err != nil {
 		return false, err
 	}
 
+	_, err = adapter.engine.ID(core.PK{owner, name}).AllCols().Update(store)
+	if err != nil {
+		session.Rollback()
+		return false, err
+	}
+
+	if oldStore.Name != store.Name && store.Name != "" {
+		stores, err := GetStores(owner)
+		if err != nil {
+			session.Rollback()
+			return false, err
+		}
+
+		for _, s := range stores {
+			needUpdate := false
+			if s.Name == name {
+				continue
+			}
+			for i, childName := range s.ChildStores {
+				if childName == name {
+					s.ChildStores[i] = store.Name
+					needUpdate = true
+				}
+			}
+			if needUpdate {
+				_, err := adapter.engine.ID(core.PK{s.Owner, s.Name}).AllCols().Update(s)
+				if err != nil {
+					session.Rollback()
+					return false, err
+				}
+			}
+		}
+	}
+	if err := session.Commit(); err != nil {
+		session.Rollback()
+		return false, err
+	}
 	// return affected != 0
 	return true, nil
 }
