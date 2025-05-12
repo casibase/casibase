@@ -25,7 +25,7 @@ func NewChainClient(providerType string, clientId string, clientSecret string, r
 	var res ChainClientInterface
 	var err error
 	if providerType == "ChainMaker" {
-		res, err = newChainChainmakerClient(clientId, clientSecret, region, networkId, chainId)
+		res, err = newChainChainmakerClient("test", "permissionedWithCert", "", "", "", "", "", networkId, "", "", chainId, false)
 	} else if providerType == "Tencent ChainMaker" {
 		res, err = newChainTencentChainmakerClient(clientId, clientSecret, region, networkId, chainId)
 	} else if providerType == "Tencent ChainMaker (Demo Network)" {
