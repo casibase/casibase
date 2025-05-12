@@ -39,6 +39,7 @@ class MessageList extends React.Component {
     } = this.props;
 
     const avatarSrc = store?.avatar || Setting.AiAvatar;
+    const filteredMessages = messages.filter(message => message.isHidden === false);
 
     return (
       <List
@@ -56,13 +57,13 @@ class MessageList extends React.Component {
           paddingBottom: hideInput ? "0px" : "40px",
           scrollBehavior: "smooth",
         }}
-        dataSource={messages.filter(message => message.isHidden === false)}
+        dataSource={filteredMessages}
         renderItem={(message, index) => (
           <MessageItem
             key={message.name || index}
             message={message}
             index={index}
-            isLastMessage={index === messages.length - 1}
+            isLastMessage={index === filteredMessages.length - 1}
             account={account}
             avatar={avatarSrc}
             onCopy={onCopyMessage}

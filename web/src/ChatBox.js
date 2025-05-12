@@ -146,7 +146,7 @@ class ChatBox extends React.Component {
   handleRegenerate = (index) => {
     // can only regenerate after sending the message
     const messages = this.state.messages || [];
-    const message = [...messages.slice(0, index)].reverse().find(message => message.author !== "AI");
+    const message = [...messages].reverse().find(message => message.author !== "AI");
 
     this.handleEditMessage({...message, text: message.text, updatedTime: new Date().toISOString()});
   };

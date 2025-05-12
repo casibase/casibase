@@ -175,6 +175,32 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		return err
 	}
 
+	store, err := object.GetStore(util.GetId("admin", chat.Store))
+	if err != nil {
+		return err
+	}
+	if store == nil {
+		return fmt.Errorf("The store: %s is not found", chat.Store)
+	}
+
+	userMessage := &object.Message{
+		Owner:        "admin",
+		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
+		CreatedTime:  util.AdjustTime(chat.CreatedTime, -100),
+		Organization: chat.Organization,
+		User:         userName,
+		Chat:         chat.Name,
+		ReplyTo:      "",
+		Author:       userName,
+		Text:         store.Welcome,
+		IsHidden:     true,
+		VectorScores: []object.VectorScore{},
+	}
+	_, err = object.AddMessage(userMessage)
+	if err != nil {
+		return err
+	}
+
 	answerMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
