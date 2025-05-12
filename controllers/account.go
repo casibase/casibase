@@ -17,13 +17,11 @@ package controllers
 import (
 	_ "embed"
 	"fmt"
-	"strings"
-	"time"
-
 	"github.com/beego/beego"
 	"github.com/casdoor/casdoor-go-sdk/casdoorsdk"
 	"github.com/casibase/casibase/object"
 	"github.com/casibase/casibase/util"
+	"strings"
 )
 
 func init() {
@@ -180,11 +178,14 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	if err != nil {
 		return err
 	}
+	if store == nil {
+		return fmt.Errorf("The store: %s is not found", chat.Store)
+	}
 
 	userMessage := &object.Message{
 		Owner:        "admin",
 		Name:         fmt.Sprintf("message_%s", util.GetRandomName()),
-		CreatedTime:  chat.CreatedTime,
+		CreatedTime:  util.AdjustTime(chat.CreatedTime, -100),
 		Organization: chat.Organization,
 		User:         userName,
 		Chat:         chat.Name,
@@ -198,7 +199,6 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 	if err != nil {
 		return err
 	}
-	time.Sleep(1000 * time.Millisecond)
 
 	answerMessage := &object.Message{
 		Owner:        "admin",
@@ -207,7 +207,7 @@ func (c *ApiController) addInitialChatAndMessage(user *casdoorsdk.User) error {
 		Organization: chat.Organization,
 		User:         userName,
 		Chat:         chat.Name,
-		ReplyTo:      userMessage.Name,
+		ReplyTo:      "Welcome",
 		Author:       "AI",
 		Text:         "",
 		VectorScores: []object.VectorScore{},
