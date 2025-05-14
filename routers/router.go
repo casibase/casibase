@@ -185,4 +185,6 @@ func initAPI() {
 	beego.Router("/api/health", &controllers.ApiController{}, "GET:Health")
 	beego.Router("/api/get-prometheus-info", &controllers.ApiController{}, "GET:GetPrometheusInfo")
 	beego.Handler("/api/metrics", promhttp.Handler())
+
+	beego.Router("/api/chat/completions", &controllers.ApiController{}, "POST:ChatCompletions")
 }
