@@ -1,3 +1,17 @@
+// Copyright 2025 The Casibase Authors. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//      http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package controllers
 
 import (
@@ -11,13 +25,13 @@ import (
 
 // OpenAIWriter implements a writer that formats responses in OpenAI format
 type OpenAIWriter struct {
-	context.Response // Embed Response instead of having ResponseWriter as a field
-	Buffer           []byte
-	RequestID        string
-	Stream           bool
-	StreamSent       bool
-	Cleaner          Cleaner
-	Model            string
+	context.Response
+	Cleaner    Cleaner
+	Buffer     []byte
+	RequestID  string
+	Stream     bool
+	StreamSent bool
+	Model      string
 }
 
 // Write processes incoming data chunks and formats them for OpenAI compatibility
@@ -57,14 +71,14 @@ func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
 		return 0, err
 	}
 
-	// Send as SSE data chunk - use Write directly on the embedded Response
-	_, err = w.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonData)))
+	// Send as SSE data chunk - use ResponseWriter to avoid recursion
+	_, err = w.ResponseWriter.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonData)))
 	if err != nil {
 		return 0, err
 	}
 
 	w.StreamSent = true
-	w.Flush() // Call Flush directly on the embedded Response
+	w.Flush()
 
 	return len(p), nil
 }
@@ -96,13 +110,13 @@ func (w *OpenAIWriter) Close(inputTokens, outputTokens, totalTokens int) error {
 			return err
 		}
 
-		_, err = w.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonData)))
+		_, err = w.ResponseWriter.Write([]byte(fmt.Sprintf("data: %s\n\n", jsonData)))
 		if err != nil {
 			return err
 		}
 
 		// Final [DONE] marker for SSE
-		_, err = w.Write([]byte("data: [DONE]\n\n"))
+		_, err = w.ResponseWriter.Write([]byte("data: [DONE]\n\n"))
 		if err != nil {
 			return err
 		}
