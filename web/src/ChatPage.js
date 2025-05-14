@@ -46,6 +46,7 @@ class ChatPage extends BaseListPage {
       messageError: false,
       autoRead: false,
       chatMenuVisible: false,
+      chatPrompt: "",
     });
 
     this.fetch();
@@ -147,9 +148,50 @@ class ChatPage extends BaseListPage {
       userAgent: this.props.account.education,
       messageCount: 0,
       needTitle: true,
+      prompt: "",
     };
   }
+  updateChatPrompt = (prompt) => {
+    if (!this.state.chat) {return;}
 
+    const chatId = this.state.chat.owner + "/" + this.state.chat.name;
+
+    this.setState({chatPrompt: prompt});
+
+    MessageBackend.setChatPrompt(chatId, prompt)
+      .then((res) => {
+        if (res.status === "ok") {
+          Setting.showMessage("success", i18next.t("general:Successfully updated"));
+
+          const chat = {...this.state.chat, prompt: prompt};
+          this.setState({chat: chat});
+        } else {
+          this.setState({chatPrompt: this.state.chat.prompt || ""});
+          Setting.showMessage("error", `${i18next.t("general:Failed to update")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        this.setState({chatPrompt: this.state.chat.prompt || ""});
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  };
+  loadChatPrompt = (chat) => {
+    if (!chat) {return;}
+
+    const chatId = chat.owner + "/" + chat.name;
+
+    MessageBackend.getChatPrompt(chatId)
+      .then((res) => {
+        if (res.status === "ok") {
+          this.setState({chatPrompt: res.data.customPrompt || ""});
+        } else {
+          Setting.showMessage("error", `${i18next.t("general:Failed to get prompt")}: ${res.msg}`);
+        }
+      })
+      .catch(error => {
+        Setting.showMessage("error", `${i18next.t("general:Failed to connect to server")}: ${error}`);
+      });
+  };
   newMessage(text, fileName, isHidden, isRegenerated) {
     const randomName = Setting.getRandomName();
     return {
@@ -256,6 +298,7 @@ class ChatPage extends BaseListPage {
   }
 
   getMessages(chat) {
+    this.loadChatPrompt(chat);
     MessageBackend.getChatMessages("admin", chat.name)
       .then((res) => {
         if (this.getMessageAnswerFromURL(res.data)) {
@@ -691,6 +734,24 @@ class ChatPage extends BaseListPage {
               store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
             />
           </div>
+
+          <ChatBox
+            disableInput={this.state.disableInput}
+            loading={this.state.messageLoading}
+            messages={this.state.messages}
+            messageError={this.state.messageError}
+            sendMessage={(text, fileName, regenerate = false) => {
+              this.sendMessage(text, fileName, false, regenerate);
+            }}
+            onMessageEdit={this.handleMessageEdit}
+            onCancelMessage={this.cancelMessage}
+            account={this.props.account}
+            name={this.state.chat?.name}
+            displayName={this.state.chat?.displayName}
+            store={this.state.chat ? this.state.stores?.find(store => store.name === this.state.chat.store) : null}
+            promptValue={this.state.chatPrompt}
+            onPromptChange={this.updateChatPrompt}
+          />
         </div>
       </div>
     );
