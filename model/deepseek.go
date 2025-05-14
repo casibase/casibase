@@ -20,18 +20,20 @@ import (
 )
 
 type DeepSeekProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewDeepSeekProvider(subType string, apiKey string, temperature float32, topP float32) (*DeepSeekProvider, error) {
+func NewDeepSeekProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*DeepSeekProvider, error) {
 	return &DeepSeekProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
@@ -75,7 +77,7 @@ func (p *DeepSeekProvider) QueryText(question string, writer io.Writer, history 
 	} else if p.subType == "deepseek-chat" {
 		localType = "Custom"
 	}
-	localProvider, err := NewLocalModelProvider(localType, subType, p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY")
+	localProvider, err := NewLocalModelProvider(localType, subType, p.apiKey, p.temperature, p.topP, 0, 0, BaseUrl, p.subType, 0, 0, "CNY", p.contextLength)
 	if err != nil {
 		return nil, err
 	}

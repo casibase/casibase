@@ -23,16 +23,18 @@ import (
 )
 
 type MistralModelProvider struct {
-	client    *mistral.MistralClient
-	modelName string
+	client        *mistral.MistralClient
+	modelName     string
+	contextLength int
 }
 
-func NewMistralProvider(apiKey, modelName string) (*MistralModelProvider, error) {
+func NewMistralProvider(apiKey, modelName string, contextLength int) (*MistralModelProvider, error) {
 	client := mistral.NewMistralClientDefault(apiKey)
 
 	return &MistralModelProvider{
-		client:    client,
-		modelName: modelName,
+		client:        client,
+		modelName:     modelName,
+		contextLength: contextLength,
 	}, nil
 }
 

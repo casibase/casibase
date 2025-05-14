@@ -26,18 +26,20 @@ import (
 )
 
 type BaiduCloudModelProvider struct {
-	subType     string
-	apiKey      string
-	temperature float64
-	topP        float64
+	subType       string
+	apiKey        string
+	temperature   float64
+	topP          float64
+	contextLength int
 }
 
-func NewBaiduCloudModelProvider(subType string, apiKey string, temperature float32, topP float32) (*BaiduCloudModelProvider, error) {
+func NewBaiduCloudModelProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*BaiduCloudModelProvider, error) {
 	return &BaiduCloudModelProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: float64(temperature),
-		topP:        float64(topP),
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   float64(temperature),
+		topP:          float64(topP),
+		contextLength: contextLength,
 	}, nil
 }
 

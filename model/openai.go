@@ -19,7 +19,9 @@ import (
 	"github.com/sashabaranov/go-openai"
 )
 
-func NewOpenAiModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (*LocalModelProvider, error) {
+func NewOpenAiModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32,
+	contextLength int,
+) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:              typ,
 		subType:          subType,
@@ -28,6 +30,7 @@ func NewOpenAiModelProvider(typ string, subType string, secretKey string, temper
 		topP:             topP,
 		frequencyPenalty: frequencyPenalty,
 		presencePenalty:  presencePenalty,
+		contextLength:    contextLength,
 	}
 	return p, nil
 }

@@ -24,22 +24,24 @@ import (
 )
 
 type iFlytekModelProvider struct {
-	subType     string
-	appID       string
-	apiKey      string
-	secretKey   string
-	temperature string
-	topK        int
+	subType       string
+	appID         string
+	apiKey        string
+	secretKey     string
+	temperature   string
+	topK          int
+	contextLength int
 }
 
-func NewiFlytekModelProvider(subType string, secretKey string, temperature float32, topK int) (*iFlytekModelProvider, error) {
+func NewiFlytekModelProvider(subType string, secretKey string, temperature float32, topK int, contextLength int) (*iFlytekModelProvider, error) {
 	p := &iFlytekModelProvider{
-		subType:     subType,
-		appID:       "",
-		apiKey:      "",
-		secretKey:   secretKey,
-		temperature: fmt.Sprintf("%f", temperature),
-		topK:        topK,
+		subType:       subType,
+		appID:         "",
+		apiKey:        "",
+		secretKey:     secretKey,
+		temperature:   fmt.Sprintf("%f", temperature),
+		topK:          topK,
+		contextLength: contextLength,
 	}
 	return p, nil
 }
@@ -95,12 +97,13 @@ func (p *iFlytekModelProvider) QueryText(question string, writer io.Writer, hist
 	if !ok {
 		return nil, fmt.Errorf("writer does not implement http.Flusher")
 	}
+	maxTokens := p.contextLength
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 32000 > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

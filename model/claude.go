@@ -25,12 +25,13 @@ import (
 )
 
 type ClaudeModelProvider struct {
-	subType   string
-	secretKey string
+	subType       string
+	secretKey     string
+	contextLength int
 }
 
-func NewClaudeModelProvider(subType string, secretKey string) (*ClaudeModelProvider, error) {
-	return &ClaudeModelProvider{subType: subType, secretKey: secretKey}, nil
+func NewClaudeModelProvider(subType string, secretKey string, contextLength int) (*ClaudeModelProvider, error) {
+	return &ClaudeModelProvider{subType: subType, secretKey: secretKey, contextLength: contextLength}, nil
 }
 
 func (p *ClaudeModelProvider) GetPricing() string {
@@ -46,13 +47,6 @@ https://docs.anthropic.com/claude/docs/models-overview#model-comparison
 | Claude Sonnet  | 200,000 tokens | $3.00/million tokens  | $15.00/million tokens |
 | Claude Opus    | 200,000 tokens | $15.00/million tokens | $75.00/million tokens |
 `
-}
-
-func GetClaudeMaxTokens(model string) int {
-	if model == "Claude 2.0" || model == "Claude Instant" {
-		return 100000
-	}
-	return 200000
 }
 
 func (p *ClaudeModelProvider) calculatePrice(modelResult *ModelResult) error {
@@ -91,12 +85,14 @@ func (p *ClaudeModelProvider) QueryText(question string, writer io.Writer, histo
 		return nil, err
 	}
 
+	maxTokens := p.contextLength
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetClaudeMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

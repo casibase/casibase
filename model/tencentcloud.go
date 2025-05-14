@@ -20,23 +20,25 @@ import (
 )
 
 type TencentCloudClient struct {
-	endpoint    string
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	endpoint      string
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewTencentCloudProvider(secretKey, endpoint, subType string, temperature, topP float32) (*TencentCloudClient, error) {
+func NewTencentCloudProvider(secretKey, endpoint, subType string, temperature, topP float32, contextLength int) (*TencentCloudClient, error) {
 	if endpoint == "" {
 		endpoint = "https://api.hunyuan.cloud.tencent.com/v1"
 	}
 	return &TencentCloudClient{
-		apiKey:      secretKey,
-		endpoint:    endpoint,
-		subType:     subType,
-		temperature: temperature,
-		topP:        topP,
+		apiKey:        secretKey,
+		endpoint:      endpoint,
+		subType:       subType,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
@@ -55,7 +57,7 @@ func (c *TencentCloudClient) QueryText(question string, writer io.Writer, histor
 		model = modelSplit[len(modelSplit)-1]
 	}
 	// Create a new LocalModelProvider to handle the request
-	localProvider, err := NewLocalModelProvider("Custom", "custom-model", c.apiKey, c.temperature, c.topP, 0, 0, baseUrl, model, 0, 0, "CNY")
+	localProvider, err := NewLocalModelProvider("Custom", "custom-model", c.apiKey, c.temperature, c.topP, 0, 0, baseUrl, model, 0, 0, "CNY", c.contextLength)
 	if err != nil {
 		return nil, err
 	}

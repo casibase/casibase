@@ -26,18 +26,20 @@ import (
 )
 
 type MiniMaxModelProvider struct {
-	subType     string
-	groupID     string
-	apiKey      string
-	temperature float32
+	subType       string
+	groupID       string
+	apiKey        string
+	temperature   float32
+	contextLength int
 }
 
-func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temperature float32) (*MiniMaxModelProvider, error) {
+func NewMiniMaxModelProvider(subType string, groupID string, apiKey string, temperature float32, contextLength int) (*MiniMaxModelProvider, error) {
 	return &MiniMaxModelProvider{
-		subType:     subType,
-		groupID:     groupID,
-		apiKey:      apiKey,
-		temperature: temperature,
+		subType:       subType,
+		groupID:       groupID,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		contextLength: contextLength,
 	}, nil
 }
 
@@ -88,7 +90,9 @@ func (p *MiniMaxModelProvider) QueryText(question string, writer io.Writer, hist
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 4096 > modelResult.TotalTokenCount {
+		maxTokens := p.contextLength
+		// https://www.minimax.io/platform/document/ChatCompletion%20v2?key=66701d281d57f38758d581d0
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

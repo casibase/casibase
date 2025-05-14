@@ -23,7 +23,7 @@ type GitHubModelProvider struct {
 	*LocalModelProvider
 }
 
-func NewGitHubModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32) (*GitHubModelProvider, error) {
+func NewGitHubModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, contextLength int) (*GitHubModelProvider, error) {
 	p := &GitHubModelProvider{
 		LocalModelProvider: &LocalModelProvider{
 			typ:                "Custom",
@@ -35,6 +35,7 @@ func NewGitHubModelProvider(typ string, subType string, secretKey string, temper
 			presencePenalty:    presencePenalty,
 			providerUrl:        "https://models.github.ai/inference",
 			compitableProvider: subType,
+			contextLength:      contextLength,
 		},
 	}
 	return p, nil

@@ -26,27 +26,20 @@ import (
 )
 
 type MoonshotModelProvider struct {
-	temperature float64
-	subType     string
-	secretKey   string
+	temperature   float64
+	subType       string
+	secretKey     string
+	contextLength int
 }
 
-func NewMoonshotModelProvider(subType string, secretKey string, temperature float64) (*MoonshotModelProvider, error) {
+func NewMoonshotModelProvider(subType string, secretKey string, temperature float64, contextLength int) (*MoonshotModelProvider, error) {
 	client := &MoonshotModelProvider{
-		subType:     subType,
-		secretKey:   secretKey,
-		temperature: temperature,
+		subType:       subType,
+		secretKey:     secretKey,
+		temperature:   temperature,
+		contextLength: contextLength,
 	}
 	return client, nil
-}
-
-func GetMoonShotMaxTokens(model string) int {
-	if model == "moonshot-v1-128k" {
-		return 128000
-	} else if model == "moonshot-v1-32k" {
-		return 32000
-	}
-	return 8000
 }
 
 func (p *MoonshotModelProvider) GetPricing() string {
@@ -93,12 +86,14 @@ func (p *MoonshotModelProvider) QueryText(question string, writer io.Writer, his
 		return nil, err
 	}
 
+	maxTokens := p.contextLength
+
 	if strings.HasPrefix(question, "$CasibaseDryRun$") {
 		modelResult, err := getDefaultModelResult(p.subType, question, "")
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if GetMoonShotMaxTokens(p.subType) > modelResult.TotalTokenCount {
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

@@ -42,9 +42,10 @@ type LocalModelProvider struct {
 	inputPricePerThousandTokens  float64
 	outputPricePerThousandTokens float64
 	currency                     string
+	contextLength                int
 }
 
-func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string) (*LocalModelProvider, error) {
+func NewLocalModelProvider(typ string, subType string, secretKey string, temperature float32, topP float32, frequencyPenalty float32, presencePenalty float32, providerUrl string, compitableProvider string, inputPricePerThousandTokens float64, outputPricePerThousandTokens float64, Currency string, contextLength int) (*LocalModelProvider, error) {
 	p := &LocalModelProvider{
 		typ:                          typ,
 		subType:                      subType,
@@ -58,6 +59,7 @@ func NewLocalModelProvider(typ string, subType string, secretKey string, tempera
 		inputPricePerThousandTokens:  inputPricePerThousandTokens,
 		outputPricePerThousandTokens: outputPricePerThousandTokens,
 		currency:                     Currency,
+		contextLength:                contextLength,
 	}
 	return p, nil
 }
@@ -310,7 +312,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 	frequencyPenalty := p.frequencyPenalty
 	presencePenalty := p.presencePenalty
 
-	maxTokens := GetOpenAiMaxTokens(model)
+	maxTokens := p.contextLength
 
 	modelResult := &ModelResult{}
 	if getOpenAiModelType(p.subType) == "Chat" {
@@ -374,7 +376,7 @@ func (p *LocalModelProvider) QueryText(question string, writer io.Writer, histor
 		}
 
 		if strings.HasPrefix(question, "$CasibaseDryRun$") {
-			if GetOpenAiMaxTokens(p.subType) > modelResult.TotalTokenCount {
+			if maxTokens > modelResult.TotalTokenCount {
 				return modelResult, nil
 			} else {
 				return nil, fmt.Errorf("exceed max tokens")

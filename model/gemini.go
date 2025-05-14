@@ -26,20 +26,22 @@ import (
 )
 
 type GeminiModelProvider struct {
-	subType     string
-	secretKey   string
-	temperature float32
-	topP        float32
-	topK        int
+	subType       string
+	secretKey     string
+	temperature   float32
+	topP          float32
+	topK          int
+	contextLength int
 }
 
-func NewGeminiModelProvider(subType string, secretKey string, temperature float32, topP float32, topK int) (*GeminiModelProvider, error) {
+func NewGeminiModelProvider(subType string, secretKey string, temperature float32, topP float32, topK int, contextLength int) (*GeminiModelProvider, error) {
 	p := &GeminiModelProvider{
-		subType:     subType,
-		secretKey:   secretKey,
-		temperature: temperature,
-		topP:        topP,
-		topK:        topK,
+		subType:       subType,
+		secretKey:     secretKey,
+		temperature:   temperature,
+		topP:          topP,
+		topK:          topK,
+		contextLength: contextLength,
 	}
 	return p, nil
 }
@@ -115,7 +117,9 @@ func (p *GeminiModelProvider) QueryText(question string, writer io.Writer, histo
 		if err != nil {
 			return nil, fmt.Errorf("cannot calculate tokens")
 		}
-		if 32000 > modelResult.TotalTokenCount {
+		maxTokens := p.contextLength
+		// https://firebase.google.com/docs/vertex-ai/models #Specifications and limitations
+		if maxTokens > modelResult.TotalTokenCount {
 			return modelResult, nil
 		} else {
 			return nil, fmt.Errorf("exceed max tokens")

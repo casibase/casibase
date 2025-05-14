@@ -24,18 +24,20 @@ import (
 )
 
 type BaichuanModelProvider struct {
-	subType     string
-	apiKey      string
-	temperature float32
-	topP        float32
+	subType       string
+	apiKey        string
+	temperature   float32
+	topP          float32
+	contextLength int
 }
 
-func NewBaichuanModelProvider(subType string, apiKey string, temperature float32, topP float32) (*BaichuanModelProvider, error) {
+func NewBaichuanModelProvider(subType string, apiKey string, temperature float32, topP float32, contextLength int) (*BaichuanModelProvider, error) {
 	return &BaichuanModelProvider{
-		subType:     subType,
-		apiKey:      apiKey,
-		temperature: temperature,
-		topP:        topP,
+		subType:       subType,
+		apiKey:        apiKey,
+		temperature:   temperature,
+		topP:          topP,
+		contextLength: contextLength,
 	}, nil
 }
 
