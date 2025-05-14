@@ -119,6 +119,12 @@ func (c *Cleaner) GetCleanedData() string {
 	return cleanString(strings.Join(c.buffer, ""))
 }
 
+// CleanResponseChunk cleans a single chunk of data for streaming responses
+func (c *Cleaner) CleanResponseChunk(data string) string {
+	// For single chunks, do a simple cleaning without buffering
+	return cleanString(data)
+}
+
 func cleanString(data string) string {
 	img := regexp.MustCompile(`<img[^>]+>`)
 	if img.MatchString(data) {

@@ -51,3 +51,8 @@ func AdjustTime(timeStr string, offsetMs int) string {
 
 	return adjustedTime.Format(time.RFC3339)
 }
+
+// GetCurrentUnixTime returns the current Unix timestamp in seconds
+func GetCurrentUnixTime() int64 {
+	return time.Now().Unix()
+}
