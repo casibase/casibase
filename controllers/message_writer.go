@@ -119,9 +119,7 @@ func (c *Cleaner) GetCleanedData() string {
 	return cleanString(strings.Join(c.buffer, ""))
 }
 
-// CleanResponseChunk cleans a single chunk of data for streaming responses
-func (c *Cleaner) CleanResponseChunk(data string) string {
-	// For single chunks, do a simple cleaning without buffering
+func (c *Cleaner) CleanString(data string) string {
 	return cleanString(data)
 }
 
