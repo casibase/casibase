@@ -45,7 +45,7 @@ func (w *OpenAIWriter) Write(p []byte) (n int, err error) {
 	}
 
 	// For streaming, send data in OpenAI format
-	cleanedData := w.Cleaner.CleanResponseChunk(string(p))
+	cleanedData := w.Cleaner.CleanString(string(p))
 	if cleanedData == "" {
 		return len(p), nil
 	}
