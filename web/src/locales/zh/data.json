@@ -1,7 +1,7 @@
 {
   "account": {
-    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. Go to your setting page by clicking on the below \"My Account\" button.",
-    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. Click \"Modify password...\" button to change your password. Then close the setting page.",
+    "1. Go to your setting page by clicking on the below \"My Account\" button.": "1. 点击下方的“我的账户”按钮，前往您的个人设置页面；",
+    "2. Click \"Modify password...\" button to change your password. Then close the setting page.": "2. 点击“编辑密码...”按钮更改您的密码。成功更改后，关闭个人设置页面；",
     "3. Go back to this page and refresh it by pressing F5 key. This alert message should be gone.": "3. 返回此页面，并按F5键刷新。这个警告信息会自行消失；",
     "4. If you encounter any issues, please contact your administrator.": "4. 如果还有任何问题，请联系管理员。",
     "My Account": "我的账户",
@@ -458,7 +458,7 @@
     "In Review": "评审中",
     "In Review 1": "初审中",
     "In Review 2": "复审中",
-    "Is public": "是否公开",
+    "Is public": "是否推荐",
     "Is recommended": "是否推荐",
     "Keywords": "关键词",
     "Label count": "标签数量",
